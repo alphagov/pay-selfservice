@@ -1,12 +1,10 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Request a live account - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
-
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 2 of 3</span>
 
     <form id="request-to-go-live-choose-how-to-process-payments-form" method="post"
@@ -77,5 +75,4 @@
 
       {{ govukButton({ text: "Continue" }) }}
     </form>
-  </div>
 {% endblock %}

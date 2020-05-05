@@ -1,15 +1,13 @@
-<div class="govuk-grid-column-one-third">
-    <nav role="navigation" class="settings-navigation">
-        <ul class="govuk-list govuk-!-margin-bottom-9">
-          {% for item in adminNavigationItems %}
-            {% if item.permissions %}
-              {% if item.current %}
-                <li class="govuk-!-font-weight-bold  govuk-!-margin-bottom-2"><a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-!-display-block" id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
-              {% else %}
-                <li class="govuk-!-margin-bottom-2"><a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-!-display-block" id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-        </ul>
-    </nav>
-</div>
+<nav role="navigation" class="settings-navigation">
+    <ul class="govuk-list govuk-!-margin-bottom-9">
+      {% for item in adminNavigationItems %}
+        {% if item.permissions %}
+          {% if item.current %}
+            <li class="govuk-!-font-weight-bold  govuk-!-margin-bottom-2"><a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-!-display-block" id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
+          {% else %}
+            <li class="govuk-!-margin-bottom-2"><a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-!-display-block" id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+</nav>

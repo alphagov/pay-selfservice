@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-full-width.njk" %}
 
 {% block pageTitle %}
   Change sign-in method - GOV.UK Pay
@@ -15,11 +15,9 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l page-title">
-    Change sign-in method
-  </h1>
-</div>
+<h1 class="govuk-heading-l page-title">
+  Change sign-in method
+</h1>
 <div class="govuk-grid-column-two-thirds">
   <form method="post" action="{{routes.user.twoFactorAuth.index}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

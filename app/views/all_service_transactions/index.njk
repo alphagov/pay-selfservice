@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-full-width.njk" %}
 
 {% block pageTitle %}
 Transactions for all live services - GOV.UK Pay
@@ -31,7 +31,6 @@ Transactions for all live services - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">Transactions for all live services</h1>
   {% include "transactions/filter.njk" %}
 
@@ -59,5 +58,4 @@ Transactions for all live services - GOV.UK Pay
   {% include "transactions/list.njk" %}
 
   {% include "transactions/paginator.njk" %}
-</div>
 {% endblock %}

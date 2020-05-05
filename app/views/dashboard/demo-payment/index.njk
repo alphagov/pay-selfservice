@@ -1,4 +1,4 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
 Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -15,7 +15,6 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Make a demo payment</h1>
     <p class="govuk-body">Try the payment experience as a user. Then view the completed payment as an administrator on GOV.UK Pay.</p>
 
@@ -55,5 +54,4 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
         }
       })
     }}
-  </div>
 {% endblock %}

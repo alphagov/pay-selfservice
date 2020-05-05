@@ -1,4 +1,4 @@
-{% extends "layout.njk" %}
+{% extends "layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Your PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Your Worldpay 3DS Flex credentials</h1>
     <form method="post" action="{{routes.yourPsp.flex}}" data-validate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -138,5 +137,4 @@
     <p class="govuk-body">
       <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.yourPsp.index }}">Cancel</a>
     </p>
-</div>
 {% endblock %}

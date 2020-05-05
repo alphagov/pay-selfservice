@@ -1,4 +1,4 @@
-{% extends "layout.njk" %}
+{% extends "layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Billing address - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     {% if not permissions.toggle_billing_address_update %}
       {% include "../includes/settings-read-only.njk" %}
     {% endif %}
@@ -83,5 +82,4 @@
         </a>
       </p>
     </form>
-  </div>
 {% endblock %}

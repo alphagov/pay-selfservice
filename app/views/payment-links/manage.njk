@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   {% if permissions.tokens_create %}Manage{% else %}View{% endif %} a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
 {% if not permissions.tokens_create %}
   <aside class="pay-info-warning-box">
     <p class="govuk-body">You don’t have permission to create or edit payment links. Contact your service admin if you would like to manage payment links.</p>
@@ -52,5 +51,4 @@
     </ul>
   </div>
   {% endif %}
-</section>
 {% endblock %}

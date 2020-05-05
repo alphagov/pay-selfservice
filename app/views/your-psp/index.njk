@@ -1,4 +1,4 @@
-{% extends "layout.njk" %}
+{% extends "layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Your PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ currentGatewayAccount.payment_provider | formatPSPname }}</h1>
 
   {% if currentGatewayAccount.payment_provider === "worldpay" %}
@@ -22,5 +21,4 @@
   {% if currentGatewayAccount.payment_provider === "epdq" %}
     {% include "./_epdq.njk" %}
   {% endif %}
-</div>
 {% endblock %}

@@ -1,11 +1,10 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Set the service name - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div id="display-name-your-service" class="govuk-grid-column-two-thirds">
   {% if errors %}
     <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
       <h2 class="govuk-error-summary__title" id="error-summary-heading">
@@ -61,5 +60,4 @@
       })
     }}
   </form>
-</div>
 {% endblock %}

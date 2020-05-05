@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
 Invite a new team member - GOV.UK Pay
@@ -15,12 +15,10 @@ Invite a new team member - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
-    <div>
-      <h1 class="govuk-heading-l underline">
-        <span class="govuk-caption-l">Team members</span>
-        Invite a team member</h1>
-    </div>
+  <div>
+    <h1 class="govuk-heading-l underline">
+      <span class="govuk-caption-l">Team members</span>
+      Invite a team member</h1>
   </div>
   <form id="invite-member-form" method="post" action="{{teamMemberInviteSubmitLink}}" class="govuk-grid-column-two-thirds">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

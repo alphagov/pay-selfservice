@@ -1,4 +1,4 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Mock card numbers for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -15,7 +15,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Mock card numbers</h1>
   <p class="govuk-body">Use this card number to test a successful payment. Don’t use real card numbers.</p>
 
@@ -39,5 +38,4 @@
       })
     }}
   </form>
-</div>
 {% endblock %}

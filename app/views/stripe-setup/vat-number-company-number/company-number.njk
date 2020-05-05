@@ -1,11 +1,10 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Add your organisation’s Company registration number - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     {% if errors | length %}
       {% set errorList = [] %}
       {% if errors['company-number-declaration'] %}
@@ -99,5 +98,4 @@
 
       {{ govukButton({ text: "Continue" }) }}
     </form>
-  </div>
 {% endblock %}

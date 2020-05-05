@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Turn off email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-m">
     Are you sure you want to turn off email notifications?
   </h1>
@@ -27,5 +26,4 @@
         classes: 'qa-off'
     }) }}
   </form>
-</div>
 {% endblock %}

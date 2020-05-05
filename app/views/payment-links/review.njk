@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
 Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -10,7 +10,6 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 {% endblock %}
 
 {% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Review your payment link details</h1>
 
   {% set detailsHTML %}
@@ -148,5 +147,4 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 
     <p class="govuk-body"><a id="create-payment-link-cancel" class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
   </form>
-</section>
 {% endblock %}

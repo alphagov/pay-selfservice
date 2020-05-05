@@ -26,8 +26,7 @@
 
 {% block head %}
   {% include "includes/head.njk" %}
-  {% block pageSpecificStyle %}
-  {% endblock %}
+  {% block pageSpecificStyle %}{% endblock %}
 {% endblock %}
 
 {% block bodyStart %}
@@ -45,11 +44,6 @@
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    {% block side_navigation %}{% endblock %}
-      {% include "includes/flash.njk" %}
-    {% block mainContent %}{% endblock %}
-  </div>
 {% endblock %}
 
 {% block footer %}
@@ -58,6 +52,5 @@
 
 {% block bodyEnd %}
   {% include "includes/scripts.njk" %}
-  {% block pageSpecificJS %}
-  {% endblock %}
+  {% block pageSpecificJS %}{% endblock %}
 {% endblock %}

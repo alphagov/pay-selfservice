@@ -1,11 +1,10 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
 Request a live account - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   {% if errors %}
     {% set errorList = [] %}
 
@@ -187,5 +186,4 @@ Request a live account - {{ currentService.name }} - GOV.UK Pay
 
     {{ govukButton({ text: "Continue" }) }}
   </form>
-</div>
 {% endblock %}

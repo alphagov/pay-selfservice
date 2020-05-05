@@ -1,4 +1,4 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Test with your users - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -14,7 +14,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Test with your users</h1>
   <p class="govuk-body">Create a reusable link to integrate your service prototype with GOV.UK Pay and test with users.</p>
 
@@ -101,5 +100,4 @@ govuk-tabs__tab--selected{% endif %}" href="{{routes.prototyping.demoService.lin
       {% endfor %}
     </div>
   {% endif %}
-</div>
 {% endblock %}

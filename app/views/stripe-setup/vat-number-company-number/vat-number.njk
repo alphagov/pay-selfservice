@@ -1,11 +1,10 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Add your organisation’s VAT number - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     {% if errors | length %}
       {% set errorList = [] %}
       {% if errors['vat-number'] %}
@@ -54,5 +53,4 @@
 
       {{ govukButton({ text: "Continue" }) }}
     </form>
-  </div>
 {% endblock %}

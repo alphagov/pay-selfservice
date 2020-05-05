@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-full-width.njk" %}
 
 {% block pageTitle %}
 Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -21,7 +21,6 @@ Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">Transactions</h1>
   {% include "transactions/filter.njk" %}
 
@@ -49,5 +48,4 @@ Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV
   {% include "transactions/list.njk" %}
 
   {% include "transactions/paginator.njk" %}
-</div>
 {% endblock %}

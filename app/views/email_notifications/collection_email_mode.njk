@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   {% if permissions.email_notification_toggle_update %}
     {% set isReadyOnly = false %}
   {% else %}
@@ -78,6 +77,4 @@
       </a>
     </p>
   </form>
-
-</div>
 {% endblock %}

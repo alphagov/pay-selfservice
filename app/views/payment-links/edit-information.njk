@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Edit your payment link details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
   <aside class="pay-info-warning-box">
     <p class="govuk-body">Editing the payment link title does not change the web&nbsp;address.</p>
   </aside>
@@ -113,5 +112,4 @@
     <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
   </div>
   {% endif %}
-</section>
 {% endblock %}

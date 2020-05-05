@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Settings - {{ currentService.name }} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Settings</h1>
 
     {% if isDigitalWalletSupported %}
@@ -207,5 +206,4 @@
       })
     }}
     <p class="govuk-body"><a class="govuk-link" href="{{routes.emailNotifications.index}}" id="templates-link">See templates and add a custom paragraph.</a></p>
-  </div>
 {% endblock %}

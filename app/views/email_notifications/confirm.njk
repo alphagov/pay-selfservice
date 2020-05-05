@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
 Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@ Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.fu
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Confirm new email template</h1>
   <p class="govuk-body">This email will be sent to users when they successfully complete a payment within your service.</p>
 
@@ -34,5 +33,4 @@ Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.fu
     }}
     <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">Cancel</a></p>
   </form>
-</div>
 {% endblock %}

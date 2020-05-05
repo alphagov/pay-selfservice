@@ -1,4 +1,4 @@
-{% extends "layout.njk" %}
+{% extends "layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Manage payment types - {{currentService.name}} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   {% if not permissions.payment_types_update %}
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
@@ -22,5 +21,4 @@
     {% block page_content %}
     {% endblock %}
   </div>
-</div>
 {% endblock %}

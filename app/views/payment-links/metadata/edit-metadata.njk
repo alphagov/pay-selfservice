@@ -1,4 +1,4 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Payment link reporting columns - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
   {% if tested.errors and tested.errors.length %}
   {{ govukErrorSummary({
     titleText: "There is a problem",
@@ -94,5 +93,4 @@
     {% endif %}
 
   <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ cancelRoute }}">Cancel</a></p>
-</section>
 {% endblock %}

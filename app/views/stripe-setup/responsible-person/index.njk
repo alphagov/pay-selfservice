@@ -1,11 +1,10 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Nominate a responsible person - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     {% if errors %}
       {% set errorList = [] %}
 
@@ -230,5 +229,4 @@
       details to confirm the responsible person’s identity.</p>
     <p class="govuk-body">Their details will be processed and stored by Stripe. GOV.UK Pay will not store these
       details.</p>
-  </div>
 {% endblock %}

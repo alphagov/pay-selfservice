@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
    Apple Pay - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">
       Apple Pay
     </h1>
@@ -62,5 +61,4 @@
       {% else %}
         {% include('./_digital_wallet_not_supported_message.njk') %}
       {% endif %}
-  </div>
 {% endblock %}

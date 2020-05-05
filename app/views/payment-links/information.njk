@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
 Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -10,7 +10,6 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 {% endblock %}
 
 {% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
   {% if isWelsh %}
     <h1 class="govuk-heading-l">Set Welsh payment link information</h1>
   {% else %}
@@ -110,5 +109,4 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
     <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
   </div>
   {% endif %}
-</section>
 {% endblock %}

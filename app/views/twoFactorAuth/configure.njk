@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-full-width.njk" %}
 
 {% if method === 'APP' %}
   {% set title = 'Set up an authenticator app' %}
@@ -21,11 +21,9 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l page-title">
-    {{ title }}
-  </h1>
-</div>
+<h1 class="govuk-heading-l page-title">
+  {{ title }}
+</h1>
 <div class="govuk-grid-column-two-thirds">
 {% if method === 'APP' %}
   <p class="govuk-body">Scan the barcode with your authenticator app or enter the secret manually.</p>

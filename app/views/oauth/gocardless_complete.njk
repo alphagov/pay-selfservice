@@ -1,12 +1,10 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
 GoCardless successfully connected - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-
-<div class="govuk-grid-column-two-thirds">
   {{ govukPanel({
     titleText: "You’ve successfully connected to GoCardless",
     classes: "govuk-!-margin-bottom-6"
@@ -37,7 +35,5 @@ GoCardless successfully connected - {{currentService.name}} {{currentGatewayAcco
   <p class="govuk-body">
     <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="/">Go to the dashboard</a>.
   </p>
-
-</div>
 
 {% endblock %}

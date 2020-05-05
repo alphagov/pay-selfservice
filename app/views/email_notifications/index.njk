@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% macro changeLink(name) %}
     <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16" id="email-notifications-toggle-{{name}}" href="{{routes.emailNotifications[name]}}">{% if permissions.email_notification_toggle_update %}Change{% else %}View{% endif %}</a>
@@ -22,7 +22,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   {% if not permissions.email_notification_toggle_update %}
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
@@ -110,5 +109,4 @@
       {% endif %}
     </div>
   {% endif %}
-</div>
 {% endblock %}

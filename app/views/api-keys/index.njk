@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
 API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -9,7 +9,6 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l page-title">API Keys</h1>
 
 {% set keysHTML %}
@@ -44,5 +43,4 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
     </ul>
     {% include "./_keys.njk" %}
   </div>
-</div>
 {% endblock %}

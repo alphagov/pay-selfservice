@@ -1,4 +1,4 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Create a prototype link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -15,7 +15,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Create a prototype link</h1>
   <form method="post" action="{{routes.prototyping.demoService.confirm}}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -92,5 +91,4 @@
       })
     }}
   </form>
-</div>
 {% endblock %}

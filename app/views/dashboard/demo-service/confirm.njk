@@ -1,4 +1,4 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Your prototype link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -18,7 +18,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Your prototype link</h1>
   <p class="govuk-body">This link will send the user to our payment pages. Use it in a “pay now” button, for example, to integrate it with your prototype.</p>
 
@@ -44,5 +43,4 @@
     })
   }}
 
-</div>
 {% endblock %}

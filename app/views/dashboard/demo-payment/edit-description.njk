@@ -1,4 +1,4 @@
-{% extends "../../layout.njk" %}
+{% extends "../../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Edit payment description for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -15,7 +15,6 @@
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Edit payment description</h1>
     <form method="post" action="{{routes.prototyping.demoPayment.index}}" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -46,5 +45,4 @@
         })
       }}
     </form>
-  </div>
 {% endblock %}

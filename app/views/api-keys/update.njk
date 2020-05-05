@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 {% block page_title %}
 Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
@@ -8,7 +8,6 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
 <form>
   <h1 class="page-title">Update an API key</h1>
   <div class="form-group">
@@ -27,5 +26,4 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
     </a>
   </div>
 </form>
-</div>
 {% endblock %}

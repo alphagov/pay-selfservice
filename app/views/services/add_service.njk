@@ -1,12 +1,10 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Add a new service - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
-
     {% if errors %}
       <div class="govuk-error-summary hidden" aria-labelledby="error-summary-heading-example-1" role="alert" tabindex="-1" data-module="govuk-error-summary">
         <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1">
@@ -110,5 +108,4 @@
         </a>
       </p>
     </form>
-  </div>
 {% endblock %}

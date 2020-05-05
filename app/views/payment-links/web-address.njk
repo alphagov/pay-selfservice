@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">The website address is already taken</h1>
 
   <form action="{{ routes.paymentLinks.webAddress }}" class="form" method="post" data-validate>
@@ -45,5 +44,4 @@
 
     <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
   </form>
-</section>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Team members details — GOV.UK Pay
@@ -16,7 +16,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds admin-list">
   <span class="govuk-caption-l">Team members</span>
   <h1 id="details-for" class="govuk-heading-l ">
     Details for {{username}}
@@ -66,5 +65,4 @@
     </div>
   </div>
   {% endif %}
-</div>
 {% endblock %}

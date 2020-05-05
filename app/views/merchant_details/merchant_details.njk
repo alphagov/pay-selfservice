@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -15,7 +15,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Organisation details</h1>
   <p class="govuk-body" id="merchant-details-info">
     {% if has_card_and_dd_gateway_account %}
@@ -85,5 +84,4 @@
       {% endif %}
     </tbody>
   </table>
-</div>
 {% endblock %}

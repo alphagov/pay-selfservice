@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Create a payment link</h1>
   <p class="govuk-body">You can create a payment link so that users can make online payments to your service. Even if you don’t have a digital service, GOV.UK Pay can still take payments for you.</p>
   <p class="govuk-body">It’s quick and easy to create a payment link and you don’t need any technical knowledge.</p>
@@ -61,6 +60,4 @@
       html: example
     })
   }}
-
-</section>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "layout.njk" %}
+{% extends "layout-with-side-nav.njk" %}
 
 {% block pageTitle %}
   3D Secure - {{ currentService.name }} - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
     {% if not permissions.toggle_3ds_update %}
       {% include "../includes/settings-read-only.njk" %}
     {% endif %}
@@ -97,5 +96,4 @@
       <h1 class="govuk-heading-l govuk-!-margin-top-6">3D Secure</h1>
       <p class="govuk-body" id="threeds-not-supported">3D Secure is not currently supported for this payment service provider (PSP).</p>
     {% endif %}
-  </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "./layout.njk" %}
+{% extends "./layout-two-thirds-no-nav.njk" %}
 
 {% block pageTitle %}
   An error occurred - GOV.UK Pay
@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l" id="error-title">{{error.title}}</h1>
 
     <p class="govuk-body" id="error-message">{{error.message}}</p>
@@ -17,5 +16,4 @@
     {% if enable_link %}
       <p class="govuk-body"><a class="govuk-link" href="{{link.link}}" id="back-link">{{link.text}}</a></p>
     {% endif %}
-</div>
 {% endblock %}
