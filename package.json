@@ -91,7 +91,7 @@
     "json2csv": "5.0.x",
     "lodash": "4.17.15",
     "minimist": "1.2.x",
-    "moment-timezone": "0.5.28",
+    "moment-timezone": "0.5.31",
     "morgan": "1.10.0",
     "node-zendesk": "1.4.0",
     "nunjucks": "3.2.1",
