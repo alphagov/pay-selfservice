@@ -94,6 +94,7 @@ function initialiseTemplateEngine (app) {
   // if it's not production we want to re-evaluate the assets on each file change
   nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/stylesheets/application.min.css'))
   nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
+  nunjucksEnvironment.addGlobal('isProduction', NODE_ENV === 'production')
 
   // Load custom Nunjucks filters
   for (let name in nunjucksFilters) {
