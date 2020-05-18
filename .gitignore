@@ -7,6 +7,7 @@
 .settings
 .start.pid
 config/dev-env.json
+.env
 public
 govuk_modules
 node_modules
