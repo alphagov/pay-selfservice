@@ -9,6 +9,7 @@ const {
   legacyConnectorTransactionSummaryParity
 } = require('./utils/ledger_legacy_connector_parity')
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
+// const fixtures = require('./../../../test/fixtures/payout_fixtures')
 
 const defaultOptions = {
   baseUrl: process.env.LEDGER_URL,
@@ -108,18 +109,29 @@ const transactionSummary = function transactionSummary (gatewayAccountId, fromDa
   return baseClient.get(configuration)
 }
 
-const payouts = function payouts (gatewayAccountId, page) {
+const payouts = async function payouts (gatewayAccountId, page) {
+  console.log('gatewayaccountid', gatewayAccountId)
   const configuration = {
     url: '/v1/payout',
     qs: {
       gateway_account_id: gatewayAccountId,
-      page
+      display_size: 20,
+      page: 1
     },
     description: 'List payouts for a given gateway account ID',
     ...defaultOptions
   }
 
+  // @TMP(sfount)
   return baseClient.get(configuration)
+  // const opts = [
+  // { paidOutDate: '2019-01-29T08:00:00.000000Z' },
+  // { paidOutDate: '2019-01-26T08:00:00.000000Z' },
+  // { paidOutDate: '2019-01-28T08:00:00.000000Z' },
+  // { paidOutDate: '2019-01-28T08:00:00.000000Z' },
+  // { paidOutDate: '2019-01-21T08:00:00.000000Z' }
+  // ]
+  // return fixtures.validPayoutSearchResponse(opts).getPlain()
 }
 
 module.exports = {

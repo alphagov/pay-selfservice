@@ -27,13 +27,19 @@
         Add a new service
       </a>
     </p>
-    {% if env.PROTOTYPE_MULTIACCOUNT_REPORTING === "true" %}
+    {# {% if env.PROTOTYPE_MULTIACCOUNT_REPORTING === "true" %} #}
     <p class="govuk-body">
       <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state create-service">
         View transactions for all live services
       </a>
     </p>
-    {% endif %}
+    <p class="govuk-body">
+      <a href="/payouts" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
+        View payouts for all live services
+      </a>
+    </p>
+
+    {# {% endif %} #}
   </div>
 
   <div class="govuk-grid-column-full">

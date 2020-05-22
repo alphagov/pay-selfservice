@@ -43,7 +43,7 @@ const accountDetailHeaders = function accountDetailHeaders (accounts) {
 const accountsString = function accountsString (accounts) {
   const emptyAccountsString = '[]'
   const outputString = accounts
-    .filter((account) => account.type === 'live')
+    // .filter((account) => account.type === 'live')
     .map((account) => account.gateway_account_id)
     .join(',')
   return outputString || emptyAccountsString
