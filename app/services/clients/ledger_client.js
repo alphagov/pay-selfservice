@@ -108,9 +108,24 @@ const transactionSummary = function transactionSummary (gatewayAccountId, fromDa
   return baseClient.get(configuration)
 }
 
+const payouts = function payouts (gatewayAccountId, page = 1) {
+  const configuration = {
+    url: '/v1/payout',
+    qs: {
+      gateway_account_id: gatewayAccountId,
+      page
+    },
+    description: 'List payouts for a given gateway account ID',
+    ...defaultOptions
+  }
+
+  return baseClient.get(configuration)
+}
+
 module.exports = {
   transaction,
   transactions,
+  payouts,
   transactionWithAccountOverride,
   allTransactionPages,
   allTransactionsAsCsv,
