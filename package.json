@@ -102,7 +102,7 @@
     "qs": "6.9.4",
     "request": "2.88.2",
     "request-promise-native": "1.0.8",
-    "requestretry": "4.1.0",
+    "requestretry": "4.1.1",
     "rfc822-validate": "1.0.0",
     "serve-favicon": "2.5.0",
     "slugify": "1.4.0",
