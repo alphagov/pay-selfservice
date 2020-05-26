@@ -1,5 +1,7 @@
 const moment = require('moment')
 
+const Ledger = require('../../../app/services/clients/ledger_client')
+
 const { indexServiceNamesByGatewayAccountId } = require('./user_services_names')
 
 const getPayoutDate = function getPayoutDate (payout) {
@@ -27,6 +29,12 @@ const groupPayoutsByDate = function groupPayoutsByDate (payouts, user) {
   return groups
 }
 
+const payouts = async function payouts (gatewayAccountId, user = {}) {
+  const payoutSearchResponse = await Ledger.payouts(gatewayAccountId)
+  return groupPayoutsByDate(payoutSearchResponse.results, user)
+}
+
 module.exports = {
+  payouts,
   groupPayoutsByDate
 }
