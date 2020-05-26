@@ -188,5 +188,8 @@ module.exports = {
   },
   settings: {
     index: '/settings'
+  },
+  payouts: {
+    list: '/payouts'
   }
 }
