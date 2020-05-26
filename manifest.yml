@@ -17,7 +17,6 @@ applications:
     NODE_ENV: production
     COOKIE_MAX_AGE: '10800000'
     ZENDESK_URL: "https://govuk.zendesk.com/api/v2"
-    USE_LEDGER_BACKEND_CSV: "true"
 
     # The below URLs are provisioned by the app-catalog user-provided service
     SELFSERVICE_URL: ""
