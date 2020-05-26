@@ -29,7 +29,7 @@ Payouts - GOV.UK Pay
   {% for key, group in payoutGroups %}
     <h2 class="govuk-heading-m">{{ group.date.format('DD MMMM') }}</h2>
 
-    <table class="govuk-table">
+    <table class="govuk-table" id="payout-list">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">Service</th>
