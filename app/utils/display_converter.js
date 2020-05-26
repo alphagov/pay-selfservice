@@ -8,7 +8,8 @@ const hideServiceHeaderTemplates = [
   'all_service_transactions/index',
   'services/index',
   'services/edit_service_name',
-  'services/add_service'
+  'services/add_service',
+  'payouts/list'
 ]
 
 const hideServiceNavTemplates = [
