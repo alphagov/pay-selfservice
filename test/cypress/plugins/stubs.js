@@ -8,6 +8,7 @@ const userFixtures = require('../../fixtures/user_fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const transactionDetailsFixtures = require('../../fixtures/transaction_fixtures')
 const ledgerTransactionFixtures = require('../../fixtures/ledger_transaction_fixtures')
+const ledgerPayoutFixtures = require('../../fixtures/payout_fixtures')
 const cardFixtures = require('../../fixtures/card_fixtures')
 const serviceFixtures = require('../../fixtures/service_fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go_live_requests_fixture')
@@ -340,6 +341,16 @@ module.exports = {
     const path = `/v1/transaction/${opts.transaction_id}`
     return simpleStubBuilder('GET', path, 200, {
       response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts).getPlain()
+    })
+  },
+  getLedgerPayoutSuccess: (opts = {}) => {
+    const path = '/v1/payout'
+    return simpleStubBuilder('GET', path, 200, {
+      query: {
+        gateway_account_id: opts.gateway_account_id,
+        page: opts.page || 1
+      },
+      response: ledgerPayoutFixtures.validPayoutSearchResponse(opts.payouts || []).getPlain()
     })
   },
   getLedgerEventsSuccess: (opts = {}) => {
