@@ -1,0 +1,54 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+Payouts - GOV.UK Pay
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "Back to My services",
+      href: routes.serviceSwitcher.index
+    })
+  }}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">Payouts</h1>
+</div>
+<div class="govuk-grid-column-two-thirds">
+  <p class="govuk-body">Payments your Payment Service Provider has made to your bank account.</h1>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+</div>
+
+
+<div class="govuk-grid-column-two-thirds">
+  {% for key, group in payoutGroups %}
+    <h2 class="govuk-heading-m">{{ group.date.format('DD MMMM') }}</h2>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Service</th>
+          <th scope="col" class="govuk-table__header">Amount</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for payoutEntry in group.entries %}
+        <tr class="govuk-table__row">
+          <td scope="row" class="govuk-table__cell">{{ payoutEntry.serviceName }}</td>
+          <td class="govuk-table__cell pay-text-align-right">
+            {{ payoutEntry.amount | penceToPoundsWithCurrency }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="govuk-body">No payouts found.</p>
+  {% endfor %}
+</div>
+{% endblock %}
