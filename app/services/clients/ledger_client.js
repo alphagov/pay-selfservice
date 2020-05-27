@@ -10,6 +10,8 @@ const {
 } = require('./utils/ledger_legacy_connector_parity')
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
 
+const { validPayoutSearchResponse } = require('../../../test/fixtures/payout_fixtures')
+
 const defaultOptions = {
   baseUrl: process.env.LEDGER_URL,
   json: true,
@@ -109,17 +111,31 @@ const transactionSummary = function transactionSummary (gatewayAccountId, fromDa
 }
 
 const payouts = function payouts (gatewayAccountId, page = 1) {
-  const configuration = {
-    url: '/v1/payout',
-    qs: {
-      gateway_account_id: gatewayAccountId,
-      page
-    },
-    description: 'List payouts for a given gateway account ID',
-    ...defaultOptions
-  }
+  // const configuration = {
+  //   url: '/v1/payout',
+  //   qs: {
+  //     gateway_account_id: gatewayAccountId,
+  //     page
+  //   },
+  //   description: 'List payouts for a given gateway account ID',
+  //   ...defaultOptions
+  // }
 
-  return baseClient.get(configuration)
+  // return baseClient.get(configuration)
+  const options = [
+    { paidOutDate: '2019-01-27T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-27T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-29T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-29T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-29T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-29T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-29T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-29T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-29T11:00:00.000000Z' },
+    { paidOutDate: '2019-01-29T11:00:00.000000Z' }
+  ]
+
+  return validPayoutSearchResponse(options).getPlain()
 }
 
 module.exports = {
