@@ -33,6 +33,7 @@ Payouts - GOV.UK Pay
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">Service</th>
           <th scope="col" class="govuk-table__header">Amount</th>
+          <th scope="col" class="govuk-table__header">Payout transactions</th>
         </tr>
       </thead>
       <tbody class="govuk-table__body">
@@ -41,6 +42,9 @@ Payouts - GOV.UK Pay
           <td scope="row" class="govuk-table__cell">{{ payoutEntry.serviceName }}</td>
           <td class="govuk-table__cell pay-text-align-right">
             {{ payoutEntry.amount | penceToPoundsWithCurrency }}
+          </td>
+          <td class="govuk-table__cell">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ paths.transactions.download }}?gatewayPayoutId={{payoutEntry.gateway_payout_id}}">Download CSV</a>
           </td>
         </tr>
         {% endfor %}

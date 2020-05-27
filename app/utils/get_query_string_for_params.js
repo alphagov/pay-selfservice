@@ -11,6 +11,7 @@ function getQueryStringForParams (params = {}, removeEmptyParams = false, flatte
     cardholder_name: params.cardholderName,
     last_digits_card_number: params.lastDigitsCardNumber,
     card_brand: params.brand,
+    gateway_payout_id: params.gatewayPayoutId,
     from_date: dates.fromDateToApiFormat(params.fromDate, params.fromTime),
     to_date: dates.toDateToApiFormat(params.toDate, params.toTime),
     ...params.feeHeaders && { fee_headers: params.feeHeaders },
