@@ -1,0 +1,18 @@
+{% set links = payoutSearchResult.pages.links %}
+{% if links and links.length %}
+<div class="pagination">
+  {% for paginationLink in links %}
+    <form class="paginationForm page-{{paginationLink.pageName}}" method="GET">
+      <input type="hidden" name="page" value="{{paginationLink.pageNumber}}"/>
+
+      <button class="pagination {{paginationLink.pageName}} {% if paginationLink.activePage %}active{% endif %}" type="submit">
+        {% if paginationLink.hasSymbolicName %}
+          {{paginationLink.pageName}}<span class="govuk-visually-hidden"> page of results</span>
+        {% else %}
+          <span class="govuk-visually-hidden">Results page </span>{{paginationLink.pageName}}
+        {% endif %}
+      </button>
+    </form>
+  {% endfor %}
+</div>
+{% endif %}
