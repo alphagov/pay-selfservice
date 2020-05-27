@@ -24,9 +24,8 @@ Payouts - GOV.UK Pay
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 </div>
 
-
 <div class="govuk-grid-column-two-thirds">
-  {% for key, group in payoutGroups %}
+  {% for key, group in payoutSearchResult.groups %}
     <h2 class="govuk-heading-m">{{ group.date.format('DD MMMM') }}</h2>
 
     <table class="govuk-table" id="payout-list">
@@ -51,4 +50,9 @@ Payouts - GOV.UK Pay
     <p class="govuk-body">No payouts found.</p>
   {% endfor %}
 </div>
+
+<div class="govuk-grid-column-two-thirds">
+  {% include "payouts/paginator.njk" %}
+</div>
+
 {% endblock %}

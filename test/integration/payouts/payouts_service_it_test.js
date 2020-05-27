@@ -23,10 +23,12 @@ describe('payouts service list payouts helper', () => {
     ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
       .reply(200, fixtures.validPayoutSearchResponse(payouts).getPlain())
 
-    const result = await payoutService.payouts(gatewayAccountId)
+    const { groups, pages } = await payoutService.payouts(gatewayAccountId)
 
-    expect(Object.keys(result).length).to.equal(1)
-    expect(result['2019-01-29'].entries.length).to.equal(2)
+    expect(Object.keys(groups).length).to.equal(1)
+    expect(groups['2019-01-29'].entries.length).to.equal(2)
+    expect(pages.total).to.equal(2)
+    expect(pages.page).to.equal(1)
   })
 
   it('responds with an empty well formed object given no payouts', async () => {
@@ -34,8 +36,10 @@ describe('payouts service list payouts helper', () => {
     ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
       .reply(200, fixtures.validPayoutSearchResponse(payouts).getPlain())
 
-    const result = await payoutService.payouts(gatewayAccountId)
+    const { groups, pages } = await payoutService.payouts(gatewayAccountId)
 
-    expect(result).to.deep.equal({})
+    expect(groups).to.deep.equal({})
+    expect(pages.total).to.equal(0)
+    expect(pages.page).to.equal(1)
   })
 })

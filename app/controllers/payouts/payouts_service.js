@@ -1,8 +1,11 @@
 const moment = require('moment')
 
 const Ledger = require('../../../app/services/clients/ledger_client')
+const Paginator = require('../../utils/paginator')
 
 const { indexServiceNamesByGatewayAccountId } = require('./user_services_names')
+
+const PAGE_SIZE = 20
 
 const getPayoutDate = function getPayoutDate (payout) {
   return payout.paid_out_date || payout.created_date
@@ -29,9 +32,20 @@ const groupPayoutsByDate = function groupPayoutsByDate (payouts, user) {
   return groups
 }
 
+const formatPayoutPages = function formatPayoutPages (payoutSearchResponse) {
+  const { total, page } = payoutSearchResponse
+  const paginator = new Paginator(total, PAGE_SIZE, page)
+  const hasMultiplePages = paginator.getLast() > 1
+  const links = hasMultiplePages && paginator.getNamedCentredRange(2, true, true)
+  return { total, page, links }
+}
+
 const payouts = async function payouts (gatewayAccountId, user = {}) {
   const payoutSearchResponse = await Ledger.payouts(gatewayAccountId)
-  return groupPayoutsByDate(payoutSearchResponse.results, user)
+  return {
+    groups: groupPayoutsByDate(payoutSearchResponse.results, user),
+    pages: formatPayoutPages(payoutSearchResponse)
+  }
 }
 
 module.exports = {
