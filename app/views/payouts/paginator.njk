@@ -1,6 +1,6 @@
 {% set links = payoutSearchResult.pages.links %}
 {% if links and links.length %}
-<div class="pagination">
+<div class="pagination" id="pagination">
   {% for paginationLink in links %}
     <form class="paginationForm page-{{paginationLink.pageName}}" method="GET">
       <input type="hidden" name="page" value="{{paginationLink.pageNumber}}"/>

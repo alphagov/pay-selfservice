@@ -1,8 +1,7 @@
 const SESSION_USER_ID = 'some-user-id'
 const GATEWAY_ACCOUNT_ID = 10
-const NUMBER_OF_HEADER_ROWS = 1
 
-function getStubsForPayoutScenario (payouts = []) {
+function getStubsForPayoutScenario (payouts = [], payoutOpts = {}) {
   return [{
     name: 'getUserSuccess',
     opts: {
@@ -26,7 +25,8 @@ function getStubsForPayoutScenario (payouts = []) {
     name: 'getLedgerPayoutSuccess',
     opts: {
       payouts,
-      gateway_account_id: GATEWAY_ACCOUNT_ID
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+      ...payoutOpts
     }
   }]
 }
@@ -41,6 +41,24 @@ describe('Payout list page', () => {
     cy.task('setupStubs', getStubsForPayoutScenario(payouts))
 
     cy.visit('/payouts')
-    cy.get('#payout-list').find('tr').should('have.length', NUMBER_OF_HEADER_ROWS + payouts.length)
+    cy.get('#payout-list').find('tr').should('have.length', 2)
+    cy.get('#pagination').should('not.exist')
+  })
+
+  it('pagination component should correclty link for a large set', () => {
+    const payouts = [
+      { gatewayAccountId: GATEWAY_ACCOUNT_ID, paidOutDate: '2019-01-28T08:00:00.000000Z' },
+      { gatewayAccountId: GATEWAY_ACCOUNT_ID, paidOutDate: '2019-01-28T08:00:00.000000Z' }
+    ]
+    const page = 2
+    cy.task('setupStubs', getStubsForPayoutScenario(payouts, { total: 80, page }))
+
+    cy.visit(`/payouts?page=${page}`)
+
+    cy.get('#payout-list').find('tr').should('have.length', 3)
+
+    cy.get('#pagination').should('exist')
+    cy.get(`.pagination .${page}`).should('have.class', 'active')
+    cy.get('.pagination').should('have.length', 7)
   })
 })

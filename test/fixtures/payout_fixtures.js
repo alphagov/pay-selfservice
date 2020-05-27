@@ -24,13 +24,13 @@ function decoratePactOptions (response) {
 }
 
 module.exports = {
-  validPayoutSearchResponse: (payoutOpts = []) => {
+  validPayoutSearchResponse: (payoutOpts = [], opts = {}) => {
     const payouts = payoutOpts.map(buildPayout)
     const response = {
       results: payouts,
-      total: payouts.length,
+      total: opts.total || payouts.length,
       count: payouts.length,
-      page: 1
+      page: opts.page || 1
     }
     return decoratePactOptions(response)
   }
