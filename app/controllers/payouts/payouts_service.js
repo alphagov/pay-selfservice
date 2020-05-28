@@ -9,7 +9,7 @@ const getPayoutDate = function getPayoutDate (payout) {
 }
 
 const sortPayoutByDateString = function sortPayoutByDateString (a, b) {
-  return new Date(getPayoutDate(a)) - new Date(getPayoutDate(b))
+  return new Date(getPayoutDate(b)) - new Date(getPayoutDate(a))
 }
 
 const groupPayoutsByDate = function groupPayoutsByDate (payouts, user) {
