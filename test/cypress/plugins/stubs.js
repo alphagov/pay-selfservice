@@ -345,12 +345,14 @@ module.exports = {
   },
   getLedgerPayoutSuccess: (opts = {}) => {
     const path = '/v1/payout'
+    const { total, page } = opts
     return simpleStubBuilder('GET', path, 200, {
       query: {
         gateway_account_id: opts.gateway_account_id,
-        page: opts.page || 1
+        page: opts.page || 1,
+        display_size: opts.display_size || 20
       },
-      response: ledgerPayoutFixtures.validPayoutSearchResponse(opts.payouts || []).getPlain()
+      response: ledgerPayoutFixtures.validPayoutSearchResponse(opts.payouts || [], { total, page }).getPlain()
     })
   },
   getLedgerEventsSuccess: (opts = {}) => {

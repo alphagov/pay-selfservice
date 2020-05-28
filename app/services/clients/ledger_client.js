@@ -108,11 +108,12 @@ const transactionSummary = function transactionSummary (gatewayAccountId, fromDa
   return baseClient.get(configuration)
 }
 
-const payouts = function payouts (gatewayAccountId, page = 1) {
+const payouts = function payouts (gatewayAccountId, page = 1, displaySize) {
   const configuration = {
     url: '/v1/payout',
     qs: {
       gateway_account_id: gatewayAccountId,
+      ...displaySize && { display_size: displaySize },
       page
     },
     description: 'List payouts for a given gateway account ID',
