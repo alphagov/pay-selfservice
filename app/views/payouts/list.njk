@@ -44,7 +44,7 @@ Payouts - GOV.UK Pay
             {{ payoutEntry.amount | penceToPoundsWithCurrency }}
           </td>
           <td class="govuk-table__cell">
-            <a class="govuk-link govuk-link--no-visited-state" href="{{ paths.transactions.download }}?gatewayPayoutId={{payoutEntry.gateway_payout_id}}">Download CSV</a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ paths.allServiceTransactions.download }}?gatewayPayoutId={{payoutEntry.gateway_payout_id}}">Download CSV</a>
           </td>
         </tr>
         {% endfor %}
