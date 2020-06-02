@@ -350,7 +350,7 @@ module.exports = {
       query: {
         gateway_account_id: opts.gateway_account_id,
         page: opts.page || 1,
-        display_size: opts.display_size || 20
+        display_size: opts.display_size || 15
       },
       response: ledgerPayoutFixtures.validPayoutSearchResponse(opts.payouts || [], { total, page }).getPlain()
     })

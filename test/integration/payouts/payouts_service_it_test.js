@@ -8,7 +8,7 @@ const fixtures = require('./../../fixtures/payout_fixtures')
 
 const gatewayAccountId = '100'
 const ledgerMock = nock(process.env.LEDGER_URL)
-const LEDGER_PAYOUT_BACKEND_ROUTE = `/v1/payout?gateway_account_id=${gatewayAccountId}&display_size=20&page=1`
+const LEDGER_PAYOUT_BACKEND_ROUTE = `/v1/payout?gateway_account_id=${gatewayAccountId}&display_size=15&page=1`
 
 describe('payouts service list payouts helper', () => {
   afterEach(() => {

@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
-Payouts - GOV.UK Pay
+Payments to your bank account - GOV.UK Pay
 {% endblock %}
 
 {% block beforeContent %}
@@ -16,12 +16,10 @@ Payouts - GOV.UK Pay
 
 {% block mainContent %}
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">Payouts</h1>
+  <h1 class="govuk-heading-l">Payments to your bank account</h1>
 </div>
 <div class="govuk-grid-column-two-thirds">
-  <p class="govuk-body">Payments your Payment Service Provider has made to your bank account.</h1>
-
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  <p class="govuk-body govuk-!-margin-bottom-8">Payments your Payment Service Provider has made to your bank account.</p>
 </div>
 
 <div class="govuk-grid-column-two-thirds">
@@ -32,8 +30,8 @@ Payouts - GOV.UK Pay
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">Service</th>
-          <th scope="col" class="govuk-table__header">Amount</th>
-          <th scope="col" class="govuk-table__header">Payout transactions</th>
+          <th scope="col" class="govuk-table__header pay-text-align-right">Amount</th>
+          <th scope="col" class="govuk-table__header">View transactions</th>
         </tr>
       </thead>
       <tbody class="govuk-table__body">
@@ -51,7 +49,8 @@ Payouts - GOV.UK Pay
       </tbody>
     </table>
   {% else %}
-    <p class="govuk-body">No payouts found.</p>
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    <p class="govuk-body">No payments to your bank account found.</p>
   {% endfor %}
 </div>
 
