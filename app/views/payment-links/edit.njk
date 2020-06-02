@@ -124,7 +124,6 @@
     })
   }}
 
-{% if currentService.experimentalFeaturesEnabled %}
   <h2 class="govuk-heading-m">Reporting columns</h2>
   <p class="govuk-body">You can download reports about your payments from your account. <p>
   <p class="govuk-body">You can add extra columns about your transactions to these reports. For example, to include your cost centre code or business area. This will help finance teams track and reconcile your payments.<p>
@@ -162,7 +161,6 @@
       classes: "govuk-button--secondary",
       href: addMetadata
     }) }}
-  {% endif %}
 
   <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
