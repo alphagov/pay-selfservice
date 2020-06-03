@@ -190,6 +190,6 @@ module.exports = {
     index: '/settings'
   },
   payouts: {
-    list: '/payouts'
+    list: '/payments-to-your-bank-account'
   }
 }
