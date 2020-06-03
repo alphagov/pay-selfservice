@@ -349,6 +349,7 @@ module.exports = {
     return simpleStubBuilder('GET', path, 200, {
       query: {
         gateway_account_id: opts.gateway_account_id,
+        state: 'paidout',
         page: opts.page || 1,
         display_size: opts.display_size || 15
       },
