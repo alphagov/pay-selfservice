@@ -19,18 +19,19 @@ Payments to your bank account - GOV.UK Pay
   <h1 class="govuk-heading-l">Payments to your bank account</h1>
 </div>
 <div class="govuk-grid-column-two-thirds">
-  <p class="govuk-body govuk-!-margin-bottom-8">Payments your Payment Service Provider has made to your bank account.</p>
+  <p class="govuk-body govuk-!-margin-bottom-8">Payments Stripe has made to your bank account.</p>
 </div>
 
 <div class="govuk-grid-column-two-thirds">
   {% for key, group in payoutSearchResult.groups %}
-    <h2 class="govuk-heading-m">{{ group.date.format('DD MMMM') }}</h2>
+    {% set dateString = group.date.format('DD MMMM') %}
+    <h2 class="govuk-heading-m">{{ dateString }}</h2>
 
     <table class="govuk-table" id="payout-list">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">Service</th>
-          <th scope="col" class="govuk-table__header pay-text-align-right">Amount</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Amount</th>
           <th scope="col" class="govuk-table__header">View transactions</th>
         </tr>
       </thead>
@@ -38,11 +39,13 @@ Payments to your bank account - GOV.UK Pay
         {% for payoutEntry in group.entries %}
         <tr class="govuk-table__row">
           <td scope="row" class="govuk-table__cell">{{ payoutEntry.serviceName }}</td>
-          <td class="govuk-table__cell pay-text-align-right">
+          <td class="govuk-table__cell govuk-table__cell--numeric">
             {{ payoutEntry.amount | penceToPoundsWithCurrency }}
           </td>
           <td class="govuk-table__cell">
-            <a class="govuk-link govuk-link--no-visited-state" href="{{ paths.allServiceTransactions.download }}?gatewayPayoutId={{payoutEntry.gateway_payout_id}}">Download CSV</a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ paths.allServiceTransactions.download }}?gatewayPayoutId={{payoutEntry.gateway_payout_id}}">
+              Download CSV <span class="govuk-visually-hidden">for {{ payoutEntry.serviceName }} on {{ dateString }}</span>
+            </a>
           </td>
         </tr>
         {% endfor %}
@@ -54,7 +57,7 @@ Payments to your bank account - GOV.UK Pay
   {% endfor %}
 </div>
 
-<div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
   {% include "payouts/paginator.njk" %}
 </div>
 
