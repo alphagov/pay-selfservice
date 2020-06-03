@@ -59,6 +59,6 @@ describe('Payout list page', () => {
 
     cy.get('#pagination').should('exist')
     cy.get(`.pagination .${page}`).should('have.class', 'active')
-    cy.get('.pagination').should('have.length', 7)
+    cy.get('.pagination').should('have.length', 8)
   })
 })

@@ -5,7 +5,7 @@ const Paginator = require('../../utils/paginator')
 
 const { indexServiceNamesByGatewayAccountId } = require('./user_services_names')
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 15
 const MAX_PAGES = 2
 
 const getPayoutDate = function getPayoutDate (payout) {
