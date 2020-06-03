@@ -40,7 +40,7 @@ describe('Payout list page', () => {
     ]
     cy.task('setupStubs', getStubsForPayoutScenario(payouts))
 
-    cy.visit('/payouts')
+    cy.visit('/payments-to-your-bank-account')
     cy.get('#payout-list').find('tr').should('have.length', 2)
     cy.get('#pagination').should('not.exist')
   })
@@ -53,7 +53,7 @@ describe('Payout list page', () => {
     const page = 2
     cy.task('setupStubs', getStubsForPayoutScenario(payouts, { total: 80, page }))
 
-    cy.visit(`/payouts?page=${page}`)
+    cy.visit(`/payments-to-your-bank-account?page=${page}`)
 
     cy.get('#payout-list').find('tr').should('have.length', 3)
 
