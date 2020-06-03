@@ -29,8 +29,15 @@
     </p>
     {% if env.PROTOTYPE_MULTIACCOUNT_REPORTING === "true" %}
     <p class="govuk-body">
-      <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state create-service">
+      <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
         View transactions for all live services
+      </a>
+    </p>
+    {% endif %}
+    {% if has_account_with_payouts %}
+    <p class="govuk-body">
+      <a href="{{routes.payouts.list}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
+        View payments to your bank account
       </a>
     </p>
     {% endif %}
