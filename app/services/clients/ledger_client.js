@@ -113,6 +113,7 @@ const payouts = function payouts (gatewayAccountId, page = 1, displaySize) {
     url: '/v1/payout',
     qs: {
       gateway_account_id: gatewayAccountId,
+      state: 'paidout',
       ...displaySize && { display_size: displaySize },
       page
     },

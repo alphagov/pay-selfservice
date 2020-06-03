@@ -36,6 +36,7 @@ describe('ledger client', () => {
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder('/v1/payout')
           .withQuery('gateway_account_id', GATEWAY_ACCOUNT_ID)
+          .withQuery('state', 'paidout')
           .withQuery('page', '1')
           .withUponReceiving('a valid search payout details request')
           .withState('two payouts exist for selfservice search')
