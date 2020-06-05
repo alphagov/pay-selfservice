@@ -2,7 +2,7 @@ const paths = require('../../../app/paths')
 const logger = require('../../utils/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { response, renderErrorView } = require('../../utils/response.js')
-const { liveUserServicesGatewayAccounts } = require('./../../utils/valid_account_id')
+const { liveUserServicesGatewayAccounts } = require('../../utils/permissions')
 const payoutService = require('./payouts_service')
 
 const listAllServicesPayouts = async function listAllServicesPayouts (req, res) {

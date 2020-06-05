@@ -7,7 +7,7 @@ const transactionService = require('../../services/transaction_service')
 const Stream = require('../../services/clients/stream_client')
 const { CORRELATION_HEADER } = require('../../utils/correlation_header')
 const { renderErrorView } = require('../../utils/response')
-const { liveUserServicesGatewayAccounts } = require('./../../utils/valid_account_id')
+const { liveUserServicesGatewayAccounts } = require('../../utils/permissions')
 
 module.exports = (req, res) => {
   const filters = req.query

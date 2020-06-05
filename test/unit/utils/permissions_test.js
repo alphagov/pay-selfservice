@@ -5,7 +5,7 @@ const { validUser } = require('./../../fixtures/user_fixtures')
 const { validGatewayAccountResponse } = require('./../../fixtures/gateway_account_fixtures')
 
 describe('gateway account filter utiltiies', () => {
-  const { userServicesContainsGatewayAccount } = require('./../../../app/utils/valid_account_id')
+  const { userServicesContainsGatewayAccount } = require('../../../app/utils/permissions')
   describe('gateway account exists on users service roles', () => {
     it('returns valid for gateway account belonging to user', () => {
       const opts = {
@@ -51,8 +51,8 @@ describe('gateway account filter utiltiies', () => {
       })
       const result = await liveUserServicesGatewayAccounts(user)
 
-      expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-lin
-      expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-lin
+      expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-line
+      expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-line
     })
 
     it('correctly identifies non stripe and moto headers', async () => {
@@ -71,8 +71,8 @@ describe('gateway account filter utiltiies', () => {
       })
       const result = await liveUserServicesGatewayAccounts(user)
 
-      expect(result.headers.shouldGetStripeHeaders).to.be.false // eslint-disable-lin
-      expect(result.headers.shouldGetMotoHeaders).to.be.false // eslint-disable-lin
+      expect(result.headers.shouldGetStripeHeaders).to.be.false // eslint-disable-line
+      expect(result.headers.shouldGetMotoHeaders).to.be.false // eslint-disable-line
     })
 
     it('correctly filters live accounts', async () => {
