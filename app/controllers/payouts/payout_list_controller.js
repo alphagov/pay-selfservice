@@ -15,7 +15,7 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res) 
       current_page: page
     }
     logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logContext[keys.GATEWAY_ACCOUNT] = gatewayAccounts
+    logContext[keys.GATEWAY_ACCOUNT_ID] = gatewayAccounts
     logger.info('Fetched page of payouts for all services', logContext)
     response(req, res, 'payouts/list', { payoutSearchResult, paths })
   } catch (error) {
