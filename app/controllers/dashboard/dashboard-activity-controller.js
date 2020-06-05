@@ -3,8 +3,6 @@
 // NPM dependencies
 const _ = require('lodash')
 const moment = require('moment-timezone')
-const AWSXRay = require('aws-xray-sdk')
-const getNamespace = require('continuation-local-storage').getNamespace
 
 // Custom dependencies
 const logger = require('../../utils/logger')(__filename)
@@ -29,9 +27,6 @@ const {
   LIVE,
   DENIED
 } = require('../../models/go-live-stage')
-
-// Constants
-const clsXrayConfig = require('../../../config/xray-cls')
 
 const links = {
   manageService: 0,
@@ -120,36 +115,29 @@ module.exports = (req, res) => {
       }))
     }
 
-    const namespace = getNamespace(clsXrayConfig.nameSpaceName)
-    const clsSegment = namespace.get(clsXrayConfig.segmentKeyName)
-
-    AWSXRay.captureAsyncFunc('ledgerClient_getTransactionSummary', function (subsegment) {
-      LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
-        .then(result => {
-          subsegment.close()
-          response(req, res, 'dashboard/index', Object.assign(model, {
-            activity: result,
-            successfulTransactionsState: 'payment-success',
-            fromDateTime,
-            toDateTime,
-            transactionsPeriodString
-          }))
+    LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
+      .then(result => {
+        response(req, res, 'dashboard/index', Object.assign(model, {
+          activity: result,
+          successfulTransactionsState: 'payment-success',
+          fromDateTime,
+          toDateTime,
+          transactionsPeriodString
+        }))
+      })
+      .catch((error, ledgerResponse) => {
+        const status = _.get(ledgerResponse, 'statusCode', 404)
+        logger.error(`[${correlationId}] Calling ledger to get transactions summary failed`, {
+          service: 'ledger',
+          method: 'GET',
+          status,
+          error
         })
-        .catch((error, ledgerResponse) => {
-          subsegment.close(error)
-          const status = _.get(ledgerResponse, 'statusCode', 404)
-          logger.error(`[${correlationId}] Calling ledger to get transactions summary failed`, {
-            service: 'ledger',
-            method: 'GET',
-            status,
-            error
-          })
-          res.status(status)
-          response(req, res, 'dashboard/index', Object.assign(model, {
-            activityError: true
-          }))
-        })
-    }, clsSegment)
+        res.status(status)
+        response(req, res, 'dashboard/index', Object.assign(model, {
+          activityError: true
+        }))
+      })
   } catch (err) {
     logger.error(`[${correlationId}] ${err.message}`, {
       service: 'frontend',
