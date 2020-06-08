@@ -9,8 +9,8 @@ const userServicesContainsGatewayAccount = function userServicesContainsGatewayA
   return accountId && gatewayAccountIds.indexOf(accountId) !== -1
 }
 
-const liveUserServicesGatewayAccounts = async function liveUserServicesGatewayAccounts (user) {
-  const accounts = await getAccounts(user)
+const liveUserServicesGatewayAccounts = async function liveUserServicesGatewayAccounts (user, permissionName) {
+  const accounts = await getAccounts(user, permissionName)
 
   return {
     headers: accountDetailHeaders(accounts),
@@ -18,8 +18,12 @@ const liveUserServicesGatewayAccounts = async function liveUserServicesGatewayAc
   }
 }
 
-const getAccounts = function getAccounts (user) {
+const getAccounts = function getAccounts (user, permissionName) {
   const gatewayAccountIds = user.serviceRoles
+    .filter((serviceRole) => serviceRole.role.permissions
+      .map((permission) => permission.name)
+      .includes(permissionName)
+    )
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
     .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
     .filter(gatewayAccountId => !isADirectDebitAccount(gatewayAccountId))
