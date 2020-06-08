@@ -1,0 +1,31 @@
+{% if stripeAccountSetup and (not stripeAccountSetup.bankAccount or not stripeAccountSetup.vatNumberCompanyNumber or not stripeAccountSetup.responsiblePerson) %}
+  <div class="govuk-grid-column-full">
+    <div class="account-status-panel">
+      <h3 class="govuk-heading-m govuk-!-font-weight-bold" style="">You must add more details to continue taking payments</h3>
+      <p class="govuk-body-m">Your service can now take payments from users. You must add more details soon or Stripe will not pay the money into your bank account. Please add:</p>
+
+      <ul class="govuk-list">
+        {% if stripeAccountSetup.responsiblePerson %}
+          <li> - details about your responsible person</li>
+        {% endif %}
+        {% if stripeAccountSetup.bankAccount %}
+          <li> - bank details</li>
+        {% endif %}
+        {% if stripeAccountSetup.vatNumberCompanyNumber %}
+          <li> - your organisation’s VAT number</li>
+        {% endif %}
+      </ul>
+
+      {{
+      govukButton({
+        text: 'Add details',
+        classes: 'govuk-!-margin-right-1',
+        href: routes.stripeSetup.accountSetup,
+        attributes: {
+          id: "add-account-details"
+        }
+      })
+    }}
+    </div>
+  </div>
+{% endif %}

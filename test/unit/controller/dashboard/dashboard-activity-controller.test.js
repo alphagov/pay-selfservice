@@ -26,11 +26,45 @@ const DASHBOARD_RESPONSE = {
   },
   net_income: 44000
 }
+let app
 
-const mockConnectorGetGatewayAccount = () => {
+const mockConnectorGetGatewayAccount = (paymentProvider, type) => {
   nock(CONNECTOR_URL)
     .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-    .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
+    .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+      payment_provider: paymentProvider,
+      type: type
+    }).getPlain())
+}
+
+const mockConnectorGetStripeSetup = (bankAccount, vatNumberCompanyNumber, responsiblePerson) => {
+  nock(CONNECTOR_URL)
+    .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/stripe-setup`)
+    .reply(200, {
+      bank_account: bankAccount,
+      vat_number_company_number: vatNumberCompanyNumber,
+      responsible_person: responsiblePerson
+    })
+}
+
+const getDashboard = async () => {
+  try {
+    const res = await supertest(app)
+      .get(paths.dashboard.index)
+    return cheerio.load(res.text)
+  } catch (err) {
+    return err
+  }
+}
+
+const mockLedgerGetTransactionsSummary = () => {
+  nock(LEDGER_URL)
+    .get('/v1/report/transactions-summary')
+    .query(obj => {
+      return obj.from_date === moment().tz('Europe/London').startOf('day').format()
+    })
+    .reply(200)
 }
 
 describe('dashboard-activity-controller', () => {
@@ -351,6 +385,71 @@ describe('dashboard-activity-controller', () => {
         expect($('.dashboard-total-group__heading').text().trim())
           .to.equal('Error fetching totals')
       })
+    })
+  })
+  describe('When the dashboard is retrieved for Stripe account', () => {
+    let session
+
+    before('Arrange', () => {
+      session = getMockSession(getUser({
+        gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+        permissions: [{ name: 'transactions:read' }]
+      }))
+
+      mockLedgerGetTransactionsSummary()
+      app = createAppWithSession(getApp(), session)
+    })
+
+    beforeEach('Arrange', () => {
+      process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
+      mockConnectorGetGatewayAccount('stripe', 'test')
+    })
+
+    afterEach(() => {
+      nock.cleanAll()
+    })
+
+    it('it should not display account status panel when feature flag is not enabled ', async () => {
+      process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
+      let $ = await getDashboard()
+      expect($('.account-status-panel').length).to.equal(0)
+    })
+
+    it('it should display account status panel when feature flag is enabled and account is not fully setup', async () => {
+      mockConnectorGetStripeSetup(false, true, false)
+      let $ = await getDashboard()
+      expect($('.account-status-panel').length).to.equal(1)
+    })
+
+    it('it should not display account status panel when feature flag is enabled and account is fully setup', async () => {
+      mockConnectorGetStripeSetup(true, true, true)
+      let $ = await getDashboard()
+      expect($('.account-status-panel').length).to.equal(0)
+    })
+  })
+  describe('When the dashboard is retrieved for non Stripe account', () => {
+    let session
+
+    before('Arrange', () => {
+      session = getMockSession(getUser({
+        gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+        permissions: [{ name: 'transactions:read' }]
+      }))
+
+      mockLedgerGetTransactionsSummary()
+      mockConnectorGetGatewayAccount('sandbox', 'live')
+      mockConnectorGetStripeSetup(true, true, true)
+      app = createAppWithSession(getApp(), session)
+    })
+
+    after(() => {
+      nock.cleanAll()
+    })
+
+    it('it should not display account status panel', async () => {
+      process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
+      let $ = await getDashboard()
+      expect($('.account-status-panel').length).to.equal(0)
     })
   })
 })
