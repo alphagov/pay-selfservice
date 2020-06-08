@@ -8,7 +8,7 @@ const payoutService = require('./payouts_service')
 const listAllServicesPayouts = async function listAllServicesPayouts (req, res) {
   try {
     const { page } = req.query
-    const gatewayAccounts = await liveUserServicesGatewayAccounts(req.user)
+    const gatewayAccounts = await liveUserServicesGatewayAccounts(req.user, 'payouts:read')
     const payoutSearchResult = await payoutService.payouts(gatewayAccounts.accounts, req.user, page)
     const logContext = {
       gateway_accounts: gatewayAccounts,

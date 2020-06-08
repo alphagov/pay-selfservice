@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
   try {
-    const gatewayResults = await liveUserServicesGatewayAccounts(req.user)
+    const gatewayResults = await liveUserServicesGatewayAccounts(req.user, 'transactions:read')
     const accountIdsUsersHasPermissionsFor = gatewayResults.accounts
     const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, filters.result)
     const cardTypes = await client.getAllCardTypesPromise(correlationId)

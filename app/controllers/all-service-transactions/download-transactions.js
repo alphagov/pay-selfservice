@@ -14,7 +14,7 @@ module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER]
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
 
-  liveUserServicesGatewayAccounts(req.user)
+  liveUserServicesGatewayAccounts(req.user, 'transactions:read')
     .then((gatewayResults) => {
       const accountIdsUsersHasPermissionsFor = gatewayResults.accounts
       filters.feeHeaders = gatewayResults.headers.shouldGetStripeHeaders
