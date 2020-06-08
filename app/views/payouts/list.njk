@@ -53,7 +53,11 @@ Payments to your bank account - GOV.UK Pay
     </table>
   {% else %}
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    {% if payoutsReleaseDate %}
+    <p class="govuk-body">No payments to your bank account found on or after {{ payoutsReleaseDate.format('DD MMMM YYYY') }}. For historic payments to your bank account please <a class="govuk-link" href="https://www.payments.service.gov.uk/support/">contact support.</a></p>
+    {% else %}
     <p class="govuk-body">No payments to your bank account found.</p>
+    {% endif %}
   {% endfor %}
 </div>
 
