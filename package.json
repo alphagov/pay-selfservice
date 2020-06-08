@@ -65,7 +65,7 @@
     ]
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "2.28.0",
+    "@govuk-pay/pay-js-commons": "2.29.0",
     "@pact-foundation/pact": "9.8.0",
     "@sentry/node": "5.15.5",
     "accessible-autocomplete": "2.0.2",
