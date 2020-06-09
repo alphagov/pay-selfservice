@@ -3,16 +3,18 @@
     <div class="govuk-grid-column-full">
       <div class="account-status-panel">
         <h3 class="govuk-heading-m govuk-!-font-weight-bold" style="">You must add more details to continue taking payments</h3>
-        <p class="govuk-body-m">Your service can now take payments from users. You must add more details soon or Stripe will not pay the money into your bank account. Please add:</p>
+        <p class="govuk-body-m">
+          Your service can now take payments from users. You must add more details or Stripe will not pay the money into your bank account. Please add:
+        </p>
 
         <ul class="govuk-list">
-          {% if stripeAccountSetup.responsiblePerson %}
+          {% if not stripeAccountSetup.responsiblePerson %}
             <li> - details about your responsible person</li>
           {% endif %}
-          {% if stripeAccountSetup.bankAccount %}
+          {% if not stripeAccountSetup.bankAccount %}
             <li> - bank details</li>
           {% endif %}
-          {% if stripeAccountSetup.vatNumberCompanyNumber %}
+          {% if not stripeAccountSetup.vatNumberCompanyNumber %}
             <li> - your organisation’s VAT number</li>
           {% endif %}
         </ul>
