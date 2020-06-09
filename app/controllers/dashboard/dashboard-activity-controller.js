@@ -89,9 +89,8 @@ const getStripeAccountSetup = async (account, correlationId) => {
   if (process.env.ENABLE_ACCOUNT_STATUS_PANEL === 'true' &&
     account.payment_provider === 'stripe') {
     try {
-      const stripeAccountSetup = await connectorClient.getStripeAccountSetup(
+      return await connectorClient.getStripeAccountSetup(
         account.gateway_account_id, correlationId)
-      return stripeAccountSetup
     } catch (error) {
       logger.error(`[${correlationId}] Failed to get Stripe account setup from Connector`, {
         service: 'connector',
@@ -142,29 +141,28 @@ module.exports = async (req, res) => {
       })
     }
 
-    LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
-      .then(result => {
-        response(req, res, 'dashboard/index', Object.assign(model, {
-          activity: result,
-          successfulTransactionsState: 'payment-success',
-          fromDateTime,
-          toDateTime,
-          transactionsPeriodString
-        }))
+    try {
+      const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
+      response(req, res, 'dashboard/index', Object.assign(model, {
+        activity: result,
+        successfulTransactionsState: 'payment-success',
+        fromDateTime,
+        toDateTime,
+        transactionsPeriodString
+      }))
+    } catch (error) {
+      const status = _.get(error.message, 'statusCode', 404)
+      logger.error(`[${correlationId}] Calling ledger to get transactions summary failed`, {
+        service: 'ledger',
+        method: 'GET',
+        status,
+        error: error.errorCode
       })
-      .catch((error, ledgerResponse) => {
-        const status = _.get(ledgerResponse, 'statusCode', 404)
-        logger.error(`[${correlationId}] Calling ledger to get transactions summary failed`, {
-          service: 'ledger',
-          method: 'GET',
-          status,
-          error
-        })
-        res.status(status)
-        response(req, res, 'dashboard/index', Object.assign(model, {
-          activityError: true
-        }))
-      })
+      res.status(status)
+      response(req, res, 'dashboard/index', Object.assign(model, {
+        activityError: true
+      }))
+    }
   } catch (err) {
     logger.error(`[${correlationId}] ${err.message}`, {
       service: 'frontend',

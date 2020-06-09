@@ -390,41 +390,69 @@ describe('dashboard-activity-controller', () => {
   describe('When the dashboard is retrieved for Stripe account', () => {
     let session
 
-    before('Arrange', () => {
-      session = getMockSession(getUser({
-        gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{ name: 'transactions:read' }]
-      }))
+    describe('User has permission to update account details', () => {
+      before('Arrange', () => {
+        session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          permissions: [{ name: 'transactions:read' }, { name: 'stripe-account-details:update' }]
+        }))
 
-      mockLedgerGetTransactionsSummary()
-      app = createAppWithSession(getApp(), session)
+        mockLedgerGetTransactionsSummary()
+        app = createAppWithSession(getApp(), session)
+      })
+
+      beforeEach('Arrange', () => {
+        process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
+        mockConnectorGetGatewayAccount('stripe', 'test')
+      })
+
+      afterEach(() => {
+        nock.cleanAll()
+      })
+
+      it('it should not display account status panel when feature flag is not enabled ', async () => {
+        process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
+        let $ = await getDashboard()
+        expect($('.account-status-panel').length).to.equal(0)
+      })
+
+      it('it should display account status panel when feature flag is enabled and account is not fully setup', async () => {
+        mockConnectorGetStripeSetup(false, true, false)
+        let $ = await getDashboard()
+        expect($('.account-status-panel').length).to.equal(1)
+      })
+
+      it('it should not display account status panel when feature flag is enabled and account is fully setup', async () => {
+        mockConnectorGetStripeSetup(true, true, true)
+        let $ = await getDashboard()
+        expect($('.account-status-panel').length).to.equal(0)
+      })
     })
+    describe('User does not have permission to update account details', () => {
+      before('Arrange', () => {
+        session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          permissions: [{ name: 'transactions:read' }]
+        }))
 
-    beforeEach('Arrange', () => {
-      process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
-      mockConnectorGetGatewayAccount('stripe', 'test')
-    })
+        mockLedgerGetTransactionsSummary()
+        app = createAppWithSession(getApp(), session)
+      })
 
-    afterEach(() => {
-      nock.cleanAll()
-    })
+      beforeEach('Arrange', () => {
+        process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
+        mockConnectorGetGatewayAccount('stripe', 'test')
+      })
 
-    it('it should not display account status panel when feature flag is not enabled ', async () => {
-      process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
-      let $ = await getDashboard()
-      expect($('.account-status-panel').length).to.equal(0)
-    })
+      afterEach(() => {
+        nock.cleanAll()
+      })
 
-    it('it should display account status panel when feature flag is enabled and account is not fully setup', async () => {
-      mockConnectorGetStripeSetup(false, true, false)
-      let $ = await getDashboard()
-      expect($('.account-status-panel').length).to.equal(1)
-    })
-
-    it('it should not display account status panel when feature flag is enabled and account is fully setup', async () => {
-      mockConnectorGetStripeSetup(true, true, true)
-      let $ = await getDashboard()
-      expect($('.account-status-panel').length).to.equal(0)
+      it('it should not display account status panel when feature flag is enabled and account is not fully setup', async () => {
+        mockConnectorGetStripeSetup(false, false, false)
+        let $ = await getDashboard()
+        expect($('.account-status-panel').length).to.equal(0)
+      })
     })
   })
   describe('When the dashboard is retrieved for non Stripe account', () => {
