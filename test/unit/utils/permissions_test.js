@@ -29,10 +29,17 @@ describe('gateway account filter utiltiies', () => {
   })
 
   describe('live accounts for a given user', () => {
+    let accountSpy
     const opts = {
       gateway_account_ids: ['1', '2', '3']
     }
     const user = validUser(opts).getAsObject()
+
+    beforeEach(() => {
+      accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => Promise.resolve({ accounts: [] }))
+    })
+    afterEach(() => accountSpy.restore())
+
     it('correctly identifies stripe and moto headers for relavent accounts', async () => {
       const { liveUserServicesGatewayAccounts } = proxyquire('./../../../app/utils/permissions', {
         '../services/clients/connector_client.js': {
@@ -52,7 +59,7 @@ describe('gateway account filter utiltiies', () => {
           }
         }
       })
-      const result = await liveUserServicesGatewayAccounts(user)
+      const result = await liveUserServicesGatewayAccounts(user, 'perm-1')
 
       expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-line
       expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-line
@@ -72,7 +79,7 @@ describe('gateway account filter utiltiies', () => {
           }
         }
       })
-      const result = await liveUserServicesGatewayAccounts(user)
+      const result = await liveUserServicesGatewayAccounts(user, 'perm-1')
 
       expect(result.headers.shouldGetStripeHeaders).to.be.false // eslint-disable-line
       expect(result.headers.shouldGetMotoHeaders).to.be.false // eslint-disable-line
@@ -103,25 +110,26 @@ describe('gateway account filter utiltiies', () => {
           }
         }
       })
-      const result = await liveUserServicesGatewayAccounts(user)
+      const result = await liveUserServicesGatewayAccounts(user, 'perm-1')
       expect(result.accounts).to.equal('1,3')
     })
 
     it('correctly filters services by users permission role', async () => {
-      const spy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => Promise.resolve({ accounts: [] }))
-
       const { liveUserServicesGatewayAccounts } = proxyquire(
         './../../../app/utils/permissions', { '../services/clients/connector_client.js': ConnectorClient }
       )
 
-      liveUserServicesGatewayAccounts(user)
-      sinon.assert.calledWith(spy, { gatewayAccountIds: [] })
-
       liveUserServicesGatewayAccounts(user, 'perm-1')
-      sinon.assert.calledWith(spy, { gatewayAccountIds: ['1', '2', '3'] })
+      sinon.assert.calledWith(accountSpy, { gatewayAccountIds: ['1', '2', '3'] })
+    })
+
+    it('does not interract with the backend if no services have the required permissions', () => {
+      const { liveUserServicesGatewayAccounts } = proxyquire(
+        './../../../app/utils/permissions', { '../services/clients/connector_client.js': ConnectorClient }
+      )
 
       liveUserServicesGatewayAccounts(user, 'permission-user-does-not-have')
-      sinon.assert.calledWith(spy, { gatewayAccountIds: [] })
+      sinon.assert.notCalled(accountSpy)
     })
   })
 })

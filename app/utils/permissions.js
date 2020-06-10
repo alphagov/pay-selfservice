@@ -28,8 +28,9 @@ const getAccounts = function getAccounts (user, permissionName) {
     .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
     .filter(gatewayAccountId => !isADirectDebitAccount(gatewayAccountId))
 
-  return client.getAccounts({ gatewayAccountIds })
-    .then((result) => result.accounts)
+  return gatewayAccountIds.length
+    ? client.getAccounts({ gatewayAccountIds }).then((result) => result.accounts)
+    : Promise.resolve([])
 }
 
 const accountDetailHeaders = function accountDetailHeaders (accounts) {
