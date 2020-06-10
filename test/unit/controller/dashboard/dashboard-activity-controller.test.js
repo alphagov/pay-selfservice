@@ -419,7 +419,11 @@ describe('dashboard-activity-controller', () => {
       it('it should display account status panel when feature flag is enabled and account is not fully setup', async () => {
         mockConnectorGetStripeSetup(false, true, false)
         let $ = await getDashboard()
+        let resultText = $('.account-status-panel').text()
         expect($('.account-status-panel').length).to.equal(1)
+        expect(resultText).to.contain('details about your responsible person')
+        expect(resultText).to.contain('bank details')
+        expect(resultText).to.not.contain('your organisation’s VAT number')
       })
 
       it('it should not display account status panel when feature flag is enabled and account is fully setup', async () => {
