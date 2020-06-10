@@ -7,14 +7,14 @@ const transactionService = require('../../services/transaction_service')
 const Stream = require('../../services/clients/stream_client')
 const { CORRELATION_HEADER } = require('../../utils/correlation_header')
 const { renderErrorView } = require('../../utils/response')
-const { liveUserServicesGatewayAccounts } = require('../../utils/permissions')
+const { liveUserServicesGatewayAccounts } = require('./../../utils/valid_account_id')
 
 module.exports = (req, res) => {
   const filters = req.query
   const correlationId = req.headers[CORRELATION_HEADER]
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
 
-  liveUserServicesGatewayAccounts(req.user, 'transactions:read')
+  liveUserServicesGatewayAccounts(req.user)
     .then((gatewayResults) => {
       const accountIdsUsersHasPermissionsFor = gatewayResults.accounts
       filters.feeHeaders = gatewayResults.headers.shouldGetStripeHeaders
