@@ -190,10 +190,6 @@ const defaultPermissions = [
   {
     name: 'connected-gocardless-account:update',
     description: 'Update connected go cardless account'
-  },
-  {
-    name: 'payouts:read',
-    description: 'View payouts'
   }
 ]
 
