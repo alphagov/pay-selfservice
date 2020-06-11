@@ -1,11 +1,14 @@
+const sinon = require('sinon')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
+
+const { ConnectorClient } = require('../../../app/services/clients/connector_client')
 
 const { validUser } = require('./../../fixtures/user_fixtures')
 const { validGatewayAccountResponse } = require('./../../fixtures/gateway_account_fixtures')
 
 describe('gateway account filter utiltiies', () => {
-  const { userServicesContainsGatewayAccount } = require('./../../../app/utils/valid_account_id')
+  const { userServicesContainsGatewayAccount } = require('../../../app/utils/permissions')
   describe('gateway account exists on users service roles', () => {
     it('returns valid for gateway account belonging to user', () => {
       const opts = {
@@ -31,7 +34,7 @@ describe('gateway account filter utiltiies', () => {
     }
     const user = validUser(opts).getAsObject()
     it('correctly identifies stripe and moto headers for relavent accounts', async () => {
-      const { liveUserServicesGatewayAccounts } = proxyquire('./../../../app/utils/valid_account_id', {
+      const { liveUserServicesGatewayAccounts } = proxyquire('./../../../app/utils/permissions', {
         '../services/clients/connector_client.js': {
           ConnectorClient: class {
             async getAccounts () {
@@ -51,12 +54,12 @@ describe('gateway account filter utiltiies', () => {
       })
       const result = await liveUserServicesGatewayAccounts(user)
 
-      expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-lin
-      expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-lin
+      expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-line
+      expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-line
     })
 
     it('correctly identifies non stripe and moto headers', async () => {
-      const { liveUserServicesGatewayAccounts } = proxyquire('./../../../app/utils/valid_account_id', {
+      const { liveUserServicesGatewayAccounts } = proxyquire('./../../../app/utils/permissions', {
         '../services/clients/connector_client.js': {
           ConnectorClient: class {
             async getAccounts () {
@@ -71,12 +74,12 @@ describe('gateway account filter utiltiies', () => {
       })
       const result = await liveUserServicesGatewayAccounts(user)
 
-      expect(result.headers.shouldGetStripeHeaders).to.be.false // eslint-disable-lin
-      expect(result.headers.shouldGetMotoHeaders).to.be.false // eslint-disable-lin
+      expect(result.headers.shouldGetStripeHeaders).to.be.false // eslint-disable-line
+      expect(result.headers.shouldGetMotoHeaders).to.be.false // eslint-disable-line
     })
 
     it('correctly filters live accounts', async () => {
-      const { liveUserServicesGatewayAccounts } = proxyquire('./../../../app/utils/valid_account_id', {
+      const { liveUserServicesGatewayAccounts } = proxyquire('./../../../app/utils/permissions', {
         '../services/clients/connector_client.js': {
           ConnectorClient: class {
             async getAccounts () {
@@ -102,6 +105,23 @@ describe('gateway account filter utiltiies', () => {
       })
       const result = await liveUserServicesGatewayAccounts(user)
       expect(result.accounts).to.equal('1,3')
+    })
+
+    it('correctly filters services by users permission role', async () => {
+      const spy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => Promise.resolve({ accounts: [] }))
+
+      const { liveUserServicesGatewayAccounts } = proxyquire(
+        './../../../app/utils/permissions', { '../services/clients/connector_client.js': ConnectorClient }
+      )
+
+      liveUserServicesGatewayAccounts(user)
+      sinon.assert.calledWith(spy, { gatewayAccountIds: [] })
+
+      liveUserServicesGatewayAccounts(user, 'perm-1')
+      sinon.assert.calledWith(spy, { gatewayAccountIds: ['1', '2', '3'] })
+
+      liveUserServicesGatewayAccounts(user, 'permission-user-does-not-have')
+      sinon.assert.calledWith(spy, { gatewayAccountIds: [] })
     })
   })
 })
