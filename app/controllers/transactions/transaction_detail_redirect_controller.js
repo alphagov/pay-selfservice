@@ -1,7 +1,7 @@
 'use strict'
 
 const paths = require('../../paths')
-const { userServicesContainsGatewayAccount } = require('../../utils/valid_account_id')
+const { userServicesContainsGatewayAccount } = require('../../utils/permissions')
 const Ledger = require('../../services/clients/ledger_client')
 const { renderErrorView } = require('../../utils/response.js')
 const router = require('../../routes')
