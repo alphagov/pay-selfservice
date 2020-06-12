@@ -19,7 +19,14 @@ module.exports = async (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
   try {
+    // @TODO(sfount) importing permission will be clearer - await permissions.getLiveGatewayAccountsFor(req.user, permission)
     const gatewayResults = await liveUserServicesGatewayAccounts(req.user, 'transactions:read')
+
+    // @TODO(sfount): rename this to something like userPermittedAccountsSummary.gatewayAccountIds
+    if (!gatewayResults.accounts.length) {
+      res.status(401).render('error', { message: 'You do not have any associated services with rights to view live transactions.' })
+      return
+    }
     const accountIdsUsersHasPermissionsFor = gatewayResults.accounts
     const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, filters.result)
     const cardTypes = await client.getAllCardTypesPromise(correlationId)

@@ -7,10 +7,18 @@ const { liveUserServicesGatewayAccounts } = require('../../utils/permissions')
 const payoutService = require('./payouts_service')
 
 const listAllServicesPayouts = async function listAllServicesPayouts (req, res) {
+  const { page } = req.query
+
   try {
     let payoutsReleaseDate
-    const { page } = req.query
+    // @TODO(sfount) importing permission will be clearer - await permissions.getLiveGatewayAccountsFor(req.user, permission)
     const gatewayAccounts = await liveUserServicesGatewayAccounts(req.user, 'payouts:read')
+
+    // @TODO(sfount): rename this to something like userPermittedAccountsSummary.gatewayAccountIds
+    if (!gatewayAccounts.accounts.length) {
+      res.status(401).render('error', { message: 'You do not have any associated services with rights to view payments to bank accounts.' })
+      return
+    }
     const payoutSearchResult = await payoutService.payouts(gatewayAccounts.accounts, req.user, page)
     const logContext = {
       gateway_accounts: gatewayAccounts,

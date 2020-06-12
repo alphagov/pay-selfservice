@@ -16,6 +16,11 @@ module.exports = (req, res) => {
 
   liveUserServicesGatewayAccounts(req.user, 'transactions:read')
     .then((gatewayResults) => {
+      // @TODO(sfount): rename this to something like userPermittedAccountsSummary.gatewayAccountIds
+      if (!gatewayResults.accounts.length) {
+        res.status(401).render('error', { message: 'You do not have any associated services with rights to view live transactions.' })
+        return
+      }
       const accountIdsUsersHasPermissionsFor = gatewayResults.accounts
       filters.feeHeaders = gatewayResults.headers.shouldGetStripeHeaders
       filters.motoHeader = gatewayResults.headers.shouldGetMotoHeaders

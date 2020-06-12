@@ -11,8 +11,7 @@ function response (req, res, template, data = {}) {
   render(req, res, template, convertedData)
 }
 
-function errorResponse (req, res, msg, status = 500) {
-  if (!msg) msg = ERROR_MESSAGE
+function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500) {
   let correlationId = req.correlationId
   if (typeof msg !== 'string') {
     msg = 'Please try again or contact support team.'
