@@ -186,6 +186,9 @@ module.exports = {
     companyNumber: '/vat-number-company-number/company-number',
     checkYourAnswers: '/vat-number-company-number/check-your-answers'
   },
+  stripe: {
+    addPspAccountDetails: '/stripe/add-psp-account-details'
+  },
   settings: {
     index: '/settings'
   },

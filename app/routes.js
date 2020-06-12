@@ -77,6 +77,7 @@ const stripeSetupVatNumberCompanyNumberController = require('./controllers/strip
 const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number-company-number/vat-number')
 const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number/company-number')
 const stripeSetupCheckYourAnswersController = require('./controllers/stripe-setup/vat-number-company-number/check-your-answers')
+const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-setup/add-psp-account-details')
 const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
@@ -91,7 +92,7 @@ const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet,
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
 
@@ -209,6 +210,7 @@ module.exports.bind = function (app) {
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
     ...lodash.values(stripeSetup),
+    ...lodash.values(stripe),
     ...lodash.values(digitalWallet),
     ...lodash.values(settings),
     ...lodash.values(yourPsp),
@@ -509,6 +511,15 @@ module.exports.bind = function (app) {
     getStripeAccount,
     checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupCheckYourAnswersController.post
+  )
+
+  app.get(stripe.addPspAccountDetails,
+    xraySegmentCls,
+    permission('stripe-account-details:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    stripeSetupAddPspAccountDetailsController.get
   )
 
   app.get(user.phoneNumber,
