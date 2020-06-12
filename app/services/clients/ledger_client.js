@@ -1,6 +1,5 @@
 'use strict'
 
-const url = require('url')
 const baseClient = require('./base_client/base_client')
 const {
   legacyConnectorTransactionParity,
@@ -50,46 +49,15 @@ const events = function events (transactionId, gatewayAccountId, options = {}) {
   return baseClient.get(configuration)
 }
 
-const transactions = function transactions (gatewayAccountId, filters = {}, urlOverride, options = {}) {
+const transactions = function transactions (gatewayAccountId, filters = {}, options = {}) {
   const path = `/v1/transaction?with_parent_transaction=true&account_id=${gatewayAccountId}&${getQueryStringForParams(filters, true, true)}`
   const configuration = Object.assign({
-    url: urlOverride ? url.parse(urlOverride).path : path,
+    url: path,
     description: 'List transactions for a given gateway account ID',
     transform: legacyConnectorTransactionsParity
   }, defaultOptions, options)
 
   return baseClient.get(configuration)
-}
-
-const allTransactionsAsCsv = function allTransactionsAsCsv (gatewayAccountId, filters = {}) {
-  const queryParams = getQueryStringForParams(filters, true, true, true)
-  const path = `/v1/transaction?with_parent_transaction=true&account_id=${gatewayAccountId}${queryParams === '' ? '' : '&' + queryParams}`
-  const configuration = {
-    baseUrl: process.env.LEDGER_URL,
-    service: 'ledger',
-    url: path,
-    description: 'List transactions as CSV for a given gateway account ID',
-    json: false,
-    headers: {
-      accept: 'text/csv'
-    }
-  }
-  return baseClient.get(configuration)
-}
-
-const allTransactionPages = async function allTransactionPages (gatewayAccountId, filters = {}, options = {}) {
-  let results = []
-  const pageOptions = { hasMorePages: true }
-
-  while (pageOptions.hasMorePages) {
-    const nextPage = await transactions(gatewayAccountId, { pageSize: 500, ...filters }, pageOptions.url, options)
-    const nextUrl = nextPage._links && nextPage._links.next_page
-    pageOptions.url = nextUrl && nextUrl.href
-    pageOptions.hasMorePages = nextUrl !== undefined
-
-    results = results.concat(nextPage.results)
-  }
-  return { results }
 }
 
 const transactionSummary = function transactionSummary (gatewayAccountId, fromDate, toDate, options = {}) {
@@ -129,8 +97,6 @@ module.exports = {
   transactions,
   payouts,
   transactionWithAccountOverride,
-  allTransactionPages,
-  allTransactionsAsCsv,
   events,
   transactionSummary
 }

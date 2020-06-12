@@ -12,24 +12,6 @@ const searchLedger = async function searchLedger (accountId, filters) {
   }
 }
 
-const searchAllLedger = async function searchAllLedger (accountId, filters) {
-  try {
-    const transactions = await Ledger.allTransactionPages(accountId, filters)
-    return transactions
-  } catch (error) {
-    throw new Error('GET_FAILED')
-  }
-}
-
-const searchAllLedgerWithCsv = async function searchAllLedgerWithCsv (accountId, filters) {
-  try {
-    const transactions = await Ledger.allTransactionsAsCsv(accountId, filters)
-    return transactions
-  } catch (error) {
-    throw new Error('GET_FAILED')
-  }
-}
-
 const csvSearchUrl = function csvSearchParams (filters, gatewayAccountId) {
   const queryParams = getQueryStringForParams(filters, true, true, true)
   const query = queryParams ? `&${queryParams}` : ''
@@ -37,6 +19,4 @@ const csvSearchUrl = function csvSearchParams (filters, gatewayAccountId) {
 }
 
 exports.search = searchLedger
-exports.searchAll = searchAllLedger
-exports.searchAllWithCsv = searchAllLedgerWithCsv
 exports.csvSearchUrl = csvSearchUrl
