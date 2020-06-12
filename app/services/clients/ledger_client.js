@@ -8,6 +8,7 @@ const {
   legacyConnectorTransactionSummaryParity
 } = require('./utils/ledger_legacy_connector_parity')
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
+const qs = require('qs')
 
 const defaultOptions = {
   baseUrl: process.env.LEDGER_URL,
@@ -49,10 +50,18 @@ const events = function events (transactionId, gatewayAccountId, options = {}) {
   return baseClient.get(configuration)
 }
 
-const transactions = function transactions (gatewayAccountId, filters = {}, options = {}) {
-  const path = `/v1/transaction?with_parent_transaction=true&account_id=${gatewayAccountId}&${getQueryStringForParams(filters, true, true)}`
+const transactions = function transactions (gatewayAccountIds = [], filters = {}, options = {}) {
+  const formatOptions = { arrayFormat: 'comma' }
+  const path = '/v1/transaction'
+  const params = {
+    with_parent_transaction: true,
+    account_id: gatewayAccountIds
+  }
+
+  const formattedParams = qs.stringify(params, formatOptions)
+  const formattedFilterParams = getQueryStringForParams(filters, true, true)
   const configuration = Object.assign({
-    url: path,
+    url: `${path}?${formattedParams}&${formattedFilterParams}`,
     description: 'List transactions for a given gateway account ID',
     transform: legacyConnectorTransactionsParity
   }, defaultOptions, options)
@@ -76,11 +85,12 @@ const transactionSummary = function transactionSummary (gatewayAccountId, fromDa
   return baseClient.get(configuration)
 }
 
-const payouts = function payouts (gatewayAccountId, page = 1, displaySize) {
+const payouts = function payouts (gatewayAccountIds = [], page = 1, displaySize) {
   const configuration = {
     url: '/v1/payout',
     qs: {
-      gateway_account_id: gatewayAccountId,
+      // qsStringifyOptions doesn't seem to be accepted here and the request library is deprecated for upstream changes
+      gateway_account_id: gatewayAccountIds.join(','),
       state: 'paidout',
       ...displaySize && { display_size: displaySize },
       page

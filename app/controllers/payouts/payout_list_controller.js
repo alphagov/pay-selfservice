@@ -3,7 +3,7 @@ const paths = require('../../../app/paths')
 const logger = require('../../utils/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { response, renderErrorView } = require('../../utils/response.js')
-const { liveUserServicesGatewayAccounts } = require('../../utils/permissions')
+const permissions = require('../../utils/permissions')
 const payoutService = require('./payouts_service')
 
 const listAllServicesPayouts = async function listAllServicesPayouts (req, res) {
@@ -11,21 +11,16 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res) 
 
   try {
     let payoutsReleaseDate
-    // @TODO(sfount) importing permission will be clearer - await permissions.getLiveGatewayAccountsFor(req.user, permission)
-    const gatewayAccounts = await liveUserServicesGatewayAccounts(req.user, 'payouts:read')
+    const userPermittedAccountsSummary = await permissions.getLiveGatewayAccountsFor(req.user, 'payouts:read')
 
-    // @TODO(sfount): rename this to something like userPermittedAccountsSummary.gatewayAccountIds
-    if (!gatewayAccounts.accounts.length) {
+    if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
       res.status(401).render('error', { message: 'You do not have any associated services with rights to view payments to bank accounts.' })
       return
     }
-    const payoutSearchResult = await payoutService.payouts(gatewayAccounts.accounts, req.user, page)
-    const logContext = {
-      gateway_accounts: gatewayAccounts,
-      current_page: page
-    }
+    const payoutSearchResult = await payoutService.payouts(userPermittedAccountsSummary.gatewayAccountIds, req.user, page)
+    const logContext = { current_page: page }
     logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logContext[keys.GATEWAY_ACCOUNT_ID] = gatewayAccounts
+    logContext[keys.GATEWAY_ACCOUNT_ID] = userPermittedAccountsSummary
     logger.info('Fetched page of payouts for all services', logContext)
 
     if (process.env.PAYOUTS_RELEASE_DATE) {

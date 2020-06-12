@@ -9,16 +9,16 @@ const userServicesContainsGatewayAccount = function userServicesContainsGatewayA
   return accountId && gatewayAccountIds.indexOf(accountId) !== -1
 }
 
-const liveUserServicesGatewayAccounts = async function liveUserServicesGatewayAccounts (user, permissionName) {
-  const accounts = await getAccounts(user, permissionName)
+const getLiveGatewayAccountsFor = async function getLiveGatewayAccountsFor (user, permissionName) {
+  const userGatewayAccounts = await fetchGatewayAccountsFor(user, permissionName)
 
   return {
-    headers: accountDetailHeaders(accounts),
-    accounts: accountsString(accounts)
+    gatewayAccountIds: getLiveGatewayAccountIds(userGatewayAccounts),
+    headers: getAllAccountDetailHeaders(userGatewayAccounts)
   }
 }
 
-const getAccounts = function getAccounts (user, permissionName) {
+const fetchGatewayAccountsFor = function fetchGatewayAccountsFor (user, permissionName) {
   const gatewayAccountIds = user.serviceRoles
     .filter((serviceRole) => serviceRole.role.permissions
       .map((permission) => permission.name)
@@ -33,11 +33,11 @@ const getAccounts = function getAccounts (user, permissionName) {
     : Promise.resolve([])
 }
 
-const accountDetailHeaders = function accountDetailHeaders (accounts) {
-  const shouldGetStripeHeaders = accounts
+const getAllAccountDetailHeaders = function getAllAccountDetailHeaders (gatewayAccounts) {
+  const shouldGetStripeHeaders = gatewayAccounts
     .some((account) => account.payment_provider === 'stripe')
 
-  const shouldGetMotoHeaders = accounts
+  const shouldGetMotoHeaders = gatewayAccounts
     .some((account) => account.allow_moto)
 
   return {
@@ -45,16 +45,13 @@ const accountDetailHeaders = function accountDetailHeaders (accounts) {
   }
 }
 
-const accountsString = function accountsString (accounts) {
-  const emptyAccountsString = '[]'
-  const outputString = accounts
+const getLiveGatewayAccountIds = function getLiveGatewayAccountIds (gatewayAccounts) {
+  return gatewayAccounts
     .filter((account) => account.type === 'live')
     .map((account) => account.gateway_account_id)
-    .join(',')
-  return outputString || emptyAccountsString
 }
 
 module.exports = {
   userServicesContainsGatewayAccount,
-  liveUserServicesGatewayAccounts
+  getLiveGatewayAccountsFor
 }
