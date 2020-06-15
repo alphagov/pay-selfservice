@@ -7,19 +7,17 @@ const logger = require('../../../utils/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 function getTargetServiceForRedirect (user, externalServiceId) {
-  return user.serviceRoles.filter((service) => service.externalId === externalServiceId)[0]
+  return user.serviceRoles.filter((serviceRole) => serviceRole.service.externalId === externalServiceId)[0]
 }
 
 module.exports = async (req, res) => {
   const externalServiceId = req.params.externalServiceId
-
-  const targetServiceForRedirect = getTargetServiceForRedirect(req.user, externalServiceId)
-
-  if (targetServiceForRedirect) {
-    const result = await connectorClient.getAccounts(targetServiceForRedirect.gatewayAccountIds)
+  const targetServiceRoleForRedirect = getTargetServiceForRedirect(req.user, externalServiceId)
+  if (targetServiceRoleForRedirect) {
+    const result = await connectorClient.getAccounts(targetServiceRoleForRedirect.service.gatewayAccountIds)
     const liveGatewayAccounts = result.accounts.filter((gatewayAccount) => gatewayAccount.type === 'live')
     if (liveGatewayAccounts && liveGatewayAccounts.length === 1) {
-      req.gateway_account.currentGatewayAccountId = liveGatewayAccounts[0].id
+      req.gateway_account.currentGatewayAccountId = liveGatewayAccounts[0].gateway_account_id
     }
   } else {
     const logContext = {}
