@@ -41,8 +41,8 @@ const formatPayoutPages = function formatPayoutPages (payoutSearchResponse) {
   return { total, page, links }
 }
 
-const payouts = async function payouts (gatewayAccountId, user = {}, page = 1) {
-  const payoutSearchResponse = await Ledger.payouts(gatewayAccountId, page, PAGE_SIZE)
+const payouts = async function payouts (gatewayAccountIds, user = {}, page = 1) {
+  const payoutSearchResponse = await Ledger.payouts(gatewayAccountIds, page, PAGE_SIZE)
   return {
     groups: groupPayoutsByDate(payoutSearchResponse.results, user),
     pages: formatPayoutPages(payoutSearchResponse)

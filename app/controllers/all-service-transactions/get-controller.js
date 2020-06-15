@@ -7,7 +7,7 @@ const { response, renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector_client.js')
 const transactionService = require('../../services/transaction_service')
 const { buildPaymentList } = require('../../utils/transaction_view.js')
-const { liveUserServicesGatewayAccounts } = require('../../utils/permissions')
+const permissions = require('../../utils/permissions')
 const { getFilters, describeFilters } = require('../../utils/filters.js')
 const router = require('../../routes.js')
 const states = require('../../utils/states')
@@ -19,9 +19,13 @@ module.exports = async (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
   try {
-    const gatewayResults = await liveUserServicesGatewayAccounts(req.user, 'transactions:read')
-    const accountIdsUsersHasPermissionsFor = gatewayResults.accounts
-    const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, filters.result)
+    const userPermittedAccountsSummary = await permissions.getLiveGatewayAccountsFor(req.user, 'transactions:read')
+
+    if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
+      res.status(401).render('error', { message: 'You do not have any associated services with rights to view live transactions.' })
+      return
+    }
+    const searchResultOutput = await transactionService.search(userPermittedAccountsSummary.gatewayAccountIds, filters.result)
     const cardTypes = await client.getAllCardTypesPromise(correlationId)
     const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, router.paths.allServiceTransactions.download, req.session.backPath)
     delete req.session.backPath
@@ -48,7 +52,7 @@ module.exports = async (req, res) => {
     }
     model.filterRedirect = router.paths.allServiceTransactions.index
     model.clearRedirect = router.paths.allServiceTransactions.index
-    model.isStripeAccount = gatewayResults.headers.shouldGetStripeHeaders
+    model.isStripeAccount = userPermittedAccountsSummary.headers.shouldGetStripeHeaders
 
     return response(req, res, 'all_service_transactions/index', model)
   } catch (err) {
