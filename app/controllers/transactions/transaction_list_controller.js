@@ -27,7 +27,7 @@ module.exports = (req, res) => {
   if (!filters.valid) return error('Invalid search')
 
   transactionService
-    .search(accountId, filters.result, correlationId)
+    .search([ accountId ], filters.result, correlationId)
     .then(transactions => {
       client
         .getAllCardTypes({ correlationId }, allCards => {
