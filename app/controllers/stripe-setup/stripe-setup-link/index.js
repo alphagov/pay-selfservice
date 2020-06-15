@@ -1,5 +1,5 @@
 'use strict'
 
 module.exports = {
-  get: require('./get.controller')
+  get: require('./stripe_setup_dashboard_redirect_controller')
 }
