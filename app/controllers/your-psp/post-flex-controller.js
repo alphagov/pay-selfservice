@@ -1,25 +1,54 @@
 'use strict'
 
+// NPM dependencies
+const lodash = require('lodash')
+
 // Local dependencies
 const paths = require('../../paths')
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector_client')
 const { correlationHeader } = require('../../utils/correlation_header')
+const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
+
+// Constants
+const ORGANISATIONAL_UNIT_ID_FIELD = 'organisational-unit-id'
+const ISSUER_FIELD = 'issuer'
+const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 
 module.exports = async (req, res) => {
   const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+
   const correlationId = req.headers[correlationHeader] || ''
+
   const accountId = req.account.gateway_account_id
+
   const removeCredentials = req.body['remove-credentials'] === 'true'
+
+  const orgUnitId = lodash.get(req.body, ORGANISATIONAL_UNIT_ID_FIELD, '').trim()
+  const issuer = lodash.get(req.body, ISSUER_FIELD, '').trim()
+  const jwtMacKey = lodash.get(req.body, JWT_MAC_KEY_FIELD, '').trim()
+
+  if (!removeCredentials) {
+    const errors = validate3dsFlexCredentials(orgUnitId, issuer, jwtMacKey)
+
+    if (!lodash.isEmpty(errors)) {
+      lodash.set(req, 'session.pageData.worldpay3dsFlex', {
+        errors: errors,
+        orgUnitId: orgUnitId,
+        issuer: issuer
+      })
+      return res.redirect(303, paths.yourPsp.flex)
+    }
+  }
 
   try {
     const flexParams = {
       correlationId: correlationId,
       gatewayAccountId: accountId,
       payload: {
-        organisational_unit_id: removeCredentials ? '' : req.body['organisational-unit-id'],
-        issuer: removeCredentials ? '' : req.body.issuer,
-        jwt_mac_key: removeCredentials ? '' : req.body['jwt-mac-key']
+        organisational_unit_id: removeCredentials ? '' : orgUnitId,
+        issuer: removeCredentials ? '' : issuer,
+        jwt_mac_key: removeCredentials ? '' : jwtMacKey
       }
     }
 
@@ -32,7 +61,6 @@ module.exports = async (req, res) => {
         },
         correlationId: correlationId
       }
-
       await connector.update3dsEnabled(threeDsParams)
     }
 
@@ -44,4 +72,25 @@ module.exports = async (req, res) => {
   } catch (error) {
     return renderErrorView(req, res, false, error.errorCode)
   }
+}
+
+function validate3dsFlexCredentials (orgUnitId, issuer, jwtMacKey) {
+  const errors = {}
+
+  const orgUnitIdValidationResult = worldpay3dsFlexValidations.validateOrgUnitId(orgUnitId)
+  if (!orgUnitIdValidationResult.valid) {
+    errors[ORGANISATIONAL_UNIT_ID_FIELD] = orgUnitIdValidationResult.message
+  }
+
+  const issuerValidationResult = worldpay3dsFlexValidations.validateIssuer(issuer)
+  if (!issuerValidationResult.valid) {
+    errors[ISSUER_FIELD] = issuerValidationResult.message
+  }
+
+  const jwtMacKeyValidationResult = worldpay3dsFlexValidations.validateJwtMacKey(jwtMacKey)
+  if (!jwtMacKeyValidationResult.valid) {
+    errors[JWT_MAC_KEY_FIELD] = jwtMacKeyValidationResult.message
+  }
+
+  return errors
 }

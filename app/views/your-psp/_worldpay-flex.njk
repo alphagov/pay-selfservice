@@ -19,7 +19,7 @@
             {
               href: routes.yourPsp.flex + "?change=organisationalUnitId",
               text: "Change",
-              visuallyHiddenText: "3DS flex credentials",
+              visuallyHiddenText: "3DS Flex credentials",
               attributes: {
                 id: "flex-credentials-change-link"
               }
@@ -29,7 +29,7 @@
       },
       {
         key: {
-          text: "Issuer"
+          text: "Issuer (API ID)"
         },
         value: {
           text: currentGatewayAccount.worldpay_3ds_flex.issuer if isFlexConfigured else "Not configured",
@@ -40,14 +40,14 @@
             {
               href: routes.yourPsp.flex + "?change=issuer",
               text: "Change",
-              visuallyHiddenText: "3DS flex credentials"
+              visuallyHiddenText: "3DS Flex credentials"
             }
           ]
         }
       },
       {
         key: {
-          text: "JWT MAC key"
+          text: "JWT MAC key (API key)"
         },
         value: {
           text: '●●●●●●●●' if isFlexConfigured else "Not configured",
@@ -58,7 +58,7 @@
             {
               href: routes.yourPsp.flex + "?change=password",
               text: "Change",
-              visuallyHiddenText: "3DS flex credentials"
+              visuallyHiddenText: "3DS Flex credentials"
             }
           ]
         }

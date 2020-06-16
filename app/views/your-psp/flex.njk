@@ -11,38 +11,80 @@
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Your Worldpay 3DS Flex credentials</h1>
-    <form method="post" action="{{routes.yourPsp.flex}}" data-validate>
+    <form method="post" action="{{routes.yourPsp.flex}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+        {% if errors %}
+          {% set errorList = [] %}
+
+          {% if errors['organisational-unit-id'] %}
+            {% set errorList = (errorList.push({
+              text: 'Organisational unit ID',
+              href: '#organisational-unit-id'
+            }), errorList) %}
+            {% set orgUnitIdError = {
+              text: errors["organisational-unit-id"]
+            } %}
+          {% endif %}
+
+          {% if errors['issuer'] %}
+            {% set errorList = (errorList.push({
+              text: 'Issuer',
+              href: '#issuer'
+            }), errorList) %}
+            {% set issuerError = {
+              text: errors["issuer"]
+            } %}
+          {% endif %}
+
+          {% if errors['jwt-mac-key'] %}
+            {% set errorList = (errorList.push({
+              text: 'JWT MAC key',
+              href: '#jwt-mac-key'
+            }), errorList) %}
+            {% set jwtMacKeyError = {
+              text: errors["jwt-mac-key"]
+            } %}
+          {% endif %}
+
+          {{ govukErrorSummary({
+            titleText: 'There was a problem with the details you gave for:',
+            errorList: errorList
+          }) }}
+        {% endif %}
 
       {% if change === 'organisationalUnitId' %}
         {{ govukInput({
             label: {
-              text: "Organisational Unit ID"
+              text: "Organisational unit ID"
             },
+            hint: {
+              text: "Provided to you by Worldpay. For example, ‘5bd9b55e4444761ac0af1c80’."
+            },
+            errorMessage: orgUnitIdError,
             id: "organisational-unit-id",
             name: "organisational-unit-id",
             classes: "govuk-input--width-20",
             type: "text",
             attributes: {
-              "data-validate": "required",
               "autofocus": "autofocus"
             },
-            value: currentGatewayAccount.worldpay_3ds_flex.organisational_unit_id
+            value: orgUnitId
           })
         }}
       {% else %}
         {{ govukInput({
             label: {
-              text: "Organisational Unit ID"
+              text: "Organisational unit ID"
             },
+            hint: {
+              text: "Provided to you by Worldpay. For example, ‘5bd9b55e4444761ac0af1c80’."
+            },
+            errorMessage: orgUnitIdError,
             id: "organisational-unit-id",
             name: "organisational-unit-id",
             classes: "govuk-input--width-20",
             type: "text",
-            attributes: {
-              "data-validate": "required"
-            },
-            value: currentGatewayAccount.worldpay_3ds_flex.organisational_unit_id
+            value: orgUnitId
           })
         }}
       {% endif %}
@@ -50,32 +92,36 @@
       {% if change === 'issuer' %}
         {{ govukInput({
             label: {
-              text: "Issuer"
+              text: "Issuer (API ID)"
             },
+            hint: {
+              text: "Provided to you by Worldpay. For example, ‘5bd9e0e4444dce153428c940’."
+            },
+            errorMessage: issuerError,
             id: "issuer",
             name: "issuer",
             classes: "govuk-input--width-20",
             type: "text",
             attributes: {
-              "data-validate": "required",
               "autofocus": "autofocus"
             },
-            value: currentGatewayAccount.worldpay_3ds_flex.issuer
+            value: issuer
           })
         }}
       {% else %}
         {{ govukInput({
             label: {
-              text: "Issuer"
+              text: "Issuer (API ID)"
             },
+            hint: {
+              text: "Provided to you by Worldpay. For example, ‘5bd9e0e4444dce153428c940’."
+            },
+            errorMessage: issuerError,
             id: "issuer",
             name: "issuer",
             classes: "govuk-input--width-20",
             type: "text",
-            attributes: {
-              "data-validate": "required"
-            },
-            value: currentGatewayAccount.worldpay_3ds_flex.issuer
+            value: issuer
           })
         }}
       {% endif %}
@@ -83,14 +129,17 @@
       {% if change === 'password' %}
         {{ govukInput({
             label: {
-              text: "JWT MAC key"
+              text: "JWT MAC key (API key)"
             },
+            hint: {
+              text: "Provided to you by Worldpay. For example, ‘fa2daee2-1fbb-45ff-4444-52805d5cd9e0’."
+            },
+            errorMessage: jwtMacKeyError,
             id: "jwt-mac-key",
             name: "jwt-mac-key",
             classes: "govuk-input--width-20",
             type: "password",
             attributes: {
-              "data-validate": "required",
               "autofocus": "autofocus"
             }
           })
@@ -98,15 +147,16 @@
         {% else %}
         {{ govukInput({
             label: {
-              text: "JWT MAC key"
+              text: "JWT MAC key (API key)"
             },
+            hint: {
+              text: "Provided to you by Worldpay. For example, ‘fa2daee2-1fbb-45ff-4444-52805d5cd9e0’."
+            },
+            errorMessage: jwtMacKeyError,
             id: "jwt-mac-key",
             name: "jwt-mac-key",
             classes: "govuk-input--width-20",
-            type: "password",
-            attributes: {
-              "data-validate": "required"
-            }
+            type: "password"
           })
         }}
       {% endif %}
