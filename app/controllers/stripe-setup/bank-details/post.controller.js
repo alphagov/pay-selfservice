@@ -52,7 +52,11 @@ module.exports = (req, res) => {
         return connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account', req.correlationId)
       })
       .then(() => {
-        return res.redirect(303, paths.dashboard.index)
+        if (process.env.ENABLE_ACCOUNT_STATUS_PANEL === 'true') {
+          return res.redirect(303, paths.stripe.addPspAccountDetails)
+        } else {
+          return res.redirect(303, paths.dashboard.index)
+        }
       })
       .catch(error => {
         // check if it is Stripe related error

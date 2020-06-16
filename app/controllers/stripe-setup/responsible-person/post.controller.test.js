@@ -33,6 +33,22 @@ describe('Responsible person POST controller', () => {
   const dobYear = '1971 '
   const dobYearNormalised = 1971
 
+  const postBody = {
+    'first-name': firstName,
+    'last-name': lastName,
+    'home-address-line-1': addressLine1,
+    'home-address-city': addressCity,
+    'home-address-postcode': addressPostcode,
+    'dob-day': dobDay,
+    'dob-month': dobMonth,
+    'dob-year': dobYear,
+    'answers-checked': 'true'
+  }
+  const postBodyWithAddress2 = {
+    ...postBody,
+    'home-address-line-2': addressLine2
+  }
+
   let req
   let res
   let setStripeAccountSetupFlagMock
@@ -71,9 +87,11 @@ describe('Responsible person POST controller', () => {
         }
       }
     }
+
+    process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
   })
 
-  it('should call Stripe with normalised details (with second address line), then connector, then redirect to the dashboard', async function () {
+  it('should call Stripe with normalised details (with second address line), then connector, then redirect to add details redirect route', async function () {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => {
       return new Promise(resolve => {
@@ -85,30 +103,11 @@ describe('Responsible person POST controller', () => {
         })
       })
     })
-    updatePersonMock = sinon.spy((stripeAccountId, personId, body) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+    updatePersonMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    req.body = {
-      'first-name': firstName,
-      'last-name': lastName,
-      'home-address-line-1': addressLine1,
-      'home-address-line-2': addressLine2,
-      'home-address-city': addressCity,
-      'home-address-postcode': addressPostcode,
-      'dob-day': dobDay,
-      'dob-month': dobMonth,
-      'dob-year': dobYear,
-      'answers-checked': 'true'
-    }
+    req.body = { ...postBodyWithAddress2 }
 
     await controller(req, res)
 
@@ -124,10 +123,10 @@ describe('Responsible person POST controller', () => {
       dob_year: dobYearNormalised
     })).to.be.true
     expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'responsible_person', req.correlationId)).to.be.true // eslint-disable-line
-    expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
+    expect(res.redirect.calledWith(303, paths.stripe.addPspAccountDetails)).to.be.true // eslint-disable-line
   })
 
-  it('should call Stripe with normalised details (no second address line), then connector, then redirect to the dashboard', async function () {
+  it('should call Stripe with normalised details (no second address line), then connector, then redirect to add details redirect route', async function () {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => {
       return new Promise(resolve => {
@@ -138,29 +137,11 @@ describe('Responsible person POST controller', () => {
         })
       })
     })
-    updatePersonMock = sinon.spy((stripeAccountId, personId, body) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+    updatePersonMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    req.body = {
-      'first-name': firstName,
-      'last-name': lastName,
-      'home-address-line-1': addressLine1,
-      'home-address-city': addressCity,
-      'home-address-postcode': addressPostcode,
-      'dob-day': dobDay,
-      'dob-month': dobMonth,
-      'dob-year': dobYear,
-      'answers-checked': 'true'
-    }
+    req.body = { ...postBody }
 
     await controller(req, res)
 
@@ -174,6 +155,32 @@ describe('Responsible person POST controller', () => {
       dob_month: dobMonthNormalised,
       dob_year: dobYearNormalised
     })).to.be.true
+    expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'responsible_person', req.correlationId)).to.be.true // eslint-disable-line
+    expect(res.redirect.calledWith(303, paths.stripe.addPspAccountDetails)).to.be.true // eslint-disable-line
+  })
+
+  it('should redirect to the dashboard when the feature flag is disabled', async function () {
+    process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
+
+    const personId = 'person-1'
+    listPersonsMock = sinon.stub((stripeAccountId) => {
+      return new Promise(resolve => {
+        resolve({
+          data: [
+            { id: personId }
+          ]
+        })
+      })
+    })
+    updatePersonMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.body = { ...postBody }
+
+    await controller(req, res)
+
+    expect(updatePersonMock.called).to.be.true // eslint-disable-line
     expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'responsible_person', req.correlationId)).to.be.true // eslint-disable-line
     expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
   })
@@ -189,42 +196,15 @@ describe('Responsible person POST controller', () => {
         })
       })
     })
-    updatePersonMock = sinon.spy((stripeAccountId, personId, body) => {
-      return new Promise((resolve, reject) => {
-        reject(new Error())
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+    updatePersonMock = sinon.spy(() => Promise.reject(new Error()))
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    req.body = {
-      'first-name': firstName,
-      'last-name': lastName,
-      'home-address-line-1': addressLine1,
-      'home-address-city': addressCity,
-      'home-address-postcode': addressPostcode,
-      'dob-day': dobDay,
-      'dob-month': dobMonth,
-      'dob-year': dobYear,
-      'answers-checked': 'true'
-    }
+    req.body = { ...postBody }
 
     await controller(req, res)
 
-    expect(updatePersonMock.calledWith(res.locals.stripeAccount.stripeAccountId, personId, { // eslint-disable-line
-      first_name: firstNameNormalised,
-      last_name: lastNameNormalised,
-      address_line1: addressLine1Normalised,
-      address_city: addressCityNormalised,
-      address_postcode: addressPostcodeNormalised,
-      dob_day: dobDayNormalised,
-      dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
-    })).to.be.true
+    expect(updatePersonMock.called).to.be.true // eslint-disable-line
     expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
     expect(res.redirect.notCalled).to.be.true // eslint-disable-line
     expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
@@ -242,42 +222,15 @@ describe('Responsible person POST controller', () => {
         })
       })
     })
-    updatePersonMock = sinon.spy((stripeAccountId, personId, body) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise((resolve, reject) => {
-        reject(new Error())
-      })
-    })
+    updatePersonMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.reject(new Error()))
     const controller = getControllerWithMocks()
 
-    req.body = {
-      'first-name': firstName,
-      'last-name': lastName,
-      'home-address-line-1': addressLine1,
-      'home-address-city': addressCity,
-      'home-address-postcode': addressPostcode,
-      'dob-day': dobDay,
-      'dob-month': dobMonth,
-      'dob-year': dobYear,
-      'answers-checked': 'true'
-    }
+    req.body = { ...postBody }
 
     await controller(req, res)
 
-    expect(updatePersonMock.calledWith(res.locals.stripeAccount.stripeAccountId, personId, { // eslint-disable-line
-      first_name: firstNameNormalised,
-      last_name: lastNameNormalised,
-      address_line1: addressLine1Normalised,
-      address_city: addressCityNormalised,
-      address_postcode: addressPostcodeNormalised,
-      dob_day: dobDayNormalised,
-      dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
-    })).to.be.true
+    expect(updatePersonMock.called).to.be.true // eslint-disable-line
     expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'responsible_person', req.correlationId)).to.be.true // eslint-disable-line
     expect(res.redirect.notCalled).to.be.true // eslint-disable-line
     expect(res.status.calledWith(500)).to.be.true // eslint-disable-line

@@ -57,118 +57,93 @@ describe('"VAT number / company number - check your answers" post controller', (
         }
       }
     }
+
+    process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
   })
 
-  it('should call stripe and connector with all data and redirect to the dashboard', done => {
-    updateCompanyMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+  it('should redirect to the dashboard if feature flag disabled', async () => {
+    process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
+
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        vat_id: sanitisedVatNumber,
-        tax_id: sanitisedCompanyNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'vat_number_company_number', req.correlationId)).to.be.true // eslint-disable-line
-      expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+      vat_id: sanitisedVatNumber,
+      tax_id: sanitisedCompanyNumber
+    })).to.be.true
+    expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'vat_number_company_number', req.correlationId)).to.be.true // eslint-disable-line
+    expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
   })
 
-  it('should call stripe and connector with VAT number only and redirect to the dashboard', done => {
+  it('should call stripe and connector with all data and redirect to the add account details redirect route', async () => {
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    await controller(req, res)
+
+    expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+      vat_id: sanitisedVatNumber,
+      tax_id: sanitisedCompanyNumber
+    })).to.be.true
+    expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'vat_number_company_number', req.correlationId)).to.be.true // eslint-disable-line
+    expect(res.redirect.calledWith(303, paths.stripe.addPspAccountDetails)).to.be.true // eslint-disable-line
+  })
+
+  it('should call stripe and connector with VAT number only and redirect to the add account details redirect route', async () => {
     req.session.pageData.stripeSetup.companyNumberData = {
       errors: {},
       companyNumberDeclaration: '',
       companyNumber: ''
     }
-    updateCompanyMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        vat_id: sanitisedVatNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'vat_number_company_number', req.correlationId)).to.be.true // eslint-disable-line
-      expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+      vat_id: sanitisedVatNumber
+    })).to.be.true
+    expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'vat_number_company_number', req.correlationId)).to.be.true // eslint-disable-line
+    expect(res.redirect.calledWith(303, paths.stripe.addPspAccountDetails)).to.be.true // eslint-disable-line
   })
 
-  it('should render error page when Stripe returns an error', done => {
-    updateCompanyMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise((resolve, reject) => {
-        reject(new Error())
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+  it('should render error page when Stripe returns an error', async () => {
+    updateCompanyMock = sinon.spy(() => Promise.reject(new Error()))
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        vat_id: sanitisedVatNumber,
-        tax_id: sanitisedCompanyNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
-      expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+      vat_id: sanitisedVatNumber,
+      tax_id: sanitisedCompanyNumber
+    })).to.be.true
+    expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
+    expect(res.redirect.notCalled).to.be.true // eslint-disable-line
+    expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
+    expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
   })
 
-  it('should render error page when connector returns error', done => {
-    updateCompanyMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise((resolve, reject) => {
-        reject(new Error())
-      })
-    })
+  it('should render error page when connector returns error', async () => {
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.reject(new Error()))
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        vat_id: sanitisedVatNumber,
-        tax_id: sanitisedCompanyNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'vat_number_company_number', req.correlationId)).to.be.true // eslint-disable-line
-      expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    expect(updateCompanyMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+      vat_id: sanitisedVatNumber,
+      tax_id: sanitisedCompanyNumber
+    })).to.be.true
+    expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'vat_number_company_number', req.correlationId)).to.be.true // eslint-disable-line
+    expect(res.redirect.notCalled).to.be.true // eslint-disable-line
+    expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
+    expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
   })
 
   function getControllerWithMocks () {
