@@ -1,8 +1,6 @@
 'use strict'
-// NPM dependencies
-const {expect} = require('chai')
+const { expect } = require('chai')
 
-// Local dependencies
 const User = require('../../../app/models/User.class')
 const userFixtures = require('../../fixtures/user_fixtures')
 

@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 const baseClient = require('./old_base_client')
@@ -31,7 +30,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'GET',
@@ -64,7 +63,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'GET',
@@ -102,7 +101,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'POST',
@@ -139,7 +138,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'PUT',
@@ -176,7 +175,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'DELETE',

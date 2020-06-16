@@ -1,7 +1,6 @@
 'use strict'
 
-// Local dependencies
-const {response, renderErrorView} = require('../../utils/response.js')
+const { response, renderErrorView } = require('../../utils/response.js')
 const auth = require('../../services/auth_service.js')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 

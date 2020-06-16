@@ -1,20 +1,18 @@
 'use strict'
 
-// NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const lodash = require('lodash')
 const csrf = require('csrf')
 
-// Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
 
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'tokens:create'}]
+  permissions: [{ name: 'tokens:create' }]
 })
 
 describe('Create payment link reference post controller', () => {

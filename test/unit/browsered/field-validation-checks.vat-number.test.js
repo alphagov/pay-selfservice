@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const { isNotVatNumber } = require('../../../app/browsered/field-validation-checks')
 
 describe('UK VAT number validations', () => {

@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const {
   validationErrors,
   isEmpty,

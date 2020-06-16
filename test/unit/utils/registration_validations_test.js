@@ -1,16 +1,13 @@
 'use strict'
 
-// NPM dependencies
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const validation = require('../../../app/utils/registration_validations')
 
 // Constants
 const expect = chai.expect
 
-// Global setup
 chai.use(chaiAsPromised)
 
 let mockRegisterAccountCookie

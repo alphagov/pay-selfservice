@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM Dependencies
 const lodash = require('lodash')
 
-// Local Dependencies
 const { renderErrorView, response } = require('../utils/response')
 const paths = require('../paths')
 const serviceService = require('../services/service_service')

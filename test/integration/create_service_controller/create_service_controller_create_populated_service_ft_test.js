@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const nock = require('nock')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const inviteFixtures = require('../../fixtures/invite_fixtures')
 const serviceRegistrationService = require('../../../app/services/service_registration_service')
@@ -17,7 +15,6 @@ const connectorMock = nock(process.env.CONNECTOR_URL)
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const expect = chai.expect
 
-// Global setup
 chai.use(chaiAsPromised)
 
 describe('create populated service', function () {

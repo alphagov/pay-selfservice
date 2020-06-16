@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const chai = require('chai')
 
-// Local dependencies
 const goLiveStageToNextPagePath = require('../../../../app/controllers/request-to-go-live/go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../../app/models/go-live-stage')
 

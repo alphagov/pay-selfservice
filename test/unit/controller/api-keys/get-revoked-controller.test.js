@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 const nock = require('nock')
 const supertest = require('supertest')
 
-// Local dependencies
 const { getApp } = require('../../../../server')
 const mockSession = require('../../../test_helpers/mock_session')
 const userCreator = require('../../../test_helpers/user_creator')
@@ -86,7 +84,7 @@ describe('Revoked API keys index', () => {
         .reply(200, {
           payment_provider: 'sandbox'
         })
-      mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, {tokens: [TOKEN_1]})
+      mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, { tokens: [TOKEN_1] })
 
       supertest(app)
         .get(paths.apiKeys.revoked)

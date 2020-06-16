@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM Dependencies
 const lodash = require('lodash')
 
 /**
@@ -36,7 +35,7 @@ class Payment {
     this.status = opts.status
     this.govukStatus = opts.govuk_status
     this.nextUrl = opts.next_url
-    opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, {method: link.method, href: link.href}))
+    opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, { method: link.method, href: link.href }))
   }
 }
 

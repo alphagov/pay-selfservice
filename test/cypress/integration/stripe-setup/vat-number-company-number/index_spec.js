@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const commonStubs = require('../../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,

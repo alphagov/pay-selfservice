@@ -1,13 +1,11 @@
 'use strict'
 
-// NPM dependencies
 const nock = require('nock')
 const csrf = require('csrf')
 const supertest = require('supertest')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const mockSession = require('../../test_helpers/mock_session')
 const getApp = require('../../../server').getApp
 const inviteFixtures = require('../../fixtures/invite_fixtures')
@@ -18,7 +16,6 @@ const SERVICE_INVITE_OTP_RESEND_RESOURCE = '/v1/api/invites/otp/resend'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const expect = chai.expect
 
-// Global setup
 chai.use(chaiAsPromised)
 
 let app

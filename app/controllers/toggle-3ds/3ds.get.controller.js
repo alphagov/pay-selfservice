@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const { response, renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector_client')
 const { correlationHeader } = require('../../utils/correlation_header')

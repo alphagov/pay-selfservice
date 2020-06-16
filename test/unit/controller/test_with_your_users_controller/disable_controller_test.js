@@ -1,18 +1,16 @@
 'use strict'
 
-// NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const nock = require('nock')
 
-// Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {randomUuid} = require('../../../../app/utils/random')
+const { randomUuid } = require('../../../../app/utils/random')
 
 const GATEWAY_ACCOUNT_ID = '929'
-const {PRODUCTS_URL, CONNECTOR_URL} = process.env
+const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 
 describe('test with your users - disable controller', () => {
   describe('when the prototype link is successfully disabled', () => {
@@ -21,7 +19,7 @@ describe('test with your users - disable controller', () => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'transactions:read'}]
+        permissions: [{ name: 'transactions:read' }]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
@@ -60,7 +58,7 @@ describe('test with your users - disable controller', () => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'transactions:read'}]
+        permissions: [{ name: 'transactions:read' }]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'

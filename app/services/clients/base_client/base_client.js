@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM Dependencies
 const request = require('request')
 const wrapper = require('./wrapper')
 

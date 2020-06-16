@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 const qrcode = require('qrcode')
 
-// Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')

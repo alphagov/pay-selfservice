@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const paths = require('../../paths')
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector_client')

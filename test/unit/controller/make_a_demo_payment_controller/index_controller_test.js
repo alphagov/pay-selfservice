@@ -1,24 +1,22 @@
 'use strict'
 
-// NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 const lodash = require('lodash')
 const csrf = require('csrf')
 const nock = require('nock')
 
-// Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {penceToPounds} = require('../../../../app/utils/currency_formatter')
+const { penceToPounds } = require('../../../../app/utils/currency_formatter')
 
 const GATEWAY_ACCOUNT_ID = '929'
-const {CONNECTOR_URL} = process.env
+const { CONNECTOR_URL } = process.env
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'transactions:read'}]
+  permissions: [{ name: 'transactions:read' }]
 })
 const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
   payment_provider: 'sandbox'

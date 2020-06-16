@@ -1,6 +1,5 @@
 'use strict'
 
-// Local Dependencies
 const Product = require('../../models/Product.class')
 const Payment = require('../../models/Payment.class')
 const baseClient = require('./base_client/base_client')

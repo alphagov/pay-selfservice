@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { validateProcessPaymentOptions } = require('../../../utils/choose_how_to_process_payments_validation')
 const { requestToGoLive } = require('../../../paths')

@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { ConnectorClient } = require('../../services/clients/connector_client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { renderErrorView } = require('../../utils/response')

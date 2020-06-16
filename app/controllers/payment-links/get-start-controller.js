@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
-const {response} = require('../../utils/response.js')
+const { response } = require('../../utils/response.js')
 
 module.exports = (req, res) => {
   lodash.set(req, 'session.pageData.createPaymentLink', {})

@@ -1,7 +1,6 @@
 'use strict'
 
-// Local dependencies
-const {render} = require('../test_helpers/html_assertions.js')
+const { render } = require('../test_helpers/html_assertions.js')
 
 describe('The pagination links', function () {
   it('should display correct pagination links for all filters', () => {
@@ -113,11 +112,11 @@ describe('The pagination links', function () {
       ],
       'filters': filters,
       'paginationLinks': [
-        {pageNumber: 1, pageName: 1},
-        {pageNumber: 2, pageName: 2},
-        {pageNumber: 3, pageName: 3},
-        {pageNumber: 2, pageName: 'next'},
-        {pageNumber: 6, pageName: 'last'}
+        { pageNumber: 1, pageName: 1 },
+        { pageNumber: 2, pageName: 2 },
+        { pageNumber: 3, pageName: 3 },
+        { pageNumber: 2, pageName: 'next' },
+        { pageNumber: 6, pageName: 'last' }
       ],
       'hasPaginationLinks': true,
       'selectedState': 'Testing2',

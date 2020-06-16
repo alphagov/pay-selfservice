@@ -3,11 +3,9 @@
 const path = require('path')
 const _ = require('lodash')
 
-// Custom dependencies
 const pactBase = require(path.join(__dirname, '/pact_base'))
 const utils = require('../cypress/utils/request_to_go_live_utils')
 
-// Global setup
 const pactServices = pactBase({ array: ['service_ids'] })
 
 module.exports = {

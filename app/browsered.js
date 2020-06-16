@@ -2,7 +2,6 @@
 
 require('@babel/polyfill')
 
-// Local dependencies
 const multiSelects = require('./browsered/multi-select')
 const fieldValidation = require('./browsered/field-validation')
 const dashboardActivity = require('./browsered/dashboard-activity')

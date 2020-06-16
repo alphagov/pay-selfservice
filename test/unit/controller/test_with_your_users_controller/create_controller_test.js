@@ -1,18 +1,16 @@
 'use strict'
 
-// NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
 
-// Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {penceToPounds} = require('../../../../app/utils/currency_formatter')
-const {CONNECTOR_URL} = process.env
+const { penceToPounds } = require('../../../../app/utils/currency_formatter')
+const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
 describe('test with your users - create controller', () => {
@@ -20,7 +18,7 @@ describe('test with your users - create controller', () => {
   before(done => {
     const user = getUser({
       gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-      permissions: [{name: 'transactions:read'}]
+      permissions: [{ name: 'transactions:read' }]
     })
     nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
       payment_provider: 'sandbox'

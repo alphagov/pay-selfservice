@@ -1,18 +1,16 @@
 'use strict'
 
-// NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const nock = require('nock')
 
-// Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {randomUuid} = require('../../../../app/utils/random')
+const { randomUuid } = require('../../../../app/utils/random')
 
 const GATEWAY_ACCOUNT_ID = '929'
-const {PRODUCTS_URL, CONNECTOR_URL, PUBLIC_AUTH_URL} = process.env
+const { PRODUCTS_URL, CONNECTOR_URL, PUBLIC_AUTH_URL } = process.env
 const PAYMENT = {
   external_id: 'product-external-id-1',
   gateway_account_id: 'product-gateway-account-id-1',
@@ -36,7 +34,7 @@ describe('Manage payment links - delete controller', () => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'tokens:create'}]
+        permissions: [{ name: 'tokens:create' }]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
@@ -79,7 +77,7 @@ describe('Manage payment links - delete controller', () => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'tokens:create'}]
+        permissions: [{ name: 'tokens:create' }]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
@@ -123,7 +121,7 @@ describe('Manage payment links - delete controller', () => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'tokens:create'}]
+        permissions: [{ name: 'tokens:create' }]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
@@ -164,7 +162,7 @@ describe('Manage payment links - delete controller', () => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'tokens:create'}]
+        permissions: [{ name: 'tokens:create' }]
       })
       nock(PRODUCTS_URL).get(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${productExternalId}`).replyWithError('Ruhroh! Something terrible has happened Shaggy!')
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {

@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const path = require('path')
 const { PactInteractionBuilder } = require('../../../fixtures/pact_interaction_builder')
 const gatewayAccountFixtures = require('../../../fixtures/gateway_account_fixtures')
@@ -17,7 +15,6 @@ const expect = chai.expect
 const port = Math.floor(Math.random() * 48127) + 1024
 const directDebitConnectorClient = getDirectDebitConnectorClient({ baseUrl: `http://localhost:${port}` })
 
-// Global setup
 chai.use(chaiAsPromised)
 
 const existingDirectDebitGatewayAccountId = 667

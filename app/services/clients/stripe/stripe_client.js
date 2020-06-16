@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const stripe = require('stripe')(process.env.STRIPE_ACCOUNT_API_KEY)
 const ProxyAgent = require('https-proxy-agent')
 
-// Local dependencies
 const StripeBankAccount = require('./stripeBankAccount.model')
 const StripeCompany = require('./stripeCompany.model')
 const StripePerson = require('./stripePerson.model')

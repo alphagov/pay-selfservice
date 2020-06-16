@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const bankDetailsValidations = require('./bank-details-validations')
 
 describe('Bank details validations', () => {

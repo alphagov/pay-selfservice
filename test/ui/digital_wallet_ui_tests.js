@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 
-// Local dependencies
 const { render } = require(path.join(__dirname, '/../test_helpers/html_assertions'))
 
 describe('The digital wallet views', () => {

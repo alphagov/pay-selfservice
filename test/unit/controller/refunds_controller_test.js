@@ -1,14 +1,11 @@
 'use strict'
 
-// NPM dependencies
 const sinon = require('sinon')
 const { expect } = require('chai')
 const nock = require('nock')
 
-// Custom dependencies
 const refundController = require('../../../app/controllers/transactions/transaction_refund_controller.js')
 
-// Global setup
 let req, res
 
 describe('Refund scenario:', function () {

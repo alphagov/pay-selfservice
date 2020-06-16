@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM Dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const { response } = require('../../../../utils/response')
 const { stripeSetup } = require('../../../../paths')
 

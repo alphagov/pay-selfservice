@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const express = require('express')
 const _ = require('lodash')
 const sinon = require('sinon')
 
-// Custom dependencies
 const userFixture = require('../fixtures/user_fixtures')
 
 const getUser = (opts) => {
@@ -38,7 +36,7 @@ const getAppWithSessionAndGatewayAccountCookies = function (app, sessionData, ga
 }
 
 const getAppWithRegisterInvitesCookie = function (app, registerInviteData) {
-  return createAppWithSession(app, {csrfSecret: '123'}, {}, registerInviteData)
+  return createAppWithSession(app, { csrfSecret: '123' }, {}, registerInviteData)
 }
 
 const getAppWithLoggedOutSession = function (app, session) {
@@ -57,7 +55,7 @@ const getAppWithSessionWithoutSecondFactor = function (app, user) {
 const getMockSession = function (user) {
   return _.cloneDeep({
     csrfSecret: '123',
-    12345: {refunded_amount: 5},
+    12345: { refunded_amount: 5 },
     passport: {
       user: user
     },

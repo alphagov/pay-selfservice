@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')

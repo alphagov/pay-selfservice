@@ -1,11 +1,9 @@
 'use strict'
 
-// npm dependencies
 const _ = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
 const getNamespace = require('continuation-local-storage').getNamespace
 
-// local dependencies
 const logger = require('../utils/logger')(__filename)
 const auth = require('../services/auth_service.js')
 const Connector = require('../services/clients/connector_client.js').ConnectorClient

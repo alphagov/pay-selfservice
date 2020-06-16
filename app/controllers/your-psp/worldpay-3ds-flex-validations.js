@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { isNotWorldpay3dsFlexOrgUnitId, isNotWorldpay3dsFlexIssuer, isNotWorldpay3dsFlexJwtMacKey } =
     require('../../../app/browsered/field-validation-checks')
 

@@ -1,6 +1,5 @@
 'use strict'
 
-// Custom dependencies
 const logger = require('../../utils/logger')(__filename)
 const userService = require('../../services/user_service')
 const paths = require('../../paths')

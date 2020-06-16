@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const chai = require('chai')
 
-// Custom dependencies
 const paths = require('../../../../app/paths.js')
 
 // Constants

@@ -1,20 +1,18 @@
 'use strict'
 
-// NPM dependencies
 const supertest = require('supertest')
 const csrf = require('csrf')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const nock = require('nock')
 
-// Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {ADMINUSERS_URL} = process.env
+const { ADMINUSERS_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'transactions:read'}]
+  permissions: [{ name: 'transactions:read' }]
 })
 
 const VALID_USER_RESPONSE = {

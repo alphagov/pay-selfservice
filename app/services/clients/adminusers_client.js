@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const baseClient = require('./base_client/base_client')
 const User = require('../../models/User.class')
 const Service = require('../../models/Service.class')

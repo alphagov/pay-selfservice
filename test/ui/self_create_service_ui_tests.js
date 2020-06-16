@@ -1,6 +1,5 @@
 'use strict'
 
-// Custom dependencies
 const renderTemplate = require('../test_helpers/html_assertions').render
 const paths = require('../../app/paths')
 

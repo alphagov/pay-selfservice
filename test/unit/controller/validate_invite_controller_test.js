@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
@@ -48,7 +47,7 @@ describe('Error handler', function () {
           getValidatedInvite: () => {
             /* eslint-disable prefer-promise-reject-errors */
             return new Promise(function (resolve, reject) {
-              reject({errorCode: errorCode})
+              reject({ errorCode: errorCode })
             })
             /* eslint-enable prefer-promise-reject-errors */
           }

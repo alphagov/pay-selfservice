@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 const zendeskClient = require('../../services/clients/zendesk_client')

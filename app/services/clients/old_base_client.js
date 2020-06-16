@@ -10,7 +10,6 @@ const request = require('requestretry')
 const getNamespace = require('continuation-local-storage').getNamespace
 const AWSXRay = require('aws-xray-sdk')
 
-// Local dependencies
 const getRequestContext = require('../../middleware/get_request_context').getRequestContext
 const CORRELATION_HEADER_NAME = require(path.join(__dirname, '/../../utils/correlation_header')).CORRELATION_HEADER
 

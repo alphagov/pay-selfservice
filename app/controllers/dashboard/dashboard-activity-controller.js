@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 const moment = require('moment-timezone')
 
-// Custom dependencies
 const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response').response
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER

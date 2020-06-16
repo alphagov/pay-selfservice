@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const moment = require('moment-timezone')
 const ukPostcode = require('uk-postcode')
 
-// Local dependencies
 const {
   isEmpty,
   isFieldGreaterThanMaxLengthChars,

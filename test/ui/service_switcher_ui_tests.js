@@ -2,8 +2,7 @@
 
 const _ = require('lodash')
 
-// Local Dependencies
-const {render} = require('../test_helpers/html_assertions.js')
+const { render } = require('../test_helpers/html_assertions.js')
 
 // Assignments e.t.c.
 let body, templateData

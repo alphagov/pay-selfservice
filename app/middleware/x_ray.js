@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const getNamespace = require('continuation-local-storage').getNamespace
 
-// Local dependencies
 const clsXrayConfig = require('../../config/xray-cls')
 
 module.exports = (req, res, next) => {

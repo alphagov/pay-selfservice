@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
 
 describe('Worldpay 3DS Flex validations', () => {

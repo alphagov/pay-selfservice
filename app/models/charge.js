@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const logger = require('../utils/logger')(__filename)
 const userService = require('../services/user_service')
 const transactionView = require('../utils/transaction_view.js')

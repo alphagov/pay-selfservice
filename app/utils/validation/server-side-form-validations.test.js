@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 const moment = require('moment-timezone')
 
-// Local dependencies
 const validations = require('./server-side-form-validations')
 
 const BLANK_TEXT = ''

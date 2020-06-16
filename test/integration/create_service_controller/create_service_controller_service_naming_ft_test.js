@@ -1,13 +1,11 @@
 'use strict'
 
-// NPM dependencies
 const nock = require('nock')
 const csrf = require('csrf')
 const supertest = require('supertest')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const mockSession = require('../../test_helpers/mock_session')
 const getApp = require('../../../server').getApp
 const selfRegisterFixtures = require('../../fixtures/self_register_fixtures')
@@ -19,7 +17,6 @@ const ACCOUNT_RESOURCE = '/v1/frontend/accounts'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const connectorMock = nock(process.env.CONNECTOR_URL)
 
-// Global setup
 chai.use(chaiAsPromised)
 
 let app
@@ -35,7 +32,7 @@ describe('create service - service naming', function () {
     const serviceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const validServiceNameRequest = selfRegisterFixtures.validServiceNameRequest()
     const request = validServiceNameRequest.getPlain()
-    const session = mockSession.getUser({default_service_id: serviceExternalId})
+    const session = mockSession.getUser({ default_service_id: serviceExternalId })
     const service = session.serviceRoles[0].service
     const gatewayAccountId = service.gatewayAccountIds[0]
     const gatewayAccount = {
@@ -45,7 +42,7 @@ describe('create service - service naming', function () {
     }
 
     connectorMock.get(`${ACCOUNT_RESOURCE}/${gatewayAccountId}`).reply(200, gatewayAccount)
-    adminusersMock.patch(`${SERVICE_RESOURCE}/${serviceExternalId}`).reply(200, Object.assign({}, service, {name: request.service_name}))
+    adminusersMock.patch(`${SERVICE_RESOURCE}/${serviceExternalId}`).reply(200, Object.assign({}, service, { name: request.service_name }))
     connectorMock.patch(`${ACCOUNT_RESOURCE}/${gatewayAccountId}`).reply(200)
 
     app = mockSession.getAppWithLoggedInUser(getApp(), session)

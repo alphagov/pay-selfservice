@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
@@ -17,7 +15,6 @@ const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const expect = chai.expect
 
-// Global setup
 chai.use(chaiAsPromised)
 
 describe('submit resend otp code API', function () {

@@ -1,10 +1,8 @@
 'use strict'
 
-// Core Dependencies
 const url = require('url')
 const _ = require('lodash')
 
-// Local Dependencies
 const auth = require('../../services/auth_service.js')
 const router = require('../../routes.js')
 const transactionService = require('../../services/transaction_service')

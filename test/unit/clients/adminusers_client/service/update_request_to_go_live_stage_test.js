@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Local dependencies
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
@@ -18,7 +16,6 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 
-// Global setup
 chai.use(chaiAsPromised)
 
 describe('adminusers client - patch request to go live stage', function () {

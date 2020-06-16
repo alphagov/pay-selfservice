@@ -1,12 +1,10 @@
 'use strict'
 
-// NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 
-// Local dependencies
 const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector_client').ConnectorClient
 const stripeAccountSetupFixtures = require('../../../fixtures/stripe_account_setup_fixtures')
@@ -16,7 +14,6 @@ const ACCOUNTS_RESOURCE = '/v1/api/accounts'
 const port = Math.floor(Math.random() * 48127) + 1024
 const connectorClient = new Connector(`http://localhost:${port}`)
 
-// Global setup
 chai.use(chaiAsPromised)
 
 const existingGatewayAccountId = 42

@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const goLiveStage = require('../../models/go-live-stage')
 const { requestToGoLive } = require('../../paths')
 

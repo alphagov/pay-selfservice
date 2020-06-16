@@ -1,10 +1,8 @@
 'use strict'
 
-// Node.js core dependencies
 const path = require('path')
 const assert = require('assert')
 
-// NPM dependencies
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 

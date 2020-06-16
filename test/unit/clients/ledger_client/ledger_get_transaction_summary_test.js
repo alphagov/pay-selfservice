@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const ledgerClient = require('../../../../app/services/clients/ledger_client')
 
@@ -16,7 +14,6 @@ const pactTestProvider = require('./ledger_pact_test_provider')
 const TRANSACTION_SUMMARY_RESOURCE = '/v1/report/transactions-summary'
 const expect = chai.expect
 
-// Global setup
 chai.use(chaiAsPromised)
 
 const existingGatewayAccountId = '123456'

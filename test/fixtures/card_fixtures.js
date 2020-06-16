@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 
-// Global setup
 const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactRegister = pactBase()
 

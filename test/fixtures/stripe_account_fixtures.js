@@ -1,12 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const pactBase = require('./pact_base')
 
-// Global setup
 const pactRegister = pactBase()
 
 module.exports = {

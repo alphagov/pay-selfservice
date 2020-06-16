@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const formatPSPname = require('../../../app/utils/format-PSP-name')
 
 describe('When a payment provider name is passed to the function', () => {

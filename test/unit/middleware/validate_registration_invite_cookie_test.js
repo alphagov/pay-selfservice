@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const proxyquire = require('proxyquire')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
@@ -9,7 +8,6 @@ const sinon = require('sinon')
 // Constants
 const expect = chai.expect
 
-// Global setup
 chai.use(chaiAsPromised)
 
 describe('validate registration invite cookie middleware', function () {

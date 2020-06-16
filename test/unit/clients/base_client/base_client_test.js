@@ -1,12 +1,10 @@
 'use strict'
 
-// NPM Dependencies
 const correlator = require('correlation-id')
 const http = require('http')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
-// Local Dependencies
 const config = require('../../../../app/utils/correlation_header')
 
 describe('baseClient', () => {
@@ -27,7 +25,7 @@ describe('baseClient', () => {
     before(done => {
       correlationID = `${Math.floor(Math.random() * 100000) + 1}`
       correlator.withId(correlationID, () => {
-        baseClient.get({url: 'http://example.com/'}, (err, response) => {
+        baseClient.get({ url: 'http://example.com/' }, (err, response) => {
           request = response.request
           done(err)
         })
@@ -51,8 +49,8 @@ describe('baseClient', () => {
         res.end()
       }).listen()
       baseClient
-        .get({url: `http://localhost:${server.address().port}/alpha`}, captureConnection)
-        .then(() => baseClient.get({url: `http://localhost:${server.address().port}/beta`}, captureConnection))
+        .get({ url: `http://localhost:${server.address().port}/alpha` }, captureConnection)
+        .then(() => baseClient.get({ url: `http://localhost:${server.address().port}/beta` }, captureConnection))
         .then(() => done())
         .catch(done)
 

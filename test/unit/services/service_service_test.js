@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 const proxyquire = require('proxyquire')
 const chai = require('chai')
@@ -8,7 +7,6 @@ const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const sinon = require('sinon')
 
-// Local Dependencies
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 
 const expect = chai.expect

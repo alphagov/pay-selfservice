@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM Dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const { stripeSetup } = require('../../../paths')
 
 module.exports = (req, res) => {

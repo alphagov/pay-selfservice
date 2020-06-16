@@ -1,17 +1,15 @@
 'use strict'
 
-// NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
 
-// Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {CONNECTOR_URL} = process.env
+const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
 describe('Two factor authenticator configure page GET', () => {
@@ -20,7 +18,7 @@ describe('Two factor authenticator configure page GET', () => {
     before(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'transactions:read'}],
+        permissions: [{ name: 'transactions:read' }],
         second_factor: 'APP'
       })
       nock(CONNECTOR_URL)

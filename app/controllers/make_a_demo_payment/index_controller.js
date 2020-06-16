@@ -1,13 +1,11 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
-const {response} = require('../../utils/response.js')
+const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
-const {isCurrency, isAboveMaxAmount} = require('../../browsered/field-validation-checks')
-const {sanitisePoundsAndPenceInput} = require('../../utils/currency_formatter')
+const { isCurrency, isAboveMaxAmount } = require('../../browsered/field-validation-checks')
+const { sanitisePoundsAndPenceInput } = require('../../utils/currency_formatter')
 
 const DEFAULTS = {
   paymentDescription: 'An example payment description',
@@ -33,7 +31,7 @@ module.exports = (req, res) => {
     paymentAmount = sanitisePoundsAndPenceInput(paymentAmount)
   }
 
-  lodash.set(req, 'session.pageData.makeADemoPayment', {paymentDescription, paymentAmount})
+  lodash.set(req, 'session.pageData.makeADemoPayment', { paymentDescription, paymentAmount })
 
   response(req, res, 'dashboard/demo-payment/index', {
     paymentAmount,

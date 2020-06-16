@@ -1,7 +1,6 @@
 'use strict'
 // TODO: we should probably do some browser testing in this project to prove this all works as intended
 
-// Local Dependencies
 const multiSelect = require('../views/includes/multi-select.njk')
 
 // Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
@@ -22,11 +21,11 @@ const ITEM_SELECTOR = '.govuk-checkboxes__input'
 const CURRENT_SELECTIONS = '.multi-select-current-selections'
 
 // http://youmightnotneedjquery.com/#ready
-function ready(fn) {
-  if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
-    fn();
+function ready (fn) {
+  if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
+    fn()
   } else {
-    document.addEventListener('DOMContentLoaded', fn);
+    document.addEventListener('DOMContentLoaded', fn)
   }
 }
 
@@ -44,7 +43,7 @@ function progressivelyEnhanceSelects () {
         const value = option.value
         const id = option.id || randomElementId()
         const checked = option.hasAttribute('selected')
-        return {value, id, checked, text}
+        return { value, id, checked, text }
       })
     }
     select.outerHTML = multiSelect(configuration)
@@ -80,16 +79,16 @@ const onItemBlur = event => {
 }
 
 const onOpenButtonClick = event => {
-  const { target } = event;
+  const { target } = event
   target.blur();
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'visible';
-  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(ITEM_SELECTOR)][0].focus();
+  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(ITEM_SELECTOR)][0].focus()
 }
 
 const onCloseAreaClick = event => {
   const { target } = event;
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(OPEN_BUTTON_SELECTOR)][0].focus();
-  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'hidden';
+  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'hidden'
 }
 
 const onItemChange = event => {
@@ -103,11 +102,13 @@ const onItemChange = event => {
 
   if (target.value) {
     allCheckbox.checked = false
-  } else (
-    items.forEach(item => {
-      item.checked = !target.checked
-    })
-  )
+  } else {
+    (
+      items.forEach(item => {
+        item.checked = !target.checked
+      })
+    )
+  }
 
   updateDisplayedValue(target.closest(TOP_LEVEL_SELECTOR))
 }
@@ -115,11 +116,11 @@ const onItemChange = event => {
 const updateDisplayedValue = elem => {
   const allItems = [...elem.querySelectorAll(ITEM_SELECTOR)]
   const selectedItemNames = allItems.filter(item => item.checked).map(item => {
-      return item.labels[0].innerHTML.trim()
-    })
+    return item.labels[0].innerHTML.trim()
+  })
   const buttonText = selectedItemNames.length ? selectedItemNames.join(', ') : allItems[0].labels[0].innerHTML.trim();
 
-  [...elem.querySelectorAll(CURRENT_SELECTIONS)][0].innerText = buttonText;
+  [...elem.querySelectorAll(CURRENT_SELECTIONS)][0].innerText = buttonText
 }
 
 const randomElementId = () => {

@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const paths = require('../../paths')
 const { sanitisePoundsAndPenceInput } = require('../../utils/currency_formatter')
 

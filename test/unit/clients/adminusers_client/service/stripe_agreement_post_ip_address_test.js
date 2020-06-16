@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Local dependencies
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
@@ -17,7 +15,6 @@ const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const serviceExternalId = 'rtglNotStarted'
 
-// Global setup
 chai.use(chaiAsPromised)
 
 describe('adminusers client - post stripe agreement - ip address', () => {

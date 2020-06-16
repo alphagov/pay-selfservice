@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 
 const pactBase = require('./pact_base')
 
-// Global setup
 const pactInvites = pactBase()
 
 function buildInviteWithDefaults (opts) {

@@ -1,7 +1,6 @@
 'use strict'
 const pactBase = require('./pact_base')
 
-// Global setup
 const pactProducts = pactBase()
 
 module.exports = {
