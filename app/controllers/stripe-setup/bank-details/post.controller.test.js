@@ -1,17 +1,8 @@
 'use strict'
 
-// NPM dependencies
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-
-// Local dependencies
 const paths = require('../../../paths')
-
-// Global setup
-chai.use(chaiAsPromised)
-const { expect } = chai // must be called after chai.use(chaiAsPromised) to use "should.eventually"
 
 describe('Bank details post controller', () => {
   const rawAccountNumber = '00012345'
@@ -59,12 +50,12 @@ describe('Bank details post controller', () => {
 
     await controller(req, res)
 
-    expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
-    })).to.be.true
-    expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'bank_account', req.correlationId)).to.be.true // eslint-disable-line
-    expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
+    })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+    sinon.assert.calledWith(res.redirect, 303, paths.dashboard.index)
   })
 
   it('should call stripe and connector and redirect to add psp account details redirect route', async () => {
@@ -74,12 +65,12 @@ describe('Bank details post controller', () => {
 
     await controller(req, res)
 
-    expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
-    })).to.be.true
-    expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'bank_account', req.correlationId)).to.be.true // eslint-disable-line
-    expect(res.redirect.calledWith(303, paths.stripe.addPspAccountDetails)).to.be.true // eslint-disable-line
+    })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+    sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
   })
 
   it('should render error page when Stripe returns unknown error', async () => {
@@ -89,14 +80,14 @@ describe('Bank details post controller', () => {
 
     await controller(req, res)
 
-    expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
-    })).to.be.true
-    expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
-    expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-    expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-    expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
+    })
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
   })
 
   it('should re-render the form page when Stripe returns "routing_number_invalid" error', async () => {
@@ -112,13 +103,13 @@ describe('Bank details post controller', () => {
 
     await controller(req, res)
 
-    expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
-    })).to.be.true
-    expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
-    expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-    expect(res.render.called).to.be.true // eslint-disable-line
+    })
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.called(res.render)
   })
 
   it('should re-render the form page when Stripe returns "account_number_invalid" error', async () => {
@@ -134,13 +125,13 @@ describe('Bank details post controller', () => {
 
     await controller(req, res)
 
-    expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
-    })).to.be.true
-    expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
-    expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-    expect(res.render.called).to.be.true // eslint-disable-line
+    })
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.called(res.render)
   })
 
   it('should render error page when connector returns error', async () => {
@@ -150,14 +141,14 @@ describe('Bank details post controller', () => {
 
     await controller(req, res)
 
-    expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
-    })).to.be.true
-    expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'bank_account', req.correlationId)).to.be.true // eslint-disable-line
-    expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-    expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-    expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
+    })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
   })
 
   function getControllerWithMocks () {
