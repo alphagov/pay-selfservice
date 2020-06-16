@@ -1,25 +1,14 @@
 'use strict'
 
-// NPM dependencies
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const paths = require('../../../paths')
-
-// Global setup
-chai.use(chaiAsPromised)
-const { expect } = chai
 
 const getController = function getController (stripeAccountSetupResponse) {
   return proxyquire('./get-controller', {
     '../../../services/clients/connector_client': {
       ConnectorClient: function () {
-        this.getStripeAccountSetup = (gatewayAccountId, correlationId) => {
-          return new Promise(resolve => {
-            resolve(stripeAccountSetupResponse)
-          })
-        }
+        this.getStripeAccountSetup = (gatewayAccountId, correlationId) => Promise.resolve(stripeAccountSetupResponse)
       }
     }
   })
@@ -51,7 +40,7 @@ describe('get controller', () => {
       vatNumberCompanyNumber: false
     })
     await controller(req, res)
-    expect(res.redirect.calledWith(303, paths.stripeSetup.bankDetails)).to.equal(true)
+    sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.bankDetails)
   })
 
   it('should redirect to responsible person page', async () => {
@@ -61,7 +50,7 @@ describe('get controller', () => {
       vatNumberCompanyNumber: false
     })
     await controller(req, res)
-    expect(res.redirect.calledWith(303, paths.stripeSetup.responsiblePerson)).to.equal(true)
+    sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.responsiblePerson)
   })
 
   it('should redirect to VAT number page', async () => {
@@ -71,7 +60,7 @@ describe('get controller', () => {
       vatNumberCompanyNumber: false
     })
     await controller(req, res)
-    expect(res.redirect.calledWith(303, paths.stripeSetup.vatNumberCompanyNumber)).to.equal(true)
+    sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.vatNumberCompanyNumber)
   })
 
   it('should render go live complete page when all steps are completed', async () => {
@@ -81,6 +70,6 @@ describe('get controller', () => {
       vatNumberCompanyNumber: true
     })
     await controller(req, res)
-    expect(res.render.calledWith('stripe-setup/go-live-complete')).to.equal(true)
+    sinon.assert.calledWith(res.render, 'stripe-setup/go-live-complete')
   })
 })
