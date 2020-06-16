@@ -15,9 +15,9 @@ describe('Your PSP settings page', () => {
     password: 'email-me'
   }
   const testFlexCredentials = {
-    organisational_unit_id: 'positron-permit-people',
-    issuer: 'jonheslop',
-    jwt_mac_key: 'anti-matter'
+    organisational_unit_id: '5bd9b55e4444761ac0af1c80',
+    issuer: '5bd9e0e4444dce153428c940',
+    jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0'
   }
   const testRemoveFlexCredentials = {
     organisational_unit_id: '',
@@ -205,14 +205,20 @@ describe('Your PSP settings page', () => {
       })
     })
 
-    it('should allow flex credentials to be configured and all values must be set', () => {
+    it('should allow 3DS Flex credentials to be configured (trimming leading and trailing space) and all values must be valid and set', () => {
       cy.get('#flex-credentials-change-link').click()
       cy.get('#removeFlexCredentials').should('not.exist')
-      cy.get('#organisational-unit-id').type(testFlexCredentials.organisational_unit_id)
-      cy.get('#issuer').type(testFlexCredentials.issuer)
+      cy.get('#organisational-unit-id').type('Invalid organisational unit ID')
+      cy.get('#issuer').type('Invalid issuer')
+      cy.get('#jwt-mac-key').type('Invalid JWT MAC key')
       cy.get('#submitFlexCredentials').click()
       cy.get('.govuk-error-summary').should('have.length', 1)
-      cy.get('#jwt-mac-key').type(testFlexCredentials.jwt_mac_key)
+      cy.get('#organisational-unit-id').should('have.value', 'Invalid organisational unit ID')
+      cy.get('#issuer').should('have.value', 'Invalid issuer')
+      cy.get('#jwt-mac-key').should('have.value', '')
+      cy.get('#organisational-unit-id').clear().type(' ' + testFlexCredentials.organisational_unit_id + ' ')
+      cy.get('#issuer').clear().type(' ' + testFlexCredentials.issuer + ' ')
+      cy.get('#jwt-mac-key').type(' ' + testFlexCredentials.jwt_mac_key + ' ')
       cy.get('#submitFlexCredentials').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/your-psp`)
@@ -241,7 +247,7 @@ describe('Your PSP settings page', () => {
       cy.get('.value-jwt-mac-key').should('contain', '●●●●●●●●')
     })
 
-    it('should allow removing flex credentials', function () {
+    it('should allow removing 3DS Flex credentials', function () {
       cy.get('#flex-credentials-change-link').click()
       cy.get('#removeFlexCredentials').should('be.visible')
       cy.get('#removeFlexCredentials').click()
@@ -359,7 +365,7 @@ describe('Your PSP settings page', () => {
     })
   })
 
-  describe('When using a ePDQ account with existing credentials', () => {
+  describe('When using an ePDQ account with existing credentials', () => {
     beforeEach(() => {
       setupYourPspStubs({
         gateway: 'epdq',

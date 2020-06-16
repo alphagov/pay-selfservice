@@ -22,7 +22,10 @@ const validationErrors = {
   invalidSortCode: 'Enter a valid sort code',
   invalidVatNumber: 'Enter a valid VAT number',
   invalidCompanyNumber: 'Enter a valid company number',
-  sevenDigitCompanyNumber: 'Company numbers in England and Wales have 8 digits and always start with 0'
+  sevenDigitCompanyNumber: 'Company numbers in England and Wales have 8 digits and always start with 0',
+  invalidWorldpay3dsFlexOrgUnitId: 'Enter your organisational unit ID in the format you received it',
+  invalidWorldpay3dsFlexIssuer: 'Enter your issuer in the format you received it',
+  invalidWorldpay3dsFlexJwtMacKey: 'Enter your JWT MAC key in the format you received it'
 }
 
 exports.validationErrors = validationErrors
@@ -132,4 +135,28 @@ exports.isNotCompanyNumber = value => {
   }
 
   return false
+}
+
+exports.isNotWorldpay3dsFlexOrgUnitId = value => {
+  if (/^[0-9a-f]{24}$/.test(value)) {
+    return false
+  } else {
+    return validationErrors.invalidWorldpay3dsFlexOrgUnitId
+  }
+}
+
+exports.isNotWorldpay3dsFlexIssuer = value => {
+  if (/^[0-9a-f]{24}$/.test(value)) {
+    return false
+  } else {
+    return validationErrors.invalidWorldpay3dsFlexIssuer
+  }
+}
+
+exports.isNotWorldpay3dsFlexJwtMacKey = value => {
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value)) {
+    return false
+  } else {
+    return validationErrors.invalidWorldpay3dsFlexJwtMacKey
+  }
 }
