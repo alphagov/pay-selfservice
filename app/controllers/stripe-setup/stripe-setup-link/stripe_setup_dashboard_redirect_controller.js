@@ -14,7 +14,9 @@ module.exports = async (req, res) => {
   const externalServiceId = req.params.externalServiceId
   const targetServiceRoleForRedirect = getTargetServiceForRedirect(req.user, externalServiceId)
   if (targetServiceRoleForRedirect) {
-    const result = await connectorClient.getAccounts(targetServiceRoleForRedirect.service.gatewayAccountIds)
+    const result = await connectorClient.getAccounts({
+      gatewayAccountIds: targetServiceRoleForRedirect.service.gatewayAccountIds
+    })
     const liveGatewayAccounts = result.accounts.filter((gatewayAccount) => gatewayAccount.type === 'live')
     if (liveGatewayAccounts && liveGatewayAccounts.length === 1) {
       req.gateway_account.currentGatewayAccountId = liveGatewayAccounts[0].gateway_account_id
