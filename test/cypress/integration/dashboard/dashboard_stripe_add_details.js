@@ -19,7 +19,7 @@ describe('The Stripe psp details banner', () => {
   it('should display the banner', () => {
     cy.visit('/')
 
-    cy.get('h3').contains('You must add more details')
+    cy.get('h2').contains('You must add more details')
     cy.get('#add-account-details').should('exist')
   })
 
