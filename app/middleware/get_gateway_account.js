@@ -1,19 +1,11 @@
 'use strict'
 
-// npm dependencies
 const _ = require('lodash')
-const AWSXRay = require('aws-xray-sdk')
-const getNamespace = require('continuation-local-storage').getNamespace
-
-// local dependencies
 const logger = require('../utils/logger')(__filename)
 const auth = require('../services/auth_service.js')
 const Connector = require('../services/clients/connector_client.js').ConnectorClient
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client.js')
-
-// Constants
-const clsXrayConfig = require('../../config/xray-cls')
 
 module.exports = function (req, res, next) {
   const accountId = auth.getCurrentGatewayAccountId(req)
@@ -33,23 +25,24 @@ module.exports = function (req, res, next) {
       })
   }
 
-  const namespace = getNamespace(clsXrayConfig.nameSpaceName)
-  const clsSegment = namespace.get(clsXrayConfig.segmentKeyName)
-
-  AWSXRay.captureAsyncFunc('connectorClient_getAccount', function (subsegment) {
-    return connectorClient.getAccount(params)
-      .then(data => {
-        subsegment.close()
-        req.account = _.extend({}, data, {
-          supports3ds: ['worldpay', 'stripe', 'epdq', 'smartpay'].includes(_.get(data, 'payment_provider')),
-          disableToggle3ds: _.get(data, 'payment_provider') === 'stripe'
-        })
-        next()
+  return connectorClient.getAccount(params)
+    .then(data => {
+      req.account = _.extend({}, data, {
+        supports3ds: ['worldpay', 'stripe', 'epdq', 'smartpay'].includes(_.get(data, 'payment_provider')),
+        disableToggle3ds: _.get(data, 'payment_provider') === 'stripe'
       })
-      .catch(err => {
-        subsegment.close(err)
-        logger.error(`${req.correlationId} - Error when attempting to retrieve card gateway account: ${err}`)
-        next()
-      })
-  }, clsSegment)
+      if (req.account.payment_provider === 'stripe' && req.account.type === 'live') {
+        return connectorClient.getStripeAccountSetup(accountId, req.correlationId)
+      }
+    })
+    .then((accountSetupDetails = null) => {
+      if (accountSetupDetails) {
+        req.account.accountSetupDetails = accountSetupDetails
+      }
+      next()
+    })
+    .catch(err => {
+      logger.error(`${req.correlationId} - Error when attempting to retrieve card gateway account: ${err}`)
+      next()
+    })
 }

@@ -4,7 +4,26 @@
     <h4 class="service-info--name govuk-heading-s">
       {{currentService.name}}
       {% if currentGatewayAccount %}
-        <strong class="environment-tag environment-tag-{{currentGatewayAccount.type}}">{% if currentGatewayAccount.full_type === 'Sandbox test' %}Test{% else %}{{currentGatewayAccount.full_type}}{% endif %}</strong>
+        {% set stripeAccountIsSetup = (currentGatewayAccount.accountSetupDetails.bankAccount and currentGatewayAccount.accountSetupDetails.responsiblePerson and currentGatewayAccount.accountSetupDetails.vatNumberCompanyNumber) %}
+        {% set tagClass %}
+          {% if currentGatewayAccount.type === "test" %}
+            govuk-tag--grey
+          {% elseif currentGatewayAccount.payment_provider === 'stripe' and not stripeAccountIsSetup %}
+            govuk-tag--blue
+          {% else %}
+
+          {% endif %}
+        {% endset %}
+        {% set tagText %}
+          {% if currentGatewayAccount.full_type === "Sandbox test" %}
+            Test
+          {% elseif currentGatewayAccount.payment_provider === 'stripe' and not stripeAccountIsSetup %}
+            {{ currentGatewayAccount.full_type }} - information needed
+          {% else %}
+            {{ currentGatewayAccount.full_type }}
+          {% endif %}
+         {% endset %}
+        <strong class="govuk-tag {{ tagClass }}">{{ tagText }}</strong>
       {% endif %}
     </h4>
   </div>
