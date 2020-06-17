@@ -2,6 +2,7 @@
 
 const paths = require('../../../../app/paths')
 const { ConnectorClient } = require('../../../services/clients/connector_client')
+const { isADirectDebitAccount } = require('../../../services/clients/direct_debit_connector_client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const logger = require('../../../utils/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
@@ -14,12 +15,11 @@ module.exports = async (req, res) => {
   const externalServiceId = req.params.externalServiceId
   const targetServiceRoleForRedirect = getTargetServiceForRedirect(req.user, externalServiceId)
   if (targetServiceRoleForRedirect) {
-    const result = await connectorClient.getAccounts({
-      gatewayAccountIds: targetServiceRoleForRedirect.service.gatewayAccountIds
-    })
+    const cardGatewayAccountIds = targetServiceRoleForRedirect.service.gatewayAccountIds.filter((id) => !isADirectDebitAccount(id))
+    const result = await connectorClient.getAccounts({ gatewayAccountIds: cardGatewayAccountIds })
     const liveGatewayAccounts = result.accounts.filter((gatewayAccount) => gatewayAccount.type === 'live')
     if (liveGatewayAccounts && liveGatewayAccounts.length === 1) {
-      req.gateway_account.currentGatewayAccountId = liveGatewayAccounts[0].gateway_account_id
+      req.gateway_account.currentGatewayAccountId = `${liveGatewayAccounts[0].gateway_account_id}`
     }
   } else {
     const logContext = {}

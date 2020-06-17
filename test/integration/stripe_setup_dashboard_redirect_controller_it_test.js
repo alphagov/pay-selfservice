@@ -23,17 +23,17 @@ describe('Service dashboard redirect to live account controller', function () {
 
     const accountsResponse = validGatewayAccountsResponse({
       accounts: [{
-        payment_provider: 'stripe'
+        payment_provider: 'stripe',
+        type: 'live'
       }]
     })
-    connectorMock.get('/v1/frontend/accounts')
+    connectorMock.get('/v1/frontend/accounts?accountIds=540')
       .reply(200, accountsResponse.getPlain())
   })
 
   it('correctly redirects to the dashboard page', () => {
-    const externalServiceId = 'some-external-service-id'
+    const externalServiceId = '193'
     return request(app).get(`/service/${externalServiceId}/dashboard/live`)
-      .set('Accept', 'application/json')
       .expect(302)
   })
 })
