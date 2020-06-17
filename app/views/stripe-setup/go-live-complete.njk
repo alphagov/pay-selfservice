@@ -6,6 +6,28 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">Go live complete</h1>
+    <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-6 psp-go-live-panel">
+      <h1 class="govuk-panel__title">
+        Go live complete
+      </h1>
+      <div class="govuk-panel__body">
+        You will now start getting payments to your bank account from Stripe
+      </div>
+    </div>
+  
+    <h2 class="govuk-heading-l">What happens next?</h2>
+
+    <p class="govuk-body">
+      Stripe will check the information you provided. If there are any problems, 
+      GOV.UK Pay will contact you to submit more information.
+    </p>
+
+    <p class="govuk-body">
+      Payments will appear on the <a href="{{routes.payouts.list}}" class="govuk-link">payments to your bank account</a> page.
+    </p>
+
+    <p class="govuk-body">
+      <a href="{{routes.dashboard.index}}" class="govuk-link">Return to dashboard</a>
+    </p>
   </div>
 {% endblock %}
