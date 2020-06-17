@@ -112,7 +112,12 @@ module.exports = async function (req, res) {
       const person = personsResponse.data.pop()
       await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
-      await res.redirect(303, paths.dashboard.index)
+
+      if (process.env.ENABLE_ACCOUNT_STATUS_PANEL === 'true') {
+        return res.redirect(303, paths.stripe.addPspAccountDetails)
+      } else {
+        return res.redirect(303, paths.dashboard.index)
+      }
     } catch (error) {
       logger.error(`[requestId=${req.correlationId}] Error creating responsible person with Stripe - ${error.message}`)
       return renderErrorView(req, res, 'Please try again or contact support team')

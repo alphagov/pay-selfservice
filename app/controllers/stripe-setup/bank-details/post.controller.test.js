@@ -1,17 +1,8 @@
 'use strict'
 
-// NPM dependencies
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-
-// Local dependencies
 const paths = require('../../../paths')
-
-// Global setup
-chai.use(chaiAsPromised)
-const { expect } = chai // must be called after chai.use(chaiAsPromised) to use "should.eventually"
 
 describe('Bank details post controller', () => {
   const rawAccountNumber = '00012345'
@@ -47,63 +38,59 @@ describe('Bank details post controller', () => {
         }
       }
     }
+
+    process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
   })
 
-  it('should call stripe and connector and redirect to the dashboard', done => {
-    updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+  it('should call stripe and connector and redirect to the dashboard when feature flag is disabled', async () => {
+    process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
+    updateBankAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: sanitisedSortCode,
-        bank_account_number: sanitisedAccountNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'bank_account', req.correlationId)).to.be.true // eslint-disable-line
-      expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+      bank_account_sort_code: sanitisedSortCode,
+      bank_account_number: sanitisedAccountNumber
+    })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+    sinon.assert.calledWith(res.redirect, 303, paths.dashboard.index)
   })
 
-  it('should render error page when Stripe returns unknown error', done => {
-    updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise((resolve, reject) => {
-        reject(new Error())
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+  it('should call stripe and connector and redirect to add psp account details redirect route', async () => {
+    updateBankAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: sanitisedSortCode,
-        bank_account_number: sanitisedAccountNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
-      expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+      bank_account_sort_code: sanitisedSortCode,
+      bank_account_number: sanitisedAccountNumber
+    })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+    sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
   })
 
-  it('should re-render the form page when Stripe returns "routing_number_invalid" error', done => {
+  it('should render error page when Stripe returns unknown error', async () => {
+    updateBankAccountMock = sinon.spy(() => Promise.reject(new Error()))
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    await controller(req, res)
+
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+      bank_account_sort_code: sanitisedSortCode,
+      bank_account_number: sanitisedAccountNumber
+    })
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
+  })
+
+  it('should re-render the form page when Stripe returns "routing_number_invalid" error', async () => {
     updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
       return new Promise((resolve, reject) => {
         const error = new Error()
@@ -111,28 +98,21 @@ describe('Bank details post controller', () => {
         reject(error)
       })
     })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: sanitisedSortCode,
-        bank_account_number: sanitisedAccountNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
-      expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-      expect(res.render.called).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+      bank_account_sort_code: sanitisedSortCode,
+      bank_account_number: sanitisedAccountNumber
+    })
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.called(res.render)
   })
 
-  it('should re-render the form page when Stripe returns "account_number_invalid" error', done => {
+  it('should re-render the form page when Stripe returns "account_number_invalid" error', async () => {
     updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
       return new Promise((resolve, reject) => {
         const error = new Error()
@@ -140,53 +120,35 @@ describe('Bank details post controller', () => {
         reject(error)
       })
     })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: sanitisedSortCode,
-        bank_account_number: sanitisedAccountNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
-      expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-      expect(res.render.called).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+      bank_account_sort_code: sanitisedSortCode,
+      bank_account_number: sanitisedAccountNumber
+    })
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.called(res.render)
   })
 
-  it('should render error page when connector returns error', done => {
-    updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise(resolve => {
-        resolve()
-      })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy((gatewayAccountId, stripeAccountSetupFlag, correlationId) => {
-      return new Promise((resolve, reject) => {
-        reject(new Error())
-      })
-    })
+  it('should render error page when connector returns error', async () => {
+    updateBankAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.reject(new Error()))
     const controller = getControllerWithMocks()
 
-    controller(req, res)
+    await controller(req, res)
 
-    setTimeout(() => {
-      expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: sanitisedSortCode,
-        bank_account_number: sanitisedAccountNumber
-      })).to.be.true
-      expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'bank_account', req.correlationId)).to.be.true // eslint-disable-line
-      expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+      bank_account_sort_code: sanitisedSortCode,
+      bank_account_number: sanitisedAccountNumber
+    })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
   })
 
   function getControllerWithMocks () {
