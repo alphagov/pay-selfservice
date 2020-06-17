@@ -86,6 +86,7 @@ const goCardlessOAuthGet = require('./controllers/partnerapp/handle_gocardless_c
 const yourPspController = require('./controllers/your-psp')
 const allTransactionsController = require('./controllers/all-service-transactions/index')
 const payoutsController = require('./controllers/payouts/payout_list_controller')
+const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
 
 // Assignments
 const {
@@ -512,6 +513,7 @@ module.exports.bind = function (app) {
     checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupCheckYourAnswersController.post
   )
+  app.get(stripeSetup.stripeSetupLink, stripeSetupDashboardRedirectController.get)
 
   app.get(stripe.addPspAccountDetails,
     xraySegmentCls,
