@@ -165,7 +165,7 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubStripeSetupGetForMultipleCalls(false, true),
+          stubStripeSetupGetForMultipleCalls(false, false, true, true),
           stubStripeAccountGet('acct_123example123'),
           commonStubs.getDashboardStatisticsStub()
         ])

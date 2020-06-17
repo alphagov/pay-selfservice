@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const commonStubs = require('../../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
@@ -163,7 +162,7 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubStripeSetupGetForMultipleCalls(gatewayAccountId, false, false, false, true),
+          stubStripeSetupGetForMultipleCalls(gatewayAccountId, false, false, false, false, false, false, true, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           stubDashboardStatisticsGet()
         ])
