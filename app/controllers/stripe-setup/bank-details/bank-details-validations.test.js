@@ -26,7 +26,7 @@ describe('Bank details validations', () => {
 
       expect(bankDetailsValidations.validateAccountNumber(bankAccountNumber)).to.deep.equal({
         valid: false,
-        message: 'Enter a valid account number'
+        message: 'Enter a valid account number like 00733445'
       })
     })
   })
@@ -52,7 +52,7 @@ describe('Bank details validations', () => {
 
       expect(bankDetailsValidations.validateSortCode(sortCode)).to.deep.equal({
         valid: false,
-        message: 'Enter a valid sort code'
+        message: 'Enter a valid sort code like 309430'
       })
     })
   })

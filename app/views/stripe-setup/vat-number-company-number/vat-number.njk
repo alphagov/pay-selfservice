@@ -1,7 +1,7 @@
 {% extends "../../layout.njk" %}
 
 {% block pageTitle %}
-  Add your organisation’s VAT number - {{ currentService.name }} - GOV.UK Pay
+  What is your organisation’s VAT number? - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -10,19 +10,19 @@
       {% set errorList = [] %}
       {% if errors['vat-number'] %}
         {% set errorList = (errorList.push({
-          text: 'VAT number',
+          text: 'Enter a valid VAT number, including ‘GB’ at the start',
           href: '#vat-number'
         }), errorList) %}
       {% endif %}
       {{ govukErrorSummary({
-        titleText: 'There was a problem with the details you gave for:',
+        titleText: 'There was a problem',
         errorList: errorList
       }) }}
     {% endif %}
-    <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Add your organisation’s VAT number</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">What is your organisation’s VAT number?</h1>
 
     <form id="vat-number-form" method="post"
-          action="/vat-number-company-number/vat-number" data-validate="true">
+          action="/vat-number-company-number/vat-number" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set vatNumberError = false %}
@@ -35,18 +35,14 @@
       {{ govukInput({
         name: "vat-number",
         id: "vat-number",
-        label: {
-          text: "VAT number"
-        },
         hint: {
-          text: "For example, ‘GBGD001’"
+          text: "VAT numbers start with ‘GB’, for example ‘GBGD123’"
         },
         classes: "govuk-input--width-30",
         value: vatNumber,
         type: "text",
         errorMessage: vatNumberError,
         attributes: {
-          "data-validate": "required vatNumber",
           autocomplete: "off",
           spellcheck: "false"
         }

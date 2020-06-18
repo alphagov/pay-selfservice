@@ -28,18 +28,18 @@ describe('isNotValidAccountNumber', () => {
   it('should be not valid when is not a number', () => {
     const accountNumber = 'abcdefgh'
 
-    expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number')
+    expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number like 00733445')
   })
 
   it('should be not valid when is too short', () => {
     const accountNumber = '12345'
 
-    expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number')
+    expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number like 00733445')
   })
 
   it('should be not valid when is too long', () => {
     const accountNumber = '123456789'
 
-    expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number')
+    expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number like 00733445')
   })
 })

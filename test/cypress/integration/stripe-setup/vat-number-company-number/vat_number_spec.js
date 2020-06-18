@@ -29,7 +29,7 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should display page correctly', () => {
-        cy.get('h1').should('contain', 'Add your organisation’s VAT number')
+        cy.get('h1').should('contain', 'What is your organisation’s VAT number?')
 
         cy.get('#vat-number-form').should('exist')
           .within(() => {
@@ -42,12 +42,14 @@ describe('Stripe setup: VAT number page', () => {
       it('should display an error when VAT number input is blank', () => {
         cy.get('#vat-number-form > button').click()
 
-        cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'VAT number')
+        cy.get('h2').should('contain', 'There was a problem')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a valid VAT number, including ‘GB’ at the start')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
-        cy.get('input#vat-number[name="vat-number"]').should('have.class', 'govuk-input--error')
-        cy.get('label[for=vat-number] > span').should('contain', 'This field cannot be blank')
+        cy.get('.govuk-form-group--error > input#vat-number').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+          cy.get('span.govuk-error-message').should('contain', 'This field cannot be blank')
+        })
       })
 
       it('should display an error when VAT number is invalid', () => {
@@ -55,12 +57,14 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.get('#vat-number-form > button').click()
 
-        cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'VAT number')
+        cy.get('h2').should('contain', 'There was a problem')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a valid VAT number, including ‘GB’ at the start')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
-        cy.get('input#vat-number[name="vat-number"]').should('have.class', 'govuk-input--error')
-        cy.get('label[for=vat-number] > span').should('contain', 'Enter a valid VAT number')
+        cy.get('.govuk-form-group--error > input#vat-number').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+          cy.get('span.govuk-error-message').should('contain', 'Enter a valid VAT number, including ‘GB’ at the start')
+        })
       })
 
       it('should redirect to /company-number page when inputs are valid', () => {

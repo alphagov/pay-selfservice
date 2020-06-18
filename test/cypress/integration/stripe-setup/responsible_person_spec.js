@@ -81,7 +81,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should display form', () => {
-      cy.get('h1').should('contain', 'Nominate a responsible person')
+      cy.get('h1').should('contain', 'Who is your responsible person?')
 
       cy.get('#responsible-person-form').should('exist')
         .within(() => {
@@ -254,7 +254,7 @@ describe('Stripe setup: responsible person page', () => {
 
       cy.get('#first-name-change-button').click()
 
-      cy.get('h1').should('contain', 'Nominate a responsible person')
+      cy.get('h1').should('contain', 'Who is your responsible person?')
 
       cy.get('#responsible-person-form').should('exist').within(() => {
         cy.get('input#first-name[name="first-name"][autocomplete="given-name"]').should('have.attr', 'value', firstName)
@@ -340,7 +340,7 @@ describe('Stripe setup: responsible person page', () => {
       })
 
       cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#home-address-line-2"]').should('contain', 'Home address')
+        cy.get('a[href="#home-address-line-2"]').should('contain', 'Building and street')
       })
 
       cy.get('#responsible-person-form').should('exist').within(() => {
@@ -366,7 +366,7 @@ describe('Stripe setup: responsible person page', () => {
       })
 
       cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#home-address-line-1"]').should('contain', 'Home address')
+        cy.get('a[href="#home-address-line-1"]').should('contain', 'Building and street')
         cy.get('a[href="#home-address-line-2"]').should('not.exist')
       })
 
