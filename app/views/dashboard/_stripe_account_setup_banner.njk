@@ -2,7 +2,7 @@
   {% if stripeAccountSetup and (not stripeAccountSetup.bankAccount or not stripeAccountSetup.vatNumberCompanyNumber or not stripeAccountSetup.responsiblePerson) %}
     <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
       <div class="account-status-panel">
-        <h3 class="govuk-heading-m govuk-!-font-weight-bold" style="">You must add more details to receive money into your bank account</h3>
+        <h2 class="govuk-heading-m">You must add more details to receive money into your bank account</h2>
         <p class="govuk-body-m">
           Your service can now take payments from users. You must add more details or Stripe will not pay the money into your bank account. Please add:
         </p>
@@ -16,6 +16,7 @@
           {% endif %}
           {% if not stripeAccountSetup.vatNumberCompanyNumber %}
             <li> - your organisation’s VAT number</li>
+            <li> - your company registration number if you’ve registered your company</li>
           {% endif %}
         </ul>
 

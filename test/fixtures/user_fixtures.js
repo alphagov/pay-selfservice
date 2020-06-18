@@ -160,6 +160,10 @@ const defaultPermissions = [
     description: 'View Go Live stage'
   },
   {
+    name: 'stripe-account-details:update',
+    description: 'Update any Stripe account onboarding details'
+  },
+  {
     name: 'stripe-bank-details:update',
     description: 'Update Stripe bank details'
   },

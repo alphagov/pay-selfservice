@@ -424,6 +424,7 @@ describe('dashboard-activity-controller', () => {
         expect(resultText).to.contain('details about your responsible person')
         expect(resultText).to.contain('bank details')
         expect(resultText).to.not.contain('your organisation’s VAT number')
+        expect(resultText).to.not.contain('your company registration number if you’ve registered your company')
       })
 
       it('it should not display account status panel when feature flag is enabled and account is fully setup', async () => {
