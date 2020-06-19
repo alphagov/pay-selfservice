@@ -1,8 +1,9 @@
-FROM node@sha256:2ab3d9a1bac67c9b4202b774664adaa94d2f1e426d8d28e07bf8979df61c8694
+# Digest of image e.g. node:12.18.1-alpine3.12 for linux/amd64 from tags list on https://hub.docker.com/_/node
+FROM node@sha256:5f5cb21e96ad6ad28b6d2c1c2d5d9f3ec1a4c96ff8e130ab7d934f8e3034339c
 
 ### Needed to run appmetrics and pact-mock-service
 COPY sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
-RUN ["apk", "--no-cache", "add", "ca-certificates", "python", "build-base"]
+RUN ["apk", "--no-cache", "add", "ca-certificates", "python2", "build-base"]
 RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk && apk add --no-cache glibc-2.28-r0.apk && rm -f glibc-2.28-r0.apk
 ###
 
