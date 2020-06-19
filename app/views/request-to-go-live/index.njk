@@ -6,29 +6,35 @@
 
 {% block mainContent %}
   {% if showNextSteps %}
-    <div class="govuk-grid-column-full">
-    {{ govukPanel({
-      titleText: "Request submitted"
-    }) }}
-    </div>
     <div class="govuk-grid-column-two-thirds">
-      <h3 class="govuk-heading-m govuk-!-margin-top-4">What happens next</h3>
-      <p class="govuk-body">We’ll email you in one working day with a link to your live account.</p>
-      <p class="govuk-body">Sign in and follow the account set up instructions.</p>
-      <p class="govuk-body">You’ll need to provide:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        {% if pspIsStripe %}
-          <li>your organisation’s contact details</li>
+      <h1 class="govuk-heading-l">Request submitted</h1>
+
+      <p class="govuk-body govuk-!-font-size-24">GOV.UK Pay will review your request within 1 working day.</p>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-4">What happens next</h2>
+
+      <p class="govuk-body">When we approve your request your service can start taking payments from users immediately.</p>
+
+      {% if pspIsStripe %}
+        <p class="govuk-body">To get money paid into your bank account from Stripe, you need to add more details. You need to provide:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>the name, date of birth and home address of the person in your organisation legally reponsible for payments (called your ‘responsible person’)</li>
           <li>your bank details</li>
           <li>your VAT number</li>
-          <li>your company number (if you have one)</li>
-          <li>the name, date of birth and home address of the person in your organisation legally responsible for payments (called your ‘responsible person’)</li>
-        {% else %}
+        </ul>
+      {% else %}
+        <p class="govuk-body">To get money paid into your bank account from your payment provider, you need to add more details. You need to provide:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
           <li>your organisation’s contact details</li>
           <li>account credentials related to your payment service provider</li>
-        {% endif %}
-      </ul>
-      <p class="govuk-body">Once that’s done, you can start taking payments.</p>
+        </ul>
+      {% endif %}
+
+      <p class="govuk-body">GOV.UK Pay will email you a link to add these additional details after approving your request.</p>
+
+      <p class="govuk-body"><a href="{{routes.dashboard.index}}" class="govuk-link">Return to dashboard</a></p>
     </div>
   {% elif denied %}
     <div class="govuk-grid-column-full">
@@ -49,32 +55,32 @@
       {% endif %}
       <div class="request-to-go-live-list">
         <div id="request-to-go-live-step-organisation-name">
-          <h3 class="govuk-heading-m">
+          <h2 class="govuk-heading-m">
             Add your organisation’s name and address
             {% if enteredOrganisationAddress %}
               <span class="status">Completed</span>
             {% elif enteredOrganisationName %}
               <span class="status">In Progress</span>
             {% endif %}
-          </h3>
+          </h2>
           <p class="govuk-body">These details will appear on your payment pages.</p>
         </div>
         <div id="request-to-go-live-step-choose-psp">
-          <h3 class="govuk-heading-m">
+          <h2 class="govuk-heading-m">
             Confirm how you’ll process payments
             {% if chosenHowToProcessPayments %}
               <span class="status">Completed</span>
             {% endif %}
-          </h3>
+          </h2>
           <p class="govuk-body">Tell us if you’ll be using GOV.UK Pay’s payment service provider Stripe, or your own.</p>
         </div>
         <div id="request-to-go-live-step-agree-terms">
-          <h3 class="govuk-heading-m">
+          <h2 class="govuk-heading-m">
             Accept our legal terms
             {% if agreedToTerms %}
               <span class="status">Completed</span>
             {% endif %}
-          </h3>
+          </h2>
           <p class="govuk-body">To use GOV.UK Pay your organisation must read and accept our legal terms.</p>
         </div>
         <form id="request-to-go-live-index-form" method="post" action="/service/{{currentService.externalId}}/request-to-go-live">
