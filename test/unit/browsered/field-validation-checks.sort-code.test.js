@@ -40,18 +40,18 @@ describe('isNotValidSortCode', () => {
   it('should be not valid when is not a number', () => {
     const sortCode = 'abcdef'
 
-    expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code')
+    expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code like 309430')
   })
 
   it('should be not valid when is too short', () => {
     const sortCode = '12345'
 
-    expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code')
+    expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code like 309430')
   })
 
   it('should be not valid when is too long', () => {
     const sortCode = '1234567'
 
-    expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code')
+    expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code like 309430')
   })
 })

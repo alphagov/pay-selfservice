@@ -1,7 +1,7 @@
 {% extends "../../layout.njk" %}
 
 {% block pageTitle %}
-  Nominate a responsible person - {{ currentService.name }} - GOV.UK Pay
+  Who is your responsible person? - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -30,14 +30,14 @@
           {% set href = '#home-address-line-2' %}
         {% endif %}
         {% set errorList = (errorList.push({
-          text: 'Home address',
+          text: 'Building and street',
           href: href
         }), errorList) %}
       {% endif %}
 
       {% if errors['home-address-city'] %}
         {% set errorList = (errorList.push({
-          text: 'City',
+          text: 'Town or city',
           href: '#home-address-city'
         }), errorList) %}
       {% endif %}
@@ -61,17 +61,26 @@
       }) }}
     {% endif %}
 
-    <h1 class="govuk-heading-l">Nominate a responsible person</h1>
-    <p class="govuk-body">Before you can take any payments, we need a named person in your organisation. It’s a legal
-      requirement to provide this information. This person will be responsible for the management of payments.</p>
+    <h1 class="govuk-heading-l">Who is your responsible person?</h1>
+
+    <p class="govuk-body">We need details of a responsible person so that Stripe can run anti-money laundering checks. Liability stays at an organisational, and not individual level.</p>
     <p class="govuk-body">The responsible person can be:</p>
     <ul class="govuk-list govuk-list--bullet">
       <li>someone in your organisation authorised to sign contracts</li>
       <li>the head of finance</li>
       <li>the head of the organisation</li>
     </ul>
-    <form id="responsible-person-form" method="post" action="/responsible-person" novalidate>
+
+    <form id="responsible-person-form" method="post" action="/responsible-person" class="govuk-!-margin-top-4" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% call govukFieldset({
+        legend: {
+          text: "Name",
+          classes: "govuk-fieldset__legend--m",
+          isPageHeading: false
+        }
+      }) %}
 
       {% set firstNameError = false %}
       {% if errors['first-name'] %}
@@ -91,6 +100,7 @@
         errorMessage: firstNameError,
         classes: "govuk-input--width-20"
       }) }}
+
       {% set lastNameNameError = false %}
       {% if errors['last-name'] %}
         {% set lastNameNameError = {
@@ -109,6 +119,19 @@
         errorMessage: lastNameNameError,
         classes: "govuk-input--width-20"
       }) }}
+
+      {% endcall %}
+
+      {% call govukFieldset({
+        legend: {
+          text: "Home address",
+          classes: "govuk-fieldset__legend--m",
+          isPageHeading: false
+        }
+      }) %}
+
+      <p class="govuk-body">Do not use a work address – Stripe needs the responsible person’s home address to check their identity</p>
+
       {% set homeAddressLine1Error = false %}
       {% if errors['home-address-line-1'] %}
         {% set homeAddressLine1Error = {
@@ -117,7 +140,7 @@
       {% endif %}
       {{ govukInput({
         label: {
-          html: 'Home address <span class="govuk-visually-hidden">line 1 of 2</span>'
+          html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
         },
         id: "home-address-line-1",
         name: "home-address-line-1",
@@ -134,7 +157,7 @@
       {% endif %}
       {{ govukInput({
         label: {
-          html: '<span class="govuk-visually-hidden">Home address line 2 of 2</span>'
+          html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
         },
         id: "home-address-line-2",
         name: "home-address-line-2",
@@ -154,7 +177,7 @@
       {% endif %}
       {{ govukInput({
         label: {
-          text: "City"
+          text: "Town or city"
         },
         id: "home-address-city",
         name: "home-address-city",
@@ -182,6 +205,9 @@
         classes: "govuk-input--width-10",
         errorMessage: homeAddressPostcodeError
       }) }}
+
+      {% endcall %}
+
       {% set dobError = false %}
       {% if errors['dob'] %}
         {% set dobError = {
@@ -193,6 +219,7 @@
         namePrefix: "dob",
         fieldset: {
           legend: {
+            classes: "govuk-fieldset__legend--m",
             text: "Date of birth"
           }
         },
@@ -224,11 +251,5 @@
 
       {{ govukButton({ text: "Continue" }) }}
     </form>
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-    <h1 class="govuk-heading-m">What will happen to this information</h1>
-    <p class="govuk-body">We’ll send this information to our payment service provider, Stripe. Stripe will use these
-      details to confirm the responsible person’s identity.</p>
-    <p class="govuk-body">Their details will be processed and stored by Stripe. GOV.UK Pay will not store these
-      details.</p>
   </div>
 {% endblock %}

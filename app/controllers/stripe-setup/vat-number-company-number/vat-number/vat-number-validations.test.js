@@ -26,14 +26,14 @@ describe('VAT number validations', () => {
   it('should not be valid when mandatory text is invalid VAT number', () => {
     expect(vatNumberValidations.validateVatNumber(invalidVatNumber)).to.deep.equal({
       valid: false,
-      message: 'Enter a valid VAT number'
+      message: 'Enter a valid VAT number, including ‘GB’ at the start'
     })
   })
 
   it('should not be valid when mandatory text is too long', () => {
     expect(vatNumberValidations.validateVatNumber(invalidLongVatNumber)).to.deep.equal({
       valid: false,
-      message: 'Enter a valid VAT number'
+      message: 'Enter a valid VAT number, including ‘GB’ at the start'
     })
   })
 })

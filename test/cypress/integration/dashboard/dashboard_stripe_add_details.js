@@ -25,6 +25,6 @@ describe('The Stripe psp details banner', () => {
 
   it('should redirect to bank account details page when "Add details" button clicked', () => {
     cy.get('#add-account-details').click()
-    cy.get('h1').contains('Add bank details')
+    cy.get('h1').contains('What are your bank details?')
   })
 })

@@ -1,13 +1,11 @@
 {% extends "../../layout.njk" %}
 
 {% block pageTitle %}
-  Nominate a responsible person - {{ currentService.name }} - GOV.UK Pay
+  Who is your responsible person? - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds-from-desktop">
-
-    <span id="request-to-go-live-current-step" class="govuk-caption-l">Before you can take payments</span>
     <h1 class="govuk-heading-l">Check details before saving</h1>
 
     <form id="responsible-person-check-display-form" method="post" action="/responsible-person" novalidate>

@@ -1,23 +1,23 @@
 {% extends "../../layout.njk" %}
 
 {% block pageTitle %}
-  Add bank details - {{ currentService.name }} - GOV.UK Pay
+  What are your bank details? - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     {% if errors | length %}
       {% set errorList = [] %}
-      {% if errors['account-number'] %}
-        {% set errorList = (errorList.push({
-          text: 'Account number',
-          href: '#account-number'
-        }), errorList) %}
-      {% endif %}
       {% if errors['sort-code'] %}
         {% set errorList = (errorList.push({
           text: 'Sort code',
           href: '#sort-code'
+        }), errorList) %}
+      {% endif %}
+      {% if errors['account-number'] %}
+        {% set errorList = (errorList.push({
+          text: 'Account number',
+          href: '#account-number'
         }), errorList) %}
       {% endif %}
       {{ govukErrorSummary({
@@ -25,12 +25,39 @@
         errorList: errorList
       }) }}
     {% endif %}
-    <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Add bank details</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">What are your bank details?</h1>
     <p class="govuk-body govuk-!-margin-bottom-6">This is the bank account payments will go into.</p>
 
     <form id="bank-details-form" method="post"
           action="/bank-details" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% set sortCodeError = false %}
+      {% if errors['sort-code'] %}
+        {% set sortCodeError = {
+          text: errors['sort-code']
+        } %}
+      {% endif %}
+
+      {{ govukInput({
+        label: {
+          text: "Sort code"
+        },
+        hint: {
+          text: "Must be 6 digits long"
+        },
+        id: "sort-code",
+        name: "sort-code",
+        classes: "govuk-input--width-5",
+        value: sortCode,
+        type: "text",
+        errorMessage: sortCodeError,
+        attributes: {
+          "data-validate": "required sortCode",
+          "autocomplete": "off",
+          "inputmode": "numeric"
+        }
+      }) }}
 
       {% set accountNumberError = false %}
       {% if errors['account-number'] %}
@@ -45,36 +72,15 @@
         label: {
           text: "Account number"
         },
+        hint: {
+          text: "Must be between 6 and 8 digits long"
+        },
         classes: "govuk-input--width-10",
         value: accountNumber,
         type: "text",
         errorMessage: accountNumberError,
         attributes: {
           "data-validate": "required accountNumber",
-          "autocomplete": "off",
-          "inputmode": "numeric"
-        }
-      }) }}
-
-      {% set sortCodeError = false %}
-      {% if errors['sort-code'] %}
-        {% set sortCodeError = {
-          text: errors['sort-code']
-        } %}
-      {% endif %}
-
-      {{ govukInput({
-        label: {
-          text: "Sort code"
-        },
-        id: "sort-code",
-        name: "sort-code",
-        classes: "govuk-input--width-10",
-        value: sortCode,
-        type: "text",
-        errorMessage: sortCodeError,
-        attributes: {
-          "data-validate": "required sortCode",
           "autocomplete": "off",
           "inputmode": "numeric"
         }
