@@ -63,13 +63,15 @@
 
     <h1 class="govuk-heading-l">Who is your responsible person?</h1>
 
-    <p class="govuk-body">We need details of a responsible person so that Stripe can run anti-money laundering checks. Liability stays at an organisational, and not individual level.</p>
+    <p class="govuk-body">We need details of a <a class="govuk-link" href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means">responsible person</a> so that Stripe can run anti-money laundering checks. Liability stays at an organisational, and not individual level.</p>
     <p class="govuk-body">The responsible person can be:</p>
     <ul class="govuk-list govuk-list--bullet">
       <li>someone in your organisation authorised to sign contracts</li>
       <li>the head of finance</li>
       <li>the head of the organisation</li>
     </ul>
+
+    <p class="govuk-body">Stripe will store the responsible person’s details, not GOV.UK Pay.</p>
 
     <form id="responsible-person-form" method="post" action="/responsible-person" class="govuk-!-margin-top-4" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
@@ -251,11 +253,5 @@
 
       {{ govukButton({ text: "Continue" }) }}
     </form>
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-    <h1 class="govuk-heading-m">What will happen to this information</h1>
-    <p class="govuk-body">We’ll send this information to our payment service provider, Stripe. Stripe will use these
-      details to confirm the responsible person’s identity.</p>
-    <p class="govuk-body">Their details will be processed and stored by Stripe. GOV.UK Pay will not store these
-      details.</p>
   </div>
 {% endblock %}
