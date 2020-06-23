@@ -18,6 +18,7 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
       </div>
     {% endif %}
   {% else %}
+    {% include "./_live_account_requested_banner.njk" %}
     {% include "./_stripe_account_setup_banner.njk" %}
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l first-steps__title">Dashboard</h1>
