@@ -58,50 +58,7 @@ function describeFilters (filters) {
   return description
 }
 
-function old_describeFilters (filters) { // eslint-disable-line
-  let description = ``
-  if (filters.fromDate) description += ` from <strong>${filters.fromDate}</strong>`
-  if (filters.toDate) description += ` to <strong>${filters.toDate}</strong>`
-
-  const paymentStates = filters.payment_states ? filters.payment_states.map(state => state.charAt(0).toUpperCase() + state.slice(1)) : []
-  const refundStates = filters.refund_states ? filters.refund_states.map(state => `Refund ${state}`) : []
-  const selectedStates = [...paymentStates, ...refundStates].map(state => `${state}`)
-  if (filters.state && selectedStates.length === 0) {
-    description += ` with a payment status of <strong>${filters.state}</strong>`
-  } else if (selectedStates.length === 1) {
-    description += ` with a payment status of <strong>${selectedStates[0]}</strong>`
-  } else if (selectedStates.length > 1) {
-    description += ` with a payment status of <strong>${selectedStates.join('</strong>, <strong>').replace(/,([^,]*)$/, ' or$1')}</strong>`
-  }
-
-  const brandStates = Array.isArray(filters.brand) ? filters.brand.map(brand => brand.replace('-', ' ')) : []
-  if (brandStates.length === 0 && filters.brand) {
-    description += ` with <strong class="capitalize">‘${filters.brand.replace('-', ' ')}’</strong> card brand`
-  } else if (brandStates.length > 1) {
-    description += ` with <strong class="capitalize">‘${brandStates.join('</strong>, <strong class="capitalize">').replace(/,([^,]*)$/, ' or$1')}’</strong> card brands`
-  }
-
-  return description
-}
-
-function old_getFilters (req) { // eslint-disable-line
-  let filters = qs.parse(req.query)
-
-  if (filters.state) {
-    const queryStates = typeof filters.state === 'string' ? [filters.state] : filters.state
-    filters.payment_states = queryStates.filter(state => !state.includes('refund-')).map(state => state.replace('payment-', ''))
-    filters.refund_states = queryStates.filter(state => state.includes('refund-')).map(state => state.replace('refund-', ''))
-  }
-  filters = _.omitBy(filters, _.isEmpty)
-  return {
-    valid: validateFilters(filters),
-    result: filters
-  }
-}
-
 module.exports = {
-  old_getFilters: old_getFilters, // eslint-disable-line
-  old_describeFilters: old_describeFilters, // eslint-disable-line
   getFilters: getFilters,
   describeFilters: describeFilters
 }
