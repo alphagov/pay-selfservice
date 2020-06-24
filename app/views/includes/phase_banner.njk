@@ -3,29 +3,33 @@
   <div class="service-info">
     <h4 class="service-info--name govuk-heading-s">
       {{currentService.name}}
-      {% if currentGatewayAccount %}
-        {% set paymentProvider = currentGatewayAccount.payment_provider.toLower() %}
-        {% set isLive = currentGatewayAccount.type === "live" %}
-        {% set stripeAccountIsSetup = (currentGatewayAccount.accountSetupDetails.bankAccount and currentGatewayAccount.accountSetupDetails.responsiblePerson and currentGatewayAccount.accountSetupDetails.vatNumberCompanyNumber) %}
+      {% if showFeatureStripeOnboarding %}
+        {% if currentGatewayAccount %}
+          {% set paymentProvider = currentGatewayAccount.payment_provider.toLowerCase() %}
+          {% set isLive = currentGatewayAccount.type === "live" %}
+          {% set stripeAccountIsSetup = (currentGatewayAccount.accountSetupDetails.bankAccount and currentGatewayAccount.accountSetupDetails.responsiblePerson and currentGatewayAccount.accountSetupDetails.vatNumberCompanyNumber) %}
 
-        {% set tagModifierClass %}
-          {% if not isLive %}
-            govuk-tag--grey
-          {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
-            govuk-tag--blue
-          {% endif %}
-        {% endset %}
+          {% set tagModifierClass %}
+            {% if not isLive %}
+              govuk-tag--grey
+            {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
+              govuk-tag--blue
+            {% endif %}
+          {% endset %}
 
-        {% set tagText %}
-          {% if paymentProvider === 'sandbox' %}
-            Test
-          {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
-            {{ paymentProvider }} {{ currentGatewayAccount.type }} - information needed
-          {% else %}
-            {{ paymentProvider }} {{ currentGatewayAccount.type }}
-          {% endif %}
-         {% endset %}
-        <strong class="govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
+          {% set tagText %}
+            {% if paymentProvider === 'sandbox' %}
+              Test
+            {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
+              {{ paymentProvider }} {{ currentGatewayAccount.type }} - information needed
+            {% else %}
+              {{ paymentProvider }} {{ currentGatewayAccount.type }}
+            {% endif %}
+          {% endset %}
+          <strong class="govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="environment-tag environment-tag-{{currentGatewayAccount.type}}">{% if currentGatewayAccount.full_type === 'Sandbox test' %}Test{% else %}{{currentGatewayAccount.full_type}}{% endif %}</strong>
       {% endif %}
     </h4>
   </div>
