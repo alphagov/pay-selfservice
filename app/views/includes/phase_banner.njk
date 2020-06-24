@@ -5,7 +5,7 @@
       {{currentService.name}}
       {% if showFeatureStripeOnboarding %}
         {% if currentGatewayAccount %}
-          {% set paymentProvider = currentGatewayAccount.payment_provider.toLowerCase() %}
+          {% set paymentProvider = currentGatewayAccount.payment_provider and currentGatewayAccount.payment_provider.toLowerCase() %}
           {% set isLive = currentGatewayAccount.type === "live" %}
           {% set stripeAccountIsSetup = (currentGatewayAccount.accountSetupDetails.bankAccount and currentGatewayAccount.accountSetupDetails.responsiblePerson and currentGatewayAccount.accountSetupDetails.vatNumberCompanyNumber) %}
 

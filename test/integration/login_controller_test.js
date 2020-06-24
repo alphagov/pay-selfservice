@@ -13,6 +13,7 @@ const chaiAsPromised = require('chai-as-promised')
 require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const userFixtures = require('../fixtures/user_fixtures')
+const { buildGetStripeAccountSetupResponse } = require('../fixtures/stripe_account_setup_fixtures')
 const gatewayAccountFixtures = require('../fixtures/gateway_account_fixtures')
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
@@ -39,6 +40,13 @@ describe('The logged in endpoint', function () {
     nock(CONNECTOR_URL)
       .get(`/v1/frontend/accounts/${ACCOUNT_ID}`)
       .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: ACCOUNT_ID }))
+    nock(CONNECTOR_URL)
+      .get(`/v1/api/accounts/${ACCOUNT_ID}/stripe-setup`)
+      .reply(200, buildGetStripeAccountSetupResponse({
+        bank_account: true,
+        vat_number_company_number: true,
+        responsible_person: true
+      }).getPlain())
     nock(LEDGER_URL)
       .get('/v1/report/transactions-summary')
       .query(() => true)
