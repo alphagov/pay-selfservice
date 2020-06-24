@@ -387,6 +387,55 @@ describe('dashboard-activity-controller', () => {
       })
     })
   })
+  describe('When the dashboard is retrieved for a service that has requested to go live', () => {
+    let session
+
+    before('Arrange', () => {
+      session = getMockSession(getUser({
+        gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+        current_go_live_stage: 'TERMS_AGREED_STRIPE',
+        permissions: [{ name: 'transactions:read' }, { name: 'go-live-stage:read' }]
+      }))
+
+      mockLedgerGetTransactionsSummary()
+      mockConnectorGetGatewayAccount('sandbox', 'test')
+      app = createAppWithSession(getApp(), session)
+    })
+
+    it('it should display the live account requested panel', async () => {
+      let $ = await getDashboard()
+      expect($('.account-status-panel').length).to.equal(1)
+      expect($('.account-status-panel h2').text()).to.equal('GOV.UK Pay are reviewing your request to go live')
+    })
+
+    afterEach(() => {
+      nock.cleanAll()
+    })
+  })
+  describe('When the dashboard is retrieved for a service that has requested to go live and the user is not an admin', () => {
+    let session
+
+    before('Arrange', () => {
+      session = getMockSession(getUser({
+        gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+        current_go_live_stage: 'TERMS_AGREED_STRIPE',
+        permissions: [{ name: 'transactions:read' }]
+      }))
+
+      mockLedgerGetTransactionsSummary()
+      mockConnectorGetGatewayAccount('sandbox', 'test')
+      app = createAppWithSession(getApp(), session)
+    })
+
+    it('it should not display the live account requested panel', async () => {
+      let $ = await getDashboard()
+      expect($('.account-status-panel').length).to.equal(0)
+    })
+
+    afterEach(() => {
+      nock.cleanAll()
+    })
+  })
   describe('When the dashboard is retrieved for Stripe account', () => {
     let session
 
