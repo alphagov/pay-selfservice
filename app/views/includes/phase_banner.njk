@@ -4,26 +4,28 @@
     <h4 class="service-info--name govuk-heading-s">
       {{currentService.name}}
       {% if currentGatewayAccount %}
+        {% set paymentProvider = currentGatewayAccount.payment_provider.toLower() %}
+        {% set isLive = currentGatewayAccount.type === "live" %}
         {% set stripeAccountIsSetup = (currentGatewayAccount.accountSetupDetails.bankAccount and currentGatewayAccount.accountSetupDetails.responsiblePerson and currentGatewayAccount.accountSetupDetails.vatNumberCompanyNumber) %}
-        {% set tagClass %}
-          {% if currentGatewayAccount.type === "test" %}
-            govuk-tag--grey
-          {% elseif currentGatewayAccount.payment_provider === 'stripe' and not stripeAccountIsSetup %}
-            govuk-tag--blue
-          {% else %}
 
+        {% set tagModifierClass %}
+          {% if not isLive %}
+            govuk-tag--grey
+          {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
+            govuk-tag--blue
           {% endif %}
         {% endset %}
+
         {% set tagText %}
-          {% if currentGatewayAccount.full_type === "Sandbox test" %}
+          {% if paymentProvider === 'sandbox' %}
             Test
-          {% elseif currentGatewayAccount.payment_provider === 'stripe' and not stripeAccountIsSetup %}
-            {{ currentGatewayAccount.full_type }} - information needed
+          {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
+            {{ paymentProvider }} {{ currentGatewayAccount.type }} - information needed
           {% else %}
-            {{ currentGatewayAccount.full_type }}
+            {{ paymentProvider }} {{ currentGatewayAccount.type }}
           {% endif %}
          {% endset %}
-        <strong class="govuk-tag {{ tagClass }}">{{ tagText }}</strong>
+        <strong class="govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
       {% endif %}
     </h4>
   </div>
