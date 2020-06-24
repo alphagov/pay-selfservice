@@ -62,14 +62,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
-      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2 > span').should('not.exist')
 
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2 > span').should('not.exist')
 
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Start now')
@@ -93,14 +93,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
-      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'In Progress')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2 > span').should('contain', 'In Progress')
 
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2 > span').should('not.exist')
 
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -124,14 +124,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
-      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2 > span').should('not.exist')
 
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -155,14 +155,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
-      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -186,14 +186,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
-      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -217,14 +217,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
-      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -248,14 +248,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
-      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -276,14 +276,15 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
-      cy.get('.govuk-panel--confirmation > h1').should('contain', 'Request submitted')
+      cy.get('h1').should('contain', 'Request submitted')
 
       cy.get('ul > li').should('contain', 'responsible person')
-      cy.get('ul > li').should('not.contain', 'account credentials')
+      cy.get('ul > li').should('contain', 'bank details')
+      cy.get('ul > li').should('contain', 'VAT number')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('not.exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('not.exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('not.exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
@@ -298,14 +299,15 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
-      cy.get('.govuk-panel--confirmation > h1').should('contain', 'Request submitted')
+      cy.get('h1').should('contain', 'Request submitted')
 
-      cy.get('ul > li').should('contain', 'account credentials')
       cy.get('ul > li').should('not.contain', 'responsible person')
+      cy.get('ul > li').should('not.contain', 'bank details')
+      cy.get('ul > li').should('not.contain', 'VAT number')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('not.exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('not.exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('not.exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
@@ -320,14 +322,15 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
-      cy.get('.govuk-panel--confirmation > h1').should('contain', 'Request submitted')
+      cy.get('h1').should('contain', 'Request submitted')
 
-      cy.get('ul > li').should('contain', 'account credentials')
       cy.get('ul > li').should('not.contain', 'responsible person')
+      cy.get('ul > li').should('not.contain', 'bank details')
+      cy.get('ul > li').should('not.contain', 'VAT number')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('not.exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('not.exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('not.exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
@@ -342,14 +345,15 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
-      cy.get('.govuk-panel--confirmation > h1').should('contain', 'Request submitted')
+      cy.get('h1').should('contain', 'Request submitted')
 
-      cy.get('ul > li').should('contain', 'account credentials')
       cy.get('ul > li').should('not.contain', 'responsible person')
+      cy.get('ul > li').should('not.contain', 'bank details')
+      cy.get('ul > li').should('not.contain', 'VAT number')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('not.exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('not.exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('not.exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
@@ -389,14 +393,14 @@ describe('Request to go live: index', () => {
 
       cy.get('.next-steps-panel').should('not.exist')
 
-      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
-      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h2').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
-      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h2').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h2 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
-      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-agree-terms > h2').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h2 > span').should('contain', 'Completed')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
