@@ -111,6 +111,15 @@ describe('Transaction details page', () => {
           transaction_id: transactionId,
           payment_states: transactionDetails.events
         }
+      },
+      {
+        name: 'getGatewayAccountStripeSetupSuccess',
+        opts: {
+          gateway_account_id: gatewayAccountId,
+          bank_account: true,
+          responsible_person: true,
+          vat_number_company_number: true
+        }
       }
     ]
   }

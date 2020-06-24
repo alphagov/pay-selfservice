@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const commonStubs = require('../../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
@@ -20,7 +19,8 @@ describe('Stripe setup: VAT number page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
-          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
+          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
         ])
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
@@ -89,7 +89,8 @@ describe('Stripe setup: VAT number page', () => {
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          stubDashboardStatisticsGet()
+          stubDashboardStatisticsGet(),
+          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
         ])
 
         cy.visit('/vat-number-company-number/vat-number')
@@ -106,7 +107,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubStripeSetupGetForMultipleCalls(gatewayAccountId, false, true),
+          stubStripeSetupGetForMultipleCalls(gatewayAccountId, false, false, true, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           stubDashboardStatisticsGet()
         ])
@@ -174,7 +175,8 @@ describe('Stripe setup: VAT number page', () => {
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
           commonStubs.getUserWithNoPermissionsStub(userExternalId, [gatewayAccountId]),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe')
+          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
+          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
         ])
 
         cy.visit('/vat-number-company-number/vat-number', { failOnStatusCode: false })

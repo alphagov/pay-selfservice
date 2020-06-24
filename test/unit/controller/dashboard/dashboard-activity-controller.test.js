@@ -46,16 +46,12 @@ const mockConnectorGetStripeSetup = (bankAccount, vatNumberCompanyNumber, respon
       vat_number_company_number: vatNumberCompanyNumber,
       responsible_person: responsiblePerson
     })
+    .persist()
 }
 
-const getDashboard = async () => {
-  try {
-    const res = await supertest(app)
-      .get(paths.dashboard.index)
-    return cheerio.load(res.text)
-  } catch (err) {
-    return err
-  }
+const getDashboard = (testApp = app) => {
+  return supertest(testApp)
+    .get(paths.dashboard.index)
 }
 
 const mockLedgerGetTransactionsSummary = () => {
@@ -403,7 +399,8 @@ describe('dashboard-activity-controller', () => {
     })
 
     it('it should display the live account requested panel', async () => {
-      let $ = await getDashboard()
+      let res = await getDashboard()
+      let $ = cheerio.load(res.text)
       expect($('.account-status-panel').length).to.equal(1)
       expect($('.account-status-panel h2').text()).to.equal('GOV.UK Pay are reviewing your request to go live')
     })
@@ -428,7 +425,8 @@ describe('dashboard-activity-controller', () => {
     })
 
     it('it should not display the live account requested panel', async () => {
-      let $ = await getDashboard()
+      let res = await getDashboard()
+      let $ = cheerio.load(res.text)
       expect($('.account-status-panel').length).to.equal(0)
     })
 
@@ -460,14 +458,18 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should not display account status panel when feature flag is not enabled ', async () => {
+        mockConnectorGetStripeSetup(false, true, false)
         process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
-        let $ = await getDashboard()
+        let res = await getDashboard(createAppWithSession(getApp(), session))
+        let $ = cheerio.load(res.text)
+        expect(res.statusCode).to.equal(200)
         expect($('.account-status-panel').length).to.equal(0)
       })
 
       it('it should display account status panel when feature flag is enabled and account is not fully setup', async () => {
         mockConnectorGetStripeSetup(false, true, false)
-        let $ = await getDashboard()
+        let res = await getDashboard(createAppWithSession(getApp(), session))
+        let $ = cheerio.load(res.text)
         let resultText = $('.account-status-panel').text()
         expect($('.account-status-panel').length).to.equal(1)
         expect(resultText).to.contain('details about your responsible person')
@@ -478,7 +480,8 @@ describe('dashboard-activity-controller', () => {
 
       it('it should not display account status panel when feature flag is enabled and account is fully setup', async () => {
         mockConnectorGetStripeSetup(true, true, true)
-        let $ = await getDashboard()
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
         expect($('.account-status-panel').length).to.equal(0)
       })
     })
@@ -504,7 +507,8 @@ describe('dashboard-activity-controller', () => {
 
       it('it should not display account status panel when feature flag is enabled and account is not fully setup', async () => {
         mockConnectorGetStripeSetup(false, false, false)
-        let $ = await getDashboard()
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
         expect($('.account-status-panel').length).to.equal(0)
       })
     })
@@ -530,7 +534,8 @@ describe('dashboard-activity-controller', () => {
 
     it('it should not display account status panel', async () => {
       process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
-      let $ = await getDashboard()
+      let res = await getDashboard()
+      let $ = cheerio.load(res.text)
       expect($('.account-status-panel').length).to.equal(0)
     })
   })

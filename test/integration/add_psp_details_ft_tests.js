@@ -44,6 +44,7 @@ describe('Add stripe psp details route', function () {
           vat_number_company_number: true,
           responsible_person: true
         }).getPlain())
+        .persist()
     })
 
     it('should load the "Go live complete" page', async () => {

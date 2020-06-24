@@ -569,6 +569,15 @@ describe('Transactions', () => {
             filters: {},
             transactions: transactionsWithAssociatedFees
           }
+        },
+        {
+          name: 'getGatewayAccountStripeSetupSuccess',
+          opts: {
+            gateway_account_id: feesAccountId,
+            bank_account: true,
+            responsible_person: true,
+            vat_number_company_number: true
+          }
         }
       ])
 

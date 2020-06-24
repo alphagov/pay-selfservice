@@ -1,16 +1,12 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 const moment = require('moment-timezone')
 
-// Custom dependencies
 const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response').response
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
 const LedgerClient = require('../../services/clients/ledger_client')
-const { ConnectorClient } = require('../../services/clients/connector_client')
-const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
 const auth = require('../../services/auth_service.js')
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
@@ -85,23 +81,6 @@ const displayGoLiveLink = (service, account, user) => {
       user.hasPermission(service.externalId, 'go-live-stage:read'))
 }
 
-const getStripeAccountSetup = async (account, correlationId) => {
-  if (process.env.ENABLE_ACCOUNT_STATUS_PANEL === 'true' &&
-    account.payment_provider === 'stripe') {
-    try {
-      return await connectorClient.getStripeAccountSetup(
-        account.gateway_account_id, correlationId)
-    } catch (error) {
-      logger.error(`[${correlationId}] Failed to get Stripe account setup from Connector`, {
-        service: 'connector',
-        method: 'GET',
-        error
-      })
-    }
-  }
-  return null
-}
-
 module.exports = async (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
 
@@ -132,13 +111,6 @@ module.exports = async (req, res) => {
       return response(req, res, 'dashboard/index', Object.assign(model, {
         activityError: true
       }))
-    }
-
-    const stripeAccountSetup = await getStripeAccountSetup(req.account, correlationId)
-    if (stripeAccountSetup) {
-      Object.assign(model, {
-        stripeAccountSetup: stripeAccountSetup
-      })
     }
 
     try {
