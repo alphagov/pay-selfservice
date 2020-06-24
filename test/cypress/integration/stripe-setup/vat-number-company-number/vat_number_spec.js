@@ -42,7 +42,7 @@ describe('Stripe setup: VAT number page', () => {
       it('should display an error when VAT number input is blank', () => {
         cy.get('#vat-number-form > button').click()
 
-        cy.get('h2').should('contain', 'There was a problem')
+        cy.get('h2').should('contain', 'There is a problem')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a valid VAT number, including ‘GB’ at the start')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
@@ -57,7 +57,7 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.get('#vat-number-form > button').click()
 
-        cy.get('h2').should('contain', 'There was a problem')
+        cy.get('h2').should('contain', 'There is a problem')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a valid VAT number, including ‘GB’ at the start')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
