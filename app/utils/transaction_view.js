@@ -72,7 +72,6 @@ module.exports = {
       delete element.created_date
     })
 
-    // TODO normalise fromDate and ToDate so you can just pass them through no problem
     connectorData.downloadTransactionLink = router.generateRoute(
       route, {
         reference: filtersResult.reference,
