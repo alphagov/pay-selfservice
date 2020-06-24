@@ -255,7 +255,7 @@ describe('3DS settings page', () => {
             updated: false
           }
         },
-        commonStubs.stripeSetupComplete(gatewayAccountId)
+        commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
       ])
     })
 

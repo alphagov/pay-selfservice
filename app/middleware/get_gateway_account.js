@@ -31,7 +31,7 @@ module.exports = function (req, res, next) {
         supports3ds: ['worldpay', 'stripe', 'epdq', 'smartpay'].includes(_.get(data, 'payment_provider')),
         disableToggle3ds: _.get(data, 'payment_provider') === 'stripe'
       })
-      if (req.account.payment_provider === 'stripe' && req.account.type === 'live') {
+      if (req.account.payment_provider === 'stripe') {
         return connectorClient.getStripeAccountSetup(accountId, req.correlationId)
       }
     })

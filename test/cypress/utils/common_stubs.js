@@ -72,18 +72,6 @@ module.exports.getGatewayAccountsStub = (gatewayAccountId, type = 'test', paymen
   }
 }
 
-module.exports.stripeSetupComplete = (gatewayAccountId, bankAccountSubmitted) => {
-  return {
-    name: 'getGatewayAccountStripeSetupSuccess',
-    opts: {
-      gateway_account_id: gatewayAccountId,
-      bank_account: true,
-      vat_number_company_number: true,
-      responsible_person: true
-    }
-  }
-}
-
 module.exports.getDirectDebitGatewayAccountStub = (gatewayAccountId, type = 'test', paymentProvider = 'sandbox') => {
   return {
     name: 'getDirectDebitGatewayAccountSuccess',

@@ -20,7 +20,7 @@ describe('Stripe setup: VAT number page', () => {
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          commonStubs.stripeSetupComplete(gatewayAccountId)
+          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
         ])
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
@@ -90,7 +90,7 @@ describe('Stripe setup: VAT number page', () => {
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           stubDashboardStatisticsGet(),
-          commonStubs.stripeSetupComplete(gatewayAccountId)
+          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
         ])
 
         cy.visit('/vat-number-company-number/vat-number')
@@ -176,7 +176,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserWithNoPermissionsStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          commonStubs.stripeSetupComplete(gatewayAccountId)
+          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
         ])
 
         cy.visit('/vat-number-company-number/vat-number', { failOnStatusCode: false })
