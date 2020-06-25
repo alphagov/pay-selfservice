@@ -1,8 +1,8 @@
 {% if permissions.stripe_account_details_update and showFeatureStripeOnboarding %}
   {% set stripeAccountSetup = account.accountSetupDetails %}
   {% if stripeAccountSetup and (not stripeAccountSetup.bankAccount or not stripeAccountSetup.vatNumberCompanyNumber or not stripeAccountSetup.responsiblePerson) %}
-    <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
-      <div class="account-status-panel">
+    <div class="account-status-panel govuk-grid-row govuk-!-margin-bottom-5">
+      <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-m">You must add more details to receive money into your bank account</h2>
         <p class="govuk-body-m">
           Your service can now take payments from users. You must add more details or Stripe will not pay the money into your bank account. Please add:

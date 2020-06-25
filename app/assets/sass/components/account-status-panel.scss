@@ -1,6 +1,9 @@
 .account-status-panel {
-  border-color: govuk-colour("blue");
-  border-style: solid;
+  border: 5px solid govuk-colour("blue");
   padding: 20px;
-  margin-bottom: 10px;
+  margin: 0 15px;
+
+  .govuk-grid-column-two-thirds{
+    padding: 0;
+  }
 }
