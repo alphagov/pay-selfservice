@@ -19,19 +19,26 @@
         <p class="govuk-body">To get money paid into your bank account from Stripe, you need to add more details. You need to provide:</p>
 
         <ul class="govuk-list govuk-list--bullet">
-          <li>the name, date of birth and home address of the person in your organisation legally reponsible for payments (called your ‘responsible person’)</li>
+          <li>the name, date of birth and home address of the person in your organisation legally reponsible for payments (called your ‘<a href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means/" class="govuk-link">responsible person</a>’)</li>
           <li>your bank details</li>
           <li>your VAT number</li>
+          <li>your company registration number if you’ve registered your company</li>
         </ul>
 
-        <p class="govuk-body">GOV.UK Pay will email you a link to add these additional details after approving your request.</p>        
+        <p class="govuk-body">GOV.UK Pay will email you a link to add these additional details after approving your request.</p>
 
-        <p class="govuk-body">All users with admin permissions can do this.  You can <a href="/service/{{ currentService.externalId }}" class="govuk-link">manage your users</a> here.</p>
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+              All users with admin permissions can submit this information.  You can <a href="/service/{{ currentService.externalId }}" class="govuk-link">manage your users</a> here.
+          </strong>
+        </div>
       {% else %}
-        <p class="govuk-body">When we activate your live account, we’ll email you with next steps.</p>
+          <p class="govuk-body">When we activate your live account, we’ll email you with next steps.</p>
       {% endif %}
 
-      <p class="govuk-body"><a href="{{routes.dashboard.index}}" class="govuk-link">Return to dashboard</a></p> 
+      <p class="govuk-body"><a href="{{routes.dashboard.index}}" class="govuk-link">Return to dashboard</a></p>
     </div>
   {% elif denied %}
     <div class="govuk-grid-column-full">

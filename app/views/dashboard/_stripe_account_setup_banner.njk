@@ -8,16 +8,16 @@
           Your service can now take payments from users. You must add more details or Stripe will not pay the money into your bank account. Please add:
         </p>
 
-        <ul class="govuk-list">
+        <ul class="govuk-list govuk-list--bullet">
           {% if not stripeAccountSetup.bankAccount %}
-            <li> - bank details</li>
+            <li>bank details</li>
           {% endif %}
           {% if not stripeAccountSetup.responsiblePerson %}
-            <li> - details about your responsible person</li>
+            <li>details about your responsible person</li>
           {% endif %}
           {% if not stripeAccountSetup.vatNumberCompanyNumber %}
-            <li> - your organisation’s VAT number</li>
-            <li> - your company registration number if you’ve registered your company</li>
+            <li>your organisation’s VAT number</li>
+            <li>your company registration number if you’ve registered your company</li>
           {% endif %}
         </ul>
 
