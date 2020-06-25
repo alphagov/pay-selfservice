@@ -10,6 +10,11 @@
   margin: govuk-spacing(2) 0 govuk-spacing(1);
 }
 
+.service-info--tag {
+  display: inline-block;
+  margin-left: 5px;
+}
+
 .service-info {
   @include govuk-media-query(tablet) {
     float: left;

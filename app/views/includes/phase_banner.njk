@@ -18,15 +18,19 @@
           {% endset %}
 
           {% set tagText %}
-            {% if paymentProvider === 'sandbox' %}
-              Test
+            {% if not isLive %}
+              {% if paymentProvider === 'sandbox' %}
+                Test
+              {% else %}
+                {{ paymentProvider }} Test
+              {% endif %}
             {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
-              {{ paymentProvider }} {{ currentGatewayAccount.type }} - information needed
+              Live - information needed
             {% else %}
-              {{ paymentProvider }} {{ currentGatewayAccount.type }}
+              Live
             {% endif %}
           {% endset %}
-          <strong class="govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
+          <strong class="service-info--tag govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
         {% endif %}
       {% else %}
         <strong class="environment-tag environment-tag-{{currentGatewayAccount.type}}">{% if currentGatewayAccount.full_type === 'Sandbox test' %}Test{% else %}{{currentGatewayAccount.full_type}}{% endif %}</strong>
