@@ -7,6 +7,7 @@ const _ = require('lodash')
 const { response } = require('../../utils/response')
 const serviceService = require('../../services/service_service')
 const getHeldPermissions = require('../../utils/get_held_permissions')
+const { getLiveGatewayAccountIds } = require('../../utils/permissions')
 
 const hasAccountWithPayouts = function hasLiveStripeAccount (gatewayAccounts) {
   return gatewayAccounts.some(gatewayAccount =>
@@ -54,7 +55,8 @@ module.exports = async (req, res) => {
     services: servicesData,
     services_singular: servicesData.length === 1,
     env: process.env,
-    has_account_with_payouts: hasAccountWithPayouts(aggregatedGatewayAccounts)
+    has_account_with_payouts: hasAccountWithPayouts(aggregatedGatewayAccounts),
+    has_live_account: getLiveGatewayAccountIds(aggregatedGatewayAccounts).length
   }
   if (newServiceId) {
     servicesData.filter(serviceData => {
