@@ -105,7 +105,7 @@
     "requestretry": "4.1.1",
     "rfc822-validate": "1.0.0",
     "serve-favicon": "2.5.0",
-    "slugify": "1.4.0",
+    "slugify": "1.4.4",
     "snyk": "1.339.3",
     "staticify": "4.0.0",
     "stripe": "8.64.0",
