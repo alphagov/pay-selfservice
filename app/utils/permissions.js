@@ -53,5 +53,6 @@ const getLiveGatewayAccountIds = function getLiveGatewayAccountIds (gatewayAccou
 
 module.exports = {
   userServicesContainsGatewayAccount,
-  getLiveGatewayAccountsFor
+  getLiveGatewayAccountsFor,
+  getLiveGatewayAccountIds
 }

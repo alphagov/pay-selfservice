@@ -27,7 +27,7 @@
         Add a new service
       </a>
     </p>
-    {% if env.PROTOTYPE_MULTIACCOUNT_REPORTING === "true" %}
+    {% if has_live_account %}
     <p class="govuk-body">
       <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
         View transactions for all live services
