@@ -102,17 +102,6 @@ const sharedStubs = (paymentProvider = 'sandbox') => {
   ]
 }
 
-const ledgerTransactionsStubWithFromDatePatternMatch = (filters, transactions) => {
-  return {
-    name: 'getLedgerTransactionsSuccessWithFromDatePatternMatch',
-    opts: {
-      gateway_account_id: gatewayAccountId,
-      transactions: transactions,
-      filters
-    }
-  }
-}
-
 const ledgerTransactionsStub = (filters, transactions) => {
   return {
     name: 'getLedgerTransactionsSuccess',
@@ -132,20 +121,18 @@ describe('Transactions List', () => {
     it('should display correctly when there are no results', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStubWithFromDatePatternMatch({}, [])
+        ledgerTransactionsStub({}, [])
       ])
       cy.visit(transactionsUrl)
       cy.get('#transactions-list tbody').should('not.exist')
     })
 
-    it('should filter by default from date when visiting page', () => {
+    it('should display unfiltered results', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStubWithFromDatePatternMatch({}, unfilteredTransactions)
+        ledgerTransactionsStub({}, unfilteredTransactions)
       ])
       cy.visit(transactionsUrl)
-
-      cy.get('#fromDate').invoke('val').should('match', /\d{2}\/\d{2}\/\d{4}/)
 
       // Ensure the transactions list has the right number of items
       cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
@@ -171,7 +158,6 @@ describe('Transactions List', () => {
       cy.get('.ui-timepicker-wrapper').should('not.be.visible')
 
       // Fill in a from date
-      cy.get('#fromDate').clear()
       cy.get('#fromDate').type('03/5/2018')
 
       // Ensure only the datepicker is showing
@@ -212,15 +198,14 @@ describe('Transactions List', () => {
       cy.get('#transactions-list tbody').find('tr').eq(1).find('th').should('contain', filteredByDatesTransactions[1].reference)
     })
 
-    it('should clear filters when "Reset filters" button is clicked', () => {
+    it('should clear filters when "Clear filter" button is clicked', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStubWithFromDatePatternMatch({}, [])
+        ledgerTransactionsStub({}, [])
       ])
-      cy.get('a').contains('Reset filters').click()
+      cy.get('a').contains('Clear filter').click()
 
-      // Default from date should be restored
-      cy.get('#fromDate').invoke('val').should('match', /\d{2}\/\d{2}\/\d{4}/)
+      cy.get('#fromDate').should('be.empty')
       cy.get('#fromTime').should('be.empty')
       cy.get('#toDate').should('be.empty')
       cy.get('#toTime').should('be.empty')
@@ -241,9 +226,6 @@ describe('Transactions List', () => {
           refund_states: 'submitted'
         }, filteredByMultipleFieldsTransactions)
       ])
-
-      // Clear the default from date filter
-      cy.get('#fromDate').clear()
 
       cy.get('#state').click()
       cy.get(`#state .govuk-checkboxes__input[value='Success']`).click()
@@ -274,7 +256,7 @@ describe('Transactions List', () => {
     it('should display card fee with corporate card surcharge transaction', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStubWithFromDatePatternMatch({}, unfilteredTransactions)
+        ledgerTransactionsStub({}, unfilteredTransactions)
       ])
       cy.visit(transactionsUrl)
 
@@ -287,14 +269,13 @@ describe('Transactions List', () => {
 
       // Ensure the card fee is displayed correctly
       cy.get('#transactions-list tbody').find('tr').eq(2).find('td').eq(1).should('contain', convertPenceToPoundsFormatted(unfilteredTransactions[2].total_amount)).and('contain', '(with card fee)')
-      cy.get('#download-transactions-link').should('have.attr', 'href')
-        .then((href) => expect(href).to.match(/transactions\/download\?fromDate=\d{2}%2F\d{2}%2F\d{4}/))
+      cy.get('#download-transactions-link').should('have.attr', 'href', '/transactions/download')
     })
 
     it('should display the fee and total columns for a stripe gateway with fees', () => {
       cy.task('setupStubs', [
         ...sharedStubs('stripe'),
-        ledgerTransactionsStubWithFromDatePatternMatch({}, transactionsWithAssociatedFees)
+        ledgerTransactionsStub({}, transactionsWithAssociatedFees)
       ])
       cy.visit(transactionsUrl)
 
@@ -312,7 +293,7 @@ describe('Transactions List', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
         {
-          name: 'getLedgerTransactionsSuccessWithFromDatePatternMatch',
+          name: 'getLedgerTransactionsSuccess',
           opts: {
             page: 1,
             transaction_length: 10001,

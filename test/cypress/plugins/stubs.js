@@ -362,35 +362,6 @@ module.exports = {
       response: ledgerTransactionFixtures.validTransactionEventsResponse(opts).getPlain()
     })
   },
-  getLedgerTransactionsSuccessWithFromDatePatternMatch: (opts = {}) => {
-    return [{
-      predicates: [{
-        matches: {
-          method: 'GET',
-          path: '/v1/transaction',
-          headers: {
-            'Accept': 'application/json'
-          },
-          query: lodash.defaults(opts.filters, {
-            account_id: opts.gateway_account_id,
-            with_parent_transaction: true,
-            page: opts.page || 1,
-            display_size: opts.display_size || 100,
-            from_date: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:00:00\\.000Z'
-          })
-        }
-      }],
-      responses: [{
-        is: {
-          statusCode: 200,
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: ledgerTransactionFixtures.validTransactionSearchResponse(opts).getPlain()
-        }
-      }]
-    }]
-  },
   getLedgerTransactionsSuccess: (opts = {}) => {
     const path = '/v1/transaction'
     return simpleStubBuilder('GET', path, 200, {

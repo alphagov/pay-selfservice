@@ -5,7 +5,6 @@ const check = require('check-types')
 const Paginator = require('../utils/paginator.js')
 const states = require('../utils/states')
 const _ = require('lodash')
-const moment = require('moment-timezone')
 
 function validateFilters (filters) {
   let pageSizeIsNull = !check.assigned(filters.pageSize)
@@ -18,14 +17,6 @@ function validateFilters (filters) {
 
 function getFilters (req) {
   let filters = qs.parse(req.query)
-
-  // If a search is being performed without any filters specified, default the from date filter to
-  // 1 month ago. We do this because the count query that is currently required by the search is
-  // very inefficient. If the search has been filtered, still allow the from date to be blank.
-  if (_.isEmpty(filters)) {
-    filters.fromDate = moment().tz('Europe/London').subtract(1, 'months').format('DD/MM/YYYY')
-  }
-
   filters.selectedStates = []
   if (filters.state) {
     filters.selectedStates = typeof filters.state === 'string' ? [filters.state] : filters.state
