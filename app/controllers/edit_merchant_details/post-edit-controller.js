@@ -30,6 +30,10 @@ const validationRules = [
     maxLength: 255
   },
   {
+    field: clientFieldNames.telephoneNumber,
+    validator: validatePhoneNumber
+  },
+  {
     field: clientFieldNames.addressLine1,
     validator: validateMandatoryField,
     maxLength: 255
@@ -52,10 +56,6 @@ const validationRules = [
 ]
 
 const directDebitAccountValidationRules = [
-  {
-    field: clientFieldNames.telephoneNumber,
-    validator: validatePhoneNumber
-  },
   {
     field: clientFieldNames.email,
     validator: validateEmail
@@ -108,6 +108,7 @@ const submitForm = async function (form, serviceExternalId, correlationId, hasDi
 
   const serviceUpdateRequest = new ServiceUpdateRequest()
     .replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
+    .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
     .replace(validPaths.merchantDetails.addressLine1, form[clientFieldNames.addressLine1])
     .replace(validPaths.merchantDetails.addressLine2, form[clientFieldNames.addressLine2])
     .replace(validPaths.merchantDetails.addressCity, form[clientFieldNames.addressCity])
@@ -116,7 +117,6 @@ const submitForm = async function (form, serviceExternalId, correlationId, hasDi
 
   if (hasDirectDebitGatewayAccount) {
     serviceUpdateRequest
-      .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
       .replace(validPaths.merchantDetails.email, form[clientFieldNames.email])
   }
 

@@ -90,28 +90,28 @@
       })
     }}
 
+    {% set phoneError = false %}
+    {% if errors["telephone-number"] %}
+      {% set phoneError = {
+        text: errors["telephone-number"]
+      } %}
+    {% endif %}
+
+    {{
+      govukInput({
+      value: merchant_details.telephone_number,
+        label: {
+          text: "Phone number"
+        },
+        errorMessage: phoneError,
+        id: "telephone-number",
+        name: "telephone-number",
+        classes: "govuk-!-width-two-thirds",
+        type: "tel"
+      })
+    }}
+
     {% if has_direct_debit_gateway_account or has_card_and_dd_gateway_account %}
-
-      {% set phoneError = false %}
-      {% if errors["telephone-number"] %}
-        {% set phoneError = {
-          text: errors["telephone-number"]
-        } %}
-      {% endif %}
-
-      {{
-        govukInput({
-        value: merchant_details.telephone_number,
-          label: {
-            text: "Phone number"
-          },
-          errorMessage: phoneError,
-          id: "telephone-number",
-          name: "telephone-number",
-          classes: "govuk-!-width-two-thirds",
-          type: "tel"
-        })
-      }}
 
       {% set emailError = false %}
       {% if errors["merchant-email"] %}
