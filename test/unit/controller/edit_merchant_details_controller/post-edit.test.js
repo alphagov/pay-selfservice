@@ -76,6 +76,7 @@ describe('edit merchant details controller - post', () => {
         service: buildServiceModel(serviceExternalId),
         body: {
           'merchant-name': validName,
+          'telephone-number': validTelephoneNumber,
           'address-line1': validLine1,
           'address-line2': validLine2,
           'address-city': validCity,
@@ -97,6 +98,11 @@ describe('edit merchant details controller - post', () => {
           'op': 'replace',
           'path': 'merchant_details/name',
           'value': validName
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/telephone_number',
+          'value': validTelephoneNumber
         },
         {
           'op': 'replace',
@@ -176,6 +182,11 @@ describe('edit merchant details controller - post', () => {
         },
         {
           'op': 'replace',
+          'path': 'merchant_details/telephone_number',
+          'value': validTelephoneNumber
+        },
+        {
+          'op': 'replace',
           'path': 'merchant_details/address_line1',
           'value': validLine1
         },
@@ -198,11 +209,6 @@ describe('edit merchant details controller - post', () => {
           'op': 'replace',
           'path': 'merchant_details/address_country',
           'value': countryGB
-        },
-        {
-          'op': 'replace',
-          'path': 'merchant_details/telephone_number',
-          'value': validTelephoneNumber
         },
         {
           'op': 'replace',
@@ -257,6 +263,7 @@ describe('edit merchant details controller - post', () => {
       expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
       expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
         'merchant-name': 'This field cannot be blank',
+        'telephone-number': 'This field cannot be blank',
         'address-line1': 'This field cannot be blank',
         'address-city': 'This field cannot be blank',
         'address-postcode': 'This field cannot be blank',
@@ -351,13 +358,12 @@ describe('edit merchant details controller - post', () => {
       })
     })
   })
-  describe('when the update merchant details call has invalid telephone number', () => {
+  describe('when the update merchant details call has invalid telephone number for a direct debit account', () => {
     let mockServiceService
     let req
     let res
     before(async function () {
       const service = buildServiceModel(serviceExternalId)
-      service.hasDirectDebitGatewayAccount = true
 
       res = setupMocks()
       req = {

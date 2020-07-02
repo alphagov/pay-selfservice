@@ -34,6 +34,7 @@ describe('Dashboard', () => {
 
       // Attempt to add an invalid postcode with all other details being legitimate
       cy.get('#merchant-name').type('Tom & Jerry')
+      cy.get('#telephone-number').type('0113 496 0000')
       cy.get('#address-line1').type('Clive House')
       cy.get('#address-line2').type('10 Downing Street')
       cy.get('#address-city').type('London')
