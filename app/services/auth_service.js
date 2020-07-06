@@ -193,5 +193,5 @@ function deserializeUser (req, externalId, done) {
 }
 
 function serializeUser (user, done) {
-  done(null, user.externalId)
+  done(null, user && user.externalId)
 }

@@ -23,6 +23,21 @@ You can watch Nodemon do it’s thing if you run `docker logs -f selfservice`.
 
 If you’re making changes to client-side JS or Sass files (anything within [`/browsered/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/browsered) or [`/assets/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/assets)) then running `npm run watch-live-reload` will watch for changes and recompile. Nodemon does not do anything here as that’s not necessary. If you install the [livereload browser plugin](http://livereload.com/extensions/) then it will refresh your page once the assets have been compiled to the `/public` folder.
 
+### Steps to run locally - new method
+The new method is faster and easier to run in debug mode.
+* `./scripts/generate-dev-environment.sh local` - this will create a local `.env` file.
+* Repeat the same steps above.
+* Run the app with: `npm run start:dev`
+* Go to: http://localhost:3000 -> Note the diff port number.
+
+#### Run in debug mode
+* You need to make sure the app runs locally first by using the instructions above.
+* In VSCode, go to the `Debug` view - `CMD + shift + D`.
+* Run the launch config `nodemon` by selecting it and pressing the green play button.
+    * This will run the app in debug mode.
+    * Add breakpoints.
+    * The app will automatically restart when you make a code change.
+
 ## Running tests
 
 #### To run mocha tests
