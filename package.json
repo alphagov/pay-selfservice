@@ -68,7 +68,7 @@
     "@govuk-pay/pay-js-commons": "2.32.2",
     "@pact-foundation/pact": "9.8.0",
     "@sentry/node": "5.18.1",
-    "accessible-autocomplete": "2.0.2",
+    "accessible-autocomplete": "2.0.3",
     "appmetrics": "5.1.1",
     "appmetrics-statsd": "3.0.0",
     "aws-sdk": "2.706.0",
