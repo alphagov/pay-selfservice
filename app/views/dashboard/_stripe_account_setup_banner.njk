@@ -1,24 +1,48 @@
 {% if permissions.stripe_account_details_update %}
-  {% set stripeAccountSetup = account.accountSetupDetails %}
-  {% if stripeAccountSetup and (not stripeAccountSetup.bankAccount or not stripeAccountSetup.vatNumber or not stripeAccountSetup.companyNumber or not stripeAccountSetup.responsiblePerson) %}
-    <div class="account-status-panel govuk-grid-row govuk-!-margin-bottom-5">
+  {% set connectorGatewayAccountStripeProgress = gatewayAccount.connectorGatewayAccountStripeProgress %}
+
+  {% set isStripeAccountRestricted = stripeAccount.charges_enabled === false %}
+  {% set stripeAccountHasDeadline = stripeAccount.requirements.current_deadline %}
+  {% set isConnectorStripeJourneyComplete = connectorGatewayAccountStripeProgress.bankAccount and connectorGatewayAccountStripeProgress.vatNumber and connectorGatewayAccountStripeProgress.companyNumber and connectorGatewayAccountStripeProgress.responsiblePerson %}
+
+  {% set panelModifierClass %}
+    {% if isStripeAccountRestricted %}
+      account-status-panel--restricted
+    {% endif %}
+  {% endset %}
+
+  {% if connectorGatewayAccountStripeProgress and (not isConnectorStripeJourneyComplete) %}
+    <div class="account-status-panel {{panelModifierClass}} govuk-grid-row govuk-!-margin-bottom-5">
       <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">You must add more details to receive money into your bank account</h2>
-        <p class="govuk-body-m">
-          Your service can now take payments from users. You must add more details or Stripe will not pay the money into your bank account. Please add:
-        </p>
+        {% if isStripeAccountRestricted %}
+          <h2 class="govuk-heading-m">Stripe have restricted your account</h2>
+
+          <p class="govuk-body-m">To start taking payments again, please add:</p>
+        {% elif stripeAccountHasDeadline %}
+          {% set dateString = stripeAccount.requirements.current_deadline %}
+
+          <h2 class="govuk-heading-m">You must add more details by {{dateString}} to continue taking payments</h2>
+          <p class="govuk-body-m">
+            Your service can now take payments from users. You must add more details by {{dateString}} or Stripe will not pay the money into your bank account. Please add:
+          </p>
+        {% else %}
+          <h2 class="govuk-heading-m">You must add more details to receive money into your bank account</h2>
+          <p class="govuk-body-m">
+            Your service can now take payments from users. You must add more details or Stripe will not pay the money into your bank account. Please add:
+          </p>
+        {% endif %}
 
         <ul class="govuk-list govuk-list--bullet">
-          {% if not stripeAccountSetup.bankAccount %}
+          {% if not connectorGatewayAccountStripeProgress.bankAccount %}
             <li>bank details</li>
           {% endif %}
-          {% if not stripeAccountSetup.responsiblePerson %}
+          {% if not connectorGatewayAccountStripeProgress.responsiblePerson %}
             <li>details about your responsible person</li>
           {% endif %}
-          {% if not stripeAccountSetup.vatNumber %}
+          {% if not connectorGatewayAccountStripeProgress.vatNumber %}
             <li>your organisation’s VAT number</li>
            {% endif %}
-          {% if not stripeAccountSetup.companyNumber %}
+          {% if not connectorGatewayAccountStripeProgress.companyNumber %}
             <li>your company registration number if you’ve registered your company</li>
           {% endif %}
         </ul>
@@ -33,6 +57,16 @@
           }
         })
       }}
+      </div>
+    </div>
+  {% elif  isStripeAccountRestricted %}
+    <div class="account-status-panel account-status-panel--restricted govuk-grid-row govuk-!-margin-bottom-5">
+      <div class="govuk-grid-column-two-thirds">
+          <h2 class="govuk-heading-m">Stripe have restricted your account</h2>
+          <p class="govuk-body-m">To start taking payments again, please contact support.</p>
+          <p class="govuk-body">
+            <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a>
+          </p>
       </div>
     </div>
   {% endif %}

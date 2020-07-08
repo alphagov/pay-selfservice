@@ -5,8 +5,8 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
 {% endblock %}
 
 {% block mainContent %}
-  {% if account.paymentMethod === 'direct debit' and account.paymentProvider === 'gocardless' %}
-    {% if account.isConnected === false %}
+  {% if gatewayAccount.paymentMethod === 'direct debit' and gatewayAccount.paymentProvider === 'gocardless' %}
+    {% if gatewayAccount.isConnected === false %}
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l first-steps__title">Connect to GoCardless</h1>
         {% include "./_link-to-gocardless.njk" %}
