@@ -4,38 +4,43 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const { stripeSetup } = require('../../../../paths')
+const logger = require('../../../../utils/logger')(__filename)
+const { response, renderErrorView } = require('../../../../utils/response')
+const { updateCompany } = require('../../../../services/clients/stripe/stripe_client')
 const companyNumberValidations = require('./company-number-validations')
+const { ConnectorClient } = require('../../../../services/clients/connector_client')
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const paths = require('../../../../paths')
 
 // Constants
 const COMPANY_NUMBER_DECLARATION_FIELD = 'company-number-declaration'
 const COMPANY_NUMBER_FIELD = 'company-number'
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   const companyNumberDeclaration = lodash.get(req.body, COMPANY_NUMBER_DECLARATION_FIELD, '')
   const rawCompanyNumber = lodash.get(req.body, COMPANY_NUMBER_FIELD, '')
-  const trimmedCompanyNumber = rawCompanyNumber.trim()
+  const sanitisedCompanyNumber = rawCompanyNumber.replace(/\s/g, '').toUpperCase()
 
-  if (lodash.isEmpty(lodash.get(req, 'session.pageData.stripeSetup.vatNumberData.vatNumber'))) {
-    return res.redirect(303, stripeSetup.vatNumberCompanyNumber)
-  }
-
-  const errors = validateCompanyNumberForm(companyNumberDeclaration, trimmedCompanyNumber)
+  const errors = validateCompanyNumberForm(companyNumberDeclaration, rawCompanyNumber.trim())
   if (!lodash.isEmpty(errors)) {
-    lodash.set(req, 'session.pageData.stripeSetup.companyNumberData', {
-      errors: errors,
+    return response(req, res, 'stripe-setup/vat-number-company-number/company-number', {
       companyNumberDeclaration: companyNumberDeclaration,
-      companyNumber: rawCompanyNumber
+      companyNumber: rawCompanyNumber,
+      errors
     })
-    return res.redirect(303, stripeSetup.companyNumber)
   } else {
-    const sessionCompanyNumber = (companyNumberDeclaration === 'false') ? '' : trimmedCompanyNumber
-    lodash.set(req, 'session.pageData.stripeSetup.companyNumberData', {
-      errors: {},
-      companyNumberDeclaration: companyNumberDeclaration,
-      companyNumber: sessionCompanyNumber
-    })
-    return res.redirect(303, stripeSetup.checkYourAnswers)
+    try {
+      const stripeCompanyBody = {
+        tax_id: sanitisedCompanyNumber || 'NOTAPPLI'
+      }
+      await updateCompany(res.locals.stripeAccount.stripeAccountId, stripeCompanyBody)
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'company_number', req.correlationId)
+
+      return res.redirect(303, paths.stripe.addPspAccountDetails)
+    } catch (error) {
+      logger.error(`[${req.correlationId}] Error submitting "Company registration number" details, error = `, error)
+      return renderErrorView(req, res, 'Please try again or contact support team')
+    }
   }
 }
 

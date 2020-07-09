@@ -37,7 +37,8 @@ describe('get controller', () => {
     const controller = getController({
       bankAccount: false,
       responsiblePerson: false,
-      vatNumberCompanyNumber: false
+      vatNumber: false,
+      companyNumber: false
     })
     await controller(req, res)
     sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.bankDetails)
@@ -47,7 +48,8 @@ describe('get controller', () => {
     const controller = getController({
       bankAccount: true,
       responsiblePerson: false,
-      vatNumberCompanyNumber: false
+      vatNumber: false,
+      companyNumber: false
     })
     await controller(req, res)
     sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.responsiblePerson)
@@ -57,17 +59,29 @@ describe('get controller', () => {
     const controller = getController({
       bankAccount: true,
       responsiblePerson: true,
-      vatNumberCompanyNumber: false
+      vatNumber: false
     })
     await controller(req, res)
-    sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.vatNumberCompanyNumber)
+    sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.vatNumber)
+  })
+
+  it('should redirect to company registration number page', async () => {
+    const controller = getController({
+      bankAccount: true,
+      responsiblePerson: true,
+      vatNumber: true,
+      companyNumber: false
+    })
+    await controller(req, res)
+    sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.companyNumber)
   })
 
   it('should render go live complete page when all steps are completed', async () => {
     const controller = getController({
       bankAccount: true,
       responsiblePerson: true,
-      vatNumberCompanyNumber: true
+      vatNumber: true,
+      companyNumber: true
     })
     await controller(req, res)
     sinon.assert.calledWith(res.render, 'stripe-setup/go-live-complete')

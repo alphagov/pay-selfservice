@@ -43,8 +43,9 @@ module.exports = {
   buildGetStripeAccountSetupResponse (opts = {}) {
     const data = {
       'bank_account': opts.bank_account || false,
-      'vat_number_company_number': opts.vat_number_company_number || false,
-      'responsible_person': opts.responsible_person || false
+      'responsible_person': opts.responsible_person || false,
+      'company_number': opts.company_number || false,
+      'vat_number': opts.vat_number || false
     }
 
     return {

@@ -2,7 +2,6 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const moment = require('moment-timezone')
 const ukPostcode = require('uk-postcode')
 
 // Local dependencies
@@ -105,7 +104,7 @@ module.exports = async function (req, res) {
   if (!lodash.isEmpty(errors)) {
     pageData['errors'] = errors
     return response(req, res, 'stripe-setup/responsible-person/index', pageData)
-  } else if (lodash.get(req.body, 'answers-checked') === 'true') {
+  } else {
     try {
       const stripeAccountId = res.locals.stripeAccount.stripeAccountId
       const personsResponse = await listPersons(stripeAccountId)
@@ -118,13 +117,6 @@ module.exports = async function (req, res) {
       logger.error(`[requestId=${req.correlationId}] Error creating responsible person with Stripe - ${error.message}`)
       return renderErrorView(req, res, 'Please try again or contact support team')
     }
-  } else if (lodash.get(req.body, 'answers-need-changing') === 'true') {
-    pageData.homeAddressPostcode = ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString()
-    return response(req, res, 'stripe-setup/responsible-person/index', pageData)
-  } else {
-    pageData.homeAddressPostcode = ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString()
-    pageData.friendlyDateOfBirth = formatDateOfBirth(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD], formFields[DOB_YEAR_FIELD])
-    return response(req, res, 'stripe-setup/responsible-person/check-your-answers', pageData)
   }
 }
 
@@ -163,12 +155,4 @@ const validateDoB = (formFields) => {
     return dateOfBirthValidationResult.message
   }
   return null
-}
-
-const formatDateOfBirth = (day, month, year) => {
-  return moment({
-    day: parseInt(day, 10),
-    month: parseInt(month, 10) - 1,
-    year: parseInt(year, 10)
-  }).format('D MMMM YYYY')
 }

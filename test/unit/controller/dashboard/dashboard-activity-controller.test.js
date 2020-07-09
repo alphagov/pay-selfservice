@@ -38,13 +38,14 @@ const mockConnectorGetGatewayAccount = (paymentProvider, type) => {
     }).getPlain())
 }
 
-const mockConnectorGetStripeSetup = (bankAccount, vatNumberCompanyNumber, responsiblePerson) => {
+const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, companyNumber) => {
   nock(CONNECTOR_URL)
     .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/stripe-setup`)
     .reply(200, {
       bank_account: bankAccount,
-      vat_number_company_number: vatNumberCompanyNumber,
-      responsible_person: responsiblePerson
+      responsible_person: responsiblePerson,
+      vat_number: vatNumber,
+      company_number: companyNumber
     })
     .persist()
 }
@@ -457,7 +458,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should display account status panel when account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(false, true, false)
+        mockConnectorGetStripeSetup(false, false, true, true)
         let res = await getDashboard(createAppWithSession(getApp(), session))
         let $ = cheerio.load(res.text)
         let resultText = $('.account-status-panel').text()
@@ -469,7 +470,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should not display account status panel when account is fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, true)
+        mockConnectorGetStripeSetup(true, true, true, true)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
         expect($('.account-status-panel').length).to.equal(0)
@@ -495,7 +496,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should not display account status panel when account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(false, false, false)
+        mockConnectorGetStripeSetup(false, false, false, false)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
         expect($('.account-status-panel').length).to.equal(0)

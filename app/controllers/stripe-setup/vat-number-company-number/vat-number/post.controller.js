@@ -4,35 +4,40 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const { stripeSetup } = require('../../../../paths')
+const logger = require('../../../../utils/logger')(__filename)
+const { response, renderErrorView } = require('../../../../utils/response')
+const { updateCompany } = require('../../../../services/clients/stripe/stripe_client')
 const vatNumberValidations = require('./vat-number-validations')
+const { ConnectorClient } = require('../../../../services/clients/connector_client')
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const paths = require('../../../../paths')
 
 // Constants
 const VAT_NUMBER_FIELD = 'vat-number'
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   const rawVatNumber = lodash.get(req.body, VAT_NUMBER_FIELD, '')
-  const displayVatNumber = rawVatNumber
+  const sanitisedVatNumber = rawVatNumber.replace(/\s/g, '').toUpperCase()
 
   const errors = validateVatNumber(rawVatNumber)
   if (!lodash.isEmpty(errors)) {
-    lodash.set(req, 'session.pageData.stripeSetup.vatNumberData', {
-      errors: errors,
-      vatNumber: rawVatNumber
+    return response(req, res, 'stripe-setup/vat-number-company-number/vat-number', {
+      vatNumber: rawVatNumber,
+      errors
     })
-    return res.redirect(303, stripeSetup.vatNumber)
   } else {
-    lodash.set(req, 'session.pageData.stripeSetup.vatNumberData', {
-      errors: {},
-      vatNumber: displayVatNumber
-    })
+    try {
+      const stripeCompanyBody = {
+        vat_id: sanitisedVatNumber
+      }
+      await updateCompany(res.locals.stripeAccount.stripeAccountId, stripeCompanyBody)
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'vat_number', req.correlationId)
 
-    const companyNumberDeclaration = lodash.get(req, 'session.pageData.stripeSetup.companyNumberData.companyNumberDeclaration')
-
-    if (companyNumberDeclaration) {
-      return res.redirect(303, stripeSetup.checkYourAnswers)
+      return res.redirect(303, paths.stripe.addPspAccountDetails)
+    } catch (error) {
+      logger.error(`[${req.correlationId}] Error submitting "VAT number" details, error = `, error)
+      return renderErrorView(req, res, 'Please try again or contact support team')
     }
-    return res.redirect(303, stripeSetup.companyNumber)
   }
 }
 

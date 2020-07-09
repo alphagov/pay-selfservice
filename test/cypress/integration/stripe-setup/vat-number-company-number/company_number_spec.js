@@ -4,7 +4,7 @@ const commonStubs = require('../../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
   stubStripeAccountGet,
-  stubStripeSetupGetForMultipleCalls,
+  stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted,
   stubDashboardStatisticsGet
 } = require('./support')
 
@@ -13,20 +13,17 @@ describe('Stripe setup: company number page', () => {
   const userExternalId = 'userExternalId'
 
   describe('Card gateway account', () => {
-    describe('when user is admin, account is Stripe and "VAT number / company number" is not already submitted', () => {
+    describe('when user is admin, account is Stripe and "company number" is not already submitted', () => {
       beforeEach(() => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
+          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
-
-        cy.visit('/vat-number-company-number/vat-number')
-        cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
-        cy.get('#vat-number-form > button').click()
+        cy.visit('/vat-number-company-number/company-number')
       })
 
       it('should display page correctly', () => {
@@ -41,7 +38,7 @@ describe('Stripe setup: company number page', () => {
             cy.get('input#company-number[name="company-number"]').should('not.be.visible')
 
             cy.get('button').should('exist')
-            cy.get('button').should('contain', 'Continue')
+            cy.get('button').should('contain', 'Save and continue')
           })
       })
 
@@ -88,53 +85,9 @@ describe('Stripe setup: company number page', () => {
         cy.get('input#company-number[name="company-number"]').should('have.class', 'govuk-input--error')
         cy.get('#company-number-error').should('contain', 'Enter a valid company number')
       })
-
-      it('should redirect to /check-your-answers page when company number is valid and "Yes" option is selected', () => {
-        cy.get('#company-number-form').should('exist')
-          .within(() => {
-            cy.get('input#company-number-declaration[name="company-number-declaration"]').check()
-            cy.get('input#company-number[name="company-number"]').type('01234567')
-
-            cy.get('button').click()
-          })
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq('/vat-number-company-number/check-your-answers')
-        })
-      })
-
-      it('should redirect to /check-your-answers page when "No" option is selected', () => {
-        cy.get('#company-number-form').should('exist')
-          .within(() => {
-            cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
-            cy.get('button').click()
-          })
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq('/vat-number-company-number/check-your-answers')
-        })
-      })
-
-      it('should redirect to /check-your-answers page when "No" option is selected even if company number is invalid', () => {
-        cy.get('#company-number-form').should('exist')
-          .within(() => {
-            cy.get('input#company-number-declaration[name="company-number-declaration"]').check()
-            cy.get('input#company-number[name="company-number"]').type('(╯°□°)╯︵ ┻━┻')
-            cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
-
-            cy.get('button').click()
-          })
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq('/vat-number-company-number/check-your-answers')
-        })
-
-        cy.get('dl.govuk-summary-list > div.govuk-summary-list__row:nth-child(2) > dd.govuk-summary-list__value')
-          .should('contain', 'None')
-      })
     })
 
-    describe('when user is admin, account is Stripe and "VAT number / company number" is already submitted', () => {
+    describe('when user is admin, account is Stripe and "company number" is already submitted', () => {
       beforeEach(() => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
       })
@@ -143,7 +96,7 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, true),
+          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': true }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           stubDashboardStatisticsGet()
         ])
@@ -154,22 +107,20 @@ describe('Stripe setup: company number page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq('/')
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your VAT number or company registration number.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your company registration number.')
+        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
       })
 
       it('should redirect to Dashboard with an error message when submitting the form', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubStripeSetupGetForMultipleCalls(gatewayAccountId, false, false, false, false, false, false, true, true),
+          stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted(gatewayAccountId, false, false, true, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           stubDashboardStatisticsGet()
         ])
 
-        cy.visit('/vat-number-company-number/vat-number')
-        cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
-        cy.get('#vat-number-form > button').click()
+        cy.visit('/vat-number-company-number/company-number')
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
@@ -183,8 +134,8 @@ describe('Stripe setup: company number page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq('/')
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your VAT number or company registration number.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your company registration number.')
+        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
       })
     })
 
@@ -197,7 +148,7 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
+          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
@@ -217,7 +168,7 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
+          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
