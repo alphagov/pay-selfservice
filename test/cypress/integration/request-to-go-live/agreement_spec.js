@@ -103,11 +103,11 @@ describe('Request to go live: agreement', () => {
       cy.task('setupStubs', stubPayload)
     })
 
-    it('should display "Confirm that you accept our legal terms" page when in CHOSEN_PSP_STRIPE', () => {
+    it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_STRIPE', () => {
       const requestToGoLiveAgreementUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`
       cy.visit(requestToGoLiveAgreementUrl)
 
-      cy.get('h1').should('contain', 'Confirm that you accept our legal terms')
+      cy.get('h1').should('contain', 'Read and accept our legal terms')
 
       cy.get('fieldset').should('contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
       cy.get('fieldset').should('contain', 'You must also accept Stripe’s legal terms. Download the Stripe Connected Account Agreement.')
@@ -156,11 +156,11 @@ describe('Request to go live: agreement', () => {
       cy.task('setupStubs', stubPayload)
     })
 
-    it('should display "Confirm that you accept our legal terms" page when in CHOSEN_PSP_WORLDPAY', () => {
+    it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_WORLDPAY', () => {
       const requestToGoLiveAgreementUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`
       cy.visit(requestToGoLiveAgreementUrl)
 
-      cy.get('h1').should('contain', 'Confirm that you accept our legal terms')
+      cy.get('h1').should('contain', 'Read and accept our legal terms')
 
       cy.get('fieldset').should('not.contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
       cy.get('fieldset').should('not.contain', 'You must also accept Stripe’s legal terms. Download the Stripe Connected Account agreement.')
