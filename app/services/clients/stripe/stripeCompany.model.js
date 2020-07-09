@@ -4,7 +4,7 @@
 const Joi = require('joi')
 
 const schema = {
-  vat_id: Joi.string().required(),
+  vat_id: Joi.string().optional(),
   tax_id: Joi.string().optional()
 }
 
@@ -27,9 +27,11 @@ class StripeCompany {
 
 function build (params) {
   const stripeCompany = {
-    company: {
-      vat_id: params.vat_id
-    }
+    company: {}
+  }
+
+  if (params.vat_id) {
+    stripeCompany.company.vat_id = params.vat_id
   }
 
   if (params.tax_id) {

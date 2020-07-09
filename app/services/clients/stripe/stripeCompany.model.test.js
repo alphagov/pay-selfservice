@@ -44,14 +44,23 @@ describe('StripeCompany', () => {
     })).to.throw('StripeCompany "tax_id" must be a string')
   })
 
-  it('should fail when vat_id is undefined', () => {
+  it('should not fail when vat_id is undefined', () => {
     const vatId = undefined
     const taxId = '000000000'
 
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).to.throw('StripeCompany "vat_id" is required')
+    })).not.to.throw('StripeCompany "vat_id" is required')
+
+    expect(new StripeCompany({
+      vat_id: vatId,
+      tax_id: taxId
+    }).basicObject()).to.deep.equal({
+      company: {
+        tax_id: taxId
+      }
+    })
   })
 
   it('should not fail when tax_id is undefined', () => {
