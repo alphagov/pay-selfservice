@@ -78,8 +78,6 @@ describe('Responsible person POST controller', () => {
         }
       }
     }
-
-    process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
   })
 
   it('should call Stripe with normalised details (with second address line), then connector, then redirect to add details redirect route', async function () {
@@ -140,28 +138,6 @@ describe('Responsible person POST controller', () => {
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
-  })
-
-  it('should redirect to the dashboard when the feature flag is disabled', async function () {
-    process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
-
-    const personId = 'person-1'
-    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
-      data: [
-        { id: personId }
-      ]
-    }))
-    updatePersonMock = sinon.spy(() => Promise.resolve())
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
-
-    req.body = { ...postBody }
-
-    await controller(req, res)
-
-    sinon.assert.called(updatePersonMock)
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, paths.dashboard.index)
   })
 
   it('should render error when Stripe returns error, not call connector, and not redirect', async function () {
