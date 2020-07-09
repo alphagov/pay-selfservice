@@ -1,4 +1,4 @@
-{% if permissions.stripe_account_details_update and showFeatureStripeOnboarding %}
+{% if permissions.stripe_account_details_update %}
   {% set stripeAccountSetup = account.accountSetupDetails %}
   {% if stripeAccountSetup and (not stripeAccountSetup.bankAccount or not stripeAccountSetup.vatNumberCompanyNumber or not stripeAccountSetup.responsiblePerson) %}
     <div class="account-status-panel govuk-grid-row govuk-!-margin-bottom-5">

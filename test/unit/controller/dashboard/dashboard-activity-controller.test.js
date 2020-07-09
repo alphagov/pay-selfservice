@@ -449,7 +449,6 @@ describe('dashboard-activity-controller', () => {
       })
 
       beforeEach('Arrange', () => {
-        process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
         mockConnectorGetGatewayAccount('stripe', 'test')
       })
 
@@ -457,16 +456,7 @@ describe('dashboard-activity-controller', () => {
         nock.cleanAll()
       })
 
-      it('it should not display account status panel when feature flag is not enabled ', async () => {
-        mockConnectorGetStripeSetup(false, true, false)
-        process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
-        let res = await getDashboard(createAppWithSession(getApp(), session))
-        let $ = cheerio.load(res.text)
-        expect(res.statusCode).to.equal(200)
-        expect($('.account-status-panel').length).to.equal(0)
-      })
-
-      it('it should display account status panel when feature flag is enabled and account is not fully setup', async () => {
+      it('it should display account status panel when account is not fully setup', async () => {
         mockConnectorGetStripeSetup(false, true, false)
         let res = await getDashboard(createAppWithSession(getApp(), session))
         let $ = cheerio.load(res.text)
@@ -478,7 +468,7 @@ describe('dashboard-activity-controller', () => {
         expect(resultText).to.not.contain('your company registration number if you’ve registered your company')
       })
 
-      it('it should not display account status panel when feature flag is enabled and account is fully setup', async () => {
+      it('it should not display account status panel when account is fully setup', async () => {
         mockConnectorGetStripeSetup(true, true, true)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
@@ -497,7 +487,6 @@ describe('dashboard-activity-controller', () => {
       })
 
       beforeEach('Arrange', () => {
-        process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
         mockConnectorGetGatewayAccount('stripe', 'test')
       })
 
@@ -505,7 +494,7 @@ describe('dashboard-activity-controller', () => {
         nock.cleanAll()
       })
 
-      it('it should not display account status panel when feature flag is enabled and account is not fully setup', async () => {
+      it('it should not display account status panel when account is not fully setup', async () => {
         mockConnectorGetStripeSetup(false, false, false)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
@@ -533,7 +522,6 @@ describe('dashboard-activity-controller', () => {
     })
 
     it('it should not display account status panel', async () => {
-      process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
       let res = await getDashboard()
       let $ = cheerio.load(res.text)
       expect($('.account-status-panel').length).to.equal(0)

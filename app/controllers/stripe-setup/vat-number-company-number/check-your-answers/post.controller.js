@@ -30,11 +30,7 @@ module.exports = async (req, res) => {
     delete req.session.pageData.stripeSetup.vatNumberData
     delete req.session.pageData.stripeSetup.companyNumberData
 
-    if (process.env.ENABLE_ACCOUNT_STATUS_PANEL === 'true') {
-      return res.redirect(303, paths.stripe.addPspAccountDetails)
-    } else {
-      return res.redirect(303, paths.dashboard.index)
-    }
+    return res.redirect(303, paths.stripe.addPspAccountDetails)
   } catch (error) {
     logger.error(`[${req.correlationId}] Error submitting "VAT number / company number" details, error = `, error)
     return renderErrorView(req, res, 'Please try again or contact support team')

@@ -38,24 +38,6 @@ describe('Bank details post controller', () => {
         }
       }
     }
-
-    process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
-  })
-
-  it('should call stripe and connector and redirect to the dashboard when feature flag is disabled', async () => {
-    process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
-    updateBankAccountMock = sinon.spy(() => Promise.resolve())
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
-
-    await controller(req, res)
-
-    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
-      bank_account_sort_code: sanitisedSortCode,
-      bank_account_number: sanitisedAccountNumber
-    })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, paths.dashboard.index)
   })
 
   it('should call stripe and connector and redirect to add psp account details redirect route', async () => {

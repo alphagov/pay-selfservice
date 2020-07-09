@@ -48,25 +48,6 @@ describe('"VAT number / company number - check your answers" post controller', (
         }
       }
     }
-
-    process.env.ENABLE_ACCOUNT_STATUS_PANEL = true
-  })
-
-  it('should redirect to the dashboard if feature flag disabled', async () => {
-    process.env.ENABLE_ACCOUNT_STATUS_PANEL = false
-
-    updateCompanyMock = sinon.spy(() => Promise.resolve())
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
-
-    await controller(req, res)
-
-    sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, {
-      vat_id: sanitisedVatNumber,
-      tax_id: sanitisedCompanyNumber
-    })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number_company_number', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, paths.dashboard.index)
   })
 
   it('should call stripe and connector with all data and redirect to the add account details redirect route', async () => {
