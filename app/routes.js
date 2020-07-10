@@ -31,7 +31,6 @@ const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-
 const getStripeAccount = require('./middleware/stripe-setup/get-stripe-account')
 const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-bank-details-not-submitted')
 const checkResponsiblePersonNotSubmitted = require('./middleware/stripe-setup/check-responsible-person-not-submitted')
-const checkVatNumberCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-company-number-not-submitted')
 const checkVatNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-not-submitted')
 const checkCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-company-number-not-submitted')
 
@@ -75,10 +74,8 @@ const requestToGoLiveAgreementController = require('./controllers/request-to-go-
 const policyDocumentsController = require('./controllers/policy')
 const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
 const stripeSetupResponsiblePersonController = require('./controllers/stripe-setup/responsible-person')
-const stripeSetupVatNumberCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number')
 const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number-company-number/vat-number')
 const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number/company-number')
-const stripeSetupCheckYourAnswersController = require('./controllers/stripe-setup/vat-number-company-number/check-your-answers')
 const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-setup/add-psp-account-details')
 const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
@@ -444,17 +441,6 @@ module.exports.bind = function (app) {
     checkResponsiblePersonNotSubmitted,
     stripeSetupResponsiblePersonController.post)
 
-  // Stripe setup: vat-number-company-number / index
-  app.get(stripeSetup.vatNumberCompanyNumber,
-    xraySegmentCls,
-    permission('stripe-vat-number-company-number:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    checkVatNumberCompanyNumberNotSubmitted,
-    stripeSetupVatNumberCompanyNumberController.get
-  )
-
   // Stripe setup: vat-number-company-number / VAT number
   app.get(stripeSetup.vatNumber,
     xraySegmentCls,
@@ -497,26 +483,6 @@ module.exports.bind = function (app) {
     stripeSetupCompanyNumberController.post
   )
 
-  // Stripe setup: vat-number-company-number / check your answers
-  app.get(stripeSetup.checkYourAnswers,
-    xraySegmentCls,
-    permission('stripe-vat-number-company-number:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    checkVatNumberCompanyNumberNotSubmitted,
-    stripeSetupCheckYourAnswersController.get
-  )
-  app.post(stripeSetup.checkYourAnswers,
-    xraySegmentCls,
-    permission('stripe-vat-number-company-number:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    getStripeAccount,
-    checkVatNumberCompanyNumberNotSubmitted,
-    stripeSetupCheckYourAnswersController.post
-  )
   app.get(stripeSetup.stripeSetupLink, stripeSetupDashboardRedirectController.get)
 
   app.get(stripe.addPspAccountDetails,
