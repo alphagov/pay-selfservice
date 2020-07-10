@@ -63,13 +63,13 @@ describe('connector client - set stripe account setup flag', () => {
     })
   })
 
-  describe('set vat number company number flag', () => {
-    const request = stripeAccountSetupFixtures.buildUpdateVatNumberCompanyNumberFlagRequest(true).getPlain()
+  describe('set vat number flag', () => {
+    const request = stripeAccountSetupFixtures.buildUpdateVatNumberFlagRequest(true).getPlain()
 
     before(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
-          .withUponReceiving('a valid patch update stripe account vat number company number flag request')
+          .withUponReceiving('a valid patch update stripe account vat number flag request')
           .withState(defaultState)
           .withMethod('PATCH')
           .withRequestBody(request)
@@ -84,7 +84,34 @@ describe('connector client - set stripe account setup flag', () => {
     afterEach(() => provider.verify())
 
     it('should update successfully', done => {
-      connectorClient.setStripeAccountSetupFlag(existingGatewayAccountId, 'vat_number_company_number')
+      connectorClient.setStripeAccountSetupFlag(existingGatewayAccountId, 'vat_number')
+        .should.be.fulfilled
+        .notify(done)
+    })
+  })
+
+  describe('set company number flag', () => {
+    const request = stripeAccountSetupFixtures.buildUpdateCompanyNumberFlagRequest(true).getPlain()
+
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
+          .withUponReceiving('a valid patch update stripe account company number flag request')
+          .withState(defaultState)
+          .withMethod('PATCH')
+          .withRequestBody(request)
+          .withStatusCode(200)
+          .withResponseHeaders({})
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should update successfully', done => {
+      connectorClient.setStripeAccountSetupFlag(existingGatewayAccountId, 'company_number')
         .should.be.fulfilled
         .notify(done)
     })

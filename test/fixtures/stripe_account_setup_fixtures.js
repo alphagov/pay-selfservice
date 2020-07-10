@@ -32,8 +32,12 @@ module.exports = {
     return buildUpdateStripeAccountSetupFlagRequest('bank_account', completed)
   },
 
-  buildUpdateVatNumberCompanyNumberFlagRequest (completed) {
-    return buildUpdateStripeAccountSetupFlagRequest('vat_number_company_number', completed)
+  buildUpdateVatNumberFlagRequest (completed) {
+    return buildUpdateStripeAccountSetupFlagRequest('vat_number', completed)
+  },
+
+  buildUpdateCompanyNumberFlagRequest (completed) {
+    return buildUpdateStripeAccountSetupFlagRequest('company_number', completed)
   },
 
   buildUpdateResponsiblePersonFlagRequest (completed) {

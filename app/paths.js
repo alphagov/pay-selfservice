@@ -181,10 +181,8 @@ module.exports = {
   stripeSetup: {
     bankDetails: '/bank-details',
     responsiblePerson: '/responsible-person',
-    vatNumberCompanyNumber: '/vat-number-company-number',
     vatNumber: '/vat-number-company-number/vat-number',
     companyNumber: '/vat-number-company-number/company-number',
-    checkYourAnswers: '/vat-number-company-number/check-your-answers',
     stripeSetupLink: '/service/:externalServiceId/dashboard/live'
   },
   stripe: {
