@@ -7,7 +7,6 @@ describe('Stripe setup: bank details page', () => {
   const userExternalId = 'userExternalId'
   const accountNumber = '00012345'
   const sortCode = '108800'
-  const displaySortCode = '10 88 00'
 
   describe('Card gateway account', () => {
     const stubGetGatewayAccountStripeSetupSuccess = function stubGetGatewayAccountStripeSetupSuccess (bankAccountCompleted) {
@@ -80,7 +79,7 @@ describe('Stripe setup: bank details page', () => {
             cy.get('input#account-number').should('exist')
             cy.get('input#sort-code').should('exist')
             cy.get('button').should('exist')
-            cy.get('button').should('contain', 'Continue')
+            cy.get('button').should('contain', 'Save and continue')
           })
       })
 
@@ -127,18 +126,6 @@ describe('Stripe setup: bank details page', () => {
         cy.get('input#sort-code').should('have.class', 'govuk-input--error')
         cy.get('label[for=sort-code] > span').should('contain', 'Enter a valid sort code like 309430')
       })
-
-      it('should go to check your answers page when inputs are valid', () => {
-        cy.get('input#account-number[name="account-number"]').type(accountNumber)
-        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-
-        cy.get('#bank-details-form > button').click()
-
-        cy.get('#account-number-value').should('contain', accountNumber)
-        cy.get('#sort-code-value').should('contain', displaySortCode)
-
-        cy.get('h1').should('contain', 'Check details before saving')
-      })
     })
 
     describe('Bank account flag already true', () => {
@@ -176,34 +163,6 @@ describe('Stripe setup: bank details page', () => {
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
         cy.get('#bank-details-form > button').click()
 
-        cy.get('h1').should('contain', 'Dashboard')
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/`)
-        })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
-      })
-
-      it('should redirect to Dashboard with an error message when submitting Check your answers page', () => {
-        cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubStripeSetupGetForMultipleCalls(false, false, true),
-          stubStripeAccountGet('acct_123example123'),
-          commonStubs.getDashboardStatisticsStub()
-        ])
-
-        cy.visit('/bank-details')
-
-        // Bank details page
-        cy.get('input#account-number[name="account-number"]').type(accountNumber)
-        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-        cy.get('#bank-details-form > button').click()
-
-        // Check your answers page
-        cy.get('#bank-details-check-submit-form > button').click()
-
-        // Dashboard page
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
@@ -257,48 +216,6 @@ describe('Stripe setup: bank details page', () => {
         })
         cy.get('h1').should('contain', 'An error occurred:')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
-      })
-    })
-
-    describe('Check your answers page', () => {
-      beforeEach(() => {
-        cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubGetGatewayAccountStripeSetupSuccess(false),
-          stubStripeAccountGet('acct_123example123')
-        ])
-
-        cy.visit('/bank-details')
-
-        cy.get('input#account-number[name="account-number"]').type(accountNumber)
-        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-        cy.get('#bank-details-form > button').click()
-      })
-
-      it('should go to check your answers page when inputs are valid', () => {
-        cy.get('#account-number-value').should('contain', accountNumber)
-        cy.get('#sort-code-value').should('contain', displaySortCode)
-
-        cy.get('h1').should('contain', 'Check details before saving')
-      })
-
-      it('should go back to index page when change account number link clicked', () => {
-        cy.get('#account-number-change-button').click()
-        cy.get('.govuk-error-summary').should('not.exist')
-
-        cy.get('h1').should('contain', 'What are your bank details?')
-        cy.get('input#account-number[name="account-number"]').should('have.value', accountNumber)
-        cy.get('input#sort-code[name="sort-code"]').should('have.value', displaySortCode)
-      })
-
-      it('should go back to index page when change sort code link clicked', () => {
-        cy.get('#sort-code-change-button').click()
-        cy.get('.govuk-error-summary').should('not.exist')
-
-        cy.get('h1').should('contain', 'What are your bank details?')
-        cy.get('input#account-number[name="account-number"]').should('have.value', accountNumber)
-        cy.get('input#sort-code[name="sort-code"]').should('have.value', displaySortCode)
       })
     })
   })

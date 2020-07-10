@@ -44,8 +44,9 @@ describe('The logged in endpoint', function () {
       .get(`/v1/api/accounts/${ACCOUNT_ID}/stripe-setup`)
       .reply(200, buildGetStripeAccountSetupResponse({
         bank_account: true,
-        vat_number_company_number: true,
-        responsible_person: true
+        responsible_person: true,
+        vat_number: true,
+        company_number: true
       }).getPlain())
     nock(LEDGER_URL)
       .get('/v1/report/transactions-summary')

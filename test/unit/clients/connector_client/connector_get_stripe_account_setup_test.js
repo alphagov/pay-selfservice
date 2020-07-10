@@ -40,8 +40,9 @@ describe('connector client - get stripe account setup', () => {
   describe('get stripe account setup success', () => {
     const stripeSetupOpts = {
       bank_account: true,
-      vat_number_company_number: false,
-      responsible_person: true
+      responsible_person: true,
+      vat_number: false,
+      company_number: false
     }
     const response = stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(stripeSetupOpts)
 
@@ -66,7 +67,8 @@ describe('connector client - get stripe account setup', () => {
         .should.be.fulfilled
         .then(stripeAccountSetup => {
           expect(stripeAccountSetup.bankAccount).to.equal(stripeSetupOpts.bank_account)
-          expect(stripeAccountSetup.vatNumberCompanyNumber).to.equal(stripeSetupOpts.vat_number_company_number)
+          expect(stripeAccountSetup.vatNumber).to.equal(stripeSetupOpts.vat_number)
+          expect(stripeAccountSetup.companyNumber).to.equal(stripeSetupOpts.company_number)
           expect(stripeAccountSetup.responsiblePerson).to.equal(stripeSetupOpts.responsible_person)
         }).should.notify(done)
     })

@@ -41,8 +41,9 @@ describe('Add stripe psp details route', function () {
         .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/stripe-setup`)
         .reply(200, buildGetStripeAccountSetupResponse({
           bank_account: true,
-          vat_number_company_number: true,
-          responsible_person: true
+          responsible_person: true,
+          vat_number: true,
+          company_number: true
         }).getPlain())
         .persist()
     })

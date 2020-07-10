@@ -32,6 +32,8 @@ const getStripeAccount = require('./middleware/stripe-setup/get-stripe-account')
 const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-bank-details-not-submitted')
 const checkResponsiblePersonNotSubmitted = require('./middleware/stripe-setup/check-responsible-person-not-submitted')
 const checkVatNumberCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-company-number-not-submitted')
+const checkVatNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-not-submitted')
+const checkCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-company-number-not-submitted')
 
 // Controllers
 const staticController = require('./controllers/static_controller')
@@ -460,7 +462,7 @@ module.exports.bind = function (app) {
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
-    checkVatNumberCompanyNumberNotSubmitted,
+    checkVatNumberNotSubmitted,
     stripeSetupVatNumberController.get
   )
   app.post(stripeSetup.vatNumber,
@@ -469,18 +471,19 @@ module.exports.bind = function (app) {
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
-    checkVatNumberCompanyNumberNotSubmitted,
+    getStripeAccount,
+    checkVatNumberNotSubmitted,
     stripeSetupVatNumberController.post
   )
 
-  // Stripe setup: vat-number-company-number / company number
+  // Stripe setup: company number
   app.get(stripeSetup.companyNumber,
     xraySegmentCls,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
-    checkVatNumberCompanyNumberNotSubmitted,
+    checkCompanyNumberNotSubmitted,
     stripeSetupCompanyNumberController.get
   )
   app.post(stripeSetup.companyNumber,
@@ -489,7 +492,8 @@ module.exports.bind = function (app) {
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
-    checkVatNumberCompanyNumberNotSubmitted,
+    getStripeAccount,
+    checkCompanyNumberNotSubmitted,
     stripeSetupCompanyNumberController.post
   )
 
