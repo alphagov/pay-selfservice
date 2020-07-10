@@ -5,7 +5,7 @@ const {
   validationErrors,
   isEmpty,
   isNotCompanyNumber
-} = require('../../../../browsered/field-validation-checks')
+} = require('../../../browsered/field-validation-checks')
 
 exports.validateCompanyNumberDeclaration = function validateCompanyNumberDeclaration (value) {
   if (!value) {
