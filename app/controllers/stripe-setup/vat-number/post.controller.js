@@ -4,13 +4,13 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const logger = require('../../../../utils/logger')(__filename)
-const { response, renderErrorView } = require('../../../../utils/response')
-const { updateCompany } = require('../../../../services/clients/stripe/stripe_client')
+const logger = require('../../../utils/logger')(__filename)
+const { response, renderErrorView } = require('../../../utils/response')
+const { updateCompany } = require('../../../services/clients/stripe/stripe_client')
 const vatNumberValidations = require('./vat-number-validations')
-const { ConnectorClient } = require('../../../../services/clients/connector_client')
+const { ConnectorClient } = require('../../../services/clients/connector_client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const paths = require('../../../../paths')
+const paths = require('../../../paths')
 
 // Constants
 const VAT_NUMBER_FIELD = 'vat-number'
@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
 
   const errors = validateVatNumber(rawVatNumber)
   if (!lodash.isEmpty(errors)) {
-    return response(req, res, 'stripe-setup/vat-number-company-number/vat-number', {
+    return response(req, res, 'stripe-setup/vat-number/index', {
       vatNumber: rawVatNumber,
       errors
     })

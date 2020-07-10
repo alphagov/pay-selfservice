@@ -1,6 +1,6 @@
 'use strict'
 
-const commonStubs = require('../../../utils/common_stubs')
+const commonStubs = require('../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
   stubStripeAccountGet,
@@ -23,7 +23,7 @@ describe('Stripe setup: company number page', () => {
         ])
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
-        cy.visit('/vat-number-company-number/company-number')
+        cy.visit('/company-number')
       })
 
       it('should display page correctly', () => {
@@ -101,7 +101,7 @@ describe('Stripe setup: company number page', () => {
           stubDashboardStatisticsGet()
         ])
 
-        cy.visit('/vat-number-company-number/company-number')
+        cy.visit('/company-number')
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
@@ -120,7 +120,7 @@ describe('Stripe setup: company number page', () => {
           stubDashboardStatisticsGet()
         ])
 
-        cy.visit('/vat-number-company-number/company-number')
+        cy.visit('/company-number')
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
@@ -152,7 +152,7 @@ describe('Stripe setup: company number page', () => {
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
-        cy.visit('/vat-number-company-number/company-number', {
+        cy.visit('/company-number', {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -172,7 +172,7 @@ describe('Stripe setup: company number page', () => {
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
-        cy.visit('/vat-number-company-number/company-number', {
+        cy.visit('/company-number', {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -190,7 +190,7 @@ describe('Stripe setup: company number page', () => {
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe')
         ])
 
-        cy.visit('/vat-number-company-number/company-number', { failOnStatusCode: false })
+        cy.visit('/company-number', { failOnStatusCode: false })
         cy.get('h1').should('contain', 'An error occurred:')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })
@@ -208,7 +208,7 @@ describe('Stripe setup: company number page', () => {
         commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'live', 'go-cardless')
       ])
 
-      cy.visit('/vat-number-company-number/company-number', {
+      cy.visit('/company-number', {
         failOnStatusCode: false
       })
 

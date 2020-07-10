@@ -22,7 +22,7 @@
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">What is your organisation’s VAT number?</h1>
 
     <form id="vat-number-form" method="post"
-          action="/vat-number-company-number/vat-number" novalidate>
+          action="/vat-number" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set vatNumberError = false %}

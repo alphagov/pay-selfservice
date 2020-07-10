@@ -1,6 +1,6 @@
 'use strict'
 
-const commonStubs = require('../../../utils/common_stubs')
+const commonStubs = require('../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
   stubStripeAccountGet,
@@ -25,7 +25,7 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
 
-        cy.visit('/vat-number-company-number/vat-number')
+        cy.visit('/vat-number')
       })
 
       it('should display page correctly', () => {
@@ -83,7 +83,7 @@ describe('Stripe setup: VAT number page', () => {
           commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
         ])
 
-        cy.visit('/vat-number-company-number/vat-number')
+        cy.visit('/vat-number')
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
@@ -102,7 +102,7 @@ describe('Stripe setup: VAT number page', () => {
           stubDashboardStatisticsGet()
         ])
 
-        cy.visit('/vat-number-company-number/vat-number')
+        cy.visit('/vat-number')
 
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
 
@@ -130,7 +130,7 @@ describe('Stripe setup: VAT number page', () => {
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
-        cy.visit('/vat-number-company-number/vat-number', {
+        cy.visit('/vat-number', {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -150,7 +150,7 @@ describe('Stripe setup: VAT number page', () => {
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
-        cy.visit('/vat-number-company-number/vat-number', {
+        cy.visit('/vat-number', {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -169,7 +169,7 @@ describe('Stripe setup: VAT number page', () => {
           commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true)
         ])
 
-        cy.visit('/vat-number-company-number/vat-number', { failOnStatusCode: false })
+        cy.visit('/vat-number', { failOnStatusCode: false })
         cy.get('h1').should('contain', 'An error occurred:')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })
@@ -187,7 +187,7 @@ describe('Stripe setup: VAT number page', () => {
         commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'live', 'go-cardless')
       ])
 
-      cy.visit('/vat-number-company-number/vat-number', {
+      cy.visit('/vat-number', {
         failOnStatusCode: false
       })
 

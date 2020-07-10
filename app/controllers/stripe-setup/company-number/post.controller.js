@@ -4,13 +4,13 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const logger = require('../../../../utils/logger')(__filename)
-const { response, renderErrorView } = require('../../../../utils/response')
-const { updateCompany } = require('../../../../services/clients/stripe/stripe_client')
+const logger = require('../../../utils/logger')(__filename)
+const { response, renderErrorView } = require('../../../utils/response')
+const { updateCompany } = require('../../../services/clients/stripe/stripe_client')
 const companyNumberValidations = require('./company-number-validations')
-const { ConnectorClient } = require('../../../../services/clients/connector_client')
+const { ConnectorClient } = require('../../../services/clients/connector_client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const paths = require('../../../../paths')
+const paths = require('../../../paths')
 
 // Constants
 const COMPANY_NUMBER_DECLARATION_FIELD = 'company-number-declaration'
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
 
   const errors = validateCompanyNumberForm(companyNumberDeclaration, rawCompanyNumber.trim())
   if (!lodash.isEmpty(errors)) {
-    return response(req, res, 'stripe-setup/vat-number-company-number/company-number', {
+    return response(req, res, 'stripe-setup/company-number/index', {
       companyNumberDeclaration: companyNumberDeclaration,
       companyNumber: rawCompanyNumber,
       errors

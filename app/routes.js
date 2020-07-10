@@ -74,8 +74,8 @@ const requestToGoLiveAgreementController = require('./controllers/request-to-go-
 const policyDocumentsController = require('./controllers/policy')
 const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
 const stripeSetupResponsiblePersonController = require('./controllers/stripe-setup/responsible-person')
-const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number-company-number/vat-number')
-const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number/company-number')
+const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number')
+const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/company-number')
 const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-setup/add-psp-account-details')
 const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
@@ -441,7 +441,7 @@ module.exports.bind = function (app) {
     checkResponsiblePersonNotSubmitted,
     stripeSetupResponsiblePersonController.post)
 
-  // Stripe setup: vat-number-company-number / VAT number
+  // Stripe setup: VAT number
   app.get(stripeSetup.vatNumber,
     xraySegmentCls,
     permission('stripe-vat-number-company-number:update'),
