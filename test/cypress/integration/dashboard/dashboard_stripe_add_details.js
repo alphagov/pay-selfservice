@@ -11,7 +11,7 @@ describe('The Stripe psp details banner', () => {
       commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
       commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
       commonStubs.getDashboardStatisticsStub(),
-      commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, false, false, false),
+      commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, false, false, false, false),
       commonStubs.getStripeAccount(gatewayAccountId, 'stripe-account-id')
     ])
   })
