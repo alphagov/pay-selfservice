@@ -96,7 +96,8 @@ const sharedStubs = (paymentProvider = 'sandbox') => {
         gateway_account_id: gatewayAccountId,
         bank_account: true,
         responsible_person: true,
-        vat_number_company_number: true
+        vat_number: true,
+        company_number: true
       }
     }
   ]

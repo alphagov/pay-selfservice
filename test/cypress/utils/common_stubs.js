@@ -90,14 +90,15 @@ module.exports.getDashboardStatisticsStub = () => {
   }
 }
 
-module.exports.getGatewayAccountStripeSetupSuccess = (gatewayAccountId, bankAccount, responsiblePerson, vatNumber) => {
+module.exports.getGatewayAccountStripeSetupSuccess = (gatewayAccountId, bankAccount, responsiblePerson, vatNumber, companyNumber) => {
   const stripeSetupStub = {
     name: 'getGatewayAccountStripeSetupSuccess',
     opts: {
       gateway_account_id: gatewayAccountId,
       bank_account: bankAccount,
       responsible_person: responsiblePerson,
-      vat_number_company_number: vatNumber
+      vat_number: vatNumber,
+      company_number: companyNumber
     }
   }
   return stripeSetupStub
