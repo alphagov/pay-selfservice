@@ -28,6 +28,7 @@ module.exports = {
           },
           group_id: zendeskConfig.GROUP_ID,
           organization_id: zendeskConfig.ORG_ID,
+          ticket_form_id: zendeskConfig.FORM_ID,
           tags: opts.tags
         }
       }, (err, request, result) => {
