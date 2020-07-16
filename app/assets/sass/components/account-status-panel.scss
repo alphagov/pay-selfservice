@@ -6,4 +6,8 @@
   .govuk-grid-column-two-thirds{
     padding: 0;
   }
+
+  &--restricted{
+    border: 5px solid govuk-colour("red"); 
+  } 
 }

@@ -35,9 +35,9 @@ module.exports = function (req, res, next) {
         return connectorClient.getStripeAccountSetup(accountId, req.correlationId)
       }
     })
-    .then((accountSetupDetails = null) => {
-      if (accountSetupDetails) {
-        req.account.accountSetupDetails = accountSetupDetails
+    .then((connectorGatewayAccountStripeProgress = null) => {
+      if (connectorGatewayAccountStripeProgress) {
+        req.account.connectorGatewayAccountStripeProgress = connectorGatewayAccountStripeProgress
       }
       next()
     })

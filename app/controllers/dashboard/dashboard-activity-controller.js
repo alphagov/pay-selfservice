@@ -8,7 +8,10 @@ const response = require('../../utils/response').response
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
 const LedgerClient = require('../../services/clients/ledger_client')
 const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
+const { ConnectorClient } = require('../../services/clients/connector_client.js')
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const auth = require('../../services/auth_service.js')
+const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe_client')
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 const {
   NOT_STARTED,
@@ -96,7 +99,11 @@ module.exports = async (req, res) => {
     goLiveNotStarted: req.service.currentGoLiveStage === NOT_STARTED,
     goLiveStarted: goLiveStartedStages.includes(req.service.currentGoLiveStage),
     goLiveRequested: goLiveRequestedStages.includes(req.service.currentGoLiveStage),
-    account: req.account
+    gatewayAccount: req.account
+  }
+
+  if (req.account.payment_provider === 'stripe') {
+    model.stripeAccount = await getStripeAccountDetails(req.account.gateway_account_id, req.correlationId)
   }
 
   try {
@@ -170,4 +177,33 @@ function getTransactionDateRange (period) {
   const fromDateTime = moment().tz('Europe/London').startOf('day').subtract(daysAgo, 'days').format()
 
   return { fromDateTime, toDateTime }
+}
+
+async function getStripeAccountDetails (gatewayAccountId, correlationId) {
+  try {
+    const stripeResponse = await connector.getStripeAccount(gatewayAccountId, correlationId)
+    const { stripeAccountId } = stripeResponse
+
+    try {
+      const fullStripeAccountDetails = await retrieveAccountDetails(stripeAccountId)
+
+      const formattedStripeAccount = {
+        charges_enabled: fullStripeAccountDetails.charges_enabled
+      }
+
+      if (fullStripeAccountDetails.requirements.current_deadline) {
+        formattedStripeAccount.requirements = {
+          current_deadline: moment.unix(fullStripeAccountDetails.requirements.current_deadline).format('D MMMM YYYY')
+        }
+      }
+
+      return formattedStripeAccount
+    } catch (e) {
+      logger.error(`[${correlationId}] Calling Stripe failed to get Stripe account details for: ${stripeAccountId}`)
+    }
+  } catch (e) {
+    logger.error(`[${correlationId}] Calling Connector failed to get Stripe account id for: ${gatewayAccountId}`)
+  }
+
+  return null
 }

@@ -14,6 +14,7 @@ const paths = require('../../../../app/paths')
 const gatewayAccountFixtures = require('../../../fixtures/gateway_account_fixtures')
 const { CONNECTOR_URL } = process.env
 const { LEDGER_URL } = process.env
+const { STRIPE_PORT, STRIPE_HOST } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const DASHBOARD_RESPONSE = {
   payments: {
@@ -50,6 +51,27 @@ const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, 
     .persist()
 }
 
+const mockConnectorGetStripeAccount = () => {
+  nock(CONNECTOR_URL)
+    .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/stripe-account`)
+    .reply(200, {
+      'stripe_account_id': 'acct_123example123'
+    })
+    .persist()
+}
+
+const mockStripeRetrieveAccount = (isChargesEnabled, currentDeadlineUnixDate) => {
+  nock(`https://${STRIPE_HOST}:${STRIPE_PORT}`)
+    .get(`/v1/accounts/acct_123example123`)
+    .reply(200, {
+      'charges_enabled': isChargesEnabled,
+      'requirements': {
+        'current_deadline': currentDeadlineUnixDate
+      }
+    })
+    .persist()
+}
+
 const getDashboard = (testApp = app) => {
   return supertest(testApp)
     .get(paths.dashboard.index)
@@ -76,6 +98,9 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetStripeAccount()
+        mockStripeRetrieveAccount(true, null)
+
         nock(LEDGER_URL)
           .get('/v1/report/transactions-summary')
           .query(obj => {
@@ -92,6 +117,7 @@ describe('dashboard-activity-controller', () => {
           .end((err, res) => {
             result = res
             $ = cheerio.load(res.text)
+
             done(err)
           })
       })
@@ -148,6 +174,9 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetStripeAccount()
+        mockStripeRetrieveAccount(true, null)
+
         nock(LEDGER_URL)
           .get('/v1/report/transactions-summary')
           .query(obj => {
@@ -198,6 +227,9 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetStripeAccount()
+        mockStripeRetrieveAccount(true, null)
+
         nock(LEDGER_URL)
           .get('/v1/report/transactions-summary')
           .query(obj => {
@@ -248,6 +280,9 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetStripeAccount()
+        mockStripeRetrieveAccount(true, null)
+
         nock(LEDGER_URL)
           .get('/v1/report/transactions-summary')
           .query(obj => {
@@ -298,6 +333,9 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetStripeAccount()
+        mockStripeRetrieveAccount(true, null)
+
         nock(LEDGER_URL)
           .get('/v1/report/transactions-summary')
           .query(obj => {
@@ -350,6 +388,9 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetStripeAccount()
+        mockStripeRetrieveAccount(true, null)
+
         nock(LEDGER_URL)
           .get('/v1/report/transactions-summary')
           .query(obj => {
@@ -396,6 +437,9 @@ describe('dashboard-activity-controller', () => {
 
       mockLedgerGetTransactionsSummary()
       mockConnectorGetGatewayAccount('sandbox', 'test')
+      mockConnectorGetStripeAccount()
+      mockStripeRetrieveAccount(true, null)
+
       app = createAppWithSession(getApp(), session)
     })
 
@@ -422,6 +466,9 @@ describe('dashboard-activity-controller', () => {
 
       mockLedgerGetTransactionsSummary()
       mockConnectorGetGatewayAccount('sandbox', 'test')
+      mockConnectorGetStripeAccount()
+      mockStripeRetrieveAccount(true, null)
+
       app = createAppWithSession(getApp(), session)
     })
 
@@ -446,11 +493,13 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockLedgerGetTransactionsSummary()
+
         app = createAppWithSession(getApp(), session)
       })
 
       beforeEach('Arrange', () => {
         mockConnectorGetGatewayAccount('stripe', 'test')
+        mockConnectorGetStripeAccount()
       })
 
       afterEach(() => {
@@ -459,6 +508,7 @@ describe('dashboard-activity-controller', () => {
 
       it('it should display account status panel when account is not fully setup', async () => {
         mockConnectorGetStripeSetup(false, false, true, true)
+        mockStripeRetrieveAccount(true, null)
         let res = await getDashboard(createAppWithSession(getApp(), session))
         let $ = cheerio.load(res.text)
         let resultText = $('.account-status-panel').text()
@@ -471,9 +521,43 @@ describe('dashboard-activity-controller', () => {
 
       it('it should not display account status panel when account is fully setup', async () => {
         mockConnectorGetStripeSetup(true, true, true, true)
+        mockStripeRetrieveAccount(true, null)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
         expect($('.account-status-panel').length).to.equal(0)
+      })
+
+      it('it should display account status panel with DATE when account is not fully setup and there is a deadline', async () => {
+        mockConnectorGetStripeSetup(true, true, false, false)
+        mockStripeRetrieveAccount(true, 1606820691)
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
+        expect($('.account-status-panel').length).to.equal(1)
+        const resultText = $('.account-status-panel').text()
+        expect(resultText).to.contain('You must add more details by 1 December 2020 to continue taking payments')
+      })
+
+      it('it should display RESTRICTED account status panel when payouts=false, account is not fully setup', async () => {
+        mockConnectorGetStripeSetup(true, true, false, false)
+        mockStripeRetrieveAccount(false, null)
+
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
+        expect($('.account-status-panel').length).to.equal(1)
+        const resultText = $('.account-status-panel').text()
+        expect(resultText).to.contain('Stripe have restricted your account')
+      })
+
+      it('it should display RESTRICTED account status panel when payouts=false, account is fully setup', async () => {
+        mockConnectorGetStripeSetup(true, true, true, true)
+        mockStripeRetrieveAccount(false, null)
+
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
+        expect($('.account-status-panel').length).to.equal(1)
+        const resultText = $('.account-status-panel').text()
+        expect(resultText).to.contain('Stripe have restricted your account')
+        expect(resultText).to.contain('To start taking payments again, please contact support.')
       })
     })
     describe('User does not have permission to update account details', () => {
@@ -484,6 +568,9 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockLedgerGetTransactionsSummary()
+        mockConnectorGetStripeAccount()
+        mockStripeRetrieveAccount(true, null)
+
         app = createAppWithSession(getApp(), session)
       })
 
