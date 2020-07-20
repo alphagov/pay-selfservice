@@ -160,7 +160,6 @@ const buildRefundDetails = (opts = {}) => {
     gateway_account_id: opts.gateway_account_id || '1',
     amount: opts.amount || 10,
     state: buildChargeEventStateWithDefaults(opts),
-    reference: opts.reference || 'aaba9756-15af-4ab0-b2c2-8696bc47655e',
     created_date: opts.created_date || '2019-08-20T14:39:49.536Z',
     transaction_type: 'REFUND',
     transaction_id: opts.transaction_id || '1b5kia0u28ll2ic4obv26r5e4h',
