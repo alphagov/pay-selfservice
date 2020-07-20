@@ -1,5 +1,5 @@
 'use strict'
-const logger = require('../../utils/logger')(__filename)
+
 const transactionService = require('../../services/transaction_service')
 const auth = require('../../services/auth_service')
 const date = require('../../utils/dates')
@@ -20,17 +20,7 @@ const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (re
   const timestampStreamStart = Date.now()
   const data = (chunk) => { res.write(chunk) }
   const complete = () => {
-    const timestampStreamEnd = Date.now()
-    logger.info('Completed file stream', {
-      gateway_account_id: accountId,
-      time_taken: timestampStreamEnd - timestampStreamStart,
-      from_date: filters.fromDate,
-      to_date: filters.toDate,
-      payment_states: filters.payment_states,
-      refund_states: filters.refund_stats,
-      x_request_id: correlationId,
-      method: 'future'
-    })
+    transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, [accountId], req.user, correlationId)
     res.end()
   }
   const error = () => renderErrorView(req, res, 'Unable to download list of transactions.')

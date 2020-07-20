@@ -63,7 +63,12 @@ const transactions = function transactions (gatewayAccountIds = [], filters = {}
   const configuration = Object.assign({
     url: `${path}?${formattedParams}&${formattedFilterParams}`,
     description: 'List transactions for a given gateway account ID',
-    transform: legacyConnectorTransactionsParity
+    transform: legacyConnectorTransactionsParity,
+    additionalLoggingFields: {
+      gateway_account_ids: gatewayAccountIds,
+      multiple_accounts: gatewayAccountIds.length > 1,
+      filters: Object.keys(filters).sort().join(', ')
+    }
   }, defaultOptions, options)
 
   return baseClient.get(configuration)

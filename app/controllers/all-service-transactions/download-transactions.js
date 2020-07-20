@@ -1,7 +1,5 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
-const { keys } = require('@govuk-pay/pay-js-commons').logging
 const date = require('../../utils/dates')
 const transactionService = require('../../services/transaction_service')
 const Stream = require('../../services/clients/stream_client')
@@ -27,20 +25,7 @@ module.exports = (req, res) => {
       const timestampStreamStart = Date.now()
       const data = (chunk) => { res.write(chunk) }
       const complete = () => {
-        const timestampStreamEnd = Date.now()
-        const logContext = {
-          time_taken: timestampStreamEnd - timestampStreamStart,
-          from_date: filters.fromDate,
-          to_date: filters.toDate,
-          gateway_payout_id: filters.gatewayPayoutId,
-          payment_states: filters.payment_states,
-          refund_states: filters.refund_stats,
-          method: 'future'
-        }
-        logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-        logContext[keys.GATEWAY_ACCOUNT_ID] = userPermittedAccountsSummary.gatewayAccountIds
-        logContext[keys.CORRELATION_ID] = correlationId
-        logger.info('Completed file stream', logContext)
+        transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, userPermittedAccountsSummary.gatewayAccountIds, req.user, correlationId)
         res.end()
       }
       const error = () => renderErrorView(req, res, 'Unable to download list of transactions.')
