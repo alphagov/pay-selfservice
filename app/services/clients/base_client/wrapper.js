@@ -82,7 +82,7 @@ module.exports = function (method, verb) {
       requestLogger.logRequestError(context, err)
     })
     call.on('response', response => {
-      requestLogger.logRequestEnd(context)
+      requestLogger.logRequestEnd(context, response)
       if (!(response && SUCCESS_CODES.includes(response.statusCode))) {
         requestLogger.logRequestFailure(context, response)
       }
