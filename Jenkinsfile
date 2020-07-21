@@ -111,9 +111,8 @@ pipeline {
         deployEcs("selfservice")
       }
     }
-    stage('Direct Debit Smoke Test') {
-      when { branch 'master' }
-      steps { runDirectDebitSmokeTest() }
+    stage('Smoke Test') {
+      
     }
     stage('Pact Tag') {
       when {
