@@ -32,7 +32,8 @@ module.exports = function (method, verb) {
       url: joinURL(lodash.get(opts, 'baseUrl', ''), opts.url),
       method: opts.method,
       description: opts.description,
-      service: opts.service
+      service: opts.service,
+      additionalLoggingFields: opts.additionalLoggingFields
     }
 
     // Set headers and optional x-ray trace headers

@@ -7,7 +7,8 @@ module.exports = {
       service: context.service,
       method: context.method,
       url: context.url,
-      description: context.description
+      description: context.description,
+      ...context.additionalLoggingFields
     }
     logContext[keys.CORRELATION_ID] = context.correlationId
     logger.info(`Calling ${context.service} to ${context.description}`, logContext)
@@ -21,7 +22,8 @@ module.exports = {
       url: context.url,
       description: context.description,
       response_time: duration,
-      status: response && response.statusCode
+      status: response && response.statusCode,
+      ...context.additionalLoggingFields
     }
     logContext[keys.CORRELATION_ID] = context.correlationId
     logger.info(`${context.method} to ${context.url} ended - elapsed time: ${duration} ms`, logContext)
@@ -33,7 +35,8 @@ module.exports = {
       method: context.method,
       url: context.url,
       description: context.description,
-      status: response.statusCode
+      status: response.statusCode,
+      ...context.additionalLoggingFields
     }
     logContext[keys.CORRELATION_ID] = context.correlationId
     logger.info(`Calling ${context.service} to ${context.description} failed`, logContext)
@@ -45,7 +48,8 @@ module.exports = {
       method: context.method,
       url: context.url,
       description: context.description,
-      error: error
+      error: error,
+      ...context.additionalLoggingFields
     }
     logContext[keys.CORRELATION_ID] = context.correlationId
     logger.error(`Calling ${context.service} to ${context.description} threw exception`, logContext)
