@@ -82,7 +82,7 @@ pipeline {
                 }
             }
             steps {
-                runAppE2E("selfservice", "card,products,directdebit")
+                runAppE2E("selfservice", "card,products")
             }
         }
       }
@@ -110,10 +110,6 @@ pipeline {
         checkPactCompatibility("selfservice", gitCommit(), "test")
         deployEcs("selfservice")
       }
-    }
-    stage('Direct Debit Smoke Test') {
-      when { branch 'master' }
-      steps { runDirectDebitSmokeTest() }
     }
     stage('Pact Tag') {
       when {
