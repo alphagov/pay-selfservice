@@ -25,14 +25,13 @@ const legacyConnectorTransactionParity = (transaction) => {
   transaction.charge_id = transaction.transaction_id
 
   if (transaction.transaction_type && transaction.transaction_type.toLowerCase() === 'refund') {
-    if (transaction.parent_transaction !== undefined && transaction.parent_transaction !== null) {
-      let charge = transaction.parent_transaction
-      transaction.charge_id = charge.transaction_id
-      transaction.gateway_transaction_id = charge.gateway_transaction_id
-      transaction.reference = charge.reference
-      transaction.description = charge.description
-      transaction.email = charge.email
-      transaction.card_details = charge.card_details
+    if (transaction.payment_details !== undefined && transaction.payment_details !== null) {
+      let paymentDetails = transaction.payment_details
+      transaction.charge_id = transaction.parent_transaction_id
+      transaction.reference = paymentDetails.reference
+      transaction.description = paymentDetails.description
+      transaction.email = paymentDetails.email
+      transaction.card_details = paymentDetails.card_details
     }
   }
 

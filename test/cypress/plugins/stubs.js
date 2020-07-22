@@ -367,7 +367,6 @@ module.exports = {
     return simpleStubBuilder('GET', path, 200, {
       query: lodash.defaults(opts.filters, {
         account_id: opts.gateway_account_id,
-        with_parent_transaction: true,
         page: opts.page || 1,
         display_size: opts.display_size || 100
       }),

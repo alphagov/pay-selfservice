@@ -54,7 +54,6 @@ const transactions = function transactions (gatewayAccountIds = [], filters = {}
   const formatOptions = { arrayFormat: 'comma' }
   const path = '/v1/transaction'
   const params = {
-    with_parent_transaction: true,
     account_id: gatewayAccountIds
   }
 

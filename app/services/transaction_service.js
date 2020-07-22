@@ -19,8 +19,7 @@ const searchLedger = async function searchLedger (gatewayAccountIds = [], filter
 const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = []) {
   const formatOptions = { arrayFormat: 'comma' }
   const params = {
-    account_id: gatewayAccountIds,
-    with_parent_transaction: true
+    account_id: gatewayAccountIds
   }
 
   const formattedParams = qs.stringify(params, formatOptions)
