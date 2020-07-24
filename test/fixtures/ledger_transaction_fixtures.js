@@ -166,24 +166,20 @@ const buildRefundDetails = (opts = {}) => {
     parent_transaction_id: opts.parent_transaction_id || 'puuhl0gu7egigin7oh9c75p4m1'
   }
 
-  if (opts.includeParentTransaction) {
-    const parentTransactionOpts = {
-      gateway_account_id: opts.gateway_account_id || '1',
-      transaction_id: opts.parent_transaction_id,
-      includeCardDetails: true,
-      includeAddress: true,
-      includeRefundSummary: true,
-      includeSettlementSummary: true,
-      status: 'success',
-      finished: true,
-      refund_summary_status: 'full',
-      amount_available: 0,
-      amount_submitted: opts.amount,
-      amount_refunded: opts.amount,
-      capture_submit_time: opts.capture_submit_time || null,
-      captured_date: opts.captured_date || null
+  if (opts.includePaymentDetails) {
+    const paymentDetails = {
+      description: opts.description || 'ref1',
+      reference: opts.reference || 'ref188888',
+      email: opts.email || 'test@example.org',
+      card_details: {
+        last_digits_card_number: opts.last_digits_card_number || '0002',
+        cardholder_name: opts.cardholder_name || 'Test User',
+        expiry_date: opts.expiry_date || '08/23',
+        card_brand: opts.card_brand || 'Visa'
+      },
+      transaction_type: 'PAYMENT'
     }
-    result.parent_transaction = buildTransactionDetails(parentTransactionOpts)
+    result.payment_details = paymentDetails
   }
   return result
 }

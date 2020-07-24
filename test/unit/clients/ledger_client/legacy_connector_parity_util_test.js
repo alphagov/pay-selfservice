@@ -24,16 +24,16 @@ describe('Ledger service client legacy parity utilities', () => {
     it('Correctly maps ledger values on refund parent transaction to current connector names', () => {
       const ledgerTransactionFixture = {
         transaction_id: 'some-transaction-id',
+        parent_transaction_id: 'payment-transaction-id',
         transaction_type: 'REFUND',
         refunded_by: 'f579410614654249987ad939f5ef53a1',
         refund_summary: {
           amount_refunded: 1000
         },
-        parent_transaction: {
-          transaction_id: 'charge-id',
-          gateway_transaction_id: 'payment-gateway-transaction-id',
+        gateway_transaction_id: 'refund-gateway-transaction-id',
+        payment_details: {
           reference: 'payment-reference',
-          description: 'payment-descriptiom',
+          description: 'payment-description',
           email: 'test-email@example.org',
           card_details: {
             cardholder_name: 'test-name',
@@ -46,11 +46,11 @@ describe('Ledger service client legacy parity utilities', () => {
       }
 
       const result = legacyConnectorTransactionParity(ledgerTransactionFixture)
-      assert.strictEqual(result.charge_id, 'charge-id')
+      assert.strictEqual(result.charge_id, 'payment-transaction-id')
       assert.strictEqual(result.refund_summary.user_external_id, 'f579410614654249987ad939f5ef53a1')
-      assert.strictEqual(result.gateway_transaction_id, 'payment-gateway-transaction-id')
+      assert.strictEqual(result.gateway_transaction_id, 'refund-gateway-transaction-id')
       assert.strictEqual(result.reference, 'payment-reference')
-      assert.strictEqual(result.description, 'payment-descriptiom')
+      assert.strictEqual(result.description, 'payment-description')
       assert.strictEqual(result.email, 'test-email@example.org')
       assert.strictEqual(result.card_details.cardholder_name, 'test-name')
       assert.strictEqual(result.card_details.card_brand, 'visa')
@@ -96,7 +96,7 @@ describe('Ledger service client legacy parity utilities', () => {
       assert.strictEqual(refundResult.submitted_by, 'some-user-id')
     })
 
-    it('Correcly transforms resource type', () => {
+    it('Correctly transforms resource type', () => {
       const { events } = legacyConnectorEventsParity(ledgerTransactionEventsFixture)
       const result = events[0]
       assert.strictEqual(result.type, 'payment')
@@ -111,10 +111,10 @@ describe('Ledger service client legacy parity utilities', () => {
         },
         {
           transaction_id: 'some-transaction-id',
+          parent_transaction_id: 'payment-transaction-id',
           transaction_type: 'REFUND',
           refunded_by: 'f579410614654249987ad939f5ef53a1',
-          parent_transaction: {
-            transaction_id: 'charge-id',
+          payment_details: {
             reference: 'payment-reference'
           }
         }]
@@ -122,7 +122,7 @@ describe('Ledger service client legacy parity utilities', () => {
       const transactions = legacyConnectorTransactionsParity(ledgerTransactionsSearchFixture)
 
       assert.strictEqual(transactions.results[0].charge_id, 'some-charge-id')
-      assert.strictEqual(transactions.results[1].charge_id, 'charge-id')
+      assert.strictEqual(transactions.results[1].charge_id, 'payment-transaction-id')
       assert.strictEqual(transactions.results[1].refund_summary.user_external_id, 'f579410614654249987ad939f5ef53a1')
       assert.strictEqual(transactions.results[1].reference, 'payment-reference')
     })

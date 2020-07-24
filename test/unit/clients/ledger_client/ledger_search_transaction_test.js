@@ -74,7 +74,6 @@ describe('ledger client', function () {
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
-          .withQuery('with_parent_transaction', 'true')
           .withQuery('page', '1')
           .withQuery('display_size', '100')
           .withUponReceiving('a valid search transaction details request')
@@ -132,7 +131,6 @@ describe('ledger client', function () {
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
-          .withQuery('with_parent_transaction', 'true')
           .withQuery('page', '1')
           .withQuery('display_size', '100')
           .withQuery('email', params.filters.email)
@@ -201,7 +199,6 @@ describe('ledger client', function () {
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
-          .withQuery('with_parent_transaction', 'true')
           .withQuery('reference', params.filters.reference)
           .withQuery('from_date', fromDateTime)
           .withQuery('to_date', toDateTime)
@@ -253,7 +250,7 @@ describe('ledger client', function () {
           type: 'refund',
           capture_submit_time: '2019-09-21T13:14:16.067Z',
           captured_date: '2019-09-21',
-          includeParentTransaction: true
+          includePaymentDetails: true
         },
         {
           amount: 2000,
@@ -280,7 +277,6 @@ describe('ledger client', function () {
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
-          .withQuery('with_parent_transaction', 'true')
           .withQuery('page', '1')
           .withQuery('display_size', '100')
           .withQuery('from_date', fromDateTime)
@@ -343,7 +339,6 @@ describe('ledger client', function () {
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
-          .withQuery('with_parent_transaction', 'true')
           .withQuery('page', '1')
           .withQuery('display_size', '100')
           .withQuery('to_date', toDateTime)
