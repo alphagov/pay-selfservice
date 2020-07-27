@@ -4,7 +4,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "nodemon",
+            "name": "Self Service",
             "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon/bin/nodemon.js",
             "program": "${workspaceFolder}/start-dev.js",
             "runtimeArgs": ["-e", "js,njk", "-r", "dotenv/config"],
