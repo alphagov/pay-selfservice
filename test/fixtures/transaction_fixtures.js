@@ -51,7 +51,7 @@ const buildTransactionDetailsWithDefaults = (opts = {}) => {
     reference: opts.reference || 'ref188888',
     charge_id: opts.charge_id || 'ht439nfg2l1e303k0dmifrn4fc',
     gateway_transaction_id: opts.gateway_transaction_id || '4cddd970-cce9-4bf1-b087-f13db1e199bd',
-    email: opts.email || 'gds-payments-team-smoke@digital.cabinet-office.gov.uk',
+    email: opts.email || 'test@example.org',
     payment_provider: opts.payment_provider || 'sandbox',
     created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
     refund_summary: {
@@ -100,7 +100,7 @@ const buildTransactionSearchResultWithDefaults = (opts = {}) => {
     links: [],
     charge_id: opts.charge_id || 'ht439nfg2l1e303k0dmifrn4fc',
     gateway_transaction_id: opts.gateway_transaction_id || '4cddd970-cce9-4bf1-b087-f13db1e199bd',
-    email: opts.email || 'gds-payments-team-smoke@digital.cabinet-office.gov.uk',
+    email: opts.email || 'test@example.org',
     transaction_type: opts.transaction_type || 'charge',
     created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
     card_details: {
