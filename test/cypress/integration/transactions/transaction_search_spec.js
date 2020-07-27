@@ -1,4 +1,3 @@
-
 const transactionsUrl = `/transactions`
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = 42
@@ -41,9 +40,19 @@ const filteredByDatesTransactions = [
 
 const filteredByMultipleFieldsTransactions = [
   {
+    transaction_id: 'payment-transaction-id',
     reference: 'filtered-by-multiple-fields',
     amount: 1500,
-    type: 'payment'
+    type: 'payment',
+    card_brand: 'Mastercard'
+  },
+  {
+    amount: 1500,
+    reference: 'filtered-by-multiple-fields2',
+    type: 'refund',
+    includePaymentDetails: true,
+    status: 'submitted',
+    parent_transaction_id: 'payment-transaction-id2'
   }
 ]
 
@@ -113,6 +122,17 @@ const ledgerTransactionsStub = (filters, transactions) => {
     }
   }
 }
+
+function assertTransactionRow (row, reference, transactionLink, email, amount, cardBrand, state) {
+  cy.get('#transactions-list tbody').find('tr').eq(row).find('th').should('contain', reference)
+  cy.get('#transactions-list tbody').find('tr > th').eq(row).find('.reference')
+    .should('have.attr', 'href', transactionLink)
+  cy.get('#transactions-list tbody').find('tr').eq(row).find('.email').should('contain', email)
+  cy.get('#transactions-list tbody').find('tr').eq(row).find('.amount').should('contain', amount)
+  cy.get('#transactions-list tbody').find('tr').eq(row).find('.brand').should('contain', cardBrand)
+  cy.get('#transactions-list tbody').find('tr').eq(row).find('.state').should('contain', state)
+}
+
 describe('Transactions List', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
@@ -250,7 +270,10 @@ describe('Transactions List', () => {
       // Ensure the right number of transactions is displayed
       cy.get('#transactions-list tbody').find('tr').should('have.length', filteredByMultipleFieldsTransactions.length)
       // Ensure the expected transactions are shown
-      cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', filteredByMultipleFieldsTransactions[0].reference)
+      assertTransactionRow(0, filteredByMultipleFieldsTransactions[0].reference, '/transactions/payment-transaction-id',
+        'test2@example.org', '£15.00', 'Mastercard', 'In progress')
+      assertTransactionRow(1, filteredByMultipleFieldsTransactions[1].reference, '/transactions/payment-transaction-id2',
+        'test@example.org', '–£15.00', 'Visa', 'Refund submitted')
     })
   })
   describe('Transactions are displayed correctly', () => {

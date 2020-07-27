@@ -72,7 +72,7 @@ const buildTransactionDetails = (opts = {}) => {
     description: opts.description || 'ref1',
     reference: opts.reference || 'ref188888',
     transaction_id: opts.transaction_id,
-    email: opts.email || 'gds-payments-team-smoke@digital.cabinet-office.gov.uk',
+    email: opts.email || 'test2@example.org',
     payment_provider: opts.payment_provider || 'sandbox',
     created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
     delayed_capture: opts.delayed_capture || false,
