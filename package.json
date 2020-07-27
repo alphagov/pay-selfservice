@@ -100,7 +100,7 @@
     "qrcode": "1.4.4",
     "qs": "6.9.4",
     "request": "2.88.2",
-    "request-promise-native": "1.0.8",
+    "request-promise-native": "1.0.9",
     "requestretry": "4.1.1",
     "rfc822-validate": "1.0.0",
     "serve-favicon": "2.5.0",
