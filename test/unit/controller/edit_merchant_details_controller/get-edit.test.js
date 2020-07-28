@@ -135,7 +135,7 @@ describe('edit merchant details controller - get', () => {
       expect(response.statusCode).to.equal(200)
     })
     it(`should show empty inputs and GB selected as country`, () => {
-      expect($('#merchant-name')).withNoAttribute('value')
+      expect($('#merchant-name').val()).equal('')
       expect($('#address-line1')).withNoAttribute('value')
       expect($('#address-line2')).withNoAttribute('value')
       expect($('#address-city')).withNoAttribute('value')
@@ -174,7 +174,7 @@ describe('edit merchant details controller - get', () => {
       expect(response.statusCode).to.equal(200)
     })
     it(`should show empty inputs and GB selected as country`, () => {
-      expect($('#merchant-name')).withNoAttribute('value')
+      expect($('#merchant-name').val()).equal('')
       expect($('#telephone-number')).withNoAttribute('value')
       expect($('#merchant-email')).withNoAttribute('value')
       expect($('#address-line1')).withNoAttribute('value')
@@ -215,7 +215,7 @@ describe('edit merchant details controller - get', () => {
       expect(response.statusCode).to.equal(200)
     })
     it(`should show empty inputs and GB selected as country`, () => {
-      expect($('#merchant-name')).withNoAttribute('value')
+      expect($('#merchant-name').val()).equal('')
       expect($('#telephone-number')).withNoAttribute('value')
       expect($('#merchant-email')).withNoAttribute('value')
       expect($('#address-line1')).withNoAttribute('value')
