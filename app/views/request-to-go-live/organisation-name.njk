@@ -26,31 +26,31 @@
           action="/service/{{ currentService.externalId }}/request-to-go-live/organisation-name" data-validate="true" >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
-      {% set organisationNameError = false %}
-      {% if errors['organisation-name'] %}
-        {% set organisationNameError = {
-          text: "Please enter a valid name"
-        } %}
-      {% endif %}
-      {{ govukInput({
-        label: {
-          text: "What is your organisation called?",
-          isPageHeading: true,
-          classes: "govuk-label--l"
-        },
-        hint: {
-          text: "Enter the main name of your organisation, not the name of your local office or individual department."
-        },
-        id: "request-to-go-live-organisation-name-input",
-        name: "organisation-name",
-        value: organisationName,
-        type: "text",
-        errorMessage: organisationNameError,
-        attributes: {
-          "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "255"
-        }
-      }) }}
+      <div class="govuk-form-group {% if errors['organisation-name'] %} govuk-form-group--error {% endif %}">
+        <h1 class="govuk-label-wrapper">
+           <label class="govuk-label govuk-label--l" for="request-to-go-live-organisation-name-input">
+            What is your organisation called?
+          </label>
+        </h1>
+
+        <span id="request-to-go-live-organisation-name-input-hint" class="govuk-hint">
+          <p>Payment card schemes require the details of the organisation taking payment to be shown on payment pages. </p>
+          <p>Enter the main name of your organisation, not your local office or individual department.</p>
+          Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).
+        </span>
+
+        {% if errors['organisation-name'] %}
+          <span id="request-to-go-live-organisation-name-input-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> {{errors['organisation-name']}}
+          </span>
+        {% endif %}
+
+        <input class="govuk-input  {% if errors['organisation-name'] %} govuk-input--error {% endif %}"
+               id="request-to-go-live-organisation-name-input" name="organisation-name"
+               type="text" aria-describedby="request-to-go-live-organisation-name-input-hint"
+               data-validate="required isFieldGreaterThanMaxLengthChars" data-validate-max-length="255"
+               value="{{organisationName}}"/>
+      </div>
 
       {{ govukButton({ text: "Continue" }) }}
     </form>
