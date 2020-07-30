@@ -12,7 +12,7 @@
   {% endset %}
 
   {% if connectorGatewayAccountStripeProgress and (not isConnectorStripeJourneyComplete) %}
-    <div class="account-status-panel {{panelModifierClass}} govuk-grid-row govuk-!-margin-bottom-5">
+    <div class="account-status-panel govuk-grid-row {{panelModifierClass}} govuk-!-margin-bottom-5">
       <div class="govuk-grid-column-two-thirds">
         {% if isStripeAccountRestricted %}
           <h2 class="govuk-heading-m">Stripe have restricted your account</h2>
@@ -60,7 +60,7 @@
       </div>
     </div>
   {% elif  isStripeAccountRestricted %}
-    <div class="account-status-panel account-status-panel--restricted govuk-grid-row govuk-!-margin-bottom-5">
+    <div class="account-status-panel govuk-grid-row account-status-panel--restricted govuk-!-margin-bottom-5">
       <div class="govuk-grid-column-two-thirds">
           <h2 class="govuk-heading-m">Stripe have restricted your account</h2>
           <p class="govuk-body-m">To start taking payments again, please contact support.</p>
