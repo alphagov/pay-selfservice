@@ -1,10 +1,10 @@
 'use strict'
 
 // Local dependencies
-const {response, renderErrorView} = require('../../utils/response.js')
-const auth = require('../../services/auth_service.js')
-const publicAuthClient = require('../../services/clients/public_auth_client')
-const {isADirectDebitAccount} = require('../../services/clients/direct_debit_connector_client.js')
+const { response, renderErrorView } = require('../../utils/response.js')
+const auth = require('../../services/auth.service.js')
+const publicAuthClient = require('../../services/clients/public-auth.client')
+const { isADirectDebitAccount } = require('../../services/clients/direct-debit-connector.client.js')
 
 module.exports = (req, res) => {
   // current account id is either external (DIRECT_DEBIT) or internal (CARD) for now

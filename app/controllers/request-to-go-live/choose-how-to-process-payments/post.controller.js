@@ -5,9 +5,9 @@ const lodash = require('lodash')
 
 // Local dependencies
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
-const { validateProcessPaymentOptions } = require('../../../utils/choose_how_to_process_payments_validation')
+const { validateProcessPaymentOptions } = require('../../../utils/choose-how-to-process-payments-validation')
 const { requestToGoLive } = require('../../../paths')
-const { updateCurrentGoLiveStage } = require('../../../services/service_service')
+const { updateCurrentGoLiveStage } = require('../../../services/service.service')
 const goLiveStage = require('../../../models/go-live-stage')
 const { renderErrorView } = require('../../../utils/response.js')
 

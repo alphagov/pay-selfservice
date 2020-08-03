@@ -2,7 +2,7 @@
 
 // Local dependencies
 const { renderErrorView } = require('../../../utils/response')
-const userService = require('../../../services/user_service')
+const userService = require('../../../services/user.service')
 const paths = require('../../../paths')
 const { invalidTelephoneNumber } = require('../../../utils/validation/telephone-number-validation')
 

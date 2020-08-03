@@ -5,7 +5,7 @@ const lodash = require('lodash')
 
 // Local dependencies
 const paths = require('../../paths')
-const productsClient = require('../../services/clients/products_client.js')
+const productsClient = require('../../services/clients/products.client.js')
 const { slugify, removeIndefiniteArticles } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
 const makeNiceURL = string => {

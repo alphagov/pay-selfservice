@@ -5,7 +5,7 @@ const lodash = require('lodash')
 
 // Local dependencies
 const paths = require('../../paths')
-const formattedPathFor = require('../../utils/replace_params_in_path')
+const formattedPathFor = require('../../utils/replace-params-in-path')
 
 module.exports = (req, res) => {
   const editData = lodash.get(req, 'session.editPaymentLinkData', {})

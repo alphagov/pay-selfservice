@@ -5,8 +5,8 @@ const lodash = require('lodash')
 
 // Local dependencies
 const { response, renderErrorView } = require('../../utils/response')
-const { ConnectorClient } = require('../../services/clients/connector_client')
-const { correlationHeader } = require('../../utils/correlation_header')
+const { ConnectorClient } = require('../../services/clients/connector.client')
+const { correlationHeader } = require('../../utils/correlation-header')
 
 module.exports = async (req, res) => {
   const connector = new ConnectorClient(process.env.CONNECTOR_URL)

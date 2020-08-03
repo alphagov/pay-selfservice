@@ -6,7 +6,7 @@ const paths = require('../../../paths')
 
 const getController = function getController (stripeAccountSetupResponse) {
   return proxyquire('./get-controller', {
-    '../../../services/clients/connector_client': {
+    '../../../services/clients/connector.client': {
       ConnectorClient: function () {
         this.getStripeAccountSetup = (gatewayAccountId, correlationId) => Promise.resolve(stripeAccountSetupResponse)
       }

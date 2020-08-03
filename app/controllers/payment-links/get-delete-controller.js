@@ -3,9 +3,9 @@
 // Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
-const productsClient = require('../../services/clients/products_client.js')
-const publicAuthClient = require('../../services/clients/public_auth_client.js')
-const auth = require('../../services/auth_service.js')
+const productsClient = require('../../services/clients/products.client.js')
+const publicAuthClient = require('../../services/clients/public-auth.client.js')
+const auth = require('../../services/auth.service.js')
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)

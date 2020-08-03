@@ -5,8 +5,8 @@ const _ = require('lodash')
 
 // local dependencies
 const { response } = require('../../utils/response')
-const serviceService = require('../../services/service_service')
-const getHeldPermissions = require('../../utils/get_held_permissions')
+const serviceService = require('../../services/service.service')
+const getHeldPermissions = require('../../utils/get-held-permissions')
 const { getLiveGatewayAccountIds } = require('../../utils/permissions')
 
 const hasAccountWithPayouts = function hasLiveStripeAccount (gatewayAccounts) {

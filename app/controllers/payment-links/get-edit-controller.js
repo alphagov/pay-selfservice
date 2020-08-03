@@ -7,10 +7,10 @@ const lodash = require('lodash')
 const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
-const productsClient = require('../../services/clients/products_client.js')
-const auth = require('../../services/auth_service.js')
+const productsClient = require('../../services/clients/products.client.js')
+const auth = require('../../services/auth.service.js')
 const { renderErrorView } = require('../../utils/response.js')
-const formattedPathFor = require('../../utils/replace_params_in_path')
+const formattedPathFor = require('../../utils/replace-params-in-path')
 
 module.exports = (req, res) => {
   const PAGE_PARAMS = {

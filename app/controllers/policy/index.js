@@ -1,5 +1,5 @@
 'use strict'
 
 module.exports = {
-  download: require('./policyDownload.controller')
+  download: require('./policy-download.controller')
 }

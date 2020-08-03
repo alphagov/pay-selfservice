@@ -1,7 +1,7 @@
 'use strict'
 
 // Local dependencies
-const emailValidator = require('../utils/email_tools.js')
+const emailValidator = require('../utils/email-tools.js')
 
 // Constants
 const NUMBERS_ONLY = new RegExp('^[0-9]+$')

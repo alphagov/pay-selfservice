@@ -4,19 +4,19 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const userFixtures = require('../../fixtures/user_fixtures')
-const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
-const transactionDetailsFixtures = require('../../fixtures/transaction_fixtures')
-const ledgerTransactionFixtures = require('../../fixtures/ledger_transaction_fixtures')
-const ledgerPayoutFixtures = require('../../fixtures/payout_fixtures')
-const cardFixtures = require('../../fixtures/card_fixtures')
-const serviceFixtures = require('../../fixtures/service_fixtures')
-const goLiveRequestFixtures = require('../../fixtures/go_live_requests_fixture')
-const stripeAccountSetupFixtures = require('../../fixtures/stripe_account_setup_fixtures')
-const productFixtures = require('../../fixtures/product_fixtures')
-const goCardlessConnectFixtures = require('../../fixtures/go_cardless_connect_fixtures')
-const ledgerFixture = require('../../fixtures/ledger_transaction_fixtures')
-const inviteFixtures = require('../../fixtures/invite_fixtures')
+const userFixtures = require('../../fixtures/user.fixtures')
+const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
+const transactionDetailsFixtures = require('../../fixtures/transaction.fixtures')
+const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
+const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
+const cardFixtures = require('../../fixtures/card.fixtures')
+const serviceFixtures = require('../../fixtures/service.fixtures')
+const goLiveRequestFixtures = require('../../fixtures/go-live-requests.fixture')
+const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
+const productFixtures = require('../../fixtures/product.fixtures')
+const goCardlessConnectFixtures = require('../../fixtures/go-cardless-connect.fixtures')
+const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
+const inviteFixtures = require('../../fixtures/invite.fixtures')
 
 const simpleStubBuilder = function simpleStubBuilder (method, path, responseCode, additionalParams = {}) {
   const request = {

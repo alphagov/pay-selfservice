@@ -8,8 +8,8 @@ const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response')
 const router = require('../../routes')
 const { renderErrorView } = require('../../utils/response')
-const serviceService = require('../../services/service_service')
-const { CORRELATION_HEADER } = require('../../utils/correlation_header')
+const serviceService = require('../../services/service.service')
+const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 
 const getIndex = (req, res) => {
   const model = {

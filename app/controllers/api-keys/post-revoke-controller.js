@@ -2,8 +2,8 @@
 
 // Local dependencies
 const paths = require('../../paths')
-const auth = require('../../services/auth_service.js')
-const publicAuthClient = require('../../services/clients/public_auth_client')
+const auth = require('../../services/auth.service.js')
+const publicAuthClient = require('../../services/clients/public-auth.client')
 
 module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)

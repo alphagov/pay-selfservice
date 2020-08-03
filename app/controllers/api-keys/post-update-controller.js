@@ -2,7 +2,7 @@
 
 // Local dependencies
 const paths = require('../../paths')
-const publicAuthClient = require('../../services/clients/public_auth_client')
+const publicAuthClient = require('../../services/clients/public-auth.client')
 
 module.exports = (req, res) => {
   // this does not need to be explicitly tied down to account_id

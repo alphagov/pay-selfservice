@@ -7,8 +7,8 @@ const supertest = require('supertest')
 
 // Local dependencies
 const { getApp } = require('../../../../server')
-const mockSession = require('../../../test_helpers/mock_session')
-const userCreator = require('../../../test_helpers/user_creator')
+const mockSession = require('../../../test-helpers/mock-session')
+const userCreator = require('../../../test-helpers/user-creator')
 const paths = require('../../../../app/paths')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
@@ -86,7 +86,7 @@ describe('Revoked API keys index', () => {
         .reply(200, {
           payment_provider: 'sandbox'
         })
-      mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, {tokens: [TOKEN_1]})
+      mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, { tokens: [TOKEN_1] })
 
       supertest(app)
         .get(paths.apiKeys.revoked)
