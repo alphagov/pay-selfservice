@@ -1,7 +1,7 @@
 'use strict'
 
 const logger = require('../utils/logger')(__filename)
-const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
+const ConnectorClient = require('../services/clients/connector.client.js').ConnectorClient
 
 // Constants
 const ACCOUNT_API_PATH = '/v1/api/accounts/{accountId}'

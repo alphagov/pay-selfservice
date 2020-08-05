@@ -5,7 +5,7 @@ const _ = require('lodash')
 
 // Custom dependencies
 const logger = require('../../utils/logger')(__filename)
-const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
+const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
 const paths = require('../../paths')
 
 /**

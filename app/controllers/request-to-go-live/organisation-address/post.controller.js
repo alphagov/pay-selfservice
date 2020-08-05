@@ -11,7 +11,7 @@ const { requestToGoLive } = require('../../../paths')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber
 } = require('../../../utils/validation/server-side-form-validations')
-const { updateService } = require('../../../services/service_service')
+const { updateService } = require('../../../services/service.service')
 const { renderErrorView } = require('../../../utils/response')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 

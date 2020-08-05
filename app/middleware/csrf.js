@@ -6,7 +6,7 @@ const csrf = require('csrf')
 // Local Dependencies
 const logger = require('../utils/logger')(__filename)
 const { renderErrorView } = require('../utils/response.js')
-const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+const CORRELATION_HEADER = require('../utils/correlation-header.js').CORRELATION_HEADER
 
 // Assignments and Variables
 const errorMsg = 'There is a problem with the payments platform'

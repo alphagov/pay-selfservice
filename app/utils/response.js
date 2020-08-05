@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const logger = require('./logger')(__filename)
-const displayConverter = require('./display_converter')
+const displayConverter = require('./display-converter')
 const { CORRELATION_ID } = require('@govuk-pay/pay-js-commons').logging.keys
 
 const ERROR_MESSAGE = 'There is a problem with the payments platform'

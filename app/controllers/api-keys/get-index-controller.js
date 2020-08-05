@@ -1,9 +1,9 @@
 'use strict'
 
 // Local dependencies
-const {response, renderErrorView} = require('../../utils/response.js')
-const auth = require('../../services/auth_service.js')
-const publicAuthClient = require('../../services/clients/public_auth_client')
+const { response, renderErrorView } = require('../../utils/response.js')
+const auth = require('../../services/auth.service.js')
+const publicAuthClient = require('../../services/clients/public-auth.client')
 
 module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)

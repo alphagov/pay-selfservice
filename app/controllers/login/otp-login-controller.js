@@ -2,9 +2,9 @@
 
 // Custom dependencies
 const logger = require('../../utils/logger')(__filename)
-const userService = require('../../services/user_service')
+const userService = require('../../services/user.service')
 const { renderErrorView } = require('../../utils/response')
-const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
+const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
 
 module.exports = (req, res) => {
   const PAGE_PARAMS = {}

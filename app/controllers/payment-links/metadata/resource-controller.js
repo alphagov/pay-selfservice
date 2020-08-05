@@ -1,9 +1,9 @@
 const { response, renderErrorView } = require('../../../utils/response')
-const formattedPathFor = require('../../../utils/replace_params_in_path')
+const formattedPathFor = require('../../../utils/replace-params-in-path')
 const paths = require('../../../paths')
-const { product } = require('../../../services/clients/products_client.js')
+const { product } = require('../../../services/clients/products.client.js')
 const MetadataForm = require('./metadata-form')
-const auth = require('../../../services/auth_service.js')
+const auth = require('../../../services/auth.service.js')
 
 const addMetadataPage = function addMetadataPage (req, res) {
   const pageData = {

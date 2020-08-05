@@ -6,9 +6,9 @@ const lodash = require('lodash')
 // Local dependencies
 const logger = require('../../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../../utils/response')
-const { updateCompany } = require('../../../services/clients/stripe/stripe_client')
+const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const vatNumberValidations = require('./vat-number-validations')
-const { ConnectorClient } = require('../../../services/clients/connector_client')
+const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const paths = require('../../../paths')
 

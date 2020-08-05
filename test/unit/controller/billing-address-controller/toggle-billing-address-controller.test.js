@@ -8,10 +8,10 @@ const supertest = require('supertest')
 const csrf = require('csrf')
 
 // Local dependencies
-const mockSession = require('../../../test_helpers/mock_session.js')
+const mockSession = require('../../../test-helpers/mock-session.js')
 const getApp = require('../../../../server.js').getApp
-const userFixtures = require('../../../fixtures/user_fixtures')
-const formattedPathFor = require('../../../../app/utils/replace_params_in_path')
+const userFixtures = require('../../../fixtures/user.fixtures')
+const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
 const paths = require('../../../../app/paths.js')
 
 // Constants

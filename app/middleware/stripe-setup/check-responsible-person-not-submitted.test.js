@@ -99,7 +99,7 @@ describe('Check responsible person not submitted middleware', () => {
 
 function getMiddlewareWithConnectorClientResolvedPromiseMock (getStripeAccountSetupResponse) {
   return proxyquire('./check-responsible-person-not-submitted', {
-    '../../services/clients/connector_client': {
+    '../../services/clients/connector.client': {
       ConnectorClient: function () {
         this.getStripeAccountSetup = (gatewayAccountId, correlationId) => {
           return new Promise(resolve => {
@@ -113,7 +113,7 @@ function getMiddlewareWithConnectorClientResolvedPromiseMock (getStripeAccountSe
 
 function getMiddlewareWithConnectorClientRejectedPromiseMock (getStripeAccountSetupResponse) {
   return proxyquire('./check-responsible-person-not-submitted', {
-    '../../services/clients/connector_client': {
+    '../../services/clients/connector.client': {
       ConnectorClient: function () {
         this.getStripeAccountSetup = (gatewayAccountId, correlationId) => {
           return new Promise((resolve, reject) => {

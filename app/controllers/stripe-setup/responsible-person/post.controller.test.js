@@ -48,11 +48,11 @@ describe('Responsible person POST controller', () => {
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
-      '../../../services/clients/stripe/stripe_client': {
+      '../../../services/clients/stripe/stripe.client': {
         listPersons: listPersonsMock,
         updatePerson: updatePersonMock
       },
-      '../../../services/clients/connector_client': {
+      '../../../services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
         }

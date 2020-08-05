@@ -4,16 +4,16 @@
 const _ = require('lodash')
 
 const { response, renderErrorView } = require('../../utils/response')
-const { ConnectorClient } = require('../../services/clients/connector_client.js')
-const transactionService = require('../../services/transaction_service')
-const { buildPaymentList } = require('../../utils/transaction_view.js')
+const { ConnectorClient } = require('../../services/clients/connector.client.js')
+const transactionService = require('../../services/transaction.service')
+const { buildPaymentList } = require('../../utils/transaction-view.js')
 const permissions = require('../../utils/permissions')
 const { getFilters, describeFilters } = require('../../utils/filters.js')
 const router = require('../../routes.js')
 const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
-const { CORRELATION_HEADER } = require('../../utils/correlation_header.js')
+const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 
 module.exports = async (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
     model.clearRedirect = router.paths.allServiceTransactions.index
     model.isStripeAccount = userPermittedAccountsSummary.headers.shouldGetStripeHeaders
 
-    return response(req, res, 'all_service_transactions/index', model)
+    return response(req, res, 'all-service-transactions/index', model)
   } catch (err) {
     renderErrorView(req, res, 'Unable to fetch transaction information')
   }

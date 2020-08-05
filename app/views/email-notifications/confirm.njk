@@ -1,0 +1,38 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l">Confirm new email template</h1>
+  <p class="govuk-body">This email will be sent to users when they successfully complete a payment within your service.</p>
+
+  <h2 class="govuk-heading-m">New email template</h2>
+
+  <div id="email-templates">
+    {% include "./email-confirmation-body.njk" %}
+  </div>
+
+  <form method="post" action="{{routes.emailNotifications.update}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input type="hidden" value="{{customEmailText}}" name="custom-email-text" class="qa-custom-p" />
+
+    {{
+      govukButton({
+        text: "Confirm",
+        classes: "qa-confirm-submit",
+        attributes: {
+          id: "qa-confirm"
+        }
+      })
+    }}
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">Cancel</a></p>
+  </form>
+</div>
+{% endblock %}

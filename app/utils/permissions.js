@@ -1,7 +1,7 @@
 'use strict'
 const _ = require('lodash')
-const { ConnectorClient } = require('../services/clients/connector_client.js')
-const { isADirectDebitAccount } = require('./../services/clients/direct_debit_connector_client')
+const { ConnectorClient } = require('../services/clients/connector.client.js')
+const { isADirectDebitAccount } = require('../services/clients/direct-debit-connector.client')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const userServicesContainsGatewayAccount = function userServicesContainsGatewayAccount (accountId, user) {

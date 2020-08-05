@@ -6,8 +6,8 @@ const lodash = require('lodash')
 // Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response')
-const productsClient = require('../../services/clients/products_client')
-const authService = require('../../services/auth_service')
+const productsClient = require('../../services/clients/products.client')
+const authService = require('../../services/auth.service')
 const { renderErrorView } = require('../../utils/response')
 const supportedLanguage = require('../../models/supported-language')
 

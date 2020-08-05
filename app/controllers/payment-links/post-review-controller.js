@@ -6,10 +6,10 @@ const lodash = require('lodash')
 // Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
-const productsClient = require('../../services/clients/products_client.js')
-const productTypes = require('../../utils/product_types')
-const publicAuthClient = require('../../services/clients/public_auth_client')
-const auth = require('../../services/auth_service.js')
+const productsClient = require('../../services/clients/products.client.js')
+const productTypes = require('../../utils/product-types')
+const publicAuthClient = require('../../services/clients/public-auth.client')
+const auth = require('../../services/auth.service.js')
 const supportedLanguage = require('../../models/supported-language')
 
 module.exports = (req, res) => {

@@ -12,8 +12,8 @@ module.exports = {
     redirectDetail: '/redirect/transactions/:chargeId'
   },
   allServiceTransactions: {
-    index: '/all_service_transactions',
-    download: '/all_service_transactions/download'
+    index: '/all-service-transactions',
+    download: '/all-service-transactions/download'
   },
   yourPsp: {
     index: '/your-psp',
@@ -167,7 +167,7 @@ module.exports = {
     linkAccount: '/link-account',
     oauthComplete: '/oauth/complete'
   },
-  generateRoute: require(path.join(__dirname, '/utils/generate_route.js')),
+  generateRoute: require(path.join(__dirname, '/utils/generate-route.js')),
   requestToGoLive: {
     index: '/service/:externalServiceId/request-to-go-live',
     organisationName: '/service/:externalServiceId/request-to-go-live/organisation-name',

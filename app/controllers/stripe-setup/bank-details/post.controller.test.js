@@ -135,10 +135,10 @@ describe('Bank details post controller', () => {
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
-      '../../../services/clients/stripe/stripe_client': {
+      '../../../services/clients/stripe/stripe.client': {
         updateBankAccount: updateBankAccountMock
       },
-      '../../../services/clients/connector_client': {
+      '../../../services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
         }
