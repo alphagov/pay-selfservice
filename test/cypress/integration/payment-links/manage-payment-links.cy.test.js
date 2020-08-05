@@ -1,5 +1,5 @@
-const commonStubs = require('../../utils/common_stubs')
-const { getProductsStub } = require('../../utils/products_stubs')
+const commonStubs = require('../../utils/common-stubs')
+const { getProductsStub } = require('../../utils/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 

@@ -1,6 +1,6 @@
 'use strict'
 
-const commonStubs = require('../../utils/common_stubs')
+const commonStubs = require('../../utils/common-stubs')
 
 describe('Stripe setup: responsible person page', () => {
   const gatewayAccountId = 42

@@ -1,7 +1,7 @@
 'use strict'
 
 const lodash = require('lodash')
-const utils = require('../../utils/request_to_go_live_utils')
+const utils = require('../../utils/request-to-go-live-utils')
 const variables = utils.variables
 
 describe('Request to go live: choose how to process payments', () => {

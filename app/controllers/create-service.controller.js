@@ -24,7 +24,7 @@ exports.get = (req, res) => {
   pageData.submit_link = paths.serviceSwitcher.create
   pageData.my_services = paths.serviceSwitcher.index
 
-  return response(req, res, 'services/add_service', pageData)
+  return response(req, res, 'services/add-service', pageData)
 }
 
 exports.post = (req, res) => {

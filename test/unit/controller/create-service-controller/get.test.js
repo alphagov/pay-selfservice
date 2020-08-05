@@ -26,10 +26,10 @@ describe('Controller: createService, Method: get', () => {
       expect(mockResponses.response.called).to.equal(true)
     })
 
-    it('should pass req, res and \'add_service\' to the responses.response method', () => {
+    it('should pass req, res and \'add-service\' to the responses.response method', () => {
       expect(mockResponses.response.args[0]).to.include(req)
       expect(mockResponses.response.args[0]).to.include(res)
-      expect(mockResponses.response.args[0]).to.include('services/add_service')
+      expect(mockResponses.response.args[0]).to.include('services/add-service')
     })
 
     it(`should pass pageData to the responses.response method with a 'current_name' property equal to ''`, () => {

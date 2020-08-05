@@ -18,7 +18,7 @@ describe('Invite a team member view', function () {
 
   it('should render error, with back link', function () {
     templateData.enable_link = true
-    let body = renderTemplate('error_logged_in', templateData)
+    let body = renderTemplate('error-logged-in', templateData)
 
     body.should.containSelector('#error-title').withText('Not so big error')
     body.should.containSelector('#error-message').withText('error, but do not worry')
@@ -29,7 +29,7 @@ describe('Invite a team member view', function () {
 
   it('should render error, without back link', function () {
     templateData.enable_link = false
-    let body = renderTemplate('error_logged_in', templateData)
+    let body = renderTemplate('error-logged-in', templateData)
 
     body.should.containSelector('#error-title').withText('Not so big error')
     body.should.containSelector('#error-message').withText('error, but do not worry')

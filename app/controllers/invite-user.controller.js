@@ -49,7 +49,7 @@ module.exports = {
       invitee
     }
 
-    return response(req, res, 'team-members/team_member_invite', data)
+    return response(req, res, 'team-members/team-member-invite', data)
   },
 
   /**
@@ -83,7 +83,7 @@ module.exports = {
         .catch(err => {
           switch (err.errorCode) {
             case 412:
-              response(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId))
+              response(req, res, 'error-logged-in', messages.emailConflict(invitee, externalServiceId))
               break
             default:
               logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err))

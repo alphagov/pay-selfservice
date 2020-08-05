@@ -1,6 +1,6 @@
 'use strict'
 
-const commonStubs = require('../../utils/common_stubs')
+const commonStubs = require('../../utils/common-stubs')
 
 describe('The Stripe psp details banner', () => {
   const gatewayAccountId = 22

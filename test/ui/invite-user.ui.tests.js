@@ -18,7 +18,7 @@ describe('Invite a team member view', function () {
       view: { id: 4 }
     }
 
-    let body = renderTemplate('team-members/team_member_invite', templateData)
+    let body = renderTemplate('team-members/team-member-invite', templateData)
 
     body.should.containSelector('.govuk-back-link').withAttribute('href', teamMemberIndexLink)
     body.should.containSelector('form#invite-member-form').withAttribute('action', teamMemberInviteSubmitLink)

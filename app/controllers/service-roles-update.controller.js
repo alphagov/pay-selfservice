@@ -69,7 +69,7 @@ module.exports = {
         if (!hasSameService(req.user, user, serviceExternalId)) {
           serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId, correlationId)
         } else {
-          response(req, res, 'team-members/team_member_permissions', viewData(user))
+          response(req, res, 'team-members/team-member-permissions', viewData(user))
         }
       })
       .catch(err => {

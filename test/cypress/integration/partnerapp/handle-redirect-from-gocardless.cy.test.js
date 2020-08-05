@@ -1,4 +1,4 @@
-const { getUserStub, getDirectDebitGatewayAccountStub } = require('../../utils/common_stubs')
+const { getUserStub, getDirectDebitGatewayAccountStub } = require('../../utils/common-stubs')
 
 describe('Get request to complete Go Cardless linking', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'

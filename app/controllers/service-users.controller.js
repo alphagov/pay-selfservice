@@ -67,7 +67,7 @@ module.exports = {
       const invitedTeamMembers = mapInvitesByRoles(invitedMembers)
       const inviteTeamMemberLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
 
-      response(req, res, 'team-members/team_members', {
+      response(req, res, 'team-members/team-members', {
         team_members: teamMembers,
         number_active_members: numberActiveMembers,
         inviteTeamMemberLink: inviteTeamMemberLink,
@@ -112,7 +112,7 @@ module.exports = {
       const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
 
       if (roleInList && hasSameService) {
-        response(req, res, 'team-members/team_member_details', {
+        response(req, res, 'team-members/team-member-details', {
           username: user.username,
           email: user.email,
           role: roleInList.description,
@@ -163,7 +163,7 @@ module.exports = {
         },
         enable_link: true
       }
-      response(req, res, 'error_logged_in', messageUserHasBeenDeleted)
+      response(req, res, 'error-logged-in', messageUserHasBeenDeleted)
     }
 
     return userService.findByExternalId(userToRemoveExternalId, correlationId)
@@ -179,7 +179,7 @@ module.exports = {
    */
   profile: (req, res) => {
     const onSuccess = (user) => {
-      response(req, res, 'team-members/team_member_profile', {
+      response(req, res, 'team-members/team-member-profile', {
         username: user.username,
         email: user.email,
         telephone_number: user.telephoneNumber,

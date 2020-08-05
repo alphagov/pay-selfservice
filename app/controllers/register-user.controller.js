@@ -59,7 +59,7 @@ module.exports = {
       if (req.register_invite.telephone_number) {
         data.telephone_number = req.register_invite.telephone_number
       }
-      response(req, res, 'user_registration/register', data)
+      response(req, res, 'user-registration/register', data)
     }
 
     return withValidatedRegistrationCookie(req, res, renderRegistrationPage)
@@ -128,7 +128,7 @@ module.exports = {
     }
 
     const displayVerifyCodePage = () => {
-      response(req, res, 'user_registration/verify_otp', data)
+      response(req, res, 'user-registration/verify-otp', data)
     }
 
     return withValidatedRegistrationCookie(req, res, displayVerifyCodePage)
@@ -188,7 +188,7 @@ module.exports = {
       const data = {
         telephone_number: telephoneNumber
       }
-      response(req, res, 'user_registration/re_verify_phone', data)
+      response(req, res, 'user-registration/re-verify-phone', data)
     }
 
     return withValidatedRegistrationCookie(req, res, displayReVerifyCodePage)

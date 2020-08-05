@@ -8,7 +8,7 @@ describe('Self-create service view', () => {
   it('should render create an account form', done => {
     const templateData = {}
 
-    const body = renderTemplate('self_create_service/register', templateData)
+    const body = renderTemplate('self-create-service/register', templateData)
 
     body.should.containSelector('h1').withExactText('Create an account')
 
@@ -26,7 +26,7 @@ describe('Self-create service view', () => {
       requesterEmail: email
     }
 
-    const body = renderTemplate('self_create_service/confirm', templateData)
+    const body = renderTemplate('self-create-service/confirm', templateData)
 
     body.should.containSelector('h1').withExactText('Check your email')
     body.should.containSelector('div#display-email-sent > p:nth-child(2)').withExactText(`An email has been sent to ${email}.`)
@@ -38,7 +38,7 @@ describe('Self-create service view', () => {
   it('should render otp verify form', done => {
     const templateData = {}
 
-    const body = renderTemplate('self_create_service/verify_otp', templateData)
+    const body = renderTemplate('self-create-service/verify-otp', templateData)
 
     body.should.containSelector('h1').withExactText('Check your phone')
 
@@ -57,7 +57,7 @@ describe('Self-create service view', () => {
       serviceName
     }
 
-    const body = renderTemplate('self_create_service/set_name', templateData)
+    const body = renderTemplate('self-create-service/set-name', templateData)
 
     body.should.containSelector('h1').withExactText('What service will you be taking payments for?')
 
@@ -73,7 +73,7 @@ describe('Self-create service view', () => {
       telephoneNumber: telephoneNumber
     }
 
-    const body = renderTemplate('self_create_service/resend_otp', templateData)
+    const body = renderTemplate('self-create-service/resend-otp', templateData)
 
     body.should.containSelector('h1').withExactText('Check your mobile number')
 
@@ -88,7 +88,7 @@ describe('Self-create service view', () => {
       telephoneNumber: '+441134960000'
     }
 
-    const body = renderTemplate('self_create_service/resend_otp', templateData)
+    const body = renderTemplate('self-create-service/resend-otp', templateData)
 
     body.should.containSelector('h1').withExactText('Check your mobile number')
 

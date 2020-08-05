@@ -1,6 +1,6 @@
 'use strict'
 
-const { getUserWithServiceRoleStubOpts } = require('../../utils/user_stubs')
+const { getUserWithServiceRoleStubOpts } = require('../../utils/user-stubs')
 
 const SERVICE_EXTERNAL_ID = 'service_abc_123'
 const AUTHENTICATED_USER_ID = 'authenticated-user-id'

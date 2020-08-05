@@ -20,7 +20,7 @@ module.exports = (req, res) => {
   qrcode.toDataURL(otpUrl)
     .then(url => {
       PAGE_PARAMS.qrCodeDataUrl = url
-      return response(req, res, 'twoFactorAuth/configure', PAGE_PARAMS)
+      return response(req, res, 'two-factor-auth/configure', PAGE_PARAMS)
     })
     .catch(err => {
       logger.error(`[requestId=${req.correlationId}] Failed to generate QR code - ${err.message}`)

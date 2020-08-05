@@ -71,7 +71,7 @@ describe('The transaction details view', () => {
       }
     }
 
-    const body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction-detail/index', templateData)
     const $ = cheerio.load(body)
     body.should.not.containSelector('.refund__toggle-container')
     $('.govuk-back-link').attr('href').should.equal('/transactions?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
@@ -178,7 +178,7 @@ describe('The transaction details view', () => {
       }
     }
 
-    const body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction-detail/index', templateData)
     const $ = cheerio.load(body)
     body.should.not.containSelector('.refund__toggle-container')
     $('.govuk-back-link').attr('href').should.equal('/transactions?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
@@ -294,7 +294,7 @@ describe('The transaction details view', () => {
       }
     }
 
-    const body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction-detail/index', templateData)
     const $ = cheerio.load(body)
     body.should.not.containSelector('.refund__toggle-container')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
@@ -396,7 +396,7 @@ describe('The transaction details view', () => {
       }
     }
 
-    const body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction-detail/index', templateData)
     body.should.not.containSelector('#amount')
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')
@@ -456,7 +456,7 @@ describe('The transaction details view', () => {
       }
     }
 
-    const body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction-detail/index', templateData)
 
     body.should.not.containSelector('table.transaction-events')
   })
@@ -502,7 +502,7 @@ describe('The transaction details view', () => {
       }
     }
 
-    const body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction-detail/index', templateData)
 
     body.should.not.containSelector('#description')
   })
@@ -548,7 +548,7 @@ describe('The transaction details view', () => {
       }
     }
 
-    const body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction-detail/index', templateData)
 
     body.should.not.containSelector('#brand')
   })
@@ -594,7 +594,7 @@ describe('The transaction details view', () => {
       }
     }
 
-    const body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction-detail/index', templateData)
 
     body.should.not.containSelector('#email')
   })

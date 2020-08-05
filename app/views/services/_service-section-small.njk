@@ -1,4 +1,4 @@
-<div class="flex-grid--row service_list_item">
+<div class="flex-grid--row service_list_item" data-name="{{ service.name }}">
   <div class="flex-grid--heading-group marked">
     <h2 class="govuk-heading-m service-name">
       {{ service.name }}
@@ -9,37 +9,40 @@
       {% endif %}
     </h2>
   </div>
-  <div class="flex-grid--column-half marked">
+  <div class="flex-grid--column-half tight marked">
     {% if service.gateway_accounts.cardAccounts.length %}
     <h3 class="govuk-heading-s">Card payments</h3>
-    <ul class="govuk-list">
+    <ul class="govuk-list service-list">
     {% for account in service.gateway_accounts.cardAccounts %}
-      {% include "./_service_switch.njk" %}
+      {% include "./_service-switch.njk" %}
     {% endfor %}
     </ul>
     {% endif %}
 
     {% if service.gateway_accounts.directdebitAccounts.length %}
     <h3 class="govuk-heading-s">Direct Debit payments</h3>
-    <ul class="govuk-list">
+    <ul class="govuk-list service-list">
     {% for account in service.gateway_accounts.directdebitAccounts %}
-      {% include "./_service_switch.njk" %}
+      {% include "./_service-switch.njk" %}
     {% endfor %}
     </ul>
     {% endif %}
   </div>
-  <div id="team-members" class="flex-grid--column-half marked">
+  <div id="team-members" class="flex-grid--column-half tight marked">
     <ul class="govuk-list">
       <li>
       {% if service.permissions.users_service_create %}
-        <a class="govuk-link govuk-link--no-visited-state manage-team-members" href="/service/{{ service.external_id }}">
-          Manage team members
-        </a>
-        <p class="font-xsmall">Team member changes affect both live and test environments.</p>
+        <p>
+          <a class="govuk-link govuk-link--no-visited-state manage-team-members" href="/service/{{ service.external_id }}">
+            Manage team members
+          </a>
+        </p>
       {% else %}
-        <a class="govuk-link govuk-link--no-visited-state view-team-members" href="/service/{{ service.external_id }}">
-          View team members
-        </a>
+        <p>
+          <a class="govuk-link govuk-link--no-visited-state view-team-members" href="/service/{{ service.external_id }}">
+            View team members
+          </a>
+        </p>
       {% endif %}
       </li>
       <li>
@@ -47,7 +50,6 @@
         <a class="govuk-link govuk-link--no-visited-state edit-merchant-details" href="/organisation-details/{{ service.external_id }}">
           Organisation details
         </a>
-        <p class="font-xsmall">Payment schemes require the details of the organisation taking payment to be shown to paying users.</p>
       {% endif %}
       </li>
     </ul>

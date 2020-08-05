@@ -1,6 +1,6 @@
 'use strict'
 
-const utils = require('../../utils/request_to_go_live_utils')
+const utils = require('../../utils/request-to-go-live-utils')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 
 const pageUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-address`

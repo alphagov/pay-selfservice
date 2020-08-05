@@ -7,18 +7,18 @@ const formatPSPname = require('./format-PSP-name')
 const hideServiceHeaderTemplates = [
   'all-service-transactions/index',
   'services/index',
-  'services/edit_service_name',
-  'services/add_service',
+  'services/edit-service-name',
+  'services/add-service',
   'payouts/list'
 ]
 
 const hideServiceNavTemplates = [
   'merchant_details/edit-merchant_details',
-  'team-members/team_members',
-  'team-members/team_member_invite',
-  'team-members/team_member_details',
-  'team-members/team_member_profile',
-  'team-members/team_member_permissions'
+  'team-members/team-members',
+  'team-members/team-member-invite',
+  'team-members/team-member-details',
+  'team-members/team-member-profile',
+  'team-members/team-member-permissions'
 ]
 
 /**

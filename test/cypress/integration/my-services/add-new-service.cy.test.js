@@ -1,6 +1,6 @@
 'use strict'
 
-const { getUserStub, getGatewayAccountsStub } = require('../../utils/common_stubs')
+const { getUserStub, getGatewayAccountsStub } = require('../../utils/common-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 const newServiceName = 'Pay for a thing'

@@ -1,4 +1,4 @@
-const commonStubs = require('../../utils/common_stubs')
+const commonStubs = require('../../utils/common-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const serviceName = {

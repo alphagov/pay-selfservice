@@ -24,7 +24,7 @@ module.exports = (req, res) => {
         delete req.session.backLink
       }
       data.service = req.service
-      response(req, res, 'transaction_detail/index', data)
+      response(req, res, 'transaction-detail/index', data)
     })
     .catch(err => {
       if (err === 'NOT_FOUND') {
