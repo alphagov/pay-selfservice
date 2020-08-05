@@ -2,13 +2,13 @@
 
 const supertest = require('supertest')
 const nock = require('nock')
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test-helpers/mock-session')
 const paths = require('../../../../app/paths')
-const {expect} = require('chai')
-const formattedPathFor = require('../../../../app/utils/replace_params_in_path')
+const { expect } = require('chai')
+const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
 
-const {PRODUCTS_URL, CONNECTOR_URL} = process.env
+const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 
 const GATEWAY_ACCOUNT_ID = '182364'
 const PRODUCT_EXTERNAL_ID = '2903e4yohi0we9yho2hio'
@@ -36,7 +36,7 @@ describe('Edit payment link information', () => {
   before(done => {
     const user = getUser({
       gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-      permissions: [{name: 'tokens:create'}]
+      permissions: [{ name: 'tokens:create' }]
     })
     session = getMockSession(user)
     nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)

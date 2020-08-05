@@ -9,7 +9,7 @@ const sinon = require('sinon')
 // Local dependencies
 const goLiveStage = require('../../../models/go-live-stage')
 const Service = require('../../../models/Service.class')
-const serviceFixtures = require('../../../../test/fixtures/service_fixtures')
+const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -18,7 +18,7 @@ const { expect } = chai
 const mockResponse = {}
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
-    '../../../services/service_service': mockServiceService,
+    '../../../services/service.service': mockServiceService,
     '../../../utils/response': mockResponse
   })
 }

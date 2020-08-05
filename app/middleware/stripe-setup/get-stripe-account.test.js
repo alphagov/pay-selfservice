@@ -79,7 +79,7 @@ describe('Get Stripe account middleware', () => {
 
 function getMiddlewareWithConnectorClientResolvedPromiseMock (getStripeAccountResponse) {
   return proxyquire('./get-stripe-account', {
-    '../../services/clients/connector_client': {
+    '../../services/clients/connector.client': {
       ConnectorClient: function () {
         this.getStripeAccount = (gatewayAccountId, correlationId) => {
           return new Promise(resolve => {
@@ -93,7 +93,7 @@ function getMiddlewareWithConnectorClientResolvedPromiseMock (getStripeAccountRe
 
 function getMiddlewareWithConnectorClientRejectedPromiseMock () {
   return proxyquire('./get-stripe-account', {
-    '../../services/clients/connector_client': {
+    '../../services/clients/connector.client': {
       ConnectorClient: function () {
         this.getStripeAccount = (gatewayAccountId, correlationId) => {
           return new Promise((resolve, reject) => {

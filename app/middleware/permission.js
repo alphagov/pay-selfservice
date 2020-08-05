@@ -1,4 +1,4 @@
-const resolveService = require('./resolve_service')
+const resolveService = require('./resolve-service')
 /**
  * @param {String} permission User must be associated to a role with the given permission
  * to have authorization for the operation.

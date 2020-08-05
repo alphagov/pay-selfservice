@@ -7,7 +7,7 @@ const analytics = require('../../../app/browsered/analytics')
 const sinon = require('sinon')
 const jsdom = require('jsdom')
 const { expect } = require('chai')
-let renderTemplate = require('../../../test/test_helpers/html_assertions.js').render
+let renderTemplate = require('../../test-helpers/html-assertions.js').render
 
 var event
 var cookieBannerObject

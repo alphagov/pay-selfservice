@@ -6,7 +6,7 @@ const lodash = require('lodash')
 // Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
-const userService = require('../../services/user_service.js')
+const userService = require('../../services/user.service.js')
 
 module.exports = (req, res) => {
   const code = req.body['code'] || ''

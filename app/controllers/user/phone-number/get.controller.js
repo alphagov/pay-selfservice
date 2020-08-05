@@ -2,7 +2,7 @@
 
 // Local dependencies
 const { renderErrorView } = require('../../../utils/response')
-const userService = require('../../../services/user_service')
+const userService = require('../../../services/user.service')
 
 module.exports = async (req, res) => {
   try {

@@ -3,7 +3,7 @@
 const paths = require('../../../paths')
 const logger = require('../../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../../utils/response')
-const { ConnectorClient } = require('../../../services/clients/connector_client')
+const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 module.exports = async (req, res) => {

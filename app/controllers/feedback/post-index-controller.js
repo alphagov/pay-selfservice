@@ -6,7 +6,7 @@ const lodash = require('lodash')
 // Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
-const zendeskClient = require('../../services/clients/zendesk_client')
+const zendeskClient = require('../../services/clients/zendesk.client')
 
 module.exports = (req, res) => {
   const message = `Service name: ${req.body['service-name']}

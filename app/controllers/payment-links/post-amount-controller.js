@@ -5,7 +5,7 @@ const lodash = require('lodash')
 
 // Local dependencies
 const paths = require('../../paths')
-const { sanitisePoundsAndPenceInput } = require('../../utils/currency_formatter')
+const { sanitisePoundsAndPenceInput } = require('../../utils/currency-formatter')
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})

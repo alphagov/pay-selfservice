@@ -5,11 +5,11 @@ const lodash = require('lodash')
 
 // Local dependencies
 const logger = require('../utils/logger')(__filename)
-const userService = require('../services/user_service')
-const transactionView = require('../utils/transaction_view.js')
-const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
+const userService = require('../services/user.service')
+const transactionView = require('../utils/transaction-view.js')
+const ConnectorClient = require('../services/clients/connector.client.js').ConnectorClient
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const Ledger = require('../services/clients/ledger_client')
+const Ledger = require('../services/clients/ledger.client')
 
 module.exports = function (correlationId) {
   correlationId = correlationId || ''

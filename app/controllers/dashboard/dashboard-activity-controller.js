@@ -5,13 +5,13 @@ const moment = require('moment-timezone')
 
 const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response').response
-const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
-const LedgerClient = require('../../services/clients/ledger_client')
-const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
-const { ConnectorClient } = require('../../services/clients/connector_client.js')
+const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
+const LedgerClient = require('../../services/clients/ledger.client')
+const { isADirectDebitAccount } = require('../../services/clients/direct-debit-connector.client.js')
+const { ConnectorClient } = require('../../services/clients/connector.client.js')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const auth = require('../../services/auth_service.js')
-const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe_client')
+const auth = require('../../services/auth.service.js')
+const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 const {
   NOT_STARTED,

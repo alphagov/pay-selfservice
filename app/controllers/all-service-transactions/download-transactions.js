@@ -1,9 +1,9 @@
 'use strict'
 
 const date = require('../../utils/dates')
-const transactionService = require('../../services/transaction_service')
-const Stream = require('../../services/clients/stream_client')
-const { CORRELATION_HEADER } = require('../../utils/correlation_header')
+const transactionService = require('../../services/transaction.service')
+const Stream = require('../../services/clients/stream.client')
+const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 const { renderErrorView } = require('../../utils/response')
 const permissions = require('../../utils/permissions')
 

@@ -6,8 +6,8 @@ const lodash = require('lodash')
 // Local dependencies
 const paths = require('../../paths')
 const { renderErrorView } = require('../../utils/response')
-const { ConnectorClient } = require('../../services/clients/connector_client')
-const { correlationHeader } = require('../../utils/correlation_header')
+const { ConnectorClient } = require('../../services/clients/connector.client')
+const { correlationHeader } = require('../../utils/correlation-header')
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
 
 // Constants

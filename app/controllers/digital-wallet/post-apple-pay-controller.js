@@ -3,8 +3,8 @@
 // Local dependencies
 const paths = require('../../paths')
 const { renderErrorView } = require('../../utils/response')
-const { ConnectorClient } = require('../../services/clients/connector_client')
-const { CORRELATION_HEADER } = require('../../utils/correlation_header')
+const { ConnectorClient } = require('../../services/clients/connector.client')
+const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 module.exports = async (req, res) => {

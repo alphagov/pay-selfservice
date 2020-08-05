@@ -7,12 +7,12 @@ const lodash = require('lodash')
 const logger = require('../../../utils/logger')(__filename)
 const { requestToGoLive } = require('../../../paths')
 const goLiveStage = require('../../../models/go-live-stage')
-const { updateCurrentGoLiveStage } = require('../../../services/service_service')
-const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('../../../services/service_service')
+const { updateCurrentGoLiveStage } = require('../../../services/service.service')
+const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('../../../services/service.service')
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { renderErrorView } = require('../../../utils/response.js')
 const { isIPv4, isIPv6 } = require('net')
-const zendeskClient = require('../../../services/clients/zendesk_client')
+const zendeskClient = require('../../../services/clients/zendesk.client')
 
 const NOT_SELECTED_AGREEMENT_ERROR_MSG = 'You need to accept our legal terms to continue'
 const stages = {
