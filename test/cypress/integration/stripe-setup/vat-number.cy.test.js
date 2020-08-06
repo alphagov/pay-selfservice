@@ -97,7 +97,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubStripeSetupGetForMultipleCallsAndVatNumberCompleted(gatewayAccountId, false, false, true, true),
+          stubStripeSetupGetForMultipleCallsAndVatNumberCompleted(gatewayAccountId, false, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           stubDashboardStatisticsGet()
         ])
