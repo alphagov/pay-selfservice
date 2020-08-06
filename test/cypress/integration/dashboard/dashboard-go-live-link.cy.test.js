@@ -1,7 +1,7 @@
 'use strict'
 
-const utils = require('../../utils/request_to_go_live_utils')
-const commonStubs = require('../../utils/common_stubs')
+const utils = require('../../utils/request-to-go-live-utils')
+const commonStubs = require('../../utils/common-stubs')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 
 describe('Go live link on dashboard', () => {

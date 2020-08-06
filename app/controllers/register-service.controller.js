@@ -25,7 +25,7 @@ module.exports = {
     const email = _.get(req, 'session.pageData.submitRegistration.email', '')
     const telephoneNumber = _.get(req, 'session.pageData.submitRegistration.telephoneNumber', '')
     _.unset(req, 'session.pageData.submitRegistration')
-    res.render('self_create_service/register', {
+    res.render('self-create-service/register', {
       email,
       telephoneNumber
     })
@@ -102,7 +102,7 @@ module.exports = {
   showConfirmation: (req, res) => {
     const requesterEmail = _.get(req, 'session.pageData.submitRegistration.email', '')
     _.unset(req, 'session.pageData.submitRegistration')
-    res.render('self_create_service/confirm', {
+    res.render('self-create-service/confirm', {
       requesterEmail
     })
   },
@@ -114,7 +114,7 @@ module.exports = {
    * @param res
    */
   showOtpVerify: (req, res) => {
-    res.render('self_create_service/verify_otp')
+    res.render('self-create-service/verify-otp')
   },
 
   /**
@@ -159,7 +159,7 @@ module.exports = {
    * @param res
    */
   showOtpResend: (req, res) => {
-    res.render('self_create_service/resend_otp', {
+    res.render('self-create-service/resend-otp', {
       telephoneNumber: req.register_invite.telephone_number
     })
   },
@@ -210,7 +210,7 @@ module.exports = {
   showNameYourService: (req, res) => {
     const serviceName = _.get(req, 'session.pageData.submitYourServiceName.serviceName', '')
     _.unset(req, 'session.pageData.submitYourServiceName')
-    res.render('self_create_service/set_name', {
+    res.render('self-create-service/set-name', {
       serviceName
     })
   },

@@ -1,6 +1,6 @@
 'use strict'
 
-const commonStubs = require('../../utils/common_stubs')
+const commonStubs = require('../../utils/common-stubs')
 
 describe('the links are displayed correctly on the dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'

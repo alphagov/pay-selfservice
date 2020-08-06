@@ -28,5 +28,5 @@ module.exports = (req, res) => {
     externalServiceId,
     editPath: formatPath(paths.merchantDetails.edit, externalServiceId)
   }
-  return response(req, res, 'merchant_details/merchant_details', pageData)
+  return response(req, res, 'merchant-details/merchant-details', pageData)
 }

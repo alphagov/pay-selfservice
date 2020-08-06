@@ -38,7 +38,7 @@ function validateGetRequest (req, res) {
 function processPayload (req, res, getPayload) {
   return directDebitConnectorClient.partnerApp.exchangeCode(getPayload)
     .then(result => {
-      response(req, res, 'oauth/gocardless_complete')
+      response(req, res, 'oauth/gocardless-complete')
     })
     .catch(err => {
       console.log(err)

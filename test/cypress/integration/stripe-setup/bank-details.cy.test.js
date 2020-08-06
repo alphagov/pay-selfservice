@@ -1,6 +1,6 @@
 'use strict'
 
-const commonStubs = require('../../utils/common_stubs')
+const commonStubs = require('../../utils/common-stubs')
 
 describe('Stripe setup: bank details page', () => {
   const gatewayAccountId = 42

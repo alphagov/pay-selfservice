@@ -1,12 +1,12 @@
 'use strict'
 
-const commonStubs = require('../../utils/common_stubs')
+const commonStubs = require('../../utils/common-stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
   stubStripeAccountGet,
   stubStripeSetupGetForMultipleCallsAndVatNumberCompleted,
   stubDashboardStatisticsGet
-} = require('./support')
+} = require('./support-stubs')
 
 describe('Stripe setup: VAT number page', () => {
   const gatewayAccountId = 42

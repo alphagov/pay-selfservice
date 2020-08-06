@@ -14,7 +14,7 @@ describe('The team member details view', function () {
       }
     }
 
-    let body = renderTemplate('team-members/team_member_details', templateData)
+    let body = renderTemplate('team-members/team-member-details', templateData)
 
     body.should.containSelector('h1#details-for').withOnlyText('Details for Oscar Smith')
     body.should.containSelector('td#email').withExactText('oscar.smith@example.com')
@@ -34,7 +34,7 @@ describe('The team member details view', function () {
       permissions: {}
     }
 
-    let body = renderTemplate('team-members/team_member_details', templateData)
+    let body = renderTemplate('team-members/team-member-details', templateData)
 
     body.should.containSelector('h1#details-for').withOnlyText('Details for Oscar Smith')
     body.should.containSelector('td#email').withExactText('oscar.smith@example.com')
@@ -51,7 +51,7 @@ describe('The team member details view', function () {
       two_factor_auth: 'SMS'
     }
 
-    let body = renderTemplate('team-members/team_member_profile', templateData)
+    let body = renderTemplate('team-members/team-member-profile', templateData)
 
     body.should.containSelector('td#email').withExactText('john.smith@example.com')
     body.should.containSelector('td#telephone-number').withExactText('+447769897329')

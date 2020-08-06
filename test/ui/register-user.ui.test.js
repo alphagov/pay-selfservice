@@ -13,7 +13,7 @@ describe('Register user view', () => {
       email: 'invitee@example.com'
     }
 
-    const body = renderTemplate('user_registration/register', templateData)
+    const body = renderTemplate('user-registration/register', templateData)
 
     body.should.containSelector('form#submit-registration').withAttribute('action', paths.registerUser.registration)
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com')
@@ -28,7 +28,7 @@ describe('Register user view', () => {
       telephone_number: '01134960000'
     }
 
-    const body = renderTemplate('user_registration/register', templateData)
+    const body = renderTemplate('user-registration/register', templateData)
 
     body.should.containSelector('form#submit-registration').withAttribute('action', paths.registerUser.registration)
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com')
@@ -43,7 +43,7 @@ describe('Register user view', () => {
       telephone_number: '+441134960000'
     }
 
-    const body = renderTemplate('user_registration/register', templateData)
+    const body = renderTemplate('user-registration/register', templateData)
 
     body.should.containSelector('form#submit-registration').withAttribute('action', paths.registerUser.registration)
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com')
@@ -57,7 +57,7 @@ describe('Register user view', () => {
       email: 'invitee@example.com'
     }
 
-    const body = renderTemplate('user_registration/verify_otp', templateData)
+    const body = renderTemplate('user-registration/verify-otp', templateData)
 
     body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.registerUser.otpVerify)
     body.should.containSelector('input#verify-code')
@@ -71,7 +71,7 @@ describe('Register user view', () => {
       telephone_number: telephoneNumber
     }
 
-    const body = renderTemplate('user_registration/re_verify_phone', templateData)
+    const body = renderTemplate('user-registration/re-verify-phone', templateData)
 
     body.should.containSelector('form#otp-send-again').withAttribute('action', paths.registerUser.reVerifyPhone)
     body.should.containSelector('input#telephone-number').withAttribute('value', telephoneNumber)
@@ -83,7 +83,7 @@ describe('Register user view', () => {
       telephone_number: '+441134960000'
     }
 
-    const body = renderTemplate('user_registration/re_verify_phone', templateData)
+    const body = renderTemplate('user-registration/re-verify-phone', templateData)
 
     body.should.containSelector('form#otp-send-again').withAttribute('action', paths.registerUser.reVerifyPhone)
     body.should.containSelector('input#telephone-number').withAttribute('value', '+441134960000')

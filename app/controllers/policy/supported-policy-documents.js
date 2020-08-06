@@ -6,22 +6,22 @@ const supportedPolicyDocuments = [
   {
     key: 'memorandum-of-understanding-for-crown-bodies',
     title: 'Pay memorandum of understanding',
-    template: 'policy/document-downloads/memorandum_of_understanding_for_crown_bodies'
+    template: 'policy/document-downloads/memorandum-of-understanding-for-crown-bodies'
   },
   {
     key: 'contract-for-non-crown-bodies',
     title: 'Pay contract',
-    template: 'policy/document-downloads/contract_for_non_crown_bodies'
+    template: 'policy/document-downloads/contract-for-non-crown-bodies'
   },
   {
     key: 'stripe-connected-account-agreement',
     title: 'Stripe Connected Account Agreement',
-    template: 'policy/document-downloads/stripe_connected_account_agreement'
+    template: 'policy/document-downloads/stripe-connected-account-agreement'
   },
   {
     key: 'pci-dss-attestation-of-compliance',
     title: 'Attestation of Compliance for PCI',
-    template: 'policy/document-downloads/pci_dss_attestation_of_compliance'
+    template: 'policy/document-downloads/pci-dss-attestation-of-compliance'
   }
 ]
 
