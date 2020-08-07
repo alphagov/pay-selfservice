@@ -9,7 +9,7 @@ const { expect } = chai
 chai.use(chaiAsPromised)
 
 const paths = require('../../../paths')
-const getController = require('./get-controller')
+const getController = require('./get.controller')
 
 describe('get controller', () => {
   let req

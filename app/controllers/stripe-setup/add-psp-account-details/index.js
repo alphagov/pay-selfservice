@@ -1,5 +1,5 @@
 'use strict'
 
 module.exports = {
-  get: require('./get-controller')
+  get: require('./get.controller')
 }

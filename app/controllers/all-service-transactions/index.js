@@ -1,6 +1,6 @@
 'use strict'
 
-const getController = require('./get-controller')
+const getController = require('./get.controller')
 const downloadTransactions = require('./download-transactions')
 
 module.exports = {
