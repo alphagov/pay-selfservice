@@ -115,7 +115,7 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted(gatewayAccountId, false, false, true, true),
+          stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted(gatewayAccountId, false, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           stubDashboardStatisticsGet()
         ])

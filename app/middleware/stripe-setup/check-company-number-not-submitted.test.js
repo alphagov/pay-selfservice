@@ -3,11 +3,11 @@
 // NPM dependencies
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 // Local dependencies
 const paths = require('../../paths')
+const checkCompanyNumberNotSubmitted = require('./check-company-number-not-submitted')
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -22,7 +22,8 @@ describe('Check "Company registration number" not submitted middleware', () => {
     req = {
       correlationId: 'correlation-id',
       account: {
-        gateway_account_id: '1'
+        gateway_account_id: '1',
+        connectorGatewayAccountStripeProgress: {}
       },
       flash: sinon.spy()
     }
@@ -36,11 +37,9 @@ describe('Check "Company registration number" not submitted middleware', () => {
   })
 
   it('should call next when "Company number" flag is false', done => {
-    const middleware = getMiddlewareWithConnectorClientResolvedPromiseMock({
-      companyNumber: false
-    })
+    req.account.connectorGatewayAccountStripeProgress.companyNumber = false
 
-    middleware(req, res, next)
+    checkCompanyNumberNotSubmitted(req, res, next)
 
     setTimeout(() => {
       expect(next.calledOnce).to.be.true // eslint-disable-line
@@ -51,11 +50,9 @@ describe('Check "Company registration number" not submitted middleware', () => {
   })
 
   it('should redirect to the dashboard with error message when "Company number" flag is true', done => {
-    const middleware = getMiddlewareWithConnectorClientResolvedPromiseMock({
-      companyNumber: true
-    })
+    req.account.connectorGatewayAccountStripeProgress.companyNumber = true
 
-    middleware(req, res, next)
+    checkCompanyNumberNotSubmitted(req, res, next)
 
     setTimeout(() => {
       expect(next.notCalled).to.be.true // eslint-disable-line
@@ -66,12 +63,9 @@ describe('Check "Company registration number" not submitted middleware', () => {
   })
 
   it('should render an error page when req.account is undefined', done => {
-    const middleware = getMiddlewareWithConnectorClientResolvedPromiseMock({
-      companyNumber: false
-    })
     req.account = undefined
 
-    middleware(req, res, next)
+    checkCompanyNumberNotSubmitted(req, res, next)
 
     setTimeout(() => {
       expect(next.notCalled).to.be.true // eslint-disable-line
@@ -81,12 +75,10 @@ describe('Check "Company registration number" not submitted middleware', () => {
     }, 250)
   })
 
-  it('should render an error page when connector rejects the call', done => {
-    const middleware = getMiddlewareWithConnectorClientRejectedPromiseMock({
-      companyNumber: false
-    })
+  it('should render an error page when req.account.connectorGatewayAccountStripeProgress is undefined', done => {
+    req.account.connectorGatewayAccountStripeProgress = undefined
 
-    middleware(req, res, next)
+    checkCompanyNumberNotSubmitted(req, res, next)
 
     setTimeout(() => {
       expect(next.notCalled).to.be.true // eslint-disable-line
@@ -96,31 +88,3 @@ describe('Check "Company registration number" not submitted middleware', () => {
     }, 250)
   })
 })
-
-function getMiddlewareWithConnectorClientResolvedPromiseMock (getStripeAccountSetupResponse) {
-  return proxyquire('./check-company-number-not-submitted', {
-    '../../services/clients/connector.client': {
-      ConnectorClient: function () {
-        this.getStripeAccountSetup = (gatewayAccountId, correlationId) => {
-          return new Promise(resolve => {
-            resolve(getStripeAccountSetupResponse)
-          })
-        }
-      }
-    }
-  })
-}
-
-function getMiddlewareWithConnectorClientRejectedPromiseMock (getStripeAccountSetupResponse) {
-  return proxyquire('./check-company-number-not-submitted', {
-    '../../services/clients/connector.client': {
-      ConnectorClient: function () {
-        this.getStripeAccountSetup = (gatewayAccountId, correlationId) => {
-          return new Promise((resolve, reject) => {
-            reject(new Error())
-          })
-        }
-      }
-    }
-  })
-}

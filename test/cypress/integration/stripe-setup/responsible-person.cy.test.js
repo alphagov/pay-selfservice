@@ -279,7 +279,7 @@ describe('Stripe setup: responsible person page', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-        stubStripeSetupGetForMultipleCalls(false, false, false, true),
+        stubStripeSetupGetForMultipleCalls(false, true),
         stubStripeAccountGet('acct_123example123'),
         commonStubs.getDashboardStatisticsStub()
       ])
