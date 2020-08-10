@@ -1,3 +1,5 @@
+const userStubs = require('../../utils/user-stubs')
+
 describe('Apple Pay', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -10,18 +12,7 @@ describe('Apple Pay', () => {
   describe('is disabled when unsupported', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                gateway_account_ids: [gatewayAccountId],
-                name: serviceName
-              }
-            }]
-          }
-        },
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         {
           name: 'getGatewayAccountSuccess',
           opts: {
@@ -49,18 +40,7 @@ describe('Apple Pay', () => {
   describe('but allow us to enable when supported', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                gateway_account_ids: [gatewayAccountId],
-                name: serviceName
-              }
-            }]
-          }
-        },
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         {
           name: 'getGatewayAccountSuccess',
           opts: {
@@ -83,18 +63,7 @@ describe('Apple Pay', () => {
   describe('Show enabled after turning on', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                gateway_account_ids: [gatewayAccountId],
-                name: serviceName
-              }
-            }]
-          }
-        },
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         {
           name: 'getGatewayAccountSuccess',
           opts: {

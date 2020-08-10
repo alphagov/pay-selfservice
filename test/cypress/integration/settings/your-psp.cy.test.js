@@ -1,5 +1,7 @@
 'use strict'
 
+const userStubs = require('../../utils/user-stubs')
+
 describe('Your PSP settings page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -27,33 +29,24 @@ describe('Your PSP settings page', () => {
 
   function setupYourPspStubs (opts = {}) {
     let stubs = []
-
-    const user = {
-      name: 'getUserSuccess',
-      opts: {
-        external_id: userExternalId,
-        service_roles: [{
-          service: {
-            gateway_account_ids: [gatewayAccountId],
-            name: serviceName
-          }
-        }]
-      }
+    let user
+    const role = {
+      permissions: [
+        {
+          name: 'transactions-details:read',
+          description: 'ViewTransactionsOnly'
+        },
+        {
+          name: 'toggle-3ds:read',
+          description: 'View3dsOnly'
+        }
+      ]
     }
 
     if (opts.readonly) {
-      user.opts.service_roles[0].role = {
-        permissions: [
-          {
-            name: 'transactions-details:read',
-            description: 'ViewTransactionsOnly'
-          },
-          {
-            name: 'toggle-3ds:read',
-            description: 'View3dsOnly'
-          }
-        ]
-      }
+      user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role })
+    } else {
+      user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
     }
 
     const gatewayAccount = {
@@ -100,18 +93,7 @@ describe('Your PSP settings page', () => {
   function setupRemoveFlexCredsStubs (opts = {}) {
     let stubs = []
 
-    const user = {
-      name: 'getUserSuccess',
-      opts: {
-        external_id: userExternalId,
-        service_roles: [{
-          service: {
-            gateway_account_ids: [gatewayAccountId],
-            name: serviceName
-          }
-        }]
-      }
-    }
+    const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
 
     const gatewayAccount = {
       name: 'getGatewayAccountSuccessRepeat',

@@ -1,6 +1,6 @@
 'use strict'
 
-const { getUserWithServiceRoleStubOpts } = require('../../utils/user-stubs')
+const userStubs = require('../../utils/user-stubs')
 
 const SERVICE_EXTERNAL_ID = 'service_abc_123'
 const AUTHENTICATED_USER_ID = 'authenticated-user-id'
@@ -12,25 +12,31 @@ describe('Edit service user permissions', () => {
     Cypress.Cookies.preserveOnce('session')
     Cypress.Cookies.preserveOnce('gateway_account')
 
-    const authenticatedUserStubOpts = getUserWithServiceRoleStubOpts(AUTHENTICATED_USER_ID, 'logged-in-user@example.com', SERVICE_EXTERNAL_ID, 'admin')
-    const userWeAreEditingStubOpts = getUserWithServiceRoleStubOpts(EDITING_USER_ID, 'other-user@example.com', SERVICE_EXTERNAL_ID, 'admin')
+    const authenticatedUserStubOpts = {
+      userExternalId: AUTHENTICATED_USER_ID,
+      email: 'logged-in-user@example.com',
+      serviceExternalId: SERVICE_EXTERNAL_ID,
+      role: { name: 'admin' }
+    }
+    const userWeAreEditingStubOpts = {
+      userExternalId: EDITING_USER_ID,
+      email: 'other-user@example.com',
+      serviceExternalId: SERVICE_EXTERNAL_ID,
+      role: { name: 'admin' }
+    }
+    const authenticatedUserSuccess = userStubs.getUserSuccess(userWeAreEditingStubOpts)
+    const userWeAreEditingSuccess = userStubs.getUserSuccess(authenticatedUserStubOpts)
 
     cy.task('setupStubs', [
-      {
-        name: 'getUserSuccess',
-        opts: authenticatedUserStubOpts
-      },
-      {
-        name: 'getUserSuccess',
-        opts: userWeAreEditingStubOpts
-      },
+      userStubs.getUserSuccess(authenticatedUserStubOpts),
+      userStubs.getUserSuccess(userWeAreEditingStubOpts),
       {
         name: 'getServiceUsersSuccess',
         opts: {
           serviceExternalId: SERVICE_EXTERNAL_ID,
           users: [
-            authenticatedUserStubOpts,
-            userWeAreEditingStubOpts
+            userWeAreEditingSuccess.opts,
+            authenticatedUserSuccess.opts
           ]
         }
       },

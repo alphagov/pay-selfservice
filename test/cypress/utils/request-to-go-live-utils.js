@@ -1,5 +1,7 @@
 'use strict'
 
+const userStubs = require('../utils/user-stubs')
+
 const variables = {
   userExternalId: 'userExternalId',
   gatewayAccountId: 42,
@@ -42,13 +44,7 @@ const buildServiceRoleWithMerchantDetails = (merchantDetails, goLiveStage) => {
 
 const getUserAndGatewayAccountStubs = (serviceRole) => {
   return [
-    {
-      name: 'getUserSuccess',
-      opts: {
-        external_id: variables.userExternalId,
-        service_roles: [serviceRole]
-      }
-    },
+    userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
     {
       name: 'getGatewayAccountSuccess',
       opts: { gateway_account_id: variables.gatewayAccountId }

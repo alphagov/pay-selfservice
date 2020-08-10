@@ -1,3 +1,5 @@
+const userStubs = require('../../utils/user-stubs')
+
 describe('Settings', () => {
   const settingsUrl = `/settings`
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -9,18 +11,7 @@ describe('Settings', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
 
       cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                name: serviceName,
-                gateway_account_ids: [gatewayAccountId]
-              }
-            }]
-          }
-        },
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         {
           name: 'getGatewayAccountSuccess',
           opts: { gateway_account_id: gatewayAccountId }
@@ -151,32 +142,20 @@ describe('Settings', () => {
   describe('For a read-only user', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-
-      cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                name: serviceName,
-                gateway_account_ids: [gatewayAccountId]
-              },
-              role: {
-                permissions: [
-                  {
-                    name: 'email-notification-template:read',
-                    description: 'Viewemailnotificationstemplate'
-                  },
-                  {
-                    name: 'transactions-details:read',
-                    description: 'Viewtransactionsdetailsonly'
-                  }
-                ]
-              }
-            }]
+      const role = {
+        permissions: [
+          {
+            name: 'email-notification-template:read',
+            description: 'Viewemailnotificationstemplate'
+          },
+          {
+            name: 'transactions-details:read',
+            description: 'Viewtransactionsdetailsonly'
           }
-        },
+        ]
+      }
+      cy.task('setupStubs', [
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role }),
         {
           name: 'getGatewayAccountSuccess',
           opts: { gateway_account_id: gatewayAccountId }
