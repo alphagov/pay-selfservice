@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 const utils = require('../../utils/request-to-go-live-utils')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
+const gatewayStubs = require('../../utils/gateway-stubs')
 
 describe('Request to go live: agreement', () => {
   const stubGovUkPayAgreement = {
@@ -90,10 +91,9 @@ describe('Request to go live: agreement', () => {
         service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_STRIPE')],
         repeat: 2
       }]
-    }, {
-      name: 'getGatewayAccountSuccess',
-      opts: { gateway_account_id: gatewayAccountId }
-    }]
+    },
+    gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    ]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_STRIPE'),
@@ -144,10 +144,9 @@ describe('Request to go live: agreement', () => {
         service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_WORLDPAY')],
         repeat: 2
       }]
-    }, {
-      name: 'getGatewayAccountSuccess',
-      opts: { gateway_account_id: gatewayAccountId }
-    }]
+    },
+    gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    ]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_WORLDPAY'), stubGovUkPayAgreement)

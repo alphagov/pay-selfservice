@@ -1,4 +1,5 @@
 const userStubs = require('../../utils/user-stubs')
+const gatewayStubs = require('../../utils/gateway-stubs')
 
 describe('Request to go live: index', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -18,10 +19,7 @@ describe('Request to go live: index', () => {
   const setupStubs = (serviceRole) => {
     cy.task('setupStubs', [
       userStubs.getUserSuccessWithServiceRole({ userExternalId, serviceRole }),
-      {
-        name: 'getGatewayAccountSuccess',
-        opts: { gateway_account_id: gatewayAccountId }
-      }
+      gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
     ])
   }
 

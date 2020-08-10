@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 const utils = require('../../utils/request-to-go-live-utils')
 const variables = utils.variables
+const gatewayStubs = require('../../utils/gateway-stubs')
 
 describe('Request to go live: choose how to process payments', () => {
   const userExternalId = variables.userExternalId
@@ -42,10 +43,7 @@ describe('Request to go live: choose how to process payments', () => {
         service_roles: [utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')],
         repeat: 2
       }]
-    }, {
-      name: 'getGatewayAccountSuccess',
-      opts: { gateway_account_id: gatewayAccountId }
-    }]
+    }, gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('CHOSEN_PSP_STRIPE'))
@@ -89,10 +87,7 @@ describe('Request to go live: choose how to process payments', () => {
         service_roles: [utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_EPDQ')],
         repeat: 2
       }]
-    }, {
-      name: 'getGatewayAccountSuccess',
-      opts: { gateway_account_id: gatewayAccountId }
-    }]
+    }, gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('CHOSEN_PSP_EPDQ'))
