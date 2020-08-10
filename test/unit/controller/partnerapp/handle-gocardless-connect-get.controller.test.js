@@ -73,7 +73,7 @@ describe('When GoCardless Connect middleware receives a GET request', function (
   })
 
   function getControllerWithMocks () {
-    return proxyquire('../../../../app/controllers/partnerapp/handle-gocardless-connect-get', {
+    return proxyquire('../../../../app/controllers/partnerapp/handle-gocardless-connect-get.controller', {
       '../../services/clients/direct-debit-connector.client': {
         partnerApp: {
           exchangeCode: exchangeCodeStub

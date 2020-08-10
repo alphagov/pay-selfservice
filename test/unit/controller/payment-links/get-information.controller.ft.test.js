@@ -18,7 +18,7 @@ const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
 const getController = (mockResponse) => {
-  return proxyquire('../../../../app/controllers/payment-links/get-information-controller', {
+  return proxyquire('../../../../app/controllers/payment-links/get-information.controller', {
     '../../utils/response': { response: mockResponse }
   })
 }
