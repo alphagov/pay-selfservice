@@ -1,34 +1,31 @@
 const SESSION_USER_ID = 'some-user-id'
 const GATEWAY_ACCOUNT_ID = 10
 
+const userStubs = require('../../utils/user-stubs')
+
 function getStubsForPayoutScenario (payouts = [], payoutOpts = {}) {
-  return [{
-    name: 'getUserSuccess',
-    opts: {
-      external_id: SESSION_USER_ID,
-      email: 'some-user@email.com',
-      service_roles: [{
-        service: {
-          name: 'some-service-name',
-          gateway_account_ids: [ GATEWAY_ACCOUNT_ID ]
-        }
-      }]
-    }
-  }, {
-    name: 'getGatewayAccountsSuccess',
-    opts: {
-      gateway_account_id: GATEWAY_ACCOUNT_ID,
-      payment_provider: 'stripe',
-      type: 'live'
-    }
-  }, {
-    name: 'getLedgerPayoutSuccess',
-    opts: {
-      payouts,
-      gateway_account_id: GATEWAY_ACCOUNT_ID,
-      ...payoutOpts
-    }
-  }]
+  return [
+    userStubs.getUserSuccess({
+      userExternalId: SESSION_USER_ID,
+      gatewayAccountId: GATEWAY_ACCOUNT_ID,
+      serviceName: 'some-service-name',
+      email: 'some-user@email.com'
+    }),
+    {
+      name: 'getGatewayAccountsSuccess',
+      opts: {
+        gateway_account_id: GATEWAY_ACCOUNT_ID,
+        payment_provider: 'stripe',
+        type: 'live'
+      }
+    }, {
+      name: 'getLedgerPayoutSuccess',
+      opts: {
+        payouts,
+        gateway_account_id: GATEWAY_ACCOUNT_ID,
+        ...payoutOpts
+      }
+    }]
 }
 
 describe('Payout list page', () => {

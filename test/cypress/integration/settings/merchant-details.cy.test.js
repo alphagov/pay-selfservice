@@ -1,3 +1,5 @@
+const userStubs = require('../../utils/user-stubs')
+
 describe('Dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -6,17 +8,7 @@ describe('Dashboard', () => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
 
     cy.task('setupStubs', [
-      {
-        name: 'getUserSuccess',
-        opts: {
-          external_id: userExternalId,
-          service_roles: [{
-            service: {
-              gateway_account_ids: [gatewayAccountId]
-            }
-          }]
-        }
-      },
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName: 'service-name' }),
       {
         name: 'getGatewayAccountsSuccess',
         opts: { gateway_account_id: gatewayAccountId }

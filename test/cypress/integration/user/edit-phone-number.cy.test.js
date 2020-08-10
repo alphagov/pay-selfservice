@@ -1,3 +1,5 @@
+const userStubs = require('../../utils/user-stubs')
+
 describe('Edit phone number flow', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -10,19 +12,7 @@ describe('Edit phone number flow', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
 
       cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                name: serviceName,
-                gateway_account_ids: [gatewayAccountId]
-              }
-            }],
-            telephone_number: testPhoneNumber
-          }
-        },
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, telephoneNumber: testPhoneNumber }),
         {
           name: 'getGatewayAccountSuccess',
           opts: { gateway_account_id: gatewayAccountId }
@@ -58,19 +48,7 @@ describe('Edit phone number flow', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
 
       cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                name: serviceName,
-                gateway_account_ids: [gatewayAccountId]
-              }
-            }],
-            telephone_number: testPhoneNumberNew
-          }
-        },
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, telephoneNumber: testPhoneNumberNew }),
         {
           name: 'getGatewayAccountSuccess',
           opts: { gateway_account_id: gatewayAccountId }

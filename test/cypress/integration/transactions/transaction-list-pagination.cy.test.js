@@ -1,4 +1,7 @@
 'use strict'
+
+const userStubs = require('../../utils/user-stubs')
+
 describe('Transactions list pagination', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -33,18 +36,7 @@ describe('Transactions list pagination', () => {
 
   const getStubs = (transactionDetails) => {
     return [
-      {
-        name: 'getUserSuccess',
-        opts: {
-          external_id: userExternalId,
-          service_roles: [{
-            service: {
-              name: serviceName,
-              gateway_account_ids: [gatewayAccountId]
-            }
-          }]
-        }
-      },
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
       {
         name: 'getUsersSuccess',
         opts: {

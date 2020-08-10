@@ -1,6 +1,6 @@
 'use strict'
 
-const { getUserWithServiceRoleStubOpts } = require('../../utils/user-stubs')
+const { getUserWithServiceRoleStubOpts, getUserSuccess } = require('../../utils/user-stubs')
 
 const SERVICE_EXTERNAL_ID = 'service_abc_123'
 const AUTHENTICATED_USER_ID = 'authenticated-user-id'
@@ -13,10 +13,12 @@ describe('Manage team members page', () => {
     const viewAndRefundUserStubOpts = getUserWithServiceRoleStubOpts('view-and-refund-user-id', 'view-and-refund-user@example.com', SERVICE_EXTERNAL_ID, 'view-and-refund')
 
     cy.task('setupStubs', [
-      {
-        name: 'getUserSuccess',
-        opts: authenticatedUserStubOpts
-      },
+      getUserSuccess({
+        userExternalId: AUTHENTICATED_USER_ID,
+        email: 'logged-in-user@example.com',
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        role: { name: 'admin' }
+      }),
       {
         name: 'getServiceUsersSuccess',
         opts: {

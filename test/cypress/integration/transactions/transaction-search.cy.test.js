@@ -1,3 +1,5 @@
+const userStubs = require('../../utils/user-stubs')
+
 const transactionsUrl = `/transactions`
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = 42
@@ -77,18 +79,7 @@ const transactionsWithAssociatedFees = [
 
 const sharedStubs = (paymentProvider = 'sandbox') => {
   return [
-    {
-      name: 'getUserSuccess',
-      opts: {
-        external_id: userExternalId,
-        service_roles: [{
-          service: {
-            name: serviceName,
-            gateway_account_ids: [gatewayAccountId]
-          }
-        }]
-      }
-    },
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     {
       name: 'getGatewayAccountSuccess',
       opts: {

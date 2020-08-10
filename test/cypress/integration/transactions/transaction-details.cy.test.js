@@ -1,6 +1,7 @@
 'use strict'
 
 const lodash = require('lodash')
+const userStubs = require('../../utils/user-stubs')
 
 const capitalise = string => string[0].toUpperCase() + string.slice(1)
 const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
@@ -72,19 +73,7 @@ describe('Transaction details page', () => {
 
   const getStubs = (transactionDetails, additionalGatewayAccountOpts = {}) => {
     return [
-      {
-        name: 'getUserSuccess',
-        opts: {
-          external_id: userExternalId,
-          email: userEmail,
-          service_roles: [{
-            service: {
-              name: serviceName,
-              gateway_account_ids: [gatewayAccountId]
-            }
-          }]
-        }
-      },
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, email: userEmail }),
       {
         name: 'getUsersSuccess',
         opts: {
