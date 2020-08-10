@@ -1,6 +1,6 @@
 const chai = require('chai')
 const { expect } = chai
-const { indexServiceNamesByGatewayAccountId } = require('../../../../app/controllers/payouts/user-services-names')
+const { indexServiceNamesByGatewayAccountId } = require('../../../../app/controllers/payouts/user-services-names.controller')
 const fixtures = require('../../../fixtures/user.fixtures')
 
 describe('user services to gateway account id map utility', () => {

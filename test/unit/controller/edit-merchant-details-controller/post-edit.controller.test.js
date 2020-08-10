@@ -11,7 +11,7 @@ const Service = require('../../../../app/models/Service.class')
 
 const mockResponse = {}
 const getController = function getController (mockServiceService) {
-  return proxyquire('../../../../app/controllers/edit-merchant-details/post-edit-controller', {
+  return proxyquire('../../../../app/controllers/edit-merchant-details/post-edit.controller', {
     '../../services/service.service': mockServiceService,
     '../../utils/response': mockResponse
   })
