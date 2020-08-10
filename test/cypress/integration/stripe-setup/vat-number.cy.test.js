@@ -1,6 +1,7 @@
 'use strict'
 
 const commonStubs = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
   stubStripeAccountGet,
@@ -16,7 +17,7 @@ describe('Stripe setup: VAT number page', () => {
     describe('when user is admin, account is Stripe and "VAT number" is not already submitted', () => {
       beforeEach(() => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
@@ -75,7 +76,7 @@ describe('Stripe setup: VAT number page', () => {
 
       it('should redirect to Dashboard with an error message when displaying the page', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': true }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
@@ -95,7 +96,7 @@ describe('Stripe setup: VAT number page', () => {
 
       it('should redirect to Dashboard with an error message when submitting the form', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubStripeSetupGetForMultipleCallsAndVatNumberCompleted(gatewayAccountId, false, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
@@ -124,7 +125,7 @@ describe('Stripe setup: VAT number page', () => {
 
       it('should show a 404 error when gateway account is not Stripe', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
@@ -144,7 +145,7 @@ describe('Stripe setup: VAT number page', () => {
 
       it('should show a 404 error when gateway account is not live', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
@@ -164,7 +165,7 @@ describe('Stripe setup: VAT number page', () => {
 
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserWithNoPermissionsStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true, true)
         ])
@@ -183,7 +184,7 @@ describe('Stripe setup: VAT number page', () => {
       cy.setEncryptedCookies(userExternalId, directDebitGatewayAccountId)
 
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [directDebitGatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId: directDebitGatewayAccountId }),
         commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'live', 'go-cardless')
       ])
 

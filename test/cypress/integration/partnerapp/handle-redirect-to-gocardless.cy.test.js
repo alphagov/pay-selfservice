@@ -1,4 +1,5 @@
-const { getUserStub, getDirectDebitGatewayAccountStub } = require('../../utils/common-stubs')
+const { getDirectDebitGatewayAccountStub } = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
 
 describe('Connect to Go Cardless', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -11,7 +12,7 @@ describe('Connect to Go Cardless', () => {
   describe('Redirect to Go Cardless Fails', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         getDirectDebitGatewayAccountStub(gatewayAccountId, 'test', 'gocardless'),
         {
           name: 'redirectToGoCardlessConnectFailure'

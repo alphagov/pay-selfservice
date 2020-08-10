@@ -2,6 +2,7 @@
 
 const utils = require('../../utils/request-to-go-live-utils')
 const commonStubs = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 
 describe('Go live link on dashboard', () => {
@@ -136,7 +137,12 @@ describe('Go live link on dashboard', () => {
       const directDebitGatewayAccountId = 'DIRECT_DEBIT:101'
 
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [directDebitGatewayAccountId], serviceExternalId, 'NOT_STARTED'),
+        userStubs.getUserSuccess({
+          userExternalId,
+          gatewayAccountId: directDebitGatewayAccountId,
+          serviceExternalId,
+          goLiveStage: 'NOT_STARTED'
+        }),
         commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'test', 'sandbox')
       ])
       cy.visit('/')

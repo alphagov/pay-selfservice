@@ -23,7 +23,6 @@ const getUserSuccess = function (opts) {
     external_id: opts.userExternalId,
     service_roles: [{
       service: {
-        name: opts.serviceName,
         gateway_account_ids: [opts.gatewayAccountId]
       }
     }],
@@ -34,6 +33,13 @@ const getUserSuccess = function (opts) {
 
   if (opts.serviceExternalId) {
     stubOptions.service_roles[0].service.external_id = opts.serviceExternalId
+  }
+  if (opts.serviceName) {
+    stubOptions.service_roles[0].service.name = opts.serviceName
+    stubOptions.service_roles[0].service.service_name = opts.serviceName
+  }
+  if (opts.goLiveStage) {
+    stubOptions.service_roles[0].service.current_go_live_stage = opts.goLiveStage
   }
   if (opts && opts.role) {
     stubOptions.service_roles[0].role = opts.role
@@ -55,8 +61,13 @@ const getUserSuccessWithServiceRole = function (opts) {
   }
 }
 
+const getUserWithNoPermissions = function (userExternalId, gatewayAccountIds) {
+  return getUserSuccess({ userExternalId, gatewayAccountIds, goLiveStage: 'NOT_STARTED', role: { permissions: [] } })
+}
+
 module.exports = {
   getUserSuccess,
+  getUserWithNoPermissions,
   getUserSuccessWithServiceRole,
   getUserWithServiceRoleStubOpts
 }
