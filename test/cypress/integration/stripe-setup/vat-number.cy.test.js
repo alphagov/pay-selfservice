@@ -3,12 +3,12 @@
 const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const transactionSummaryStubs = require('../../utils/transaction-summary-stubs')
 
 const {
   stubGetGatewayAccountStripeSetupSuccess,
   stubStripeAccountGet,
-  stubStripeSetupGetForMultipleCallsAndVatNumberCompleted,
-  stubDashboardStatisticsGet
+  stubStripeSetupGetForMultipleCallsAndVatNumberCompleted
 } = require('./support-stubs')
 
 describe('Stripe setup: VAT number page', () => {
@@ -82,7 +82,7 @@ describe('Stripe setup: VAT number page', () => {
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': true }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          stubDashboardStatisticsGet(),
+          transactionSummaryStubs.getDashboardStatistics(),
           commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true, true)
         ])
 
@@ -102,7 +102,7 @@ describe('Stripe setup: VAT number page', () => {
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
           stubStripeSetupGetForMultipleCallsAndVatNumberCompleted(gatewayAccountId, false, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          stubDashboardStatisticsGet()
+          transactionSummaryStubs.getDashboardStatistics()
         ])
 
         cy.visit('/vat-number')

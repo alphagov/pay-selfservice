@@ -1,12 +1,5 @@
 'use strict'
 
-module.exports.getDashboardStatisticsStub = () => {
-  return {
-    name: 'getDashboardStatisticsStub',
-    opts: {}
-  }
-}
-
 module.exports.getGatewayAccountStripeSetupSuccess = (gatewayAccountId, bankAccount, responsiblePerson, vatNumber, companyNumber) => {
   const stripeSetupStub = {
     name: 'getGatewayAccountStripeSetupSuccess',

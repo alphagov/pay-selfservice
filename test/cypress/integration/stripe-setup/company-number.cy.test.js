@@ -2,12 +2,12 @@
 
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const transactionSummaryStubs = require('../../utils/transaction-summary-stubs')
 
 const {
   stubGetGatewayAccountStripeSetupSuccess,
   stubStripeAccountGet,
-  stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted,
-  stubDashboardStatisticsGet
+  stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted
 } = require('./support-stubs')
 
 describe('Stripe setup: company number page', () => {
@@ -100,7 +100,7 @@ describe('Stripe setup: company number page', () => {
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': true }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          stubDashboardStatisticsGet()
+          transactionSummaryStubs.getDashboardStatistics()
         ])
 
         cy.visit('/company-number')
@@ -119,7 +119,7 @@ describe('Stripe setup: company number page', () => {
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
           stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted(gatewayAccountId, false, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          stubDashboardStatisticsGet()
+          transactionSummaryStubs.getDashboardStatistics()
         ])
 
         cy.visit('/company-number')

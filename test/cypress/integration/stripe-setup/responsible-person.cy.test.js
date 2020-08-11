@@ -1,8 +1,8 @@
 'use strict'
 
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const transactionSummaryStubs = require('../../utils/transaction-summary-stubs')
 
 describe('Stripe setup: responsible person page', () => {
   const gatewayAccountId = 42
@@ -261,7 +261,7 @@ describe('Stripe setup: responsible person page', () => {
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
         stubStripeSetupGet(true),
         stubStripeAccountGet('acct_123example123'),
-        commonStubs.getDashboardStatisticsStub()
+        transactionSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/responsible-person')
@@ -283,7 +283,7 @@ describe('Stripe setup: responsible person page', () => {
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
         stubStripeSetupGetForMultipleCalls(false, true),
         stubStripeAccountGet('acct_123example123'),
-        commonStubs.getDashboardStatisticsStub()
+        transactionSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/responsible-person')
