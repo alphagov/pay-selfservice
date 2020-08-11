@@ -1,4 +1,5 @@
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Settings', () => {
   const settingsUrl = `/settings`
@@ -12,10 +13,7 @@ describe('Settings', () => {
 
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        },
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
         {
           name: 'getAccountAuthSuccess',
           opts: { gateway_account_id: gatewayAccountId }
@@ -156,10 +154,7 @@ describe('Settings', () => {
       }
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role }),
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        },
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
         {
           name: 'getAccountAuthSuccess',
           opts: { gateway_account_id: gatewayAccountId }

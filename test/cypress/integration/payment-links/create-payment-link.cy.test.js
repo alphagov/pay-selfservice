@@ -1,5 +1,5 @@
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const serviceName = {
@@ -11,7 +11,7 @@ describe('The create payment link flow', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId: userExternalId, gatewayAccountId, serviceName }),
-      commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay')
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' })
     ])
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })

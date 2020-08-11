@@ -1,5 +1,5 @@
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const { getProductsStub, getProductByExternalIdStub } = require('../../utils/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
@@ -37,7 +37,7 @@ describe('Editing a payment link', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
         getProductsStub([product], gatewayAccountId),
         getProductByExternalIdStub(product, gatewayAccountId)
       ])
@@ -253,7 +253,7 @@ describe('Editing a payment link', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
         getProductsStub([product], gatewayAccountId),
         getProductByExternalIdStub(product, gatewayAccountId)
       ])

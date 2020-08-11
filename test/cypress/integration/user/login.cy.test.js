@@ -1,4 +1,5 @@
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Login Page', () => {
   const gatewayAccountId = 42
@@ -10,10 +11,7 @@ describe('Login Page', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName: 'service-name' }),
-      {
-        name: 'getGatewayAccountSuccess',
-        opts: { gateway_account_id: gatewayAccountId }
-      },
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
       {
         name: 'postUserAuthenticateSuccess',
         opts: {

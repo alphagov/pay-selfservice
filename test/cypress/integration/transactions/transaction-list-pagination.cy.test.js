@@ -1,6 +1,7 @@
 'use strict'
 
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Transactions list pagination', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -43,10 +44,7 @@ describe('Transactions list pagination', () => {
           users: []
         }
       },
-      {
-        name: 'getGatewayAccountSuccess',
-        opts: { gateway_account_id: gatewayAccountId }
-      },
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
       {
         name: 'getCardTypesSuccess'
       },
