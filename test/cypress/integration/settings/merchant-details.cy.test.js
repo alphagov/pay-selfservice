@@ -1,4 +1,5 @@
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -9,10 +10,7 @@ describe('Dashboard', () => {
 
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName: 'service-name' }),
-      {
-        name: 'getGatewayAccountsSuccess',
-        opts: { gateway_account_id: gatewayAccountId }
-      }
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId, paymentProvider: 'sandbox', type: 'test' })
     ])
   })
 

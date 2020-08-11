@@ -1,8 +1,8 @@
 'use strict'
 
 const utils = require('../../utils/request-to-go-live-utils')
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 
 describe('Go live link on dashboard', () => {
@@ -143,7 +143,7 @@ describe('Go live link on dashboard', () => {
           serviceExternalId,
           goLiveStage: 'NOT_STARTED'
         }),
-        commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'test', 'sandbox')
+        gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId: directDebitGatewayAccountId, type: 'test', paymentProvider: 'sandbox' })
       ])
       cy.visit('/')
 

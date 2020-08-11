@@ -2,6 +2,7 @@
 
 const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('The Stripe psp details banner', () => {
   const gatewayAccountId = 22
@@ -10,7 +11,7 @@ describe('The Stripe psp details banner', () => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-      commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
       commonStubs.getDashboardStatisticsStub(),
       commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, false, false, false, false),
       commonStubs.getStripeAccount(gatewayAccountId, 'stripe-account-id')

@@ -1,7 +1,7 @@
 'use strict'
 
-const { getGatewayAccountsStub } = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const authenticatedUserId = 'authenticated-user-id'
 const serviceExternalId = 'service-external-id'
 const newServiceName = 'Updated Service'
@@ -17,7 +17,7 @@ function setupStubs (serviceName, stubs = []) {
   cy.task('setupStubs', [
     ...stubs,
     userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1', serviceExternalId, serviceName }),
-    getGatewayAccountsStub(1)
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' })
   ])
 }
 

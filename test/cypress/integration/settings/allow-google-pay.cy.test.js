@@ -1,4 +1,5 @@
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Google Pay', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -13,14 +14,7 @@ describe('Google Pay', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            payment_provider: 'worldpay',
-            allow_google_pay: false
-          }
-        }
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: 'worldpay', allowGooglePay: false })
       ])
     })
 
@@ -41,14 +35,7 @@ describe('Google Pay', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            payment_provider: 'worldpay',
-            allow_google_pay: false
-          }
-        }
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: 'worldpay', allowGooglePay: false })
       ])
     })
 
@@ -64,14 +51,7 @@ describe('Google Pay', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            payment_provider: 'worldpay',
-            allow_google_pay: true
-          }
-        }
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: 'worldpay', allowGooglePay: true })
       ])
     })
 

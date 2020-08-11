@@ -2,6 +2,7 @@ const SESSION_USER_ID = 'some-user-id'
 const GATEWAY_ACCOUNT_ID = 10
 
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 function getStubsForPayoutScenario (payouts = [], payoutOpts = {}) {
   return [
@@ -11,14 +12,8 @@ function getStubsForPayoutScenario (payouts = [], payoutOpts = {}) {
       serviceName: 'some-service-name',
       email: 'some-user@email.com'
     }),
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: GATEWAY_ACCOUNT_ID, paymentProvider: 'stripe', type: 'live' }),
     {
-      name: 'getGatewayAccountsSuccess',
-      opts: {
-        gateway_account_id: GATEWAY_ACCOUNT_ID,
-        payment_provider: 'stripe',
-        type: 'live'
-      }
-    }, {
       name: 'getLedgerPayoutSuccess',
       opts: {
         payouts,

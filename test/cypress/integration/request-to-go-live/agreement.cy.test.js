@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 const utils = require('../../utils/request-to-go-live-utils')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
-const gatewayStubs = require('../../utils/gateway-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Request to go live: agreement', () => {
   const stubGovUkPayAgreement = {
@@ -92,7 +92,7 @@ describe('Request to go live: agreement', () => {
         repeat: 2
       }]
     },
-    gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
     ]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
@@ -145,7 +145,7 @@ describe('Request to go live: agreement', () => {
         repeat: 2
       }]
     },
-    gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
     ]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,

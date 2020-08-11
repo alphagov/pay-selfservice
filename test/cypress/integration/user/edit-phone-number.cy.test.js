@@ -1,5 +1,5 @@
 const userStubs = require('../../utils/user-stubs')
-const gatewayStubs = require('../../utils/gateway-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Edit phone number flow', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -14,7 +14,7 @@ describe('Edit phone number flow', () => {
 
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, telephoneNumber: testPhoneNumber }),
-        gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
       ])
     })
 
@@ -47,7 +47,7 @@ describe('Edit phone number flow', () => {
 
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, telephoneNumber: testPhoneNumberNew }),
-        gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
       ])
     })
 

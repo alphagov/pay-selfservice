@@ -2,6 +2,7 @@
 
 const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('the links are displayed correctly on the dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -16,7 +17,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 3 links for a live sandbox account', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
         commonStubs.getDashboardStatisticsStub()
       ])
 
@@ -39,7 +40,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 2 links for a live non-sandbox account', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'worldpay'),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'worldpay' }),
         commonStubs.getDashboardStatisticsStub()
       ])
 
@@ -56,7 +57,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 4 links for a test sandbox account', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId: 'an-id', goLiveStage: 'NOT_STARTED' }),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'sandbox'),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'sandbox' }),
         commonStubs.getDashboardStatisticsStub()
       ])
 
@@ -79,7 +80,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 3 links for a test non-sandbox account', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
         commonStubs.getDashboardStatisticsStub()
       ])
 
@@ -107,7 +108,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 3 links for a live sandbox account', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
+        gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
         commonStubs.getDashboardStatisticsStub()
       ])
 
@@ -127,7 +128,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 2 links for a live non-sandbox account', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'live', 'go-cardless'),
+        gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'go-cardless' }),
         commonStubs.getDashboardStatisticsStub()
       ])
 
@@ -144,7 +145,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 4 links for a test sandbox account', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId: 'an-id', goLiveStage: 'NOT_STARTED' }),
-        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'test', 'sandbox'),
+        gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'sandbox' }),
         commonStubs.getDashboardStatisticsStub()
       ])
 
@@ -167,7 +168,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 3 links for a test non-sandbox account', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId: 'an-id', goLiveStage: 'NOT_STARTED' }),
-        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'test', 'go-cardless'),
+        gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'go-cardless' }),
         commonStubs.getDashboardStatisticsStub()
       ])
 

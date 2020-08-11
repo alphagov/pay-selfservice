@@ -2,6 +2,7 @@
 
 const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Stripe setup: bank details page', () => {
   const gatewayAccountId = 42
@@ -64,7 +65,7 @@ describe('Stripe setup: bank details page', () => {
       beforeEach(() => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
+          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
           stubGetGatewayAccountStripeSetupSuccess(false),
           stubStripeAccountGet('acct_123example123')
         ])
@@ -133,7 +134,7 @@ describe('Stripe setup: bank details page', () => {
       it('should redirect to Dashboard with an error message when on Bank details page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
+          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
           stubGetGatewayAccountStripeSetupSuccess(true),
           stubStripeAccountGet('acct_123example123'),
           commonStubs.getDashboardStatisticsStub()
@@ -152,7 +153,7 @@ describe('Stripe setup: bank details page', () => {
       it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
+          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
           stubStripeSetupGetForMultipleCalls(false, true),
           stubStripeAccountGet('acct_123example123'),
           commonStubs.getDashboardStatisticsStub()
@@ -177,7 +178,7 @@ describe('Stripe setup: bank details page', () => {
       it('should show a 404 error when gateway account is not Stripe', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
+          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
           stubGetGatewayAccountStripeSetupSuccess(false),
           stubStripeAccountGet('acct_123example123')
         ])
@@ -193,7 +194,7 @@ describe('Stripe setup: bank details page', () => {
       it('should show a 404 error when gateway account is not live', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
+          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'stripe' }),
           stubGetGatewayAccountStripeSetupSuccess(false),
           stubStripeAccountGet('acct_123example123')
         ])
@@ -209,7 +210,7 @@ describe('Stripe setup: bank details page', () => {
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
           userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe')
+          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' })
         ])
 
         cy.visit('/bank-details', {
@@ -229,7 +230,7 @@ describe('Stripe setup: bank details page', () => {
 
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId: directDebitGatewayAccountId }),
-        commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'live', 'go-cardless')
+        gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId: directDebitGatewayAccountId, type: 'live', paymentProvider: 'gocardless' })
       ])
 
       cy.visit('/bank-details', {

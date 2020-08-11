@@ -1,4 +1,5 @@
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -8,14 +9,7 @@ describe('Dashboard', () => {
   function setupDirectDebitGatewayAccount (isConnected, paymentProvider = 'gocardless') {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-      {
-        name: 'getDirectDebitGatewayAccountSuccess',
-        opts: {
-          gateway_account_id: gatewayAccountId,
-          payment_provider: paymentProvider,
-          is_connected: isConnected
-        }
-      }
+      gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, paymentProvider, isConnected })
     ])
   }
 

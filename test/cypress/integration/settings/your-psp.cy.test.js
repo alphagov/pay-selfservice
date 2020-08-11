@@ -1,7 +1,7 @@
 'use strict'
 
 const userStubs = require('../../utils/user-stubs')
-const gatewayStubs = require('../../utils/gateway-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Your PSP settings page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -50,7 +50,7 @@ describe('Your PSP settings page', () => {
       user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
     }
 
-    const gatewayAccount = gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
 
     if (opts.gateway) {
       gatewayAccount.opts.payment_provider = opts.gateway

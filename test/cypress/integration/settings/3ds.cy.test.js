@@ -2,7 +2,7 @@
 
 const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
-const gatewayStubs = require('../../utils/gateway-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('3DS settings page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -30,16 +30,7 @@ describe('3DS settings page', () => {
     } else {
       user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
     }
-
-    const gatewayAccount = gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId })
-
-    if (opts.gateway) {
-      gatewayAccount.opts.payment_provider = opts.gateway
-    }
-
-    if (opts.requires3ds) {
-      gatewayAccount.opts.requires3ds = opts.requires3ds
-    }
+    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: opts.gateway, requires3ds: opts.requires3ds })
 
     const card = {
       name: 'getAcceptedCardTypesSuccess',
@@ -224,7 +215,7 @@ describe('3DS settings page', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe', requires3ds: true }),
         {
           name: 'getAcceptedCardTypesSuccess',
           opts: {

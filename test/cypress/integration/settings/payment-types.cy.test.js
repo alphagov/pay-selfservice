@@ -1,5 +1,5 @@
 const userStubs = require('../../utils/user-stubs')
-const gatewayStubs = require('../../utils/gateway-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
 describe('Payment types', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -14,7 +14,7 @@ describe('Payment types', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
         {
           name: 'getCardTypesSuccess'
         },
@@ -64,7 +64,7 @@ describe('Payment types', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
         {
           name: 'getCardTypesSuccess'
         },
@@ -96,7 +96,7 @@ describe('Payment types', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayStubs.getGatewayAccountSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
         {
           name: 'getCardTypesSuccess'
         },
