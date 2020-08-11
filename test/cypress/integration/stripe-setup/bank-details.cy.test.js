@@ -99,34 +99,6 @@ describe('Stripe setup: bank details page', () => {
         cy.get('input#sort-code').should('have.class', 'govuk-input--error')
         cy.get('label[for=sort-code] > span').should('contain', 'This field cannot be blank')
       })
-
-      it('should display an error when account number is invalid', () => {
-        cy.get('input#account-number[name="account-number"]').type('abc')
-        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-
-        cy.get('#bank-details-form > button').click()
-
-        cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Account number')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#account-number')
-
-        cy.get('input#account-number').should('have.class', 'govuk-input--error')
-        cy.get('label[for=account-number] > span').should('contain', 'Enter a valid account number like 00733445')
-      })
-
-      it('should display an error when sort code is invalid', () => {
-        cy.get('input#account-number[name="account-number"]').type(accountNumber)
-        cy.get('input#sort-code[name="sort-code"]').type('abc')
-
-        cy.get('#bank-details-form > button').click()
-
-        cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Sort code')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#sort-code')
-
-        cy.get('input#sort-code').should('have.class', 'govuk-input--error')
-        cy.get('label[for=sort-code] > span').should('contain', 'Enter a valid sort code like 309430')
-      })
     })
 
     describe('Bank account flag already true', () => {
