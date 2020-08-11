@@ -357,38 +357,6 @@ describe('The create payment link flow', () => {
       it('should have Welsh-specific instructions', () => {
         cy.get('button').should('exist').should('contain', 'Create Welsh payment link')
       })
-
-      it('should redirect to information page when "Change" clicked', () => {
-        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/information`)
-        })
-      })
-
-      it('should have details pre-filled', () => {
-        cy.get('input#payment-link-title').should('have.value', name)
-        cy.get('textarea#payment-link-description').should('have.value', description)
-      })
-
-      it('should have Welsh-specific instructions', () => {
-        cy.get('input#payment-link-title').parent('.govuk-form-group').get('span')
-          .should('contain', 'For example, “Talu am drwydded barcio”')
-      })
-
-      it('should redirect to the review page when "Continue" is clicked', () => {
-        cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
-          cy.get('button').click()
-        })
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/review`)
-        })
-      })
-
-      it('should have Welsh-specific instructions', () => {
-        cy.get('button').should('exist').should('contain', 'Create Welsh payment link')
-      })
     })
 
     describe('Should clear session when returning to the create payment link start page', () => {
