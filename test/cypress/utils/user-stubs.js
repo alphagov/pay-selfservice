@@ -51,6 +51,15 @@ const getUserSuccess = function (opts) {
   }
 }
 
+const getUsersSuccess = function () {
+  return {
+    name: 'getUsersSuccess',
+    opts: {
+      users: []
+    }
+  }
+}
+
 const getUserSuccessWithServiceRole = function (opts) {
   return {
     name: 'getUserSuccess',
@@ -65,9 +74,44 @@ const getUserWithNoPermissions = function (userExternalId, gatewayAccountIds) {
   return getUserSuccess({ userExternalId, gatewayAccountIds, goLiveStage: 'NOT_STARTED', role: { permissions: [] } })
 }
 
+const postUserAuthenticateSuccess = function (userExternalId, username, password) {
+  return {
+    name: 'postUserAuthenticateSuccess',
+    opts: {
+      external_id: userExternalId,
+      username: username,
+      password: password
+    }
+  }
+}
+
+const postUserAuthenticateInvalidPassword = function (username, password) {
+  return {
+    name: 'postUserAuthenticateInvalidPassword',
+    opts: {
+      username: username,
+      password: password
+    }
+  }
+}
+
+const postSecondFactorSuccess = function (userExternalId) {
+  return {
+    name: 'postSecondFactorSuccess',
+    opts:
+      {
+        external_id: userExternalId
+      }
+  }
+}
+
 module.exports = {
   getUserSuccess,
+  getUsersSuccess,
   getUserWithNoPermissions,
   getUserSuccessWithServiceRole,
-  getUserWithServiceRoleStubOpts
+  getUserWithServiceRoleStubOpts,
+  postUserAuthenticateSuccess,
+  postUserAuthenticateInvalidPassword,
+  postSecondFactorSuccess
 }

@@ -74,12 +74,7 @@ describe('Transaction details page', () => {
   const getStubs = (transactionDetails, additionalGatewayAccountOpts = {}) => {
     return [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, email: userEmail }),
-      {
-        name: 'getUsersSuccess',
-        opts: {
-          users: []
-        }
-      },
+      userStubs.getUsersSuccess(),
       {
         name: 'getGatewayAccountSuccess',
         opts: {

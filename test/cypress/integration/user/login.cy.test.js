@@ -12,27 +12,9 @@ describe('Login Page', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName: 'service-name' }),
       gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-      {
-        name: 'postUserAuthenticateSuccess',
-        opts: {
-          external_id: userExternalId,
-          username: validUsername,
-          password: validPassword
-        }
-      },
-      {
-        name: 'postUserAuthenticateInvalidPassword',
-        opts: {
-          username: validUsername,
-          password: invalidPassword
-        }
-      },
-      {
-        name: 'postSecondFactorSuccess',
-        opts: {
-          external_id: userExternalId
-        }
-      }
+      userStubs.postUserAuthenticateSuccess(userExternalId, validUsername, validPassword),
+      userStubs.postUserAuthenticateInvalidPassword(validUsername, invalidPassword),
+      userStubs.postSecondFactorSuccess(userExternalId)
     ])
 
     cy.visit('/')
