@@ -2,6 +2,7 @@
 
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const userStubs = require('../../utils/user-stubs')
+const payoutStubs = require('../../utils/payout-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 
@@ -29,10 +30,7 @@ describe('Service has a live account that supports payouts', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
       gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type: 'live', paymentProvider: 'stripe' }),
-      {
-        name: 'getLedgerPayoutSuccess',
-        opts: { gateway_account_id: 1 }
-      }
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: '1' })
     ])
     cy.contains('a', 'View payments to your bank account').click()
     cy.get('h1').contains('Payments to your bank account')

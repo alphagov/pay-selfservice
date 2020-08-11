@@ -3,6 +3,7 @@ const GATEWAY_ACCOUNT_ID = 10
 
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const payoutStubs = require('../../utils/payout-stubs')
 
 function getStubsForPayoutScenario (payouts = [], payoutOpts = {}) {
   return [
@@ -13,14 +14,8 @@ function getStubsForPayoutScenario (payouts = [], payoutOpts = {}) {
       email: 'some-user@email.com'
     }),
     gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: GATEWAY_ACCOUNT_ID, paymentProvider: 'stripe', type: 'live' }),
-    {
-      name: 'getLedgerPayoutSuccess',
-      opts: {
-        payouts,
-        gateway_account_id: GATEWAY_ACCOUNT_ID,
-        ...payoutOpts
-      }
-    }]
+    payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: GATEWAY_ACCOUNT_ID, payouts, payoutOpts })
+  ]
 }
 
 describe('Payout list page', () => {
