@@ -1,12 +1,15 @@
 'use strict'
 
-module.exports.getStripeAccount = (gatewayAccountId, stripeAccountId) => {
-  const stripeAccountStub = {
+const getStripeAccountSuccess = function (gatewayAccountId, stripeAccountId) {
+  return {
     name: 'getStripeAccountSuccess',
     opts: {
       gateway_account_id: gatewayAccountId,
       stripe_account_id: stripeAccountId
     }
   }
-  return stripeAccountStub
+}
+
+module.exports = {
+  getStripeAccountSuccess
 }

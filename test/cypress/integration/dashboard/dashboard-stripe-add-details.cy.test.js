@@ -1,10 +1,10 @@
 'use strict'
 
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../utils/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
+const stripeAccountStubs = require('../../utils/stripe-account-stubs')
 
 describe('The Stripe psp details banner', () => {
   const gatewayAccountId = 22
@@ -22,7 +22,7 @@ describe('The Stripe psp details banner', () => {
         vatNumber: false,
         companyNumber: false
       }),
-      commonStubs.getStripeAccount(gatewayAccountId, 'stripe-account-id')
+      stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'stripe-account-id')
     ])
   })
 
