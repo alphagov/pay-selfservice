@@ -1,6 +1,7 @@
 'use strict'
 
 const commonStubs = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
 
 describe('Stripe setup: responsible person page', () => {
   const gatewayAccountId = 42
@@ -69,7 +70,7 @@ describe('Stripe setup: responsible person page', () => {
   describe('when user is admin, account is Stripe and responsible person not already nominated', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
         stubStripeSetupGet(false),
         stubStripeAccountGet('acct_123example123')
@@ -255,7 +256,7 @@ describe('Stripe setup: responsible person page', () => {
   describe('trying to view form when responsible person already nominated', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
         stubStripeSetupGet(true),
         stubStripeAccountGet('acct_123example123'),
@@ -277,7 +278,7 @@ describe('Stripe setup: responsible person page', () => {
   describe('trying to save details when responsible person already nominated', function () {
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
         stubStripeSetupGetForMultipleCalls(false, true),
         stubStripeAccountGet('acct_123example123'),
@@ -312,7 +313,7 @@ describe('Stripe setup: responsible person page', () => {
   describe('when it’s not a Stripe gateway account', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'worldpay'),
         stubStripeSetupGet(false),
         stubStripeAccountGet('acct_123example123')
@@ -329,7 +330,7 @@ describe('Stripe setup: responsible person page', () => {
   describe('when user has incorrect permissions', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserWithNoPermissionsStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
         stubStripeSetupGet(false),
         stubStripeAccountGet('acct_123example123')

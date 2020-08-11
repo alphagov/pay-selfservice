@@ -1,4 +1,5 @@
-const { getUserStub, getGatewayAccountStub } = require('../../utils/common-stubs')
+const { getGatewayAccountStub } = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
 const { getProductsStub, getProductByExternalIdStub, deleteProductStub } = require('../../utils/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
@@ -12,7 +13,7 @@ describe('Should delete payment link', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
     cy.task('setupStubs', [
-      getUserStub(userExternalId, [gatewayAccountId]),
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
       getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
       getProductsStub([product], gatewayAccountId),
       getProductByExternalIdStub(product, gatewayAccountId),

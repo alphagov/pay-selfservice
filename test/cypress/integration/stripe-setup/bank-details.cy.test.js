@@ -1,6 +1,7 @@
 'use strict'
 
 const commonStubs = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
 
 describe('Stripe setup: bank details page', () => {
   const gatewayAccountId = 42
@@ -62,7 +63,7 @@ describe('Stripe setup: bank details page', () => {
     describe('Bank details page is shown', () => {
       beforeEach(() => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(false),
           stubStripeAccountGet('acct_123example123')
@@ -131,7 +132,7 @@ describe('Stripe setup: bank details page', () => {
     describe('Bank account flag already true', () => {
       it('should redirect to Dashboard with an error message when on Bank details page', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(true),
           stubStripeAccountGet('acct_123example123'),
@@ -150,7 +151,7 @@ describe('Stripe setup: bank details page', () => {
 
       it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubStripeSetupGetForMultipleCalls(false, true),
           stubStripeAccountGet('acct_123example123'),
@@ -175,7 +176,7 @@ describe('Stripe setup: bank details page', () => {
     describe('Not a Stripe gateway account', () => {
       it('should show a 404 error when gateway account is not Stripe', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
           stubGetGatewayAccountStripeSetupSuccess(false),
           stubStripeAccountGet('acct_123example123')
@@ -191,7 +192,7 @@ describe('Stripe setup: bank details page', () => {
     describe('Not a live gateway account', () => {
       it('should show a 404 error when gateway account is not live', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(false),
           stubStripeAccountGet('acct_123example123')
@@ -207,7 +208,7 @@ describe('Stripe setup: bank details page', () => {
     describe('User does not have the correct permissions', () => {
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
-          commonStubs.getUserWithNoPermissionsStub(userExternalId, [gatewayAccountId]),
+          userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe')
         ])
 
@@ -227,7 +228,7 @@ describe('Stripe setup: bank details page', () => {
       cy.setEncryptedCookies(userExternalId, directDebitGatewayAccountId)
 
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [directDebitGatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId: directDebitGatewayAccountId }),
         commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'live', 'go-cardless')
       ])
 

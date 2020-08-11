@@ -1,4 +1,6 @@
 const commonStubs = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
+
 const { getProductsStub } = require('../../utils/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
@@ -42,7 +44,7 @@ describe('The manage payment links page', () => {
   describe('No payment links', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
         getProductsStub([], gatewayAccountId)
       ])
@@ -68,7 +70,7 @@ describe('The manage payment links page', () => {
 
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
         getProductsStub(products, gatewayAccountId)
       ])
@@ -109,7 +111,7 @@ describe('The manage payment links page', () => {
 
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
         getProductsStub(products, gatewayAccountId)
       ])
@@ -158,7 +160,7 @@ describe('The manage payment links page', () => {
 
     beforeEach(() => {
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
         getProductsStub(products, gatewayAccountId)
       ])
@@ -196,7 +198,7 @@ describe('The manage payment links page', () => {
       }
 
       cy.task('setupStubs', [
-        commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
         productsFailureStub
       ])

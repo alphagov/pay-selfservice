@@ -1,6 +1,7 @@
 'use strict'
 
 const commonStubs = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
 
 describe('The Stripe psp details banner', () => {
   const gatewayAccountId = 22
@@ -8,7 +9,7 @@ describe('The Stripe psp details banner', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
     cy.task('setupStubs', [
-      commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
       commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
       commonStubs.getDashboardStatisticsStub(),
       commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, false, false, false, false),

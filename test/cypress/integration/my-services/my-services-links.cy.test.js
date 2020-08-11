@@ -1,6 +1,7 @@
 'use strict'
 
-const { getUserStubWithServiceName, getGatewayAccountsStub } = require('../../utils/common-stubs')
+const { getGatewayAccountsStub } = require('../../utils/common-stubs')
+const userStubs = require('../../utils/user-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 
@@ -13,7 +14,7 @@ describe('Service has a live account that supports payouts', () => {
 
   it('should display link to view payouts', () => {
     cy.task('setupStubs', [
-      getUserStubWithServiceName(authenticatedUserId, [1]),
+      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
       getGatewayAccountsStub(1, 'live', 'stripe')
     ])
 
@@ -26,7 +27,7 @@ describe('Service has a live account that supports payouts', () => {
 
   it('should direct to the list payouts page', () => {
     cy.task('setupStubs', [
-      getUserStubWithServiceName(authenticatedUserId, [1]),
+      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
       getGatewayAccountsStub(1, 'live', 'stripe'),
       {
         name: 'getLedgerPayoutSuccess',
@@ -41,7 +42,7 @@ describe('Service has a live account that supports payouts', () => {
 describe('Service does not have a live account that supports payouts', () => {
   it('should display link to view payouts', () => {
     cy.task('setupStubs', [
-      getUserStubWithServiceName(authenticatedUserId, [1]),
+      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
       getGatewayAccountsStub(1, 'test', 'stripe')
     ])
 
@@ -56,7 +57,7 @@ describe('Service does not have a live account that supports payouts', () => {
 describe('User has access to no live services', () => {
   it('should not display link to all service transactions', () => {
     cy.task('setupStubs', [
-      getUserStubWithServiceName(authenticatedUserId, [1]),
+      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
       getGatewayAccountsStub(1, 'test', 'sandbox')
     ])
 
@@ -71,7 +72,7 @@ describe('User has access to no live services', () => {
 describe('User has access to one or more live services', () => {
   it('should display link to all service transactions', () => {
     cy.task('setupStubs', [
-      getUserStubWithServiceName(authenticatedUserId, [1]),
+      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
       getGatewayAccountsStub(1, 'live', 'worldpay')
     ])
 
