@@ -48,8 +48,71 @@ const getDirectDebitGatewayAccountSuccess = function (opts) {
   }
 }
 
+const postCreateGatewayAccountSuccess = function (opts) {
+  return {
+    name: 'postCreateGatewayAccountSuccess',
+    opts: {
+      service_name: opts.serviceName,
+      payment_provider: opts.paymentProvider,
+      type: opts.type,
+      gateway_account_id: opts.gatewayAccountId,
+      verifyCalledTimes: opts.verifyCalledTimes
+    }
+  }
+}
+
+const getAcceptedCardTypesSuccess = function (opts) {
+  return {
+    name: 'getAcceptedCardTypesSuccess',
+    opts: {
+      account_id: opts.gatewayAccountId,
+      updated: opts.updated,
+      maestro: opts.maestro || ''
+    }
+  }
+}
+
+const getCardTypesSuccess = function () {
+  return {
+    name: 'getCardTypesSuccess'
+  }
+}
+
+const getGatewayAccountSuccessRepeat = function (opts) {
+  return {
+    name: 'getGatewayAccountSuccessRepeat',
+    opts: [{
+      gateway_account_id: opts[0].gatewayAccountId,
+      worldpay_3ds_flex: opts[0].worldpay3dsFlex,
+      payment_provider: opts[0].paymentProvider,
+      credentials: opts[0].credentials,
+      repeat: 2
+    },
+    {
+      gateway_account_id: opts[1].gatewayAccountId,
+      payment_provider: opts[1].paymentProvider,
+      worldpay_3ds_flex: opts[1].worldpay3dsFlex,
+      credentials: opts[1].credentials
+    }]
+  }
+}
+
+const patchUpdate3DS = function (opts) {
+  return {
+    name: 'patchUpdate3DS',
+    opts: {
+      toggle_3ds: opts.toggle3ds
+    }
+  }
+}
+
 module.exports = {
   getGatewayAccountSuccess,
+  getGatewayAccountSuccessRepeat,
   getGatewayAccountsSuccess,
-  getDirectDebitGatewayAccountSuccess
+  getAcceptedCardTypesSuccess,
+  getDirectDebitGatewayAccountSuccess,
+  postCreateGatewayAccountSuccess,
+  getCardTypesSuccess,
+  patchUpdate3DS
 }

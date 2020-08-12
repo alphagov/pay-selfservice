@@ -2,6 +2,7 @@
 
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const userStubs = require('../../utils/user-stubs')
+const serviceStubs = require('../../utils/service-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 const newServiceName = 'Pay for a thing'
@@ -9,44 +10,11 @@ const newServiceWelshName = 'Talu am beth'
 const newServiceId = 'new-service-id'
 const newGatewayAccountId = 38
 
-const createGatewayAccountStub = {
-  name: 'postCreateGatewayAccountSuccess',
-  opts: {
-    service_name: newServiceName,
-    payment_provider: 'sandbox',
-    type: 'test',
-    gateway_account_id: newGatewayAccountId,
-    verifyCalledTimes: 1
-  }
-}
-const assignUserRoleStub = {
-  name: 'postAssignServiceRoleSuccess',
-  opts: {
-    external_id: authenticatedUserId,
-    service_external_id: newServiceId,
-    role_name: 'admin',
-    verifyCalledTimes: 1
-  }
-}
+const createGatewayAccountStub =
+  gatewayAccountStubs.postCreateGatewayAccountSuccess({ serviceName: newServiceName, paymentProvider: 'sandbox', type: 'test', gatewayAccountId: newGatewayAccountId, verifyCalledTimes: 1 })
 
-function getCreateServiceStub (englishName, welshName) {
-  const serviceName = {
-    en: englishName
-  }
-  if (welshName) {
-    serviceName.cy = welshName
-  }
-
-  return {
-    name: 'postCreateServiceSuccess',
-    opts: {
-      gateway_account_ids: [newGatewayAccountId],
-      service_name: serviceName,
-      external_id: newServiceId,
-      verifyCalledTimes: 1
-    }
-  }
-}
+const assignUserRoleStub =
+  userStubs.postAssignServiceRoleSuccess({ userExternalId: authenticatedUserId, serviceExternalId: newServiceId })
 
 function setupStubs (stubs = []) {
   cy.task('setupStubs', [
@@ -84,7 +52,7 @@ describe('Add a new service', () => {
       setupStubs([
         createGatewayAccountStub,
         assignUserRoleStub,
-        getCreateServiceStub(newServiceName)
+        serviceStubs.postCreateServiceSuccess({ serviceExternalId: newServiceId, gatewayAccountId: newGatewayAccountId, serviceName: { en: newServiceName } })
       ])
       cy.get('input#service-name').type(newServiceName)
       cy.get('button').contains('Add service').click()
@@ -121,7 +89,7 @@ describe('Add a new service', () => {
       setupStubs([
         createGatewayAccountStub,
         assignUserRoleStub,
-        getCreateServiceStub(newServiceName, newServiceWelshName)
+        serviceStubs.postCreateServiceSuccess({ serviceExternalId: newServiceId, gatewayAccountId: newGatewayAccountId, serviceName: { en: newServiceName, cy: newServiceWelshName } })
       ])
       cy.get('input#service-name').type(newServiceName)
       cy.get('input#service-name-cy').type(newServiceWelshName)

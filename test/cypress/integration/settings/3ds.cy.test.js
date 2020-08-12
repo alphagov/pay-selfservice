@@ -32,24 +32,8 @@ describe('3DS settings page', () => {
     }
     const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: opts.gateway, requires3ds: opts.requires3ds })
 
-    const card = {
-      name: 'getAcceptedCardTypesSuccess',
-      opts: {
-        account_id: gatewayAccountId,
-        updated: false
-      }
-    }
-
-    if (opts.maestro) {
-      card.opts.maestro = opts.maestro
-    }
-
-    const patchUpdate = {
-      name: 'patchUpdate3DS',
-      opts: {
-        toggle_3ds: true
-      }
-    }
+    const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false, maestro: opts.maestro })
+    const patchUpdate = gatewayAccountStubs.patchUpdate3DS({ toggle3ds: true })
 
     stubs.push(user, gatewayAccount, card, patchUpdate)
 
@@ -216,13 +200,7 @@ describe('3DS settings page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe', requires3ds: true }),
-        {
-          name: 'getAcceptedCardTypesSuccess',
-          opts: {
-            account_id: gatewayAccountId,
-            updated: false
-          }
-        },
+        gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false }),
         stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
       ])
     })

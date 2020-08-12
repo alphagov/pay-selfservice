@@ -15,22 +15,8 @@ describe('Payment types', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        {
-          name: 'getCardTypesSuccess'
-        },
-        {
-          name: 'getAcceptedCardTypesSuccess',
-          opts: {
-            account_id: gatewayAccountId,
-            updated: false
-          }
-        },
-        {
-          name: 'getAcceptedCardsForAccountSuccess',
-          opts: {
-            account_id: gatewayAccountId
-          }
-        }
+        gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false }),
+        gatewayAccountStubs.getCardTypesSuccess()
       ])
     })
 
@@ -65,22 +51,8 @@ describe('Payment types', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        {
-          name: 'getCardTypesSuccess'
-        },
-        {
-          name: 'getAcceptedCardTypesSuccess',
-          opts: {
-            account_id: gatewayAccountId,
-            updated: true
-          }
-        },
-        {
-          name: 'getAcceptedCardsForAccountSuccess',
-          opts: {
-            account_id: gatewayAccountId
-          }
-        }
+        gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: true }),
+        gatewayAccountStubs.getCardTypesSuccess()
       ])
     })
 
@@ -97,15 +69,8 @@ describe('Payment types', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        {
-          name: 'getCardTypesSuccess'
-        },
-        {
-          name: 'getAcceptedCardTypesSuccess',
-          opts: {
-            account_id: gatewayAccountId
-          }
-        }
+        gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.getCardTypesSuccess()
       ])
     })
 
