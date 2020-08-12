@@ -106,13 +106,25 @@ describe('Transaction details page', () => {
   })
 
   describe('page content', () => {
-    it('should display transaction details correctly when delayed capture is OFF', () => {
+    it('should display transaction details correctly with optional data', function () {
       const transactionDetails = defaultTransactionDetails()
-      cy.task('setupStubs', getStubs(transactionDetails))
+      transactionDetails.wallet_type = 'APPLE_PAY'
+      transactionDetails.metadata = {
+        key1: 123,
+        key2: true,
+        key3: 'some string'
+      }
+      transactionDetails.payment_provider = 'stripe'
+      transactionDetails.fee = 100
+      transactionDetails.net_amount = defaultAmount - 100
+      transactionDetails.moto = true
+      transactionDetails.delayed_capture = true
+      transactionDetails.corporate_card_surcharge = 250
+      transactionDetails.total_amount = 1250
 
+      cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: true }))
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
-      // Ensure page details match up
       // Reference number
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
         transactionDetails.reference)
@@ -121,113 +133,83 @@ describe('Transaction details page', () => {
         capitalise(transactionDetails.state.status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
-        convertPenceToPoundsFormatted(transactionDetails.amount))
-      // Refunded amount
+        `${convertPenceToPoundsFormatted(transactionDetails.total_amount)} (including a card fee of ${convertPenceToPoundsFormatted(transactionDetails.corporate_card_surcharge)})`)
+      // PSP Fee
       cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
+        convertPenceToPoundsFormatted(transactionDetails.fee))
+      // Net amount
+      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('have.text',
+        convertPenceToPoundsFormatted(transactionDetails.net_amount))
+      // Refund submitted
+      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').first().should('have.text',
         convertPenceToPoundsFormatted(transactionDetails.refund_summary_submitted))
       // Date created
-      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
+      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('contain',
         formatDate(new Date(transactionDetails.events[0].timestamp)))
       // Provider
-      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
         capitalise(transactionDetails.payment_provider))
       // Provider ID
-      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
         transactionDetails.gateway_transaction_id)
       // GOVUK Payment ID
-      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
         transactionDetails.transaction_id)
+      // Delayed capture
+      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
+        'On')
+      // Moto
+      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
+        'Yes')
       // Payment method
-      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
         transactionDetails.card_brand)
       // Name on card
-      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(14).find('td').first().should('have.text',
         transactionDetails.cardholder_name)
-      // // Card number
-      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
+      // Card number
+      cy.get('.transaction-details tbody').find('tr').eq(15).find('td').first().should('have.text',
         `**** **** **** ${transactionDetails.last_digits_card_number}`)
       // Card expiry date
-      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(16).find('td').first().should('have.text',
         transactionDetails.expiry_date)
+      // Wallett type
+      cy.get('.transaction-details tbody').find('tr').eq(17).find('td').first().should('have.text', 'Apple Pay')
       // Email
-      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(18).find('td').first().should('have.text',
         transactionDetails.email)
-      cy.get('#delayed-capture').should('not.exist')
+      // Metadata
+      cy.get('h2').should('contain', 'Metadata')
+      cy.get('th').contains('key1').siblings().first().should('contain', '123')
+      cy.get('th').contains('key2').siblings().first().should('contain', 'true')
+      cy.get('th').contains('key3').siblings().first().should('contain', 'some string')
     })
 
-    it('should display transaction details correctly when delayed capture is ON', () => {
-      const aDelayedCaptureTransaction = defaultTransactionDetails()
-      aDelayedCaptureTransaction.delayed_capture = true
-      cy.task('setupStubs', getStubs(aDelayedCaptureTransaction))
-
-      cy.visit(`${transactionsUrl}/${aDelayedCaptureTransaction.transaction_id}`)
-
-      // Ensure page details match up
-      // Reference number
-      cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
-        aDelayedCaptureTransaction.reference)
-      // Status
-      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain',
-        capitalise(aDelayedCaptureTransaction.state.status))
-      // Amount
-      cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
-        convertPenceToPoundsFormatted(aDelayedCaptureTransaction.amount))
-      // Refunded amount
-      cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
-        convertPenceToPoundsFormatted(aDelayedCaptureTransaction.refund_summary_submitted))
-      // Date created
-      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
-        formatDate(new Date(aDelayedCaptureTransaction.events[0].timestamp)))
-      // Provider
-      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').first().should('have.text',
-        capitalise(aDelayedCaptureTransaction.payment_provider))
-      // Provider ID
-      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('have.text',
-        aDelayedCaptureTransaction.gateway_transaction_id)
-      // GOVUK Payment ID
-      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
-        aDelayedCaptureTransaction.transaction_id)
-      // Delayed capture
-      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
-        'On')
-      // Payment method
-      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
-        aDelayedCaptureTransaction.card_brand)
-      // Name on card
-      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
-        aDelayedCaptureTransaction.cardholder_name)
-      // Card number
-      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
-        `**** **** **** ${aDelayedCaptureTransaction.last_digits_card_number}`)
-      // Card expiry date
-      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
-        aDelayedCaptureTransaction.expiry_date)
-      // Email
-      cy.get('.transaction-details tbody').find('tr').eq(14).find('td').first().should('have.text',
-        aDelayedCaptureTransaction.email)
-    })
-
-    it('should display corporate card surcharge in the amount field correctly when there is a corporate card surcharge', () => {
-      const aCorporateCardSurchargeTransaction = defaultTransactionDetails()
-      aCorporateCardSurchargeTransaction.corporate_card_surcharge = 250
-      aCorporateCardSurchargeTransaction.total_amount = 1250
-      cy.task('setupStubs', getStubs(aCorporateCardSurchargeTransaction))
-
-      cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeTransaction.transaction_id}`)
-
-      // Ensure page details match up
-      // Amount
-      cy.get('#amount').should('have.text',
-        `${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.total_amount)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.corporate_card_surcharge)})`)
-    })
-
-    it('should show a transaction when no card details are present ', function () {
+    it('should display transaction details and a list of history with no optional data', () => {
       const events = [{
         event_type: 'PAYMENT_CREATED',
         status: 'created',
         finished: false,
-        amount: '20000',
+        amount: '1000',
         timestamp: '2018-12-24 13:21:05'
+      }, {
+        event_type: 'PAYMENT_STARTED',
+        status: 'started',
+        finished: false,
+        amount: '1000',
+        timestamp: '2018-12-24 13:23:12'
+      }, {
+        event_type: 'AUTHORISATION_SUCCEEDED',
+        status: 'submitted',
+        finished: false,
+        amount: '1000',
+        timestamp: '2018-12-24 12:05:43'
+      }, {
+        event_type: 'USER_APPROVED_FOR_CAPTURE',
+        status: 'success',
+        finished: true,
+        amount: '1000',
+        timestamp: '2018-12-24 12:05:43'
       }]
       const opts = {
         includeAddress: false
@@ -279,41 +261,11 @@ describe('Transaction details page', () => {
       cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
         transactionDetails.email)
       cy.get('#delayed-capture').should('not.exist')
-    })
-  })
+      cy.get('.transaction-details tbody').should('not.contain', 'Wallet Type')
+      cy.get('h2').should('not.contain', 'Metadata')
+      cy.get('th').contains('MOTO:').should('not.exist')
 
-  describe('the transaction history endpoint', () => {
-    it('should show a list of transaction history for success', function () {
-      const events = [{
-        event_type: 'PAYMENT_CREATED',
-        status: 'created',
-        finished: false,
-        amount: '20000',
-        timestamp: '2018-12-24 13:21:05'
-      }, {
-        event_type: 'PAYMENT_STARTED',
-        status: 'started',
-        finished: false,
-        amount: '20000',
-        timestamp: '2018-12-24 13:23:12'
-      }, {
-        event_type: 'AUTHORISATION_SUCCEEDED',
-        status: 'submitted',
-        finished: false,
-        amount: '20000',
-        timestamp: '2018-12-24 12:05:43'
-      }, {
-        event_type: 'USER_APPROVED_FOR_CAPTURE',
-        status: 'success',
-        finished: true,
-        amount: '20000',
-        timestamp: '2018-12-24 12:05:43'
-      }]
-      const transactionDetails = defaultTransactionDetails(events)
-      cy.task('setupStubs', getStubs(transactionDetails))
-
-      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
+      // History details
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[3].status))
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(1).should('contain',
@@ -430,84 +382,5 @@ describe('Transaction details page', () => {
       // Assert refund message
       cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(transactionDetails.refund_summary_available)}`)
     })
-  })
-
-  it('should display Wallet Type where available', () => {
-    const transactionDetails = defaultTransactionDetails()
-    transactionDetails.wallet_type = 'APPLE_PAY'
-    cy.task('setupStubs', getStubs(transactionDetails))
-    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-    cy.get('th').contains('Wallet type').siblings().first().should('contain', 'Apple Pay')
-  })
-
-  it('should not display Wallet Type when not included in charge', () => {
-    const transactionDetails = defaultTransactionDetails()
-    cy.task('setupStubs', getStubs(transactionDetails))
-    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-    cy.get('.transaction-details tbody').should('not.contain', 'Wallet Type')
-  })
-
-  it('should display metadata when available', () => {
-    const transactionDetails = defaultTransactionDetails()
-    transactionDetails.metadata = {
-      key1: 123,
-      key2: true,
-      key3: 'some string'
-    }
-    cy.task('setupStubs', getStubs(transactionDetails))
-    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-    cy.get('h2').should('contain', 'Metadata')
-    cy.get('th').contains('key1').siblings().first().should('contain', '123')
-    cy.get('th').contains('key2').siblings().first().should('contain', 'true')
-    cy.get('th').contains('key3').siblings().first().should('contain', 'some string')
-  })
-
-  it('should not display metadata when unavailable', () => {
-    const transactionDetails = defaultTransactionDetails()
-    cy.task('setupStubs', getStubs(transactionDetails))
-    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-    cy.get('h2').should('not.contain', 'Metadata')
-  })
-
-  it('should show fee breakdown for stripe tranaction with associated fees', () => {
-    const transactionDetails = defaultTransactionDetails()
-    transactionDetails.payment_provider = 'stripe'
-    transactionDetails.fee = 100
-    transactionDetails.net_amount = defaultAmount - 100
-    cy.task('setupStubs', getStubs(transactionDetails))
-    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-    cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').first().should('have.text', convertPenceToPoundsFormatted(transactionDetails.fee))
-    cy.get('.transaction-details tbody').find('[data-cell-type="net"]').first().should('have.text', convertPenceToPoundsFormatted(transactionDetails.amount - transactionDetails.fee))
-  })
-
-  it('should not display MOTO row when MOTO payments are not enabled for the gateway account', () => {
-    const transactionDetails = defaultTransactionDetails()
-    cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: false }))
-
-    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
-    cy.get('th').contains('MOTO:').should('not.exist')
-  })
-
-  it('should display MOTO row when MOTO payments are enabled for the gateway account and the transaction is a MOTO payment', () => {
-    const transactionDetails = defaultTransactionDetails()
-    transactionDetails.moto = true
-    cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: true }))
-
-    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
-    cy.get('th').contains('MOTO:').should('exist')
-    cy.get('#moto').should('have.text', 'Yes')
-  })
-
-  it('should display MOTO row when MOTO payments are enabled for the gateway account and the transaction is not a MOTO payment', () => {
-    const transactionDetails = defaultTransactionDetails()
-    transactionDetails.moto = false
-    cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: true }))
-
-    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
-    cy.get('th').contains('MOTO:').should('exist')
-    cy.get('#moto').should('have.text', 'No')
   })
 })
