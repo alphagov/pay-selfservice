@@ -1,14 +1,12 @@
 'use strict'
 
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const transactionSummaryStubs = require('../../utils/transaction-summary-stubs')
+const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
 
 const {
-  stubGetGatewayAccountStripeSetupSuccess,
-  stubStripeAccountGet,
-  stubStripeSetupGetForMultipleCallsAndVatNumberCompleted
+  stubStripeAccountGet
 } = require('./support-stubs')
 
 describe('Stripe setup: VAT number page', () => {
@@ -21,9 +19,9 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': false }),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true, true)
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
         ])
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
@@ -80,10 +78,9 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': true }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           transactionSummaryStubs.getDashboardStatistics(),
-          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true, true)
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
         ])
 
         cy.visit('/vat-number')
@@ -100,7 +97,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubStripeSetupGetForMultipleCallsAndVatNumberCompleted(gatewayAccountId, false, true),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({ gatewayAccountId, vatNumber: [false, true] }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
           transactionSummaryStubs.getDashboardStatistics()
         ])
@@ -129,7 +126,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': false }),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
@@ -149,7 +146,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'vatNumberCompleted': false }),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: false }),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
@@ -169,7 +166,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true, true)
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
         ])
 
         cy.visit('/vat-number', { failOnStatusCode: false })

@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 const userStubs = require('../../utils/user-stubs')
+const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
 
 const capitalise = string => string[0].toUpperCase() + string.slice(1)
 const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
@@ -96,16 +97,7 @@ describe('Transaction details page', () => {
           payment_states: transactionDetails.events
         }
       },
-      {
-        name: 'getGatewayAccountStripeSetupSuccess',
-        opts: {
-          gateway_account_id: gatewayAccountId,
-          bank_account: true,
-          responsible_person: true,
-          vat_number: true,
-          company_number: true
-        }
-      }
+      stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: true, responsiblePerson: true, vatNumber: true, companyNumber: true })
     ]
   }
 

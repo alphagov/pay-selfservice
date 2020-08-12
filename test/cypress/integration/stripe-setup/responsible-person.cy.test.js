@@ -3,6 +3,7 @@
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const transactionSummaryStubs = require('../../utils/transaction-summary-stubs')
+const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
 
 describe('Stripe setup: responsible person page', () => {
   const gatewayAccountId = 42
@@ -39,31 +40,6 @@ describe('Stripe setup: responsible person page', () => {
     }
   }
 
-  const stubStripeSetupGet = function stubStripeSetupGet (responsiblePersonCompleted) {
-    return {
-      name: 'getGatewayAccountStripeSetupSuccess',
-      opts: {
-        gateway_account_id: gatewayAccountId,
-        responsible_person: responsiblePersonCompleted
-      }
-    }
-  }
-
-  const stubStripeSetupGetForMultipleCalls = function stubStripeSetupGetForMultipleCalls (...responsiblePersonCompleted) {
-    const data = responsiblePersonCompleted.map(completed => (
-      {
-        responsible_person: completed
-      }
-    ))
-    return {
-      name: 'getGatewayAccountStripeSetupFlagChanged',
-      opts: {
-        gateway_account_id: gatewayAccountId,
-        data: data
-      }
-    }
-  }
-
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
   })
@@ -73,7 +49,7 @@ describe('Stripe setup: responsible person page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-        stubStripeSetupGet(false),
+        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: false }),
         stubStripeAccountGet('acct_123example123')
       ])
 
@@ -259,7 +235,7 @@ describe('Stripe setup: responsible person page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-        stubStripeSetupGet(true),
+        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: true }),
         stubStripeAccountGet('acct_123example123'),
         transactionSummaryStubs.getDashboardStatistics()
       ])
@@ -281,7 +257,7 @@ describe('Stripe setup: responsible person page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-        stubStripeSetupGetForMultipleCalls(false, true),
+        stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({ gatewayAccountId, responsiblePerson: [false, true] }),
         stubStripeAccountGet('acct_123example123'),
         transactionSummaryStubs.getDashboardStatistics()
       ])
@@ -316,7 +292,7 @@ describe('Stripe setup: responsible person page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'worldpay' }),
-        stubStripeSetupGet(false),
+        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: false }),
         stubStripeAccountGet('acct_123example123')
       ])
 
@@ -333,7 +309,7 @@ describe('Stripe setup: responsible person page', () => {
       cy.task('setupStubs', [
         userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-        stubStripeSetupGet(false),
+        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: false }),
         stubStripeAccountGet('acct_123example123')
       ])
 

@@ -4,6 +4,7 @@ const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../utils/transaction-summary-stubs')
+const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
 
 describe('The Stripe psp details banner', () => {
   const gatewayAccountId = 22
@@ -14,7 +15,13 @@ describe('The Stripe psp details banner', () => {
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
       gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
       transactionsSummaryStubs.getDashboardStatistics(),
-      commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, false, false, false, false),
+      stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
+        gatewayAccountId,
+        responsiblePerson: false,
+        bankAccount: false,
+        vatNumber: false,
+        companyNumber: false
+      }),
       commonStubs.getStripeAccount(gatewayAccountId, 'stripe-account-id')
     ])
   })
