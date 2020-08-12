@@ -15,17 +15,13 @@ describe('Stripe setup: responsible person page', () => {
   const typedLastName = ' Benn'
   const addressLine1 = '52 Festive Road'
   const typedAddressLine1 = ' 52 Festive Road'
-  const addressLine2 = 'Putney'
   const typedAddressLine2 = 'Putney '
   const city = 'London'
   const typedCity = 'London '
   const postcode = 'SW15 1LP'
   const typedPostcode = 'sw151lp '
-  const dobDay = '25'
   const typedDobDay = '25 '
-  const dobMonth = '02'
   const typedDobMonth = ' 02'
-  const dobYear = '1971'
   const typedDobYear = '1971 '
   const longText = 'This text is 300 ................................................................................' +
     '...............................................................................................................' +
@@ -92,18 +88,18 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('#home-address-line-2').type(typedAddressLine2)
         cy.get('#home-address-city').type(typedCity)
         cy.get('#home-address-postcode').type('not a valid UK postcode')
-        cy.get('#dob-day').type(typedDobDay)
-        cy.get('#dob-month').type(typedDobMonth)
-        cy.get('#dob-year').type(typedDobYear)
+        cy.get('#dob-day').type('29')
+        cy.get('#dob-month').type('2')
+        cy.get('#dob-year').type('2001')
         cy.get('button').click()
       })
 
       cy.get('.govuk-error-summary').should('exist').within(() => {
         cy.get('a[href="#last-name"]').should('contain', 'Last name')
-      })
-
-      cy.get('.govuk-error-summary').should('exist').within(() => {
         cy.get('a[href="#home-address-postcode"]').should('contain', 'Postcode')
+        cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
+        cy.get('a[href="#dob-month"]').should('not.exist')
+        cy.get('a[href="#dob-year"]').should('not.exist')
       })
 
       cy.get('#responsible-person-form').should('exist').within(() => {
@@ -117,45 +113,22 @@ describe('Stripe setup: responsible person page', () => {
           cy.get('input#home-address-postcode[name=home-address-postcode][autocomplete=postal-code]').should('have.attr', 'value', 'not a valid UK postcode')
         })
 
+        cy.get('.govuk-form-group--error > fieldset > #dob-error').parent().parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+          cy.get('input#dob-day').should('have.attr', 'value', '29')
+          cy.get('input#dob-month').should('have.attr', 'value', '2')
+          cy.get('input#dob-year').should('have.attr', 'value', '2001')
+        })
+
         cy.get('input#first-name[name="first-name"][autocomplete="given-name"]').should('have.attr', 'value', firstName)
         cy.get('input#last-name[name="last-name"][autocomplete="family-name"]').should('exist')
         cy.get('input#home-address-line-1[name="home-address-line-1"][autocomplete="address-line1"]').should('have.attr', 'value', addressLine1)
-        cy.get('input#home-address-line-2[name="home-address-line-2"][autocomplete="address-line2"]').should('have.attr', 'value', addressLine2)
         cy.get('input#home-address-city[name="home-address-city"][autocomplete="address-level2"]').should('have.attr', 'value', city)
-        cy.get('input#dob-day[name="dob-day"][autocomplete="bday-day"]').should('have.attr', 'value', dobDay)
-        cy.get('input#dob-month[name="dob-month"][autocomplete="bday-month"]').should('have.attr', 'value', dobMonth)
-        cy.get('input#dob-year[name="dob-year"][autocomplete="bday-year"]').should('have.attr', 'value', dobYear)
 
         cy.get('button').should('exist')
 
         cy.get('input[name="answers-need-changing"]').should('not.exist')
         cy.get('input[name="answers-checked"]').should('not.exist')
-      })
-    })
-
-    it('should show error for second address line using first address line label', () => {
-      cy.get('#responsible-person-form').within(() => {
-        cy.get('#first-name').type(typedLastName)
-        cy.get('#last-name').type(typedLastName)
-        cy.get('#home-address-line-1').type(typedAddressLine1)
-        cy.get('#home-address-line-2').type(longText)
-        cy.get('#home-address-city').type(typedCity)
-        cy.get('#home-address-postcode').type(postcode)
-        cy.get('#dob-day').type(typedDobDay)
-        cy.get('#dob-month').type(typedDobMonth)
-        cy.get('#dob-year').type(typedDobYear)
-        cy.get('button').click()
-      })
-
-      cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#home-address-line-2"]').should('contain', 'Building and street')
-      })
-
-      cy.get('#responsible-person-form').should('exist').within(() => {
-        cy.get('.govuk-form-group--error > input#home-address-line-2').parent().should('exist').within(() => {
-          cy.get('.govuk-error-message').should('exist')
-          cy.get('input#home-address-line-2').should('have.attr', 'value', longText)
-        })
       })
     })
 
@@ -186,36 +159,6 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('.govuk-form-group--error > input#home-address-line-2').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
           cy.get('input#home-address-line-2').should('have.attr', 'value', longText)
-        })
-      })
-    })
-
-    it('should error when validation for the date of birth fails', () => {
-      cy.get('#responsible-person-form').within(() => {
-        cy.get('#first-name').type(typedLastName)
-        cy.get('#last-name').type(typedLastName)
-        cy.get('#home-address-line-1').type(typedAddressLine1)
-        cy.get('#home-address-line-2').type(typedAddressLine2)
-        cy.get('#home-address-city').type(typedCity)
-        cy.get('#home-address-postcode').type(postcode)
-        cy.get('#dob-day').type('29')
-        cy.get('#dob-month').type('2')
-        cy.get('#dob-year').type('2001')
-        cy.get('button').click()
-      })
-
-      cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
-        cy.get('a[href="#dob-month"]').should('not.exist')
-        cy.get('a[href="#dob-year"]').should('not.exist')
-      })
-
-      cy.get('#responsible-person-form').should('exist').within(() => {
-        cy.get('.govuk-form-group--error > fieldset > #dob-error').parent().parent().should('exist').within(() => {
-          cy.get('.govuk-error-message').should('exist')
-          cy.get('input#dob-day').should('have.attr', 'value', '29')
-          cy.get('input#dob-month').should('have.attr', 'value', '2')
-          cy.get('input#dob-year').should('have.attr', 'value', '2001')
         })
       })
     })
