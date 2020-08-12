@@ -1,8 +1,8 @@
 'use strict'
 
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const transactionsSummaryStubs = require('../../utils/transaction-summary-stubs')
 
 describe('the links are displayed correctly on the dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -18,7 +18,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
-        commonStubs.getDashboardStatisticsStub()
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/')
@@ -41,7 +41,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'worldpay' }),
-        commonStubs.getDashboardStatisticsStub()
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/')
@@ -58,7 +58,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId: 'an-id', goLiveStage: 'NOT_STARTED' }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'sandbox' }),
-        commonStubs.getDashboardStatisticsStub()
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/')
@@ -81,7 +81,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        commonStubs.getDashboardStatisticsStub()
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/')
@@ -109,7 +109,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
-        commonStubs.getDashboardStatisticsStub()
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/')
@@ -129,7 +129,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'go-cardless' }),
-        commonStubs.getDashboardStatisticsStub()
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/')
@@ -146,7 +146,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId: 'an-id', goLiveStage: 'NOT_STARTED' }),
         gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'sandbox' }),
-        commonStubs.getDashboardStatisticsStub()
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/')
@@ -169,7 +169,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId: 'an-id', goLiveStage: 'NOT_STARTED' }),
         gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'go-cardless' }),
-        commonStubs.getDashboardStatisticsStub()
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/')

@@ -1,8 +1,8 @@
 'use strict'
 
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
 
 describe('3DS settings page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -223,7 +223,7 @@ describe('3DS settings page', () => {
             updated: false
           }
         },
-        commonStubs.getGatewayAccountStripeSetupSuccess(gatewayAccountId, true, true, true, true)
+        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
       ])
     })
 

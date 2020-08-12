@@ -1,7 +1,7 @@
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 
-const { getProductsStub } = require('../../utils/products-stubs')
+const productStubs = require('../../utils/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 
@@ -46,7 +46,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        getProductsStub([], gatewayAccountId)
+        productStubs.getProductsStub([], gatewayAccountId)
       ])
     })
 
@@ -72,7 +72,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        getProductsStub(products, gatewayAccountId)
+        productStubs.getProductsStub(products, gatewayAccountId)
       ])
     })
 
@@ -113,7 +113,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        getProductsStub(products, gatewayAccountId)
+        productStubs.getProductsStub(products, gatewayAccountId)
       ])
     })
 
@@ -162,7 +162,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        getProductsStub(products, gatewayAccountId)
+        productStubs.getProductsStub(products, gatewayAccountId)
       ])
     })
 
@@ -192,15 +192,10 @@ describe('The manage payment links page', () => {
 
   describe('There was a problem when getting the products', () => {
     beforeEach(() => {
-      const productsFailureStub = {
-        name: 'getProductsByGatewayAccountIdFailure',
-        opts: { gateway_account_id: gatewayAccountId }
-      }
-
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        productsFailureStub
+        productStubs.getProductsByGatewayAccountIdFailure()
       ])
     })
 

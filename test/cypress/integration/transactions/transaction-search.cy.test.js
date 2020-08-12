@@ -1,5 +1,6 @@
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
 
 const transactionsUrl = `/transactions`
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -85,16 +86,7 @@ const sharedStubs = (paymentProvider = 'sandbox') => {
     {
       name: 'getCardTypesSuccess'
     },
-    {
-      name: 'getGatewayAccountStripeSetupSuccess',
-      opts: {
-        gateway_account_id: gatewayAccountId,
-        bank_account: true,
-        responsible_person: true,
-        vat_number: true,
-        company_number: true
-      }
-    }
+    stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId })
   ]
 }
 

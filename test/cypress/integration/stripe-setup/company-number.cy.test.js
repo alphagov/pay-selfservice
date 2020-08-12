@@ -2,13 +2,9 @@
 
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
-
-const {
-  stubGetGatewayAccountStripeSetupSuccess,
-  stubStripeAccountGet,
-  stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted,
-  stubDashboardStatisticsGet
-} = require('./support-stubs')
+const transactionSummaryStubs = require('../../utils/transaction-summary-stubs')
+const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
+const stripeAccountStubs = require('../../utils/stripe-account-stubs')
 
 describe('Stripe setup: company number page', () => {
   const gatewayAccountId = 42
@@ -20,8 +16,8 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': false }),
-          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: false }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
@@ -98,9 +94,9 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': true }),
-          stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          stubDashboardStatisticsGet()
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: true }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+          transactionSummaryStubs.getDashboardStatistics()
         ])
 
         cy.visit('/company-number')
@@ -117,9 +113,10 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubStripeSetupGetForMultipleCallsAndCompanyNumberCompleted(gatewayAccountId, false, true),
-          stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
-          stubDashboardStatisticsGet()
+
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({ gatewayAccountId, companyNumber: [false, true] }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+          transactionSummaryStubs.getDashboardStatistics()
         ])
 
         cy.visit('/company-number')
@@ -150,8 +147,8 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': false }),
-          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: false }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/company-number', {
@@ -170,8 +167,8 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, { 'companyNumberCompleted': false }),
-          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: false }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/company-number', {

@@ -38,12 +38,7 @@ describe('Transactions list pagination', () => {
   const getStubs = (transactionDetails) => {
     return [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-      {
-        name: 'getUsersSuccess',
-        opts: {
-          users: []
-        }
-      },
+      userStubs.getUsersSuccess(),
       gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
       {
         name: 'getCardTypesSuccess'

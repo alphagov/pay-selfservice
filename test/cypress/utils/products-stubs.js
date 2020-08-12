@@ -31,4 +31,16 @@ const deleteProductStub = function deleteProductStub (product, gatewayAccountId,
   }
 }
 
-module.exports = { getProductsStub, getProductByExternalIdStub, deleteProductStub }
+const getProductsByGatewayAccountIdFailure = function (gatewayAccountId) {
+  return {
+    name: 'getProductsByGatewayAccountIdFailure',
+    opts: { gateway_account_id: gatewayAccountId }
+  }
+}
+
+module.exports = {
+  getProductsStub,
+  getProductByExternalIdStub,
+  deleteProductStub,
+  getProductsByGatewayAccountIdFailure
+}

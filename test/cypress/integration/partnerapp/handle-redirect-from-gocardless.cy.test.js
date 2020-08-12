@@ -1,5 +1,6 @@
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const userStubs = require('../../utils/user-stubs')
+const goCardlessStubs = require('../../utils/go-cardless-connect-stubs')
 
 describe('Get request to complete Go Cardless linking', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -28,7 +29,7 @@ describe('Get request to complete Go Cardless linking', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'gocardless' }),
-        { name: 'exchangeGoCardlessAccessCodeAccountAlreadyConnected' }
+        goCardlessStubs.exchangeGoCardlessAccessCodeAccountAlreadyConnected()
       ])
     })
 

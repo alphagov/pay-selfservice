@@ -1,8 +1,10 @@
 'use strict'
 
-const commonStubs = require('../../utils/common-stubs')
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const transactionSummaryStubs = require('../../utils/transaction-summary-stubs')
+const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
+const stripeAccountStubs = require('../../utils/stripe-account-stubs')
 
 describe('Stripe setup: bank details page', () => {
   const gatewayAccountId = 42
@@ -11,52 +13,6 @@ describe('Stripe setup: bank details page', () => {
   const sortCode = '108800'
 
   describe('Card gateway account', () => {
-    const stubGetGatewayAccountStripeSetupSuccess = function stubGetGatewayAccountStripeSetupSuccess (bankAccountCompleted) {
-      const stripeSetupStub = {
-        name: 'getGatewayAccountStripeSetupSuccess',
-        opts: {
-          gateway_account_id: gatewayAccountId,
-          bank_account: bankAccountCompleted
-        }
-      }
-      return stripeSetupStub
-    }
-
-    const stubStripeAccountGet = function stubStripeAccountGet (stripeAccountId) {
-      const stripeAccountStub = {
-        name: 'getStripeAccountSuccess',
-        opts: {
-          gateway_account_id: gatewayAccountId,
-          stripe_account_id: stripeAccountId
-        }
-      }
-      return stripeAccountStub
-    }
-
-    /**
-     * When request to /v1/api/accounts/${gateway_account_id}/stripe-setup is made
-     * it will use bankAccountCompleted as a response
-     * and it will use next bankAccountCompleted value in the response for consecutive API calls
-     *
-     * @param bankAccountCompleted
-     * @returns {{opts: {gateway_account_id: number, data: *}, name: string}}
-     */
-    const stubStripeSetupGetForMultipleCalls = function stubStripeSetupGetForMultipleCalls (...bankAccountCompleted) {
-      const data = bankAccountCompleted.map(completed => (
-        {
-          bank_account: completed
-        }
-      ))
-      const stripeBankAccountFlagStub = {
-        name: 'getGatewayAccountStripeSetupFlagChanged',
-        opts: {
-          gateway_account_id: gatewayAccountId,
-          data: data
-        }
-      }
-      return stripeBankAccountFlagStub
-    }
-
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
     })
@@ -66,8 +22,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(false),
-          stubStripeAccountGet('acct_123example123')
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: false }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -107,9 +63,9 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(true),
-          stubStripeAccountGet('acct_123example123'),
-          commonStubs.getDashboardStatisticsStub()
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: true }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+          transactionSummaryStubs.getDashboardStatistics()
         ])
 
         cy.visit('/bank-details')
@@ -126,9 +82,9 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stubStripeSetupGetForMultipleCalls(false, true),
-          stubStripeAccountGet('acct_123example123'),
-          commonStubs.getDashboardStatisticsStub()
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({ gatewayAccountId, bankAccount: [false, true] }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+          transactionSummaryStubs.getDashboardStatistics()
         ])
 
         cy.visit('/bank-details')
@@ -151,8 +107,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
-          stubGetGatewayAccountStripeSetupSuccess(false),
-          stubStripeAccountGet('acct_123example123')
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: false }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/bank-details', {
@@ -167,8 +123,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
           gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'stripe' }),
-          stubGetGatewayAccountStripeSetupSuccess(false),
-          stubStripeAccountGet('acct_123example123')
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: false }),
+          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/bank-details', {
