@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 const userStubs = require('../../utils/user-stubs')
 const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
+const transactionStubs = require('../../utils/transaction-stubs')
 
 const capitalise = string => string[0].toUpperCase() + string.slice(1)
 const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
@@ -84,19 +85,8 @@ describe('Transaction details page', () => {
           payment_provider: transactionDetails.payment_provider
         }
       },
-      {
-        name: 'getLedgerTransactionSuccess',
-        opts: {
-          ...transactionDetails
-        }
-      },
-      {
-        name: 'getLedgerEventsSuccess',
-        opts: {
-          transaction_id: transactionId,
-          payment_states: transactionDetails.events
-        }
-      },
+      transactionStubs.getLedgerTransactionSuccess({ transactionDetails }),
+      transactionStubs.getLedgerEventsSuccess({ transactionId, events: transactionDetails.events }),
       stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: true, responsiblePerson: true, vatNumber: true, companyNumber: true })
     ]
   }
@@ -298,17 +288,10 @@ describe('Transaction details page', () => {
       const transactionDetails = defaultTransactionDetails()
       const refundAmount = transactionDetails.amount + 1
       const stubs = lodash.concat(getStubs(transactionDetails), [
-        {
-          name: 'postRefundAmountNotAvailable',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            charge_id: transactionDetails.transaction_id,
-            amount: refundAmount,
-            refund_amount_available: transactionDetails.amount,
-            user_external_id: userExternalId,
-            user_email: userEmail
-          }
-        }
+        transactionStubs.postRefundAmountNotAvailable(
+          {
+            gatewayAccountId, userExternalId, userEmail, transactionId: transactionDetails.transaction_id, refundAmount, refundAmountAvailable: transactionDetails.amount
+          })
       ])
       cy.task('setupStubs', stubs)
 

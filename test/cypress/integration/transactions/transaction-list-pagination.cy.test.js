@@ -2,6 +2,7 @@
 
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const transactionStubs = require('../../utils/transaction-stubs')
 
 describe('Transactions list pagination', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -9,19 +10,6 @@ describe('Transactions list pagination', () => {
   const transactionsUrl = '/transactions'
   const serviceName = 'Test Service'
   const defaultAmount = 1000
-
-  function defaultTransactionPaginationDetails (opts = {}) {
-    return {
-      gateway_account_id: gatewayAccountId,
-      page: opts.page || 1,
-      transaction_length: opts.transaction_length || 50,
-      transaction_count: opts.transaction_count || 3,
-      transactions: opts.transactions,
-      filters: opts.filters || {},
-      display_size: opts.display_size || 5,
-      links: opts.links || {}
-    }
-  }
 
   function generateTransactions (length) {
     const transactions = []
@@ -35,20 +23,26 @@ describe('Transactions list pagination', () => {
     return transactions
   }
 
+  function transactionSearchResultOpts (transactionLength, displaySize, page, filters, links) {
+    return {
+      gatewayAccountId,
+      transactionLength: transactionLength || 50,
+      displaySize: displaySize || 5,
+      page: page || 1,
+      transactionCount: 3,
+      transactions: generateTransactions(2),
+      filters: filters,
+      links: links || {}
+    }
+  }
+
   const getStubs = (transactionDetails) => {
     return [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
       userStubs.getUsersSuccess(),
       gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-      {
-        name: 'getCardTypesSuccess'
-      },
-      {
-        name: 'getLedgerTransactionsSuccess',
-        opts: {
-          ...transactionDetails
-        }
-      }
+      gatewayAccountStubs.getCardTypesSuccess(),
+      transactionStubs.getLedgerTransactionsSuccess(transactionDetails)
     ]
   }
 
@@ -58,20 +52,10 @@ describe('Transactions list pagination', () => {
     })
     describe('Pagination', () => {
       it('should default to page 1 and display_size 100', () => {
-        const opts = {
-          gateway_account_id: gatewayAccountId,
-          transaction_length: 600,
-          page: 1,
-          display_size: 100,
-          transactions: generateTransactions(2),
-          filters: {},
-          links: {
-            self: {
-              href: '/v1/transactions?&page=&display_size=&state='
-            }
-          }
-        }
-        cy.task('setupStubs', getStubs(defaultTransactionPaginationDetails(opts)))
+        const opts = transactionSearchResultOpts(600, 100, 1, {},
+          { self: { href: '/v1/transactions?&page=&display_size=&state=' } })
+
+        cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl)
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
@@ -98,21 +82,10 @@ describe('Transactions list pagination', () => {
       })
 
       it('should generate correct pagination data when no page number passed', () => {
-        const opts = {
-          gateway_account_id: gatewayAccountId,
-          transaction_length: 30,
-          transaction_count: 5,
-          page: '',
-          display_size: 5,
-          transactions: generateTransactions(2),
-          filters: {},
-          links: {
-            self: {
-              href: '/v1/transactions?&page=&display_size=5&state='
-            }
-          }
-        }
-        cy.task('setupStubs', getStubs(defaultTransactionPaginationDetails(opts)))
+        const opts = transactionSearchResultOpts(30, 5, '', {},
+          { self: { href: '/v1/transactions?&page=&display_size=5&state=' } })
+
+        cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
@@ -139,20 +112,10 @@ describe('Transactions list pagination', () => {
       })
 
       it('should generate correct pagination data when page number passed', () => {
-        const opts = {
-          gateway_account_id: gatewayAccountId,
-          transaction_length: 30,
-          display_size: 5,
-          page: 3,
-          transactions: generateTransactions(2),
-          filters: {},
-          links: {
-            self: {
-              href: '/v1/transactions?page=3&display_size=5&state='
-            }
-          }
-        }
-        cy.task('setupStubs', getStubs(defaultTransactionPaginationDetails(opts)))
+        const opts = transactionSearchResultOpts(30, 5, 3, {},
+          { self: { href: '/v1/transactions?&page=3&display_size=5&state=' } })
+
+        cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=3')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
@@ -191,20 +154,10 @@ describe('Transactions list pagination', () => {
       })
 
       it('should generate correct pagination data with different display size', () => {
-        const opts = {
-          gateway_account_id: gatewayAccountId,
-          transaction_length: 30,
-          display_size: 2,
-          page: 3,
-          transactions: generateTransactions(2),
-          filters: {},
-          links: {
-            self: {
-              href: '/v1/transactions?page=3&display_size=2&state='
-            }
-          }
-        }
-        cy.task('setupStubs', getStubs(defaultTransactionPaginationDetails(opts)))
+        const opts = transactionSearchResultOpts(30, 2, 3, {},
+          { self: { href: '/v1/transactions?&page=3&display_size=2&state=' } })
+
+        cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=2&page=3')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
@@ -243,20 +196,9 @@ describe('Transactions list pagination', () => {
       })
 
       it('should return correct display size options when total over 500', () => {
-        const opts = {
-          gateway_account_id: gatewayAccountId,
-          transaction_length: 600,
-          display_size: 100,
-          page: 1,
-          transactions: generateTransactions(2),
-          filters: {},
-          links: {
-            self: {
-              href: '/v1/transactions?page=1&display_size=100&state='
-            }
-          }
-        }
-        cy.task('setupStubs', getStubs(defaultTransactionPaginationDetails(opts)))
+        const opts = transactionSearchResultOpts(600, 100, 1, {},
+          { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
+        cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
         cy.get('#displaySize').should('contain', 'Results per page:')
@@ -268,20 +210,9 @@ describe('Transactions list pagination', () => {
       })
 
       it('should return correct display size options when total between 100 and 500', () => {
-        const opts = {
-          gateway_account_id: gatewayAccountId,
-          transaction_length: 400,
-          display_size: 100,
-          page: 1,
-          transactions: generateTransactions(2),
-          filters: {},
-          links: {
-            self: {
-              href: '/v1/transactions?page=1&display_size=100&state='
-            }
-          }
-        }
-        cy.task('setupStubs', getStubs(defaultTransactionPaginationDetails(opts)))
+        const opts = transactionSearchResultOpts(400, 100, 1, {},
+          { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
+        cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
         cy.get('#displaySize').should('contain', 'Results per page:')
@@ -294,20 +225,8 @@ describe('Transactions list pagination', () => {
       })
 
       it('should return correct display size options when total under 100', () => {
-        const opts = {
-          gateway_account_id: gatewayAccountId,
-          transaction_length: 50,
-          display_size: 100,
-          page: 1,
-          transactions: generateTransactions(2),
-          filters: {},
-          links: {
-            self: {
-              href: '/v1/transactions?page=1&display_size=100&state='
-            }
-          }
-        }
-        cy.task('setupStubs', getStubs(defaultTransactionPaginationDetails(opts)))
+        const opts = transactionSearchResultOpts(50, 100, 1, {})
+        cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
@@ -316,20 +235,9 @@ describe('Transactions list pagination', () => {
       })
 
       it('should return correct display size options when total under 1000', () => {
-        const opts = {
-          gateway_account_id: gatewayAccountId,
-          transaction_length: 150,
-          display_size: 500,
-          page: 1,
-          transactions: generateTransactions(2),
-          filters: {},
-          links: {
-            self: {
-              href: '/v1/transactions?page=1&display_size=500&state='
-            }
-          }
-        }
-        cy.task('setupStubs', getStubs(defaultTransactionPaginationDetails(opts)))
+        const opts = transactionSearchResultOpts(150, 500, 1, {},
+          { self: { href: '/v1/transactions?&page=1&display_size=500&state=' } })
+        cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=500&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 

@@ -1,6 +1,7 @@
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
+const transactionsStubs = require('../../utils/transaction-stubs')
 
 const transactionsUrl = `/transactions`
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -88,17 +89,6 @@ const sharedStubs = (paymentProvider = 'sandbox') => {
   ]
 }
 
-const ledgerTransactionsStub = (filters, transactions) => {
-  return {
-    name: 'getLedgerTransactionsSuccess',
-    opts: {
-      gateway_account_id: gatewayAccountId,
-      transactions: transactions,
-      filters
-    }
-  }
-}
-
 function assertTransactionRow (row, reference, transactionLink, email, amount, cardBrand, state) {
   cy.get('#transactions-list tbody').find('tr').eq(row).find('th').should('contain', reference)
   cy.get('#transactions-list tbody').find('tr > th').eq(row).find('.reference')
@@ -118,7 +108,7 @@ describe('Transactions List', () => {
     it('should display correctly when there are no results', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStub({}, [])
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId })
       ])
       cy.visit(transactionsUrl)
       cy.get('#transactions-list tbody').should('not.exist')
@@ -127,7 +117,7 @@ describe('Transactions List', () => {
     it('should display unfiltered results', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStub({}, unfilteredTransactions)
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
       ])
       cy.visit(transactionsUrl)
 
@@ -143,10 +133,14 @@ describe('Transactions List', () => {
     it('should be able to filter using date-time pickers', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStub({
-          from_date: '2018-05-03T00:00:00.000Z',
-          to_date: '2018-05-03T00:00:01.000Z'
-        }, filteredByDatesTransactions)
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: filteredByDatesTransactions,
+          filters: {
+            from_date: '2018-05-03T00:00:00.000Z',
+            to_date: '2018-05-03T00:00:01.000Z'
+          }
+        })
       ])
 
       // 1. Filtering FROM
@@ -198,7 +192,7 @@ describe('Transactions List', () => {
     it('should clear filters when "Clear filter" button is clicked', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStub({}, [])
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: [], filters: {} })
       ])
       cy.get('a').contains('Clear filter').click()
 
@@ -211,17 +205,21 @@ describe('Transactions List', () => {
     it('should return results when filtering by all fields', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStub({
-          reference: 'ref123',
-          from_date: '2018-05-03T00:00:00.000Z',
-          to_date: '2018-05-04T00:00:01.000Z',
-          payment_states: 'created,started,submitted,capturable,success',
-          email: 'gds4',
-          card_brands: 'visa,master-card',
-          last_digits_card_number: '4242',
-          cardholder_name: 'doe',
-          refund_states: 'submitted'
-        }, filteredByMultipleFieldsTransactions)
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: filteredByMultipleFieldsTransactions,
+          filters: {
+            reference: 'ref123',
+            from_date: '2018-05-03T00:00:00.000Z',
+            to_date: '2018-05-04T00:00:01.000Z',
+            payment_states: 'created,started,submitted,capturable,success',
+            email: 'gds4',
+            card_brands: 'visa,master-card',
+            last_digits_card_number: '4242',
+            cardholder_name: 'doe',
+            refund_states: 'submitted'
+          }
+        })
       ])
 
       cy.get('#state').click()
@@ -256,7 +254,7 @@ describe('Transactions List', () => {
     it('should display card fee with corporate card surcharge transaction', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        ledgerTransactionsStub({}, unfilteredTransactions)
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions, transactionLength: 1000 })
       ])
       cy.visit(transactionsUrl)
 
@@ -275,7 +273,7 @@ describe('Transactions List', () => {
     it('should display the fee and total columns for a stripe gateway with fees', () => {
       cy.task('setupStubs', [
         ...sharedStubs('stripe'),
-        ledgerTransactionsStub({}, transactionsWithAssociatedFees)
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: transactionsWithAssociatedFees })
       ])
       cy.visit(transactionsUrl)
 
@@ -292,17 +290,7 @@ describe('Transactions List', () => {
     it('should not display csv download link', function () {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        {
-          name: 'getLedgerTransactionsSuccess',
-          opts: {
-            page: 1,
-            transaction_length: 10001,
-            transaction_count: 3,
-            gateway_account_id: gatewayAccountId,
-            filters: {},
-            transactions: unfilteredTransactions
-          }
-        }
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions, transactionLength: 10001 })
       ])
       cy.visit(transactionsUrl)
 
