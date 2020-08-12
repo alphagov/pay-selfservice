@@ -4,6 +4,7 @@ const lodash = require('lodash')
 const utils = require('../../utils/request-to-go-live-utils')
 const variables = utils.variables
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const userStubs = require('../../utils/user-stubs')
 
 describe('Request to go live: choose how to process payments', () => {
   const userExternalId = variables.userExternalId
@@ -32,18 +33,13 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('Service has correct go live stage and user selects Stripe account', () => {
-    const repeatGetUserSuccessStub = [{
-      name: 'getUserSuccessRepeatFirstResponseNTimes',
-      opts: [{
-        external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')],
-        repeat: 2
-      }, {
-        external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')],
-        repeat: 2
-      }]
-    }, gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })]
+    const repeatGetUserSuccessStub = [
+      userStubs.getUserSuccessRepeatFirstResponseNTimes([
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS') },
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE') }
+      ]),
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    ]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('CHOSEN_PSP_STRIPE'))
@@ -76,18 +72,12 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('Service has correct go live stage and user selects non Stripe account', () => {
-    const repeatGetUserSuccessStub = [{
-      name: 'getUserSuccessRepeatFirstResponseNTimes',
-      opts: [{
-        external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')],
-        repeat: 2
-      }, {
-        external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_EPDQ')],
-        repeat: 2
-      }]
-    }, gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })]
+    const repeatGetUserSuccessStub = [
+      userStubs.getUserSuccessRepeatFirstResponseNTimes([
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS') },
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_EPDQ') }
+      ]),
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('CHOSEN_PSP_EPDQ'))

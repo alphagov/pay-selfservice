@@ -1,6 +1,7 @@
 'use strict'
 
 const userStubs = require('../../utils/user-stubs')
+const inviteStubs = require('../../utils/invite-stubs')
 
 const SERVICE_EXTERNAL_ID = 'service_abc_123'
 const AUTHENTICATED_USER_ID = 'authenticated-user-id'
@@ -30,31 +31,16 @@ describe('Edit service user permissions', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess(authenticatedUserStubOpts),
       userStubs.getUserSuccess(userWeAreEditingStubOpts),
-      {
-        name: 'getServiceUsersSuccess',
-        opts: {
-          serviceExternalId: SERVICE_EXTERNAL_ID,
-          users: [
-            userWeAreEditingSuccess.opts,
-            authenticatedUserSuccess.opts
-          ]
-        }
-      },
-      {
-        name: 'getInvitedUsersSuccess',
-        opts: {
-          serviceExternalId: SERVICE_EXTERNAL_ID,
-          invites: []
-        }
-      },
-      {
-        name: 'putUpdateServiceRoleSuccess',
-        opts: {
-          role: 'view-and-refund',
-          external_id: EDITING_USER_ID,
-          serviceExternalId: SERVICE_EXTERNAL_ID
-        }
-      }
+      userStubs.getServiceUsersSuccess({
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        users: [userWeAreEditingSuccess.opts, authenticatedUserSuccess.opts]
+      }),
+      inviteStubs.getInvitedUsersSuccess({ serviceExternalId: SERVICE_EXTERNAL_ID, invites: [] }),
+      userStubs.putUpdateServiceRoleSuccess({
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        userExternalId: EDITING_USER_ID,
+        role: 'view-and-refund'
+      })
     ])
   })
 
