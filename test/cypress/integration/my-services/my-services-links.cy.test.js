@@ -1,8 +1,8 @@
 'use strict'
 
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
-const userStubs = require('../../utils/user-stubs')
-const payoutStubs = require('../../utils/payout-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const userStubs = require('../../stubs/user-stubs')
+const payoutStubs = require('../../stubs/payout-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 

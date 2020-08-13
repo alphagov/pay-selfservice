@@ -57,9 +57,34 @@ const patchUpdateMerchantDetailsSuccess = function (opts) {
   }
 }
 
+const patchUpdateServiceSuccessCatchAll = function (opts) {
+  return {
+    name: 'patchUpdateServiceSuccessCatchAll',
+    opts: {
+      external_id: opts.serviceExternalId,
+      current_go_live_stage: opts.currentGoLiveStage
+    }
+  }
+}
+
+const patchGoLiveStageFailure = (opts) => {
+  return {
+    name: 'patchGoLiveStageFailure',
+    opts: {
+      external_id: opts.serviceExternalId,
+      gateway_account_ids: [opts.gatewayAccountId],
+      current_go_live_stage: opts.currentGoLiveStage,
+      path: 'current_go_live_stage',
+      value: opts.currentGoLiveStage
+    }
+  }
+}
+
 module.exports = {
   postCreateServiceSuccess,
   patchUpdateServiceNameSuccess,
   patchUpdateServiceGoLiveStageSuccess,
-  patchUpdateMerchantDetailsSuccess
+  patchUpdateMerchantDetailsSuccess,
+  patchUpdateServiceSuccessCatchAll,
+  patchGoLiveStageFailure
 }

@@ -1,5 +1,5 @@
-const userStubs = require('../../utils/user-stubs')
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
 describe('Login Page', () => {
   const gatewayAccountId = 42

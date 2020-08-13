@@ -1,8 +1,8 @@
 'use strict'
 
-const userStubs = require('../utils/user-stubs')
-const gatewayAccountStubs = require('./gateway-account-stubs')
-const serviceStubs = require('./service-stubs')
+const userStubs = require('../stubs/user-stubs')
+const gatewayAccountStubs = require('../stubs/gateway-account-stubs')
+const serviceStubs = require('../stubs/service-stubs')
 
 const variables = {
   userExternalId: 'userExternalId',
@@ -60,26 +60,18 @@ const patchUpdateGoLiveStageSuccessStub = (currentGoLiveStage) => {
 }
 
 const patchUpdateGoLiveStageErrorStub = (currentGoLiveStage) => {
-  return {
-    name: 'patchGoLiveStageFailure',
-    opts: {
-      external_id: variables.serviceExternalId,
-      gateway_account_ids: [variables.gatewayAccountId],
-      current_go_live_stage: currentGoLiveStage,
-      path: 'current_go_live_stage',
-      value: currentGoLiveStage
-    }
-  }
+  return serviceStubs.patchGoLiveStageFailure({
+    serviceExternalId: variables.serviceExternalId,
+    gatewayAccountId: variables.gatewayAccountId,
+    currentGoLiveStage: currentGoLiveStage
+  })
 }
 
 const patchUpdateServiceSuccessCatchAllStub = (currentGoLiveStage) => {
-  return {
-    name: 'patchUpdateServiceSuccessCatchAll',
-    opts: {
-      external_id: variables.serviceExternalId,
-      current_go_live_stage: currentGoLiveStage
-    }
-  }
+  return serviceStubs.patchUpdateServiceSuccessCatchAll({
+    serviceExternalId: variables.serviceExternalId,
+    currentGoLiveStage: currentGoLiveStage
+  })
 }
 
 const setupGetUserAndGatewayAccountStubs = (serviceRole) => {

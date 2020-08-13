@@ -1,8 +1,8 @@
 'use strict'
 
-const userStubs = require('../../utils/user-stubs')
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
-const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 
 describe('3DS settings page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
