@@ -9,8 +9,7 @@ const authenticatedUserId = 'authenticated-user-id'
 describe('Service has a live account that supports payouts', () => {
   beforeEach(() => {
     // keep the same session for entire describe block
-    Cypress.Cookies.preserveOnce('session')
-    Cypress.Cookies.preserveOnce('gateway_account')
+    Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
   it('should display link to view payouts', () => {
