@@ -18,6 +18,12 @@ const getGatewayAccountSuccess = function (opts) {
   if (opts.type) {
     stubOptions.type = opts.type
   }
+  if (opts.worldpay3dsFlex) {
+    stubOptions.worldpay_3ds_flex = opts.worldpay3dsFlex
+  }
+  if (opts.credentials) {
+    stubOptions.credentials = opts.credentials
+  }
 
   return {
     name: 'getGatewayAccountSuccess',
@@ -78,25 +84,6 @@ const getCardTypesSuccess = function () {
   }
 }
 
-const getGatewayAccountSuccessRepeat = function (opts) {
-  return {
-    name: 'getGatewayAccountSuccessRepeat',
-    opts: [{
-      gateway_account_id: opts[0].gatewayAccountId,
-      worldpay_3ds_flex: opts[0].worldpay3dsFlex,
-      payment_provider: opts[0].paymentProvider,
-      credentials: opts[0].credentials,
-      repeat: 2
-    },
-    {
-      gateway_account_id: opts[1].gatewayAccountId,
-      payment_provider: opts[1].paymentProvider,
-      worldpay_3ds_flex: opts[1].worldpay3dsFlex,
-      credentials: opts[1].credentials
-    }]
-  }
-}
-
 const patchUpdate3DS = function (opts) {
   return {
     name: 'patchUpdate3DS',
@@ -108,7 +95,6 @@ const patchUpdate3DS = function (opts) {
 
 module.exports = {
   getGatewayAccountSuccess,
-  getGatewayAccountSuccessRepeat,
   getGatewayAccountsSuccess,
   getAcceptedCardTypesSuccess,
   getDirectDebitGatewayAccountSuccess,
