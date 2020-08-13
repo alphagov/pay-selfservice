@@ -63,6 +63,13 @@
             }
           },
           {
+            value: 'gov_banking',
+            text: "Government Banking's provider, Worldpay",
+            label: {
+              classes: "govuk-label--s"
+            }
+          },
+          {
             value: 'other_psp',
             text: 'Other providers',
             label: {
@@ -70,6 +77,9 @@
             },
             conditional: {
               html: otherPSP
+            },
+            hint: {
+              text: 'If you agreed with GOV.UK Pay before 1 August 2020 to use ePDQ, Smartpay or your own Worldpay contract, you can connect your live account to that PSP. If not, please select one of the other providers or contact GOV.UK Pay support for more info.'
             }
           }
         ]
