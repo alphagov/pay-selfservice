@@ -3,8 +3,8 @@
 const lodash = require('lodash')
 const utils = require('../../utils/request-to-go-live-utils')
 const variables = utils.variables
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
-const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const userStubs = require('../../stubs/user-stubs')
 
 describe('Request to go live: choose how to process payments', () => {
   const userExternalId = variables.userExternalId

@@ -1,10 +1,10 @@
 'use strict'
 
-const userStubs = require('../../utils/user-stubs')
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
-const transactionSummaryStubs = require('../../utils/transaction-summary-stubs')
-const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
-const stripeAccountStubs = require('../../utils/stripe-account-stubs')
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
+const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
+const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
 describe('Stripe setup: company number page', () => {
   const gatewayAccountId = 42

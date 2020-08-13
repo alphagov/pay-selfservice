@@ -1,7 +1,7 @@
-const userStubs = require('../../utils/user-stubs')
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
-const productStubs = require('../../utils/products-stubs')
+const productStubs = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 

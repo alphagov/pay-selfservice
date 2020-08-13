@@ -1,6 +1,6 @@
-const userStubs = require('../../utils/user-stubs')
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
-const transactionsSummaryStubs = require('../../utils/transaction-summary-stubs')
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
 
 describe('Dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'

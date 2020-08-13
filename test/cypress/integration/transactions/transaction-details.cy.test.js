@@ -1,10 +1,10 @@
 'use strict'
 
 const lodash = require('lodash')
-const userStubs = require('../../utils/user-stubs')
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
-const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
-const transactionStubs = require('../../utils/transaction-stubs')
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
+const transactionStubs = require('../../stubs/transaction-stubs')
 
 const capitalise = string => string[0].toUpperCase() + string.slice(1)
 const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`

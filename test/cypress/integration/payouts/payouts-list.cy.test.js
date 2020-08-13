@@ -1,9 +1,9 @@
 const SESSION_USER_ID = 'some-user-id'
 const GATEWAY_ACCOUNT_ID = 10
 
-const userStubs = require('../../utils/user-stubs')
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
-const payoutStubs = require('../../utils/payout-stubs')
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const payoutStubs = require('../../stubs/payout-stubs')
 
 function getStubsForPayoutScenario (payouts = [], payoutOpts = {}) {
   return [

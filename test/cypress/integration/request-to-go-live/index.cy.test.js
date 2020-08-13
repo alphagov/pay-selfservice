@@ -1,5 +1,5 @@
-const userStubs = require('../../utils/user-stubs')
-const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
 describe('Request to go live: index', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
