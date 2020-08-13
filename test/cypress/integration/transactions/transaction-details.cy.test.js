@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 const userStubs = require('../../utils/user-stubs')
+const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../utils/stripe-account-setup-stub')
 const transactionStubs = require('../../utils/transaction-stubs')
 
@@ -77,14 +78,11 @@ describe('Transaction details page', () => {
     return [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, email: userEmail }),
       userStubs.getUsersSuccess(),
-      {
-        name: 'getGatewayAccountSuccess',
-        opts: {
-          ...additionalGatewayAccountOpts,
-          gateway_account_id: gatewayAccountId,
-          payment_provider: transactionDetails.payment_provider
-        }
-      },
+      gatewayAccountStubs.getGatewayAccountSuccess({
+        gatewayAccountId,
+        paymentProvider: transactionDetails.payment_provider,
+        allowMoto: additionalGatewayAccountOpts.allow_moto
+      }),
       transactionStubs.getLedgerTransactionSuccess({ transactionDetails }),
       transactionStubs.getLedgerEventsSuccess({ transactionId, events: transactionDetails.events }),
       stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: true, responsiblePerson: true, vatNumber: true, companyNumber: true })

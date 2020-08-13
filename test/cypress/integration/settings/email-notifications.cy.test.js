@@ -14,31 +14,10 @@ describe('Settings', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        {
-          name: 'getAccountAuthSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        },
-        {
-          name: 'patchConfirmationEmailToggleSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            enabled: true
-          }
-        },
-        {
-          name: 'patchRefundEmailToggleSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            enabled: true
-          }
-        },
-        {
-          name: 'patchAccountEmailCollectionModeSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            collectionMode: 'MANDATORY'
-          }
-        }
+        gatewayAccountStubs.getAccountAuthSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.patchConfirmationEmailToggleSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.patchRefundEmailToggleSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.patchAccountEmailCollectionModeSuccess({ gatewayAccountId })
       ])
 
       cy.visit(settingsUrl)
@@ -155,31 +134,10 @@ describe('Settings', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        {
-          name: 'getAccountAuthSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        },
-        {
-          name: 'patchConfirmationEmailToggleSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            enabled: true
-          }
-        },
-        {
-          name: 'patchRefundEmailToggleSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            enabled: true
-          }
-        },
-        {
-          name: 'patchAccountEmailCollectionModeSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            collectionMode: 'MANDATORY'
-          }
-        }
+        gatewayAccountStubs.getAccountAuthSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.patchConfirmationEmailToggleSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.patchRefundEmailToggleSuccess({ gatewayAccountId }),
+        gatewayAccountStubs.patchAccountEmailCollectionModeSuccess({ gatewayAccountId })
       ])
 
       cy.visit(settingsUrl)

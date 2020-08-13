@@ -69,11 +69,7 @@ describe('Your PSP settings page', () => {
     }
 
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
-
-    const patchUpdateCredentials = {
-      name: 'patchUpdateCredentials',
-      opts: { gateway_account_id: gatewayAccountId, ...testCredentials }
-    }
+    const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentials({ gatewayAccountId, testCredentials })
 
     stubs.push(user, gatewayAccount, card, patchUpdateCredentials)
 
@@ -91,15 +87,8 @@ describe('Your PSP settings page', () => {
       credentials: opts.credentials
     })
 
-    const patchUpdateCredentials = {
-      name: 'patchUpdateCredentials',
-      opts: { gateway_account_id: gatewayAccountId, ...testCredentials }
-    }
-
-    const patchUpdateFlexCredentials = {
-      name: 'patchUpdateFlexCredentials',
-      opts: { gateway_account_id: gatewayAccountId, ...testFlexCredentials }
-    }
+    const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentials({ gatewayAccountId, testCredentials })
+    const patchUpdateFlexCredentials = gatewayAccountStubs.patchUpdateFlexCredentials({ gatewayAccountId, ...testFlexCredentials })
 
     stubs.push(user, gatewayAccount, patchUpdateCredentials, patchUpdateFlexCredentials)
 
