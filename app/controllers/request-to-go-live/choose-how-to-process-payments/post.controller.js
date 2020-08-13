@@ -17,7 +17,8 @@ const stages = {
   stripe: goLiveStage.CHOSEN_PSP_STRIPE,
   worldpay: goLiveStage.CHOSEN_PSP_WORLDPAY,
   smartpay: goLiveStage.CHOSEN_PSP_SMARTPAY,
-  epdq: goLiveStage.CHOSEN_PSP_EPDQ
+  epdq: goLiveStage.CHOSEN_PSP_EPDQ,
+  gov_banking: goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY
 }
 
 module.exports = (req, res) => {

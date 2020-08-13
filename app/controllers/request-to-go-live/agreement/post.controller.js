@@ -19,7 +19,8 @@ const stages = {
   CHOSEN_PSP_STRIPE: goLiveStage.TERMS_AGREED_STRIPE,
   CHOSEN_PSP_WORLDPAY: goLiveStage.TERMS_AGREED_WORLDPAY,
   CHOSEN_PSP_SMARTPAY: goLiveStage.TERMS_AGREED_SMARTPAY,
-  CHOSEN_PSP_EPDQ: goLiveStage.TERMS_AGREED_EPDQ
+  CHOSEN_PSP_EPDQ: goLiveStage.TERMS_AGREED_EPDQ,
+  CHOSEN_PSP_GOV_BANKING_WORLDPAY: goLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY
 }
 
 const getUserIpAddress = req => {
@@ -52,7 +53,7 @@ const createZendeskMessage = opts => ` Service name: ${opts.serviceName}
  Organisation name: ${opts.merchantDetails}
  Service ID: ${opts.serviceExternalId}
  PSP: ${opts.psp}
- IP address: ${opts.ipAddress} 
+ IP address: ${opts.ipAddress}
  Email address: ${opts.email}
  Time: ${opts.timestamp}
 `

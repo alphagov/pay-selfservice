@@ -199,6 +199,21 @@ describe('Request to go live: index', () => {
     })
   })
 
+  describe('Request to go live stage CHOSEN_PSP_GOV_BANKING_WORLDPAY', () => {
+    beforeEach(() => {
+      setupStubs(buildServiceRoleForGoLiveStage('CHOSEN_PSP_GOV_BANKING_WORLDPAY'))
+    })
+
+    it('should show "Request to go live" page with correct progress indication', () => {
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
+      cy.visit(requestToGoLivePageUrl)
+      cy.get('#request-to-go-live-index-form > button').click()
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
+      })
+    })
+  })
+
   describe('Request to go live stage CHOSEN_PSP_SMARTPAY', () => {
     beforeEach(() => {
       setupStubs(buildServiceRoleForGoLiveStage('CHOSEN_PSP_SMARTPAY'))
@@ -304,6 +319,21 @@ describe('Request to go live: index', () => {
       cy.get('#request-to-go-live-step-agree-terms > h2').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
+    })
+  })
+
+  describe('Request to go live stage TERMS_AGREED_GOV_BANKING_WORLDPAY', () => {
+    beforeEach(() => {
+      setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_GOV_BANKING_WORLDPAY'))
+    })
+
+    it('should show "Request to go live" page with correct progress indication', () => {
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
+      cy.visit(requestToGoLivePageUrl)
+      cy.get('h1').should('contain', 'Request submitted')
+      cy.get('ul > li').should('not.contain', 'responsible person')
+      cy.get('ul > li').should('not.contain', 'bank details')
+      cy.get('ul > li').should('not.contain', 'VAT number')
     })
   })
 
