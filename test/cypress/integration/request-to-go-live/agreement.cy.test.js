@@ -155,6 +155,36 @@ describe('Request to go live: agreement', () => {
     })
   })
 
+  describe('REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_GOV_BANKING_WORLDPAY', () => {
+    const repeatGetUserSuccessStub = [
+      userStubs.getUserSuccessRepeatFirstResponseNTimes([
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_GOV_BANKING_WORLDPAY') },
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_GOV_BANKING_WORLDPAY') }
+      ]),
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    ]
+
+    const stubPayload = lodash.concat(repeatGetUserSuccessStub,
+      utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_GOV_BANKING_WORLDPAY'),
+      goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }))
+
+    beforeEach(() => {
+      cy.task('setupStubs', stubPayload)
+    })
+
+    it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_GOV_BANKING_WORLDPAY', () => {
+      const requestToGoLiveAgreementUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`
+      cy.visit(requestToGoLiveAgreementUrl)
+      cy.get('fieldset').should('not.contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
+      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body the memorandum of understanding applies')
+      cy.get('#agreement').check()
+      cy.get('#request-to-go-live-agreement-form > button').click()
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
+      })
+    })
+  })
+
   describe('adminusers error handlings', () => {
     const stubPayload = lodash.concat(utils.getUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_STRIPE')),
       goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }),

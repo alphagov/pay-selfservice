@@ -20,6 +20,10 @@ describe('go-live-stage-to-next-page-path tests', () => {
     it('should resolve TERMS_AGREED_WORLDPAY stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.TERMS_AGREED_WORLDPAY]).to.equal(path)
     })
+
+    it('should resolve TERMS_AGREED_GOV_BANKIKNG_WORLDPAY stages correctly', () => {
+      expect(goLiveStageToNextPagePath[goLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY]).to.equal(path)
+    })
     it('should resolve TERMS_AGREED_SMARTPAY stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.TERMS_AGREED_SMARTPAY]).to.equal(path)
     })
@@ -66,6 +70,10 @@ describe('go-live-stage-to-next-page-path tests', () => {
     })
     it('should resolve CHOSEN_PSP_WORLDPAY stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_WORLDPAY]).to.equal(path)
+    })
+
+    it('should resolve CHOSEN_PSP_GOV_BANKING_WORLDPAY stages correctly', () => {
+      expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY]).to.equal(path)
     })
     it('should resolve CHOSEN_PSP_SMARTPAY stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_SMARTPAY]).to.equal(path)
