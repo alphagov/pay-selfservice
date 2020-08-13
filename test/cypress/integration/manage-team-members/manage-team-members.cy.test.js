@@ -1,6 +1,7 @@
 'use strict'
 
-const { getUserWithServiceRoleStubOpts, getUserSuccess } = require('../../utils/user-stubs')
+const { getUserWithServiceRoleStubOpts, getUserSuccess, getServiceUsersSuccess } = require('../../utils/user-stubs')
+const inviteStubs = require('../../utils/invite-stubs')
 
 const SERVICE_EXTERNAL_ID = 'service_abc_123'
 const AUTHENTICATED_USER_ID = 'authenticated-user-id'
@@ -12,6 +13,21 @@ describe('Manage team members page', () => {
     const viewOnlyUserStubOpts = getUserWithServiceRoleStubOpts('view-only-user-id', 'view-only-user@example.com', SERVICE_EXTERNAL_ID, 'view-only')
     const viewAndRefundUserStubOpts = getUserWithServiceRoleStubOpts('view-and-refund-user-id', 'view-and-refund-user@example.com', SERVICE_EXTERNAL_ID, 'view-and-refund')
 
+    const invites = [
+      {
+        email: 'invited-admin-user@example.com',
+        role: 'admin'
+      },
+      {
+        email: 'invited-view-only-user@example.com',
+        role: 'view-only'
+      },
+      {
+        email: 'invited-view-and-refund-user@example.com',
+        role: 'view-and-refund'
+      }
+    ]
+
     cy.task('setupStubs', [
       getUserSuccess({
         userExternalId: AUTHENTICATED_USER_ID,
@@ -19,38 +35,14 @@ describe('Manage team members page', () => {
         serviceExternalId: SERVICE_EXTERNAL_ID,
         role: { name: 'admin' }
       }),
-      {
-        name: 'getServiceUsersSuccess',
-        opts: {
-          serviceExternalId: SERVICE_EXTERNAL_ID,
-          users: [
-            authenticatedUserStubOpts,
-            adminUserStubOpts,
-            viewOnlyUserStubOpts,
-            viewAndRefundUserStubOpts
-          ]
-        }
-      },
-      {
-        name: 'getInvitedUsersSuccess',
-        opts: {
-          serviceExternalId: SERVICE_EXTERNAL_ID,
-          invites: [
-            {
-              email: 'invited-admin-user@example.com',
-              role: 'admin'
-            },
-            {
-              email: 'invited-view-only-user@example.com',
-              role: 'view-only'
-            },
-            {
-              email: 'invited-view-and-refund-user@example.com',
-              role: 'view-and-refund'
-            }
-          ]
-        }
-      }
+      getServiceUsersSuccess({
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        users: [authenticatedUserStubOpts, adminUserStubOpts, viewOnlyUserStubOpts, viewAndRefundUserStubOpts]
+      }),
+      inviteStubs.getInvitedUsersSuccess({
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        invites: invites
+      })
     ])
   })
 

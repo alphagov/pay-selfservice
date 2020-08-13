@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 const utils = require('../../utils/request-to-go-live-utils')
+const serviceStubs = require('../../utils/service-stubs')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 
 describe('Request to go live: organisation name page', () => {
@@ -12,32 +13,15 @@ describe('Request to go live: organisation name page', () => {
   })
 
   const stubPatchRequests = (currentGoLiveStage, organisationName) => {
-    return [{
-      name: 'patchUpdateServiceGoLiveStageSuccess',
-      opts: {
-        external_id: serviceExternalId,
-        gateway_account_ids: [gatewayAccountId],
-        current_go_live_stage: currentGoLiveStage,
-        path: 'current_go_live_stage',
-        value: currentGoLiveStage
-      }
-    },
-    {
-      name: 'patchUpdateMerchantDetailsSuccess',
-      opts: {
-        external_id: serviceExternalId,
-        gateway_account_ids: [gatewayAccountId],
-        current_go_live_stage: currentGoLiveStage,
-        merchant_details: {
-          name: organisationName
-        }
-      }
-    }]
+    return [
+      serviceStubs.patchUpdateServiceGoLiveStageSuccess({ serviceExternalId, gatewayAccountId, currentGoLiveStage }),
+      serviceStubs.patchUpdateMerchantDetailsSuccess({ serviceExternalId, gatewayAccountId, currentGoLiveStage, organisationName })
+    ]
   }
 
   describe('User does not have the correct permissions', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
-    serviceRole.role = { permissions: [ ] }
+    serviceRole.role = { permissions: [] }
     beforeEach(() => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })

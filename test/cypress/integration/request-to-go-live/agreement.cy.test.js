@@ -4,26 +4,10 @@ const lodash = require('lodash')
 const utils = require('../../utils/request-to-go-live-utils')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const userStubs = require('../../utils/user-stubs')
+const goLiveRequestStubs = require('../../utils/go-live-request-stubs')
 
 describe('Request to go live: agreement', () => {
-  const stubGovUkPayAgreement = {
-    name: 'postGovUkPayAgreement',
-    opts: {
-      external_id: serviceExternalId,
-      user_external_id: userExternalId,
-      email: 'someone@example.org',
-      agreementTime: '2019-02-13T11:11:16.878Z'
-    }
-  }
-
-  const stubStripeAgreement = {
-    name: 'postStripeAgreementIpAddress',
-    opts: {
-      external_id: serviceExternalId,
-      ip_address: '93.184.216.34'
-    }
-  }
-
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
   })
@@ -80,25 +64,18 @@ describe('Request to go live: agreement', () => {
   })
 
   describe('REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_STRIPE', () => {
-    const repeatGetUserSuccessStub = [{
-      name: 'getUserSuccessRepeatFirstResponseNTimes',
-      opts: [{
-        external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_STRIPE')],
-        repeat: 2
-      }, {
-        external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_STRIPE')],
-        repeat: 2
-      }]
-    },
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    const repeatGetUserSuccessStub = [
+      userStubs.getUserSuccessRepeatFirstResponseNTimes([
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_STRIPE') },
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_STRIPE') }
+      ]),
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
     ]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_STRIPE'),
-      stubGovUkPayAgreement,
-      stubStripeAgreement)
+      goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }),
+      goLiveRequestStubs.postStripeAgreementIpAddress({ serviceExternalId }))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
     })
@@ -133,23 +110,17 @@ describe('Request to go live: agreement', () => {
   })
 
   describe('REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_WORLDPAY', () => {
-    const repeatGetUserSuccessStub = [{
-      name: 'getUserSuccessRepeatFirstResponseNTimes',
-      opts: [{
-        external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_WORLDPAY')],
-        repeat: 2
-      }, {
-        external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_WORLDPAY')],
-        repeat: 2
-      }]
-    },
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
+    const repeatGetUserSuccessStub = [
+      userStubs.getUserSuccessRepeatFirstResponseNTimes([
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_WORLDPAY') },
+        { userExternalId, serviceRoles: utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_WORLDPAY') }
+      ]),
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
     ]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_WORLDPAY'), stubGovUkPayAgreement)
+      utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_WORLDPAY'),
+      goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }))
 
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
@@ -186,7 +157,7 @@ describe('Request to go live: agreement', () => {
 
   describe('adminusers error handlings', () => {
     const stubPayload = lodash.concat(utils.getUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_STRIPE')),
-      stubGovUkPayAgreement,
+      goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }),
       utils.patchUpdateGoLiveStageErrorStub('TERMS_AGREED_STRIPE'))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)

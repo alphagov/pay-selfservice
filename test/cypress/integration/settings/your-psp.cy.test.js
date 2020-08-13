@@ -68,13 +68,7 @@ describe('Your PSP settings page', () => {
       gatewayAccount.opts.worldpay_3ds_flex = opts.worldpay_3ds_flex
     }
 
-    const card = {
-      name: 'getAcceptedCardTypesSuccess',
-      opts: {
-        account_id: gatewayAccountId,
-        updated: false
-      }
-    }
+    const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
 
     const patchUpdateCredentials = {
       name: 'patchUpdateCredentials',
@@ -91,30 +85,19 @@ describe('Your PSP settings page', () => {
 
     const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
 
-    const gatewayAccount = {
-      name: 'getGatewayAccountSuccessRepeat',
-      opts: [{
-        gateway_account_id: gatewayAccountId,
-        worldpay_3ds_flex: opts.worldpay_3ds_flex,
-        payment_provider: opts.gateway,
-        credentials: opts.credentials,
-        repeat: 2
-      },
-      {
-        gateway_account_id: gatewayAccountId,
-        payment_provider: opts.gateway,
-        worldpay_3ds_flex: opts.worldpay_3ds_flex_remove,
-        credentials: opts.credentials
-      }]
-    }
-
-    const card = {
-      name: 'getAcceptedCardTypesSuccess',
-      opts: {
-        account_id: gatewayAccountId,
-        updated: false
-      }
-    }
+    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccessRepeat([{
+      gatewayAccountId,
+      worldpay3dsFlex: opts.worldpay_3ds_flex,
+      paymentProvider: opts.gateway,
+      credentials: opts.credentials,
+      repeat: 2
+    },
+    {
+      gatewayAccountId,
+      paymentProvider: opts.gateway,
+      worldpay3dsFlex: opts.worldpay_3ds_flex_remove,
+      credentials: opts.credentials
+    }])
 
     const patchUpdateCredentials = {
       name: 'patchUpdateCredentials',
@@ -126,7 +109,7 @@ describe('Your PSP settings page', () => {
       opts: { gateway_account_id: gatewayAccountId, ...testFlexCredentials }
     }
 
-    stubs.push(user, gatewayAccount, card, patchUpdateCredentials, patchUpdateFlexCredentials)
+    stubs.push(user, gatewayAccount, patchUpdateCredentials, patchUpdateFlexCredentials)
 
     cy.task('setupStubs', stubs)
   }

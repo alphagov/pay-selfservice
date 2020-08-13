@@ -105,13 +105,65 @@ const postSecondFactorSuccess = function (userExternalId) {
   }
 }
 
+const getServiceUsersSuccess = function (opts) {
+  return {
+    name: 'getServiceUsersSuccess',
+    opts: {
+      serviceExternalId: opts.serviceExternalId,
+      users: opts.users
+    }
+  }
+}
+
+const putUpdateServiceRoleSuccess = function (opts) {
+  return {
+    name: 'putUpdateServiceRoleSuccess',
+    opts: {
+      role: opts.role,
+      external_id: opts.userExternalId,
+      serviceExternalId: opts.serviceExternalId
+    }
+  }
+}
+
+const postAssignServiceRoleSuccess = function (opts) {
+  return {
+    name: 'postAssignServiceRoleSuccess',
+    opts: {
+      external_id: opts.userExternalId,
+      service_external_id: opts.serviceExternalId,
+      role_name: 'admin',
+      verifyCalledTimes: 1
+    }
+  }
+}
+
+const getUserSuccessRepeatFirstResponseNTimes = function (opts) {
+  return {
+    name: 'getUserSuccessRepeatFirstResponseNTimes',
+    opts: [{
+      external_id: opts[0].userExternalId,
+      service_roles: [opts[0].serviceRoles],
+      repeat: 2
+    }, {
+      external_id: opts[1].userExternalId,
+      service_roles: [opts[1].serviceRoles],
+      repeat: 2
+    }]
+  }
+}
+
 module.exports = {
   getUserSuccess,
   getUsersSuccess,
   getUserWithNoPermissions,
   getUserSuccessWithServiceRole,
   getUserWithServiceRoleStubOpts,
+  getUserSuccessRepeatFirstResponseNTimes,
+  getServiceUsersSuccess,
+  postAssignServiceRoleSuccess,
   postUserAuthenticateSuccess,
   postUserAuthenticateInvalidPassword,
-  postSecondFactorSuccess
+  postSecondFactorSuccess,
+  putUpdateServiceRoleSuccess
 }

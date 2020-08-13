@@ -2,6 +2,8 @@
 
 const userStubs = require('../../utils/user-stubs')
 const gatewayAccountStubs = require('../../utils/gateway-account-stubs')
+const serviceStubs = require('../../utils/service-stubs')
+
 const authenticatedUserId = 'authenticated-user-id'
 const serviceExternalId = 'service-external-id'
 const newServiceName = 'Updated Service'
@@ -19,20 +21,6 @@ function setupStubs (serviceName, stubs = []) {
     userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1', serviceExternalId, serviceName }),
     gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' })
   ])
-}
-
-function getPatchRequestStub (welshServiceName) {
-  return {
-    name: 'patchUpdateServiceNameSuccess',
-    opts: {
-      external_id: serviceExternalId,
-      serviceName: {
-        en: newServiceName,
-        cy: welshServiceName || ''
-      },
-      verifyCalledTimes: 1
-    }
-  }
 }
 
 describe('Update service name', () => {
@@ -77,7 +65,8 @@ describe('Update service name', () => {
     })
 
     it('should update service name to Updated Service', () => {
-      setupStubs(serviceName, [getPatchRequestStub()])
+      setupStubs(serviceName,
+        [serviceStubs.patchUpdateServiceNameSuccess({ serviceExternalId, serviceName: { en: newServiceName } })])
       cy.get('input#service-name').clear()
       cy.get('input#service-name').type(newServiceName)
       cy.get('button').contains('Save').click()
@@ -105,7 +94,8 @@ describe('Update service name', () => {
     })
 
     it('should update Welsh service name to Cymraeg', () => {
-      setupStubs(welshServiceName, [getPatchRequestStub('Cymraeg')])
+      setupStubs(welshServiceName,
+        [serviceStubs.patchUpdateServiceNameSuccess({ serviceExternalId, serviceName: { en: newServiceName, cy: 'Cymraeg' } })])
       cy.get('input#service-name').clear()
       cy.get('input#service-name').type(newServiceName)
       cy.get('input#service-name-cy').clear()

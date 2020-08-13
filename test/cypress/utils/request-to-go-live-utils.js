@@ -2,6 +2,7 @@
 
 const userStubs = require('../utils/user-stubs')
 const gatewayAccountStubs = require('./gateway-account-stubs')
+const serviceStubs = require('./service-stubs')
 
 const variables = {
   userExternalId: 'userExternalId',
@@ -51,30 +52,20 @@ const getUserAndGatewayAccountStubs = (serviceRole) => {
 }
 
 const getUserWithModifiedServiceRoleOnNextRequestStub = (serviceRoleBefore, serviceRoleAfter) =>
-  [{
-    name: 'getUserSuccessRepeatFirstResponseNTimes',
-    opts: [{
-      external_id: variables.userExternalId,
-      service_roles: [serviceRoleBefore],
-      repeat: 2
-    }, {
-      external_id: variables.userExternalId,
-      service_roles: [serviceRoleAfter],
-      repeat: 2
-    }]
-  },
-  gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId: variables.gatewayAccountId })
+  [
+    userStubs.getUserSuccessRepeatFirstResponseNTimes([
+      { userExternalId: variables.userExternalId, serviceRoles: serviceRoleBefore },
+      { userExternalId: variables.userExternalId, serviceRoles: serviceRoleAfter }
+    ]),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId: variables.gatewayAccountId })
   ]
 
 const patchUpdateGoLiveStageSuccessStub = (currentGoLiveStage) => {
-  return {
-    name: 'patchUpdateServiceGoLiveStageSuccess',
-    opts: {
-      external_id: variables.serviceExternalId,
-      gateway_account_ids: [variables.gatewayAccountId],
-      current_go_live_stage: currentGoLiveStage
-    }
-  }
+  return serviceStubs.patchUpdateServiceGoLiveStageSuccess({
+    serviceExternalId: variables.serviceExternalId,
+    gatewayAccountId: variables.gatewayAccountId,
+    currentGoLiveStage
+  })
 }
 
 const patchUpdateGoLiveStageErrorStub = (currentGoLiveStage) => {
