@@ -230,46 +230,6 @@ module.exports = {
       response: gatewayAccountFixtures.validGatewayAccountsResponse({ accounts: [opts] }).getPlain()
     })
   },
-  getGatewayAccountSuccessRepeatNTimes: (opts = {}) => {
-    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0]).getPlain()
-    const aSecondValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[1]).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/frontend/accounts/${opts[0].gateway_account_id}`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidGetGatewayAccountResponse
-          },
-          _behaviors: {
-            repeat: 1
-          }
-        }, {
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aSecondValidGetGatewayAccountResponse
-          },
-          _behaviors: {
-            repeat: 1
-          }
-        }]
-      }
-    ]
-  },
   getDirectDebitGatewayAccountSuccess: (opts = {}) => {
     const path = '/v1/api/accounts/' + opts.gateway_account_id
     return simpleStubBuilder('GET', path, 200, {

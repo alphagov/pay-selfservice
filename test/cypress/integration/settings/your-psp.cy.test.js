@@ -64,8 +64,8 @@ describe('Your PSP settings page', () => {
       gatewayAccount.opts.notificationCredentials = opts.notificationCredentials
     }
 
-    if (opts.worldpay_3ds_flex) {
-      gatewayAccount.opts.worldpay_3ds_flex = opts.worldpay_3ds_flex
+    if (opts.worldpay3dsFlex) {
+      gatewayAccount.opts.worldpay_3ds_flex = opts.worldpay3dsFlex
     }
 
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
@@ -84,20 +84,12 @@ describe('Your PSP settings page', () => {
     let stubs = []
 
     const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
-
-    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccessRepeat([{
-      gatewayAccountId,
-      worldpay3dsFlex: opts.worldpay_3ds_flex,
-      paymentProvider: opts.gateway,
-      credentials: opts.credentials,
-      repeat: 2
-    },
-    {
+    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({
       gatewayAccountId,
       paymentProvider: opts.gateway,
       worldpay3dsFlex: opts.worldpay_3ds_flex_remove,
       credentials: opts.credentials
-    }])
+    })
 
     const patchUpdateCredentials = {
       name: 'patchUpdateCredentials',
@@ -188,16 +180,13 @@ describe('Your PSP settings page', () => {
   })
 
   describe('When using a Worldpay account with existing credentials', () => {
-    beforeEach(() => {
-      setupRemoveFlexCredsStubs({
+    it('should show all credentials as configured', () => {
+      setupYourPspStubs({
         gateway: 'worldpay',
         credentials: testCredentials,
-        worldpay_3ds_flex: testFlexCredentials,
-        worldpay_3ds_flex_remove: testRemoveFlexCredentials
+        worldpay3dsFlex: testFlexCredentials
       })
-    })
 
-    it('should show all credentials as configured', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
       cy.visit('/your-psp')
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
@@ -206,10 +195,17 @@ describe('Your PSP settings page', () => {
       cy.get('.value-organisational-unit-id').should('contain', testFlexCredentials.organisational_unit_id)
       cy.get('.value-issuer').should('contain', testFlexCredentials.issuer)
       cy.get('.value-jwt-mac-key').should('contain', '●●●●●●●●')
+
+      cy.get('#flex-credentials-change-link').click()
     })
 
     it('should allow removing 3DS Flex credentials', function () {
-      cy.get('#flex-credentials-change-link').click()
+      setupRemoveFlexCredsStubs({
+        gateway: 'worldpay',
+        credentials: testCredentials,
+        worldpay_3ds_flex_remove: testRemoveFlexCredentials
+      })
+
       cy.get('#removeFlexCredentials').should('be.visible')
       cy.get('#removeFlexCredentials').click()
       cy.location().should((location) => {
