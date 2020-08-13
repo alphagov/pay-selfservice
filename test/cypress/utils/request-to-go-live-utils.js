@@ -51,15 +51,6 @@ const getUserAndGatewayAccountStubs = (serviceRole) => {
   ]
 }
 
-const getUserWithModifiedServiceRoleOnNextRequestStub = (serviceRoleBefore, serviceRoleAfter) =>
-  [
-    userStubs.getUserSuccessRepeatFirstResponseNTimes([
-      { userExternalId: variables.userExternalId, serviceRoles: serviceRoleBefore },
-      { userExternalId: variables.userExternalId, serviceRoles: serviceRoleAfter }
-    ]),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId: variables.gatewayAccountId })
-  ]
-
 const patchUpdateGoLiveStageSuccessStub = (currentGoLiveStage) => {
   return serviceStubs.patchUpdateServiceGoLiveStageSuccess({
     serviceExternalId: variables.serviceExternalId,
@@ -101,7 +92,6 @@ module.exports = {
   buildServiceRoleForGoLiveStageWithMerchantName,
   buildServiceRoleWithMerchantDetails,
   getUserAndGatewayAccountStubs,
-  getUserWithModifiedServiceRoleOnNextRequestStub,
   patchUpdateGoLiveStageSuccessStub,
   patchUpdateGoLiveStageErrorStub,
   patchUpdateServiceSuccessCatchAllStub,
