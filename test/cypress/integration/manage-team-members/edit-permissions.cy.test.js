@@ -10,8 +10,7 @@ const EDITING_USER_ID = 'user-we-are-editing-id'
 describe('Edit service user permissions', () => {
   beforeEach(() => {
     // keep the same session for entire describe block
-    Cypress.Cookies.preserveOnce('session')
-    Cypress.Cookies.preserveOnce('gateway_account')
+    Cypress.Cookies.preserveOnce('session', 'gateway_account')
 
     const authenticatedUserStubOpts = {
       userExternalId: AUTHENTICATED_USER_ID,

@@ -26,8 +26,7 @@ function setupStubs (serviceName, stubs = []) {
 describe('Update service name', () => {
   beforeEach(() => {
     // keep the same session for entire describe block
-    Cypress.Cookies.preserveOnce('session')
-    Cypress.Cookies.preserveOnce('gateway_account')
+    Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
   describe('Edit a service name without a Welsh name', () => {

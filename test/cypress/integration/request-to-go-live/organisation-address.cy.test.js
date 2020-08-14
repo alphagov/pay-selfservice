@@ -20,8 +20,7 @@ describe('The organisation address page', () => {
   describe('The go-live stage is ENTERED_ORGANISATION_NAME and there are no existing merchant details', () => {
     beforeEach(() => {
       // keep the same session for entire describe block
-      Cypress.Cookies.preserveOnce('session')
-      Cypress.Cookies.preserveOnce('gateway_account')
+      Cypress.Cookies.preserveOnce('session', 'gateway_account')
     })
 
     describe('Form validation', () => {
