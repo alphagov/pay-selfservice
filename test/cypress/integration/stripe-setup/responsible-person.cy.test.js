@@ -18,14 +18,10 @@ describe('Stripe setup: responsible person page', () => {
   const typedAddressLine2 = 'Putney '
   const city = 'London'
   const typedCity = 'London '
-  const postcode = 'SW15 1LP'
   const typedPostcode = 'sw151lp '
   const typedDobDay = '25 '
   const typedDobMonth = ' 02'
   const typedDobYear = '1971 '
-  const longText = 'This text is 300 ................................................................................' +
-    '...............................................................................................................' +
-    '............................................................................ characters long'
 
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
@@ -129,37 +125,6 @@ describe('Stripe setup: responsible person page', () => {
 
         cy.get('input[name="answers-need-changing"]').should('not.exist')
         cy.get('input[name="answers-checked"]').should('not.exist')
-      })
-    })
-
-    it('should only show address once in error summary if error in both address lines', () => {
-      cy.get('#responsible-person-form').within(() => {
-        cy.get('#first-name').type(typedLastName)
-        cy.get('#last-name').type(typedLastName)
-        cy.get('#home-address-line-1').type(longText)
-        cy.get('#home-address-line-2').type(longText)
-        cy.get('#home-address-city').type(typedCity)
-        cy.get('#home-address-postcode').type(postcode)
-        cy.get('#dob-day').type(typedDobDay)
-        cy.get('#dob-month').type(typedDobMonth)
-        cy.get('#dob-year').type(typedDobYear)
-        cy.get('button').click()
-      })
-
-      cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#home-address-line-1"]').should('contain', 'Building and street')
-        cy.get('a[href="#home-address-line-2"]').should('not.exist')
-      })
-
-      cy.get('#responsible-person-form').should('exist').within(() => {
-        cy.get('.govuk-form-group--error > input#home-address-line-1').parent().should('exist').within(() => {
-          cy.get('.govuk-error-message').should('exist')
-          cy.get('input#home-address-line-1').should('have.attr', 'value', longText)
-        })
-        cy.get('.govuk-form-group--error > input#home-address-line-2').parent().should('exist').within(() => {
-          cy.get('.govuk-error-message').should('exist')
-          cy.get('input#home-address-line-2').should('have.attr', 'value', longText)
-        })
       })
     })
   })
