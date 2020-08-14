@@ -46,7 +46,7 @@
         name: 'choose-how-to-process-payments-mode',
         fieldset: {
           legend: {
-            text: 'How will you process payments?',
+            text: 'Which payment service provider will you use?',
             isPageHeading: true,
             classes: 'govuk-fieldset__legend--l'
           }
@@ -59,14 +59,17 @@
               classes: "govuk-label--s"
             },
             hint: {
-              text: 'GOV.UK Pay uses Stripe to process payments. Using Stripe means you don’t need to have your own payment service provider.'
+              text: 'GOV.UK Pay has a contract with Stripe to process payments. Using Stripe means that you don’t need your own contract with a payment service provider.'
             }
           },
           {
             value: 'gov_banking',
-            text: "Government Banking's provider, Worldpay",
+            text: "Government Banking's provider",
             label: {
               classes: "govuk-label--s"
+            },
+            hint: {
+              text: 'Government Banking has a contract with Worldpay to process payments that is open to central government and health organisations. You need an agreement with Government Banking to use their contract.'
             }
           },
           {
@@ -79,7 +82,7 @@
               html: otherPSP
             },
             hint: {
-              text: 'If you agreed with GOV.UK Pay before 1 August 2020 to use ePDQ, Smartpay or your own Worldpay contract, you can connect your live account to that PSP. If not, please select one of the other providers or contact GOV.UK Pay support for more info.'
+              text: 'If you’re already using GOV.UK Pay with one of the following providers, you can continue to use them for new services until 31st July 2021.'
             }
           }
         ]
