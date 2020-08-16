@@ -6,6 +6,27 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
+function setupStubs (userExternalId, gatewayAccountId, bankAccount, type = 'live', paymentProvider = 'stripe') {
+  let stripeSetupStub
+
+  if (Array.isArray(bankAccount)) {
+    stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
+      gatewayAccountId,
+      bankAccount: bankAccount
+    })
+  } else {
+    stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount })
+  }
+
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type, paymentProvider }),
+    stripeSetupStub,
+    stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+    transactionSummaryStubs.getDashboardStatistics()
+  ])
+}
+
 describe('Stripe setup: bank details page', () => {
   const gatewayAccountId = 42
   const userExternalId = 'userExternalId'
@@ -19,13 +40,7 @@ describe('Stripe setup: bank details page', () => {
 
     describe('Bank details page is shown', () => {
       beforeEach(() => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-        ])
-
+        setupStubs(userExternalId, gatewayAccountId, false)
         cy.visit('/bank-details')
       })
 
@@ -60,13 +75,7 @@ describe('Stripe setup: bank details page', () => {
 
     describe('Bank account flag already true', () => {
       it('should redirect to Dashboard with an error message when on Bank details page', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: true }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-          transactionSummaryStubs.getDashboardStatistics()
-        ])
+        setupStubs(userExternalId, gatewayAccountId, true)
 
         cy.visit('/bank-details')
 
@@ -79,13 +88,7 @@ describe('Stripe setup: bank details page', () => {
       })
 
       it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({ gatewayAccountId, bankAccount: [false, true] }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-          transactionSummaryStubs.getDashboardStatistics()
-        ])
+        setupStubs(userExternalId, gatewayAccountId, [false, true], 'live', 'stripe')
 
         cy.visit('/bank-details')
 
@@ -104,12 +107,7 @@ describe('Stripe setup: bank details page', () => {
 
     describe('Not a Stripe gateway account', () => {
       it('should show a 404 error when gateway account is not Stripe', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-        ])
+        setupStubs(userExternalId, gatewayAccountId, true, 'live', 'sandbox')
 
         cy.visit('/bank-details', {
           failOnStatusCode: false
@@ -120,12 +118,7 @@ describe('Stripe setup: bank details page', () => {
 
     describe('Not a live gateway account', () => {
       it('should show a 404 error when gateway account is not live', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-        ])
+        setupStubs(userExternalId, gatewayAccountId, false, 'test', 'sandbox')
 
         cy.visit('/bank-details', {
           failOnStatusCode: false

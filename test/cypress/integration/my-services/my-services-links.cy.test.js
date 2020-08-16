@@ -6,6 +6,12 @@ const payoutStubs = require('../../stubs/payout-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 
+function getUserAndAccountStubs (type, paymentProvider) {
+  return [userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type, paymentProvider })
+  ]
+}
+
 describe('Service has a live account that supports payouts', () => {
   beforeEach(() => {
     // keep the same session for entire describe block
@@ -13,10 +19,7 @@ describe('Service has a live account that supports payouts', () => {
   })
 
   it('should display link to view payouts', () => {
-    cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type: 'live', paymentProvider: 'stripe' })
-    ])
+    cy.task('setupStubs', getUserAndAccountStubs('live', 'stripe'))
 
     cy.setEncryptedCookies(authenticatedUserId, 1)
     cy.visit('/my-services')
@@ -27,8 +30,7 @@ describe('Service has a live account that supports payouts', () => {
 
   it('should direct to the list payouts page', () => {
     cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type: 'live', paymentProvider: 'stripe' }),
+      ...getUserAndAccountStubs('live', 'stripe'),
       payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: '1' })
     ])
     cy.contains('a', 'View payments to your bank account').click()
@@ -38,10 +40,7 @@ describe('Service has a live account that supports payouts', () => {
 
 describe('Service does not have a live account that supports payouts', () => {
   it('should display link to view payouts', () => {
-    cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type: 'test', paymentProvider: 'stripe' })
-    ])
+    cy.task('setupStubs', getUserAndAccountStubs('test', 'stripe'))
 
     cy.setEncryptedCookies(authenticatedUserId, 1)
     cy.visit('/my-services')
@@ -53,10 +52,7 @@ describe('Service does not have a live account that supports payouts', () => {
 
 describe('User has access to no live services', () => {
   it('should not display link to all service transactions', () => {
-    cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type: 'test', paymentProvider: 'sandbox' })
-    ])
+    cy.task('setupStubs', getUserAndAccountStubs('test', 'sandbox'))
 
     cy.setEncryptedCookies(authenticatedUserId, 1)
     cy.visit('/my-services')
@@ -68,10 +64,7 @@ describe('User has access to no live services', () => {
 
 describe('User has access to one or more live services', () => {
   it('should display link to all service transactions', () => {
-    cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type: 'live', paymentProvider: 'worldpay' })
-    ])
+    cy.task('setupStubs', getUserAndAccountStubs('live', 'worldpay'))
 
     cy.setEncryptedCookies(authenticatedUserId, 1)
     cy.visit('/my-services')

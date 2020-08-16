@@ -1,6 +1,17 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
+function setupStubs (userExternalId, gatewayAccountId, serviceName, allowGooglePay) {
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
+    gatewayAccountStubs.getGatewayAccountSuccess({
+      gatewayAccountId,
+      paymentProvider: 'worldpay',
+      allowGooglePay: allowGooglePay
+    })
+  ])
+}
+
 describe('Google Pay', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -12,10 +23,7 @@ describe('Google Pay', () => {
 
   describe('is disabled', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: 'worldpay', allowGooglePay: false })
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName, false)
     })
 
     it('should show it is disabled', () => {
@@ -33,10 +41,7 @@ describe('Google Pay', () => {
 
   describe('but allow us to enable when supported', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: 'worldpay', allowGooglePay: false })
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName, false)
     })
 
     it('should allow us to enable', () => {
@@ -49,10 +54,7 @@ describe('Google Pay', () => {
 
   describe('Show enabled after turning on', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: 'worldpay', allowGooglePay: true })
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName, true)
     })
 
     it('should allow us to enable', () => {

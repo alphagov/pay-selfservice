@@ -6,6 +6,27 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
+function setupStubs (userExternalId, gatewayAccountId, vatNumber, type = 'live', paymentProvider = 'stripe') {
+  let stripeSetupStub
+
+  if (Array.isArray(vatNumber)) {
+    stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
+      gatewayAccountId,
+      vatNumber: vatNumber
+    })
+  } else {
+    stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber })
+  }
+
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type, paymentProvider }),
+    stripeSetupStub,
+    stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+    transactionSummaryStubs.getDashboardStatistics()
+  ])
+}
+
 describe('Stripe setup: VAT number page', () => {
   const gatewayAccountId = 42
   const userExternalId = 'userExternalId'
@@ -13,13 +34,7 @@ describe('Stripe setup: VAT number page', () => {
   describe('Card gateway account', () => {
     describe('when user is admin, account is Stripe and "VAT number" is not already submitted', () => {
       beforeEach(() => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
-        ])
+        setupStubs(userExternalId, gatewayAccountId, false)
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
 
@@ -72,13 +87,7 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should redirect to Dashboard with an error message when displaying the page', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-          transactionSummaryStubs.getDashboardStatistics(),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
-        ])
+        setupStubs(userExternalId, gatewayAccountId, true)
 
         cy.visit('/vat-number')
 
@@ -91,13 +100,7 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should redirect to Dashboard with an error message when submitting the form', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({ gatewayAccountId, vatNumber: [false, true] }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-          transactionSummaryStubs.getDashboardStatistics()
-        ])
+        setupStubs(userExternalId, gatewayAccountId, [false, true])
 
         cy.visit('/vat-number')
 
@@ -120,12 +123,7 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should show a 404 error when gateway account is not Stripe', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-        ])
+        setupStubs(userExternalId, gatewayAccountId, false, 'live', 'sandbox')
 
         cy.visit('/vat-number', {
           failOnStatusCode: false
@@ -140,12 +138,7 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should show a 404 error when gateway account is not live', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-        ])
+        setupStubs(userExternalId, gatewayAccountId, false, 'test', 'stripe')
 
         cy.visit('/vat-number', {
           failOnStatusCode: false
@@ -162,8 +155,7 @@ describe('Stripe setup: VAT number page', () => {
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
           userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
+          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' })
         ])
 
         cy.visit('/vat-number', { failOnStatusCode: false })

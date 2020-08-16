@@ -6,6 +6,27 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
+function setupStubs (userExternalId, gatewayAccountId, responsiblePerson, type = 'live', paymentProvider = 'stripe') {
+  let stripeSetupStub
+
+  if (Array.isArray(responsiblePerson)) {
+    stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
+      gatewayAccountId,
+      responsiblePerson: responsiblePerson
+    })
+  } else {
+    stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson })
+  }
+
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type, paymentProvider }),
+    stripeSetupStub,
+    stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+    transactionSummaryStubs.getDashboardStatistics()
+  ])
+}
+
 describe('Stripe setup: responsible person page', () => {
   const gatewayAccountId = 42
   const userExternalId = 'userExternalId'
@@ -33,12 +54,7 @@ describe('Stripe setup: responsible person page', () => {
 
   describe('when user is admin, account is Stripe and responsible person not already nominated', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: false }),
-        stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-      ])
+      setupStubs(userExternalId, gatewayAccountId, false)
 
       cy.visit('/responsible-person')
     })
@@ -166,13 +182,7 @@ describe('Stripe setup: responsible person page', () => {
 
   describe('trying to view form when responsible person already nominated', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: true }),
-        stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-        transactionSummaryStubs.getDashboardStatistics()
-      ])
+      setupStubs(userExternalId, gatewayAccountId, true)
 
       cy.visit('/responsible-person')
     })
@@ -188,13 +198,7 @@ describe('Stripe setup: responsible person page', () => {
 
   describe('trying to save details when responsible person already nominated', function () {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-        stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({ gatewayAccountId, responsiblePerson: [false, true] }),
-        stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-        transactionSummaryStubs.getDashboardStatistics()
-      ])
+      setupStubs(userExternalId, gatewayAccountId, [false, true])
 
       cy.visit('/responsible-person')
     })
@@ -223,12 +227,7 @@ describe('Stripe setup: responsible person page', () => {
 
   describe('when it’s not a Stripe gateway account', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'worldpay' }),
-        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: false }),
-        stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-      ])
+      setupStubs(userExternalId, gatewayAccountId, false, 'live', 'worldpay')
 
       cy.visit('/responsible-person', { failOnStatusCode: false })
     })
@@ -242,9 +241,7 @@ describe('Stripe setup: responsible person page', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: false }),
-        stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' })
       ])
 
       cy.visit('/responsible-person', { failOnStatusCode: false })

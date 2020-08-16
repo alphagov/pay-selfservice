@@ -6,6 +6,27 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
+function setupStubs (userExternalId, gatewayAccountId, companyNumber, type = 'live', paymentProvider = 'stripe') {
+  let stripeSetupStub
+
+  if (Array.isArray(companyNumber)) {
+    stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
+      gatewayAccountId,
+      companyNumber: companyNumber
+    })
+  } else {
+    stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber })
+  }
+
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type, paymentProvider }),
+    stripeSetupStub,
+    stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+    transactionSummaryStubs.getDashboardStatistics()
+  ])
+}
+
 describe('Stripe setup: company number page', () => {
   const gatewayAccountId = 42
   const userExternalId = 'userExternalId'
@@ -13,12 +34,7 @@ describe('Stripe setup: company number page', () => {
   describe('Card gateway account', () => {
     describe('when user is admin, account is Stripe and "company number" is not already submitted', () => {
       beforeEach(() => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-        ])
+        setupStubs(userExternalId, gatewayAccountId, false)
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
         cy.visit('/company-number')
@@ -91,13 +107,7 @@ describe('Stripe setup: company number page', () => {
       })
 
       it('should redirect to Dashboard with an error message when displaying the page', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: true }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-          transactionSummaryStubs.getDashboardStatistics()
-        ])
+        setupStubs(userExternalId, gatewayAccountId, true)
 
         cy.visit('/company-number')
 
@@ -110,14 +120,7 @@ describe('Stripe setup: company number page', () => {
       })
 
       it('should redirect to Dashboard with an error message when submitting the form', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({ gatewayAccountId, companyNumber: [false, true] }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-          transactionSummaryStubs.getDashboardStatistics()
-        ])
+        setupStubs(userExternalId, gatewayAccountId, [false, true])
 
         cy.visit('/company-number')
 
@@ -144,12 +147,7 @@ describe('Stripe setup: company number page', () => {
       })
 
       it('should show a 404 error when gateway account is not Stripe', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'sandbox' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-        ])
+        setupStubs(userExternalId, gatewayAccountId, [false, true], 'live', 'sandbox')
 
         cy.visit('/company-number', {
           failOnStatusCode: false
@@ -164,12 +162,7 @@ describe('Stripe setup: company number page', () => {
       })
 
       it('should show a 404 error when gateway account is not live', () => {
-        cy.task('setupStubs', [
-          userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'stripe' }),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: false }),
-          stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
-        ])
+        setupStubs(userExternalId, gatewayAccountId, [false, true], 'test', 'stripe')
 
         cy.visit('/company-number', {
           failOnStatusCode: false

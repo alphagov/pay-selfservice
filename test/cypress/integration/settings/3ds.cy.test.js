@@ -64,10 +64,7 @@ describe('3DS settings page', () => {
   describe('When using Worldpay', () => {
     describe('with insufficient permissions', () => {
       beforeEach(() => {
-        setup3dsStubs({
-          readonly: true,
-          gateway: 'worldpay'
-        })
+        setup3dsStubs({ readonly: true, gateway: 'worldpay' })
       })
 
       it('should show info box and inputs should be disabled ', () => {
@@ -86,9 +83,7 @@ describe('3DS settings page', () => {
 
     describe('with 3DS switched off', () => {
       beforeEach(() => {
-        setup3dsStubs({
-          gateway: 'worldpay'
-        })
+        setup3dsStubs({ gateway: 'worldpay' })
       })
 
       it('should show Worldpay specific merchant code stuff and radios', () => {
@@ -107,10 +102,7 @@ describe('3DS settings page', () => {
 
     describe('with 3DS switched on', () => {
       beforeEach(() => {
-        setup3dsStubs({
-          gateway: 'worldpay',
-          requires3ds: true
-        })
+        setup3dsStubs({ requires3ds: true, gateway: 'worldpay' })
       })
 
       it('should show Worldpay specific merchant code stuff and radios', () => {
@@ -129,11 +121,7 @@ describe('3DS settings page', () => {
 
     describe('with 3DS switched on with Maestro enabled too', () => {
       beforeEach(() => {
-        setup3dsStubs({
-          gateway: 'worldpay',
-          requires3ds: true,
-          maestro: true
-        })
+        setup3dsStubs({ requires3ds: true, gateway: 'worldpay', maestro: true })
       })
 
       it('should show Worldpay specific merchant code stuff and disabled radios', () => {
@@ -157,9 +145,7 @@ describe('3DS settings page', () => {
 
     describe('should change when clicked', () => {
       beforeEach(() => {
-        setup3dsStubs({
-          gateway: 'worldpay'
-        })
+        setup3dsStubs({ gateway: 'worldpay' })
       })
 
       it('should show success message and radios should update', () => {
@@ -178,10 +164,7 @@ describe('3DS settings page', () => {
 
   describe('should update when form submitted', () => {
     beforeEach(() => {
-      setup3dsStubs({
-        gateway: 'worldpay',
-        requires3ds: true
-      })
+      setup3dsStubs({ requires3ds: true, gateway: 'worldpay' })
     })
 
     it('should show success message and radios should update', () => {

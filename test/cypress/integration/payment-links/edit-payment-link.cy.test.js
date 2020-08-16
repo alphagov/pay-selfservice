@@ -19,6 +19,15 @@ const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, la
   }
 }
 
+function setupStubs (product) {
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
+    getProductsStub([product], gatewayAccountId),
+    getProductByExternalIdStub(product, gatewayAccountId)
+  ])
+}
+
 describe('Editing a payment link', () => {
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
@@ -35,12 +44,7 @@ describe('Editing a payment link', () => {
       { 'Finance team': 'Licensing', 'cost_code': '12345', 'group': 'A' })
 
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        getProductsStub([product], gatewayAccountId),
-        getProductByExternalIdStub(product, gatewayAccountId)
-      ])
+      setupStubs(product)
     })
 
     it('should navigate to the edit page', () => {
@@ -251,12 +255,7 @@ describe('Editing a payment link', () => {
     const product = buildPaymentLinkOpts(productId, name, 'cy', description, 1000)
 
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        getProductsStub([product], gatewayAccountId),
-        getProductByExternalIdStub(product, gatewayAccountId)
-      ])
+      setupStubs(product)
     })
 
     it('should navigate to the edit page', () => {
