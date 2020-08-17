@@ -16,7 +16,10 @@ const reasonMessages = {
   'invalid_chars': '<h2>Use valid characters only</h2> Choose an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”'
 }
 
-module.exports = (req, res) => {
+// naming critical paths helps with code navigation, clarity, stack traces
+// compare standards across apps and come up with a sensible default (verbs etc.)
+// const refundChargeHTTPController = function refundChargeHTTPController(req, res) {
+function refundChargeHTTPController (req, res) {
   const correlationId = req.headers[CORRELATION_HEADER]
   const userExternalId = req.user.externalId
   const userEmail = req.user.email
@@ -24,7 +27,9 @@ module.exports = (req, res) => {
   const chargeService = Charge(correlationId)
   // simplify getting accountId and not pass req object if possible. getCurrentGatewayAccountId is used at multiple places
   const accountId = auth.getCurrentGatewayAccountId(req)
-  const chargeId = req.params.chargeId
+  const { chargeId } = req.params
+
+  // what does show mean? can this have a clearer name, naming conventions?
   const show = router.generateRoute(router.paths.transactions.detail, { chargeId })
 
   const refundAmount = req.body['refund-type'] === 'full' ? req.body['full-amount'] : req.body['refund-amount']
@@ -51,3 +56,7 @@ module.exports = (req, res) => {
       res.redirect(show)
     })
 }
+
+// define standard convention for module exports, look at what's currently done
+// helpful for code navigation knowing where to consistently look
+module.exports = refundChargeHTTPController
