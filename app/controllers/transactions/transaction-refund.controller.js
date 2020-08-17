@@ -20,7 +20,9 @@ module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER]
   const userExternalId = req.user.externalId
   const userEmail = req.user.email
-  const charge = Charge(correlationId)
+  // rationalise what is model vs service and move/rename these as appropriate
+  const chargeService = Charge(correlationId)
+  // simplify getting accountId and not pass req object if possible. getCurrentGatewayAccountId is used at multiple places
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
   const show = router.generateRoute(router.paths.transactions.detail, { chargeId })
@@ -37,7 +39,7 @@ module.exports = (req, res) => {
   let refundAmountForConnector = parseInt(refundMatch[1]) * 100
   if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2])
 
-  return charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail)
+  return chargeService.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail)
     .then(
       () => {
         req.flash('generic', reasonMessages['refund_complete'])
