@@ -6,6 +6,9 @@ const auth = require('../../services/auth.service.js')
 const router = require('../../routes.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 
+// markups are a BIG BIG NO NO !!!!
+// pass error code and let nunjuck deal with it
+// separate backend and internal errors (encapsulate it in a thing)
 const reasonMessages = {
   'refund_complete': '<h2>Refund successful</h2> It may take up to 6 days to process.',
   'REFUND_FAILED': '<h2>Refund failed</h2> We couldn’t process this refund. Try again later.',
@@ -37,6 +40,7 @@ module.exports = (req, res) => {
   let refundAmountForConnector = parseInt(refundMatch[1]) * 100
   if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2])
 
+  // change to await try - catch
   return charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail)
     .then(
       () => {
