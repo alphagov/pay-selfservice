@@ -78,9 +78,9 @@ module.exports = {
       response: userFixtures.validUsersResponse(opts.users).getPlain()
     })
   },
-  getUserSuccessRepeatFirstResponseNTimes: (opts = {}) => {
-    const aValidUserResponse = userFixtures.validUserResponse(opts[0]).getPlain()
-    const aSecondValidUserResponse = userFixtures.validUserResponse(opts[1]).getPlain()
+  getUserSuccessRespondDifferentlySecondTime: (opts = {}) => {
+    const aValidUserResponse = userFixtures.validUserResponse(opts.firstResponseOpts).getPlain()
+    const aSecondValidUserResponse = userFixtures.validUserResponse(opts.secondResponseOpts).getPlain()
     return [
       {
         predicates: [{
@@ -101,7 +101,7 @@ module.exports = {
             body: aValidUserResponse
           },
           _behaviors: {
-            repeat: opts[0].repeat
+            repeat: opts.firstResponseOpts.repeat
           }
         }, {
           is: {
@@ -112,7 +112,7 @@ module.exports = {
             body: aSecondValidUserResponse
           },
           _behaviors: {
-            repeat: opts[1].repeat
+            repeat: opts.secondResponseOpts.repeat
           }
         }
         ]

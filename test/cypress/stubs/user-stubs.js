@@ -19,30 +19,14 @@ const getUserWithServiceRoleStubOpts = function (userExternalId, email, serviceE
 }
 
 const getUserSuccess = function (opts) {
-  let stubOptions = {
+  const serviceRole = buildServiceRoleOpts(opts)
+
+  const stubOptions = {
     external_id: opts.userExternalId,
-    service_roles: [{
-      service: {
-        gateway_account_ids: [opts.gatewayAccountId]
-      }
-    }],
+    service_roles: [serviceRole],
     username: opts.email,
     email: opts.email,
     telephone_number: opts.telephoneNumber
-  }
-
-  if (opts.serviceExternalId) {
-    stubOptions.service_roles[0].service.external_id = opts.serviceExternalId
-  }
-  if (opts.serviceName) {
-    stubOptions.service_roles[0].service.name = opts.serviceName
-    stubOptions.service_roles[0].service.service_name = opts.serviceName
-  }
-  if (opts.goLiveStage) {
-    stubOptions.service_roles[0].service.current_go_live_stage = opts.goLiveStage
-  }
-  if (opts && opts.role) {
-    stubOptions.service_roles[0].role = opts.role
   }
 
   return {
@@ -99,9 +83,9 @@ const postSecondFactorSuccess = function (userExternalId) {
   return {
     name: 'postSecondFactorSuccess',
     opts:
-      {
-        external_id: userExternalId
-      }
+    {
+      external_id: userExternalId
+    }
   }
 }
 
@@ -138,19 +122,60 @@ const postAssignServiceRoleSuccess = function (opts) {
   }
 }
 
-const getUserSuccessRepeatFirstResponseNTimes = function (opts) {
+/**
+ * This is used when calling a route expects a user to be in a certain state to proceed, and then
+ * performs a redirect to another route which expects the user to have changed.
+ *
+ * An example of this is in the request to go live flow, where the service must have a particular
+ * value of `current_go_live_stage` to be able to navigate to a page in the flow, and then when the
+ * page is submitted it will continue to the next page in the flow which expects a different value
+ * of `current_go_live_stage` for the page to load successfully.
+ * @param {*} firstResponseOpts the user options for the first response
+ * @param {*} secondResponseOpts  the user options for the second response
+ */
+const getUserSuccessRespondDifferentlySecondTime = function (userExternalId, firstResponseOpts, secondResponseOpts) {
   return {
-    name: 'getUserSuccessRepeatFirstResponseNTimes',
-    opts: [{
-      external_id: opts[0].userExternalId,
-      service_roles: [opts[0].serviceRoles],
-      repeat: 2
-    }, {
-      external_id: opts[1].userExternalId,
-      service_roles: [opts[1].serviceRoles],
-      repeat: 2
-    }]
+    name: 'getUserSuccessRespondDifferentlySecondTime',
+    opts: {
+      firstResponseOpts: {
+        external_id: userExternalId,
+        service_roles: [buildServiceRoleOpts(firstResponseOpts)]
+      },
+      secondResponseOpts: {
+        external_id: userExternalId,
+        service_roles: [buildServiceRoleOpts(secondResponseOpts)]
+      }
+    }
   }
+}
+
+function buildServiceRoleOpts (opts) {
+  const serviceRole = {
+    service: {
+      gateway_account_ids: [opts.gatewayAccountId]
+    }
+  }
+
+  if (opts.serviceExternalId) {
+    serviceRole.service.external_id = opts.serviceExternalId
+  }
+  if (opts.serviceName) {
+    serviceRole.service.name = opts.serviceName
+    serviceRole.service.service_name = opts.serviceName
+  }
+  if (opts.goLiveStage) {
+    serviceRole.service.current_go_live_stage = opts.goLiveStage
+  }
+  if (opts.merchantName) {
+    serviceRole.service.merchant_details = {
+      name: opts.merchantName
+    }
+  }
+  if (opts.role) {
+    serviceRole.role = opts.role
+  }
+
+  return serviceRole
 }
 
 module.exports = {
@@ -159,7 +184,7 @@ module.exports = {
   getUserWithNoPermissions,
   getUserSuccessWithServiceRole,
   getUserWithServiceRoleStubOpts,
-  getUserSuccessRepeatFirstResponseNTimes,
+  getUserSuccessRespondDifferentlySecondTime,
   getServiceUsersSuccess,
   postAssignServiceRoleSuccess,
   postUserAuthenticateSuccess,
