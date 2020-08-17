@@ -29,6 +29,10 @@ const getGatewayAccountSuccess = function (opts) {
     stubOptions.allow_moto = opts.allowMoto
   }
 
+  if (opts.notificationCredentials) {
+    stubOptions.notificationCredentials = opts.notificationCredentials
+  }
+
   return {
     name: 'getGatewayAccountSuccess',
     opts: stubOptions

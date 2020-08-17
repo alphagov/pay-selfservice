@@ -36,6 +36,14 @@ const buildPaymentLinkWithMetadataOpts = function buildPaymentLinkWithMetadataOp
   }
 }
 
+function setupStubs (products) {
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
+    productStubs.getProductsStub(products, gatewayAccountId)
+  ])
+}
+
 describe('The manage payment links page', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
@@ -43,11 +51,7 @@ describe('The manage payment links page', () => {
 
   describe('No payment links', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        productStubs.getProductsStub([], gatewayAccountId)
-      ])
+      setupStubs([])
     })
 
     it('should state that there are no payment links', () => {
@@ -69,11 +73,7 @@ describe('The manage payment links page', () => {
     ]
 
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        productStubs.getProductsStub(products, gatewayAccountId)
-      ])
+      setupStubs(products)
     })
 
     it('should list English payment links and have no Welsh payment links section', () => {
@@ -110,11 +110,7 @@ describe('The manage payment links page', () => {
     ]
 
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        productStubs.getProductsStub(products, gatewayAccountId)
-      ])
+      setupStubs(products)
     })
 
     it('should list English payment links and Welsh payment links separately', () => {
@@ -159,11 +155,7 @@ describe('The manage payment links page', () => {
     ]
 
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
-        productStubs.getProductsStub(products, gatewayAccountId)
-      ])
+      setupStubs(products)
     })
 
     it('should list Welsh payment links', () => {

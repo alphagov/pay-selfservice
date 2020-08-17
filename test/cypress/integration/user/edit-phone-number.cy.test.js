@@ -1,6 +1,13 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
+function setupStubs (userExternalId, gatewayAccountId, serviceName, telephoneNumber) {
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, telephoneNumber }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
+  ])
+}
+
 describe('Edit phone number flow', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -11,11 +18,7 @@ describe('Edit phone number flow', () => {
   describe('Pre edit', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, telephoneNumber: testPhoneNumber }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName, testPhoneNumber)
     })
 
     describe('Profile page', () => {
@@ -44,11 +47,7 @@ describe('Edit phone number flow', () => {
   describe('Post edit', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, telephoneNumber: testPhoneNumberNew }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName, testPhoneNumberNew)
     })
 
     it('should save changes and redirect to my profile', () => {

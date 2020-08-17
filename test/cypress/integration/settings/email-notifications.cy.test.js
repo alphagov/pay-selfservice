@@ -1,6 +1,17 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
+function setupStubs (userExternalId, gatewayAccountId, serviceName, role) {
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
+    gatewayAccountStubs.getAccountAuthSuccess({ gatewayAccountId }),
+    gatewayAccountStubs.patchConfirmationEmailToggleSuccess({ gatewayAccountId }),
+    gatewayAccountStubs.patchRefundEmailToggleSuccess({ gatewayAccountId }),
+    gatewayAccountStubs.patchAccountEmailCollectionModeSuccess({ gatewayAccountId })
+  ])
+}
+
 describe('Settings', () => {
   const settingsUrl = `/settings`
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -10,15 +21,7 @@ describe('Settings', () => {
   describe('For an admin user', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.getAccountAuthSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.patchConfirmationEmailToggleSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.patchRefundEmailToggleSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.patchAccountEmailCollectionModeSuccess({ gatewayAccountId })
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName)
 
       cy.visit(settingsUrl)
     })
@@ -131,14 +134,7 @@ describe('Settings', () => {
           }
         ]
       }
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.getAccountAuthSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.patchConfirmationEmailToggleSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.patchRefundEmailToggleSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.patchAccountEmailCollectionModeSuccess({ gatewayAccountId })
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName, role)
 
       cy.visit(settingsUrl)
     })

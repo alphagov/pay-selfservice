@@ -50,24 +50,13 @@ describe('Your PSP settings page', () => {
       user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
     }
 
-    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
-
-    if (opts.gateway) {
-      gatewayAccount.opts.payment_provider = opts.gateway
-    }
-
-    if (opts.credentials) {
-      gatewayAccount.opts.credentials = opts.credentials
-    }
-
-    if (opts.notificationCredentials) {
-      gatewayAccount.opts.notificationCredentials = opts.notificationCredentials
-    }
-
-    if (opts.worldpay3dsFlex) {
-      gatewayAccount.opts.worldpay_3ds_flex = opts.worldpay3dsFlex
-    }
-
+    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({
+      gatewayAccountId,
+      worldpay3dsFlex: opts.worldpay3dsFlex,
+      credentials: opts.credentials,
+      paymentProvider: opts.gateway,
+      notificationCredentials: opts.notificationCredentials
+    })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
     const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentials({ gatewayAccountId, testCredentials })
 

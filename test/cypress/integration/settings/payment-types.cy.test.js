@@ -1,6 +1,15 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
+function setupStubs (userExternalId, gatewayAccountId, serviceName, updated = false) {
+  cy.task('setupStubs', [
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
+    gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated }),
+    gatewayAccountStubs.getCardTypesSuccess()
+  ])
+}
+
 describe('Payment types', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -12,12 +21,7 @@ describe('Payment types', () => {
 
   describe('Card types', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false }),
-        gatewayAccountStubs.getCardTypesSuccess()
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName)
     })
 
     it('should show page title', () => {
@@ -48,12 +52,7 @@ describe('Payment types', () => {
 
   describe('Card types', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: true }),
-        gatewayAccountStubs.getCardTypesSuccess()
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName, true)
     })
 
     it('should update if we add Diners Club', () => {
@@ -66,12 +65,7 @@ describe('Payment types', () => {
 
   describe('Card types', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId }),
-        gatewayAccountStubs.getCardTypesSuccess()
-      ])
+      setupStubs(userExternalId, gatewayAccountId, serviceName)
     })
 
     it('should show error if user tries to disable all card types', () => {
