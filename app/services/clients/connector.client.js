@@ -550,6 +550,7 @@ ConnectorClient.prototype = {
    * @param successCallback
    *          Callback function for successful refunds
    */
+  // get rid of http callbacks
   postChargeRefund: function (params, successCallback) {
     let url = _chargeRefundsUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
     logger.debug('Calling connector to post a refund for payment', {

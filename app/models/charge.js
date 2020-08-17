@@ -33,7 +33,7 @@ module.exports = function (correlationId) {
       throw getStatusCodeForError(error)
     }
   }
-
+  // stop creating our own low level promises
   function refund (accountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail) {
     return new Promise(function (resolve, reject) {
       const payload = {
