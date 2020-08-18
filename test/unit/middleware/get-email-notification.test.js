@@ -44,17 +44,13 @@ describe('retrieve email notification template', function () {
   })
 
   it('should merge account with email notification template data and call next on success', function (done) {
-    let emailStub = function () {
-      return {
-        get: function () {
-          return new Promise(function (resolve) {
-            resolve({ customEmailText: 'hello', emailEnabled: true })
-          })
-        }
+    const emailStub = {
+      getEmailSettings: function () {
+        return Promise.resolve({ customEmailText: 'hello', emailEnabled: true })
       }
     }
     const retrieveEmailNotification = proxyquire(path.join(__dirname, '/../../../app/middleware/get-email-notification.js'), {
-      '../models/email.js': emailStub
+      '../services/email.service.js': emailStub
     })
     const req = { account: { gateway_account_id: 1 }, headers: {} }
     retrieveEmailNotification(req, response, next).should.be.fulfilled.then(function () {
