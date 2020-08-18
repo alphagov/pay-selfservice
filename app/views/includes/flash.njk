@@ -1,16 +1,18 @@
 {% block flash %}
-  {% if flash.genericError %}
-    <div class="govuk-grid-row govuk-!-margin-bottom-5 flash-container">
-      <div class="govuk-grid-column-two-thirds notification generic-error error-summary">
+  <div class="govuk-grid-column-two-thirds">
+    {% if flash.genericError %}
+    <div class="flash-container">
+      <div class="notification generic-error error-summary">
         {{ flash.genericError | safe }}
       </div>
     </div>
-  {% endif %}
-  {% if flash.generic %}
-    <div class="govuk-grid-row govuk-!-margin-bottom-5 flash-container flash-container--good">
-      <div class="govuk-grid-column-two-thirds notification generic-flash">
+    {% endif %}
+    {% if flash.generic %}
+    <div class="flash-container flash-container--good">
+      <div class="notification generic-flash">
         {{ flash.generic | safe }}
       </div>
     </div>
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock %}

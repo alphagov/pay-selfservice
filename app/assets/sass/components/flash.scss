@@ -1,5 +1,4 @@
 .flash-container {
-  margin: 0 15px;
   @extend .govuk-error-summary;
     &--good {
     border-color:  govuk-colour("green");
