@@ -1,7 +1,7 @@
 'use strict'
 
 // Local Dependencies
-const Charge = require('../../models/charge.js')
+const { refund } = require('../../services/transaction.service')
 const auth = require('../../services/auth.service.js')
 const router = require('../../routes.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
@@ -20,7 +20,6 @@ module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER]
   const userExternalId = req.user.externalId
   const userEmail = req.user.email
-  const charge = Charge(correlationId)
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
   const show = router.generateRoute(router.paths.transactions.detail, { chargeId })
@@ -37,7 +36,7 @@ module.exports = (req, res) => {
   let refundAmountForConnector = parseInt(refundMatch[1]) * 100
   if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2])
 
-  return charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail)
+  return refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
     .then(
       () => {
         req.flash('generic', reasonMessages['refund_complete'])
