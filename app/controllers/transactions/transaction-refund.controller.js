@@ -2,7 +2,6 @@
 
 // Local Dependencies
 const { refund } = require('../../services/transaction.service')
-const auth = require('../../services/auth.service.js')
 const router = require('../../routes.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 const { sanitisePoundsAndPenceInput } = require('../../utils/currency-formatter')
@@ -17,31 +16,35 @@ const reasonMessages = {
   'invalid_chars': '<h2>Use valid characters only</h2> Choose an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”'
 }
 
-const refundTransaction = async function refundTransaction (req, res) {
-  const correlationId = req.headers[CORRELATION_HEADER]
-  const userExternalId = req.user.externalId
-  const userEmail = req.user.email
-  const accountId = auth.getCurrentGatewayAccountId(req)
-  const chargeId = req.params.chargeId
-  const transactionDetailPath = router.generateRoute(router.paths.transactions.detail, { chargeId })
-
-  const isFullRefund = req.body['refund-type'] === 'full'
-  const refundAmount = isFullRefund ? req.body['full-amount'] : req.body['refund-amount']
-  const refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence'])
-
-  const refundAmountInPence = sanitisePoundsAndPenceInput(refundAmount)
-  if (!refundAmountInPence) {
-    req.flash('genericError', reasonMessages['invalid_chars'])
-    return res.redirect(transactionDetailPath)
-  }
-
+const refundTransaction = async function refundTransaction (req, res, next) {
   try {
-    await refund(accountId, chargeId, refundAmountInPence, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
-    req.flash('generic', reasonMessages['refund_complete'])
-    res.redirect(transactionDetailPath)
+    const correlationId = req.headers[CORRELATION_HEADER]
+    const userExternalId = req.user.externalId
+    const userEmail = req.user.email
+    const accountId = req.account.gateway_account_id
+    const { chargeId } = req.params
+    const transactionDetailPath = router.generateRoute(router.paths.transactions.detail, { chargeId })
+
+    const isFullRefund = req.body['refund-type'] === 'full'
+    const refundAmount = isFullRefund ? req.body['full-amount'] : req.body['refund-amount']
+    const refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence'])
+
+    const refundAmountInPence = sanitisePoundsAndPenceInput(refundAmount)
+    if (!refundAmountInPence) {
+      req.flash('genericError', reasonMessages['invalid_chars'])
+      return res.redirect(transactionDetailPath)
+    }
+
+    try {
+      await refund(accountId, chargeId, refundAmountInPence, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
+      req.flash('generic', reasonMessages['refund_complete'])
+      res.redirect(transactionDetailPath)
+    } catch (err) {
+      req.flash('genericError', reasonMessages[err] ? reasonMessages[err] : reasonMessages.REFUND_FAILED)
+      res.redirect(transactionDetailPath)
+    }
   } catch (err) {
-    req.flash('genericError', reasonMessages[err] ? reasonMessages[err] : reasonMessages.REFUND_FAILED)
-    res.redirect(transactionDetailPath)
+    next(err)
   }
 }
 

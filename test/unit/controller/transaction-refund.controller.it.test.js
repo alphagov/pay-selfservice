@@ -24,8 +24,8 @@ describe('Refund scenario:', function () {
     req.service = {
       gatewayAccountIds: ['123', '456']
     }
-    req.gateway_account = {
-      currentGatewayAccountId: '123'
+    req.account = {
+      gateway_account_id: '123'
     }
     req.params = {
       chargeId: '123456'
