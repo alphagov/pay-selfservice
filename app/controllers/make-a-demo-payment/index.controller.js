@@ -7,7 +7,7 @@ const lodash = require('lodash')
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const { isCurrency, isAboveMaxAmount } = require('../../browsered/field-validation-checks')
-const { sanitisePoundsAndPenceInput } = require('../../utils/currency-formatter')
+const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
 const DEFAULTS = {
   paymentDescription: 'An example payment description',
@@ -30,7 +30,7 @@ module.exports = (req, res) => {
   }
 
   if (req.body['payment-amount']) {
-    paymentAmount = sanitisePoundsAndPenceInput(paymentAmount)
+    paymentAmount = safeConvertPoundsStringToPence(paymentAmount)
   }
 
   lodash.set(req, 'session.pageData.makeADemoPayment', { paymentDescription, paymentAmount })

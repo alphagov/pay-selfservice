@@ -6,7 +6,7 @@ const lodash = require('lodash')
 // Local dependencies
 const paths = require('../../paths')
 const formattedPathFor = require('../../utils/replace-params-in-path')
-const { sanitisePoundsAndPenceInput } = require('../../utils/currency-formatter')
+const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
 module.exports = (req, res) => {
   const paymentAmountType = req.body['amount-type-group']
@@ -19,7 +19,7 @@ module.exports = (req, res) => {
     return res.redirect(formattedPathFor(paths.paymentLinks.editAmount, req.params.productExternalId))
   }
 
-  let sanitisedAmount = sanitisePoundsAndPenceInput(paymentLinkAmount)
+  let sanitisedAmount = safeConvertPoundsStringToPence(paymentLinkAmount)
 
   if (paymentLinkAmount !== '' && sanitisedAmount === null) {
     req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-amount">Enter the amount</a></li></ul>`)

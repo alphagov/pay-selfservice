@@ -12,13 +12,13 @@ const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const authService = require('../../services/auth.service.js')
 const { isCurrency, isHttps, isAboveMaxAmount } = require('../../browsered/field-validation-checks')
-const { penceToPounds, sanitisePoundsAndPenceInput } = require('../../utils/currency-formatter')
+const { penceToPounds, safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
 module.exports = (req, res) => {
   const gatewayAccountId = authService.getCurrentGatewayAccountId(req)
   const confirmationPage = req.body['confirmation-page']
   const paymentDescription = req.body['payment-description']
-  const paymentAmountInPence = sanitisePoundsAndPenceInput(req.body['payment-amount'], true)
+  const paymentAmountInPence = safeConvertPoundsStringToPence(req.body['payment-amount'], true)
   lodash.set(req, 'session.pageData.createPrototypeLink', { paymentAmountInPence, paymentDescription, confirmationPage })
 
   if (!paymentDescription) {
