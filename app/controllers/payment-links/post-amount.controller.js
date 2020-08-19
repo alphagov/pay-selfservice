@@ -5,7 +5,7 @@ const lodash = require('lodash')
 
 // Local dependencies
 const paths = require('../../paths')
-const { sanitisePoundsAndPenceInput } = require('../../utils/currency-formatter')
+const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
@@ -19,7 +19,7 @@ module.exports = (req, res) => {
     return res.redirect(paths.paymentLinks.amount)
   }
 
-  let formattedPaymentLinkAmount = sanitisePoundsAndPenceInput(paymentLinkAmount)
+  let formattedPaymentLinkAmount = safeConvertPoundsStringToPence(paymentLinkAmount)
 
   if (paymentLinkAmount !== '' && formattedPaymentLinkAmount === null) {
     req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-amount">Enter the amount</a></li></ul>`)

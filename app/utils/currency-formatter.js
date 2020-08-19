@@ -15,7 +15,7 @@ const penceToPoundsWithCurrency = amount => {
   return new Intl.NumberFormat('en-gb', { style: 'currency', currency: 'GBP' }).format(penceToPounds(amount))
 }
 
-const sanitisePoundsAndPenceInput = amount => {
+const safeConvertPoundsStringToPence = amount => {
   if (amount) {
     const cleanedCurrencyString = amount.replace(/[^0-9.-]+/g, '')
     const result = AMOUNT_FORMAT.exec(cleanedCurrencyString)
@@ -40,5 +40,5 @@ module.exports = {
   penceToPounds,
   poundsToPence,
   penceToPoundsWithCurrency,
-  sanitisePoundsAndPenceInput
+  safeConvertPoundsStringToPence
 }

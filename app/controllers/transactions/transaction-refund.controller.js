@@ -4,7 +4,7 @@
 const { refund } = require('../../services/transaction.service')
 const router = require('../../routes.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
-const { sanitisePoundsAndPenceInput } = require('../../utils/currency-formatter')
+const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
 const reasonMessages = {
   'refund_complete': '<h2>Refund successful</h2> It may take up to 6 days to process.',
@@ -29,7 +29,7 @@ const refundTransaction = async function refundTransaction (req, res, next) {
     const refundAmount = isFullRefund ? req.body['full-amount'] : req.body['refund-amount']
     const refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence'])
 
-    const refundAmountInPence = sanitisePoundsAndPenceInput(refundAmount)
+    const refundAmountInPence = safeConvertPoundsStringToPence(refundAmount)
     if (!refundAmountInPence) {
       req.flash('genericError', reasonMessages['invalid_chars'])
       return res.redirect(transactionDetailPath)

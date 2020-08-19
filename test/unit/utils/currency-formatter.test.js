@@ -6,7 +6,7 @@ const {
   penceToPounds,
   poundsToPence,
   penceToPoundsWithCurrency,
-  sanitisePoundsAndPenceInput
+  safeConvertPoundsStringToPence
 } = require('../../../app/utils/currency-formatter')
 
 const validPenceAmount = 1050
@@ -43,25 +43,25 @@ describe(`Pounds to pence with currency`, () => {
 describe(`Sanitise pounds and pence user input`, () => {
   describe(`when given pounds and pence amount from user input ${validPoundsAndPenceAmount}`, () => {
     it(`should return ${validPenceAmount}`, () => {
-      expect(sanitisePoundsAndPenceInput(validPoundsAndPenceAmount)).to.equal(validPenceAmount)
+      expect(safeConvertPoundsStringToPence(validPoundsAndPenceAmount)).to.equal(validPenceAmount)
     })
   })
 
   describe(`when given pounds from user input ${invalidAmountWithoutDecimals}`, () => {
     it(`should return ${validPenceAmount}`, () => {
-      expect(sanitisePoundsAndPenceInput(invalidAmountWithoutDecimals)).to.equal(1000)
+      expect(safeConvertPoundsStringToPence(invalidAmountWithoutDecimals)).to.equal(1000)
     })
   })
 
   describe(`when given invalid pounds and pence from user input ${invalidAmountWithOneDecimals}`, () => {
     it(`should return ${validPenceAmount}`, () => {
-      expect(sanitisePoundsAndPenceInput(invalidAmountWithOneDecimals)).to.equal(validPenceAmount)
+      expect(safeConvertPoundsStringToPence(invalidAmountWithOneDecimals)).to.equal(validPenceAmount)
     })
   })
 
   describe(`when given invalid pounds and pence from user input ${invalidAmountWithLetter}`, () => {
     it(`should return ${validPenceAmount}`, () => {
-      expect(sanitisePoundsAndPenceInput(invalidAmountWithLetter)).to.equal(validPenceAmount)
+      expect(safeConvertPoundsStringToPence(invalidAmountWithLetter)).to.equal(validPenceAmount)
     })
   })
 })
