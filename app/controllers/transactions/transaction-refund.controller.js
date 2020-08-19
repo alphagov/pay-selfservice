@@ -16,7 +16,7 @@ const reasonMessages = {
   'invalid_chars': '<h2>Use valid characters only</h2> Choose an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”'
 }
 
-const refundTransaction = function refundTransaction (req, res) {
+const refundTransaction = async function refundTransaction (req, res) {
   const correlationId = req.headers[CORRELATION_HEADER]
   const userExternalId = req.user.externalId
   const userEmail = req.user.email
@@ -36,17 +36,14 @@ const refundTransaction = function refundTransaction (req, res) {
   let refundAmountForConnector = parseInt(refundMatch[1]) * 100
   if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2])
 
-  return refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
-    .then(
-      () => {
-        req.flash('generic', reasonMessages['refund_complete'])
-        res.redirect(show)
-      }
-    )
-    .catch(err => {
-      req.flash('genericError', reasonMessages[err] ? reasonMessages[err] : reasonMessages.REFUND_FAILED)
-      res.redirect(show)
-    })
+  try {
+    await refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
+    req.flash('generic', reasonMessages['refund_complete'])
+    res.redirect(show)
+  } catch (err) {
+    req.flash('genericError', reasonMessages[err] ? reasonMessages[err] : reasonMessages.REFUND_FAILED)
+    res.redirect(show)
+  }
 }
 
 module.exports = refundTransaction
