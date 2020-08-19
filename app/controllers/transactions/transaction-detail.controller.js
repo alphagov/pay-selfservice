@@ -1,11 +1,10 @@
 'use strict'
 
 // Local Dependencies
-const Charge = require('../../models/charge.js')
+const { ledgerFindWithEvents } = require('../../services/transaction.service')
 const auth = require('../../services/auth.service.js')
 const { response } = require('../../utils/response.js')
 const { renderErrorView } = require('../../utils/response.js')
-const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 
 const defaultMsg = 'Error processing transaction view'
 const notFound = 'Charge not found'
@@ -13,10 +12,8 @@ const notFound = 'Charge not found'
 module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
-  const correlationId = req.headers[CORRELATION_HEADER]
 
-  Charge(correlationId)
-    .findWithEvents(accountId, chargeId)
+  ledgerFindWithEvents(accountId, chargeId)
     .then(data => {
       data.indexFilters = req.session.filters
       if (req.session.backLink) {
