@@ -22,7 +22,7 @@ const refundTransaction = async function refundTransaction (req, res) {
   const userEmail = req.user.email
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
-  const show = router.generateRoute(router.paths.transactions.detail, { chargeId })
+  const transactionDetailPath = router.generateRoute(router.paths.transactions.detail, { chargeId })
 
   const refundAmount = req.body['refund-type'] === 'full' ? req.body['full-amount'] : req.body['refund-amount']
   const refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence'])
@@ -30,7 +30,7 @@ const refundTransaction = async function refundTransaction (req, res) {
 
   if (!refundMatch) {
     req.flash('genericError', reasonMessages['invalid_chars'])
-    return res.redirect(show)
+    return res.redirect(transactionDetailPath)
   }
 
   let refundAmountForConnector = parseInt(refundMatch[1]) * 100
@@ -39,10 +39,10 @@ const refundTransaction = async function refundTransaction (req, res) {
   try {
     await refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
     req.flash('generic', reasonMessages['refund_complete'])
-    res.redirect(show)
+    res.redirect(transactionDetailPath)
   } catch (err) {
     req.flash('genericError', reasonMessages[err] ? reasonMessages[err] : reasonMessages.REFUND_FAILED)
-    res.redirect(show)
+    res.redirect(transactionDetailPath)
   }
 }
 
