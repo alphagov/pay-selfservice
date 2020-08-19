@@ -73,28 +73,28 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
 }
 
 const refund = function refundTransaction (accountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail, correlationId) {
+  const payload = {
+    amount: amount,
+    refund_amount_available: refundAmountAvailable,
+    user_external_id: userExternalId,
+    user_email: userEmail
+  }
+
+  logger.log('info', 'Submitting a refund for a charge', {
+    'chargeId': chargeId,
+    'amount': amount,
+    'refundAmountAvailable': refundAmountAvailable,
+    'userExternalId': userExternalId
+  })
+
+  const params = {
+    gatewayAccountId: accountId,
+    chargeId: chargeId,
+    payload: payload,
+    correlationId: correlationId
+  }
+
   return new Promise(function (resolve, reject) {
-    const payload = {
-      amount: amount,
-      refund_amount_available: refundAmountAvailable,
-      user_external_id: userExternalId,
-      user_email: userEmail
-    }
-
-    logger.log('info', 'Submitting a refund for a charge', {
-      'chargeId': chargeId,
-      'amount': amount,
-      'refundAmountAvailable': refundAmountAvailable,
-      'userExternalId': userExternalId
-    })
-
-    const params = {
-      gatewayAccountId: accountId,
-      chargeId: chargeId,
-      payload: payload,
-      correlationId: correlationId
-    }
-
     connector.postChargeRefund(params, function () {
       resolve()
     }).on('connectorError', (err, response, body) => {
