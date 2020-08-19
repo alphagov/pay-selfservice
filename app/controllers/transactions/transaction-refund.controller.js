@@ -5,6 +5,7 @@ const { refund } = require('../../services/transaction.service')
 const auth = require('../../services/auth.service.js')
 const router = require('../../routes.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
+const { sanitisePoundsAndPenceInput } = require('../../utils/currency-formatter')
 
 const reasonMessages = {
   'refund_complete': '<h2>Refund successful</h2> It may take up to 6 days to process.',
@@ -24,20 +25,18 @@ const refundTransaction = async function refundTransaction (req, res) {
   const chargeId = req.params.chargeId
   const transactionDetailPath = router.generateRoute(router.paths.transactions.detail, { chargeId })
 
-  const refundAmount = req.body['refund-type'] === 'full' ? req.body['full-amount'] : req.body['refund-amount']
+  const isFullRefund = req.body['refund-type'] === 'full'
+  const refundAmount = isFullRefund ? req.body['full-amount'] : req.body['refund-amount']
   const refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence'])
-  const refundMatch = /^([0-9]+)(?:\.([0-9]{2}))?$/.exec(refundAmount)
 
-  if (!refundMatch) {
+  const refundAmountInPence = sanitisePoundsAndPenceInput(refundAmount)
+  if (!refundAmountInPence) {
     req.flash('genericError', reasonMessages['invalid_chars'])
     return res.redirect(transactionDetailPath)
   }
 
-  let refundAmountForConnector = parseInt(refundMatch[1]) * 100
-  if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2])
-
   try {
-    await refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
+    await refund(accountId, chargeId, refundAmountInPence, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
     req.flash('generic', reasonMessages['refund_complete'])
     res.redirect(transactionDetailPath)
   } catch (err) {
