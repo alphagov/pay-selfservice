@@ -90,7 +90,7 @@ describe('Manage payment links - disable controller', () => {
     it('should add a relevant error message to the session \'flash\'', () => {
       expect(session.flash).to.have.property('genericError')
       expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2><p>Unable to delete the payment link</p>')
+      expect(session.flash.genericError[0]).to.equal('Something went wrong when deleting the payment link. Please try again or contact support.')
     })
   })
 })

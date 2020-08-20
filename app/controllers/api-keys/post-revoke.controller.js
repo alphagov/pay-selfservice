@@ -4,6 +4,7 @@
 const paths = require('../../paths')
 const auth = require('../../services/auth.service.js')
 const publicAuthClient = require('../../services/clients/public-auth.client')
+const logger = require('../../utils/logger')(__filename)
 
 module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
@@ -20,8 +21,9 @@ module.exports = (req, res) => {
       req.flash('generic', 'The API key was successfully revoked')
       res.redirect(paths.apiKeys.index)
     })
-    .catch(err => {
-      req.flash('genericError', `<h2>Something went wrong</h2><p>${err}</p>`)
+    .catch(error => {
+      logger.error('Error revoking API key', { error })
+      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       res.redirect(paths.apiKeys.index)
     })
 }

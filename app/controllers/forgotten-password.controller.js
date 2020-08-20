@@ -45,7 +45,7 @@ module.exports = {
     }
 
     return userService.findByResetToken(id).then(render, () => {
-      req.flash('genericError', 'Invalid password reset link')
+      req.flash('genericError', 'Something went wrong. Please request a new password reset email.')
       res.redirect('/login')
     })
   },

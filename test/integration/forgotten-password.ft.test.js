@@ -1,101 +1,89 @@
-const path = require('path')
+'use strict'
+
 const nock = require('nock')
 const proxyquire = require('proxyquire')
-const reqFixtures = require(path.join(__dirname, '/../fixtures/browser/forgotten-password.fixtures'))
-const resFixtures = require(path.join(__dirname, '/../fixtures/response'))
-const userFixtures = require(path.join(__dirname, '/../fixtures/user.fixtures'))
+const sinon = require('sinon')
+const reqFixtures = require('../fixtures/browser/forgotten-password.fixtures')
+const resFixtures = require('../fixtures/response')
+const userFixtures = require('../fixtures/user.fixtures')
 
-let chai = require('chai')
-let chaiAsPromised = require('chai-as-promised')
-
-chai.use(chaiAsPromised)
-
-const expect = chai.expect
-
-let alwaysValidPassword = function (password) {
+const alwaysValidPassword = function (password) {
   return false // common-password returns false if password is not one of the common passwords (which would be invalid)
 }
 
-let userService = function (commonPasswordMock) {
-  return proxyquire(path.join(__dirname, '/../../app/services/user.service.js'), {
+const userService = function (commonPasswordMock) {
+  return proxyquire('../../app/services/user.service.js', {
     'common-password': commonPasswordMock || alwaysValidPassword
   })
 }
 
-let forgottenPassword = function (commonPasswordMock) {
-  return proxyquire(path.join(__dirname, '/../../app/controllers/forgotten-password.controller.js'), {
+const forgottenPassword = function (commonPasswordMock) {
+  return proxyquire('../../app/controllers/forgotten-password.controller.js', {
     '../services/user.service.js': userService(commonPasswordMock)
   })
 }
 
-let adminusersMock = nock(process.env.ADMINUSERS_URL)
+const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const USER_RESOURCE = '/v1/api/users'
 const FORGOTTEN_PASSWORD_RESOURCE = '/v1/api/forgotten-passwords'
 const RESET_PASSWORD_RESOURCE = '/v1/api/reset-password'
 
 describe('forgotten_password_controller', function () {
-  let forgottenPasswordController = forgottenPassword()
+  const forgottenPasswordController = forgottenPassword()
 
-  afterEach((done) => {
+  afterEach(() => {
     nock.cleanAll()
-    done()
   })
 
-  it('send email upon valid forgotten password reset request', function (done) {
-    let req = reqFixtures.validForgottenPasswordPost()
-    let res = resFixtures.getStubbedRes()
-    let username = req.body.username
+  it('send email upon valid forgotten password reset request', async () => {
+    const req = reqFixtures.validForgottenPasswordPost()
+    const res = resFixtures.getStubbedRes()
+    const username = req.body.username
 
     adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
       .validForgottenPasswordCreateRequest(username)
       .getPlain())
       .reply(200)
 
-    forgottenPasswordController.emailPost(req, res).should.be.fulfilled
-      .then(() => {
-        expect(res.redirect.called).to.equal(true)
-      }).should.notify(done)
+    await forgottenPasswordController.emailPost(req, res)
+    sinon.assert.called(res.redirect)
   })
 
-  it('display new password capture form', function (done) {
-    let req = reqFixtures.validForgottenPasswordGet()
-    let res = resFixtures.getStubbedRes()
-    let token = req.params.id
+  it('display new password capture form', async () => {
+    const req = reqFixtures.validForgottenPasswordGet()
+    const res = resFixtures.getStubbedRes()
+    const token = req.params.id
 
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ code: token })
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
 
-    forgottenPasswordController.newPasswordGet(req, res).should.be.fulfilled
-      .then(() => {
-        expect(res.render.calledWith('forgotten-password/new-password', { id: token })).to.equal(true)
-      }).should.notify(done)
+    await forgottenPasswordController.newPasswordGet(req, res)
+    sinon.assert.calledWith(res.render, 'forgotten-password/new-password', { id: token })
   })
 
-  it('display error view if token not found/expired', function (done) {
-    let req = reqFixtures.validForgottenPasswordGet()
-    let res = resFixtures.getStubbedRes()
-    let token = req.params.id
+  it('display error view if token not found/expired', async () => {
+    const req = reqFixtures.validForgottenPasswordGet()
+    const res = resFixtures.getStubbedRes()
+    const token = req.params.id
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(404)
 
-    forgottenPasswordController.newPasswordGet(req, res).should.be.fulfilled
-      .then(() => {
-        expect(req.flash.calledWith('genericError', 'Invalid password reset link')).to.equal(true)
-        expect(res.redirect.calledWith('/login')).to.equal(true)
-      }).should.notify(done)
+    await forgottenPasswordController.newPasswordGet(req, res)
+    sinon.assert.calledWith(req.flash, 'genericError', 'Something went wrong. Please request a new password reset email.')
+    sinon.assert.calledWith(res.redirect, '/login')
   })
 
-  it('reset users password upon valid reset password request', function (done) {
-    let req = reqFixtures.validUpdatePasswordPost()
-    let res = resFixtures.getStubbedRes()
-    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
-    let userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
+  it('reset users password upon valid reset password request', async () => {
+    const req = reqFixtures.validUpdatePasswordPost()
+    const res = resFixtures.getStubbedRes()
+    const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const token = req.params.id
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    const userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain())
@@ -112,21 +100,19 @@ describe('forgotten_password_controller', function () {
       .validIncrementSessionVersionRequest().getPlain())
       .reply(200)
 
-    forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
-      .then(() => {
-        expect(req.session.destroy.called).to.equal(true)
-        expect(req.flash.calledWith('generic', 'Password has been updated')).to.equal(true)
-        expect(res.redirect.calledWith('/login')).to.equal(true)
-      }).should.notify(done)
+    await forgottenPasswordController.newPasswordPost(req, res)
+    sinon.assert.called(req.session.destroy)
+    sinon.assert.calledWith(req.flash, 'generic', 'Password has been updated')
+    sinon.assert.calledWith(res.redirect, '/login')
   })
 
-  it('reset users password upon valid reset password request should destroy session even if incrementing user session fails', function (done) {
-    let req = reqFixtures.validUpdatePasswordPost()
-    let res = resFixtures.getStubbedRes()
-    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
-    let userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
+  it('reset users password upon valid reset password request should destroy session even if incrementing user session fails', async () => {
+    const req = reqFixtures.validUpdatePasswordPost()
+    const res = resFixtures.getStubbedRes()
+    const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const token = req.params.id
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    const userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
@@ -144,23 +130,21 @@ describe('forgotten_password_controller', function () {
       .getPlain())
       .reply(500)
 
-    forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
-      .then(() => {
-        expect(req.session.destroy.called).to.equal(true)
-        expect(req.flash.calledWith('generic', 'Password has been updated')).to.equal(true)
-        expect(res.redirect.calledWith('/login')).to.equal(true)
-      }).should.notify(done)
+    await forgottenPasswordController.newPasswordPost(req, res)
+    sinon.assert.called(req.session.destroy)
+    sinon.assert.calledWith(req.flash, 'generic', 'Password has been updated')
+    sinon.assert.calledWith(res.redirect, '/login')
   })
 
-  it('error if password is too short', function (done) {
-    let req = reqFixtures.validUpdatePasswordPost()
-    let res = resFixtures.getStubbedRes()
-    let username = req.body.username
-    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+  it('error if password is too short', async () => {
+    const req = reqFixtures.validUpdatePasswordPost()
+    const res = resFixtures.getStubbedRes()
+    const username = req.body.username
+    const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     req.body.password = 'short'
-    let userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
-    let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    const userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
+    const token = req.params.id
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
@@ -168,23 +152,21 @@ describe('forgotten_password_controller', function () {
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain())
 
-    forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
-      .then(() => {
-        expect(req.flash.calledWith('genericError', 'Your password must be at least 10 characters.')).to.equal(true)
-        expect(res.redirect.calledWith('/reset-password/' + token)).to.equal(true)
-      }).should.notify(done)
+    await forgottenPasswordController.newPasswordPost(req, res)
+    sinon.assert.calledWith(req.flash, 'genericError', 'Password must be 10 characters or more')
+    sinon.assert.calledWith(res.redirect, `/reset-password/${token}`)
   })
 
-  it('error if password is one of the common passwords', function (done) {
-    let aForgottenPasswordController = forgottenPassword(() => true)
-    let req = reqFixtures.validUpdatePasswordPost()
-    let res = resFixtures.getStubbedRes()
-    let username = req.body.username
-    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+  it('error if password is one of the common passwords', async () => {
+    const aForgottenPasswordController = forgottenPassword(() => true)
+    const req = reqFixtures.validUpdatePasswordPost()
+    const res = resFixtures.getStubbedRes()
+    const username = req.body.username
+    const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     req.body.password = 'common password'
-    let userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
-    let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    const userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
+    const token = req.params.id
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
@@ -192,21 +174,19 @@ describe('forgotten_password_controller', function () {
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain())
 
-    aForgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
-      .then(() => {
-        expect(req.flash.calledWith('genericError', 'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')).to.equal(true)
-        expect(res.redirect.calledWith('/reset-password/' + token)).to.equal(true)
-      }).should.notify(done)
+    await aForgottenPasswordController.newPasswordPost(req, res)
+    sinon.assert.calledWith(req.flash, 'genericError', 'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
+    sinon.assert.calledWith(res.redirect, `/reset-password/${token}`)
   })
 
-  it('error if unknown error returns from adminusers', function (done) {
-    let req = reqFixtures.validUpdatePasswordPost()
-    let res = resFixtures.getStubbedRes()
-    let username = req.body.username
-    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
-    let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+  it('error if unknown error returns from adminusers', async () => {
+    const req = reqFixtures.validUpdatePasswordPost()
+    const res = resFixtures.getStubbedRes()
+    const username = req.body.username
+    const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
+    const token = req.params.id
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
@@ -219,10 +199,8 @@ describe('forgotten_password_controller', function () {
       .getPlain())
       .reply(500)
 
-    forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
-      .then(() => {
-        expect(req.flash.calledWith('genericError', 'There has been a problem updating password.')).to.equal(true)
-        expect(res.redirect.calledWith('/reset-password/' + token)).to.equal(true)
-      }).should.notify(done)
+    await forgottenPasswordController.newPasswordPost(req, res)
+    sinon.assert.calledWith(req.flash, 'genericError', 'There has been a problem updating password. Please try again.')
+    sinon.assert.calledWith(res.redirect, `/reset-password/${token}`)
   })
 })

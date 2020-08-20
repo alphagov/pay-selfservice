@@ -24,7 +24,7 @@ module.exports = (req, res) => {
     })
     .catch(err => {
       logger.error(`[requestId=${req.correlationId}] Failed to generate QR code - ${err.message}`)
-      req.flash('genericError', `<h2>Internal server error, please try again</h2>`)
+      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       return res.redirect(paths.user.twoFactorAuth.index)
     })
 }

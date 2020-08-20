@@ -1,45 +1,45 @@
-var _ = require('lodash')
-var sinon = require('sinon')
+'use strict'
 
-var baseReq = {
-  flash: sinon.stub(),
-  session: {
-    destroy: sinon.stub()
-  }
-}
+var sinon = require('sinon')
 
 module.exports = {
   validForgottenPasswordPost: (username) => {
-    let req = {
+    return {
       body: {
         username: username || 'validForgottenPasswordPost@example.gov.uk'
+      },
+      flash: sinon.spy(),
+      session: {
+        destroy: sinon.spy()
       }
     }
-
-    return _.merge(baseReq, req)
   },
 
   validForgottenPasswordGet: (token) => {
-    let req = {
+    return {
       params: {
         id: token || '3lodzl'
+      },
+      flash: sinon.spy(),
+      session: {
+        destroy: sinon.spy()
       }
     }
-
-    return _.merge(baseReq, req)
   },
 
   validUpdatePasswordPost: (username, token, password) => {
-    let req = {
+    return {
       params: {
         id: token || 'dxad2j'
       },
       body: {
         password: password || 'G0VUkPay2017Rocks',
         username: username || 'validUpdatePasswordPost@example.gov.uk'
+      },
+      flash: sinon.spy(),
+      session: {
+        destroy: sinon.spy()
       }
     }
-
-    return _.merge(baseReq, req)
   }
 }

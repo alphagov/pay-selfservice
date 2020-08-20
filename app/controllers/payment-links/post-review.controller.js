@@ -75,7 +75,7 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Creating a payment link failed - ${err.message}`)
-      req.flash('genericError', `<h2>There were errors</h2><p>Error while creating payment link</p>`)
+      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       return res.redirect(paths.paymentLinks.review)
     })
 }

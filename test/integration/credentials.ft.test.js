@@ -538,41 +538,38 @@ describe('Credentials endpoints', () => {
       const sendData = { 'password': 'a-notification-password' }
       const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
-        .end((err, res) => {
-          if (err) done(err)
+        .expect(res => {
           expect(res.statusCode).to.equal(302)
           expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
           expect(session.flash.genericError).to.have.property('length').to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Please enter a valid username</h2>')
-          done()
+          expect(session.flash.genericError[0]).to.equal('Enter a username')
         })
+        .end(done)
     })
     it('should should flash a relevant error if no password is sent', function (done) {
       const sendData = { 'username': 'a-notification-username' }
       const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
-        .end((err, res) => {
-          if (err) done(err)
+        .expect(res => {
           expect(res.statusCode).to.equal(302)
           expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
           expect(session.flash.genericError).to.have.property('length').to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Please enter a valid password</h2>')
-          done()
+          expect(session.flash.genericError[0]).to.equal('Enter a password')
         })
+        .end(done)
     })
 
     it('should should flash a relevant error if too short a password is sent', function (done) {
       const sendData = { 'username': 'a-notification-username', 'password': '123456789' }
       const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
-        .end((err, res) => {
-          if (err) done(err)
+        .expect(res => {
           expect(res.statusCode).to.equal(302)
           expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
           expect(session.flash.genericError).to.have.property('length').to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Please enter a valid password</h2> Choose a Password of 10 characters or longer')
-          done()
+          expect(session.flash.genericError[0]).to.equal('Password must be 10 characters or more')
         })
+        .end(done)
     })
   })
 })

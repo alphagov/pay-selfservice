@@ -67,7 +67,7 @@ module.exports = {
     const role = rolesModule.getRoleByExtId(roleId)
 
     if (!emailValidator(invitee)) {
-      req.flash('genericError', `Invalid email address`)
+      req.flash('genericError', 'Enter a valid email address')
       lodash.set(req, 'session.pageData', { invitee })
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
     } else if (!role) {

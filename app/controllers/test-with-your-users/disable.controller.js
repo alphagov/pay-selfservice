@@ -14,7 +14,7 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Disable product failed - ${err.message}`)
-      req.flash('genericError', '<p>Unable to delete prototype link</p>')
+      req.flash('genericError', 'Something went wrong when deleting the prototype link. Please try again or contact support.')
       res.redirect(paths.prototyping.demoService.links)
     })
 }

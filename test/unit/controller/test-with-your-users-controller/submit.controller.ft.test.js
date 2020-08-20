@@ -150,7 +150,7 @@ describe('test with your users - submit controller', () => {
       it('should add a relevant error message to the session \'flash\'', () => {
         expect(session.flash).to.have.property('genericError')
         expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2> Error while creating product')
+        expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again or contact support.')
       })
     })
     describe('but it is unable to create a product', () => {
@@ -187,7 +187,7 @@ describe('test with your users - submit controller', () => {
       it('should add a relevant error message to the session \'flash\'', () => {
         expect(session.flash).to.have.property('genericError')
         expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2> Error while creating product')
+        expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again or contact support.')
       })
     })
   })
@@ -226,7 +226,7 @@ describe('test with your users - submit controller', () => {
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
           expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Use valid characters only</h2> Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+          expect(session.flash.genericError[0]).to.equal('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
         })
       })
       describe('because the value has too many digits to the right of the decimal point', () => {
@@ -262,7 +262,7 @@ describe('test with your users - submit controller', () => {
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
           expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Use valid characters only</h2> Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+          expect(session.flash.genericError[0]).to.equal('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
         })
       })
       describe('because the value exceeds 100,000', () => {
@@ -298,7 +298,7 @@ describe('test with your users - submit controller', () => {
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
           expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Enter a valid amount</h2> Choose an amount under £100,000')
+          expect(session.flash.genericError[0]).to.equal('Enter an amount under £100,000')
         })
       })
     })
@@ -331,7 +331,7 @@ describe('test with your users - submit controller', () => {
       it('should add a relevant error message to the session \'flash\'', () => {
         expect(session.flash).to.have.property('genericError')
         expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('<h2>Enter a valid secure URL</h2>URL must begin with https://')
+        expect(session.flash.genericError[0]).to.equal('URL must begin with https://')
       })
     })
     describe('and the description is empty', () => {
@@ -368,7 +368,7 @@ describe('test with your users - submit controller', () => {
       it('should add a relevant error message to the session \'flash\'', () => {
         expect(session.flash).to.have.property('genericError')
         expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('<h2>Enter a description</h2> Tell users what they are paying for')
+        expect(session.flash.genericError[0]).to.equal('Enter a description')
       })
     })
   })

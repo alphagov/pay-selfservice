@@ -36,7 +36,7 @@ describe('registration_validation module', () => {
       const validPhoneNumber = '01134960000'
       const password = undefined
       expect(validation.validateUserRegistrationInputs(validPhoneNumber, password))
-        .to.be.rejectedWith('Your password must be at least 10 characters.')
+        .to.be.rejectedWith('Password must be 10 characters or more')
     })
 
     it('should invalidate if the provided password a common password', () => {
@@ -50,7 +50,7 @@ describe('registration_validation module', () => {
       const validPhoneNumber = '01134960000'
       const validPassword = '2se45&s'
       expect(validation.validateUserRegistrationInputs(validPhoneNumber, validPassword))
-        .to.be.rejectedWith('Your password must be at least 10 characters.')
+        .to.be.rejectedWith('Password must be 10 characters or more')
     })
   })
 

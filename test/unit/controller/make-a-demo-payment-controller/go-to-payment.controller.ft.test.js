@@ -116,7 +116,7 @@ describe('make a demo payment - go to payment controller', () => {
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
           expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2> Error while creating demo payment')
+          expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again.')
         })
       })
     })
@@ -156,7 +156,7 @@ describe('make a demo payment - go to payment controller', () => {
       it('should add a relevant error message to the session \'flash\'', () => {
         expect(session.flash).to.have.property('genericError')
         expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2> Error while creating demo payment')
+        expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again.')
       })
     })
   })

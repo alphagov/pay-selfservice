@@ -22,13 +22,13 @@ module.exports = (req, res) => {
   lodash.set(req, 'session.pageData.createPrototypeLink', { paymentAmountInPence, paymentDescription, confirmationPage })
 
   if (!paymentDescription) {
-    req.flash('genericError', `<h2>Enter a description</h2> Tell users what they are paying for`)
+    req.flash('genericError', 'Enter a description')
   } else if (!paymentAmountInPence || isCurrency(penceToPounds(paymentAmountInPence))) {
-    req.flash('genericError', `<h2>Use valid characters only</h2> ${isCurrency(paymentAmountInPence)}`)
+    req.flash('genericError', isCurrency(paymentAmountInPence))
   } else if (isAboveMaxAmount(penceToPounds(paymentAmountInPence))) {
-    req.flash('genericError', `<h2>Enter a valid amount</h2> ${isAboveMaxAmount(penceToPounds(paymentAmountInPence))}`)
+    req.flash('genericError', isAboveMaxAmount(penceToPounds(paymentAmountInPence)))
   } else if (!confirmationPage || isHttps(confirmationPage)) {
-    req.flash('genericError', `<h2>Enter a valid secure URL</h2>${isHttps(confirmationPage)}`)
+    req.flash('genericError', isHttps(confirmationPage))
   }
 
   if (lodash.get(req, 'session.flash.genericError.length')) {
@@ -58,7 +58,7 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Create product failed - ${err.message}`)
-      req.flash('genericError', `<h2>There were errors</h2> Error while creating product`)
+      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       return res.redirect(paths.prototyping.demoService.create)
     })
 }

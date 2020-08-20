@@ -172,7 +172,7 @@ describe('Create payment link review controller', () => {
     it('should add a relevant error message to the session \'flash\'', () => {
       expect(session.flash).to.have.property('genericError')
       expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2><p>Error while creating payment link</p>')
+      expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again or contact support.')
     })
   })
   describe('when the API token creation fails', () => {
@@ -214,7 +214,7 @@ describe('Create payment link review controller', () => {
     it('should add a relevant error message to the session \'flash\'', () => {
       expect(session.flash).to.have.property('genericError')
       expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2><p>Error while creating payment link</p>')
+      expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again or contact support.')
     })
   })
   describe('when paymentDescription in missing from the session', () => {

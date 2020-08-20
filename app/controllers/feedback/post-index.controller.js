@@ -36,7 +36,7 @@ ${req.body['feedback-suggestion']}`
         'feedback-rating': req.body['feedback-rating']
       })
       logger.error(`Error posting request to Zendesk - ${err}`)
-      req.flash('genericError', `<h2>We couldn’t send your feedback</h2><p>Please try again</p>`)
+      req.flash('genericError', 'We couldn’t send your feedback. Please try again')
       return res.redirect(paths.feedback)
     })
 }

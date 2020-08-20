@@ -3,6 +3,7 @@
 // Local dependencies
 const paths = require('../../paths')
 const publicAuthClient = require('../../services/clients/public-auth.client')
+const logger = require('../../utils/logger')(__filename)
 
 module.exports = (req, res) => {
   // this does not need to be explicitly tied down to account_id
@@ -21,8 +22,9 @@ module.exports = (req, res) => {
       req.flash('generic', 'The API key description was successfully updated')
       res.redirect(paths.apiKeys.index)
     })
-    .catch(err => {
-      req.flash('genericError', `<h2>Something went wrong</h2><p>${err}</p>`)
+    .catch(error => {
+      logger.error('Error updating API key description', { error })
+      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       res.redirect(paths.apiKeys.index)
     })
 }

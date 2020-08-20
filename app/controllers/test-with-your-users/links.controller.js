@@ -24,6 +24,6 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Get PROTOTYPE product by gateway account id failed - ${err.message}`)
-      renderErrorView(req, res, 'Internal server error')
+      renderErrorView(req, res)
     })
 }

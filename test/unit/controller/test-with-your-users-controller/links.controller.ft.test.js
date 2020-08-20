@@ -285,9 +285,9 @@ describe('Show the prototype links', () => {
       nock.cleanAll()
     })
 
-    it('should an internal server error', () => {
+    it('should show an error page', () => {
       expect(response.status).to.equal(500)
-      expect(response.body).to.have.property('message', 'Internal server error')
+      expect(response.body).to.have.property('message', 'There is a problem with the payments platform')
     })
   })
 })

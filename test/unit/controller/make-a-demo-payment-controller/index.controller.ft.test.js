@@ -201,7 +201,7 @@ describe('make a demo payment - index controller', () => {
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
           expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Use valid characters only</h2> Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+          expect(session.flash.genericError[0]).to.equal('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
         })
       })
       describe('because the value has too many digits to the right of the decimal point', () => {
@@ -235,7 +235,7 @@ describe('make a demo payment - index controller', () => {
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
           expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Use valid characters only</h2> Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+          expect(session.flash.genericError[0]).to.equal('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
         })
       })
       describe('because the value exceeds 100,000', () => {
@@ -273,7 +273,7 @@ describe('make a demo payment - index controller', () => {
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
           expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>Enter a valid amount</h2> Choose an amount under £100,000')
+          expect(session.flash.genericError[0]).to.equal('Enter an amount under £100,000')
         })
       })
     })

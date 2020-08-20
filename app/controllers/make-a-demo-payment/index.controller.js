@@ -21,11 +21,13 @@ module.exports = (req, res) => {
 
   if (!paymentAmount || isCurrency(paymentAmount)) {
     lodash.set(req, 'session.pageData.makeADemoPayment.paymentAmount', paymentAmount)
-    req.flash('genericError', `<h2>Use valid characters only</h2> ${isCurrency(paymentAmount)}`)
+    req.flash('genericError', isCurrency(paymentAmount))
     return res.redirect(paths.prototyping.demoPayment.editAmount)
-  } else if (isAboveMaxAmount(paymentAmount)) {
+  }
+  const isAboveMaxAmountError = isAboveMaxAmount(paymentAmount)
+  if (isAboveMaxAmountError) {
     lodash.set(req, 'session.pageData.makeADemoPayment.paymentAmount', paymentAmount)
-    req.flash('genericError', `<h2>Enter a valid amount</h2> ${isAboveMaxAmount(paymentAmount)}`)
+    req.flash('genericError', isAboveMaxAmountError)
     return res.redirect(paths.prototyping.demoPayment.editAmount)
   }
 
