@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
     await connector.toggleGooglePay(gatewayAccountId, enable, correlationId)
     logger.info(`${correlationId} ${enable ? 'enabled' : 'disabled'} google pay boolean for ${gatewayAccountId}`)
 
-    req.flash('generic', `<h2>Google Pay successfully ${enable ? 'enabled' : 'disabled'}.</h2>`)
+    req.flash('generic', `Google Pay successfully ${enable ? 'enabled' : 'disabled'}.`)
     return res.redirect(paths.digitalWallet.googlePay)
   } catch (error) {
     logger.error(`${correlationId} error enabling google pay for ${gatewayAccountId}: ${error}`)

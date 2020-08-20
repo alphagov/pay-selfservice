@@ -17,7 +17,7 @@ module.exports = (req, res) => {
     payload: payload
   })
     .then(() => {
-      req.flash('generic', '<h2>The API key was successfully revoked</h2>')
+      req.flash('generic', 'The API key was successfully revoked')
       res.redirect(paths.apiKeys.index)
     })
     .catch(err => {

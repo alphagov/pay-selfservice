@@ -89,7 +89,7 @@ describe('Create payment link review controller', () => {
     it('should redirect to the manage page with a success message', () => {
       expect(session.flash).to.have.property('generic')
       expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('<h2>Your payment link is now live</h2><p>Give this link to your users to collect payments for your service.</p>')
+      expect(session.flash.generic[0]).to.contain('Your payment link is now live.')
       expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage)
     })
   })
@@ -253,7 +253,7 @@ describe('Create payment link review controller', () => {
     it('should redirect to the manage page with a success message', () => {
       expect(session.flash).to.have.property('generic')
       expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('<h2>Your payment link is now live</h2><p>Give this link to your users to collect payments for your service.</p>')
+      expect(session.flash.generic[0]).to.contain('Your payment link is now live.')
       expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage)
     })
   })

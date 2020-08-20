@@ -14,9 +14,9 @@ module.exports = (req, res) => {
   userService.configureNewOtpKey(req.user.externalId, code, method, req.correlationId)
     .then(user => {
       if (method === 'APP') {
-        req.flash('generic', `<h2>Your sign-in method has been&nbsp;updated</h2><p>Use your authenticator app when you next sign in</p>`)
+        req.flash('generic', `Your sign-in method has been updated. Use your authenticator app when you next sign in.`)
       } else {
-        req.flash('generic', `<h2>Your sign-in method has been&nbsp;updated</h2><p>We’ll send you a text message when you next sign in</p>`)
+        req.flash('generic', `Your sign-in method has been updated. We’ll send you a text message when you next sign in.`)
       }
       return res.redirect(paths.user.profile)
     })
