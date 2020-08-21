@@ -18,7 +18,7 @@ module.exports = (req, res) => {
     correlationId: req.correlationId
   })
     .then(() => {
-      req.flash('generic', '<h2>The API key description was successfully updated</h2>')
+      req.flash('generic', 'The API key description was successfully updated')
       res.redirect(paths.apiKeys.index)
     })
     .catch(err => {

@@ -50,7 +50,7 @@ describe('Manage payment links - disable controller', () => {
     it('should add a relevant generic message to the session \'flash\'', () => {
       expect(session.flash).to.have.property('generic')
       expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('<h2>The payment link was successfully deleted</h2>')
+      expect(session.flash.generic[0]).to.equal('The payment link was successfully deleted')
     })
   })
 

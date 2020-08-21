@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   try {
     await connector.toggleApplePay(gatewayAccountId, enable, correlationId)
 
-    req.flash('generic', `<h2>Apple Pay successfully ${enable ? 'enabled' : 'disabled'}.</h2>`)
+    req.flash('generic', `Apple Pay successfully ${enable ? 'enabled' : 'disabled'}.`)
     return res.redirect(paths.digitalWallet.applePay)
   } catch (error) {
     return renderErrorView(req, res, false, error.errorCode)

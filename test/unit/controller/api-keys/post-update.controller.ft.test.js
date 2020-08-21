@@ -74,6 +74,6 @@ describe('POST to update an API key description', () => {
   it('should have success message', () => {
     expect(session.flash).to.have.property('generic')
     expect(session.flash.generic.length).to.equal(1)
-    expect(session.flash.generic[0]).to.equal('<h2>The API key description was successfully updated</h2>')
+    expect(session.flash.generic[0]).to.equal('The API key description was successfully updated')
   })
 })
