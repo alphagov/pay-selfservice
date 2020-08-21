@@ -7,7 +7,7 @@ const paths = require('../../paths')
 module.exports = (req, res) => {
   userService.sendProvisonalOTP(req.user, req.correlationId)
     .then(() => {
-      req.flash('generic', `Another verification code has been sent to your phone`)
+      req.flash('generic', 'Another verification code has been sent to your phone')
       return res.redirect(paths.user.twoFactorAuth.configure)
     })
     .catch(err => {

@@ -33,7 +33,7 @@ module.exports = (req, res) => {
   lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
 
   if (req.body['change'] === 'true') {
-    req.flash('generic', `The details have been updated`)
+    req.flash('generic', 'The details have been updated')
     return res.redirect(paths.paymentLinks.review)
   }
 

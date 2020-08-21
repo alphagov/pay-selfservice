@@ -28,7 +28,7 @@ ${req.body['feedback-suggestion']}`
   zendeskClient.createTicket(opts)
     .then(() => {
       lodash.set(req, 'session.pageData.feedback', {})
-      req.flash('generic', `Thanks for your feedback`)
+      req.flash('generic', 'Thanks for your feedback')
       return res.redirect(paths.feedback)
     }).catch(err => {
       lodash.set(req, 'session.pageData.feedback', {

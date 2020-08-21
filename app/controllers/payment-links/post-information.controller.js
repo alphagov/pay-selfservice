@@ -29,7 +29,7 @@ module.exports = (req, res) => {
 
   if (req.body['change'] === 'true') {
     if (!lodash.isEmpty(pageData) && !lodash.isEqual(pageData, updatedPageData)) {
-      req.flash('generic', `The details have been updated`)
+      req.flash('generic', 'The details have been updated')
     }
     return res.redirect(paths.paymentLinks.review)
   }
