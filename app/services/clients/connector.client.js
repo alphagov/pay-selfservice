@@ -514,6 +514,57 @@ ConnectorClient.prototype = {
       }
     )
   },
+
+  /**
+   * @param gatewayAccountId
+   * @param isMaskCardNumber (boolean)
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+
+  toggleMotoMaskCardNumberInput: function (gatewayAccountId, isMaskCardNumber, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'moto_mask_card_number_input',
+          value: isMaskCardNumber
+        },
+        correlationId,
+        description: 'For MOTO service - toggle masking of the card number input',
+        service: SERVICE_NAME
+      }
+    )
+  },
+
+  /**
+   * @param gatewayAccountId
+   * @param isMaskSecurityCode (boolean)
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+
+  toggleMotoMaskSecurityCodeInput: function (gatewayAccountId, isMaskSecurityCode, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'moto_mask_card_security_code_input',
+          value: isMaskSecurityCode
+        },
+        correlationId,
+        description: 'For MOTO service - toggle masking of the security code input',
+        service: SERVICE_NAME
+      }
+    )
+  },
+
   /**
    * @param gatewayAccountId
    * @param gatewayMerchantId (string)
