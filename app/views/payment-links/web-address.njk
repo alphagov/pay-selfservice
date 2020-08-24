@@ -11,6 +11,16 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {% if flash.error %}
+    {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [{
+            text: flash.error | safe,
+            href: "#payment-name-path"
+          }]
+        }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">The website address is already taken</h1>
 
   <form action="{{ routes.paymentLinks.webAddress }}" class="form" method="post" data-validate>
@@ -26,7 +36,7 @@
       <span class="govuk-hint pay-text-black">
         {{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/
       </span>
-      {% if flash.genericError %}
+      {% if flash.error %}
         <span id="payment-name-path-error" class="govuk-error-message">
           The website address is already taken
         </span>

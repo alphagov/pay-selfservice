@@ -23,7 +23,7 @@ module.exports = (req, res) => {
   lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
 
   if (updatedPageData.paymentLinkTitle === '') {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-link-title">Title</a></li></ul>`)
+    req.flash('error', 'Enter a title')
     return res.redirect(paths.paymentLinks.information)
   }
 

@@ -10,6 +10,16 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {% if flash.error %}
+    {{ govukErrorSummary({
+          titleText: 'There is a problem',
+          errorList: [{
+            text: flash.error | safe,
+            href: '#payment-link-title'
+          }]
+        }) }}
+  {% endif %}
+
   <aside class="pay-info-warning-box">
     <p class="govuk-body">Editing the payment link title does not change the web&nbsp;address.</p>
   </aside>
@@ -22,7 +32,7 @@
     {% endif %}
 
     {% set titleError = false %}
-    {% if flash.genericError %}
+    {% if flash.error %}
     {% set titleError = {
       text: "This field cannot be blank"
     } %}

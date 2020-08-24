@@ -14,14 +14,14 @@ module.exports = (req, res) => {
   const paymentReferenceHint = req.body['reference-hint-text'].trim()
 
   if (!paymentReferenceType) {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#standard-or-custom-ref">Would you like us to create a payment reference number for your users?</a></li></ul>`)
+    req.flash('error', 'Would you like us to create a payment reference number for your users?')
     req.flash('errorType', `paymentReferenceType`)
     return res.redirect(paths.paymentLinks.reference)
   }
 
   if (paymentReferenceType === 'custom') {
     if (paymentReferenceLabel === '') {
-      req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#reference-label">Name of your payment reference number</a></li></ul>`)
+      req.flash('error', 'Enter a name for your payment reference')
       req.flash('errorType', `label`)
       return res.redirect(paths.paymentLinks.reference)
     }

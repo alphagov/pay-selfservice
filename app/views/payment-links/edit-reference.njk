@@ -11,6 +11,27 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {% if flash.error and flash.errorType[0] === "paymentReferenceType" %}
+    {% set errorList = [{
+      text: flash.error | safe,
+      href: "#standard-or-custom-ref"
+      }]
+    %}
+  {% elif flash.error and flash.errorType[0] === "label" %}
+    {% set errorList = [{
+        text: flash.error | safe,
+        href: "#reference-label"
+        }]
+      %}
+  {% endif %}
+
+  {% if errorList | length %}
+    {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errorList
+      }) }}
+  {% endif %}
+  
   <form action="{{ self }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}

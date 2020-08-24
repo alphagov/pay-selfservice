@@ -39,7 +39,7 @@ describe('Edit phone number flow', () => {
         cy.visit('/my-profile/phone-number')
         cy.get('input[name="phone"]').clear().type('not a number')
         cy.get('#save-phone-number').click()
-        cy.get('.error-summary').should('exist')
+        cy.get('.govuk-error-summary').should('exist')
         cy.get('input[name="phone"]').should('have.class', 'govuk-input--error')
       })
     })

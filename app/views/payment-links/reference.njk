@@ -11,6 +11,27 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {% if flash.error and flash.errorType[0] === "paymentReferenceType" %}
+    {% set errorList = [{
+      text: flash.error | safe,
+      href: "#reference-type-custom"
+      }]
+    %}
+  {% elif flash.error and flash.errorType[0] === "label" %}
+    {% set errorList = [{
+        text: flash.error | safe,
+        href: "#reference-label"
+        }]
+      %}
+  {% endif %}
+
+  {% if errorList | length %}
+    {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errorList
+      }) }}
+  {% endif %}
+
   <form action="{{ routes.paymentLinks.reference }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
@@ -108,7 +129,7 @@
           {
               value: "custom",
               text: "Yes",
-              checked: paymentReferenceType === 'custom',
+              checked: paymentReferenceType === 'custom' or blankReferenceLabelError,
               id: "reference-type-custom",
               conditional: {
                 html: customReferenceHTML
@@ -117,7 +138,7 @@
           {
               value: "standard",
               text: "No",
-              checked: paymentReferenceType === 'standard' or blankReferenceLabelError,
+              checked: paymentReferenceType === 'standard',
               id: "reference-type-standard",
               conditional: {
                 html: standardReferenceHTML

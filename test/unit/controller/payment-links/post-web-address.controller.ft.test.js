@@ -118,7 +118,7 @@ describe('Create payment link web address post controller', () => {
     })
 
     it('should expect session to contain error message', () => {
-      expect(session.flash.genericError).to.have.property('length').to.equal(1)
+      expect(session.flash.error).to.have.property('length').to.equal(1)
     })
   })
 })

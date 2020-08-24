@@ -14,16 +14,16 @@ module.exports = (req, res) => {
   const paymentLinkAmount = req.body['payment-amount']
 
   if (!paymentAmountType) {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#fixed-or-variable">Is the payment for a fixed amount?</a></li></ul>`)
-    req.flash('errorType', `paymentAmountType`)
+    req.flash('error', 'Is the payment for a fixed amount?')
+    req.flash('errorType', 'paymentAmountType')
     return res.redirect(paths.paymentLinks.amount)
   }
 
   let formattedPaymentLinkAmount = safeConvertPoundsStringToPence(paymentLinkAmount)
 
   if (paymentLinkAmount !== '' && formattedPaymentLinkAmount === null) {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-amount">Enter the amount</a></li></ul>`)
-    req.flash('errorType', `paymentAmountFormat`)
+    req.flash('error', 'Enter the amount')
+    req.flash('errorType', 'paymentAmountFormat')
     return res.redirect(paths.paymentLinks.amount)
   }
 

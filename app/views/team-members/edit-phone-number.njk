@@ -16,11 +16,21 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+  {% if flash.error %}
+    {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [{
+            text: flash.error | safe,
+            href: "#phone"
+          }]
+        }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">Change your phone number</h1>
   <p class="govuk-body">Your phone number is used to send a text message code when you sign in to help verify your identity.</p>
 
   {% set phoneError = false %}
-  {% if flash.genericError %}
+  {% if flash.error %}
   {% set phoneError = {
     text: "Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192"
   } %}

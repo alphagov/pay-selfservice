@@ -11,6 +11,16 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {% if flash.error %}
+    {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [{
+            text: flash.error | safe,
+            href: "#payment-link-title"
+          }]
+        }) }}
+  {% endif %}
+
   {% if isWelsh %}
     <h1 class="govuk-heading-l">Set Welsh payment link information</h1>
   {% else %}
@@ -25,7 +35,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
     {% endif %}
 
     {% set titleError = false %}
-    {% if flash.genericError %}
+    {% if flash.error %}
       {% set titleError = {
         text: 'This field cannot be blank'
       } %}
