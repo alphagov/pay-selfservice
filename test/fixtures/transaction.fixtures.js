@@ -1,11 +1,8 @@
 'use strict'
 
-// NPM dependencies
-const path = require('path')
 const lodash = require('lodash')
+const pactBase = require('./pact-base')
 
-// Global setup
-const pactBase = require(path.join(__dirname, '/pact-base'))
 const pactRegister = pactBase()
 
 const buildChargeEventWithDefaults = (opts = {}) => {
@@ -224,7 +221,8 @@ module.exports = {
   },
   invalidTransactionRefundResponse: (opts = {}) => {
     let data = {
-      reason: opts.reason || 'amount_not_available'
+      reason: opts.reason || 'amount_not_available',
+      error_identifier: opts.error_identifier || 'REFUND_NOT_AVAILABLE'
     }
 
     return {

@@ -20,9 +20,9 @@ const expect = chai.expect
 // Global setup
 chai.use(chaiAsPromised)
 
-const existingGatewayAccountId = 42
-const defaultChargeId = 'abc123'
-const defaultChargeState = `Gateway account ${existingGatewayAccountId} exists and has a charge for £1 with id ${defaultChargeId}`
+const gatewayAccountId = 42
+const chargeId = 'abc123'
+const defaultChargeState = `Gateway account ${gatewayAccountId} exists and has a charge for £1 with id ${chargeId}`
 
 describe('connector client', function () {
   const provider = new Pact({
@@ -45,15 +45,10 @@ describe('connector client', function () {
         refund_amount_available: 100
       })
 
-      const params = {
-        gatewayAccountId: existingGatewayAccountId,
-        chargeId: defaultChargeId,
-        payload: validPostRefundRequest.getPlain()
-      }
-      before((done) => {
+      before(() => {
         const pactified = validPostRefundRequest.getPactified()
-        provider.addInteraction(
-          new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}/refunds`)
+        return provider.addInteraction(
+          new PactInteractionBuilder(`${CHARGES_RESOURCE}/${gatewayAccountId}/charges/${chargeId}/refunds`)
             .withUponReceiving('a valid post refund request')
             .withState(defaultChargeState)
             .withMethod('POST')
@@ -61,18 +56,14 @@ describe('connector client', function () {
             .withStatusCode(202)
             .build()
         )
-          .then(() => done())
-          .catch(done)
       })
 
       afterEach(() => provider.verify())
 
-      it('should post a refund request successfully', function (done) {
-        connectorClient.postChargeRefund(
-          params, () => {
-            done()
-          }
-        )
+      it('should post a refund request successfully', () => {
+        const payload = validPostRefundRequest.getPlain()
+        return connectorClient.postChargeRefund(gatewayAccountId, chargeId, payload, 'correlation-id')
+          .should.be.fulfilled
       })
     })
 
@@ -83,18 +74,12 @@ describe('connector client', function () {
       })
       const invalidTransactionRefundResponse = transactionDetailsFixtures.invalidTransactionRefundResponse()
 
-      const params = {
-        gatewayAccountId: 42,
-        chargeId: defaultChargeId,
-        payload: invalidTransactionRefundRequest.getPlain()
-      }
-
-      before((done) => {
+      before(() => {
         const pactifiedRequest = invalidTransactionRefundRequest.getPactified()
         const pactifiedResponse = invalidTransactionRefundResponse.getPactified()
 
-        provider.addInteraction(
-          new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}/refunds`)
+        return provider.addInteraction(
+          new PactInteractionBuilder(`${CHARGES_RESOURCE}/${gatewayAccountId}/charges/${chargeId}/refunds`)
             .withUponReceiving('an invalid transaction refund request')
             .withState(defaultChargeState)
             .withMethod('POST')
@@ -102,23 +87,20 @@ describe('connector client', function () {
             .withStatusCode(400)
             .withResponseBody(pactifiedResponse)
             .build()
-        ).then(() => done())
-          .catch(done)
+        )
       })
 
       afterEach(() => provider.verify())
 
-      it('should fail with a refund amount greater than the refund amount available', function (done) {
+      it('should fail with a refund amount greater than the refund amount available', () => {
         const refundFailureResponse = invalidTransactionRefundResponse.getPlain()
-        connectorClient.postChargeRefund(params,
-          () => {
-            done('refund success callback should not be executed')
-          }).on('connectorError', (err, response) => {
-          if (err) { return done(err) }
-          expect(response.statusCode).to.equal(400)
-          expect(response.body).to.deep.equal(refundFailureResponse)
-          done()
-        })
+        const payload = invalidTransactionRefundRequest.getPlain()
+        return connectorClient.postChargeRefund(gatewayAccountId, chargeId, payload, 'correlation-id')
+          .should.be.rejected.then(response => {
+            expect(response.errorCode).to.equal(400)
+            expect(response.errorIdentifier).to.equal(refundFailureResponse.error_identifier)
+            expect(response.reason).to.equal(refundFailureResponse.reason)
+          })
       })
     })
   })

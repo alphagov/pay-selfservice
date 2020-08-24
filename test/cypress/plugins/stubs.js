@@ -294,7 +294,10 @@ module.exports = {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
     return simpleStubBuilder('POST', path, 400, {
       request: transactionDetailsFixtures.validTransactionRefundRequest(opts).getPlain(),
-      response: transactionDetailsFixtures.invalidTransactionRefundResponse({ reason: 'amount_not_available' }).getPlain()
+      response: transactionDetailsFixtures.invalidTransactionRefundResponse({
+        error_identifier: 'REFUND_NOT_AVAILABLE',
+        reason: 'amount_not_available'
+      }).getPlain()
     })
   },
   getLedgerTransactionSuccess: (opts = {}) => {

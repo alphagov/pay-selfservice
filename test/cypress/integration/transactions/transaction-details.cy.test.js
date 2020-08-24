@@ -310,7 +310,7 @@ describe('Transaction details page', () => {
       // Ensure the flash container is showing
       cy.get('.flash-container').should('be.visible')
 
-      cy.get('.flash-container').find('.error-summary').should('contain', 'The amount you tried to refund is greater than the transaction total')
+      cy.get('.flash-container').find('.error-summary').should('contain', 'The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
     })
 
     it('should allow a refund to be re-attempted in the event of a failed refund', () => {

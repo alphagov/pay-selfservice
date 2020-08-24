@@ -264,16 +264,6 @@ module.exports = {
       getPlain: () => data
     }
   },
-  invalidTransactionRefundResponse: (opts = {}) => {
-    let data = {
-      reason: opts.reason || 'amount_not_available'
-    }
-
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
-    }
-  },
   validTransactionEventsResponse: (opts = {}) => {
     const data = {
       transaction_id: opts.transaction_id || 'ht439nfg2l1e303k0dmifrn4fc',
