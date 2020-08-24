@@ -15,6 +15,9 @@ const getGatewayAccountSuccess = function (opts) {
   if (opts.requires3ds) {
     stubOptions.requires3ds = opts.requires3ds
   }
+  if (opts.allowMoto) {
+    stubOptions.allow_moto = opts.allowMoto
+  }
   if (opts.type) {
     stubOptions.type = opts.type
   }
@@ -27,6 +30,14 @@ const getGatewayAccountSuccess = function (opts) {
 
   if (opts.allowMoto) {
     stubOptions.allow_moto = opts.allowMoto
+  }
+
+  if (opts.motoMaskCardNumber) {
+    stubOptions.moto_mask_card_number_input = opts.motoMaskCardNumber
+  }
+
+  if (opts.motoMaskSecurityCode) {
+    stubOptions.moto_mask_card_security_code_input = opts.motoMaskSecurityCode
   }
 
   if (opts.notificationCredentials) {
@@ -110,6 +121,24 @@ const patchUpdate3DS = function (opts) {
   }
 }
 
+const patchUpdateMotoMaskSecurityCode = function (opts) {
+  return {
+    name: 'patchUpdateMotoMaskSecurityCode',
+    opts: {
+      moto_mask_card_security_code_input: opts.motoMaskCardSecurityCode
+    }
+  }
+}
+
+const patchUpdateMotoMaskCardNumber = function (opts) {
+  return {
+    name: 'patchUpdateMotoMaskCardNumber',
+    opts: {
+      moto_mask_card_number_input: opts.motoMaskCardNumber
+    }
+  }
+}
+
 const patchConfirmationEmailToggleSuccess = function (opts) {
   return {
     name: 'patchConfirmationEmailToggleSuccess',
@@ -177,5 +206,7 @@ module.exports = {
   patchRefundEmailToggleSuccess,
   patchAccountEmailCollectionModeSuccess,
   patchUpdateCredentials,
-  patchUpdateFlexCredentials
+  patchUpdateFlexCredentials,
+  patchUpdateMotoMaskCardNumber,
+  patchUpdateMotoMaskSecurityCode
 }

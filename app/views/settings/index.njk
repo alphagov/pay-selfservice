@@ -207,5 +207,60 @@
       })
     }}
     <p class="govuk-body"><a class="govuk-link" href="{{routes.emailNotifications.index}}" id="templates-link">See templates and add a custom paragraph.</a></p>
+    
+    {% if allowMoto %}
+      <h1 id="moto-mask-security-settings-heading" class="govuk-heading-m govuk-!-margin-top-8">Security</h1>
+      <p class="govuk-body">Hide sensitive details being viewed on a call agent's screen.</p>
+
+      {{
+        govukSummaryList({
+          classes: 'pay-!-border-top pay-!-padding-top-2-small',
+          rows: [
+            {
+              key: {
+                text: 'Hide card numbers',
+                classes: 'govuk-!-width-one-half'
+              },
+              value: {
+                text: 'On' if motoMaskCardNumberInputEnabled else 'Off',
+                classes: 'govuk-!-width-one-quarter'
+              },
+              actions: {
+                classes: 'govuk-!-width-one-quarter',
+                items: [
+                  {
+                    href: routes.toggleMotoMaskCardNumberAndSecurityCode.cardNumber,
+                    classes: 'govuk-link--no-visited-state',
+                    text: 'Change' if permissions.moto_mask_input_update else 'View',
+                    visuallyHiddenText: 'Moto Secure settings'
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: 'Hide card security codes',
+                classes: 'govuk-!-width-one-half'
+              },
+              value: {
+                text: 'On' if motoMaskSecurityCodeInputEnabled else 'Off',
+                classes: 'govuk-!-width-one-quarter'
+              },
+              actions: {
+                classes: 'govuk-!-width-one-quarter',
+                items: [
+                  {
+                    href: routes.toggleMotoMaskCardNumberAndSecurityCode.securityCode,
+                    classes: 'govuk-link--no-visited-state',
+                    text: 'Change' if permissions.moto_mask_input_update else 'View',
+                    visuallyHiddenText: 'Moto Secure settings'
+                  }
+                ]
+              }
+            }
+          ]
+        })
+      }}
+    {% endif %} 
   </div>
 {% endblock %}
