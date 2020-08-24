@@ -22,7 +22,7 @@ module.exports = (req, res) => {
       res.redirect(paths.apiKeys.index)
     })
     .catch(error => {
-      logger.error('Error revoking API key', { error })
+      logger.error('Error revoking API key', { error: error.message })
       req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       res.redirect(paths.apiKeys.index)
     })

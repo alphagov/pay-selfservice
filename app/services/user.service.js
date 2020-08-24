@@ -221,11 +221,7 @@ module.exports = {
    * @param newPhoneNumber
    * @returns {Promise}
    */
-  updatePhoneNumber: async function (externalId, newPhoneNumber) {
-    try {
-      return await getAdminUsersClient().updatePhoneNumberForUser(externalId, newPhoneNumber)
-    } catch (err) {
-      throw new Error('There has been a problem updating the phone number. Please try again')
-    }
+  updatePhoneNumber: function (externalId, newPhoneNumber) {
+    return getAdminUsersClient().updatePhoneNumberForUser(externalId, newPhoneNumber)
   }
 }

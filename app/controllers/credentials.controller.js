@@ -97,9 +97,9 @@ module.exports = {
     } else if (!password) {
       req.flash('genericError', `Enter a password`)
     } else {
-      const validationError = isPasswordLessThanTenChars(password)
-      if (validationError) {
-        req.flash('genericError', validationError)
+      const failedValidationMessage = isPasswordLessThanTenChars(password)
+      if (failedValidationMessage) {
+        req.flash('genericError', failedValidationMessage)
       }
     }
 
