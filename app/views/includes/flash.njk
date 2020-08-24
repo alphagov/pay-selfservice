@@ -1,18 +1,19 @@
 {% block flash %}
   <div class="govuk-grid-column-two-thirds">
     {% if flash.genericError %}
-    <div class="flash-container">
-      <div class="notification generic-error error-summary">
-        {{ flash.genericError | safe }}
-      </div>
-    </div>
+      {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [{
+            text: flash.genericError | safe
+          }]
+        }) }}
     {% endif %}
     {% if flash.generic %}
-    <div class="flash-container flash-container--good">
-      <div class="notification generic-flash">
-        {{ flash.generic | safe }}
+      <div class="flash-container flash-container--good">
+        <div class="notification generic-flash">
+          {{ flash.generic | safe }}
+        </div>
       </div>
-    </div>
     {% endif %}
   </div>
 {% endblock %}

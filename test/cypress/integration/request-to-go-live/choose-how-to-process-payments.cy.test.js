@@ -120,7 +120,7 @@ describe('Request to go live: choose how to process payments', () => {
         cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
         cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
-        cy.get('.error-summary').should('contain', 'You need to select an option')
+        cy.get('.govuk-error-summary').should('contain', 'You need to select an option')
 
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
@@ -134,7 +134,7 @@ describe('Request to go live: choose how to process payments', () => {
 
         cy.get('#choose-how-to-process-payments-mode-3').click()
         cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
-        cy.get('.error-summary').should('contain', 'You need to select one of Worldpay, Smartpay or ePDQ')
+        cy.get('.govuk-error-summary').should('contain', 'You need to select one of Worldpay, Smartpay or ePDQ')
 
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)

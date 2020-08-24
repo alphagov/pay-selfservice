@@ -76,7 +76,7 @@ describe('Payment types', () => {
       cy.get('#credit-3').click()
       cy.get('#credit-4').click()
       cy.get('#save-card-types').click()
-      cy.get('.error-summary').should('be.visible')
+      cy.get('.govuk-error-summary').should('be.visible')
     })
   })
 })

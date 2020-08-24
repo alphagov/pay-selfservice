@@ -157,7 +157,7 @@ describe('Stripe setup: responsible person page', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq('/')
       })
-      cy.get('.flash-container .generic-error').should('contain', 'responsible person')
+      cy.get('.govuk-error-summary').should('contain', 'responsible person')
     })
   })
 
@@ -186,7 +186,7 @@ describe('Stripe setup: responsible person page', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq('/')
       })
-      cy.get('.flash-container .generic-error').should('contain', 'responsible person')
+      cy.get('.govuk-error-summary').should('contain', 'responsible person')
     })
   })
 

@@ -115,8 +115,8 @@ describe('Stripe setup: company number page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq('/')
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your company registration number.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
+        cy.get('.govuk-error-summary').should('contain', 'You’ve already provided your company registration number.')
+        cy.get('.govuk-error-summary').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
       })
 
       it('should redirect to Dashboard with an error message when submitting the form', () => {
@@ -136,8 +136,8 @@ describe('Stripe setup: company number page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq('/')
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your company registration number.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
+        cy.get('.govuk-error-summary').should('contain', 'You’ve already provided your company registration number.')
+        cy.get('.govuk-error-summary').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
       })
     })
 
