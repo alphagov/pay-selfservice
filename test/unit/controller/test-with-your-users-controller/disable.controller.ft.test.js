@@ -50,7 +50,7 @@ describe('test with your users - disable controller', () => {
     it('should add a relevant generic message to the session \'flash\'', () => {
       expect(session.flash).to.have.property('generic')
       expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('<p>Prototype link deleted</p>')
+      expect(session.flash.generic[0]).to.equal('Prototype link deleted')
     })
   })
 

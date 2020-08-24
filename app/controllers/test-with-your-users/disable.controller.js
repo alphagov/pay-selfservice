@@ -9,7 +9,7 @@ module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
   productsClient.product.disable(gatewayAccountId, req.params.productExternalId)
     .then(() => {
-      req.flash('generic', '<p>Prototype link deleted</p>')
+      req.flash('generic', 'Prototype link deleted')
       res.redirect(paths.prototyping.demoService.links)
     })
     .catch((err) => {

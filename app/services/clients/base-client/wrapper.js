@@ -67,6 +67,7 @@ module.exports = function (method, verb) {
           const err = new Error(errors || body || 'Unknown error')
           err.errorCode = response.statusCode
           err.errorIdentifier = lodash.get(body, 'error_identifier')
+          err.reason = lodash.get(body, 'reason')
           reject(err)
         } else {
           // eslint-disable-next-line

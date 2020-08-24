@@ -1,152 +1,229 @@
 'use strict'
 
-// NPM dependencies
 const sinon = require('sinon')
-const { expect } = require('chai')
 const nock = require('nock')
 
-// Custom dependencies
 const refundController = require('../../../app/controllers/transactions/transaction-refund.controller.js')
+const transactionFixtures = require('../../fixtures/transaction.fixtures')
 
-// Global setup
+const ACCOUNT_ID = '123'
+const CHARGE_ID = '123456'
+const connectorRefundUrl = `/v1/api/accounts/${ACCOUNT_ID}/charges/${CHARGE_ID}/refunds`
+const connectorMock = nock(process.env.CONNECTOR_URL)
+
 let req, res
 
 describe('Refund scenario:', function () {
-  beforeEach(function () {
-    req = {}
-    req.headers = {
-      'x-request-id': '1234'
-    }
-    req.user = {
-      externalId: '92734386',
-      email: 'test@example.com'
-    }
-    req.service = {
-      gatewayAccountIds: ['123', '456']
-    }
-    req.account = {
-      gateway_account_id: '123'
-    }
-    req.params = {
-      chargeId: '123456'
-    }
-    req.body = {
-      'refund-type': 'full',
-      'refund-amount-available-in-pence': '5000',
-      'full-amount': '5000'
-    }
-    req.flash = sinon.spy()
+  afterEach(function () {
+    nock.cleanAll()
+  })
 
+  beforeEach(function () {
+    req = {
+      headers: {
+        'x-request-id': '1234'
+      },
+      user: {
+        externalId: '92734386',
+        email: 'test@example.com'
+      },
+      account: {
+        gateway_account_id: ACCOUNT_ID
+      },
+      params: {
+        chargeId: CHARGE_ID
+      },
+      flash: sinon.spy()
+    }
     res = {
       redirect: sinon.spy()
     }
   })
 
-  it('should redirect back to transaction details and show refund sucess message', function (done) {
-    var mockRefundResponse = {
-      'refund_id': 'Just looking the status code of the response at the moment'
+  it('should show refund sucess message for a full refund', async () => {
+    req.body = {
+      'refund-type': 'full',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '50.00'
     }
-    nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
-      'user_external_id': req.user.externalId,
-      'user_email': req.user.email,
-      'amount': 500000,
-      'refund_amount_available': 5000
-    })
-      .reply(202, mockRefundResponse)
 
-    refundController(req, res).then(() => {
-      expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('generic', '<h2>Refund successful</h2> It may take up to 6 days to process.')).to.equal(true)
-    }).should.notify(done)
+    const request = transactionFixtures.validTransactionRefundRequest({
+      user_external_id: req.user.externalId,
+      user_email: req.user.email,
+      amount: 5000,
+      refund_amount_available: 5000
+    }).getPlain()
+    connectorMock.post(connectorRefundUrl, request)
+      .reply(202)
+
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundSuccess', 'true')
   })
 
-  it('should redirect back to transaction details and show error message if refund amount is greater than initial charge', function (done) {
-    var mockRefundResponse = {
-      'refund_id': 'Just looking the status code of the response at the moment'
+  it('should show refund sucess message for a partial refund', async () => {
+    req.body = {
+      'refund-type': 'partial',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '50.00',
+      'refund-amount': '19.90'
     }
-    nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
-      'user_external_id': req.user.externalId,
-      'user_email': req.user.email,
-      'amount': 600000,
-      'refund_amount_available': 5000
-    })
-      .reply(400, mockRefundResponse)
 
-    refundController(req, res).catch(() => {
-      expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('genericError', '<h2>Select another amount</h2> The amount you tried to refund is greater than the transaction total')).to.equal(true)
-    }).should.notify(done)
+    const request = transactionFixtures.validTransactionRefundRequest({
+      user_external_id: req.user.externalId,
+      user_email: req.user.email,
+      amount: 1990,
+      refund_amount_available: 5000
+    }).getPlain()
+    connectorMock.post(connectorRefundUrl, request)
+      .reply(202)
+
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundSuccess', 'true')
   })
 
-  it('should redirect back to transaction details and show error message if refund amount is smaller than minimum accepted', function (done) {
-    var mockRefundResponse = {
-      'refund_id': 'Just looking the status code of the response at the moment'
+  it('should show error message if partial refund amount is invalid', async () => {
+    req.body = {
+      'refund-type': 'partial',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '5000',
+      'refund-amount': '6.000'
     }
-    nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
-      'user_external_id': req.user.externalId,
-      'user_email': req.user.email,
-      'amount': 1,
-      'refund_amount_available': 5000
-    })
-      .reply(400, mockRefundResponse)
 
-    refundController(req, res).catch(() => {
-      expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('genericError', '<h2>Select another amount</h2> The amount you tried to refund is less than the accepted minimum for this transaction.')).to.equal(true)
-    }).should.notify(done)
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundError', 'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”')
   })
 
-  it('should redirect back to transaction details and show error message if refund request has already been submitted', function (done) {
-    var mockRefundResponse = {
-      'message': 'Precondition Failed!'
+  it('should show error message if partial refund amount is greater than initial charge', async () => {
+    req.body = {
+      'refund-type': 'partial',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '5000',
+      'refund-amount': '60.00'
     }
-    nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
-      'user_external_id': req.user.externalId,
-      'user_email': req.user.email,
-      'amount': 1,
-      'refund_amount_available': 5000
-    })
-      .reply(400, mockRefundResponse)
 
-    refundController(req, res).catch(() => {
-      expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('genericError', '<h2>Repeat request</h2> This refund request has already been submitted. Refresh your transactions list.')).to.equal(true)
-    }).should.notify(done)
+    const request = transactionFixtures.validTransactionRefundRequest({
+      user_external_id: req.user.externalId,
+      user_email: req.user.email,
+      amount: 6000,
+      refund_amount_available: 5000
+    }).getPlain()
+    const response = transactionFixtures.invalidTransactionRefundResponse({
+      error_identifier: 'REFUND_NOT_AVAILABLE',
+      reason: 'amount_not_available'
+    }).getPlain()
+
+    connectorMock.post(connectorRefundUrl, request)
+      .reply(400, response)
+
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundError', 'The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
   })
 
-  it('should redirect back to transaction details and show error message if refund request has already been fully refunded', function (done) {
-    var mockRefundResponse = {
-      'reason': 'full'
+  it('should show error message if the partial refund amount is smaller than minimum accepted', async () => {
+    req.body = {
+      'refund-type': 'partial',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '5000',
+      'refund-amount': '00.01'
     }
-    nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
-      'user_external_id': req.user.externalId,
-      'user_email': req.user.email,
-      'amount': 1,
-      'refund_amount_available': 5000
-    })
-      .reply(400, mockRefundResponse)
 
-    refundController(req, res).catch(() => {
-      expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('Repeat request<h2> This </h2>refund request has already been submitted. Refresh your transactions list.')).to.equal(true)
-    }).should.notify(done)
+    const request = transactionFixtures.validTransactionRefundRequest({
+      user_external_id: req.user.externalId,
+      user_email: req.user.email,
+      amount: 1,
+      refund_amount_available: 5000
+    }).getPlain()
+    const response = transactionFixtures.invalidTransactionRefundResponse({
+      error_identifier: 'REFUND_NOT_AVAILABLE',
+      reason: 'amount_min_validation'
+    }).getPlain()
+
+    connectorMock.post(connectorRefundUrl, request)
+      .reply(400, response)
+
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundError', 'The amount you tried to refund is too low. Please try again.')
   })
 
-  it('should redirect back to transaction details and show error message if unexpected error has occured', function (done) {
-    var mockRefundResponse = {
-      'message': 'what happeneeed!'
+  it('should show error message if the partial refund request has already been submitted', async () => {
+    req.body = {
+      'refund-type': 'partial',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '5000',
+      'refund-amount': '19.90'
     }
-    nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
-      'user_external_id': req.user.externalId,
-      'user_email': req.user.email,
-      'amount': 1,
-      'refund_amount_available': 5000
-    })
-      .reply(400, mockRefundResponse)
 
-    refundController(req, res).catch(() => {
-      expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('genericError', '<h2>Refund failed</h2> We couldn’t process this refund. Try again later.')).to.equal(true)
-    }).should.notify(done)
+    const request = transactionFixtures.validTransactionRefundRequest({
+      user_external_id: req.user.externalId,
+      user_email: req.user.email,
+      amount: 1990,
+      refund_amount_available: 5000
+    }).getPlain()
+    const response = transactionFixtures.invalidTransactionRefundResponse({
+      error_identifier: 'REFUND_AMOUNT_AVAILABLE_MISMATCH'
+    }).getPlain()
+
+    connectorMock.post(connectorRefundUrl, request)
+      .reply(400, response)
+
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundError', 'This refund request has already been submitted.')
+  })
+
+  it('should show error message if refund request has already been fully refunded', async () => {
+    req.body = {
+      'refund-type': 'full',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '50.00'
+    }
+
+    const request = transactionFixtures.validTransactionRefundRequest({
+      user_external_id: req.user.externalId,
+      user_email: req.user.email,
+      amount: 5000,
+      refund_amount_available: 5000
+    }).getPlain()
+    const response = transactionFixtures.invalidTransactionRefundResponse({
+      error_identifier: 'REFUND_NOT_AVAILABLE',
+      reason: 'full'
+    }).getPlain()
+
+    connectorMock.post(connectorRefundUrl, request)
+      .reply(400, response)
+
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundError', 'This refund request has already been submitted.')
+  })
+
+  it('should show error message if unexpected error has occured', async () => {
+    req.body = {
+      'refund-type': 'full',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '50.00'
+    }
+
+    const request = transactionFixtures.validTransactionRefundRequest({
+      user_external_id: req.user.externalId,
+      user_email: req.user.email,
+      amount: 5000,
+      refund_amount_available: 5000
+    }).getPlain()
+    const response = transactionFixtures.invalidTransactionRefundResponse({
+      error_identifier: 'UNKNOWN_ERROR_IDENTIFIER'
+    }).getPlain()
+
+    connectorMock.post(connectorRefundUrl, request)
+      .reply(400, response)
+
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundError', 'We couldn’t process this refund. Please try again or contact support.')
   })
 })

@@ -9,9 +9,16 @@ const Ledger = require('./clients/ledger.client')
 const { ConnectorClient } = require('./clients/connector.client')
 const getQueryStringForParams = require('../utils/get-query-string-for-params')
 const userService = require('../services/user.service')
-const transactionView = require('../utils/transaction-view.js')
+const transactionView = require('../utils/transaction-view')
+const errorIdentifier = require('../models/error-identifier')
 
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+
+const connectorRefundFailureReasons = {
+  ALREADY_FULLY_REFUNDED: 'full',
+  AMOUNT_NOT_AVAILABLE: 'amount_not_available',
+  AMOUNT_BELOW_MINIMUM: 'amount_min_validation'
+}
 
 const searchLedger = async function searchLedger (gatewayAccountIds = [], filters) {
   try {
@@ -72,14 +79,7 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
   }
 }
 
-const refund = function refundTransaction (gatewayAccountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail, correlationId) {
-  const payload = {
-    amount: amount,
-    refund_amount_available: refundAmountAvailable,
-    user_external_id: userExternalId,
-    user_email: userEmail
-  }
-
+const refund = async function refundTransaction (gatewayAccountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail, correlationId) {
   const logContext = {
     refund_amount_available: refundAmountAvailable,
     amount: amount
@@ -90,28 +90,36 @@ const refund = function refundTransaction (gatewayAccountId, chargeId, amount, r
   logContext[keys.CORRELATION_ID] = correlationId
   logger.log('info', 'Submitting a refund for a charge', logContext)
 
-  const params = { gatewayAccountId, chargeId, payload, correlationId }
+  const payload = {
+    amount: amount,
+    refund_amount_available: refundAmountAvailable,
+    user_external_id: userExternalId,
+    user_email: userEmail
+  }
 
-  return new Promise(function (resolve, reject) {
-    connector.postChargeRefund(params, function () {
-      resolve()
-    }).on('connectorError', (err, response, body) => {
-      err = 'REFUND_FAILED'
-      if (response && response.statusCode === 400) {
-        if (body.reason) {
-          err = body.reason
+  try {
+    await connector.postChargeRefund(gatewayAccountId, chargeId, payload, correlationId)
+  } catch (err) {
+    if (err.errorIdentifier) {
+      if (err.errorIdentifier === errorIdentifier.REFUND_AMOUNT_AVAILABLE_MISMATCH) {
+        throw new Error('This refund request has already been submitted.')
+      }
+
+      if (err.errorIdentifier === errorIdentifier.REFUND_NOT_AVAILABLE &&
+        err.reason) {
+        if (err.reason === connectorRefundFailureReasons.ALREADY_FULLY_REFUNDED) {
+          throw new Error('This refund request has already been submitted.')
+        }
+        if (err.reason === connectorRefundFailureReasons.AMOUNT_NOT_AVAILABLE) {
+          throw new Error('The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
+        }
+        if (err.reason === connectorRefundFailureReasons.AMOUNT_BELOW_MINIMUM) {
+          throw new Error('The amount you tried to refund is too low. Please try again.')
         }
       }
-      if (response && response.statusCode === 412) {
-        if (body.reason) {
-          err = body.reason
-        } else {
-          err = 'refund_amount_available_mismatch'
-        }
-      }
-      reject(err)
-    })
-  })
+    }
+    throw new Error('We couldn’t process this refund. Please try again or contact support.')
+  }
 }
 
 function getStatusCodeForError (err, response) {

@@ -115,11 +115,6 @@ function _serviceNameUrlFor (gatewayAccountId, url) {
 }
 
 /** @private */
-function _chargeRefundsUrlFor (gatewayAccountId, chargeId, url) {
-  return url + CHARGE_REFUNDS_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId)
-}
-
-/** @private */
 var _getNotificationEmailUrlFor = function (accountID, url) {
   return url + EMAIL_NOTIFICATION__PATH.replace('{accountId}', accountID)
 }
@@ -540,28 +535,24 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Create a refund of the provided amount for the given payment
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            chargeId (required)
-   *            payload (required)
-   *            correlationId (optional)
-   * @param successCallback
-   *          Callback function for successful refunds
+   * @param gatewayAccountId
+   * @param chargeId
+   * @param payload
+   * @param correlationId
+   * @returns {Promise<Object>}
    */
-  postChargeRefund: function (params, successCallback) {
-    let url = _chargeRefundsUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
-    logger.debug('Calling connector to post a refund for payment', {
-      service: 'connector',
-      method: 'POST',
-      url: url,
-      chargeId: params.chargeId,
-      payload: params.payload
-    })
-
-    oldBaseClient.post(url, params, this.responseHandler(successCallback))
-    return this
+  postChargeRefund: function (gatewayAccountId, chargeId, payload, correlationId) {
+    return baseClient.post(
+      {
+        baseUrl: this.connectorUrl,
+        url: CHARGE_REFUNDS_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId),
+        json: true,
+        body: payload,
+        correlationId,
+        description: 'submit refund',
+        service: SERVICE_NAME
+      }
+    )
   },
   /**
    *

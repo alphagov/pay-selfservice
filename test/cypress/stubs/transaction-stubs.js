@@ -33,6 +33,21 @@ const getLedgerTransactionsSuccess = function (opts) {
   }
 }
 
+const postRefundSuccess = function (opts) {
+  return {
+    name: 'postRefundSuccess',
+    opts: {
+      gateway_account_id: opts.gatewayAccountId,
+      charge_id: opts.transactionId,
+      amount: opts.refundAmount,
+      refund_amount_available: opts.refundAmountAvailable,
+      user_external_id: opts.userExternalId,
+      user_email: opts.userEmail,
+      verifyTimesCalled: 1
+    }
+  }
+}
+
 const postRefundAmountNotAvailable = function (opts) {
   return {
     name: 'postRefundAmountNotAvailable',
@@ -51,5 +66,6 @@ module.exports = {
   getLedgerEventsSuccess,
   getLedgerTransactionSuccess,
   getLedgerTransactionsSuccess,
+  postRefundSuccess,
   postRefundAmountNotAvailable
 }

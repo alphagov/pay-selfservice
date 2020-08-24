@@ -71,6 +71,6 @@ describe('POST edit payment link controller', () => {
     expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage)
     expect(session.flash).to.have.property('generic')
     expect(session.flash.generic.length).to.equal(1)
-    expect(session.flash.generic[0]).to.equal('<h2>Your payment link has been updated</h2>')
+    expect(session.flash.generic[0]).to.equal('Your payment link has been updated')
   })
 })
