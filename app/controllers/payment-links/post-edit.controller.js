@@ -23,6 +23,6 @@ module.exports = (req, res) => {
     .catch((err) => {
       console.log(err)
       logger.error(`[requestId=${req.correlationId}] update of payment link failed - ${err.message}`)
-      renderErrorView(req, res, 'Internal server error')
+      renderErrorView(req, res)
     })
 }

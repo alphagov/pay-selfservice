@@ -70,12 +70,12 @@ module.exports = (req, res) => {
     })
     .then(product => {
       lodash.unset(req, 'session.pageData.createPaymentLink')
-      req.flash('generic', `Your payment link is now live. Give this link to your users to collect payments for your service.`)
+      req.flash('generic', 'Your payment link is now live. Give this link to your users to collect payments for your service.')
       res.redirect(paths.paymentLinks.manage)
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Creating a payment link failed - ${err.message}`)
-      req.flash('genericError', `<h2>There were errors</h2><p>Error while creating payment link</p>`)
+      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       return res.redirect(paths.paymentLinks.review)
     })
 }

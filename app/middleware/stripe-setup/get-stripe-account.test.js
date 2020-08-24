@@ -1,14 +1,8 @@
 'use strict'
 
-// NPM dependencies
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-
-// Global setup
-chai.use(chaiAsPromised)
-const { expect } = chai // must be called after chai.use(chaiAsPromised) to use "should.eventually"
 
 describe('Get Stripe account middleware', () => {
   let req
@@ -27,7 +21,7 @@ describe('Get Stripe account middleware', () => {
       }
     }
     res = {
-      setHeader: sinon.stub(),
+      setHeader: sinon.spy(),
       status: sinon.spy(),
       render: sinon.spy(),
       locals: {}
@@ -35,45 +29,33 @@ describe('Get Stripe account middleware', () => {
     next = sinon.spy()
   })
 
-  it('should retrieve Stripe account', done => {
+  it('should retrieve Stripe account', async () => {
     const middleware = getMiddlewareWithConnectorClientResolvedPromiseMock(stripeAccount)
 
-    middleware(req, res, next)
-
-    setTimeout(() => {
-      expect(res.locals.stripeAccount).to.deep.equal(stripeAccount)
-      expect(next.calledOnce).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await middleware(req, res, next)
+    expect(res.locals.stripeAccount).to.deep.equal(stripeAccount)
+    sinon.assert.calledOnce(next)
   })
 
-  it('should render an error page when req.account is undefined', done => {
+  it('should render an error page when req.account is undefined', async () => {
     const middleware = getMiddlewareWithConnectorClientResolvedPromiseMock(stripeAccount)
     req.account = undefined
 
-    middleware(req, res, next)
-
-    setTimeout(() => {
-      expect(res.locals.stripeAccount).to.be.undefined // eslint-disable-line
-      expect(next.notCalled).to.be.true // eslint-disable-line
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Internal server error' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await middleware(req, res, next)
+    expect(res.locals.stripeAccount).to.be.undefined // eslint-disable-line
+    sinon.assert.notCalled(next)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error')
   })
 
-  it('should render an error page when connector rejects the call', done => {
+  it('should render an error page when connector rejects the call', async () => {
     const middleware = getMiddlewareWithConnectorClientRejectedPromiseMock()
 
-    middleware(req, res, next)
-
-    setTimeout(() => {
-      expect(res.locals.stripeAccount).to.be.undefined // eslint-disable-line
-      expect(next.notCalled).to.be.true // eslint-disable-line
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await middleware(req, res, next)
+    expect(res.locals.stripeAccount).to.be.undefined // eslint-disable-line
+    sinon.assert.notCalled(next)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error')
   })
 })
 
@@ -81,11 +63,7 @@ function getMiddlewareWithConnectorClientResolvedPromiseMock (getStripeAccountRe
   return proxyquire('./get-stripe-account', {
     '../../services/clients/connector.client': {
       ConnectorClient: function () {
-        this.getStripeAccount = (gatewayAccountId, correlationId) => {
-          return new Promise(resolve => {
-            resolve(getStripeAccountResponse)
-          })
-        }
+        this.getStripeAccount = () => Promise.resolve(getStripeAccountResponse)
       }
     }
   })
@@ -95,11 +73,7 @@ function getMiddlewareWithConnectorClientRejectedPromiseMock () {
   return proxyquire('./get-stripe-account', {
     '../../services/clients/connector.client': {
       ConnectorClient: function () {
-        this.getStripeAccount = (gatewayAccountId, correlationId) => {
-          return new Promise((resolve, reject) => {
-            reject(new Error())
-          })
-        }
+        this.getStripeAccount = () => Promise.reject(new Error())
       }
     }
   })

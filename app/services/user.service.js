@@ -123,14 +123,14 @@ module.exports = {
   updatePassword: function (token, newPassword) {
     return new Promise(function (resolve, reject) {
       if (newPassword.length < MIN_PASSWORD_LENGTH) {
-        reject(new Error('Your password must be at least 10 characters.'))
+        reject(new Error('Password must be 10 characters or more'))
       } else if (commonPassword(newPassword)) {
         reject(new Error('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'))
       } else {
         getAdminUsersClient().updatePasswordForUser(token, newPassword)
           .then(
             () => resolve(),
-            () => reject(new Error('There has been a problem updating password.'))
+            () => reject(new Error('There has been a problem updating password. Please try again.'))
           )
       }
     })
@@ -221,8 +221,7 @@ module.exports = {
    * @param newPhoneNumber
    * @returns {Promise}
    */
-  updatePhoneNumber: (externalId, newPhoneNumber) => {
+  updatePhoneNumber: function (externalId, newPhoneNumber) {
     return getAdminUsersClient().updatePhoneNumberForUser(externalId, newPhoneNumber)
-      .catch(error => new Error(`There has been a problem updating the phone number: ${error}`))
   }
 }

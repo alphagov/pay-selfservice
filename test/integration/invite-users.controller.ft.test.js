@@ -8,9 +8,6 @@ const chai = require('chai')
 const roles = require('../../app/utils/roles').roles
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const inviteFixtures = require(path.join(__dirname, '/../fixtures/invite.fixtures'))
-const sinon = require('sinon')
-const _ = require('lodash')
-const inviteUserController = require('../../app/controllers/invite-user.controller')
 
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
@@ -44,7 +41,7 @@ describe('invite user controller', function () {
 
   describe('invite user', function () {
     it('should invite a new team member successfully', function (done) {
-      let validInvite = inviteFixtures.validInviteRequest()
+      const validInvite = inviteFixtures.validInviteRequest()
       adminusersMock.post(INVITE_RESOURCE)
         .reply(201, inviteFixtures.validInviteResponse(validInvite.getPlain()))
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
@@ -65,7 +62,7 @@ describe('invite user controller', function () {
     })
 
     it('should error if the user is already invited/exists', function (done) {
-      let existingUser = 'existing-user@example.com'
+      const existingUser = 'existing-user@example.com'
       adminusersMock.post(INVITE_RESOURCE)
         .reply(412, inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(existingUser).getPlain())
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
@@ -88,7 +85,7 @@ describe('invite user controller', function () {
     })
 
     it('should error on unknown role externalId', function (done) {
-      let unknownRoleId = '999'
+      const unknownRoleId = '999'
 
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
@@ -107,32 +104,6 @@ describe('invite user controller', function () {
           expect(res.body.message).to.equal('Unable to send invitation at this time')
         })
         .end(done)
-    })
-
-    it('should error invitee is an invalid email address', function (done) {
-      let baseReq = {
-        flash: sinon.stub()
-      }
-      let res = {
-        redirect: sinon.stub()
-      }
-
-      let invalidEmail = 'invalid@examplecom'
-      const externalServiceId = 'some-external-service-id'
-      let req = _.merge(baseReq, {
-        correlationId: 'blah',
-        user: { externalId: 'some-ext-id', serviceIds: ['1'] },
-        body: { 'invitee-email': invalidEmail, 'role-input': '200' },
-        service: {
-          externalId: externalServiceId
-        }
-      })
-
-      inviteUserController.invite(req, res)
-
-      expect(req.flash.calledWith('genericError', 'Invalid email address')).to.equal(true)
-      expect(res.redirect.calledWith(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))).to.equal(true)
-      done()
     })
   })
 })

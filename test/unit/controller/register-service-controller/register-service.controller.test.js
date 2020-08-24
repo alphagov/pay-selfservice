@@ -1,145 +1,105 @@
 'use strict'
 
-// NPM dependencies
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const chai = require('chai')
-
-// Custom dependencies
 const paths = require('../../../../app/paths.js')
 
-// Constants
-const expect = chai.expect
-
-describe('Error handler register service', function () {
-  let correlationId, req, res, flashStub, redirectStub, renderStub, statusStub, email, telephoneNumber, password
+describe('Register service', function () {
+  let req, res
 
   beforeEach(() => {
-    correlationId = 'abcde12345'
-    email = 'be@gov.uk'
-    telephoneNumber = '07512345678'
-    password = 'password1234'
-
-    flashStub = sinon.spy()
-
     req = {
-      correlationId,
+      correlationId: 'abcde12345',
       body: {
-        email,
-        'telephone-number': telephoneNumber,
-        password
+        email: 'foo@example.com',
+        'telephone-number': '07512345678',
+        password: 'password1234'
       },
-      flash: flashStub
+      flash: sinon.spy()
     }
-
-    redirectStub = sinon.spy()
-    renderStub = sinon.spy()
-    statusStub = sinon.spy()
 
     res = {
-      setHeader: flashStub,
-      redirect: redirectStub,
-      render: renderStub,
-      status: statusStub
+      setHeader: sinon.spy(),
+      redirect: sinon.spy(),
+      render: sinon.spy(),
+      status: sinon.spy()
     }
   })
 
-  afterEach(() => {
-    redirectStub = sinon.spy()
-    renderStub = sinon.spy()
-    statusStub = sinon.spy()
-    flashStub = sinon.spy()
+  const controllerWithStubbedAdminusersSuccess = proxyquire('../../../../app/controllers/register-service.controller.js', {
+    '../services/service-registration.service': {
+      submitRegistration: () => Promise.resolve()
+    }
   })
 
-  const controller = function (error) {
+  const getControllerWithStubbedAdminusersError = function (error) {
     return proxyquire('../../../../app/controllers/register-service.controller.js',
       {
         '../services/service-registration.service': {
-          submitRegistration: () => {
-            return new Promise(function (resolve, reject) {
-              reject(error)
-            })
-          }
+          submitRegistration: () => Promise.reject(error)
         }
       })
   }
 
-  it('should handle 400 as 303 redirect to index', function (done) {
-    email = 'be@mail.com'
-    const errorMessage = `Invalid input`
-    const error = {
+  it('should redirect to the registration submitted page when successful', async () => {
+    await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res)
+    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
+  })
+
+  it('should relay validation message from adminusers when it responds with a 400', async () => {
+    const errorMessage = `message from adminusers`
+    const errorFromAdminusers = {
       errorCode: 400,
       message: {
         errors: errorMessage
       }
     }
 
-    controller(error).submitRegistration(req, res).should.be.fulfilled
-      .then(() => {
-        expect(flashStub.calledWith('genericError', errorMessage)).to.equal(true)
-        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true)
-      }).should.notify(done)
+    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res)
+
+    sinon.assert.calledWith(req.flash, 'genericError', errorMessage)
+    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
   })
 
-  it('should handle 403 as 303 redirect to index', function (done) {
-    email = 'be@mail.com'
-    const errorMessage = `Email [${email}] is not a valid public sector email`
-    const error = {
+  it('should relay validation message from adminusers when it responds with a 403', async () => {
+    const errorMessage = `message from adminusers`
+    const errorFromAdminusers = {
       errorCode: 403,
       message: {
         errors: errorMessage
       }
     }
 
-    controller(error).submitRegistration(req, res).should.be.fulfilled
-      .then(() => {
-        expect(flashStub.calledWith('genericError', errorMessage)).to.equal(true)
-        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true)
-      }).should.notify(done)
+    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res)
+
+    sinon.assert.calledWith(req.flash, 'genericError', errorMessage)
+    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
   })
 
-  it('should handle 409 as 303 redirect to confirmation page', function (done) {
-    email = 'be@mail.com'
-    const errorMessage = `email [${email}] already exists`
-    const error = {
-      errorCode: 409,
-      message: {
-        errors: errorMessage
-      }
+  it('should continue to confirmation page when adminusers returns a 409', async () => {
+    const errorFromAdminusers = {
+      errorCode: 409
     }
 
-    controller(error).submitRegistration(req, res).should.be.fulfilled
-      .then(() => {
-        expect(redirectStub.calledWith(303, paths.selfCreateService.confirm)).to.equal(true)
-      }).should.notify(done)
+    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res)
+    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
   })
 
-  it('should handle no error code as 303 redirect to index', function (done) {
-    telephoneNumber = '0751234567'
-    const error = new Error('Invalid phone number')
+  it('should show error whan an invalid phone number is entered', async () => {
+    req.body['telephone-number'] = 'acb1234567'
 
-    controller(error).submitRegistration(req, res).should.be.fulfilled
-      .then(() => {
-        expect(flashStub.calledWith('genericError', error.message)).to.equal(true)
-        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true)
-      }).should.notify(done)
+    await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res)
+    sinon.assert.calledWith(req.flash, 'genericError', 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
   })
 
-  it('should handle 404 as 303 redirect to error page', function (done) {
-    email = 'be@mail.com'
-    const errorCode = 404
-    const errorMessage = `[${correlationId}] ${errorCode} An error has occurred. Rendering error view - errorMessage=Unable to process registration at this time`
+  it('should show error page for unexpected error from adminusers', async () => {
     const error = {
-      errorCode,
-      message: {
-        errors: errorMessage
-      }
+      errorCode: 404
     }
 
-    controller(error).submitRegistration(req, res).should.be.fulfilled
-      .then(() => {
-        expect(statusStub.calledWith(errorCode)).to.eq(true)
-        expect(renderStub.calledWith('error', { message: 'Unable to process registration at this time' })).to.equal(true)
-      }).should.notify(done)
+    await getControllerWithStubbedAdminusersError(error).submitRegistration(req, res)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error')
   })
 })

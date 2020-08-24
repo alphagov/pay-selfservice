@@ -18,6 +18,6 @@ module.exports = async (req, res) => {
     req.flash('generic', 'Phone number updated')
     return res.redirect(paths.user.profile)
   } catch (error) {
-    return renderErrorView(req, res, 'Unable to update phone number')
+    return renderErrorView(req, res, 'Unable to update phone number. Please try again or contact support team.')
   }
 }

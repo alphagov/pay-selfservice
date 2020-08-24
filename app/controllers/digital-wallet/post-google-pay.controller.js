@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   const gatewayMerchantId = req.body.merchantId
 
   if (enable && !gatewayMerchantId) {
-    req.flash('genericError', '<h2>Please enter a valid Merchant ID</h2>')
+    req.flash('genericError', 'Enter a valid Merchant ID')
     return res.redirect(paths.digitalWallet.googlePay)
   }
 
@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
     } catch (error) {
       logger.info(`${correlationId} error setting google pay merchant ID for ${gatewayAccountId}: `, error)
       if (error.errorCode === 400) {
-        req.flash('genericError', `<h2>There was an error enabling google pay. Check that the Merchant ID you entered is correct and that your PSP account credentials have been set.</h2>`)
+        req.flash('genericError', 'There was an error enabling google pay. Check that the Merchant ID you entered is correct and that your PSP account credentials have been set.')
         return res.redirect(paths.digitalWallet.googlePay)
       } else {
         return renderErrorView(req, res, false, error.errorCode)

@@ -90,7 +90,7 @@ describe('test with your users - disable controller', () => {
     it('should add a relevant error message to the session \'flash\'', () => {
       expect(session.flash).to.have.property('genericError')
       expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<p>Unable to delete prototype link</p>')
+      expect(session.flash.genericError[0]).to.equal('Something went wrong when deleting the prototype link. Please try again or contact support.')
     })
   })
 })

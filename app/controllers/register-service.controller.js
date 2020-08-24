@@ -55,7 +55,7 @@ module.exports = {
         })
         res.redirect(303, paths.selfCreateService.confirm)
       } else {
-        renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode)
+        renderErrorView(req, res)
       }
     }
 

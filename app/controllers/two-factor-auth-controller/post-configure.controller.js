@@ -14,9 +14,9 @@ module.exports = (req, res) => {
   userService.configureNewOtpKey(req.user.externalId, code, method, req.correlationId)
     .then(user => {
       if (method === 'APP') {
-        req.flash('generic', `Your sign-in method has been updated. Use your authenticator app when you next sign in.`)
+        req.flash('generic', 'Your sign-in method has been updated. Use your authenticator app when you next sign in.')
       } else {
-        req.flash('generic', `Your sign-in method has been updated. We’ll send you a text message when you next sign in.`)
+        req.flash('generic', 'Your sign-in method has been updated. We’ll send you a text message when you next sign in.')
       }
       return res.redirect(paths.user.profile)
     })
@@ -25,7 +25,7 @@ module.exports = (req, res) => {
       if (err.errorCode === 401 || err.errorCode === 400) {
         errorMessage = `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#code">Please enter a valid verification code</a></li></ul>`
       } else {
-        errorMessage = `<h2>Internal server error, please try again</h2>`
+        errorMessage = 'Something went wrong. Please try again or contact support.'
         logger.error(`[requestId=${req.correlationId}] Activating new OTP key failed, server error`)
       }
       req.flash('genericError', errorMessage)

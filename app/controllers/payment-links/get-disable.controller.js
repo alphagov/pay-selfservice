@@ -15,7 +15,7 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Disable product failed - ${err.message}`)
-      req.flash('genericError', '<h2>There were errors</h2><p>Unable to delete the payment link</p>')
+      req.flash('genericError', 'Something went wrong when deleting the payment link. Please try again or contact support.')
       res.redirect(paths.paymentLinks.manage)
     })
 }

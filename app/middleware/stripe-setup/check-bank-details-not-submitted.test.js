@@ -1,16 +1,8 @@
 'use strict'
 
-// NPM dependencies
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
 const sinon = require('sinon')
-// Local dependencies
 const paths = require('../../paths')
 const checkBankDetailsNotSubmitted = require('./check-bank-details-not-submitted')
-
-// Global setup
-chai.use(chaiAsPromised)
-const { expect } = chai // must be called after chai.use(chaiAsPromised) to use "should.eventually"
 
 describe('Check bank details not submitted middleware', () => {
   let req
@@ -35,54 +27,39 @@ describe('Check bank details not submitted middleware', () => {
     next = sinon.spy()
   })
 
-  it('should call next when bank account flag is false', done => {
+  it('should call next when bank account flag is false', async () => {
     req.account.connectorGatewayAccountStripeProgress.bankAccount = false
 
-    checkBankDetailsNotSubmitted(req, res, next)
-    setTimeout(() => {
-      expect(next.calledOnce).to.be.true // eslint-disable-line
-      expect(req.flash.notCalled).to.be.true // eslint-disable-line
-      expect(res.redirect.notCalled).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await checkBankDetailsNotSubmitted(req, res, next)
+    sinon.assert.calledOnce(next)
+    sinon.assert.notCalled(req.flash)
+    sinon.assert.notCalled(res.redirect)
   })
 
-  it('should redirect to the dashboard with error message when bank account flag is true', done => {
+  it('should redirect to the dashboard with error message when bank account flag is true', async () => {
     req.account.connectorGatewayAccountStripeProgress.bankAccount = true
 
-    checkBankDetailsNotSubmitted(req, res, next)
-
-    setTimeout(() => {
-      expect(next.notCalled).to.be.true // eslint-disable-line
-      expect(req.flash.calledWith('genericError', 'You’ve already provided your bank details.<br />Contact GOV.UK Pay support if you need to update them.')).to.be.true // eslint-disable-line
-      expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await checkBankDetailsNotSubmitted(req, res, next)
+    sinon.assert.notCalled(next)
+    sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+    sinon.assert.calledWith(res.redirect, 303, paths.dashboard.index)
   })
 
-  it('should render an error page when req.account is undefined', done => {
+  it('should render an error page when req.account is undefined', async () => {
     req.account = undefined
 
-    checkBankDetailsNotSubmitted(req, res, next)
-
-    setTimeout(() => {
-      expect(next.notCalled).to.be.true // eslint-disable-line
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Internal server error' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await checkBankDetailsNotSubmitted(req, res, next)
+    sinon.assert.notCalled(next)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error')
   })
 
-  it('should render an error page when req.account.connectorGatewayAccountStripeProgress', done => {
+  it('should render an error page when req.account.connectorGatewayAccountStripeProgress', async () => {
     req.account.connectorGatewayAccountStripeProgress = undefined
 
-    checkBankDetailsNotSubmitted(req, res, next)
-
-    setTimeout(() => {
-      expect(next.notCalled).to.be.true // eslint-disable-line
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await checkBankDetailsNotSubmitted(req, res, next)
+    sinon.assert.notCalled(next)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error')
   })
 })

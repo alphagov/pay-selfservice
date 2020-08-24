@@ -40,7 +40,7 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Making a demo payment failed - ${err.message}`)
-      req.flash('genericError', `<h2>There were errors</h2> Error while creating demo payment`)
+      req.flash('genericError', 'Something went wrong. Please try again.')
       return res.redirect(paths.prototyping.demoPayment.index)
     })
 }
