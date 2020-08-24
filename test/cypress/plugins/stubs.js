@@ -290,6 +290,13 @@ module.exports = {
       response: transactionDetailsFixtures.validChargeEventsResponse(opts).getPlain()
     })
   },
+  postRefundSuccess: (opts = {}) => {
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
+    return simpleStubBuilder('POST', path, 200, {
+      request: transactionDetailsFixtures.validTransactionRefundRequest(opts).getPlain(),
+      verifyCalledTimes: opts.verifyCalledTimes
+    })
+  },
   postRefundAmountNotAvailable: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
     return simpleStubBuilder('POST', path, 400, {

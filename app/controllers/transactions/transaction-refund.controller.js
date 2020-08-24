@@ -21,15 +21,15 @@ const refundTransaction = async function refundTransaction (req, res, next) {
 
     const refundAmountInPence = safeConvertPoundsStringToPence(refundAmount)
     if (!refundAmountInPence) {
-      req.flash('genericError', 'Choose an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”')
+      req.flash('refundError', 'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”')
       return res.redirect(transactionDetailPath)
     }
 
     try {
       await refund(accountId, chargeId, refundAmountInPence, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
-      req.flash('generic', 'Refund successful. It may take up to 6 days to process.')
+      req.flash('refundSuccess', 'true')
     } catch (err) {
-      req.flash('genericError', err.message)
+      req.flash('refundError', err.message)
     }
     res.redirect(transactionDetailPath)
   } catch (err) {

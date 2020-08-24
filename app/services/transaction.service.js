@@ -118,7 +118,7 @@ const refund = async function refundTransaction (gatewayAccountId, chargeId, amo
         }
       }
     }
-    throw new Error('We couldn’t process this refund. Try again later.')
+    throw new Error('We couldn’t process this refund. Please try again or contact support.')
   }
 }
 

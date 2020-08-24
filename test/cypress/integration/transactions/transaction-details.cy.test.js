@@ -1,6 +1,5 @@
 'use strict'
 
-const lodash = require('lodash')
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
@@ -282,15 +281,44 @@ describe('Transaction details page', () => {
   })
 
   describe('refunds', () => {
+    it('should show success message when full refund is successful', () => {
+      const transactionDetails = defaultTransactionDetails()
+      const refundAmount = transactionDetails.amount + 1
+      const stubs = [
+        ...getStubs(transactionDetails),
+        transactionStubs.postRefundSuccess(
+          {
+            gatewayAccountId, userExternalId, userEmail, transactionId: transactionDetails.transaction_id, refundAmount, refundAmountAvailable: transactionDetails.amount
+          })
+      ]
+      cy.task('setupStubs', stubs)
+
+      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+      // Click the refund button
+      cy.get('.target-to-show--toggle').click()
+
+      cy.get('.govuk-radios__input#full').should('be.checked')
+
+      // Click the refund submit button
+      cy.get('#refund-button').click()
+
+      // Ensure the flash container is showing
+      cy.get('.flash-container.flash-container--good').should('be.visible')
+
+      cy.get('.flash-container').find('h2').should('contain', 'Refund successful')
+    })
+
     it('should fail when an invalid refund amount is specified', () => {
       const transactionDetails = defaultTransactionDetails()
       const refundAmount = transactionDetails.amount + 1
-      const stubs = lodash.concat(getStubs(transactionDetails), [
+      const stubs = [
+        ...getStubs(transactionDetails),
         transactionStubs.postRefundAmountNotAvailable(
           {
             gatewayAccountId, userExternalId, userEmail, transactionId: transactionDetails.transaction_id, refundAmount, refundAmountAvailable: transactionDetails.amount
           })
-      ])
+      ]
       cy.task('setupStubs', stubs)
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
@@ -299,7 +327,9 @@ describe('Transaction details page', () => {
       cy.get('.target-to-show--toggle').click()
 
       // Select partial refund
-      cy.get('#partial').click()
+      cy.get('.govuk-radios__input#partial').click()
+      cy.get('.govuk-radios__input#full').should('not.be.checked')
+      cy.get('.govuk-radios__input#partial').should('be.checked')
 
       // Select partial refund
       cy.get('#refund-amount').type('10.01')
@@ -308,9 +338,10 @@ describe('Transaction details page', () => {
       cy.get('#refund-button').click()
 
       // Ensure the flash container is showing
-      cy.get('.flash-container').should('be.visible')
+      cy.get('.govuk-error-summary').should('be.visible')
 
-      cy.get('.flash-container').find('.error-summary').should('contain', 'The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
+      cy.get('.govuk-error-summary').find('h2').should('contain', 'Refund failed')
+      cy.get('.govuk-error-summary').find('ul.govuk-error-summary__list > li:nth-child(1)').should('contain', 'The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
     })
 
     it('should allow a refund to be re-attempted in the event of a failed refund', () => {
@@ -322,7 +353,6 @@ describe('Transaction details page', () => {
 
       // Ensure the refund button is available
       cy.get('.target-to-show--toggle').should('be.visible')
-      cy.get('.target-to-show--toggle').should('be.enabled')
 
       // Click the refund button
       cy.get('.target-to-show--toggle').click()

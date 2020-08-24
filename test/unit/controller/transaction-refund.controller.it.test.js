@@ -58,7 +58,7 @@ describe('Refund scenario:', function () {
 
     await refundController(req, res)
     sinon.assert.calledWith(res.redirect, '/transactions/123456')
-    sinon.assert.calledWith(req.flash, 'generic', 'Refund successful. It may take up to 6 days to process.')
+    sinon.assert.calledWith(req.flash, 'refundSuccess', 'true')
   })
 
   it('should show refund sucess message for a partial refund', async () => {
@@ -80,7 +80,7 @@ describe('Refund scenario:', function () {
 
     await refundController(req, res)
     sinon.assert.calledWith(res.redirect, '/transactions/123456')
-    sinon.assert.calledWith(req.flash, 'generic', 'Refund successful. It may take up to 6 days to process.')
+    sinon.assert.calledWith(req.flash, 'refundSuccess', 'true')
   })
 
   it('should show error message if partial refund amount is invalid', async () => {
@@ -93,7 +93,7 @@ describe('Refund scenario:', function () {
 
     await refundController(req, res)
     sinon.assert.calledWith(res.redirect, '/transactions/123456')
-    sinon.assert.calledWith(req.flash, 'genericError', 'Choose an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”')
+    sinon.assert.calledWith(req.flash, 'refundError', 'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”')
   })
 
   it('should show error message if partial refund amount is greater than initial charge', async () => {
@@ -120,7 +120,7 @@ describe('Refund scenario:', function () {
 
     await refundController(req, res)
     sinon.assert.calledWith(res.redirect, '/transactions/123456')
-    sinon.assert.calledWith(req.flash, 'genericError', 'The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
+    sinon.assert.calledWith(req.flash, 'refundError', 'The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
   })
 
   it('should show error message if the partial refund amount is smaller than minimum accepted', async () => {
@@ -147,7 +147,7 @@ describe('Refund scenario:', function () {
 
     await refundController(req, res)
     sinon.assert.calledWith(res.redirect, '/transactions/123456')
-    sinon.assert.calledWith(req.flash, 'genericError', 'The amount you tried to refund is too low. Please try again.')
+    sinon.assert.calledWith(req.flash, 'refundError', 'The amount you tried to refund is too low. Please try again.')
   })
 
   it('should show error message if the partial refund request has already been submitted', async () => {
@@ -173,7 +173,7 @@ describe('Refund scenario:', function () {
 
     await refundController(req, res)
     sinon.assert.calledWith(res.redirect, '/transactions/123456')
-    sinon.assert.calledWith(req.flash, 'genericError', 'This refund request has already been submitted.')
+    sinon.assert.calledWith(req.flash, 'refundError', 'This refund request has already been submitted.')
   })
 
   it('should show error message if refund request has already been fully refunded', async () => {
@@ -199,7 +199,7 @@ describe('Refund scenario:', function () {
 
     await refundController(req, res)
     sinon.assert.calledWith(res.redirect, '/transactions/123456')
-    sinon.assert.calledWith(req.flash, 'genericError', 'This refund request has already been submitted.')
+    sinon.assert.calledWith(req.flash, 'refundError', 'This refund request has already been submitted.')
   })
 
   it('should show error message if unexpected error has occured', async () => {
@@ -224,6 +224,6 @@ describe('Refund scenario:', function () {
 
     await refundController(req, res)
     sinon.assert.calledWith(res.redirect, '/transactions/123456')
-    sinon.assert.calledWith(req.flash, 'genericError', 'We couldn’t process this refund. Try again later.')
+    sinon.assert.calledWith(req.flash, 'refundError', 'We couldn’t process this refund. Please try again or contact support.')
   })
 })
