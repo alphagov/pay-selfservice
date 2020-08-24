@@ -1,0 +1,69 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  MOTO  - hide security codes for {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {% if not permissions.moto_mask_input_update %}
+      {% set disabled = true %}
+      {% include "../includes/settings-read-only.njk" %}
+    {% endif %}
+
+    {% if allowMoto %}
+      <h1 class="govuk-heading-l">Do you want to stop call agents and people near them from viewing sensitive details on their screen?</h1>
+
+      <p class="govuk-body-l">If you hide security codes, call agents will be unable to read the numbers entered on their screen.</p>
+
+      <form method="post">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+        {{
+          govukRadios({
+            idPrefix: 'moto-mask-security-code-input-toggle',
+            name: 'moto-mask-security-code-input-toggle',
+            fieldset: {
+              legend: {
+                text: 'Security code:',
+                classes: 'govuk-!-font-weight-bold'
+              }
+            },
+            items: [
+              {
+                text: 'Hidden',
+                value: 'on',
+                checked: true if motoMaskCardSecurityCodeInputEnabled else false,
+                disabled: disabled
+              },
+              {
+                text: 'Visible',
+                value: 'off',
+                checked: true if not motoMaskCardSecurityCodeInputEnabled else false,
+                disabled: disabled
+              }
+            ]
+          })
+        }}
+
+        {{
+          govukButton({
+            text: 'Save changes',
+            classes: 'govuk-!-margin-bottom-3',
+            disabled: disabled,
+            attributes: {
+              id: "save-moto-mask-changes"
+            }
+          })
+        }}
+      </form>
+      <p class="govuk-body">or <a href="{{routes.settings.index}}" class="govuk-link govuk-link--no-visited-state">cancel</a></p>
+    {% else %}
+      <h1 class="govuk-heading-l govuk-!-margin-top-6">This feature is not available</h1>
+      <p class="govuk-body" id="threeds-not-supported">Masking of card numbers and security codes is not allowed for this account.</p>
+    {% endif %}
+  </div>
+{% endblock %}

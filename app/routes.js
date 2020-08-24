@@ -57,6 +57,8 @@ const inviteUserController = require('./controllers/invite-user.controller')
 const registerController = require('./controllers/register-user.controller')
 const serviceRolesUpdateController = require('./controllers/service-roles-update.controller')
 const toggle3dsController = require('./controllers/toggle-3ds')
+const toggleMotoMaskCardNumber = require('./controllers/toggle-moto-mask-card-number')
+const toggleMotoMaskSecurityCode = require('./controllers/toggle-moto-mask-security-code')
 const selfCreateServiceController = require('./controllers/register-service.controller')
 const createServiceController = require('./controllers/create-service.controller')
 const inviteValidationController = require('./controllers/invite-validation.controller')
@@ -91,7 +93,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode: toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
   partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
@@ -314,6 +316,12 @@ module.exports.bind = function (app) {
   // 3D SECURE TOGGLE
   app.get(t3ds.index, xraySegmentCls, permission('toggle-3ds:read'), getAccount, paymentMethodIsCard, toggle3dsController.get)
   app.post(t3ds.index, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3dsController.post)
+
+  // MOTO MASK CARD NUMBER & SECURITY CODE TOGGLE
+  app.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, xraySegmentCls, permission('moto-mask-input:read'), getAccount, paymentMethodIsCard, toggleMotoMaskCardNumber.get)
+  app.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, xraySegmentCls, permission('moto-mask-input:update'), getAccount, paymentMethodIsCard, toggleMotoMaskCardNumber.post)
+  app.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, xraySegmentCls, permission('moto-mask-input:read'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.get)
+  app.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, xraySegmentCls, permission('moto-mask-input:update'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.post)
 
   // BILLING ADDRESS TOGGLE
   app.get(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:read'), getAccount, paymentMethodIsCard, toggleBillingAddressController.getIndex)
