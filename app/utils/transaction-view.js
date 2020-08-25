@@ -13,7 +13,6 @@ const url = require('url')
 const TransactionEvent = require('../models/TransactionEvent.class')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
-const PAGINATION_SPREAD = 2
 const CSV_MAX_LIMIT = process.env.CSV_MAX_LIMIT || 10000
 
 module.exports = {
@@ -24,6 +23,7 @@ module.exports = {
     connectorData.hasResults = connectorData.results.length !== 0
     connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length)
     connectorData.showCsvDownload = connectorData.total <= CSV_MAX_LIMIT
+    connectorData.totalOverLimit = connectorData.total >= CSV_MAX_LIMIT
     connectorData.totalFormatted = connectorData.total.toLocaleString()
     connectorData.csvMaxLimitFormatted = parseInt(CSV_MAX_LIMIT).toLocaleString()
     connectorData.paginationLinks = getPaginationLinks(connectorData)
@@ -159,7 +159,7 @@ function asGBP (amountInPence) {
 function getPaginationLinks (connectorData) {
   if (connectorData.total) {
     const paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
-    return paginator.getLast() > 1 ? paginator.getNamedCentredRange(PAGINATION_SPREAD, true, true) : null
+    return paginator.buildNavigationLinks(connectorData._links, connectorData.results.length)
   }
 }
 

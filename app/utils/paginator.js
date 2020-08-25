@@ -23,15 +23,17 @@ Paginator.MAX_PAGE_SIZE = LARGE_PAGE_SIZE
 
 /**
  * @param  {number} pageNumber
- * @param  {number} pageName
+ * @param  {string} pageName
+ * @param  {boolean} disabled
  * @return {Object. <string>}
  */
-function createPageObject (pageNumber, pageName) {
+function createPageObject (pageNumber, pageName, disabled) {
   return {
     pageNumber: pageNumber,
     pageName: pageName || pageNumber,
     hasSymbolicName: (pageName !== undefined),
-    activePage: pageNumber === this.page
+    activePage: pageNumber === this.page,
+    disabled: disabled
   }
 }
 
@@ -166,6 +168,30 @@ Paginator.prototype = {
     }
 
     return namedRange
+  },
+
+  buildNavigationLinks: function buildNavigationLinks (linksFromResults, resultsLength) {
+    let namedPages = []
+
+    if ((!linksFromResults.prev_page && !linksFromResults.next_page) || resultsLength === 0) {
+      return namedPages
+    }
+
+    if (linksFromResults.prev_page) {
+      const previous = this.page - 1
+      namedPages.push(createPageObject(previous, 'Previous'))
+    } else {
+      namedPages.push(createPageObject(null, 'Previous', true))
+    }
+
+    if (linksFromResults.next_page) {
+      const next = this.page + 1
+      namedPages.push(createPageObject(next, 'Next'))
+    } else {
+      namedPages.push(createPageObject(null, 'Next', true))
+    }
+
+    return namedPages
   },
 
   /**

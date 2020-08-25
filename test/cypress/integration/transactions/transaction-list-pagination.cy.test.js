@@ -51,148 +51,84 @@ describe('Transactions list pagination', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
     })
     describe('Pagination', () => {
-      it('should default to page 1 and display_size 100', () => {
-        const opts = transactionSearchResultOpts(600, 100, 1, {},
-          { self: { href: '/v1/transactions?&page=&display_size=&state=' } })
-
-        cy.task('setupStubs', getStubs(opts))
-        cy.visit(transactionsUrl)
-        cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
-
-        cy.get('form.paginationForm.page-1').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '1')
-        })
-        cy.get('button.pagination.1.active').should('exist')
-        cy.get('form.paginationForm.page-2').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '2')
-        })
-        cy.get('button.pagination.2').should('exist')
-        cy.get('form.paginationForm.page-3').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '3')
-        })
-        cy.get('button.pagination.3').should('exist')
-        cy.get('form.paginationForm.page-next').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '2')
-        })
-        cy.get('button.pagination.next').should('exist')
-        cy.get('form.paginationForm.page-last').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '6')
-        })
-        cy.get('button.pagination.last').should('exist')
-      })
-
-      it('should generate correct pagination data when no page number passed', () => {
-        const opts = transactionSearchResultOpts(30, 5, '', {},
-          { self: { href: '/v1/transactions?&page=&display_size=5&state=' } })
+      it('should display pagination links with previous page disabled for first page', () => {
+        const opts = transactionSearchResultOpts(30, 5, 1, {},
+          {
+            self: { href: '/v1/transactions?&page=&display_size=5&state=' },
+            next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
+          })
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-1').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '1')
+        cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
+          cy.get('input[name="page"]').should('have.value', '')
         })
-        cy.get('button.pagination.1.active').should('exist')
-        cy.get('form.paginationForm.page-2').should('exist').within(() => {
+        cy.get('button.pagination.Previous').should('exist')
+        cy.get('button.pagination.Previous').should('be.disabled')
+
+        cy.get('form.paginationForm.page-Next').should('exist').within(() => {
           cy.get('input[name="page"]').should('have.value', '2')
         })
-        cy.get('button.pagination.2').should('exist')
-        cy.get('form.paginationForm.page-3').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '3')
-        })
-        cy.get('button.pagination.3').should('exist')
-        cy.get('form.paginationForm.page-next').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '2')
-        })
-        cy.get('button.pagination.next').should('exist')
-        cy.get('form.paginationForm.page-last').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '6')
-        })
-        cy.get('button.pagination.last').should('exist')
+        cy.get('button.pagination.Next').should('exist')
       })
 
-      it('should generate correct pagination data when page number passed', () => {
+      it('should have both next and previous pagination links enabled, when ledger return both links ', () => {
         const opts = transactionSearchResultOpts(30, 5, 3, {},
-          { self: { href: '/v1/transactions?&page=3&display_size=5&state=' } })
+          {
+            self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
+            next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' },
+            prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' }
+          })
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=3')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-previous').should('exist').within(() => {
+        cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
           cy.get('input[name="page"]').should('have.value', '2')
         })
-        cy.get('button.pagination.previous').should('exist')
-        cy.get('form.paginationForm.page-1').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '1')
-        })
-        cy.get('button.pagination.1').should('exist')
-        cy.get('form.paginationForm.page-2').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '2')
-        })
-        cy.get('button.pagination.2').should('exist')
-        cy.get('form.paginationForm.page-3').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '3')
-        })
-        cy.get('button.pagination.3.active').should('exist')
-        cy.get('form.paginationForm.page-4').should('exist').within(() => {
+        cy.get('button.pagination.Previous').should('exist')
+
+        cy.get('form.paginationForm.page-Next').should('exist').within(() => {
           cy.get('input[name="page"]').should('have.value', '4')
         })
-        cy.get('button.pagination.4').should('exist')
-        cy.get('form.paginationForm.page-5').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '5')
-        })
-        cy.get('button.pagination.5').should('exist')
-        cy.get('form.paginationForm.page-next').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '4')
-        })
-        cy.get('button.pagination.next').should('exist')
-        cy.get('form.paginationForm.page-last').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '6')
-        })
-        cy.get('button.pagination.last').should('exist')
+        cy.get('button.pagination.Next').should('exist')
       })
 
-      it('should generate correct pagination data with different display size', () => {
-        const opts = transactionSearchResultOpts(30, 2, 3, {},
-          { self: { href: '/v1/transactions?&page=3&display_size=2&state=' } })
+      it('should display the next page as disabled, when ledger does not return next page', () => {
+        const opts = transactionSearchResultOpts(30, 5, 3, {},
+          {
+            self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
+            prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' }
+          })
 
         cy.task('setupStubs', getStubs(opts))
-        cy.visit(transactionsUrl + '?pageSize=2&page=3')
+        cy.visit(transactionsUrl + '?pageSize=5&page=3')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-previous').should('exist').within(() => {
+        cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
           cy.get('input[name="page"]').should('have.value', '2')
         })
-        cy.get('button.pagination.previous').should('exist')
-        cy.get('form.paginationForm.page-1').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '1')
+        cy.get('button.pagination.Previous').should('exist')
+
+        cy.get('form.paginationForm.page-Next').should('exist').within(() => {
+          cy.get('input[name="page"]').should('have.value', '')
         })
-        cy.get('button.pagination.1').should('exist')
-        cy.get('form.paginationForm.page-2').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '2')
-        })
-        cy.get('button.pagination.2').should('exist')
-        cy.get('form.paginationForm.page-3').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '3')
-        })
-        cy.get('button.pagination.3.active').should('exist')
-        cy.get('form.paginationForm.page-4').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '4')
-        })
-        cy.get('button.pagination.4').should('exist')
-        cy.get('form.paginationForm.page-5').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '5')
-        })
-        cy.get('button.pagination.5').should('exist')
-        cy.get('form.paginationForm.page-next').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '4')
-        })
-        cy.get('button.pagination.next').should('exist')
-        cy.get('form.paginationForm.page-last').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '15')
-        })
-        cy.get('button.pagination.last').should('exist')
+        cy.get('button.pagination.Next').should('exist')
+        cy.get('button.pagination.Next').should('be.disabled')
+      })
+
+      it('should not display pagination links, when ledger does not provide both next and previous links', () => {
+        const opts = transactionSearchResultOpts(30, 5, '', {},
+          { self: { href: '/v1/transactions?&page=2&display_size=5&state=' } })
+
+        cy.task('setupStubs', getStubs(opts))
+        cy.visit(transactionsUrl + '?pageSize=5&page=')
+
+        cy.get('form.paginationForm.page-Previous').should('not.exist')
+        cy.get('form.paginationForm.page-Next').should('not.exist')
       })
 
       it('should return correct display size options when total over 500', () => {

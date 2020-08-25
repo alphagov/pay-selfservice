@@ -338,7 +338,9 @@ module.exports = {
       query: lodash.defaults(opts.filters, {
         account_id: opts.gateway_account_id,
         page: opts.page || 1,
-        display_size: opts.display_size || 100
+        display_size: opts.display_size || 100,
+        limit_total: true,
+        limit_total_size: 10000
       }),
       response: ledgerTransactionFixtures.validTransactionSearchResponse(opts).getPlain()
     })

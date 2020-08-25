@@ -13,7 +13,8 @@ const qs = require('qs')
 const defaultOptions = {
   baseUrl: process.env.LEDGER_URL,
   json: true,
-  service: 'ledger'
+  service: 'ledger',
+  limit_total_size: process.env.CSV_MAX_LIMIT || 10000
 }
 
 const transaction = function transaction (id, gatewayAccountId, options = {}) {
@@ -54,7 +55,9 @@ const transactions = function transactions (gatewayAccountIds = [], filters = {}
   const formatOptions = { arrayFormat: 'comma' }
   const path = '/v1/transaction'
   const params = {
-    account_id: gatewayAccountIds
+    account_id: gatewayAccountIds,
+    limit_total: true,
+    limit_total_size: defaultOptions.limit_total_size
   }
 
   const formattedParams = qs.stringify(params, formatOptions)
