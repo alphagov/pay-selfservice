@@ -7,35 +7,38 @@ const lodash = require('lodash')
 const paths = require('../../paths')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
-module.exports = (req, res) => {
-  const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
-  let updatedPageData = lodash.cloneDeep(pageData)
-  const paymentAmountType = req.body['amount-type-group']
-  const paymentLinkAmount = req.body['payment-amount']
+module.exports = function postAmount (req, res, next) {
+  const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
+  if (!sessionData) {
+    next(new Error('Payment link data not found in session cookie'))
+  }
 
-  if (!paymentAmountType) {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#fixed-or-variable">Is the payment for a fixed amount?</a></li></ul>`)
-    req.flash('errorType', `paymentAmountType`)
+  const type = req.body['amount-type-group']
+  const amount = req.body['payment-amount']
+
+  let formattedPaymentLinkAmount = ''
+  const errors = {}
+  if (!type) {
+    errors.type = 'Is the payment for a fixed amount?'
+  } else if (type === 'fixed') {
+    formattedPaymentLinkAmount = safeConvertPoundsStringToPence(amount)
+    if (amount === '' || formattedPaymentLinkAmount === null) {
+      errors.amount = 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
+    }
+  }
+
+  if (!lodash.isEmpty(errors)) {
+    sessionData.amountPageRecovered = {
+      errors,
+      type
+    }
     return res.redirect(paths.paymentLinks.amount)
   }
 
-  let formattedPaymentLinkAmount = safeConvertPoundsStringToPence(paymentLinkAmount)
+  sessionData.paymentLinkAmount = formattedPaymentLinkAmount
+  sessionData.paymentAmountType = type
 
-  if (paymentLinkAmount !== '' && formattedPaymentLinkAmount === null) {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-amount">Enter the amount</a></li></ul>`)
-    req.flash('errorType', `paymentAmountFormat`)
-    return res.redirect(paths.paymentLinks.amount)
-  }
-
-  if (paymentAmountType === 'variable') {
-    formattedPaymentLinkAmount = ''
-  }
-
-  updatedPageData.paymentLinkAmount = formattedPaymentLinkAmount
-  updatedPageData.paymentAmountType = paymentAmountType
-  lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
-
-  if (pageData.paymentLinkAmount && pageData.paymentLinkAmount !== formattedPaymentLinkAmount) {
+  if (req.body['change'] === 'true') {
     req.flash('generic', 'The details have been updated')
   }
 

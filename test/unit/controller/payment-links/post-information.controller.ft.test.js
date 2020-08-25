@@ -37,6 +37,7 @@ describe('Create payment link information controller', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
       product = validProductResponse({
         type: 'ADHOC',
@@ -126,6 +127,7 @@ describe('Create payment link information controller', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -166,40 +168,42 @@ describe('Create payment link information controller', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
       supertest(app)
         .post(paths.paymentLinks.information)
-        .send(Object.assign({}, VALID_PAYLOAD, { 'payment-link-title': '' }))
+        .send(Object.assign({}, VALID_PAYLOAD, {
+          'payment-link-title': '',
+          'payment-link-description': 'something'
+        }))
         .end((err, res) => {
           result = res
           done(err)
         })
     })
 
-    it('should have no paymentLinkTitle stored in the session', () => {
+    it('should not have title and description stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentLinkTitle').to.equal('')
+      expect(sessionPageData).to.not.have.property('paymentLinkTitle')
+      expect(sessionPageData).to.not.have.property('paymentLinkDescription')
     })
 
-    it('should have paymentLinkDescription stored in the session', () => {
-      const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentLinkDescription').to.equal(PAYMENT_DESCRIPTION)
+    it('should have a recovered object stored on the session containing errors and submitted data', () => {
+      const recovered = lodash.get(session, 'pageData.createPaymentLink.informationPageRecovered', {})
+      expect(recovered).to.have.property('title').to.equal('')
+      expect(recovered).to.have.property('description').to.equal('something')
+      expect(recovered).to.have.property('errors')
+      expect(recovered.errors).to.have.property('title')
     })
 
     it('should redirect with status code 302', () => {
       expect(result.statusCode).to.equal(302)
     })
 
-    it('should redirect to the information page with an error message', () => {
+    it('should redirect to the information page', () => {
       expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.information)
-    })
-
-    it('should add a relevant error message to the session \'flash\'', () => {
-      expect(session.flash).to.have.property('genericError')
-      expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-link-title">Title</a></li></ul>')
     })
   })
 })

@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -11,6 +12,23 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {% if errors %}
+    {{ errorSummary({
+      errors: [
+        {
+          show: errors.type,
+          text: errors.type,
+          href: "#reference-type-custom"
+        },
+        {
+          show: errors.label,
+          text: errors.label,
+          href: "#reference-label"
+        }
+      ]
+      }) }}
+  {% endif %}
+
   <form action="{{ routes.paymentLinks.reference }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
@@ -18,14 +36,14 @@
     {% endif %}
 
     {% set noSelectionError = false %}
-    {% if flash.errorType[0] === "paymentReferenceType" %}
+    {% if errors.type %}
     {% set noSelectionError = {
         text: "Please choose an option"
     } %}
     {% endif %}
 
     {% set blankReferenceLabelError = false %}
-    {% if flash.errorType[0] === "label" %}
+    {% if errors.label %}
     {% set blankReferenceLabelError = {
         text: "Reference number cannot be blank"
     } %}
@@ -117,7 +135,7 @@
           {
               value: "standard",
               text: "No",
-              checked: paymentReferenceType === 'standard' or blankReferenceLabelError,
+              checked: paymentReferenceType === 'standard',
               id: "reference-type-standard",
               conditional: {
                 html: standardReferenceHTML

@@ -7,26 +7,27 @@ const lodash = require('lodash')
 const { response } = require('../../utils/response')
 const supportedLanguage = require('../../models/supported-language')
 
-module.exports = (req, res) => {
-  const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
-  const paymentLinkTitle = req.body['payment-description'] || pageData.paymentLinkTitle || ''
-  const paymentLinkDescription = req.body['payment-amount'] || pageData.paymentLinkDescription || ''
+module.exports = function showInformationPage (req, res) {
+  // initialise session for create payment link journey if it doesn't exist
+  if (!lodash.get(req, 'session.pageData.createPaymentLink')) {
+    lodash.set(req, 'session.pageData.createPaymentLink', {})
+  }
+
+  const sessionData = req.session.pageData.createPaymentLink
+  if (!sessionData.hasOwnProperty('isWelsh')) {
+    sessionData.isWelsh = lodash.get(req, 'query.language') === supportedLanguage.WELSH
+  }
+
+  const recovered = sessionData.informationPageRecovered || {}
+  delete sessionData.informationPageRecovered
+
+  const paymentLinkTitle = recovered.title || sessionData.paymentLinkTitle || ''
+  const paymentLinkDescription = recovered.description || sessionData.paymentLinkDescription || ''
   const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI
 
   const change = lodash.get(req, 'query.field', {})
 
-  let isWelsh
-  if (pageData.hasOwnProperty('isWelsh')) {
-    isWelsh = pageData.isWelsh
-  } else {
-    isWelsh = lodash.get(req, 'query.language') === supportedLanguage.WELSH
-    lodash.set(req, 'session.pageData.createPaymentLink', {
-      ...pageData,
-      isWelsh
-    })
-  }
-
-  const language = isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH
+  const language = sessionData.isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH
   const serviceName = req.service.serviceName[language] || req.service.serviceName.en
 
   return response(req, res, 'payment-links/information', {
@@ -34,7 +35,8 @@ module.exports = (req, res) => {
     friendlyURL,
     paymentLinkTitle,
     paymentLinkDescription,
-    isWelsh,
-    serviceName
+    isWelsh: sessionData.isWelsh,
+    serviceName,
+    errors: recovered.errors
   })
 }

@@ -28,6 +28,7 @@ describe('Create payment link amount post controller', () => {
     }
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -68,6 +69,7 @@ describe('Create payment link amount post controller', () => {
     }
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -108,6 +110,7 @@ describe('Create payment link amount post controller', () => {
     }
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -147,6 +150,7 @@ describe('Create payment link amount post controller', () => {
     }
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -159,8 +163,9 @@ describe('Create payment link amount post controller', () => {
         })
     })
 
-    it('should pass an error with "paymentAmountType"', () => {
-      expect(session.flash.errorType[0]).to.equal('paymentAmountType')
+    it('should have a recovered object stored on the session containing error', () => {
+      const recovered = lodash.get(session, 'pageData.createPaymentLink.amountPageRecovered', {})
+      expect(recovered.errors).to.have.property('type')
     })
 
     it('should redirect with status code 302', () => {

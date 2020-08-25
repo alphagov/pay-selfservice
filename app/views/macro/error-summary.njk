@@ -1,0 +1,20 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% macro errorSummary(params) %}
+  {% set errorList = [] %}
+  {% for error in params.errors %}
+    {% if error.show %}
+      {% set errorList = (errorList.push({
+          text: error.text | safe,
+          href: error.href
+        }), errorList) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if errorList | length %}
+    {{ govukErrorSummary({
+        titleText: params.titleText or "There is a problem",
+        errorList: errorList
+      }) }}
+  {% endif %}
+{% endmacro %}

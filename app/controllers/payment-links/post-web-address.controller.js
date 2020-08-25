@@ -12,26 +12,36 @@ const makeNiceURL = string => {
   return slugify(removeIndefiniteArticles(string))
 }
 
-module.exports = (req, res) => {
-  const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
-  let updatedPageData = lodash.cloneDeep(pageData)
-
-  if (updatedPageData.productNamePath === '') {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-name-path">Please change the website address</a></li></ul>`)
-    return res.redirect(paths.paymentLinks.webAddress)
+module.exports = async function postWebAddress (req, res, next) {
+  const paymentLinkData = lodash.get(req, 'session.pageData.createPaymentLink')
+  if (!paymentLinkData) {
+    next(new Error('Payment link data not found in session cookie'))
   }
 
-  updatedPageData.productNamePath = makeNiceURL(req.body['payment-name-path'])
-  lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
+  const path = req.body['payment-name-path']
 
-  productsClient.product.getByProductPath(updatedPageData.serviceNamePath, updatedPageData.productNamePath)
-    .then(product => {
-    // if product exists we need to alert the user they must use a different URL
-      req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-name-path">Website address</a></li></ul>`)
-      return res.redirect(paths.paymentLinks.webAddress)
-    })
-    .catch((err) => { // eslint-disable-line handle-callback-err
-    // if it errors then it means no product was found and that’s good
+  const errors = {}
+  let resolvedPath
+  if (path === '') {
+    errors.path = 'Enter a website address'
+  } else {
+    resolvedPath = makeNiceURL(path)
+
+    try {
+      await productsClient.product.getByProductPath(paymentLinkData.serviceNamePath, resolvedPath)
+      // URL already in use
+      errors.path = 'Enter a different website address'
+    } catch (err) {
+      // URL not in use, continue
+      paymentLinkData.productNamePath = resolvedPath
       return res.redirect(paths.paymentLinks.reference)
-    })
+    }
+  }
+
+  // there were errors, show form again
+  lodash.set(req, 'session.pageData.createPaymentLink.webAddressPageRecovered', {
+    errors,
+    path
+  })
+  return res.redirect(paths.paymentLinks.webAddress)
 }
