@@ -25,6 +25,7 @@ describe('POST payment link edit amount controller', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      session.editPaymentLinkData = {}
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -65,6 +66,7 @@ describe('POST payment link edit amount controller', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      session.editPaymentLinkData = {}
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -105,6 +107,7 @@ describe('POST payment link edit amount controller', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      session.editPaymentLinkData = {}
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -131,17 +134,20 @@ describe('POST payment link edit amount controller', () => {
       expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
     })
 
-    it('should redirect with error message', () => {
-      expect(session.flash).to.have.property('genericError')
-      expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#fixed-or-variable">Is the payment for a fixed amount?</a></li></ul>')
+    it('should have a recovered object stored on the session containing errors and submitted data', () => {
+      const recovered = session.editPaymentLinkData.amountPageRecovered
+      expect(recovered).to.have.property('type').to.equal('')
+      expect(recovered).to.have.property('amount').to.equal('')
+      expect(recovered).to.have.property('errors')
+      expect(recovered.errors).to.have.property('type')
     })
   })
 
-  describe('if no price set is bad', () => {
+  describe('if no price set', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      session.editPaymentLinkData = {}
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -169,10 +175,12 @@ describe('POST payment link edit amount controller', () => {
       expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
     })
 
-    it('should redirect with error message', () => {
-      expect(session.flash).to.have.property('genericError')
-      expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-amount">Enter the amount</a></li></ul>')
+    it('should have a recovered object stored on the session containing errors and submitted data', () => {
+      const recovered = session.editPaymentLinkData.amountPageRecovered
+      expect(recovered).to.have.property('type').to.equal('fixed')
+      expect(recovered).to.have.property('amount').to.equal('')
+      expect(recovered).to.have.property('errors')
+      expect(recovered.errors).to.have.property('amount')
     })
   })
 })

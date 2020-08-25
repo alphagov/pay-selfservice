@@ -15,7 +15,7 @@ const makeNiceURL = string => {
 module.exports = async function postWebAddress (req, res, next) {
   const paymentLinkData = lodash.get(req, 'session.pageData.createPaymentLink')
   if (!paymentLinkData) {
-    next(new Error('Payment link data not found in session cookie'))
+    return next(new Error('Payment link data not found in session cookie'))
   }
 
   const paymentLinkURLPath = req.body['payment-name-path']

@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Edit your payment link reference - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -11,6 +12,14 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      type: "#reference-type-custom",
+      label: "#reference-label"
+    }
+  }) }}
+  
   <form action="{{ self }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
@@ -18,16 +27,16 @@
     {% endif %}
 
     {% set noSelectionError = false %}
-    {% if flash.errorType[0] === "paymentReferenceType" %}
+    {% if errors.type %}
     {% set noSelectionError = {
         text: "Please choose an option"
     } %}
     {% endif %}
 
     {% set blankReferenceLabelError = false %}
-    {% if flash.errorType[0] === "label" %}
+    {% if errors.label %}
     {% set blankReferenceLabelError = {
-        text: "Reference number cannot be blank"
+        text: errors.label
     } %}
     {% endif %}
 
@@ -46,7 +55,7 @@
         govukInput({
           id: "reference-label",
           name: "reference-label",
-          value: product.referenceLabel,
+          value: referenceLabel,
           errorMessage: blankReferenceLabelError,
           classes: "govuk-input--width-20",
           label: {
@@ -67,7 +76,7 @@
         govukCharacterCount({
           id: "reference-hint-text",
           name: "reference-hint-text",
-          value: product.referenceHint,
+          value: referenceHint,
           classes: "govuk-input--width-20",
           maxlength: 255,
           label: {
@@ -108,7 +117,7 @@
           {
               value: "custom",
               text: "Yes",
-              checked: product.referenceEnabled,
+              checked: referenceEnabled,
               id: "reference-type-custom",
               conditional: {
                 html: customReferenceHTML
@@ -117,7 +126,7 @@
           {
               value: "standard",
               text: "No",
-              checked: referenceEnabled,
+              checked: not referenceEnabled,
               id: "reference-type-standard",
               conditional: {
                 html: standardReferenceHTML
