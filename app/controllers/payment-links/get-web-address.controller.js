@@ -6,13 +6,22 @@ const lodash = require('lodash')
 // Local dependencies
 const { response } = require('../../utils/response.js')
 
-module.exports = (req, res) => {
+module.exports = function showWebAddressPage (req, res, next) {
   const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI
-  const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
-  const productNamePath = pageData.productNamePath || ''
+
+  const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
+  if (!sessionData) {
+    next(new Error('Payment link data not found in session cookie'))
+  }
+
+  const recovered = sessionData.webAddressPageRecovered || {}
+  delete sessionData.webAddressPageRecovered
+
+  const productNamePath = recovered.path || sessionData.productNamePath || ''
 
   return response(req, res, 'payment-links/web-address', {
     friendlyURL,
-    productNamePath
+    productNamePath,
+    errors: recovered.errors
   })
 }

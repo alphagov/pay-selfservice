@@ -117,8 +117,11 @@ describe('Create payment link web address post controller', () => {
       expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.webAddress)
     })
 
-    it('should expect session to contain error message', () => {
-      expect(session.flash.genericError).to.have.property('length').to.equal(1)
+    it('should have a recovered object stored on the session containing errors and submitted data', () => {
+      const recovered = lodash.get(session, 'pageData.createPaymentLink.webAddressPageRecovered', {})
+      expect(recovered).to.have.property('path').to.equal(PAYMENT_TITLE_SLUGIFIED)
+      expect(recovered).to.have.property('errors')
+      expect(recovered.errors).to.have.property('path')
     })
   })
 })

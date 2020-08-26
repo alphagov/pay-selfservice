@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -11,6 +12,13 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      path: "#payment-name-path"
+    }
+  }) }}
+
   <h1 class="govuk-heading-l">The website address is already taken</h1>
 
   <form action="{{ routes.paymentLinks.webAddress }}" class="form" method="post" data-validate>
@@ -26,7 +34,7 @@
       <span class="govuk-hint pay-text-black">
         {{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/
       </span>
-      {% if flash.genericError %}
+      {% if errors.path %}
         <span id="payment-name-path-error" class="govuk-error-message">
           The website address is already taken
         </span>

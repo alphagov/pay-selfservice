@@ -6,12 +6,18 @@ const lodash = require('lodash')
 // Local dependencies
 const { response } = require('../../utils/response.js')
 
-module.exports = (req, res) => {
-  const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
-  const paymentReferenceType = req.body['reference-type-group'] || pageData.paymentReferenceType || ''
-  const paymentReferenceLabel = req.body['reference-label'] || pageData.paymentReferenceLabel || ''
-  const paymentReferenceHint = req.body['reference-hint-text'] || pageData.paymentReferenceHint || ''
-  const isWelsh = pageData.isWelsh
+module.exports = function showReferencePage (req, res, next) {
+  const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
+  if (!sessionData) {
+    next(new Error('Payment link data not found in session cookie'))
+  }
+
+  const recovered = sessionData.referencePageRecovered || {}
+  delete sessionData.referencePageRecovered
+
+  const paymentReferenceType = recovered.type || sessionData.paymentReferenceType || ''
+  const paymentReferenceLabel = recovered.label || sessionData.paymentReferenceLabel || ''
+  const paymentReferenceHint = recovered.hint || sessionData.paymentReferenceHint || ''
 
   const change = lodash.get(req, 'query.change', {})
 
@@ -20,6 +26,7 @@ module.exports = (req, res) => {
     paymentReferenceType,
     paymentReferenceLabel,
     paymentReferenceHint,
-    isWelsh
+    isWelsh: sessionData.isWelsh,
+    errors: recovered.errors
   })
 }

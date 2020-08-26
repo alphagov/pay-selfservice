@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -11,22 +12,30 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      type: "#amount-type-fixed",
+      amount: "#payment-amount"
+    }
+  }) }}
+
   <form action="{{ nextPage }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set noSelectionError = false %}
-    {% if flash.errorType[0] === "paymentAmountType" %}
+    {% if errors.type %}
     {% set noSelectionError = {
         text: "Please choose an option"
     } %}
     {% endif %}
 
     {% set variableHTML %}
-      <div class="currency-input govuk-form-group{% if flash.errorType[0] === 'paymentAmountFormat' %} govuk-form-group--error{% endif %}">
+      <div class="currency-input govuk-form-group{% if errors.amount %} govuk-form-group--error{% endif %}">
         <label class="govuk-label" for="payment-amount">
           Enter the amount
           <span class="govuk-visually-hidden">in &pound;</span>
-          {% if flash.errorType[0] === "paymentAmountFormat" %}
+          {% if errors.amount %}
           <span class="govuk-error-message">
             Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”
           </span>
@@ -35,7 +44,7 @@
         <div class="currency-input__inner">
           <span class="currency-input__inner__unit">&pound;</span>
           <input
-            class="govuk-input govuk-input--width-10{% if flash.errorType[0] === 'paymentAmountFormat' %} govuk-input--error{% endif %}"
+            class="govuk-input govuk-input--width-10{% if errors.amount %} govuk-input--error{% endif %}"
             aria-label="Enter amount in pounds"
             name="payment-amount"
             autofocus
@@ -67,7 +76,7 @@
               value: "fixed",
               text: "Yes",
               id: "amount-type-fixed",
-              checked: paymentAmountType === "fixed" or flash.errorType[0] === "paymentAmountFormat",
+              checked: paymentAmountType === "fixed",
               conditional: {
                 html: variableHTML
               }

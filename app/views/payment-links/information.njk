@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
 Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -11,6 +12,13 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      title: "#payment-link-title"
+    }
+  }) }}
+
   {% if isWelsh %}
     <h1 class="govuk-heading-l">Set Welsh payment link information</h1>
   {% else %}
@@ -25,9 +33,9 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
     {% endif %}
 
     {% set titleError = false %}
-    {% if flash.genericError %}
+    {% if errors.title %}
       {% set titleError = {
-        text: 'This field cannot be blank'
+        text: errors.title | safe
       } %}
     {% endif %}
     {% set confirmationLabel %}{{friendlyURL}}/{{serviceName | removeIndefiniteArticles | slugify}}/{% endset %}

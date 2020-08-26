@@ -28,6 +28,7 @@ describe('Create payment link reference post controller', () => {
     }
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -74,6 +75,7 @@ describe('Create payment link reference post controller', () => {
     }
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -120,6 +122,7 @@ describe('Create payment link reference post controller', () => {
     }
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -132,8 +135,9 @@ describe('Create payment link reference post controller', () => {
         })
     })
 
-    it('should pass an error with "paymentReferenceType"', () => {
-      expect(session.flash.errorType[0]).to.equal('paymentReferenceType')
+    it('should have a recovered object stored on the session containing error', () => {
+      const recovered = lodash.get(session, 'pageData.createPaymentLink.referencePageRecovered', {})
+      expect(recovered.errors).to.have.property('type')
     })
 
     it('should redirect with status code 302', () => {
@@ -151,10 +155,11 @@ describe('Create payment link reference post controller', () => {
       'csrfToken': csrf().create('123'),
       'reference-type-group': 'custom',
       'reference-label': '',
-      'reference-hint-text': ''
+      'reference-hint-text': 'hint text'
     }
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
+      lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -167,8 +172,12 @@ describe('Create payment link reference post controller', () => {
         })
     })
 
-    it('should pass an error with "label"', () => {
-      expect(session.flash.errorType[0]).to.equal('label')
+    it('should have a recovered object stored on the session containing errors and submitted data', () => {
+      const recovered = lodash.get(session, 'pageData.createPaymentLink.referencePageRecovered', {})
+      expect(recovered).to.have.property('type').to.equal('custom')
+      expect(recovered).to.have.property('label').to.equal('')
+      expect(recovered).to.have.property('hint').to.equal('hint text')
+      expect(recovered.errors).to.have.property('label')
     })
 
     it('should redirect with status code 302', () => {
