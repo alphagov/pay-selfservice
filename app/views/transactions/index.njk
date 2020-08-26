@@ -1,7 +1,11 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
-Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+    {% if allServiceTransactions %}
+       Transactions for all live services
+    {% else %}
+       Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+    {% endif %}
 {% endblock %}
 
 {% block classesOnBodyTag %}transactions index {% endblock %}
@@ -20,9 +24,28 @@ Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV
 <script src="/public/js/components/datetime-picker.js"></script>
 {% endblock %}
 
+{% block beforeContent %}
+  {% if allServiceTransactions %}
+    {{
+      govukBackLink({
+        text: "Back to My services",
+        href: routes.serviceSwitcher.index
+      })
+    }}
+  {% else %}
+    {% include "includes/phase-banner.njk" %}
+  {% endif %}
+{% endblock %}
+
 {% block mainContent %}
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">Transactions</h1>
+  <h1 class="govuk-heading-l">
+    {% if allServiceTransactions %}
+       Transactions for all live services
+    {% else %}
+       Transactions
+    {% endif %}
+  </h1>
   {% include "transactions/filter.njk" %}
 
   {% include "transactions/display-size.njk" %}

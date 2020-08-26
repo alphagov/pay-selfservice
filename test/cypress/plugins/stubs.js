@@ -340,7 +340,7 @@ module.exports = {
         page: opts.page || 1,
         display_size: opts.display_size || 100,
         limit_total: true,
-        limit_total_size: 10000
+        limit_total_size: 10001
       }),
       response: ledgerTransactionFixtures.validTransactionSearchResponse(opts).getPlain()
     })

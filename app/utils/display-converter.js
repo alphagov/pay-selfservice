@@ -5,7 +5,6 @@ const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder'
 const formatPSPname = require('./format-PSP-name')
 
 const hideServiceHeaderTemplates = [
-  'all-service-transactions/index',
   'services/index',
   'services/edit-service-name',
   'services/add-service',
