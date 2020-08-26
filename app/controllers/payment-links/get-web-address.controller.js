@@ -17,7 +17,7 @@ module.exports = function showWebAddressPage (req, res, next) {
   const recovered = sessionData.webAddressPageRecovered || {}
   delete sessionData.webAddressPageRecovered
 
-  const productNamePath = recovered.path || sessionData.productNamePath || ''
+  const productNamePath = recovered.paymentLinkURLPath || sessionData.productNamePath || ''
 
   return response(req, res, 'payment-links/web-address', {
     friendlyURL,

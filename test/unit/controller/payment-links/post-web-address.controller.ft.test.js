@@ -119,7 +119,7 @@ describe('Create payment link web address post controller', () => {
 
     it('should have a recovered object stored on the session containing errors and submitted data', () => {
       const recovered = lodash.get(session, 'pageData.createPaymentLink.webAddressPageRecovered', {})
-      expect(recovered).to.have.property('path').to.equal(PAYMENT_TITLE_SLUGIFIED)
+      expect(recovered).to.have.property('paymentLinkURLPath').to.equal(PAYMENT_TITLE_SLUGIFIED)
       expect(recovered).to.have.property('errors')
       expect(recovered.errors).to.have.property('path')
     })

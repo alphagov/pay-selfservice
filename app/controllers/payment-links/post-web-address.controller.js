@@ -18,22 +18,22 @@ module.exports = async function postWebAddress (req, res, next) {
     next(new Error('Payment link data not found in session cookie'))
   }
 
-  const path = req.body['payment-name-path']
+  const paymentLinkURLPath = req.body['payment-name-path']
 
   const errors = {}
-  let resolvedPath
-  if (path === '') {
+  let resolvedURLPath
+  if (paymentLinkURLPath === '') {
     errors.path = 'Enter a website address'
   } else {
-    resolvedPath = makeNiceURL(path)
+    resolvedURLPath = makeNiceURL(paymentLinkURLPath)
 
     try {
-      await productsClient.product.getByProductPath(paymentLinkData.serviceNamePath, resolvedPath)
+      await productsClient.product.getByProductPath(paymentLinkData.serviceNamePath, resolvedURLPath)
       // URL already in use
       errors.path = 'Enter a different website address'
     } catch (err) {
       // URL not in use, continue
-      paymentLinkData.productNamePath = resolvedPath
+      paymentLinkData.productNamePath = resolvedURLPath
       return res.redirect(paths.paymentLinks.reference)
     }
   }
@@ -41,7 +41,7 @@ module.exports = async function postWebAddress (req, res, next) {
   // there were errors, show form again
   lodash.set(req, 'session.pageData.createPaymentLink.webAddressPageRecovered', {
     errors,
-    path
+    paymentLinkURLPath
   })
   return res.redirect(paths.paymentLinks.webAddress)
 }
