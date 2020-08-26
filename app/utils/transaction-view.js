@@ -23,7 +23,7 @@ module.exports = {
     connectorData.hasResults = connectorData.results.length !== 0
     connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length)
     connectorData.showCsvDownload = connectorData.total <= CSV_MAX_LIMIT
-    connectorData.totalOverLimit = connectorData.total >= CSV_MAX_LIMIT
+    connectorData.totalOverLimit = connectorData.total > CSV_MAX_LIMIT
     connectorData.totalFormatted = connectorData.total.toLocaleString()
     connectorData.csvMaxLimitFormatted = parseInt(CSV_MAX_LIMIT).toLocaleString()
     connectorData.paginationLinks = getPaginationLinks(connectorData)

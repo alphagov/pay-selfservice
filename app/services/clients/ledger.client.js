@@ -14,7 +14,7 @@ const defaultOptions = {
   baseUrl: process.env.LEDGER_URL,
   json: true,
   service: 'ledger',
-  limit_total_size: process.env.CSV_MAX_LIMIT || 10000
+  limit_total_size: (process.env.CSV_MAX_LIMIT || 10000) + 1
 }
 
 const transaction = function transaction (id, gatewayAccountId, options = {}) {
