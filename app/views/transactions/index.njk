@@ -28,7 +28,11 @@ Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV
   {% include "transactions/display-size.njk" %}
 
   <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
-    {{totalFormatted}} transactions
+    {% if totalOverLimit %}
+      Over {{csvMaxLimitFormatted}} transactions
+    {% else %}
+      {{totalFormatted}} transactions
+    {% endif %}
     {{ filtersDescription | safe }}
   </h3>
 

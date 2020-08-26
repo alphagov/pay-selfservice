@@ -38,10 +38,13 @@ Transactions for all live services - GOV.UK Pay
   {% include "transactions/display-size.njk" %}
 
   <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
-    {{totalFormatted}} transactions
+    {% if totalOverLimit %}
+      Over {{csvMaxLimitFormatted}} transactions
+    {% else %}
+      {{totalFormatted}} transactions
+    {% endif %}
     {{ filtersDescription | safe }}
   </h3>
-
   {% if permissions.transactions_download_read %}
     {% if (hasResults) %}
       <p class="govuk-body">
