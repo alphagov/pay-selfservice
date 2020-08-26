@@ -12,22 +12,13 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
-  {% if errors %}
-    {{ errorSummary({
-      errors: [
-        {
-          show: errors.type,
-          text: errors.type,
-          href: "#amount-type-fixed"
-        },
-        {
-          show: errors.amount,
-          text: errors.amount,
-          href: "#payment-amount"
-        }
-      ]
-      }) }}
-  {% endif %}
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      type: "#amount-type-fixed",
+      amount: "#payment-amount"
+    }
+  }) }}
 
   <form action="{{ nextPage }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

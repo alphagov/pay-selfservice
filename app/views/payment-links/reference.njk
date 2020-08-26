@@ -12,22 +12,13 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
-  {% if errors %}
-    {{ errorSummary({
-      errors: [
-        {
-          show: errors.type,
-          text: errors.type,
-          href: "#reference-type-custom"
-        },
-        {
-          show: errors.label,
-          text: errors.label,
-          href: "#reference-label"
-        }
-      ]
-      }) }}
-  {% endif %}
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      type: "#reference-type-custom",
+      label: "#reference-label"
+    }
+  }) }}
 
   <form action="{{ routes.paymentLinks.reference }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

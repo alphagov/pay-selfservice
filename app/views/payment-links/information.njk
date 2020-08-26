@@ -12,15 +12,12 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
-  {% if errors %}
-    {{ errorSummary ({
-      errors: [{
-        show: errors.title,
-        text: errors.title,
-        href: "#payment-link-title"
-      }]
-    }) }}
-  {% endif %}
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      title: "#payment-link-title"
+    }
+  }) }}
 
   {% if isWelsh %}
     <h1 class="govuk-heading-l">Set Welsh payment link information</h1>

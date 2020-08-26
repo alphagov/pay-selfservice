@@ -12,15 +12,12 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
-  {% if errors %}
-    {{ errorSummary ({
-      errors: [{
-        show: errors.path,
-        text: errors.path,
-        href: "#payment-name-path"
-      }]
-    }) }}
-  {% endif %}
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      path: "#payment-name-path"
+    }
+  }) }}
 
   <h1 class="govuk-heading-l">The website address is already taken</h1>
 
