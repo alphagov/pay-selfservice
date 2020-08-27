@@ -48,15 +48,15 @@ module.exports = {
 
     const errors = {}
     const validEmail = validateEmail(email)
-    if (!validEmail) {
+    if (!validEmail.valid) {
       errors.email = validEmail.message
     }
     const validPhoneNumber = validatePhoneNumber(telephoneNumber)
-    if (!validPhoneNumber) {
+    if (!validPhoneNumber.valid) {
       errors.telephoneNumber = validPhoneNumber.message
     }
     const validPassword = validatePassword(password)
-    if (!validPassword) {
+    if (!validPassword.valid) {
       errors.password = validPassword.message
     }
 
@@ -139,7 +139,7 @@ module.exports = {
     }
 
     const validOtp = validateOtp(otpCode)
-    if (!validOtp) {
+    if (!validOtp.valid) {
       sessionData.recovered = {
         errors: {
           verificationCode: validOtp.message
@@ -212,7 +212,7 @@ module.exports = {
     const telephoneNumber = req.body['telephone-number']
 
     const validPhoneNumber = validatePhoneNumber(telephoneNumber)
-    if (!validPhoneNumber) {
+    if (!validPhoneNumber.valid) {
       res.render('self-create-service/resend-otp', {
         telephoneNumber,
         errors: {

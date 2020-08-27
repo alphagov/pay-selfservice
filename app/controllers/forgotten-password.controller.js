@@ -19,7 +19,7 @@ const emailPost = async function emailPost (req, res) {
   const username = req.body.username
 
   const validEmail = validateEmail(username)
-  if (!validEmail) {
+  if (!validEmail.valid) {
     res.render('forgotten-password/index', {
       username,
       errors: {
@@ -64,7 +64,7 @@ const newPasswordPost = async function newPasswordPost (req, res, next) {
     const user = await userService.findByExternalId(forgottenPassword.user_external_id, req.correlationId)
 
     const validPassword = validatePassword(password)
-    if (!validPassword) {
+    if (!validPassword.valid) {
       lodash.set(req, 'session.pageData.updatePasswordRecovered', {
         errors: {
           password: validPassword.message

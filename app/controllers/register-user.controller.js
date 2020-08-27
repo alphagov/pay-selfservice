@@ -87,11 +87,11 @@ module.exports = {
 
     const errors = {}
     const validPhoneNumber = validatePhoneNumber(telephoneNumber)
-    if (!validPhoneNumber) {
+    if (!validPhoneNumber.valid) {
       errors.telephoneNumber = validPhoneNumber.message
     }
     const validPassword = validatePassword(password)
-    if (!validPassword) {
+    if (!validPassword.valid) {
       errors.password = validPassword.message
     }
 
@@ -146,7 +146,7 @@ module.exports = {
     }
 
     const validOtp = validateOtp(verificationCode)
-    if (!validOtp) {
+    if (!validOtp.valid) {
       sessionData.recovered = {
         errors: {
           verificationCode: validOtp.message
@@ -208,7 +208,7 @@ module.exports = {
     }
 
     const validPhoneNumber = validatePhoneNumber(telephoneNumber)
-    if (!validPhoneNumber) {
+    if (!validPhoneNumber.valid) {
       sessionData.recovered = {
         telephoneNumber: telephoneNumber,
         errors: {
