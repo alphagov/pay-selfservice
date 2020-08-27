@@ -55,6 +55,7 @@ module.exports = {
       return next(new Error('Missing registration session in cookie'))
     }
     const { recovered } = sessionData
+    delete sessionData.recovered
     const data = {
       email: sessionData.email,
       telephone_number: recovered.telephone_number,
