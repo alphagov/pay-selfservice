@@ -8,7 +8,10 @@ const { renderErrorView } = require('../utils/response')
 const serviceService = require('../services/service.service')
 const registrationService = require('../services/service-registration.service')
 const loginController = require('../controllers/login')
-const { validatePhoneNumber } = require('../utils/validation/server-side-form-validations')
+const {
+  validatePhoneNumber,
+  validateEmail,
+  validatePassword } = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
 
 module.exports = {
@@ -20,12 +23,12 @@ module.exports = {
    * @param res
    */
   showRegistration: (req, res) => {
-    const email = lodash.get(req, 'session.pageData.submitRegistration.email', '')
-    const telephoneNumber = lodash.get(req, 'session.pageData.submitRegistration.telephoneNumber', '')
+    const recovered = lodash.get(req, 'session.pageData.submitRegistration', {})
     lodash.unset(req, 'session.pageData.submitRegistration')
     res.render('self-create-service/register', {
-      email,
-      telephoneNumber
+      email: recovered.email,
+      telephoneNumber: recovered.telephoneNumber,
+      errors: recovered.errors
     })
   },
 
@@ -41,16 +44,27 @@ module.exports = {
     const telephoneNumber = req.body['telephone-number']
     const password = req.body['password']
 
-    lodash.set(req, 'session.pageData.submitRegistration', {
-      email,
-      telephoneNumber
-    })
+    const errors = {}
+    const validEmail = validateEmail(email)
+    if (!validEmail) {
+      errors.email = validEmail.message
+    }
+    const validPhoneNumber = validatePhoneNumber(telephoneNumber)
+    if (!validPhoneNumber) {
+      errors.telephoneNumber = validPhoneNumber.message
+    }
+    const validPassword = validPassword(password)
+    if (!validPassword) {
+      errors.password = validPassword.message
+    }
 
-    try {
-      renderErrorView(req, res)
-    } catch (err) {
-      req.flash('genericError', err.message)
-      return res.redirect(303, paths.selfCreateService.register)
+    if (!lodash.isEmpty(errors)) {
+      lodash.set(req, 'session.pageData.submitRegistration', {
+        email,
+        telephoneNumber,
+        errors
+      })
+      return res.redirect( paths.selfCreateService.register)
     }
 
     try {
@@ -62,8 +76,12 @@ module.exports = {
         err.message.errors) {
         // Unfortunately we rely on error response from adminusers to provide validation errors,
         // such as the email not being a public sector email. So relay this back to the user.
-        req.flash('genericError', err.message.errors)
-        return res.redirect(303, paths.selfCreateService.register)
+        lodash.set(req, 'session.pageData.submitRegistration', {
+          email,
+          telephoneNumber,
+          errors
+        })
+        return res.redirect( paths.selfCreateService.register)
       }
       if (err.errorCode === 409) {
         // Adminusers bizarrely returns a 409 when a user already exists, but sends them an email
