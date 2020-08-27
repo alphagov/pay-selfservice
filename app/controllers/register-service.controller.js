@@ -9,6 +9,7 @@ const serviceService = require('../services/service.service')
 const registrationService = require('../services/service-registration.service')
 const loginController = require('../controllers/login')
 const { validateServiceRegistrationInputs, validateRegistrationTelephoneNumber } = require('../utils/registration-validations')
+const { validatePhoneNumber } = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
 
 module.exports = {
@@ -35,60 +36,46 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitRegistration: (req, res) => {
+  submitRegistration: async function submitRegistration (req, res) {
     const correlationId = req.correlationId
     const email = req.body['email']
     const telephoneNumber = req.body['telephone-number']
     const password = req.body['password']
 
-    const handleServerError = (err) => {
-      if ((err.errorCode === 400) || (err.errorCode === 403)) {
-        const error = (err.message && err.message.errors) ? err.message.errors : 'Invalid input'
-        handleInvalidUserInput(error)
-      } else if (err.errorCode === 409) {
-        // we should redirect in all cases regardless whether the user exists, disabled or new
-        _.set(req, 'session.pageData.submitRegistration', {
-          email,
-          telephoneNumber
-        })
+    _.set(req, 'session.pageData.submitRegistration', {
+      email,
+      telephoneNumber
+    })
+
+    try {
+      renderErrorView(req, res)
+    } catch (err) {
+      req.flash('genericError', err.message)
+      return res.redirect(303, paths.selfCreateService.register)
+    }
+
+    try {
+      await registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
+      res.redirect(303, paths.selfCreateService.confirm)
+    } catch (err) {
+      if ((err.errorCode === 400 || err.errorCode === 403) &&
+        err.message &&
+        err.message.errors) {
+        // Unfortunately we rely on error response from adminusers to provide validation errors,
+        // such as the email not being a public sector email. So relay this back to the user.
+        req.flash('genericError', err.message.errors)
+        res.redirect(303, paths.selfCreateService.register)
+      }
+      if (err.errorCode === 409) {
+        // Adminusers bizarrely returns a 409 when a user already exists, but sends them an email
+        // to tell them this. We continue to the next page if this is the case as it will
+        // tell them to check their email.
         res.redirect(303, paths.selfCreateService.confirm)
       } else {
-        renderErrorView(req, res)
+        _.unset(req, 'session.pageData.submitRegistration')
+        return renderErrorView(req, res)
       }
     }
-
-    const handleInvalidUserInput = (message) => {
-      _.set(req, 'session.pageData.submitRegistration', {
-        email,
-        telephoneNumber
-      })
-      logger.debug(`[requestId=${correlationId}] invalid user input`)
-      req.flash('genericError', message)
-      res.redirect(303, paths.selfCreateService.register)
-    }
-
-    const handleError = (err) => {
-      if (err.errorCode) {
-        handleServerError(err)
-      } else {
-        handleInvalidUserInput(err.message)
-      }
-    }
-
-    const proceedToRegistration = () => {
-      registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
-        .then(() => {
-          _.set(req, 'session.pageData.submitRegistration', {
-            email,
-            telephoneNumber
-          })
-          res.redirect(303, paths.selfCreateService.confirm)
-        }).catch((err) => handleError(err))
-    }
-
-    return validateServiceRegistrationInputs(email, telephoneNumber, password)
-      .then(proceedToRegistration)
-      .catch(err => handleError(err))
   },
 
   /**
@@ -157,9 +144,7 @@ module.exports = {
    * @param res
    */
   showOtpResend: (req, res) => {
-    res.render('self-create-service/resend-otp', {
-      telephoneNumber: req.register_invite.telephone_number
-    })
+    res.render('self-create-service/resend-otp')
   },
 
   /**
@@ -168,35 +153,34 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitOtpResend: (req, res) => {
+  submitOtpResend: async function submitOtpResend (req, res) {
     const correlationId = req.correlationId
     const code = req.register_invite.code
     const telephoneNumber = req.body['telephone-number']
 
-    const resendOtpAndProceedToVerify = () => {
-      registrationService.resendOtpCode(code, telephoneNumber, correlationId)
-        .then(() => {
-          req.register_invite.telephone_number = telephoneNumber
-          res.redirect(303, paths.selfCreateService.otpVerify)
-        })
-        .catch(err => {
-          logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
-          if (err.errorCode === 404) {
-            renderErrorView(req, res, 'Unable to process registration at this time', 404)
-          } else {
-            renderErrorView(req, res, 'Unable to process registration at this time', 500)
-          }
-        })
+    const validPhoneNumber = validatePhoneNumber(telephoneNumber)
+    if (!validPhoneNumber) {
+      res.render('self-create-service/resend-otp', {
+        telephoneNumber,
+        errors: {
+          telephoneNumber: validPhoneNumber.message
+        }
+      })
     }
 
-    return validateRegistrationTelephoneNumber(telephoneNumber)
-      .then(resendOtpAndProceedToVerify)
-      .catch(err => {
-        logger.debug(`[requestId=${correlationId}] invalid user input - telephone number`)
-        req.flash('genericError', err.message)
-        req.register_invite.telephone_number = telephoneNumber
-        res.redirect(303, paths.selfCreateService.otpResend)
-      })
+    try {
+      await registrationService.resendOtpCode(code, telephoneNumber, correlationId)
+      req.register_invite.telephone_number = telephoneNumber
+      res.redirect(303, paths.selfCreateService.otpVerify)
+    }
+    catch (err) {
+      logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
+      if (err.errorCode === 404) {
+        renderErrorView(req, res, 'Unable to process registration at this time', 404)
+      } else {
+        renderErrorView(req, res, 'Unable to process registration at this time', 500)
+      }
+    }
   },
 
   /**
