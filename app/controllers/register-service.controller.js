@@ -73,19 +73,18 @@ module.exports = {
       await registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
       res.redirect(303, paths.selfCreateService.confirm)
     } catch (err) {
-      if ((err.errorCode === 400 || err.errorCode === 403) &&
-        err.message &&
-        err.message.errors) {
-        // Unfortunately we rely on error response from adminusers to provide validation errors,
-        // such as the email not being a public sector email. So relay this back to the user.
+      if (err.errorCode === 403 && err.message && err.message.errors) {
+        // 403 from adminusers indicates that this is not a public sector email
         lodash.set(req, 'session.pageData.submitRegistration', {
           email,
           telephoneNumber,
-          errors
+          errors: {
+            email: 'Enter a public sector email address'
+          }
         })
         return res.redirect(paths.selfCreateService.register)
       }
-      if (err.errorCode === 409) {
+      else if (err.errorCode === 409) {
         // Adminusers bizarrely returns a 409 when a user already exists, but sends them an email
         // to tell them this. We continue to the next page if this is the case as it will
         // tell them to check their email.

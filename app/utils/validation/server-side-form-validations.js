@@ -162,6 +162,10 @@ const validateEmail = function validateEmail (email) {
 }
 
 const validatePassword = function validatePassword (password) {
+  if (isEmpty(password)) {
+    return invalidReturnObject('Enter a password')
+  }
+
   const invalidPasswordMessage = isPasswordLessThanTenChars(password)
   if (invalidPasswordMessage) {
     return invalidReturnObject(invalidPasswordMessage)
