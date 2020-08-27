@@ -11,7 +11,6 @@ const messages = {
   missingCookie: 'Unable to process registration at this time',
   internalError: 'Unable to process registration at this time',
   linkExpired: 'This invitation is no longer valid',
-  invalidOtp: 'Invalid verification code'
 }
 
 const handleError = (req, res, err) => {
