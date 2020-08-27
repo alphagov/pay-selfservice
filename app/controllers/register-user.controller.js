@@ -10,6 +10,10 @@ const shouldProceedWithRegistration = validations.shouldProceedWithRegistration
 const validateRegistrationInputs = validations.validateUserRegistrationInputs
 const validateRegistrationTelephoneNumber = validations.validateRegistrationTelephoneNumber
 const validateOtp = validations.validateOtp
+const {
+  validatePhoneNumber,
+  validateEmail,
+  validatePassword } = require('../utils/validation/server-side-form-validations')
 
 // Constants
 const messages = {
@@ -45,24 +49,18 @@ const handleError = (req, res, err) => {
 }
 
 module.exports = {
-
-  /**
-   * display user registration data entry form.
-   * @param req
-   * @param res
-   */
-  showRegistration: (req, res) => {
-    const renderRegistrationPage = () => {
-      const data = {
-        email: req.register_invite.email
-      }
-      if (req.register_invite.telephone_number) {
-        data.telephone_number = req.register_invite.telephone_number
-      }
-      response(req, res, 'user-registration/register', data)
+  showRegistration: function showRegistration (req, res, next) {
+    const sessionData = req.register_invite
+    if (!sessionData) {
+      return next(new Error('Missing registration session in cookie'))
     }
-
-    return withValidatedRegistrationCookie(req, res, renderRegistrationPage)
+    const { recovered } = sessionData
+    const data = {
+      email: sessionData.email,
+      telephone_number: recovered.telephone_number,
+      errors: recovered.errors
+    }
+    response(req, res, 'user-registration/register', data)
   },
 
   /**
@@ -89,19 +87,39 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitRegistration: (req, res) => {
+  submitRegistration: async function submitRegistration (req, res, next) {
     const telephoneNumber = req.body['telephone-number']
     const password = req.body['password']
     const correlationId = req.correlationId
-    const code = req.register_invite.code
 
-    const proceedToVerification = () => {
-      registrationService.submitRegistration(code, telephoneNumber, password, correlationId)
-        .then(() => {
-          req.register_invite.telephone_number = telephoneNumber
-          res.redirect(303, paths.registerUser.otpVerify)
-        })
-        .catch((err) => handleError(req, res, err))
+    const sessionData = req.register_invite
+    if (!sessionData) {
+      return next(new Error('Missing registration session in cookie'))
+    }
+
+    const validPhoneNumber = validatePhoneNumber(telephoneNumber)
+    if (!validPhoneNumber) {
+      errors.telephoneNumber = validPhoneNumber.message
+    }
+    const validPassword = validatePassword(password)
+    if (!validPassword) {
+      errors.password = validPassword.message
+    }
+
+    if (!lodash.isEmpty(errors)) {
+      sessionData.recovered = {
+        telephoneNumber,
+        errors
+      }
+      return res.redirect(paths.selfCreateService.register)
+    }
+
+    try {
+      await registrationService.submitRegistration(sessionData.code, telephoneNumber, password, correlationId)
+      req.register_invite.telephone_number = telephoneNumber
+      res.redirect(303, paths.registerUser.otpVerify)
+    } catch (err) {
+      next(err)
     }
 
     const redirectToDetailEntry = (err) => {

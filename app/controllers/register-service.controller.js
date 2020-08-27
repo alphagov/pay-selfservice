@@ -53,7 +53,7 @@ module.exports = {
     if (!validPhoneNumber) {
       errors.telephoneNumber = validPhoneNumber.message
     }
-    const validPassword = validPassword(password)
+    const validPassword = validatePassword(password)
     if (!validPassword) {
       errors.password = validPassword.message
     }

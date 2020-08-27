@@ -1,4 +1,5 @@
 {% extends "../layout-logged-out.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Create an account - GOV.UK Pay
@@ -6,6 +7,13 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      telephoneNumber: '#telephone-number',
+      password: '#password'
+    }
+  }) }}
     <h1 class="govuk-heading-l page-title">Create an account</h1>
     <p class="govuk-body-l" id="email-display">Your account will be created with this email: {{email}}</p>
     <form action="{{routes.registerUser.registration}}" method="post" id="submit-registration" class="form submit-registration">
@@ -24,7 +32,8 @@
           value: telephone_number,
           hint: {
             text: "We’ll send you a verification code by text message"
-          }
+          },
+          errorMessage = { text: errors.telephoneNumber } if errors.telephoneNumber else false
         })
       }}
       {{
@@ -40,7 +49,8 @@
           },
           hint: {
             text: "Must be at least 10 characters"
-          }
+          },
+          errorMessage = { text: errors.password } if errors.password else false
         })
       }}
       {{
