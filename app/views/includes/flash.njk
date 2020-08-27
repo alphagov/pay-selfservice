@@ -1,3 +1,5 @@
+{% from "../macro/success-notification.njk" import successNotification %}
+
 {% block flash %}
   <div class="govuk-grid-column-two-thirds">
     {% if flash.genericError %}
@@ -8,11 +10,9 @@
     </div>
     {% endif %}
     {% if flash.generic %}
-    <div class="flash-container flash-container--good">
-      <div class="notification generic-flash">
-        {{ flash.generic | safe }}
-      </div>
-    </div>
+    {{ successNotification({
+      heading: flash.generic | safe
+    }) }}
     {% endif %}
   </div>
 {% endblock %}

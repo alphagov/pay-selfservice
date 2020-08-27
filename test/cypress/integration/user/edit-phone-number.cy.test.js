@@ -54,7 +54,7 @@ describe('Edit phone number flow', () => {
       cy.visit('/my-profile/phone-number')
       cy.get('input[name="phone"]').clear().type(testPhoneNumberNew)
       cy.get('#save-phone-number').click()
-      cy.get('.generic-flash').should('exist').should('contain', 'Phone number updated')
+      cy.get('.notification').should('exist').should('contain', 'Phone number updated')
       cy.get('#telephone-number').should('contain', testPhoneNumberNew)
     })
   })

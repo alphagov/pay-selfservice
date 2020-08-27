@@ -13,11 +13,7 @@ module.exports = (req, res) => {
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP')
   userService.configureNewOtpKey(req.user.externalId, code, method, req.correlationId)
     .then(user => {
-      if (method === 'APP') {
-        req.flash('generic', 'Your sign-in method has been updated. Use your authenticator app when you next sign in.')
-      } else {
-        req.flash('generic', 'Your sign-in method has been updated. We’ll send you a text message when you next sign in.')
-      }
+      req.flash('otpMethodUpdated', method)
       return res.redirect(paths.user.profile)
     })
     .catch((err) => {

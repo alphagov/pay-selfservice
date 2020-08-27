@@ -1,0 +1,8 @@
+{% macro successNotification(params) %}
+  <div class="flash-container flash-container--good">
+    <div class="notification">
+      <h2>{{ params.heading | safe }}</h2>
+      <p>{{ params.body | safe }}</p>
+    </div>
+  </div>
+{% endmacro %}

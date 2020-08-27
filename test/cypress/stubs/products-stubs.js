@@ -38,9 +38,16 @@ const getProductsByGatewayAccountIdFailure = function (gatewayAccountId) {
   }
 }
 
+const postCreateProductSuccess = function() {
+  return {
+    name: 'postCreateProductSuccess'
+  }
+}
+
 module.exports = {
   getProductsStub,
   getProductByExternalIdStub,
   deleteProductStub,
-  getProductsByGatewayAccountIdFailure
+  getProductsByGatewayAccountIdFailure,
+  postCreateProductSuccess
 }
