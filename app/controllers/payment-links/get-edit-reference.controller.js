@@ -10,15 +10,18 @@ const formattedPathFor = require('../../utils/replace-params-in-path')
 const supportedLanguage = require('../../models/supported-language')
 
 module.exports = function showEditReferencePage (req, res, next) {
+  const { productExternalId } = req.params
+
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
-  if (!sessionData) {
-    return next(new Error('Edit payment link data not found in session cookie'))
+  if (!sessionData || sessionData.externalId != productExternalId) {
+    req.flash('genericError', 'Something went wrong. Please try again.')
+    return res.redirect(paths.paymentLinks.manage)
   }
 
   const recovered = sessionData.referencePageRecovered || {}
   delete sessionData.referencePageRecovered
 
-  const self = formattedPathFor(paths.paymentLinks.editReference, req.params.productExternalId)
+  const self = formattedPathFor(paths.paymentLinks.editReference, productExternalId)
   const change = lodash.get(req, 'query.field', {})
   const referenceLabel = recovered.referenceLabel || sessionData.referenceLabel
   const referenceHint = recovered.referenceHint || sessionData.referenceHint

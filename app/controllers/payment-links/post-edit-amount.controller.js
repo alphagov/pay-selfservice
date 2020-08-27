@@ -8,10 +8,13 @@ const paths = require('../../paths')
 const formattedPathFor = require('../../utils/replace-params-in-path')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
-module.exports = function postEditAmount (req, res, next) {
+module.exports = function postEditAmount (req, res) {
+  const { productExternalId } = req.params
+  
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
-  if (!sessionData) {
-    return next(new Error('Edit payment link data not found in session cookie'))
+  if (!sessionData || sessionData.externalId != productExternalId) {
+    req.flash('genericError', 'Something went wrong. Please try again.')
+    return res.redirect(paths.paymentLinks.manage)
   }
 
   const type = req.body['amount-type-group']
@@ -34,11 +37,11 @@ module.exports = function postEditAmount (req, res, next) {
       type,
       amount: ''
     }
-    return res.redirect(formattedPathFor(paths.paymentLinks.editAmount, req.params.productExternalId))
+    return res.redirect(formattedPathFor(paths.paymentLinks.editAmount, productExternalId))
   }
 
   sessionData.price = amountInPence
   lodash.set(req, 'session.editPaymentLinkData', sessionData)
 
-  return res.redirect(formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId))
+  return res.redirect(formattedPathFor(paths.paymentLinks.edit, productExternalId))
 }

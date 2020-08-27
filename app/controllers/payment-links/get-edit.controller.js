@@ -1,41 +1,44 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
-const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const auth = require('../../services/auth.service.js')
-const { renderErrorView } = require('../../utils/response.js')
 const formattedPathFor = require('../../utils/replace-params-in-path')
 
-module.exports = (req, res) => {
-  const PAGE_PARAMS = {
-    self: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId),
-    editInformation: formattedPathFor(paths.paymentLinks.editInformation, req.params.productExternalId),
-    editReference: formattedPathFor(paths.paymentLinks.editReference, req.params.productExternalId),
-    editAmount: formattedPathFor(paths.paymentLinks.editAmount, req.params.productExternalId),
-    addMetadata: formattedPathFor(paths.paymentLinks.metadata.add, req.params.productExternalId),
+module.exports = async function showEditPaymentLink (req, res, next) {
+  const { productExternalId } = req.params
+
+  let editPaymentLinkData = lodash.get(req, 'session.editPaymentLinkData', {})
+  if (editPaymentLinkData.externalId && editPaymentLinkData.externalId != productExternalId) {
+    // Currently it is only possible to edit one payment link at a time due to how we use the 
+    // session.
+    delete req.session.editPaymentLinkData
+    editPaymentLinkData = {}
+  }
+
+  const pageData = {
+    self: formattedPathFor(paths.paymentLinks.edit, productExternalId),
+    editInformation: formattedPathFor(paths.paymentLinks.editInformation, productExternalId),
+    editReference: formattedPathFor(paths.paymentLinks.editReference, productExternalId),
+    editAmount: formattedPathFor(paths.paymentLinks.editAmount, productExternalId),
+    addMetadata: formattedPathFor(paths.paymentLinks.metadata.add, productExternalId),
     formattedPathFor,
     paths
   }
 
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  productsClient.product.getByProductExternalId(gatewayAccountId, req.params.productExternalId)
-    .then(product => {
-      const productCheck = lodash.cloneDeep(product)
-      const editPaymentLinkData = lodash.get(req, 'session.editPaymentLinkData', {})
-      delete editPaymentLinkData.metadata
-      PAGE_PARAMS.product = lodash.merge(product, editPaymentLinkData)
-      PAGE_PARAMS.changed = !lodash.isEqual(productCheck, PAGE_PARAMS.product)
-      lodash.set(req, 'session.editPaymentLinkData', PAGE_PARAMS.product)
-      return response(req, res, 'payment-links/edit', PAGE_PARAMS)
-    })
-    .catch((err) => {
-      logger.error(`[requestId=${req.correlationId}] Get ADHOC product by gateway account id failed - ${err.message}`)
-      renderErrorView(req, res)
-    })
+  try {
+    const product = await productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId)
+    const productCheck = lodash.cloneDeep(product)
+    delete editPaymentLinkData.metadata
+    pageData.product = lodash.merge(product, editPaymentLinkData)
+    pageData.changed = !lodash.isEqual(productCheck, pageData.product)
+    lodash.set(req, 'session.editPaymentLinkData', pageData.product)
+    return response(req, res, 'payment-links/edit', pageData)
+  } catch (err) {
+    return next(new Error(`Getting product from products failed - ${err.message}`))
+  }
 }

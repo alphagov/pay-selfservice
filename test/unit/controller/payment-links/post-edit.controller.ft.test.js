@@ -12,8 +12,8 @@ const { getApp } = require('../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../test-helpers/mock-session')
 const paths = require('../../../../app/paths')
 const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
+const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
-const { PRODUCTS_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const PRODUCT_EXTERNAL_ID = '2903e4yohi0we9yho2hio'
 const PAYMENT_1 = {
@@ -39,14 +39,20 @@ const VALID_PAYLOAD = {
   csrfToken: csrf().create('123')
 }
 
+const productsMock = nock(process.env.PRODUCTS_URL)
+const connectorMock = nock(process.env.CONNECTOR_URL)
+
 describe('POST edit payment link controller', () => {
   let result, session, app
   before('Arrange', () => {
-    nock(PRODUCTS_URL).patch(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${PRODUCT_EXTERNAL_ID}`).reply(200, PAYMENT_1)
+    connectorMock.get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+      .reply(200, validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }).getPlain())
+    productsMock.patch(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${PRODUCT_EXTERNAL_ID}`).reply(200, PAYMENT_1)
     session = getMockSession(VALID_USER)
-    lodash.set(session, 'editPaymentLinkData', {
+    session.editPaymentLinkData = {
+      externalId: PRODUCT_EXTERNAL_ID,
       name: 'Pay for an offline service'
-    })
+    }
 
     app = createAppWithSession(getApp(), session)
   })
