@@ -15,7 +15,7 @@ const emailPost = async function emailPost (req, res) {
   const correlationId = req.correlationId
   const username = req.body.username
 
-    const errors = {}
+  const errors = {}
   if (emailValidator(username)) {
     try {
       await userService.sendPasswordResetToken(username, correlationId)
@@ -26,15 +26,16 @@ const emailPost = async function emailPost (req, res) {
       res.redirect('/reset-password/' + req.params.id)
     }
   } else if (!username) {
-      errors.username = 'Enter an email address'
+    errors.username = 'Enter an email address'
   } else {
-      errors.username = 'Enter a valid email address'
+    errors.username = 'Enter a valid email address'
   }
 
-    res.render('forgotten-password/index', {
-      username,
-      errors
-    })
+  res.render('forgotten-password/index', {
+    username,
+    errors
+  })
+}
 
 const passwordRequested = function passwordRequested (req, res) {
   res.render('forgotten-password/password-requested')
@@ -48,7 +49,7 @@ const newPasswordGet = function newPasswordGet (req, res) {
   }
 
   return userService.findByResetToken(id).then(render, () => {
-      req.flash('genericError', 'Something went wrong. Please request a new password reset email.')
+    req.flash('genericError', 'Something went wrong. Please request a new password reset email.')
     res.redirect('/login')
   })
 }
