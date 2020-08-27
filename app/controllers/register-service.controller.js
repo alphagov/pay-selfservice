@@ -11,7 +11,9 @@ const loginController = require('../controllers/login')
 const {
   validatePhoneNumber,
   validateEmail,
-  validatePassword } = require('../utils/validation/server-side-form-validations')
+  validatePassword,
+  validateOtp
+} = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
 
 module.exports = {
@@ -126,8 +128,42 @@ module.exports = {
    * @param res
    * @returns {*|Promise|Promise.<T>}
    */
-  createPopulatedService: (req, res) => {
+  createPopulatedService: async function (req, res, next) {
     const correlationId = req.correlationId
+    const code = req.register_invite.code
+    const otpCode = req.body['verify-code']
+
+    const sessionData = req.register_invite
+    if (!sessionData) {
+      return next(new Error('Missing registration session in cookie'))
+    }
+
+    const validOtp = validateOtp(otpCode)
+    if (!validOtp) {
+      sessionData.recovered = {
+        errors: {
+          verificationCode: validOtp.message
+        }
+      }
+      res.redirect(303, paths.selfCreateService.otpVerify)
+    }
+
+    try {
+      await registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
+    } catch (err) {
+      if (err.errorCode === 401) {
+        sessionData.recovered = {
+          errors: {
+            verificationCode: validOtp.message
+          }
+        }
+        res.redirect(303, paths.selfCreateService.otpVerify)
+      } else if (err.errorCode === 410) {
+        renderErrorView(req, res, 'This invitation is no longer valid', 410)
+      } else {
+        renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+      }
+    }
 
     return registrationService.createPopulatedService(req.register_invite.code, correlationId)
       .then(completeServiceInviteResponse => {
