@@ -33,7 +33,7 @@
           hint: {
             text: "We’ll send you a verification code by text message"
           },
-          errorMessage = { text: errors.telephoneNumber } if errors.telephoneNumber else false
+          errorMessage: { text: errors.telephoneNumber } if errors.telephoneNumber else false
         })
       }}
       {{
@@ -50,7 +50,7 @@
           hint: {
             text: "Must be at least 10 characters"
           },
-          errorMessage = { text: errors.password } if errors.password else false
+          errorMessage: { text: errors.password } if errors.password else false
         })
       }}
       {{
