@@ -118,20 +118,8 @@ module.exports = {
    * @param newPassword
    * @returns {Promise}
    */
-  updatePassword: function (token, newPassword) {
-    return new Promise(function (resolve, reject) {
-      if (newPassword.length < MIN_PASSWORD_LENGTH) {
-        reject(new Error('Password must be 10 characters or more'))
-      } else if (commonPassword(newPassword)) {
-        reject(new Error('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'))
-      } else {
-        getAdminUsersClient().updatePasswordForUser(token, newPassword)
-          .then(
-            () => resolve(),
-            () => reject(new Error('There has been a problem updating password. Please try again.'))
-          )
-      }
-    })
+  updatePassword: function updatePassword (token, newPassword) {
+    return getAdminUsersClient().updatePasswordForUser(token, newPassword)
   },
 
   /**

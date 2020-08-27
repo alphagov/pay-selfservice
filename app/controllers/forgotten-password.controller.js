@@ -1,11 +1,14 @@
 'use strict'
 
 const lodash = require('lodash')
-const emailValidator = require('../utils/email-tools.js')
 const paths = require('../paths.js')
 const { renderErrorView } = require('../utils/response.js')
 const userService = require('../services/user.service.js')
 const logger = require('../utils/logger')(__filename)
+const {
+  validateEmail,
+  validatePassword
+} = require('../utils/validation/server-side-form-validations')
 
 const emailGet = function emailGet (req, res) {
   res.render('forgotten-password/index')
@@ -15,26 +18,24 @@ const emailPost = async function emailPost (req, res) {
   const correlationId = req.correlationId
   const username = req.body.username
 
-  const errors = {}
-  if (emailValidator(username)) {
-    try {
-      await userService.sendPasswordResetToken(username, correlationId)
-      res.redirect(paths.user.passwordRequested)
-    } catch (err) {
-      logger.error('Sending password reset email failed: ' + err)
-      req.flash('genericError', 'Something went wrong. Please try again.')
-      res.redirect('/reset-password/' + req.params.id)
-    }
-  } else if (!username) {
-    errors.username = 'Enter an email address'
-  } else {
-    errors.username = 'Enter a valid email address'
+  const validEmail = validateEmail(username)
+  if (!validEmail) {
+    res.render('forgotten-password/index', {
+      username,
+      errors: {
+        username: validEmail.message
+      }
+    })
   }
 
-  res.render('forgotten-password/index', {
-    username,
-    errors
-  })
+  try {
+    await userService.sendPasswordResetToken(username, correlationId)
+    res.redirect(paths.user.passwordRequested)
+  } catch (err) {
+    logger.error('Sending password reset email failed: ' + err)
+    req.flash('genericError', 'Something went wrong. Please try again.')
+    res.redirect('/reset-password/' + req.params.id)
+  }
 }
 
 const passwordRequested = function passwordRequested (req, res) {
@@ -54,21 +55,24 @@ const newPasswordGet = function newPasswordGet (req, res) {
   })
 }
 
-const newPasswordPost = async function newPasswordPost (req, res) {
+const newPasswordPost = async function newPasswordPost (req, res, next) {
   try {
-    const forgottenPassword = await userService.findByResetToken(req.params.id)
+    const token = req.params.id
+    const password = req.body.password
+
+    const forgottenPassword = await userService.findByResetToken(token)
     const user = await userService.findByExternalId(forgottenPassword.user_external_id, req.correlationId)
 
-    if (!user) {
-      return renderErrorView(req, res)
+    const validPassword = validatePassword(password)
+    if (!validPassword) {
+      lodash.set(req, 'session.pageData.updatePasswordRecovered', {
+        errors: {
+          password: validPassword.message
+        }
+      })
     }
 
-    try {
-      await userService.updatePassword(req.params.id, req.body.password)
-    } catch (err) {
-      req.flash('genericError', err.message)
-      return res.redirect('/reset-password/' + req.params.id)
-    }
+    await userService.updatePassword(token, password)
     try {
       await userService.logOut(user)
     } catch (err) {

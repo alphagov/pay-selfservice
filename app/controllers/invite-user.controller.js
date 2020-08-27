@@ -69,12 +69,12 @@ module.exports = {
     const role = rolesModule.getRoleByExtId(roleId)
 
     if (!emailValidator(invitee)) {
-      lodash.set(req, 'session.pageData.inviteUserRecovered', { 
+      lodash.set(req, 'session.pageData.inviteUserRecovered', {
         invitee,
         errors: {
           invitee: 'Enter a valid email address'
         }
-       })
+      })
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
     } else if (!role) {
       logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`)

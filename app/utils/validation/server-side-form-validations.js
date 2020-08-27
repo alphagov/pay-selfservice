@@ -55,7 +55,7 @@ const validateMandatoryField = function validateMandatoryField (value, maxLength
 const validatePhoneNumber = function validatePhoneNumber (phoneNumber) {
   const isEmptyErrorMessage = isEmpty(phoneNumber)
   if (isEmptyErrorMessage) {
-    return invalidReturnObject(isEmptyErrorMessage)
+    return invalidReturnObject("Enter a telephone number")
   }
 
   const phoneNumberInvalid = invalidTelephoneNumber(phoneNumber)
@@ -69,7 +69,7 @@ const validatePhoneNumber = function validatePhoneNumber (phoneNumber) {
 const validatePostcode = function validatePostcode (postcode, countryCode) {
   const isEmptyErrorMessage = isEmpty(postcode)
   if (isEmptyErrorMessage) {
-    return invalidReturnObject(isEmptyErrorMessage)
+    return invalidReturnObject("Enter a postcode")
   }
 
   // only do proper validation on UK postcodes
@@ -149,9 +149,8 @@ const validateDateOfBirth = function validateDateOfBirth (day, month, year) {
 }
 
 const validateEmail = function validateEmail (email) {
-  const isEmptyErrorMessage = isEmpty(email)
-  if (isEmptyErrorMessage) {
-    return invalidReturnObject(isEmptyErrorMessage)
+  if (isEmpty(email)) {
+    return invalidReturnObject("Enter an email address")
   }
 
   const invalidEmailErrorMessage = isValidEmail(email)
@@ -167,7 +166,7 @@ const validatePassword = function validatePassword (password) {
   if (isPasswordLessThanTenChars) {
     return invalidReturnObject(isPasswordLessThanTenChars)
   }
-  
+
   if (commonPassword(password)) {
     return invalidReturnObject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
   }

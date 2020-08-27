@@ -64,7 +64,7 @@ module.exports = {
         telephoneNumber,
         errors
       })
-      return res.redirect( paths.selfCreateService.register)
+      return res.redirect(paths.selfCreateService.register)
     }
 
     try {
@@ -81,7 +81,7 @@ module.exports = {
           telephoneNumber,
           errors
         })
-        return res.redirect( paths.selfCreateService.register)
+        return res.redirect(paths.selfCreateService.register)
       }
       if (err.errorCode === 409) {
         // Adminusers bizarrely returns a 409 when a user already exists, but sends them an email
@@ -189,8 +189,7 @@ module.exports = {
       await registrationService.resendOtpCode(code, telephoneNumber, correlationId)
       req.register_invite.telephone_number = telephoneNumber
       res.redirect(303, paths.selfCreateService.otpVerify)
-    }
-    catch (err) {
+    } catch (err) {
       logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
       if (err.errorCode === 404) {
         renderErrorView(req, res, 'Unable to process registration at this time', 404)

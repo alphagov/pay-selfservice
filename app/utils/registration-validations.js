@@ -29,5 +29,5 @@ module.exports = {
         reject(new Error('registration cookie does not contain the email and/or code'))
       }
     })
-  },
+  }
 }
