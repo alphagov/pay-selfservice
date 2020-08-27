@@ -1,5 +1,6 @@
 'use strict'
 
+const lodash = require('lodash')
 const emailValidator = require('../utils/email-tools.js')
 const paths = require('../paths.js')
 const { renderErrorView } = require('../utils/response.js')
@@ -15,6 +16,7 @@ module.exports = {
     const correlationId = req.correlationId
     const username = req.body.username
 
+    const errors = {}
     if (emailValidator(username)) {
       return userService.sendPasswordResetToken(username, correlationId)
         .then(() => {
@@ -24,12 +26,15 @@ module.exports = {
           res.redirect('/reset-password/' + req.params.id)
         })
     } else if (!username) {
-      req.flash('error', 'You must enter an email address')
-      res.redirect(paths.user.forgottenPassword)
+      errors.username = 'Enter an email address'
     } else {
-      req.flash('error', 'You must enter a valid email address')
-      res.redirect(paths.user.forgottenPassword)
+      errors.username = 'Enter a valid email address'
     }
+
+    res.render('forgotten-password/index', {
+      username,
+      errors
+    })
   },
 
   passwordRequested: (req, res) => {
