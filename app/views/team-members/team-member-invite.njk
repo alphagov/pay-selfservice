@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
 Invite a new team member - GOV.UK Pay
@@ -16,6 +17,12 @@ Invite a new team member - GOV.UK Pay
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        invitee: '#invitee-email'
+      }
+    }) }}
     <div>
       <h1 class="govuk-heading-l underline">
         <span class="govuk-caption-l">Team members</span>
@@ -31,7 +38,8 @@ Invite a new team member - GOV.UK Pay
         id: "invitee-email",
         name: "invitee-email",
         classes: "govuk-!-width-two-thirds",
-        type: "email"
+        type: "email",
+        errorMessage: { text: errors.invitee } if errors.invitee or false
       })
     }}
 

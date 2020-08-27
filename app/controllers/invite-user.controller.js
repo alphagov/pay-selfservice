@@ -39,14 +39,16 @@ module.exports = {
     const externalServiceId = req.service.externalId
     const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
     const teamMemberInviteSubmitLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
-    const invitee = lodash.get(req, 'session.pageData.invitee', '')
+    const recovered = lodash.get(req, 'session.pageData.inviteUserRecovered', {})
+    lodash.unset('session.pageData.inviteUserRecovered')
     let data = {
       teamMemberIndexLink: teamMemberIndexLink,
       teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
       admin: { id: roles['admin'].extId },
       viewAndRefund: { id: roles['view-and-refund'].extId },
       view: { id: roles['view-only'].extId },
-      invitee
+      invitee: recovered.invitee,
+      errors: recovered.errors
     }
 
     return response(req, res, 'team-members/team-member-invite', data)
@@ -67,8 +69,12 @@ module.exports = {
     const role = rolesModule.getRoleByExtId(roleId)
 
     if (!emailValidator(invitee)) {
-      req.flash('genericError', 'Enter a valid email address')
-      lodash.set(req, 'session.pageData', { invitee })
+      lodash.set(req, 'session.pageData.inviteUserRecovered', { 
+        invitee,
+        errors: {
+          invitee: 'Enter a valid email address'
+        }
+       })
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
     } else if (!role) {
       logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`)
