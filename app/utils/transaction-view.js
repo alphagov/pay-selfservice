@@ -14,6 +14,7 @@ const TransactionEvent = require('../models/TransactionEvent.class')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
 const CSV_MAX_LIMIT = process.env.CSV_MAX_LIMIT || 10000
+const ledgerTransactionCountLimitEnabled = process.env.LEDGER_ENABLE_TRANSACTION_COUNT_LIMIT === 'true'
 
 module.exports = {
   /** prepares the transaction list view */
@@ -23,7 +24,7 @@ module.exports = {
     connectorData.hasResults = connectorData.results.length !== 0
     connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length)
     connectorData.showCsvDownload = connectorData.total <= CSV_MAX_LIMIT
-    connectorData.totalOverLimit = connectorData.total > CSV_MAX_LIMIT
+    connectorData.totalOverLimit = ledgerTransactionCountLimitEnabled && connectorData.total > CSV_MAX_LIMIT
     connectorData.totalFormatted = connectorData.total.toLocaleString()
     connectorData.csvMaxLimitFormatted = parseInt(CSV_MAX_LIMIT).toLocaleString()
     connectorData.paginationLinks = getPaginationLinks(connectorData)
