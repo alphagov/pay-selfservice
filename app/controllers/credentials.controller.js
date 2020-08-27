@@ -1,7 +1,7 @@
 const EDIT_CREDENTIALS_MODE = 'editCredentials'
 const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials'
 
-const _ = require('lodash')
+const lodash = require('lodash')
 const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
 const { response } = require('../utils/response')
@@ -25,12 +25,12 @@ function showSuccessView (viewMode, req, res) {
     default:
       responsePayload.editNotificationCredentialsMode = false
   }
-  const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
-  if (invalidCreds) {
-    responsePayload.lastNotificationsData = invalidCreds
+  const recovered = lodash.get(req, 'session.pageData.editNotificationCredentials')
+  if (recovered) {
+    responsePayload.lastNotificationsData = recovered
     delete req.session.pageData.editNotificationCredentials
   }
-  responsePayload.change = _.get(req, 'query.change', {})
+  responsePayload.change = lodash.get(req, 'query.change', {})
 
   response(req, res, 'credentials/' + req.account.payment_provider, responsePayload)
 }
@@ -56,17 +56,17 @@ function credentialsPatchRequestValueOf (req) {
     }
   }
 
-  const merchantId = _.get(req, 'body.merchantId')
+  const merchantId = lodash.get(req, 'body.merchantId')
   if (merchantId) {
     requestPayload.credentials.merchant_id = req.body.merchantId
   }
 
-  const shaInPassphrase = _.get(req, 'body.shaInPassphrase')
+  const shaInPassphrase = lodash.get(req, 'body.shaInPassphrase')
   if (shaInPassphrase) {
     requestPayload.credentials.sha_in_passphrase = req.body.shaInPassphrase
   }
 
-  const shaOutPassphrase = _.get(req, 'body.shaOutPassphrase')
+  const shaOutPassphrase = lodash.get(req, 'body.shaOutPassphrase')
   if (shaOutPassphrase) {
     requestPayload.credentials.sha_out_passphrase = req.body.shaOutPassphrase
   }
@@ -90,21 +90,26 @@ module.exports = {
   updateNotificationCredentials: function (req, res) {
     const accountId = auth.getCurrentGatewayAccountId((req))
     const connectorUrl = CONNECTOR_URL + '/v1/api/accounts/{accountId}/notification-credentials'
-    const { username, password } = _.get(req, 'body')
+    const { username, password } = lodash.get(req, 'body')
 
+    const errors = {}
     if (!username) {
-      req.flash('genericError', 'Enter a username')
+      errors.username = 'Enter a username'
     } else if (!password) {
-      req.flash('genericError', 'Enter a password')
+      errors.password = 'Enter a password'
     } else {
       const failedValidationMessage = isPasswordLessThanTenChars(password)
       if (failedValidationMessage) {
-        req.flash('genericError', failedValidationMessage)
+        errors.password = failedValidationMessage
       }
     }
 
-    if (_.get(req, 'session.flash.genericError.length')) {
-      _.set(req, 'session.pageData.editNotificationCredentials', { username, password })
+    if (!lodash.isEmpty(errors)) {
+      lodash.set(req, 'session.pageData.editNotificationCredentials', {
+        username,
+        password,
+        errors
+      })
       return res.redirect(paths.notificationCredentials.edit)
     }
 
