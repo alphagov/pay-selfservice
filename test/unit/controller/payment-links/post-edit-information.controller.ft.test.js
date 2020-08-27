@@ -25,7 +25,7 @@ describe('POST payment link edit information controller', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
-      session.editPaymentLinkData = {}
+      session.editPaymentLinkData = { externalId: PRODUCT_EXTERNAL_ID }
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
@@ -69,7 +69,7 @@ describe('POST payment link edit information controller', () => {
     let result, session, app
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
-      session.editPaymentLinkData = {}
+      session.editPaymentLinkData = { externalId: PRODUCT_EXTERNAL_ID }
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {

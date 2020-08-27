@@ -13,23 +13,34 @@ describe('GET edit information controller', () => {
     req = {
       params: {
         productExternalId
-      }
+      },
+      flash: sinon.spy()
     }
     res = {
       render: sinon.spy(),
       setHeaders: sinon.spy(),
-      status: sinon.spy()
+      status: sinon.spy(),
+      redirect: sinon.spy()
     }
     next = sinon.spy()
   })
 
-  it('should pass an error to next when session data not found', () => {
+  it('should return to "Manage payment links" with an error if session data not found', () => {
     getEditInformationController(req, res, next)
-    sinon.assert.calledWith(next, sinon.match.instanceOf(Error))
+    sinon.assert.calledWith(res.redirect, '/create-payment-link/manage')
+  })
+
+  it('should return to "Manage payment links" with an error if ID in URL does not match ID in session', () => {
+    lodash.set(req, 'session.editPaymentLinkData', {
+      externalId: 'a-different-id'
+    })
+    getEditInformationController(req, res, next)
+    sinon.assert.calledWith(res.redirect, '/create-payment-link/manage')
   })
 
   it('should send field values from session when rendering page', () => {
     const session = {
+      externalId: productExternalId,
       name: 'a payment link',
       description: 'a description',
       language: 'cy'
@@ -55,6 +66,7 @@ describe('GET edit information controller', () => {
       }
     }
     const session = {
+      externalId: productExternalId,
       name: 'a payment link',
       description: 'a description',
       language: 'cy',
