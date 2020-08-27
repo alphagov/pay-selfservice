@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Edit phone number - My profile - GOV.UK Pay
@@ -16,13 +17,20 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      phone: "#phone"
+    }
+  }) }}
+
   <h1 class="govuk-heading-l">Change your phone number</h1>
   <p class="govuk-body">Your phone number is used to send a text message code when you sign in to help verify your identity.</p>
 
   {% set phoneError = false %}
-  {% if flash.genericError %}
+  {% if errors.phone %}
   {% set phoneError = {
-    text: "Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192"
+    text: errors.phone
   } %}
   {% endif %}
 
