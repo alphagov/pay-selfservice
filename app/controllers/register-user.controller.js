@@ -41,7 +41,7 @@ module.exports = {
     if (!sessionData) {
       return next(new Error('Missing registration session in cookie'))
     }
-    const { recovered } = sessionData
+    const recovered = sessionData.recovered || {}
     delete sessionData.recovered
     const data = {
       email: sessionData.email,
@@ -122,7 +122,7 @@ module.exports = {
     if (!sessionData) {
       return next(new Error('Missing registration session in cookie'))
     }
-    const { recovered } = sessionData
+    const recovered = sessionData.recovered || {}
     delete sessionData.recovered
     const data = {
       email: req.register_invite.email,
@@ -183,7 +183,7 @@ module.exports = {
     if (!sessionData) {
       return next(new Error('Missing registration session in cookie'))
     }
-    const { recovered } = sessionData.recovered
+    const recovered = sessionData.recovered || {}.recovered
     delete sessionData.recovered
 
     const data = {

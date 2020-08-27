@@ -180,7 +180,7 @@ const validatePassword = function validatePassword (password) {
 
 const validateOtp = function validateOtp (otp) {
   if (!otp || !NUMBERS_ONLY.test(otp)) {
-    return invalidReturnObject('Invalid verification coe')
+    return invalidReturnObject('Invalid verification code')
   }
   return validReturnObject
 }

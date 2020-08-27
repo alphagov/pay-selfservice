@@ -25,8 +25,8 @@ module.exports = {
    * @param res
    */
   showRegistration: (req, res) => {
-    const recovered = lodash.get(req, 'session.pageData.submitRegistration', {})
-    lodash.unset(req, 'session.pageData.submitRegistration')
+    const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered', {})
+    lodash.unset('session.pageData.submitRegistration.recovered')
     res.render('self-create-service/register', {
       email: recovered.email,
       telephoneNumber: recovered.telephoneNumber,
@@ -61,7 +61,7 @@ module.exports = {
     }
 
     if (!lodash.isEmpty(errors)) {
-      lodash.set(req, 'session.pageData.submitRegistration', {
+      lodash.set(req, 'session.pageData.submitRegistration.recovered', {
         email,
         telephoneNumber,
         errors
@@ -71,11 +71,10 @@ module.exports = {
 
     try {
       await registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
-      res.redirect(303, paths.selfCreateService.confirm)
     } catch (err) {
       if (err.errorCode === 403 && err.message && err.message.errors) {
         // 403 from adminusers indicates that this is not a public sector email
-        lodash.set(req, 'session.pageData.submitRegistration', {
+        lodash.set(req, 'session.pageData.submitRegistration.recovered', {
           email,
           telephoneNumber,
           errors: {
@@ -83,17 +82,20 @@ module.exports = {
           }
         })
         return res.redirect(paths.selfCreateService.register)
-      }
-      else if (err.errorCode === 409) {
+      } else if (err.errorCode !== 409) {
         // Adminusers bizarrely returns a 409 when a user already exists, but sends them an email
         // to tell them this. We continue to the next page if this is the case as it will
         // tell them to check their email.
-        res.redirect(303, paths.selfCreateService.confirm)
-      } else {
         lodash.unset(req, 'session.pageData.submitRegistration')
         return renderErrorView(req, res)
       }
     }
+
+    lodash.set(req, 'session.pageData.submitRegistration', {
+      email,
+      telephoneNumber
+    })
+    res.redirect(303, paths.selfCreateService.confirm)
   },
 
   /**
@@ -116,8 +118,17 @@ module.exports = {
    * @param req
    * @param res
    */
-  showOtpVerify: (req, res) => {
-    res.render('self-create-service/verify-otp')
+  showOtpVerify: (req, res, next) => {
+    const sessionData = req.register_invite
+    if (!sessionData) {
+      return next(new Error('Missing registration session in cookie'))
+    }
+    const recovered = sessionData.recovered || {}
+    delete sessionData.recovered
+
+    res.render('self-create-service/verify-otp', {
+      errors: recovered.errors
+    })
   },
 
   /**
@@ -144,7 +155,7 @@ module.exports = {
           verificationCode: validOtp.message
         }
       }
-      res.redirect(303, paths.selfCreateService.otpVerify)
+      return res.redirect(303, paths.selfCreateService.otpVerify)
     }
 
     try {
@@ -158,25 +169,24 @@ module.exports = {
         }
         res.redirect(303, paths.selfCreateService.otpVerify)
       } else if (err.errorCode === 410) {
-        renderErrorView(req, res, 'This invitation is no longer valid', 410)
+        return renderErrorView(req, res, 'This invitation is no longer valid', 410)
+      } else {
+        return renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+      }
+    }
+
+    try {
+      const completeInviteResponse = await registrationService.createPopulatedService(req.register_invite.code, correlationId)
+      loginController.setupDirectLoginAfterRegister(req, res, completeInviteResponse.user_external_id)
+      return res.redirect(303, paths.selfCreateService.logUserIn)
+    } catch (err) {
+      if (err.errorCode === 409) {
+        const error = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
+        renderErrorView(req, res, error, err.errorCode)
       } else {
         renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
       }
     }
-
-    return registrationService.createPopulatedService(req.register_invite.code, correlationId)
-      .then(completeServiceInviteResponse => {
-        loginController.setupDirectLoginAfterRegister(req, res, completeServiceInviteResponse.user_external_id)
-        res.redirect(303, paths.selfCreateService.logUserIn)
-      })
-      .catch(err => {
-        if (err.errorCode === 409) {
-          const error = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
-          renderErrorView(req, res, error, err.errorCode)
-        } else {
-          renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
-        }
-      })
   },
 
   /**
