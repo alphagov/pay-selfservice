@@ -1,11 +1,6 @@
 'use strict'
 
-const commonPassword = require('common-password')
-
 const getAdminUsersClient = require('./clients/adminusers.client')
-
-// Constants
-const MIN_PASSWORD_LENGTH = 10
 
 module.exports = {
 
