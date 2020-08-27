@@ -55,7 +55,7 @@ const validateMandatoryField = function validateMandatoryField (value, maxLength
 const validatePhoneNumber = function validatePhoneNumber (phoneNumber) {
   const isEmptyErrorMessage = isEmpty(phoneNumber)
   if (isEmptyErrorMessage) {
-    return invalidReturnObject("Enter a telephone number")
+    return invalidReturnObject('Enter a telephone number')
   }
 
   const phoneNumberInvalid = invalidTelephoneNumber(phoneNumber)
@@ -69,7 +69,7 @@ const validatePhoneNumber = function validatePhoneNumber (phoneNumber) {
 const validatePostcode = function validatePostcode (postcode, countryCode) {
   const isEmptyErrorMessage = isEmpty(postcode)
   if (isEmptyErrorMessage) {
-    return invalidReturnObject("Enter a postcode")
+    return invalidReturnObject('Enter a postcode')
   }
 
   // only do proper validation on UK postcodes
@@ -150,7 +150,7 @@ const validateDateOfBirth = function validateDateOfBirth (day, month, year) {
 
 const validateEmail = function validateEmail (email) {
   if (isEmpty(email)) {
-    return invalidReturnObject("Enter an email address")
+    return invalidReturnObject('Enter an email address')
   }
 
   const invalidEmailErrorMessage = isValidEmail(email)
@@ -162,9 +162,9 @@ const validateEmail = function validateEmail (email) {
 }
 
 const validatePassword = function validatePassword (password) {
-  const isPasswordLessThanTenChars = isPasswordLessThanTenChars(password)
-  if (isPasswordLessThanTenChars) {
-    return invalidReturnObject(isPasswordLessThanTenChars)
+  const invalidPasswordMessage = isPasswordLessThanTenChars(password)
+  if (invalidPasswordMessage) {
+    return invalidReturnObject(invalidPasswordMessage)
   }
 
   if (commonPassword(password)) {
@@ -188,5 +188,6 @@ module.exports = {
   validatePostcode,
   validateDateOfBirth,
   validateEmail,
-  validatePassword
+  validatePassword,
+  validateOtp
 }

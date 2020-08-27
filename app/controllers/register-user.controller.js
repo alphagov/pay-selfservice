@@ -1,16 +1,13 @@
 'use strict'
 
+const lodash = require('lodash')
 const logger = require('../utils/logger')(__filename)
 const { renderErrorView, response } = require('../utils/response')
 const registrationService = require('../services/user-registration.service')
 const paths = require('../paths')
 const loginController = require('./login')
-const validations = require('../utils/registration-validations')
-const shouldProceedWithRegistration = validations.shouldProceedWithRegistration
-const validateRegistrationTelephoneNumber = validations.validateRegistrationTelephoneNumber
 const {
   validatePhoneNumber,
-  validateEmail,
   validatePassword,
   validateOtp
 } = require('../utils/validation/server-side-form-validations')
@@ -88,6 +85,7 @@ module.exports = {
       return next(new Error('Missing registration session in cookie'))
     }
 
+    const errors = {}
     const validPhoneNumber = validatePhoneNumber(telephoneNumber)
     if (!validPhoneNumber) {
       errors.telephoneNumber = validPhoneNumber.message
@@ -119,7 +117,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  showOtpVerify: (req, res) => {
+  showOtpVerify: (req, res, next) => {
     const sessionData = req.register_invite
     if (!sessionData) {
       return next(new Error('Missing registration session in cookie'))
@@ -138,7 +136,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitOtpVerify: async function submitOtpVerify (req, res) {
+  submitOtpVerify: async function submitOtpVerify (req, res, next) {
     const correlationId = req.correlationId
     const verificationCode = req.body['verify-code']
 
@@ -180,7 +178,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  showReVerifyPhone: (req, res) => {
+  showReVerifyPhone: (req, res, next) => {
     const sessionData = req.register_invite
     if (!sessionData) {
       return next(new Error('Missing registration session in cookie'))
@@ -200,7 +198,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitReVerifyPhone: async function submitReVerifyPhone (req, res) {
+  submitReVerifyPhone: async function submitReVerifyPhone (req, res, next) {
     const correlationId = req.correlationId
     const telephoneNumber = req.body['telephone-number']
 
