@@ -7,13 +7,13 @@ const paths = require('../paths')
 const loginController = require('./login')
 const validations = require('../utils/registration-validations')
 const shouldProceedWithRegistration = validations.shouldProceedWithRegistration
-const validateRegistrationInputs = validations.validateUserRegistrationInputs
 const validateRegistrationTelephoneNumber = validations.validateRegistrationTelephoneNumber
-const validateOtp = validations.validateOtp
 const {
   validatePhoneNumber,
   validateEmail,
-  validatePassword } = require('../utils/validation/server-side-form-validations')
+  validatePassword,
+  validateOtp
+} = require('../utils/validation/server-side-form-validations')
 
 // Constants
 const messages = {
@@ -21,16 +21,6 @@ const messages = {
   internalError: 'Unable to process registration at this time',
   linkExpired: 'This invitation is no longer valid',
   invalidOtp: 'Invalid verification code'
-}
-
-const withValidatedRegistrationCookie = (req, res, next) => {
-  const correlationId = req.correlationId
-  return shouldProceedWithRegistration(req.register_invite)
-    .then(next)
-    .catch(err => {
-      logger.warn(`[requestId=${correlationId}] unable to validate required cookie for registration - ${err.message}`)
-      renderErrorView(req, res, messages.missingCookie, 404)
-    })
 }
 
 const handleError = (req, res, err) => {
@@ -58,7 +48,7 @@ module.exports = {
     delete sessionData.recovered
     const data = {
       email: sessionData.email,
-      telephone_number: recovered.telephone_number,
+      telephone_number: recovered.telephone_number || sessionData.telephone_number,
       errors: recovered.errors
     }
     response(req, res, 'user-registration/register', data)
@@ -112,7 +102,7 @@ module.exports = {
         telephoneNumber,
         errors
       }
-      return res.redirect(paths.selfCreateService.register)
+      return res.redirect(paths.registerUser.registration)
     }
 
     try {
@@ -120,20 +110,8 @@ module.exports = {
       req.register_invite.telephone_number = telephoneNumber
       res.redirect(303, paths.registerUser.otpVerify)
     } catch (err) {
-      next(err)
+      handleError(req, res, err)
     }
-
-    const redirectToDetailEntry = (err) => {
-      req.register_invite.telephone_number = telephoneNumber
-      req.flash('genericError', err.message)
-      res.redirect(303, paths.registerUser.registration)
-    }
-
-    return withValidatedRegistrationCookie(req, res, () => {
-      validateRegistrationInputs(telephoneNumber, password)
-        .then(proceedToVerification)
-        .catch(redirectToDetailEntry)
-    })
   },
 
   /**
@@ -142,15 +120,17 @@ module.exports = {
    * @param res
    */
   showOtpVerify: (req, res) => {
+    const sessionData = req.register_invite
+    if (!sessionData) {
+      return next(new Error('Missing registration session in cookie'))
+    }
+    const { recovered } = sessionData
+    delete sessionData.recovered
     const data = {
-      email: req.register_invite.email
+      email: req.register_invite.email,
+      errors: recovered.errors
     }
-
-    const displayVerifyCodePage = () => {
-      response(req, res, 'user-registration/verify-otp', data)
-    }
-
-    return withValidatedRegistrationCookie(req, res, displayVerifyCodePage)
+    response(req, res, 'user-registration/verify-otp', data)
   },
 
   /**
@@ -158,41 +138,41 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitOtpVerify: (req, res) => {
+  submitOtpVerify: async function submitOtpVerify (req, res) {
     const correlationId = req.correlationId
     const verificationCode = req.body['verify-code']
-    const code = req.register_invite.code
 
-    const redirectToAutoLogin = (req, res) => {
-      res.redirect(303, paths.registerUser.logUserIn)
+    const sessionData = req.register_invite
+    if (!sessionData) {
+      return next(new Error('Missing registration session in cookie'))
     }
 
-    const handleInvalidOtp = (message) => {
-      logger.debug(`[requestId=${correlationId}] invalid user input - otp code`)
-      req.flash('genericError', message)
+    const validOtp = validateOtp(verificationCode)
+    if (!validOtp) {
+      sessionData.recovered = {
+        errors: {
+          verificationCode: validOtp.message
+        }
+      }
       res.redirect(303, paths.registerUser.otpVerify)
     }
 
-    const verifyOtpAndCreateUser = function () {
-      registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
-        .then((user) => {
-          loginController.setupDirectLoginAfterRegister(req, res, user.external_id)
-          redirectToAutoLogin(req, res)
-        })
-        .catch(err => {
-          if (err.errorCode && err.errorCode === 401) {
-            handleInvalidOtp(messages.invalidOtp)
-          } else {
-            handleError(req, res, err)
+    try {
+      const user = await registrationService.verifyOtpAndCreateUser(sessionData.code, verificationCode, correlationId)
+      loginController.setupDirectLoginAfterRegister(req, res, user.external_id)
+      res.redirect(303, paths.registerUser.logUserIn)
+    } catch (err) {
+      if (err.errorCode && err.errorCode === 401) {
+        sessionData.recovered = {
+          errors: {
+            verificationCode: 'Invalid verification code'
           }
-        })
+        }
+        res.redirect(303, paths.registerUser.otpVerify)
+      } else {
+        handleError(req, res, err)
+      }
     }
-
-    return withValidatedRegistrationCookie(req, res, () => {
-      validateOtp(verificationCode)
-        .then(verifyOtpAndCreateUser)
-        .catch(err => handleInvalidOtp(err.message))
-    })
   },
 
   /**
@@ -201,16 +181,18 @@ module.exports = {
    * @param res
    */
   showReVerifyPhone: (req, res) => {
-    const telephoneNumber = req.register_invite.telephone_number
-
-    const displayReVerifyCodePage = () => {
-      const data = {
-        telephone_number: telephoneNumber
-      }
-      response(req, res, 'user-registration/re-verify-phone', data)
+    const sessionData = req.register_invite
+    if (!sessionData) {
+      return next(new Error('Missing registration session in cookie'))
     }
+    const { recovered } = sessionData.recovered
+    delete sessionData.recovered
 
-    return withValidatedRegistrationCookie(req, res, displayReVerifyCodePage)
+    const data = {
+      telephone_number: sessionData.telephone_number,
+      errors: recovered.errors
+    }
+    response(req, res, 'user-registration/re-verify-phone', data)
   },
 
   /**
@@ -218,30 +200,31 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitReVerifyPhone: (req, res) => {
+  submitReVerifyPhone: async function submitReVerifyPhone (req, res) {
     const correlationId = req.correlationId
-    const code = req.register_invite.code
     const telephoneNumber = req.body['telephone-number']
 
-    const resendOtpAndProceedToVerify = () => {
-      registrationService.resendOtpCode(code, telephoneNumber, correlationId)
-        .then(() => {
-          req.register_invite.telephone_number = telephoneNumber
-          res.redirect(303, paths.registerUser.otpVerify)
-        })
-        .catch(err => handleError(req, res, err))
+    const sessionData = req.register_invite
+    if (!sessionData) {
+      return next(new Error('Missing registration session in cookie'))
     }
 
-    return withValidatedRegistrationCookie(req, res, () => {
-      validateRegistrationTelephoneNumber(telephoneNumber)
-        .then(resendOtpAndProceedToVerify)
-        .catch(err => {
-          logger.debug(`[requestId=${correlationId}] invalid user input - telephone number`)
-          req.flash('genericError', err.message)
-          req.register_invite.telephone_number = telephoneNumber
-          res.redirect(303, paths.registerUser.reVerifyPhone)
-        })
-    })
-  }
+    const validPhoneNumber = validatePhoneNumber(telephoneNumber)
+    if (!validPhoneNumber) {
+      sessionData.recovered = {
+        telephoneNumber: telephoneNumber,
+        errors: {
+          telephoneNumber: validPhoneNumber.message
+        }
+      }
+    }
 
+    try {
+      await registrationService.resendOtpCode(sessionData.code, telephoneNumber, correlationId)
+      sessionData.telephone_number = telephoneNumber
+      res.redirect(303, paths.registerUser.otpVerify)
+    } catch (err) {
+      handleError(req, res, err)
+    }
+  }
 }

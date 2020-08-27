@@ -1,4 +1,5 @@
 {% extends "../layout-logged-out.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Enter verification code - GOV.UK Pay
@@ -6,6 +7,13 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        verificationCode: '#verify-code'
+      }
+    }) }}
+
     <h1 class="form-title govuk-heading-l">Check your phone</h1>
     <p class="govuk-body">We’ve sent you a text message with a verification code</p>
     <form action="{{routes.registerUser.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
@@ -22,7 +30,8 @@
           attributes: {
             autofocus: true,
             autocomplete: "off"
-          }
+          },
+          errorMessage: { text: errors.verificationCode } if errors.verificationCode else false
         })
       }}
       {{
