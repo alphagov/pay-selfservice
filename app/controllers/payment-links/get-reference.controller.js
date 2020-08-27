@@ -9,7 +9,7 @@ const { response } = require('../../utils/response.js')
 module.exports = function showReferencePage (req, res, next) {
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
   if (!sessionData) {
-    next(new Error('Payment link data not found in session cookie'))
+    return next(new Error('Payment link data not found in session cookie'))
   }
 
   const recovered = sessionData.referencePageRecovered || {}

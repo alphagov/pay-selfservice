@@ -10,19 +10,19 @@ const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatt
 module.exports = function postAmount (req, res, next) {
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
   if (!sessionData) {
-    next(new Error('Payment link data not found in session cookie'))
+    return next(new Error('Payment link data not found in session cookie'))
   }
 
   const type = req.body['amount-type-group']
   const amount = req.body['payment-amount']
 
-  let formattedPaymentLinkAmount = ''
+  let amountInPence = ''
   const errors = {}
   if (!type) {
     errors.type = 'Is the payment for a fixed amount?'
   } else if (type === 'fixed') {
-    formattedPaymentLinkAmount = safeConvertPoundsStringToPence(amount)
-    if (amount === '' || formattedPaymentLinkAmount === null) {
+    amountInPence = safeConvertPoundsStringToPence(amount)
+    if (amount === '' || amountInPence === null) {
       errors.amount = 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
     }
   }
@@ -35,7 +35,7 @@ module.exports = function postAmount (req, res, next) {
     return res.redirect(paths.paymentLinks.amount)
   }
 
-  sessionData.paymentLinkAmount = formattedPaymentLinkAmount
+  sessionData.paymentLinkAmount = amountInPence
   sessionData.paymentAmountType = type
 
   if (req.body['change'] === 'true') {

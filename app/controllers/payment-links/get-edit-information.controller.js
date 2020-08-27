@@ -1,34 +1,34 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
-const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
-const productsClient = require('../../services/clients/products.client.js')
-const auth = require('../../services/auth.service.js')
-const { renderErrorView } = require('../../utils/response.js')
 const formattedPathFor = require('../../utils/replace-params-in-path')
 const supportedLanguage = require('../../models/supported-language')
 
-module.exports = (req, res) => {
-  const pageData = {
-    self: formattedPathFor(paths.paymentLinks.editInformation, req.params.productExternalId)
+module.exports = function showEditInformationPage (req, res, next) {
+  const sessionData = lodash.get(req, 'session.editPaymentLinkData')
+  if (!sessionData) {
+    return next(new Error('Edit payment link data not found in session cookie'))
   }
-  const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  pageData.change = lodash.get(req, 'query.field', {})
 
-  productsClient.product.getByProductExternalId(gatewayAccountId, req.params.productExternalId)
-    .then(product => {
-      const editPaymentLinkData = lodash.get(req, 'session.editPaymentLinkData', {})
-      pageData.product = lodash.merge(product, editPaymentLinkData)
-      pageData.isWelsh = product.language === supportedLanguage.WELSH
-      return response(req, res, 'payment-links/edit-information', pageData)
-    })
-    .catch((err) => {
-      logger.error(`[requestId=${req.correlationId}] Get ADHOC product by gateway account id failed - ${err.message}`)
-      renderErrorView(req, res)
-    })
+  const recovered = sessionData.informationPageRecovered || {}
+  delete sessionData.informationPageRecovered
+
+  const self = formattedPathFor(paths.paymentLinks.editInformation, req.params.productExternalId)
+  const change = lodash.get(req, 'query.field', {})
+  const paymentLinkTitle = recovered.name || sessionData.name
+  const paymentLinkDescription = recovered.description || sessionData.description
+  const isWelsh = sessionData.language === supportedLanguage.WELSH
+
+  const pageData = {
+    self,
+    change,
+    paymentLinkTitle,
+    paymentLinkDescription,
+    isWelsh,
+    errors: recovered.errors
+  }
+  return response(req, res, 'payment-links/edit-information', pageData)
 }

@@ -36,7 +36,7 @@
     {% set blankReferenceLabelError = false %}
     {% if errors.label %}
     {% set blankReferenceLabelError = {
-        text: "Reference number cannot be blank"
+        text: errors.label
     } %}
     {% endif %}
 

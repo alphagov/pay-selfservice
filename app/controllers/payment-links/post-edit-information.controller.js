@@ -7,17 +7,29 @@ const lodash = require('lodash')
 const paths = require('../../paths')
 const formattedPathFor = require('../../utils/replace-params-in-path')
 
-module.exports = (req, res) => {
-  const editData = lodash.get(req, 'session.editPaymentLinkData', {})
+module.exports = function postEditInformation (req, res, next) {
+  const sessionData = lodash.get(req, 'session.editPaymentLinkData')
+  if (!sessionData) {
+    return next(new Error('Edit payment link data not found in session cookie'))
+  }
 
-  editData.name = req.body['payment-link-title']
-  editData.description = req.body['payment-link-description']
-  lodash.set(req, 'session.editPaymentLinkData', editData)
+  const name = req.body['payment-link-title']
+  const description = req.body['payment-link-description']
 
-  if (editData.name === '') {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-link-title">Title</a></li></ul>`)
+  if (name === '') {
+    const errors = {
+      title: 'Enter a title'
+    }
+    sessionData.informationPageRecovered = {
+      errors,
+      name,
+      description
+    }
     return res.redirect(formattedPathFor(paths.paymentLinks.editInformation, req.params.productExternalId))
   }
+
+  sessionData.name = name
+  sessionData.description = description
 
   return res.redirect(formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId))
 }

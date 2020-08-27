@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Edit your payment link details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -10,6 +11,13 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      title: "#payment-link-title"
+    }
+  }) }}
+
   <aside class="pay-info-warning-box">
     <p class="govuk-body">Editing the payment link title does not change the web&nbsp;address.</p>
   </aside>
@@ -22,9 +30,9 @@
     {% endif %}
 
     {% set titleError = false %}
-    {% if flash.genericError %}
+    {% if errors.title %}
     {% set titleError = {
-      text: "This field cannot be blank"
+      text: errors.title | safe
     } %}
     {% endif %}
 
@@ -75,7 +83,7 @@
         hint: {
           html: titleHint
         },
-        value: product.name,
+        value: paymentLinkTitle,
         attributes: titleAttributes,
         errorMessage: titleError
       })
@@ -92,7 +100,7 @@
         hint: {
           text: detailsHint
         },
-        value: product.description,
+        value: paymentLinkDescription,
         attributes: descriptionAttributes
       })
     }}
