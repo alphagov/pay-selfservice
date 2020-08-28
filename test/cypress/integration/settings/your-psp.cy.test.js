@@ -189,7 +189,7 @@ describe('Your PSP settings page', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/your-psp`)
       })
-      cy.get('.generic-flash').should('contain', 'Credentials deleted. 3DS Flex has been removed from your account. Your payments will now use 3DS only.')
+      cy.get('.notification').should('contain', 'Credentials deleted. 3DS Flex has been removed from your account. Your payments will now use 3DS only.')
       cy.get('.value-organisational-unit-id').should('contain', 'Not configured')
       cy.get('.value-issuer').should('contain', 'Not configured')
       cy.get('.value-jwt-mac-key').should('contain', 'Not configured')

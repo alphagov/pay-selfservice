@@ -1,5 +1,7 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const tokenStubs = require('../../stubs/token-stubs')
+const productStubs = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const serviceName = {
@@ -11,7 +13,10 @@ describe('The create payment link flow', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId: userExternalId, gatewayAccountId, serviceName }),
-      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' })
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
+      tokenStubs.postCreateTokenForAccountSuccess({ gatewayAccountId }),
+      productStubs.postCreateProductSuccess(),
+      productStubs.getProductsStub([{name: 'A payment link'}], gatewayAccountId)
     ])
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
@@ -215,6 +220,28 @@ describe('The create payment link flow', () => {
       it('should have instructions for an English payment link', () => {
         cy.get('input#payment-link-title').parent('.govuk-form-group').get('span')
           .should('contain', 'For example, “Pay for a parking permit”')
+      })
+
+      it('should go back to the review page', () => {
+        cy.get('form[method=post][action="/create-payment-link/information"]').should('exist')
+          .within(() => {
+            cy.get('button').click()
+          })
+
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/create-payment-link/review`)
+        })
+
+        cy.get('.notification').find('h2').should('contain', 'The details have been updated')
+      })
+
+      it('should redirect to the manage payment link page with a success message', () => {
+        cy.get('button').contains('Create payment link').click()
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/create-payment-link/manage`)
+        })
+
+        cy.get('.notification').find('h2').should('contain', 'Your payment link is now live')
       })
     })
   })

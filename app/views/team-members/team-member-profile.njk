@@ -1,10 +1,21 @@
 {% extends "../layout.njk" %}
+{% from "../macro/success-notification.njk" import successNotification %}
 
 {% block pageTitle %}
 My profile - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  {% if flash.otpMethodUpdated %}
+    {{ successNotification({
+          heading: "Your sign-in method has been updated",
+          body: "Use your authenticator app when you next sign in." 
+                if flash.otpMethodUpdated[0] === "APP" 
+                else "We’ll send you a text message when you next sign in."
+    }) }}
+  {% endif %}
+</div>
 <div class="govuk-grid-column-full">
   <h1 id="details-for" class="govuk-heading-l page-title">
       My profile

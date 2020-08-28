@@ -17,6 +17,7 @@ const productFixtures = require('../../fixtures/product.fixtures')
 const goCardlessConnectFixtures = require('../../fixtures/go-cardless-connect.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
 const inviteFixtures = require('../../fixtures/invite.fixtures')
+const tokenFixtures = require('../../fixtures/token.fixtures')
 
 const simpleStubBuilder = function simpleStubBuilder (method, path, responseCode, additionalParams = {}) {
   const request = {
@@ -515,6 +516,18 @@ module.exports = {
       request: serviceFixtures.validCreateServiceRequest(opts).getPlain(),
       response: serviceFixtures.validServiceResponse(opts).getPlain(),
       verifyCalledTimes: opts.verifyCalledTimes
+    })
+  },
+  postCreateTokenForAccountSuccess: (opts = {}) => {
+    const path = '/v1/frontend/auth'
+    return simpleStubBuilder('POST', path, 200, {
+      response: tokenFixtures.validCreateTokenForGatewayAccountResponse().getPlain()
+    })
+  },
+  postCreateProductSuccess: (opts = {}) => {
+    const path = '/v1/api/products'
+    return simpleStubBuilder('POST', path, 200, {
+      response: productFixtures.validProductResponse(opts).getPlain()
     })
   }
 }
