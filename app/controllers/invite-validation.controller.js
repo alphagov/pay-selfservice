@@ -10,7 +10,7 @@ const paths = require('../paths')
 const messages = {
   missingCookie: 'Unable to process registration at this time',
   internalError: 'Unable to process registration at this time',
-  linkExpired: 'This invitation is no longer valid',
+  linkExpired: 'This invitation is no longer valid'
 }
 
 const handleError = (req, res, err) => {
