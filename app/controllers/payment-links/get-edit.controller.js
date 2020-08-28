@@ -12,8 +12,8 @@ module.exports = async function showEditPaymentLink (req, res, next) {
   const { productExternalId } = req.params
 
   let editPaymentLinkData = lodash.get(req, 'session.editPaymentLinkData', {})
-  if (editPaymentLinkData.externalId && editPaymentLinkData.externalId != productExternalId) {
-    // Currently it is only possible to edit one payment link at a time due to how we use the 
+  if (editPaymentLinkData.externalId && editPaymentLinkData.externalId !== productExternalId) {
+    // Currently it is only possible to edit one payment link at a time due to how we use the
     // session.
     delete req.session.editPaymentLinkData
     editPaymentLinkData = {}

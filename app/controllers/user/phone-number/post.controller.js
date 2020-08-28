@@ -6,7 +6,7 @@ const userService = require('../../../services/user.service')
 const paths = require('../../../paths')
 const { invalidTelephoneNumber } = require('../../../utils/validation/telephone-number-validation')
 
-module.exports = async function updatePhoneNumber(req, res) {
+module.exports = async function updatePhoneNumber (req, res) {
   const telephoneNumber = req.body.phone
   if (invalidTelephoneNumber(telephoneNumber)) {
     const pageData = {
