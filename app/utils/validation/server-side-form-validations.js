@@ -179,8 +179,11 @@ const validatePassword = function validatePassword (password) {
 }
 
 const validateOtp = function validateOtp (otp) {
-  if (!otp || !NUMBERS_ONLY.test(otp)) {
-    return invalidReturnObject('Invalid verification code')
+  if (!otp) {
+    return invalidReturnObject('Enter your verification code')
+  }
+  if (!NUMBERS_ONLY.test(otp)) {
+    return invalidReturnObject('Enter numbers only')
   }
   return validReturnObject
 }

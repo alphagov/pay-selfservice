@@ -1,8 +1,6 @@
 'use strict'
 
-const lodash = require('lodash')
 const paths = require('../paths.js')
-const { renderErrorView } = require('../utils/response.js')
 const userService = require('../services/user.service.js')
 const logger = require('../utils/logger')(__filename)
 const {
@@ -42,37 +40,36 @@ const passwordRequested = function passwordRequested (req, res) {
   res.render('forgotten-password/password-requested')
 }
 
-const newPasswordGet = function newPasswordGet (req, res) {
-  const id = req.params.id
-  const render = (user) => {
-    if (!user) return renderErrorView(req, res)
+const newPasswordGet = async function newPasswordGet (req, res) {
+  const { id } = req.params
+  try {
+    await userService.findByResetToken(id)
     res.render('forgotten-password/new-password', { id: id })
-  }
-
-  return userService.findByResetToken(id).then(render, () => {
+  } catch (err) {
     req.flash('genericError', 'Something went wrong. Please request a new password reset email.')
     res.redirect('/login')
-  })
+  }
 }
 
 const newPasswordPost = async function newPasswordPost (req, res, next) {
   try {
-    const token = req.params.id
+    const { id } = req.params
     const password = req.body.password
 
-    const forgottenPassword = await userService.findByResetToken(token)
+    const forgottenPassword = await userService.findByResetToken(id)
     const user = await userService.findByExternalId(forgottenPassword.user_external_id, req.correlationId)
 
     const validPassword = validatePassword(password)
     if (!validPassword.valid) {
-      lodash.set(req, 'session.pageData.updatePasswordRecovered', {
+      return res.render('forgotten-password/new-password', {
+        id: id,
         errors: {
           password: validPassword.message
         }
       })
     }
 
-    await userService.updatePassword(token, password)
+    await userService.updatePassword(id, password)
     try {
       await userService.logOut(user)
     } catch (err) {

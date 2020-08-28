@@ -44,7 +44,7 @@ module.exports = {
     delete sessionData.recovered
     const data = {
       email: sessionData.email,
-      telephone_number: recovered.telephone_number || sessionData.telephone_number,
+      telephone_number: recovered.telephoneNumber || sessionData.telephone_number,
       errors: recovered.errors
     }
     response(req, res, 'user-registration/register', data)
@@ -182,11 +182,11 @@ module.exports = {
     if (!sessionData) {
       return next(new Error('Missing registration session in cookie'))
     }
-    const recovered = sessionData.recovered || {}.recovered
+    const recovered = sessionData.recovered || {}
     delete sessionData.recovered
 
     const data = {
-      telephone_number: sessionData.telephone_number,
+      telephone_number: recovered.telephoneNumber || sessionData.telephone_number,
       errors: recovered.errors
     }
     response(req, res, 'user-registration/re-verify-phone', data)
@@ -214,6 +214,7 @@ module.exports = {
           telephoneNumber: validPhoneNumber.message
         }
       }
+      return res.redirect(paths.registerUser.reVerifyPhone)
     }
 
     try {
