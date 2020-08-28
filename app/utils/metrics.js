@@ -5,7 +5,7 @@ var metricsPort = process.env.METRICS_PORT || 8125
 var metricsPrefix = 'selfservice.'
 
 function initialiseMonitoring () {
-  appmetrics.configure({'mqtt': 'off'})
+  appmetrics.configure({ 'mqtt': 'off' })
   var appmetricsStatsd = require('appmetrics-statsd')
 
   return appmetricsStatsd.StatsD(metricsHost, metricsPort, metricsPrefix)

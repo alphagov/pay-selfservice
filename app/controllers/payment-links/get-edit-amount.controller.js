@@ -11,7 +11,7 @@ module.exports = function showEditAmountPage (req, res) {
   const { productExternalId } = req.params
 
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
-  if (!sessionData || sessionData.externalId != productExternalId) {
+  if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
     return res.redirect(paths.paymentLinks.manage)
   }

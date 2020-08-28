@@ -15,7 +15,7 @@ module.exports = function errorHandler (err, req, res, next) {
 
   const logContext = {
     // trim the stack as long log messages are truncated by Splunk
-    stack: err.stack.substring(0, 300),
+    stack: err.stack.substring(0, 300)
   }
   logContext[keys.CORRELATION_ID] = req.headers[CORRELATION_HEADER]
   logger.error(`Unhandled error caught: ${err.message}`, logContext)

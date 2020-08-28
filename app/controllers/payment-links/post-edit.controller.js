@@ -10,7 +10,7 @@ module.exports = async function updatePaymentLink (req, res, next) {
   const gatewayAccountId = req.account.gateway_account_id
 
   const editPaymentLinkData = lodash.get(req, 'session.editPaymentLinkData')
-  if (!editPaymentLinkData || editPaymentLinkData.externalId != productExternalId) {
+  if (!editPaymentLinkData || editPaymentLinkData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
     return res.redirect(paths.paymentLinks.manage)
   }
