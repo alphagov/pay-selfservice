@@ -131,6 +131,46 @@ describe('Transactions list pagination', () => {
         cy.get('form.paginationForm.page-Next').should('not.exist')
       })
 
+      it('should navigate to next page correctly with all filters intact', () => {
+        const opts = transactionSearchResultOpts(30, 5, 1, {
+          reference: 'ref123',
+          email: 'gds4',
+          cardholder_name: 'doe',
+          last_digits_card_number: '4242',
+          from_date: '2018-05-03T00:00:00.000Z',
+          to_date: '2018-05-04T00:00:01.000Z',
+          card_brands: 'visa,master-card',
+          payment_states: 'success'
+        },
+        {
+          self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
+          next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
+        })
+
+        let stubs = getStubs(opts)
+
+        // stubs for next page
+        opts.page = 2
+        opts.links = { prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' } }
+        stubs.push(transactionStubs.getLedgerTransactionsSuccess(opts))
+
+        cy.task('setupStubs', stubs)
+        cy.visit(transactionsUrl + '?pageSize=5&page=1&reference=ref123&email=gds4&cardholderName=doe&lastDigitsCardNumber=4242&fromDate=03%2F05%2F2018&fromTime=1%3A00%3A00&toDate=04%2F05%2F2018&toTime=1%3A00%3A00&brand=visa&brand=master-card&state=Success')
+
+        cy.get('.page-Next').first().click()
+
+        cy.get('#reference').invoke('val').should('contain', 'ref123')
+        cy.get('#fromDate').invoke('val').should('contain', '03/05/2018')
+        cy.get('#fromTime').invoke('val').should('contain', '1:00:00')
+        cy.get('#toDate').invoke('val').should('contain', '04/05/2018')
+        cy.get('#toTime').invoke('val').should('contain', '1:00:00')
+        cy.get('#email').invoke('val').should('contain', 'gds4')
+        cy.get('#lastDigitsCardNumber').invoke('val').should('contain', '4242')
+        cy.get('#cardholderName').invoke('val').should('contain', 'doe')
+        cy.get('#option-select-title-state').invoke('text').should('contain', 'Success')
+        cy.get('#option-select-title-brand').invoke('text').should('contain', 'Visa, Mastercard')
+      })
+
       it('should return correct display size options when total over 500', () => {
         const opts = transactionSearchResultOpts(600, 100, 1, {},
           { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
