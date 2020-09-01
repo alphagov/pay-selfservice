@@ -9,7 +9,7 @@ const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 
-module.exports = async function showConfigureSeconfFactorMethod (req, res) {
+module.exports = async function showConfigureSecondFactorMethod (req, res) {
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP')
   const recovered = lodash.get(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {})
   lodash.unset(req, 'session.pageData.configureTwoFactorAuthMethodRecovered')
