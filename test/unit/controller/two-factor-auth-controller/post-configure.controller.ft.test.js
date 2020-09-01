@@ -89,9 +89,10 @@ describe('Two factor authenticator configure page POST', () => {
       expect(result.headers).to.have.property('location').to.equal(paths.user.twoFactorAuth.configure)
     })
 
-    it('should show an error message', () => {
-      expect(session.flash.genericError).to.have.property('length').to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#code">Please enter a valid verification code</a></li></ul>')
+    it('should have a recovered object stored on the session containing errors', () => {
+      const recovered = session.pageData.configureTwoFactorAuthMethodRecovered
+      expect(recovered).to.have.property('errors')
+      expect(recovered.errors).to.have.property('verificationCode')
     })
   })
 })
