@@ -1,12 +1,10 @@
 'use strict'
 
-// NPM Dependencies
 const every = require('lodash/every')
 
 // Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
 require('./polyfills')
 
-// Local Dependencies
 const checks = require('./field-validation-checks')
 
 // Global constants

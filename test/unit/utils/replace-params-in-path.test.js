@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const formattedPathFor = require('../../../app/utils/replace-params-in-path')
 
 describe('When a path is formatted', () => {

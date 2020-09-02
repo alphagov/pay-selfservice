@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM Dependencies
 const correlator = require('correlation-id')
 const { expect } = require('chai')
 
-// Local Dependencies
 const { CORRELATION_HEADER } = require('../../../app/utils/correlation-header')
 const correlationMiddleware = require('../../../app/middleware/correlation-id')
 let req

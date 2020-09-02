@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const paths = require('../../paths')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const logger = require('../../utils/logger')(__filename)

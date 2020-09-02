@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const nock = require('nock')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 const inviteFixtures = require('../../fixtures/invite.fixtures')
 const serviceRegistrationService = require('../../../app/services/service-registration.service')

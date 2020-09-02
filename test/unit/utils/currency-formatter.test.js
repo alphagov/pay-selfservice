@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 const {
   penceToPounds,

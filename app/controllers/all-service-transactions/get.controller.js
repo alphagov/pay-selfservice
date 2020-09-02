@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 
 const { response, renderErrorView } = require('../../utils/response')

@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const accessibleAutocomplete = require('accessible-autocomplete')
 
 module.exports = () => {

@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
 
-// Custom dependencies
 const path = require('path')
 const port = parseInt(process.env.LEDGER_URL.match(/\d+(\.\d+)?$/g)[0], 10)
 

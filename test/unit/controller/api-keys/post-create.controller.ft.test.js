@@ -1,12 +1,10 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 const csrf = require('csrf')
 const nock = require('nock')
 const supertest = require('supertest')
 
-// Local dependencies
 const { getApp } = require('../../../../server')
 const mockSession = require('../../../test-helpers/mock-session')
 const userCreator = require('../../../test-helpers/user-creator')
@@ -16,7 +14,7 @@ const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '182364'
 const REQUEST_ID = 'unique-request-id'
 const TOKEN_RESPONSE = {
-  token: 'g4jcsi2rnsep02397jsh89eqklvmg6gqtc8c0h75ql2is1vl3pldf7c4g7'
+  token: 'an-api-key'
 }
 const DESCRIPTION = 'Some words'
 const VALID_PAYLOAD = {

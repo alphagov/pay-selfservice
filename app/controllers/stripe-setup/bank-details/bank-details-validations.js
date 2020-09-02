@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { isEmpty, isNotAccountNumber, isNotSortCode } = require('../../../browsered/field-validation-checks')
 
 exports.validateAccountNumber = (accountNumber) => {

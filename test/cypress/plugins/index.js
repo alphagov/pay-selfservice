@@ -7,11 +7,9 @@
 
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 const request = require('request-promise-native')
 
-// Local dependencies
 const cookieMonster = require('./cookie-monster')
 const stubs = require('./stubs')
 

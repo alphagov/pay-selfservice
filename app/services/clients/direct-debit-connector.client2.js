@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const baseClient = require('./base-client/base.client')
 const GatewayAccount = require('../../models/DirectDebitGatewayAccount.class')
 

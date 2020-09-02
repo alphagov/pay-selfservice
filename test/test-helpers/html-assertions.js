@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const cheerio = require('cheerio')
 const chai = require('chai')
 const nunjucks = require('nunjucks')
 
-// Local dependencies
 const router = require('../../app/routes.js')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const formatPSPname = require('../../app/utils/format-PSP-name')

@@ -1,13 +1,11 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 const joinURL = require('url-join')
 const correlator = require('correlation-id')
 const { getNamespace } = require('continuation-local-storage')
 const AWSXRay = require('aws-xray-sdk')
 
-// Local dependencies
 const requestLogger = require('../../../utils/request-logger')
 const { CORRELATION_HEADER } = require('../../../utils/correlation-header')
 

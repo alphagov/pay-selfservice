@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const StripeBankAccount = require('./stripeBankAccount.model')
 
 describe('StripeBankAccount', () => {

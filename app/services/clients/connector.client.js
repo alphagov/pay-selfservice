@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
 
-// Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const oldBaseClient = require('./old-base.client')
 const baseClient = require('./base-client/base.client')

@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const logger = require('../../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../../utils/response')
 const bankDetailsValidations = require('./bank-details-validations')

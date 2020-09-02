@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM Dependencies
 const path = require('path')
 const assert = require('assert')
 const AWSXRay = require('aws-xray-sdk')
@@ -9,7 +8,6 @@ const proxyquire = require('proxyquire')
 const _ = require('lodash')
 const { expect } = require('chai')
 
-// Local Dependencies
 const auth = require('../../../app/services/auth.service.js')
 const paths = require('../../../app/paths.js')
 const mockSession = require('../../test-helpers/mock-session.js')

@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
-// Custom dependencies
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const productFixtures = require('../../../../fixtures/product.fixtures')

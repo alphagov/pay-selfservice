@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const { invalidTelephoneNumber } = require('./telephone-number-validation')
 
 describe('telephone number validation', () => {

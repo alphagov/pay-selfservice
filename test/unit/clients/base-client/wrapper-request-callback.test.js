@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM Dependencies
 // const request = require('request')
 const { expect } = require('chai')
 const sinon = require('sinon')
@@ -9,7 +8,6 @@ const requestLogger = {}
 const events = require('events')
 const util = require('util')
 
-// Local Dependencies
 const wrapper = proxyquire('../../../../app/services/clients/base-client/wrapper', {
   '../../../utils/request-logger': requestLogger
 })

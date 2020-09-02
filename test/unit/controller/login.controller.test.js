@@ -1,12 +1,9 @@
 'use strict'
 
-// Node.js core dependencies
 const assert = require('assert')
 
-// NPM dependencies
 const sinon = require('sinon')
 
-// Custom dependencies
 const loginController = require('../../../app/controllers/login')
 
 // Global setup

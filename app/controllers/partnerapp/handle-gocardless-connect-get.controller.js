@@ -1,6 +1,5 @@
 'use strict'
 
-// Custom dependencies
 const logger = require('../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../utils/response')
 const directDebitConnectorClient = require('../../services/clients/direct-debit-connector.client')

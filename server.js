@@ -3,7 +3,6 @@ if (process.env.DISABLE_APPMETRICS !== 'true') {
   require('./app/utils/metrics').metrics()
 }
 
-// NPM dependencies
 const express = require('express')
 const nunjucks = require('nunjucks')
 const favicon = require('serve-favicon')
@@ -13,7 +12,6 @@ const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
 const staticify = require('staticify')('./public')
 
-// Custom dependencies
 const router = require('./app/routes')
 const cookieUtil = require('./app/utils/cookie')
 const noCache = require('./app/utils/no-cache')

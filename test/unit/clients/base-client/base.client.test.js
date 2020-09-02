@@ -1,12 +1,10 @@
 'use strict'
 
-// NPM Dependencies
 const correlator = require('correlation-id')
 const http = require('http')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
-// Local Dependencies
 const config = require('../../../../app/utils/correlation-header')
 
 describe('baseClient', () => {

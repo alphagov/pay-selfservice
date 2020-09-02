@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 
-// Custom dependencies
 const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
 const { renderErrorView } = require('../utils/response')

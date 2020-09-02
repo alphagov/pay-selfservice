@@ -1,6 +1,5 @@
 'use strict'
 
-// Local Dependencies
 exports.index = require('./index.controller')
 exports.links = require('./links.controller')
 exports.disable = require('./disable.controller')

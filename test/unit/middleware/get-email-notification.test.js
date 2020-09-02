@@ -1,6 +1,5 @@
 'use strict'
 
-// Node.js core dependencies
 const path = require('path')
 const assert = require('assert')
 const sinon = require('sinon')

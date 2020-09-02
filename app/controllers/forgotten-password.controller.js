@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const emailValidator = require('../utils/email-tools.js')
 const paths = require('../paths.js')
 const { renderErrorView } = require('../utils/response.js')

@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const { response } = require('../../utils/response.js')
 
 module.exports = function showReferencePage (req, res, next) {

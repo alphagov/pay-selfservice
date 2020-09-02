@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { response } = require('../../utils/response')
 
 const humaniseEmailMode = mode => {

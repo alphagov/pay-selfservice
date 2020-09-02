@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM Dependencies
 const lodash = require('lodash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
@@ -16,7 +15,6 @@ const getNamespace = require('continuation-local-storage').getNamespace
  */
 require('correlation-id')
 
-// Local Dependencies
 const logger = require('../utils/logger')(__filename)
 const sessionValidator = require('./session-validator.js')
 const paths = require('../paths.js')

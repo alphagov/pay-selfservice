@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const { isNotCompanyNumber } = require('../../../app/browsered/field-validation-checks')
 
 describe('isNotCompanyNumber', () => {

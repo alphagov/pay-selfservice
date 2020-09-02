@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 
 // Global setup

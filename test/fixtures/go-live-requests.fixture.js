@@ -3,7 +3,6 @@
 const path = require('path')
 const _ = require('lodash')
 
-// Custom dependencies
 const pactBase = require(path.join(__dirname, '/pact-base'))
 const utils = require('../cypress/utils/request-to-go-live-utils')
 

@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { render } = require('../test-helpers/html-assertions.js')
 
 describe('The pagination links', function () {

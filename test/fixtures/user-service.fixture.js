@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 
-// Custom dependencies
 const userFixtures = require(path.join(__dirname, '/user.fixtures'))
 const pactBase = require(path.join(__dirname, '/pact-base'))
 

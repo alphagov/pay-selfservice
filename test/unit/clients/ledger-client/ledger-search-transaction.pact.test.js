@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const ledgerClient = require('../../../../app/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../../fixtures/ledger-transaction.fixtures')

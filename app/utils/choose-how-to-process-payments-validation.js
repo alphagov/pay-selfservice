@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
 const PSP = 'choose-how-to-process-payments-mode'

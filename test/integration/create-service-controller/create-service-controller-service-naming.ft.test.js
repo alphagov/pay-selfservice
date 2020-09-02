@@ -1,13 +1,11 @@
 'use strict'
 
-// NPM dependencies
 const nock = require('nock')
 const csrf = require('csrf')
 const supertest = require('supertest')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const mockSession = require('../../test-helpers/mock-session')
 const getApp = require('../../../server').getApp
 const selfRegisterFixtures = require('../../fixtures/self-register.fixtures')

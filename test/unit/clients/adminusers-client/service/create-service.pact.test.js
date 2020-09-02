@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')

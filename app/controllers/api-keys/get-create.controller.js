@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { response } = require('../../utils/response.js')
 const auth = require('../../services/auth.service.js')
 

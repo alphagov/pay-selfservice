@@ -1,6 +1,5 @@
 'use strict'
 
-// Local Dependencies
 const { refund } = require('../../services/transaction.service')
 const router = require('../../routes.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')

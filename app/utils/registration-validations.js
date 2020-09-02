@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 const commonPassword = require('common-password')
 
-// Local dependencies
 const emailValidator = require('./email-tools.js')
 const { invalidTelephoneNumber } = require('../utils/validation/telephone-number-validation')
 

@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-// Local dependencies
 const restrictToLiveStripeAccount = require('./restrict-to-live-stripe-account')
 
 describe('Restrict to live stripe account middleware', () => {
