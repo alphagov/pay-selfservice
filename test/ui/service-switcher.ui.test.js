@@ -2,7 +2,6 @@
 
 const _ = require('lodash')
 
-// Local Dependencies
 const { render } = require('../test-helpers/html-assertions.js')
 
 // Assignments e.t.c.

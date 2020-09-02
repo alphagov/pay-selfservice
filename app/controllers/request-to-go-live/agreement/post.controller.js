@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const logger = require('../../../utils/logger')(__filename)
 const { requestToGoLive } = require('../../../paths')
 const goLiveStage = require('../../../models/go-live-stage')

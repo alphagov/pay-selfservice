@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const userFixtures = require('../../fixtures/user.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 const transactionDetailsFixtures = require('../../fixtures/transaction.fixtures')

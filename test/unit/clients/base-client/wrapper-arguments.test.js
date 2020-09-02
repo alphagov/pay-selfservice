@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM Dependencies
 const { expect } = require('chai')
 const sinon = require('sinon')
 
-// Local Dependencies
 const wrapper = require('../../../../app/services/clients/base-client/wrapper')
 
 describe('wrapper: arguments handling', () => {

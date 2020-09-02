@@ -1,13 +1,11 @@
 'use strict'
 
-// NPM dependencies
 const supertest = require('supertest')
 const nock = require('nock')
 const csrf = require('csrf')
 const cheerio = require('cheerio')
 const { expect } = require('chai')
 
-// Local dependencies
 const { getApp } = require('../../../../server')
 const { getMockSession, getUser, createAppWithSession } = require('../../../test-helpers/mock-session')
 const paths = require('../../../../app/paths')

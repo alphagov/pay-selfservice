@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const passport = require('passport')
 
 module.exports = (req, res, next) => {

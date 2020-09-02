@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 
-// Local dependencies
 const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response.js').response
 const emailService = require('../../services/email.service.js')

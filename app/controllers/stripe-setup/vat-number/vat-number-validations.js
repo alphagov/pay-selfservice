@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { isEmpty, isNotVatNumber } = require('../../../browsered/field-validation-checks')
 
 exports.validateVatNumber = function validateVatNumber (value) {

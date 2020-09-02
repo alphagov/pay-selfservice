@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM Dependencies
 const path = require('path')
 const expect = require('chai').expect
 const _ = require('lodash')

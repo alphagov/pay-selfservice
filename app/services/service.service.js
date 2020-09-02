@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const getAdminUsersClient = require('./clients/adminusers.client')
 const { ConnectorClient } = require('./clients/connector.client')
 const directDebitConnectorClient = require('./clients/direct-debit-connector.client')

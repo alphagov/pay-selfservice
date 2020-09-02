@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { renderErrorView } = require('../../../utils/response')
 const userService = require('../../../services/user.service')
 const paths = require('../../../paths')

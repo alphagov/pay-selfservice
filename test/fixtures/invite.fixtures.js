@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 
 const pactBase = require('./pact-base')

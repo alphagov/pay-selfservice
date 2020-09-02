@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const commonPassword = require('common-password')
 
-// Custom dependencies
 const getAdminUsersClient = require('./clients/adminusers.client')
 
 // Constants

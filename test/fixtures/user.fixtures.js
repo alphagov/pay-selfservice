@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const User = require('../../app/models/User.class')
 const pactBase = require('./pact-base')
 const goLiveStage = require('../../app/models/go-live-stage')

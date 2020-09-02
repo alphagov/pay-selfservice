@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 
-// Local dependencies
 const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 

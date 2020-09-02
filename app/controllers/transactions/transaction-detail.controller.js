@@ -1,6 +1,5 @@
 'use strict'
 
-// Local Dependencies
 const { ledgerFindWithEvents } = require('../../services/transaction.service')
 const auth = require('../../services/auth.service.js')
 const { response } = require('../../utils/response.js')

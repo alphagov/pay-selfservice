@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const emailValidator = require('../utils/email-tools.js')
 
 // Constants

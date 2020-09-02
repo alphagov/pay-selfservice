@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const requestLogger = require('../../utils/request-logger')
 const createCallbackToPromiseConverter = require('../../utils/response-converter').createCallbackToPromiseConverter
 const baseClient = require('./old-base.client')

@@ -1,9 +1,7 @@
 'use strict'
-// NPM Dependencies
 const lodash = require('lodash')
 const { penceToPoundsWithCurrency } = require('../utils/currency-formatter')
 
-// Local Dependencies
 const states = require('../utils/states')
 const dates = require('../utils/dates')
 

@@ -1,12 +1,10 @@
 'use strict'
 
-// NPM dependencies
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-// Local dependencies
 const goLiveStage = require('../../../models/go-live-stage')
 const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')

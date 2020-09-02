@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 
-// Custom dependencies
 const logger = require('../../utils/logger')(__filename)
 const { setSessionVersion } = require('../../services/auth.service')
 const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER

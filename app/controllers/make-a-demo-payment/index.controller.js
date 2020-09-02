@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const { isCurrency, isAboveMaxAmount } = require('../../browsered/field-validation-checks')

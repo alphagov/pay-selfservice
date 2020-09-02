@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
 
-// local dependencies
 const { response } = require('../../utils/response')
 const serviceService = require('../../services/service.service')
 const getHeldPermissions = require('../../utils/get-held-permissions')

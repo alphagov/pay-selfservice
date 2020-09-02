@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const Joi = require('joi')
 
 const schema = {

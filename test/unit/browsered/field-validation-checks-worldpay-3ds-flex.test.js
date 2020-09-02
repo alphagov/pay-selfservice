@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const { expect } = require('chai')
 
-// Local dependencies
 const { isNotWorldpay3dsFlexOrgUnitId, isNotWorldpay3dsFlexIssuer, isNotWorldpay3dsFlexJwtMacKey } =
     require('../../../app/browsered/field-validation-checks')
 

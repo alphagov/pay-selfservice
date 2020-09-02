@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 
-// local dependencies
 const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
 
 describe('The email body view', function () {

@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const proxyquire = require('proxyquire')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')

@@ -1,6 +1,5 @@
 'use strict'
 
-// npm dependencies
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')

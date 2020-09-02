@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const paths = require('../../paths')
 const formatPath = require('../../utils/replace-params-in-path')
 const { response } = require('../../utils/response')

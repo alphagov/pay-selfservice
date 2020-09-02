@@ -1,12 +1,10 @@
 'use strict'
 
-// NPM dependencies)
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-// Custom dependencies
 const paths = require('../../../app/paths')
 
 // Constants

@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM Dependencies
 const lodash = require('lodash')
 
 /**

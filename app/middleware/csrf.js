@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM Dependencies
 const csrf = require('csrf')
 
-// Local Dependencies
 const logger = require('../utils/logger')(__filename)
 const { renderErrorView } = require('../utils/response.js')
 const CORRELATION_HEADER = require('../utils/correlation-header.js').CORRELATION_HEADER

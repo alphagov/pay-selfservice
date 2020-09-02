@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 
 module.exports = (req, res) => {

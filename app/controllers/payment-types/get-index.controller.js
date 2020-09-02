@@ -1,6 +1,5 @@
 'use strict'
 
-// Local dependencies
 const { response, renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')

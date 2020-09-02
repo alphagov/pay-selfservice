@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
@@ -8,7 +7,6 @@ const cheerio = require('cheerio')
 chai.should()
 chai.use(chaiAsPromised)
 
-// Local dependencies
 const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
 
 describe('The transaction details view', () => {

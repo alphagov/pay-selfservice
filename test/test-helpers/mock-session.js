@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const express = require('express')
 const _ = require('lodash')
 const sinon = require('sinon')
 
-// Custom dependencies
 const userFixture = require('../fixtures/user.fixtures')
 
 const getUser = (opts) => {

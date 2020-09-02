@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-// Custom dependencies
 const validation = require('../../../app/utils/registration-validations')
 
 // Constants

@@ -1,10 +1,8 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 const ukPostcode = require('uk-postcode')
 
-// Local dependencies
 const paths = require('../../../paths')
 const logger = require('../../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../../utils/response')

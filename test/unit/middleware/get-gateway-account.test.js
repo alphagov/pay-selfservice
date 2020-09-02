@@ -1,6 +1,5 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 const proxyquire = require('proxyquire')
 const lodash = require('lodash')

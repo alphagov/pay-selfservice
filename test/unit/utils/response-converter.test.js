@@ -1,11 +1,9 @@
 'use strict'
 
-// NPM dependencies
 const path = require('path')
 const chai = require('chai')
 const sinon = require('sinon')
 
-// Local dependencies
 const responseConverter = require(path.join(__dirname, '/../../../app/utils/response-converter'))
 
 chai.should()
