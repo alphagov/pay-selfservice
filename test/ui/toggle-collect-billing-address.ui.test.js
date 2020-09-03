@@ -29,7 +29,7 @@ describe('The toggle Billing Address page', function () {
 
     const body = renderTemplate('billing-address/index', templateData)
 
-    body.should.containSelector('.pay-info-warning-box').withExactText('You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D secure, accepted card types, email notifications, or billing address.')
+    body.should.containSelector('.pay-info-warning-box').withExactText('You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D secure, accepted card types, email notifications, billing address or mask card numbers or security codes for MOTO services.')
     body.should.containSelector('#billing-address-toggle-2').withAttribute('checked')
     body.should.containSelector('#billing-address-toggle-2').withAttribute('disabled')
     body.should.containSelector('#billing-address-toggle-button').withAttribute('disabled')

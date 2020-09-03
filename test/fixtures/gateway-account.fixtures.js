@@ -28,7 +28,9 @@ function validGatewayAccount (opts) {
         enabled: true
       }
     },
-    allow_moto: opts.allow_moto || false
+    allow_moto: opts.allow_moto || false,
+    moto_mask_card_number_input: opts.moto_mask_card_number_input || false,
+    moto_mask_card_security_code_input: opts.moto_mask_card_security_code_input || false
   }
 
   if (opts.description) {

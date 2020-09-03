@@ -39,7 +39,7 @@ const responseBodyToStripeAccountTransformer = body => new StripeAccount(body)
  * @private
  * @param  {object} self
  */
-function _createResponseHandler (self) {
+function _createResponseHandler(self) {
   return function (callback) {
     return function (error, response, body) {
       if (error || !isInArray(response.statusCode, [200, 202])) {
@@ -68,47 +68,47 @@ function _createResponseHandler (self) {
  * @param  {Object} value - value to find into the array
  * @param {Object[]} array - array source for finding the given value
  */
-function isInArray (value, array) {
+function isInArray(value, array) {
   return array.indexOf(value) > -1
 }
 
 /** @private */
-function _accountApiUrlFor (gatewayAccountId, url) {
+function _accountApiUrlFor(gatewayAccountId, url) {
   return url + ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountUrlFor (gatewayAccountId, url) {
+function _accountUrlFor(gatewayAccountId, url) {
   return url + ACCOUNT_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountsUrlFor (gatewayAccountIds, url) {
+function _accountsUrlFor(gatewayAccountIds, url) {
   return url + ACCOUNTS_FRONTEND_PATH + '?accountIds=' + gatewayAccountIds.join(',')
 }
 
 /** @private */
-function _accountNotificationCredentialsUrlFor (gatewayAccountId, url) {
+function _accountNotificationCredentialsUrlFor(gatewayAccountId, url) {
   return url + ACCOUNT_NOTIFICATION_CREDENTIALS_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountCredentialsUrlFor (gatewayAccountId, url) {
+function _accountCredentialsUrlFor(gatewayAccountId, url) {
   return url + ACCOUNT_CREDENTIALS_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountAcceptedCardTypesUrlFor (gatewayAccountId, url) {
+function _accountAcceptedCardTypesUrlFor(gatewayAccountId, url) {
   return url + ACCEPTED_CARD_TYPES_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _cardTypesUrlFor (url) {
+function _cardTypesUrlFor(url) {
   return url + CARD_TYPES_API_PATH
 }
 
 /** @private */
-function _serviceNameUrlFor (gatewayAccountId, url) {
+function _serviceNameUrlFor(gatewayAccountId, url) {
   return url + SERVICE_NAME_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
@@ -131,7 +131,7 @@ var _getToggle3dsUrlFor = function (accountID, url) {
  * Connects to connector
  * @param {string} connectorUrl connector url
  */
-function ConnectorClient (connectorUrl) {
+function ConnectorClient(connectorUrl) {
   this.connectorUrl = connectorUrl
   this.responseHandler = _createResponseHandler(this)
 
@@ -507,6 +507,57 @@ ConnectorClient.prototype = {
       }
     )
   },
+
+  /**
+   * @param gatewayAccountId
+   * @param isMaskCardNumber (boolean)
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+
+  toggleMotoMaskCardNumberInput: function (gatewayAccountId, isMaskCardNumber, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'moto_mask_card_number_input',
+          value: isMaskCardNumber
+        },
+        correlationId,
+        description: 'Toggle gateway account card number masking setting',
+        service: SERVICE_NAME
+      }
+    )
+  },
+
+  /**
+   * @param gatewayAccountId
+   * @param isMaskSecurityCode (boolean)
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+
+  toggleMotoMaskSecurityCodeInput: function (gatewayAccountId, isMaskSecurityCode, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'moto_mask_card_security_code_input',
+          value: isMaskSecurityCode
+        },
+        correlationId,
+        description: 'Toggle gateway account card security code masking setting',
+        service: SERVICE_NAME
+      }
+    )
+  },
+
   /**
    * @param gatewayAccountId
    * @param gatewayMerchantId (string)

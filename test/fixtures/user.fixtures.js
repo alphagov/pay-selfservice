@@ -196,7 +196,16 @@ const defaultPermissions = [
   {
     name: 'payouts:read',
     description: 'View payouts'
+  },
+  {
+    name: 'moto-mask-input:update',
+    description: 'Update moto mask for card number and security code'
+  },
+  {
+    name: 'moto-mask-input:read',
+    description: 'View moto mask for card number and security code'
   }
+
 ]
 
 // Setup

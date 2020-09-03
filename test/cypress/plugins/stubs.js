@@ -434,6 +434,28 @@ module.exports = {
       verifyCalledTimes: opts.verifyCalledTimes
     })
   },
+
+  patchUpdateMotoMaskSecurityCode: (opts = {}) => {
+    const path = `/v1/api/accounts/${opts.gateway_account_id}`
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: {
+        op: 'replace',
+        path: 'moto_mask_security_code_input',
+        value: opts.motoMaskCardSecurityCode
+      }
+    })
+  },
+
+  patchUpdateMotoMaskCardNumber: (opts = {}) => {
+    const path = `/v1/api/accounts/${opts.gateway_account_id}`
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: {
+        op: 'replace',
+        path: 'moto_mask_card_number_input',
+        value: opts.motoMaskCardNumber
+      }
+    })
+  },
   patchUpdate3DS: (opts = {}) => {
     const path = `/v1/api/frontend/accounts/${opts.gateway_account_id}/3ds-toggle`
     // TODO: this should use a fixture to construct the request body
