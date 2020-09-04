@@ -64,7 +64,7 @@ describe('MOTO mask security section', () => {
 
       it('should show radios as disabled and card number mask disabled', () => {
         cy.visit('/settings')
-        cy.get('.govuk-summary-list__key').eq(4).should('contain', 'Hide card number')
+        cy.get('.govuk-summary-list__key').eq(4).should('contain', 'Hide card numbers')
         cy.get('.govuk-summary-list__value').eq(4).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(4).contains('View')
         cy.get('.govuk-summary-list__actions a').eq(4).click()
@@ -84,7 +84,7 @@ describe('MOTO mask security section', () => {
 
       it('should show radios as enabled and card number mask disabled', () => {
         cy.visit('/settings')
-        cy.get('.govuk-summary-list__key').eq(4).should('contain', 'Hide card number')
+        cy.get('.govuk-summary-list__key').eq(4).should('contain', 'Hide card numbers')
         cy.get('.govuk-summary-list__value').eq(4).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(4).contains('Change')
         cy.get('.govuk-summary-list__actions a').eq(4).click()
