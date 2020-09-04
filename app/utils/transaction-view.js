@@ -13,8 +13,7 @@ const url = require('url')
 const TransactionEvent = require('../models/TransactionEvent.class')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
-const CSV_MAX_LIMIT = process.env.CSV_MAX_LIMIT || 10000
-const ledgerTransactionCountLimitEnabled = process.env.LEDGER_ENABLE_TRANSACTION_COUNT_LIMIT === 'true'
+const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 module.exports = {
   /** prepares the transaction list view */
@@ -23,10 +22,10 @@ module.exports = {
     connectorData.hasFilters = Object.keys(filtersResult).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
     connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length)
-    connectorData.showCsvDownload = connectorData.total <= CSV_MAX_LIMIT
-    connectorData.totalOverLimit = ledgerTransactionCountLimitEnabled && connectorData.total > CSV_MAX_LIMIT
+    connectorData.totalOverLimit = connectorData.total > LEDGER_TRANSACTION_COUNT_LIMIT
+    connectorData.showCsvDownload = showCsvDownload(connectorData, filtersResult)
     connectorData.totalFormatted = connectorData.total.toLocaleString()
-    connectorData.csvMaxLimitFormatted = parseInt(CSV_MAX_LIMIT).toLocaleString()
+    connectorData.maxLimitFormatted = parseInt(LEDGER_TRANSACTION_COUNT_LIMIT).toLocaleString()
     connectorData.paginationLinks = getPaginationLinks(connectorData)
     connectorData.hasPaginationLinks = !!getPaginationLinks(connectorData)
 
@@ -192,4 +191,14 @@ function getCurrentPageSize (connectorData) {
 function hasPageSizeLinks (connectorData) {
   const paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
   return paginator.showDisplaySizeLinks()
+}
+
+function showCsvDownload (connectorData, filters) {
+  if (connectorData.total <= LEDGER_TRANSACTION_COUNT_LIMIT) {
+    return true
+  }
+
+  return Object.keys(filters).filter(function (key) {
+    return key !== 'page' && key !== 'pageSize'
+  }).length !== 0
 }

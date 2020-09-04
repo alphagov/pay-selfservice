@@ -338,8 +338,8 @@ module.exports = {
         account_id: opts.gateway_account_id,
         page: opts.page || 1,
         display_size: opts.display_size || 100,
-        limit_total: false,
-        limit_total_size: 10001
+        limit_total: true,
+        limit_total_size: 5001
       }),
       response: ledgerTransactionFixtures.validTransactionSearchResponse(opts).getPlain()
     })

@@ -52,7 +52,7 @@
 
   <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
     {% if totalOverLimit %}
-      Over {{csvMaxLimitFormatted}} transactions
+      Over {{maxLimitFormatted}} transactions
     {% else %}
       {{totalFormatted}} transactions
     {% endif %}
@@ -60,14 +60,17 @@
   </h3>
 
   {% if permissions.transactions_download_read %}
+
     {% if (hasResults) %}
-      <p id="csv-download" class="govuk-body">
-      {% if showCsvDownload %}
-        <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"> Download all transaction details as a CSV file </a>
+      {% if (showCsvDownload) %}
+          <p id="csv-download" class="govuk-body">
+            <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"> Download all transaction details as a CSV file </a>
+          </p>
       {% else %}
-        You cannot download CSV over {{ csvMaxLimitFormatted }} transactions. Please refine your search
+          <p id="csv-download" class="govuk-body">
+              Filter results to download a CSV of transactions
+          </p>
       {% endif %}
-      </p>
     {% endif %}
   {% endif %}
 
