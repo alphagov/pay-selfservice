@@ -1,0 +1,18 @@
+
+{% for state in filters.selectedStates %}
+    <input class="state" name="state" type="hidden" value="{{state}}"/>
+{% endfor %}
+{% for brand in filters.selectedBrands %}
+    <input class="brand" name="brand" type="hidden" value="{{brand}}"/>
+{% endfor %}
+
+<input type="hidden" name="reference" value="{{filters.reference}}"/>
+<input type="hidden" name="email" value="{{filters.email}}"/>
+<input type="hidden" name="fromDate" value="{{filters.fromDate}}"/>
+<input type="hidden" name="toDate" value="{{filters.toDate}}"/>
+
+<input type="hidden" name="fromTime" value="{{filters.fromTime}}">
+<input type="hidden" name="toTime" value="{{filters.toTime}}">
+<input type="hidden" name="lastDigitsCardNumber" value="{{filters.lastDigitsCardNumber}}">
+<input type="hidden" name="cardholderName" value="{{filters.cardholderName}}">
+
