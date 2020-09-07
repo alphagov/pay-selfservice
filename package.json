@@ -104,7 +104,7 @@
     "serve-favicon": "2.5.0",
     "slugify": "1.4.5",
     "staticify": "4.0.0",
-    "stripe": "8.89.0",
+    "stripe": "8.92.0",
     "throng": "4.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
