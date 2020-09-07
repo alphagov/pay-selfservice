@@ -9,14 +9,13 @@ const {
 } = require('./utils/ledger-legacy-connector-parity')
 const getQueryStringForParams = require('../../utils/get-query-string-for-params')
 const qs = require('qs')
-const ledgerTransactionCountLimitEnabled = process.env.LEDGER_ENABLE_TRANSACTION_COUNT_LIMIT === 'true'
 
 const defaultOptions = {
   baseUrl: process.env.LEDGER_URL,
   json: true,
   service: 'ledger',
-  limit_total_size: (process.env.CSV_MAX_LIMIT || 10000) + 1,
-  limit_total: ledgerTransactionCountLimitEnabled
+  limit_total_size: 5001,
+  limit_total: true
 }
 
 const transaction = function transaction (id, gatewayAccountId, options = {}) {

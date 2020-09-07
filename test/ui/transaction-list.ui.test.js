@@ -63,7 +63,7 @@ describe('The transaction list view', function () {
       total: 9999,
       showCsvDownload: true,
       totalFormatted: '9,999',
-      csvMaxLimitFormatted: '10,000'
+      maxLimitFormatted: '10,000'
     }
 
     const body = renderTemplate('transactions/index', templateData)
@@ -99,7 +99,7 @@ describe('The transaction list view', function () {
       total: 9999,
       showCsvDownload: true,
       totalFormatted: '9,999',
-      csvMaxLimitFormatted: '10,000',
+      maxLimitFormatted: '10,000',
       allServiceTransactions: true
     }
 
@@ -138,7 +138,7 @@ describe('The transaction list view', function () {
       total: 10001,
       showCsvDownload: false,
       totalFormatted: '10,001',
-      csvMaxLimitFormatted: '10,000'
+      maxLimitFormatted: '10,000'
     }
 
     const body = renderTemplate('transactions/index', templateData)
@@ -153,7 +153,7 @@ describe('The transaction list view', function () {
         .withTableDataAt(5, templateData.results[ix].state_friendly)
         .withTableDataAt(6, templateData.results[ix].created)
     })
-    body.should.containSelector('p#csv-download').withExactText('You cannot download CSV over 10,000 transactions. Please refine your search')
+    body.should.containSelector('p#csv-download').withExactText('Filter results to download a CSV of transactions')
   })
 
   it('should not render amount if no permission', function () {
@@ -226,7 +226,7 @@ describe('The transaction list view', function () {
       total: 1,
       showCsvDownload: true,
       totalFormatted: '1',
-      csvMaxLimitFormatted: '10,000'
+      maxLimitFormatted: '10,000'
     }
 
     const body = renderTemplate('transactions/index', templateData)

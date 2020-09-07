@@ -286,16 +286,26 @@ describe('Transactions List', () => {
       cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').eq(1).find('span').should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[1].amount - transactionsWithAssociatedFees[1].fee))
     })
   })
-  describe('No csv download link when total > 10k', () => {
-    it('should not display csv download link', function () {
+  describe('csv download link', () => {
+    it('should not display csv download link when results >5k and no filter applied', function () {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions, transactionLength: 10001 })
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions, transactionLength: 5001 })
       ])
       cy.visit(transactionsUrl)
 
       cy.get('#download-transactions-link').should('not.exist')
-      cy.get('.govuk-body').should('contain', 'You cannot download CSV over 10,000 transactions. Please refine your search')
+      cy.get('#csv-download').should('contain', 'Filter results to download a CSV of transactions')
+    })
+
+    it('should display csv download link when results >5k and filters applied', function () {
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions, transactionLength: 10001, filters: { reference: 'unfiltered' } })
+      ])
+      cy.visit(transactionsUrl + '?reference=unfiltered')
+
+      cy.get('#download-transactions-link').should('exist')
     })
   })
 })
