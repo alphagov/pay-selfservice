@@ -263,10 +263,10 @@ describe('edit merchant details controller - post', () => {
       expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
       expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
         'merchant-name': 'This field cannot be blank',
-        'telephone-number': 'This field cannot be blank',
+        'telephone-number': 'Enter a telephone number',
         'address-line1': 'This field cannot be blank',
         'address-city': 'This field cannot be blank',
-        'address-postcode': 'This field cannot be blank',
+        'address-postcode': 'Enter a postcode',
         'address-country': 'This field cannot be blank'
       })
     })
@@ -312,10 +312,10 @@ describe('edit merchant details controller - post', () => {
         'merchant-name': 'This field cannot be blank',
         'address-line1': 'This field cannot be blank',
         'address-city': 'This field cannot be blank',
-        'address-postcode': 'This field cannot be blank',
+        'address-postcode': 'Enter a postcode',
         'address-country': 'This field cannot be blank',
-        'telephone-number': 'This field cannot be blank',
-        'merchant-email': 'This field cannot be blank'
+        'telephone-number': 'Enter a telephone number',
+        'merchant-email': 'Enter an email address'
       })
     })
   })

@@ -9,7 +9,7 @@ const BLANK_TEXT = ''
 const MAX_LENGTH = 25
 const LOOOONG_TEXT = 'abcdefghijklmnopqrstuvwxyz'
 
-describe('Responsible person page field validations', () => {
+describe('Server side form validations', () => {
   describe('optional text field validations', () => {
     it('should validate that optional text is valid', () => {
       expect(validations.validateOptionalField('some text', MAX_LENGTH).valid).to.be.true // eslint-disable-line
@@ -67,7 +67,7 @@ describe('Responsible person page field validations', () => {
     it('should not be valid when postcode is blank', () => {
       expect(validations.validatePostcode(BLANK_TEXT)).to.deep.equal({
         valid: false,
-        message: 'This field cannot be blank'
+        message: 'Enter a postcode'
       })
     })
 
@@ -220,7 +220,7 @@ describe('Responsible person page field validations', () => {
     it('should not be valid for empty phone number', () => {
       expect(validations.validatePhoneNumber('')).to.deep.equal({
         valid: false,
-        message: 'This field cannot be blank'
+        message: 'Enter a telephone number'
       })
     })
 
@@ -240,7 +240,7 @@ describe('Responsible person page field validations', () => {
     it('should not be valid for empty email address', () => {
       expect(validations.validateEmail('')).to.deep.equal({
         valid: false,
-        message: 'This field cannot be blank'
+        message: 'Enter an email address'
       })
     })
 
@@ -248,6 +248,26 @@ describe('Responsible person page field validations', () => {
       expect(validations.validateEmail('abd')).to.deep.equal({
         valid: false,
         message: 'Please use a valid email address'
+      })
+    })
+  })
+
+  describe('password validation', () => {
+    it('should be valid for a not common password over 10 characters long', () => {
+      expect(validations.validatePassword('over-10-cha').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should not be valid for a password that is too short', () => {
+      expect(validations.validatePassword('ashortstr')).to.deep.equal({
+        valid: false,
+        message:'Password must be 10 characters or more'
+      })
+    })
+
+    it('should not be valid for a common password', () => {
+      expect(validations.validatePassword('1234567890')).to.deep.equal({
+        valid: false,
+        message:'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'
       })
     })
   })
