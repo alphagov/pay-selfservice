@@ -1,4 +1,5 @@
 {% extends "../layout-logged-out.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
 Forgot your password - GOV.UK Pay
@@ -6,18 +7,13 @@ Forgot your password - GOV.UK Pay
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  {% if flash.error %}
-  <div class="govuk-error-summary hidden" aria-labelledby="error-summary-heading-example-1" role="alert" tabindex="-1" data-module="govuk-error-summary">
-    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1">
-      There was a problem with the details you gave for:
-    </h2>
-    <div class="govuk-error-summary__body">
-      <ul class="govuk-list govuk-error-summary__list">
-        <li><a href="#username">Email</a></li>
-      </ul>
-    </div>
-  </div>
-  {% endif %}
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      username: '#username'
+    }
+  }) }}
+
   <form action="/reset-password" method="post" class="form submit-forgotten-email">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <h1 class="govuk-heading-l page-title">
@@ -25,20 +21,12 @@ Forgot your password - GOV.UK Pay
     </h1>
     <p class="govuk-body">We'll then send you an email which you can use to set up a new password.</p>
 
-    {% set error = false %}
-
-    {% if flash.error %}
-      {% set error = {
-        text: flash.error
-      } %}
-    {% endif %}
-
     {{ govukInput({
         label: {
           text: "Email address"
         },
         id: "username",
-        errorMessage: error,
+        errorMessage: { text: errors.username } if errors.username else false,
         name: "username",
         classes: "govuk-!-width-two-thirds",
         type: "email"
