@@ -31,12 +31,9 @@ const emailPost = async function emailPost (req, res) {
     res.redirect(paths.user.passwordRequested)
   } catch (err) {
     if (err.errorCode === 404) {
-      return res.render('forgotten-password/index', {
-        username,
-        errors: {
-          username: "No account was found for this email address"
-        }
-      })
+      // Tell the user an email has been sent if the account doesn't exist
+      // This is to prevent username enumeration
+      res.redirect(paths.user.passwordRequested)
     } else {
       logger.error('Sending password reset email failed: ' + err)
       req.flash('genericError', 'Something went wrong. Please try again.')

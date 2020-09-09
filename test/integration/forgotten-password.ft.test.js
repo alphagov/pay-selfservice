@@ -47,7 +47,7 @@ describe('forgotten_password_controller', function () {
       .reply(200)
 
     await forgottenPasswordController.emailPost(req, res)
-    sinon.assert.called(res.redirect)
+    sinon.assert.calledWith(res.redirect, '/reset-password-requested')
   })
 
   it('send render the page with errors if no email is entered', async () => {
@@ -64,7 +64,7 @@ describe('forgotten_password_controller', function () {
     })
   })
 
-  it('send render the page with errors if adminusers returns a 404', async () => {
+  it('show the password reset email sent page if account is not found in adminusers', async () => {
     const req = reqFixtures.validForgottenPasswordPost()
     const res = resFixtures.getStubbedRes()
     const username = req.body.username
@@ -75,12 +75,22 @@ describe('forgotten_password_controller', function () {
       .reply(404)
 
     await forgottenPasswordController.emailPost(req, res)
-    sinon.assert.calledWithMatch(res.render, 'forgotten-password/index', {
-      username,
-      errors: {
-        username: 'No account was found for this email address'
-      }
-    })
+    sinon.assert.calledWith(res.redirect, '/reset-password-requested')
+  })
+
+  it('should show the same page with a generic error when we get an unexpected error from adminusers', async () => {
+    const req = reqFixtures.validForgottenPasswordPost()
+    const res = resFixtures.getStubbedRes()
+    const username = req.body.username
+
+    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
+      .validForgottenPasswordCreateRequest(username)
+      .getPlain())
+      .reply(500)
+
+    await forgottenPasswordController.emailPost(req, res)
+    sinon.assert.calledWith(req.flash, 'genericError', 'Something went wrong. Please try again.')
+    sinon.assert.calledWith(res.redirect, '/reset-password')
   })
 
   it('display new password capture form', async () => {
