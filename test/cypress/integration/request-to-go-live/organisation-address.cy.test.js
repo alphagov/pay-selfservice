@@ -33,7 +33,7 @@ describe('The organisation address page', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
         cy.visit(pageUrl)
 
-        cy.get('h1').should('contain', `What is your organisation's address?`)
+        cy.get('h1').should('contain', `What is your organisation’s address?`)
 
         cy.get(`form[method=post][action="/service/${serviceExternalId}/request-to-go-live/organisation-address"]`)
           .should('exist')
