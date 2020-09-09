@@ -198,7 +198,9 @@ function showCsvDownload (connectorData, filters) {
     return true
   }
 
-  return Object.keys(filters).filter(function (key) {
-    return key !== 'page' && key !== 'pageSize'
-  }).length !== 0
+  const hasUserFilteredResults = Object.keys(filters)
+    .filter((key) => !['page', 'pageSize'].includes(key))
+    .length !== 0
+
+  return hasUserFilteredResults
 }

@@ -7,16 +7,10 @@
       {{pageSizeLink.name}}
     {% else %}
       <form class="displaySizeForm govuk-!-display-inline-block" method="get" action="{{pageSizeLink.search_path}}">
-        <input type="hidden" name="state" value="{{pageSizeLink.filters.state}}"/>
-        <input type="hidden" name="reference" value="{{pageSizeLink.filters.reference}}" />
-        <input type="hidden" name="fromDate" value="{{pageSizeLink.filters.fromDate}}" />
-        <input type="hidden" name="toDate" value="{{pageSizeLink.filters.toDate}}"/>
+        {% include "transactions/common-hidden-search-fields.njk" %}
         <input type="hidden" name="page" value="1"/>
         <input type="hidden" name="pageSize" value="{{pageSizeLink.value}}"/>
-        <input type="hidden" name="fromTime" value="{{pageSizeLink.filters.fromTime}}">
-        <input type="hidden" name="toTime" value="{{pageSizeLink.filters.toTime}}">
-        <input type="hidden" name="lastDigitsCardNumber" value="{{filters.lastDigitsCardNumber}}">
-        <input type="hidden" name="cardholderName" value="{{filters.cardholderName}}">
+
         <button class="pay-button--as-link displaySize govuk-!-font-size-19">{{pageSizeLink.name}}</button>
       </form>
     {% endif %}

@@ -24,6 +24,11 @@ function getFilters (req) {
     filters.payment_states = result.payment_states
     filters.refund_states = result.refund_states
   }
+
+  if (filters.brand) {
+    filters.selectedBrands = typeof filters.brand === 'string' ? [filters.brand] : filters.brand
+  }
+
   filters = _.omitBy(filters, _.isEmpty)
   return {
     valid: validateFilters(filters),
@@ -45,13 +50,13 @@ function describeFilters (filters) {
     description += ` with <strong>${selectedStates.join('</strong>, <strong>').replace(/,([^,]*)$/, ' or$1')}</strong> states`
   }
 
-  const brandStates = Array.isArray(filters.brand) ? filters.brand.map(brand => brand.replace('-', ' ')) : []
-  if (brandStates.length === 0 && filters.brand) {
-    if (filters.brand === 'jcb') {
-      filters.brand = 'JCB'
-    }
-    description += ` with <strong class="capitalize">‘${filters.brand.replace('-', ' ')}’</strong> card brand`
-  } else if (brandStates.length > 1) {
+  if (filters.selectedBrands && filters.selectedBrands.length > 0) {
+    const brandStates = filters.selectedBrands.map(brand => {
+      if (brand === 'jcb') {
+        brand = 'JCB'
+      }
+      return brand.replace('-', ' ')
+    })
     description += ` with <strong class="capitalize">‘${brandStates.join('</strong>, <strong class="capitalize">').replace(/,([^,]*)$/, ' or$1')}’</strong> card brands`
   }
 

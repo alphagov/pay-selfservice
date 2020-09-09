@@ -2,22 +2,9 @@
 <div class="pagination">
   {% for paginationLink in paginationLinks %}
     <form class="paginationForm page-{{paginationLink.pageName}}" method="get" action="{{paginationLink.search_path}}">
-      {% for state in filters.selectedStates %}
-        <input class="state" name="state" type="hidden" value="{{state}}"/>
-      {% endfor %}
-      {% for brand in filters.brand %}
-        <input class="brand" name="brand" type="hidden" value="{{brand}}"/>
-      {% endfor %}
-      <input type="hidden" name="reference" value="{{filters.reference}}"/>
-      <input type="hidden" name="email" value="{{filters.email}}"/>
-      <input type="hidden" name="fromDate" value="{{filters.fromDate}}"/>
-      <input type="hidden" name="toDate" value="{{filters.toDate}}"/>
+      {% include "transactions/common-hidden-search-fields.njk" %}
       <input type="hidden" name="page" value="{{paginationLink.pageNumber}}"/>
       <input type="hidden" name="pageSize" value="{{filters.pageSize}}"/>
-      <input type="hidden" name="fromTime" value="{{filters.fromTime}}">
-      <input type="hidden" name="toTime" value="{{filters.toTime}}">
-      <input type="hidden" name="lastDigitsCardNumber" value="{{filters.lastDigitsCardNumber}}">
-      <input type="hidden" name="cardholderName" value="{{filters.cardholderName}}">
 
       <button class="pagination {{paginationLink.pageName}} {% if paginationLink.activePage %}active{% endif %} {% if paginationLink.disabled %}govuk-button--disabled {% endif %}" {% if paginationLink.disabled %} disabled="disabled" {% endif %} type="submit">
           <span class="govuk-visually-hidden">Results page </span>{{paginationLink.pageName}}
