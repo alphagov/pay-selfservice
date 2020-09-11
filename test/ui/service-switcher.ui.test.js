@@ -59,7 +59,7 @@ describe('The account switcher link', () => {
     })
 
     it('should display Manage Team Members link in switcher page when user has permission to create users', () => {
-      body.should.containSelector('a.manage-team-members').withExactText('Manage team members')
+      body.should.containSelector('a.manage-team-members').withExactText('Manage team members for Super Mega Service')
     })
 
     it(`should render a service if a user is a member of a single services`, () => {
