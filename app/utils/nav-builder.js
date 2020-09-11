@@ -58,7 +58,7 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
 const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) => {
   return [
     {
-      id: 'navigation-menu-settings',
+      id: 'navigation-menu-settings-home',
       name: 'Settings',
       url: paths.settings.index,
       current: pathLookup(originalUrl, paths.settings.index),
