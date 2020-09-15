@@ -22,36 +22,43 @@ My profile - GOV.UK Pay
   </h1>
 </div>
 <div class="govuk-grid-column-two-thirds">
-  <table class="govuk-table">
-    <caption class="govuk-visually-hidden">Details for {{username}}</caption>
-    <tbody class="govuk-table__body">
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="row">Email</th>
-        <td class="govuk-table__cell" colspan="2" id="email">{{email}}</td>
-      </tr>
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="row">Mobile number</th>
-        <td class="govuk-table__cell" id="telephone-number">{{telephone_number}}</td>
-        <td class="govuk-table__cell pay-text-align-right">
-          <a id="change-phone-link" class="govuk-link" href="{{routes.user.phoneNumber}}">Change</a>
-        </td>
-      </tr>
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="row">Sign-in method</th>
-        <td class="govuk-table__cell" id="two-factor-auth">
+  <dl class="profile-settings govuk-table">
+    <div class="profile-settings__row">  
+      <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
+        Email
+      </dt>
+      <dd class="profile-settings__value govuk-table__cell" id="email">
+        {{email}}
+      </dd>
+    </div>
+    <div class="profile-settings__row">
+      <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
+        Mobile number
+      </dt>
+      <dd class="profile-settings__value govuk-table__cell" id="telephone-number">
+        {{telephone_number}} 
+        <span class="profile-settings__change-link">
+          <a class="govuk-link" href="{{routes.user.phoneNumber}}" id="change-phone-link">Change <span class="govuk-visually-hidden">mobile number</span></a>
+        </span> 
+      </dd>
+    </div>
+    <div class="profile-settings__row">  
+      <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
+        Sign-in method
+      </dt>
+      <dd class="profile-settings__value govuk-table__cell" id="two-factor-auth">
           {% if two_factor_auth === 'APP' %}
             Authenticator app
           {% endif %}
           {% if two_factor_auth === 'SMS' %}
             Text message
           {% endif %}
-        </td>
-        <td class="govuk-table__cell pay-text-align-right">
-          <a class="govuk-link" href="{{two_factor_auth_link}}">Change</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          <span class="profile-settings__change-link">
+            <a class="govuk-link" href="{{two_factor_auth_link}}">Change <span class="govuk-visually-hidden">sign-in method</span></a>
+          </span>
+      </dd>
+    </div>
+  </dl> 
 </div>
 <div class="govuk-grid-column-one-third">
   <div class="related-information">

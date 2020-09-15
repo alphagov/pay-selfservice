@@ -53,8 +53,8 @@ describe('The team member details view', function () {
 
     let body = renderTemplate('team-members/team-member-profile', templateData)
 
-    body.should.containSelector('td#email').withExactText('john.smith@example.com')
-    body.should.containSelector('td#telephone-number').withExactText('+447769897329')
-    body.should.containSelector('td#two-factor-auth').withText('Text message')
+    body.should.containSelector('#email').withExactText('john.smith@example.com')
+    body.should.containSelector('#telephone-number').withText('+447769897329')
+    body.should.containSelector('#two-factor-auth').withText('Text message')
   })
 })

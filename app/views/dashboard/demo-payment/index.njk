@@ -19,32 +19,40 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
     <h1 class="govuk-heading-l">Make a demo payment</h1>
     <p class="govuk-body">Try the payment experience as a user. Then view the completed payment as an administrator on GOV.UK Pay.</p>
 
-    {% macro editButton(path) %}
-      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.prototyping.demoPayment[path]}}">Edit</a>
-    {% endmacro %}
+    <dl class="demo-payment-settings">
+      <dt class="demo-payment-settings__setting">
+        <div class="govuk-heading-s govuk-!-margin-0">Payment description</div>
+        <div class="govuk-body pay-text-grey govuk-!-margin-bottom-2">Tell users what they are paying for</div>
+      </dt>
+      <dd class="demo-payment-settings__value govuk-!-margin-bottom-2">
+        <div class="govuk-body govuk-!-margin-0" id="payment-description">
+          {{ paymentDescription | striptags(true) | escape | nl2br }}
+          <span class="demo-payment-settings__edit-link">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{routes.prototyping.demoPayment.editDescription}}">
+              Edit <span class="govuk-visually-hidden">description</span>
+            </a>
+          </span>
+        </div>
+      </dd>
 
-    <table class="govuk-table">
-      <caption class="govuk-table__caption">
-        Payment description
-        <span class="govuk-!-font-weight-regular pay-text-grey govuk-!-display-block">Tell users what they are paying for</span>
-      </caption>
-      <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell" id="payment-description">{{ paymentDescription | striptags(true) | escape | nl2br }}</td>
-          <td class="govuk-table__cell pay-text-align-right">{{ editButton('editDescription') }}</td>
-        </tr>
-      </tbody>
-    </table>
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6"> 
 
-    <table class="govuk-table">
-      <caption class="govuk-table__caption">Payment amount</caption>
-      <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell govuk-table__cell--number" id="payment-amount">{{ paymentAmount | penceToPoundsWithCurrency }}</td>
-          <td class="govuk-table__cell pay-text-align-right">{{ editButton('editAmount') }}</td>
-        </tr>
-      </tbody>
-    </table>
+      <dt class="demo-payment-settings__setting govuk-!-margin-bottom-2">
+        <div class="govuk-heading-s govuk-!-margin-0">Payment amount</div>
+      </dt>
+      <dd class="demo-payment-settings__value govuk-!-margin-bottom-2">
+        <div class="govuk-body govuk-!-margin-0" id="payment-amount">
+          {{ paymentAmount | penceToPoundsWithCurrency }}
+          <span class="demo-payment-settings__edit-link">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{routes.prototyping.demoPayment.editAmount}}">
+              Edit <span class="govuk-visually-hidden">amount</span>
+            </a>
+          </span>
+        </div>
+      </dd>
+    </dl>
+
+    <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
     {{
       govukButton({
