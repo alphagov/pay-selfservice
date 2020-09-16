@@ -34,13 +34,13 @@
       {% if service.permissions.users_service_create %}
         <p>
           <a class="govuk-link govuk-link--no-visited-state manage-team-members" href="/service/{{ service.external_id }}">
-            Manage team members
+            Manage team members <span class="govuk-visually-hidden">for {{ service.name }}</span>
           </a>
         </p>
       {% else %}
         <p>
           <a class="govuk-link govuk-link--no-visited-state view-team-members" href="/service/{{ service.external_id }}">
-            View team members
+            View team members <span class="govuk-visually-hidden">for {{ service.name }}</span>
           </a>
         </p>
       {% endif %}
@@ -48,7 +48,7 @@
       <li>
       {% if service.permissions.merchant_details_read %}
         <a class="govuk-link govuk-link--no-visited-state edit-merchant-details" href="/organisation-details/{{ service.external_id }}">
-          Organisation details
+          Organisation details <span class="govuk-visually-hidden">for {{ service.name }}</span>
         </a>
       {% endif %}
       </li>
