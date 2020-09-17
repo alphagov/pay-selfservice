@@ -9,6 +9,19 @@
   There are no {{token_state}} API keys
   {% endif %}
 </h2>
+
+{% if active %}
+  {% set apiKeyLinkRoute = routes.apiKeys.revoked %}
+  {% set apiKeyLinkText = 'revoked' %}
+{% else %}
+  {% set apiKeyLinkRoute = routes.apiKeys.index %}
+  {% set apiKeyLinkText = 'active' %}
+{% endif %}
+
+<div class="govuk-body">
+  <a class="govuk-link" href="{{ apiKeyLinkRoute }}">View {{apiKeyLinkText}} keys</a>
+</div>
+
 {% if permissions.tokens_create %}
   {% if active %}
     {{
