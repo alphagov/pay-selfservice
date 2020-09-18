@@ -26,6 +26,10 @@ module.exports.init = () => {
           target.style.display = 'none'
         })
         toggleTarget.style.display = 'block'
+
+        const targetHeading = toggleTarget.querySelector('.target-to-show__heading')
+        if (targetHeading) targetHeading.focus()
+
         if (toggleContainer) toggleContainer.style.display = 'none'
       }, false)
 
