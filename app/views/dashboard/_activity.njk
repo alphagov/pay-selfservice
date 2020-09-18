@@ -44,40 +44,46 @@
 {% if not activityError %}
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
-      <h2 class="dashboard-total-group__title">Successful payments</h2>
+      <h2 class="dashboard-total-group__title">
+        <a class="govuk-link" href="{{routes.transactions.index}}?state={{successfulTransactionsState}}&amp;{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
+          Successful payments
+        </a>    
+      </h2>
     </header>
-    <a class="dashboard-total-group__link" href="{{routes.transactions.index}}?state={{successfulTransactionsState}}&amp;{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
-      <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
-        <dt class="govuk-visually-hidden">Count</dt>
-        <dd class="dashboard-total-group__count">{{ activity.successful_payments.count }}</dd>
-        <dt class="govuk-visually-hidden">Amount</dt>
-        <dd class="dashboard-total-group__amount">{{ activity.successful_payments.total_in_pence | penceToPoundsWithCurrency }}</dd>
-      </dl>
-    </a>
+    <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
+      <dt class="govuk-visually-hidden">Count</dt>
+      <dd class="dashboard-total-group__count">{{ activity.successful_payments.count }}</dd>
+      <dt class="govuk-visually-hidden">Amount</dt>
+      <dd class="dashboard-total-group__amount">{{ activity.successful_payments.total_in_pence | penceToPoundsWithCurrency }}</dd>
+    </dl>
   </article>
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
-      <h2 class="dashboard-total-group__title">Successful refunds</h2>
+      <h2 class="dashboard-total-group__title">
+        <a class="govuk-link" href="{{routes.transactions.index}}?state=refund-success&amp;{{ transactionsPeriodString }}" title="View refunded transactions for chosen time period">
+          Successful refunds
+        </a>
+      </h2>
     </header>
-    <a class="dashboard-total-group__link" href="{{routes.transactions.index}}?state=refund-success&amp;{{ transactionsPeriodString }}" title="View refunded transactions for chosen time period">
-      <dl class="dashboard-total-group__values dashboard-total-group__values--red">
-        <dt class="govuk-visually-hidden">Count</dt>
-        <dd class="dashboard-total-group__count">{{ activity.refunded_payments.count }}</dd>
-        <dt class="govuk-visually-hidden">Amount</dt>
-        <dd class="dashboard-total-group__amount">{{ activity.refunded_payments.total_in_pence | penceToPoundsWithCurrency }}</dd>
-      </dl>
-    </a>
+    <dl class="dashboard-total-group__values dashboard-total-group__values--red">
+      <dt class="govuk-visually-hidden">Count</dt>
+      <dd class="dashboard-total-group__count">{{ activity.refunded_payments.count }}</dd>
+      <dt class="govuk-visually-hidden">Amount</dt>
+      <dd class="dashboard-total-group__amount">{{ activity.refunded_payments.total_in_pence | penceToPoundsWithCurrency }}</dd>
+    </dl>
   </article>
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
-      <h2 class="dashboard-total-group__title">Net income</h2>
+      <h2 class="dashboard-total-group__title">
+        <a class="govuk-link" href="{{routes.transactions.index}}?state=payment-success&amp;state=refund-success&amp;{{ transactionsPeriodString }}" title="View successful payments and refunded transactions for chosen time period">
+          Net income
+        </a>
+      </h2>
     </header>
-    <a class="dashboard-total-group__link" href="{{routes.transactions.index}}?state=payment-success&amp;state=refund-success&amp;{{ transactionsPeriodString }}" title="View successful payments and refunded transactions for chosen time period">
-      <dl class="dashboard-total-group__values">
-        <dt class="govuk-visually-hidden">Amount</dt>
-        <dd class="dashboard-total-group__amount">{{ activity.net_income.total_in_pence | penceToPoundsWithCurrency }}</dd>
-      </dl>
-    </a>
+    <dl class="dashboard-total-group__values">
+      <dt class="govuk-visually-hidden">Amount</dt>
+      <dd class="dashboard-total-group__amount">{{ activity.net_income.total_in_pence | penceToPoundsWithCurrency }}</dd>
+    </dl>
 
     {% set detailsHTML %}
       <p>Net income was calculated by subtracting the successful refunds from the successful payments for {{ fromDateTime | datetime('full') }} to {{ toDateTime | datetime('full') }}</p>
