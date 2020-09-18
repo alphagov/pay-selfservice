@@ -1,0 +1,15 @@
+.demo-payment-settings{
+  margin: 0;
+
+  &__setting{
+    margin: 0;
+  }
+
+  &__value{
+    margin-inline-start: 0;
+  }
+
+  &__edit-link{
+    float: right;
+  }
+}

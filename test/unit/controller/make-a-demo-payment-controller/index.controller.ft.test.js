@@ -46,11 +46,11 @@ describe('make a demo payment - index controller', () => {
     })
 
     it(`should default to a payment amount of '20.00'`, () => {
-      expect($(`#payment-amount`).text()).to.equal(`£${'20.00'}`)
+      expect($(`#payment-amount`).text()).to.contain(`£${'20.00'}`)
     })
 
     it(`should default to a payment description of 'An example payment description'`, () => {
-      expect($(`#payment-description`).text()).to.equal('An example payment description')
+      expect($(`#payment-description`).text()).to.contain('An example payment description')
     })
   })
   describe('when values exist in the session but none are in the body', () => {
@@ -81,11 +81,11 @@ describe('make a demo payment - index controller', () => {
 
     it(`should show the payment amount stored in the session`, () => {
       const paymentAmountInPounds = penceToPounds(paymentAmount)
-      expect($(`#payment-amount`).text()).to.equal(`£${paymentAmountInPounds}`)
+      expect($(`#payment-amount`).text()).to.contain(`£${paymentAmountInPounds}`)
     })
 
     it(`should show the payment description stored in the session`, () => {
-      expect($(`#payment-description`).text()).to.equal(paymentDescription)
+      expect($(`#payment-description`).text()).to.contain(paymentDescription)
     })
   })
   describe('when values exist in the body', () => {
@@ -122,11 +122,11 @@ describe('make a demo payment - index controller', () => {
         })
 
         it(`should show the payment amount from the body`, () => {
-          expect($(`#payment-amount`).text()).to.equal(`£${paymentAmount}`)
+          expect($(`#payment-amount`).text()).to.contain(`£${paymentAmount}`)
         })
 
         it(`should show the payment description from the body`, () => {
-          expect($(`#payment-description`).text()).to.equal(paymentDescription)
+          expect($(`#payment-description`).text()).to.contain(paymentDescription)
         })
       })
       describe('and there are no values in the session', () => {
@@ -159,11 +159,11 @@ describe('make a demo payment - index controller', () => {
         })
 
         it(`should show the payment amount from the body`, () => {
-          expect($(`#payment-amount`).text()).to.equal(`£${paymentAmount}`)
+          expect($(`#payment-amount`).text()).to.contain(`£${paymentAmount}`)
         })
 
         it(`should show the payment description from the body`, () => {
-          expect($(`#payment-description`).text()).to.equal(paymentDescription)
+          expect($(`#payment-description`).text()).to.contain(paymentDescription)
         })
       })
     })
