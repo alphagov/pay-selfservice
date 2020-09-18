@@ -11,38 +11,7 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l page-title">API Keys</h1>
-
-{% set keysHTML %}
+  
   {% include "./_keys.njk" %}
-{% endset %}
-
-  <div class="govuk-tabs">
-    <ul class="govuk-tabs__list">
-      {% if active %}
-        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-          <a class="govuk-tabs__tab" href="#active-keys" aria-selected="true">
-            Active keys
-          </a>
-        </li>
-        <li class="govuk-tabs__list-item">
-          <a id="revoked-keys-tab" class="govuk-tabs__tab govuk-tabs__tab" href="{{ routes.apiKeys.revoked }}">
-            Revoked keys
-          </a>
-        </li>
-      {% else %}
-        <li class="govuk-tabs__list-item">
-          <a class="govuk-tabs__tab" href="{{ routes.apiKeys.index }}">
-            Active keys
-          </a>
-        </li>
-        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-          <a class="govuk-tabs__tab" href="#revoked-keys" aria-selected="true">
-            Revoked keys
-          </a>
-        </li>
-      {% endif %}
-    </ul>
-    {% include "./_keys.njk" %}
-  </div>
 </div>
 {% endblock %}
