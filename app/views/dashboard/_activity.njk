@@ -2,6 +2,10 @@
 <form class="govuk-grid-column-full" action="/" method="get">
 
   {{ govukSelect({
+    formGroup: {
+      classes: "dashboard-date-range-container govuk-!-margin-right-2"
+    },
+    classes: "dashboard-date-range-container__select",
     id: "activity-period",
     name: "period",
     label: {
@@ -32,12 +36,10 @@
     ]
   }) }}
 
-  <noscript>
-    {{ govukButton({
-      classes: 'nojs-update-button',
-      text: "Update"
-    }) }}
-  </noscript>
+  {{ govukButton({
+    classes: "dashboard-date-range__select",
+    text: "Update"
+  }) }}
 </form>
 
 <div data-click-events data-click-category="Dashboard" data-click-action="Activity link clicked">
