@@ -3,7 +3,7 @@
     <input name="csrfToken" type="hidden" value="{{csrf}}" />
     <input name="gatewayAccountId" type="hidden" value="{{ account.external_id }}"/>
     <button
-      class="pay-button--as-link service-switcher {{ account.type }} {{ account.payment_provider }}"
+      class="govuk-link pay-button--as-link service-switcher {{ account.type }} {{ account.payment_provider }}"
       type="submit"
       role="link">
       {{ account.type | title }}
