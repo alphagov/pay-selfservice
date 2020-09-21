@@ -13,13 +13,15 @@
 {% if active %}
   {% set apiKeyLinkRoute = routes.apiKeys.revoked %}
   {% set apiKeyLinkText = 'revoked' %}
+  {% set apiKeyLinkId = 'revoked-keys-link' %}
 {% else %}
   {% set apiKeyLinkRoute = routes.apiKeys.index %}
   {% set apiKeyLinkText = 'active' %}
+  {% set apiKeyLinkId = 'active-keys-link' %}
 {% endif %}
 
 <div class="govuk-body">
-  <a class="govuk-link" href="{{ apiKeyLinkRoute }}">View {{apiKeyLinkText}} keys</a>
+  <a class="govuk-link" href="{{ apiKeyLinkRoute }}" id="{{apiKeyLinkId}}">View {{apiKeyLinkText}} keys</a>
 </div>
 
 {% if permissions.tokens_create %}
