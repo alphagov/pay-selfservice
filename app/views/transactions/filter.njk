@@ -79,46 +79,56 @@
       }}
     </div>
     <div class="govuk-grid-column-one-quarter">
-      {{
-        govukSelect({
-          id: "card-brand",
-          name: "brand",
-          classes: 'govuk-!-font-size-16',
-          label: {
-            text: "Card brand",
-            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-          },
-          hint: {
-            text: "Select a brand",
-            classes: 'govuk-!-font-size-14'
-          },
-          attributes: {
-            'data-enhance-multiple': true
-          },
-          items: cardBrands
-        })
-      }}
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-visually-hidden">
+            Card brand
+        </legend>
+        {{
+          govukSelect({
+            id: "card-brand",
+            name: "brand",
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: "Card brand",
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: "Select a brand",
+              classes: 'govuk-!-font-size-14'
+            },
+            attributes: {
+              'data-enhance-multiple': true
+            },
+            items: cardBrands
+          })
+        }}
+      </fieldset>
     </div>
     <div class="govuk-grid-column-one-quarter">
-      {{
-        govukSelect({
-          id: "state",
-          name: "state",
-          classes: 'govuk-!-font-size-16',
-          label: {
-            text: "Payment status",
-            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-          },
-          hint: {
-            text: "Select an option",
-            classes: 'govuk-!-font-size-14'
-          },
-          attributes: {
-            'data-enhance-multiple': true
-          },
-          items: eventStates
-        })
-      }}
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-visually-hidden">
+            Payment status
+        </legend>
+        {{
+          govukSelect({
+            id: "state",
+            name: "state",
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: "Payment status",
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: "Select an option",
+              classes: 'govuk-!-font-size-14'
+            },
+            attributes: {
+              'data-enhance-multiple': true
+            },
+            items: eventStates
+          })
+        }}
+        </fieldset> 
     </div>
     <div class="govuk-grid-column-one-half">
       <fieldset class="govuk-fieldset">
