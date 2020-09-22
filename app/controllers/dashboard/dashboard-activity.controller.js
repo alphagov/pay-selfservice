@@ -128,7 +128,6 @@ module.exports = async (req, res) => {
       const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
       response(req, res, 'dashboard/index', Object.assign(model, {
         activity: result,
-        successfulTransactionsState: 'payment-success',
         fromDateTime,
         toDateTime,
         transactionsPeriodString
