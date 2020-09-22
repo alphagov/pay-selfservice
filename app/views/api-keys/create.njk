@@ -65,10 +65,14 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
           id: "generate-button",
           "data-copy-text": true,
           "data-target": "copy-this-api-key",
-          "data-success": "API key has been copied"
+          "data-success": "API key has been copied",
+          "data-notification-target": "copy-this-api-key-notification" 
         }
       })
     }}
+
+    <div class="copy-this-api-key-notification govuk-visually-hidden" aria-live="assertive"></div>
+
     <p class="govuk-body">
       <a class="govuk-link govuk-link--no-visited-state" href="{{routes.apiKeys.index}}" id="finish-link">
         Back to API keys
