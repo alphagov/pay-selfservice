@@ -1,3 +1,15 @@
+.dashboard-date-range-container{
+  display: block;
+
+  @include govuk-media-query($from: tablet) {
+    display: inline-block; 
+  }
+
+  &__select {
+    width: 100%;
+  }
+}
+
 .dashboard-total {
   &-group {
     margin-bottom: govuk-spacing(6);
@@ -56,8 +68,4 @@
     margin-top: govuk-spacing(2);
     @include govuk-font($size: 16);
   }
-}
-
-.nojs-update-button {
-  margin-left: govuk-spacing(3);
 }
