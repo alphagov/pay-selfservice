@@ -3,8 +3,8 @@
     <h2 class="govuk-heading-m service-name">
       {{ service.name }}
       {% if service.permissions.service_name_update %}
-      <a href="/service/{{ service.external_id }}/edit-name" class="govuk-!-font-size-14 govuk-!-font-weight-regular govuk-link--no-visited-state govuk-!-margin-left-2 edit-service-name">
-        Edit name
+      <a href="/service/{{ service.external_id }}/edit-name" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-regular govuk-!-margin-left-2 edit-service-name">
+        Edit name <span class="govuk-visually-hidden">for {{ service.name }}</span>
       </a>
       {% endif %}
     </h2>
