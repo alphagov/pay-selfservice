@@ -260,14 +260,14 @@ describe('Server side form validations', () => {
     it('should not be valid for a password that is too short', () => {
       expect(validations.validatePassword('ashortstr')).to.deep.equal({
         valid: false,
-        message:'Password must be 10 characters or more'
+        message: 'Password must be 10 characters or more'
       })
     })
 
     it('should not be valid for a common password', () => {
       expect(validations.validatePassword('1234567890')).to.deep.equal({
         valid: false,
-        message:'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'
+        message: 'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'
       })
     })
   })

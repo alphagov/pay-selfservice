@@ -38,7 +38,7 @@ const getProductsByGatewayAccountIdFailure = function (gatewayAccountId) {
   }
 }
 
-const postCreateProductSuccess = function() {
+const postCreateProductSuccess = function () {
   return {
     name: 'postCreateProductSuccess'
   }

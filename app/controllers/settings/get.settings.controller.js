@@ -19,7 +19,7 @@ module.exports = (req, res) => {
     refundEmailEnabled: req.account.refundEmailEnabled,
     allowMoto: req.account.allow_moto,
     motoMaskCardNumberInputEnabled: req.account.moto_mask_card_number_input,
-    motoMaskSecurityCodeInputEnabled: req.account.moto_mask_card_security_code_input,
+    motoMaskSecurityCodeInputEnabled: req.account.moto_mask_card_security_code_input
   }
 
   return response(req, res, 'settings/index', pageData)
