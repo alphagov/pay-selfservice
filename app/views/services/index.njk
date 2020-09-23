@@ -1,10 +1,37 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-fork.njk" %}
 
 {% block pageTitle %}
-  Choose service - GOV.UK Pay
+  (sfount) Choose service - GOV.UK Pay
+{% endblock %}
+
+{% block beforeContent %}
+  <div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
+    {% if not hideServiceNav %}
+    <nav role="navigation" class="sfount-navigation">
+      <ul class="sfount-navigation--list">
+        <!-- selected -->
+        <li class="sfount-navigation--list-item sfount-navigation--list-item-active">
+          <a id="nav-link-to-services" href="/my-services">Services</a>
+        </li>
+        <!-- non selected -->
+        <li class="service-navigation--list-item">
+          <a id="nav-link-to-transactions" href="/all-service-transactions">Transactions</a>
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block mainContent %}
+
+
+  <div class="govuk-grid-row">
+
+  </div>
+
+  <div class="govuk-grid-row">
+
   {% if new_service_name %}
     <div class="govuk-grid-column-full govuk-!-margin-0">
       <div class="flash-container flash-container--good">
@@ -65,5 +92,7 @@
         {% endif %}
       {% endfor %}
     </div>
+  </div>
+
   </div>
 {% endblock %}
