@@ -2,7 +2,7 @@
 
 const { response } = require('../../utils/response')
 
-module.exports = function showToggleMaskCardSecurityCodePage(req, res) {
+module.exports = function showToggleMaskCardSecurityCodePage (req, res) {
   const pageData = {
     allowMoto: req.account.allow_moto,
     motoMaskCardNumberInputEnabled: req.account.moto_mask_card_number_input,

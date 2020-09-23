@@ -12,7 +12,7 @@ module.exports = () => {
     input.addEventListener('input', confirmInput, false)
 
     if (input.dataset.confirmationDisplay === 'onload') {
-      confirmInput({target: input})
+      confirmInput({ target: input })
     }
   })
 

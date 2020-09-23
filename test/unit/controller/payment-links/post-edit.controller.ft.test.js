@@ -2,7 +2,6 @@
 
 const supertest = require('supertest')
 const { expect } = require('chai')
-const lodash = require('lodash')
 const nock = require('nock')
 const csrf = require('csrf')
 

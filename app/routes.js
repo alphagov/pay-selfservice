@@ -91,7 +91,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode: toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
   partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths

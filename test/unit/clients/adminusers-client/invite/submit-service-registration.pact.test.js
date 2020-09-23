@@ -1,10 +1,8 @@
 'use strict'
 
-
 const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-
 
 const path = require('path')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
