@@ -105,7 +105,7 @@
     "slugify": "1.4.5",
     "staticify": "5.0.0",
     "stripe": "8.96.0",
-    "throng": "4.0.x",
+    "throng": "5.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
     "winston": "3.3.3"
