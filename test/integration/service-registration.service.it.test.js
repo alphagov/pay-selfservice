@@ -4,9 +4,9 @@ const nock = require('nock')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const inviteFixtures = require('../../fixtures/invite.fixtures')
-const serviceRegistrationService = require('../../../app/services/service-registration.service')
+const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
+const inviteFixtures = require('../fixtures/invite.fixtures')
+const serviceRegistrationService = require('../../app/services/service-registration.service')
 
 // Constants
 const CONNECTOR_ACCOUNTS_URL = '/v1/api/accounts'
@@ -25,7 +25,7 @@ describe('create populated service', function () {
   })
 
   it('should create a sandbox gateway account and complete invite successfully', function (done) {
-    const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
+    const inviteCode = 'a-valid-invite-code'
     const userExternalId = 'f84b8210f93d455e97baeaf3fea72cf4'
     const serviceExternalId = '43a6818b522b4a628a14355614665ca3'
     const gatewayAccountId = '1'
@@ -66,7 +66,7 @@ describe('create populated service', function () {
   })
 
   it('should error if creation of a gateway account failed', function (done) {
-    const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
+    const inviteCode = 'a-valid-invite-code'
 
     const mockConnectorCreateGatewayAccountResponse = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
       .reply(500)
@@ -78,7 +78,7 @@ describe('create populated service', function () {
   })
 
   it('should error if creation of a gateway account succeeded, but complete invite failed', function (done) {
-    const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
+    const inviteCode = 'a-valid-invite-code'
     const gatewayAccountId = '1'
 
     const mockConnectorCreateGatewayAccountResponse =
@@ -106,7 +106,7 @@ describe('create populated service', function () {
   })
 
   it('should error if creation of a gateway account succeeded and complete invite succeeded, but user already exists', function (done) {
-    const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
+    const inviteCode = 'a-valid-invite-code'
     const gatewayAccountId = '1'
 
     const mockConnectorCreateGatewayAccountResponse =

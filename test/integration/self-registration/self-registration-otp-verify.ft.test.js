@@ -44,7 +44,7 @@ describe('create service otp validation', function () {
 
   describe('post to otp verify page', function () {
     it('should redirect to proceed-to-login page when user submits valid otp code', function (done) {
-      const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
+      const inviteCode = 'a-valid-invite-code'
       const userExternalId = 'f84b8210f93d455e97baeaf3fea72cf4'
       const serviceExternalId = '43a6818b522b4a628a14355614665ca3'
       const gatewayAccountId = '1'
