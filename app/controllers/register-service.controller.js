@@ -8,11 +8,11 @@ const { renderErrorView } = require('../utils/response')
 const serviceService = require('../services/service.service')
 const registrationService = require('../services/service-registration.service')
 const loginController = require('../controllers/login')
-const { validateRegistrationTelephoneNumber } = require('../utils/registration-validations')
 const {
   validatePhoneNumber,
   validateEmail,
-  validatePassword
+  validatePassword,
+  validateOtp
 } = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
 
@@ -118,8 +118,14 @@ module.exports = {
    * @param req
    * @param res
    */
-  showOtpVerify: function showOtpVerify (req, res) {
-    res.render('self-create-service/verify-otp')
+  showOtpVerify: function showOtpVerify (req, res, next) {
+    const sessionData = req.register_invite
+    const recovered = sessionData.recovered || {}
+    delete sessionData.recovered
+
+    res.render('self-create-service/verify-otp', {
+      errors: recovered.errors
+    })
   },
 
   /**
@@ -129,22 +135,51 @@ module.exports = {
    * @param res
    * @returns {*|Promise|Promise.<T>}
    */
-  createPopulatedService: function createPopulatedService (req, res) {
+  createPopulatedService: async function createPopulatedService (req, res, next) {
+    const sessionData = req.register_invite
     const correlationId = req.correlationId
+    const code = req.register_invite.code
+    const otpCode = req.body['verify-code']
 
-    return registrationService.createPopulatedService(req.register_invite.code, correlationId)
-      .then(completeServiceInviteResponse => {
-        loginController.setupDirectLoginAfterRegister(req, res, completeServiceInviteResponse.user_external_id)
-        res.redirect(303, paths.selfCreateService.logUserIn)
-      })
-      .catch(err => {
-        if (err.errorCode === 409) {
-          const error = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
-          renderErrorView(req, res, error, err.errorCode)
-        } else {
-          renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+    const validOtp = validateOtp(otpCode)
+    if (!validOtp.valid) {
+      sessionData.recovered = {
+        errors: {
+          verificationCode: validOtp.message
         }
-      })
+      }
+      return res.redirect(303, paths.selfCreateService.otpVerify)
+    }
+
+    try {
+      await registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
+    } catch (err) {
+      if (err.errorCode === 401) {
+        sessionData.recovered = {
+          errors: {
+            verificationCode: 'The verification code you’ve used is incorrect or has expired'
+          }
+        }
+        return res.redirect(303, paths.selfCreateService.otpVerify)
+      } else if (err.errorCode === 410) {
+        return renderErrorView(req, res, 'This invitation is no longer valid', 410)
+      } else {
+        return renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+      }
+    }
+
+    try {
+      const completeInviteResponse = await registrationService.createPopulatedService(req.register_invite.code, correlationId)
+      loginController.setupDirectLoginAfterRegister(req, res, completeInviteResponse.user_external_id)
+      return res.redirect(303, paths.selfCreateService.logUserIn)
+    } catch (err) {
+      if (err.errorCode === 409) {
+        const error = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
+        renderErrorView(req, res, error, err.errorCode)
+      } else {
+        renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+      }
+    }
   },
 
   /**
@@ -175,35 +210,34 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitOtpResend: function submitOtpResend (req, res) {
+  submitOtpResend: async function submitOtpResend (req, res) {
+    const sessionData = req.register_invite
     const correlationId = req.correlationId
-    const code = req.register_invite.code
+    const code = sessionData.code
     const telephoneNumber = req.body['telephone-number']
 
-    const resendOtpAndProceedToVerify = () => {
-      registrationService.resendOtpCode(code, telephoneNumber, correlationId)
-        .then(() => {
-          req.register_invite.telephone_number = telephoneNumber
-          res.redirect(303, paths.selfCreateService.otpVerify)
-        })
-        .catch(err => {
-          logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
-          if (err.errorCode === 404) {
-            renderErrorView(req, res, 'Unable to process registration at this time', 404)
-          } else {
-            renderErrorView(req, res, 'Unable to process registration at this time', 500)
-          }
-        })
+    const validPhoneNumber = validatePhoneNumber(telephoneNumber)
+    if (!validPhoneNumber.valid) {
+      res.render('self-create-service/resend-otp', {
+        telephoneNumber,
+        errors: {
+          telephoneNumber: validPhoneNumber.message
+        }
+      })
     }
 
-    return validateRegistrationTelephoneNumber(telephoneNumber)
-      .then(resendOtpAndProceedToVerify)
-      .catch(err => {
-        logger.debug(`[requestId=${correlationId}] invalid user input - telephone number`)
-        req.flash('genericError', err.message)
-        req.register_invite.telephone_number = telephoneNumber
-        res.redirect(303, paths.selfCreateService.otpResend)
-      })
+    try {
+      await registrationService.resendOtpCode(code, telephoneNumber, correlationId)
+      sessionData.telephone_number = telephoneNumber
+      res.redirect(303, paths.selfCreateService.otpVerify)
+    } catch (err) {
+      logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
+      if (err.errorCode === 404) {
+        renderErrorView(req, res, 'Unable to process registration at this time', 404)
+      } else {
+        renderErrorView(req, res, 'Unable to process registration at this time', 500)
+      }
+    }
   },
 
   /**

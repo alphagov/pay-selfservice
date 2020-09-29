@@ -50,7 +50,7 @@ describe('Register service', function () {
 
   it('should redirect with error stating email has to be a public sector email when adminusers responds with a 403', async () => {
     const errorFromAdminusers = {
-      errorCode: 403,
+      errorCode: 403
     }
 
     await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res)

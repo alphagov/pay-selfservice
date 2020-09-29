@@ -271,4 +271,24 @@ describe('Server side form validations', () => {
       })
     })
   })
+
+  describe('otp code validation', () => {
+    it('should be valid for a valid OTP code', () => {
+      expect(validations.validateOtp('123').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should not be valid for empty OTP code', () => {
+      expect(validations.validateOtp('')).to.deep.equal({
+        valid: false,
+        message: 'Enter your verification code'
+      })
+    })
+
+    it('should not be valid for an invalid OTP code', () => {
+      expect(validations.validateOtp('abc')).to.deep.equal({
+        valid: false,
+        message: 'Enter numbers only'
+      })
+    })
+  })
 })

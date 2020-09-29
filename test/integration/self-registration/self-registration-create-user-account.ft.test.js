@@ -71,7 +71,7 @@ describe('create service otp validation', function () {
             email: '',
             telephoneNumber: '07912345678',
             errors: {
-              email: "Enter an email address"
+              email: 'Enter an email address'
             }
           }
         })
