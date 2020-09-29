@@ -2,6 +2,8 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const lodash = require('lodash')
+const { expect } = require('chai')
 const paths = require('../../../../app/paths.js')
 
 describe('Register service', function () {
@@ -46,33 +48,21 @@ describe('Register service', function () {
     sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
   })
 
-  it('should relay validation message from adminusers when it responds with a 400', async () => {
-    const errorMessage = `message from adminusers`
-    const errorFromAdminusers = {
-      errorCode: 400,
-      message: {
-        errors: errorMessage
-      }
-    }
-
-    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res)
-
-    sinon.assert.calledWith(req.flash, 'genericError', errorMessage)
-    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
-  })
-
-  it('should relay validation message from adminusers when it responds with a 403', async () => {
-    const errorMessage = `message from adminusers`
+  it('should redirect with error stating email has to be a public sector email when adminusers responds with a 403', async () => {
     const errorFromAdminusers = {
       errorCode: 403,
-      message: {
-        errors: errorMessage
-      }
     }
 
     await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res)
 
-    sinon.assert.calledWith(req.flash, 'genericError', errorMessage)
+    const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered')
+    expect(recovered).to.deep.equal({
+      email: req.body.email,
+      telephoneNumber: req.body['telephone-number'],
+      errors: {
+        email: 'Enter a public sector email address'
+      }
+    })
     sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
   })
 
@@ -85,11 +75,18 @@ describe('Register service', function () {
     sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
   })
 
-  it('should show error whan an invalid phone number is entered', async () => {
-    req.body['telephone-number'] = 'acb1234567'
+  it('should redirect with error whan an invalid phone number is entered', async () => {
+    req.body['telephone-number'] = 'acb1234567' // pragma: allowlist secret
 
     await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res)
-    sinon.assert.calledWith(req.flash, 'genericError', 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+    const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered')
+    expect(recovered).to.deep.equal({
+      email: req.body.email,
+      telephoneNumber: req.body['telephone-number'],
+      errors: {
+        telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+      }
+    })
     sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
   })
 
