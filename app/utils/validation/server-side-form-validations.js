@@ -12,6 +12,8 @@ const {
 } = require('../../browsered/field-validation-checks')
 const { invalidTelephoneNumber } = require('./telephone-number-validation')
 
+const NUMBERS_ONLY = new RegExp('^[0-9]+$')
+
 const validReturnObject = {
   valid: true,
   message: null
@@ -176,6 +178,16 @@ const validatePassword = function validatePassword (password) {
   return validReturnObject
 }
 
+const validateOtp = function validateOtp (otp) {
+  if (!otp) {
+    return notValidReturnObject('Enter your verification code')
+  }
+  if (!NUMBERS_ONLY.test(otp)) {
+    return notValidReturnObject('Enter numbers only')
+  }
+  return validReturnObject
+}
+
 module.exports = {
   validateOptionalField,
   validateMandatoryField,
@@ -183,5 +195,6 @@ module.exports = {
   validatePostcode,
   validateDateOfBirth,
   validateEmail,
-  validatePassword
+  validatePassword,
+  validateOtp
 }

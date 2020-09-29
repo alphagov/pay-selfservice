@@ -206,9 +206,9 @@ describe('Server side form validations', () => {
 
       expect(validations.validateDateOfBirth(dateInTheMysteriousFuture.date(),
         dateInTheMysteriousFuture.month() + 1, dateInTheMysteriousFuture.year())).to.deep.equal({
-        valid: false,
-        message: 'Date of birth must be in the past'
-      })
+          valid: false,
+          message: 'Date of birth must be in the past'
+        })
     })
   })
 
@@ -268,6 +268,27 @@ describe('Server side form validations', () => {
       expect(validations.validatePassword('1234567890')).to.deep.equal({
         valid: false,
         message: 'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'
+      })
+    })
+  })
+  
+  
+  describe('otp code validation', () => {
+    it('should be valid for a valid OTP code', () => {
+      expect(validations.validateOtp('123').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should not be valid for empty OTP code', () => {
+      expect(validations.validateOtp('')).to.deep.equal({
+        valid: false,
+        message: 'Enter your verification code'
+      })
+    })
+
+    it('should not be valid for an invalid OTP code', () => {
+      expect(validations.validateOtp('abc')).to.deep.equal({
+        valid: false,
+        message: 'Enter numbers only'
       })
     })
   })
