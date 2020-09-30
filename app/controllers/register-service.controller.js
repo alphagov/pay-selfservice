@@ -16,6 +16,12 @@ const {
 } = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
 
+const missingSessionErrorMessage = 'Unable to process registration at this time'
+
+const registrationSessionPresent = function registrationSessionPresent (sessionData) {
+  return sessionData && sessionData.email && sessionData.code
+}
+
 module.exports = {
 
   /**
@@ -118,8 +124,11 @@ module.exports = {
    * @param req
    * @param res
    */
-  showOtpVerify: function showOtpVerify (req, res, next) {
+  showOtpVerify: function showOtpVerify (req, res) {
     const sessionData = req.register_invite
+    if (!registrationSessionPresent(sessionData)) {
+      return renderErrorView(req, res, missingSessionErrorMessage, 404)
+    }
     const recovered = sessionData.recovered || {}
     delete sessionData.recovered
 
@@ -137,6 +146,9 @@ module.exports = {
    */
   createPopulatedService: async function createPopulatedService (req, res, next) {
     const sessionData = req.register_invite
+    if (!registrationSessionPresent(sessionData)) {
+      return renderErrorView(req, res, missingSessionErrorMessage, 404)
+    }
     const correlationId = req.correlationId
     const code = req.register_invite.code
     const otpCode = req.body['verify-code']
@@ -174,8 +186,8 @@ module.exports = {
       return res.redirect(303, paths.selfCreateService.logUserIn)
     } catch (err) {
       if (err.errorCode === 409) {
-        const error = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
-        renderErrorView(req, res, error, err.errorCode)
+        const errorMessage = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
+        renderErrorView(req, res, errorMessage, err.errorCode)
       } else {
         renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
       }
@@ -199,8 +211,12 @@ module.exports = {
    * @param res
    */
   showOtpResend: function showOtpResend (req, res) {
+    const sessionData = req.register_invite
+    if (!registrationSessionPresent(sessionData)) {
+      return renderErrorView(req, res, missingSessionErrorMessage, 404)
+    }
     res.render('self-create-service/resend-otp', {
-      telephoneNumber: req.register_invite.telephone_number
+      telephoneNumber: sessionData.telephone_number
     })
   },
 
@@ -212,6 +228,9 @@ module.exports = {
    */
   submitOtpResend: async function submitOtpResend (req, res) {
     const sessionData = req.register_invite
+    if (!registrationSessionPresent(sessionData)) {
+      return renderErrorView(req, res, missingSessionErrorMessage, 404)
+    }
     const correlationId = req.correlationId
     const code = sessionData.code
     const telephoneNumber = req.body['telephone-number']
