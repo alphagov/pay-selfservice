@@ -1,6 +1,6 @@
 'use strict'
 
-const _ = require('lodash')
+const lodash = require('lodash')
 
 const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
@@ -8,7 +8,12 @@ const { renderErrorView } = require('../utils/response')
 const serviceService = require('../services/service.service')
 const registrationService = require('../services/service-registration.service')
 const loginController = require('../controllers/login')
-const { validateServiceRegistrationInputs, validateRegistrationTelephoneNumber } = require('../utils/registration-validations')
+const { validateRegistrationTelephoneNumber } = require('../utils/registration-validations')
+const {
+  validatePhoneNumber,
+  validateEmail,
+  validatePassword
+} = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
 
 module.exports = {
@@ -19,13 +24,13 @@ module.exports = {
    * @param req
    * @param res
    */
-  showRegistration: (req, res) => {
-    const email = _.get(req, 'session.pageData.submitRegistration.email', '')
-    const telephoneNumber = _.get(req, 'session.pageData.submitRegistration.telephoneNumber', '')
-    _.unset(req, 'session.pageData.submitRegistration')
+  showRegistration: function showRegistration (req, res) {
+    const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered', {})
+    lodash.unset('session.pageData.submitRegistration.recovered')
     res.render('self-create-service/register', {
-      email,
-      telephoneNumber
+      email: recovered.email,
+      telephoneNumber: recovered.telephoneNumber,
+      errors: recovered.errors
     })
   },
 
@@ -35,60 +40,62 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitRegistration: (req, res) => {
+  submitRegistration: async function submitRegistration (req, res) {
     const correlationId = req.correlationId
     const email = req.body['email']
     const telephoneNumber = req.body['telephone-number']
     const password = req.body['password']
 
-    const handleServerError = (err) => {
-      if ((err.errorCode === 400) || (err.errorCode === 403)) {
-        const error = (err.message && err.message.errors) ? err.message.errors : 'Invalid input'
-        handleInvalidUserInput(error)
-      } else if (err.errorCode === 409) {
-        // we should redirect in all cases regardless whether the user exists, disabled or new
-        _.set(req, 'session.pageData.submitRegistration', {
-          email,
-          telephoneNumber
-        })
-        res.redirect(303, paths.selfCreateService.confirm)
-      } else {
-        renderErrorView(req, res)
-      }
+    const errors = {}
+    const validEmail = validateEmail(email)
+    if (!validEmail.valid) {
+      errors.email = validEmail.message
+    }
+    const validPhoneNumber = validatePhoneNumber(telephoneNumber)
+    if (!validPhoneNumber.valid) {
+      errors.telephoneNumber = validPhoneNumber.message
+    }
+    const validPassword = validatePassword(password)
+    if (!validPassword.valid) {
+      errors.password = validPassword.message
     }
 
-    const handleInvalidUserInput = (message) => {
-      _.set(req, 'session.pageData.submitRegistration', {
+    if (!lodash.isEmpty(errors)) {
+      lodash.set(req, 'session.pageData.submitRegistration.recovered', {
         email,
-        telephoneNumber
+        telephoneNumber,
+        errors
       })
-      logger.debug(`[requestId=${correlationId}] invalid user input`)
-      req.flash('genericError', message)
-      res.redirect(303, paths.selfCreateService.register)
+      return res.redirect(303, paths.selfCreateService.register)
     }
 
-    const handleError = (err) => {
-      if (err.errorCode) {
-        handleServerError(err)
-      } else {
-        handleInvalidUserInput(err.message)
+    try {
+      await registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
+    } catch (err) {
+      if (err.errorCode === 403) {
+        // 403 from adminusers indicates that this is not a public sector email
+        lodash.set(req, 'session.pageData.submitRegistration.recovered', {
+          email,
+          telephoneNumber,
+          errors: {
+            email: 'Enter a public sector email address'
+          }
+        })
+        return res.redirect(303, paths.selfCreateService.register)
+      } else if (err.errorCode !== 409) {
+        // Adminusers bizarrely returns a 409 when a user already exists, but sends them an email
+        // to tell them this. We continue to the next page if this is the case as it will
+        // tell them to check their email.
+        lodash.unset(req, 'session.pageData.submitRegistration')
+        return renderErrorView(req, res)
       }
     }
 
-    const proceedToRegistration = () => {
-      registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
-        .then(() => {
-          _.set(req, 'session.pageData.submitRegistration', {
-            email,
-            telephoneNumber
-          })
-          res.redirect(303, paths.selfCreateService.confirm)
-        }).catch((err) => handleError(err))
-    }
-
-    return validateServiceRegistrationInputs(email, telephoneNumber, password)
-      .then(proceedToRegistration)
-      .catch(err => handleError(err))
+    lodash.set(req, 'session.pageData.submitRegistration', {
+      email,
+      telephoneNumber
+    })
+    res.redirect(303, paths.selfCreateService.confirm)
   },
 
   /**
@@ -97,9 +104,9 @@ module.exports = {
    * @param req
    * @param res
    */
-  showConfirmation: (req, res) => {
-    const requesterEmail = _.get(req, 'session.pageData.submitRegistration.email', '')
-    _.unset(req, 'session.pageData.submitRegistration')
+  showConfirmation: function showConfirmation (req, res) {
+    const requesterEmail = lodash.get(req, 'session.pageData.submitRegistration.email', '')
+    lodash.unset(req, 'session.pageData.submitRegistration')
     res.render('self-create-service/confirm', {
       requesterEmail
     })
@@ -111,7 +118,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  showOtpVerify: (req, res) => {
+  showOtpVerify: function showOtpVerify (req, res) {
     res.render('self-create-service/verify-otp')
   },
 
@@ -122,7 +129,7 @@ module.exports = {
    * @param res
    * @returns {*|Promise|Promise.<T>}
    */
-  createPopulatedService: (req, res) => {
+  createPopulatedService: function createPopulatedService (req, res) {
     const correlationId = req.correlationId
 
     return registrationService.createPopulatedService(req.register_invite.code, correlationId)
@@ -146,7 +153,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  loggedIn: (req, res) => {
+  loggedIn: function loggedIn (req, res) {
     res.redirect(303, paths.selfCreateService.serviceNaming)
   },
 
@@ -156,7 +163,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  showOtpResend: (req, res) => {
+  showOtpResend: function showOtpResend (req, res) {
     res.render('self-create-service/resend-otp', {
       telephoneNumber: req.register_invite.telephone_number
     })
@@ -168,7 +175,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitOtpResend: (req, res) => {
+  submitOtpResend: function submitOtpResend (req, res) {
     const correlationId = req.correlationId
     const code = req.register_invite.code
     const telephoneNumber = req.body['telephone-number']
@@ -205,9 +212,9 @@ module.exports = {
    * @param req
    * @param res
    */
-  showNameYourService: (req, res) => {
-    const serviceName = _.get(req, 'session.pageData.submitYourServiceName.serviceName', '')
-    _.unset(req, 'session.pageData.submitYourServiceName')
+  showNameYourService: function showNameYourService (req, res) {
+    const serviceName = lodash.get(req, 'session.pageData.submitYourServiceName.serviceName', '')
+    lodash.unset(req, 'session.pageData.submitYourServiceName')
     res.render('self-create-service/set-name', {
       serviceName
     })
@@ -219,7 +226,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitYourServiceName: (req, res) => {
+  submitYourServiceName: function submitYourServiceName (req, res) {
     const correlationId = req.correlationId
     const serviceName = req.body['service-name']
     const serviceNameCy = req.body['service-name-cy']
@@ -227,15 +234,15 @@ module.exports = {
     const validationErrorsCy = validateServiceName(serviceNameCy, 'service-name-cy', false)
 
     if (Object.keys(validationErrors).length || Object.keys(validationErrorsCy).length) {
-      _.set(req, 'session.pageData.submitYourServiceName', {
+      lodash.set(req, 'session.pageData.submitYourServiceName', {
         errors: validationErrors,
-        current_name: _.merge({}, { en: serviceName, cy: serviceNameCy })
+        current_name: lodash.merge({}, { en: serviceName, cy: serviceNameCy })
       })
       res.redirect(303, paths.selfCreateService.serviceNaming)
     } else {
       return serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, serviceNameCy, correlationId)
         .then(() => {
-          _.unset(req, 'session.pageData.submitYourServiceName')
+          lodash.unset(req, 'session.pageData.submitYourServiceName')
           res.redirect(303, paths.dashboard.index)
         })
         .catch(err => {

@@ -67,8 +67,13 @@ describe('create service otp validation', function () {
       .expect('Location', paths.selfCreateService.register)
       .expect(() => {
         expect(session.pageData.submitRegistration).to.deep.equal({
-          email: '',
-          telephoneNumber: '07912345678'
+          recovered: {
+            email: '',
+            telephoneNumber: '07912345678',
+            errors: {
+              email: "Enter an email address"
+            }
+          }
         })
       })
       .end(done)
