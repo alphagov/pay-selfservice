@@ -1,4 +1,5 @@
 {% extends "../layout-logged-out.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Resend verification code - GOV.UK Pay
@@ -6,6 +7,13 @@
 
 {% block mainContent %}
 <div id="display_otp_resend" class="govuk-grid-column-two-thirds">
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      telephoneNumber: '#telephone-number'
+    }
+  }) }}
+
   <h1 class="form-title govuk-heading-l">Check your mobile number</h1>
   <p class="govuk-body">Check your mobile phone number is correct, then resend the verification code.</p>
   <form action="{{routes.selfCreateService.otpResend}}" class="form" method="post" id="otp-resend-form">
@@ -21,7 +29,8 @@
             text: "Mobile number",
             classes: "govuk-label--s"
         },
-        value: telephoneNumber
+        value: telephoneNumber,
+        errorMessage: { text: errors.telephoneNumber } if errors.telephoneNumber else false
       })
     }}
     {{
