@@ -277,7 +277,7 @@ const showNameYourService = function showNameYourService (req, res) {
  * @param req
  * @param res
  */
-const submitYourServiceName = function submitYourServiceName (req, res) {
+const submitYourServiceName = async function submitYourServiceName (req, res) {
   const correlationId = req.correlationId
   const serviceName = req.body['service-name']
   const serviceNameCy = req.body['service-name-cy']
@@ -291,15 +291,14 @@ const submitYourServiceName = function submitYourServiceName (req, res) {
     })
     res.redirect(303, paths.selfCreateService.serviceNaming)
   } else {
-    return serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, serviceNameCy, correlationId)
-      .then(() => {
-        lodash.unset(req, 'session.pageData.submitYourServiceName')
-        res.redirect(303, paths.dashboard.index)
-      })
-      .catch(err => {
-        logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
-        renderErrorView(req, res, err)
-      })
+    try {
+      await serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, serviceNameCy, correlationId)
+      lodash.unset(req, 'session.pageData.submitYourServiceName')
+      res.redirect(303, paths.dashboard.index)
+    } catch (err) {
+      logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
+      renderErrorView(req, res, err)
+    }
   }
 }
 
