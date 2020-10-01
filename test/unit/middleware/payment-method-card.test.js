@@ -1,15 +1,12 @@
 'use strict'
 
 const sinon = require('sinon')
-const chai = require('chai')
-const { expect } = chai
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const paymentMethodIsCard = require('../../../app/middleware/payment-method-card.js')
 
 let res
 let next
 
-chai.use(chaiAsPromised)
 
 describe('user has payment-method-card middleware', () => {
   beforeEach(() => {

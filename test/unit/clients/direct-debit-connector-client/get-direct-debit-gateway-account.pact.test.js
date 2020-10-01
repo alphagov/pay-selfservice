@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const { PactInteractionBuilder } = require('../../../fixtures/pact-interaction-builder')
@@ -11,12 +10,10 @@ const getDirectDebitConnectorClient = require('../../../../app/services/clients/
 const GatewayAccount = require('../../../../app/models/DirectDebitGatewayAccount.class')
 
 // Constants
-const expect = chai.expect
 const port = Math.floor(Math.random() * 48127) + 1024
 const directDebitConnectorClient = getDirectDebitConnectorClient({ baseUrl: `http://localhost:${port}` })
 
 // Global setup
-chai.use(chaiAsPromised)
 
 const existingDirectDebitGatewayAccountId = 667
 
@@ -55,16 +52,16 @@ describe('connector client - get gateway account', function () {
 
     afterEach(() => provider.verify())
 
-    it('should get gateway account successfully', function (done) {
+    it('should get gateway account successfully', function () {
       const gatewayAccount = new GatewayAccount(validGetGatewayAccountResponse.getPlain())
       const params = {
         gatewayAccountId: existingDirectDebitGatewayAccountId,
         correlationId: null
       }
-      directDebitConnectorClient.getGatewayAccountByExternalId(params)
-        .should.be.fulfilled.then((response) => {
+      return directDebitConnectorClient.getGatewayAccountByExternalId(params)
+        .then((response) => {
           expect(response).to.deep.equal(gatewayAccount)
-        }).should.notify(done)
+        })
     })
   })
 })

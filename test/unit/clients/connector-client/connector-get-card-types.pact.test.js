@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const cardFixtures = require('../../../fixtures/card.fixtures')
 const CARD_TYPES_RESOURCE = '/v1/api/card-types'
 const port = Math.floor(Math.random() * 48127) + 1024
 const connectorClient = new Connector(`http://localhost:${port}`)
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('connector client', function () {
   const provider = new Pact({

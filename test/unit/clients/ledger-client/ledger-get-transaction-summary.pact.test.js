@@ -1,7 +1,6 @@
 'use strict'
 
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const ledgerClient = require('../../../../app/services/clients/ledger.client')
@@ -12,10 +11,8 @@ const pactTestProvider = require('./ledger-pact-test-provider')
 
 // Constants
 const TRANSACTION_SUMMARY_RESOURCE = '/v1/report/transactions-summary'
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 const existingGatewayAccountId = '123456'
 const defaultTransactionState = 'three payments and a refund all in success state exists'

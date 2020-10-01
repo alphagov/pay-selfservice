@@ -1,6 +1,6 @@
 'use strict'
 
-const chai = require('chai')
+const { expect } = require('chai')
 const nock = require('nock')
 const _ = require('lodash')
 const connectorMock = nock(process.env.CONNECTOR_URL)
@@ -10,9 +10,6 @@ const DIRECT_DEBIT_ACCOUNTS_PATH = '/v1/api/accounts'
 const serviceSwitchController = require('../../../app/controllers/my-services')
 const userFixtures = require('../../fixtures/user.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const chaiAsPromised = require('chai-as-promised')
-const { expect } = require('chai')
-chai.use(chaiAsPromised)
 
 describe('service switch controller: list of accounts', function () {
   beforeEach(() => {

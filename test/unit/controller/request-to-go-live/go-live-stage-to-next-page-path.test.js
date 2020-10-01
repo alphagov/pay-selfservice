@@ -1,12 +1,11 @@
 'use strict'
 
-const chai = require('chai')
+const { expect } = require('chai')
 
 const goLiveStageToNextPagePath = require('../../../../app/controllers/request-to-go-live/go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../../app/models/go-live-stage')
 
 // Constants
-const expect = chai.expect
 
 describe('go-live-stage-to-next-page-path tests', () => {
   describe('should return "index" path', () => {

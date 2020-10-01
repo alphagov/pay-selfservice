@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const inviteFixtures = require('../../../../fixtures/invite.fixtures')
 const INVITE_RESOURCE = '/v1/api/invites'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('submit resend otp code API', function () {
   let provider = new Pact({
@@ -50,11 +47,10 @@ describe('submit resend otp code API', function () {
 
     afterEach(() => provider.verify())
 
-    it('should submit otp code resend successfully', function (done) {
+    it('should submit otp code resend successfully', function () {
       const registration = validOtpResend.getPlain()
 
-      adminusersClient.resendOtpCode(registration.code, registration.telephone_number).should.be.fulfilled
-        .should.notify(done)
+      return adminusersClient.resendOtpCode(registration.code, registration.telephone_number)
     })
   })
 
@@ -79,13 +75,17 @@ describe('submit resend otp code API', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 400 on missing fields', function (done) {
+    it('should return 400 on missing fields', function () {
       const resendData = validOtpResend.getPlain()
-      adminusersClient.resendOtpCode(resendData.code, resendData.telephone_number).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors[0]).to.equal('Field [code] is required')
-      }).should.notify(done)
+      return adminusersClient.resendOtpCode(resendData.code, resendData.telephone_number)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          (err) => {
+            expect(err.errorCode).to.equal(400)
+            expect(err.message.errors.length).to.equal(1)
+            expect(err.message.errors[0]).to.equal('Field [code] is required')
+          }
+        )
     })
   })
 
@@ -107,11 +107,13 @@ describe('submit resend otp code API', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 404 when code is not found/expired', function (done) {
+    it('should return 404 when code is not found/expired', function () {
       const resendData = validOtpResend.getPlain()
-      adminusersClient.resendOtpCode(resendData.code, resendData.telephone_number).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+      return adminusersClient.resendOtpCode(resendData.code, resendData.telephone_number)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

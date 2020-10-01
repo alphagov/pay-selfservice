@@ -2,8 +2,7 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const userFixtures = require('../../../../fixtures/user.fixtures')
@@ -15,8 +14,6 @@ const User = require('../../../../../app/models/User.class')
 // Constants
 const AUTHENTICATE_PATH = '/v1/api/users/authenticate'
 
-chai.use(chaiAsPromised)
-const expect = chai.expect
 
 describe('adminusers client - authenticate', () => {
   const provider = new Pact({

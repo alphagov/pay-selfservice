@@ -1,14 +1,11 @@
 const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
-var chai = require('chai')
-var chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 var userFixtures = require('../../../../fixtures/user.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised)
 
-const expect = chai.expect
 const USER_PATH = '/v1/api/users'
 var port = Math.floor(Math.random() * 48127) + 1024
 var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
@@ -44,8 +41,8 @@ describe('adminusers client - session', function () {
 
     afterEach(() => provider.verify())
 
-    it('should increment session version successfully', function (done) {
-      adminusersClient.incrementSessionVersionForUser(existingExternalId).should.be.fulfilled.notify(done)
+    it('should increment session version successfully', function () {
+      return adminusersClient.incrementSessionVersionForUser(existingExternalId)
     })
   })
 
@@ -68,10 +65,12 @@ describe('adminusers client - session', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return not found if user not exist', function (done) {
-      adminusersClient.incrementSessionVersionForUser(nonExistentExternalId).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should return not found if user not exist', function () {
+      return adminusersClient.incrementSessionVersionForUser(nonExistentExternalId)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

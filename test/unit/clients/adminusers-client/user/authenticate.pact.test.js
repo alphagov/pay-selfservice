@@ -1,15 +1,12 @@
 const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
-var chai = require('chai')
+const { expect } = require('chai')
 var _ = require('lodash')
-var chaiAsPromised = require('chai-as-promised')
 var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 var userFixtures = require('../../../../fixtures/user.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised)
 
-const expect = chai.expect
 const USER_PATH = '/v1/api/users'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
@@ -47,10 +44,10 @@ describe('adminusers client - authenticate', function () {
 
     afterEach(() => provider.verify())
 
-    it('should authenticate a user successfully', function (done) {
+    it('should authenticate a user successfully', function () {
       let requestData = request.getPlain()
 
-      adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.fulfilled.then(function (user) {
+      return adminusersClient.authenticateUser(requestData.username, requestData.password).then(function (user) {
         let expectedUser = validUserResponse.getPlain()
         expect(user.username).to.be.equal(expectedUser.username)
         expect(user.email).to.be.equal(expectedUser.email)
@@ -59,7 +56,7 @@ describe('adminusers client - authenticate', function () {
         expect(user.otpKey).to.be.equal(expectedUser.otp_key)
         expect(user.serviceRoles[0].role.name).to.be.equal(expectedUser.service_roles[0].role.name)
         expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUser.service_roles[0].role.permissions.length)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -83,13 +80,17 @@ describe('adminusers client - authenticate', function () {
 
     afterEach(() => provider.verify())
 
-    it('should fail authentication if invalid username / password', function (done) {
+    it('should fail authentication if invalid username / password', function () {
       let requestData = request.getPlain()
-      adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(401)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(unauthorizedResponse.getPlain().errors)
-      }).should.notify(done)
+      return adminusersClient.authenticateUser(requestData.username, requestData.password)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          (err) => {
+            expect(err.errorCode).to.equal(401)
+            expect(err.message.errors.length).to.equal(1)
+            expect(err.message.errors).to.deep.equal(unauthorizedResponse.getPlain().errors)
+          }
+        )
     })
   })
 
@@ -113,12 +114,16 @@ describe('adminusers client - authenticate', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error bad request if mandatory fields are missing', function (done) {
-      adminusersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(2)
-        expect(response.message.errors).to.deep.equal(badAuthenticateResponse.getPlain().errors)
-      }).should.notify(done)
+    it('should error bad request if mandatory fields are missing', function () {
+      return adminusersClient.authenticateUser(request.username, request.password)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          (err) => {
+            expect(err.errorCode).to.equal(400)
+            expect(err.message.errors.length).to.equal(2)
+            expect(err.message.errors).to.deep.equal(badAuthenticateResponse.getPlain().errors)
+          }
+        )
     })
   })
 })

@@ -1,7 +1,6 @@
-const chai = require('chai')
+const { expect } = require('chai')
 const nock = require('nock')
 
-const { expect } = chai
 
 const payoutService = require('../../../app/controllers/payouts/payouts.service')
 const fixtures = require('../../fixtures/payout.fixtures')

@@ -2,18 +2,15 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const userServiceFixtures = require('../../../../fixtures/user-service.fixture')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
 // Global setup
-chai.use(chaiAsPromised)
 
 // Constants
-const expect = chai.expect
 const SERVICES_PATH = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
@@ -56,14 +53,14 @@ describe('adminusers client - service users', () => {
 
     afterEach(() => provider.verify())
 
-    it('should return service users successfully', done => {
-      adminusersClient.getServiceUsers(existingServiceExternalId).should.be.fulfilled.then(
+    it('should return service users successfully', () => {
+      return adminusersClient.getServiceUsers(existingServiceExternalId).then(
         users => {
           const expectedResponse = getServiceUsersResponse.getPlain()
           expect(users[0].serviceRoles.length).to.be.equal(expectedResponse[0].service_roles.length)
           expect(users[0].hasService(existingServiceExternalId)).to.be.equal(true)
         }
-      ).should.notify(done)
+      )
     })
   })
 
@@ -81,12 +78,12 @@ describe('adminusers client - service users', () => {
 
     afterEach(() => provider.verify())
 
-    it('should return service not found', done => {
-      adminusersClient.getServiceUsers(nonExistingServiceId).should.be.rejected.then(
-        err => {
-          expect(err.errorCode).to.equal(404)
-        }
-      ).should.notify(done)
+    it('should return service not found', () => {
+      return adminusersClient.getServiceUsers(nonExistingServiceId)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

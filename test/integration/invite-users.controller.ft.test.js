@@ -4,12 +4,11 @@ const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const supertest = require('supertest')
 const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const csrf = require('csrf')
-const chai = require('chai')
+const { expect } = require('chai')
 const roles = require('../../app/utils/roles').roles
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const inviteFixtures = require(path.join(__dirname, '/../fixtures/invite.fixtures'))
 
-const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const formattedPathFor = require('../../app/utils/replace-params-in-path')

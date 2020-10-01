@@ -1,6 +1,6 @@
 'use strict'
 
-const chai = require('chai')
+const { expect } = require('chai')
 
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const payoutFixture = require('../../../fixtures/payout.fixtures')
@@ -8,7 +8,6 @@ const ledgerClient = require('../../../../app/services/clients/ledger.client')
 
 const pactTestProvider = require('./ledger-pact-test-provider')
 
-const { expect } = chai
 
 const GATEWAY_ACCOUNT_ID = '654321'
 

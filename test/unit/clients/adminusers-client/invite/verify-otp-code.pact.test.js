@@ -1,14 +1,11 @@
 const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
-var chai = require('chai')
-var chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 var registrationFixtures = require('../../../../fixtures/invite.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised)
 
-const expect = chai.expect
 const INVITE_RESOURCE = '/v1/api/invites'
 var port = Math.floor(Math.random() * 48127) + 1024
 var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
@@ -45,10 +42,9 @@ describe('adminusers client - submit verification details', function () {
 
     afterEach(() => provider.verify())
 
-    it('should verify otp code successfully', function (done) {
+    it('should verify otp code successfully', function () {
       let securityCode = validRequest.getPlain()
-      adminusersClient.verifyOtpAndCreateUser(securityCode.code, securityCode.otp).should.be.fulfilled
-        .should.notify(done)
+      return adminusersClient.verifyOtpAndCreateUser(securityCode.code, securityCode.otp)
     })
   })
 
@@ -73,13 +69,17 @@ describe('adminusers client - submit verification details', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 400 on missing fields', function (done) {
+    it('should return 400 on missing fields', function () {
       let verifyCodeData = verifyCodeRequest.getPlain()
-      adminusersClient.verifyOtpAndCreateUser(verifyCodeData.code, verifyCodeData.otp).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors[0]).to.equal('Field [code] is required')
-      }).should.notify(done)
+      return adminusersClient.verifyOtpAndCreateUser(verifyCodeData.code, verifyCodeData.otp)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          (err) => {
+            expect(err.errorCode).to.equal(400)
+            expect(err.message.errors.length).to.equal(1)
+            expect(err.message.errors[0]).to.equal('Field [code] is required')
+          }
+        )
     })
   })
 
@@ -101,11 +101,13 @@ describe('adminusers client - submit verification details', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 404 if code cannot be found', function (done) {
+    it('should return 404 if code cannot be found', function () {
       let request = verifyCodeRequest.getPlain()
-      adminusersClient.verifyOtpAndCreateUser(request.code, request.otp).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+      return adminusersClient.verifyOtpAndCreateUser(request.code, request.otp)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 
@@ -127,11 +129,13 @@ describe('adminusers client - submit verification details', function () {
 
     afterEach(() => provider.verify())
 
-    it('return 410 if code locked', function (done) {
+    it('return 410 if code locked', function () {
       let request = verifyCodeRequest.getPlain()
-      adminusersClient.verifyOtpAndCreateUser(request.code, request.otp).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(410)
-      }).should.notify(done)
+      return adminusersClient.verifyOtpAndCreateUser(request.code, request.otp)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(410)
+        )
     })
   })
 })

@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtur
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
 const port = Math.floor(Math.random() * 48127) + 1024
 const connectorClient = new Connector(`http://localhost:${port}`)
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('connector client - create gateway account', function () {
   const provider = new Pact({
@@ -51,14 +48,14 @@ describe('connector client - create gateway account', function () {
 
     afterEach(() => provider.verify())
 
-    it('should submit create gateway account successfully', function (done) {
+    it('should submit create gateway account successfully', function () {
       const createGatewayAccount = validCreateGatewayAccountRequest.getPlain()
-      connectorClient.createGatewayAccount(
+      return connectorClient.createGatewayAccount(
         createGatewayAccount.payment_provider,
         createGatewayAccount.type,
         createGatewayAccount.service_name,
         createGatewayAccount.analytics_id
-      ).should.be.fulfilled.should.notify(done)
+      )
     })
   })
 
@@ -87,17 +84,20 @@ describe('connector client - create gateway account', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 400 on missing fields', function (done) {
+    it('should return 400 on missing fields', function () {
       const createGatewayAccount = invalidCreateGatewayAccountRequest.getPlain()
-      connectorClient.createGatewayAccount(
+      return connectorClient.createGatewayAccount(
         createGatewayAccount.payment_provider,
         createGatewayAccount.type,
         createGatewayAccount.service_name,
         createGatewayAccount.analytics_id
-      ).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message).to.deep.equal(errorResponse)
-      }).should.notify(done)
+      ).then(
+        () => { throw new Error('Expected to reject') },
+        (err) => {
+          expect(err.errorCode).to.equal(400)
+          expect(err.message).to.deep.equal(errorResponse)
+        }
+      )
     })
   })
 })

@@ -5,6 +5,7 @@ const expect = require('chai').expect
 const _ = require('lodash')
 const EventEmitter = require('events').EventEmitter
 const proxyquire = require('proxyquire')
+const { error } = require('console')
 
 function getEmailService (connectorClientStub) {
   return proxyquire(path.join(__dirname, '/../../../app/services/email.service.js'), {
@@ -26,8 +27,11 @@ describe('email notification', function () {
           }
         }
         const emailService = getEmailService(connectorClientStub)
-        return expect(emailService.getEmailSettings(123, 'some-unique-id'))
-          .to.be.rejectedWith('CONNECTOR_FAILED')
+        return emailService.getEmailSettings(123, 'some-unique-id')
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.message).to.equal('CONNECTOR_FAILED')
+          )
       }
       )
     })
@@ -64,8 +68,8 @@ describe('email notification', function () {
           }
         }
         const emailService = getEmailService(connectorClientStub)
-        return expect(emailService.getEmailSettings(123, 'some-unique-id'))
-          .to.be.fulfilled.then(function (response) {
+        return emailService.getEmailSettings(123, 'some-unique-id')
+          .then(function (response) {
             expect(response).to.deep.equal({
               customEmailText: 'template here',
               emailEnabled: true,
@@ -96,8 +100,11 @@ describe('email notification', function () {
           }
         }
         const emailService = getEmailService(connectorClientStub)
-        return expect(emailService.updateConfirmationTemplate(123, 'some-unique-id'))
-          .to.be.rejectedWith('CONNECTOR_FAILED')
+        return emailService.updateConfirmationTemplate(123, 'some-unique-id')
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.message).to.equal('CONNECTOR_FAILED')
+          )
       }
       )
     })
@@ -120,8 +127,11 @@ describe('email notification', function () {
           }
         }
         const emailService = getEmailService(connectorClientStub)
-        return expect(emailService.updateConfirmationTemplate(123, 'some-unique-id'))
-          .to.be.rejectedWith('POST_FAILED')
+        return emailService.updateConfirmationTemplate(123, 'some-unique-id')
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.message).to.equal('POST_FAILED')
+          )
       })
     })
 
@@ -140,7 +150,7 @@ describe('email notification', function () {
           }
         }
         const emailService = getEmailService(connectorClientStub)
-        return expect(emailService.updateConfirmationTemplate(123, 'some-unique-id')).to.be.fulfilled
+        return expect(emailService.updateConfirmationTemplate(123, 'some-unique-id'))
       })
     })
   })
@@ -165,8 +175,11 @@ describe('email notification', function () {
             }
           }
           const emailService = getEmailService(connectorClientStub)
-          return expect(emailService.setConfirmationEnabled(123, toggle, 'some-unique-id'))
-            .to.be.rejectedWith('CONNECTOR_FAILED')
+          return emailService.setConfirmationEnabled(123, toggle, 'some-unique-id')
+            .then(
+              () => { throw new Error('Expected to reject') },
+              err => expect(err.message).to.equal('CONNECTOR_FAILED')
+            )
         }
         )
       })
@@ -189,8 +202,11 @@ describe('email notification', function () {
             }
           }
           const emailService = getEmailService(connectorClientStub)
-          return expect(emailService.setConfirmationEnabled(123, true, 'some-unique-id'))
-            .to.be.rejectedWith('PATCH_FAILED')
+          return emailService.setConfirmationEnabled(123, true, 'some-unique-id')
+            .then(
+              () => { throw new Error('Expected to reject') },
+              err => expect(err.message).to.equal('PATCH_FAILED')
+            )
         })
       })
 
@@ -210,7 +226,7 @@ describe('email notification', function () {
             }
           }
           const emailService = getEmailService(connectorClientStub)
-          return expect(emailService.setConfirmationEnabled(123, true, 'some-unique-id')).to.be.fulfilled
+          return emailService.setConfirmationEnabled(123, true, 'some-unique-id')
         })
       })
     })

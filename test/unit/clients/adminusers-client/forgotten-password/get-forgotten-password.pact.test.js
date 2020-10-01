@@ -1,14 +1,11 @@
 const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
-var chai = require('chai')
-var chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 var userFixtures = require('../../../../fixtures/user.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-chai.use(chaiAsPromised)
-const expect = chai.expect
 const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords'
 
 describe('adminusers client - get forgotten password', function () {
@@ -42,13 +39,13 @@ describe('adminusers client - get forgotten password', function () {
 
     afterEach(() => provider.verify())
 
-    it('should GET a forgotten password entry', function (done) {
-      adminusersClient.getForgottenPassword(code).should.be.fulfilled.then(function (forgottenPassword) {
+    it('should GET a forgotten password entry', function () {
+      return adminusersClient.getForgottenPassword(code).then(function (forgottenPassword) {
         expect(forgottenPassword.code).to.be.equal(expectedForgottenPassword.code)
         expect(forgottenPassword.date).to.be.equal(expectedForgottenPassword.date)
         expect(forgottenPassword.username).to.be.equal(expectedForgottenPassword.username)
         expect(forgottenPassword._links.length).to.be.equal(expectedForgottenPassword._links.length)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -68,10 +65,12 @@ describe('adminusers client - get forgotten password', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error if no valid forgotten password entry', function (done) {
-      adminusersClient.getForgottenPassword(code).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should error if no valid forgotten password entry', function () {
+      return adminusersClient.getForgottenPassword(code)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

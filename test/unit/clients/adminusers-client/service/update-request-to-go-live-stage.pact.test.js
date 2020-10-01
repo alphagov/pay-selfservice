@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,11 +12,9 @@ const serviceFixtures = require('../../../../fixtures/service.fixtures')
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - patch request to go live stage', function () {
   let provider = new Pact({
@@ -58,12 +55,12 @@ describe('adminusers client - patch request to go live stage', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update successfully', function (done) {
-      adminusersClient.updateCurrentGoLiveStage(serviceExternalId, 'ENTERED_ORGANISATION_NAME')
-        .should.be.fulfilled.then(service => {
+    it('should update successfully', function () {
+      return adminusersClient.updateCurrentGoLiveStage(serviceExternalId, 'ENTERED_ORGANISATION_NAME')
+        .then(service => {
           expect(service.externalId).to.equal(serviceExternalId)
           expect(service.currentGoLiveStage).to.equal('ENTERED_ORGANISATION_NAME')
-        }).should.notify(done)
+        })
     })
   })
 })

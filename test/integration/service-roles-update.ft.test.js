@@ -7,14 +7,11 @@ const csrf = require('csrf')
 const userFixtures = require(path.join(__dirname, '/../fixtures/user.fixtures'))
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const roles = require('../../app/utils/roles').roles
-const chai = require('chai')
+const { expect } = require('chai')
 const _ = require('lodash')
-const chaiAsPromised = require('chai-as-promised')
 let app
 
-chai.use(chaiAsPromised)
 
-let expect = chai.expect
 let adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const USER_RESOURCE = '/v1/api/users'

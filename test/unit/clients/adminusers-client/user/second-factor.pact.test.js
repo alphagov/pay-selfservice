@@ -1,14 +1,12 @@
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
-let chai = require('chai')
+const { expect } = require('chai')
 let chaiAsPromised = require('chai-as-promised')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised)
 
-const expect = chai.expect
 const USER_PATH = '/v1/api/users'
 let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
@@ -42,8 +40,8 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('should send a new 2FA token successfully', function (done) {
-      adminusersClient.sendSecondFactor(existingExternalId).should.be.fulfilled.notify(done)
+    it('should send a new 2FA token successfully', function () {
+      return adminusersClient.sendSecondFactor(existingExternalId)
     })
   })
 
@@ -63,10 +61,12 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return not found if user not exist', function (done) {
-      adminusersClient.sendSecondFactor(externalId).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should return not found if user not exist', function () {
+      return adminusersClient.sendSecondFactor(externalId)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 
@@ -89,10 +89,10 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('authenticate a valid 2FA token successfully', function (done) {
-      adminusersClient.authenticateSecondFactor(existingExternalId, token).should.be.fulfilled.then(function (createdUser) {
+    it('authenticate a valid 2FA token successfully', function () {
+      return adminusersClient.authenticateSecondFactor(existingExternalId, token).then(function (createdUser) {
         expect(createdUser.externalId).to.be.equal(existingExternalId)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -115,10 +115,12 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('error bad request an invalid 2FA token', function (done) {
-      adminusersClient.authenticateSecondFactor(existingExternalId, token).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-      }).should.notify(done)
+    it('error bad request an invalid 2FA token', function () {
+      return adminusersClient.authenticateSecondFactor(existingExternalId, token)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(400)
+        )
     })
   })
 
@@ -142,10 +144,12 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('error unauthorized an expired/unauthorized 2FA token', function (done) {
-      adminusersClient.authenticateSecondFactor(existingExternalId, token).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(401)
-      }).should.notify(done)
+    it('error unauthorized an expired/unauthorized 2FA token', function () {
+      return adminusersClient.authenticateSecondFactor(existingExternalId, token)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(401)
+        )
     })
   })
 })

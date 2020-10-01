@@ -1,15 +1,11 @@
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const SERVICES_PATH = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
-
-chai.use(chaiAsPromised)
 
 describe('adminusers client - delete user', function () {
   let provider = new Pact({
@@ -49,11 +45,8 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should delete a user successfully', function (done) {
-      adminusersClient.deleteUser(serviceId, removerId, userId).should.be.fulfilled
-        .then(() => {
-        })
-        .should.notify(done)
+    it('should delete a user successfully', function () {
+      return adminusersClient.deleteUser(serviceId, removerId, userId)
     })
   })
 
@@ -76,12 +69,12 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should conflict when remover and user to delete coincide', function (done) {
-      adminusersClient.deleteUser(serviceId, removerId, removerId).should.be.rejected
-        .then((response) => {
-          expect(response.errorCode).to.equal(409)
-        })
-        .should.notify(done)
+    it('should conflict when remover and user to delete coincide', function () {
+      return adminusersClient.deleteUser(serviceId, removerId, removerId)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(409)
+        )
     })
   })
 
@@ -106,12 +99,12 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return not found when resource is not found (user or service)', function (done) {
-      adminusersClient.deleteUser(serviceId, removerId, otherUserId).should.be.rejected
-        .then((response) => {
-          expect(response.errorCode).to.equal(404)
-        })
-        .should.notify(done)
+    it('should return not found when resource is not found (user or service)', function () {
+      return adminusersClient.deleteUser(serviceId, removerId, otherUserId)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 
@@ -139,12 +132,12 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return forbidden when remover dos not ex', function (done) {
-      adminusersClient.deleteUser(serviceId, nonExistentRemoverId, userId).should.be.rejected
-        .then((response) => {
-          expect(response.errorCode).to.equal(403)
-        })
-        .should.notify(done)
+    it('should return forbidden when remover dos not ex', function () {
+      return adminusersClient.deleteUser(serviceId, nonExistentRemoverId, userId)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(403)
+        )
     })
   })
 })

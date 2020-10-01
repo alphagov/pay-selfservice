@@ -3,12 +3,9 @@
 const path = require('path')
 const assert = require('assert')
 const sinon = require('sinon')
-const chai = require('chai')
-const { expect } = chai
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
-chai.use(chaiAsPromised)
 
 describe('retrieve email notification template', function () {
   const response = {
@@ -42,7 +39,7 @@ describe('retrieve email notification template', function () {
     }, 100)
   })
 
-  it('should merge account with email notification template data and call next on success', function (done) {
+  it('should merge account with email notification template data and call next on success', function () {
     const emailStub = {
       getEmailSettings: function () {
         return Promise.resolve({ customEmailText: 'hello', emailEnabled: true })
@@ -52,13 +49,13 @@ describe('retrieve email notification template', function () {
       '../services/email.service.js': emailStub
     })
     const req = { account: { gateway_account_id: 1 }, headers: {} }
-    retrieveEmailNotification(req, response, next).should.be.fulfilled.then(function () {
+    return retrieveEmailNotification(req, response, next).then(function () {
       expect(req.account).to.deep.equal({
         customEmailText: 'hello',
         'gateway_account_id': 1,
         'emailEnabled': true
       })
       expect(next.called).to.be.true // eslint-disable-line
-    }).should.notify(done)
+    })
   })
 })

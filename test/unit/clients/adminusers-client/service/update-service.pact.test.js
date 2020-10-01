@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,10 +14,8 @@ const goLiveStage = require('../../../../../app/models/go-live-stage')
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 const existingServiceExternalId = 'cp5wa'
 
@@ -145,7 +142,11 @@ describe('adminusers client - patch request to update service', function () {
     afterEach(() => provider.verify())
 
     it('should reject promise', () => {
-      return adminUsersClient.updateService(existingServiceExternalId, invalidRequest).should.be.rejected // eslint-disable-line
+      return adminUsersClient.updateService(existingServiceExternalId, invalidRequest)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(400)
+        )
     })
   })
 })

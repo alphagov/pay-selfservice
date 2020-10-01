@@ -2,9 +2,7 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const chai = require('chai')
-const { expect } = chai
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const userFixtures = require('../../../../fixtures/user.fixtures')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
@@ -15,7 +13,6 @@ const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const USER_PATH = '/v1/api/users'
 
-chai.use(chaiAsPromised)
 
 describe('adminusers client - get user', () => {
   const provider = new Pact({
@@ -47,10 +44,10 @@ describe('adminusers client - get user', () => {
 
     afterEach(() => provider.verify())
 
-    it('should find a user successfully', done => {
+    it('should find a user successfully', () => {
       const expectedUserData = getUserResponse.getPlain()
 
-      adminusersClient.getUserByExternalId(expectedUserData.external_id).should.be.fulfilled.then(user => {
+      return adminusersClient.getUserByExternalId(expectedUserData.external_id).then(user => {
         expect(user.externalId).to.be.equal(expectedUserData.external_id)
         expect(user.username).to.be.equal(expectedUserData.username)
         expect(user.email).to.be.equal(expectedUserData.email)
@@ -61,7 +58,7 @@ describe('adminusers client - get user', () => {
         expect(user.provisionalOtpKey).to.be.equal(expectedUserData.provisional_otp_key)
         expect(user.secondFactor).to.be.equal(expectedUserData.second_factor)
         expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData.service_roles[0].role.permissions.length)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -83,10 +80,12 @@ describe('adminusers client - get user', () => {
 
     afterEach(() => provider.verify())
 
-    it('should respond 404 if user not found', done => {
-      adminusersClient.getUserByExternalId(params.external_id).should.be.rejected.then(response => {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should respond 404 if user not found', () => {
+      return adminusersClient.getUserByExternalId(params.external_id)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

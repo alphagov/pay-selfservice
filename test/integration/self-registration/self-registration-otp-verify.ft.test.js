@@ -3,8 +3,7 @@
 const nock = require('nock')
 const csrf = require('csrf')
 const supertest = require('supertest')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 
 const session = require('../../test-helpers/mock-session')
@@ -19,10 +18,8 @@ const CONNECTOR_ACCOUNTS_URL = '/v1/api/accounts'
 const ADMINUSERS_INVITES_URL = '/v1/api/invites'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const connectorMock = nock(process.env.CONNECTOR_URL)
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 const inviteCode = 'a-valid-invite-code'
 const userExternalId = 'f84b8210f93d455e97baeaf3fea72cf4'

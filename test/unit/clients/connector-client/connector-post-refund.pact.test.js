@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const transactionDetailsFixtures = require('../../../fixtures/transaction.fixtur
 const CHARGES_RESOURCE = '/v1/api/accounts'
 const port = Math.floor(Math.random() * 48127) + 1024
 const connectorClient = new Connector(`http://localhost:${port}`)
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 const gatewayAccountId = 42
 const chargeId = 'abc123'
@@ -61,7 +58,6 @@ describe('connector client', function () {
       it('should post a refund request successfully', () => {
         const payload = validPostRefundRequest.getPlain()
         return connectorClient.postChargeRefund(gatewayAccountId, chargeId, payload, 'correlation-id')
-          .should.be.fulfilled
       })
     })
 
@@ -94,11 +90,14 @@ describe('connector client', function () {
         const refundFailureResponse = invalidTransactionRefundResponse.getPlain()
         const payload = invalidTransactionRefundRequest.getPlain()
         return connectorClient.postChargeRefund(gatewayAccountId, chargeId, payload, 'correlation-id')
-          .should.be.rejected.then(response => {
-            expect(response.errorCode).to.equal(400)
-            expect(response.errorIdentifier).to.equal(refundFailureResponse.error_identifier)
-            expect(response.reason).to.equal(refundFailureResponse.reason)
-          })
+          .then(
+            () => { throw new Error('Expected to reject') },
+            (err) => {
+              expect(err.errorCode).to.equal(400)
+              expect(err.errorIdentifier).to.equal(refundFailureResponse.error_identifier)
+              expect(err.reason).to.equal(refundFailureResponse.reason)
+            }
+          )
       })
     })
   })

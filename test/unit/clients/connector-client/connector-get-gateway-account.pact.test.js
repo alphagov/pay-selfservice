@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtur
 const ACCOUNTS_RESOURCE = '/v1/frontend/accounts'
 const port = Math.floor(Math.random() * 48127) + 1024
 const connectorClient = new Connector(`http://localhost:${port}`)
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 const existingGatewayAccountId = 666
 
@@ -55,16 +52,15 @@ describe('connector client - get gateway account', function () {
 
     afterEach(() => provider.verify())
 
-    it('should get gateway account successfully', function (done) {
+    it('should get gateway account successfully', function () {
       const getGatewayAccount = validGetGatewayAccountResponse.getPlain()
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         correlationId: null
       }
-      connectorClient.getAccount(params)
-        .should.be.fulfilled.then((response) => {
-          expect(response).to.deep.equal(getGatewayAccount)
-        }).should.notify(done)
+      return connectorClient.getAccount(params).then((response) => {
+        expect(response).to.deep.equal(getGatewayAccount)
+      })
     })
   })
 })

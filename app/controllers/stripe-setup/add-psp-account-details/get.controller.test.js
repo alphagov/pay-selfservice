@@ -1,12 +1,8 @@
 'use strict'
 
-const chai = require('chai')
-
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const sinon = require('sinon')
 
-const { expect } = chai
-chai.use(chaiAsPromised)
 
 const paths = require('../../../paths')
 const getController = require('./get.controller')

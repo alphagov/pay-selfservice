@@ -2,16 +2,13 @@
 
 const path = require('path')
 const sinon = require('sinon')
-const chai = require('chai')
-const { expect } = chai
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const paths = require('../../../app/paths')
 const hasServices = require(path.join(__dirname, '/../../../app/middleware/has-services.js'))
 const userFixtures = require('../../fixtures/user.fixtures')
 
 let res, next
 
-chai.use(chaiAsPromised)
 
 describe('user has services middleware', function () {
   beforeEach(function () {

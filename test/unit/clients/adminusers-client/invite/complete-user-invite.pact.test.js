@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const inviteFixtures = require('../../../../fixtures/invite.fixtures')
 const INVITE_RESOURCE = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - complete a user invite', function () {
   let provider = new Pact({
@@ -61,13 +58,13 @@ describe('adminusers client - complete a user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should complete a service invite successfully', function (done) {
+    it('should complete a service invite successfully', function () {
       const expectedData = validInviteCompleteResponse.getPlain()
-      adminusersClient.completeInvite(inviteCode).should.be.fulfilled.then(response => {
+      return adminusersClient.completeInvite(inviteCode).then(response => {
         expect(response.invite).to.deep.equal(expectedData.invite)
         expect(response.user_external_id).to.equal(userExternalId)
         expect(response.service_external_id).to.equal(serviceExternalId)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -88,10 +85,12 @@ describe('adminusers client - complete a user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 404 NOT FOUND if invite code not found', function (done) {
-      adminusersClient.completeInvite(nonExistingInviteCode).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should 404 NOT FOUND if invite code not found', function () {
+      return adminusersClient.completeInvite(nonExistingInviteCode)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 
@@ -112,10 +111,12 @@ describe('adminusers client - complete a user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 410 GONE if invite is expired', function (done) {
-      adminusersClient.completeInvite(inviteCode).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(410)
-      }).should.notify(done)
+    it('should 410 GONE if invite is expired', function () {
+      return adminusersClient.completeInvite(inviteCode)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(410)
+        )
     })
   })
 })

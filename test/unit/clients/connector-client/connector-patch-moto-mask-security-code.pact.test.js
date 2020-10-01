@@ -2,8 +2,7 @@
 
 // NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 // Custom dependencies
 const path = require('path')
@@ -18,7 +17,6 @@ const connectorClient = new Connector(`http://localhost:${port}`)
 const existingGatewayAccountId = 667
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('connector client - patch MOTO mask security code toggle (enabled) request', () => {
   const patchRequestParams = { path: 'moto_mask_card_security_code_input', value: true }
@@ -55,10 +53,8 @@ describe('connector client - patch MOTO mask security code toggle (enabled) requ
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', done => {
-      connectorClient.toggleMotoMaskSecurityCodeInput(existingGatewayAccountId, true, null)
-        .should.be.fulfilled
-        .notify(done)
+    it('should toggle successfully', () => {
+      return connectorClient.toggleMotoMaskSecurityCodeInput(existingGatewayAccountId, true, null)
     })
   })
 })

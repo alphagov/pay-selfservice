@@ -2,19 +2,16 @@
 
 const nock = require('nock')
 const supertest = require('supertest')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const paths = require('../../app/paths')
 const getApp = require('../../server').getApp
 const session = require('../test-helpers/mock-session')
 const inviteFixtures = require('../fixtures/invite.fixtures')
 
-chai.use(chaiAsPromised)
 
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const INVITE_RESOURCE_PATH = '/v1/api/invites'
-const expect = chai.expect
 
 let app
 let mockRegisterAccountCookie

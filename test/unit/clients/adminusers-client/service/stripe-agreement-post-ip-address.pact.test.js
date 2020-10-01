@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -16,7 +15,6 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 const serviceExternalId = 'rtglNotStarted'
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - post stripe agreement - ip address', () => {
   let provider = new Pact({
@@ -53,9 +51,8 @@ describe('adminusers client - post stripe agreement - ip address', () => {
 
     afterEach(() => provider.verify())
 
-    it('should post ip address successfully', done => {
-      adminusersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress)
-        .should.be.fulfilled.should.notify(done)
+    it('should post ip address successfully', () => {
+      return adminusersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress)
     })
   })
 })

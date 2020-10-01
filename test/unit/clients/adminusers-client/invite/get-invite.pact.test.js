@@ -2,15 +2,12 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const inviteFixtures = require('../../../../fixtures/invite.fixtures')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised)
 
-const expect = chai.expect
 
 const INVITES_PATH = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
@@ -52,14 +49,14 @@ describe('adminusers client - get a validated invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should find an invite successfully', function (done) {
+    it('should find an invite successfully', function () {
       const expectedInviteData = getInviteResponse.getPlain()
 
-      adminusersClient.getValidatedInvite(params.invite_code).should.be.fulfilled.then(function (invite) {
+      return adminusersClient.getValidatedInvite(params.invite_code).then(function (invite) {
         expect(invite.email).to.be.equal(expectedInviteData.email)
         expect(invite.telephone_number).to.be.equal(expectedInviteData.telephone_number)
         expect(invite.type).to.be.equal(expectedInviteData.type)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -79,10 +76,12 @@ describe('adminusers client - get a validated invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should respond 410 if invite expired', function (done) {
-      adminusersClient.getValidatedInvite(expiredCode).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(410)
-      }).should.notify(done)
+    it('should respond 410 if invite expired', function () {
+      return adminusersClient.getValidatedInvite(expiredCode)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(410)
+        )
     })
   })
 
@@ -102,10 +101,12 @@ describe('adminusers client - get a validated invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should respond 404 if invite not found', function (done) {
-      adminusersClient.getValidatedInvite(nonExistingCode).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should respond 404 if invite not found', function () {
+      return adminusersClient.getValidatedInvite(nonExistingCode)
+      .then(
+        () => { throw new Error('Expected to reject') },
+        err => expect(err.errorCode).to.equal(404)
+      )
     })
   })
 })

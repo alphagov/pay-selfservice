@@ -3,13 +3,10 @@
 const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
-chai.use(chaiAsPromised)
 
 // Constants
-const expect = chai.expect
 
 describe('Error handler', function () {
   let correlationId, req, res, setHeaderStub, statusStub, renderStub
@@ -55,33 +52,33 @@ describe('Error handler', function () {
       })
   }
 
-  it('should handle 404 as unable to process registration at this time', function (done) {
+  it('should handle 404 as unable to process registration at this time', function () {
     const errorCode = 404
 
-    controller(errorCode).validateInvite(req, res).should.be.fulfilled
+    return controller(errorCode).validateInvite(req, res)
       .then(() => {
         expect(statusStub.calledWith(errorCode)).to.eq(true)
         expect(renderStub.calledWith('error', { message: 'Unable to process registration at this time' })).to.eq(true)
-      }).should.notify(done)
+      })
   })
 
-  it('should handle 410 as this invitation link has expired', function (done) {
+  it('should handle 410 as this invitation link has expired', function () {
     const errorCode = 410
 
-    controller(errorCode).validateInvite(req, res).should.be.fulfilled
+    return controller(errorCode).validateInvite(req, res)
       .then(() => {
         expect(statusStub.calledWith(errorCode)).to.eq(true)
         expect(renderStub.calledWith('error', { message: 'This invitation is no longer valid' })).to.eq(true)
-      }).should.notify(done)
+      })
   })
 
-  it('should handle undefined as unable to process registration at this time with error code 500', function (done) {
+  it('should handle undefined as unable to process registration at this time with error code 500', function () {
     const errorCode = undefined
 
-    controller(errorCode).validateInvite(req, res).should.be.fulfilled
+    return controller(errorCode).validateInvite(req, res)
       .then(() => {
         expect(statusStub.calledWith(500)).to.eq(true)
         expect(renderStub.calledWith('error', { message: 'Unable to process registration at this time' })).to.eq(true)
-      }).should.notify(done)
+      })
   })
 })

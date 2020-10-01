@@ -1,11 +1,8 @@
 'use strict'
 
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
-chai.use(chaiAsPromised)
-chai.should()
 
 require(path.join(__dirname, '/../test-helpers/html-assertions.js'))
 const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render

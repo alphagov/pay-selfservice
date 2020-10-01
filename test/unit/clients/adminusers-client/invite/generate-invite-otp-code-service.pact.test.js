@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -12,10 +11,8 @@ const getAdminUsersClient = require('../../../../../app/services/clients/adminus
 const INVITE_RESOURCE = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - generate otp code for service invite', function () {
   let provider = new Pact({
@@ -48,8 +45,8 @@ describe('adminusers client - generate otp code for service invite', function ()
 
     afterEach(() => provider.verify())
 
-    it('should generate service invite otp code successfully', function (done) {
-      adminusersClient.generateInviteOtpCode(inviteCode).should.be.fulfilled.notify(done)
+    it('should generate service invite otp code successfully', function () {
+      return adminusersClient.generateInviteOtpCode(inviteCode)
     })
   })
 
@@ -69,10 +66,12 @@ describe('adminusers client - generate otp code for service invite', function ()
 
     afterEach(() => provider.verify())
 
-    it('should 404 NOT FOUND if service invite code not found', function (done) {
-      adminusersClient.generateInviteOtpCode(nonExistingInviteCode).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should 404 NOT FOUND if service invite code not found', function () {
+      return adminusersClient.generateInviteOtpCode(nonExistingInviteCode)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

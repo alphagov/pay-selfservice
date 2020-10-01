@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const inviteFixtures = require('../../../../fixtures/invite.fixtures')
 const INVITE_RESOURCE = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - generate otp code for user invite', function () {
   let provider = new Pact({
@@ -51,9 +48,9 @@ describe('adminusers client - generate otp code for user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should generate user invite otp code successfully', function (done) {
+    it('should generate user invite otp code successfully', function () {
       const registration = validRegistrationRequest.getPlain()
-      adminusersClient.generateInviteOtpCode(inviteCode, registration.telephone_number, registration.password).should.be.fulfilled.notify(done)
+      return adminusersClient.generateInviteOtpCode(inviteCode, registration.telephone_number, registration.password)
     })
   })
 
@@ -79,13 +76,17 @@ describe('adminusers client - generate otp code for user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 400 BAD REQUEST telephone number is not valid', function (done) {
+    it('should 400 BAD REQUEST telephone number is not valid', function () {
       const registration = validRegistrationRequest.getPlain()
-      adminusersClient.generateInviteOtpCode(inviteCode, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors[0]).to.equal('Field [telephone_number] is required')
-      }).should.notify(done)
+      return adminusersClient.generateInviteOtpCode(inviteCode, registration.telephone_number, registration.password)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          (err) => {
+            expect(err.errorCode).to.equal(400)
+            expect(err.message.errors.length).to.equal(1)
+            expect(err.message.errors[0]).to.equal('Field [telephone_number] is required')
+          }
+        )
     })
   })
 
@@ -107,11 +108,13 @@ describe('adminusers client - generate otp code for user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 404 NOT FOUND if user invite code not found', function (done) {
+    it('should 404 NOT FOUND if user invite code not found', function () {
       const registration = validRegistrationRequest.getPlain()
-      adminusersClient.generateInviteOtpCode(nonExistingInviteCode, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+      return adminusersClient.generateInviteOtpCode(nonExistingInviteCode, registration.telephone_number, registration.password)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

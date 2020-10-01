@@ -6,10 +6,7 @@ const csrf = require('csrf')
 const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
-chai.use(chaiAsPromised)
-const expect = chai.expect
+const { expect } = require('chai')
 
 let app
 

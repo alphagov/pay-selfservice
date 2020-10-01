@@ -1,7 +1,7 @@
 'use strict'
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
-let chai = require('chai')
+const { expect } = require('chai')
 let chaiAsPromised = require('chai-as-promised')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let random = require('../../../../../app/utils/random')
@@ -9,8 +9,6 @@ let getAdminUsersClient = require('../../../../../app/services/clients/adminuser
 let PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-chai.use(chaiAsPromised)
-const { expect } = chai
 const USER_PATH = '/v1/api/users'
 
 describe('adminusers client - get users', function () {
@@ -60,22 +58,21 @@ describe('adminusers client - get users', function () {
     afterEach(() => provider.verify())
 
     it('should find users successfully', function () {
-      let expectedUserData = getUserResponse.getPlain()
+      const expectedUserData = getUserResponse.getPlain()
 
-      let result = expect(adminusersClient.getUsersByExternalIds(existingExternalIds))
-
-      return result.to.be.fulfilled.then(function (users) {
-        users.forEach((user, index) => {
-          expect(user.externalId).to.be.equal(expectedUserData[index].external_id)
-          expect(user.username).to.be.equal(expectedUserData[index].username)
-          expect(user.email).to.be.equal(expectedUserData[index].email)
-          expect(user.serviceRoles.length).to.be.equal(1)
-          expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(2)
-          expect(user.telephoneNumber).to.be.equal(expectedUserData[index].telephone_number)
-          expect(user.otpKey).to.be.equal(expectedUserData[index].otp_key)
-          expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData[index].service_roles[0].role.permissions.length)
+      return adminusersClient.getUsersByExternalIds(existingExternalIds)
+        .then(function (users) {
+          users.forEach((user, index) => {
+            expect(user.externalId).to.be.equal(expectedUserData[index].external_id)
+            expect(user.username).to.be.equal(expectedUserData[index].username)
+            expect(user.email).to.be.equal(expectedUserData[index].email)
+            expect(user.serviceRoles.length).to.be.equal(1)
+            expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(2)
+            expect(user.telephoneNumber).to.be.equal(expectedUserData[index].telephone_number)
+            expect(user.otpKey).to.be.equal(expectedUserData[index].otp_key)
+            expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData[index].service_roles[0].role.permissions.length)
+          })
         })
-      })
     })
   })
 
@@ -100,9 +97,11 @@ describe('adminusers client - get users', function () {
     afterEach(() => provider.verify())
 
     it('should respond 404 if user not found', function () {
-      return expect(adminusersClient.getUsersByExternalIds(existingExternalIds)).to.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      })
+      return adminusersClient.getUsersByExternalIds(existingExternalIds)
+      .then(
+        () => { throw new Error('Expected to reject') },
+        err => expect(err.errorCode).to.equal(404)
+      )
     })
   })
 })

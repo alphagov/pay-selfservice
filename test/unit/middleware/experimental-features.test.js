@@ -1,13 +1,10 @@
 const path = require('path')
 const sinon = require('sinon')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const experimentalFeatures = require(path.join(__dirname, '/../../../app/middleware/experimental-features.js'))
 
-const { expect } = chai
 let res, next
 
-chai.use(chaiAsPromised)
 
 describe('services experimental features middleware', () => {
   beforeEach(() => {

@@ -1,7 +1,6 @@
-var chai = require('chai')
+const { expect } = require('chai')
 var displayConverter = require('../../../app/utils/display-converter')
 
-const expect = chai.expect
 
 describe('Display converter', function () {
   it('should add full_type to account if type is test', function () {

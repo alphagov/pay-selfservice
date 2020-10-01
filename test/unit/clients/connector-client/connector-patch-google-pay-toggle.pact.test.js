@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,11 +12,9 @@ const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtur
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
 const port = Math.floor(Math.random() * 48127) + 1024
 const connectorClient = new Connector(`http://localhost:${port}`)
-const expect = chai.expect
 const existingGatewayAccountId = 666
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('connector client - patch google pay toggle (enabled) request', () => {
   const patchRequestParams = { path: 'allow_google_pay', value: true }
@@ -54,10 +51,8 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', done => {
-      connectorClient.toggleGooglePay(existingGatewayAccountId, true, null)
-        .should.be.fulfilled
-        .notify(done)
+    it('should toggle successfully', () => {
+      return connectorClient.toggleGooglePay(existingGatewayAccountId, true, null)
     })
   })
 
@@ -77,11 +72,12 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
 
     afterEach(() => provider.verify())
 
-    it('should respond bad request for unsupported payment provider', done => {
-      connectorClient.toggleGooglePay(existingGatewayAccountId, true, null)
-        .should.be.rejected.then(response => {
-          expect(response.errorCode).to.equal(400)
-        }).should.notify(done)
+    it('should respond bad request for unsupported payment provider', () => {
+      return connectorClient.toggleGooglePay(existingGatewayAccountId, true, null)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(400)
+        )
     })
   })
 })

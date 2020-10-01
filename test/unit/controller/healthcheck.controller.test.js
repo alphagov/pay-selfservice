@@ -1,8 +1,7 @@
-var path = require('path')
-var healthCheckController = require(path.join(__dirname, '/../../../app/controllers/healthcheck.controller.js'))
-var sinon = require('sinon')
-var chai = require('chai')
-var expect = chai.expect
+const path = require('path')
+const sinon = require('sinon')
+const { expect } = require('chai')
+const healthCheckController = require(path.join(__dirname, '/../../../app/controllers/healthcheck.controller.js'))
 
 describe('Healthcheck controller', function () {
   it('should return healthy', function (done) {

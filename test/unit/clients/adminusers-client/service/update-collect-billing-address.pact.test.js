@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,11 +12,9 @@ const serviceFixtures = require('../../../../fixtures/service.fixtures')
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - patch collect billing address toggle', function () {
   let provider = new Pact({
@@ -57,12 +54,12 @@ describe('adminusers client - patch collect billing address toggle', function ()
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', function (done) {
-      adminusersClient.updateCollectBillingAddress(serviceExternalId, false)
-        .should.be.fulfilled.then(service => {
+    it('should toggle successfully', function () {
+      return adminusersClient.updateCollectBillingAddress(serviceExternalId, false)
+        .then(service => {
           expect(service.external_id).to.equal(serviceExternalId)
           expect(service.collect_billing_address).to.equal(false)
-        }).should.notify(done)
+        })
     })
   })
 })

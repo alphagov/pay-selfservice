@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -17,7 +16,6 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const serviceExternalId = 'cp5wa'
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - post govuk pay agreement - email address', () => {
   let provider = new Pact({
@@ -53,9 +51,8 @@ describe('adminusers client - post govuk pay agreement - email address', () => {
 
     afterEach(() => provider.verify())
 
-    it('should post email address successfully', done => {
-      adminusersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
-        .should.be.fulfilled.should.notify(done)
+    it('should post email address successfully', () => {
+      return adminusersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
     })
   })
 })

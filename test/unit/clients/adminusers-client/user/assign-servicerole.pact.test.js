@@ -1,14 +1,12 @@
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
-let chai = require('chai')
+const { expect } = require('chai')
 let chaiAsPromised = require('chai-as-promised')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised)
 
-const expect = chai.expect
 const USER_PATH = '/v1/api/users'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
@@ -67,11 +65,11 @@ describe('adminusers client - assign service role to user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should assign service role to a user successfully', function (done) {
-      adminusersClient.assignServiceRole(existingUserExternalId, existingServiceExternalId, role).should.be.fulfilled.then(function (updatedUser) {
+    it('should assign service role to a user successfully', function () {
+      return adminusersClient.assignServiceRole(existingUserExternalId, existingServiceExternalId, role).then(function (updatedUser) {
         const newServiceRole = updatedUser.serviceRoles.find(serviceRole => serviceRole.service.externalId === existingServiceExternalId)
         expect(newServiceRole.role.name).to.be.equal(role)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -97,10 +95,12 @@ describe('adminusers client - assign service role to user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error not found for non existent user when updating service role', function (done) {
-      adminusersClient.assignServiceRole(nonExistentUserExternalId, existingServiceExternalId, role).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should error not found for non existent user when updating service role', function () {
+      return adminusersClient.assignServiceRole(nonExistentUserExternalId, existingServiceExternalId, role)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 
@@ -126,10 +126,12 @@ describe('adminusers client - assign service role to user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error bad request if service cannot be located', function (done) {
-      adminusersClient.assignServiceRole(existingUserExternalId, serviceExternalId, role).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-      }).should.notify(done)
+    it('should error bad request if service cannot be located', function () {
+      return adminusersClient.assignServiceRole(existingUserExternalId, serviceExternalId, role)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(400)
+        )
     })
   })
 })

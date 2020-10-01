@@ -1,15 +1,13 @@
 'use strict'
 
 const path = require('path')
-const chai = require('chai')
+const { expect } = require('chai')
 const sinon = require('sinon')
 
 const responseConverter = require(path.join(__dirname, '/../../../app/utils/response-converter'))
 
-chai.should()
 
 let context
-const expect = chai.expect
 let spyResolve
 let spyReject
 

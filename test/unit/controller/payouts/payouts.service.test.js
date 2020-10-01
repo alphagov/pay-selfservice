@@ -1,5 +1,4 @@
-const chai = require('chai')
-const { expect } = chai
+const { expect } = require('chai')
 const { groupPayoutsByDate } = require('../../../../app/controllers/payouts/payouts.service')
 const payoutFixtures = require('../../../fixtures/payout.fixtures')
 const userFixtures = require('../../../fixtures/user.fixtures')

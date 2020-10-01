@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const inviteFixtures = require('../../../../fixtures/invite.fixtures')
 const INVITE_RESOURCE = '/v1/api/invites'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - complete an invite', function () {
   let provider = new Pact({
@@ -67,13 +64,13 @@ describe('adminusers client - complete an invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should complete a service invite successfully', function (done) {
+    it('should complete a service invite successfully', function () {
       const expectedData = validInviteCompleteResponse.getPlain()
-      adminusersClient.completeInvite(inviteCode, gatewayAccountIds).should.be.fulfilled.then(response => {
+      return adminusersClient.completeInvite(inviteCode, gatewayAccountIds).then(response => {
         expect(response.invite).to.deep.equal(expectedData.invite)
         expect(response.user_external_id).to.equal(userExternalId)
         expect(response.service_external_id).to.equal(serviceExternalId)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -99,10 +96,12 @@ describe('adminusers client - complete an invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 404 NOT FOUND if invite code not found', function (done) {
-      adminusersClient.completeInvite(nonExistingInviteCode, gatewayAccountIds).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+    it('should 404 NOT FOUND if invite code not found', function () {
+      return adminusersClient.completeInvite(nonExistingInviteCode, gatewayAccountIds)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 
@@ -128,10 +127,12 @@ describe('adminusers client - complete an invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 409 CONFLICT if user with same email exists', function (done) {
-      adminusersClient.completeInvite(inviteCode, gatewayAccountIds).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(409)
-      }).should.notify(done)
+    it('should 409 CONFLICT if user with same email exists', function () {
+      return adminusersClient.completeInvite(inviteCode, gatewayAccountIds)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(409)
+        )
     })
   })
 
@@ -159,10 +160,12 @@ describe('adminusers client - complete an invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 400 BAD REQUEST if gateway accounts are non numeric', function (done) {
-      adminusersClient.completeInvite(inviteCode, invalidGatewayAccountIds).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-      }).should.notify(done)
+    it('should 400 BAD REQUEST if gateway accounts are non numeric', function () {
+      return adminusersClient.completeInvite(inviteCode, invalidGatewayAccountIds)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(400)
+        )
     })
   })
 })

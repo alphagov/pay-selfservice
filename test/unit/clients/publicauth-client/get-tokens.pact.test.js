@@ -2,9 +2,7 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const chai = require('chai')
-const { expect } = chai
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 // constants
 const port = Math.floor(Math.random() * 48127) + 1024
@@ -15,7 +13,6 @@ const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtur
 const publicauthClient = require('../../../../app/services/clients/public-auth.client')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised)
 
 describe('publicauth client - get tokens', function () {
   let provider = new Pact({

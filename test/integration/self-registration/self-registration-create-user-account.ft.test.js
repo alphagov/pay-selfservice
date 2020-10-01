@@ -3,8 +3,7 @@
 const nock = require('nock')
 const csrf = require('csrf')
 const supertest = require('supertest')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const mockSession = require('../../test-helpers/mock-session')
 const getApp = require('../../../server').getApp
@@ -14,10 +13,8 @@ const paths = require('../../../app/paths')
 // Constants
 const SERVICE_INVITE_RESOURCE = '/v1/api/invites/service'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 let app
 

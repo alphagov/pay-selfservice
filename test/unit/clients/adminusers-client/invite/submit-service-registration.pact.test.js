@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
@@ -11,9 +10,7 @@ const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-bu
 
 // Globals
 
-chai.use(chaiAsPromised)
 
-const expect = chai.expect
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
@@ -51,11 +48,11 @@ describe('adminusers client - self register service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should send a notification successfully', function (done) {
+    it('should send a notification successfully', function () {
       const register = validRegistration.getPlain()
 
-      adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).should.be.fulfilled.then(function (response) {
-      }).should.notify(done)
+      return adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).then(function (response) {
+      })
     })
   })
 
@@ -80,14 +77,18 @@ describe('adminusers client - self register service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return bad request', function (done) {
+    it('should return bad request', function () {
       const register = invalidInvite.getPlain()
 
-      adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
-      }).should.notify(done)
+      return adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          (err) => {
+            expect(err.errorCode).to.equal(400)
+            expect(err.message.errors.length).to.equal(1)
+            expect(err.message.errors).to.deep.equal(errorResponse.getPlain().errors)
+          }
+        )
     })
   })
 })

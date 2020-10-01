@@ -3,8 +3,7 @@
 const nock = require('nock')
 const csrf = require('csrf')
 const supertest = require('supertest')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const mockSession = require('../../test-helpers/mock-session')
 const getApp = require('../../../server').getApp
@@ -18,7 +17,6 @@ const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const connectorMock = nock(process.env.CONNECTOR_URL)
 
 // Global setup
-chai.use(chaiAsPromised)
 
 let app
 

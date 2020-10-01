@@ -1,5 +1,4 @@
-const chai = require('chai')
-const { expect } = chai
+const { expect } = require('chai')
 const { indexServiceNamesByGatewayAccountId } = require('../../../../app/controllers/payouts/user-services-names.controller')
 const fixtures = require('../../../fixtures/user.fixtures')
 

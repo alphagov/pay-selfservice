@@ -1,12 +1,8 @@
 'use strict'
 
-// NPM modules
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
 const request = require('supertest')
 const nock = require('nock')
 
-// Local modules
 require('../test-helpers/serialize-mock')
 const userCreator = require('../test-helpers/user-creator')
 const getApp = require('../../server').getApp
@@ -26,8 +22,6 @@ const aCorrelationHeader = {
 const connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader)
 const ledgerMock = nock(process.env.LEDGER_URL, aCorrelationHeader)
 
-chai.use(chaiAsPromised)
-chai.should()
 let app
 
 function ledgerMockResponds (code, data, searchParameters) {

@@ -1,6 +1,5 @@
-let chai = require('chai')
+const { expect } = require('chai')
 let roles = require('../../../app/utils/roles')
-let expect = chai.expect
 
 describe('roles module', function () {
   it('should find get role by role id', function (done) {

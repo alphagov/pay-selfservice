@@ -1,17 +1,12 @@
 'use strict'
 
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 const goLiveStage = require('../../../models/go-live-stage')
 const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
-
-// Global setup
-chai.use(chaiAsPromised)
-const { expect } = chai
 
 const mockResponse = {}
 const getController = function getController (mockServiceService) {

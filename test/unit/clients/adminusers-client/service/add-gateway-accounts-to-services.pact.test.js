@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,12 +12,10 @@ const serviceFixtures = require('../../../../fixtures/service.fixtures')
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 let result, request
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('admin users client - add gateway accounts to service', () => {
   this.timeout = 5000
@@ -59,12 +56,11 @@ describe('admin users client - add gateway accounts to service', () => {
     afterEach(() => provider.verify())
 
     it('should update service name', () => {
-      result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountsIdsToAdd)
-
-      return expect(result)
-        .to.be.fulfilled
-        .and.to.eventually.include({ externalId: serviceExternalId })
-        .and.to.have.property('gatewayAccountIds').to.include(...gatewayAccountIdsAfter)
+      return adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountsIdsToAdd)
+        .then((result) => {
+          expect(result).to.have.property('externalId').to.equal(serviceExternalId)
+          expect(result).to.have.property('gatewayAccountIds').to.include(...gatewayAccountIdsAfter)
+        })
     })
   })
 
@@ -95,16 +91,20 @@ describe('admin users client - add gateway accounts to service', () => {
     it('should reject with an error detailing the conflicting', () => {
       result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
 
-      return expect(result)
-        .to.be.rejected
-        .and.to.eventually.deep.equal({
-          errorCode: 409,
-          message: {
-            errors: [
-              'One or more of the following gateway account ids has already assigned to another service: [111]'
-            ]
+      return adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          (err) => {
+            expect(err).to.deep.equal({
+              errorCode: 409,
+              message: {
+                errors: [
+                  'One or more of the following gateway account ids has already assigned to another service: [111]'
+                ]
+              }
+            })
           }
-        })
+        )
     })
   })
 
@@ -132,9 +132,11 @@ describe('admin users client - add gateway accounts to service', () => {
     it('should reject with an error detailing the conflicting', () => {
       result = adminusersClient.addGatewayAccountsToService(nonExistentServiceId, gatewayAccountIds)
 
-      return expect(result)
-        .to.be.rejected
-        .and.to.eventually.have.property('errorCode').to.equal(404)
+      return adminusersClient.addGatewayAccountsToService(nonExistentServiceId, gatewayAccountIds)
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

@@ -1,6 +1,5 @@
-const chai = require('chai')
+const { expect } = require('chai')
 const MetadataForm = require('./../../../../../app/controllers/payment-links/metadata/metadata-form')
-const { expect } = chai
 
 describe('Payment link metadata form model', () => {
   it('initialises with valid input', () => {

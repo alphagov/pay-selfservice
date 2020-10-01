@@ -1,4 +1,4 @@
-const chai = require('chai')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 
@@ -9,7 +9,6 @@ const userFixtures = require('../../../fixtures/user.fixtures')
 const paths = require('../../../../app/paths.js')
 const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
 
-const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const USER_RESOURCE = '/v1/api/users'
 let response, session, $

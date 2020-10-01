@@ -1,8 +1,7 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -13,10 +12,8 @@ const serviceFixtures = require('../../../../fixtures/service.fixtures')
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const expect = chai.expect
 
 // Global setup
-chai.use(chaiAsPromised)
 
 describe('adminusers client - create a new service', function () {
   let provider = new Pact({
@@ -58,12 +55,12 @@ describe('adminusers client - create a new service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should create a new service', function (done) {
-      adminusersClient.createService().should.be.fulfilled.then(service => {
+    it('should create a new service', function () {
+      return adminusersClient.createService().then(service => {
         expect(service.external_id).to.equal(externalId)
         expect(service.name).to.equal(name)
         expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -96,12 +93,12 @@ describe('adminusers client - create a new service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should create a new service', function (done) {
-      adminusersClient.createService(null, null, validRequest.getPlain().gateway_account_ids).should.be.fulfilled.then(service => {
+    it('should create a new service', function () {
+      return adminusersClient.createService(null, null, validRequest.getPlain().gateway_account_ids).then(service => {
         expect(service.external_id).to.equal(externalId)
         expect(service.name).to.equal(name)
         expect(service.gateway_account_ids).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
-      }).should.notify(done)
+      })
     })
   })
 
@@ -136,12 +133,12 @@ describe('adminusers client - create a new service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should create a new service', function (done) {
-      adminusersClient.createService('Service name', null, null).should.be.fulfilled.then(service => {
+    it('should create a new service', function () {
+      return adminusersClient.createService('Service name', null, null).then(service => {
         expect(service.external_id).to.equal(externalId)
         expect(service.name).to.equal(name)
         expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
-      }).should.notify(done)
+      })
     })
   })
 })

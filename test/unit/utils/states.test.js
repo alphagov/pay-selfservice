@@ -3,8 +3,8 @@
 const chai = require('chai')
 const assertArrays = require('chai-arrays')
 let states = require('../../../app/utils/states')
+const { expect } = chai
 chai.use(assertArrays)
-const expect = chai.expect
 
 describe('states', function () {
   describe('new states', function () {

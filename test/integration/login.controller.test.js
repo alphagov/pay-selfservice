@@ -5,10 +5,9 @@ const request = require('supertest')
 const nock = require('nock')
 const assert = require('assert')
 const notp = require('notp')
-const chai = require('chai')
+const { expect } = require('chai')
 const _ = require('lodash')
 const sinon = require('sinon')
-const chaiAsPromised = require('chai-as-promised')
 
 require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
@@ -22,8 +21,6 @@ const mockRes = require('../fixtures/response')
 
 const { CONNECTOR_URL } = process.env
 const { LEDGER_URL } = process.env
-chai.use(chaiAsPromised)
-const expect = chai.expect
 
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const ACCOUNT_ID = '182364'

@@ -4,10 +4,8 @@
 const nock = require('nock')
 const supertest = require('supertest')
 const csrf = require('csrf')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
 
-const { expect } = chai
 
 // Local modules
 const session = require('../test-helpers/mock-session.js')
@@ -25,7 +23,6 @@ const INVITE_RESOURCE = '/v1/api/invites'
 const USER_RESOURCE = '/v1/api/users'
 
 let app
-chai.use(chaiAsPromised)
 
 describe('service users resource', () => {
   let EXTERNAL_ID_LOGGED_IN = '7d19aff33f8948deb97ed16b2912dcd3'

@@ -1,6 +1,6 @@
 'use strict'
 
-const chai = require('chai')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const supertest = require('supertest')
@@ -13,7 +13,6 @@ const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
 const paths = require('../../../../app/paths.js')
 
 // Constants
-const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const USER_RESOURCE = '/v1/api/users'
 const SERVICES_RESOURCE = '/v1/api/services'
