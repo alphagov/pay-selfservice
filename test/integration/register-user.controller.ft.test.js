@@ -121,7 +121,14 @@ describe('register user controller', () => {
         .expect(303, {})
         .expect('Location', paths.registerUser.registration)
         .expect((res) => {
-          expect(mockRegisterAccountCookie.telephone_number).to.equal(invalidPhone)
+          expect(mockRegisterAccountCookie)
+            .to.have.property('recovered')
+            .to.deep.equal({
+              telephoneNumber: invalidPhone,
+              errors: {
+                telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+              }
+            })
         })
         .end(done)
     })
@@ -396,7 +403,14 @@ describe('register user controller', () => {
         .expect(303, {})
         .expect('Location', paths.registerUser.reVerifyPhone)
         .expect((res) => {
-          expect(mockRegisterAccountCookie.telephone_number).to.equal(invalidPhone)
+          expect(mockRegisterAccountCookie)
+            .to.have.property('recovered')
+            .to.deep.equal({
+              telephoneNumber: invalidPhone,
+              errors: {
+                telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+              }
+            })
         })
         .end(done)
     })

@@ -1,4 +1,5 @@
 {% extends "../layout-logged-out.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Resend verification code - GOV.UK Pay
@@ -6,6 +7,13 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        telephoneNumber: '#telephone-number'
+      }
+    }) }}
+
     <h1 class="form-title govuk-heading-l">Resend verification code</h1>
     <p class="govuk-body">Text messages sometimes take a few minutes to arrive. If you did not receive the text, you can resend it.</p>
     <p class="govuk-body">If you no longer have access to the phone with the number registered for this service, speak to your service manager to reset the number.</p>
@@ -26,7 +34,8 @@
           value: telephone_number,
           hint: {
             text: "We’ll send you a verification code by text message"
-          }
+          },
+          errorMessage: { text: errors.telephoneNumber } if errors.telephoneNumber else false
         })
       }}
       {{
