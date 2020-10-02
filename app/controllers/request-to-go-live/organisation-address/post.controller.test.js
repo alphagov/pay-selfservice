@@ -5,13 +5,13 @@ const sinon = require('sinon')
 const goLiveStage = require('../../../models/go-live-stage')
 const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
+const controller = require('./post.controller')
 
-const mockResponse = {}
-jest.mock('../../../services/service.service', () => mockServiceService);
-jest.mock('../../../utils/response', () => mockResponse);
-const getController = function getController (mockServiceService) {
-  return require('./post.controller');
-}
+const { renderErrorView } = require('../../../utils/response')
+const { updateService } = require('../../../services/service.service')
+
+jest.mock('../../../utils/response')
+jest.mock('../../../services/service.service')
 
 describe('request to go live organisation address post controller', () => {
   describe('successful submission', () => {
@@ -50,7 +50,6 @@ describe('request to go live organisation address post controller', () => {
         redirect: sinon.spy(),
         render: sinon.spy()
       }
-      mockResponse.renderErrorView = sinon.spy()
     })
 
     describe('service update success', () => {
@@ -59,14 +58,7 @@ describe('request to go live organisation address post controller', () => {
         current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
       }).getPlain())
 
-      const mockUpdateService = sinon.spy(() => {
-        return new Promise(resolve => {
-          resolve(updatedService)
-        })
-      })
-
-      const mockServiceService = { updateService: mockUpdateService }
-      const controller = getController(mockServiceService)
+      updateService.mockResolvedValue(Promise.resolve(updatedService))
 
       it('should update merchant details and go live stage', async () => {
         const expectedUpdateServiceRequest = [
@@ -109,7 +101,7 @@ describe('request to go live organisation address post controller', () => {
 
         await controller(req, res)
 
-        expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).toBe(true)
+        expect(updateService).toHaveBeenCalledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)
         expect(res.redirect.calledWith(303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)).toBe(true)
       })
 
@@ -165,7 +157,7 @@ describe('request to go live organisation address post controller', () => {
 
           await controller(req, res)
 
-          expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).toBe(true)
+          expect(updateService).toHaveBeenCalledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)
           expect(res.redirect.calledWith(303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)).toBe(true)
         }
       )
@@ -175,16 +167,10 @@ describe('request to go live organisation address post controller', () => {
       it(
         'should show an error page if updating service throws error',
         async () => {
-          const mockUpdateService = sinon.spy(() => {
-            return new Promise((resolve, reject) => {
-              reject(new Error())
-            })
-          })
-          const mockServiceService = { updateService: mockUpdateService }
-          const controller = getController(mockServiceService)
+          updateService.mockResolvedValue(Promise.reject(new Error()))
 
           await controller(req, res)
-          expect(mockResponse.renderErrorView.called).toBe(true)
+          expect(renderErrorView).toHaveBeenCalledTimes(1)
         }
       )
     })
