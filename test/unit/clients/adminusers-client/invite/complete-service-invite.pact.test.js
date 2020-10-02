@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,7 +14,7 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 
 // Global setup
 
-describe('adminusers client - complete an invite', function () {
+describe('adminusers client - complete an invite', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
@@ -26,8 +25,8 @@ describe('adminusers client - complete an invite', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
@@ -48,7 +47,7 @@ describe('adminusers client - complete an invite', function () {
       service_external_id: serviceExternalId
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/complete`)
           .withState('a valid service invite exists with the given invite code')
@@ -64,13 +63,13 @@ describe('adminusers client - complete an invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should complete a service invite successfully', function () {
+    it('should complete a service invite successfully', () => {
       const expectedData = validInviteCompleteResponse.getPlain()
       return adminusersClient.completeInvite(inviteCode, gatewayAccountIds).then(response => {
-        expect(response.invite).to.deep.equal(expectedData.invite)
-        expect(response.user_external_id).to.equal(userExternalId)
-        expect(response.service_external_id).to.equal(serviceExternalId)
-      })
+        expect(response.invite).toEqual(expectedData.invite)
+        expect(response.user_external_id).toBe(userExternalId)
+        expect(response.service_external_id).toBe(serviceExternalId)
+      });
     })
   })
 
@@ -82,7 +81,7 @@ describe('adminusers client - complete an invite', function () {
       gateway_account_ids: gatewayAccountIds
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${nonExistingInviteCode}/complete`)
           .withState('invite not exists for the given invite code')
@@ -96,12 +95,12 @@ describe('adminusers client - complete an invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 404 NOT FOUND if invite code not found', function () {
+    it('should 404 NOT FOUND if invite code not found', () => {
       return adminusersClient.completeInvite(nonExistingInviteCode, gatewayAccountIds)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 
@@ -113,7 +112,7 @@ describe('adminusers client - complete an invite', function () {
       gateway_account_ids: gatewayAccountIds
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/complete`)
           .withState('invite conflict for the given invite code')
@@ -127,12 +126,12 @@ describe('adminusers client - complete an invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 409 CONFLICT if user with same email exists', function () {
+    it('should 409 CONFLICT if user with same email exists', () => {
       return adminusersClient.completeInvite(inviteCode, gatewayAccountIds)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(409)
-        )
+          err => expect(err.errorCode).toBe(409)
+        );
     })
   })
 
@@ -145,7 +144,7 @@ describe('adminusers client - complete an invite', function () {
     })
     const errorResponse = inviteFixtures.badRequestResponseWhenNonNumericGatewayAccountIds(invalidGatewayAccountIds)
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/complete`)
           .withState('invite expired for the given invite code')
@@ -160,12 +159,15 @@ describe('adminusers client - complete an invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 400 BAD REQUEST if gateway accounts are non numeric', function () {
-      return adminusersClient.completeInvite(inviteCode, invalidGatewayAccountIds)
-        .then(
-          () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(400)
-        )
-    })
+    it(
+      'should 400 BAD REQUEST if gateway accounts are non numeric',
+      () => {
+        return adminusersClient.completeInvite(inviteCode, invalidGatewayAccountIds)
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.errorCode).toBe(400)
+          );
+      }
+    )
   })
 })

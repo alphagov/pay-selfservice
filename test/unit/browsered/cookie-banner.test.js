@@ -6,7 +6,6 @@ const cookieBanner = require('../../../app/browsered/cookie-banner')
 const analytics = require('../../../app/browsered/analytics')
 const sinon = require('sinon')
 const jsdom = require('jsdom')
-const { expect } = require('chai')
 let renderTemplate = require('../../test-helpers/html-assertions.js').render
 
 var event
@@ -29,76 +28,91 @@ describe('Cookie banner', () => {
   })
 
   it('should set the cookie banner display style to block on init', () => {
-    expect(cookieBannerObject.$module.style.display).to.be.equal('block')
+    expect(cookieBannerObject.$module.style.display).toBe('block')
   })
 
   it('should set the cookie banner display style to none on hide ', () => {
     event = sinon.mock()
     cookieBannerObject.hideCookieMessage(event)
-    expect(cookieBannerObject.$module.style.display).to.be.equal('none')
+    expect(cookieBannerObject.$module.style.display).toBe('none')
   })
 
-  it('should initialise analytics if consented and analyticsTrackingId is configured ', () => {
-    analyticsTrackingId = 'test-id'
-    cookieBannerObject.setCookieConsent(true)
+  it(
+    'should initialise analytics if consented and analyticsTrackingId is configured ',
+    () => {
+      analyticsTrackingId = 'test-id'
+      cookieBannerObject.setCookieConsent(true)
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
-    expect(document.body.innerHTML).to.contain('You’ve accepted analytics cookies.')
+      expect(document.cookie).toBe('; govuk_pay_cookie_policy={"analytics":true}')
+      expect(document.body.innerHTML).toEqual(expect.arrayContaining(['You’ve accepted analytics cookies.']))
 
-    expect(analyticsInit.calledOnce).to.be.true
-  })
-  it('should not initialise analytics if consented and analyticsTrackingId is not configured ', () => {
-    cookieBannerObject.setCookieConsent(true)
+      expect(analyticsInit.calledOnce).toBe(true)
+    }
+  )
+  it(
+    'should not initialise analytics if consented and analyticsTrackingId is not configured ',
+    () => {
+      cookieBannerObject.setCookieConsent(true)
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
-    expect(document.body.innerHTML).to.contain('You’ve accepted analytics cookies.')
-    expect(analyticsInit.calledOnce).to.be.false
-  })
+      expect(document.cookie).toBe('; govuk_pay_cookie_policy={"analytics":true}')
+      expect(document.body.innerHTML).toEqual(expect.arrayContaining(['You’ve accepted analytics cookies.']))
+      expect(analyticsInit.calledOnce).toBe(false)
+    }
+  )
 
   it('should not initialise analytics if not consented ', () => {
     cookieBannerObject.setCookieConsent(false)
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":false}')
-    expect(document.body.innerHTML).to.contain('You told us not to use analytics cookies.')
+    expect(document.cookie).toBe('; govuk_pay_cookie_policy={"analytics":false}')
+    expect(document.body.innerHTML).toEqual(expect.arrayContaining(['You told us not to use analytics cookies.']))
 
-    expect(analyticsInit.calledOnce).to.be.false
+    expect(analyticsInit.calledOnce).toBe(false)
   })
 
-  it('should not display cookie banner and initialise analytics if previously consented ', () => {
-    // set consent cookie before initialising cookie banner
-    cookieBannerObject.setCookieConsent(true)
-    analyticsTrackingId = 'test'
+  it(
+    'should not display cookie banner and initialise analytics if previously consented ',
+    () => {
+      // set consent cookie before initialising cookie banner
+      cookieBannerObject.setCookieConsent(true)
+      analyticsTrackingId = 'test'
 
-    cookieBannerObject = cookieBanner.initCookieBanner()
+      cookieBannerObject = cookieBanner.initCookieBanner()
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
-    expect(cookieBannerObject.$module.style.display).to.be.equal('none')
+      expect(document.cookie).toBe('; govuk_pay_cookie_policy={"analytics":true}')
+      expect(cookieBannerObject.$module.style.display).toBe('none')
 
-    expect(analyticsInit.calledOnce).to.be.true
-  })
+      expect(analyticsInit.calledOnce).toBe(true)
+    }
+  )
 
-  it('should not display cookie banner and not initialise analytics if not previously consented ', () => {
-    // set consent cookie before initialising cookie banner
-    cookieBannerObject.setCookieConsent(false)
+  it(
+    'should not display cookie banner and not initialise analytics if not previously consented ',
+    () => {
+      // set consent cookie before initialising cookie banner
+      cookieBannerObject.setCookieConsent(false)
 
-    cookieBannerObject = cookieBanner.initCookieBanner()
+      cookieBannerObject = cookieBanner.initCookieBanner()
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":false}')
-    expect(cookieBannerObject.$module.style.display).to.be.equal('none')
+      expect(document.cookie).toBe('; govuk_pay_cookie_policy={"analytics":false}')
+      expect(cookieBannerObject.$module.style.display).toBe('none')
 
-    expect(analyticsInit.notCalled).to.be.true
-  })
+      expect(analyticsInit.notCalled).toBe(true)
+    }
+  )
 
-  it('should not display cookie banner and not initialise analytics if previously consented but analytics ID is not configured', () => {
-    // set consent cookie before initialising cookie banner
-    cookieBannerObject.setCookieConsent(true)
-    analyticsTrackingId = ''
+  it(
+    'should not display cookie banner and not initialise analytics if previously consented but analytics ID is not configured',
+    () => {
+      // set consent cookie before initialising cookie banner
+      cookieBannerObject.setCookieConsent(true)
+      analyticsTrackingId = ''
 
-    cookieBannerObject = cookieBanner.initCookieBanner()
+      cookieBannerObject = cookieBanner.initCookieBanner()
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
-    expect(cookieBannerObject.$module.style.display).to.be.equal('none')
+      expect(document.cookie).toBe('; govuk_pay_cookie_policy={"analytics":true}')
+      expect(cookieBannerObject.$module.style.display).toBe('none')
 
-    expect(analyticsInit.notCalled).to.be.true
-  })
+      expect(analyticsInit.notCalled).toBe(true)
+    }
+  )
 })

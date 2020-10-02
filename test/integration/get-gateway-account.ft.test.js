@@ -5,18 +5,16 @@ const path = require('path')
 const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 
-const { expect } = require('chai')
-
 let app
 
-describe('get account', function () {
+describe('get account', () => {
   afterEach((done) => {
     nock.cleanAll()
     app = null
     done()
   })
 
-  it('should get a card account', function (done) {
+  it('should get a card account', done => {
     const user = session.getUser({
       service_roles: [
         {
@@ -62,7 +60,7 @@ describe('get account', function () {
       .set('Accept', 'application/json')
       .expect(200)
       .expect(data => {
-        expect(data.body.currentGatewayAccount).to.deep.equal({
+        expect(data.body.currentGatewayAccount).toEqual({
           bob: 'bob',
           disableToggle3ds: false,
           type: 'test',
@@ -74,7 +72,7 @@ describe('get account', function () {
       .end(done)
   })
 
-  it('should get a direct debit account', function (done) {
+  it('should get a direct debit account', done => {
     const user = session.getUser({
       service_roles: [
         {
@@ -105,7 +103,7 @@ describe('get account', function () {
       .set('Accept', 'application/json')
       .expect(200)
       .expect(data => {
-        expect(data.body.currentGatewayAccount).to.deep.equal({
+        expect(data.body.currentGatewayAccount).toEqual({
           type: 'test',
           payment_provider: 'sandbox',
           full_type: 'Sandbox test',

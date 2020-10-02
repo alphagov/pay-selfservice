@@ -5,8 +5,8 @@ const path = require('path')
 const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 
-describe('The credentials view in edit mode', function () {
-  it('should display credentials view for a worldpay account', function () {
+describe('The credentials view in edit mode', () => {
+  it('should display credentials view for a worldpay account', () => {
     const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'worldpay',
@@ -23,29 +23,29 @@ describe('The credentials view in edit mode', function () {
 
     const body = renderTemplate('credentials/worldpay', templateData)
 
-    body.should.containSelector('#view-title').withExactText('Your Worldpay credentials')
+    expect(body).containSelector('#view-title').withExactText('Your Worldpay credentials')
 
-    body.should.containSelector('form#credentials-form')
+    expect(body).containSelector('form#credentials-form')
       .withAttribute('method', 'post')
       .withAttribute('action', paths.credentials.create)
 
-    body.should.not.containSelector('a#edit-credentials-link')
+    expect(body).not.containSelector('a#edit-credentials-link')
 
-    body.should.containInputField('merchantId', 'text')
+    expect(body).containInputField('merchantId', 'text')
       .withAttribute('value', 'a-merchant-id')
       .withLabel('Merchant code')
 
-    body.should.containInputField('username', 'text')
+    expect(body).containInputField('username', 'text')
       .withAttribute('value', 'a-username')
       .withLabel('Username')
 
-    body.should.containInputField('password', 'password')
+    expect(body).containInputField('password', 'password')
       .withLabel('Password')
 
-    body.should.containSelector('#submitCredentials')
+    expect(body).containSelector('#submitCredentials')
   })
 
-  it('should display credentials view for a smartpay account', function () {
+  it('should display credentials view for a smartpay account', () => {
     const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'smartpay',
@@ -62,29 +62,29 @@ describe('The credentials view in edit mode', function () {
 
     const body = renderTemplate('credentials/smartpay', templateData)
 
-    body.should.containSelector('#view-title').withExactText('Your Smartpay credentials')
+    expect(body).containSelector('#view-title').withExactText('Your Smartpay credentials')
 
-    body.should.containSelector('form#credentials-form')
+    expect(body).containSelector('form#credentials-form')
       .withAttribute('method', 'post')
       .withAttribute('action', paths.credentials.create)
 
-    body.should.not.containSelector('a#edit-credentials-link')
+    expect(body).not.containSelector('a#edit-credentials-link')
 
-    body.should.containInputField('merchantId', 'text')
+    expect(body).containInputField('merchantId', 'text')
       .withAttribute('value', 'a-merchant-id')
       .withLabel('Merchant account code')
 
-    body.should.containInputField('username', 'text')
+    expect(body).containInputField('username', 'text')
       .withAttribute('value', 'a-username')
       .withLabel('Username')
 
-    body.should.containInputField('password', 'password')
+    expect(body).containInputField('password', 'password')
       .withLabel('Password')
 
-    body.should.containSelector('#submitCredentials')
+    expect(body).containSelector('#submitCredentials')
   })
 
-  it('should display credentials view for a ePDQ account', function () {
+  it('should display credentials view for a ePDQ account', () => {
     const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'epdq',
@@ -101,35 +101,35 @@ describe('The credentials view in edit mode', function () {
 
     let body = renderTemplate('credentials/epdq', templateData)
 
-    body.should.containSelector('#view-title').withExactText('Your ePDQ credentials')
+    expect(body).containSelector('#view-title').withExactText('Your ePDQ credentials')
 
-    body.should.containSelector('form#credentials-form')
+    expect(body).containSelector('form#credentials-form')
       .withAttribute('method', 'post')
       .withAttribute('action', paths.credentials.create)
 
-    body.should.not.containSelector('a#edit-credentials-link')
+    expect(body).not.containSelector('a#edit-credentials-link')
 
-    body.should.containInputField('merchantId', 'text')
+    expect(body).containInputField('merchantId', 'text')
       .withAttribute('value', 'a-psp-id')
       .withLabel('PSP ID')
 
-    body.should.containInputField('username', 'text')
+    expect(body).containInputField('username', 'text')
       .withAttribute('value', 'a-username')
       .withLabel('Username')
 
-    body.should.containInputField('password', 'password')
+    expect(body).containInputField('password', 'password')
       .withLabel('Password')
 
-    body.should.containInputField('shaInPassphrase', 'password')
+    expect(body).containInputField('shaInPassphrase', 'password')
       .withLabel('SHA-IN passphrase')
 
-    body.should.containInputField('shaOutPassphrase', 'password')
+    expect(body).containInputField('shaOutPassphrase', 'password')
       .withLabel('SHA-OUT passphrase')
 
-    body.should.containSelector('#submitCredentials')
+    expect(body).containSelector('#submitCredentials')
   })
 
-  it('should display error page for `stripe`', function () {
+  it('should display error page for `stripe`', () => {
     const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'stripe',
@@ -143,10 +143,10 @@ describe('The credentials view in edit mode', function () {
 
     const body = renderTemplate('404', templateData)
 
-    body.should.containSelector('h1:first-of-type').withExactText('Page not found')
+    expect(body).containSelector('h1:first-of-type').withExactText('Page not found')
 
-    body.should.not.containSelector('form#credentials-form')
-    body.should.not.containSelector('a#edit-credentials-link')
-    body.should.not.containSelector('input#submitCredentials')
+    expect(body).not.containSelector('form#credentials-form')
+    expect(body).not.containSelector('a#edit-credentials-link')
+    expect(body).not.containSelector('input#submitCredentials')
   })
 })

@@ -1,18 +1,17 @@
-const { expect } = require('chai')
 let roles = require('../../../app/utils/roles')
 
-describe('roles module', function () {
-  it('should find get role by role id', function (done) {
+describe('roles module', () => {
+  it('should find get role by role id', done => {
     let role = roles.getRoleByExtId(200)
 
-    expect(role).to.deep.equal({ extId: 200, name: 'admin', description: 'Administrator' })
+    expect(role).toEqual({ extId: 200, name: 'admin', description: 'Administrator' })
     done()
   })
 
-  it('should return undefined for unknown role id', function (done) {
+  it('should return undefined for unknown role id', done => {
     let role = roles.getRoleByExtId('999')
 
-    expect(role).to.equal(undefined)
+    expect(role).toBeUndefined()
     done()
   })
 })

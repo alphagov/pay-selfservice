@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,7 +14,7 @@ let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}`
 
 // Global setup
 
-describe('adminusers client - complete a user invite', function () {
+describe('adminusers client - complete a user invite', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
@@ -26,8 +25,8 @@ describe('adminusers client - complete a user invite', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
@@ -43,7 +42,7 @@ describe('adminusers client - complete a user invite', function () {
       service_external_id: serviceExternalId
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/complete`)
           .withState('a valid user invite exists with the given invite code')
@@ -58,20 +57,20 @@ describe('adminusers client - complete a user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should complete a service invite successfully', function () {
+    it('should complete a service invite successfully', () => {
       const expectedData = validInviteCompleteResponse.getPlain()
       return adminusersClient.completeInvite(inviteCode).then(response => {
-        expect(response.invite).to.deep.equal(expectedData.invite)
-        expect(response.user_external_id).to.equal(userExternalId)
-        expect(response.service_external_id).to.equal(serviceExternalId)
-      })
+        expect(response.invite).toEqual(expectedData.invite)
+        expect(response.user_external_id).toBe(userExternalId)
+        expect(response.service_external_id).toBe(serviceExternalId)
+      });
     })
   })
 
   describe('not found', () => {
     const nonExistingInviteCode = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${nonExistingInviteCode}/complete`)
           .withState('invite not exists for the given invite code')
@@ -85,19 +84,19 @@ describe('adminusers client - complete a user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 404 NOT FOUND if invite code not found', function () {
+    it('should 404 NOT FOUND if invite code not found', () => {
       return adminusersClient.completeInvite(nonExistingInviteCode)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 
   describe('complete service invite - 410 GONE', () => {
     const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/complete`)
           .withState('invite expired for the given invite code')
@@ -111,12 +110,12 @@ describe('adminusers client - complete a user invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should 410 GONE if invite is expired', function () {
+    it('should 410 GONE if invite is expired', () => {
       return adminusersClient.completeInvite(inviteCode)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(410)
-        )
+          err => expect(err.errorCode).toBe(410)
+        );
     })
   })
 })

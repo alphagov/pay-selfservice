@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -17,7 +16,7 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 
 const existingServiceExternalId = 'cp5wa'
 
-describe('adminusers client - update service name', function () {
+describe('adminusers client - update service name', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -28,8 +27,8 @@ describe('adminusers client - update service name', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success with en and cy', () => {
     const serviceName = {
@@ -43,7 +42,7 @@ describe('adminusers client - update service name', function () {
       service_name: serviceName
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update service name request with en and cy')
@@ -60,14 +59,14 @@ describe('adminusers client - update service name', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update service name for en and cy', function () {
+    it('should update service name for en and cy', () => {
       return adminusersClient.updateServiceName(existingServiceExternalId, serviceName.en, serviceName.cy)
         .then(service => {
-          expect(service.external_id).to.equal(existingServiceExternalId)
-          expect(service.name).to.equal(serviceName.en)
-          expect(service.service_name.en).to.equal(serviceName.en)
-          expect(service.service_name.cy).to.equal(serviceName.cy)
-        })
+          expect(service.external_id).toBe(existingServiceExternalId)
+          expect(service.name).toBe(serviceName.en)
+          expect(service.service_name.en).toBe(serviceName.en)
+          expect(service.service_name.cy).toBe(serviceName.cy)
+        });
     })
   })
 
@@ -85,7 +84,7 @@ describe('adminusers client - update service name', function () {
       }
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update service name request with empty string for cy name')
@@ -102,13 +101,13 @@ describe('adminusers client - update service name', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update service name with empty string for cy', function () {
+    it('should update service name with empty string for cy', () => {
       return adminusersClient.updateServiceName(existingServiceExternalId, serviceNameEn)
         .then(service => {
-          expect(service.external_id).to.equal(existingServiceExternalId)
-          expect(service.name).to.equal(serviceNameEn)
-          expect(service.service_name.en).to.equal(serviceNameEn)
-        })
+          expect(service.external_id).toBe(existingServiceExternalId)
+          expect(service.name).toBe(serviceNameEn)
+          expect(service.service_name.en).toBe(serviceNameEn)
+        });
     })
   })
 
@@ -120,7 +119,7 @@ describe('adminusers client - update service name', function () {
     }
     const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequest(serviceName)
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${nonExistentServiceExternalId}`)
           .withUponReceiving('an invalid update service name request - service not found')
@@ -136,12 +135,12 @@ describe('adminusers client - update service name', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return not found if service not exist', function () {
+    it('should return not found if service not exist', () => {
       return adminusersClient.updateServiceName(nonExistentServiceExternalId, serviceName.en, serviceName.cy)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

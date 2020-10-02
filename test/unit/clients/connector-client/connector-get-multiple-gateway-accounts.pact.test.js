@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,7 +14,7 @@ const connectorClient = new Connector(`http://localhost:${port}`)
 
 // Global setup
 
-describe('connector client - get multiple gateway accounts', function () {
+describe('connector client - get multiple gateway accounts', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
@@ -26,8 +25,8 @@ describe('connector client - get multiple gateway accounts', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('get multiple gateway accounts - success', () => {
     const validGetGatewayAccountsResponse = gatewayAccountFixtures.validGatewayAccountsResponse({
@@ -37,7 +36,7 @@ describe('connector client - get multiple gateway accounts', function () {
       ]
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
           .withUponReceiving('a valid get gateway accounts request')
@@ -54,12 +53,12 @@ describe('connector client - get multiple gateway accounts', function () {
 
     afterEach(() => provider.verify())
 
-    it('should get multiple gateway accounts successfully', function () {
+    it('should get multiple gateway accounts successfully', () => {
       const getGatewayAccounts = validGetGatewayAccountsResponse.getPlain()
       return connectorClient.getAccounts({ gatewayAccountIds: [111, 222], correlationId: null })
         .then((response) => {
-          expect(response).to.deep.equal(getGatewayAccounts)
-        })
+          expect(response).toEqual(getGatewayAccounts)
+        });
     })
   })
 })

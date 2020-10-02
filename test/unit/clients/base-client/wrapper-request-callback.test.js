@@ -1,16 +1,13 @@
 'use strict'
 
-// const request = require('request')
-const { expect } = require('chai')
 const sinon = require('sinon')
-const proxyquire = require('proxyquire')
 const requestLogger = {}
 const events = require('events')
 const util = require('util')
 
-const wrapper = proxyquire('../../../../app/services/clients/base-client/wrapper', {
-  '../../../utils/request-logger': requestLogger
-})
+jest.mock('../../../utils/request-logger', () => requestLogger);
+
+const wrapper = require('../../../../app/services/clients/base-client/wrapper')
 
 describe('wrapper: request scenarios', () => {
   describe('when the request returns successfully with statusCode 200', () => {
@@ -33,7 +30,7 @@ describe('wrapper: request scenarios', () => {
     }
     // Wire the EventEmitter into it, so we can emit the event specified above to any watchers
     util.inherits(RequestStub, events.EventEmitter)
-    before(done => {
+    beforeAll(done => {
       requestLogger.logRequestStart = sinon.spy()
       requestLogger.logRequestEnd = sinon.spy()
       requestLogger.logRequestFailure = sinon.spy()
@@ -48,24 +45,30 @@ describe('wrapper: request scenarios', () => {
         .catch(done)
     })
     it('should return a promise', () => {
-      expect(returnee.constructor).to.equal(Promise)
+      expect(returnee.constructor).toBe(Promise)
     })
-    it('should return a promise that is resolved with the body of the successful request', () => {
-      expect(resolved).to.equal('success')
-    })
+    it(
+      'should return a promise that is resolved with the body of the successful request',
+      () => {
+        expect(resolved).toBe('success')
+      }
+    )
     it('should call a supplied callback function', () => {
-      expect(cb.lastCall.args[0]).to.equal(null)
-      expect(cb.lastCall.args[1]).to.have.property('statusCode').to.equal(200)
-      expect(cb.lastCall.args[1]).to.have.property('body').to.equal('success')
-      expect(cb.lastCall.args[2]).to.equal('success')
-      expect(cb.called).to.equal(true)
+      expect(cb.lastCall.args[0]).toBeNull()
+      expect(cb.lastCall.args[1]).to.have.property('statusCode').toBe(200)
+      expect(cb.lastCall.args[1]).to.have.property('body').toBe('success')
+      expect(cb.lastCall.args[2]).toBe('success')
+      expect(cb.called).toBe(true)
     })
-    it('should log the request start and request end but not a request failure or error', () => {
-      expect(requestLogger.logRequestStart.called).to.equal(true)
-      expect(requestLogger.logRequestEnd.called).to.equal(true)
-      expect(requestLogger.logRequestError.called).to.equal(false)
-      expect(requestLogger.logRequestFailure.called).to.equal(false)
-    })
+    it(
+      'should log the request start and request end but not a request failure or error',
+      () => {
+        expect(requestLogger.logRequestStart.called).toBe(true)
+        expect(requestLogger.logRequestEnd.called).toBe(true)
+        expect(requestLogger.logRequestError.called).toBe(false)
+        expect(requestLogger.logRequestFailure.called).toBe(false)
+      }
+    )
   })
   describe('when the request fails', () => {
     let cb
@@ -87,7 +90,7 @@ describe('wrapper: request scenarios', () => {
     }
     // Wire the EventEmitter into it, so we can emit the event specified above to any watchers
     util.inherits(RequestStub, events.EventEmitter)
-    before(done => {
+    beforeAll(done => {
       requestLogger.logRequestStart = sinon.spy()
       requestLogger.logRequestEnd = sinon.spy()
       requestLogger.logRequestFailure = sinon.spy()
@@ -102,25 +105,34 @@ describe('wrapper: request scenarios', () => {
         })
     })
     it('should return a promise', () => {
-      expect(returnee.constructor).to.equal(Promise)
+      expect(returnee.constructor).toBe(Promise)
     })
-    it('should return a promise that is rejected with an error with a message equal to the response body and an \'errorCode\' property equal to the response code', () => {
-      expect(rejected.constructor).to.equal(Error)
-      expect(rejected.message).to.equal('not found')
-      expect(rejected.errorCode).to.equal(404)
-    })
-    it('should call a supplied callback function with the results of the request', () => {
-      expect(cb.lastCall.args[0]).to.equal(null)
-      expect(cb.lastCall.args[1]).to.have.property('statusCode').to.equal(404)
-      expect(cb.lastCall.args[1]).to.have.property('body').to.equal('not found')
-      expect(cb.lastCall.args[2]).to.equal('not found')
-    })
-    it('should log the request start, end and failure but not a request error', () => {
-      expect(requestLogger.logRequestStart.called).to.equal(true)
-      expect(requestLogger.logRequestEnd.called).to.equal(true)
-      expect(requestLogger.logRequestError.called).to.equal(false)
-      expect(requestLogger.logRequestFailure.called).to.equal(true)
-    })
+    it(
+      'should return a promise that is rejected with an error with a message equal to the response body and an \'errorCode\' property equal to the response code',
+      () => {
+        expect(rejected.constructor).toBe(Error)
+        expect(rejected.message).toBe('not found')
+        expect(rejected.errorCode).toBe(404)
+      }
+    )
+    it(
+      'should call a supplied callback function with the results of the request',
+      () => {
+        expect(cb.lastCall.args[0]).toBeNull()
+        expect(cb.lastCall.args[1]).to.have.property('statusCode').toBe(404)
+        expect(cb.lastCall.args[1]).to.have.property('body').toBe('not found')
+        expect(cb.lastCall.args[2]).toBe('not found')
+      }
+    )
+    it(
+      'should log the request start, end and failure but not a request error',
+      () => {
+        expect(requestLogger.logRequestStart.called).toBe(true)
+        expect(requestLogger.logRequestEnd.called).toBe(true)
+        expect(requestLogger.logRequestError.called).toBe(false)
+        expect(requestLogger.logRequestFailure.called).toBe(true)
+      }
+    )
   })
 
   describe('when the request errors', () => {
@@ -144,7 +156,7 @@ describe('wrapper: request scenarios', () => {
 
     // Wire the EventEmitter into it, so we can emit the event specified above to any watchers
     util.inherits(RequestStub, events.EventEmitter)
-    before(done => {
+    beforeAll(done => {
       requestLogger.logRequestStart = sinon.spy()
       requestLogger.logRequestEnd = sinon.spy()
       requestLogger.logRequestFailure = sinon.spy()
@@ -159,23 +171,32 @@ describe('wrapper: request scenarios', () => {
         })
     })
     it('should return a promise', () => {
-      expect(returnee.constructor).to.equal(Promise)
+      expect(returnee.constructor).toBe(Promise)
     })
-    it('should return a promise that is rejected with the error that the request module returned', () => {
-      expect(rejected.constructor).to.equal(Error)
-      expect(rejected.message).to.equal('something simply dreadful happened')
-      expect(rejected.errorCode).to.equal(undefined)
-    })
-    it('should call a supplied callback function with the results of the request', () => {
-      expect(cb.lastCall.args[0]).to.equal(rejected)
-      expect(cb.lastCall.args[1]).to.equal(undefined)
-      expect(cb.lastCall.args[2]).to.equal(undefined)
-    })
-    it('should log the request start, end and error but not a request failure', () => {
-      expect(requestLogger.logRequestStart.called).to.equal(true)
-      expect(requestLogger.logRequestEnd.called).to.equal(true)
-      expect(requestLogger.logRequestError.called).to.equal(true)
-      expect(requestLogger.logRequestFailure.called).to.equal(false)
-    })
+    it(
+      'should return a promise that is rejected with the error that the request module returned',
+      () => {
+        expect(rejected.constructor).toBe(Error)
+        expect(rejected.message).toBe('something simply dreadful happened')
+        expect(rejected.errorCode).toBeUndefined()
+      }
+    )
+    it(
+      'should call a supplied callback function with the results of the request',
+      () => {
+        expect(cb.lastCall.args[0]).toBe(rejected)
+        expect(cb.lastCall.args[1]).toBeUndefined()
+        expect(cb.lastCall.args[2]).toBeUndefined()
+      }
+    )
+    it(
+      'should log the request start, end and error but not a request failure',
+      () => {
+        expect(requestLogger.logRequestStart.called).toBe(true)
+        expect(requestLogger.logRequestEnd.called).toBe(true)
+        expect(requestLogger.logRequestError.called).toBe(true)
+        expect(requestLogger.logRequestFailure.called).toBe(false)
+      }
+    )
   })
 })

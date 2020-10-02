@@ -1,7 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
-
 const StripeBankAccount = require('./stripeBankAccount.model')
 
 describe('StripeBankAccount', () => {
@@ -14,7 +12,7 @@ describe('StripeBankAccount', () => {
       bank_account_number: bankAccountNumber
     })
 
-    expect(stripeBankAccount.basicObject()).to.deep.equal({
+    expect(stripeBankAccount.basicObject()).toEqual({
       external_account: {
         object: 'bank_account',
         country: 'GB',
@@ -33,7 +31,7 @@ describe('StripeBankAccount', () => {
     expect(() => new StripeBankAccount({
       bank_account_sort_code: bankAccountSortCode,
       bank_account_number: bankAccountNumber
-    })).to.throw('StripeBankAccount "bank_account_sort_code" must be a string')
+    })).toThrowError('StripeBankAccount "bank_account_sort_code" must be a string')
   })
 
   it('should fail when account number is numeric', () => {
@@ -43,7 +41,7 @@ describe('StripeBankAccount', () => {
     expect(() => new StripeBankAccount({
       bank_account_sort_code: bankAccountSortCode,
       bank_account_number: bankAccountNumber
-    })).to.throw('StripeBankAccount "bank_account_number" must be a string')
+    })).toThrowError('StripeBankAccount "bank_account_number" must be a string')
   })
 
   it('should fail when sort code is null', () => {
@@ -53,7 +51,7 @@ describe('StripeBankAccount', () => {
     expect(() => new StripeBankAccount({
       bank_account_sort_code: bankAccountSortCode,
       bank_account_number: bankAccountNumber
-    })).to.throw('StripeBankAccount "bank_account_sort_code" must be a string')
+    })).toThrowError('StripeBankAccount "bank_account_sort_code" must be a string')
   })
 
   it('should fail when account number is null', () => {
@@ -63,7 +61,7 @@ describe('StripeBankAccount', () => {
     expect(() => new StripeBankAccount({
       bank_account_sort_code: bankAccountSortCode,
       bank_account_number: bankAccountNumber
-    })).to.throw('StripeBankAccount "bank_account_number" must be a string')
+    })).toThrowError('StripeBankAccount "bank_account_number" must be a string')
   })
 
   it('should fail when sort code is blank string', () => {
@@ -73,7 +71,7 @@ describe('StripeBankAccount', () => {
     expect(() => new StripeBankAccount({
       bank_account_sort_code: bankAccountSortCode,
       bank_account_number: bankAccountNumber
-    })).to.throw('StripeBankAccount "bank_account_sort_code" is not allowed to be empty')
+    })).toThrowError('StripeBankAccount "bank_account_sort_code" is not allowed to be empty')
   })
 
   it('should fail when account number is blank string', () => {
@@ -83,6 +81,6 @@ describe('StripeBankAccount', () => {
     expect(() => new StripeBankAccount({
       bank_account_sort_code: bankAccountSortCode,
       bank_account_number: bankAccountNumber
-    })).to.throw('StripeBankAccount "bank_account_number" is not allowed to be empty')
+    })).toThrowError('StripeBankAccount "bank_account_number" is not allowed to be empty')
   })
 })

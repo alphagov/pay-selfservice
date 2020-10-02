@@ -2,7 +2,6 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const { expect } = require('chai')
 
 // constants
 const port = Math.floor(Math.random() * 48127) + 1024
@@ -13,7 +12,7 @@ const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtur
 const publicauthClient = require('../../../../app/services/clients/public-auth.client')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-describe('publicauth client - get tokens', function () {
+describe('publicauth client - get tokens', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'publicauth',
@@ -24,8 +23,8 @@ describe('publicauth client - get tokens', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     const params = {
@@ -34,7 +33,7 @@ describe('publicauth client - get tokens', function () {
 
     const getServiceAuthResponse = gatewayAccountFixtures.validGatewayAccountTokensResponse(params)
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${TOKENS_PATH}/${params.accountId}`)
           .withState(`Gateway account ${params.accountId} exists in the database`)
@@ -46,11 +45,11 @@ describe('publicauth client - get tokens', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return service tokens information successfully', function (done) {
+    it('should return service tokens information successfully', done => {
       const expectedTokensData = getServiceAuthResponse.getPlain()
 
       publicauthClient.getActiveTokensForAccount(params).then(function (tokens) {
-        expect(tokens).to.deep.equal(expectedTokensData)
+        expect(tokens).toEqual(expectedTokensData)
         done()
       })
     })

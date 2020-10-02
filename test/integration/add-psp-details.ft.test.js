@@ -3,7 +3,6 @@
 const supertest = require('supertest')
 const nock = require('nock')
 const cheerio = require('cheerio')
-const { expect } = require('chai')
 
 const paths = require('../../app/paths')
 const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fixtures')
@@ -15,13 +14,13 @@ const GATEWAY_ACCOUNT_ID = 111
 const { getApp } = require('../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../test-helpers/mock-session')
 
-describe('Add stripe psp details route', function () {
+describe('Add stripe psp details route', () => {
   describe('All setup steps complete', () => {
     let app
 
     afterEach(() => nock.cleanAll())
 
-    beforeEach(function () {
+    beforeEach(() => {
       const session = getMockSession(getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'stripe-account-details:update' }]
@@ -52,8 +51,8 @@ describe('Add stripe psp details route', function () {
       const res = await supertest(app)
         .get(paths.stripe.addPspAccountDetails)
       const $ = cheerio.load(res.text)
-      expect(res.statusCode).to.equal(200)
-      expect($('h1').text()).to.contain('Go live complete')
+      expect(res.statusCode).toBe(200)
+      expect($('h1').text()).toEqual(expect.arrayContaining(['Go live complete']))
     })
   })
 })

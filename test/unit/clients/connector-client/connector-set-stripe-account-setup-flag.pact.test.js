@@ -28,13 +28,13 @@ describe('connector client - set stripe account setup flag', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('set bank account flag', () => {
     const request = stripeAccountSetupFixtures.buildUpdateBankAccountDetailsFlagRequest(true).getPlain()
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
           .withUponReceiving('a valid patch update stripe account bank account flag request')
@@ -59,7 +59,7 @@ describe('connector client - set stripe account setup flag', () => {
   describe('set vat number flag', () => {
     const request = stripeAccountSetupFixtures.buildUpdateVatNumberFlagRequest(true).getPlain()
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
           .withUponReceiving('a valid patch update stripe account vat number flag request')
@@ -84,7 +84,7 @@ describe('connector client - set stripe account setup flag', () => {
   describe('set company number flag', () => {
     const request = stripeAccountSetupFixtures.buildUpdateCompanyNumberFlagRequest(true).getPlain()
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
           .withUponReceiving('a valid patch update stripe account company number flag request')
@@ -109,7 +109,7 @@ describe('connector client - set stripe account setup flag', () => {
   describe('set responsible person flag', () => {
     const request = stripeAccountSetupFixtures.buildUpdateResponsiblePersonFlagRequest(true).getPlain()
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
           .withUponReceiving('a valid patch update stripe account responsible person flag request')

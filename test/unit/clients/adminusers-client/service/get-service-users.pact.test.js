@@ -2,7 +2,6 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const { expect } = require('chai')
 
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const userServiceFixtures = require('../../../../fixtures/user-service.fixture')
@@ -28,8 +27,8 @@ describe('adminusers client - service users', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('single user is returned for service', () => {
     const getServiceUsersResponse = userServiceFixtures.validServiceUsersResponse([{
@@ -40,7 +39,7 @@ describe('adminusers client - service users', () => {
       }]
     }])
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICES_PATH}/${existingServiceExternalId}/users`)
           .withUponReceiving('a valid get service users request')
@@ -57,16 +56,16 @@ describe('adminusers client - service users', () => {
       return adminusersClient.getServiceUsers(existingServiceExternalId).then(
         users => {
           const expectedResponse = getServiceUsersResponse.getPlain()
-          expect(users[0].serviceRoles.length).to.be.equal(expectedResponse[0].service_roles.length)
-          expect(users[0].hasService(existingServiceExternalId)).to.be.equal(true)
+          expect(users[0].serviceRoles.length).toBe(expectedResponse[0].service_roles.length)
+          expect(users[0].hasService(existingServiceExternalId)).toBe(true)
         }
-      )
+      );
     })
   })
 
   describe('service does not exist', () => {
     const nonExistingServiceId = '500'
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICES_PATH}/${nonExistingServiceId}/users`)
           .withUponReceiving('a valid get service users request with non-existing service id')
@@ -82,8 +81,8 @@ describe('adminusers client - service users', () => {
       return adminusersClient.getServiceUsers(nonExistingServiceId)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

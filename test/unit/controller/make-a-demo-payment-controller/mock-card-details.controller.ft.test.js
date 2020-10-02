@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
@@ -16,7 +15,7 @@ describe('make a demo payment - mock card details controller', () => {
   describe('when both paymentDescription and paymentAmount exist in the session', () => {
     let result, $, app
 
-    before('Arrange', () => {
+    beforeAll(() => {
       const session = getMockSession(getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }]
@@ -31,7 +30,7 @@ describe('make a demo payment - mock card details controller', () => {
       app = createAppWithSession(getApp(), session)
     })
 
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .get(paths.prototyping.demoPayment.mockCardDetails)
         .end((err, res) => {
@@ -41,27 +40,33 @@ describe('make a demo payment - mock card details controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
-    it(`should include a back link linking to the demoservice index page`, () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoPayment.index)
-    })
+    it(
+      `should include a back link linking to the demoservice index page`,
+      () => {
+        expect($('.govuk-back-link').attr('href')).toBe(paths.prototyping.demoPayment.index)
+      }
+    )
 
-    it(`should include form which has the go to demo payment page as its action`, () => {
-      expect($('form').attr('action')).to.equal(paths.prototyping.demoPayment.goToPaymentScreens)
-    })
+    it(
+      `should include form which has the go to demo payment page as its action`,
+      () => {
+        expect($('form').attr('action')).toBe(paths.prototyping.demoPayment.goToPaymentScreens)
+      }
+    )
   })
 
   describe('when paymentDescription exists in the session but paymentAmount does not', () => {
     let result, app
 
-    before('Arrange', () => {
+    beforeAll(() => {
       const session = getMockSession(getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }]
@@ -75,7 +80,7 @@ describe('make a demo payment - mock card details controller', () => {
       app = createAppWithSession(getApp(), session)
     })
 
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .get(paths.prototyping.demoPayment.mockCardDetails)
         .end((err, res) => {
@@ -84,23 +89,23 @@ describe('make a demo payment - mock card details controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect back to the index page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+      expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.index)
     })
   })
 
   describe('when paymentAmount exists in the session but paymentAmount does not', () => {
     let result, app
 
-    before('Arrange', () => {
+    beforeAll(() => {
       const session = getMockSession(getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }]
@@ -114,7 +119,7 @@ describe('make a demo payment - mock card details controller', () => {
       app = createAppWithSession(getApp(), session)
     })
 
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .get(paths.prototyping.demoPayment.mockCardDetails)
         .end((err, res) => {
@@ -123,23 +128,23 @@ describe('make a demo payment - mock card details controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect back to the index page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+      expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.index)
     })
   })
 
   describe('when there neither paymentDescription or paymentAmount exist in the session', () => {
     let result, app
 
-    before('Arrange', () => {
+    beforeAll(() => {
       const session = getMockSession(getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }]
@@ -150,7 +155,7 @@ describe('make a demo payment - mock card details controller', () => {
       app = createAppWithSession(getApp(), session)
     })
 
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .get(paths.prototyping.demoPayment.mockCardDetails)
         .end((err, res) => {
@@ -159,16 +164,16 @@ describe('make a demo payment - mock card details controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect back to the index page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+      expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.index)
     })
   })
 })

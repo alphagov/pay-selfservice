@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -19,7 +18,7 @@ const gatewayAccountId = 42
 const chargeId = 'abc123'
 const defaultChargeState = `Gateway account ${gatewayAccountId} exists and has a charge for £1 with id ${chargeId}`
 
-describe('connector client', function () {
+describe('connector client', () => {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
@@ -30,8 +29,8 @@ describe('connector client', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('post refund', () => {
     describe('success', () => {
@@ -40,7 +39,7 @@ describe('connector client', function () {
         refund_amount_available: 100
       })
 
-      before(() => {
+      beforeAll(() => {
         const pactified = validPostRefundRequest.getPactified()
         return provider.addInteraction(
           new PactInteractionBuilder(`${CHARGES_RESOURCE}/${gatewayAccountId}/charges/${chargeId}/refunds`)
@@ -68,7 +67,7 @@ describe('connector client', function () {
       })
       const invalidTransactionRefundResponse = transactionDetailsFixtures.invalidTransactionRefundResponse()
 
-      before(() => {
+      beforeAll(() => {
         const pactifiedRequest = invalidTransactionRefundRequest.getPactified()
         const pactifiedResponse = invalidTransactionRefundResponse.getPactified()
 
@@ -86,19 +85,22 @@ describe('connector client', function () {
 
       afterEach(() => provider.verify())
 
-      it('should fail with a refund amount greater than the refund amount available', () => {
-        const refundFailureResponse = invalidTransactionRefundResponse.getPlain()
-        const payload = invalidTransactionRefundRequest.getPlain()
-        return connectorClient.postChargeRefund(gatewayAccountId, chargeId, payload, 'correlation-id')
-          .then(
-            () => { throw new Error('Expected to reject') },
-            (err) => {
-              expect(err.errorCode).to.equal(400)
-              expect(err.errorIdentifier).to.equal(refundFailureResponse.error_identifier)
-              expect(err.reason).to.equal(refundFailureResponse.reason)
-            }
-          )
-      })
+      it(
+        'should fail with a refund amount greater than the refund amount available',
+        () => {
+          const refundFailureResponse = invalidTransactionRefundResponse.getPlain()
+          const payload = invalidTransactionRefundRequest.getPlain()
+          return connectorClient.postChargeRefund(gatewayAccountId, chargeId, payload, 'correlation-id')
+            .then(
+              () => { throw new Error('Expected to reject') },
+              (err) => {
+                expect(err.errorCode).toBe(400)
+                expect(err.errorIdentifier).toBe(refundFailureResponse.error_identifier)
+                expect(err.reason).toBe(refundFailureResponse.reason)
+              }
+            );
+        }
+      )
     })
   })
 })

@@ -2,10 +2,10 @@
 
 const correlator = require('correlation-id')
 const http = require('http')
-const { expect } = require('chai')
-const proxyquire = require('proxyquire')
 
 const config = require('../../../../app/utils/correlation-header')
+
+jest.mock('requestretry', () => requestRetryStub);
 
 describe('baseClient', () => {
   const requestRetryStub = {
@@ -15,14 +15,11 @@ describe('baseClient', () => {
       }
     }
   }
-  const baseClient = proxyquire('../../../../app/services/clients/base-client/base.client',
-    {
-      'requestretry': requestRetryStub
-    })
+  const baseClient = require('../../../../app/services/clients/base-client/base.client')
 
   describe('headers', () => {
     let correlationID, request
-    before(done => {
+    beforeAll(done => {
       correlationID = `${Math.floor(Math.random() * 100000) + 1}`
       correlator.withId(correlationID, () => {
         baseClient.get({ url: 'http://example.com/' }, (err, response) => {
@@ -32,18 +29,24 @@ describe('baseClient', () => {
       })
     })
 
-    it(`should set outbound request's '${config.CORRELATION_HEADER}' header to be the result of 'correlator.getId()'`, () => {
-      expect(request.headers).to.have.property(config.CORRELATION_HEADER).to.equal(correlationID)
-    })
+    it(
+      `should set outbound request's '${config.CORRELATION_HEADER}' header to be the result of 'correlator.getId()'`,
+      () => {
+        expect(request.headers).to.have.property(config.CORRELATION_HEADER).toBe(correlationID)
+      }
+    )
 
-    it(`should set outbound request's 'Content-Type' header to be 'application/json'`, () => {
-      expect(request.headers).to.have.property('Content-Type').to.equal('application/json')
-    })
+    it(
+      `should set outbound request's 'Content-Type' header to be 'application/json'`,
+      () => {
+        expect(request.headers).to.have.property('Content-Type').toBe('application/json')
+      }
+    )
   })
   describe('keepAlive', () => {
     let server
     let connections = []
-    before(done => {
+    beforeAll(done => {
       server = http.createServer((req, res) => {
         res.writeHead(200)
         res.end()
@@ -58,13 +61,16 @@ describe('baseClient', () => {
         connections.push(response.connection)
       }
     })
-    after(() => {
+    afterAll(() => {
       server.close()
     })
 
-    it('should use the same connection for 2 requests to the same domain', () => {
-      expect(connections.length).to.equal(2)
-      expect(connections[0] === connections[1]).to.equal(true)
-    })
+    it(
+      'should use the same connection for 2 requests to the same domain',
+      () => {
+        expect(connections.length).toBe(2)
+        expect(connections[0] === connections[1]).toBe(true)
+      }
+    )
   })
 })

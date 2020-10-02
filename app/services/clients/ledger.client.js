@@ -23,7 +23,7 @@ const transaction = function transaction (id, gatewayAccountId, options = {}) {
     url: `/v1/transaction/${id}`,
     qs: {
       account_id: gatewayAccountId,
-      ...options.transaction_type && { transaction_type: options.transaction_type }
+      ...(options.transaction_type && { transaction_type: options.transaction_type })
     },
     description: 'Get individual transaction details',
     transform: legacyConnectorTransactionParity
@@ -100,7 +100,7 @@ const payouts = function payouts (gatewayAccountIds = [], page = 1, displaySize)
       // qsStringifyOptions doesn't seem to be accepted here and the request library is deprecated for upstream changes
       gateway_account_id: gatewayAccountIds.join(','),
       state: 'paidout',
-      ...displaySize && { display_size: displaySize },
+      ...(displaySize && { display_size: displaySize }),
       page
     },
     description: 'List payouts for a given gateway account ID',

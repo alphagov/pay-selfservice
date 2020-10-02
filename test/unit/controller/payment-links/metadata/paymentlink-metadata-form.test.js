@@ -1,13 +1,12 @@
-const { expect } = require('chai')
 const MetadataForm = require('./../../../../../app/controllers/payment-links/metadata/metadata-form')
 
 describe('Payment link metadata form model', () => {
   it('initialises with valid input', () => {
     const body = { 'metadata-column-header': 'key', 'metadata-cell-value': 'value' }
     const form = new MetadataForm(body)
-    expect(form).to.not.be.null // eslint-disable-line
-    expect(form.values['metadata-column-header']).to.eq('key')
-    expect(form.values['metadata-cell-value']).to.eq('value')
+    expect(form).not.toBeNull() // eslint-disable-line
+    expect(form.values['metadata-column-header']).toBe('key')
+    expect(form.values['metadata-cell-value']).toBe('value')
   })
 
   it('correctly validates given invalid input', () => {
@@ -15,9 +14,9 @@ describe('Payment link metadata form model', () => {
     const form = new MetadataForm(body)
     const tested = form.validate()
 
-    expect(tested.errors.length).to.eq(1)
-    expect(tested.errorMaps['metadata-column-header']).to.not.be.null // eslint-disable-line
-    expect(tested.errorMaps['metadata-cell-value']).to.be.undefined // eslint-disable-line
+    expect(tested.errors.length).toBe(1)
+    expect(tested.errorMaps['metadata-column-header']).not.toBeNull() // eslint-disable-line
+    expect(tested.errorMaps['metadata-cell-value']).toBeUndefined() // eslint-disable-line
   })
 
   it('correctly passes with all valid inputs', () => {
@@ -25,7 +24,7 @@ describe('Payment link metadata form model', () => {
     const form = new MetadataForm(body)
     const tested = form.validate()
 
-    expect(tested.errors.length).to.eq(0)
+    expect(tested.errors.length).toBe(0)
   })
 
   it('parses a known submission error correctly', () => {
@@ -34,7 +33,7 @@ describe('Payment link metadata form model', () => {
     const form = new MetadataForm(body)
     const submissionError = form.parseSubmissionError(error)
 
-    expect(submissionError.field).to.eq(form.fields.metadataKey)
+    expect(submissionError.field).toBe(form.fields.metadataKey)
   })
 
   it('gets default error case if no known codes match', () => {
@@ -43,6 +42,6 @@ describe('Payment link metadata form model', () => {
     const form = new MetadataForm(body)
     const submissionError = form.parseSubmissionError(error)
 
-    expect(submissionError.text).to.eq('Unknown problem with adding reporting column')
+    expect(submissionError.text).toBe('Unknown problem with adding reporting column')
   })
 })

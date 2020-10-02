@@ -1,6 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const supertest = require('supertest')
@@ -37,7 +36,7 @@ describe('Toggle billing address collection controller', () => {
   }
 
   describe('should get index with billing address on', () => {
-    before(done => {
+    beforeAll(done => {
       user = buildUserWithCollectBillingAddress(true)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
@@ -51,15 +50,15 @@ describe('Toggle billing address collection controller', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it('should have correct checkbox checked', () => {
-      expect($('#billing-address-toggle:checked').length).to.equal(1)
-      expect($('#billing-address-toggle-2:checked').length).to.equal(0)
+      expect($('#billing-address-toggle:checked').length).toBe(1)
+      expect($('#billing-address-toggle-2:checked').length).toBe(0)
     })
   })
   describe('should get index with billing address off', () => {
-    before(done => {
+    beforeAll(done => {
       user = buildUserWithCollectBillingAddress(false)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
@@ -73,15 +72,15 @@ describe('Toggle billing address collection controller', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it('should have correct checkbox checked', () => {
-      expect($('#billing-address-toggle:checked').length).to.equal(0)
-      expect($('#billing-address-toggle-2:checked').length).to.equal(1)
+      expect($('#billing-address-toggle:checked').length).toBe(0)
+      expect($('#billing-address-toggle-2:checked').length).toBe(1)
     })
   })
   describe('should redirect to index on enable billing address', () => {
-    before(done => {
+    beforeAll(done => {
       user = buildUserWithCollectBillingAddress(true)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
@@ -106,14 +105,14 @@ describe('Toggle billing address collection controller', () => {
         })
     })
     it('should get a nice 302 status code', () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
     it('should redirect to the index page', () => {
-      expect(response.headers).to.have.property('location').to.equal(paths.toggleBillingAddress.index)
+      expect(response.headers).to.have.property('location').toBe(paths.toggleBillingAddress.index)
     })
   })
   describe('should redirect to index on disable billing address', () => {
-    before(done => {
+    beforeAll(done => {
       user = buildUserWithCollectBillingAddress(false)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
@@ -138,10 +137,10 @@ describe('Toggle billing address collection controller', () => {
         })
     })
     it('should get a nice 302 status code', () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
     it('should redirect to the index page', () => {
-      expect(response.headers).to.have.property('location').to.equal(paths.toggleBillingAddress.index)
+      expect(response.headers).to.have.property('location').toBe(paths.toggleBillingAddress.index)
     })
   })
 })

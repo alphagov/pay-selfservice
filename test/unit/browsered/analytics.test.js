@@ -3,7 +3,6 @@
 const analytics = require('../../../app/browsered/analytics')
 const sinon = require('sinon')
 const jsdom = require('jsdom')
-const { expect } = require('chai')
 
 describe('analytics setup', () => {
   beforeEach(() => {
@@ -17,18 +16,18 @@ describe('analytics setup', () => {
     }).window
     document = window.document
     analytics.setupAnalytics()
-    expect(ga.callCount).equals(11)
-    expect(ga.getCall(0).calledWith('create', 'test-analytics-id', 'auto')).equals(true)
-    expect(ga.getCall(1).calledWith('set', 'anonymizeIp', true)).equals(true)
-    expect(ga.getCall(2).calledWith('set', 'displayFeaturesTask', null)).equals(true)
-    expect(ga.getCall(3).calledWith('set', 'transport', 'beacon')).equals(true)
+    expect(ga.callCount).toBe(11)
+    expect(ga.getCall(0).calledWith('create', 'test-analytics-id', 'auto')).toBe(true)
+    expect(ga.getCall(1).calledWith('set', 'anonymizeIp', true)).toBe(true)
+    expect(ga.getCall(2).calledWith('set', 'displayFeaturesTask', null)).toBe(true)
+    expect(ga.getCall(3).calledWith('set', 'transport', 'beacon')).toBe(true)
 
     expect(ga.getCall(4).calledWith('create',
-      'linked-tracking-id', 'auto', 'govuk_shared', { 'allowLinker': true })).equals(true)
-    expect(ga.getCall(5).calledWith('govuk_shared.require', 'linker')).equals(true)
-    expect(ga.getCall(6).calledWith('govuk_shared.linker.set', 'anonymizeIp')).equals(true)
-    expect(ga.getCall(7).calledWith('govuk_shared.linker:autoLink', ['www.gov.uk'])).equals(true)
-    expect(ga.getCall(8).calledWith('set', 'page', '/search?from_date=2020-01-01')).equals(true)
+      'linked-tracking-id', 'auto', 'govuk_shared', { 'allowLinker': true })).toBe(true)
+    expect(ga.getCall(5).calledWith('govuk_shared.require', 'linker')).toBe(true)
+    expect(ga.getCall(6).calledWith('govuk_shared.linker.set', 'anonymizeIp')).toBe(true)
+    expect(ga.getCall(7).calledWith('govuk_shared.linker:autoLink', ['www.gov.uk'])).toBe(true)
+    expect(ga.getCall(8).calledWith('set', 'page', '/search?from_date=2020-01-01')).toBe(true)
   })
 
   it('should filter PII correctly ', () => {
@@ -39,6 +38,6 @@ describe('analytics setup', () => {
     analytics.setupAnalytics()
 
     expect(ga.getCall(8).calledWith('set', 'page',
-      '/search?from_date=2020-01-01&email=&to_date=2020-01-01')).equals(true)
+      '/search?from_date=2020-01-01&email=&to_date=2020-01-01')).toBe(true)
   })
 })

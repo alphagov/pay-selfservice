@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,7 +14,7 @@ const connectorClient = new Connector(`http://localhost:${port}`)
 
 // Global setup
 
-describe('connector client', function () {
+describe('connector client', () => {
   const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
@@ -26,13 +25,13 @@ describe('connector client', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('get card types', () => {
     const validCardTypesResponse = cardFixtures.validCardTypesResponse()
 
-    before((done) => {
+    beforeAll((done) => {
       const pactified = validCardTypesResponse.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${CARD_TYPES_RESOURCE}`)
@@ -48,10 +47,10 @@ describe('connector client', function () {
 
     afterEach(() => provider.verify())
 
-    it('should get card types successfully', function (done) {
+    it('should get card types successfully', done => {
       const getCardTypes = validCardTypesResponse.getPlain()
       connectorClient.getAllCardTypes((connectorData, connectorResponse) => {
-        expect(connectorResponse.body).to.deep.equal(getCardTypes)
+        expect(connectorResponse.body).toEqual(getCardTypes)
         done()
       })
     })

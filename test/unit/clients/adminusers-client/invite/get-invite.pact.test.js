@@ -2,7 +2,6 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const { expect } = require('chai')
 const inviteFixtures = require('../../../../fixtures/invite.fixtures')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -11,7 +10,7 @@ const INVITES_PATH = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
-describe('adminusers client - get a validated invite', function () {
+describe('adminusers client - get a validated invite', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
@@ -22,8 +21,8 @@ describe('adminusers client - get a validated invite', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
@@ -35,7 +34,7 @@ describe('adminusers client - get a validated invite', function () {
 
     const getInviteResponse = inviteFixtures.validInviteResponse(params)
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITES_PATH}/${inviteCode}`)
           .withState('a valid invite exists with the given invite code')
@@ -47,21 +46,21 @@ describe('adminusers client - get a validated invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should find an invite successfully', function () {
+    it('should find an invite successfully', () => {
       const expectedInviteData = getInviteResponse.getPlain()
 
       return adminusersClient.getValidatedInvite(params.invite_code).then(function (invite) {
-        expect(invite.email).to.be.equal(expectedInviteData.email)
-        expect(invite.telephone_number).to.be.equal(expectedInviteData.telephone_number)
-        expect(invite.type).to.be.equal(expectedInviteData.type)
-      })
+        expect(invite.email).toBe(expectedInviteData.email)
+        expect(invite.telephone_number).toBe(expectedInviteData.telephone_number)
+        expect(invite.type).toBe(expectedInviteData.type)
+      });
     })
   })
 
   describe('expired', () => {
     const expiredCode = '7d19aff33f8948deb97ed16b2912dcd3'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITES_PATH}/${expiredCode}`)
           .withState('invite expired for the given invite code')
@@ -74,19 +73,19 @@ describe('adminusers client - get a validated invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should respond 410 if invite expired', function () {
+    it('should respond 410 if invite expired', () => {
       return adminusersClient.getValidatedInvite(expiredCode)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(410)
-        )
+          err => expect(err.errorCode).toBe(410)
+        );
     })
   })
 
   describe('not found', () => {
     const nonExistingCode = '7d19aff33f8948deb97ed16b2912dcd3'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITES_PATH}/${nonExistingCode}`)
           .withState('invite not exists for the given invite code')
@@ -99,12 +98,12 @@ describe('adminusers client - get a validated invite', function () {
 
     afterEach(() => provider.verify())
 
-    it('should respond 404 if invite not found', function () {
+    it('should respond 404 if invite not found', () => {
       return adminusersClient.getValidatedInvite(nonExistingCode)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const lodash = require('lodash')
 const nock = require('nock')
 const csrf = require('csrf')
@@ -28,7 +27,7 @@ const VALID_PAYLOAD = {
 describe('Create payment link web address post controller', () => {
   describe(`when an available product path name is submitted`, () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.createPaymentLink', {
         paymentLinkTitle: 'Payment title',
@@ -47,7 +46,7 @@ describe('Create payment link web address post controller', () => {
         .query({ 'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path })
         .reply(404, product)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.paymentLinks.webAddress)
         .send(VALID_PAYLOAD)
@@ -59,21 +58,21 @@ describe('Create payment link web address post controller', () => {
 
     it('should have productNamePath stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('productNamePath').to.equal(PAYMENT_TITLE_SLUGIFIED)
+      expect(sessionPageData).to.have.property('productNamePath').toBe(PAYMENT_TITLE_SLUGIFIED)
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to the reference page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.reference)
+      expect(result.headers).to.have.property('location').toBe(paths.paymentLinks.reference)
     })
   })
 
   describe(`when an unavailable product path name is submitted`, () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
       lodash.set(session, 'pageData.createPaymentLink', {
@@ -92,7 +91,7 @@ describe('Create payment link web address post controller', () => {
         .query({ 'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path })
         .reply(200, product)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.paymentLinks.webAddress)
         .send(VALID_PAYLOAD)
@@ -104,22 +103,25 @@ describe('Create payment link web address post controller', () => {
 
     it('should have productNamePath stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('productNamePath').to.equal(PAYMENT_TITLE_SLUGIFIED)
+      expect(sessionPageData).to.have.property('productNamePath').toBe(PAYMENT_TITLE_SLUGIFIED)
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to the web address page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.webAddress)
+      expect(result.headers).to.have.property('location').toBe(paths.paymentLinks.webAddress)
     })
 
-    it('should have a recovered object stored on the session containing errors and submitted data', () => {
-      const recovered = lodash.get(session, 'pageData.createPaymentLink.webAddressPageRecovered', {})
-      expect(recovered).to.have.property('paymentLinkURLPath').to.equal(PAYMENT_TITLE_SLUGIFIED)
-      expect(recovered).to.have.property('errors')
-      expect(recovered.errors).to.have.property('path')
-    })
+    it(
+      'should have a recovered object stored on the session containing errors and submitted data',
+      () => {
+        const recovered = lodash.get(session, 'pageData.createPaymentLink.webAddressPageRecovered', {})
+        expect(recovered).to.have.property('paymentLinkURLPath').toBe(PAYMENT_TITLE_SLUGIFIED)
+        expect(recovered).toHaveProperty('errors')
+        expect(recovered.errors).toHaveProperty('path')
+      }
+    )
   })
 })

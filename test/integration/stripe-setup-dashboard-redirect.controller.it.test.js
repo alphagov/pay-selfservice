@@ -15,10 +15,10 @@ const { validGatewayAccountsResponse } = require('../fixtures/gateway-account.fi
 const user = session.getUser()
 const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
 
-describe('Service dashboard redirect to live account controller', function () {
+describe('Service dashboard redirect to live account controller', () => {
   afterEach(() => nock.cleanAll())
 
-  beforeEach(function () {
+  beforeEach(() => {
     userCreator.mockUserResponse(user.toJson())
 
     const accountsResponse = validGatewayAccountsResponse({

@@ -1,7 +1,6 @@
 'use strict'
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
-const { expect } = require('chai')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let random = require('../../../../../app/utils/random')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
@@ -10,7 +9,7 @@ let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const USER_PATH = '/v1/api/users'
 
-describe('adminusers client - get users', function () {
+describe('adminusers client - get users', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
@@ -21,8 +20,8 @@ describe('adminusers client - get users', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     let existingExternalIds = [
@@ -43,7 +42,7 @@ describe('adminusers client - get users', function () {
 
     let getUserResponse = userFixtures.validMultipleUserResponse(params)
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(USER_PATH)
           .withQuery('ids', existingExternalIds.join())
@@ -56,22 +55,22 @@ describe('adminusers client - get users', function () {
 
     afterEach(() => provider.verify())
 
-    it('should find users successfully', function () {
+    it('should find users successfully', () => {
       const expectedUserData = getUserResponse.getPlain()
 
       return adminusersClient.getUsersByExternalIds(existingExternalIds)
         .then(function (users) {
           users.forEach((user, index) => {
-            expect(user.externalId).to.be.equal(expectedUserData[index].external_id)
-            expect(user.username).to.be.equal(expectedUserData[index].username)
-            expect(user.email).to.be.equal(expectedUserData[index].email)
-            expect(user.serviceRoles.length).to.be.equal(1)
-            expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(2)
-            expect(user.telephoneNumber).to.be.equal(expectedUserData[index].telephone_number)
-            expect(user.otpKey).to.be.equal(expectedUserData[index].otp_key)
-            expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData[index].service_roles[0].role.permissions.length)
+            expect(user.externalId).toBe(expectedUserData[index].external_id)
+            expect(user.username).toBe(expectedUserData[index].username)
+            expect(user.email).toBe(expectedUserData[index].email)
+            expect(user.serviceRoles.length).toBe(1)
+            expect(user.serviceRoles[0].service.gatewayAccountIds.length).toBe(2)
+            expect(user.telephoneNumber).toBe(expectedUserData[index].telephone_number)
+            expect(user.otpKey).toBe(expectedUserData[index].otp_key)
+            expect(user.serviceRoles[0].role.permissions.length).toBe(expectedUserData[index].service_roles[0].role.permissions.length)
           })
-        })
+        });
     })
   })
 
@@ -81,7 +80,7 @@ describe('adminusers client - get users', function () {
       random.randomUuid()
     ]
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(USER_PATH)
           .withQuery('ids', existingExternalIds.join())
@@ -95,12 +94,12 @@ describe('adminusers client - get users', function () {
 
     afterEach(() => provider.verify())
 
-    it('should respond 404 if user not found', function () {
+    it('should respond 404 if user not found', () => {
       return adminusersClient.getUsersByExternalIds(existingExternalIds)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

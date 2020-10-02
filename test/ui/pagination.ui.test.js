@@ -2,7 +2,7 @@
 
 const { render } = require('../test-helpers/html-assertions.js')
 
-describe('The pagination links', function () {
+describe('The pagination links', () => {
   it('should display correct pagination links for all filters', () => {
     const filters = {
       'reference': 'ref1',
@@ -24,62 +24,65 @@ describe('The pagination links', function () {
     const templateData = transactionsTemplateData(filters)
     const body = render('transactions/paginator', templateData)
 
-    body.should.containSelector('div.pagination')
+    expect(body).containSelector('div.pagination')
 
     templateData.paginationLinks.forEach((link) => {
-      body.should.containSelector('.paginationForm.page-' + link.pageName)
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="state"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName)
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="state"]')
         .withAttribute('value', 'Cancelled')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="reference"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="reference"]')
         .withAttribute('value', 'ref1')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + ' [name="email"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + ' [name="email"]')
         .withAttribute('value', 'abc@example.com')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="fromDate"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="fromDate"]')
         .withAttribute('value', '2015-01-11')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + ' [name="toDate"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + ' [name="toDate"]')
         .withAttribute('value', '2016-01-11')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="page"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="page"]')
         .withAttribute('value', String(link.pageNumber))
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="pageSize"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="pageSize"]')
         .withAttribute('value', '100')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="fromTime"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="fromTime"]')
         .withAttribute('value', '01:01:01')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + ' [name="toTime"]')
+      expect(body).containSelector('.paginationForm.page-' + link.pageName + ' [name="toTime"]')
         .withAttribute('value', '02:02:02')
     })
   })
 
-  it('should display correct pagination links for transactions filtered by multiple payment states', () => {
-    const filters = {
-      'state': ['Cancelled', 'In Progress'],
-      'selectedStates': [
-        'Cancelled',
-        'In Progress'
-      ],
-      'payment_states': [
-        'cancelled',
-        'created',
-        'started',
-        'submitted'
-      ],
-      'pageSize': '100'
+  it(
+    'should display correct pagination links for transactions filtered by multiple payment states',
+    () => {
+      const filters = {
+        'state': ['Cancelled', 'In Progress'],
+        'selectedStates': [
+          'Cancelled',
+          'In Progress'
+        ],
+        'payment_states': [
+          'cancelled',
+          'created',
+          'started',
+          'submitted'
+        ],
+        'pageSize': '100'
+      }
+
+      const templateData = transactionsTemplateData(filters)
+      const body = render('transactions/paginator', templateData)
+
+      expect(body).containSelector('div.pagination')
+
+      templateData.paginationLinks.forEach((link) => {
+        expect(body).containSelector('.paginationForm.page-' + link.pageName)
+        expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="state"][value="Cancelled"]')
+        expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="state"][value="In Progress"]')
+        expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="page"]')
+          .withAttribute('value', String(link.pageNumber))
+        expect(body).containSelector('.paginationForm.page-' + link.pageName + '  [name="pageSize"]')
+          .withAttribute('value', '100')
+      })
     }
-
-    const templateData = transactionsTemplateData(filters)
-    const body = render('transactions/paginator', templateData)
-
-    body.should.containSelector('div.pagination')
-
-    templateData.paginationLinks.forEach((link) => {
-      body.should.containSelector('.paginationForm.page-' + link.pageName)
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="state"][value="Cancelled"]')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="state"][value="In Progress"]')
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="page"]')
-        .withAttribute('value', String(link.pageNumber))
-      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="pageSize"]')
-        .withAttribute('value', '100')
-    })
-  })
+  )
 
   const transactionsTemplateData = (filters = {}) => {
     return {

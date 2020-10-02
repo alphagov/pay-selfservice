@@ -14,8 +14,8 @@ function getQueryStringForParams (params = {}, removeEmptyParams = false, flatte
     gateway_payout_id: params.gatewayPayoutId,
     from_date: dates.fromDateToApiFormat(params.fromDate, params.fromTime),
     to_date: dates.toDateToApiFormat(params.toDate, params.toTime),
-    ...params.feeHeaders && { fee_headers: params.feeHeaders },
-    ...params.motoHeader && { moto_header: params.motoHeader }
+    ...(params.feeHeaders && { fee_headers: params.feeHeaders }),
+    ...(params.motoHeader && { moto_header: params.motoHeader })
   }
 
   if (!ignorePagination) {

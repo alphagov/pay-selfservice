@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const nock = require('nock')
 const csrf = require('csrf')
 
@@ -41,7 +40,7 @@ const connectorMock = nock(process.env.CONNECTOR_URL)
 
 describe('POST edit payment link controller', () => {
   let result, session, app
-  before('Arrange', () => {
+  beforeAll(() => {
     connectorMock.get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
       .reply(200, validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }).getPlain())
     productsMock.patch(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${PRODUCT_EXTERNAL_ID}`).reply(200, PAYMENT_1)
@@ -53,7 +52,7 @@ describe('POST edit payment link controller', () => {
 
     app = createAppWithSession(getApp(), session)
   })
-  before('Act', done => {
+  beforeAll(done => {
     supertest(app)
       .post(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
       .send(VALID_PAYLOAD)
@@ -62,18 +61,18 @@ describe('POST edit payment link controller', () => {
         done(err)
       })
   })
-  after(() => {
+  afterAll(() => {
     nock.cleanAll()
   })
 
   it('should redirect with status code 302', () => {
-    expect(result.statusCode).to.equal(302)
+    expect(result.statusCode).toBe(302)
   })
 
   it('should redirect to the manage page with a success message', () => {
-    expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage)
-    expect(session.flash).to.have.property('generic')
-    expect(session.flash.generic.length).to.equal(1)
-    expect(session.flash.generic[0]).to.equal('Your payment link has been updated')
+    expect(result.headers).to.have.property('location').toBe(paths.paymentLinks.manage)
+    expect(session.flash).toHaveProperty('generic')
+    expect(session.flash.generic.length).toBe(1)
+    expect(session.flash.generic[0]).toBe('Your payment link has been updated')
   })
 })

@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
@@ -15,7 +14,7 @@ const GATEWAY_ACCOUNT_ID = '929'
 describe('Create payment link web address controller', () => {
   describe('if landing here for the first time', () => {
     let result, $, session
-    before(done => {
+    beforeAll(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'tokens:create' }]
@@ -37,24 +36,26 @@ describe('Create payment link web address controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
-    it(`should include a cancel link linking to the Create payment link index`, () => {
-      expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.start)
-    })
+    it(
+      `should include a cancel link linking to the Create payment link index`,
+      () => {
+        expect($('.cancel').attr('href')).toBe(paths.paymentLinks.start)
+      }
+    )
 
     it(`should have itself as the form action`, () => {
-      expect($('form').attr('action')).to.equal(paths.paymentLinks.webAddress)
+      expect($('form').attr('action')).toBe(paths.paymentLinks.webAddress)
     })
 
     it(`should an input containing the product path`, () =>
-      expect($(`input[type="text"]`).val()).to.equal(session.pageData.createPaymentLink.productNamePath)
-    )
+      expect($(`input[type="text"]`).val()).toBe(session.pageData.createPaymentLink.productNamePath))
   })
 })

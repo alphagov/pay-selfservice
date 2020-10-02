@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const nock = require('nock')
 const csrf = require('csrf')
 
@@ -21,12 +20,12 @@ const VALID_USER = getUser({
 describe('POST payment link edit amount controller', () => {
   describe('if fixed price is set', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       session.editPaymentLinkData = { externalId: PRODUCT_EXTERNAL_ID }
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
         .send({
@@ -39,35 +38,35 @@ describe('POST payment link edit amount controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
     })
 
     it('should set price in session', () => {
-      expect(session.editPaymentLinkData.price).to.equal(500)
+      expect(session.editPaymentLinkData.price).toBe(500)
     })
 
     it('should redirect to the edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
     })
   })
 
   describe('if variable price is set', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       session.editPaymentLinkData = { externalId: PRODUCT_EXTERNAL_ID }
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
         .send({
@@ -80,35 +79,35 @@ describe('POST payment link edit amount controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
     })
 
     it('should set price in session', () => {
-      expect(session.editPaymentLinkData.price).to.equal('')
+      expect(session.editPaymentLinkData.price).toBe('')
     })
 
     it('should redirect to the edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
     })
   })
 
   describe('if no radio is selected', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       session.editPaymentLinkData = { externalId: PRODUCT_EXTERNAL_ID }
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
         .send({
@@ -120,35 +119,38 @@ describe('POST payment link edit amount controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to same page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
     })
 
-    it('should have a recovered object stored on the session containing errors and submitted data', () => {
-      const recovered = session.editPaymentLinkData.amountPageRecovered
-      expect(recovered).to.have.property('type').to.equal('')
-      expect(recovered).to.have.property('amount').to.equal('')
-      expect(recovered).to.have.property('errors')
-      expect(recovered.errors).to.have.property('type')
-    })
+    it(
+      'should have a recovered object stored on the session containing errors and submitted data',
+      () => {
+        const recovered = session.editPaymentLinkData.amountPageRecovered
+        expect(recovered).to.have.property('type').toBe('')
+        expect(recovered).to.have.property('amount').toBe('')
+        expect(recovered).toHaveProperty('errors')
+        expect(recovered.errors).toHaveProperty('type')
+      }
+    )
   })
 
   describe('if no price set', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       session.editPaymentLinkData = { externalId: PRODUCT_EXTERNAL_ID }
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
         .send({
@@ -161,24 +163,27 @@ describe('POST payment link edit amount controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to same page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
     })
 
-    it('should have a recovered object stored on the session containing errors and submitted data', () => {
-      const recovered = session.editPaymentLinkData.amountPageRecovered
-      expect(recovered).to.have.property('type').to.equal('fixed')
-      expect(recovered).to.have.property('amount').to.equal('')
-      expect(recovered).to.have.property('errors')
-      expect(recovered.errors).to.have.property('amount')
-    })
+    it(
+      'should have a recovered object stored on the session containing errors and submitted data',
+      () => {
+        const recovered = session.editPaymentLinkData.amountPageRecovered
+        expect(recovered).to.have.property('type').toBe('fixed')
+        expect(recovered).to.have.property('amount').toBe('')
+        expect(recovered).toHaveProperty('errors')
+        expect(recovered.errors).toHaveProperty('amount')
+      }
+    )
   })
 })

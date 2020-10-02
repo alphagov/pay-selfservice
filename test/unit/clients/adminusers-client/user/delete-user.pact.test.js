@@ -1,13 +1,12 @@
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const { expect } = require('chai')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const SERVICES_PATH = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
-describe('adminusers client - delete user', function () {
+describe('adminusers client - delete user', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -18,15 +17,15 @@ describe('adminusers client - delete user', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   const serviceId = 'pact-delete-service-id'
   const removerId = 'pact-delete-remover-id'
   const userId = 'pact-delete-user-id'
 
   describe('delete user API - success', () => {
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
           .withState('a user and user admin exists in service with the given ids before a delete operation')
@@ -45,13 +44,13 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should delete a user successfully', function () {
+    it('should delete a user successfully', () => {
       return adminusersClient.deleteUser(serviceId, removerId, userId)
     })
   })
 
   describe('delete user API - remove user itself - conflict', () => {
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${removerId}`)
           .withUponReceiving('a valid delete user from service request but remover is equal to user to be removed')
@@ -69,19 +68,19 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should conflict when remover and user to delete coincide', function () {
+    it('should conflict when remover and user to delete coincide', () => {
       return adminusersClient.deleteUser(serviceId, removerId, removerId)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(409)
-        )
+          err => expect(err.errorCode).toBe(409)
+        );
     })
   })
 
   describe('delete user API - user does not exist - not found', () => {
     const otherUserId = 'user-does-not-exist'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${otherUserId}`)
           .withUponReceiving('an invalid delete user from service request as user does not exist')
@@ -99,13 +98,16 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return not found when resource is not found (user or service)', function () {
-      return adminusersClient.deleteUser(serviceId, removerId, otherUserId)
-        .then(
-          () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
-    })
+    it(
+      'should return not found when resource is not found (user or service)',
+      () => {
+        return adminusersClient.deleteUser(serviceId, removerId, otherUserId)
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.errorCode).toBe(404)
+          );
+      }
+    )
   })
 
   describe('delete user API - user context (remover) does not exist - forbidden', () => {
@@ -113,7 +115,7 @@ describe('adminusers client - delete user', function () {
     const serviceId = 'pact-service-no-remover-test'
     const userId = 'pact-user-no-remover-test'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
           .withState('a user exists but not the remover before a delete operation')
@@ -132,12 +134,12 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return forbidden when remover dos not ex', function () {
+    it('should return forbidden when remover dos not ex', () => {
       return adminusersClient.deleteUser(serviceId, nonExistentRemoverId, userId)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(403)
-        )
+          err => expect(err.errorCode).toBe(403)
+        );
     })
   })
 })

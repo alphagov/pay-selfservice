@@ -1,8 +1,17 @@
 'use strict'
 
-const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const paths = require('../../../paths')
+
+jest.mock('../../../services/clients/stripe/stripe.client', () => ({
+  updateBankAccount: updateBankAccountMock
+}));
+
+jest.mock('../../../services/clients/connector.client', () => ({
+  ConnectorClient: function () {
+    this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
+  }
+}));
 
 describe('Bank details post controller', () => {
   const rawAccountNumber = '00012345'
@@ -40,81 +49,93 @@ describe('Bank details post controller', () => {
     }
   })
 
-  it('should call stripe and connector and redirect to add psp account details redirect route', async () => {
-    updateBankAccountMock = sinon.spy(() => Promise.resolve())
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
+  it(
+    'should call stripe and connector and redirect to add psp account details redirect route',
+    async () => {
+      updateBankAccountMock = sinon.spy(() => Promise.resolve())
+      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMocks()
 
-    await controller(req, res)
+      await controller(req, res)
 
-    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
-      bank_account_sort_code: sanitisedSortCode,
-      bank_account_number: sanitisedAccountNumber
-    })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
-  })
-
-  it('should render error page when Stripe returns unknown error', async () => {
-    updateBankAccountMock = sinon.spy(() => Promise.reject(new Error()))
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
-
-    await controller(req, res)
-
-    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
-      bank_account_sort_code: sanitisedSortCode,
-      bank_account_number: sanitisedAccountNumber
-    })
-    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.notCalled(res.redirect)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
-  })
-
-  it('should re-render the form page when Stripe returns "routing_number_invalid" error', async () => {
-    updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise((resolve, reject) => {
-        const error = new Error()
-        error.code = 'routing_number_invalid'
-        reject(error)
+      sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
       })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+      sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
+    }
+  )
 
-    await controller(req, res)
+  it(
+    'should render error page when Stripe returns unknown error',
+    async () => {
+      updateBankAccountMock = sinon.spy(() => Promise.reject(new Error()))
+      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMocks()
 
-    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
-      bank_account_sort_code: sanitisedSortCode,
-      bank_account_number: sanitisedAccountNumber
-    })
-    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.notCalled(res.redirect)
-    sinon.assert.called(res.render)
-  })
+      await controller(req, res)
 
-  it('should re-render the form page when Stripe returns "account_number_invalid" error', async () => {
-    updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
-      return new Promise((resolve, reject) => {
-        const error = new Error()
-        error.code = 'account_number_invalid'
-        reject(error)
+      sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
       })
-    })
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
+      sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+      sinon.assert.notCalled(res.redirect)
+      sinon.assert.calledWith(res.status, 500)
+      sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
+    }
+  )
 
-    await controller(req, res)
+  it(
+    'should re-render the form page when Stripe returns "routing_number_invalid" error',
+    async () => {
+      updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
+        return new Promise((resolve, reject) => {
+          const error = new Error()
+          error.code = 'routing_number_invalid'
+          reject(error)
+        })
+      })
+      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMocks()
 
-    sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
-      bank_account_sort_code: sanitisedSortCode,
-      bank_account_number: sanitisedAccountNumber
-    })
-    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.notCalled(res.redirect)
-    sinon.assert.called(res.render)
-  })
+      await controller(req, res)
+
+      sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
+      })
+      sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+      sinon.assert.notCalled(res.redirect)
+      sinon.assert.called(res.render)
+    }
+  )
+
+  it(
+    'should re-render the form page when Stripe returns "account_number_invalid" error',
+    async () => {
+      updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
+        return new Promise((resolve, reject) => {
+          const error = new Error()
+          error.code = 'account_number_invalid'
+          reject(error)
+        })
+      })
+      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMocks()
+
+      await controller(req, res)
+
+      sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
+      })
+      sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+      sinon.assert.notCalled(res.redirect)
+      sinon.assert.called(res.render)
+    }
+  )
 
   it('should render error page when connector returns error', async () => {
     updateBankAccountMock = sinon.spy(() => Promise.resolve())
@@ -134,15 +155,6 @@ describe('Bank details post controller', () => {
   })
 
   function getControllerWithMocks () {
-    return proxyquire('./post.controller', {
-      '../../../services/clients/stripe/stripe.client': {
-        updateBankAccount: updateBankAccountMock
-      },
-      '../../../services/clients/connector.client': {
-        ConnectorClient: function () {
-          this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
-        }
-      }
-    })
+    return require('./post.controller');
   }
 })

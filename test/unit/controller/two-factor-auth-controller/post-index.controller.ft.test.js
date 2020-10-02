@@ -2,7 +2,6 @@
 
 const supertest = require('supertest')
 const csrf = require('csrf')
-const { expect } = require('chai')
 const nock = require('nock')
 
 const { getApp } = require('../../../../server')
@@ -32,7 +31,7 @@ const VALID_USER_RESPONSE = {
 describe('Two factor authenticator configure index POST', () => {
   describe('to set up another app', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
       nock(ADMINUSERS_URL)
@@ -40,7 +39,7 @@ describe('Two factor authenticator configure index POST', () => {
         .reply(200, VALID_USER_RESPONSE)
     })
 
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.user.twoFactorAuth.index)
         .send({
@@ -52,22 +51,22 @@ describe('Two factor authenticator configure index POST', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to the configure page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.user.twoFactorAuth.configure)
+      expect(result.headers).to.have.property('location').toBe(paths.user.twoFactorAuth.configure)
     })
   })
 
   describe('to set up SMS', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
       nock(ADMINUSERS_URL)
@@ -78,7 +77,7 @@ describe('Two factor authenticator configure index POST', () => {
         .reply(200)
     })
 
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.user.twoFactorAuth.index)
         .send({
@@ -90,16 +89,16 @@ describe('Two factor authenticator configure index POST', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to the configure page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.user.twoFactorAuth.configure)
+      expect(result.headers).to.have.property('location').toBe(paths.user.twoFactorAuth.configure)
     })
   })
 })

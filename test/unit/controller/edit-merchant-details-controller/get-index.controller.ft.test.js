@@ -1,6 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const supertest = require('supertest')
@@ -28,7 +27,7 @@ describe('Organisation details controller - get', () => {
   }
 
   describe('when the organisation already has details (CREDIT CARD GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       user = userFixtures.validUserResponse({
         service_roles: [{
           service: {
@@ -60,19 +59,19 @@ describe('Organisation details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should show table with the organisation details`, () => {
-      expect($('#merchant-name').text()).to.contain('name')
-      expect($('#merchant-address').text()).to.contain('line1')
-      expect($('#merchant-address').text()).to.contain('line2')
-      expect($('#merchant-address').text()).to.contain('City')
-      expect($('#merchant-address').text()).to.contain('POSTCODE')
-      expect($('#merchant-address').text()).to.contain('United Kingdom')
+      expect($('#merchant-name').text()).toEqual(expect.arrayContaining(['name']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['line1']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['line2']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['City']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['POSTCODE']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['United Kingdom']))
     })
   })
   describe('when the merchant already has details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = userFixtures.validUserResponse({
         service_roles: [{
           service: {
@@ -104,21 +103,21 @@ describe('Organisation details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should show table with the organisation details`, () => {
-      expect($('#merchant-name').text()).to.contain('name')
-      expect($('#telephone-number').text()).to.contain('03069990000')
-      expect($('#merchant-email').text()).to.contain('dd-merchant@example.com')
-      expect($('#merchant-address').text()).to.contain('line1')
-      expect($('#merchant-address').text()).to.contain('line2')
-      expect($('#merchant-address').text()).to.contain('City')
-      expect($('#merchant-address').text()).to.contain('POSTCODE')
-      expect($('#merchant-address').text()).to.contain('United Kingdom')
+      expect($('#merchant-name').text()).toEqual(expect.arrayContaining(['name']))
+      expect($('#telephone-number').text()).toEqual(expect.arrayContaining(['03069990000']))
+      expect($('#merchant-email').text()).toEqual(expect.arrayContaining(['dd-merchant@example.com']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['line1']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['line2']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['City']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['POSTCODE']))
+      expect($('#merchant-address').text()).toEqual(expect.arrayContaining(['United Kingdom']))
     })
   })
   describe('when the merchant has empty details (CREDIT CARD GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = userFixtures.validUserResponse({
         service_roles: [{
           service: {
@@ -141,14 +140,14 @@ describe('Organisation details controller - get', () => {
         })
     })
     it(`should get a nice 302 status code`, () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
     it('should redirect to the edit page', () => {
-      expect(response.headers).to.have.property('location').to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(response.headers).to.have.property('location').toBe(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
   })
   describe('should redirect to edit when the merchant name is set but not the address', () => {
-    before(done => {
+    beforeAll(done => {
       const user = userFixtures.validUserResponse({
         service_roles: [{
           service: {
@@ -173,14 +172,14 @@ describe('Organisation details controller - get', () => {
         })
     })
     it(`should get a nice 302 status code`, () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
     it('should redirect to the edit page', () => {
-      expect(response.headers).to.have.property('location').to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(response.headers).to.have.property('location').toBe(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
   })
   describe('should redirect to edit when the mandatory address fields have not been set', () => {
-    before(done => {
+    beforeAll(done => {
       const user = userFixtures.validUserResponse({
         service_roles: [{
           service: {
@@ -206,14 +205,14 @@ describe('Organisation details controller - get', () => {
         })
     })
     it(`should get a nice 302 status code`, () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
     it('should redirect to the edit page', () => {
-      expect(response.headers).to.have.property('location').to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(response.headers).to.have.property('location').toBe(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
   })
   describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = userFixtures.validUserResponse({
         service_roles: [{
           service: {
@@ -237,14 +236,14 @@ describe('Organisation details controller - get', () => {
         })
     })
     it(`should get a nice 302 status code`, () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
     it('should redirect to the edit page', () => {
-      expect(response.headers).to.have.property('location').to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(response.headers).to.have.property('location').toBe(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
   })
   describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT and CREDIT CARD GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = userFixtures.validUserResponse({
         service_roles: [{
           service: {
@@ -268,10 +267,10 @@ describe('Organisation details controller - get', () => {
         })
     })
     it(`should get a nice 302 status code`, () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
     it('should redirect to the edit page', () => {
-      expect(response.headers).to.have.property('location').to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(response.headers).to.have.property('location').toBe(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
   })
 })

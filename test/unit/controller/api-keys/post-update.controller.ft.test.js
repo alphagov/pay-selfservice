@@ -1,6 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
 const csrf = require('csrf')
 const nock = require('nock')
 const supertest = require('supertest')
@@ -27,7 +26,7 @@ describe('POST to update an API key description', () => {
   let app
   let response
   let session
-  before(done => {
+  beforeAll(done => {
     const user = mockSession.getUser({
       gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'tokens:update' }]
     })
@@ -60,18 +59,18 @@ describe('POST to update an API key description', () => {
       })
   })
 
-  after(() => {
+  afterAll(() => {
     nock.cleanAll()
   })
 
   it('should redirect back to index', () => {
-    expect(response.statusCode).to.equal(302)
-    expect(response.headers).to.have.property('location').to.equal(paths.apiKeys.index)
+    expect(response.statusCode).toBe(302)
+    expect(response.headers).to.have.property('location').toBe(paths.apiKeys.index)
   })
 
   it('should have success message', () => {
-    expect(session.flash).to.have.property('generic')
-    expect(session.flash.generic.length).to.equal(1)
-    expect(session.flash.generic[0]).to.equal('The API key description was successfully updated')
+    expect(session.flash).toHaveProperty('generic')
+    expect(session.flash.generic.length).toBe(1)
+    expect(session.flash.generic[0]).toBe('The API key description was successfully updated')
   })
 })

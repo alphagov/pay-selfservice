@@ -1,6 +1,5 @@
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
-const { expect } = require('chai')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -12,7 +11,7 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const existingServiceExternalId = 'cp5wa'
 
-describe('adminusers client - assign service role to user', function () {
+describe('adminusers client - assign service role to user', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -23,8 +22,8 @@ describe('adminusers client - assign service role to user', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('assign user service role API - success', () => {
     const role = 'view-and-refund'
@@ -47,7 +46,7 @@ describe('adminusers client - assign service role to user', function () {
       provisional_otp_key: null
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services`)
           .withUponReceiving('a valid assign service role request')
@@ -63,11 +62,11 @@ describe('adminusers client - assign service role to user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should assign service role to a user successfully', function () {
+    it('should assign service role to a user successfully', () => {
       return adminusersClient.assignServiceRole(existingUserExternalId, existingServiceExternalId, role).then(function (updatedUser) {
         const newServiceRole = updatedUser.serviceRoles.find(serviceRole => serviceRole.service.externalId === existingServiceExternalId)
-        expect(newServiceRole.role.name).to.be.equal(role)
-      })
+        expect(newServiceRole.role.name).toBe(role)
+      });
     })
   })
 
@@ -79,7 +78,7 @@ describe('adminusers client - assign service role to user', function () {
       role_name: role
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${nonExistentUserExternalId}/services`)
           .withUponReceiving('a service role request for non existent-user')
@@ -93,13 +92,16 @@ describe('adminusers client - assign service role to user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error not found for non existent user when updating service role', function () {
-      return adminusersClient.assignServiceRole(nonExistentUserExternalId, existingServiceExternalId, role)
-        .then(
-          () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
-    })
+    it(
+      'should error not found for non existent user when updating service role',
+      () => {
+        return adminusersClient.assignServiceRole(nonExistentUserExternalId, existingServiceExternalId, role)
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.errorCode).toBe(404)
+          );
+      }
+    )
   })
 
   describe('assign user service role API - 400 response', () => {
@@ -110,7 +112,7 @@ describe('adminusers client - assign service role to user', function () {
       role_name: role
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services`)
           .withUponReceiving('an assign service role request for non existent service')
@@ -124,12 +126,12 @@ describe('adminusers client - assign service role to user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error bad request if service cannot be located', function () {
+    it('should error bad request if service cannot be located', () => {
       return adminusersClient.assignServiceRole(existingUserExternalId, serviceExternalId, role)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(400)
-        )
+          err => expect(err.errorCode).toBe(400)
+        );
     })
   })
 })

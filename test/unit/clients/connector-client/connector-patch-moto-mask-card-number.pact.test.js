@@ -30,14 +30,14 @@ describe('connector client - patch MOTO mask card number toggle (enabled) reques
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('MOTO mask card number input toggle - supported payment provider request', () => {
     const motoMaskCardNumberInputProviderState =
       `a gateway account with MOTO enabled and an external id ${existingGatewayAccountId} exists in the database`
 
-    before(() => {
+    beforeAll(() => {
       return provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
           .withUponReceiving('a valid patch MOTO mask card number input (enabled) request')

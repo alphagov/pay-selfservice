@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const csrf = require('csrf')
@@ -30,14 +29,14 @@ const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
 describe('Add payment link metadata', () => {
   describe('successfull add metadata submission', () => {
     let result, session, app
-    before('Nock configuration', () => {
+    beforeAll(() => {
       const expectedProductRequest = { 'mykey': 'myvalue' }
       nock(PRODUCTS_URL).post(`/v1/api/products/${productId}/metadata`, expectedProductRequest).reply(201, {})
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
     })
-    before('Supertest configuration', done => {
+    beforeAll(done => {
       const path = formattedPathFor(paths.paymentLinks.metadata.add, productId)
       supertest(app)
         .post(path)
@@ -47,22 +46,22 @@ describe('Add payment link metadata', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should succeed with products and redirect to the detail page', () => {
-      expect(result.statusCode).to.equal(302)
-      expect(session.flash).to.have.property('generic')
-      expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('Updated reporting column mykey')
+      expect(result.statusCode).toBe(302)
+      expect(session.flash).toHaveProperty('generic')
+      expect(session.flash.generic.length).toBe(1)
+      expect(session.flash.generic[0]).toBe('Updated reporting column mykey')
     })
   })
 
   describe('metadata submission is rejected', () => {
     let result, session, app, $
 
-    before('Nock configuration', () => {
+    beforeAll(() => {
       const expectedProductRequest = {
         'mykey': 'myvalue'
       }
@@ -71,7 +70,7 @@ describe('Add payment link metadata', () => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
     })
-    before('Supertest configuration', done => {
+    beforeAll(done => {
       const path = formattedPathFor(paths.paymentLinks.metadata.add, productId)
       supertest(app)
         .post(path)
@@ -82,26 +81,29 @@ describe('Add payment link metadata', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
-    it('should propagate both server and products errors through to client error summary', () => {
-      expect(result.statusCode).to.equal(200)
-      expect($('.govuk-error-summary__list li').length).to.equal(1)
-    })
+    it(
+      'should propagate both server and products errors through to client error summary',
+      () => {
+        expect(result.statusCode).toBe(200)
+        expect($('.govuk-error-summary__list li').length).toBe(1)
+      }
+    )
   })
 
   describe('successfull updating metadata given a known key', () => {
     let result, session, app
-    before('Nock configuration', () => {
+    beforeAll(() => {
       const expectedProductRequest = { 'mykey': 'myvalue' }
       nock(PRODUCTS_URL).patch(`/v1/api/products/${productId}/metadata`, expectedProductRequest).reply(201, {})
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
     })
-    before('Supertest configuration', done => {
+    beforeAll(done => {
       const path = formattedPathFor(paths.paymentLinks.metadata.edit, productId)
       supertest(app)
         .post(path)
@@ -111,28 +113,28 @@ describe('Add payment link metadata', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should succeed with products and redirect to the detail page', () => {
-      expect(result.statusCode).to.equal(302)
-      expect(session.flash).to.have.property('generic')
-      expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('Updated reporting column mykey')
+      expect(result.statusCode).toBe(302)
+      expect(session.flash).toHaveProperty('generic')
+      expect(session.flash.generic.length).toBe(1)
+      expect(session.flash.generic[0]).toBe('Updated reporting column mykey')
     })
   })
 
   describe('successfully delete metadata given a known key', () => {
     let result, session, app
     const metadataKey = 'key'
-    before('Nock configuration', () => {
+    beforeAll(() => {
       nock(PRODUCTS_URL).delete(`/v1/api/products/${productId}/metadata/${metadataKey}`).reply(200, {})
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
     })
-    before('Supertest configuration', done => {
+    beforeAll(done => {
       const path = formattedPathFor(paths.paymentLinks.metadata.delete, productId, metadataKey)
       supertest(app)
         .post(path)
@@ -142,15 +144,15 @@ describe('Add payment link metadata', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should succeed with products and redirect to the detail page', () => {
-      expect(result.statusCode).to.equal(302)
-      expect(session.flash).to.have.property('generic')
-      expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal(`Deleted reporting column ${metadataKey}`)
+      expect(result.statusCode).toBe(302)
+      expect(session.flash).toHaveProperty('generic')
+      expect(session.flash.generic.length).toBe(1)
+      expect(session.flash.generic[0]).toBe(`Deleted reporting column ${metadataKey}`)
     })
   })
 })

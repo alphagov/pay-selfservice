@@ -1,7 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
-
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const ledgerClient = require('../../../../app/services/clients/ledger.client')
 
@@ -17,9 +15,9 @@ const TRANSACTION_SUMMARY_RESOURCE = '/v1/report/transactions-summary'
 const existingGatewayAccountId = '123456'
 const defaultTransactionState = 'three payments and a refund all in success state exists'
 
-describe('ledger client transaction summary', function () {
-  before(() => pactTestProvider.setup())
-  after(() => pactTestProvider.finalize())
+describe('ledger client transaction summary', () => {
+  beforeAll(() => pactTestProvider.setup())
+  afterAll(() => pactTestProvider.finalize())
 
   describe('get transaction summary', () => {
     const params = {
@@ -33,7 +31,7 @@ describe('ledger client transaction summary', function () {
     }
     const validTransactionSummaryResponse = transactionDetailsFixtures.validTransactionSummaryDetails(params)
 
-    before(() => {
+    beforeAll(() => {
       const pactified = validTransactionSummaryResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_SUMMARY_RESOURCE}`)
@@ -51,12 +49,12 @@ describe('ledger client transaction summary', function () {
 
     afterEach(() => pactTestProvider.verify())
 
-    it('should get transaction summary successfully', function () {
+    it('should get transaction summary successfully', () => {
       const getTransactionSummaryDetails = legacyConnectorParityTransformer.legacyConnectorTransactionSummaryParity(validTransactionSummaryResponse.getPlain())
       return ledgerClient.transactionSummary(params.account_id, params.from_date, params.to_date)
         .then((ledgerResponse) => {
-          expect(ledgerResponse).to.deep.equal(getTransactionSummaryDetails)
-        })
+          expect(ledgerResponse).toEqual(getTransactionSummaryDetails)
+        });
     })
   })
 })

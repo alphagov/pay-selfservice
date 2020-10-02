@@ -37,13 +37,13 @@ function getTransactionList () {
     .set('x-request-id', requestId)
 }
 
-describe('The /transactions endpoint', function () {
-  afterEach(function () {
+describe('The /transactions endpoint', () => {
+  afterEach(() => {
     nock.cleanAll()
     app = null
   })
 
-  beforeEach(function (done) {
+  beforeEach(done => {
     const permissions = 'transactions:read'
     const user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
@@ -60,28 +60,37 @@ describe('The /transactions endpoint', function () {
       })
   })
 
-  it('should show error message on a bad request while retrieving the list of transactions', function (done) {
-    const errorMessage = 'Unable to retrieve list of transactions.'
-    ledgerMockResponds(400, { 'message': errorMessage }, ledgerSearchParameters)
+  it(
+    'should show error message on a bad request while retrieving the list of transactions',
+    done => {
+      const errorMessage = 'Unable to retrieve list of transactions.'
+      ledgerMockResponds(400, { 'message': errorMessage }, ledgerSearchParameters)
 
-    getTransactionList()
-      .expect(500, { 'message': errorMessage })
-      .end(done)
-  })
+      getTransactionList()
+        .expect(500, { 'message': errorMessage })
+        .end(done)
+    }
+  )
 
-  it('should show a generic error message on a ledger service error while retrieving the list of transactions', function (done) {
-    ledgerMockResponds(500, { 'message': 'some error from connector' }, ledgerSearchParameters)
+  it(
+    'should show a generic error message on a ledger service error while retrieving the list of transactions',
+    done => {
+      ledgerMockResponds(500, { 'message': 'some error from connector' }, ledgerSearchParameters)
 
-    getTransactionList()
-      .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
-      .end(done)
-  })
+      getTransactionList()
+        .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
+        .end(done)
+    }
+  )
 
-  it('should show internal error message if any error happens while retrieving the list of transactions', function (done) {
-    // No ledgerMock defined on purpose to mock a network failure
+  it(
+    'should show internal error message if any error happens while retrieving the list of transactions',
+    done => {
+      // No ledgerMock defined on purpose to mock a network failure
 
-    getTransactionList()
-      .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
-      .end(done)
-  })
+      getTransactionList()
+        .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
+        .end(done)
+    }
+  )
 })

@@ -3,8 +3,8 @@ const legacyConnectorEventsParity = (transactionEvents) => {
     return Object.assign({
       type: event.resource_type.toLowerCase(),
       updated: event.timestamp,
-      ...(event.data.refunded_by) && { submitted_by: event.data.refunded_by }
-    }, event)
+      ...(event.data.refunded_by && { submitted_by: event.data.refunded_by })
+    }, event);
   })
   return transactionEvents
 }

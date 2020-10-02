@@ -2,7 +2,6 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const { expect } = require('chai')
 
 const userFixtures = require('../../../../fixtures/user.fixtures')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
@@ -24,14 +23,14 @@ describe('adminusers client - get user', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('find a valid user', () => {
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const getUserResponse = userFixtures.validUserResponse({ external_id: existingExternalId })
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
           .withState(`a user exists with the given external id ${existingExternalId}`)
@@ -47,17 +46,17 @@ describe('adminusers client - get user', () => {
       const expectedUserData = getUserResponse.getPlain()
 
       return adminusersClient.getUserByExternalId(expectedUserData.external_id).then(user => {
-        expect(user.externalId).to.be.equal(expectedUserData.external_id)
-        expect(user.username).to.be.equal(expectedUserData.username)
-        expect(user.email).to.be.equal(expectedUserData.email)
-        expect(user.serviceRoles.length).to.be.equal(1)
-        expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(1)
-        expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number)
-        expect(user.otpKey).to.be.equal(expectedUserData.otp_key)
-        expect(user.provisionalOtpKey).to.be.equal(expectedUserData.provisional_otp_key)
-        expect(user.secondFactor).to.be.equal(expectedUserData.second_factor)
-        expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData.service_roles[0].role.permissions.length)
-      })
+        expect(user.externalId).toBe(expectedUserData.external_id)
+        expect(user.username).toBe(expectedUserData.username)
+        expect(user.email).toBe(expectedUserData.email)
+        expect(user.serviceRoles.length).toBe(1)
+        expect(user.serviceRoles[0].service.gatewayAccountIds.length).toBe(1)
+        expect(user.telephoneNumber).toBe(expectedUserData.telephone_number)
+        expect(user.otpKey).toBe(expectedUserData.otp_key)
+        expect(user.provisionalOtpKey).toBe(expectedUserData.provisional_otp_key)
+        expect(user.secondFactor).toBe(expectedUserData.second_factor)
+        expect(user.serviceRoles[0].role.permissions.length).toBe(expectedUserData.service_roles[0].role.permissions.length)
+      });
     })
   })
 
@@ -66,7 +65,7 @@ describe('adminusers client - get user', () => {
       external_id: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
     }
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
           .withState('no user exists with the given external id')
@@ -83,8 +82,8 @@ describe('adminusers client - get user', () => {
       return adminusersClient.getUserByExternalId(params.external_id)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

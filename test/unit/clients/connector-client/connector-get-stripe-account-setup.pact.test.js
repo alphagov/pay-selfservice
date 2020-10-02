@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 const path = require('path')
 
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -29,8 +28,8 @@ describe('connector client - get stripe account setup', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('get stripe account setup success', () => {
     const stripeSetupOpts = {
@@ -41,7 +40,7 @@ describe('connector client - get stripe account setup', () => {
     }
     const response = stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(stripeSetupOpts)
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
           .withUponReceiving('a valid get stripe account bank account flag request')
@@ -60,11 +59,11 @@ describe('connector client - get stripe account setup', () => {
     it('should update successfully', () => {
       return connectorClient.getStripeAccountSetup(existingGatewayAccountId)
         .then(stripeAccountSetup => {
-          expect(stripeAccountSetup.bankAccount).to.equal(stripeSetupOpts.bank_account)
-          expect(stripeAccountSetup.vatNumber).to.equal(stripeSetupOpts.vat_number)
-          expect(stripeAccountSetup.companyNumber).to.equal(stripeSetupOpts.company_number)
-          expect(stripeAccountSetup.responsiblePerson).to.equal(stripeSetupOpts.responsible_person)
-        })
+          expect(stripeAccountSetup.bankAccount).toBe(stripeSetupOpts.bank_account)
+          expect(stripeAccountSetup.vatNumber).toBe(stripeSetupOpts.vat_number)
+          expect(stripeAccountSetup.companyNumber).toBe(stripeSetupOpts.company_number)
+          expect(stripeAccountSetup.responsiblePerson).toBe(stripeSetupOpts.responsible_person)
+        });
     })
   })
 })

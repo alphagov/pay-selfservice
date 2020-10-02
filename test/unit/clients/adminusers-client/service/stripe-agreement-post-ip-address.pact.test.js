@@ -26,15 +26,15 @@ describe('adminusers client - post stripe agreement - ip address', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('post ip address', () => {
     const ipAddress = '93.184.216.34' // example.org
     const opts = { ip_address: ipAddress }
     const validStripeAgreementRequest = validPostStripeAgreementRequest(opts).getPlain()
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}/stripe-agreement`)
           .withUponReceiving('a valid post stripe agreement - ip address request')

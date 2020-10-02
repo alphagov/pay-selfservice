@@ -3,7 +3,6 @@
 const nock = require('nock')
 const supertest = require('supertest')
 const csrf = require('csrf')
-const { expect } = require('chai')
 
 const paths = require('../../app/paths')
 const getApp = require('../../server').getApp
@@ -43,39 +42,45 @@ describe('register user controller', () => {
         .set('x-request-id', 'bob')
         .expect(200)
         .expect((res) => {
-          expect(res.body.email).to.equal('invitee@example.com')
+          expect(res.body.email).toBe('invitee@example.com')
         })
         .end(done)
     })
 
-    it('should display create account form with telephone populated, if invite has been attempted', done => {
-      mockRegisterAccountCookie.email = 'invitee@example.com'
-      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
-      mockRegisterAccountCookie.telephone_number = '+441134960000'
+    it(
+      'should display create account form with telephone populated, if invite has been attempted',
+      done => {
+        mockRegisterAccountCookie.email = 'invitee@example.com'
+        mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
+        mockRegisterAccountCookie.telephone_number = '+441134960000'
 
-      supertest(app)
-        .get(paths.registerUser.registration)
-        .set('Accept', 'application/json')
-        .set('x-request-id', 'bob')
-        .expect(200)
-        .expect((res) => {
-          expect(res.body.email).to.equal('invitee@example.com')
-          expect(res.body.telephone_number).to.equal('+441134960000')
-        })
-        .end(done)
-    })
+        supertest(app)
+          .get(paths.registerUser.registration)
+          .set('Accept', 'application/json')
+          .set('x-request-id', 'bob')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.email).toBe('invitee@example.com')
+            expect(res.body.telephone_number).toBe('+441134960000')
+          })
+          .end(done)
+      }
+    )
 
-    it('should display error when email and/or code is not in the cookie', done => {
-      supertest(app)
-        .get(paths.registerUser.registration)
-        .set('Accept', 'application/json')
-        .set('x-request-id', 'bob')
-        .expect(404)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
-        })
-        .end(done)
-    })
+    it(
+      'should display error when email and/or code is not in the cookie',
+      done => {
+        supertest(app)
+          .get(paths.registerUser.registration)
+          .set('Accept', 'application/json')
+          .set('x-request-id', 'bob')
+          .expect(404)
+          .expect((res) => {
+            expect(res.body.message).toBe('Unable to process registration at this time')
+          })
+          .end(done)
+      }
+    )
   })
 
   /**
@@ -94,40 +99,42 @@ describe('register user controller', () => {
         })
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).toBe('Unable to process registration at this time')
         })
         .end(done)
     })
 
-    it('should redirect back to registration form if error in phone number', done => {
-      mockRegisterAccountCookie.email = 'invitee@example.com'
-      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
+    it(
+      'should redirect back to registration form if error in phone number',
+      done => {
+        mockRegisterAccountCookie.email = 'invitee@example.com'
+        mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      const invalidPhone = 'abc'
-      supertest(app)
-        .post(paths.registerUser.registration)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .set('x-request-id', 'bob')
-        .send({
-          'telephone-number': invalidPhone,
-          'password': 'password1234',
-          csrfToken: csrf().create('123')
-        })
-        .expect(303, {})
-        .expect('Location', paths.registerUser.registration)
-        .expect((res) => {
-          expect(mockRegisterAccountCookie)
-            .to.have.property('recovered')
-            .to.deep.equal({
-              telephoneNumber: invalidPhone,
-              errors: {
-                telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
-              }
-            })
-        })
-        .end(done)
-    })
+        const invalidPhone = 'abc'
+        supertest(app)
+          .post(paths.registerUser.registration)
+          .set('Accept', 'application/json')
+          .set('Content-Type', 'application/x-www-form-urlencoded')
+          .set('x-request-id', 'bob')
+          .send({
+            'telephone-number': invalidPhone,
+            'password': 'password1234',
+            csrfToken: csrf().create('123')
+          })
+          .expect(303, {})
+          .expect('Location', paths.registerUser.registration)
+          .expect((res) => {
+            expect(mockRegisterAccountCookie)
+              .to.have.property('recovered').toEqual({
+                telephoneNumber: invalidPhone,
+                errors: {
+                  telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+                }
+              })
+          })
+          .end(done)
+      }
+    )
 
     it('should redirect to phone verification page', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
@@ -170,7 +177,7 @@ describe('register user controller', () => {
         })
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).toBe('Unable to process registration at this time')
         })
         .end(done)
     })
@@ -187,7 +194,7 @@ describe('register user controller', () => {
         .set('x-request-id', 'bob')
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).toBe('Unable to process registration at this time')
         })
         .end(done)
     })
@@ -230,7 +237,7 @@ describe('register user controller', () => {
         .expect(303, {})
         .expect('Location', paths.registerUser.logUserIn)
         .expect(() => {
-          expect(mockRegisterAccountCookie.userExternalId).to.equal(newUserExtId)
+          expect(mockRegisterAccountCookie.userExternalId).toBe(newUserExtId)
         })
         .end(done)
     })
@@ -247,28 +254,31 @@ describe('register user controller', () => {
         })
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).toBe('Unable to process registration at this time')
         })
         .end(done)
     })
 
-    it('should error and allow user to reenter otp if invalid otp code entry', done => {
-      mockRegisterAccountCookie.email = 'invitee@example.com'
-      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
+    it(
+      'should error and allow user to reenter otp if invalid otp code entry',
+      done => {
+        mockRegisterAccountCookie.email = 'invitee@example.com'
+        mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      supertest(app)
-        .post(paths.registerUser.otpVerify)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .set('x-request-id', 'bob')
-        .send({
-          'verify-code': 'hfwe67q', // non-numeric
-          csrfToken: csrf().create('123')
-        })
-        .expect(303)
-        .expect('Location', paths.registerUser.otpVerify)
-        .end(done)
-    })
+        supertest(app)
+          .post(paths.registerUser.otpVerify)
+          .set('Accept', 'application/json')
+          .set('Content-Type', 'application/x-www-form-urlencoded')
+          .set('x-request-id', 'bob')
+          .send({
+            'verify-code': 'hfwe67q', // non-numeric
+            csrfToken: csrf().create('123')
+          })
+          .expect(303)
+          .expect('Location', paths.registerUser.otpVerify)
+          .end(done)
+      }
+    )
 
     it('should error if error during otp code verification', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
@@ -288,7 +298,7 @@ describe('register user controller', () => {
         })
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).toBe('Unable to process registration at this time')
         })
         .end(done)
     })
@@ -298,63 +308,72 @@ describe('register user controller', () => {
    *  ENDPOINT showReVerifyPhone
    */
   describe('show re-verify phone endpoint', () => {
-    it('should display re verify otp code form with pre-populated telephone number', done => {
-      const telephoneNumber = '+441134960000'
+    it(
+      'should display re verify otp code form with pre-populated telephone number',
+      done => {
+        const telephoneNumber = '+441134960000'
 
-      mockRegisterAccountCookie.email = 'invitee@example.com'
-      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
-      mockRegisterAccountCookie.telephone_number = telephoneNumber
+        mockRegisterAccountCookie.email = 'invitee@example.com'
+        mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
+        mockRegisterAccountCookie.telephone_number = telephoneNumber
 
-      supertest(app)
-        .get(paths.registerUser.reVerifyPhone)
-        .set('Accept', 'application/json')
-        .set('x-request-id', 'bob')
-        .expect(200)
-        .expect((res) => {
-          expect(res.body.telephone_number).to.equal(telephoneNumber)
-        })
-        .end(done)
-    })
+        supertest(app)
+          .get(paths.registerUser.reVerifyPhone)
+          .set('Accept', 'application/json')
+          .set('x-request-id', 'bob')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.telephone_number).toBe(telephoneNumber)
+          })
+          .end(done)
+      }
+    )
 
-    it('should display error when email and/or code is not in the cookie', done => {
-      supertest(app)
-        .get(paths.registerUser.reVerifyPhone)
-        .set('Accept', 'application/json')
-        .set('x-request-id', 'bob')
-        .expect(404)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
-        })
-        .end(done)
-    })
+    it(
+      'should display error when email and/or code is not in the cookie',
+      done => {
+        supertest(app)
+          .get(paths.registerUser.reVerifyPhone)
+          .set('Accept', 'application/json')
+          .set('x-request-id', 'bob')
+          .expect(404)
+          .expect((res) => {
+            expect(res.body.message).toBe('Unable to process registration at this time')
+          })
+          .end(done)
+      }
+    )
   })
 
   /**
    *  ENDPOINT submitReVerifyPhone
    */
   describe('submit re-verify phone endpoint', () => {
-    it('should proceed to verify otp upon successful telephone number re-entry', done => {
-      const telephoneNumber = '+441134960000'
+    it(
+      'should proceed to verify otp upon successful telephone number re-entry',
+      done => {
+        const telephoneNumber = '+441134960000'
 
-      mockRegisterAccountCookie.email = 'invitee@example.com'
-      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
+        mockRegisterAccountCookie.email = 'invitee@example.com'
+        mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/resend`)
-        .reply(200)
+        adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/resend`)
+          .reply(200)
 
-      supertest(app)
-        .post(paths.registerUser.reVerifyPhone)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .set('x-request-id', 'bob')
-        .send({
-          'telephone-number': telephoneNumber,
-          csrfToken: csrf().create('123')
-        })
-        .expect(303, {})
-        .expect('Location', paths.registerUser.otpVerify)
-        .end(done)
-    })
+        supertest(app)
+          .post(paths.registerUser.reVerifyPhone)
+          .set('Accept', 'application/json')
+          .set('Content-Type', 'application/x-www-form-urlencoded')
+          .set('x-request-id', 'bob')
+          .send({
+            'telephone-number': telephoneNumber,
+            csrfToken: csrf().create('123')
+          })
+          .expect(303, {})
+          .expect('Location', paths.registerUser.otpVerify)
+          .end(done)
+      }
+    )
 
     it('should error on an error during resend otp', done => {
       const telephoneNumber = '+441134960000'
@@ -376,40 +395,42 @@ describe('register user controller', () => {
         })
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).toBe('Unable to process registration at this time')
         })
         .end(done)
     })
 
-    it('should redirect back to re verify phone view if error in phone number', done => {
-      mockRegisterAccountCookie.email = 'invitee@example.com'
-      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
+    it(
+      'should redirect back to re verify phone view if error in phone number',
+      done => {
+        mockRegisterAccountCookie.email = 'invitee@example.com'
+        mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      const invalidPhone = 'abc'
+        const invalidPhone = 'abc'
 
-      supertest(app)
-        .post(paths.registerUser.reVerifyPhone)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .set('x-request-id', 'bob')
-        .send({
-          'telephone-number': invalidPhone,
-          csrfToken: csrf().create('123')
-        })
-        .expect(303, {})
-        .expect('Location', paths.registerUser.reVerifyPhone)
-        .expect((res) => {
-          expect(mockRegisterAccountCookie)
-            .to.have.property('recovered')
-            .to.deep.equal({
-              telephoneNumber: invalidPhone,
-              errors: {
-                telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
-              }
-            })
-        })
-        .end(done)
-    })
+        supertest(app)
+          .post(paths.registerUser.reVerifyPhone)
+          .set('Accept', 'application/json')
+          .set('Content-Type', 'application/x-www-form-urlencoded')
+          .set('x-request-id', 'bob')
+          .send({
+            'telephone-number': invalidPhone,
+            csrfToken: csrf().create('123')
+          })
+          .expect(303, {})
+          .expect('Location', paths.registerUser.reVerifyPhone)
+          .expect((res) => {
+            expect(mockRegisterAccountCookie)
+              .to.have.property('recovered').toEqual({
+                telephoneNumber: invalidPhone,
+                errors: {
+                  telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+                }
+              })
+          })
+          .end(done)
+      }
+    )
 
     it('should error if cookie details are missing', done => {
       const telephoneNumber = '+441134960000'
@@ -424,7 +445,7 @@ describe('register user controller', () => {
         })
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).toBe('Unable to process registration at this time')
         })
         .end(done)
     })
@@ -434,22 +455,25 @@ describe('register user controller', () => {
    * ENDPOINT subscribeService
    */
   describe('subscribe existing user to a service endpoint', () => {
-    it('should redirect user to my-services page and display added to new service message', done => {
-      const inviteCode = 'nfjkh438rf3901jqf'
-      mockRegisterAccountCookie.code = inviteCode
+    it(
+      'should redirect user to my-services page and display added to new service message',
+      done => {
+        const inviteCode = 'nfjkh438rf3901jqf'
+        mockRegisterAccountCookie.code = inviteCode
 
-      const serviceExternalId = '378y235y8234y5'
-      adminusersMock.post(`${INVITE_RESOURCE_PATH}/${inviteCode}/complete`)
-        .reply(200, { service_external_id: serviceExternalId })
+        const serviceExternalId = '378y235y8234y5'
+        adminusersMock.post(`${INVITE_RESOURCE_PATH}/${inviteCode}/complete`)
+          .reply(200, { service_external_id: serviceExternalId })
 
-      supertest(app)
-        .get(paths.registerUser.subscribeService)
-        .set('Accept', 'application/json')
-        .set('x-request-id', 'bob')
-        .expect(303)
-        .expect('Location', `${paths.serviceSwitcher.index}?s=${serviceExternalId}`)
-        .end(done)
-    })
+        supertest(app)
+          .get(paths.registerUser.subscribeService)
+          .set('Accept', 'application/json')
+          .set('x-request-id', 'bob')
+          .expect(303)
+          .expect('Location', `${paths.serviceSwitcher.index}?s=${serviceExternalId}`)
+          .end(done)
+      }
+    )
 
     it('should error if cookie details are missing', done => {
       supertest(app)
@@ -458,7 +482,7 @@ describe('register user controller', () => {
         .set('x-request-id', 'bob')
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).toBe('Unable to process registration at this time')
         })
         .end(done)
     })
@@ -476,7 +500,7 @@ describe('register user controller', () => {
         .set('x-request-id', 'bob')
         .expect(410)
         .expect((res) => {
-          expect(res.body.message).to.equal('This invitation is no longer valid')
+          expect(res.body.message).toBe('This invitation is no longer valid')
         })
         .end(done)
     })

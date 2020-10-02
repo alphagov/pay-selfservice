@@ -1,7 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
-
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const ledgerClient = require('../../../../app/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../../fixtures/ledger-transaction.fixtures')
@@ -17,9 +15,9 @@ const existingGatewayAccountId = '123456'
 const defaultTransactionId = 'ch_123abc456xyz'
 const defaultTransactionState = 'a transaction has CREATED and AUTHORISATION_REJECTED payment events'
 
-describe('ledger client', function () {
-  before(() => pactTestProvider.setup())
-  after(() => pactTestProvider.finalize())
+describe('ledger client', () => {
+  beforeAll(() => pactTestProvider.setup())
+  afterAll(() => pactTestProvider.finalize())
 
   describe('get transaction events details', () => {
     const params = {
@@ -43,7 +41,7 @@ describe('ledger client', function () {
         }
       ]
     })
-    before(() => {
+    beforeAll(() => {
       const pactified = validTransactionEventsResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}/${params.transaction_id}/event`)
@@ -59,12 +57,12 @@ describe('ledger client', function () {
 
     afterEach(() => pactTestProvider.verify())
 
-    it('should get transaction events successfully', function () {
+    it('should get transaction events successfully', () => {
       const getTransactionEventsDetails = legacyConnectorParityTransformer.legacyConnectorEventsParity(validTransactionEventsResponse.getPlain())
       return ledgerClient.events(params.transaction_id, params.account_id)
         .then((ledgerResponse) => {
-          expect(ledgerResponse).to.deep.equal(getTransactionEventsDetails)
-        })
+          expect(ledgerResponse).toEqual(getTransactionEventsDetails)
+        });
     })
   })
 })

@@ -1,6 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
 const nock = require('nock')
 const supertest = require('supertest')
 
@@ -39,7 +38,7 @@ const mockGetRevokedAPIKeys = gatewayAccountId => {
 
 describe('Revoked API keys index', () => {
   let app
-  before(function () {
+  beforeAll(() => {
     const user = mockSession.getUser({
       gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'tokens-revoked:read' }]
     })
@@ -49,7 +48,7 @@ describe('Revoked API keys index', () => {
 
   describe('when no API keys exist', () => {
     let response
-    before(function (done) {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -65,21 +64,21 @@ describe('Revoked API keys index', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return API keys with state revoked', () => {
-      expect(response.body.token_state).to.equal('revoked')
+      expect(response.body.token_state).toBe('revoked')
     })
     it('should not return any API keys', () => {
-      expect(response.body.tokens.length).to.equal(0)
+      expect(response.body.tokens.length).toBe(0)
     })
   })
 
   describe('when one API key exists', () => {
     let response
-    before(function (done) {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -95,26 +94,26 @@ describe('Revoked API keys index', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return API keys with state revoked', () => {
-      expect(response.body.token_state).to.equal('revoked')
+      expect(response.body.token_state).toBe('revoked')
     })
 
     it('should return one API key', () => {
-      expect(response.body.tokens.length).to.equal(1)
+      expect(response.body.tokens.length).toBe(1)
     })
 
     it('should return tokens_singular as true', () => {
-      expect(response.body.tokens_singular).to.equal(true)
+      expect(response.body.tokens_singular).toBe(true)
     })
   })
 
   describe('when more than one API key exists', () => {
     let response
-    before(function (done) {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -130,20 +129,20 @@ describe('Revoked API keys index', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return API keys with state revoked', () => {
-      expect(response.body.token_state).to.equal('revoked')
+      expect(response.body.token_state).toBe('revoked')
     })
 
     it('should return two API key', () => {
-      expect(response.body.tokens.length).to.equal(2)
+      expect(response.body.tokens.length).toBe(2)
     })
 
     it('should return tokens_singular as false', () => {
-      expect(response.body.tokens_singular).to.equal(false)
+      expect(response.body.tokens_singular).toBe(false)
     })
   })
 })

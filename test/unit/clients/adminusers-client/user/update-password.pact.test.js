@@ -1,6 +1,5 @@
 const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
-const { expect } = require('chai')
 var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 var userFixtures = require('../../../../fixtures/user.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -9,7 +8,7 @@ const RESET_PASSWORD_PATH = '/v1/api/reset-password'
 var port = Math.floor(Math.random() * 48127) + 1024
 var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
-describe('adminusers client - update password', function () {
+describe('adminusers client - update password', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -20,13 +19,13 @@ describe('adminusers client - update password', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('update password for user API - success', () => {
     let request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(RESET_PASSWORD_PATH)
           .withState('a valid forgotten password entry and a related user exists')
@@ -41,7 +40,7 @@ describe('adminusers client - update password', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update password successfully', function () {
+    it('should update password successfully', () => {
       let requestData = request.getPlain()
       return adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password)
     })
@@ -50,7 +49,7 @@ describe('adminusers client - update password', function () {
   describe('update password for user API - not found', () => {
     let request = userFixtures.validUpdatePasswordRequest()
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(RESET_PASSWORD_PATH)
           .withState('a forgotten password does not exists')
@@ -64,13 +63,16 @@ describe('adminusers client - update password', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error if forgotten password code is not found/expired', function () {
-      let requestData = request.getPlain()
-      return adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password)
-        .then(
-          () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
-    })
+    it(
+      'should error if forgotten password code is not found/expired',
+      () => {
+        let requestData = request.getPlain()
+        return adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password)
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.errorCode).toBe(404)
+          );
+      }
+    )
   })
 })

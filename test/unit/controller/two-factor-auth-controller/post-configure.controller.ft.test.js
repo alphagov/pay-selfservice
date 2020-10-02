@@ -2,7 +2,6 @@
 
 const supertest = require('supertest')
 const csrf = require('csrf')
-const { expect } = require('chai')
 const nock = require('nock')
 
 const { getApp } = require('../../../../server')
@@ -18,7 +17,7 @@ const VALID_USER = getUser({
 describe('Two factor authenticator configure page POST', () => {
   describe('if code entered is correct', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
 
@@ -27,7 +26,7 @@ describe('Two factor authenticator configure page POST', () => {
         .reply(200)
     })
 
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.user.twoFactorAuth.configure)
         .send({
@@ -39,22 +38,22 @@ describe('Two factor authenticator configure page POST', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to the profile page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.user.profile)
+      expect(result.headers).to.have.property('location').toBe(paths.user.profile)
     })
   })
 
   describe('if code entered is incorrect', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
 
@@ -63,7 +62,7 @@ describe('Two factor authenticator configure page POST', () => {
         .reply(401)
     })
 
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.user.twoFactorAuth.configure)
         .send({
@@ -75,22 +74,25 @@ describe('Two factor authenticator configure page POST', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to the configure page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.user.twoFactorAuth.configure)
+      expect(result.headers).to.have.property('location').toBe(paths.user.twoFactorAuth.configure)
     })
 
-    it('should have a recovered object stored on the session containing errors', () => {
-      const recovered = session.pageData.configureTwoFactorAuthMethodRecovered
-      expect(recovered).to.have.property('errors')
-      expect(recovered.errors).to.have.property('verificationCode')
-    })
+    it(
+      'should have a recovered object stored on the session containing errors',
+      () => {
+        const recovered = session.pageData.configureTwoFactorAuthMethodRecovered
+        expect(recovered).toHaveProperty('errors')
+        expect(recovered.errors).toHaveProperty('verificationCode')
+      }
+    )
   })
 })

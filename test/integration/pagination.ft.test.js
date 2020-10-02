@@ -33,13 +33,13 @@ function searchTransactions (data) {
     .send()
 }
 
-describe('Pagination', function () {
-  afterEach(function () {
+describe('Pagination', () => {
+  afterEach(() => {
     nock.cleanAll()
     app = null
   })
 
-  beforeEach(function (done) {
+  beforeEach(done => {
     let permissions = 'transactions:read'
     var user = session.getUser({
       gateway_account_ids: [gatewayAccountId], permissions: [{ name: permissions }]
@@ -52,26 +52,32 @@ describe('Pagination', function () {
       .reply(200, ALL_CARD_TYPES)
   })
 
-  describe('Pagination', function () {
-    it('should return return error if page out of bounds', function (done) {
+  describe('Pagination', () => {
+    it('should return return error if page out of bounds', done => {
       let data = { 'page': -1 }
 
       searchTransactions(data)
         .expect(500, { 'message': 'Invalid search' }).end(done)
     })
 
-    it('should return return error if pageSize out of bounds 1', function (done) {
-      let data = { 'pageSize': 600 }
+    it(
+      'should return return error if pageSize out of bounds 1',
+      done => {
+        let data = { 'pageSize': 600 }
 
-      searchTransactions(data)
-        .expect(500, { 'message': 'Invalid search' }).end(done)
-    })
+        searchTransactions(data)
+          .expect(500, { 'message': 'Invalid search' }).end(done)
+      }
+    )
 
-    it('should return return error if pageSize out of bounds 2', function (done) {
-      let data = { 'pageSize': 0 }
+    it(
+      'should return return error if pageSize out of bounds 2',
+      done => {
+        let data = { 'pageSize': 0 }
 
-      searchTransactions(data)
-        .expect(500, { 'message': 'Invalid search' }).end(done)
-    })
+        searchTransactions(data)
+          .expect(500, { 'message': 'Invalid search' }).end(done)
+      }
+    )
   })
 })

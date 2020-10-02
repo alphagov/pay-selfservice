@@ -1,7 +1,6 @@
 'use strict'
 
 const nock = require('nock')
-const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const reqFixtures = require('../fixtures/browser/forgotten-password.fixtures')
 const resFixtures = require('../fixtures/response')
@@ -11,16 +10,16 @@ const alwaysValidPassword = function (password) {
   return false // common-password returns false if password is not one of the common passwords (which would be invalid)
 }
 
+jest.mock('common-password', () => commonPasswordMock || alwaysValidPassword);
+
 const userService = function (commonPasswordMock) {
-  return proxyquire('../../app/services/user.service.js', {
-    'common-password': commonPasswordMock || alwaysValidPassword
-  })
+  return require('../../app/services/user.service.js');
 }
 
+jest.mock('../services/user.service.js', () => userService(commonPasswordMock));
+
 const forgottenPassword = function (commonPasswordMock) {
-  return proxyquire('../../app/controllers/forgotten-password.controller.js', {
-    '../services/user.service.js': userService(commonPasswordMock)
-  })
+  return require('../../app/controllers/forgotten-password.controller.js');
 }
 
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
@@ -29,7 +28,7 @@ const USER_RESOURCE = '/v1/api/users'
 const FORGOTTEN_PASSWORD_RESOURCE = '/v1/api/forgotten-passwords'
 const RESET_PASSWORD_RESOURCE = '/v1/api/reset-password'
 
-describe('forgotten_password_controller', function () {
+describe('forgotten_password_controller', () => {
   const forgottenPasswordController = forgottenPassword()
 
   afterEach(() => {
@@ -64,34 +63,40 @@ describe('forgotten_password_controller', function () {
     })
   })
 
-  it('show the password reset email sent page if account is not found in adminusers', async () => {
-    const req = reqFixtures.validForgottenPasswordPost()
-    const res = resFixtures.getStubbedRes()
-    const username = req.body.username
+  it(
+    'show the password reset email sent page if account is not found in adminusers',
+    async () => {
+      const req = reqFixtures.validForgottenPasswordPost()
+      const res = resFixtures.getStubbedRes()
+      const username = req.body.username
 
-    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
-      .validForgottenPasswordCreateRequest(username)
-      .getPlain())
-      .reply(404)
+      adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
+        .validForgottenPasswordCreateRequest(username)
+        .getPlain())
+        .reply(404)
 
-    await forgottenPasswordController.emailPost(req, res)
-    sinon.assert.calledWith(res.redirect, '/reset-password-requested')
-  })
+      await forgottenPasswordController.emailPost(req, res)
+      sinon.assert.calledWith(res.redirect, '/reset-password-requested')
+    }
+  )
 
-  it('should show the same page with a generic error when we get an unexpected error from adminusers', async () => {
-    const req = reqFixtures.validForgottenPasswordPost()
-    const res = resFixtures.getStubbedRes()
-    const username = req.body.username
+  it(
+    'should show the same page with a generic error when we get an unexpected error from adminusers',
+    async () => {
+      const req = reqFixtures.validForgottenPasswordPost()
+      const res = resFixtures.getStubbedRes()
+      const username = req.body.username
 
-    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
-      .validForgottenPasswordCreateRequest(username)
-      .getPlain())
-      .reply(500)
+      adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
+        .validForgottenPasswordCreateRequest(username)
+        .getPlain())
+        .reply(500)
 
-    await forgottenPasswordController.emailPost(req, res)
-    sinon.assert.calledWith(req.flash, 'genericError', 'Something went wrong. Please try again.')
-    sinon.assert.calledWith(res.redirect, '/reset-password')
-  })
+      await forgottenPasswordController.emailPost(req, res)
+      sinon.assert.calledWith(req.flash, 'genericError', 'Something went wrong. Please try again.')
+      sinon.assert.calledWith(res.redirect, '/reset-password')
+    }
+  )
 
   it('display new password capture form', async () => {
     const req = reqFixtures.validForgottenPasswordGet()
@@ -149,35 +154,38 @@ describe('forgotten_password_controller', function () {
     sinon.assert.calledWith(res.redirect, '/login')
   })
 
-  it('reset users password upon valid reset password request should destroy session even if incrementing user session fails', async () => {
-    const req = reqFixtures.validUpdatePasswordPost()
-    const res = resFixtures.getStubbedRes()
-    const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const token = req.params.id
-    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
-    const userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
+  it(
+    'reset users password upon valid reset password request should destroy session even if incrementing user session fails',
+    async () => {
+      const req = reqFixtures.validUpdatePasswordPost()
+      const res = resFixtures.getStubbedRes()
+      const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+      const token = req.params.id
+      const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+      const userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
-    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
-      .reply(200, forgottenPasswordResponse.getPlain())
+      adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+        .reply(200, forgottenPasswordResponse.getPlain())
 
-    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
-      .reply(200, userResponse.getPlain())
+      adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
+        .reply(200, userResponse.getPlain())
 
-    adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
-      .validUpdatePasswordRequest(token, req.body.password)
-      .getPlain())
-      .reply(204)
+      adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
+        .validUpdatePasswordRequest(token, req.body.password)
+        .getPlain())
+        .reply(204)
 
-    adminusersMock.patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures
-      .validIncrementSessionVersionRequest()
-      .getPlain())
-      .reply(500)
+      adminusersMock.patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures
+        .validIncrementSessionVersionRequest()
+        .getPlain())
+        .reply(500)
 
-    await forgottenPasswordController.newPasswordPost(req, res)
-    sinon.assert.called(req.session.destroy)
-    sinon.assert.calledWith(req.flash, 'generic', 'Password has been updated')
-    sinon.assert.calledWith(res.redirect, '/login')
-  })
+      await forgottenPasswordController.newPasswordPost(req, res)
+      sinon.assert.called(req.session.destroy)
+      sinon.assert.calledWith(req.flash, 'generic', 'Password has been updated')
+      sinon.assert.calledWith(res.redirect, '/login')
+    }
+  )
 
   it('should render page with errors if password is invalid', async () => {
     const req = reqFixtures.validUpdatePasswordPost()

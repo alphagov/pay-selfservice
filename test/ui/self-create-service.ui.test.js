@@ -9,12 +9,12 @@ describe('Self-create service view', () => {
 
     const body = renderTemplate('self-create-service/register', templateData)
 
-    body.should.containSelector('h1').withExactText('Create an account')
+    expect(body).containSelector('h1').withExactText('Create an account')
 
-    body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.register)
-    body.should.containInputField('email', 'email')
-    body.should.containInputField('telephone-number', 'tel')
-    body.should.containInputField('password', 'password')
+    expect(body).containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.register)
+    expect(body).containInputField('email', 'email')
+    expect(body).containInputField('telephone-number', 'tel')
+    expect(body).containInputField('password', 'password')
 
     done()
   })
@@ -27,9 +27,9 @@ describe('Self-create service view', () => {
 
     const body = renderTemplate('self-create-service/confirm', templateData)
 
-    body.should.containSelector('h1').withExactText('Check your email')
-    body.should.containSelector('div#display-email-sent > p:nth-child(2)').withExactText(`An email has been sent to ${email}.`)
-    body.should.containSelector('div#display-email-sent > p:nth-child(3)').withExactText('Click the link in the email to continue your registration.')
+    expect(body).containSelector('h1').withExactText('Check your email')
+    expect(body).containSelector('div#display-email-sent > p:nth-child(2)').withExactText(`An email has been sent to ${email}.`)
+    expect(body).containSelector('div#display-email-sent > p:nth-child(3)').withExactText('Click the link in the email to continue your registration.')
 
     done()
   })
@@ -39,13 +39,13 @@ describe('Self-create service view', () => {
 
     const body = renderTemplate('self-create-service/verify-otp', templateData)
 
-    body.should.containSelector('h1').withExactText('Check your phone')
+    expect(body).containSelector('h1').withExactText('Check your phone')
 
-    body.should.containSelector('#display_otp_verify > .govuk-body:first-of-type').withExactText(`We’ve sent you a text message with a verification code`)
-    body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.selfCreateService.otpVerify)
-    body.should.containInputField('verify-code', 'text')
+    expect(body).containSelector('#display_otp_verify > .govuk-body:first-of-type').withExactText(`We’ve sent you a text message with a verification code`)
+    expect(body).containSelector('form#verify-phone-form').withAttribute('action', paths.selfCreateService.otpVerify)
+    expect(body).containInputField('verify-code', 'text')
 
-    body.should.containSelector('#display_otp_verify > .govuk-body:last-of-type > a').withExactText('Not received a text message?')
+    expect(body).containSelector('#display_otp_verify > .govuk-body:last-of-type > a').withExactText('Not received a text message?')
 
     done()
   })
@@ -58,10 +58,10 @@ describe('Self-create service view', () => {
 
     const body = renderTemplate('self-create-service/set-name', templateData)
 
-    body.should.containSelector('h1').withExactText('What service will you be taking payments for?')
+    expect(body).containSelector('h1').withExactText('What service will you be taking payments for?')
 
-    body.should.containInputField('service-name', 'text').withAttribute('value', serviceName)
-    body.should.containSelector('form#name-your-service-form').withAttribute('action', paths.selfCreateService.serviceNaming)
+    expect(body).containInputField('service-name', 'text').withAttribute('value', serviceName)
+    expect(body).containSelector('form#name-your-service-form').withAttribute('action', paths.selfCreateService.serviceNaming)
 
     done()
   })
@@ -74,26 +74,29 @@ describe('Self-create service view', () => {
 
     const body = renderTemplate('self-create-service/resend-otp', templateData)
 
-    body.should.containSelector('h1').withExactText('Check your mobile number')
+    expect(body).containSelector('h1').withExactText('Check your mobile number')
 
-    body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
-    body.should.containInputField('telephone-number', 'tel').withAttribute('value', telephoneNumber)
+    expect(body).containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
+    expect(body).containInputField('telephone-number', 'tel').withAttribute('value', telephoneNumber)
 
     done()
   })
 
-  it('should render otp resend form with international telephone number', done => {
-    const templateData = {
-      telephoneNumber: '+441134960000'
+  it(
+    'should render otp resend form with international telephone number',
+    done => {
+      const templateData = {
+        telephoneNumber: '+441134960000'
+      }
+
+      const body = renderTemplate('self-create-service/resend-otp', templateData)
+
+      expect(body).containSelector('h1').withExactText('Check your mobile number')
+
+      expect(body).containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
+      expect(body).containInputField('telephone-number', 'tel').withAttribute('value', '+441134960000')
+
+      done()
     }
-
-    const body = renderTemplate('self-create-service/resend-otp', templateData)
-
-    body.should.containSelector('h1').withExactText('Check your mobile number')
-
-    body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
-    body.should.containInputField('telephone-number', 'tel').withAttribute('value', '+441134960000')
-
-    done()
-  })
+  )
 })

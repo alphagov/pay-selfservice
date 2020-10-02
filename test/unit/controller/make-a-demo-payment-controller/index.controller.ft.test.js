@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const lodash = require('lodash')
 const csrf = require('csrf')
@@ -25,7 +24,7 @@ const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
 describe('make a demo payment - index controller', () => {
   describe('when no values exist in the body and none are in session', () => {
     let result, $, session
-    before(done => {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       session = getMockSession(VALID_USER)
       supertest(createAppWithSession(getApp(), session))
@@ -37,25 +36,28 @@ describe('make a demo payment - index controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return with a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
     it(`should default to a payment amount of '20.00'`, () => {
-      expect($(`#payment-amount`).text()).to.contain(`£${'20.00'}`)
+      expect($(`#payment-amount`).text()).toEqual(expect.arrayContaining([`£${'20.00'}`]))
     })
 
-    it(`should default to a payment description of 'An example payment description'`, () => {
-      expect($(`#payment-description`).text()).to.contain('An example payment description')
-    })
+    it(
+      `should default to a payment description of 'An example payment description'`,
+      () => {
+        expect($(`#payment-description`).text()).toEqual(expect.arrayContaining(['An example payment description']))
+      }
+    )
   })
   describe('when values exist in the session but none are in the body', () => {
     let result, $, session, paymentAmount, paymentDescription
-    before(done => {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       paymentAmount = '10000'
       paymentDescription = 'Pay your window tax'
@@ -71,28 +73,28 @@ describe('make a demo payment - index controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return with a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
     it(`should show the payment amount stored in the session`, () => {
       const paymentAmountInPounds = penceToPounds(paymentAmount)
-      expect($(`#payment-amount`).text()).to.contain(`£${paymentAmountInPounds}`)
+      expect($(`#payment-amount`).text()).toEqual(expect.arrayContaining([`£${paymentAmountInPounds}`]))
     })
 
     it(`should show the payment description stored in the session`, () => {
-      expect($(`#payment-description`).text()).to.contain(paymentDescription)
+      expect($(`#payment-description`).text()).toEqual(expect.arrayContaining([paymentDescription]))
     })
   })
   describe('when values exist in the body', () => {
     describe('and they are valid', () => {
       describe('and there are also values in the session', () => {
         let result, $, session, paymentAmount, paymentDescription
-        before(done => {
+        beforeAll(done => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           paymentAmount = '100.00'
           paymentDescription = 'Pay your window tax'
@@ -113,25 +115,25 @@ describe('make a demo payment - index controller', () => {
             })
         })
 
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should return with a statusCode of 200', () => {
-          expect(result.statusCode).to.equal(200)
+          expect(result.statusCode).toBe(200)
         })
 
         it(`should show the payment amount from the body`, () => {
-          expect($(`#payment-amount`).text()).to.contain(`£${paymentAmount}`)
+          expect($(`#payment-amount`).text()).toEqual(expect.arrayContaining([`£${paymentAmount}`]))
         })
 
         it(`should show the payment description from the body`, () => {
-          expect($(`#payment-description`).text()).to.contain(paymentDescription)
+          expect($(`#payment-description`).text()).toEqual(expect.arrayContaining([paymentDescription]))
         })
       })
       describe('and there are no values in the session', () => {
         let result, $, session, paymentAmount, paymentDescription
-        before(done => {
+        beforeAll(done => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           paymentAmount = '100.00'
           paymentDescription = 'Pay your window tax'
@@ -150,27 +152,27 @@ describe('make a demo payment - index controller', () => {
             })
         })
 
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should return with a statusCode of 200', () => {
-          expect(result.statusCode).to.equal(200)
+          expect(result.statusCode).toBe(200)
         })
 
         it(`should show the payment amount from the body`, () => {
-          expect($(`#payment-amount`).text()).to.contain(`£${paymentAmount}`)
+          expect($(`#payment-amount`).text()).toEqual(expect.arrayContaining([`£${paymentAmount}`]))
         })
 
         it(`should show the payment description from the body`, () => {
-          expect($(`#payment-description`).text()).to.contain(paymentDescription)
+          expect($(`#payment-description`).text()).toEqual(expect.arrayContaining([paymentDescription]))
         })
       })
     })
     describe('but the payment amount is invalid', () => {
       describe('because the value includes text', () => {
         let result, session
-        before(done => {
+        beforeAll(done => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           supertest(createAppWithSession(getApp(), session))
@@ -186,25 +188,27 @@ describe('make a demo payment - index controller', () => {
             })
         })
 
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should redirect with a statusCode of 302', () => {
-          expect(result.statusCode).to.equal(302)
+          expect(result.statusCode).toBe(302)
         })
         it(`should redirect to the edit payment amount page`, () => {
-          expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.editAmount)
+          expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.editAmount)
         })
         it('should add a relevant error message to the session \'flash\'', () => {
-          expect(session.flash).to.have.property('genericError')
-          expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+          expect(session.flash).toHaveProperty('genericError')
+          expect(session.flash.genericError.length).toBe(1)
+          expect(session.flash.genericError[0]).toBe(
+            'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
+          )
         })
       })
       describe('because the value has too many digits to the right of the decimal point', () => {
         let result, session
-        before(done => {
+        beforeAll(done => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           supertest(createAppWithSession(getApp(), session))
@@ -220,31 +224,33 @@ describe('make a demo payment - index controller', () => {
             })
         })
 
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should redirect with a statusCode of 302', () => {
-          expect(result.statusCode).to.equal(302)
+          expect(result.statusCode).toBe(302)
         })
         it(`should redirect to the edit payment amount page`, () => {
-          expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.editAmount)
+          expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.editAmount)
         })
         it('should add a relevant error message to the session \'flash\'', () => {
-          expect(session.flash).to.have.property('genericError')
-          expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+          expect(session.flash).toHaveProperty('genericError')
+          expect(session.flash.genericError.length).toBe(1)
+          expect(session.flash.genericError[0]).toBe(
+            'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
+          )
         })
       })
       describe('because the value exceeds 100,000', () => {
         let result, session, app
-        before('Arrange', () => {
+        beforeAll(() => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
 
-        before('Act', done => {
+        beforeAll(done => {
           supertest(app)
             .post(paths.prototyping.demoPayment.index)
             .send({
@@ -258,20 +264,20 @@ describe('make a demo payment - index controller', () => {
             })
         })
 
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should redirect with a statusCode of 302', () => {
-          expect(result.statusCode).to.equal(302)
+          expect(result.statusCode).toBe(302)
         })
         it(`should redirect to the edit payment amount page`, () => {
-          expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.editAmount)
+          expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.editAmount)
         })
         it('should add a relevant error message to the session \'flash\'', () => {
-          expect(session.flash).to.have.property('genericError')
-          expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('Enter an amount under £100,000')
+          expect(session.flash).toHaveProperty('genericError')
+          expect(session.flash.genericError.length).toBe(1)
+          expect(session.flash.genericError[0]).toBe('Enter an amount under £100,000')
         })
       })
     })

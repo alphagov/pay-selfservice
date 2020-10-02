@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,7 +14,7 @@ const connectorClient = new Connector(`http://localhost:${port}`)
 
 // Global setup
 
-describe('connector client - create gateway account', function () {
+describe('connector client - create gateway account', () => {
   const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
@@ -26,13 +25,13 @@ describe('connector client - create gateway account', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('create gateway account - success', () => {
     const validCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
 
-    before((done) => {
+    beforeAll((done) => {
       const pactified = validCreateGatewayAccountRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
@@ -48,7 +47,7 @@ describe('connector client - create gateway account', function () {
 
     afterEach(() => provider.verify())
 
-    it('should submit create gateway account successfully', function () {
+    it('should submit create gateway account successfully', () => {
       const createGatewayAccount = validCreateGatewayAccountRequest.getPlain()
       return connectorClient.createGatewayAccount(
         createGatewayAccount.payment_provider,
@@ -67,7 +66,7 @@ describe('connector client - create gateway account', function () {
       message: `Unsupported payment provider ${nonExistentPaymentProvider}.`
     }
 
-    before((done) => {
+    beforeAll((done) => {
       const pactified = invalidCreateGatewayAccountRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
@@ -84,7 +83,7 @@ describe('connector client - create gateway account', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 400 on missing fields', function () {
+    it('should return 400 on missing fields', () => {
       const createGatewayAccount = invalidCreateGatewayAccountRequest.getPlain()
       return connectorClient.createGatewayAccount(
         createGatewayAccount.payment_provider,
@@ -94,10 +93,10 @@ describe('connector client - create gateway account', function () {
       ).then(
         () => { throw new Error('Expected to reject') },
         (err) => {
-          expect(err.errorCode).to.equal(400)
-          expect(err.message).to.deep.equal(errorResponse)
+          expect(err.errorCode).toBe(400)
+          expect(err.message).toEqual(errorResponse)
         }
-      )
+      );
     })
   })
 })

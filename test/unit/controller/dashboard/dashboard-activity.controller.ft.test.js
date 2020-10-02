@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const moment = require('moment-timezone')
@@ -89,7 +88,7 @@ describe('dashboard-activity-controller', () => {
     describe('and the period is not set', () => {
       let result, $, app
 
-      before('Arrange', () => {
+      beforeAll(() => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'transactions:read' }]
@@ -109,7 +108,7 @@ describe('dashboard-activity-controller', () => {
         app = createAppWithSession(getApp(), session)
       })
 
-      before('Act', done => {
+      beforeAll(done => {
         supertest(app)
           .get(paths.dashboard.index)
           .end((err, res) => {
@@ -120,52 +119,48 @@ describe('dashboard-activity-controller', () => {
           })
       })
 
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('it should return a statusCode of 200', () => {
-        expect(result.statusCode).to.equal(200)
+        expect(result.statusCode).toBe(200)
       })
 
       it('it should default the period to today', () => {
-        expect($('#activity-period option[selected]').val()).to.equal('today')
+        expect($('#activity-period option[selected]').val()).toBe('today')
       })
 
       it('it should set the successful payments count', () => {
-        expect($('.dashboard-total-group:nth-child(1) .dashboard-total-group__count').text())
-          .to.equal('10')
+        expect($('.dashboard-total-group:nth-child(1) .dashboard-total-group__count').text()).toBe('10')
       })
 
       it('it should set the successful payments amount in pounds', () => {
-        expect($('.dashboard-total-group:nth-child(1) .dashboard-total-group__amount').text())
-          .to.equal('£550.00')
+        expect($('.dashboard-total-group:nth-child(1) .dashboard-total-group__amount').text()).toBe('£550.00')
       })
 
       it('it should set the refund payments count', () => {
-        expect($('.dashboard-total-group:nth-child(2) .dashboard-total-group__count').text())
-          .to.equal('2')
+        expect($('.dashboard-total-group:nth-child(2) .dashboard-total-group__count').text()).toBe('2')
       })
 
       it('it should set the refund payments amount in pounds', () => {
-        expect($('.dashboard-total-group:nth-child(2) .dashboard-total-group__amount').text())
-          .to.equal('£110.00')
+        expect($('.dashboard-total-group:nth-child(2) .dashboard-total-group__amount').text()).toBe('£110.00')
       })
 
       it('it should set the net income amount in pounds', () => {
-        expect($('.dashboard-total-group:nth-child(3) .dashboard-total-group__amount').text())
-          .to.equal('£440.00')
+        expect($('.dashboard-total-group:nth-child(3) .dashboard-total-group__amount').text()).toBe('£440.00')
       })
 
       it('it should print the time period in the summary box', () => {
-        expect($('.dashboard-total-explainer').text())
-          .to.contain(moment().tz('Europe/London').startOf('day').subtract(0, 'days').format('D MMMM YYYY h:mm:ssa z'))
+        expect($('.dashboard-total-explainer').text()).toEqual(expect.arrayContaining([
+          moment().tz('Europe/London').startOf('day').subtract(0, 'days').format('D MMMM YYYY h:mm:ssa z')
+        ]))
       })
     })
     describe('and the period is set to today explicitly', () => {
       let result, $, app
 
-      before('Arrange', () => {
+      beforeAll(() => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'transactions:read' }]
@@ -185,7 +180,7 @@ describe('dashboard-activity-controller', () => {
         app = createAppWithSession(getApp(), session)
       })
 
-      before('Act', done => {
+      beforeAll(done => {
         supertest(app)
           .get(paths.dashboard.index)
           .query({
@@ -198,27 +193,28 @@ describe('dashboard-activity-controller', () => {
           })
       })
 
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('it should return a statusCode of 200', () => {
-        expect(result.statusCode).to.equal(200)
+        expect(result.statusCode).toBe(200)
       })
 
       it('it should select the period today', () => {
-        expect($('#activity-period option[selected]').val()).to.equal('today')
+        expect($('#activity-period option[selected]').val()).toBe('today')
       })
 
       it('it should print the time period in the summary box', () => {
-        expect($('.dashboard-total-explainer').text())
-          .to.contain(moment().tz('Europe/London').startOf('day').format('D MMMM YYYY h:mm:ssa z'))
+        expect($('.dashboard-total-explainer').text()).toEqual(expect.arrayContaining([
+          moment().tz('Europe/London').startOf('day').format('D MMMM YYYY h:mm:ssa z')
+        ]))
       })
     })
     describe('and the period is set to yesterday', () => {
       let result, $, app
 
-      before('Arrange', () => {
+      beforeAll(() => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'transactions:read' }]
@@ -238,7 +234,7 @@ describe('dashboard-activity-controller', () => {
         app = createAppWithSession(getApp(), session)
       })
 
-      before('Act', done => {
+      beforeAll(done => {
         supertest(app)
           .get(paths.dashboard.index)
           .query({
@@ -251,27 +247,28 @@ describe('dashboard-activity-controller', () => {
           })
       })
 
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('it should return a statusCode of 200', () => {
-        expect(result.statusCode).to.equal(200)
+        expect(result.statusCode).toBe(200)
       })
 
       it('it should select the period yesterday', () => {
-        expect($('#activity-period option[selected]').val()).to.equal('yesterday')
+        expect($('#activity-period option[selected]').val()).toBe('yesterday')
       })
 
       it('it should print the time period in the summary box', () => {
-        expect($('.dashboard-total-explainer').text())
-          .to.contain(moment().tz('Europe/London').startOf('day').subtract(1, 'days').format('D MMMM YYYY h:mm:ssa z'))
+        expect($('.dashboard-total-explainer').text()).toEqual(expect.arrayContaining([
+          moment().tz('Europe/London').startOf('day').subtract(1, 'days').format('D MMMM YYYY h:mm:ssa z')
+        ]))
       })
     })
     describe('and the period is set to previous 7 days', () => {
       let result, $, app
 
-      before('Arrange', () => {
+      beforeAll(() => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'transactions:read' }]
@@ -291,7 +288,7 @@ describe('dashboard-activity-controller', () => {
         app = createAppWithSession(getApp(), session)
       })
 
-      before('Act', done => {
+      beforeAll(done => {
         supertest(app)
           .get(paths.dashboard.index)
           .query({
@@ -304,27 +301,28 @@ describe('dashboard-activity-controller', () => {
           })
       })
 
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('it should return a statusCode of 200', () => {
-        expect(result.statusCode).to.equal(200)
+        expect(result.statusCode).toBe(200)
       })
 
       it('it should select the period previous-seven-days', () => {
-        expect($('#activity-period option[selected]').val()).to.equal('previous-seven-days')
+        expect($('#activity-period option[selected]').val()).toBe('previous-seven-days')
       })
 
       it('it should print the time period in the summary box', () => {
-        expect($('.dashboard-total-explainer').text())
-          .to.contain(moment().tz('Europe/London').startOf('day').subtract(8, 'days').format('D MMMM YYYY h:mm:ssa z'))
+        expect($('.dashboard-total-explainer').text()).toEqual(expect.arrayContaining([
+          moment().tz('Europe/London').startOf('day').subtract(8, 'days').format('D MMMM YYYY h:mm:ssa z')
+        ]))
       })
     })
     describe('and the period is set to previous 30 days', () => {
       let result, $, app
 
-      before('Arrange', () => {
+      beforeAll(() => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'transactions:read' }]
@@ -344,7 +342,7 @@ describe('dashboard-activity-controller', () => {
         app = createAppWithSession(getApp(), session)
       })
 
-      before('Act', done => {
+      beforeAll(done => {
         supertest(app)
           .get(paths.dashboard.index)
           .query({
@@ -357,21 +355,22 @@ describe('dashboard-activity-controller', () => {
           })
       })
 
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('it should return a statusCode of 200', () => {
-        expect(result.statusCode).to.equal(200)
+        expect(result.statusCode).toBe(200)
       })
 
       it('it should select the period previous-thirty-days', () => {
-        expect($('#activity-period option[selected]').val()).to.equal('previous-thirty-days')
+        expect($('#activity-period option[selected]').val()).toBe('previous-thirty-days')
       })
 
       it('it should print the time period in the summary box', () => {
-        expect($('.dashboard-total-explainer').text())
-          .to.contain(moment().tz('Europe/London').startOf('day').subtract(31, 'days').format('D MMMM YYYY h:mm:ssa z'))
+        expect($('.dashboard-total-explainer').text()).toEqual(expect.arrayContaining([
+          moment().tz('Europe/London').startOf('day').subtract(31, 'days').format('D MMMM YYYY h:mm:ssa z')
+        ]))
       })
     })
   })
@@ -379,7 +378,7 @@ describe('dashboard-activity-controller', () => {
     describe('due to a 404 coming from connector', () => {
       let result, $, app
 
-      before('Arrange', () => {
+      beforeAll(() => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'transactions:read' }]
@@ -399,7 +398,7 @@ describe('dashboard-activity-controller', () => {
         app = createAppWithSession(getApp(), session)
       })
 
-      before('Act', done => {
+      beforeAll(done => {
         supertest(app)
           .get(paths.dashboard.index)
           .end((err, res) => {
@@ -409,24 +408,23 @@ describe('dashboard-activity-controller', () => {
           })
       })
 
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('it should return a statusCode of 404', () => {
-        expect(result.statusCode).to.equal(404)
+        expect(result.statusCode).toBe(404)
       })
 
       it('it should print the error message', () => {
-        expect($('.dashboard-total-group__heading').text().trim())
-          .to.equal('Error fetching totals')
+        expect($('.dashboard-total-group__heading').text().trim()).toBe('Error fetching totals')
       })
     })
   })
   describe('When the dashboard is retrieved for a service that has requested to go live', () => {
     let session
 
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         current_go_live_stage: 'TERMS_AGREED_STRIPE',
@@ -444,8 +442,8 @@ describe('dashboard-activity-controller', () => {
     it('it should display the live account requested panel', async () => {
       let res = await getDashboard()
       let $ = cheerio.load(res.text)
-      expect($('.account-status-panel').length).to.equal(1)
-      expect($('.account-status-panel h2').text()).to.equal('GOV.UK Pay are reviewing your request to go live')
+      expect($('.account-status-panel').length).toBe(1)
+      expect($('.account-status-panel h2').text()).toBe('GOV.UK Pay are reviewing your request to go live')
     })
 
     afterEach(() => {
@@ -455,7 +453,7 @@ describe('dashboard-activity-controller', () => {
   describe('When the dashboard is retrieved for a service that has requested to go live and the user is not an admin', () => {
     let session
 
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         current_go_live_stage: 'TERMS_AGREED_STRIPE',
@@ -473,7 +471,7 @@ describe('dashboard-activity-controller', () => {
     it('it should not display the live account requested panel', async () => {
       let res = await getDashboard()
       let $ = cheerio.load(res.text)
-      expect($('.account-status-panel').length).to.equal(0)
+      expect($('.account-status-panel').length).toBe(0)
     })
 
     afterEach(() => {
@@ -484,7 +482,7 @@ describe('dashboard-activity-controller', () => {
     let session
 
     describe('User has permission to update account details', () => {
-      before('Arrange', () => {
+      beforeAll(() => {
         session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'transactions:read' }, { name: 'stripe-account-details:update' }]
@@ -495,7 +493,7 @@ describe('dashboard-activity-controller', () => {
         app = createAppWithSession(getApp(), session)
       })
 
-      beforeEach('Arrange', () => {
+      beforeEach(() => {
         mockConnectorGetGatewayAccount('stripe', 'test')
         mockConnectorGetStripeAccount()
       })
@@ -504,62 +502,83 @@ describe('dashboard-activity-controller', () => {
         nock.cleanAll()
       })
 
-      it('it should display account status panel when account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(false, false, true, true)
-        mockStripeRetrieveAccount(true, null)
-        let res = await getDashboard(createAppWithSession(getApp(), session))
-        let $ = cheerio.load(res.text)
-        let resultText = $('.account-status-panel').text()
-        expect($('.account-status-panel').length).to.equal(1)
-        expect(resultText).to.contain('details about your responsible person')
-        expect(resultText).to.contain('bank details')
-        expect(resultText).to.not.contain('your organisation’s VAT number')
-        expect(resultText).to.not.contain('your company registration number if you’ve registered your company')
-      })
+      it(
+        'it should display account status panel when account is not fully setup',
+        async () => {
+          mockConnectorGetStripeSetup(false, false, true, true)
+          mockStripeRetrieveAccount(true, null)
+          let res = await getDashboard(createAppWithSession(getApp(), session))
+          let $ = cheerio.load(res.text)
+          let resultText = $('.account-status-panel').text()
+          expect($('.account-status-panel').length).toBe(1)
+          expect(resultText).toEqual(expect.arrayContaining(['details about your responsible person']))
+          expect(resultText).toEqual(expect.arrayContaining(['bank details']))
+          expect(resultText).toEqual(expect.not.arrayContaining(['your organisation’s VAT number']))
+          expect(resultText).toEqual(
+            expect.not.arrayContaining(['your company registration number if you’ve registered your company'])
+          )
+        }
+      )
 
-      it('it should not display account status panel when account is fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, true, true)
-        mockStripeRetrieveAccount(true, null)
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
-        expect($('.account-status-panel').length).to.equal(0)
-      })
+      it(
+        'it should not display account status panel when account is fully setup',
+        async () => {
+          mockConnectorGetStripeSetup(true, true, true, true)
+          mockStripeRetrieveAccount(true, null)
+          let res = await getDashboard()
+          let $ = cheerio.load(res.text)
+          expect($('.account-status-panel').length).toBe(0)
+        }
+      )
 
-      it('it should display account status panel with DATE when account is not fully setup and there is a deadline', async () => {
-        mockConnectorGetStripeSetup(true, true, false, false)
-        mockStripeRetrieveAccount(true, 1606820691)
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
-        expect($('.account-status-panel').length).to.equal(1)
-        const resultText = $('.account-status-panel').text()
-        expect(resultText).to.contain('You must add more details by 1 December 2020 to continue taking payments')
-      })
+      it(
+        'it should display account status panel with DATE when account is not fully setup and there is a deadline',
+        async () => {
+          mockConnectorGetStripeSetup(true, true, false, false)
+          mockStripeRetrieveAccount(true, 1606820691)
+          let res = await getDashboard()
+          let $ = cheerio.load(res.text)
+          expect($('.account-status-panel').length).toBe(1)
+          const resultText = $('.account-status-panel').text()
+          expect(resultText).toEqual(expect.arrayContaining(
+            ['You must add more details by 1 December 2020 to continue taking payments']
+          ))
+        }
+      )
 
-      it('it should display RESTRICTED account status panel when payouts=false, account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, false, false)
-        mockStripeRetrieveAccount(false, null)
+      it(
+        'it should display RESTRICTED account status panel when payouts=false, account is not fully setup',
+        async () => {
+          mockConnectorGetStripeSetup(true, true, false, false)
+          mockStripeRetrieveAccount(false, null)
 
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
-        expect($('.account-status-panel').length).to.equal(1)
-        const resultText = $('.account-status-panel').text()
-        expect(resultText).to.contain('Stripe have restricted your account')
-      })
+          let res = await getDashboard()
+          let $ = cheerio.load(res.text)
+          expect($('.account-status-panel').length).toBe(1)
+          const resultText = $('.account-status-panel').text()
+          expect(resultText).toEqual(expect.arrayContaining(['Stripe have restricted your account']))
+        }
+      )
 
-      it('it should display RESTRICTED account status panel when payouts=false, account is fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, true, true)
-        mockStripeRetrieveAccount(false, null)
+      it(
+        'it should display RESTRICTED account status panel when payouts=false, account is fully setup',
+        async () => {
+          mockConnectorGetStripeSetup(true, true, true, true)
+          mockStripeRetrieveAccount(false, null)
 
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
-        expect($('.account-status-panel').length).to.equal(1)
-        const resultText = $('.account-status-panel').text()
-        expect(resultText).to.contain('Stripe have restricted your account')
-        expect(resultText).to.contain('To start taking payments again, please contact support.')
-      })
+          let res = await getDashboard()
+          let $ = cheerio.load(res.text)
+          expect($('.account-status-panel').length).toBe(1)
+          const resultText = $('.account-status-panel').text()
+          expect(resultText).toEqual(expect.arrayContaining(['Stripe have restricted your account']))
+          expect(resultText).toEqual(
+            expect.arrayContaining(['To start taking payments again, please contact support.'])
+          )
+        }
+      )
     })
     describe('User does not have permission to update account details', () => {
-      before('Arrange', () => {
+      beforeAll(() => {
         session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'transactions:read' }]
@@ -572,7 +591,7 @@ describe('dashboard-activity-controller', () => {
         app = createAppWithSession(getApp(), session)
       })
 
-      beforeEach('Arrange', () => {
+      beforeEach(() => {
         mockConnectorGetGatewayAccount('stripe', 'test')
       })
 
@@ -580,18 +599,21 @@ describe('dashboard-activity-controller', () => {
         nock.cleanAll()
       })
 
-      it('it should not display account status panel when account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(false, false, false, false)
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
-        expect($('.account-status-panel').length).to.equal(0)
-      })
+      it(
+        'it should not display account status panel when account is not fully setup',
+        async () => {
+          mockConnectorGetStripeSetup(false, false, false, false)
+          let res = await getDashboard()
+          let $ = cheerio.load(res.text)
+          expect($('.account-status-panel').length).toBe(0)
+        }
+      )
     })
   })
   describe('When the dashboard is retrieved for non Stripe account', () => {
     let session
 
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }]
@@ -603,14 +625,14 @@ describe('dashboard-activity-controller', () => {
       app = createAppWithSession(getApp(), session)
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('it should not display account status panel', async () => {
       let res = await getDashboard()
       let $ = cheerio.load(res.text)
-      expect($('.account-status-panel').length).to.equal(0)
+      expect($('.account-status-panel').length).toBe(0)
     })
   })
 })

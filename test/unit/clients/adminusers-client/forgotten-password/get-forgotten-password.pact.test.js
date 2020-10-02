@@ -1,6 +1,5 @@
 const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
-const { expect } = require('chai')
 var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 var userFixtures = require('../../../../fixtures/user.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -8,7 +7,7 @@ let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords'
 
-describe('adminusers client - get forgotten password', function () {
+describe('adminusers client - get forgotten password', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -19,15 +18,15 @@ describe('adminusers client - get forgotten password', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     let code = 'existing-code'
     let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ code: code })
     let expectedForgottenPassword = validForgottenPasswordResponse.getPlain()
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${FORGOTTEN_PASSWORD_PATH}/${code}`)
           .withState('a forgotten password entry exist')
@@ -39,20 +38,20 @@ describe('adminusers client - get forgotten password', function () {
 
     afterEach(() => provider.verify())
 
-    it('should GET a forgotten password entry', function () {
+    it('should GET a forgotten password entry', () => {
       return adminusersClient.getForgottenPassword(code).then(function (forgottenPassword) {
-        expect(forgottenPassword.code).to.be.equal(expectedForgottenPassword.code)
-        expect(forgottenPassword.date).to.be.equal(expectedForgottenPassword.date)
-        expect(forgottenPassword.username).to.be.equal(expectedForgottenPassword.username)
-        expect(forgottenPassword._links.length).to.be.equal(expectedForgottenPassword._links.length)
-      })
+        expect(forgottenPassword.code).toBe(expectedForgottenPassword.code)
+        expect(forgottenPassword.date).toBe(expectedForgottenPassword.date)
+        expect(forgottenPassword.username).toBe(expectedForgottenPassword.username)
+        expect(forgottenPassword._links.length).toBe(expectedForgottenPassword._links.length)
+      });
     })
   })
 
   describe('not found', () => {
     let code = 'non-existent-code'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${FORGOTTEN_PASSWORD_PATH}/${code}`)
           .withState('a valid (non-expired) forgotten password entry does not exist')
@@ -65,12 +64,12 @@ describe('adminusers client - get forgotten password', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error if no valid forgotten password entry', function () {
+    it('should error if no valid forgotten password entry', () => {
       return adminusersClient.getForgottenPassword(code)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

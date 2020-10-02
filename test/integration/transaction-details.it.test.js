@@ -27,13 +27,13 @@ function ledgerTransactionPathFor (transactionId) {
   return LEDGER_TRANSACTION_PATH.replace('{transactionId}', transactionId)
 }
 
-describe('The transaction view scenarios', function () {
-  afterEach(function () {
+describe('The transaction view scenarios', () => {
+  afterEach(() => {
     nock.cleanAll()
     app = null
   })
 
-  beforeEach(function (done) {
+  beforeEach(done => {
     let permissions = 'transactions-details:read'
     let user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
@@ -50,34 +50,43 @@ describe('The transaction view scenarios', function () {
       })
   })
 
-  describe('The transaction history endpoint', function () {
-    it('should return transaction not found if a non existing transaction id requested', function (done) {
-      let nonExistentTransactionId = 888
-      let ledgerError = { 'message': 'HTTP 404 Not Found' }
-      ledgerMock.get(ledgerTransactionPathFor(nonExistentTransactionId))
-        .reply(404, ledgerError)
+  describe('The transaction history endpoint', () => {
+    it(
+      'should return transaction not found if a non existing transaction id requested',
+      done => {
+        let nonExistentTransactionId = 888
+        let ledgerError = { 'message': 'HTTP 404 Not Found' }
+        ledgerMock.get(ledgerTransactionPathFor(nonExistentTransactionId))
+          .reply(404, ledgerError)
 
-      whenGetTransactionHistory(nonExistentTransactionId, app)
-        .expect(404, { 'message': 'Charge not found' })
-        .end(done)
-    })
+        whenGetTransactionHistory(nonExistentTransactionId, app)
+          .expect(404, { 'message': 'Charge not found' })
+          .end(done)
+      }
+    )
 
-    it('should return a generic error if ledger responds with an error', function (done) {
-      let transactionId = 888
-      let ledgerError = { 'message': 'Internal server error' }
-      ledgerMock.get(ledgerTransactionPathFor(transactionId))
-        .reply(500, ledgerError)
+    it(
+      'should return a generic error if ledger responds with an error',
+      done => {
+        let transactionId = 888
+        let ledgerError = { 'message': 'Internal server error' }
+        ledgerMock.get(ledgerTransactionPathFor(transactionId))
+          .reply(500, ledgerError)
 
-      whenGetTransactionHistory(transactionId, app)
-        .expect(500, { 'message': 'Error processing transaction view' })
-        .end(done)
-    })
+        whenGetTransactionHistory(transactionId, app)
+          .expect(500, { 'message': 'Error processing transaction view' })
+          .end(done)
+      }
+    )
 
-    it('should return a generic error if unable to communicate with ledger', function (done) {
-      let transactionId = 452345
-      whenGetTransactionHistory(transactionId, app)
-        .expect(500, { 'message': 'Error processing transaction view' })
-        .end(done)
-    })
+    it(
+      'should return a generic error if unable to communicate with ledger',
+      done => {
+        let transactionId = 452345
+        whenGetTransactionHistory(transactionId, app)
+          .expect(500, { 'message': 'Error processing transaction view' })
+          .end(done)
+      }
+    )
   })
 })

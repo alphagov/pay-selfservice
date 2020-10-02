@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -14,7 +13,7 @@ let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}`
 
 // Global setup
 
-describe('adminusers client - generate otp code for service invite', function () {
+describe('adminusers client - generate otp code for service invite', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
@@ -25,13 +24,13 @@ describe('adminusers client - generate otp code for service invite', function ()
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/otp/generate`)
           .withState('a valid invite exists with the given invite code')
@@ -45,7 +44,7 @@ describe('adminusers client - generate otp code for service invite', function ()
 
     afterEach(() => provider.verify())
 
-    it('should generate service invite otp code successfully', function () {
+    it('should generate service invite otp code successfully', () => {
       return adminusersClient.generateInviteOtpCode(inviteCode)
     })
   })
@@ -53,7 +52,7 @@ describe('adminusers client - generate otp code for service invite', function ()
   describe('not found', () => {
     const nonExistingInviteCode = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/${nonExistingInviteCode}/otp/generate`)
           .withState('invite not exists for the given invite code')
@@ -66,12 +65,12 @@ describe('adminusers client - generate otp code for service invite', function ()
 
     afterEach(() => provider.verify())
 
-    it('should 404 NOT FOUND if service invite code not found', function () {
+    it('should 404 NOT FOUND if service invite code not found', () => {
       return adminusersClient.generateInviteOtpCode(nonExistingInviteCode)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

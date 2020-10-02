@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
@@ -15,7 +14,7 @@ const GATEWAY_ACCOUNT_ID = '929'
 describe('Two factor authenticator configure page GET', () => {
   describe('if setting up an APP', () => {
     let result, $, session
-    before(done => {
+    beforeAll(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }],
@@ -37,29 +36,32 @@ describe('Two factor authenticator configure page GET', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).toBe(paths.user.profile)
     })
 
     it(`should have itself as the form action`, () => {
-      expect($('form').attr('action')).to.equal(paths.user.twoFactorAuth.configure)
+      expect($('form').attr('action')).toBe(paths.user.twoFactorAuth.configure)
     })
 
-    it(`should have a base64 encoded image in the image src for the QR code`, () => {
-      expect($('.qr-code').attr('src')).to.contain('data:image/png;base64')
-    })
+    it(
+      `should have a base64 encoded image in the image src for the QR code`,
+      () => {
+        expect($('.qr-code').attr('src')).toEqual(expect.arrayContaining(['data:image/png;base64']))
+      }
+    )
   })
   describe('if setting up SMS', () => {
     let result, $, session
-    before(done => {
+    beforeAll(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }],
@@ -81,30 +83,30 @@ describe('Two factor authenticator configure page GET', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).toBe(paths.user.profile)
     })
 
     it(`should have itself as the form action`, () => {
-      expect($('form').attr('action')).to.equal(paths.user.twoFactorAuth.configure)
+      expect($('form').attr('action')).toBe(paths.user.twoFactorAuth.configure)
     })
 
     it(`should not show a QR code`, () => {
-      expect($('.qr-code').length).to.equal(0)
+      expect($('.qr-code').length).toBe(0)
     })
   })
   describe('if returning to page with validation errors', () => {
     const verificationCodeError = 'Problem with verification code'
     let result, $, session
-    before(done => {
+    beforeAll(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }],
@@ -131,21 +133,21 @@ describe('Two factor authenticator configure page GET', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
     it('should show an error summary', () => {
-      expect($('.govuk-error-summary__list li').length).to.equal(1)
-      expect($('.govuk-error-summary__list li a[href$="#code"]').text()).to.equal(verificationCodeError)
+      expect($('.govuk-error-summary__list li').length).toBe(1)
+      expect($('.govuk-error-summary__list li a[href$="#code"]').text()).toBe(verificationCodeError)
     })
 
     it('should show inline errors', () => {
-      expect($('.govuk-error-message').length).to.equal(1)
+      expect($('.govuk-error-message').length).toBe(1)
     })
   })
 })

@@ -1,11 +1,10 @@
 'use strict'
 const cheerio = require('cheerio')
-const { expect } = require('chai')
 
 const renderTemplate = require('../test-helpers/html-assertions.js').render
 
-describe('The transaction list view', function () {
-  it('should render all transactions', function () {
+describe('The transaction list view', () => {
+  it('should render all transactions', () => {
     var templateData = {
       'total': 2,
       'filtersDescription': '  from 2015-01-11 01:01:01   to 2015-01-11 01:01:01   with <strong>\'Refund success\'</strong>, <strong>\'Success\'</strong> states   with \'Visa\' card brand',
@@ -78,30 +77,30 @@ describe('The transaction list view', function () {
     var body = renderTemplate('transactions/index', templateData)
     var $ = cheerio.load(body)
 
-    expect($('#download-transactions-link').attr('href')).to.equal(templateData.downloadTransactionLink)
+    expect($('#download-transactions-link').attr('href')).toBe(templateData.downloadTransactionLink)
 
     const totalResultsText = $('#total-results').text()
-    expect(totalResultsText).to.contain('2 transactions')
-    expect(totalResultsText).to.contain('from 2015-01-11 01:01:01')
-    expect(totalResultsText).to.contain('to 2015-01-11 01:01:01')
-    expect(totalResultsText).to.contain('with \'Refund success\'')
-    expect(totalResultsText).to.contain('\'Success\' states')
-    expect(totalResultsText).to.contain('with \'Visa\' card brand')
-    expect($('input#reference').attr('value')).to.equal('ref1')
-    expect($('input#fromDate').attr('value')).to.equal('2015-01-11 01:01:01')
+    expect(totalResultsText).toEqual(expect.arrayContaining(['2 transactions']))
+    expect(totalResultsText).toEqual(expect.arrayContaining(['from 2015-01-11 01:01:01']))
+    expect(totalResultsText).toEqual(expect.arrayContaining(['to 2015-01-11 01:01:01']))
+    expect(totalResultsText).toEqual(expect.arrayContaining(['with \'Refund success\'']))
+    expect(totalResultsText).toEqual(expect.arrayContaining(['\'Success\' states']))
+    expect(totalResultsText).toEqual(expect.arrayContaining(['with \'Visa\' card brand']))
+    expect($('input#reference').attr('value')).toBe('ref1')
+    expect($('input#fromDate').attr('value')).toBe('2015-01-11 01:01:01')
 
     templateData.results.forEach(function (transactionData, ix) {
       const rowSelector = `table#transactions-list tr:nth-of-type(${ix + 1})`
-      expect($(`${rowSelector} th a`).text()).to.contain(templateData.results[ix].reference)
-      expect($(`${rowSelector} td:nth-of-type(1)`).text()).to.equal(templateData.results[ix].email)
-      expect($(`${rowSelector} td:nth-of-type(2)`).text()).to.equal(templateData.results[ix].amount)
-      expect($(`${rowSelector} td:nth-of-type(3)`).text()).to.equal(templateData.results[ix].card_details.card_brand)
-      expect($(`${rowSelector} td:nth-of-type(4)`).text()).to.equal(templateData.results[ix].state_friendly)
-      expect($(`${rowSelector} td:nth-of-type(5)`).text()).to.equal(templateData.results[ix].created)
+      expect($(`${rowSelector} th a`).text()).toEqual(expect.arrayContaining([templateData.results[ix].reference]))
+      expect($(`${rowSelector} td:nth-of-type(1)`).text()).toBe(templateData.results[ix].email)
+      expect($(`${rowSelector} td:nth-of-type(2)`).text()).toBe(templateData.results[ix].amount)
+      expect($(`${rowSelector} td:nth-of-type(3)`).text()).toBe(templateData.results[ix].card_details.card_brand)
+      expect($(`${rowSelector} td:nth-of-type(4)`).text()).toBe(templateData.results[ix].state_friendly)
+      expect($(`${rowSelector} td:nth-of-type(5)`).text()).toBe(templateData.results[ix].created)
     })
   })
 
-  it('should render no transactions', function () {
+  it('should render no transactions', () => {
     var templateData = {
       'results': [],
       'hasResults': false
@@ -110,7 +109,7 @@ describe('The transaction list view', function () {
     var body = renderTemplate('transactions/index', templateData)
     const $ = cheerio.load(body)
 
-    expect($('#download-transactions-link').length).to.equal(0)
-    expect($('p#no-results').text()).to.equal('No results match the search criteria.')
+    expect($('#download-transactions-link').length).toBe(0)
+    expect($('p#no-results').text()).toBe('No results match the search criteria.')
   })
 })

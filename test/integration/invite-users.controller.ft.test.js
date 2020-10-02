@@ -4,7 +4,6 @@ const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const supertest = require('supertest')
 const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const csrf = require('csrf')
-const { expect } = require('chai')
 const roles = require('../../app/utils/roles').roles
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const inviteFixtures = require(path.join(__dirname, '/../fixtures/invite.fixtures'))
@@ -13,14 +12,14 @@ const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const formattedPathFor = require('../../app/utils/replace-params-in-path')
 
-describe('invite user controller', function () {
+describe('invite user controller', () => {
   const userInSession = session.getUser({})
   const EXTERNAL_SERVICE_ID = userInSession.serviceRoles[0].service.externalId
   userInSession.serviceRoles[0].role.permissions.push({ name: 'users-service:create' })
   const INVITE_RESOURCE = `/v1/api/invites/user`
 
-  describe('invite user index view', function () {
-    it('should display invite page', function (done) {
+  describe('invite user index view', () => {
+    it('should display invite page', done => {
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
@@ -28,18 +27,18 @@ describe('invite user controller', function () {
         .set('Accept', 'application/json')
         .expect(200)
         .expect((res) => {
-          expect(res.body.teamMemberIndexLink).to.equal(formattedPathFor(paths.teamMembers.index, EXTERNAL_SERVICE_ID))
-          expect(res.body.teamMemberInviteSubmitLink).to.equal(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
-          expect(res.body.admin.id).to.equal(roles['admin'].extId)
-          expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId)
-          expect(res.body.view.id).to.equal(roles['view-only'].extId)
+          expect(res.body.teamMemberIndexLink).toBe(formattedPathFor(paths.teamMembers.index, EXTERNAL_SERVICE_ID))
+          expect(res.body.teamMemberInviteSubmitLink).toBe(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
+          expect(res.body.admin.id).toBe(roles['admin'].extId)
+          expect(res.body.viewAndRefund.id).toBe(roles['view-and-refund'].extId)
+          expect(res.body.view.id).toBe(roles['view-only'].extId)
         })
         .end(done)
     })
   })
 
-  describe('invite user', function () {
-    it('should invite a new team member successfully', function (done) {
+  describe('invite user', () => {
+    it('should invite a new team member successfully', done => {
       const validInvite = inviteFixtures.validInviteRequest()
       adminusersMock.post(INVITE_RESOURCE)
         .reply(201, inviteFixtures.validInviteResponse(validInvite.getPlain()))
@@ -60,7 +59,7 @@ describe('invite user controller', function () {
         .end(done)
     })
 
-    it('should error if the user is already invited/exists', function (done) {
+    it('should error if the user is already invited/exists', done => {
       const existingUser = 'existing-user@example.com'
       adminusersMock.post(INVITE_RESOURCE)
         .reply(412, inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(existingUser).getPlain())
@@ -78,12 +77,12 @@ describe('invite user controller', function () {
         })
         .expect(200)
         .expect((res) => {
-          expect(res.body.error.message).to.include(existingUser)
+          expect(res.body.error.message).toEqual(expect.arrayContaining([existingUser]))
         })
         .end(done)
     })
 
-    it('should error on unknown role externalId', function (done) {
+    it('should error on unknown role externalId', done => {
       const unknownRoleId = '999'
 
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
@@ -100,7 +99,7 @@ describe('invite user controller', function () {
         })
         .expect(200)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to send invitation at this time')
+          expect(res.body.message).toBe('Unable to send invitation at this time')
         })
         .end(done)
     })

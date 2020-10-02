@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 const path = require('path')
 
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -29,8 +28,8 @@ describe('connector client - get stripe account', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('get stripe account setup success', () => {
     const stripeAccountOpts = {
@@ -38,7 +37,7 @@ describe('connector client - get stripe account', () => {
     }
     const response = stripeAccountFixtures.buildGetStripeAccountResponse(stripeAccountOpts)
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-account`)
           .withUponReceiving('a valid get stripe account request')
@@ -56,8 +55,8 @@ describe('connector client - get stripe account', () => {
 
     it('should get successfully', () => {
       return connectorClient.getStripeAccount(existingGatewayAccountId, 'correlation-id').then(stripeAccount => {
-        expect(stripeAccount.stripeAccountId).to.equal(stripeAccountOpts.stripe_account_id)
-      })
+        expect(stripeAccount.stripeAccountId).toBe(stripeAccountOpts.stripe_account_id)
+      });
     })
   })
 })

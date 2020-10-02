@@ -1,23 +1,21 @@
 'use strict'
 
-const proxyquire = require('proxyquire')
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
+
+jest.mock('./app/routes', () => ({
+  bind: (app) => {
+    app.get(testPath, () => { throw Error('an unhandled error') })
+  }
+}));
 
 describe('express unhandled error handler', () => {
   describe('should render the error page when there is an unhandled error', () => {
     const testPath = '/test-error'
     let response, $
 
-    before(done => {
-      const { getApp } = proxyquire('../../server', {
-        './app/routes': {
-          bind: (app) => {
-            app.get(testPath, () => { throw Error('an unhandled error') })
-          }
-        }
-      })
+    beforeAll(done => {
+      const { getApp } = require('../../server')
 
       supertest(getApp())
         .get(testPath)
@@ -29,15 +27,17 @@ describe('express unhandled error handler', () => {
     })
 
     it('should respond with a code of 500', () => {
-      expect(response.statusCode).to.equal(500)
+      expect(response.statusCode).toBe(500)
     })
 
     it('should show the error page', () => {
-      expect($('.page-title').text()).to.equal('An error occurred:')
+      expect($('.page-title').text()).toBe('An error occurred:')
     })
 
     it('should tell the user to contact support', () => {
-      expect($('#errorMsg').text()).to.equal('There is a problem with the payments platform. Please contact the support team.')
+      expect($('#errorMsg').text()).toBe(
+        'There is a problem with the payments platform. Please contact the support team.'
+      )
     })
   })
 })

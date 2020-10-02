@@ -2,7 +2,6 @@
 
 const supertest = require('supertest')
 const csrf = require('csrf')
-const { expect } = require('chai')
 const nock = require('nock')
 
 const { getApp } = require('../../../../server')
@@ -17,7 +16,7 @@ const VALID_USER = getUser({
 
 describe('Feedback page POST', () => {
   let result, session, app
-  before('Arrange', () => {
+  beforeAll(() => {
     session = getMockSession(VALID_USER)
     app = createAppWithSession(getApp(), session)
 
@@ -26,7 +25,7 @@ describe('Feedback page POST', () => {
       .reply(200)
   })
 
-  before('Act', done => {
+  beforeAll(done => {
     supertest(app)
       .post(paths.feedback)
       .send({
@@ -39,15 +38,15 @@ describe('Feedback page POST', () => {
         done(err)
       })
   })
-  after(() => {
+  afterAll(() => {
     nock.cleanAll()
   })
 
   it('should return a statusCode of 302', () => {
-    expect(result.statusCode).to.equal(302)
+    expect(result.statusCode).toBe(302)
   })
 
   it('should redirect to the profile page', () => {
-    expect(result.headers).to.have.property('location').to.equal(paths.feedback)
+    expect(result.headers).to.have.property('location').toBe(paths.feedback)
   })
 })

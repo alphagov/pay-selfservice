@@ -5,7 +5,6 @@ const nock = require('nock')
 const { getApp } = require('../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../test-helpers/mock-session')
 const paths = require('../../../../app/paths')
-const { expect } = require('chai')
 const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
 const lodash = require('lodash')
 
@@ -34,7 +33,7 @@ const mockGetByProductExternalIdEndpoint = (gatewayAccountId, productExternalId)
 
 describe('Edit a payment link', () => {
   let session
-  before(() => {
+  beforeAll(() => {
     const user = getUser({
       gateway_account_ids: [GATEWAY_ACCOUNT_ID],
       permissions: [{ name: 'tokens:create' }]
@@ -44,7 +43,7 @@ describe('Edit a payment link', () => {
 
   describe('when landing here for the first time', () => {
     let response
-    before(done => {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -60,18 +59,24 @@ describe('Edit a payment link', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('self', formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
-      expect(response.body).to.have.property('editInformation', formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
-      expect(response.body).to.have.property('editAmount', formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+      expect(response.body).toHaveProperty('self', formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(response.body).toHaveProperty(
+        'editInformation',
+        formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID)
+      )
+      expect(response.body).toHaveProperty(
+        'editAmount',
+        formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID)
+      )
     })
 
     it('should pass the product', () => {
-      expect(response.body).to.have.deep.property('product', {
+      expect(response.body).toHaveProperty('product', {
         description: 'product-description-1',
         externalId: 'product-external-id-1',
         gatewayAccountId: 'product-gateway-account-id-1',
@@ -89,13 +94,13 @@ describe('Edit a payment link', () => {
     })
 
     it('should set changed to false', () => {
-      expect(response.body).to.have.property('changed', false)
+      expect(response.body).toHaveProperty('changed', false)
     })
   })
 
   describe('when landing here after editing the link', () => {
     let response
-    before(done => {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -115,12 +120,12 @@ describe('Edit a payment link', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should pass the updated product', () => {
-      expect(response.body).to.have.deep.property('product', {
+      expect(response.body).toHaveProperty('product', {
         description: 'product-description-1',
         externalId: 'product-external-id-1',
         gatewayAccountId: 'product-gateway-account-id-1',
@@ -138,7 +143,7 @@ describe('Edit a payment link', () => {
     })
 
     it('should set changed to true', () => {
-      expect(response.body).to.have.property('changed', true)
+      expect(response.body).toHaveProperty('changed', true)
     })
   })
 })

@@ -1,8 +1,18 @@
 'use strict'
 
-const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const paths = require('../../../paths')
+
+jest.mock('../../../services/clients/stripe/stripe.client', () => ({
+  listPersons: listPersonsMock,
+  updatePerson: updatePersonMock
+}));
+
+jest.mock('../../../services/clients/connector.client', () => ({
+  ConnectorClient: function () {
+    this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
+  }
+}));
 
 describe('Responsible person POST controller', () => {
   const firstName = 'Chesney '
@@ -47,17 +57,7 @@ describe('Responsible person POST controller', () => {
   let updatePersonMock
 
   function getControllerWithMocks () {
-    return proxyquire('./post.controller', {
-      '../../../services/clients/stripe/stripe.client': {
-        listPersons: listPersonsMock,
-        updatePerson: updatePersonMock
-      },
-      '../../../services/clients/connector.client': {
-        ConnectorClient: function () {
-          this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
-        }
-      }
-    })
+    return require('./post.controller');
   }
 
   beforeEach(() => {
@@ -80,89 +80,98 @@ describe('Responsible person POST controller', () => {
     }
   })
 
-  it('should call Stripe with normalised details (with second address line), then connector, then redirect to add details redirect route', async function () {
-    const personId = 'person-1'
-    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
-      data: [
-        { id: 'other-person' },
-        { id: personId }
-      ]
-    }))
-    updatePersonMock = sinon.spy(() => Promise.resolve())
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
+  it(
+    'should call Stripe with normalised details (with second address line), then connector, then redirect to add details redirect route',
+    async () => {
+      const personId = 'person-1'
+      listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+        data: [
+          { id: 'other-person' },
+          { id: personId }
+        ]
+      }))
+      updatePersonMock = sinon.spy(() => Promise.resolve())
+      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMocks()
 
-    req.body = { ...postBodyWithAddress2 }
+      req.body = { ...postBodyWithAddress2 }
 
-    await controller(req, res)
+      await controller(req, res)
 
-    sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
-      first_name: firstNameNormalised,
-      last_name: lastNameNormalised,
-      address_line1: addressLine1Normalised,
-      address_line2: addressLine2Normalised,
-      address_city: addressCityNormalised,
-      address_postcode: addressPostcodeNormalised,
-      dob_day: dobDayNormalised,
-      dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
-    })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
-  })
+      sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
+        first_name: firstNameNormalised,
+        last_name: lastNameNormalised,
+        address_line1: addressLine1Normalised,
+        address_line2: addressLine2Normalised,
+        address_city: addressCityNormalised,
+        address_postcode: addressPostcodeNormalised,
+        dob_day: dobDayNormalised,
+        dob_month: dobMonthNormalised,
+        dob_year: dobYearNormalised
+      })
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+      sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
+    }
+  )
 
-  it('should call Stripe with normalised details (no second address line), then connector, then redirect to add details redirect route', async function () {
-    const personId = 'person-1'
-    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
-      data: [
-        { id: personId }
-      ]
-    }))
-    updatePersonMock = sinon.spy(() => Promise.resolve())
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
+  it(
+    'should call Stripe with normalised details (no second address line), then connector, then redirect to add details redirect route',
+    async () => {
+      const personId = 'person-1'
+      listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+        data: [
+          { id: personId }
+        ]
+      }))
+      updatePersonMock = sinon.spy(() => Promise.resolve())
+      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMocks()
 
-    req.body = { ...postBody }
+      req.body = { ...postBody }
 
-    await controller(req, res)
+      await controller(req, res)
 
-    sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
-      first_name: firstNameNormalised,
-      last_name: lastNameNormalised,
-      address_line1: addressLine1Normalised,
-      address_city: addressCityNormalised,
-      address_postcode: addressPostcodeNormalised,
-      dob_day: dobDayNormalised,
-      dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
-    })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
-  })
+      sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
+        first_name: firstNameNormalised,
+        last_name: lastNameNormalised,
+        address_line1: addressLine1Normalised,
+        address_city: addressCityNormalised,
+        address_postcode: addressPostcodeNormalised,
+        dob_day: dobDayNormalised,
+        dob_month: dobMonthNormalised,
+        dob_year: dobYearNormalised
+      })
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+      sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
+    }
+  )
 
-  it('should render error when Stripe returns error, not call connector, and not redirect', async function () {
-    const personId = 'person-1'
-    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
-      data: [
-        { id: personId }
-      ]
-    }))
-    updatePersonMock = sinon.spy(() => Promise.reject(new Error()))
-    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
+  it(
+    'should render error when Stripe returns error, not call connector, and not redirect',
+    async () => {
+      const personId = 'person-1'
+      listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+        data: [
+          { id: personId }
+        ]
+      }))
+      updatePersonMock = sinon.spy(() => Promise.reject(new Error()))
+      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMocks()
 
-    req.body = { ...postBody }
+      req.body = { ...postBody }
 
-    await controller(req, res)
+      await controller(req, res)
 
-    sinon.assert.called(updatePersonMock)
-    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.notCalled(res.redirect)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
-  })
+      sinon.assert.called(updatePersonMock)
+      sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+      sinon.assert.notCalled(res.redirect)
+      sinon.assert.calledWith(res.status, 500)
+      sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
+    }
+  )
 
-  it('should render error when connector returns error', async function () {
+  it('should render error when connector returns error', async () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [

@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -16,7 +15,7 @@ const serviceExternalId = 'cp5wa'
 
 // Global setup
 
-describe('adminusers client - patch collect billing address toggle', function () {
+describe('adminusers client - patch collect billing address toggle', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -27,8 +26,8 @@ describe('adminusers client - patch collect billing address toggle', function ()
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('patch collect billing address toggle - disabled', () => {
     const validUpdateCollectBillingAddressRequest = serviceFixtures.validCollectBillingAddressToggleRequest({ enabled: false })
@@ -37,7 +36,7 @@ describe('adminusers client - patch collect billing address toggle', function ()
       collect_billing_address: false
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
           .withUponReceiving('a valid patch collect billing address toggle (disabled) request')
@@ -54,12 +53,12 @@ describe('adminusers client - patch collect billing address toggle', function ()
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', function () {
+    it('should toggle successfully', () => {
       return adminusersClient.updateCollectBillingAddress(serviceExternalId, false)
         .then(service => {
-          expect(service.external_id).to.equal(serviceExternalId)
-          expect(service.collect_billing_address).to.equal(false)
-        })
+          expect(service.external_id).toBe(serviceExternalId)
+          expect(service.collect_billing_address).toBe(false)
+        });
     })
   })
 })

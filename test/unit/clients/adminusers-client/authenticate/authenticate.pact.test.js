@@ -2,7 +2,6 @@
 
 const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
-const { expect } = require('chai')
 
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const userFixtures = require('../../../../fixtures/user.fixtures')
@@ -25,8 +24,8 @@ describe('adminusers client - authenticate', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   const existingUsername = 'existing-user'
   const validPassword = 'password'
@@ -41,7 +40,7 @@ describe('adminusers client - authenticate', () => {
         passwordMatcher: validPassword
       })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
           .withUponReceiving('a correct password for a user')
@@ -58,7 +57,7 @@ describe('adminusers client - authenticate', () => {
 
     it('should return the right authentication success response', done => {
       adminusersClient.authenticateUser(existingUsername, validPassword).then((response) => {
-        expect(response).to.deep.equal(new User(validPasswordResponse.getPlain()))
+        expect(response).toEqual(new User(validPasswordResponse.getPlain()))
         done()
       })
     })
@@ -75,7 +74,7 @@ describe('adminusers client - authenticate', () => {
         passwordMatcher: invalidPassword
       })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
           .withUponReceiving('an incorrect password for a user')
@@ -94,8 +93,8 @@ describe('adminusers client - authenticate', () => {
       adminusersClient.authenticateUser(existingUsername, invalidPassword).then(() => {
         done('should not resolve here')
       }).catch(err => {
-        expect(err.errorCode).to.equal(401)
-        expect(err.message.errors).to.deep.equal(invalidPasswordResponse.getPlain().errors)
+        expect(err.errorCode).toBe(401)
+        expect(err.message.errors).toEqual(invalidPasswordResponse.getPlain().errors)
         done()
       })
     })

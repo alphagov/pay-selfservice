@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -19,7 +18,7 @@ const adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 
 const existingServiceExternalId = 'cp5wa'
 
-describe('adminusers client - patch request to update service', function () {
+describe('adminusers client - patch request to update service', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -30,8 +29,8 @@ describe('adminusers client - patch request to update service', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('a valid update service patch request to update single field', () => {
     const merchantDetailsName = 'updated-name'
@@ -46,7 +45,7 @@ describe('adminusers client - patch request to update service', function () {
       }
     })
 
-    before(() => {
+    beforeAll(() => {
       return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update single service field request')
@@ -60,11 +59,11 @@ describe('adminusers client - patch request to update service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update a merchant name successfully', async function () {
+    it('should update a merchant name successfully', async () => {
       const service = await adminUsersClient.updateService(existingServiceExternalId, validUpdateServiceRequest)
 
-      expect(service.externalId).to.equal(existingServiceExternalId)
-      expect(service.merchantDetails.name).to.equal(merchantDetailsName)
+      expect(service.externalId).toBe(existingServiceExternalId)
+      expect(service.merchantDetails.name).toBe(merchantDetailsName)
     })
   })
 
@@ -99,7 +98,7 @@ describe('adminusers client - patch request to update service', function () {
       current_go_live_stage: currentGoLiveStage
     })
 
-    before(() => {
+    beforeAll(() => {
       return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update service request to update all fields')
@@ -113,11 +112,11 @@ describe('adminusers client - patch request to update service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update service successfully', async function () {
+    it('should update service successfully', async () => {
       const service = await adminUsersClient.updateService(existingServiceExternalId, validUpdateServiceRequest)
-      expect(service.externalId).to.equal(existingServiceExternalId)
-      expect(service.merchantDetails).to.deep.equal(merchantDetails)
-      expect(service.currentGoLiveStage).to.equal(currentGoLiveStage)
+      expect(service.externalId).toBe(existingServiceExternalId)
+      expect(service.merchantDetails).toEqual(merchantDetails)
+      expect(service.currentGoLiveStage).toBe(currentGoLiveStage)
     })
   })
 
@@ -128,7 +127,7 @@ describe('adminusers client - patch request to update service', function () {
       'value': 'bar'
     }]
 
-    before(() => {
+    beforeAll(() => {
       return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('an invalid update service patch request')
@@ -145,8 +144,8 @@ describe('adminusers client - patch request to update service', function () {
       return adminUsersClient.updateService(existingServiceExternalId, invalidRequest)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(400)
-        )
+          err => expect(err.errorCode).toBe(400)
+        );
     })
   })
 })

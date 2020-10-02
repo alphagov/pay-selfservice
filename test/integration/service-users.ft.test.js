@@ -4,7 +4,6 @@
 const nock = require('nock')
 const supertest = require('supertest')
 const csrf = require('csrf')
-const { expect } = require('chai')
 
 // Local modules
 const session = require('../test-helpers/mock-session.js')
@@ -35,136 +34,147 @@ describe('service users resource', () => {
     done()
   })
 
-  it('get list of service users should link to my profile for my user', done => {
-    const externalServiceId = '734rgw76jhka'
-    let userOpts = {
-      external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN,
-      service_roles: [{
+  it(
+    'get list of service users should link to my profile for my user',
+    done => {
+      const externalServiceId = '734rgw76jhka'
+      let userOpts = {
+        external_id: EXTERNAL_ID_LOGGED_IN,
+        username: USERNAME_LOGGED_IN,
+        email: USERNAME_LOGGED_IN,
+        service_roles: [{
+          service: {
+            name: 'System Generated',
+            external_id: externalServiceId
+          },
+          role: {
+            name: 'admin',
+            description: 'Administrator',
+            permissions: [{
+              name: 'users-service:create'
+            }]
+          }
+        }]
+      }
+      const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([userOpts])
+      const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
+      const user = userFixtures.validUserResponse(userOpts).getAsObject()
+
+      adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
+        .reply(200, serviceUsersRes.getPlain())
+      adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
+        .reply(200, getInvitesRes.getPlain())
+      app = session.getAppWithLoggedInUser(getApp(), user)
+
+      supertest(app)
+        .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
+        .set('Accept', 'application/json')
+        .expect(200)
+        .expect(res => {
+          expect(res.body.number_active_members).toBe(1)
+          expect(res.body.number_admin_members).toBe(1)
+          expect(res.body['number_view-only_members']).toBe(0)
+          expect(res.body['number_view-and-refund_members']).toBe(0)
+          expect(res.body.team_members.admin.length).toBe(1)
+          expect(res.body.team_members.admin[0].username).toBe(USERNAME_LOGGED_IN)
+          expect(res.body.team_members.admin[0].link).toBe('/my-profile')
+          expect(res.body.team_members.admin[0].is_current).toBe(true)
+          expect(res.body.team_members['view-only'].length).toBe(0)
+          expect(res.body.team_members['view-and-refund'].length).toBe(0)
+        })
+        .end(done)
+    }
+  )
+
+  it(
+    'get list of service users should link to a users view details for other users',
+    done => {
+      const externalServiceId = '734rgw76jhka'
+
+      const serviceRoles = [{
         service: {
           name: 'System Generated',
           external_id: externalServiceId
         },
-        role: {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: [{
-            name: 'users-service:create'
-          }]
-        }
+        role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:create' }] }
       }]
+      const user = session.getUser({
+        external_id: EXTERNAL_ID_LOGGED_IN,
+        username: USERNAME_LOGGED_IN,
+        email: USERNAME_LOGGED_IN + '@example.com',
+        service_roles: serviceRoles
+      })
+
+      const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{
+        service_roles: serviceRoles
+      }, {
+        external_id: EXTERNAL_ID_OTHER_USER,
+        service_roles: serviceRoles
+      }])
+      const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
+
+      adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
+        .reply(200, serviceUsersRes.getPlain())
+      adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
+        .reply(200, getInvitesRes.getPlain())
+      app = session.getAppWithLoggedInUser(getApp(), user)
+
+      supertest(app)
+        .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
+        .set('Accept', 'application/json')
+        .expect(200)
+        .expect(res => {
+          expect(res.body.team_members.admin[1].link).toBe(
+            formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER)
+          )
+        })
+        .end(done)
     }
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([userOpts])
-    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
-    const user = userFixtures.validUserResponse(userOpts).getAsObject()
+  )
 
-    adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
-      .reply(200, serviceUsersRes.getPlain())
-    adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
-      .reply(200, getInvitesRes.getPlain())
-    app = session.getAppWithLoggedInUser(getApp(), user)
+  it(
+    'should error when accessing a service that the user is not a member of',
+    done => {
+      const externalServiceId = '734rgw76jhka'
+      const noAccessServiceId = 'no_access'
 
-    supertest(app)
-      .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
-      .set('Accept', 'application/json')
-      .expect(200)
-      .expect(res => {
-        expect(res.body.number_active_members).to.equal(1)
-        expect(res.body.number_admin_members).to.equal(1)
-        expect(res.body['number_view-only_members']).to.equal(0)
-        expect(res.body['number_view-and-refund_members']).to.equal(0)
-        expect(res.body.team_members.admin.length).to.equal(1)
-        expect(res.body.team_members.admin[0].username).to.equal(USERNAME_LOGGED_IN)
-        expect(res.body.team_members.admin[0].link).to.equal('/my-profile')
-        expect(res.body.team_members.admin[0].is_current).to.equal(true)
-        expect(res.body.team_members['view-only'].length).to.equal(0)
-        expect(res.body.team_members['view-and-refund'].length).to.equal(0)
+      const serviceRoles = [{
+        service: {
+          name: 'System Generated',
+          external_id: externalServiceId
+        },
+        role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:create' }] }
+      }]
+
+      const user = session.getUser({
+        external_id: EXTERNAL_ID_LOGGED_IN,
+        username: USERNAME_LOGGED_IN,
+        email: USERNAME_LOGGED_IN + '@example.com',
+        service_roles: serviceRoles
       })
-      .end(done)
-  })
 
-  it('get list of service users should link to a users view details for other users', done => {
-    const externalServiceId = '734rgw76jhka'
+      const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{
+        service_roles: []
+      }, {
+        external_id: EXTERNAL_ID_OTHER_USER,
+        service_roles: []
+      }])
+      const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
 
-    const serviceRoles = [{
-      service: {
-        name: 'System Generated',
-        external_id: externalServiceId
-      },
-      role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:create' }] }
-    }]
-    const user = session.getUser({
-      external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
-      service_roles: serviceRoles
-    })
+      adminusersMock.get(`${SERVICE_RESOURCE}/${noAccessServiceId}/users`)
+        .reply(200, serviceUsersRes.getPlain())
+      adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${noAccessServiceId}`)
+        .reply(200, getInvitesRes.getPlain())
 
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{
-      service_roles: serviceRoles
-    }, {
-      external_id: EXTERNAL_ID_OTHER_USER,
-      service_roles: serviceRoles
-    }])
-    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
+      app = session.getAppWithLoggedInUser(getApp(), user)
 
-    adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
-      .reply(200, serviceUsersRes.getPlain())
-    adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
-      .reply(200, getInvitesRes.getPlain())
-    app = session.getAppWithLoggedInUser(getApp(), user)
-
-    supertest(app)
-      .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
-      .set('Accept', 'application/json')
-      .expect(200)
-      .expect(res => {
-        expect(res.body.team_members.admin[1].link).to.equal(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
-      })
-      .end(done)
-  })
-
-  it('should error when accessing a service that the user is not a member of', done => {
-    const externalServiceId = '734rgw76jhka'
-    const noAccessServiceId = 'no_access'
-
-    const serviceRoles = [{
-      service: {
-        name: 'System Generated',
-        external_id: externalServiceId
-      },
-      role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:create' }] }
-    }]
-
-    const user = session.getUser({
-      external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
-      service_roles: serviceRoles
-    })
-
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{
-      service_roles: []
-    }, {
-      external_id: EXTERNAL_ID_OTHER_USER,
-      service_roles: []
-    }])
-    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
-
-    adminusersMock.get(`${SERVICE_RESOURCE}/${noAccessServiceId}/users`)
-      .reply(200, serviceUsersRes.getPlain())
-    adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${noAccessServiceId}`)
-      .reply(200, getInvitesRes.getPlain())
-
-    app = session.getAppWithLoggedInUser(getApp(), user)
-
-    supertest(app)
-      .get(formattedPathFor(paths.teamMembers.index, noAccessServiceId))
-      .set('Accept', 'application/json')
-      .expect(403)
-      .end(done)
-  })
+      supertest(app)
+        .get(formattedPathFor(paths.teamMembers.index, noAccessServiceId))
+        .set('Accept', 'application/json')
+        .expect(403)
+        .end(done)
+    }
+  )
 
   it('view team member details', done => {
     const externalServiceId = '734rgw76jhka'
@@ -205,11 +215,15 @@ describe('service users resource', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
-        expect(res.body.username).to.equal(USERNAME_OTHER_USER)
-        expect(res.body.email).to.equal('other-user@example.com')
-        expect(res.body.role).to.equal('View only')
-        expect(res.body.editPermissionsLink).to.equal(formattedPathFor(paths.teamMembers.permissions, externalServiceId, EXTERNAL_ID_OTHER_USER))
-        expect(res.body.removeTeamMemberLink).to.equal(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
+        expect(res.body.username).toBe(USERNAME_OTHER_USER)
+        expect(res.body.email).toBe('other-user@example.com')
+        expect(res.body.role).toBe('View only')
+        expect(res.body.editPermissionsLink).toBe(
+          formattedPathFor(paths.teamMembers.permissions, externalServiceId, EXTERNAL_ID_OTHER_USER)
+        )
+        expect(res.body.removeTeamMemberLink).toBe(
+          formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER)
+        )
       })
       .end(done)
   })
@@ -239,9 +253,9 @@ describe('service users resource', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
-        expect(res.body.username).to.equal(user.username)
-        expect(res.body.email).to.equal(user.email)
-        expect(res.body.telephone_number).to.equal(user.telephone_number)
+        expect(res.body.username).toBe(user.username)
+        expect(res.body.email).toBe(user.email)
+        expect(res.body.telephone_number).toBe(user.telephone_number)
       })
       .end(done)
   })
@@ -274,127 +288,139 @@ describe('service users resource', () => {
       .end(done)
   })
 
-  it('should redirect to my profile when trying to access my user through team members path', done => {
-    const userInSession = session.getUser({
-      permissions: [{ name: 'users-service:read' }]
-    })
-    const externalServiceId = userInSession.serviceRoles[0].service.externalId
-    EXTERNAL_ID_LOGGED_IN = userInSession.externalId
-
-    app = session.getAppWithLoggedInUser(getApp(), userInSession)
-
-    supertest(app)
-      .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_LOGGED_IN))
-      .set('Accept', 'application/json')
-      .expect(302)
-      .expect('Location', '/my-profile')
-      .end(done)
-  })
-
-  it('error when accessing an user from other service profile (cheeky!)', done => {
-    const externalServiceId1 = '48753g874tg'
-    const externalServiceId2 = '7huh4y7tu6g'
-    const user = session.getUser({
-      external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
-      service_roles: [{
-        service: {
-          name: 'System Generated',
-          external_id: externalServiceId1
-        },
-        role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:read' }] }
-      }]
-    })
-    const getUserResponse = userFixtures.validUserResponse({
-      external_id: EXTERNAL_ID_OTHER_USER,
-      username: USERNAME_OTHER_USER,
-      service_roles: [{
-        service: {
-          name: 'System Generated',
-          external_id: externalServiceId2
-        },
-        role: {
-          name: 'view-only',
-          description: 'View only',
-          permissions: [{ name: 'users-service:read' }]
-        }
-      }]
-    })
-
-    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
-      .reply(200, getUserResponse.getPlain())
-
-    app = session.getAppWithLoggedInUser(getApp(), user)
-
-    supertest(app)
-      .get(formattedPathFor(paths.teamMembers.show, externalServiceId2, EXTERNAL_ID_OTHER_USER))
-      .set('Accept', 'application/json')
-      .expect(403)
-      .expect(res => {
-        expect(res.body.message).to.equal('You do not have the rights to access this service.')
+  it(
+    'should redirect to my profile when trying to access my user through team members path',
+    done => {
+      const userInSession = session.getUser({
+        permissions: [{ name: 'users-service:read' }]
       })
-      .end(done)
-  })
+      const externalServiceId = userInSession.serviceRoles[0].service.externalId
+      EXTERNAL_ID_LOGGED_IN = userInSession.externalId
 
-  it('remove a team member successfully should redirect user to team member', done => {
-    const userInSession = session.getUser({
-      permissions: [{ name: 'users-service:delete' }]
-    })
-    const externalServiceId = userInSession.serviceRoles[0].service.externalId
-    EXTERNAL_ID_LOGGED_IN = userInSession.externalId
+      app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
-    const userToDelete = {
-      external_id: EXTERNAL_ID_OTHER_USER,
-      username: USERNAME_OTHER_USER,
-      role: { name: 'view-only' }
+      supertest(app)
+        .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_LOGGED_IN))
+        .set('Accept', 'application/json')
+        .expect(302)
+        .expect('Location', '/my-profile')
+        .end(done)
     }
+  )
 
-    const getUserResponse = userFixtures.validUserResponse(userToDelete)
-
-    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
-      .reply(200, getUserResponse.getPlain())
-
-    adminusersMock.delete(`${SERVICE_RESOURCE}/${externalServiceId}/users/${EXTERNAL_ID_OTHER_USER}`)
-      .reply(200)
-
-    app = session.getAppWithLoggedInUser(getApp(), userInSession)
-
-    supertest(app)
-      .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
-      .send({ csrfToken: csrf().create('123') })
-      .expect(302)
-      .expect('Location', formattedPathFor(paths.teamMembers.index, externalServiceId))
-      .end(done)
-  })
-
-  it('when remove a team member fails when user does not exist should redirect user to error view with link to view team members', done => {
-    const userInSession = session.getUser({
-      permissions: [{ name: 'users-service:delete' }]
-    })
-
-    const externalServiceId = userInSession.serviceRoles[0].service.externalId
-    EXTERNAL_ID_LOGGED_IN = userInSession.externalId
-
-    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
-      .reply(404)
-
-    app = session.getAppWithLoggedInUser(getApp(), userInSession)
-
-    supertest(app)
-      .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
-      .set('Accept', 'application/json')
-      .send({ csrfToken: csrf().create('123') })
-      .expect(200)
-      .expect(res => {
-        expect(res.body.error.title).to.equal('This person has already been removed')
-        expect(res.body.error.message).to.equal('This person has already been removed by another administrator.')
-        expect(res.body.link.link).to.equal(`/service/${externalServiceId}`)
-        expect(res.body.link.text).to.equal('View all team members')
-        expect(res.body.enable_link).to.equal(true)
+  it(
+    'error when accessing an user from other service profile (cheeky!)',
+    done => {
+      const externalServiceId1 = '48753g874tg'
+      const externalServiceId2 = '7huh4y7tu6g'
+      const user = session.getUser({
+        external_id: EXTERNAL_ID_LOGGED_IN,
+        username: USERNAME_LOGGED_IN,
+        email: USERNAME_LOGGED_IN + '@example.com',
+        service_roles: [{
+          service: {
+            name: 'System Generated',
+            external_id: externalServiceId1
+          },
+          role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:read' }] }
+        }]
       })
-      .end(done)
-  })
+      const getUserResponse = userFixtures.validUserResponse({
+        external_id: EXTERNAL_ID_OTHER_USER,
+        username: USERNAME_OTHER_USER,
+        service_roles: [{
+          service: {
+            name: 'System Generated',
+            external_id: externalServiceId2
+          },
+          role: {
+            name: 'view-only',
+            description: 'View only',
+            permissions: [{ name: 'users-service:read' }]
+          }
+        }]
+      })
+
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
+        .reply(200, getUserResponse.getPlain())
+
+      app = session.getAppWithLoggedInUser(getApp(), user)
+
+      supertest(app)
+        .get(formattedPathFor(paths.teamMembers.show, externalServiceId2, EXTERNAL_ID_OTHER_USER))
+        .set('Accept', 'application/json')
+        .expect(403)
+        .expect(res => {
+          expect(res.body.message).toBe('You do not have the rights to access this service.')
+        })
+        .end(done)
+    }
+  )
+
+  it(
+    'remove a team member successfully should redirect user to team member',
+    done => {
+      const userInSession = session.getUser({
+        permissions: [{ name: 'users-service:delete' }]
+      })
+      const externalServiceId = userInSession.serviceRoles[0].service.externalId
+      EXTERNAL_ID_LOGGED_IN = userInSession.externalId
+
+      const userToDelete = {
+        external_id: EXTERNAL_ID_OTHER_USER,
+        username: USERNAME_OTHER_USER,
+        role: { name: 'view-only' }
+      }
+
+      const getUserResponse = userFixtures.validUserResponse(userToDelete)
+
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
+        .reply(200, getUserResponse.getPlain())
+
+      adminusersMock.delete(`${SERVICE_RESOURCE}/${externalServiceId}/users/${EXTERNAL_ID_OTHER_USER}`)
+        .reply(200)
+
+      app = session.getAppWithLoggedInUser(getApp(), userInSession)
+
+      supertest(app)
+        .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
+        .send({ csrfToken: csrf().create('123') })
+        .expect(302)
+        .expect('Location', formattedPathFor(paths.teamMembers.index, externalServiceId))
+        .end(done)
+    }
+  )
+
+  it(
+    'when remove a team member fails when user does not exist should redirect user to error view with link to view team members',
+    done => {
+      const userInSession = session.getUser({
+        permissions: [{ name: 'users-service:delete' }]
+      })
+
+      const externalServiceId = userInSession.serviceRoles[0].service.externalId
+      EXTERNAL_ID_LOGGED_IN = userInSession.externalId
+
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
+        .reply(404)
+
+      app = session.getAppWithLoggedInUser(getApp(), userInSession)
+
+      supertest(app)
+        .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
+        .set('Accept', 'application/json')
+        .send({ csrfToken: csrf().create('123') })
+        .expect(200)
+        .expect(res => {
+          expect(res.body.error.title).toBe('This person has already been removed')
+          expect(res.body.error.message).toBe('This person has already been removed by another administrator.')
+          expect(res.body.link.link).toBe(`/service/${externalServiceId}`)
+          expect(res.body.link.text).toBe('View all team members')
+          expect(res.body.enable_link).toBe(true)
+        })
+        .end(done)
+    }
+  )
 
   it('get list of invited users', done => {
     const externalServiceId = '734rgw76jhka'
@@ -444,15 +470,15 @@ describe('service users resource', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
-        expect(res.body.number_invited_members).to.equal(2)
-        expect(res.body.number_admin_invited_members).to.equal(1)
-        expect(res.body['number_view-only_invited_members']).to.equal(1)
-        expect(res.body['number_view-and-refund_invited_members']).to.equal(0)
-        expect(res.body.invited_team_members.admin.length).to.equal(1)
-        expect(res.body.invited_team_members.admin[0].username).to.equal(FIRST_EMAIL)
-        expect(res.body.invited_team_members['view-only'].length).to.equal(1)
-        expect(res.body.invited_team_members['view-only'][0].username).to.equal(SECOND_EMAIL)
-        expect(res.body.invited_team_members['view-and-refund'].length).to.equal(0)
+        expect(res.body.number_invited_members).toBe(2)
+        expect(res.body.number_admin_invited_members).toBe(1)
+        expect(res.body['number_view-only_invited_members']).toBe(1)
+        expect(res.body['number_view-and-refund_invited_members']).toBe(0)
+        expect(res.body.invited_team_members.admin.length).toBe(1)
+        expect(res.body.invited_team_members.admin[0].username).toBe(FIRST_EMAIL)
+        expect(res.body.invited_team_members['view-only'].length).toBe(1)
+        expect(res.body.invited_team_members['view-only'][0].username).toBe(SECOND_EMAIL)
+        expect(res.body.invited_team_members['view-and-refund'].length).toBe(0)
       })
       .end(done)
   })

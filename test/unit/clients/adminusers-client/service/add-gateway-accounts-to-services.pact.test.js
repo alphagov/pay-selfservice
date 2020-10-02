@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -30,13 +29,13 @@ describe('admin users client - add gateway accounts to service', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('a successful add gateway account to service request', () => {
     const gatewayAccountsIdsToAdd = ['42']
     const gatewayAccountIdsAfter = ['42', '111']
-    before(done => {
+    beforeAll(done => {
       request = serviceFixtures.addGatewayAccountsRequest(gatewayAccountsIdsToAdd)
       const response = serviceFixtures.validServiceResponse({ gateway_account_ids: gatewayAccountIdsAfter })
       provider.addInteraction(
@@ -58,15 +57,15 @@ describe('admin users client - add gateway accounts to service', () => {
     it('should update service name', () => {
       return adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountsIdsToAdd)
         .then((result) => {
-          expect(result).to.have.property('externalId').to.equal(serviceExternalId)
-          expect(result).to.have.property('gatewayAccountIds').to.include(...gatewayAccountIdsAfter)
-        })
+          expect(result).to.have.property('externalId').toBe(serviceExternalId)
+          expect(result).toEqual(expect.arrayContaining([...gatewayAccountIdsAfter]))
+        });
     })
   })
 
   describe('an unsuccessful add gateway account to service request that responds with 409', () => {
     const gatewayAccountIds = ['111']
-    before(done => {
+    beforeAll(done => {
       request = serviceFixtures.addGatewayAccountsRequest(gatewayAccountIds)
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
@@ -93,7 +92,7 @@ describe('admin users client - add gateway accounts to service', () => {
         .then(
           () => { throw new Error('Expected to reject') },
           (err) => {
-            expect(err).to.deep.equal({
+            expect(err).toEqual({
               errorCode: 409,
               message: {
                 errors: [
@@ -102,7 +101,7 @@ describe('admin users client - add gateway accounts to service', () => {
               }
             })
           }
-        )
+        );
     })
   })
 
@@ -110,7 +109,7 @@ describe('admin users client - add gateway accounts to service', () => {
     const nonExistentServiceId = 'non-existent-id'
     const gatewayAccountIds = ['42']
 
-    before(done => {
+    beforeAll(done => {
       request = serviceFixtures.addGatewayAccountsRequest(gatewayAccountIds)
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${nonExistentServiceId}`)
@@ -131,8 +130,8 @@ describe('admin users client - add gateway accounts to service', () => {
       return adminusersClient.addGatewayAccountsToService(nonExistentServiceId, gatewayAccountIds)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

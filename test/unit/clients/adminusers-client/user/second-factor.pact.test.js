@@ -1,6 +1,5 @@
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
-const { expect } = require('chai')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -11,7 +10,7 @@ let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}`
 
 const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
-describe('adminusers client', function () {
+describe('adminusers client', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
@@ -22,11 +21,11 @@ describe('adminusers client', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('send new second factor API - success', () => {
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor`)
           .withState('a user exists')
@@ -38,7 +37,7 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('should send a new 2FA token successfully', function () {
+    it('should send a new 2FA token successfully', () => {
       return adminusersClient.sendSecondFactor(existingExternalId)
     })
   })
@@ -46,7 +45,7 @@ describe('adminusers client', function () {
   describe('send new 2FA token API - user not found', () => {
     let externalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${externalId}/second-factor`)
           .withUponReceiving('a second factor post request for a non-existent user')
@@ -59,12 +58,12 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return not found if user not exist', function () {
+    it('should return not found if user not exist', () => {
       return adminusersClient.sendSecondFactor(externalId)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 
@@ -73,7 +72,7 @@ describe('adminusers client', function () {
     let request = userFixtures.validAuthenticateSecondFactorRequest(token)
     let response = userFixtures.validUserResponse({ external_id: existingExternalId })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
           .withState('a user exists')
@@ -87,10 +86,10 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('authenticate a valid 2FA token successfully', function () {
+    it('authenticate a valid 2FA token successfully', () => {
       return adminusersClient.authenticateSecondFactor(existingExternalId, token).then(function (createdUser) {
-        expect(createdUser.externalId).to.be.equal(existingExternalId)
-      })
+        expect(createdUser.externalId).toBe(existingExternalId)
+      });
     })
   })
 
@@ -99,7 +98,7 @@ describe('adminusers client', function () {
     let request = userFixtures.validAuthenticateSecondFactorRequest(token)
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
           .withState('a user exists')
@@ -113,12 +112,12 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('error bad request an invalid 2FA token', function () {
+    it('error bad request an invalid 2FA token', () => {
       return adminusersClient.authenticateSecondFactor(existingExternalId, token)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(400)
-        )
+          err => expect(err.errorCode).toBe(400)
+        );
     })
   })
 
@@ -127,7 +126,7 @@ describe('adminusers client', function () {
     let request = userFixtures.validAuthenticateSecondFactorRequest(token)
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
           .withState('a user exists')
@@ -142,12 +141,12 @@ describe('adminusers client', function () {
 
     afterEach(() => provider.verify())
 
-    it('error unauthorized an expired/unauthorized 2FA token', function () {
+    it('error unauthorized an expired/unauthorized 2FA token', () => {
       return adminusersClient.authenticateSecondFactor(existingExternalId, token)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(401)
-        )
+          err => expect(err.errorCode).toBe(401)
+        );
     })
   })
 })

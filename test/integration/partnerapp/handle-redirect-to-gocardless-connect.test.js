@@ -15,7 +15,7 @@ const GOCARDLESS_URL = process.env.GOCARDLESS_TEST_OAUTH_BASE_URL + '/oauth/auth
 
 let app
 
-describe('GET /link/account - GoCardless Connect partner app', function () {
+describe('GET /link/account - GoCardless Connect partner app', () => {
   const stateParam = 'some-test-state'
   const expectedUrl = `${GOCARDLESS_URL}?client_id=${CLIENT_ID}&initial_view=login&redirect_uri=${REDIRECT_URI}&response_type=code&scope=read_write&access_type=offline&state=${stateParam}`
 
@@ -29,38 +29,44 @@ describe('GET /link/account - GoCardless Connect partner app', function () {
     const mockSession = getMockSession(user)
     app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), mockSession, user)
   })
-  afterEach(function () {
+  afterEach(() => {
     app = null
   })
 
-  it('allows access if authenticated and DIRECT_DEBIT account (redirects to GoCardless Connect)', done => {
-    request(app)
-      .get(paths.partnerApp.linkAccount)
-      .expect(302)
-      .expect('Location', expectedUrl)
-      .end(done)
-  })
+  it(
+    'allows access if authenticated and DIRECT_DEBIT account (redirects to GoCardless Connect)',
+    done => {
+      request(app)
+        .get(paths.partnerApp.linkAccount)
+        .expect(302)
+        .expect('Location', expectedUrl)
+        .end(done)
+    }
+  )
 })
 
-describe('GET /link/account - GoCardless Connect partner app', function () {
+describe('GET /link/account - GoCardless Connect partner app', () => {
   beforeEach(() => {
     const user = getUser({ permissions: [{ name: 'connected-gocardless-account:update' }] })
     const mockSession = getMockSession(user)
     app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), mockSession, user)
   })
-  afterEach(function () {
+  afterEach(() => {
     app = null
   })
 
-  it('does not allow access if authenticated and NOT DIRECT_DEBIT account', done => {
-    request(app)
-      .get(paths.partnerApp.linkAccount)
-      .expect(404)
-      .end(done)
-  })
+  it(
+    'does not allow access if authenticated and NOT DIRECT_DEBIT account',
+    done => {
+      request(app)
+        .get(paths.partnerApp.linkAccount)
+        .expect(404)
+        .end(done)
+    }
+  )
 })
 
-describe('GET /link/account - GoCardless Connect partner app', function () {
+describe('GET /link/account - GoCardless Connect partner app', () => {
   beforeEach(() => {
     app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), {})
   })

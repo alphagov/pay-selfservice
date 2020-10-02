@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const lodash = require('lodash')
 const nock = require('nock')
@@ -24,7 +23,7 @@ const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
 describe('make a demo payment - edit controller', () => {
   describe(`when the path navigated to is the 'edit amount' path`, () => {
     let result, $, session, paymentAmount
-    before(done => {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       paymentAmount = '10000'
       session = getMockSession(VALID_USER)
@@ -38,30 +37,36 @@ describe('make a demo payment - edit controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return with a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
     it('should render the edit amount page', () => {
-      expect($('h1').text()).to.equal('Edit payment amount')
+      expect($('h1').text()).toBe('Edit payment amount')
     })
 
-    it('should have a back button that takes the user back to the demo payment index page', () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoPayment.index)
-    })
+    it(
+      'should have a back button that takes the user back to the demo payment index page',
+      () => {
+        expect($('.govuk-back-link').attr('href')).toBe(paths.prototyping.demoPayment.index)
+      }
+    )
 
-    it(`should set the 'payment-amount' value to be that found in the session`, () => {
-      const paymentAmountInPounds = penceToPounds(paymentAmount)
-      expect($(`input[name='payment-amount']`).val()).to.equal(paymentAmountInPounds)
-    })
+    it(
+      `should set the 'payment-amount' value to be that found in the session`,
+      () => {
+        const paymentAmountInPounds = penceToPounds(paymentAmount)
+        expect($(`input[name='payment-amount']`).val()).toBe(paymentAmountInPounds)
+      }
+    )
   })
   describe(`when the path navigated to is the 'edit description' path`, () => {
     let result, $, session, paymentDescription
-    before(done => {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       paymentDescription = 'Pay your window tax'
       session = getMockSession(VALID_USER)
@@ -75,24 +80,30 @@ describe('make a demo payment - edit controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return with a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
     it('should render the edit amount page', () => {
-      expect($('h1').text()).to.equal('Edit payment description')
+      expect($('h1').text()).toBe('Edit payment description')
     })
 
-    it('should have a back button that takes the user back to the demo payment index page', () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoPayment.index)
-    })
+    it(
+      'should have a back button that takes the user back to the demo payment index page',
+      () => {
+        expect($('.govuk-back-link').attr('href')).toBe(paths.prototyping.demoPayment.index)
+      }
+    )
 
-    it(`should set the 'payment-description' value to be that found in the session`, () => {
-      expect($(`textarea[name='payment-description']`).val()).to.equal(paymentDescription)
-    })
+    it(
+      `should set the 'payment-description' value to be that found in the session`,
+      () => {
+        expect($(`textarea[name='payment-description']`).val()).toBe(paymentDescription)
+      }
+    )
   })
 })

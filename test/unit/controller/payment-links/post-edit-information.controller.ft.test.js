@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const nock = require('nock')
 const csrf = require('csrf')
 
@@ -21,12 +20,12 @@ const VALID_USER = getUser({
 describe('POST payment link edit information controller', () => {
   describe('if values are present', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       session.editPaymentLinkData = { externalId: PRODUCT_EXTERNAL_ID }
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
         .send({
@@ -39,38 +38,38 @@ describe('POST payment link edit information controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
     })
 
     it('should set title in session', () => {
-      expect(session.editPaymentLinkData.name).to.equal('hello world')
+      expect(session.editPaymentLinkData.name).toBe('hello world')
     })
 
     it('should set details in session', () => {
-      expect(session.editPaymentLinkData.description).to.equal('some words')
+      expect(session.editPaymentLinkData.description).toBe('some words')
     })
 
     it('should redirect to the edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
     })
   })
   describe('if title is blank', () => {
     let result, session, app
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       session.editPaymentLinkData = { externalId: PRODUCT_EXTERNAL_ID }
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
         .send({
@@ -83,24 +82,27 @@ describe('POST payment link edit information controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to same page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').toBe(formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
     })
 
-    it('should have a recovered object stored on the session containing errors and submitted data', () => {
-      const recovered = session.editPaymentLinkData.informationPageRecovered
-      expect(recovered).to.have.property('name').to.equal('')
-      expect(recovered).to.have.property('description').to.equal('some words')
-      expect(recovered).to.have.property('errors')
-      expect(recovered.errors).to.have.property('title')
-    })
+    it(
+      'should have a recovered object stored on the session containing errors and submitted data',
+      () => {
+        const recovered = session.editPaymentLinkData.informationPageRecovered
+        expect(recovered).to.have.property('name').toBe('')
+        expect(recovered).to.have.property('description').toBe('some words')
+        expect(recovered).toHaveProperty('errors')
+        expect(recovered.errors).toHaveProperty('title')
+      }
+    )
   })
 })

@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const { PactInteractionBuilder } = require('../../../fixtures/pact-interaction-builder')
@@ -17,7 +16,7 @@ const directDebitConnectorClient = getDirectDebitConnectorClient({ baseUrl: `htt
 
 const existingDirectDebitGatewayAccountId = 667
 
-describe('connector client - get gateway account', function () {
+describe('connector client - get gateway account', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'direct-debit-connector',
@@ -28,15 +27,15 @@ describe('connector client - get gateway account', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('get single gateway account - success', () => {
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
       gateway_account_id: existingDirectDebitGatewayAccountId
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`/v1/api/accounts/${existingDirectDebitGatewayAccountId}`)
           .withUponReceiving('a valid get gateway account request')
@@ -52,7 +51,7 @@ describe('connector client - get gateway account', function () {
 
     afterEach(() => provider.verify())
 
-    it('should get gateway account successfully', function () {
+    it('should get gateway account successfully', () => {
       const gatewayAccount = new GatewayAccount(validGetGatewayAccountResponse.getPlain())
       const params = {
         gatewayAccountId: existingDirectDebitGatewayAccountId,
@@ -60,8 +59,8 @@ describe('connector client - get gateway account', function () {
       }
       return directDebitConnectorClient.getGatewayAccountByExternalId(params)
         .then((response) => {
-          expect(response).to.deep.equal(gatewayAccount)
-        })
+          expect(response).toEqual(gatewayAccount)
+        });
     })
   })
 })

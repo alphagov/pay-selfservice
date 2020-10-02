@@ -1,7 +1,6 @@
 'use strict'
 
 const sinon = require('sinon')
-const { expect } = require('chai')
 const paymentMethodIsCard = require('../../../app/middleware/payment-method-card.js')
 
 let res
@@ -22,20 +21,23 @@ describe('user has payment-method-card middleware', () => {
 
     paymentMethodIsCard(req, res, next)
 
-    expect(next.called).to.be.true // eslint-disable-line
+    expect(next.called).toBe(true) // eslint-disable-line
 
     done()
   })
 
-  it('should redirect to error page if the user is using direct debit', done => {
-    const req = { account: { paymentMethod: 'direct debit' } }
+  it(
+    'should redirect to error page if the user is using direct debit',
+    done => {
+      const req = { account: { paymentMethod: 'direct debit' } }
 
-    paymentMethodIsCard(req, res, next)
+      paymentMethodIsCard(req, res, next)
 
-    expect(next.notCalled).to.be.true // eslint-disable-line
-    expect(res.status.calledWith(403))
-    expect(res.render.calledWith('error'))
+      expect(next.notCalled).toBe(true) // eslint-disable-line
+      expect(res.status.calledWith(403))
+      expect(res.render.calledWith('error'))
 
-    done()
-  })
+      done()
+    }
+  )
 })

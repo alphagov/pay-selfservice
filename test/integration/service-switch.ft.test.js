@@ -6,18 +6,16 @@ const csrf = require('csrf')
 const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 
-const { expect } = require('chai')
-
 let app
 
-describe('service switch controller', function () {
+describe('service switch controller', () => {
   afterEach((done) => {
     nock.cleanAll()
     app = null
     done()
   })
 
-  it('should post request for new account id', function (done) {
+  it('should post request for new account id', done => {
     let user = session.getUser({
       gateway_account_ids: ['1', '2', '5']
     })
@@ -38,7 +36,7 @@ describe('service switch controller', function () {
       })
       .expect(302)
       .expect(() => {
-        expect(mockGatewayAccountCookie.currentGatewayAccountId).to.equal('5')
+        expect(mockGatewayAccountCookie.currentGatewayAccountId).toBe('5')
       })
       .end(done)
   })

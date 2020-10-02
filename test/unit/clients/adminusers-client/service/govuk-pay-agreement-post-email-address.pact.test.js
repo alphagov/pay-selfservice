@@ -27,14 +27,14 @@ describe('adminusers client - post govuk pay agreement - email address', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('post email address', () => {
     const payload = { user_external_id: userExternalId }
     const validGovUkAgreementUserEmailRequest = validPostGovUkPayAgreementRequest(payload).getPlain()
 
-    before(done => {
+    beforeAll(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}/govuk-pay-agreement`)
           .withUponReceiving('a valid post govuk pay agreement - email address request')

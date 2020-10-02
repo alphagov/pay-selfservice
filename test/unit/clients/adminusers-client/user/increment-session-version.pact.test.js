@@ -1,6 +1,5 @@
 const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
-const { expect } = require('chai')
 var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 var userFixtures = require('../../../../fixtures/user.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -9,7 +8,7 @@ const USER_PATH = '/v1/api/users'
 var port = Math.floor(Math.random() * 48127) + 1024
 var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
-describe('adminusers client - session', function () {
+describe('adminusers client - session', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -20,14 +19,14 @@ describe('adminusers client - session', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('increment session version  API - success', () => {
     let request = userFixtures.validIncrementSessionVersionRequest()
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
           .withState('a user exists')
@@ -40,7 +39,7 @@ describe('adminusers client - session', function () {
 
     afterEach(() => provider.verify())
 
-    it('should increment session version successfully', function () {
+    it('should increment session version successfully', () => {
       return adminusersClient.incrementSessionVersionForUser(existingExternalId)
     })
   })
@@ -49,7 +48,7 @@ describe('adminusers client - session', function () {
     let nonExistentExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
     let request = userFixtures.validIncrementSessionVersionRequest()
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${nonExistentExternalId}`)
           .withState('a user does not exist')
@@ -64,12 +63,12 @@ describe('adminusers client - session', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return not found if user not exist', function () {
+    it('should return not found if user not exist', () => {
       return adminusersClient.incrementSessionVersionForUser(nonExistentExternalId)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

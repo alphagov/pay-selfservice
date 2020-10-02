@@ -1,8 +1,8 @@
 var assert = require('assert')
 var withCorrelationHeader = require('../../../app/utils/correlation-header.js').withCorrelationHeader
 
-describe('correlation header', function () {
-  it('add correlation id header if args exists', function () {
+describe('correlation header', () => {
+  it('add correlation id header if args exists', () => {
     var argsWithCorrelationHeader = withCorrelationHeader(
       {
         parameters: { foo: 'bar' },
@@ -20,7 +20,7 @@ describe('correlation header', function () {
       })
   })
 
-  it('add correlation id header if args.header does not exist', function () {
+  it('add correlation id header if args.header does not exist', () => {
     var argsWithCorrelationHeader = withCorrelationHeader(
       {
         parameters: { foo: 'bar' }
@@ -34,7 +34,7 @@ describe('correlation header', function () {
       })
   })
 
-  it('add correlation id header if args does not exist', function () {
+  it('add correlation id header if args does not exist', () => {
     var argsWithCorrelationHeader = withCorrelationHeader(null, 'some-unique-id')
 
     assert.deepStrictEqual(argsWithCorrelationHeader,

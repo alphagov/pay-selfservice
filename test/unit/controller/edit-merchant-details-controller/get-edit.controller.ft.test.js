@@ -1,4 +1,3 @@
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 
@@ -35,7 +34,7 @@ describe('edit merchant details controller - get', () => {
   })
 
   describe('when the merchant already has details (CREDIT CARD GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = buildUserResponse(['20'], {
         name: 'name',
         telephone_number: '',
@@ -58,19 +57,19 @@ describe('edit merchant details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should pre-fill form values with the merchant details`, () => {
-      expect($('#merchant-name').val()).to.equal('name')
-      expect($('#address-line1').val()).to.equal('line1')
-      expect($('#address-line2').val()).to.equal('line2')
-      expect($('#address-city').val()).to.equal('City')
-      expect($('#address-postcode').val()).to.equal('POSTCODE')
-      expect($('#address-country').val()).to.equal('AR')
+      expect($('#merchant-name').val()).toBe('name')
+      expect($('#address-line1').val()).toBe('line1')
+      expect($('#address-line2').val()).toBe('line2')
+      expect($('#address-city').val()).toBe('City')
+      expect($('#address-postcode').val()).toBe('POSTCODE')
+      expect($('#address-country').val()).toBe('AR')
     })
   })
   describe('when the merchant already has details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere'], {
         name: 'name',
         telephone_number: '03069990000',
@@ -94,21 +93,21 @@ describe('edit merchant details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should pre-fill form values with the merchant details`, () => {
-      expect($('#merchant-name').val()).to.equal('name')
-      expect($('#telephone-number').val()).to.equal('03069990000')
-      expect($('#merchant-email').val()).to.equal('dd-merchant@example.com')
-      expect($('#address-line1').val()).to.equal('line1')
-      expect($('#address-line2').val()).to.equal('line2')
-      expect($('#address-city').val()).to.equal('City')
-      expect($('#address-postcode').val()).to.equal('POSTCODE')
-      expect($('#address-country').val()).to.equal('AR')
+      expect($('#merchant-name').val()).toBe('name')
+      expect($('#telephone-number').val()).toBe('03069990000')
+      expect($('#merchant-email').val()).toBe('dd-merchant@example.com')
+      expect($('#address-line1').val()).toBe('line1')
+      expect($('#address-line2').val()).toBe('line2')
+      expect($('#address-city').val()).toBe('City')
+      expect($('#address-postcode').val()).toBe('POSTCODE')
+      expect($('#address-country').val()).toBe('AR')
     })
   })
   describe('when the merchant has empty details (CREDIT CARD GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = buildUserResponse(['20'], {
         name: '',
         telephone_number: '',
@@ -131,22 +130,22 @@ describe('edit merchant details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should show empty inputs and GB selected as country`, () => {
-      expect($('#merchant-name').val()).equal('')
+      expect($('#merchant-name').val()).toBe('')
       expect($('#address-line1')).withNoAttribute('value')
       expect($('#address-line2')).withNoAttribute('value')
       expect($('#address-city')).withNoAttribute('value')
       expect($('#address-postcode')).withNoAttribute('value')
-      expect($('#address-country').val()).to.equal('GB')
+      expect($('#address-country').val()).toBe('GB')
     })
     it(`should display the merchant details`, () => {
-      expect($('#merchant-details-info').text()).to.include('Payment card schemes require the details')
+      expect($('#merchant-details-info').text()).toEqual(expect.arrayContaining(['Payment card schemes require the details']))
     })
   })
   describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere'], {
         name: '',
         telephone_number: '',
@@ -170,24 +169,24 @@ describe('edit merchant details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should show empty inputs and GB selected as country`, () => {
-      expect($('#merchant-name').val()).equal('')
+      expect($('#merchant-name').val()).toBe('')
       expect($('#telephone-number')).withNoAttribute('value')
       expect($('#merchant-email')).withNoAttribute('value')
       expect($('#address-line1')).withNoAttribute('value')
       expect($('#address-line2')).withNoAttribute('value')
       expect($('#address-city')).withNoAttribute('value')
       expect($('#address-postcode')).withNoAttribute('value')
-      expect($('#address-country').val()).to.equal('GB')
+      expect($('#address-country').val()).toBe('GB')
     })
     it(`should display the merchant details info`, () => {
-      expect($('#merchant-details-info').text()).to.include('Direct Debit requires the details')
+      expect($('#merchant-details-info').text()).toEqual(expect.arrayContaining(['Direct Debit requires the details']))
     })
   })
   describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT and CREDIT CARD GATEWAY ACCOUNT)', () => {
-    before(done => {
+    beforeAll(done => {
       const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere', '12345'], {
         name: '',
         telephone_number: '',
@@ -211,20 +210,22 @@ describe('edit merchant details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should show empty inputs and GB selected as country`, () => {
-      expect($('#merchant-name').val()).equal('')
+      expect($('#merchant-name').val()).toBe('')
       expect($('#telephone-number')).withNoAttribute('value')
       expect($('#merchant-email')).withNoAttribute('value')
       expect($('#address-line1')).withNoAttribute('value')
       expect($('#address-line2')).withNoAttribute('value')
       expect($('#address-city')).withNoAttribute('value')
       expect($('#address-postcode')).withNoAttribute('value')
-      expect($('#address-country').val()).to.equal('GB')
+      expect($('#address-country').val()).toBe('GB')
     })
     it(`should display the merchant details info`, () => {
-      expect($('#merchant-details-info').text()).to.include('Payment card schemes and Direct Debit require the details')
+      expect($('#merchant-details-info').text()).toEqual(
+        expect.arrayContaining(['Payment card schemes and Direct Debit require the details'])
+      )
     })
   })
   describe('when errors and merchant details are set in the session (CREDIT CARD GATEWAY ACCOUNT)', () => {
@@ -235,7 +236,7 @@ describe('edit merchant details controller - get', () => {
     const addressPostcodeError = 'address postcode error'
     const addressCountryError = 'address country error'
 
-    before(done => {
+    beforeAll(done => {
       const user = buildUserResponse(['20'])
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
@@ -281,38 +282,44 @@ describe('edit merchant details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.be.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should show a list of errors`, () => {
-      expect($('.govuk-error-summary__list li').length).to.equal(5)
-      expect($('.govuk-error-summary__list li a[href$="#merchant-name"]').text()).to.equal('Name')
-      expect($('.govuk-error-summary__list li a[href$="#address-country"]').text()).to.equal('Country')
+      expect($('.govuk-error-summary__list li').length).toBe(5)
+      expect($('.govuk-error-summary__list li a[href$="#merchant-name"]').text()).toBe('Name')
+      expect($('.govuk-error-summary__list li a[href$="#address-country"]').text()).toBe('Country')
     })
     it(`should show inline error messages`, () => {
-      expect($('.govuk-error-message').length).to.equal(6)
-      expect($('.govuk-form-group--error > input#merchant-name').parent().find('.govuk-error-message').text())
-        .to.contain(merchantNameError)
-      expect($('.govuk-form-group--error > input#address-line1').parent().find('.govuk-error-message').text())
-        .to.contain(addressLine1Error)
-      expect($('.govuk-form-group--error > input#address-line2').parent().find('.govuk-error-message').text())
-        .to.contain(addressLine2Error)
-      expect($('.govuk-form-group--error > input#address-city').parent().find('.govuk-error-message').text())
-        .to.contain(addressCityError)
-      expect($('.govuk-form-group--error > input#address-postcode').parent().find('.govuk-error-message').text())
-        .to.contain(addressPostcodeError)
-      expect($('.govuk-form-group--error > select#address-country').parent().find('.govuk-error-message').text())
-        .to.contain(addressCountryError)
+      expect($('.govuk-error-message').length).toBe(6)
+      expect(
+        $('.govuk-form-group--error > input#merchant-name').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([merchantNameError]))
+      expect(
+        $('.govuk-form-group--error > input#address-line1').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([addressLine1Error]))
+      expect(
+        $('.govuk-form-group--error > input#address-line2').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([addressLine2Error]))
+      expect(
+        $('.govuk-form-group--error > input#address-city').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([addressCityError]))
+      expect(
+        $('.govuk-form-group--error > input#address-postcode').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([addressPostcodeError]))
+      expect(
+        $('.govuk-form-group--error > select#address-country').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([addressCountryError]))
     })
     it(`should not show an updated successful banner`, () => {
-      expect($('.notification').length).to.equal(0)
+      expect($('.notification').length).toBe(0)
     })
     it(`should show prefilled inputs`, () => {
-      expect($('#merchant-name').val()).to.equal('name')
-      expect($('#address-line1').val()).to.equal('line1')
-      expect($('#address-line2').val()).to.equal('line2')
-      expect($('#address-city').val()).to.equal('City')
-      expect($('#address-postcode').val()).to.equal('POSTCODE')
-      expect($('#address-country').val()).to.equal('GB')
+      expect($('#merchant-name').val()).toBe('name')
+      expect($('#address-line1').val()).toBe('line1')
+      expect($('#address-line2').val()).toBe('line2')
+      expect($('#address-city').val()).toBe('City')
+      expect($('#address-postcode').val()).toBe('POSTCODE')
+      expect($('#address-country').val()).toBe('GB')
     })
   })
   describe('when errors and merchant details are set in the session (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
@@ -320,7 +327,7 @@ describe('edit merchant details controller - get', () => {
     const telephoneNumberError = 'telephone number error'
     const merchantEmailError = 'merchant email error'
 
-    before(done => {
+    beforeAll(done => {
       const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere'])
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
@@ -365,35 +372,38 @@ describe('edit merchant details controller - get', () => {
         })
     })
     it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.be.equal(200)
+      expect(response.statusCode).toBe(200)
     })
     it(`should show a list of errors`, () => {
-      expect($('.govuk-error-summary__list li').length).to.equal(3)
-      expect($('.govuk-error-summary__list li a[href$="#merchant-name"]').text()).to.equal('Name')
-      expect($('.govuk-error-summary__list li a[href$="#telephone-number"]').text()).to.equal('Phone number')
-      expect($('.govuk-error-summary__list li a[href$="#merchant-email"]').text()).to.equal('Email')
+      expect($('.govuk-error-summary__list li').length).toBe(3)
+      expect($('.govuk-error-summary__list li a[href$="#merchant-name"]').text()).toBe('Name')
+      expect($('.govuk-error-summary__list li a[href$="#telephone-number"]').text()).toBe('Phone number')
+      expect($('.govuk-error-summary__list li a[href$="#merchant-email"]').text()).toBe('Email')
     })
     it(`should show inline error messages`, () => {
-      expect($('.govuk-error-message').length).to.equal(3)
-      expect($('.govuk-form-group--error > input#merchant-name').parent().find('.govuk-error-message').text())
-        .to.contain(merchantNameError)
-      expect($('.govuk-form-group--error > input#telephone-number').parent().find('.govuk-error-message').text())
-        .to.contain(telephoneNumberError)
-      expect($('.govuk-form-group--error > input#merchant-email').parent().find('.govuk-error-message').text())
-        .to.contain(merchantEmailError)
+      expect($('.govuk-error-message').length).toBe(3)
+      expect(
+        $('.govuk-form-group--error > input#merchant-name').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([merchantNameError]))
+      expect(
+        $('.govuk-form-group--error > input#telephone-number').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([telephoneNumberError]))
+      expect(
+        $('.govuk-form-group--error > input#merchant-email').parent().find('.govuk-error-message').text()
+      ).toEqual(expect.arrayContaining([merchantEmailError]))
     })
     it(`should not show an updated successful banner`, () => {
-      expect($('.notification').length).to.equal(0)
+      expect($('.notification').length).toBe(0)
     })
     it(`should show prefilled inputs`, () => {
-      expect($('#merchant-name').val()).to.equal('name')
-      expect($('#telephone-number').val()).to.equal('invalid-phone')
-      expect($('#merchant-email').val()).to.equal('dd-merchant@example.com-invalid')
-      expect($('#address-line1').val()).to.equal('line1')
-      expect($('#address-line2').val()).to.equal('line2')
-      expect($('#address-city').val()).to.equal('City')
-      expect($('#address-postcode').val()).to.equal('POSTCODE')
-      expect($('#address-country').val()).to.equal('GB')
+      expect($('#merchant-name').val()).toBe('name')
+      expect($('#telephone-number').val()).toBe('invalid-phone')
+      expect($('#merchant-email').val()).toBe('dd-merchant@example.com-invalid')
+      expect($('#address-line1').val()).toBe('line1')
+      expect($('#address-line2').val()).toBe('line2')
+      expect($('#address-city').val()).toBe('City')
+      expect($('#address-postcode').val()).toBe('POSTCODE')
+      expect($('#address-country').val()).toBe('GB')
     })
   })
 })

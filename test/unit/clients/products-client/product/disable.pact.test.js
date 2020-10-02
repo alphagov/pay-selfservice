@@ -1,8 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
-const proxyquire = require('proxyquire')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -12,12 +10,12 @@ const API_RESOURCE = '/v1/api'
 const port = Math.floor(Math.random() * 48127) + 1024
 let result, productExternalId, gatewayAccountId
 
+jest.mock('../../../config', () => ({
+  PRODUCTS_URL: baseUrl
+}));
+
 function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
-  return proxyquire('../../../../../app/services/clients/products.client', {
-    '../../../config': {
-      PRODUCTS_URL: baseUrl
-    }
-  })
+  return require('../../../../../app/services/clients/products.client');
 }
 
 describe('products client - disable a product', () => {
@@ -31,11 +29,11 @@ describe('products client - disable a product', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('when a product is successfully disabled', () => {
-    before(done => {
+    beforeAll(done => {
       const productsClient = getProductsClient()
       gatewayAccountId = '999'
       productExternalId = 'a_valid_external_id'
@@ -57,12 +55,12 @@ describe('products client - disable a product', () => {
     afterEach(() => provider.verify())
 
     it('should disable the product', () => {
-      expect(result).to.equal(undefined)
+      expect(result).toBeUndefined()
     })
   })
 
   describe('create a product - bad request', () => {
-    before(done => {
+    beforeAll(done => {
       const productsClient = getProductsClient()
       productExternalId = 'a_non_existant_external_id'
       provider.addInteraction(
@@ -83,7 +81,7 @@ describe('products client - disable a product', () => {
     afterEach(() => provider.verify())
 
     it('should reject with error: bad request', () => {
-      expect(result.errorCode).to.equal(400)
+      expect(result.errorCode).toBe(400)
     })
   })
 })

@@ -1,8 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
-const proxyquire = require('proxyquire')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,12 +13,12 @@ let request, response, result
 
 const randomPrice = () => Math.round(Math.random() * 10000) + 1
 
+jest.mock('../../../config', () => ({
+  PRODUCTS_URL: baseUrl
+}));
+
 function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
-  return proxyquire('../../../../../app/services/clients/products.client', {
-    '../../../config': {
-      PRODUCTS_URL: baseUrl
-    }
-  })
+  return require('../../../../../app/services/clients/products.client');
 }
 
 describe('products client - create a new product', () => {
@@ -34,13 +32,13 @@ describe('products client - create a new product', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('when a product is successfully created', () => {
     const language = 'cy'
 
-    before(done => {
+    beforeAll(done => {
       const productsClient = getProductsClient()
       request = productFixtures.validCreateProductRequest({
         description: 'a test product',
@@ -81,26 +79,26 @@ describe('products client - create a new product', () => {
     it('should create a new product', () => {
       const plainRequest = request.getPlain()
       const plainResponse = response.getPlain()
-      expect(result.gatewayAccountId).to.equal(plainRequest.gateway_account_id)
-      expect(result.name).to.equal(plainRequest.name)
-      expect(result.description).to.equal(plainRequest.description)
-      expect(result.price).to.equal(plainRequest.price)
-      expect(result.returnUrl).to.equal('https://example.gov.uk/paid-for-somet')
-      expect(result.type).to.equal('DEMO')
-      expect(result.language).to.equal(language)
-      expect(result).to.have.property('links')
-      expect(Object.keys(result.links).length).to.equal(2)
-      expect(result.links).to.have.property('self')
-      expect(result.links.self).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'self').method)
-      expect(result.links.self).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'self').href)
-      expect(result.links).to.have.property('pay')
-      expect(result.links.pay).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'pay').method)
-      expect(result.links.pay).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'pay').href)
+      expect(result.gatewayAccountId).toBe(plainRequest.gateway_account_id)
+      expect(result.name).toBe(plainRequest.name)
+      expect(result.description).toBe(plainRequest.description)
+      expect(result.price).toBe(plainRequest.price)
+      expect(result.returnUrl).toBe('https://example.gov.uk/paid-for-somet')
+      expect(result.type).toBe('DEMO')
+      expect(result.language).toBe(language)
+      expect(result).toHaveProperty('links')
+      expect(Object.keys(result.links).length).toBe(2)
+      expect(result.links).toHaveProperty('self')
+      expect(result.links.self).to.have.property('method').toBe(plainResponse._links.find(link => link.rel === 'self').method)
+      expect(result.links.self).to.have.property('href').toBe(plainResponse._links.find(link => link.rel === 'self').href)
+      expect(result.links).toHaveProperty('pay')
+      expect(result.links.pay).to.have.property('method').toBe(plainResponse._links.find(link => link.rel === 'pay').method)
+      expect(result.links.pay).to.have.property('href').toBe(plainResponse._links.find(link => link.rel === 'pay').href)
     })
   })
 
   describe('create a product - bad request', () => {
-    before(done => {
+    beforeAll(done => {
       const productsClient = getProductsClient()
       request = productFixtures.validCreateProductRequest({ pay_api_token: '' })
       const requestPlain = request.getPlain()
@@ -132,7 +130,7 @@ describe('products client - create a new product', () => {
     afterEach(() => provider.verify())
 
     it('should reject with error: bad request', () => {
-      expect(result.errorCode).to.equal(400)
+      expect(result.errorCode).toBe(400)
     })
   })
 })

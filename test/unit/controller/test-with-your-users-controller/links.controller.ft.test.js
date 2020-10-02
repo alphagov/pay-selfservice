@@ -6,7 +6,6 @@ const { getApp } = require('../../../../server')
 const mockSession = require('../../../test-helpers/mock-session')
 const userCreator = require('../../../test-helpers/user-creator')
 const paths = require('../../../../app/paths')
-const { expect } = require('chai')
 
 const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 
@@ -62,7 +61,7 @@ function mockGetProductsByGatewayAccountEndpoint (gatewayAccountId) {
 
 describe('Show the prototype links', () => {
   let app
-  before(function () {
+  beforeAll(() => {
     const user = mockSession.getUser({
       gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'transactions:read' }]
     })
@@ -72,7 +71,7 @@ describe('Show the prototype links', () => {
 
   describe('when no links exist', () => {
     let response
-    before(function (done) {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -88,28 +87,28 @@ describe('Show the prototype links', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should toggle the product tab', () => {
-      expect(response.body).to.have.property('productsTab', true)
+      expect(response.body).toHaveProperty('productsTab', true)
     })
 
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).toHaveProperty('createPage', paths.prototyping.demoService.create)
+      expect(response.body).toHaveProperty('indexPage', paths.prototyping.demoService.index)
+      expect(response.body).toHaveProperty('linksPage', paths.prototyping.demoService.links)
     })
 
     it('should not display any link', () => {
-      expect(response.body).to.have.property('productsLength', 0)
+      expect(response.body).toHaveProperty('productsLength', 0)
     })
   })
 
   describe('when at least one link exists', () => {
     let response
-    before(function (done) {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -125,23 +124,23 @@ describe('Show the prototype links', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should toggle the product tab', () => {
-      expect(response.body).to.have.property('productsTab', true)
+      expect(response.body).toHaveProperty('productsTab', true)
     })
 
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).toHaveProperty('createPage', paths.prototyping.demoService.create)
+      expect(response.body).toHaveProperty('indexPage', paths.prototyping.demoService.index)
+      expect(response.body).toHaveProperty('linksPage', paths.prototyping.demoService.links)
     })
 
     it('should display all the links', () => {
-      expect(response.body).to.have.property('productsLength', 1)
-      expect(response.body).to.have.deep.property('products', [{
+      expect(response.body).toHaveProperty('productsLength', 1)
+      expect(response.body).toHaveProperty('products', [{
         description: 'product-description-1',
         externalId: 'product-external-id-1',
         gatewayAccountId: 'product-gateway-account-id-1',
@@ -161,7 +160,7 @@ describe('Show the prototype links', () => {
 
   describe('when more than one link exist', () => {
     let response
-    before(function (done) {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -177,23 +176,23 @@ describe('Show the prototype links', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should toggle the product tab', () => {
-      expect(response.body).to.have.property('productsTab', true)
+      expect(response.body).toHaveProperty('productsTab', true)
     })
 
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).toHaveProperty('createPage', paths.prototyping.demoService.create)
+      expect(response.body).toHaveProperty('indexPage', paths.prototyping.demoService.index)
+      expect(response.body).toHaveProperty('linksPage', paths.prototyping.demoService.links)
     })
 
     it('should display all the links', () => {
-      expect(response.body).to.have.property('productsLength', 2)
-      expect(response.body).to.have.deep.property('products', [{
+      expect(response.body).toHaveProperty('productsLength', 2)
+      expect(response.body).toHaveProperty('products', [{
         description: 'product-description-1',
         externalId: 'product-external-id-1',
         gatewayAccountId: 'product-gateway-account-id-1',
@@ -227,7 +226,7 @@ describe('Show the prototype links', () => {
 
   describe('when one prototype link and one live link exists', () => {
     let response
-    before(function (done) {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -244,8 +243,8 @@ describe('Show the prototype links', () => {
     })
 
     it('should display only prototype links', () => {
-      expect(response.body).to.have.property('productsLength', 1)
-      expect(response.body).to.have.deep.property('products', [{
+      expect(response.body).toHaveProperty('productsLength', 1)
+      expect(response.body).toHaveProperty('products', [{
         description: 'product-description-1',
         externalId: 'product-external-id-1',
         gatewayAccountId: 'product-gateway-account-id-1',
@@ -265,7 +264,7 @@ describe('Show the prototype links', () => {
 
   describe('when there is a problem retrieving the products', () => {
     let response
-    before(function (done) {
+    beforeAll(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
           payment_provider: 'sandbox'
@@ -281,13 +280,13 @@ describe('Show the prototype links', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should show an error page', () => {
-      expect(response.status).to.equal(500)
-      expect(response.body).to.have.property('message', 'There is a problem with the payments platform')
+      expect(response.status).toBe(500)
+      expect(response.body).toHaveProperty('message', 'There is a problem with the payments platform')
     })
   })
 })

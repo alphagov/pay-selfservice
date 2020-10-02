@@ -1,11 +1,26 @@
 const sinon = require('sinon')
-const { expect } = require('chai')
-const proxyquire = require('proxyquire')
 
 const { ConnectorClient } = require('../../../app/services/clients/connector.client')
 
 const { validUser } = require('../../fixtures/user.fixtures')
 const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
+
+jest.mock('../services/clients/connector.client.js', () => ({
+  ConnectorClient: class {
+    async getAccounts () {
+      return {
+        accounts: [
+          validGatewayAccountResponse({
+            payment_provider: 'stripe'
+          }).getPlain(),
+          validGatewayAccountResponse({
+            allow_moto: true
+          }).getPlain()
+        ]
+      }
+    }
+  }
+}));
 
 describe('gateway account filter utiltiies', () => {
   const { userServicesContainsGatewayAccount } = require('../../../app/utils/permissions')
@@ -16,7 +31,7 @@ describe('gateway account filter utiltiies', () => {
       }
       const user = validUser(opts).getAsObject()
       const valid = userServicesContainsGatewayAccount('2', user)
-      expect(valid).to.equal(true)
+      expect(valid).toBe(true)
     })
     it('returns invalid for gateway account not belonging to user', () => {
       const opts = {
@@ -24,7 +39,7 @@ describe('gateway account filter utiltiies', () => {
       }
       const user = validUser(opts).getAsObject()
       const valid = userServicesContainsGatewayAccount('4', user)
-      expect(valid).to.equal(false)
+      expect(valid).toBe(false)
     })
   })
 
@@ -40,30 +55,16 @@ describe('gateway account filter utiltiies', () => {
     })
     afterEach(() => accountSpy.restore())
 
-    it('correctly identifies stripe and moto headers for relavent accounts', async () => {
-      const { getLiveGatewayAccountsFor } = proxyquire('./../../../app/utils/permissions', {
-        '../services/clients/connector.client.js': {
-          ConnectorClient: class {
-            async getAccounts () {
-              return {
-                accounts: [
-                  validGatewayAccountResponse({
-                    payment_provider: 'stripe'
-                  }).getPlain(),
-                  validGatewayAccountResponse({
-                    allow_moto: true
-                  }).getPlain()
-                ]
-              }
-            }
-          }
-        }
-      })
-      const result = await getLiveGatewayAccountsFor(user, 'perm-1')
+    it(
+      'correctly identifies stripe and moto headers for relavent accounts',
+      async () => {
+        const { getLiveGatewayAccountsFor } = require('./../../../app/utils/permissions')
+        const result = await getLiveGatewayAccountsFor(user, 'perm-1')
 
-      expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-line
-      expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-line
-    })
+        expect(result.headers.shouldGetStripeHeaders).toBe(true) // eslint-disable-line
+        expect(result.headers.shouldGetMotoHeaders).toBe(true) // eslint-disable-line
+      }
+    )
 
     it('correctly identifies non stripe and moto headers', async () => {
       const { getLiveGatewayAccountsFor } = proxyquire('./../../../app/utils/permissions', {
@@ -81,8 +82,8 @@ describe('gateway account filter utiltiies', () => {
       })
       const result = await getLiveGatewayAccountsFor(user, 'perm-1')
 
-      expect(result.headers.shouldGetStripeHeaders).to.be.false // eslint-disable-line
-      expect(result.headers.shouldGetMotoHeaders).to.be.false // eslint-disable-line
+      expect(result.headers.shouldGetStripeHeaders).toBe(false) // eslint-disable-line
+      expect(result.headers.shouldGetMotoHeaders).toBe(false) // eslint-disable-line
     })
 
     it('correctly filters live accounts', async () => {
@@ -111,7 +112,7 @@ describe('gateway account filter utiltiies', () => {
         }
       })
       const result = await getLiveGatewayAccountsFor(user, 'perm-1')
-      expect(result.gatewayAccountIds).to.deep.equal([ '1', '3' ])
+      expect(result.gatewayAccountIds).toEqual([ '1', '3' ])
     })
 
     it('correctly filters services by users permission role', async () => {
@@ -123,13 +124,16 @@ describe('gateway account filter utiltiies', () => {
       sinon.assert.calledWith(accountSpy, { gatewayAccountIds: ['1', '2', '3'] })
     })
 
-    it('does not interract with the backend if no services have the required permissions', () => {
-      const { getLiveGatewayAccountsFor } = proxyquire(
-        './../../../app/utils/permissions', { '../services/clients/connector.client.js': ConnectorClient }
-      )
+    it(
+      'does not interract with the backend if no services have the required permissions',
+      () => {
+        const { getLiveGatewayAccountsFor } = proxyquire(
+          './../../../app/utils/permissions', { '../services/clients/connector.client.js': ConnectorClient }
+        )
 
-      getLiveGatewayAccountsFor(user, 'permission-user-does-not-have')
-      sinon.assert.notCalled(accountSpy)
-    })
+        getLiveGatewayAccountsFor(user, 'permission-user-does-not-have')
+        sinon.assert.notCalled(accountSpy)
+      }
+    )
   })
 })

@@ -1,7 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
-const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 describe('Get Stripe account middleware', () => {
@@ -33,7 +31,7 @@ describe('Get Stripe account middleware', () => {
     const middleware = getMiddlewareWithConnectorClientResolvedPromiseMock(stripeAccount)
 
     await middleware(req, res, next)
-    expect(res.locals.stripeAccount).to.deep.equal(stripeAccount)
+    expect(res.locals.stripeAccount).toEqual(stripeAccount)
     sinon.assert.calledOnce(next)
   })
 
@@ -42,31 +40,34 @@ describe('Get Stripe account middleware', () => {
     req.account = undefined
 
     await middleware(req, res, next)
-    expect(res.locals.stripeAccount).to.be.undefined // eslint-disable-line
+    expect(res.locals.stripeAccount).toBeUndefined() // eslint-disable-line
     sinon.assert.notCalled(next)
     sinon.assert.calledWith(res.status, 500)
     sinon.assert.calledWith(res.render, 'error')
   })
 
-  it('should render an error page when connector rejects the call', async () => {
-    const middleware = getMiddlewareWithConnectorClientRejectedPromiseMock()
+  it(
+    'should render an error page when connector rejects the call',
+    async () => {
+      const middleware = getMiddlewareWithConnectorClientRejectedPromiseMock()
 
-    await middleware(req, res, next)
-    expect(res.locals.stripeAccount).to.be.undefined // eslint-disable-line
-    sinon.assert.notCalled(next)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error')
-  })
+      await middleware(req, res, next)
+      expect(res.locals.stripeAccount).toBeUndefined() // eslint-disable-line
+      sinon.assert.notCalled(next)
+      sinon.assert.calledWith(res.status, 500)
+      sinon.assert.calledWith(res.render, 'error')
+    }
+  )
 })
 
+jest.mock('../../services/clients/connector.client', () => ({
+  ConnectorClient: function () {
+    this.getStripeAccount = () => Promise.resolve(getStripeAccountResponse)
+  }
+}));
+
 function getMiddlewareWithConnectorClientResolvedPromiseMock (getStripeAccountResponse) {
-  return proxyquire('./get-stripe-account', {
-    '../../services/clients/connector.client': {
-      ConnectorClient: function () {
-        this.getStripeAccount = () => Promise.resolve(getStripeAccountResponse)
-      }
-    }
-  })
+  return require('./get-stripe-account');
 }
 
 function getMiddlewareWithConnectorClientRejectedPromiseMock () {

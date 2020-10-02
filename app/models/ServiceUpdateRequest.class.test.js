@@ -1,12 +1,11 @@
 'use strict'
 
-const { expect } = require('chai')
 const { ServiceUpdateRequest } = require('./ServiceUpdateRequest.class')
 
 describe('the ServiceUpdateRequest model', () => {
   it('should successfully add a "replace" request', () => {
     const payload = new ServiceUpdateRequest().replace('foo', 'bar').formatPayload()
-    expect(payload).to.deep.equal([{
+    expect(payload).toEqual([{
       'op': 'replace',
       'path': 'foo',
       'value': 'bar'
@@ -15,7 +14,7 @@ describe('the ServiceUpdateRequest model', () => {
 
   it('should successfully add an "add" request', () => {
     const payload = new ServiceUpdateRequest().add('foo', 'bar').formatPayload()
-    expect(payload).to.deep.equal([{
+    expect(payload).toEqual([{
       'op': 'add',
       'path': 'foo',
       'value': 'bar'
@@ -29,7 +28,7 @@ describe('the ServiceUpdateRequest model', () => {
       .add('add-path', 'add-value')
       .formatPayload()
 
-    expect(payload).to.deep.equal([
+    expect(payload).toEqual([
       {
         'op': 'replace',
         'path': 'replace-path-1',

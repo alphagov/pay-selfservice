@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,7 +14,7 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 
 // Global setup
 
-describe('adminusers client - create a new service', function () {
+describe('adminusers client - create a new service', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -26,8 +25,8 @@ describe('adminusers client - create a new service', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     const name = 'Service name'
@@ -39,7 +38,7 @@ describe('adminusers client - create a new service', function () {
       gateway_account_ids: gatewayAccountIds
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(SERVICE_RESOURCE)
           .withUponReceiving('a valid create service request with empty object')
@@ -55,12 +54,12 @@ describe('adminusers client - create a new service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should create a new service', function () {
+    it('should create a new service', () => {
       return adminusersClient.createService().then(service => {
-        expect(service.external_id).to.equal(externalId)
-        expect(service.name).to.equal(name)
-        expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
-      })
+        expect(service.external_id).toBe(externalId)
+        expect(service.name).toBe(name)
+        expect(service.gateway_account_ids).toEqual(gatewayAccountIds)
+      });
     })
   })
 
@@ -77,7 +76,7 @@ describe('adminusers client - create a new service', function () {
       gateway_account_ids: gatewayAccountIds
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(SERVICE_RESOURCE)
           .withUponReceiving('a valid create service request with gateway account ids')
@@ -93,12 +92,12 @@ describe('adminusers client - create a new service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should create a new service', function () {
+    it('should create a new service', () => {
       return adminusersClient.createService(null, null, validRequest.getPlain().gateway_account_ids).then(service => {
-        expect(service.external_id).to.equal(externalId)
-        expect(service.name).to.equal(name)
-        expect(service.gateway_account_ids).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
-      })
+        expect(service.external_id).toBe(externalId)
+        expect(service.name).toBe(name)
+        expect(service.gateway_account_ids).toEqual(validCreateServiceResponse.getPlain().gateway_account_ids)
+      });
     })
   })
 
@@ -117,7 +116,7 @@ describe('adminusers client - create a new service', function () {
       gateway_account_ids: gatewayAccountIds
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(SERVICE_RESOURCE)
           .withUponReceiving('a valid create service request with service name')
@@ -133,12 +132,12 @@ describe('adminusers client - create a new service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should create a new service', function () {
+    it('should create a new service', () => {
       return adminusersClient.createService('Service name', null, null).then(service => {
-        expect(service.external_id).to.equal(externalId)
-        expect(service.name).to.equal(name)
-        expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
-      })
+        expect(service.external_id).toBe(externalId)
+        expect(service.name).toBe(name)
+        expect(service.gateway_account_ids).toEqual(gatewayAccountIds)
+      });
     })
   })
 })

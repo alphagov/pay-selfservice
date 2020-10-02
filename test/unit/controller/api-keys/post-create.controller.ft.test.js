@@ -1,6 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
 const csrf = require('csrf')
 const nock = require('nock')
 const supertest = require('supertest')
@@ -26,7 +25,7 @@ describe('POST to create an API key', () => {
   describe('without description', () => {
     let app
     let response
-    before(done => {
+    beforeAll(done => {
       const user = mockSession.getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'tokens:create' }]
       })
@@ -59,22 +58,22 @@ describe('POST to create an API key', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return with the API key', () => {
-      expect(response.body.token).to.equal(TOKEN_RESPONSE.token)
+      expect(response.body.token).toBe(TOKEN_RESPONSE.token)
     })
     it('and a blank description', () => {
-      expect(response.body.description).to.equal('')
+      expect(response.body.description).toBe('')
     })
   })
 
   describe('with a description', () => {
     let app
     let response
-    before(done => {
+    beforeAll(done => {
       const user = mockSession.getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'tokens:create' }]
       })
@@ -109,15 +108,15 @@ describe('POST to create an API key', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return with the API key', () => {
-      expect(response.body.token).to.equal(TOKEN_RESPONSE.token)
+      expect(response.body.token).toBe(TOKEN_RESPONSE.token)
     })
     it('and a blank description', () => {
-      expect(response.body.description).to.equal(DESCRIPTION)
+      expect(response.body.description).toBe(DESCRIPTION)
     })
   })
 })

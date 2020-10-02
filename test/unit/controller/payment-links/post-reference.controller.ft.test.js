@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const lodash = require('lodash')
 const csrf = require('csrf')
 
@@ -24,12 +23,12 @@ describe('Create payment link reference post controller', () => {
       'reference-label': 'Some words',
       'reference-hint-text': 'Some more words'
     }
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.paymentLinks.reference)
         .send(VALID_PAYLOAD)
@@ -41,25 +40,25 @@ describe('Create payment link reference post controller', () => {
 
     it('should have paymentReferenceType stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentReferenceType').to.equal(VALID_PAYLOAD['reference-type-group'])
+      expect(sessionPageData).to.have.property('paymentReferenceType').toBe(VALID_PAYLOAD['reference-type-group'])
     })
 
     it('should have paymentReferenceLabel stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentReferenceLabel').to.equal(VALID_PAYLOAD['reference-label'])
+      expect(sessionPageData).to.have.property('paymentReferenceLabel').toBe(VALID_PAYLOAD['reference-label'])
     })
 
     it('should have paymentReferenceHint stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentReferenceHint').to.equal(VALID_PAYLOAD['reference-hint-text'])
+      expect(sessionPageData).to.have.property('paymentReferenceHint').toBe(VALID_PAYLOAD['reference-hint-text'])
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to the amount page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.amount)
+      expect(result.headers).to.have.property('location').toBe(paths.paymentLinks.amount)
     })
   })
 
@@ -71,12 +70,12 @@ describe('Create payment link reference post controller', () => {
       'reference-label': '',
       'reference-hint-text': ''
     }
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.paymentLinks.reference)
         .send(VALID_PAYLOAD)
@@ -88,25 +87,25 @@ describe('Create payment link reference post controller', () => {
 
     it('should have paymentReferenceType stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentReferenceType').to.equal(VALID_PAYLOAD['reference-type-group'])
+      expect(sessionPageData).to.have.property('paymentReferenceType').toBe(VALID_PAYLOAD['reference-type-group'])
     })
 
     it('should have paymentReferenceLabel stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentReferenceLabel').to.equal(VALID_PAYLOAD['reference-label'])
+      expect(sessionPageData).to.have.property('paymentReferenceLabel').toBe(VALID_PAYLOAD['reference-label'])
     })
 
     it('should have paymentReferenceHint stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentReferenceHint').to.equal(VALID_PAYLOAD['reference-hint-text'])
+      expect(sessionPageData).to.have.property('paymentReferenceHint').toBe(VALID_PAYLOAD['reference-hint-text'])
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect to the amount page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.amount)
+      expect(result.headers).to.have.property('location').toBe(paths.paymentLinks.amount)
     })
   })
 
@@ -118,12 +117,12 @@ describe('Create payment link reference post controller', () => {
       'reference-label': '',
       'reference-hint-text': ''
     }
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.paymentLinks.reference)
         .send(VALID_PAYLOAD)
@@ -133,17 +132,20 @@ describe('Create payment link reference post controller', () => {
         })
     })
 
-    it('should have a recovered object stored on the session containing error', () => {
-      const recovered = lodash.get(session, 'pageData.createPaymentLink.referencePageRecovered', {})
-      expect(recovered.errors).to.have.property('type')
-    })
+    it(
+      'should have a recovered object stored on the session containing error',
+      () => {
+        const recovered = lodash.get(session, 'pageData.createPaymentLink.referencePageRecovered', {})
+        expect(recovered.errors).toHaveProperty('type')
+      }
+    )
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect back to itself', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.reference)
+      expect(result.headers).to.have.property('location').toBe(paths.paymentLinks.reference)
     })
   })
 
@@ -155,12 +157,12 @@ describe('Create payment link reference post controller', () => {
       'reference-label': '',
       'reference-hint-text': 'hint text'
     }
-    before('Arrange', () => {
+    beforeAll(() => {
       session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.createPaymentLink', {})
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.paymentLinks.reference)
         .send(VALID_PAYLOAD)
@@ -170,20 +172,23 @@ describe('Create payment link reference post controller', () => {
         })
     })
 
-    it('should have a recovered object stored on the session containing errors and submitted data', () => {
-      const recovered = lodash.get(session, 'pageData.createPaymentLink.referencePageRecovered', {})
-      expect(recovered).to.have.property('type').to.equal('custom')
-      expect(recovered).to.have.property('label').to.equal('')
-      expect(recovered).to.have.property('hint').to.equal('hint text')
-      expect(recovered.errors).to.have.property('label')
-    })
+    it(
+      'should have a recovered object stored on the session containing errors and submitted data',
+      () => {
+        const recovered = lodash.get(session, 'pageData.createPaymentLink.referencePageRecovered', {})
+        expect(recovered).to.have.property('type').toBe('custom')
+        expect(recovered).to.have.property('label').toBe('')
+        expect(recovered).to.have.property('hint').toBe('hint text')
+        expect(recovered.errors).toHaveProperty('label')
+      }
+    )
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect back to itself', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.reference)
+      expect(result.headers).to.have.property('location').toBe(paths.paymentLinks.reference)
     })
   })
 })

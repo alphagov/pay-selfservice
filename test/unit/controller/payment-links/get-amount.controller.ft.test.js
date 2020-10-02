@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
@@ -16,7 +15,7 @@ const { penceToPounds } = require('../../../../app/utils/currency-formatter')
 describe('Create payment link amount controller', () => {
   describe('if landing here for the first time', () => {
     let result, $, session
-    before(done => {
+    beforeAll(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'tokens:create' }]
@@ -34,36 +33,37 @@ describe('Create payment link amount controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
-    it('should include a cancel link linking to the Create payment link index', () => {
-      expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.start)
-    })
+    it(
+      'should include a cancel link linking to the Create payment link index',
+      () => {
+        expect($('.cancel').attr('href')).toBe(paths.paymentLinks.start)
+      }
+    )
 
     it('should have itself as the form action', () => {
-      expect($('form').attr('action')).to.equal(paths.paymentLinks.amount)
+      expect($('form').attr('action')).toBe(paths.paymentLinks.amount)
     })
 
     it('should have no checked radio buttons', () =>
-      expect($('input[type="radio"]:checked').length).to.equal(0)
-    )
+      expect($('input[type="radio"]:checked').length).toBe(0))
 
     it('should have blank value in the amount input', () =>
-      expect($('input[name="payment-amount"]').val()).to.equal('')
-    )
+      expect($('input[name="payment-amount"]').val()).toBe(''))
   })
 
   describe('when returning to the page with validation errors', () => {
     const amountError = 'Something wrong with amount'
     const typeError = 'Something wrong with type'
     let $, session
-    before(done => {
+    beforeAll(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'tokens:create' }]
@@ -86,34 +86,33 @@ describe('Create payment link amount controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should set the fixed amount radio to checked', () => {
-      expect($('#amount-type-fixed:checked').length).to.equal(1)
-      expect($('#amount-type-variable:checked').length).to.equal(0)
+      expect($('#amount-type-fixed:checked').length).toBe(1)
+      expect($('#amount-type-variable:checked').length).toBe(0)
     })
 
     it('should have blank value in the amount input', () =>
-      expect($('input[name="payment-amount"]').val()).to.equal('')
-    )
+      expect($('input[name="payment-amount"]').val()).toBe(''))
 
     it('should show an error summary', () => {
-      expect($('.govuk-error-summary__list li').length).to.equal(2)
-      expect($('.govuk-error-summary__list li a[href$="#payment-amount"]').text()).to.equal(amountError)
-      expect($('.govuk-error-summary__list li a[href$="#amount-type-fixed"]').text()).to.equal(typeError)
+      expect($('.govuk-error-summary__list li').length).toBe(2)
+      expect($('.govuk-error-summary__list li a[href$="#payment-amount"]').text()).toBe(amountError)
+      expect($('.govuk-error-summary__list li a[href$="#amount-type-fixed"]').text()).toBe(typeError)
     })
 
     it('should show inline errors', () => {
-      expect($('.govuk-error-message').length).to.equal(2)
+      expect($('.govuk-error-message').length).toBe(2)
     })
   })
 
   describe('if returning here to change fields', () => {
     describe('where an amount was set', () => {
       let $, session
-      before(done => {
+      beforeAll(done => {
         const user = getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'tokens:create' }]
@@ -135,22 +134,23 @@ describe('Create payment link amount controller', () => {
             done(err)
           })
       })
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('should set the fixed amount radio to checked', () =>
-        expect($('#amount-type-fixed:checked').length).to.equal(1)
-      )
+        expect($('#amount-type-fixed:checked').length).toBe(1))
 
-      it('should set the value of the amount input to pre-existing data present in the session', () =>
-        expect($('input[name="payment-amount"]').val()).to.equal(penceToPounds(session.pageData.createPaymentLink.paymentLinkAmount))
+      it(
+        'should set the value of the amount input to pre-existing data present in the session',
+        () =>
+          expect($('input[name="payment-amount"]').val()).toBe(penceToPounds(session.pageData.createPaymentLink.paymentLinkAmount))
       )
     })
 
     describe('where an amount was not set', () => {
       let $, session
-      before(done => {
+      beforeAll(done => {
         const user = getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
           permissions: [{ name: 'tokens:create' }]
@@ -172,17 +172,19 @@ describe('Create payment link amount controller', () => {
             done(err)
           })
       })
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('should set the variable amount radio to checked', () => {
-        expect($('#amount-type-variable:checked').length).to.equal(1)
-        expect($('#amount-type-fixed:checked').length).to.equal(0)
+        expect($('#amount-type-variable:checked').length).toBe(1)
+        expect($('#amount-type-fixed:checked').length).toBe(0)
       })
 
-      it('should set the value of the amount input to pre-existing data present in the session', () =>
-        expect($('input[name="payment-amount"]').val()).to.equal('')
+      it(
+        'should set the value of the amount input to pre-existing data present in the session',
+        () =>
+          expect($('input[name="payment-amount"]').val()).toBe('')
       )
     })
   })

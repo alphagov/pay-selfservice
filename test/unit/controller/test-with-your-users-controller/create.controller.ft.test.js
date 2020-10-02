@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
@@ -15,7 +14,7 @@ const GATEWAY_ACCOUNT_ID = '929'
 
 describe('test with your users - create controller', () => {
   let result, $, session
-  before(done => {
+  beforeAll(done => {
     const user = getUser({
       gateway_account_ids: [GATEWAY_ACCOUNT_ID],
       permissions: [{ name: 'transactions:read' }]
@@ -37,31 +36,40 @@ describe('test with your users - create controller', () => {
         done(err)
       })
   })
-  after(() => {
+  afterAll(() => {
     nock.cleanAll()
   })
 
   it('should return a statusCode of 200', () => {
-    expect(result.statusCode).to.equal(200)
+    expect(result.statusCode).toBe(200)
   })
 
-  it(`should include a back link linking to the demoservice links page`, () => {
-    expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoService.links)
-  })
+  it(
+    `should include a back link linking to the demoservice links page`,
+    () => {
+      expect($('.govuk-back-link').attr('href')).toBe(paths.prototyping.demoService.links)
+    }
+  )
 
   it(`should have the confirm page as the form action`, () => {
-    expect($('form').attr('action')).to.equal(paths.prototyping.demoService.confirm)
+    expect($('form').attr('action')).toBe(paths.prototyping.demoService.confirm)
   })
 
-  it(`should pre-set the value of the 'payment-description' input to pre-existing data if present in the session`, () =>
-    expect($(`input[name='payment-description']`).val()).to.equal(session.pageData.createPrototypeLink.paymentDescription)
+  it(
+    `should pre-set the value of the 'payment-description' input to pre-existing data if present in the session`,
+    () =>
+      expect($(`input[name='payment-description']`).val()).toBe(session.pageData.createPrototypeLink.paymentDescription)
   )
 
-  it(`should pre-set the value of the 'payment-amount' input to pre-existing data if present in the session`, () =>
-    expect($(`input[name='payment-amount']`).val()).to.equal(penceToPounds(session.pageData.createPrototypeLink.paymentAmount))
+  it(
+    `should pre-set the value of the 'payment-amount' input to pre-existing data if present in the session`,
+    () =>
+      expect($(`input[name='payment-amount']`).val()).toBe(penceToPounds(session.pageData.createPrototypeLink.paymentAmount))
   )
 
-  it(`should pre-set the value of the 'confirmation-page' input to pre-existing data if present in the session`, () =>
-    expect($(`input[name='confirmation-page']`).val()).to.equal(session.pageData.createPrototypeLink.confirmationPage)
+  it(
+    `should pre-set the value of the 'confirmation-page' input to pre-existing data if present in the session`,
+    () =>
+      expect($(`input[name='confirmation-page']`).val()).toBe(session.pageData.createPrototypeLink.confirmationPage)
   )
 })

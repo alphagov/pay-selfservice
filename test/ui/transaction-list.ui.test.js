@@ -5,7 +5,7 @@ const path = require('path')
 
 require(path.join(__dirname, '/../test-helpers/html-assertions.js'))
 const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
-chai.should()
+expect(chai)()
 
 function buildTransaction (chargeId, amount, stateFriendly, status, cardBrand, email, includeCorporateCardSurcharge = false) {
   let transaction = {
@@ -42,8 +42,8 @@ function buildTransaction (chargeId, amount, stateFriendly, status, cardBrand, e
   return transaction
 }
 
-describe('The transaction list view', function () {
-  it('should render all transactions', function () {
+describe('The transaction list view', () => {
+  it('should render all transactions', () => {
     const templateData = {
       'results': [
         buildTransaction(100, '£50.00', 'Declined', 'failed', 'Visa', 'example1@mail.fake'),
@@ -66,7 +66,7 @@ describe('The transaction list view', function () {
     const body = renderTemplate('transactions/index', templateData)
 
     templateData.results.forEach(function (transactionData, ix) {
-      body.should.containSelector('table#transactions-list')
+      expect(body).containSelector('table#transactions-list')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.results[ix].reference)
         .withTableDataAt(2, templateData.results[ix].email)
@@ -75,50 +75,53 @@ describe('The transaction list view', function () {
         .withTableDataAt(5, templateData.results[ix].state_friendly)
         .withTableDataAt(6, templateData.results[ix].created)
     })
-    body.should.containSelector('#download-transactions-link')
+    expect(body).containSelector('#download-transactions-link')
 
-    body.should.containSelector('.govuk-heading-l').withExactText('Transactions')
-    body.should.not.containSelector('.govuk-back-link')
+    expect(body).containSelector('.govuk-heading-l').withExactText('Transactions')
+    expect(body).not.containSelector('.govuk-back-link')
   })
 
-  it('should render relevant sections for `all service transactions`', function () {
-    const templateData = {
-      'results': [
-        buildTransaction(100, '£50.00', 'Declined', 'failed', 'Visa', 'example1@mail.fake')
-      ],
-      permissions: {
-        'transactions_email_read': true,
-        'transactions_amount_read': true,
-        'transactions_card_type_read': true,
-        'transactions_download_read': true
-      },
-      hasResults: true,
-      total: 9999,
-      showCsvDownload: true,
-      totalFormatted: '9,999',
-      maxLimitFormatted: '10,000',
-      allServiceTransactions: true
+  it(
+    'should render relevant sections for `all service transactions`',
+    () => {
+      const templateData = {
+        'results': [
+          buildTransaction(100, '£50.00', 'Declined', 'failed', 'Visa', 'example1@mail.fake')
+        ],
+        permissions: {
+          'transactions_email_read': true,
+          'transactions_amount_read': true,
+          'transactions_card_type_read': true,
+          'transactions_download_read': true
+        },
+        hasResults: true,
+        total: 9999,
+        showCsvDownload: true,
+        totalFormatted: '9,999',
+        maxLimitFormatted: '10,000',
+        allServiceTransactions: true
+      }
+
+      const body = renderTemplate('transactions/index', templateData)
+
+      templateData.results.forEach(function (transactionData, ix) {
+        expect(body).containSelector('table#transactions-list')
+          .havingRowAt(ix + 1)
+          .withTableDataAt(1, templateData.results[ix].reference)
+          .withTableDataAt(2, templateData.results[ix].email)
+          .withTableDataAt(3, templateData.results[ix].amount)
+          .withTableDataAt(4, templateData.results[ix].card_details.card_brand)
+          .withTableDataAt(5, templateData.results[ix].state_friendly)
+          .withTableDataAt(6, templateData.results[ix].created)
+      })
+      expect(body).containSelector('#download-transactions-link')
+
+      expect(body).containSelector('.govuk-back-link')
+      expect(body).containSelector('.govuk-heading-l').withText('Transactions for all live services')
     }
+  )
 
-    const body = renderTemplate('transactions/index', templateData)
-
-    templateData.results.forEach(function (transactionData, ix) {
-      body.should.containSelector('table#transactions-list')
-        .havingRowAt(ix + 1)
-        .withTableDataAt(1, templateData.results[ix].reference)
-        .withTableDataAt(2, templateData.results[ix].email)
-        .withTableDataAt(3, templateData.results[ix].amount)
-        .withTableDataAt(4, templateData.results[ix].card_details.card_brand)
-        .withTableDataAt(5, templateData.results[ix].state_friendly)
-        .withTableDataAt(6, templateData.results[ix].created)
-    })
-    body.should.containSelector('#download-transactions-link')
-
-    body.should.containSelector('.govuk-back-link')
-    body.should.containSelector('.govuk-heading-l').withText('Transactions for all live services')
-  })
-
-  it('should render all transactions without download link', function () {
+  it('should render all transactions without download link', () => {
     const templateData = {
       'results': [
         buildTransaction(100, '£50.00', 'Declined', 'failed', 'Visa', 'example1@mail.fake'),
@@ -141,7 +144,7 @@ describe('The transaction list view', function () {
     const body = renderTemplate('transactions/index', templateData)
 
     templateData.results.forEach(function (transactionData, ix) {
-      body.should.containSelector('table#transactions-list')
+      expect(body).containSelector('table#transactions-list')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.results[ix].reference)
         .withTableDataAt(2, templateData.results[ix].email)
@@ -150,10 +153,10 @@ describe('The transaction list view', function () {
         .withTableDataAt(5, templateData.results[ix].state_friendly)
         .withTableDataAt(6, templateData.results[ix].created)
     })
-    body.should.containSelector('p#csv-download').withExactText('Filter results to download a CSV of transactions')
+    expect(body).containSelector('p#csv-download').withExactText('Filter results to download a CSV of transactions')
   })
 
-  it('should not render amount if no permission', function () {
+  it('should not render amount if no permission', () => {
     const templateData = {
       'results': [
         buildTransaction(100, '£50.00', 'Success', 'success', 'Visa', 'example1@mail.fake'),
@@ -167,11 +170,11 @@ describe('The transaction list view', function () {
 
     const body = renderTemplate('transactions/index', templateData)
 
-    body.should.not.containSelector('#transactions-list .amount')
-    body.should.not.containSelector('#amount-header')
+    expect(body).not.containSelector('#transactions-list .amount')
+    expect(body).not.containSelector('#amount-header')
   })
 
-  it('should not render email if no permission', function () {
+  it('should not render email if no permission', () => {
     const templateData = {
       'results': [
         buildTransaction(100, '£50.00', 'Timed out', 'failed', 'Visa', 'example1@mail.fake'),
@@ -185,11 +188,11 @@ describe('The transaction list view', function () {
 
     const body = renderTemplate('transactions/index', templateData)
 
-    body.should.not.containSelector('#transactions-list .email')
-    body.should.not.containSelector('#email-header')
+    expect(body).not.containSelector('#transactions-list .email')
+    expect(body).not.containSelector('#email-header')
   })
 
-  it('should not render card brand if no permission', function () {
+  it('should not render card brand if no permission', () => {
     const templateData = {
       'results': [
         buildTransaction(100, '£50.00', 'Success', 'success', 'Visa', 'example1@mail.fake'),
@@ -203,11 +206,11 @@ describe('The transaction list view', function () {
 
     const body = renderTemplate('transactions/index', templateData)
 
-    body.should.not.containSelector('#transactions-list .brand')
-    body.should.not.containSelector('#brand-header')
+    expect(body).not.containSelector('#transactions-list .brand')
+    expect(body).not.containSelector('#brand-header')
   })
 
-  it('should render all transactions with corporate surcharge', function () {
+  it('should render all transactions with corporate surcharge', () => {
     const templateData = {
       'results': [
         buildTransaction(102, '£20.00', 'Refund success', 'success', 'Amex', 'example3@mail.fake', true),
@@ -229,7 +232,7 @@ describe('The transaction list view', function () {
     const body = renderTemplate('transactions/index', templateData)
 
     templateData.results.forEach(function (transactionData, ix) {
-      body.should.containSelector('table#transactions-list')
+      expect(body).containSelector('table#transactions-list')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.results[ix].reference)
         .withTableDataAt(2, templateData.results[ix].email)
@@ -238,6 +241,6 @@ describe('The transaction list view', function () {
         .withTableDataAt(5, templateData.results[ix].state_friendly)
         .withTableDataAt(6, templateData.results[ix].created)
     })
-    body.should.containSelector('#download-transactions-link')
+    expect(body).containSelector('#download-transactions-link')
   })
 })

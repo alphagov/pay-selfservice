@@ -1,7 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
-const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 const serviceFixtures = require('../../../fixtures/service.fixtures')
@@ -10,11 +8,10 @@ const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
 const Service = require('../../../../app/models/Service.class')
 
 const mockResponse = {}
+jest.mock('../../services/service.service', () => mockServiceService);
+jest.mock('../../utils/response', () => mockResponse);
 const getController = function getController (mockServiceService) {
-  return proxyquire('../../../../app/controllers/edit-merchant-details/post-edit.controller', {
-    '../../services/service.service': mockServiceService,
-    '../../utils/response': mockResponse
-  })
+  return require('../../../../app/controllers/edit-merchant-details/post-edit.controller');
 }
 
 const setupMocks = () => {
@@ -69,7 +66,7 @@ describe('edit merchant details controller - post', () => {
     let mockServiceService
     let req
     let res
-    before(async function () {
+    beforeAll(async () => {
       res = setupMocks()
       req = {
         correlationId,
@@ -130,15 +127,15 @@ describe('edit merchant details controller - post', () => {
           'value': countryGB
         }
       ]
-      expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).to.equal(true)
+      expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).toBe(true)
     })
 
     it('should redirect back to the index page', () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.index, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.index, serviceExternalId))).toBe(true)
     })
 
     it('should set the success notification in the session', () => {
-      expect(req.flash.calledWith('generic', 'Organisation details updated')).to.equal(true)
+      expect(req.flash.calledWith('generic', 'Organisation details updated')).toBe(true)
     })
   })
 
@@ -146,7 +143,7 @@ describe('edit merchant details controller - post', () => {
     let mockServiceService
     let req
     let res
-    before(async function () {
+    beforeAll(async () => {
       const service = buildServiceModel(serviceExternalId)
       service.hasDirectDebitGatewayAccount = true
 
@@ -216,15 +213,15 @@ describe('edit merchant details controller - post', () => {
           'value': validEmail
         }
       ]
-      expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).to.equal(true)
+      expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).toBe(true)
     })
 
     it('should redirect back to the index page', () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.index, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.index, serviceExternalId))).toBe(true)
     })
 
     it('should set the success notification in the session', () => {
-      expect(req.flash.calledWith('generic', 'Organisation details updated')).to.equal(true)
+      expect(req.flash.calledWith('generic', 'Organisation details updated')).toBe(true)
     })
   })
 
@@ -232,7 +229,7 @@ describe('edit merchant details controller - post', () => {
     let mockServiceService
     let req
     let res
-    before(async function () {
+    beforeAll(async () => {
       res = setupMocks()
       req = {
         correlationId,
@@ -256,12 +253,12 @@ describe('edit merchant details controller - post', () => {
     })
 
     it(`should redirect back to the page`, () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).toBe(true)
     })
 
     it(`should the errors in the session`, () => {
-      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+      expect(req.session.pageData.editMerchantDetails.success).toBe(false) // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).toEqual({
         'merchant-name': 'This field cannot be blank',
         'telephone-number': 'Enter a telephone number',
         'address-line1': 'This field cannot be blank',
@@ -276,7 +273,7 @@ describe('edit merchant details controller - post', () => {
     let mockServiceService
     let req
     let res
-    before(async function () {
+    beforeAll(async () => {
       const service = buildServiceModel(serviceExternalId)
       service.hasDirectDebitGatewayAccount = true
 
@@ -303,12 +300,12 @@ describe('edit merchant details controller - post', () => {
     })
 
     it(`should redirect back to the page`, () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).toBe(true)
     })
 
     it(`should the errors in the session`, () => {
-      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+      expect(req.session.pageData.editMerchantDetails.success).toBe(false) // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).toEqual({
         'merchant-name': 'This field cannot be blank',
         'address-line1': 'This field cannot be blank',
         'address-city': 'This field cannot be blank',
@@ -324,7 +321,7 @@ describe('edit merchant details controller - post', () => {
     let mockServiceService
     let req
     let res
-    before(async function () {
+    beforeAll(async () => {
       res = setupMocks()
       req = {
         correlationId,
@@ -348,12 +345,12 @@ describe('edit merchant details controller - post', () => {
     })
 
     it(`should redirect back to the page`, () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).toBe(true)
     })
 
     it(`should set errors in the session`, () => {
-      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+      expect(req.session.pageData.editMerchantDetails.success).toBe(false) // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).toEqual({
         'address-postcode': 'Please enter a real postcode'
       })
     })
@@ -362,7 +359,7 @@ describe('edit merchant details controller - post', () => {
     let mockServiceService
     let req
     let res
-    before(async function () {
+    beforeAll(async () => {
       const service = buildServiceModel(serviceExternalId)
 
       res = setupMocks()
@@ -387,11 +384,11 @@ describe('edit merchant details controller - post', () => {
       await controller(req, res)
     })
     it(`should redirect back to the page`, () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).toBe(true)
     })
     it(`should set errors in the session`, () => {
-      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+      expect(req.session.pageData.editMerchantDetails.success).toBe(false) // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).toEqual({
         'telephone-number': 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
       })
     })
@@ -400,7 +397,7 @@ describe('edit merchant details controller - post', () => {
     let mockServiceService
     let req
     let res
-    before(async function () {
+    beforeAll(async () => {
       const service = buildServiceModel(serviceExternalId)
       service.hasDirectDebitGatewayAccount = true
 
@@ -427,12 +424,12 @@ describe('edit merchant details controller - post', () => {
     })
 
     it(`should redirect back to the page`, () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).toBe(true)
     })
 
     it(`should set errors in the session`, () => {
-      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+      expect(req.session.pageData.editMerchantDetails.success).toBe(false) // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).toEqual({
         'merchant-email': 'Please use a valid email address'
       })
     })
@@ -441,7 +438,7 @@ describe('edit merchant details controller - post', () => {
     let mockServiceService
     let req
     let res
-    before(async function () {
+    beforeAll(async () => {
       const service = buildServiceModel(serviceExternalId)
       service.hasDirectDebitGatewayAccount = true
 
@@ -468,7 +465,7 @@ describe('edit merchant details controller - post', () => {
     })
 
     it('should render error page', () => {
-      expect(mockResponse.renderErrorView.called).to.equal(true)
+      expect(mockResponse.renderErrorView.called).toBe(true)
     })
   })
 })

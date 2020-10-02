@@ -1,10 +1,9 @@
 const path = require('path')
 const sinon = require('sinon')
-const { expect } = require('chai')
 const healthCheckController = require(path.join(__dirname, '/../../../app/controllers/healthcheck.controller.js'))
 
-describe('Healthcheck controller', function () {
-  it('should return healthy', function (done) {
+describe('Healthcheck controller', () => {
+  it('should return healthy', done => {
     let setHeaderStub = sinon.stub()
     let jsonStub = sinon.stub()
     let res = {
@@ -16,8 +15,8 @@ describe('Healthcheck controller', function () {
     }
 
     healthCheckController.healthcheck(req, res)
-    expect(setHeaderStub.calledWith('Content-Type', 'application/json')).to.be.equal(true)
-    expect(jsonStub.calledWith({ 'ping': { 'healthy': true } })).to.be.equal(true)
+    expect(setHeaderStub.calledWith('Content-Type', 'application/json')).toBe(true)
+    expect(jsonStub.calledWith({ 'ping': { 'healthy': true } })).toBe(true)
     done()
   })
 })

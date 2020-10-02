@@ -1,6 +1,5 @@
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
-const { expect } = require('chai')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -12,7 +11,7 @@ let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}`
 const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const existingServiceExternalId = 'cp5wa'
 
-describe('adminusers client - update user service role', function () {
+describe('adminusers client - update user service role', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -23,8 +22,8 @@ describe('adminusers client - update user service role', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('update user service role API - success', () => {
     let role = 'view-and-refund'
@@ -37,7 +36,7 @@ describe('adminusers client - update user service role', function () {
       }]
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
           .withState(`a service exists with external id ${existingServiceExternalId} with multiple admin users`)
@@ -52,12 +51,12 @@ describe('adminusers client - update user service role', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update service role of a user successfully', function () {
+    it('should update service role of a user successfully', () => {
       let requestData = request.getPlain()
       return adminusersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, requestData.role_name).then(function (updatedUser) {
         const updatedServiceRole = updatedUser.serviceRoles.find(serviceRole => serviceRole.service.externalId === existingServiceExternalId)
-        expect(updatedServiceRole.role.name).to.be.equal(role)
-      })
+        expect(updatedServiceRole.role.name).toBe(role)
+      });
     })
   })
 
@@ -66,7 +65,7 @@ describe('adminusers client - update user service role', function () {
     let request = userFixtures.validUpdateServiceRoleRequest(role)
     let externalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${externalId}/services/${existingServiceExternalId}`)
           .withUponReceiving('an update service role request for non-existent user')
@@ -80,21 +79,24 @@ describe('adminusers client - update user service role', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error not found for non existent user when updating service role', function () {
-      let requestData = request.getPlain()
-      return adminusersClient.updateServiceRole(externalId, existingServiceExternalId, requestData.role_name)
-        .then(
-          () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
-    })
+    it(
+      'should error not found for non existent user when updating service role',
+      () => {
+        let requestData = request.getPlain()
+        return adminusersClient.updateServiceRole(externalId, existingServiceExternalId, requestData.role_name)
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.errorCode).toBe(404)
+          );
+      }
+    )
   })
 
   describe('update user service role API - user does not belong to service', () => {
     let role = 'admin'
     let request = userFixtures.validUpdateServiceRoleRequest(role)
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
           .withState(`a user exists external id ${existingUserExternalId} and a service exists with external id ${existingServiceExternalId}`)
@@ -108,21 +110,24 @@ describe('adminusers client - update user service role', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error conflict if user does not have access to the given service id', function () {
-      let requestData = request.getPlain()
-      return adminusersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, requestData.role_name)
-        .then(
-          () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(409)
-        )
-    })
+    it(
+      'should error conflict if user does not have access to the given service id',
+      () => {
+        let requestData = request.getPlain()
+        return adminusersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, requestData.role_name)
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.errorCode).toBe(409)
+          );
+      }
+    )
   })
 
   describe('update user service role API - minimum no of admin limit reached', () => {
     let role = 'view-and-refund'
     let request = userFixtures.validUpdateServiceRoleRequest(role)
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
           .withState(`a user exists with external id ${existingUserExternalId} with admin role for service with id ${existingServiceExternalId}`)
@@ -136,13 +141,16 @@ describe('adminusers client - update user service role', function () {
 
     afterEach(() => provider.verify())
 
-    it('should error precondition failed, if number of remaining admins for the service is going to be less than 1', function () {
-      let requestData = request.getPlain()
-      return adminusersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, requestData.role_name)
-        .then(
-          () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(412)
-        )
-    })
+    it(
+      'should error precondition failed, if number of remaining admins for the service is going to be less than 1',
+      () => {
+        let requestData = request.getPlain()
+        return adminusersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, requestData.role_name)
+          .then(
+            () => { throw new Error('Expected to reject') },
+            err => expect(err.errorCode).toBe(412)
+          );
+      }
+    )
   })
 })

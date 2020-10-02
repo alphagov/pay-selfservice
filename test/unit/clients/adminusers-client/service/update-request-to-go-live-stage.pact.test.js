@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -16,7 +15,7 @@ const serviceExternalId = 'cp5wa'
 
 // Global setup
 
-describe('adminusers client - patch request to go live stage', function () {
+describe('adminusers client - patch request to go live stage', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -27,8 +26,8 @@ describe('adminusers client - patch request to go live stage', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('patch request to go live stage', () => {
     const value = 'ENTERED_ORGANISATION_NAME'
@@ -38,7 +37,7 @@ describe('adminusers client - patch request to go live stage', function () {
       current_go_live_stage: 'ENTERED_ORGANISATION_NAME'
     })
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
           .withUponReceiving('a valid patch current go live stage request')
@@ -55,12 +54,12 @@ describe('adminusers client - patch request to go live stage', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update successfully', function () {
+    it('should update successfully', () => {
       return adminusersClient.updateCurrentGoLiveStage(serviceExternalId, 'ENTERED_ORGANISATION_NAME')
         .then(service => {
-          expect(service.externalId).to.equal(serviceExternalId)
-          expect(service.currentGoLiveStage).to.equal('ENTERED_ORGANISATION_NAME')
-        })
+          expect(service.externalId).toBe(serviceExternalId)
+          expect(service.currentGoLiveStage).toBe('ENTERED_ORGANISATION_NAME')
+        });
     })
   })
 })

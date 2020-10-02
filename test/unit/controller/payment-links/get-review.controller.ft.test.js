@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
@@ -15,7 +14,7 @@ const GATEWAY_ACCOUNT_ID = '929'
 describe('Create payment link review controller', () => {
   describe('when landing here after completing journey', () => {
     let result, $, session
-    before(done => {
+    beforeAll(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{
@@ -40,36 +39,48 @@ describe('Create payment link review controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should return a statusCode of 200', () => {
-      expect(result.statusCode).to.equal(200)
+      expect(result.statusCode).toBe(200)
     })
 
-    it(`should include a cancel link linking to the Create payment link index`, () => {
-      expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.start)
-    })
+    it(
+      `should include a cancel link linking to the Create payment link index`,
+      () => {
+        expect($('.cancel').attr('href')).toBe(paths.paymentLinks.start)
+      }
+    )
 
     it(`should include link to change title`, () => {
-      expect($('.govuk-summary-list__row:nth-child(1) a').attr('href')).to.equal(`${paths.paymentLinks.information}?field=payment-link-title`)
+      expect($('.govuk-summary-list__row:nth-child(1) a').attr('href')).toBe(`${paths.paymentLinks.information}?field=payment-link-title`)
     })
 
     it(`should include link to change description`, () => {
-      expect($('.govuk-summary-list__row:nth-child(2) a').attr('href')).to.equal(`${paths.paymentLinks.information}?field=payment-link-description`)
+      expect($('.govuk-summary-list__row:nth-child(2) a').attr('href')).toBe(`${paths.paymentLinks.information}?field=payment-link-description`)
     })
 
     it(`should display the Title in the definition list`, () =>
-      expect($(`.govuk-summary-list__row:nth-child(1) .govuk-summary-list__value`).text()).to.contain(session.pageData.createPaymentLink.paymentLinkTitle)
-    )
+      expect(
+        $(`.govuk-summary-list__row:nth-child(1) .govuk-summary-list__value`).text()
+      ).toEqual(
+        expect.arrayContaining([session.pageData.createPaymentLink.paymentLinkTitle])
+      ))
 
     it(`should display some details in the definition list`, () =>
-      expect($(`.govuk-summary-list__row:nth-child(2) .govuk-summary-list__value`).text()).to.contain(session.pageData.createPaymentLink.paymentLinkDescription)
-    )
+      expect(
+        $(`.govuk-summary-list__row:nth-child(2) .govuk-summary-list__value`).text()
+      ).toEqual(
+        expect.arrayContaining([session.pageData.createPaymentLink.paymentLinkDescription])
+      ))
 
     it(`should display the reference in the definition list`, () =>
-      expect($(`.govuk-summary-list__row:nth-child(3) .govuk-summary-list__value`).text()).to.contain(session.pageData.createPaymentLink.paymentReferenceLabel)
-    )
+      expect(
+        $(`.govuk-summary-list__row:nth-child(3) .govuk-summary-list__value`).text()
+      ).toEqual(
+        expect.arrayContaining([session.pageData.createPaymentLink.paymentReferenceLabel])
+      ))
   })
 })

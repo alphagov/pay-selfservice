@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -30,14 +29,14 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('google pay toggle - supported payment provider request', () => {
     const googlePayToggleSupportedPaymentProviderState =
       `a gateway account supporting digital wallet with external id ${existingGatewayAccountId} exists in the database`
 
-    before(() => {
+    beforeAll(() => {
       return provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
           .withUponReceiving('a valid patch google pay toggle (enabled) request')
@@ -59,7 +58,7 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
   describe('google pay toggle with unsupported payment provider request', () => {
     const googlePayToggleUnsupportedPaymentProviderState = `User ${existingGatewayAccountId} exists in the database`
 
-    before(() => {
+    beforeAll(() => {
       return provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
           .withUponReceiving('a valid patch google pay toggle (enabled) request')
@@ -76,8 +75,8 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
       return connectorClient.toggleGooglePay(existingGatewayAccountId, true, null)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(400)
-        )
+          err => expect(err.errorCode).toBe(400)
+        );
     })
   })
 })

@@ -4,7 +4,6 @@ const supertest = require('supertest')
 const nock = require('nock')
 const csrf = require('csrf')
 const cheerio = require('cheerio')
-const { expect } = require('chai')
 
 const { getApp } = require('../../../../server')
 const { getMockSession, getUser, createAppWithSession } = require('../../../test-helpers/mock-session')
@@ -44,7 +43,7 @@ const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_
 describe('test with your users - submit controller', () => {
   describe('when it is called on a gateway account that is from a payment provider other than sandbox', () => {
     let session, response, $
-    before(done => {
+    beforeAll(done => {
       session = getMockSession(VALID_USER)
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'worldpay'
@@ -59,26 +58,29 @@ describe('test with your users - submit controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should respond with a code of 403: forbidden', () => {
-      expect(response.statusCode).to.equal(403)
+      expect(response.statusCode).toBe(403)
     })
 
     it('should show the error page', () => {
-      expect($('.page-title').text()).to.equal('An error occurred:')
+      expect($('.page-title').text()).toBe('An error occurred:')
     })
 
-    it('should inform the user that this page is only available via sandbox', () => {
-      expect($('#errorMsg').text()).to.equal('This page is only available on Sandbox accounts')
-    })
+    it(
+      'should inform the user that this page is only available via sandbox',
+      () => {
+        expect($('#errorMsg').text()).toBe('This page is only available on Sandbox accounts')
+      }
+    )
   })
   describe('when it is called with valid inputs', () => {
     describe('and it successfully creates both an API token and a product', () => {
       let session, response, $
-      before(done => {
+      beforeAll(done => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, { token: API_TOKEN })
@@ -96,29 +98,32 @@ describe('test with your users - submit controller', () => {
             done(err)
           })
       })
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('should respond with code 200', () => {
-        expect(response.statusCode).to.equal(200)
+        expect(response.statusCode).toBe(200)
       })
 
       it('should show the prototype link returned from the products api', () => {
         const prototypeLink = $('#prototyping__links-link-create-payment')
         const url = VALID_CREATE_PRODUCT_RESPONSE._links.find(link => link.rel === 'pay').href
-        expect(prototypeLink.attr('href')).to.equal(url)
-        expect(prototypeLink.text()).to.equal(url)
+        expect(prototypeLink.attr('href')).toBe(url)
+        expect(prototypeLink.text()).toBe(url)
       })
 
-      it('should have a back link and a button that link back to the links page', () => {
-        expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoService.links)
-        expect($('#see-prototype-links').attr('href')).to.equal(paths.prototyping.demoService.links)
-      })
+      it(
+        'should have a back link and a button that link back to the links page',
+        () => {
+          expect($('.govuk-back-link').attr('href')).toBe(paths.prototyping.demoService.links)
+          expect($('#see-prototype-links').attr('href')).toBe(paths.prototyping.demoService.links)
+        }
+      )
     })
     describe('but it is unable to create an API token', () => {
       let session, response
-      before(done => {
+      beforeAll(done => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .replyWithError('Somet nasty happened')
@@ -133,27 +138,27 @@ describe('test with your users - submit controller', () => {
             done(err)
           })
       })
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('should redirect with code 302', () => {
-        expect(response.statusCode).to.equal(302)
+        expect(response.statusCode).toBe(302)
       })
 
       it('should redirect to the create prototype link page', () => {
-        expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+        expect(response.header).to.have.property('location').toBe(paths.prototyping.demoService.create)
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
-        expect(session.flash).to.have.property('genericError')
-        expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again or contact support.')
+        expect(session.flash).toHaveProperty('genericError')
+        expect(session.flash.genericError.length).toBe(1)
+        expect(session.flash.genericError[0]).toBe('Something went wrong. Please try again or contact support.')
       })
     })
     describe('but it is unable to create a product', () => {
       let session, response
-      before(done => {
+      beforeAll(done => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, { token: API_TOKEN })
@@ -171,21 +176,21 @@ describe('test with your users - submit controller', () => {
             done(err)
           })
       })
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
       it('should redirect with code 302', () => {
-        expect(response.statusCode).to.equal(302)
+        expect(response.statusCode).toBe(302)
       })
 
       it('should redirect to the create prototype link page', () => {
-        expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+        expect(response.header).to.have.property('location').toBe(paths.prototyping.demoService.create)
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
-        expect(session.flash).to.have.property('genericError')
-        expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again or contact support.')
+        expect(session.flash).toHaveProperty('genericError')
+        expect(session.flash.genericError.length).toBe(1)
+        expect(session.flash.genericError[0]).toBe('Something went wrong. Please try again or contact support.')
       })
     })
   })
@@ -193,13 +198,13 @@ describe('test with your users - submit controller', () => {
     describe('and the amount is invalid', () => {
       describe('because the value includes text', () => {
         let result, session, app
-        before('Arrange', () => {
+        beforeAll(() => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
 
-        before('Act', done => {
+        beforeAll(done => {
           supertest(app)
             .post(paths.prototyping.demoService.confirm)
             .send(Object.assign({}, VALID_PAYLOAD, {
@@ -211,31 +216,33 @@ describe('test with your users - submit controller', () => {
             })
         })
 
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should redirect with a statusCode of 302', () => {
-          expect(result.statusCode).to.equal(302)
+          expect(result.statusCode).toBe(302)
         })
         it('should redirect to the create prototype link page', () => {
-          expect(result.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+          expect(result.header).to.have.property('location').toBe(paths.prototyping.demoService.create)
         })
         it('should add a relevant error message to the session \'flash\'', () => {
-          expect(session.flash).to.have.property('genericError')
-          expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+          expect(session.flash).toHaveProperty('genericError')
+          expect(session.flash.genericError.length).toBe(1)
+          expect(session.flash.genericError[0]).toBe(
+            'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
+          )
         })
       })
       describe('because the value has too many digits to the right of the decimal point', () => {
         let result, session, app
-        before('Arrange', () => {
+        beforeAll(() => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
 
-        before('Act', done => {
+        beforeAll(done => {
           supertest(app)
             .post(paths.prototyping.demoService.confirm)
             .send(Object.assign({}, VALID_PAYLOAD, {
@@ -247,31 +254,33 @@ describe('test with your users - submit controller', () => {
             })
         })
 
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should redirect with a statusCode of 302', () => {
-          expect(result.statusCode).to.equal(302)
+          expect(result.statusCode).toBe(302)
         })
         it('should redirect to the create prototype link page', () => {
-          expect(result.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+          expect(result.header).to.have.property('location').toBe(paths.prototyping.demoService.create)
         })
         it('should add a relevant error message to the session \'flash\'', () => {
-          expect(session.flash).to.have.property('genericError')
-          expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+          expect(session.flash).toHaveProperty('genericError')
+          expect(session.flash.genericError.length).toBe(1)
+          expect(session.flash.genericError[0]).toBe(
+            'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
+          )
         })
       })
       describe('because the value exceeds 100,000', () => {
         let result, session, app
-        before('Arrange', () => {
+        beforeAll(() => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
 
-        before('Act', done => {
+        beforeAll(done => {
           supertest(app)
             .post(paths.prototyping.demoService.confirm)
             .send(Object.assign({}, VALID_PAYLOAD, {
@@ -283,26 +292,26 @@ describe('test with your users - submit controller', () => {
             })
         })
 
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should redirect with a statusCode of 302', () => {
-          expect(result.statusCode).to.equal(302)
+          expect(result.statusCode).toBe(302)
         })
         it('should redirect to the create prototype link page', () => {
-          expect(result.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+          expect(result.header).to.have.property('location').toBe(paths.prototyping.demoService.create)
         })
         it('should add a relevant error message to the session \'flash\'', () => {
-          expect(session.flash).to.have.property('genericError')
-          expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('Enter an amount under £100,000')
+          expect(session.flash).toHaveProperty('genericError')
+          expect(session.flash.genericError.length).toBe(1)
+          expect(session.flash.genericError[0]).toBe('Enter an amount under £100,000')
         })
       })
     })
     describe('and the confirmation page link is not https://', () => {
       let session, response
-      before(done => {
+      beforeAll(done => {
         session = getMockSession(VALID_USER)
         const app = createAppWithSession(getApp(), session)
         nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
@@ -319,22 +328,22 @@ describe('test with your users - submit controller', () => {
       })
 
       it('should redirect with code 302', () => {
-        expect(response.statusCode).to.equal(302)
+        expect(response.statusCode).toBe(302)
       })
 
       it('should redirect to the create prototype link page', () => {
-        expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+        expect(response.header).to.have.property('location').toBe(paths.prototyping.demoService.create)
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
-        expect(session.flash).to.have.property('genericError')
-        expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('URL must begin with https://')
+        expect(session.flash).toHaveProperty('genericError')
+        expect(session.flash.genericError.length).toBe(1)
+        expect(session.flash.genericError[0]).toBe('URL must begin with https://')
       })
     })
     describe('and the description is empty', () => {
       let session, response
-      before(done => {
+      beforeAll(done => {
         session = getMockSession(VALID_USER)
         const app = createAppWithSession(getApp(), session)
         const payload = Object.assign({}, VALID_PAYLOAD)
@@ -351,22 +360,22 @@ describe('test with your users - submit controller', () => {
             done(err)
           })
       })
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('should redirect with code 302', () => {
-        expect(response.statusCode).to.equal(302)
+        expect(response.statusCode).toBe(302)
       })
 
       it('should redirect to the create prototype link page', () => {
-        expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+        expect(response.header).to.have.property('location').toBe(paths.prototyping.demoService.create)
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
-        expect(session.flash).to.have.property('genericError')
-        expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('Enter a description')
+        expect(session.flash).toHaveProperty('genericError')
+        expect(session.flash.genericError.length).toBe(1)
+        expect(session.flash.genericError[0]).toBe('Enter a description')
       })
     })
   })

@@ -1,6 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
 const sinon = require('sinon')
 
 const paths = require('../../../paths')
@@ -57,16 +56,19 @@ describe('get controller', () => {
     sinon.assert.calledWith(res.redirect, 303, paths.stripeSetup.companyNumber)
   })
 
-  it('should render go live complete page when all steps are completed', async () => {
-    req.account.connectorGatewayAccountStripeProgress = {
-      bankAccount: true,
-      responsiblePerson: true,
-      vatNumber: true,
-      companyNumber: true
+  it(
+    'should render go live complete page when all steps are completed',
+    async () => {
+      req.account.connectorGatewayAccountStripeProgress = {
+        bankAccount: true,
+        responsiblePerson: true,
+        vatNumber: true,
+        companyNumber: true
+      }
+      getController(req, res)
+      sinon.assert.calledWith(res.render, 'stripe-setup/go-live-complete')
     }
-    getController(req, res)
-    sinon.assert.calledWith(res.render, 'stripe-setup/go-live-complete')
-  })
+  )
 
   it('should render an error page when req.account is undefined', done => {
     req.account = undefined
@@ -74,21 +76,24 @@ describe('get controller', () => {
     getController(req, res)
 
     setTimeout(() => {
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
+      expect(res.status.calledWith(500)).toBe(true) // eslint-disable-line
+      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).toBe(true) // eslint-disable-line
       done()
     }, 250)
   })
 
-  it('should render an error page when req.account.connectorGatewayAccountStripeProgress is undefined', done => {
-    req.account.connectorGatewayAccountStripeProgress = undefined
+  it(
+    'should render an error page when req.account.connectorGatewayAccountStripeProgress is undefined',
+    done => {
+      req.account.connectorGatewayAccountStripeProgress = undefined
 
-    getController(req, res)
+      getController(req, res)
 
-    setTimeout(() => {
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
-  })
+      setTimeout(() => {
+        expect(res.status.calledWith(500)).toBe(true) // eslint-disable-line
+        expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).toBe(true) // eslint-disable-line
+        done()
+      }, 250)
+    }
+  )
 })

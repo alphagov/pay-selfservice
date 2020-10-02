@@ -6,9 +6,9 @@ let states = require('../../../app/utils/states')
 const { expect } = chai
 chai.use(assertArrays)
 
-describe('states', function () {
-  describe('new states', function () {
-    it('should get unique display states for states dropdown', function () {
+describe('states', () => {
+  describe('new states', () => {
+    it('should get unique display states for states dropdown', () => {
       const allDisplayStates = states.allDisplayStates()
       expect(allDisplayStates.length).to.be.equal(9)
       expect(allDisplayStates).to.be.containingAllOf([
@@ -16,36 +16,42 @@ describe('states', function () {
         'Refund submitted', 'Refund error', 'Refund success'])
     })
 
-    it('should get connector states from In progress display state', function () {
-      const connectorStatesResult = states.displayStatesToConnectorStates(['In progress'])
-      expect(connectorStatesResult.payment_states.length).to.be.equal(4)
-      expect(connectorStatesResult.payment_states).to.be.containingAllOf(['created', 'started', 'submitted'])
-      expect(connectorStatesResult.refund_states.length).to.be.equal(0)
-    })
+    it(
+      'should get connector states from In progress display state',
+      () => {
+        const connectorStatesResult = states.displayStatesToConnectorStates(['In progress'])
+        expect(connectorStatesResult.payment_states.length).to.be.equal(4)
+        expect(connectorStatesResult.payment_states).to.be.containingAllOf(['created', 'started', 'submitted'])
+        expect(connectorStatesResult.refund_states.length).to.be.equal(0)
+      }
+    )
 
-    it('should get connector states from Cancelled display state', function () {
+    it('should get connector states from Cancelled display state', () => {
       const connectorStatesResult = states.displayStatesToConnectorStates(['Cancelled'])
       expect(connectorStatesResult.payment_states.length).to.be.equal(1)
       expect(connectorStatesResult.payment_states).to.be.containingAllOf(['cancelled'])
       expect(connectorStatesResult.refund_states.length).to.be.equal(0)
     })
 
-    it('should get connector states from refunds display states', function () {
+    it('should get connector states from refunds display states', () => {
       const connectorStatesResult = states.displayStatesToConnectorStates(['Refund success', 'Refund error', 'Refund submitted'])
       expect(connectorStatesResult.refund_states.length).to.be.equal(3)
       expect(connectorStatesResult.refund_states).to.be.containingAllOf(['submitted', 'error', 'success'])
       expect(connectorStatesResult.payment_states.length).to.be.equal(0)
     })
 
-    it('should get connector states from all possible display states', function () {
-      const connectorStatesResult = states.displayStatesToConnectorStates(['In progress', 'Success', 'Error', 'Declined', 'Timed out', 'Cancelled', 'Refund success', 'Refund error', 'Refund submitted'])
-      expect(connectorStatesResult.payment_states.length).to.be.equal(9)
-      expect(connectorStatesResult.payment_states).to.be.containingAllOf(['created', 'started', 'submitted', 'success', 'error', 'declined', 'timedout', 'cancelled'])
-      expect(connectorStatesResult.refund_states.length).to.be.equal(3)
-      expect(connectorStatesResult.refund_states).to.be.containingAllOf(['submitted', 'error', 'success'])
-    })
+    it(
+      'should get connector states from all possible display states',
+      () => {
+        const connectorStatesResult = states.displayStatesToConnectorStates(['In progress', 'Success', 'Error', 'Declined', 'Timed out', 'Cancelled', 'Refund success', 'Refund error', 'Refund submitted'])
+        expect(connectorStatesResult.payment_states.length).to.be.equal(9)
+        expect(connectorStatesResult.payment_states).to.be.containingAllOf(['created', 'started', 'submitted', 'success', 'error', 'declined', 'timedout', 'cancelled'])
+        expect(connectorStatesResult.refund_states.length).to.be.equal(3)
+        expect(connectorStatesResult.refund_states).to.be.containingAllOf(['submitted', 'error', 'success'])
+      }
+    )
 
-    it('should convert to correct display state selector objects', function () {
+    it('should convert to correct display state selector objects', () => {
       const allDisplayStates = states.allDisplayStates()
       const allDisplayStateSelectors = states.allDisplayStateSelectorObjects()
       expect(allDisplayStateSelectors.length).to.be.equal(9)
@@ -54,7 +60,7 @@ describe('states', function () {
       })
     })
 
-    it('should get display name for connector state', function () {
+    it('should get display name for connector state', () => {
       expect(states.getDisplayNameForConnectorState({ status: 'capturable' })).to.equal('In progress')
       expect(states.getDisplayNameForConnectorState({ status: 'submitted' })).to.equal('In progress')
       expect(states.getDisplayNameForConnectorState({ status: 'created' })).to.equal('In progress')
@@ -95,7 +101,7 @@ describe('states', function () {
       expect(states.getDisplayNameForConnectorState({ status: 'submitted' }, 'refund')).to.equal('Refund submitted')
     })
 
-    it('should get event display name for connector state', function () {
+    it('should get event display name for connector state', () => {
       expect(states.getEventDisplayNameForConnectorState({ status: 'capturable' }, 'payment')).to.equal('Capturable')
       expect(states.getEventDisplayNameForConnectorState({ status: 'submitted' }, 'payment')).to.equal('Submitted')
       expect(states.getEventDisplayNameForConnectorState({ status: 'submitted' }, 'PAYMENT')).to.equal('Submitted')

@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -18,7 +17,7 @@ const connectorClient = new Connector(`http://localhost:${port}`)
 const existingGatewayAccountId = 42
 const defaultState = `Gateway account ${existingGatewayAccountId} exists in the database`
 
-describe('connector client - patch email collection mode', function () {
+describe('connector client - patch email collection mode', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
@@ -29,14 +28,14 @@ describe('connector client - patch email collection mode', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('patch email collection mode - mandatory', () => {
     const validGatewayAccountEmailCollectionModeRequest =
       gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest('MANDATORY')
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
           .withUponReceiving('a valid patch email collection mode (mandatory) request')
@@ -52,13 +51,13 @@ describe('connector client - patch email collection mode', function () {
 
     afterEach(() => provider.verify())
 
-    it('should set email collection mode to mandatory', function (done) {
+    it('should set email collection mode to mandatory', done => {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         payload: validGatewayAccountEmailCollectionModeRequest.getPlain()
       }
       connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
-        expect(connectorResponse.statusCode).to.equal(200)
+        expect(connectorResponse.statusCode).toBe(200)
         done()
       })
     })
@@ -68,7 +67,7 @@ describe('connector client - patch email collection mode', function () {
     const validGatewayAccountEmailCollectionModeRequest =
       gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest('OPTIONAL')
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
           .withUponReceiving('a valid patch email collection mode (optional) request')
@@ -84,13 +83,13 @@ describe('connector client - patch email collection mode', function () {
 
     afterEach(() => provider.verify())
 
-    it('should set email collection mode to optional', function (done) {
+    it('should set email collection mode to optional', done => {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         payload: validGatewayAccountEmailCollectionModeRequest.getPlain()
       }
       connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
-        expect(connectorResponse.statusCode).to.equal(200)
+        expect(connectorResponse.statusCode).toBe(200)
         done()
       })
     })
@@ -100,7 +99,7 @@ describe('connector client - patch email collection mode', function () {
     const validGatewayAccountEmailCollectionModeRequest =
       gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest('OFF')
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
           .withUponReceiving('a valid patch email collection mode (off) request')
@@ -116,13 +115,13 @@ describe('connector client - patch email collection mode', function () {
 
     afterEach(() => provider.verify())
 
-    it('should set email collection mode to mandatory', function (done) {
+    it('should set email collection mode to mandatory', done => {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         payload: validGatewayAccountEmailCollectionModeRequest.getPlain()
       }
       connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
-        expect(connectorResponse.statusCode).to.equal(200)
+        expect(connectorResponse.statusCode).toBe(200)
         done()
       })
     })

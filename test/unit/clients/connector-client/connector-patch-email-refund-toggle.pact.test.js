@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -18,7 +17,7 @@ const connectorClient = new Connector(`http://localhost:${port}`)
 const existingGatewayAccountId = 42
 const defaultState = `Gateway account ${existingGatewayAccountId} exists in the database`
 
-describe('connector client - patch email refund toggle', function () {
+describe('connector client - patch email refund toggle', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
@@ -29,13 +28,13 @@ describe('connector client - patch email refund toggle', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('patch email refund toggle - enabled', () => {
     const validGatewayAccountEmailRefundToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(true)
 
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/email-notification`)
           .withUponReceiving('a valid patch email refund toggle (enabled) request')
@@ -51,13 +50,13 @@ describe('connector client - patch email refund toggle', function () {
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', function (done) {
+    it('should toggle successfully', done => {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         payload: validGatewayAccountEmailRefundToggleRequest.getPlain()
       }
       connectorClient.updateRefundEmailEnabled(params, (connectorData, connectorResponse) => {
-        expect(connectorResponse.statusCode).to.equal(200)
+        expect(connectorResponse.statusCode).toBe(200)
         done()
       })
     })

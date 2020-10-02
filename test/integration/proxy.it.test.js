@@ -18,12 +18,12 @@ var httpProxy = require('http-proxy')
  *  (Although it's used only for internal communication)
  */
 
-describe('request.js client', function () {
+describe('request.js client', () => {
   var proxiedServer, proxyServer, nonProxiedServer,
     proxiedServerUrl, proxyUrl, nonProxiedServerUrl,
     nonProxiedServerPort
 
-  before(function () {
+  beforeAll(() => {
     // Disable logging.
     winston.level = 'none'
 
@@ -66,23 +66,23 @@ describe('request.js client', function () {
     })
   })
 
-  beforeEach(function () {
+  beforeEach(() => {
     process.env.HTTP_PROXY = proxyUrl
     process.env.NO_PROXY = 'localhost:' + nonProxiedServerPort
   })
 
-  afterEach(function () {
+  afterEach(() => {
     delete process.env.HTTP_PROXY
     delete process.env.NO_PROXY
   })
 
-  after(function () {
+  afterAll(() => {
     proxyServer.close()
     proxiedServer.close()
     nonProxiedServer.close()
   })
 
-  it('should proxy requests when HTTP_PROXY enabled', function (done) {
+  it('should proxy requests when HTTP_PROXY enabled', done => {
     var client = request.defaults({ json: true })
 
     client(proxiedServerUrl, function (error, response, body) {
@@ -93,7 +93,7 @@ describe('request.js client', function () {
     })
   })
 
-  it('should not proxy requests for NO_PROXY hosts', function (done) {
+  it('should not proxy requests for NO_PROXY hosts', done => {
     var client = request.defaults({ json: true })
 
     client(nonProxiedServerUrl, function (error, response, body) {

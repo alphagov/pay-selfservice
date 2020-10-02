@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const nock = require('nock')
 
 const { getApp } = require('../../../../server')
@@ -30,7 +29,7 @@ const PAYMENT = {
 describe('Manage payment links - delete controller', () => {
   describe('when the payment link and api token are successfully deleted', () => {
     let response, session
-    before(done => {
+    beforeAll(done => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
@@ -52,28 +51,28 @@ describe('Manage payment links - delete controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with code 302', () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage)
+      expect(response.header).to.have.property('location').toBe(paths.paymentLinks.manage)
     })
 
     it('should add a relevant generic message to the session \'flash\'', () => {
-      expect(session.flash).to.have.property('generic')
-      expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('The payment link was successfully deleted')
+      expect(session.flash).toHaveProperty('generic')
+      expect(session.flash.generic.length).toBe(1)
+      expect(session.flash.generic[0]).toBe('The payment link was successfully deleted')
     })
   })
 
   describe('when deleting the payment link fails but deleting token succeeds', () => {
     let response, session
-    before(done => {
+    beforeAll(done => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
@@ -96,28 +95,30 @@ describe('Manage payment links - delete controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with code 302', () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage)
+      expect(response.header).to.have.property('location').toBe(paths.paymentLinks.manage)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {
-      expect(session.flash).to.have.property('genericError')
-      expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('Something went wrong when deleting the payment link. Please try again or contact support.')
+      expect(session.flash).toHaveProperty('genericError')
+      expect(session.flash.genericError.length).toBe(1)
+      expect(session.flash.genericError[0]).toBe(
+        'Something went wrong when deleting the payment link. Please try again or contact support.'
+      )
     })
   })
 
   describe('when deleting the payment link succeeds but deleting token fails', () => {
     let response, session
-    before(done => {
+    beforeAll(done => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
@@ -137,28 +138,30 @@ describe('Manage payment links - delete controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with code 302', () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage)
+      expect(response.header).to.have.property('location').toBe(paths.paymentLinks.manage)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {
-      expect(session.flash).to.have.property('genericError')
-      expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('Something went wrong when deleting the payment link. Please try again or contact support.')
+      expect(session.flash).toHaveProperty('genericError')
+      expect(session.flash.genericError.length).toBe(1)
+      expect(session.flash.genericError[0]).toBe(
+        'Something went wrong when deleting the payment link. Please try again or contact support.'
+      )
     })
   })
 
   describe('when failing to fetch information about a product', () => {
     let response, session
-    before(done => {
+    beforeAll(done => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
@@ -180,22 +183,24 @@ describe('Manage payment links - delete controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with code 302', () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage)
+      expect(response.header).to.have.property('location').toBe(paths.paymentLinks.manage)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {
-      expect(session.flash).to.have.property('genericError')
-      expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('Something went wrong when deleting the payment link. Please try again or contact support.')
+      expect(session.flash).toHaveProperty('genericError')
+      expect(session.flash.genericError.length).toBe(1)
+      expect(session.flash.genericError[0]).toBe(
+        'Something went wrong when deleting the payment link. Please try again or contact support.'
+      )
     })
   })
 })

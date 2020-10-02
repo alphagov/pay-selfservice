@@ -1,4 +1,3 @@
-const { expect } = require('chai')
 const nock = require('nock')
 
 const payoutService = require('../../../app/controllers/payouts/payouts.service')
@@ -13,31 +12,37 @@ describe('payouts service list payouts helper', () => {
     nock.cleanAll()
   })
 
-  it('responds with grouped payouts given a well formed request and existing payouts', async () => {
-    const payouts = [
-      { gatewayAccountId, paidOutDate: '2019-01-29T08:00:00.000000Z' },
-      { gatewayAccountId, paidOutDate: '2019-01-29T09:00:00.000000Z' }
-    ]
-    ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
-      .reply(200, fixtures.validPayoutSearchResponse(payouts).getPlain())
+  it(
+    'responds with grouped payouts given a well formed request and existing payouts',
+    async () => {
+      const payouts = [
+        { gatewayAccountId, paidOutDate: '2019-01-29T08:00:00.000000Z' },
+        { gatewayAccountId, paidOutDate: '2019-01-29T09:00:00.000000Z' }
+      ]
+      ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
+        .reply(200, fixtures.validPayoutSearchResponse(payouts).getPlain())
 
-    const { groups, pages } = await payoutService.payouts([ gatewayAccountId ])
+      const { groups, pages } = await payoutService.payouts([ gatewayAccountId ])
 
-    expect(Object.keys(groups).length).to.equal(1)
-    expect(groups['2019-01-29'].entries.length).to.equal(2)
-    expect(pages.total).to.equal(2)
-    expect(pages.page).to.equal(1)
-  })
+      expect(Object.keys(groups).length).toBe(1)
+      expect(groups['2019-01-29'].entries.length).toBe(2)
+      expect(pages.total).toBe(2)
+      expect(pages.page).toBe(1)
+    }
+  )
 
-  it('responds with an empty well formed object given no payouts', async () => {
-    const payouts = []
-    ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
-      .reply(200, fixtures.validPayoutSearchResponse(payouts).getPlain())
+  it(
+    'responds with an empty well formed object given no payouts',
+    async () => {
+      const payouts = []
+      ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
+        .reply(200, fixtures.validPayoutSearchResponse(payouts).getPlain())
 
-    const { groups, pages } = await payoutService.payouts([ gatewayAccountId ])
+      const { groups, pages } = await payoutService.payouts([ gatewayAccountId ])
 
-    expect(groups).to.deep.equal({})
-    expect(pages.total).to.equal(0)
-    expect(pages.page).to.equal(1)
-  })
+      expect(groups).toEqual({})
+      expect(pages.total).toBe(0)
+      expect(pages.page).toBe(1)
+    }
+  )
 })

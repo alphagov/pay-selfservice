@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
@@ -15,7 +14,7 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 
 // Global setup
 
-describe('submit resend otp code API', function () {
+describe('submit resend otp code API', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
@@ -26,13 +25,13 @@ describe('submit resend otp code API', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     const validOtpResend = inviteFixtures.validResendOtpCodeRequest()
 
-    before((done) => {
+    beforeAll((done) => {
       const pactified = validOtpResend.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/resend`)
@@ -47,7 +46,7 @@ describe('submit resend otp code API', function () {
 
     afterEach(() => provider.verify())
 
-    it('should submit otp code resend successfully', function () {
+    it('should submit otp code resend successfully', () => {
       const registration = validOtpResend.getPlain()
 
       return adminusersClient.resendOtpCode(registration.code, registration.telephone_number)
@@ -59,7 +58,7 @@ describe('submit resend otp code API', function () {
     validOtpResend.code = ''
     const errorResponse = inviteFixtures.badRequestResponseWhenFieldsMissing(['code'])
 
-    before((done) => {
+    beforeAll((done) => {
       const pactified = validOtpResend.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/resend`)
@@ -75,24 +74,24 @@ describe('submit resend otp code API', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 400 on missing fields', function () {
+    it('should return 400 on missing fields', () => {
       const resendData = validOtpResend.getPlain()
       return adminusersClient.resendOtpCode(resendData.code, resendData.telephone_number)
         .then(
           () => { throw new Error('Expected to reject') },
           (err) => {
-            expect(err.errorCode).to.equal(400)
-            expect(err.message.errors.length).to.equal(1)
-            expect(err.message.errors[0]).to.equal('Field [code] is required')
+            expect(err.errorCode).toBe(400)
+            expect(err.message.errors.length).toBe(1)
+            expect(err.message.errors[0]).toBe('Field [code] is required')
           }
-        )
+        );
     })
   })
 
   describe('not found', () => {
     const validOtpResend = inviteFixtures.validResendOtpCodeRequest()
 
-    before((done) => {
+    beforeAll((done) => {
       const pactified = validOtpResend.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/resend`)
@@ -107,13 +106,13 @@ describe('submit resend otp code API', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 404 when code is not found/expired', function () {
+    it('should return 404 when code is not found/expired', () => {
       const resendData = validOtpResend.getPlain()
       return adminusersClient.resendOtpCode(resendData.code, resendData.telephone_number)
         .then(
           () => { throw new Error('Expected to reject') },
-          err => expect(err.errorCode).to.equal(404)
-        )
+          err => expect(err.errorCode).toBe(404)
+        );
     })
   })
 })

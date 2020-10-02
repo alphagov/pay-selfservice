@@ -27,13 +27,13 @@ function ledgerTransactionPathFor (transactionId) {
   return LEDGER_TRANSACTION_PATH.replace('{transactionId}', transactionId)
 }
 
-describe('The transaction view scenarios', function () {
-  afterEach(function () {
+describe('The transaction view scenarios', () => {
+  afterEach(() => {
     nock.cleanAll()
     app = null
   })
 
-  beforeEach(function (done) {
+  beforeEach(done => {
     let permissions = 'transactions-details:read'
     let user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
@@ -50,8 +50,8 @@ describe('The transaction view scenarios', function () {
       })
   })
 
-  describe('The transaction redirect endpoint', function () {
-    it('should return 302 when the user has permissions', function (done) {
+  describe('The transaction redirect endpoint', () => {
+    it('should return 302 when the user has permissions', done => {
       let transactionId = 888
 
       const response = validTransactionDetailsResponse({
@@ -75,28 +75,31 @@ describe('The transaction view scenarios', function () {
         .end(done)
     })
 
-    it('should return 404 when the user does not have permissions', function (done) {
-      let transactionId = 888
+    it(
+      'should return 404 when the user does not have permissions',
+      done => {
+        let transactionId = 888
 
-      const response = validTransactionDetailsResponse({
-        transaction_id: transactionId,
-        type: 'payment',
-        amount: 100,
-        fee: 5,
-        net_amount: 95,
-        refund_summary_available: 100,
-        gateway_account_id: 1337
-      }).getPlain()
+        const response = validTransactionDetailsResponse({
+          transaction_id: transactionId,
+          type: 'payment',
+          amount: 100,
+          fee: 5,
+          net_amount: 95,
+          refund_summary_available: 100,
+          gateway_account_id: 1337
+        }).getPlain()
 
-      ledgerMock.get(ledgerTransactionPathFor(transactionId))
-        .query({
-          override_account_id_restriction: true
-        })
-        .reply(200, response)
+        ledgerMock.get(ledgerTransactionPathFor(transactionId))
+          .query({
+            override_account_id_restriction: true
+          })
+          .reply(200, response)
 
-      whenGetRedirectTransactionRoute(transactionId, app)
-        .expect(404)
-        .end(done)
-    })
+        whenGetRedirectTransactionRoute(transactionId, app)
+          .expect(404)
+          .end(done)
+      }
+    )
   })
 })

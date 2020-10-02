@@ -2,7 +2,6 @@
 
 const lodash = require('lodash')
 const sinon = require('sinon')
-const { expect } = require('chai')
 const getEditInformationController = require('../../../../app/controllers/payment-links/get-edit-information.controller')
 
 describe('GET edit information controller', () => {
@@ -25,18 +24,24 @@ describe('GET edit information controller', () => {
     next = sinon.spy()
   })
 
-  it('should return to "Manage payment links" with an error if session data not found', () => {
-    getEditInformationController(req, res, next)
-    sinon.assert.calledWith(res.redirect, '/create-payment-link/manage')
-  })
+  it(
+    'should return to "Manage payment links" with an error if session data not found',
+    () => {
+      getEditInformationController(req, res, next)
+      sinon.assert.calledWith(res.redirect, '/create-payment-link/manage')
+    }
+  )
 
-  it('should return to "Manage payment links" with an error if ID in URL does not match ID in session', () => {
-    lodash.set(req, 'session.editPaymentLinkData', {
-      externalId: 'a-different-id'
-    })
-    getEditInformationController(req, res, next)
-    sinon.assert.calledWith(res.redirect, '/create-payment-link/manage')
-  })
+  it(
+    'should return to "Manage payment links" with an error if ID in URL does not match ID in session',
+    () => {
+      lodash.set(req, 'session.editPaymentLinkData', {
+        externalId: 'a-different-id'
+      })
+      getEditInformationController(req, res, next)
+      sinon.assert.calledWith(res.redirect, '/create-payment-link/manage')
+    }
+  )
 
   it('should send field values from session when rendering page', () => {
     const session = {
@@ -57,32 +62,35 @@ describe('GET edit information controller', () => {
     })
   })
 
-  it('should send recovered field values when rendering the page with errors', () => {
-    const recovered = {
-      name: 'new name',
-      description: 'new description',
-      errors: {
-        title: 'A problem with the title'
+  it(
+    'should send recovered field values when rendering the page with errors',
+    () => {
+      const recovered = {
+        name: 'new name',
+        description: 'new description',
+        errors: {
+          title: 'A problem with the title'
+        }
       }
+      const session = {
+        externalId: productExternalId,
+        name: 'a payment link',
+        description: 'a description',
+        language: 'cy',
+        informationPageRecovered: recovered
+      }
+      lodash.set(req, 'session.editPaymentLinkData', session)
+
+      getEditInformationController(req, res, next)
+
+      sinon.assert.calledWithMatch(res.render, 'payment-links/edit-information', {
+        paymentLinkTitle: recovered.name,
+        paymentLinkDescription: recovered.description,
+        isWelsh: true,
+        errors: recovered.errors
+      })
+
+      expect(session).not.toHaveProperty('informationPageRecovered')
     }
-    const session = {
-      externalId: productExternalId,
-      name: 'a payment link',
-      description: 'a description',
-      language: 'cy',
-      informationPageRecovered: recovered
-    }
-    lodash.set(req, 'session.editPaymentLinkData', session)
-
-    getEditInformationController(req, res, next)
-
-    sinon.assert.calledWithMatch(res.render, 'payment-links/edit-information', {
-      paymentLinkTitle: recovered.name,
-      paymentLinkDescription: recovered.description,
-      isWelsh: true,
-      errors: recovered.errors
-    })
-
-    expect(session).to.not.have.property('informationPageRecovered')
-  })
+  )
 })

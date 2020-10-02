@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const lodash = require('lodash')
 const nock = require('nock')
 const csrf = require('csrf')
@@ -47,7 +46,7 @@ describe('make a demo payment - go to payment controller', () => {
     describe(`when the API token is successfully created`, () => {
       describe(`and the product is successfully created`, () => {
         let result, session, app
-        before('Arrange', () => {
+        beforeAll(() => {
           nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
           nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST).reply(201, VALID_CREATE_PRODUCT_RESPONSE)
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
@@ -56,7 +55,7 @@ describe('make a demo payment - go to payment controller', () => {
           lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
           app = createAppWithSession(getApp(), session)
         })
-        before('Act', done => {
+        beforeAll(done => {
           supertest(app)
             .post(paths.prototyping.demoPayment.goToPaymentScreens)
             .send(VALID_PAYLOAD)
@@ -65,23 +64,23 @@ describe('make a demo payment - go to payment controller', () => {
               done(err)
             })
         })
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should redirect with status code 302', () => {
-          expect(result.statusCode).to.equal(302)
+          expect(result.statusCode).toBe(302)
         })
 
         it('should redirect to the products pay link', () => {
           const paylink = VALID_CREATE_PRODUCT_RESPONSE._links.find(link => link.rel === 'pay').href
-          expect(result.headers).to.have.property('location').to.equal(paylink)
+          expect(result.headers).to.have.property('location').toBe(paylink)
         })
       })
       describe(`but the product creation fails`, () => {
         let result, session, app
 
-        before('Arrange', () => {
+        beforeAll(() => {
           nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
           nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST).replyWithError('Something went wrong')
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
@@ -90,7 +89,7 @@ describe('make a demo payment - go to payment controller', () => {
           lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
           app = createAppWithSession(getApp(), session)
         })
-        before('Act', done => {
+        beforeAll(done => {
           supertest(app)
             .post(paths.prototyping.demoPayment.goToPaymentScreens)
             .send(VALID_PAYLOAD)
@@ -99,28 +98,28 @@ describe('make a demo payment - go to payment controller', () => {
               done(err)
             })
         })
-        after(() => {
+        afterAll(() => {
           nock.cleanAll()
         })
 
         it('should redirect with status code 302', () => {
-          expect(result.statusCode).to.equal(302)
+          expect(result.statusCode).toBe(302)
         })
 
         it('should redirect back to the index page', () => {
-          expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+          expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.index)
         })
 
         it('should add a relevant error message to the session \'flash\'', () => {
-          expect(session.flash).to.have.property('genericError')
-          expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again.')
+          expect(session.flash).toHaveProperty('genericError')
+          expect(session.flash.genericError.length).toBe(1)
+          expect(session.flash.genericError[0]).toBe('Something went wrong. Please try again.')
         })
       })
     })
     describe(`when the API token creation fails`, () => {
       let result, session, app
-      before('Arrange', () => {
+      beforeAll(() => {
         nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).replyWithError('Something went wrong')
         session = getMockSession(VALID_USER)
@@ -128,7 +127,7 @@ describe('make a demo payment - go to payment controller', () => {
         lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
         app = createAppWithSession(getApp(), session)
       })
-      before('Act', done => {
+      beforeAll(done => {
         supertest(app)
           .post(paths.prototyping.demoPayment.goToPaymentScreens)
           .send({
@@ -139,35 +138,35 @@ describe('make a demo payment - go to payment controller', () => {
             done(err)
           })
       })
-      after(() => {
+      afterAll(() => {
         nock.cleanAll()
       })
 
       it('should redirect with status code 302', () => {
-        expect(result.statusCode).to.equal(302)
+        expect(result.statusCode).toBe(302)
       })
 
       it('should redirect back to the index page', () => {
-        expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+        expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.index)
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
-        expect(session.flash).to.have.property('genericError')
-        expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('Something went wrong. Please try again.')
+        expect(session.flash).toHaveProperty('genericError')
+        expect(session.flash.genericError.length).toBe(1)
+        expect(session.flash.genericError[0]).toBe('Something went wrong. Please try again.')
       })
     })
   })
   describe(`when paymentDescription is missing from the session`, () => {
     let result, app
 
-    before('Arrange', () => {
+    beforeAll(() => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       const session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.prototyping.demoPayment.goToPaymentScreens)
         .send({
@@ -179,28 +178,28 @@ describe('make a demo payment - go to payment controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect back to the index page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+      expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.index)
     })
   })
   describe(`when paymentAmount is missing from the session`, () => {
     let result, app
 
-    before('Arrange', () => {
+    beforeAll(() => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       const session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
       app = createAppWithSession(getApp(), session)
     })
-    before('Act', done => {
+    beforeAll(done => {
       supertest(app)
         .post(paths.prototyping.demoPayment.goToPaymentScreens)
         .send({
@@ -212,16 +211,16 @@ describe('make a demo payment - go to payment controller', () => {
         })
     })
 
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {
-      expect(result.statusCode).to.equal(302)
+      expect(result.statusCode).toBe(302)
     })
 
     it('should redirect back to the index page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+      expect(result.headers).to.have.property('location').toBe(paths.prototyping.demoPayment.index)
     })
   })
 })

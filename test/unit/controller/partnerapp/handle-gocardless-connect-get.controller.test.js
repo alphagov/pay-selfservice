@@ -1,13 +1,17 @@
 'use strict'
 
-const { expect } = require('chai')
 const sinon = require('sinon')
-const proxyquire = require('proxyquire')
 
 let req, res, exchangeCodeStub
 
-describe('When GoCardless Connect middleware receives a GET request', function () {
-  beforeEach(function () {
+jest.mock('../../services/clients/direct-debit-connector.client', () => ({
+  partnerApp: {
+    exchangeCode: exchangeCodeStub
+  }
+}));
+
+describe('When GoCardless Connect middleware receives a GET request', () => {
+  beforeEach(() => {
     req = {
       account: {
         type: 'test'
@@ -20,7 +24,7 @@ describe('When GoCardless Connect middleware receives a GET request', function (
 
     res = {
       end: () => {
-        expect(true).to.equal(true)
+        expect(true).toBe(true)
       },
       setHeader: sinon.stub(),
       render: sinon.stub()
@@ -32,7 +36,7 @@ describe('When GoCardless Connect middleware receives a GET request', function (
   describe('with all required parameters', () => {
     it('successfully parses the GET request and creates a POST request', () => {
       res.status = (code) => {
-        expect(code).to.equal(200)
+        expect(code).toBe(200)
       }
       const controller = getControllerWithMocks()
       controller.index(req, res)
@@ -49,7 +53,7 @@ describe('When GoCardless Connect middleware receives a GET request', function (
 
     it('returns bad request', () => {
       res.status = (code) => {
-        expect(code).to.equal(400)
+        expect(code).toBe(400)
       }
       const controller = getControllerWithMocks()
       controller.index(req, res)
@@ -65,7 +69,7 @@ describe('When GoCardless Connect middleware receives a GET request', function (
     })
     it('then returns bad request', () => {
       res.status = (code) => {
-        expect(code).to.equal(400)
+        expect(code).toBe(400)
       }
       const controller = getControllerWithMocks()
       controller.index(req, res)
@@ -73,12 +77,8 @@ describe('When GoCardless Connect middleware receives a GET request', function (
   })
 
   function getControllerWithMocks () {
-    return proxyquire('../../../../app/controllers/partnerapp/handle-gocardless-connect-get.controller', {
-      '../../services/clients/direct-debit-connector.client': {
-        partnerApp: {
-          exchangeCode: exchangeCodeStub
-        }
-      }
-    })
+    return require(
+      '../../../../app/controllers/partnerapp/handle-gocardless-connect-get.controller'
+    );
   }
 })

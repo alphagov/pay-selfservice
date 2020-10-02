@@ -1,9 +1,8 @@
 var Paginator = require('../../../app/utils/paginator.js')
 var assert = require('chai').assert
-var expect = require('chai').expect
 
-describe('paginator', function () {
-  it('should return the correct next page', function () {
+describe('paginator', () => {
+  it('should return the correct next page', () => {
     var paginator1 = new Paginator(21, 4, 4)
     var paginator2 = new Paginator(21, 4, 6)
 
@@ -11,7 +10,7 @@ describe('paginator', function () {
     assert(paginator2.getNext() === null)
   })
 
-  it('should return the correct previous page', function () {
+  it('should return the correct previous page', () => {
     var paginator1 = new Paginator(21, 4, 4)
     var paginator2 = new Paginator(21, 4, 1)
 
@@ -19,27 +18,30 @@ describe('paginator', function () {
     assert(paginator2.getPrevious() === null)
   })
 
-  it('should return the correct last page', function () {
+  it('should return the correct last page', () => {
     var paginator1 = new Paginator(21, 4, 4)
     assert(paginator1.getLast() === 6)
   })
 
-  it('should return the correct first page', function () {
+  it('should return the correct first page', () => {
     var paginator1 = new Paginator(21, 4, 4)
     assert(paginator1.getFirst() === 1)
   })
 
-  it('should return a centered range limited by total number of pages', function () {
-    var paginator1 = new Paginator(21, 4, 2)
-    var paginator2 = new Paginator(21, 4, 4)
-    var paginator3 = new Paginator(21, 4, 5)
+  it(
+    'should return a centered range limited by total number of pages',
+    () => {
+      var paginator1 = new Paginator(21, 4, 2)
+      var paginator2 = new Paginator(21, 4, 4)
+      var paginator3 = new Paginator(21, 4, 5)
 
-    expect(paginator1.getCentredRange(3)).to.deep.equal([1, 2, 3, 4, 5])
-    expect(paginator2.getCentredRange(2)).to.deep.equal([2, 3, 4, 5, 6])
-    expect(paginator3.getCentredRange(2)).to.deep.equal([3, 4, 5, 6])
-  })
+      expect(paginator1.getCentredRange(3)).toEqual([1, 2, 3, 4, 5])
+      expect(paginator2.getCentredRange(2)).toEqual([2, 3, 4, 5, 6])
+      expect(paginator3.getCentredRange(2)).toEqual([3, 4, 5, 6])
+    }
+  )
 
-  it('should return correct display size options', function () {
+  it('should return correct display size options', () => {
     var paginator1 = new Paginator(1000, 100, 2)
     var paginator2 = new Paginator(1000, 500, 2)
 
@@ -47,22 +49,22 @@ describe('paginator', function () {
 
     var paginator4 = new Paginator(50, 2, 1)
 
-    expect(paginator1.getDisplaySizeOptions()).to.deep.equal([
+    expect(paginator1.getDisplaySizeOptions()).toEqual([
       { type: 'small', name: 100, value: 100, active: true },
       { type: 'large', name: 500, value: 500, active: false }
     ])
 
-    expect(paginator2.getDisplaySizeOptions()).to.deep.equal([
+    expect(paginator2.getDisplaySizeOptions()).toEqual([
       { type: 'small', name: 100, value: 100, active: false },
       { type: 'large', name: 500, value: 500, active: true }
     ])
 
-    expect(paginator3.getDisplaySizeOptions()).to.deep.equal([
+    expect(paginator3.getDisplaySizeOptions()).toEqual([
       { type: 'small', name: 100, value: 100, active: true },
       { type: 'large', name: 'Show all', value: 500, active: false }
     ])
 
-    expect(paginator4.getDisplaySizeOptions()).to.deep.equal([
+    expect(paginator4.getDisplaySizeOptions()).toEqual([
       { type: null, name: 'Show all', value: 100, active: false }
     ])
   })

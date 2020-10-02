@@ -1,6 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
 const cheerio = require('cheerio')
 const { render } = require('../test-helpers/html-assertions')
 
@@ -13,8 +12,8 @@ describe('Stripe setup - responsible person view', () => {
     const body = render('stripe-setup/responsible-person/index', templateData)
 
     const $ = cheerio.load(body)
-    expect($('.govuk-error-summary__list li').length).to.equal(1)
-    expect($('.govuk-error-summary__list li a[href$="#home-address-line-1"]').text()).to.equal('Building and street')
+    expect($('.govuk-error-summary__list li').length).toBe(1)
+    expect($('.govuk-error-summary__list li a[href$="#home-address-line-1"]').text()).toBe('Building and street')
 
     done()
   })
@@ -27,25 +26,28 @@ describe('Stripe setup - responsible person view', () => {
     const body = render('stripe-setup/responsible-person/index', templateData)
 
     const $ = cheerio.load(body)
-    expect($('.govuk-error-summary__list li').length).to.equal(1)
-    expect($('.govuk-error-summary__list li a[href$="#home-address-line-2"]').text()).to.equal('Building and street')
+    expect($('.govuk-error-summary__list li').length).toBe(1)
+    expect($('.govuk-error-summary__list li a[href$="#home-address-line-2"]').text()).toBe('Building and street')
 
     done()
   })
 
-  it('should only display single error in error summary if there is an error for both address lines', done => {
-    const templateData = {
-      errors: {
-        'home-address-line-1': 'Inline error message',
-        'home-address-line-2': 'Inline error message' }
+  it(
+    'should only display single error in error summary if there is an error for both address lines',
+    done => {
+      const templateData = {
+        errors: {
+          'home-address-line-1': 'Inline error message',
+          'home-address-line-2': 'Inline error message' }
+      }
+
+      const body = render('stripe-setup/responsible-person/index', templateData)
+
+      const $ = cheerio.load(body)
+      expect($('.govuk-error-summary__list li').length).toBe(1)
+      expect($('.govuk-error-summary__list li a[href$="#home-address-line-1"]').text()).toBe('Building and street')
+
+      done()
     }
-
-    const body = render('stripe-setup/responsible-person/index', templateData)
-
-    const $ = cheerio.load(body)
-    expect($('.govuk-error-summary__list li').length).to.equal(1)
-    expect($('.govuk-error-summary__list li a[href$="#home-address-line-1"]').text()).to.equal('Building and street')
-
-    done()
-  })
+  )
 })

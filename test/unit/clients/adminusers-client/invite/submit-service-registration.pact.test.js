@@ -1,7 +1,6 @@
 'use strict'
 
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 const path = require('path')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
@@ -15,7 +14,7 @@ const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port
 
 const INVITE_PATH = '/v1/api/invites'
 
-describe('adminusers client - self register service', function () {
+describe('adminusers client - self register service', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
@@ -26,14 +25,14 @@ describe('adminusers client - self register service', function () {
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
-  after(() => provider.finalize())
+  beforeAll(() => provider.setup())
+  afterAll(() => provider.finalize())
 
   describe('success', () => {
     const validRegistration = registerFixtures.validRegisterRequest()
 
     const pactified = validRegistration.getPactified()
-    before((done) => {
+    beforeAll((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_PATH}/service`)
           .withUponReceiving('a valid self create service request')
@@ -47,7 +46,7 @@ describe('adminusers client - self register service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should send a notification successfully', function () {
+    it('should send a notification successfully', () => {
       const register = validRegistration.getPlain()
 
       return adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).then(function (response) {
@@ -59,7 +58,7 @@ describe('adminusers client - self register service', function () {
     const invalidInvite = registerFixtures.invalidEmailRegisterRequest()
     const errorResponse = registerFixtures.badRequestResponseWhenFieldsMissing(['email'])
 
-    before((done) => {
+    beforeAll((done) => {
       const pactified = invalidInvite.getPactified()
 
       provider.addInteraction(
@@ -76,18 +75,18 @@ describe('adminusers client - self register service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return bad request', function () {
+    it('should return bad request', () => {
       const register = invalidInvite.getPlain()
 
       return adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password)
         .then(
           () => { throw new Error('Expected to reject') },
           (err) => {
-            expect(err.errorCode).to.equal(400)
-            expect(err.message.errors.length).to.equal(1)
-            expect(err.message.errors).to.deep.equal(errorResponse.getPlain().errors)
+            expect(err.errorCode).toBe(400)
+            expect(err.message.errors.length).toBe(1)
+            expect(err.message.errors).toEqual(errorResponse.getPlain().errors)
           }
-        )
+        );
     })
   })
 })

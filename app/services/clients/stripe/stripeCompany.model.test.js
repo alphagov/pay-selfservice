@@ -1,7 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
-
 const StripeCompany = require('./stripeCompany.model')
 
 describe('StripeCompany', () => {
@@ -14,7 +12,7 @@ describe('StripeCompany', () => {
       tax_id: taxId
     })
 
-    expect(stripeCompany.basicObject()).to.deep.equal({
+    expect(stripeCompany.basicObject()).toEqual({
       company: {
         vat_id: vatId,
         tax_id: taxId
@@ -29,7 +27,7 @@ describe('StripeCompany', () => {
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).to.throw('StripeCompany "vat_id" must be a string')
+    })).toThrowError('StripeCompany "vat_id" must be a string')
   })
 
   it('should fail when tax_id is numeric', () => {
@@ -39,7 +37,7 @@ describe('StripeCompany', () => {
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).to.throw('StripeCompany "tax_id" must be a string')
+    })).toThrowError('StripeCompany "tax_id" must be a string')
   })
 
   it('should not fail when vat_id is undefined', () => {
@@ -49,12 +47,12 @@ describe('StripeCompany', () => {
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).not.to.throw('StripeCompany "vat_id" is required')
+    })).not.toThrowError('StripeCompany "vat_id" is required')
 
     expect(new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    }).basicObject()).to.deep.equal({
+    }).basicObject()).toEqual({
       company: {
         tax_id: taxId
       }
@@ -68,12 +66,12 @@ describe('StripeCompany', () => {
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).not.to.throw('StripeCompany "tax_id" is required')
+    })).not.toThrowError('StripeCompany "tax_id" is required')
 
     expect(new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    }).basicObject()).to.deep.equal({
+    }).basicObject()).toEqual({
       company: {
         vat_id: vatId
       }
@@ -85,11 +83,11 @@ describe('StripeCompany', () => {
 
     expect(() => new StripeCompany({
       vat_id: vatId
-    })).not.to.throw('StripeCompany "tax_id" is required')
+    })).not.toThrowError('StripeCompany "tax_id" is required')
 
     expect(new StripeCompany({
       vat_id: vatId
-    }).basicObject()).to.deep.equal({
+    }).basicObject()).toEqual({
       company: {
         vat_id: vatId
       }
@@ -103,7 +101,7 @@ describe('StripeCompany', () => {
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).to.throw('StripeCompany "vat_id" must be a string')
+    })).toThrowError('StripeCompany "vat_id" must be a string')
   })
 
   it('should fail when tax_id is null', () => {
@@ -113,7 +111,7 @@ describe('StripeCompany', () => {
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).to.throw('StripeCompany "tax_id" must be a string')
+    })).toThrowError('StripeCompany "tax_id" must be a string')
   })
 
   it('should fail when vat_id is blank string', () => {
@@ -123,7 +121,7 @@ describe('StripeCompany', () => {
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).to.throw('StripeCompany "vat_id" is not allowed to be empty')
+    })).toThrowError('StripeCompany "vat_id" is not allowed to be empty')
   })
 
   it('should fail when tax_id is blank string', () => {
@@ -133,6 +131,6 @@ describe('StripeCompany', () => {
     expect(() => new StripeCompany({
       vat_id: vatId,
       tax_id: taxId
-    })).to.throw('StripeCompany "tax_id" is not allowed to be empty')
+    })).toThrowError('StripeCompany "tax_id" is not allowed to be empty')
   })
 })

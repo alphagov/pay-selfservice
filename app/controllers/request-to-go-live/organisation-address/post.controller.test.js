@@ -1,7 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
-const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 const goLiveStage = require('../../../models/go-live-stage')
@@ -9,11 +7,10 @@ const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 
 const mockResponse = {}
+jest.mock('../../../services/service.service', () => mockServiceService);
+jest.mock('../../../utils/response', () => mockResponse);
 const getController = function getController (mockServiceService) {
-  return proxyquire('./post.controller', {
-    '../../../services/service.service': mockServiceService,
-    '../../../utils/response': mockResponse
-  })
+  return require('./post.controller');
 }
 
 describe('request to go live organisation address post controller', () => {
@@ -71,7 +68,7 @@ describe('request to go live organisation address post controller', () => {
       const mockServiceService = { updateService: mockUpdateService }
       const controller = getController(mockServiceService)
 
-      it('should update merchant details and go live stage', async function () {
+      it('should update merchant details and go live stage', async () => {
         const expectedUpdateServiceRequest = [
           {
             'op': 'replace',
@@ -112,78 +109,84 @@ describe('request to go live organisation address post controller', () => {
 
         await controller(req, res)
 
-        expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).to.equal(true)
-        expect(res.redirect.calledWith(303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)).to.equal(true)
+        expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).toBe(true)
+        expect(res.redirect.calledWith(303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)).toBe(true)
       })
 
-      it('should submit empty strings for optional fields left blank', async function () {
-        req.body = {
-          'address-line1': validLine1,
-          'address-line2': '',
-          'address-city': validCity,
-          'address-postcode': validPostcode,
-          'address-country': validCountry,
-          'telephone-number': validTeleponeNumber
-        }
-
-        const expectedUpdateServiceRequest = [
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_line1',
-            'value': validLine1
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_line2',
-            'value': ''
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_city',
-            'value': validCity
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_postcode',
-            'value': validPostcode
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_country',
-            'value': validCountry
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/telephone_number',
-            'value': validTeleponeNumber
-          },
-          {
-            'op': 'replace',
-            'path': 'current_go_live_stage',
-            'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+      it(
+        'should submit empty strings for optional fields left blank',
+        async () => {
+          req.body = {
+            'address-line1': validLine1,
+            'address-line2': '',
+            'address-city': validCity,
+            'address-postcode': validPostcode,
+            'address-country': validCountry,
+            'telephone-number': validTeleponeNumber
           }
-        ]
 
-        await controller(req, res)
+          const expectedUpdateServiceRequest = [
+            {
+              'op': 'replace',
+              'path': 'merchant_details/address_line1',
+              'value': validLine1
+            },
+            {
+              'op': 'replace',
+              'path': 'merchant_details/address_line2',
+              'value': ''
+            },
+            {
+              'op': 'replace',
+              'path': 'merchant_details/address_city',
+              'value': validCity
+            },
+            {
+              'op': 'replace',
+              'path': 'merchant_details/address_postcode',
+              'value': validPostcode
+            },
+            {
+              'op': 'replace',
+              'path': 'merchant_details/address_country',
+              'value': validCountry
+            },
+            {
+              'op': 'replace',
+              'path': 'merchant_details/telephone_number',
+              'value': validTeleponeNumber
+            },
+            {
+              'op': 'replace',
+              'path': 'current_go_live_stage',
+              'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+            }
+          ]
 
-        expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).to.equal(true)
-        expect(res.redirect.calledWith(303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)).to.equal(true)
-      })
+          await controller(req, res)
+
+          expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).toBe(true)
+          expect(res.redirect.calledWith(303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)).toBe(true)
+        }
+      )
     })
 
     describe('error updating service', () => {
-      it('should show an error page if updating service throws error', async function () {
-        const mockUpdateService = sinon.spy(() => {
-          return new Promise((resolve, reject) => {
-            reject(new Error())
+      it(
+        'should show an error page if updating service throws error',
+        async () => {
+          const mockUpdateService = sinon.spy(() => {
+            return new Promise((resolve, reject) => {
+              reject(new Error())
+            })
           })
-        })
-        const mockServiceService = { updateService: mockUpdateService }
-        const controller = getController(mockServiceService)
+          const mockServiceService = { updateService: mockUpdateService }
+          const controller = getController(mockServiceService)
 
-        await controller(req, res)
-        expect(mockResponse.renderErrorView.called).to.equal(true)
-      })
+          await controller(req, res)
+          expect(mockResponse.renderErrorView.called).toBe(true)
+        }
+      )
     })
   })
 })

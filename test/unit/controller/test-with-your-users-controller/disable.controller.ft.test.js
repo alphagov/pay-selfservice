@@ -1,7 +1,6 @@
 'use strict'
 
 const supertest = require('supertest')
-const { expect } = require('chai')
 const nock = require('nock')
 
 const { getApp } = require('../../../../server')
@@ -15,7 +14,7 @@ const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 describe('test with your users - disable controller', () => {
   describe('when the prototype link is successfully disabled', () => {
     let response, session
-    before(done => {
+    beforeAll(done => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
@@ -33,28 +32,28 @@ describe('test with your users - disable controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with code 302', () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
 
     it('should redirect to the create prototype link page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.links)
+      expect(response.header).to.have.property('location').toBe(paths.prototyping.demoService.links)
     })
 
     it('should add a relevant generic message to the session \'flash\'', () => {
-      expect(session.flash).to.have.property('generic')
-      expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('Prototype link deleted')
+      expect(session.flash).toHaveProperty('generic')
+      expect(session.flash.generic.length).toBe(1)
+      expect(session.flash.generic[0]).toBe('Prototype link deleted')
     })
   })
 
   describe('when disabling the prototype link fails', () => {
     let response, session
-    before(done => {
+    beforeAll(done => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
@@ -73,22 +72,24 @@ describe('test with your users - disable controller', () => {
           done(err)
         })
     })
-    after(() => {
+    afterAll(() => {
       nock.cleanAll()
     })
 
     it('should redirect with code 302', () => {
-      expect(response.statusCode).to.equal(302)
+      expect(response.statusCode).toBe(302)
     })
 
     it('should redirect to the create prototype link page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.links)
+      expect(response.header).to.have.property('location').toBe(paths.prototyping.demoService.links)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {
-      expect(session.flash).to.have.property('genericError')
-      expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('Something went wrong when deleting the prototype link. Please try again or contact support.')
+      expect(session.flash).toHaveProperty('genericError')
+      expect(session.flash.genericError.length).toBe(1)
+      expect(session.flash.genericError[0]).toBe(
+        'Something went wrong when deleting the prototype link. Please try again or contact support.'
+      )
     })
   })
 })

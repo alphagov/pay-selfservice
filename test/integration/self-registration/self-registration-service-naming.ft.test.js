@@ -19,14 +19,14 @@ const connectorMock = nock(process.env.CONNECTOR_URL)
 
 let app
 
-describe('create service - service naming', function () {
+describe('create service - service naming', () => {
   afterEach((done) => {
     nock.cleanAll()
     app = null
     done()
   })
 
-  it('should redirect to home page on successful submission', function (done) {
+  it('should redirect to home page on successful submission', done => {
     const serviceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const validServiceNameRequest = selfRegisterFixtures.validServiceNameRequest()
     const request = validServiceNameRequest.getPlain()
@@ -55,21 +55,24 @@ describe('create service - service naming', function () {
       .expect('Location', paths.dashboard.index)
       .end(done)
   })
-  it('should redirect to name your service page if user input invalid', function (done) {
-    const invalidServiceNameRequest = selfRegisterFixtures.invalidServiceNameRequest()
+  it(
+    'should redirect to name your service page if user input invalid',
+    done => {
+      const invalidServiceNameRequest = selfRegisterFixtures.invalidServiceNameRequest()
 
-    const request = invalidServiceNameRequest.getPlain()
-    let session = mockSession.getUser()
-    app = mockSession.getAppWithLoggedInUser(getApp(), session)
-    supertest(app)
-      .post(paths.selfCreateService.serviceNaming)
-      .send({
-        'service-name': request.service_name,
-        'service-name-cy': '',
-        csrfToken: csrf().create('123')
-      })
-      .expect(303)
-      .expect('Location', paths.selfCreateService.serviceNaming)
-      .end(done)
-  })
+      const request = invalidServiceNameRequest.getPlain()
+      let session = mockSession.getUser()
+      app = mockSession.getAppWithLoggedInUser(getApp(), session)
+      supertest(app)
+        .post(paths.selfCreateService.serviceNaming)
+        .send({
+          'service-name': request.service_name,
+          'service-name-cy': '',
+          csrfToken: csrf().create('123')
+        })
+        .expect(303)
+        .expect('Location', paths.selfCreateService.serviceNaming)
+        .end(done)
+    }
+  )
 })

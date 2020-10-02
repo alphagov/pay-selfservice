@@ -1,7 +1,5 @@
 'use strict'
 
-const { expect } = require('chai')
-
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const ledgerClient = require('../../../../app/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../../fixtures/ledger-transaction.fixtures')
@@ -15,9 +13,9 @@ const TRANSACTION_RESOURCE = '/v1/transaction'
 
 const existingGatewayAccountId = '123456'
 
-describe('ledger client', function () {
-  before(() => pactTestProvider.setup())
-  after(() => pactTestProvider.finalize())
+describe('ledger client', () => {
+  beforeAll(() => pactTestProvider.setup())
+  afterAll(() => pactTestProvider.finalize())
 
   describe('search transactions with no filters', () => {
     const params = {
@@ -64,7 +62,7 @@ describe('ledger client', function () {
         }
       ]
     })
-    before(() => {
+    beforeAll(() => {
       const pactified = validTransactionSearchResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
@@ -84,12 +82,12 @@ describe('ledger client', function () {
 
     afterEach(() => pactTestProvider.verify())
 
-    it('should search transaction successfully', function () {
+    it('should search transaction successfully', () => {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse.getPlain())
       return ledgerClient.transactions(params.account_id)
         .then((ledgerResponse) => {
-          expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
-        })
+          expect(ledgerResponse).toEqual(searchTransactionDetails)
+        });
     })
   })
 
@@ -123,7 +121,7 @@ describe('ledger client', function () {
         }
       ]
     })
-    before(() => {
+    beforeAll(() => {
       const pactified = validFilterTransactionResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
@@ -145,12 +143,12 @@ describe('ledger client', function () {
 
     afterEach(() => pactTestProvider.verify())
 
-    it('should search transaction successfully', function () {
+    it('should search transaction successfully', () => {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse.getPlain())
       return ledgerClient.transactions(params.account_id, params.filters)
         .then((ledgerResponse) => {
-          expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
-        })
+          expect(ledgerResponse).toEqual(searchTransactionDetails)
+        });
     })
   })
 
@@ -193,7 +191,7 @@ describe('ledger client', function () {
         }
       ]
     })
-    before(() => {
+    beforeAll(() => {
       const pactified = validFilterTransactionResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
@@ -217,12 +215,12 @@ describe('ledger client', function () {
 
     afterEach(() => pactTestProvider.verify())
 
-    it('should search transaction successfully', function () {
+    it('should search transaction successfully', () => {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse.getPlain())
       return ledgerClient.transactions(params.account_id, params.filters)
         .then((ledgerResponse) => {
-          expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
-        })
+          expect(ledgerResponse).toEqual(searchTransactionDetails)
+        });
     })
   })
 
@@ -273,7 +271,7 @@ describe('ledger client', function () {
         }
       ]
     })
-    before(() => {
+    beforeAll(() => {
       const pactified = validTransactionSearchResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
@@ -294,12 +292,12 @@ describe('ledger client', function () {
 
     afterEach(() => pactTestProvider.verify())
 
-    it('should filter transaction successfully', function () {
+    it('should filter transaction successfully', () => {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse.getPlain())
       return ledgerClient.transactions(params.account_id, params.filters)
         .then((ledgerResponse) => {
-          expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
-        })
+          expect(ledgerResponse).toEqual(searchTransactionDetails)
+        });
     })
   })
 
@@ -337,7 +335,7 @@ describe('ledger client', function () {
         }
       ]
     })
-    before(() => {
+    beforeAll(() => {
       const pactified = validTransactionSearchResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
@@ -358,12 +356,12 @@ describe('ledger client', function () {
 
     afterEach(() => pactTestProvider.verify())
 
-    it('should filter transaction successfully', function () {
+    it('should filter transaction successfully', () => {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse.getPlain())
       return ledgerClient.transactions(params.account_id, params.filters)
         .then((ledgerResponse) => {
-          expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
-        })
+          expect(ledgerResponse).toEqual(searchTransactionDetails)
+        });
     })
   })
 })

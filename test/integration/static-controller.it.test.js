@@ -4,9 +4,9 @@ var request = require('supertest')
 var getApp = require(path.join(__dirname, '/../../server.js')).getApp
 var _ = require('lodash')
 
-describe('static controller', function () {
+describe('static controller', () => {
   _.each(['get', 'post', 'delete', 'put', 'patch'], function (verb) {
-    it('should return an error page', function (done) {
+    it('should return an error page', done => {
       request(getApp())[verb]('/request-denied')
         .set('Accept', 'application/json')
         .expect(400)

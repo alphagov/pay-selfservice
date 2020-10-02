@@ -41,8 +41,8 @@ describe('An endpoint not protected', () => {
   })
 })
 
-describe('An endpoint protected by auth.enforceUserBothFactors', function () {
-  afterEach(function () {
+describe('An endpoint protected by auth.enforceUserBothFactors', () => {
+  afterEach(() => {
     app = null
   })
 
