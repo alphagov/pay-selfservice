@@ -34,11 +34,16 @@
     "watch-live-reload": "./node_modules/.bin/grunt watch",
     "lint": "./node_modules/.bin/standard --fix",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
-    "test": "rm -rf ./pacts && NODE_ENV=test ./node_modules/mocha/bin/mocha --exclude **/*.cy.test.js '!(node_modules)/**/*.test'.js",
+    "test": "rm -rf ./pacts && NODE_ENV=test jest",
     "cypress:server": "mb --debug | DISABLE_APPMETRICS=true node --inspect -r dotenv/config start.js dotenv_config_path=test/cypress/test.env",
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "publish-pacts": "./bin/publish-pacts.js"
+  },
+  "jest" : {
+    "testPathIgnorePatterns" : [
+      ".cy.test.js"
+    ]
   },
   "husky": {
     "hooks": {
