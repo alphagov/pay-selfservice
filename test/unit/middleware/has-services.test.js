@@ -9,7 +9,6 @@ const userFixtures = require('../../fixtures/user.fixtures')
 
 let res, next
 
-
 describe('user has services middleware', function () {
   beforeEach(function () {
     res = {

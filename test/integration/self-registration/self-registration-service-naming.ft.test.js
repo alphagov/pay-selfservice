@@ -3,7 +3,6 @@
 const nock = require('nock')
 const csrf = require('csrf')
 const supertest = require('supertest')
-const { expect } = require('chai')
 
 const mockSession = require('../../test-helpers/mock-session')
 const getApp = require('../../../server').getApp

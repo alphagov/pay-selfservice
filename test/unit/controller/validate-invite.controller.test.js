@@ -5,7 +5,6 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-
 // Constants
 
 describe('Error handler', function () {

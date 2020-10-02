@@ -10,7 +10,6 @@ const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-bu
 
 // Globals
 
-
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 

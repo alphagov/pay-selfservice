@@ -3,7 +3,6 @@
 const { expect } = require('chai')
 const sinon = require('sinon')
 
-
 const paths = require('../../../paths')
 const getController = require('./get.controller')
 

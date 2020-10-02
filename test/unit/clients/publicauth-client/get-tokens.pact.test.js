@@ -13,7 +13,6 @@ const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtur
 const publicauthClient = require('../../../../app/services/clients/public-auth.client')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-
 describe('publicauth client - get tokens', function () {
   let provider = new Pact({
     consumer: 'selfservice-to-be',

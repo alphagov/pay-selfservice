@@ -8,7 +8,6 @@ const ledgerClient = require('../../../../app/services/clients/ledger.client')
 
 const pactTestProvider = require('./ledger-pact-test-provider')
 
-
 const GATEWAY_ACCOUNT_ID = '654321'
 
 describe('ledger client', () => {

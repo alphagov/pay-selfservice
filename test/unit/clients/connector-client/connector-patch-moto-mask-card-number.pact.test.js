@@ -2,7 +2,6 @@
 
 // NPM dependencies
 const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
 
 // Custom dependencies
 const path = require('path')

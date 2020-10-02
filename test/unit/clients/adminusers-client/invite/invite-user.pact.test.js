@@ -5,7 +5,6 @@ var getAdminUsersClient = require('../../../../../app/services/clients/adminuser
 var inviteFixtures = require('../../../../fixtures/invite.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-
 const INVITES_PATH = '/v1/api/invites/user'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })

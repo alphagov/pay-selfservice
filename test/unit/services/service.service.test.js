@@ -7,7 +7,6 @@ const sinon = require('sinon')
 
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 
-
 // Constants
 const correlationId = 'correlationId'
 
@@ -165,8 +164,8 @@ describe('service service', function () {
       }
       directDebitClientStub = {
         gatewayAccount: {
-          create: () => Promise.reject(new Error("dd connector should not be called")),
-          get: () => Promise.reject(new Error("dd connector should not be called"))
+          create: () => Promise.reject(new Error('dd connector should not be called')),
+          get: () => Promise.reject(new Error('dd connector should not be called'))
         },
         isADirectDebitAccount: () => false
       }
@@ -189,7 +188,7 @@ describe('service service', function () {
       connectorClientStub = {
         ConnectorClient: function () {
           return {
-            patchServiceName: () => Promise.reject(new Error("dd connector should not be called"))
+            patchServiceName: () => Promise.reject(new Error('dd connector should not be called'))
           }
         }
       }
@@ -204,8 +203,8 @@ describe('service service', function () {
       }
       directDebitClientStub = {
         gatewayAccount: {
-          create: () => Promise.reject(new Error("dd connector should not be called")),
-          get: () => Promise.reject(new Error("dd connector should not be called"))
+          create: () => Promise.reject(new Error('dd connector should not be called')),
+          get: () => Promise.reject(new Error('dd connector should not be called'))
         },
         isADirectDebitAccount: () => true
       }
@@ -273,8 +272,8 @@ describe('service service', function () {
       }
       directDebitClientStub = {
         gatewayAccount: {
-          create: () => Promise.reject(new Error("dd connector should not be called")),
-          get: () => Promise.reject(new Error("dd connector should not be called"))
+          create: () => Promise.reject(new Error('dd connector should not be called')),
+          get: () => Promise.reject(new Error('dd connector should not be called'))
         }
       }
 

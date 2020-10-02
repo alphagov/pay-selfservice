@@ -5,7 +5,6 @@ const experimentalFeatures = require(path.join(__dirname, '/../../../app/middlew
 
 let res, next
 
-
 describe('services experimental features middleware', () => {
   beforeEach(() => {
     res = {

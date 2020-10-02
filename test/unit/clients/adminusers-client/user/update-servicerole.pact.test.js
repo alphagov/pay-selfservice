@@ -1,11 +1,9 @@
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
 const { expect } = require('chai')
-let chaiAsPromised = require('chai-as-promised')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
-
 
 const USER_PATH = '/v1/api/users'
 let port = Math.floor(Math.random() * 48127) + 1024

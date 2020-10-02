@@ -7,8 +7,6 @@ const inviteFixtures = require('../../../../fixtures/invite.fixtures')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-
-
 const INVITES_PATH = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
 let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
@@ -103,10 +101,10 @@ describe('adminusers client - get a validated invite', function () {
 
     it('should respond 404 if invite not found', function () {
       return adminusersClient.getValidatedInvite(nonExistingCode)
-      .then(
-        () => { throw new Error('Expected to reject') },
-        err => expect(err.errorCode).to.equal(404)
-      )
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

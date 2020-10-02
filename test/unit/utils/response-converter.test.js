@@ -6,7 +6,6 @@ const sinon = require('sinon')
 
 const responseConverter = require(path.join(__dirname, '/../../../app/utils/response-converter'))
 
-
 let context
 let spyResolve
 let spyReject

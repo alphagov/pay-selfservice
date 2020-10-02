@@ -5,7 +5,6 @@ const expect = require('chai').expect
 const _ = require('lodash')
 const EventEmitter = require('events').EventEmitter
 const proxyquire = require('proxyquire')
-const { error } = require('console')
 
 function getEmailService (connectorClientStub) {
   return proxyquire(path.join(__dirname, '/../../../app/services/email.service.js'), {

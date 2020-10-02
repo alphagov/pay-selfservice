@@ -7,7 +7,6 @@ const paymentMethodIsCard = require('../../../app/middleware/payment-method-card
 let res
 let next
 
-
 describe('user has payment-method-card middleware', () => {
   beforeEach(() => {
     res = {

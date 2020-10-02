@@ -1,7 +1,5 @@
-const chai = require('chai')
 const { render } = require('../test-helpers/html-assertions')
 const { serviceNavigationItems, adminNavigationItems } = require('../../app/utils/nav-builder')
-chai.should()
 
 describe('navigation menu', function () {
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {

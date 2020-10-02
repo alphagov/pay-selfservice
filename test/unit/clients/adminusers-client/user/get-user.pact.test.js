@@ -13,7 +13,6 @@ const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const USER_PATH = '/v1/api/users'
 
-
 describe('adminusers client - get user', () => {
   const provider = new Pact({
     consumer: 'selfservice',

@@ -5,7 +5,6 @@ const getAdminUsersClient = require('../../../../../app/services/clients/adminus
 const registrationFixtures = require('../../../../fixtures/invite.fixtures')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-
 const OTP_VALIDATE_RESOURCE = '/v1/api/invites/otp/validate/service'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })

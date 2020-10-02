@@ -6,7 +6,6 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
-
 describe('retrieve email notification template', function () {
   const response = {
     status: () => {

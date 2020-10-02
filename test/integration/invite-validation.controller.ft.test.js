@@ -9,7 +9,6 @@ const getApp = require('../../server').getApp
 const session = require('../test-helpers/mock-session')
 const inviteFixtures = require('../fixtures/invite.fixtures')
 
-
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const INVITE_RESOURCE_PATH = '/v1/api/invites'
 

@@ -11,7 +11,6 @@ const { expect } = require('chai')
 const _ = require('lodash')
 let app
 
-
 let adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const USER_RESOURCE = '/v1/api/users'

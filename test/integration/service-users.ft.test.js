@@ -6,7 +6,6 @@ const supertest = require('supertest')
 const csrf = require('csrf')
 const { expect } = require('chai')
 
-
 // Local modules
 const session = require('../test-helpers/mock-session.js')
 const { getApp } = require('../../server.js')

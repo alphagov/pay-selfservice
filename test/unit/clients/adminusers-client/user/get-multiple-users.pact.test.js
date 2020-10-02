@@ -2,7 +2,6 @@
 const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
 const { expect } = require('chai')
-let chaiAsPromised = require('chai-as-promised')
 let userFixtures = require('../../../../fixtures/user.fixtures')
 let random = require('../../../../../app/utils/random')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
@@ -98,10 +97,10 @@ describe('adminusers client - get users', function () {
 
     it('should respond 404 if user not found', function () {
       return adminusersClient.getUsersByExternalIds(existingExternalIds)
-      .then(
-        () => { throw new Error('Expected to reject') },
-        err => expect(err.errorCode).to.equal(404)
-      )
+        .then(
+          () => { throw new Error('Expected to reject') },
+          err => expect(err.errorCode).to.equal(404)
+        )
     })
   })
 })

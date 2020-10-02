@@ -1,11 +1,11 @@
 'use strict'
 
-const { expect } = require('chai')
-
+const chai = require('chai')
 const path = require('path')
 
 require(path.join(__dirname, '/../test-helpers/html-assertions.js'))
 const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+chai.should()
 
 function buildTransaction (chargeId, amount, stateFriendly, status, cardBrand, email, includeCorporateCardSurcharge = false) {
   let transaction = {

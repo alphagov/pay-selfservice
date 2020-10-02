@@ -1,9 +1,12 @@
 'use strict'
 
+const chai = require('chai')
 const path = require('path')
 const cheerio = require('cheerio')
 
 const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+
+chai.should()
 
 describe('The transaction details view', () => {
   it('should render transaction details when payment does not have card details', () => {

@@ -14,7 +14,6 @@ const User = require('../../../../../app/models/User.class')
 // Constants
 const AUTHENTICATE_PATH = '/v1/api/users/authenticate'
 
-
 describe('adminusers client - authenticate', () => {
   const provider = new Pact({
     consumer: 'selfservice',

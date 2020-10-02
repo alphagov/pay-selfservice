@@ -13,7 +13,7 @@ const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const serviceExternalId = 'cp5wa'
-let result, request
+let request
 
 // Global setup
 
@@ -89,8 +89,6 @@ describe('admin users client - add gateway accounts to service', () => {
     afterEach(() => provider.verify())
 
     it('should reject with an error detailing the conflicting', () => {
-      result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
-
       return adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
         .then(
           () => { throw new Error('Expected to reject') },
@@ -130,8 +128,6 @@ describe('admin users client - add gateway accounts to service', () => {
     afterEach(() => provider.verify())
 
     it('should reject with an error detailing the conflicting', () => {
-      result = adminusersClient.addGatewayAccountsToService(nonExistentServiceId, gatewayAccountIds)
-
       return adminusersClient.addGatewayAccountsToService(nonExistentServiceId, gatewayAccountIds)
         .then(
           () => { throw new Error('Expected to reject') },

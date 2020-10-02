@@ -5,7 +5,6 @@ var getAdminUsersClient = require('../../../../../app/services/clients/adminuser
 var userFixtures = require('../../../../fixtures/user.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
-
 const RESET_PASSWORD_PATH = '/v1/api/reset-password'
 var port = Math.floor(Math.random() * 48127) + 1024
 var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
