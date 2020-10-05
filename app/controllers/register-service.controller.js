@@ -30,7 +30,7 @@ const registrationSessionPresent = function registrationSessionPresent (sessionD
  */
 const showRegistration = function showRegistration (req, res) {
   const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered', {})
-  lodash.unset('session.pageData.submitRegistration.recovered')
+  lodash.unset(req, 'session.pageData.submitRegistration.recovered')
   res.render('self-create-service/register', {
     email: recovered.email,
     telephoneNumber: recovered.telephoneNumber,
