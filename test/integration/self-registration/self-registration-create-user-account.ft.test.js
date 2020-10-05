@@ -4,20 +4,16 @@ const nock = require('nock')
 const csrf = require('csrf')
 const supertest = require('supertest')
 const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const cheerio = require('cheerio')
 
 const mockSession = require('../../test-helpers/mock-session')
 const getApp = require('../../../server').getApp
 const selfRegisterFixtures = require('../../fixtures/self-register.fixtures')
 const paths = require('../../../app/paths')
 
-// Constants
 const SERVICE_INVITE_RESOURCE = '/v1/api/invites/service'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const expect = chai.expect
-
-// Global setup
-chai.use(chaiAsPromised)
 
 let app
 
@@ -26,6 +22,35 @@ describe('create service otp validation', function () {
     nock.cleanAll()
     app = null
     done()
+  })
+
+  it('should render with errors when they are in recovered object in cookie', function (done) {
+    const errorMessage = 'An error with the email'
+    const session = {
+      pageData: {
+        submitRegistration: {
+          recovered: {
+            telephoneNumber: '07451234567',
+            email: 'bob@bob.com',
+            errors: {
+              email: errorMessage
+            }
+          }
+        }
+      }
+    }
+    app = mockSession.getAppWithLoggedOutSession(getApp(), session)
+    supertest(app)
+      .get(paths.selfCreateService.register)
+      .expect(200)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.govuk-error-summary__list li').length).to.equal(1)
+        expect($('.govuk-error-summary__list li a[href$="#email"]').text()).to.equal(errorMessage)
+
+        expect(session).to.not.have.property('recovered')
+      })
+      .end(done)
   })
 
   it('should redirect to confirmation page on successful registration', function (done) {
