@@ -71,7 +71,7 @@
     "aws-sdk": "2.766.0",
     "aws-xray-sdk": "2.5.0",
     "body-parser": "1.19.0",
-    "change-case": "3.1.0",
+    "change-case": "4.1.1",
     "check-types": "11.1.x",
     "client-sessions": "0.8.0",
     "common-password": "0.1.2",
