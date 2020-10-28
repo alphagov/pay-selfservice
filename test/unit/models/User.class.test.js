@@ -66,15 +66,50 @@ describe('Class: User', () => {
   describe('is internal user', () => {
     it('should return false', () => {
       process.env.GDS_INTERNAL_USER_EMAIL_DOMAIN = '@example.org'
-      user = user = new User(userFixtures.validUserResponse().getPlain())
+      user = new User(userFixtures.validUserResponse().getPlain())
       result = user.internalUser
       expect(result).to.equal(false)
     })
     it('should return true', function () {
       process.env.GDS_INTERNAL_USER_EMAIL_DOMAIN = '@example.com'
-      user = user = new User(userFixtures.validUserResponse().getPlain())
+      user = new User(userFixtures.validUserResponse().getPlain())
       result = user.internalUser
       expect(result).to.equal(true)
+    })
+  })
+
+  describe('number of live services', () => {
+    const opts = {
+      service_roles: [{
+        service: {
+          name: 'System Generated',
+          external_id: 'externalServiceId',
+          current_go_live_stage: 'LIVE'
+        }
+      }, {
+        service: {
+          name: 'System Generated',
+          external_id: 'externalServiceId2',
+          current_go_live_stage: 'CHOSEN_PSP_STRIPE'
+        }
+      }, {
+        service: {
+          name: 'System Generated',
+          external_id: 'externalServiceId3',
+          current_go_live_stage: 'ENTERED_ORGANISATION_ADDRESS'
+        }
+      }, {
+        service: {
+          name: 'System Generated',
+          external_id: 'externalServiceId4',
+          current_go_live_stage: 'LIVE'
+        }
+      }]
+    }
+    it('should return the number of live services', function () {
+      user = new User(userFixtures.validUserResponse(opts).getPlain())
+      result = user.numberOfLiveServices
+      expect(result).to.equal(2)
     })
   })
 })
