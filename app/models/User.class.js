@@ -47,6 +47,7 @@ class User {
     this.features = (userData.features || '').split(',').map(feature => feature.trim())
     this.secondFactor = userData.second_factor
     this.provisionalOtpKey = userData.provisional_otp_key || ''
+    this.internalUser = this.email.includes(process.env.GDS_INTERNAL_USER_EMAIL_DOMAIN)
   }
 
   /**
