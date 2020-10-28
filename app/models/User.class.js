@@ -14,6 +14,8 @@ const ServiceRole = require('./ServiceRole.class')
  * @property {string} telephoneNumber - The user's telephone number
  * @property {boolean} disabled - Whether or not the user is disabled
  * @property {ServiceRole[]} serviceRoles - An array of the user's serviceRoles
+ * @property {boolean} internalUser - Whether the user is internal
+ * @property {number} numberOfLiveServices - number of live services user is associated with
  *
  */
 class User {
@@ -48,6 +50,7 @@ class User {
     this.secondFactor = userData.second_factor
     this.provisionalOtpKey = userData.provisional_otp_key || ''
     this.internalUser = this.email.includes(process.env.GDS_INTERNAL_USER_EMAIL_DOMAIN)
+    this.numberOfLiveServices = this.serviceRoles.filter(serviceRole => serviceRole.service.currentGoLiveStage === 'LIVE').length
   }
 
   /**
