@@ -40,7 +40,8 @@ const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = []) 
   return `${process.env.LEDGER_URL}/v1/transaction?${formattedParams}&${formattedFilterParams}`
 }
 
-const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStreamStart, filters, gatewayAccountIds, user, correlationId) {
+const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStreamStart, filters, gatewayAccountIds, user, correlationId,
+  allLiveServiceTransactions) {
   const timestampStreamEnd = Date.now()
   const logContext = {
     time_taken: timestampStreamEnd - timestampStreamStart,
@@ -52,6 +53,9 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
     method: 'future',
     gateway_account_ids: gatewayAccountIds,
     multiple_accounts: gatewayAccountIds.length > 1,
+    internal_user: user.internalUser,
+    all_live_service_transactions: allLiveServiceTransactions,
+    user_number_of_live_services: user.numberOfLiveServices,
     filters: Object.keys(filters).sort().join(', ')
   }
   logContext[keys.USER_EXTERNAL_ID] = user && user.externalId

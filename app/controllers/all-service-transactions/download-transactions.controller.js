@@ -25,7 +25,7 @@ module.exports = (req, res) => {
       const timestampStreamStart = Date.now()
       const data = (chunk) => { res.write(chunk) }
       const complete = () => {
-        transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, userPermittedAccountsSummary.gatewayAccountIds, req.user, correlationId)
+        transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, userPermittedAccountsSummary.gatewayAccountIds, req.user, correlationId, true)
         res.end()
       }
       const error = () => renderErrorView(req, res, 'Unable to download list of transactions.')
