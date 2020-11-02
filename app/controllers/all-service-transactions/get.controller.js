@@ -11,6 +11,8 @@ const { getFilters, describeFilters } = require('../../utils/filters.js')
 const router = require('../../routes.js')
 const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
+const logger = require('../../utils/logger')(__filename)
+const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 
@@ -19,6 +21,15 @@ module.exports = async (req, res) => {
   const filters = getFilters(req)
   try {
     const userPermittedAccountsSummary = await permissions.getLiveGatewayAccountsFor(req.user, 'transactions:read')
+
+    const logContext = {
+      gateway_account_ids: userPermittedAccountsSummary.gatewayAccountIds,
+      user_number_of_live_services: req.user.numberOfLiveServices,
+      internal_user: req.user.internalUser
+    }
+    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
+    logContext[keys.CORRELATION_ID] = correlationId
+    logger.info('Listing all live services transactions', logContext)
 
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
       res.status(401).render('error', { message: 'You do not have any associated services with rights to view live transactions.' })

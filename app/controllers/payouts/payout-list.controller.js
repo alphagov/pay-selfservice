@@ -18,9 +18,13 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res) 
       return
     }
     const payoutSearchResult = await payoutService.payouts(userPermittedAccountsSummary.gatewayAccountIds, req.user, page)
-    const logContext = { current_page: page }
+    const logContext = {
+      current_page: page,
+      internal_user: req.user.internalUser,
+      gateway_account_ids: userPermittedAccountsSummary.gatewayAccountIds,
+      user_number_of_live_services: req.user.numberOfLiveServices
+    }
     logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logContext[keys.GATEWAY_ACCOUNT_ID] = userPermittedAccountsSummary
     logger.info('Fetched page of payouts for all services', logContext)
 
     if (process.env.PAYOUTS_RELEASE_DATE) {
