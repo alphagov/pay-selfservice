@@ -18,7 +18,6 @@ const gatewayAccountId1 = '1'
 const gatewayAccountId2 = '2'
 const nonExistentId = '3'
 const directDebitAccountId1 = 'DIRECT_DEBIT:adashdkjlq3434lk'
-const directDebitAccountId2 = 'DIRECT_DEBIT:sadasdkasjdlkjlkeuo2'
 const nonExistentDirectDebitId = 'DIRECT_DEBIT:XXXsadasdkasjdlkjlkeuo2'
 
 let directDebitClientStub
@@ -57,7 +56,7 @@ const getDDGatewayAccounts = function (obj) {
 
 describe('service service', function () {
   describe('when getting gateway accounts', function () {
-    it('should return gateway accounts for the valid ids', function (done) {
+    it('should return card gateway accounts only for the valid ids and ignore direct debit gateway accounts', function (done) {
       directDebitClientStub = {
         gatewayAccounts: {
           get: getDDGatewayAccounts
@@ -75,42 +74,9 @@ describe('service service', function () {
         })
 
       serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId, directDebitAccountId1, nonExistentDirectDebitId], correlationId).then(gatewayAccounts => {
-        expect(gatewayAccounts).to.have.lengthOf(3)
-        expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
-          .to.have.all.members(['1', '2', 'DIRECT_DEBIT:adashdkjlq3434lk'])
-        done()
-      })
-    })
-
-    it('should not call connector for retrieving direct debit accounts', function (done) {
-      directDebitClientStub = {
-        gatewayAccounts: {
-          get: getDDGatewayAccounts
-        },
-        isADirectDebitAccount: () => true
-      }
-
-      connectorClientStub = {
-        ConnectorClient: function () {
-          return {
-            getAccounts: () => {
-              return new Promise(() => {
-                done('connector should not be called')
-              })
-            }
-          }
-        }
-      }
-
-      serviceService = proxyquire('../../../app/services/service.service',
-        {
-          '../services/clients/connector.client': connectorClientStub,
-          '../services/clients/direct-debit-connector.client': directDebitClientStub
-        })
-
-      serviceService.getGatewayAccounts([directDebitAccountId1, directDebitAccountId2], correlationId).then(gatewayAccounts => {
         expect(gatewayAccounts).to.have.lengthOf(2)
-        expect(gatewayAccounts.map(accountObj => accountObj.external_id)).to.have.all.members(['DIRECT_DEBIT:sadasdkasjdlkjlkeuo2', 'DIRECT_DEBIT:adashdkjlq3434lk'])
+        expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
+          .to.have.all.members(['1', '2'])
         done()
       })
     })

@@ -26,17 +26,12 @@ function getGatewayAccounts (gatewayAccountIds, correlationId) {
       correlationId: correlationId
     }) : Promise.resolve([])
 
-  const fetchDirectDebitGatewayAccounts = accounts[0].length > 0
-    ? directDebitConnectorClient.gatewayAccounts.get({
-      gatewayAccountIds: accounts[0],
-      correlationId: correlationId
-    }) : Promise.resolve([])
 
   const returnGatewayAccountVariant = ga => (ga.gateway_account_external_id && isADirectDebitAccount(ga.gateway_account_external_id))
     ? new DirectDebitGatewayAccount(ga).toMinimalJson()
     : new CardGatewayAccount(ga).toMinimalJson()
 
-  return Promise.all([fetchCardGatewayAccounts, fetchDirectDebitGatewayAccounts])
+  return Promise.all([fetchCardGatewayAccounts])
     .then(results => {
       return results
         .reduce((accumulator, currentValue) => {

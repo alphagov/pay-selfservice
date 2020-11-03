@@ -19,7 +19,7 @@ describe('service switch controller: list of accounts', function () {
     nock.cleanAll()
   })
 
-  it('should render a list of services when user has multiple services', function (done) {
+  it.only('should render a list of services when user has multiple services and ignore direct debit services', function (done) {
     const service1gatewayAccountIds = ['2', '5']
     const service2gatewayAccountIds = ['3', '6', '7']
     const service3gatewayAccountIds = ['4', '9']
@@ -30,12 +30,6 @@ describe('service switch controller: list of accounts', function () {
       .reply(200, { accounts: allServiceGatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
         gateway_account_id: iter,
         service_name: `account ${iter}`,
-        type: _.sample(['test', 'live'])
-      }).getPlain()) })
-
-    directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `?externalAccountIds=${directDebitGatewayAccountIds.join(',')}`)
-      .reply(200, { accounts: directDebitGatewayAccountIds.map(iter => gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
-        gateway_account_id: iter,
         type: _.sample(['test', 'live'])
       }).getPlain()) })
 
@@ -102,14 +96,12 @@ describe('service switch controller: list of accounts', function () {
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
-        expect(directDebitGatewayAccountNamesOf(renderData, 'service-external-id-4')).to.have.lengthOf(2).and.to.include('DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'DIRECT_DEBIT:ksdfhjhfd;sfksd34')
-
+        expect(renderData.services.filter(s => s.external_id === 'service-external-id-4')[0].gateway_accounts.cardAccounts).to.have.lengthOf(0)
         done()
       }
     }
 
     const cardGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.cardAccounts.map(g => g.service_name)
-    const directDebitGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.directdebitAccounts.map(g => g.id)
 
     serviceSwitchController.getIndex(req, res)
   })
