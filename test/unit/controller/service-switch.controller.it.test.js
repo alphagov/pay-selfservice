@@ -19,7 +19,7 @@ describe('service switch controller: list of accounts', function () {
     nock.cleanAll()
   })
 
-  it.only('should render a list of services when user has multiple services and ignore direct debit services', function (done) {
+  it('should render a list of services when user has multiple services and ignore direct debit services', function (done) {
     const service1gatewayAccountIds = ['2', '5']
     const service2gatewayAccountIds = ['3', '6', '7']
     const service3gatewayAccountIds = ['4', '9']

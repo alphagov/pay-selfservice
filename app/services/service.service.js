@@ -17,7 +17,7 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
  *
  * @returns {Promise<GatewayAccount[]>} promise of collection of gateway accounts which belong to this service
  */
-function getGatewayAccounts (gatewayAccountIds, correlationId) {
+async function getGatewayAccounts (gatewayAccountIds, correlationId) {
   const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
 
   const fetchCardGatewayAccounts = accounts[1].length > 0
@@ -31,18 +31,14 @@ function getGatewayAccounts (gatewayAccountIds, correlationId) {
     ? new DirectDebitGatewayAccount(ga).toMinimalJson()
     : new CardGatewayAccount(ga).toMinimalJson()
 
-  return Promise.all([fetchCardGatewayAccounts])
-    .then(results => {
-      return results
-        .reduce((accumulator, currentValue) => {
-          return currentValue.accounts ? accumulator.concat(currentValue.accounts) : accumulator
-        }, [])
-        .map(returnGatewayAccountVariant)
-        .filter(p => !(p instanceof Error))
-    })
-    .catch(err => {
-      return new Error(err)
-    })
+  const results = await Promise.all([fetchCardGatewayAccounts])
+
+  return results
+    .reduce((accumulator, currentValue) => {
+      return currentValue.accounts ? accumulator.concat(currentValue.accounts) : accumulator
+    }, [])
+    .map(returnGatewayAccountVariant)
+    .filter(p => !(p instanceof Error))
 }
 
 /**
