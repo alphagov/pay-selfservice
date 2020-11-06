@@ -3,8 +3,13 @@
 const chai = require('chai')
 const nock = require('nock')
 const _ = require('lodash')
-const connectorMock = nock(process.env.CONNECTOR_URL)
-const directDebitConnectorMock = nock(process.env.DIRECT_DEBIT_CONNECTOR_URL)
+const connectorMock = nock(process.env.CONNECTOR_URL, {
+  reqheaders: {
+    'content-type': 'application/json',
+    'host': 'localhost:8001',
+    'accept': 'application/json'
+  }
+}).log(console.log)
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const DIRECT_DEBIT_ACCOUNTS_PATH = '/v1/api/accounts'
 const serviceSwitchController = require('../../../app/controllers/my-services')
@@ -19,14 +24,14 @@ describe('service switch controller: list of accounts', function () {
     nock.cleanAll()
   })
 
-  it('should render a list of services when user has multiple services and ignore direct debit services', function (done) {
+  it('should render a list of services when user has multiple services', function (done) {
     const service1gatewayAccountIds = ['2', '5']
     const service2gatewayAccountIds = ['3', '6', '7']
     const service3gatewayAccountIds = ['4', '9']
     const allServiceGatewayAccountIds = service1gatewayAccountIds.concat(service2gatewayAccountIds).concat(service3gatewayAccountIds)
     const directDebitGatewayAccountIds = ['DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'DIRECT_DEBIT:ksdfhjhfd;sfksd34']
 
-    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${allServiceGatewayAccountIds.join(',')}`)
+    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${allServiceGatewayAccountIds.join(',')}`, {})
       .reply(200, { accounts: allServiceGatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
         gateway_account_id: iter,
         service_name: `account ${iter}`,
@@ -96,7 +101,6 @@ describe('service switch controller: list of accounts', function () {
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
-        expect(renderData.services.filter(s => s.external_id === 'service-external-id-4')[0].gateway_accounts.cardAccounts).to.have.lengthOf(0)
         done()
       }
     }

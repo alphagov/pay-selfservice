@@ -9,6 +9,7 @@ const { isADirectDebitAccount } = directDebitConnectorClient
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const DirectDebitGatewayAccount = require('../models/DirectDebitGatewayAccount.class')
 const Service = require('../models/Service.class')
+const { gatewayAccount } = require('./clients/direct-debit-connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 /**
@@ -18,27 +19,22 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
  * @returns {Promise<GatewayAccount[]>} promise of collection of gateway accounts which belong to this service
  */
 async function getGatewayAccounts (gatewayAccountIds, correlationId) {
-  const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
+  const cardGatewayAccountIds = gatewayAccountIds.filter(id => !isADirectDebitAccount(id))
 
-  const fetchCardGatewayAccounts = accounts[1].length > 0
-    ? connectorClient.getAccounts({
-      gatewayAccountIds: accounts[1],
+  console.log('g1')
+  console.log('g1 - gatewayAccountIds: ', gatewayAccountIds)
+
+  // if (cardGatewayAccountIds.length > 0) {
+    const cardGatewayAccounts = await connectorClient.getAccounts({
+      gatewayAccountIds: cardGatewayAccountIds,
       correlationId: correlationId
-    }) : Promise.resolve([])
+    })
 
-
-  const returnGatewayAccountVariant = ga => (ga.gateway_account_external_id && isADirectDebitAccount(ga.gateway_account_external_id))
-    ? new DirectDebitGatewayAccount(ga).toMinimalJson()
-    : new CardGatewayAccount(ga).toMinimalJson()
-
-  const results = await Promise.all([fetchCardGatewayAccounts])
-
-  return results
-    .reduce((accumulator, currentValue) => {
-      return currentValue.accounts ? accumulator.concat(currentValue.accounts) : accumulator
-    }, [])
-    .map(returnGatewayAccountVariant)
-    .filter(p => !(p instanceof Error))
+    return cardGatewayAccounts.accounts
+      .map(gatewayAccount => new CardGatewayAccount(gatewayAccount).toMinimalJson())
+  // } else {
+    // return []
+  // }
 }
 
 /**

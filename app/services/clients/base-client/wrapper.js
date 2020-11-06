@@ -15,6 +15,10 @@ const clsXrayConfig = require('../../../../config/xray-cls')
 
 module.exports = function (method, verb) {
   return (uri, opts, cb) => new Promise((resolve, reject) => {
+    console.log('22')
+    console.log('22 - response')
+    console.log('22')
+
     const namespace = getNamespace(clsXrayConfig.nameSpaceName)
     const clsSegment = namespace ? namespace.get(clsXrayConfig.segmentKeyName) : null
 
@@ -51,6 +55,9 @@ module.exports = function (method, verb) {
     // start request
     requestLogger.logRequestStart(context)
     const call = method(opts, (err, response, body) => {
+      console.log('@@@@@ - body')
+      console.log('@@@@@ - body: ', body)
+      console.log('@@@@@ - opts: ', opts)
       if (cb) cb(err, response, body)
       if (err) {
         reject(err)
@@ -82,6 +89,9 @@ module.exports = function (method, verb) {
       requestLogger.logRequestError(context, err)
     })
     call.on('response', response => {
+      console.log('1111111111111')
+      console.log('1111 - response')
+      console.log('1111111111111')
       requestLogger.logRequestEnd(context, response)
       if (!(response && SUCCESS_CODES.includes(response.statusCode))) {
         requestLogger.logRequestFailure(context, response)

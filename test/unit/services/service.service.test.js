@@ -28,15 +28,13 @@ let serviceService
 const getGatewayAccounts = function () {
   return {
     getAccounts: function (obj) {
-      return new Promise(function (resolve) {
-        resolve({
-          accounts: obj.gatewayAccountIds.filter(fil => fil !== nonExistentId).map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
-            gateway_account_id: iter,
-            service_name: `account ${iter}`,
-            type: _.sample(['test', 'live'])
-          }).getPlain())
-        })
-      })
+      return {
+        accounts: obj.gatewayAccountIds.filter(fil => fil !== nonExistentId).map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
+          gateway_account_id: iter,
+          service_name: `account ${iter}`,
+          type: _.sample(['test', 'live'])
+        }).getPlain())
+      }
     }
   }
 }
@@ -74,6 +72,7 @@ describe('service service', function () {
         })
 
       serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId, directDebitAccountId1, nonExistentDirectDebitId], correlationId).then(gatewayAccounts => {
+        console.log('return - gatewayAccounts: ', gatewayAccounts)
         expect(gatewayAccounts).to.have.lengthOf(2)
         expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
           .to.have.all.members(['1', '2'])

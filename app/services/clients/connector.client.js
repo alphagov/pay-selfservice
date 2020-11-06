@@ -177,13 +177,17 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccounts: function (params) {
+    console.log('11 - getAccounts - params: ', params)
     let url = _accountsUrlFor(params.gatewayAccountIds, this.connectorUrl)
+    console.log('11 - getAccounts - url: ', url)
     let context = {
       url: url,
       correlationId: params.correlationId,
       description: 'get an account',
       service: SERVICE_NAME
     }
+
+    console.log('11 - context: ', context)
 
     return baseClient.get(
       url, context
