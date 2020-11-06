@@ -104,6 +104,7 @@ function initialiseTemplateEngine (app) {
 function initialisePublic (app) {
   app.use('/public', express.static('public'))
   app.use('/', express.static('node_modules/govuk-frontend/govuk'))
+  app.use('/js', express.static('node_modules/sticky-js/dist'))
 }
 
 function initialiseRoutes (app) {

@@ -1,4 +1,5 @@
-{% extends "../layout.njk" %}
+{% set base = "../all-services-base.njk" if allServiceTransactions else "../layout.njk" %}
+{% extends base %}
 
 {% block pageTitle %}
     {% if allServiceTransactions %}
@@ -16,6 +17,7 @@
 {% endblock %}
 
 {% block pageSpecificJS %}
+{{ super() }}
 <script src="/public/js/components/link-follower.js"></script>
 <script src="https://unpkg.com/jquery@3.3.1/dist/jquery.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js" integrity="sha384-w48xMCwgWQu0zb3PvQI/rK5lfN6G+lSWu+qI4ukKZg3I5Xx3/VWA8IiaQ8O7tZur" crossorigin="anonymous"></script>
@@ -24,20 +26,24 @@
 <script src="/public/js/components/datetime-picker.js"></script>
 {% endblock %}
 
+{% set allServicesSelected = "transactions" %}
 {% block beforeContent %}
   {% if allServiceTransactions %}
-    {{
+    {# @TODO(sfount) a better way of doing this #}
+    {{ super() }}
+    {# {{
       govukBackLink({
         text: "Back to My services",
         href: routes.serviceSwitcher.index
       })
-    }}
+    }} #}
   {% else %}
     {% include "includes/phase-banner.njk" %}
   {% endif %}
 {% endblock %}
 
 {% block mainContent %}
+<div class="govuk-grid-row">
 <div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">
     {% if allServiceTransactions %}
@@ -80,4 +86,7 @@
 
   {% include "transactions/paginator.njk" %}
 </div>
+{% if allServiceTransactions %}
+</div>
+{% endif %}
 {% endblock %}

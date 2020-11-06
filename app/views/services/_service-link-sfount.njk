@@ -1,0 +1,21 @@
+<li>
+  <form method="post" action="{{routes.serviceSwitcher.switch}}">
+  <input name="csrfToken" type="hidden" value="{{csrf}}" />
+  <input name="gatewayAccountId" type="hidden" value="{{ account.external_id }}"/>
+  <button class="govuk-link pay-button--as-link service-switcher {{ account.type }}" type="submit" role="link">
+      {% if account.type === "live" %}
+        Live
+        {% if multipleLiveAccounts %}
+        {{ account.payment_provider | formatPSPname }}
+        {% endif %}
+        account
+      {% else %}
+        Test
+        {% if multipleTestAccounts and account.payment_provider !== "sandbox" %}
+        {{ account.payment_provider | formatPSPname }}
+        {% endif %}
+        account
+      {% endif %}
+  </button>
+  </form>
+</li>

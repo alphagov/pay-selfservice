@@ -1,27 +1,46 @@
-{% extends "../layout-fork.njk" %}
+{% extends "../all-services-base.njk" %}
 
 {% block pageTitle %}
   (sfount) Choose service - GOV.UK Pay
 {% endblock %}
 
-{% block beforeContent %}
-  <div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
-    {% if not hideServiceNav %}
+{% set allServicesSelected = "services" %}
+
+{# {% block beforeContent %}
+  <div id="govuk-pay-sticky-container" data-sticky-container>
+  <div
+    class="govuk-phase-banner govuk-clearfix govuk-pay-sticky"
+    style="z-index: 10; padding: 0; background-color: white;"
+    data-sticky-wrap
+    data-sticky-for="640">
     <nav role="navigation" class="sfount-navigation">
       <ul class="sfount-navigation--list">
         <!-- selected -->
         <li class="sfount-navigation--list-item sfount-navigation--list-item-active">
-          <a id="nav-link-to-services" href="/my-services">Services</a>
+          <a id="nav-link-to-services" href="{{routes.serviceSwitcher.index}}">Services</a>
         </li>
         <!-- non selected -->
         <li class="service-navigation--list-item">
-          <a id="nav-link-to-transactions" href="/all-service-transactions">Transactions</a>
+          <a id="nav-link-to-transactions" href="{{routes.allServiceTransactions.index}}">Transactions</a>
         </li>
+        <li class="service-navigation--list-item">
+          <a id="nav-link-to-transactions" href="{{routes.payouts.list}}">Bank payments</a>
+        </li>
+
       </ul>
     </nav>
-    {% endif %}
+
+    <div class="sfount-live-filter" style="padding-top: 10px; padding-bottom: 5px;">
+      {% if liveMode %}
+      <strong class="govuk-tag govuk-tag--green govuk-!-font-size-19" style="margin-right: 15px;">live</strong>
+      <a href="?environment=test" class="govuk-link">Switch to Test</a>
+      {% else %}
+      <strong class="govuk-tag govuk-tag--grey govuk-!-font-size-19" style="margin-right: 15px;">test</strong>
+      <a href="?environment=live" class="govuk-link">Switch to Live</a>
+      {% endif %}
+    </div>
   </div>
-{% endblock %}
+{% endblock %} #}
 
 {% block mainContent %}
 
@@ -40,59 +59,127 @@
     </div>
   {% endif %}
 
-  <h1 class="govuk-heading-l govuk-grid-column-full govuk-!-margin-bottom-3 service-count">
-    {% if services_singular %}
-      You have {{services.length}} service
-    {% else %}
-      You have {{services.length}} services
-    {% endif %}
-  </h1>
-
-  <div class="govuk-grid-column-full">
-    <p class="govuk-body">
-      <a href="{{routes.serviceSwitcher.create}}" class="govuk-link govuk-link--no-visited-state create-service">
-        Add a new service
-      </a>
-    </p>
-    {% if has_live_account %}
-    <p class="govuk-body">
-      <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-        View transactions for all live services
-      </a>
-    </p>
-    {% endif %}
-    {% if has_account_with_payouts %}
-    <p class="govuk-body">
-      <a href="{{routes.payouts.list}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-        View payments to your bank account
-      </a>
-    </p>
-    {% endif %}
   </div>
 
-  <div class="govuk-grid-column-full">
-    {% if services.length > 7 %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l">Services</h1>
+    </div>
+  </div>
+
+    {# <div class="govuk-grid-row"> #}
       <div class="js-show flex-grid--row">
         <div class="flex-grid--column-half tight">
           <label class="govuk-label" for="service-filter">Filter services</label>
           <div id="service-filter-container" class="autocomplete-container"></div>
         </div>
-        <div class="flex-grid--column-half tight">
+        <div class="flex-grid--column-half tight govuk-visually-hidden">
           <button class="govuk-link pay-button--as-link govuk-!-margin-top-7" id="clear-filters">Clear filter</button>
         </div>
       </div>
-    {% endif %}
+    {# </div> #}
 
-    <div class="flex-grid">
-      {% for service in services %}
-        {% if services.length > 7 %}
-          {% include "./_service-section-small.njk" %}
-        {% else %}
-          {% include "./_service-section.njk" %}
-        {% endif %}
-      {% endfor %}
+      {# <div class="govuk-grid-column-one-half tight">
+        <label class="govuk-label" for="service-filter">Filter services</label>
+        <div id="service-filter-container" class="autocomplete-container"></div>
+      </div>
+    </div> #}
+
+  {% for service in services %}
+
+    {# @TODO(sfount) we would actually do the filtering before requesting services from the backend, filtering wouldn't be done in the template  #}
+    {% if (service.hasLiveAccount and liveMode) or (not service.hasLiveAccount and not liveMode) %}
+    {% set multipleLiveAccounts = service.grouped_accounts.live and service.grouped_accounts.live.length > 1 %}
+    {% set multipleTestAccounts = service.grouped_accounts.test and service.grouped_accounts.test.length > 1 %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <div style="border-top: solid 1px #b1b4b6" class="govuk-!-padding-top-6">
+          <h2 class="govuk-heading-m service-name">
+            {{ service.name }}
+            {% if not service.hasLiveAccount and service.permissions.service_name_update %}
+            <a href="/service/{{ service.external_id }}/edit-name" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-regular govuk-!-margin-left-2 edit-service-name">
+              Edit name <span class="govuk-visually-hidden">for {{ service.name }}</span>
+            </a>
+            {% endif %}
+          </h2>
+        </div>
+      </div>
     </div>
-  </div>
 
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <ul class="govuk-list service-list">
+
+          <!-- @TODO(sfount) as part of this prototype review, sketch out what it would take to deep link all of the service pages rather than rely on cookies -->
+          {% if service.hasLiveAccount %}
+            {% for account in service.grouped_accounts.live %}
+              {% include "./_service-link-sfount.njk" %}
+            {% endfor %}
+
+          {% else %}
+            {% for account in service.grouped_accounts.test %}
+              {% include "./_service-link-sfount.njk" %}
+            {% endfor %}
+          {% endif %}
+        </ul>
+      </div>
+      <div class="govuk-grid-column-one-quarter">
+        <ul class="govuk-list">
+          <li style="padding-bottom: 20px;">
+          {% if service.permissions.users_service_create %}
+            <a class="govuk-link govuk-link--no-visited-state manage-team-members" href="/service/{{ service.external_id }}">
+              Manage team members <span class="govuk-visually-hidden">for {{ service.name }}</span>
+            </a>
+          {% else %}
+            <a class="govuk-link govuk-link--no-visited-state view-team-members" href="/service/{{ service.external_id }}">
+              View team members <span class="govuk-visually-hidden">for {{ service.name }}</span>
+            </a>
+          {% endif %}
+          </li>
+          <li style="padding-bottom: 20px;">
+          {% if service.permissions.merchant_details_read %}
+            <a class="govuk-link govuk-link--no-visited-state edit-merchant-details" href="/organisation-details/{{ service.external_id }}">
+              Organisation details <span class="govuk-visually-hidden">for {{ service.name }}</span>
+            </a>
+          {% endif %}
+          {% if service.hasLiveAccount %}
+            {% for account in service.grouped_accounts.test %}
+              <li style="padding-bottom: 20px;">
+                <form method="post" action="{{routes.serviceSwitcher.switch}}">
+                  <input name="csrfToken" type="hidden" value="{{csrf}}" />
+                  <input name="gatewayAccountId" type="hidden" value="{{ account.external_id }}"/>
+                  <button class="govuk-link pay-button--as-link govuk-link govuk-link--no-visited-state govuk-!-font-size-19" type="submit" role="link">
+                      View
+                      test
+                      {% if multipleTestAccounts and account.payment_provider !== "sandbox" %}
+                      {{ account.payment_provider | formatPSPname }}
+                      {% endif %}
+                      account
+                  </button>
+                </form>
+                {# <a class="govuk-link govuk-link--no-visited-state view-team-members" href="/service/{{ service.external_id }}">
+                  View test
+                  {% if account.payment_provider !== "sandbox" %}
+                  {{ account.payment_provider | formatPSPname }}
+                  {% endif %}
+                  account
+                </a> #}
+              </li>
+            {% endfor %}
+          {% endif %}
+        </ul>
+
+      </div>
+    </div>
+    {# {% if services.length > 7 %}
+      {% include "./_service-section-small.njk" %}
+    {% else %}
+      {% include "./_service-section.njk" %}
+    {% endif %} #}
+
+    {% endif %}
+  {% endfor %}
+  {# </div> #}
+  {# </div> #}
   </div>
 {% endblock %}

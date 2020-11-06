@@ -11,7 +11,7 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res) 
 
   try {
     let payoutsReleaseDate
-    const userPermittedAccountsSummary = await permissions.getLiveGatewayAccountsFor(req.user, 'payouts:read')
+    const userPermittedAccountsSummary = await permissions.getLiveGatewayAccountsFor(req.user, 'payouts:read', req.session.liveMode)
 
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
       res.status(401).render('error', { message: 'You do not have any associated services with rights to view payments to bank accounts.' })

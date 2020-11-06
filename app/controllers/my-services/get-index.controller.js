@@ -28,6 +28,7 @@ module.exports = async (req, res) => {
 
   const aggregatedGatewayAccounts = await serviceService.getGatewayAccounts(aggregatedGatewayAccountIds, req.correlationId)
 
+  console.log('aggregated', aggregatedGatewayAccounts)
   const servicesData = servicesRoles.map(serviceRole => {
     // For Direct Debit currently we initialise req.user.serviceRoles[].service.gatewayAccountIds with external ids,
     // but for Cards we initialise with internal ids.
@@ -37,6 +38,7 @@ module.exports = async (req, res) => {
         serviceRole.service.gatewayAccountIds.includes(gatewayAccount.id.toString()))
     const cardAccounts = gatewayAccounts.filter(gatewayAccount => !isDirectDebitAccount(gatewayAccount))
     const directdebitAccounts = gatewayAccounts.filter(isDirectDebitAccount)
+    const groupedAccounts = _.groupBy(cardAccounts, 'type')
     const payload = {
       name: serviceRole.service.name === 'System Generated' ? 'Temporary Service Name' : serviceRole.service.name,
       external_id: serviceRole.service.externalId,
@@ -44,6 +46,11 @@ module.exports = async (req, res) => {
         cardAccounts: _.sortBy(cardAccounts, 'type', 'asc'),
         directdebitAccounts
       },
+      grouped_accounts: {
+        live: groupedAccounts.live,
+        test: groupedAccounts.test
+      },
+      hasLiveAccount: groupedAccounts.live && groupedAccounts.live.length,
       permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
     }
     return payload

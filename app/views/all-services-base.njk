@@ -1,0 +1,58 @@
+{% extends "./layout-fork.njk" %}
+
+{% block beforeContent %}
+  <div id="govuk-pay-sticky-container" data-sticky-container>
+  <div
+    class="govuk-phase-banner govuk-clearfix govuk-pay-sticky"
+    style="z-index: 10; padding: 0; background-color: white;"
+    data-sticky-wrap
+    data-sticky-for="640">
+    <nav role="navigation" class="sfount-navigation">
+      <ul class="sfount-navigation--list">
+        <li class="sfount-navigation--list-item {{ 'sfount-navigation--list-item-active' if allServicesSelected === 'services' else '' }}">
+          <a id="nav-link-to-services" href="{{routes.serviceSwitcher.index}}">Services</a>
+        </li>
+        <li class="sfount-navigation--list-item {{ 'sfount-navigation--list-item-active' if allServicesSelected === 'transactions' else '' }}">
+          <a id="nav-link-to-transactions" href="{{routes.allServiceTransactions.index}}">Transactions</a>
+        </li>
+        <li class="sfount-navigation--list-item {{ 'sfount-navigation--list-item-active' if allServicesSelected === 'bank_payments' else '' }}">
+          <a id="nav-link-to-transactions" href="{{routes.payouts.list}}">Bank payments</a>
+        </li>
+
+      </ul>
+    </nav>
+
+    <div class="sfount-live-filter" style="padding-top: 10px; padding-bottom: 5px;">
+      {% if liveMode %}
+      <strong class="govuk-tag govuk-tag--green govuk-!-font-size-19" style="margin-right: 15px;">live</strong>
+      <a href="?environment=test" class="govuk-link">Switch to Test</a>
+      {% else %}
+      <strong class="govuk-tag govuk-tag--grey govuk-!-font-size-19" style="margin-right: 15px;">test</strong>
+      <a href="?environment=live" class="govuk-link">Switch to Live</a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block pageSpecificJS %}
+  <script src="/js/sticky.min.js"></script>
+  <script>
+    var sticky = new Sticky('.govuk-pay-sticky')
+    var container = document.querySelector('#govuk-pay-sticky-container')
+    var widthContainer = document.querySelector('.govuk-width-container')
+
+    if (window.ResizeObserver) {
+      var container = document.querySelector('#govuk-pay-sticky-container')
+      var observer = new ResizeObserver(function() {
+        if (sticky.elements) {
+          var width = widthContainer.getBoundingClientRect().width
+          sticky.elements.forEach(function (element) {
+              element.parentElement.style.width = + width + 'px'
+              sticky.update()
+          })
+        }
+      })
+      observer.observe(container)
+    }
+  </script>
+{% endblock %}

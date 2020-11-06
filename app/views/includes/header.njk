@@ -5,15 +5,15 @@ govuk-width-container govuk-header__container--{{accountType}}
 {% if loggedIn %}
 {% set payHeaderNavigation = [
   {
-    text: "My services",
+    text: "All services",
     href: routes.serviceSwitcher.index,
-    active: services.length > 0,
+    active: allServicesSelected === "services",
     attributes: {
       id: "my-services"
     }
   },
   {
-    text: "My profile",
+    text: "Profile",
     href: routes.user.profile,
     active: username.length > 0,
     attributes: {

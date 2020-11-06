@@ -21,11 +21,23 @@
   }
 }
 
-.sfount-navigation {
+.sfount-live-filter {
   margin: 0;
+  background-color: white;
 
   @include govuk-media-query(tablet) {
     margin: 0;
+    float: right;
+  }
+}
+
+.sfount-navigation {
+  margin: 0;
+  background-color: white;
+
+  @include govuk-media-query(tablet) {
+    margin: 0;
+    float: left;
   }
 
   &--list {
@@ -40,7 +52,7 @@
 
     @include govuk-media-query(tablet) {
       display: inline-block;
-      margin: 0 0 0 govuk-spacing(6);
+      margin-right: govuk-spacing(6);
       border-bottom: 5px solid transparent;
       border-left: 0;
     }

@@ -31,6 +31,7 @@ const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-ba
 const checkResponsiblePersonNotSubmitted = require('./middleware/stripe-setup/check-responsible-person-not-submitted')
 const checkVatNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-not-submitted')
 const checkCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-company-number-not-submitted')
+const allServices = require('./middleware/all-services')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -91,7 +92,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode: toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
   partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
@@ -232,10 +233,10 @@ module.exports.bind = function (app) {
   app.get(transactions.redirectDetail, xraySegmentCls, permission('transactions-details:read'), getAccount, transactionDetailRedirectController)
 
   // ALL SERVICE TRANSACTIONS
-  app.get(allServiceTransactions.index, xraySegmentCls, permission('transactions:read'), getAccount, allTransactionsController.getController)
+  app.get(allServiceTransactions.index, xraySegmentCls, permission('transactions:read'), allServices, allTransactionsController.getController)
   app.get(allServiceTransactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, allTransactionsController.downloadTransactions)
 
-  app.get(payouts.list, permission('transactions:read'), payoutsController.listAllServicesPayouts)
+  app.get(payouts.list, permission('transactions:read'), allServices, payoutsController.listAllServicesPayouts)
 
   // YOUR PSP
   app.get(yourPsp.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
@@ -290,7 +291,7 @@ module.exports.bind = function (app) {
   app.post(en.refund, xraySegmentCls, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailUpdate)
 
   // SERVICE SWITCHER
-  app.get(serviceSwitcher.index, xraySegmentCls, myServicesController.getIndex)
+  app.get(serviceSwitcher.index, xraySegmentCls, allServices, myServicesController.getIndex)
   app.post(serviceSwitcher.switch, xraySegmentCls, myServicesController.postIndex)
   app.get(serviceSwitcher.create, xraySegmentCls, createServiceController.get)
   app.post(serviceSwitcher.create, xraySegmentCls, createServiceController.post)

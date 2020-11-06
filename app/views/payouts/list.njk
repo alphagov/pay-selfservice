@@ -1,20 +1,16 @@
-{% extends "../layout.njk" %}
+{% extends "../all-services-base.njk" %}
 
 {% block pageTitle %}
 Payments to your bank account - GOV.UK Pay
 {% endblock %}
 
+{% set allServicesSelected = "bank_payments" %}
 {% block beforeContent %}
   {{ super() }}
-  {{
-    govukBackLink({
-      text: "Back to My services",
-      href: routes.serviceSwitcher.index
-    })
-  }}
 {% endblock %}
 
 {% block mainContent %}
+<div class="govuk-grid-row">
 <div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">Payments to your bank account</h1>
 </div>
@@ -64,6 +60,9 @@ Payments to your bank account - GOV.UK Pay
 
 <div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
   {% include "payouts/paginator.njk" %}
+</div>
+
+</div>
 </div>
 
 {% endblock %}
