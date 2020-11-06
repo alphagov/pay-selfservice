@@ -7,9 +7,7 @@ const { ConnectorClient } = require('./clients/connector.client')
 const directDebitConnectorClient = require('./clients/direct-debit-connector.client')
 const { isADirectDebitAccount } = directDebitConnectorClient
 const CardGatewayAccount = require('../models/GatewayAccount.class')
-const DirectDebitGatewayAccount = require('../models/DirectDebitGatewayAccount.class')
 const Service = require('../models/Service.class')
-const { gatewayAccount } = require('./clients/direct-debit-connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 /**
@@ -21,20 +19,13 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 async function getGatewayAccounts (gatewayAccountIds, correlationId) {
   const cardGatewayAccountIds = gatewayAccountIds.filter(id => !isADirectDebitAccount(id))
 
-  console.log('g1')
-  console.log('g1 - gatewayAccountIds: ', gatewayAccountIds)
+  const cardGatewayAccounts = await connectorClient.getAccounts({
+    gatewayAccountIds: cardGatewayAccountIds,
+    correlationId: correlationId
+  })
 
-  // if (cardGatewayAccountIds.length > 0) {
-    const cardGatewayAccounts = await connectorClient.getAccounts({
-      gatewayAccountIds: cardGatewayAccountIds,
-      correlationId: correlationId
-    })
-
-    return cardGatewayAccounts.accounts
-      .map(gatewayAccount => new CardGatewayAccount(gatewayAccount).toMinimalJson())
-  // } else {
-    // return []
-  // }
+  return cardGatewayAccounts.accounts
+    .map(gatewayAccount => new CardGatewayAccount(gatewayAccount).toMinimalJson())
 }
 
 /**

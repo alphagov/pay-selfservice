@@ -3,15 +3,8 @@
 const chai = require('chai')
 const nock = require('nock')
 const _ = require('lodash')
-const connectorMock = nock(process.env.CONNECTOR_URL, {
-  reqheaders: {
-    'content-type': 'application/json',
-    'host': 'localhost:8001',
-    'accept': 'application/json'
-  }
-}).log(console.log)
+const connectorMock = nock(process.env.CONNECTOR_URL)
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
-const DIRECT_DEBIT_ACCOUNTS_PATH = '/v1/api/accounts'
 const serviceSwitchController = require('../../../app/controllers/my-services')
 const userFixtures = require('../../fixtures/user.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
@@ -31,7 +24,7 @@ describe('service switch controller: list of accounts', function () {
     const allServiceGatewayAccountIds = service1gatewayAccountIds.concat(service2gatewayAccountIds).concat(service3gatewayAccountIds)
     const directDebitGatewayAccountIds = ['DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'DIRECT_DEBIT:ksdfhjhfd;sfksd34']
 
-    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${allServiceGatewayAccountIds.join(',')}`, {})
+    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${allServiceGatewayAccountIds.join(',')}`)
       .reply(200, { accounts: allServiceGatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
         gateway_account_id: iter,
         service_name: `account ${iter}`,
@@ -111,6 +104,9 @@ describe('service switch controller: list of accounts', function () {
   })
 
   it('should render page with no data even if user does not belong to any service', function (done) {
+    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=`)
+      .reply(200, { accounts: [] })
+
     const req = {
       user: userFixtures.validUserResponse({
         username: 'bob',
