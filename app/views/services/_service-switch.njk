@@ -8,12 +8,8 @@
       role="link">
       {{ account.type | title }}
       {% if account.type === 'live' %}
-        {% if account.payment_method === 'direct debit' %}
-          direct debit account
-        {% else %}
-          card account
-        {% endif %}
-        {% else %}
+        card account
+      {% else %}
         account ({{ account.payment_provider }})
       {% endif %}
     </button>
