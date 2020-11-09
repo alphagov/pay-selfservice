@@ -18,15 +18,6 @@
     {% endfor %}
     </ul>
     {% endif %}
-
-    {% if service.gateway_accounts.directdebitAccounts.length %}
-    <h3 class="govuk-heading-s">Direct Debit payments</h3>
-    <ul class="govuk-list service-list">
-    {% for account in service.gateway_accounts.directdebitAccounts %}
-      {% include "./_service-switch.njk" %}
-    {% endfor %}
-    </ul>
-    {% endif %}
   </div>
   <div id="team-members" class="flex-grid--column-half tight marked">
     <ul class="govuk-list">
