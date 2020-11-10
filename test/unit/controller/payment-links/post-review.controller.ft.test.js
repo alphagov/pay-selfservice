@@ -28,10 +28,12 @@ const VALID_CREATE_TOKEN_REQUEST = {
   account_id: GATEWAY_ACCOUNT_ID,
   created_by: VALID_USER.email,
   type: 'PRODUCTS',
-  description: `Token for “${PAYMENT_TITLE}” payment link`
+  description: `Token for “${PAYMENT_TITLE}” payment link`,
+  token_account_type: 'test'
 }
 const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
-  payment_provider: 'sandbox'
+  payment_provider: 'sandbox',
+  type: 'test'
 }
 const VALID_CREATE_TOKEN_RESPONSE = { token: randomUuid() }
 
