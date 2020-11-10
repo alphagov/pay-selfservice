@@ -4,9 +4,7 @@ const chai = require('chai')
 const nock = require('nock')
 const _ = require('lodash')
 const connectorMock = nock(process.env.CONNECTOR_URL)
-const directDebitConnectorMock = nock(process.env.DIRECT_DEBIT_CONNECTOR_URL)
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
-const DIRECT_DEBIT_ACCOUNTS_PATH = '/v1/api/accounts'
 const serviceSwitchController = require('../../../app/controllers/my-services')
 const userFixtures = require('../../fixtures/user.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
@@ -30,12 +28,6 @@ describe('service switch controller: list of accounts', function () {
       .reply(200, { accounts: allServiceGatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
         gateway_account_id: iter,
         service_name: `account ${iter}`,
-        type: _.sample(['test', 'live'])
-      }).getPlain()) })
-
-    directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `?externalAccountIds=${directDebitGatewayAccountIds.join(',')}`)
-      .reply(200, { accounts: directDebitGatewayAccountIds.map(iter => gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
-        gateway_account_id: iter,
         type: _.sample(['test', 'live'])
       }).getPlain()) })
 
@@ -102,19 +94,19 @@ describe('service switch controller: list of accounts', function () {
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
-        expect(directDebitGatewayAccountNamesOf(renderData, 'service-external-id-4')).to.have.lengthOf(2).and.to.include('DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'DIRECT_DEBIT:ksdfhjhfd;sfksd34')
-
         done()
       }
     }
 
     const cardGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.cardAccounts.map(g => g.service_name)
-    const directDebitGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.directdebitAccounts.map(g => g.id)
 
     serviceSwitchController.getIndex(req, res)
   })
 
   it('should render page with no data even if user does not belong to any service', function (done) {
+    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=`)
+      .reply(200, { accounts: [] })
+
     const req = {
       user: userFixtures.validUserResponse({
         username: 'bob',

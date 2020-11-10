@@ -177,24 +177,17 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccounts: function (params) {
-    return new Promise((resolve, reject) => {
-      let url = _accountsUrlFor(params.gatewayAccountIds, this.connectorUrl)
-      let startTime = new Date()
-      let context = {
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId: params.correlationId,
-        method: 'GET',
-        description: 'get an account',
-        service: SERVICE_NAME
-      }
+    let url = _accountsUrlFor(params.gatewayAccountIds, this.connectorUrl)
+    let context = {
+      url: url,
+      correlationId: params.correlationId,
+      description: 'get an account',
+      service: SERVICE_NAME
+    }
 
-      let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-      oldBaseClient.get(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
-    })
+    return baseClient.get(
+      url, context
+    )
   },
 
   /**

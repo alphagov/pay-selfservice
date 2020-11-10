@@ -18,7 +18,6 @@ const gatewayAccountId1 = '1'
 const gatewayAccountId2 = '2'
 const nonExistentId = '3'
 const directDebitAccountId1 = 'DIRECT_DEBIT:adashdkjlq3434lk'
-const directDebitAccountId2 = 'DIRECT_DEBIT:sadasdkasjdlkjlkeuo2'
 const nonExistentDirectDebitId = 'DIRECT_DEBIT:XXXsadasdkasjdlkjlkeuo2'
 
 let directDebitClientStub
@@ -42,99 +41,34 @@ const getGatewayAccounts = function () {
   }
 }
 
-const getDDGatewayAccounts = function (obj) {
-  return new Promise(function (resolve) {
-    resolve({
-      accounts: obj.gatewayAccountIds.filter(fil => fil !== nonExistentDirectDebitId).map(iter => gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
-        gateway_account_id: iter,
-        gateway_account_external_id: iter,
-        service_name: `account ${iter}`,
-        type: _.sample(['test', 'live'])
-      }).getPlain())
-    })
-  })
-}
-
 describe('service service', function () {
   describe('when getting gateway accounts', function () {
-    it('should return gateway accounts for the valid ids', function (done) {
-      directDebitClientStub = {
-        gatewayAccounts: {
-          get: getDDGatewayAccounts
-        }
-      }
-
+    it('should return card gateway accounts only for the valid ids', function (done) {
       connectorClientStub = {
         ConnectorClient: getGatewayAccounts
       }
 
       serviceService = proxyquire('../../../app/services/service.service',
         {
-          '../services/clients/connector.client': connectorClientStub,
-          '../services/clients/direct-debit-connector.client': directDebitClientStub
+          '../services/clients/connector.client': connectorClientStub
         })
 
       serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId, directDebitAccountId1, nonExistentDirectDebitId], correlationId).then(gatewayAccounts => {
-        expect(gatewayAccounts).to.have.lengthOf(3)
-        expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
-          .to.have.all.members(['1', '2', 'DIRECT_DEBIT:adashdkjlq3434lk'])
-        done()
-      })
-    })
-
-    it('should not call connector for retrieving direct debit accounts', function (done) {
-      directDebitClientStub = {
-        gatewayAccounts: {
-          get: getDDGatewayAccounts
-        },
-        isADirectDebitAccount: () => true
-      }
-
-      connectorClientStub = {
-        ConnectorClient: function () {
-          return {
-            getAccounts: () => {
-              return new Promise(() => {
-                done('connector should not be called')
-              })
-            }
-          }
-        }
-      }
-
-      serviceService = proxyquire('../../../app/services/service.service',
-        {
-          '../services/clients/connector.client': connectorClientStub,
-          '../services/clients/direct-debit-connector.client': directDebitClientStub
-        })
-
-      serviceService.getGatewayAccounts([directDebitAccountId1, directDebitAccountId2], correlationId).then(gatewayAccounts => {
         expect(gatewayAccounts).to.have.lengthOf(2)
-        expect(gatewayAccounts.map(accountObj => accountObj.external_id)).to.have.all.members(['DIRECT_DEBIT:sadasdkasjdlkjlkeuo2', 'DIRECT_DEBIT:adashdkjlq3434lk'])
+        expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
+          .to.have.all.members(['1', '2'])
         done()
       })
     })
 
     it('should not call direct debit connector for card accounts', function (done) {
-      directDebitClientStub = {
-        gatewayAccounts: {
-          get: function () {
-            return new Promise(function () {
-              done('dd connector should not be called')
-            })
-          }
-        },
-        isADirectDebitAccount: () => false
-      }
-
       connectorClientStub = {
         ConnectorClient: getGatewayAccounts
       }
 
       serviceService = proxyquire('../../../app/services/service.service',
         {
-          '../services/clients/connector.client': connectorClientStub,
-          '../services/clients/direct-debit-connector.client': directDebitClientStub
+          '../services/clients/connector.client': connectorClientStub
         })
 
       serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2], correlationId).should.be.fulfilled.then(gatewayAccounts => {
@@ -170,20 +104,6 @@ describe('service service', function () {
         }
       }
       directDebitClientStub = {
-        gatewayAccount: {
-          create: () => {
-            return new Promise(() => {
-              console.log('dd connector should not be called')
-              done('should not be called')
-            })
-          },
-          get: () => {
-            return new Promise(() => {
-              console.log('dd connector should not be called')
-              done('should not be called')
-            })
-          }
-        },
         isADirectDebitAccount: () => false
       }
 
@@ -223,20 +143,6 @@ describe('service service', function () {
         }
       }
       directDebitClientStub = {
-        gatewayAccount: {
-          create: () => {
-            return new Promise(() => {
-              console.log('---> dd connector should not be called')
-              done('should not be called')
-            })
-          },
-          get: () => {
-            return new Promise(() => {
-              console.log('---< dd connector should not be called')
-              done('should not be called')
-            })
-          }
-        },
         isADirectDebitAccount: () => true
       }
 
@@ -296,22 +202,6 @@ describe('service service', function () {
         ConnectorClient: function () {
           return {
             patchServiceName: patchServiceName
-          }
-        }
-      }
-      directDebitClientStub = {
-        gatewayAccount: {
-          create: () => {
-            return new Promise(() => {
-              console.log('---> dd connector should not be called')
-              done('should not be called')
-            })
-          },
-          get: () => {
-            return new Promise(() => {
-              console.log('---< dd connector should not be called')
-              done('should not be called')
-            })
           }
         }
       }
