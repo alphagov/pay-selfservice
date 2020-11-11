@@ -38,14 +38,16 @@ describe('POST to create an API key', () => {
           'account_id': GATEWAY_ACCOUNT_ID,
           'description': '',
           'created_by': user.email,
-          'token_type': 'CARD'
+          'token_type': 'CARD',
+          'token_account_type': 'live'
         }
       )
         .reply(200, TOKEN_RESPONSE)
 
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
-          payment_provider: 'sandbox'
+          payment_provider: 'sandbox',
+          type: 'live'
         })
 
       supertest(app)
@@ -86,14 +88,16 @@ describe('POST to create an API key', () => {
           'account_id': GATEWAY_ACCOUNT_ID,
           'description': DESCRIPTION,
           'created_by': user.email,
-          'token_type': 'CARD'
+          'token_type': 'CARD',
+          'token_account_type': 'test'
         }
       )
         .reply(200, TOKEN_RESPONSE)
 
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, {
-          payment_provider: 'sandbox'
+          payment_provider: 'sandbox',
+          type: 'test'
         })
 
       VALID_PAYLOAD.description = DESCRIPTION
