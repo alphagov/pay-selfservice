@@ -47,10 +47,12 @@ function progressivelyEnhanceSelects () {
       })
     }
     select.outerHTML = multiSelect(configuration)
-    const newMultiSelect = document.getElementById(`${configuration.id}`)
+    const newMultiSelect = document.getElementById(`${configuration.id}__container`)
+
     const openButton = [...newMultiSelect.querySelectorAll(OPEN_BUTTON_SELECTOR)][0]
     const closeButton = [...newMultiSelect.querySelectorAll(CLOSE_BUTTON_SELECTOR)][0]
     const items = [...newMultiSelect.querySelectorAll(ITEM_SELECTOR)]
+
     const dropdown = [...newMultiSelect.querySelectorAll(DROPDOWN_SELECTOR)][0]
     const scrollContainer = [...newMultiSelect.querySelectorAll(SCROLL_CONTAINER_SELECTOR)][0]
     openButton.addEventListener('click', onOpenButtonClick, false)
@@ -83,12 +85,14 @@ const onOpenButtonClick = event => {
   target.blur();
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'visible';
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(ITEM_SELECTOR)][0].focus()
+  target.setAttribute('aria-expanded', true)
 }
 
 const onCloseAreaClick = event => {
   const { target } = event;
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(OPEN_BUTTON_SELECTOR)][0].focus();
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'hidden'
+  target.setAttribute('aria-expanded', false)
 }
 
 const onItemChange = event => {
