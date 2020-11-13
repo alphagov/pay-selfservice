@@ -13,6 +13,7 @@ module.exports = async function createAPIKey (req, res, next) {
     description: description,
     account_id: accountId,
     created_by: req.user.email,
+    type: 'API',
     token_type: isADirectDebitAccount(accountId) ? 'DIRECT_DEBIT' : 'CARD',
     token_account_type: req.account.type
   }
