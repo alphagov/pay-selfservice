@@ -26,7 +26,8 @@ const VALID_USER = getUser({
 const VALID_CREATE_TOKEN_REQUEST = {
   account_id: GATEWAY_ACCOUNT_ID,
   created_by: VALID_USER.email,
-  description: 'Token for Demo Payment'
+  description: 'Token for Demo Payment',
+  type: 'PRODUCTS'
 }
 const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
   payment_provider: 'sandbox'

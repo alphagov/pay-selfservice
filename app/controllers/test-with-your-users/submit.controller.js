@@ -39,7 +39,8 @@ module.exports = (req, res) => {
     payload: {
       account_id: gatewayAccountId,
       created_by: req.user.email,
-      description: `Token for Prototype: ${req.body['payment-description']}`
+      description: `Token for Prototype: ${req.body['payment-description']}`,
+      type: 'PRODUCTS'
     } })
     .then(publicAuthData => productsClient.product.create({
       payApiToken: publicAuthData.token,

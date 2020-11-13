@@ -28,7 +28,8 @@ const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
 const VALID_CREATE_TOKEN_REQUEST = {
   account_id: GATEWAY_ACCOUNT_ID,
   created_by: VALID_USER.email,
-  description: `Token for Prototype: ${VALID_PAYLOAD['payment-description']}`
+  description: `Token for Prototype: ${VALID_PAYLOAD['payment-description']}`,
+  type: 'PRODUCTS'
 }
 const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   name: VALID_PAYLOAD['payment-description'],

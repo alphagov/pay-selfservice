@@ -39,7 +39,8 @@ describe('POST to create an API key', () => {
           'description': '',
           'created_by': user.email,
           'token_type': 'CARD',
-          'token_account_type': 'live'
+          'token_account_type': 'live',
+          'type': 'API'
         }
       )
         .reply(200, TOKEN_RESPONSE)
@@ -89,7 +90,8 @@ describe('POST to create an API key', () => {
           'description': DESCRIPTION,
           'created_by': user.email,
           'token_type': 'CARD',
-          'token_account_type': 'test'
+          'token_account_type': 'test',
+          'type': 'API'
         }
       )
         .reply(200, TOKEN_RESPONSE)
