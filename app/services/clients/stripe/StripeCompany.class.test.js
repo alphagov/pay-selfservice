@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 
-const StripeCompany = require('./stripeCompany.model')
+const StripeCompany = require('./StripeCompany.class')
 
 describe('StripeCompany', () => {
   it('should successfully create a StripeCompany object', () => {
