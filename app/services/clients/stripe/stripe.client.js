@@ -3,9 +3,9 @@
 const stripe = require('stripe')(process.env.STRIPE_ACCOUNT_API_KEY)
 const ProxyAgent = require('https-proxy-agent')
 
-const StripeBankAccount = require('./stripeBankAccount.model')
-const StripeCompany = require('./stripeCompany.model')
-const StripePerson = require('./stripePerson.model')
+const StripeBankAccount = require('./StripeBankAccount.class')
+const StripeCompany = require('./StripeCompany.class')
+const StripePerson = require('./StripePerson.class')
 
 // Constants
 const STRIPE_HOST = process.env.STRIPE_HOST

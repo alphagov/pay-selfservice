@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 
-const StripeBankAccount = require('./stripeBankAccount.model')
+const StripeBankAccount = require('./StripeBankAccount.class')
 
 describe('StripeBankAccount', () => {
   it('should successfully create a StripeBankAccount object', () => {

@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 
-const StripePerson = require('./stripePerson.model')
+const StripePerson = require('./StripePerson.class')
 
 const firstName = 'Carol'
 const lastName = 'Danvers'
