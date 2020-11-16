@@ -167,8 +167,8 @@ describe('Transactions list pagination', () => {
         cy.get('#email').invoke('val').should('contain', 'gds4')
         cy.get('#lastDigitsCardNumber').invoke('val').should('contain', '4242')
         cy.get('#cardholderName').invoke('val').should('contain', 'doe')
-        cy.get('#option-select-title-state').invoke('text').should('contain', 'Success')
-        cy.get('#option-select-title-brand').invoke('text').should('contain', 'Visa, Mastercard')
+        cy.get('#state').invoke('text').should('contain', 'Success')
+        cy.get('#card-brand').invoke('text').should('contain', 'Visa, Mastercard')
       })
 
       it('should return correct display size options when total over 500', () => {
