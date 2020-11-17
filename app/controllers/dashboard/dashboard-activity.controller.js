@@ -13,6 +13,8 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const auth = require('../../services/auth.service.js')
 const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
+
+// @TMP(sfount) this feels like a service?
 const {
   NOT_STARTED,
   ENTERED_ORGANISATION_NAME,
@@ -88,7 +90,17 @@ const displayGoLiveLink = (service, account, user) => {
       user.hasPermission(service.externalId, 'go-live-stage:read'))
 }
 
+// @TMP(sfount) - what do we assume has happened and is good to go by the controller stage
+// - the user is authenticated to access this gateway account? - this wasn't checked anywhere explicitly
+// >> was it implicitly checked when setting the gateway account id based on the service role in `getAccount`
+// - the user is logged in
 module.exports = async (req, res) => {
+  // /account/:account_id/dashboard
+  // - explicitly check the account_id exists in one of the users service roles
+  // - fetch the account from connector
+
+  // @TMP(sfount) - as this has already run in the middleware, it's deterministic and will always get the gateway acount id set before
+  // - could just access the session gateway account
   const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
 
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')

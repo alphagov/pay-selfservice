@@ -152,7 +152,11 @@ module.exports.bind = function (app) {
   // LOGIN
   app.get(user.logIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginController.loginGet)
   app.post(user.logIn, xraySegmentCls, validateAndRefreshCsrf, trimUsername, loginController.loginUser, hasServices, resolveService, getAccount, loginController.postLogin)
+
+  // @TMP(sfount) - assuming passport serialise and deserialise is what fetches the user from admin users
+  // @TMP(sfount) - how many middleware does this actually need, what are we doing
   app.get(dashboard.index, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardController.dashboardActivity)
+
   app.get(user.noAccess, xraySegmentCls, loginController.noAccess)
   app.get(user.logOut, xraySegmentCls, loginController.logout)
   app.get(user.otpSendAgain, xraySegmentCls, enforceUserFirstFactor, validateAndRefreshCsrf, loginController.sendAgainGet)

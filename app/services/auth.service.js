@@ -138,17 +138,26 @@ function getCurrentGatewayAccountId (req) {
     req.gateway_account = {}
   }
   // retrieve user's gatewayAccountIds
+  // @TMP(sfount) - don't think this will ever be needed as the service is ensured in has-services
+  // TODO: rm
   let currentServiceGatewayAccountIds = lodash.get(req, 'service.gatewayAccountIds') || lodash.get(req, 'user.serviceRoles[0].service.gatewayAccountIds', false)
   if ((!currentServiceGatewayAccountIds) || (currentServiceGatewayAccountIds.length === 0)) {
     logger.error(`Could not resolve the gatewayAccountId for user: ${lodash.get(req, 'user.externalId')}`)
     return null
   }
+
+  // @TMP(sfount) - this is doing a permissions check and otherwise defaulting to something
+  // this feels particularly fragile
+
   // check if we don't have Cookie value
   // or if it's different user  / different userGatewayAccountIds
   if ((!currentGatewayAccountId) ||
   (currentServiceGatewayAccountIds.indexOf(currentGatewayAccountId) === -1)) {
     currentGatewayAccountId = currentServiceGatewayAccountIds[0]
   }
+
+  // @TMP(sfount) - why is the req.session.gateway_account - sort sessions out
+
   // save currentGatewayAccountId and return it
   req.gateway_account.currentGatewayAccountId = currentGatewayAccountId
   return req.gateway_account.currentGatewayAccountId
