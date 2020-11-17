@@ -60,13 +60,13 @@ describe('The create payment link flow', () => {
             cy.get('input#payment-link-title').should('exist')
             cy.get('input#payment-link-title').should('have.attr', 'lang', 'en')
             cy.get('label[for="payment-link-title"]').should('contain', 'Title')
-            cy.get('input#payment-link-title').parent('.govuk-form-group').get('span')
+            cy.get('#payment-link-title-hint')
               .should('contain', 'For example, “Pay for a parking permit”')
 
             cy.get('textarea#payment-link-description').should('exist')
             cy.get('textarea#payment-link-description').should('have.attr', 'lang', 'en')
             cy.get('label[for="payment-link-description"]').should('exist')
-            cy.get('textarea#payment-link-description').parent('.govuk-form-group').get('span')
+            cy.get('#payment-link-description-hint')
               .should('contain', 'Give your users more information.')
 
             cy.get('div#payment-link-title-confirmation').should('not.exist')
@@ -116,12 +116,12 @@ describe('The create payment link flow', () => {
 
             cy.get('input#reference-label').should('exist')
             cy.get('input#reference-label').should('have.attr', 'lang', 'en')
-            cy.get('input#reference-label').parent('.govuk-form-group').get('span')
+            cy.get('#reference-label-hint')
               .should('contain', 'For example, “invoice number”')
 
             cy.get('textarea#reference-hint-text').should('exist')
             cy.get('textarea#reference-hint-text').should('have.attr', 'lang', 'en')
-            cy.get('textarea#reference-hint-text').parent('.govuk-form-group').get('span')
+            cy.get('#reference-hint-text-hint')
               .should('contain', 'Tell users what the')
 
             cy.get('button').should('exist')
@@ -218,7 +218,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should have instructions for an English payment link', () => {
-        cy.get('input#payment-link-title').parent('.govuk-form-group').get('span')
+        cy.get('#payment-link-title-hint')
           .should('contain', 'For example, “Pay for a parking permit”')
       })
 
@@ -275,13 +275,13 @@ describe('The create payment link flow', () => {
             cy.get('input#payment-link-title').should('exist')
             cy.get('input#payment-link-title').should('have.attr', 'lang', 'cy')
             cy.get('label[for="payment-link-title"]').should('contain', 'Welsh title')
-            cy.get('input#payment-link-title').parent('.govuk-form-group').get('span')
+            cy.get('#payment-link-title-hint')
               .should('contain', 'For example, “Talu am drwydded barcio”')
 
             cy.get('textarea#payment-link-description').should('exist')
             cy.get('textarea#payment-link-description').should('have.attr', 'lang', 'cy')
             cy.get('label[for="payment-link-description"]').should('exist')
-            cy.get('textarea#payment-link-description').parent('.govuk-form-group').get('span')
+            cy.get('#payment-link-description-hint')
               .should('contain', 'Give your users more information in Welsh')
 
             cy.get('button').should('exist')
@@ -325,12 +325,12 @@ describe('The create payment link flow', () => {
 
             cy.get('input#reference-label').should('exist')
             cy.get('input#reference-label').should('have.attr', 'lang', 'cy')
-            cy.get('input#reference-label').parent('.govuk-form-group').get('span')
+            cy.get('#reference-label-hint')
               .should('contain', 'For example, “rhif anfoneb”')
 
             cy.get('textarea#reference-hint-text').should('exist')
             cy.get('textarea#reference-hint-text').should('have.attr', 'lang', 'cy')
-            cy.get('textarea#reference-hint-text').parent('.govuk-form-group').get('span')
+            cy.get('#reference-hint-text-hint')
               .should('contain', 'Explain in Welsh')
 
             cy.get('button').should('exist')
