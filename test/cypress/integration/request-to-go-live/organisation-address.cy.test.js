@@ -52,7 +52,7 @@ describe('The organisation address page', () => {
             cy.get('input#address-postcode[name="address-postcode"]').should('exist')
 
             cy.get('label[for="telephone-number"]').should('exist')
-            cy.get('span#telephone-number-hint').should('exist')
+            cy.get('#telephone-number-hint').should('exist')
             cy.get('input#telephone-number[name="telephone-number"]').should('exist')
           })
       })
