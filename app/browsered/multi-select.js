@@ -76,6 +76,7 @@ const onItemBlur = event => {
   setTimeout(() => {
     if ([...dropdown.querySelectorAll(`${ITEM_SELECTOR}:focus`)].length <= 0) {
       dropdown.style.visibility = 'hidden'
+      dropdown.closest(TOP_LEVEL_SELECTOR).querySelector(OPEN_BUTTON_SELECTOR).setAttribute('aria-expanded', false)
     }
   }, 100)
 }
@@ -85,14 +86,14 @@ const onOpenButtonClick = event => {
   target.blur();
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'visible';
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(ITEM_SELECTOR)][0].focus()
-  target.setAttribute('aria-expanded', true)
+  target.closest(OPEN_BUTTON_SELECTOR).setAttribute('aria-expanded', true)
 }
 
 const onCloseAreaClick = event => {
   const { target } = event;
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(OPEN_BUTTON_SELECTOR)][0].focus();
   [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'hidden'
-  target.setAttribute('aria-expanded', false)
+  target.closest(OPEN_BUTTON_SELECTOR).setAttribute('aria-expanded', false)
 }
 
 const onItemChange = event => {
