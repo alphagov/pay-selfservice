@@ -12,10 +12,26 @@
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
 {% if flash.createPaymentLinkSuccess %}
-    {{ successNotification({
-      heading: "Your payment link is now live",
-      body: "Give this link to your users to collect payments for your service."
-    }) }}
+  {% if isTestGateway %}
+    {% set heading = "Your test payment link is ready to use" %}
+    {% set body %}
+      <span>
+        To collect payments from your users with this link you will need to
+        <a class="govuk-link" href="{{ paths.generateRoute(paths.requestToGoLive.index, { externalServiceId: externalServiceId }) }}">request to go live</a>
+        and create the payment link again.
+      </span>
+    {% endset %}
+  {% else %}
+    {% set heading = "Your payment link is now live" %}
+    {% set body %}
+      <span>Give this link to your users to collect payments for your service</span>
+    {% endset %}
+  {% endif %}
+
+  {{ successNotification({
+    heading: heading,
+    body: body
+  }) }}
 {% endif %}
 
 {% if not permissions.tokens_create %}
