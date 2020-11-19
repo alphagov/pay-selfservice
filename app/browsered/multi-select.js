@@ -55,6 +55,7 @@ function progressivelyEnhanceSelects () {
 
     const dropdown = [...newMultiSelect.querySelectorAll(DROPDOWN_SELECTOR)][0]
     const scrollContainer = [...newMultiSelect.querySelectorAll(SCROLL_CONTAINER_SELECTOR)][0]
+
     openButton.addEventListener('click', onOpenButtonClick, false)
     closeButton.addEventListener('click', onCloseAreaClick, false)
     items.forEach(item => {
@@ -69,6 +70,26 @@ function progressivelyEnhanceSelects () {
     }
     updateDisplayedValue(dropdown.parentNode)
   })
+
+  closeMultiSelectOnEscapeKeypress()
+}
+
+const closeMultiSelectOnEscapeKeypress = function () {
+  document.body.addEventListener('keydown', checkForEscapeKeyHandler, false)
+
+  function checkForEscapeKeyHandler (e) {
+    var keyCode = e.keyCode
+    if (keyCode === 27) {
+      const mulitSelectElements = document.querySelectorAll(DROPDOWN_SELECTOR)
+
+      mulitSelectElements.forEach(element => {
+        if (element.style.visibility === 'visible') {
+          element.style.visibility = 'hidden'
+          element.closest(TOP_LEVEL_SELECTOR).querySelector(OPEN_BUTTON_SELECTOR).focus()     
+        }
+      })
+    }
+  }
 }
 
 const onItemBlur = event => {
