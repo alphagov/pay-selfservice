@@ -670,6 +670,30 @@ ConnectorClient.prototype = {
     })
   },
 
+    /**
+   * @param gatewayAccountId
+   * @param integrationVersion3ds (number)
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+  updateIntegrationVersion3ds: function (gatewayAccountId, integrationVersion3ds, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'integration_version_3ds',
+          value: integrationVersion3ds
+        },
+        correlationId,
+        description: 'Set the 3DS integration version to use when authorising with the gateway',
+        service: SERVICE_NAME
+      }
+    )
+  },
+
   getStripeAccountSetup: function (gatewayAccountId, correlationId) {
     return baseClient.get(
       {
