@@ -19,12 +19,12 @@
     <p class="govuk-body">Updating information about your business is required to help protect against fraud and stay current with Know Your Customer (KYC) regulations.</p>
     <p class="govuk-body">All additional required information will be stored by Stripe, not GOV.UK Pay.</p>
 
-    {# enctype="multipart/form-data" #}
     <form
         id="compliance-required-info-form"
         method="POST"
         action="/stripe-compliance-2020"
         class="govuk-!-margin-top-6"
+        enctype="multipart/form-data"
         novalidate>
         <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
         <fieldset class="govuk-fieldset">
@@ -34,7 +34,7 @@
                 </h1>
             </legend>
 
-            {{ govukInput({
+            {# {{ govukInput({
                 label: { html: '<span class="govuk-visually-hidden">Your organisation</span> Email' },
                 id: "organisation-email",
                 name: "organisation-email",
@@ -42,7 +42,7 @@
                 errorMessage: {
                     text: errors["organisation-email"]
                 } if errors["organisation-email"]
-            }) }}
+            }) }} #}
 
             {{ govukInput({
                 label: { html: '<span class="govuk-visually-hidden">Your organisation</span> Website' },
@@ -80,6 +80,7 @@
                 id: "person-number",
                 name: "person-number",
                 value: form["person-number"],
+                hint: { text: "Any valid UK phone number" },
                 errorMessage: {
                     text: errors["person-number"]
                 } if errors["person-number"]
@@ -95,28 +96,29 @@
                 } if errors["person-job-title"]
             }) }}
 
-            {{ govukFileUpload({
-                id: "person-document",
-                name: "person-document",
-                label: { html: 'Upload a <span class="govuk-visually-hidden">responsible person</span> verification document' },
-                errorMessage: {
-                    text: errors["person-document"]
-                } if errors["person-document"],
-                attributes: {
-                    "accept": "image/jpeg, image/png, application/pdf"
-                }
-            }) }}
-            {# <div class="govuk-form-group">
-                <label class="govuk-label" for="person-documnet">
-                Upload a <span class="govuk-visually-hidden">responsible person</span> verification document
-                </label>
-                <div id="verification-document-hint" class="govuk-hint">
-                    A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+            {% if personIsVerified %}
+                <div class="govuk-form-group">
+                    <label class="govuk-label">
+                        Upload a <span class="govuk-visually-hidden">responsible person</span> verification document
+                    </label>
+                    <p class="govuk-body">
+                        <strong class="govuk-tag govuk-tag--green">Verified</strong> Your responsible person has already been successfully verified with Stripe.
+                    </p>
                 </div>
-                <input class="govuk-file-upload" id="person-documnet" name="person-document" type="file">
-            </div> #}
+            {% else %}
+                {{ govukFileUpload({
+                    id: "person-document",
+                    name: "person-document",
+                    label: { html: 'Upload a <span class="govuk-visually-hidden">responsible person</span> verification document' },
+                    errorMessage: {
+                        text: errors["person-document"]
+                    } if errors["person-document"],
+                    attributes: {
+                        "accept": "image/jpeg, image/png, application/pdf"
+                    }
+                }) }}
+            {% endif %}
         </fieldset>
-
 
         {{ govukButton({ text: "Save and continue" }) }}
     </form>

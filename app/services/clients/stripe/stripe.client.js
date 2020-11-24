@@ -53,5 +53,28 @@ module.exports = {
   retrieveResponsiblePerson: async function (stripeAccountId) {
     const accountPersons = await this.listPersons(stripeAccountId)
     return accountPersons.data && accountPersons.data[0]
+  },
+
+  uploadIdentificationDocument: function (stripeAccountId, fileName, buffer) {
+    return stripe.files.create({
+      purpose: 'identity_document',
+      file: {
+        data: buffer,
+        name: `${stripeAccountId}_${fileName}`,
+        type: 'application/octet-stream'
+      }
+    })
+  },
+
+  patchAccountForCompliance2020: function (stripeAccountId, accountPatch) {
+    return stripe.accounts.update(stripeAccountId, accountPatch.payload())
+  },
+
+  patchPersonForCompliance2020: function (stripeAccountId, personId, personPatch) {
+    return stripe.accounts.updatePerson(
+      stripeAccountId,
+      personId,
+      personPatch.payload()
+    )
   }
 }

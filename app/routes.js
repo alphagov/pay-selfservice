@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
+const multer = require('multer')
 const { getNamespace, createNamespace } = require('continuation-local-storage')
 
 const logger = require('./utils/logger')(__filename)
@@ -101,6 +102,9 @@ module.exports.paths = paths
 
 // Constants
 const clsXrayConfig = require('../config/xray-cls')
+
+const storage = multer.memoryStorage()
+const upload = multer({ storage })
 
 module.exports.bind = function (app) {
   AWSXRay.enableManualMode()
@@ -518,12 +522,14 @@ module.exports.bind = function (app) {
   app.post(stripeSetup.compliance,
     xraySegmentCls,
     enforceUserAuthenticated,
+    upload.single('person-document'),
     validateAndRefreshCsrf,
     permission('stripe-responsible-person:update'),
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
     getStripeAccount,
+    resolveService,
     stripeSetupCompliance.updateStripeAccountForCompliance
   )
 
