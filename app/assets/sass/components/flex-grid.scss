@@ -37,16 +37,26 @@
   &--column-third {
     @extend .govuk-grid-column-one-third;
     margin-bottom: govuk-spacing(6);
+
+    @include govuk-media-query(tablet) {
+      flex: 0 0 auto;
+    }
+  }
+
+  &--column-two-thirds {
+    @extend .govuk-grid-column-two-thirds;
+    margin-bottom: govuk-spacing(6);
+
+    @include govuk-media-query(tablet) {
+      flex: 0 0 auto;
+    }
   }
 
   &--column-half,
-  &--column-third {
+  &--column-third,
+  &--column-two-thirds {
     &.marked {
       margin-bottom: 0;
-
-      &:nth-child(even) {
-        border-right: solid 1px $govuk-border-colour;
-      }
     }
   }
 }

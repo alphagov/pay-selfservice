@@ -22,3 +22,11 @@
     }
   }
 }
+
+.manage-service-links-container{
+  margin-top: govuk-spacing(3);
+
+  @include govuk-media-query(tablet) {
+    margin-top: govuk-spacing(0);
+  }
+}
