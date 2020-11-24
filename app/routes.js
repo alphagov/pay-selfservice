@@ -74,6 +74,7 @@ const stripeSetupBankDetailsController = require('./controllers/stripe-setup/ban
 const stripeSetupResponsiblePersonController = require('./controllers/stripe-setup/responsible-person')
 const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number')
 const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/company-number')
+const stripeSetupCompliance = require('./controllers/stripe-setup/compliance/http.controller')
 const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-setup/add-psp-account-details')
 const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
@@ -485,6 +486,26 @@ module.exports.bind = function (app) {
     getStripeAccount,
     checkCompanyNumberNotSubmitted,
     stripeSetupCompanyNumberController.post
+  )
+
+  app.get(stripeSetup.compliance,
+    xraySegmentCls,
+    permission('stripe-responsible-person:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    getStripeAccount,
+    stripeSetupCompliance.compliancePage
+  )
+
+  app.post(stripeSetup.compliance,
+    xraySegmentCls,
+    permission('stripe-responsible-person:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    getStripeAccount,
+    stripeSetupCompliance.updateStripeAccountForCompliance
   )
 
   app.get(stripeSetup.stripeSetupLink, stripeSetupDashboardRedirectController.get)

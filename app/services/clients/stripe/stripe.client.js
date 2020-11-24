@@ -48,5 +48,10 @@ module.exports = {
     return stripe.accounts.retrieve(stripeAccountId, {
       timeout: 10000
     })
+  },
+
+  retrieveResponsiblePerson: async function (stripeAccountId) {
+    const accountPersons = await this.listPersons(stripeAccountId)
+    return accountPersons.data && accountPersons.data[0]
   }
 }

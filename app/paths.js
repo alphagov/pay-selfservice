@@ -186,6 +186,7 @@ module.exports = {
     responsiblePerson: '/responsible-person',
     vatNumber: '/vat-number',
     companyNumber: '/company-number',
+    compliance: '/stripe-compliance-2020',
     stripeSetupLink: '/service/:externalServiceId/dashboard/live'
   },
   stripe: {

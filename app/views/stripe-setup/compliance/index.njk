@@ -1,0 +1,88 @@
+{% extends "../../layout.njk" %}
+
+{% block pageTitle %}
+  Please update your account information - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {% if errors %}
+        {% set errorList = [] %}
+        {{ govukErrorSumary({
+            titleText: 'There was a problem',
+            errorList: errorList
+        }) }}
+    {% endif %}
+
+    <h1 class="govuk-heading-l">Please update your account information</h1>
+    <p class="govuk-body">GOV.UK Pay's provider, Stripe, have updated thier account compliance requirements.</p>
+    <p class="govuk-body">Updating information about your business is required to help protect against fraud and stay current with Know Your Customer (KYC) regulations.</p>
+    <p class="govuk-body">All additional required information will be stored by Stripe, not GOV.UK Pay.</p>
+
+    <form
+        id="compliance-required-info-form"
+        method="POST"
+        action="/stripe-compliance-2020"
+        class="govuk-!-margin-top-6"
+        enctype="multipart/form-data"
+        novalidate>
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                Your organisation
+                </h1>
+            </legend>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="organisation-email">
+                <span class="govuk-visually-hidden">of your organisation</span> Email
+                </label>
+                <input class="govuk-input" id="organisation-email" name="organisation-email" type="text"></div>
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="organisation-url">
+                <span class="govuk-visually-hidden">Your organisation</span> Website
+                </label>
+                <input class="govuk-input" id="organisation-url" name="organisation-url" type="text"></div>
+        </fieldset>
+
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                Your responsible person
+                </h1>
+            </legend>
+
+
+            <p class="govuk-body">As a reminder, the responsible person for this account is <b>{{ responsiblePerson.first_name }} {{ responsiblePerson.last_name }}</b>.</p>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="person-email">
+                <span class="govuk-visually-hidden">Responsible person</span> Email
+                </label>
+                <input class="govuk-input" id="person-email" name="person-email" type="text"></div>
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="person-number">
+                <span class="govuk-visually-hidden">Responsible person</span> Phone number
+                </label>
+                <input class="govuk-input" id="person-number" name="person-number" type="text"></div>
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="person-job-title">
+                <span class="govuk-visually-hidden">Responsible person</span> Job title
+                </label>
+                <input class="govuk-input" id="person-job-title" name="person-job-title" type="text"></div>
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="person-documnet">
+                Upload a <span class="govuk-visually-hidden">responsible person</span> verification document
+                </label>
+                <div id="verification-document-hint" class="govuk-hint">
+                    A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+                </div>
+                <input class="govuk-file-upload" id="person-documnet" name="person-document" type="file">
+            </div>
+        </fieldset>
+
+
+        {{ govukButton({ text: "Save and continue" }) }}
+    </form>
+   </div>
+{% endblock %}
