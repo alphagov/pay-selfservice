@@ -208,7 +208,6 @@ module.exports.bind = function (app) {
     ...lodash.values(billingAddress),
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
-    ...lodash.values(stripeSetup),
     ...lodash.values(stripe),
     ...lodash.values(digitalWallet),
     ...lodash.values(settings),
@@ -404,6 +403,8 @@ module.exports.bind = function (app) {
   // Stripe setup: bank details
   app.get(
     stripeSetup.bankDetails,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     xraySegmentCls,
     permission('stripe-bank-details:update'),
     getAccount,
@@ -415,6 +416,8 @@ module.exports.bind = function (app) {
   )
   app.post(
     stripeSetup.bankDetails,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     xraySegmentCls,
     permission('stripe-bank-details:update'),
     getAccount,
@@ -428,6 +431,8 @@ module.exports.bind = function (app) {
   // Stripe setup: responsible person
   app.get(stripeSetup.responsiblePerson,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     permission('stripe-responsible-person:update'),
     getAccount,
     paymentMethodIsCard,
@@ -438,6 +443,8 @@ module.exports.bind = function (app) {
   )
   app.post(stripeSetup.responsiblePerson,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     permission('stripe-responsible-person:update'),
     getAccount,
     paymentMethodIsCard,
@@ -449,6 +456,8 @@ module.exports.bind = function (app) {
   // Stripe setup: VAT number
   app.get(stripeSetup.vatNumber,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
@@ -458,6 +467,8 @@ module.exports.bind = function (app) {
   )
   app.post(stripeSetup.vatNumber,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
@@ -470,6 +481,8 @@ module.exports.bind = function (app) {
   // Stripe setup: company number
   app.get(stripeSetup.companyNumber,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
@@ -479,6 +492,8 @@ module.exports.bind = function (app) {
   )
   app.post(stripeSetup.companyNumber,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
@@ -490,6 +505,8 @@ module.exports.bind = function (app) {
 
   app.get(stripeSetup.compliance,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     permission('stripe-responsible-person:update'),
     getAccount,
     paymentMethodIsCard,
@@ -500,6 +517,8 @@ module.exports.bind = function (app) {
 
   app.post(stripeSetup.compliance,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    validateAndRefreshCsrf,
     permission('stripe-responsible-person:update'),
     getAccount,
     paymentMethodIsCard,
@@ -508,7 +527,7 @@ module.exports.bind = function (app) {
     stripeSetupCompliance.updateStripeAccountForCompliance
   )
 
-  app.get(stripeSetup.stripeSetupLink, stripeSetupDashboardRedirectController.get)
+  app.get(stripeSetup.stripeSetupLink, enforceUserAuthenticated, validateAndRefreshCsrf, stripeSetupDashboardRedirectController.get)
 
   app.get(stripe.addPspAccountDetails,
     xraySegmentCls,

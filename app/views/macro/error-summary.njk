@@ -3,9 +3,10 @@
 {% macro errorSummary(params) %}
   {% set errorList = [] %}
   {% for key, message in params.errors %}
+    {% set href = ("#" + key) if params.keyIsHref else params.hrefs[key] %}
     {% set errorList = (errorList.push({
         text: message | safe,
-        href: params.hrefs[key]
+        href: href
       }), errorList) %}
   {% endfor %}
 

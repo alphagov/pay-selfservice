@@ -1,4 +1,5 @@
 {% extends "../../layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Please update your account information - {{ currentService.name }} - GOV.UK Pay
@@ -7,10 +8,9 @@
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     {% if errors %}
-        {% set errorList = [] %}
-        {{ govukErrorSumary({
-            titleText: 'There was a problem',
-            errorList: errorList
+        {{ errorSummary({
+            errors: errors,
+            keyIsHref: true
         }) }}
     {% endif %}
 
@@ -19,13 +19,14 @@
     <p class="govuk-body">Updating information about your business is required to help protect against fraud and stay current with Know Your Customer (KYC) regulations.</p>
     <p class="govuk-body">All additional required information will be stored by Stripe, not GOV.UK Pay.</p>
 
+    {# enctype="multipart/form-data" #}
     <form
         id="compliance-required-info-form"
         method="POST"
         action="/stripe-compliance-2020"
         class="govuk-!-margin-top-6"
-        enctype="multipart/form-data"
         novalidate>
+        <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <h1 class="govuk-fieldset__heading">
@@ -33,16 +34,25 @@
                 </h1>
             </legend>
 
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="organisation-email">
-                <span class="govuk-visually-hidden">of your organisation</span> Email
-                </label>
-                <input class="govuk-input" id="organisation-email" name="organisation-email" type="text"></div>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="organisation-url">
-                <span class="govuk-visually-hidden">Your organisation</span> Website
-                </label>
-                <input class="govuk-input" id="organisation-url" name="organisation-url" type="text"></div>
+            {{ govukInput({
+                label: { html: '<span class="govuk-visually-hidden">Your organisation</span> Email' },
+                id: "organisation-email",
+                name: "organisation-email",
+                value: form["organisation-email"],
+                errorMessage: {
+                    text: errors["organisation-email"]
+                } if errors["organisation-email"]
+            }) }}
+
+            {{ govukInput({
+                label: { html: '<span class="govuk-visually-hidden">Your organisation</span> Website' },
+                id: "organisation-url",
+                name: "organisation-url",
+                value: form["organisation-url"],
+                errorMessage: {
+                    text: errors["organisation-url"]
+                } if errors["organisation-url"]
+            }) }}
         </fieldset>
 
         <fieldset class="govuk-fieldset">
@@ -55,22 +65,48 @@
 
             <p class="govuk-body">As a reminder, the responsible person for this account is <b>{{ responsiblePerson.first_name }} {{ responsiblePerson.last_name }}</b>.</p>
 
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="person-email">
-                <span class="govuk-visually-hidden">Responsible person</span> Email
-                </label>
-                <input class="govuk-input" id="person-email" name="person-email" type="text"></div>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="person-number">
-                <span class="govuk-visually-hidden">Responsible person</span> Phone number
-                </label>
-                <input class="govuk-input" id="person-number" name="person-number" type="text"></div>
-            <div class="govuk-form-group">
-                <label class="govuk-label" for="person-job-title">
-                <span class="govuk-visually-hidden">Responsible person</span> Job title
-                </label>
-                <input class="govuk-input" id="person-job-title" name="person-job-title" type="text"></div>
-            <div class="govuk-form-group">
+            {{ govukInput({
+                label: { html: '<span class="govuk-visually-hidden">Responsible person</span> Email' },
+                id: "person-email",
+                name: "person-email",
+                value: form["person-email"],
+                errorMessage: {
+                    text: errors["person-email"]
+                } if errors["person-email"]
+            }) }}
+
+            {{ govukInput({
+                label: { html: '<span class="govuk-visually-hidden">Responsible person</span> Phone number' },
+                id: "person-number",
+                name: "person-number",
+                value: form["person-number"],
+                errorMessage: {
+                    text: errors["person-number"]
+                } if errors["person-number"]
+            }) }}
+
+            {{ govukInput({
+                label: { html: '<span class="govuk-visually-hidden">Responsible person</span> Job title' },
+                id: "person-job-title",
+                name: "person-job-title",
+                value: form["person-job-title"],
+                errorMessage: {
+                    text: errors["person-job-title"]
+                } if errors["person-job-title"]
+            }) }}
+
+            {{ govukFileUpload({
+                id: "person-document",
+                name: "person-document",
+                label: { html: 'Upload a <span class="govuk-visually-hidden">responsible person</span> verification document' },
+                errorMessage: {
+                    text: errors["person-document"]
+                } if errors["person-document"],
+                attributes: {
+                    "accept": "image/jpeg, image/png, application/pdf"
+                }
+            }) }}
+            {# <div class="govuk-form-group">
                 <label class="govuk-label" for="person-documnet">
                 Upload a <span class="govuk-visually-hidden">responsible person</span> verification document
                 </label>
@@ -78,7 +114,7 @@
                     A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
                 </div>
                 <input class="govuk-file-upload" id="person-documnet" name="person-document" type="file">
-            </div>
+            </div> #}
         </fieldset>
 
 
