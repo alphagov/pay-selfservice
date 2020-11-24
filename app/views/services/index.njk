@@ -58,11 +58,7 @@
 
     <div class="flex-grid">
       {% for service in services %}
-        {% if services.length > 7 %}
-          {% include "./_service-section-small.njk" %}
-        {% else %}
           {% include "./_service-section.njk" %}
-        {% endif %}
       {% endfor %}
     </div>
   </div>
