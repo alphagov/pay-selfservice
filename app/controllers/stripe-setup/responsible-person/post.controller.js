@@ -9,7 +9,7 @@ const { response, renderErrorView } = require('../../../utils/response')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth
 } = require('../../../utils/validation/server-side-form-validations')
-const { listPersons, updatePerson } = require('../../../services/clients/stripe/stripe.client')
+const { updatePerson, tmpSetUpdated, tmpDocumentUpload } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
@@ -105,9 +105,9 @@ module.exports = async function (req, res) {
   } else {
     try {
       const stripeAccountId = res.locals.stripeAccount.stripeAccountId
-      const personsResponse = await listPersons(stripeAccountId)
-      const person = personsResponse.data.pop()
-      await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))
+      const document = await tmpDocumentUpload(stripeAccountId, req.file.originalname, req.file.buffer)
+      await updatePerson(stripeAccountId, document.id, buildStripePerson(formFields))
+      await tmpSetUpdated(stripeAccountId)
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
 
       return res.redirect(303, paths.stripe.addPspAccountDetails)

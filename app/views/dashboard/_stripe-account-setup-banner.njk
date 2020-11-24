@@ -17,7 +17,7 @@
         {% if isStripeAccountRestricted %}
           <h2 class="govuk-heading-m">Stripe have restricted your account</h2>
 
-          <p class="govuk-body-m">To start taking payments again, please add:</p>
+          <p class="govuk-body-m">To take payments, please add:</p>
         {% elif stripeAccountHasDeadline %}
           {% set dateString = stripeAccount.requirements.current_deadline %}
 
@@ -63,7 +63,7 @@
     <div class="account-status-panel account-status-panel--restricted govuk-grid-row govuk-!-margin-bottom-5">
       <div class="govuk-grid-column-two-thirds">
           <h2 class="govuk-heading-m">Stripe have restricted your account</h2>
-          <p class="govuk-body-m">To start taking payments again, please contact support.</p>
+          <p class="govuk-body-m">To take payments, please contact support.</p>
           <p class="govuk-body">
             <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a>
           </p>

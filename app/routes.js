@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
 const { getNamespace, createNamespace } = require('continuation-local-storage')
+const multer = require('multer')
 
 const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
@@ -100,6 +101,9 @@ module.exports.paths = paths
 
 // Constants
 const clsXrayConfig = require('../config/xray-cls')
+
+const storage = multer.memoryStorage()
+const upload = multer({ storage })
 
 module.exports.bind = function (app) {
   AWSXRay.enableManualMode()
@@ -207,7 +211,6 @@ module.exports.bind = function (app) {
     ...lodash.values(billingAddress),
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
-    ...lodash.values(stripeSetup),
     ...lodash.values(stripe),
     ...lodash.values(digitalWallet),
     ...lodash.values(settings),
@@ -404,6 +407,7 @@ module.exports.bind = function (app) {
   app.get(
     stripeSetup.bankDetails,
     xraySegmentCls,
+    enforceUserAuthenticated, validateAndRefreshCsrf,
     permission('stripe-bank-details:update'),
     getAccount,
     paymentMethodIsCard,
@@ -414,6 +418,7 @@ module.exports.bind = function (app) {
   )
   app.post(
     stripeSetup.bankDetails,
+    enforceUserAuthenticated, validateAndRefreshCsrf,
     xraySegmentCls,
     permission('stripe-bank-details:update'),
     getAccount,
@@ -427,6 +432,7 @@ module.exports.bind = function (app) {
   // Stripe setup: responsible person
   app.get(stripeSetup.responsiblePerson,
     xraySegmentCls,
+    enforceUserAuthenticated, validateAndRefreshCsrf,
     permission('stripe-responsible-person:update'),
     getAccount,
     paymentMethodIsCard,
@@ -437,6 +443,9 @@ module.exports.bind = function (app) {
   )
   app.post(stripeSetup.responsiblePerson,
     xraySegmentCls,
+    enforceUserAuthenticated,
+    upload.single('identity-document'),
+    validateAndRefreshCsrf,
     permission('stripe-responsible-person:update'),
     getAccount,
     paymentMethodIsCard,
@@ -448,6 +457,7 @@ module.exports.bind = function (app) {
   // Stripe setup: VAT number
   app.get(stripeSetup.vatNumber,
     xraySegmentCls,
+    enforceUserAuthenticated, validateAndRefreshCsrf,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
@@ -457,6 +467,7 @@ module.exports.bind = function (app) {
   )
   app.post(stripeSetup.vatNumber,
     xraySegmentCls,
+    enforceUserAuthenticated, validateAndRefreshCsrf,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
@@ -469,6 +480,7 @@ module.exports.bind = function (app) {
   // Stripe setup: company number
   app.get(stripeSetup.companyNumber,
     xraySegmentCls,
+    enforceUserAuthenticated, validateAndRefreshCsrf,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
@@ -478,6 +490,7 @@ module.exports.bind = function (app) {
   )
   app.post(stripeSetup.companyNumber,
     xraySegmentCls,
+    enforceUserAuthenticated, validateAndRefreshCsrf,
     permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
@@ -487,10 +500,11 @@ module.exports.bind = function (app) {
     stripeSetupCompanyNumberController.post
   )
 
-  app.get(stripeSetup.stripeSetupLink, stripeSetupDashboardRedirectController.get)
+  app.get(stripeSetup.stripeSetupLink, enforceUserAuthenticated, validateAndRefreshCsrf, stripeSetupDashboardRedirectController.get)
 
   app.get(stripe.addPspAccountDetails,
     xraySegmentCls,
+    enforceUserAuthenticated, validateAndRefreshCsrf,
     permission('stripe-account-details:update'),
     getAccount,
     paymentMethodIsCard,

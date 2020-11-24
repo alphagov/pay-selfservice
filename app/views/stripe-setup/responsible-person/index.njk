@@ -73,7 +73,13 @@
 
     <p class="govuk-body">Stripe will store the responsible person’s details, not GOV.UK Pay.</p>
 
-    <form id="responsible-person-form" method="post" action="/responsible-person" class="govuk-!-margin-top-4" novalidate>
+    <form
+      id="responsible-person-form"
+      method="post"
+      action="/responsible-person?_csrf={{ csrf }}"
+      class="govuk-!-margin-top-4"
+      enctype="multipart/form-data"
+      novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% call govukFieldset({
@@ -250,6 +256,18 @@
           }
         ]
       }) }}
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="identity-document">
+          Upload a file
+        </label>
+        <input
+          class="govuk-file-upload"
+          id="file-identity-document"
+          name="identity-document"
+          accept="image/jpeg, image/png, application/pdf"
+          type="file">
+      </div>
 
       {{ govukButton({ text: "Save and continue" }) }}
     </form>

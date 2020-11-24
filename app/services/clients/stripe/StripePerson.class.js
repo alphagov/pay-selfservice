@@ -45,7 +45,14 @@ function build (params) {
       day: params.dob_day,
       month: params.dob_month,
       year: params.dob_year
-    }
+    },
+    relationship: {
+      representative: true,
+      executive: true,
+      title: ''
+    },
+    email: '',
+    phone: ''
   }
 
   if (params.address_line2) {

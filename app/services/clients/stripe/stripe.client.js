@@ -35,13 +35,48 @@ module.exports = {
     return stripe.accounts.update(stripeAccountId, company.basicObject())
   },
 
+  tmpSetUpdated: function (stripeAccountId) {
+    return stripe.accounts.update(stripeAccountId, {
+      email: '',
+      company: {
+        directors_provided: true,
+        owners_provided: true,
+        executives_provided: true,
+        phone: ''
+      },
+      business_profile: {
+        mcc: 9399,
+        url: 'https://payments.service.gov.uk'
+      }
+    })
+  },
+
+  tmpDocumentUpload: function (stripeAccountId, fileName, fileBuffer) {
+    return stripe.files.create({
+      purpose: 'identity_document',
+      file: {
+        data: fileBuffer,
+        name: `${stripeAccountId}_${fileName}`,
+        type: 'application/octet-stream'
+      }
+    })
+  },
+
   listPersons: function (stripeAccountId) {
     return stripe.accounts.listPersons(stripeAccountId)
   },
 
-  updatePerson: function (stripeAccountId, stripePersonId, body) {
+  updatePerson: function (stripeAccountId, stripeDocumentFileId, body) {
     const stripePerson = new StripePerson(body)
-    return stripe.accounts.updatePerson(stripeAccountId, stripePersonId, stripePerson.basicObject())
+    // return stripe.accounts.updatePerson(stripeAccountId, stripePersonId, stripePerson.basicObject())
+    return stripe.accounts.createPerson(stripeAccountId, {
+      ...stripePerson.basicObject(),
+      verification: {
+        additional_document: {
+          front: stripeDocumentFileId
+        }
+      }
+    })
   },
 
   retrieveAccountDetails: function (stripeAccountId) {
