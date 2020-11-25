@@ -241,7 +241,7 @@ describe('The create payment link flow', () => {
           expect(location.pathname).to.eq(`/create-payment-link/manage`)
         })
 
-        cy.get('.notification').find('h2').should('contain', 'Your payment link is now live')
+        cy.get('.notification').find('h2').should('contain', 'Your Payment link is ready to test')
       })
     })
   })
