@@ -12,6 +12,10 @@ const { response } = require('../../utils/response.js')
 const { renderErrorView } = require('../../utils/response.js')
 const { getFilters, describeFilters } = require('../../utils/filters.js')
 const states = require('../../utils/states')
+
+// this module uses the old base client pub/ sub `on` error propagation, in certain
+// cases this relies on the instance of the client being unique to correctly
+// handle errors.
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')

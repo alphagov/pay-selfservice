@@ -5,8 +5,9 @@ const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
 
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+
 module.exports = async (req, res) => {
-  const connector = new ConnectorClient(process.env.CONNECTOR_URL)
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
 

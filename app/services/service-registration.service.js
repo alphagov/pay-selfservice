@@ -3,14 +3,14 @@
 const logger = require('../utils/logger')(__filename)
 const getAdminUsersClient = require('./clients/adminusers.client')
 const ConnectorClient = require('./clients/connector.client').ConnectorClient
-const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
+const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const completeServiceInvite = (inviteCode, gatewayAccountIds, correlationId) => {
   return getAdminUsersClient({ correlationId }).completeInvite(inviteCode, gatewayAccountIds)
 }
 
 const createGatewayAccount = function (correlationId) {
-  return connectorClient().createGatewayAccount('sandbox', 'test', null, null, correlationId)
+  return connectorClient.createGatewayAccount('sandbox', 'test', null, null, correlationId)
 }
 
 module.exports = {

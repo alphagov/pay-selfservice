@@ -11,14 +11,18 @@ const notificationUpdateUrl = function (accountID) {
   return process.env.CONNECTOR_URL + EMAIL_NOTIFICATION_UPDATE_API_PATH.replace('{accountId}', accountID)
 }
 
-const connectorClient = function () {
+// this module uses the old base client pub/ sub `on` error propagation, in certain
+// cases this relies on the instance of the client being unique to correctly
+// handle errors. This instantiation should be removed when the newer promise
+// based client is used
+const newConnectorClient = function () {
   return new ConnectorClient(process.env.CONNECTOR_URL)
 }
 
 const getEmailSettings = function (accountID, correlationId) {
   return new Promise(function (resolve, reject) {
     const startTime = new Date()
-    connectorClient().getAccount({
+    newConnectorClient().getAccount({
       gatewayAccountId: accountID,
       correlationId: correlationId
     })
@@ -42,7 +46,7 @@ const updateConfirmationTemplate = function (accountID, emailText, correlationId
   return new Promise(function (resolve, reject) {
     const startTime = new Date()
     const patch = { 'op': 'replace', 'path': '/payment_confirmed/template_body', 'value': emailText }
-    connectorClient().updateConfirmationEmail({
+    newConnectorClient().updateConfirmationEmail({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
@@ -63,7 +67,7 @@ const setEmailCollectionMode = function (accountID, collectionMode, correlationI
   return new Promise(function (resolve, reject) {
     const startTime = new Date()
     const patch = { 'op': 'replace', 'path': 'email_collection_mode', 'value': collectionMode }
-    connectorClient().updateEmailCollectionMode({
+    newConnectorClient().updateEmailCollectionMode({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
@@ -82,7 +86,7 @@ const setConfirmationEnabled = function (accountID, enabled, correlationId) {
   return new Promise(function (resolve, reject) {
     const startTime = new Date()
     const patch = { 'op': 'replace', 'path': '/payment_confirmed/enabled', 'value': enabled }
-    connectorClient().updateConfirmationEmailEnabled({
+    newConnectorClient().updateConfirmationEmailEnabled({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
@@ -101,7 +105,7 @@ const setRefundEmailEnabled = function (accountID, enabled, correlationId) {
   return new Promise(function (resolve, reject) {
     const startTime = new Date()
     const patch = { 'op': 'replace', 'path': '/refund_issued/enabled', 'value': enabled }
-    connectorClient().updateRefundEmailEnabled({
+    newConnectorClient().updateRefundEmailEnabled({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID

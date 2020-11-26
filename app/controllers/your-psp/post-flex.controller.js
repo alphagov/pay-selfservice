@@ -13,9 +13,9 @@ const ORGANISATIONAL_UNIT_ID_FIELD = 'organisational-unit-id'
 const ISSUER_FIELD = 'issuer'
 const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 
-module.exports = async (req, res) => {
-  const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
+module.exports = async (req, res) => {
   const correlationId = req.headers[correlationHeader] || ''
 
   const accountId = req.account.gateway_account_id

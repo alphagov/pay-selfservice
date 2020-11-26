@@ -13,7 +13,11 @@ const { CONNECTOR_URL } = process.env
 const { CORRELATION_HEADER } = require('../utils/correlation-header')
 const { isPasswordLessThanTenChars } = require('../browsered/field-validation-checks')
 
-const connectorClient = () => new ConnectorClient(CONNECTOR_URL)
+// this module uses the old base client pub/ sub `on` error propagation, in certain
+// cases this relies on the instance of the client being unique to correctly
+// handle errors. This instantiation should be removed when the newer promise
+// based client is used
+const newConnectorClient = () => new ConnectorClient(CONNECTOR_URL)
 
 function showSuccessView (viewMode, req, res) {
   let responsePayload = {}
@@ -118,7 +122,7 @@ module.exports = {
     var url = connectorUrl.replace('{accountId}', accountId)
     var correlationId = req.headers[CORRELATION_HEADER] || ''
 
-    connectorClient().postAccountNotificationCredentials({
+    newConnectorClient().postAccountNotificationCredentials({
       payload: { username, password },
       correlationId: correlationId,
       gatewayAccountId: accountId
@@ -167,7 +171,7 @@ module.exports = {
     var correlationId = req.headers[CORRELATION_HEADER] || ''
 
     var startTime = new Date()
-    connectorClient().patchAccountCredentials({
+    newConnectorClient().patchAccountCredentials({
       payload: credentialsPatchRequestValueOf(req),
       correlationId: correlationId,
       gatewayAccountId: accountId
