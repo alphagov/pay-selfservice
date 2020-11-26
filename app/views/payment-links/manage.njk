@@ -54,10 +54,15 @@
     {% endif %}
   </p>
 
-  <p class="govuk-body payment-links-list--header">
-    You can download reports about your payments from your account. Edit a payment link to add extra columns to these reports. For example, to include your cost centre code.
-  </p>
+  <h2 class="govuk-heading-m">Add metadata for reconciliation and reporting</h2>
 
+  <p class="govuk-body">You can add metadata like cost centre codes or business area to your payment links. To add these:</p>
+
+  <ol class="govuk-list govuk-list--number">
+    <li>Find the Payment link you want and select <span class="govuk-!-font-weight-bold">Edit</span>.</li>
+    <li>Select <span class="govuk-!-font-weight-bold">Add a reporting column<span>.</li>
+  </ol>
+  
   {% if englishPaymentLinks.length %}
   <ul class="govuk-list pay-!-border-top govuk-!-padding-top-3 govuk-!-padding-bottom-3 payment-links-list">
     {% for product in englishPaymentLinks %}
