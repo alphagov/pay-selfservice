@@ -5,52 +5,52 @@
 {% endblock %}
 
 {% block mainContent %}
-  {% if new_service_name %}
-    <div class="govuk-grid-column-full govuk-!-margin-0">
-      <div class="flash-container flash-container--good">
-        <p id="new-service-name" class="govuk-body govuk-!-margin-bottom-0">You have been added to {{new_service_name}}</p>
+  <div class="govuk-grid-column-two-thirds">
+    {% if new_service_name %}
+      <div class="govuk-grid-column-full govuk-!-margin-0">
+        <div class="flash-container flash-container--good">
+          <p id="new-service-name" class="govuk-body govuk-!-margin-bottom-0">You have been added to {{new_service_name}}</p>
+        </div>
       </div>
-    </div>
-  {% endif %}
-
-  <h1 class="govuk-heading-l govuk-grid-column-full govuk-!-margin-bottom-3 service-count">
-    {% if services_singular %}
-      You have {{services.length}} service
-    {% else %}
-      You have {{services.length}} services
     {% endif %}
-  </h1>
 
-  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-3 service-count">
+      {% if services_singular %}
+        You have {{services.length}} service
+      {% else %}
+        You have {{services.length}} services
+      {% endif %}
+    </h1>
+
     <p class="govuk-body">
       <a href="{{routes.serviceSwitcher.create}}" class="govuk-link govuk-link--no-visited-state create-service">
         Add a new service
       </a>
     </p>
-    {% if has_live_account %}
-    <p class="govuk-body">
-      <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-        View transactions for all live services
-      </a>
-    </p>
-    {% endif %}
-    {% if has_account_with_payouts %}
-    <p class="govuk-body">
-      <a href="{{routes.payouts.list}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-        View payments to your bank account
-      </a>
-    </p>
-    {% endif %}
-  </div>
 
-  <div class="govuk-grid-column-full">
+    {% if has_live_account %}
+      <p class="govuk-body">
+        <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
+          View transactions for all live services
+        </a>
+      </p>
+    {% endif %}
+
+    {% if has_account_with_payouts %}
+      <p class="govuk-body">
+        <a href="{{routes.payouts.list}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
+          View payments to your bank account
+        </a>
+      </p>
+    {% endif %}
+    
     {% if services.length > 7 %}
       <div class="js-show flex-grid--row">
-        <div class="flex-grid--column-half tight">
+        <div class="flex-grid--column-two-thirds tight">
           <label class="govuk-label" for="service-filter">Filter services</label>
           <div id="service-filter-container" class="autocomplete-container"></div>
         </div>
-        <div class="flex-grid--column-half tight">
+        <div class="flex-grid--column-third tight">
           <button class="govuk-link pay-button--as-link govuk-!-margin-top-7" id="clear-filters">Clear filter</button>
         </div>
       </div>
@@ -60,6 +60,6 @@
       {% for service in services %}
           {% include "./_service-section.njk" %}
       {% endfor %}
-    </div>
+    </div>    
   </div>
 {% endblock %}
