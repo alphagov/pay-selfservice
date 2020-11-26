@@ -13,9 +13,7 @@ module.exports = {
    */
   authenticate: function (username, submittedPassword, correlationId) {
     if (!username || !submittedPassword) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error('Failed to authenticate'))
-      })
+      return Promise.reject(new Error('Failed to authenticate'))
     }
     return adminUsersClient.authenticateUser(username, submittedPassword, correlationId)
   },
@@ -28,9 +26,7 @@ module.exports = {
    */
   authenticateSecondFactor: function (externalId, code, correlationId) {
     if (!externalId || !code) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error('Failed to authenticate second factor'))
-      })
+      return Promise.reject(new Error('Failed to authenticate second factor'))
     }
 
     return adminUsersClient.authenticateSecondFactor(externalId, code, correlationId)
