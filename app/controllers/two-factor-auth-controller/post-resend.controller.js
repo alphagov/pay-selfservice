@@ -5,7 +5,7 @@ const userService = require('../../services/user.service.js')
 const paths = require('../../paths')
 
 module.exports = (req, res) => {
-  userService.sendProvisonalOTP(req.user, req.correlationId)
+  userService.sendProvisionalOTP(req.user, req.correlationId)
     .then(() => {
       req.flash('generic', 'Another verification code has been sent to your phone')
       return res.redirect(paths.user.profile.twoFactorAuth.configure)

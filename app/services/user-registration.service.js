@@ -1,6 +1,7 @@
 'use strict'
 
 const getAdminUsersClient = require('./clients/adminusers.client')
+const adminUsersClient = getAdminUsersClient()
 
 module.exports = {
 
@@ -14,7 +15,7 @@ module.exports = {
    * @returns {*|Constructor}
    */
   submitRegistration: function (code, telephoneNumber, password, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).generateInviteOtpCode(code, telephoneNumber, password)
+    return adminUsersClient.generateInviteOtpCode(code, telephoneNumber, password, correlationId)
   },
 
   /**
@@ -25,15 +26,15 @@ module.exports = {
    * @param correlationId
    */
   verifyOtpAndCreateUser: function (code, verifyCode, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).verifyOtpAndCreateUser(code, verifyCode)
+    return adminUsersClient.verifyOtpAndCreateUser(code, verifyCode, correlationId)
   },
 
   resendOtpCode: function (code, phoneNumber, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).resendOtpCode(code, phoneNumber)
+    return adminUsersClient.resendOtpCode(code, phoneNumber, correlationId)
   },
 
   completeInvite: function (code, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).completeInvite(code)
+    return adminUsersClient.completeInvite(correlationId, code)
   }
 
 }
