@@ -522,7 +522,10 @@ module.exports.bind = function (app) {
   app.post(stripeSetup.compliance,
     xraySegmentCls,
     enforceUserAuthenticated,
-    upload.single('person-document'),
+    upload.fields([
+      { name: 'person-identity-document', maxCount: 1 },
+      { name: 'person-additional-document', maxCount: 1 }
+    ]),
     validateAndRefreshCsrf,
     permission('stripe-responsible-person:update'),
     getAccount,

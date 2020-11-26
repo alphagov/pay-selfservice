@@ -55,12 +55,12 @@ module.exports = {
     return accountPersons.data && accountPersons.data[0]
   },
 
-  uploadIdentificationDocument: function (stripeAccountId, fileName, buffer) {
+  uploadIdentificationDocument: function (stripeAccountId, purposeString, fileName, buffer) {
     return stripe.files.create({
       purpose: 'identity_document',
       file: {
         data: buffer,
-        name: `${stripeAccountId}_${fileName}`,
+        name: `${stripeAccountId}_${purposeString}_${fileName}`,
         type: 'application/octet-stream'
       }
     })

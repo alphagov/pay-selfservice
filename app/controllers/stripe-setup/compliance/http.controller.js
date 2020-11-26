@@ -17,16 +17,24 @@ const validationRules = [
   { field: stripeCompliancePatchFields.RESPONSIBLE_PERSON_JOB_TITLE_FIELD, validator: validateMandatoryField }
 ]
 
-function validateDocumentFile (file) {
-  if (!file) {
-    return 'Select a verification document'
+function validateDocumentFile (files, shouldIncludePDFs = false) {
+  if (!files) {
+    return 'Select a document'
   }
+  const file = files[0]
 
   if (file.size > 10000000) {
     return 'The selected file must be smaller than 10MB'
   }
-  if (!['image/png', 'image/jpeg', 'application/pdf'].includes(file.mimetype)) {
-    return 'The selected file must be a PNG, JPG or PDF'
+
+  if (shouldIncludePDFs) {
+    if (!['image/png', 'image/jpeg', 'application/pdf'].includes(file.mimetype)) {
+      return 'The selected file must be a PNG, JPG or PDF'
+    }
+  } else {
+    if (!['image/png', 'image/jpeg'].includes(file.mimetype)) {
+      return 'The selected file must be a PNG or JPG'
+    }
   }
   return null
 }
@@ -64,8 +72,10 @@ async function updateStripeAccountForCompliance (req, res, next) {
     const personIsVerified = responsiblePerson.verification.status === 'verified'
 
     // if the user is already verified we aren't expecting a document upload
-    const documentError = personIsVerified === false && validateDocumentFile(req.file)
-    if (documentError) errors[stripeCompliancePatchFields.RESPONSIBLE_PERSON_DOCUMENT_FIELD] = documentError
+    const identityDocumentError = personIsVerified === false && validateDocumentFile(req.files && req.files[stripeCompliancePatchFields.RESPONSIBLE_PERSON_IDENTITY_DOCUMENT_FIELD], true)
+    if (identityDocumentError) errors[stripeCompliancePatchFields.RESPONSIBLE_PERSON_IDENTITY_DOCUMENT_FIELD] = identityDocumentError
+    const additionalDocumentError = personIsVerified === false && validateDocumentFile(req.files && req.files[stripeCompliancePatchFields.RESPONSIBLE_PERSON_ADDITIONAL_DOCUMENT_FIELD], false)
+    if (additionalDocumentError) errors[stripeCompliancePatchFields.RESPONSIBLE_PERSON_ADDITIONAL_DOCUMENT_FIELD] = additionalDocumentError
 
     if (Object.keys(errors).length) {
       return response(req, res, 'stripe-setup/compliance/index', { form, errors, responsiblePerson, personIsVerified })
@@ -73,9 +83,14 @@ async function updateStripeAccountForCompliance (req, res, next) {
 
     // we only need to patch the identity document if this user isn't already verified
     if (!personIsVerified) {
-      const document = await stripeClient.uploadIdentificationDocument(stripeAccountId, req.file.originalname, req.file.buffer)
-      logger.info('Uploaded document for unverified person', { stripeAccountId, requestId: req.correlationId, personId: responsiblePerson.id })
-      form[stripeCompliancePatchFields.RESPONSIBLE_PERSON_DOCUMENT_FIELD] = document.id
+      const identityUpload = req.files[stripeCompliancePatchFields.RESPONSIBLE_PERSON_IDENTITY_DOCUMENT_FIELD][0]
+      const additionalUpload = req.files[stripeCompliancePatchFields.RESPONSIBLE_PERSON_ADDITIONAL_DOCUMENT_FIELD][0]
+      const identityDocument = await stripeClient.uploadIdentificationDocument(stripeAccountId, 'identity', identityUpload.originalname, identityUpload.buffer)
+      logger.info('Uploaded identity document for unverified person', { stripeAccountId, requestId: req.correlationId, personId: responsiblePerson.id })
+      const additionalDocument = await stripeClient.uploadIdentificationDocument(stripeAccountId, 'additional', additionalUpload.originalname, additionalUpload.buffer)
+      logger.info('Uploaded additional document for unverified person', { stripeAccountId, requestId: req.correlationId, personId: responsiblePerson.id })
+      form[stripeCompliancePatchFields.RESPONSIBLE_PERSON_IDENTITY_DOCUMENT_FIELD] = identityDocument.id
+      form[stripeCompliancePatchFields.RESPONSIBLE_PERSON_ADDITIONAL_DOCUMENT_FIELD] = additionalDocument.id
     }
 
     const personPatch = new PersonPatch(form)

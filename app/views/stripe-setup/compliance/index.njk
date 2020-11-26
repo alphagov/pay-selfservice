@@ -107,16 +107,30 @@
                 </div>
             {% else %}
                 {{ govukFileUpload({
-                    id: "person-document",
-                    name: "person-document",
-                    label: { html: 'Upload a <span class="govuk-visually-hidden">responsible person</span> verification document' },
+                    id: "person-identity-document",
+                    name: "person-identity-document",
+                    label: { html: 'Upload an <span class="govuk-visually-hidden">responsible person</span> identity document' },
+                    hint: { text: 'Acceptable forms of identification include: Passport, Driver license, Resident permit, Citizen Card, electoral ID, Validate UK. Document should be in colour and rotated with the image right-side up.' },
                     errorMessage: {
-                        text: errors["person-document"]
-                    } if errors["person-document"],
+                        text: errors["person-identity-document"]
+                    } if errors["person-identity-document"],
+                    attributes: {
+                        "accept": "image/jpeg, image/png"
+                    }
+                }) }}
+                {{ govukFileUpload({
+                    id: "person-additional-document",
+                    name: "person-additional-document",
+                    label: { html: 'Upload a <span class="govuk-visually-hidden">responsible person</span> verification document' },
+                    hint: { text: 'A document showing address, either a passport, local ID card or utility bill from a well-known utility company.' },
+                    errorMessage: {
+                        text: errors["person-additional-document"]
+                    } if errors["person-additional-document"],
                     attributes: {
                         "accept": "image/jpeg, image/png, application/pdf"
                     }
                 }) }}
+
             {% endif %}
         </fieldset>
 

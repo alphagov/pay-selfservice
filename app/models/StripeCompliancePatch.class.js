@@ -9,7 +9,8 @@ const ORGANISATION_PHONE_FIELD = 'organisation-phone'
 const RESPONSIBLE_PERSON_EMAIL_FIELD = 'person-email'
 const RESPONSIBLE_PERSON_NUMBER_FIELD = 'person-number'
 const RESPONSIBLE_PERSON_JOB_TITLE_FIELD = 'person-job-title'
-const RESPONSIBLE_PERSON_DOCUMENT_FIELD = 'person-document'
+const RESPONSIBLE_PERSON_IDENTITY_DOCUMENT_FIELD = 'person-identity-document'
+const RESPONSIBLE_PERSON_ADDITIONAL_DOCUMENT_FIELD = 'person-additional-document'
 
 const stripeCompliancePatchFields = {
   // ORGANISATION_EMAIL_FIELD,
@@ -18,7 +19,8 @@ const stripeCompliancePatchFields = {
   RESPONSIBLE_PERSON_EMAIL_FIELD,
   RESPONSIBLE_PERSON_NUMBER_FIELD,
   RESPONSIBLE_PERSON_JOB_TITLE_FIELD,
-  RESPONSIBLE_PERSON_DOCUMENT_FIELD
+  RESPONSIBLE_PERSON_IDENTITY_DOCUMENT_FIELD,
+  RESPONSIBLE_PERSON_ADDITIONAL_DOCUMENT_FIELD
 }
 const GOVERNMENT_SERVICES_MERCHANT_CATEGORY = 9399
 
@@ -46,7 +48,8 @@ class AccountPatch {
       business_profile: {
         mcc: GOVERNMENT_SERVICES_MERCHANT_CATEGORY,
         url: this.organisation.url
-      }
+      },
+      requested_capabilities: [ 'card_payments', 'transfers' ]
     }
   }
 }
@@ -54,7 +57,8 @@ class AccountPatch {
 class PersonPatch {
   constructor (form) {
     this.person = {
-      documentId: form[RESPONSIBLE_PERSON_DOCUMENT_FIELD],
+      identityDocumentId: form[RESPONSIBLE_PERSON_IDENTITY_DOCUMENT_FIELD],
+      additionalDocumentId: form[RESPONSIBLE_PERSON_ADDITIONAL_DOCUMENT_FIELD],
       title: form[RESPONSIBLE_PERSON_JOB_TITLE_FIELD],
       email: form[RESPONSIBLE_PERSON_EMAIL_FIELD],
       phone: form[RESPONSIBLE_PERSON_NUMBER_FIELD]
@@ -74,10 +78,13 @@ class PersonPatch {
       phone: phoneUtil.format(number, PhoneNumberFormat.INTERNATIONAL),
 
       // we only want to include the uploaded document if it has been passed through
-      ...this.person.documentId && {
+      ...this.person.identityDocumentId && {
         verification: {
+          document: {
+            front: this.person.identityDocumentId
+          },
           additional_document: {
-            front: this.person.documentId
+            front: this.person.additionalDocumentId
           }
         }
       }
