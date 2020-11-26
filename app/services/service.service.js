@@ -9,6 +9,7 @@ const { isADirectDebitAccount } = directDebitConnectorClient
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
+const adminUsersClient = getAdminUsersClient()
 
 /**
  * @method getServicesForUser
@@ -40,7 +41,7 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
   if (!serviceExternalId) {
     return Promise.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
   }
-  return getAdminUsersClient({ correlationId }).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
+  return adminUsersClient.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
     .then(result => {
       // Update gateway account service names in connector
       const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
@@ -66,7 +67,7 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
  * @returns {Promise<Service>} the updated service
  */
 function updateService (serviceExternalId, serviceUpdateRequest, correlationId) {
-  return getAdminUsersClient({ correlationId }).updateService(serviceExternalId, serviceUpdateRequest)
+  return adminUsersClient.updateService(serviceExternalId, serviceUpdateRequest, correlationId)
 }
 
 /**
@@ -81,7 +82,7 @@ function createService (serviceName, serviceNameCy, correlationId) {
 
   return connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
     .then(gatewayAccount =>
-      getAdminUsersClient({ correlationId }).createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id])
+      adminUsersClient.createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id], correlationId)
     )
 }
 
@@ -94,7 +95,7 @@ function createService (serviceName, serviceNameCy, correlationId) {
  * @returns {*|Promise|Promise}
  */
 function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, correlationId) {
-  return getAdminUsersClient({ correlationId }).updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
+  return adminUsersClient.updateCollectBillingAddress(serviceExternalId, collectBillingAddress, correlationId)
 }
 
 /**
@@ -106,7 +107,7 @@ function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, 
  * @returns {*|Promise|Promise}
  */
 function updateCurrentGoLiveStage (serviceExternalId, newStage, correlationId) {
-  return getAdminUsersClient({ correlationId }).updateCurrentGoLiveStage(serviceExternalId, newStage)
+  return adminUsersClient.updateCurrentGoLiveStage(serviceExternalId, newStage, correlationId)
 }
 
 /**
@@ -118,7 +119,7 @@ function updateCurrentGoLiveStage (serviceExternalId, newStage, correlationId) {
  * @returns {*|Promise|Promise}
  */
 function addStripeAgreementIpAddress (serviceExternalId, ipAddress, correlationId) {
-  return getAdminUsersClient({ correlationId }).addStripeAgreementIpAddress(serviceExternalId, ipAddress)
+  return adminUsersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress, correlationId)
 }
 
 /**
@@ -130,7 +131,7 @@ function addStripeAgreementIpAddress (serviceExternalId, ipAddress, correlationI
  * @returns {*|Promise|Promise}
  */
 function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId, correlationId) {
-  return getAdminUsersClient({ correlationId }).addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
+  return adminUsersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId, correlationId)
 }
 
 module.exports = {

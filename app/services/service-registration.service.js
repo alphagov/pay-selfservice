@@ -5,8 +5,10 @@ const getAdminUsersClient = require('./clients/adminusers.client')
 const ConnectorClient = require('./clients/connector.client').ConnectorClient
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
+const adminUsersClient = getAdminUsersClient()
+
 const completeServiceInvite = (inviteCode, gatewayAccountIds, correlationId) => {
-  return getAdminUsersClient({ correlationId }).completeInvite(inviteCode, gatewayAccountIds)
+  return adminUsersClient.completeInvite(inviteCode, gatewayAccountIds, correlationId)
 }
 
 const createGatewayAccount = function (correlationId) {
@@ -24,7 +26,7 @@ module.exports = {
    * @param correlationId
    */
   submitRegistration: function (email, phoneNumber, password, correlationId) {
-    return getAdminUsersClient({ correlationId }).submitServiceRegistration(email, phoneNumber, password)
+    return adminUsersClient.submitServiceRegistration(email, phoneNumber, password, correlationId)
   },
 
   /**
@@ -35,7 +37,7 @@ module.exports = {
    * @param correlationId
    */
   submitServiceInviteOtpCode: (code, otpCode, correlationId) => {
-    return getAdminUsersClient({ correlationId }).verifyOtpForServiceInvite(code, otpCode)
+    return adminUsersClient.verifyOtpForServiceInvite(code, otpCode, correlationId)
   },
 
   /**
@@ -67,7 +69,7 @@ module.exports = {
    * @returns {*|Constructor}
    */
   generateServiceInviteOtpCode: function (inviteCode, correlationId) {
-    return getAdminUsersClient({ correlationId }).generateInviteOtpCode(inviteCode)
+    return adminUsersClient.generateInviteOtpCode(inviteCode, correlationId)
   },
 
   /**
@@ -78,6 +80,6 @@ module.exports = {
    * @param correlationId
    */
   resendOtpCode: function (code, phoneNumber, correlationId) {
-    return getAdminUsersClient({ correlationId }).resendOtpCode(code, phoneNumber)
+    return adminUsersClient.resendOtpCode(code, phoneNumber, correlationId)
   }
 }
