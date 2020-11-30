@@ -11,6 +11,7 @@ const session = require('../../test-helpers/mock-session')
 const getApp = require('../../../server').getApp
 const inviteFixtures = require('../../fixtures/invite.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
+const userFixtures = require('../../fixtures/user.fixtures')
 const paths = require('../../../app/paths')
 
 // Constants
@@ -90,11 +91,14 @@ describe('create service otp validation', function () {
           user_external_id: userExternalId,
           service_external_id: serviceExternalId
         }).getPlain()
+      const getUserResponse = userFixtures.validUserResponse({ external_id: userExternalId }).getPlain()
 
       connectorMock.post(CONNECTOR_ACCOUNTS_URL)
         .reply(201, mockConnectorCreateGatewayAccountResponse)
       adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`, mockAdminUsersInviteCompleteRequest)
         .reply(200, mockAdminUsersInviteCompleteResponse)
+      adminusersMock.get(`/v1/api/users/${userExternalId}`)
+        .reply(200, getUserResponse)
 
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest({
         code: inviteCode

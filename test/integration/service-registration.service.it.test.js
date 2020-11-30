@@ -6,6 +6,7 @@ const chaiAsPromised = require('chai-as-promised')
 
 const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
 const inviteFixtures = require('../fixtures/invite.fixtures')
+const userFixtures = require('../fixtures/user.fixtures')
 const serviceRegistrationService = require('../../app/services/service-registration.service')
 
 // Constants
@@ -48,20 +49,20 @@ describe('create populated service', function () {
         user_external_id: userExternalId,
         service_external_id: serviceExternalId
       }).getPlain()
+    const getUserResponse = userFixtures.validUserResponse({ external_id: userExternalId }).getPlain()
 
     const createGatewayAccountMock = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
       .reply(201, mockConnectorCreateGatewayAccountResponse)
     const completeServiceInviteMock = adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`, mockAdminUsersInviteCompleteRequest)
       .reply(200, mockAdminUsersInviteCompleteResponse)
+    const getUserMock = adminusersMock.get(`/v1/api/users/${userExternalId}`)
+      .reply(200, getUserResponse)
 
-    serviceRegistrationService.createPopulatedService(inviteCode).should.be.fulfilled.then(completeServiceInviteResponse => {
+    serviceRegistrationService.createPopulatedService(inviteCode).should.be.fulfilled.then(user => {
       expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
-      expect(completeServiceInviteResponse.invite.code).to.equal(mockAdminUsersInviteCompleteResponse.invite.code)
-      expect(completeServiceInviteResponse.invite.type).to.equal(mockAdminUsersInviteCompleteResponse.invite.type)
-      expect(completeServiceInviteResponse.invite.disabled).to.equal(mockAdminUsersInviteCompleteResponse.invite.disabled)
-      expect(completeServiceInviteResponse.user_external_id).to.equal(mockAdminUsersInviteCompleteResponse.user_external_id)
-      expect(completeServiceInviteResponse.service_external_id).to.equal(mockAdminUsersInviteCompleteResponse.service_external_id)
+      expect(getUserMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
+      expect(user.externalId).to.equal(userExternalId)
     }).should.notify(done)
   })
 

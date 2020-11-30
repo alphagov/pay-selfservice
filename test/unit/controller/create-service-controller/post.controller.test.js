@@ -19,7 +19,7 @@ const getController = function (mockResponses, mockServiceService, mockUserServi
 
 describe('Controller: createService, Method: post', () => {
   describe('when the service name is not empty', () => {
-    before(done => {
+    before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
@@ -35,12 +35,7 @@ describe('Controller: createService, Method: post', () => {
       res = {
         redirect: sinon.spy()
       }
-      const result = addServiceCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
-      }
+      await addServiceCtrl.post(req, res)
     })
 
     it(`should call 'res.redirect' with '/my-service'`, () => {
@@ -50,7 +45,7 @@ describe('Controller: createService, Method: post', () => {
   })
 
   describe('when the service name is not empty, but the update call fails', () => {
-    before(done => {
+    before(async () => {
       mockServiceService.createService = sinon.stub().rejects(new Error('something went wrong'))
       mockResponses.renderErrorView = sinon.spy()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
@@ -62,12 +57,7 @@ describe('Controller: createService, Method: post', () => {
         }
       }
       res = {}
-      const result = addServiceCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
-      }
+      await addServiceCtrl.post(req, res)
     })
 
     it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
@@ -80,7 +70,7 @@ describe('Controller: createService, Method: post', () => {
   })
 
   describe('when the service name is not empty, and the create service succeeds, but the assign service role call fails', () => {
-    before(done => {
+    before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().rejects(new Error('something went wrong'))
       mockResponses.renderErrorView = sinon.spy()
@@ -94,12 +84,7 @@ describe('Controller: createService, Method: post', () => {
         }
       }
       res = {}
-      const result = addServiceCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
-      }
+      await addServiceCtrl.post(req, res)
     })
 
     it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
@@ -112,7 +97,7 @@ describe('Controller: createService, Method: post', () => {
   })
 
   describe('when the service name is empty', () => {
-    before(done => {
+    before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
@@ -127,12 +112,7 @@ describe('Controller: createService, Method: post', () => {
       res = {
         redirect: sinon.spy()
       }
-      const result = addServiceCtrl.post(req, res)
-      if (result) {
-        done(new Error('Returned a promise'))
-      } else {
-        done()
-      }
+      await addServiceCtrl.post(req, res)
     })
 
     it(`should call 'res.redirect' with a to create service`, () => {
@@ -147,7 +127,7 @@ describe('Controller: createService, Method: post', () => {
   })
 
   describe('when the Welsh service name is empty', () => {
-    before(done => {
+    before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
@@ -163,12 +143,7 @@ describe('Controller: createService, Method: post', () => {
       res = {
         redirect: sinon.spy()
       }
-      const result = addServiceCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
-      }
+      await addServiceCtrl.post(req, res)
     })
 
     it(`should call 'res.redirect' with '/my-service'`, () => {

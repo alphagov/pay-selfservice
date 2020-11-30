@@ -60,9 +60,9 @@ describe('adminusers client - create a new service', function () {
 
     it('should create a new service', function (done) {
       adminusersClient.createService().should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal(externalId)
+        expect(service.externalId).to.equal(externalId)
         expect(service.name).to.equal(name)
-        expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
+        expect(service.gatewayAccountIds).to.deep.equal(gatewayAccountIds)
       }).should.notify(done)
     })
   })
@@ -98,9 +98,9 @@ describe('adminusers client - create a new service', function () {
 
     it('should create a new service', function (done) {
       adminusersClient.createService(null, null, validRequest.getPlain().gateway_account_ids).should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal(externalId)
+        expect(service.externalId).to.equal(externalId)
         expect(service.name).to.equal(name)
-        expect(service.gateway_account_ids).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
+        expect(service.gatewayAccountIds).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
       }).should.notify(done)
     })
   })
@@ -138,9 +138,9 @@ describe('adminusers client - create a new service', function () {
 
     it('should create a new service', function (done) {
       adminusersClient.createService('Service name', null, null).should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal(externalId)
+        expect(service.externalId).to.equal(externalId)
         expect(service.name).to.equal(name)
-        expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
+        expect(service.gatewayAccountIds).to.deep.equal(gatewayAccountIds)
       }).should.notify(done)
     })
   })

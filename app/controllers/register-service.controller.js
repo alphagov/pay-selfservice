@@ -179,8 +179,8 @@ const createPopulatedService = async function createPopulatedService (req, res, 
   }
 
   try {
-    const completeInviteResponse = await registrationService.createPopulatedService(req.register_invite.code, correlationId)
-    loginController.setupDirectLoginAfterRegister(req, res, completeInviteResponse.user_external_id)
+    const user = await registrationService.createPopulatedService(req.register_invite.code, correlationId)
+    loginController.setupDirectLoginAfterRegister(req, res, user.externalId)
     return res.redirect(303, paths.selfCreateService.logUserIn)
   } catch (err) {
     if (err.errorCode === 409) {
