@@ -1,18 +1,21 @@
 {% from "../macro/success-notification.njk" import successNotification %}
 
 {% block flash %}
-  <div class="govuk-grid-column-two-thirds">
-    {% if flash.genericError %}
-    <div class="flash-container">
-      <div class="notification generic-error error-summary">
-        {{ flash.genericError | safe }}
+  {% if flash.genericError %}
+    <div class="govuk-grid-column-two-thirds">
+      <div class="flash-container">
+        <div class="notification generic-error error-summary">
+          {{ flash.genericError | safe }}
+        </div>
       </div>
     </div>
-    {% endif %}
-    {% if flash.generic %}
-    {{ successNotification({
-      heading: flash.generic | safe
-    }) }}
-    {% endif %}
-  </div>
+  {% endif %}
+
+  {% if flash.generic %}
+    <div class="govuk-grid-column-two-thirds">
+      {{ successNotification
+        ({heading: flash.generic | safe}) 
+      }}
+    </div>
+  {% endif %}
 {% endblock %}
