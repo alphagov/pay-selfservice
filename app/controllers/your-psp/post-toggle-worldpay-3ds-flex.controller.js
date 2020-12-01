@@ -11,7 +11,7 @@ module.exports = async function toggleWorldpay3dsFlex (req, res) {
 
     if (req.body['toggle-worldpay-3ds-flex'] === 'on' || req.body['toggle-worldpay-3ds-flex'] === 'off') {
         const enabling3dsFlex = toggleWorldpay3dsFlex === 'on'
-        const message = enabling3dsFlex ? '3DS Flex turned on' : '3DS Flex turned off'
+        const message = enabling3dsFlex ? '3DS Flex has been turned on.' : '3DS Flex has been turned off. Your payments will now use 3DS only.'
         const integrationVersion3ds = enabling3dsFlex ? 2 : 1
         try {
             await connector.updateIntegrationVersion3ds(accountId, integrationVersion3ds, req.correlationId)

@@ -465,6 +465,16 @@ module.exports = {
       }
     })
   },
+  patchIntegrationVersion3ds: (opts = {}) => {
+    const path = `/v1/api/accounts/${opts.gateway_account_id}`
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: {
+        op: 'replace',
+        path: 'integration_version_3ds',
+        value: opts.patchIntegrationVersion3ds
+      }
+    })
+  },
   redirectToGoCardlessConnectFailure: (opts = {}) => {
     const path = '/oauth/authorize'
     return simpleStubBuilder('GET', path, 500, {
