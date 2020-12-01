@@ -536,6 +536,7 @@ module.exports = function (clientOptions = {}) {
       body: {},
       correlationId: correlationId,
       description: 'create service',
+      transform: responseBodyToServiceTransformer,
       service: SERVICE_NAME,
       baseClientErrorHandler: 'old'
     }

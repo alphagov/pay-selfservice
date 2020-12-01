@@ -2,13 +2,13 @@
 
 const lodash = require('lodash')
 
-const { renderErrorView, response } = require('../utils/response')
+const { response } = require('../utils/response')
 const paths = require('../paths')
 const serviceService = require('../services/service.service')
 const userService = require('../services/user.service')
 const { validateServiceName } = require('../utils/service-name-validation')
 
-exports.get = (req, res) => {
+function get (req, res) {
   let pageData = lodash.get(req, 'session.pageData.createServiceName')
 
   if (pageData) {
@@ -25,7 +25,7 @@ exports.get = (req, res) => {
   return response(req, res, 'services/add-service', pageData)
 }
 
-exports.post = (req, res) => {
+async function post (req, res, next) {
   const correlationId = lodash.get(req, 'correlationId')
   const serviceName = lodash.get(req, 'body.service-name')
   const serviceHasNameCy = lodash.get(req, 'body.welsh-service-name-bool')
@@ -38,15 +38,19 @@ exports.post = (req, res) => {
       current_name: serviceName,
       current_name_cy: serviceNameCy
     })
-    res.redirect(paths.serviceSwitcher.create)
-  } else {
-    return serviceService.createService(serviceName, serviceNameCy, correlationId)
-      .then((service) => userService.assignServiceRole(req.user.externalId, service.external_id, 'admin', correlationId))
-      .then(() => {
-        res.redirect(paths.serviceSwitcher.index)
-      })
-      .catch(err => {
-        renderErrorView(req, res, err)
-      })
+    return res.redirect(paths.serviceSwitcher.create)
   }
+
+  try {
+    const service = await serviceService.createService(serviceName, serviceNameCy, req.user, correlationId)
+    await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin', correlationId)
+    res.redirect(paths.serviceSwitcher.index)
+  } catch (err) {
+    next(err)
+  }
+}
+
+module.exports = {
+  get,
+  post
 }

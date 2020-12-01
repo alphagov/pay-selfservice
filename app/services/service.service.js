@@ -1,7 +1,9 @@
 'use strict'
 
 const lodash = require('lodash')
+const { keys } = require('@govuk-pay/pay-js-commons').logging
 
+const logger = require('../utils/logger')(__filename)
 const getAdminUsersClient = require('./clients/adminusers.client')
 const { ConnectorClient } = require('./clients/connector.client')
 const directDebitConnectorClient = require('./clients/direct-debit-connector.client')
@@ -10,12 +12,6 @@ const CardGatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
-/**
- * @method getServicesForUser
- * @param {string[]} gatewayAccountIds - The ids of interested gateway accounts.
- *
- * @returns {Promise<GatewayAccount[]>} promise of collection of gateway accounts which belong to this service
- */
 async function getGatewayAccounts (gatewayAccountIds, correlationId) {
   const cardGatewayAccountIds = gatewayAccountIds.filter(id => !isADirectDebitAccount(id))
 
@@ -28,14 +24,6 @@ async function getGatewayAccounts (gatewayAccountIds, correlationId) {
     .map(gatewayAccount => new CardGatewayAccount(gatewayAccount).toMinimalJson())
 }
 
-/**
- * Update service name
- *
- * @param serviceExternalId
- * @param serviceName
- * @param correlationId
- * @returns {Promise<Service>} the updated service
- */
 function updateServiceName (serviceExternalId, serviceName, serviceNameCy, correlationId) {
   if (!serviceExternalId) {
     return Promise.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
@@ -57,78 +45,40 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
     })
 }
 
-/**
- * Update the service
- *
- * @param serviceExternalId
- * @param merchantDetails
- * @param correlationId
- * @returns {Promise<Service>} the updated service
- */
 function updateService (serviceExternalId, serviceUpdateRequest, correlationId) {
   return getAdminUsersClient({ correlationId }).updateService(serviceExternalId, serviceUpdateRequest)
 }
 
-/**
- * Create a new service with a sandbox account
- * @param serviceName
- * @param correlationId
- * @returns {*|Promise|Promise<Service>} the created service
- */
-function createService (serviceName, serviceNameCy, correlationId) {
+async function createService (serviceName, serviceNameCy, user, correlationId) {
   if (!serviceName) serviceName = 'System Generated'
   if (!serviceNameCy) serviceNameCy = ''
 
-  return connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
-    .then(gatewayAccount =>
-      getAdminUsersClient({ correlationId }).createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id])
-    )
+  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
+  const service = await getAdminUsersClient({ correlationId }).createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id])
+
+  const logContext = {
+    internal_user: user.internalUser
+  }
+  logContext[keys.USER_EXTERNAL_ID] = user.externalId
+  logContext[keys.SERVICE_EXTERNAL_ID] = service.externalId
+  logContext[keys.GATEWAY_ACCOUNT_ID] = gatewayAccount.gateway_account_id
+  logger.info('New service added by existing user', logContext)
+
+  return service
 }
 
-/**
- * Update the collect billing address setting
- *
- * @param serviceExternalId
- * @param collectBillingAddress
- * @param correlationId
- * @returns {*|Promise|Promise}
- */
 function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, correlationId) {
   return getAdminUsersClient({ correlationId }).updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
 }
 
-/**
- * Update the current go live stage setting
- *
- * @param serviceExternalId
- * @param newStage
- * @param correlationId
- * @returns {*|Promise|Promise}
- */
 function updateCurrentGoLiveStage (serviceExternalId, newStage, correlationId) {
   return getAdminUsersClient({ correlationId }).updateCurrentGoLiveStage(serviceExternalId, newStage)
 }
 
-/**
- * Update the current go live stage setting
- *
- * @param serviceExternalId
- * @param ipAddress
- * @param correlationId
- * @returns {*|Promise|Promise}
- */
 function addStripeAgreementIpAddress (serviceExternalId, ipAddress, correlationId) {
   return getAdminUsersClient({ correlationId }).addStripeAgreementIpAddress(serviceExternalId, ipAddress)
 }
 
-/**
- * Update the current go live stage setting
- *
- * @param serviceExternalId
- * @param ipAddress
- * @param correlationId
- * @returns {*|Promise|Promise}
- */
 function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId, correlationId) {
   return getAdminUsersClient({ correlationId }).addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
 }
