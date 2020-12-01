@@ -7,7 +7,7 @@ const random = require('../../../../app/utils/random')
 const mockResponses = {}
 const mockServiceService = {}
 const mockUserService = {}
-let req, res
+let req, res, next
 
 const getController = function (mockResponses, mockServiceService, mockUserService) {
   return proxyquire('../../../../app/controllers/create-service.controller', {
@@ -17,12 +17,19 @@ const getController = function (mockResponses, mockServiceService, mockUserServi
   })
 }
 
+function initialiseSpies () {
+  res = {
+    redirect: sinon.spy()
+  }
+  next = sinon.spy()
+  mockResponses.response = sinon.spy()
+}
+
 describe('Controller: createService, Method: post', () => {
   describe('when the service name is not empty', () => {
     before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
-      mockResponses.response = sinon.spy()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
@@ -32,10 +39,8 @@ describe('Controller: createService, Method: post', () => {
           'service-name-cy': 'Some Cymraeg new service name'
         }
       }
-      res = {
-        redirect: sinon.spy()
-      }
-      await addServiceCtrl.post(req, res)
+      initialiseSpies()
+      await addServiceCtrl.post(req, res, next)
     })
 
     it(`should call 'res.redirect' with '/my-service'`, () => {
@@ -47,7 +52,6 @@ describe('Controller: createService, Method: post', () => {
   describe('when the service name is not empty, but the update call fails', () => {
     before(async () => {
       mockServiceService.createService = sinon.stub().rejects(new Error('something went wrong'))
-      mockResponses.renderErrorView = sinon.spy()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         correlationId: random.randomUuid(),
@@ -56,16 +60,13 @@ describe('Controller: createService, Method: post', () => {
           'service-name-cy': 'Some Cymraeg new service name'
         }
       }
-      res = {}
-      await addServiceCtrl.post(req, res)
+      initialiseSpies()
+      await addServiceCtrl.post(req, res, next)
     })
 
     it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
-      expect(mockResponses.renderErrorView.called).to.equal(true)
-      expect(mockResponses.renderErrorView.args[0]).to.include(req)
-      expect(mockResponses.renderErrorView.args[0]).to.include(res)
-      expect(mockResponses.renderErrorView.args[0][2] instanceof Error).to.equal(true)
-      expect(mockResponses.renderErrorView.args[0][2].message).to.equal('something went wrong')
+      sinon.assert.calledOnce(next)
+      expect(next.firstCall.args[0]).to.be.instanceOf(Error)
     })
   })
 
@@ -73,7 +74,6 @@ describe('Controller: createService, Method: post', () => {
     before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().rejects(new Error('something went wrong'))
-      mockResponses.renderErrorView = sinon.spy()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
@@ -83,16 +83,13 @@ describe('Controller: createService, Method: post', () => {
           'service-name-cy': 'Some Cymraeg new service name'
         }
       }
-      res = {}
-      await addServiceCtrl.post(req, res)
+      initialiseSpies()
+      await addServiceCtrl.post(req, res, next)
     })
 
     it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
-      expect(mockResponses.renderErrorView.called).to.equal(true)
-      expect(mockResponses.renderErrorView.args[0]).to.include(req)
-      expect(mockResponses.renderErrorView.args[0]).to.include(res)
-      expect(mockResponses.renderErrorView.args[0][2] instanceof Error).to.equal(true)
-      expect(mockResponses.renderErrorView.args[0][2].message).to.equal('something went wrong')
+      sinon.assert.calledOnce(next)
+      expect(next.firstCall.args[0]).to.be.instanceOf(Error)
     })
   })
 
@@ -100,7 +97,6 @@ describe('Controller: createService, Method: post', () => {
     before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
-      mockResponses.response = sinon.spy()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         correlationId: random.randomUuid(),
@@ -109,10 +105,8 @@ describe('Controller: createService, Method: post', () => {
           'service-name': ''
         }
       }
-      res = {
-        redirect: sinon.spy()
-      }
-      await addServiceCtrl.post(req, res)
+      initialiseSpies()
+      await addServiceCtrl.post(req, res, next)
     })
 
     it(`should call 'res.redirect' with a to create service`, () => {
@@ -130,7 +124,6 @@ describe('Controller: createService, Method: post', () => {
     before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
-      mockResponses.response = sinon.spy()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
@@ -140,10 +133,8 @@ describe('Controller: createService, Method: post', () => {
           'service-name-cy': ''
         }
       }
-      res = {
-        redirect: sinon.spy()
-      }
-      await addServiceCtrl.post(req, res)
+      initialiseSpies()
+      await addServiceCtrl.post(req, res, next)
     })
 
     it(`should call 'res.redirect' with '/my-service'`, () => {
@@ -153,10 +144,9 @@ describe('Controller: createService, Method: post', () => {
   })
 
   describe('when the Welsh service name is filled in', () => {
-    before(done => {
+    before(async () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
-      mockResponses.response = sinon.spy()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
@@ -166,15 +156,8 @@ describe('Controller: createService, Method: post', () => {
           'service-name-cy': ''
         }
       }
-      res = {
-        redirect: sinon.spy()
-      }
-      const result = addServiceCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
-      }
+      initialiseSpies()
+      await addServiceCtrl.post(req, res, next)
     })
 
     it(`should call 'res.redirect' with '/my-service'`, () => {

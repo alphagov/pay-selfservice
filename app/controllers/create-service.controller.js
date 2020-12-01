@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const { renderErrorView, response } = require('../utils/response')
+const { response } = require('../utils/response')
 const paths = require('../paths')
 const serviceService = require('../services/service.service')
 const userService = require('../services/user.service')
@@ -25,7 +25,7 @@ function get (req, res) {
   return response(req, res, 'services/add-service', pageData)
 }
 
-async function post (req, res) {
+async function post (req, res, next) {
   const correlationId = lodash.get(req, 'correlationId')
   const serviceName = lodash.get(req, 'body.service-name')
   const serviceHasNameCy = lodash.get(req, 'body.welsh-service-name-bool')
@@ -46,7 +46,7 @@ async function post (req, res) {
     await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin', correlationId)
     res.redirect(paths.serviceSwitcher.index)
   } catch (err) {
-    renderErrorView(req, res, err)
+    next(err)
   }
 }
 
