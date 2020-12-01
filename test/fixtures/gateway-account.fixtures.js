@@ -45,6 +45,9 @@ function validGatewayAccount (opts) {
   if (opts.requires3ds) {
     gatewayAccount.requires3ds = opts.requires3ds
   }
+  if (opts.requires3ds) {
+    gatewayAccount.integration_version_3ds = opts.integrationVersion3ds
+  }
   if (opts.credentials) {
     gatewayAccount.credentials = opts.credentials
   }

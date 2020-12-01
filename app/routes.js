@@ -237,6 +237,7 @@ module.exports.bind = function (app) {
 
   // YOUR PSP
   app.get(yourPsp.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
+  app.post(yourPsp.worldpay3dsFlex, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, yourPspController.postToggleWorldpay3dsFlex)
   app.get(yourPsp.flex, xraySegmentCls, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.getFlex)
   app.post(yourPsp.flex, xraySegmentCls, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.postFlex)
 

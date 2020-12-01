@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const paths = require('../../paths')
 
-describe('Toogle Worldpay 3DS Flex controller', () => {
+describe('Toggle Worldpay 3DS Flex controller', () => {
   let req
   let res
   let updateIntegrationVersion3dsMock
@@ -35,7 +35,7 @@ describe('Toogle Worldpay 3DS Flex controller', () => {
     await controller(req, res)
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2, req.correlationId)
-    sinon.assert.calledWith(req.flash, 'generic', '3DS Flex turned on')
+    sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned on.')
     sinon.assert.calledWith(res.redirect, 303, paths.yourPsp.index)
   })
 
@@ -47,7 +47,7 @@ describe('Toogle Worldpay 3DS Flex controller', () => {
     await controller(req, res)
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 1, req.correlationId)
-    sinon.assert.calledWith(req.flash, 'generic', '3DS Flex turned off')
+    sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned off. Your payments will now use 3DS only.')
     sinon.assert.calledWith(res.redirect, 303, paths.yourPsp.index)
   })
 

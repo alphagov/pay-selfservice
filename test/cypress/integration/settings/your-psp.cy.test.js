@@ -22,11 +22,6 @@ describe('Your PSP settings page', () => {
     issuer: '5bd9e0e4444dce153428c940',
     jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0'
   }
-  const testRemoveFlexCredentials = {
-    organisational_unit_id: '',
-    issuer: '',
-    jwt_mac_key: ''
-  }
 
   function setupYourPspStubs (opts = {}) {
     let stubs = []
@@ -52,6 +47,8 @@ describe('Your PSP settings page', () => {
 
     const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({
       gatewayAccountId,
+      requires3ds: opts.requires3ds,
+      integrationVersion3ds: opts.integrationVersion3ds,
       worldpay3dsFlex: opts.worldpay3dsFlex,
       credentials: opts.credentials,
       paymentProvider: opts.gateway,
@@ -59,27 +56,8 @@ describe('Your PSP settings page', () => {
     })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
     const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentials({ gatewayAccountId, testCredentials })
-
-    stubs.push(user, gatewayAccount, card, patchUpdateCredentials)
-
-    cy.task('setupStubs', stubs)
-  }
-
-  function setupRemoveFlexCredsStubs (opts = {}) {
-    let stubs = []
-
-    const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
-    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({
-      gatewayAccountId,
-      paymentProvider: opts.gateway,
-      worldpay3dsFlex: opts.worldpay_3ds_flex_remove,
-      credentials: opts.credentials
-    })
-
-    const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentials({ gatewayAccountId, testCredentials })
-    const patchUpdateFlexCredentials = gatewayAccountStubs.patchUpdateFlexCredentials({ gatewayAccountId, ...testFlexCredentials })
-
-    stubs.push(user, gatewayAccount, patchUpdateCredentials, patchUpdateFlexCredentials)
+    const patchIntegrationVersion3ds = gatewayAccountStubs.patchIntegrationVersion3ds({ integrationVersion3ds: opts.integrationVersion3ds })
+    stubs.push(user, gatewayAccount, card, patchUpdateCredentials, patchIntegrationVersion3ds)
 
     cy.task('setupStubs', stubs)
   }
@@ -176,23 +154,82 @@ describe('Your PSP settings page', () => {
 
       cy.get('#flex-credentials-change-link').click()
     })
+  })
 
-    it('should allow removing 3DS Flex credentials', function () {
-      setupRemoveFlexCredsStubs({
+  describe('When using a Worldpay account to toggle 3DS Flex', () => {
+    it('should have a button to enable 3DS Flex if 3DS is enabled, 3DS integration version is 1 and there are 3DS Flex creds', () => {
+      setupYourPspStubs({
         gateway: 'worldpay',
+        requires3ds: true,
+        integrationVersion3ds: 1,
         credentials: testCredentials,
-        worldpay_3ds_flex_remove: testRemoveFlexCredentials
+        worldpay3dsFlex: testFlexCredentials
       })
 
-      cy.get('#removeFlexCredentials').should('be.visible')
-      cy.get('#removeFlexCredentials').click()
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.visit('/your-psp')
+      cy.get('#worldpay-3ds-flex-is-off').should('exist')
+      cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
+      cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
+
+      cy.get('#enable-worldpay-3ds-flex-button').should('exist').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/your-psp`)
       })
-      cy.get('.notification').should('contain', 'Credentials deleted. 3DS Flex has been removed from your account. Your payments will now use 3DS only.')
-      cy.get('.value-organisational-unit-id').should('contain', 'Not configured')
-      cy.get('.value-issuer').should('contain', 'Not configured')
-      cy.get('.value-jwt-mac-key').should('contain', 'Not configured')
+    })
+
+    it('should have a button to disable 3DS Flex if 3DS is enabled and 3DS integration version is 2', () => {
+      setupYourPspStubs({
+        gateway: 'worldpay',
+        requires3ds: true,
+        integrationVersion3ds: 2,
+        credentials: testCredentials,
+        worldpay3dsFlex: testFlexCredentials
+      })
+
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.visit('/your-psp')
+      cy.get('#worldpay-3ds-flex-is-on').should('exist')
+      cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
+      cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
+
+      cy.get('#disable-worldpay-3ds-flex-button').should('exist').click()
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/your-psp`)
+      })
+    })
+
+    it('should have not have a button to enable 3DS Flex if 3DS is enabled, 3DS integration version is 1 but there are no 3DS Flex credentials', () => {
+      setupYourPspStubs({
+        gateway: 'worldpay',
+        requires3ds: false,
+        integrationVersion3ds: 1,
+        credentials: testCredentials
+      })
+
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.visit('/your-psp')
+      cy.get('#worldpay-3ds-flex-is-off').should('exist')
+      cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
+      cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
+      cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
+    })
+
+    it('should have not have a button to enable or disable 3DS Flex if 3DS is disabled', () => {
+      setupYourPspStubs({
+        gateway: 'worldpay',
+        requires3ds: false,
+        integrationVersion3ds: 1,
+        credentials: testCredentials,
+        worldpay3dsFlex: testFlexCredentials
+      })
+
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.visit('/your-psp')
+      cy.get('#worldpay-3ds-flex-is-off').should('exist')
+      cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
+      cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
+      cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
     })
   })
 

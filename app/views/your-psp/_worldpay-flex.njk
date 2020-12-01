@@ -1,4 +1,11 @@
-<h2 class="govuk-heading-m govuk-!-margin-top-9">3DS Flex credentials</h2>
+<h2 class="govuk-heading-m govuk-!-margin-top-9">3DS Flex</h2>
+
+{{ govukInsetText({
+  "attributes": {
+    "id": "worldpay-3ds-flex-is-on" if isWorldpay3dsFlexEnabled else "worldpay-3ds-flex-is-off"
+  },
+  text: "3DS Flex is turned on." if isWorldpay3dsFlexEnabled else "3DS Flex is turned off."
+}) }}
 
 <p class="govuk-body">Worldpay’s 3DS Flex improves how 3DS works and will also enable 3DS2 when required. There’s an additional fee to Worldpay to use 3DS Flex. <a class="govuk-link" href="https://www.payments.service.gov.uk/3d-secure-2/">Find out more about 3DS2 and 3DS Flex</a>.</p>
 
@@ -16,7 +23,7 @@
           text: "Organisational unit ID"
         },
         value: {
-          text: currentGatewayAccount.worldpay_3ds_flex.organisational_unit_id if isFlexConfigured else "Not configured",
+          text: currentGatewayAccount.worldpay_3ds_flex.organisational_unit_id if isWorldpay3dsFlexCredentialsConfigured else "Not configured",
           classes: "value-organisational-unit-id"
         },
         actions: {
@@ -37,7 +44,7 @@
           text: "Issuer (API ID)"
         },
         value: {
-          text: currentGatewayAccount.worldpay_3ds_flex.issuer if isFlexConfigured else "Not configured",
+          text: currentGatewayAccount.worldpay_3ds_flex.issuer if isWorldpay3dsFlexCredentialsConfigured else "Not configured",
           classes: "value-issuer"
         },
         actions: {
@@ -55,7 +62,7 @@
           text: "JWT MAC key (API key)"
         },
         value: {
-          text: '●●●●●●●●' if isFlexConfigured else "Not configured",
+          text: '●●●●●●●●' if isWorldpay3dsFlexCredentialsConfigured else "Not configured",
           classes: "value-jwt-mac-key"
         },
         actions: {
@@ -71,3 +78,28 @@
     ]
   })
 }}
+
+{% if (is3dsEnabled and isWorldpay3dsFlexCredentialsConfigured) or isWorldpay3dsFlexEnabled %}
+  <form method="post" action="{{routes.yourPsp.worldpay3dsFlex}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}">
+    {% if is3dsEnabled and isWorldpay3dsFlexCredentialsConfigured and not isWorldpay3dsFlexEnabled %}
+        <input id="toggle-worldpay-3ds-flex" name="toggle-worldpay-3ds-flex" type="hidden" value="on">
+        {{ govukButton({
+          attributes: {
+            id: "enable-worldpay-3ds-flex-button"
+          },
+          text: "Turn on 3DS Flex",
+          classes: "govuk-button--secondary"
+        }) }}
+    {% elif isWorldpay3dsFlexEnabled %}
+      <input id="toggle-worldpay-3ds-flex" name="toggle-worldpay-3ds-flex" type="hidden" value="off">
+      {{ govukButton({
+        attributes: {
+          id: "disable-worldpay-3ds-flex-button"
+        },
+        text: "Turn off 3DS Flex",
+        classes: "govuk-button--secondary"
+      }) }}
+    {% endif %}
+  </form>
+{% endif %}

@@ -170,21 +170,6 @@
         })
       }}
     </form>
-    <form method="post" action="{{routes.yourPsp.flex}}">
-        {% if isFlexConfigured %}
-            <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-            <input id="remove-credentials" name="remove-credentials" type="hidden" value="true" />
-            {{
-            govukButton({
-                text: "Remove credentials",
-                classes: "govuk-button--warning",
-                attributes: {
-                    id: "removeFlexCredentials"
-                }
-                })
-            }}
-        {% endif %}
-    </form>
     <p class="govuk-body">
       <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.yourPsp.index }}">Cancel</a>
     </p>

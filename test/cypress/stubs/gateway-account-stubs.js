@@ -15,6 +15,9 @@ const getGatewayAccountSuccess = function (opts) {
   if (opts.requires3ds) {
     stubOptions.requires3ds = opts.requires3ds
   }
+  if (opts.integrationVersion3ds !== undefined) {
+    stubOptions.integrationVersion3ds = opts.integrationVersion3ds
+  }
   if (opts.allowMoto) {
     stubOptions.allow_moto = opts.allowMoto
   }
@@ -121,6 +124,15 @@ const patchUpdate3DS = function (opts) {
   }
 }
 
+const patchIntegrationVersion3ds = function (opts) {
+  return {
+    name: 'patchIntegrationVersion3ds',
+    opts: {
+      integration_version_3ds: opts.integrationVersion3ds
+    }
+  }
+}
+
 const patchUpdateMotoMaskSecurityCode = function (opts) {
   return {
     name: 'patchUpdateMotoMaskSecurityCode',
@@ -202,6 +214,7 @@ module.exports = {
   postCreateGatewayAccountSuccess,
   getCardTypesSuccess,
   patchUpdate3DS,
+  patchIntegrationVersion3ds,
   patchConfirmationEmailToggleSuccess,
   patchRefundEmailToggleSuccess,
   patchAccountEmailCollectionModeSuccess,

@@ -16,7 +16,8 @@ module.exports = {
   },
   yourPsp: {
     index: '/your-psp',
-    flex: '/your-psp/flex'
+    flex: '/your-psp/flex',
+    worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
   },
   credentials: {
     index: '/credentials',
