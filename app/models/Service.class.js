@@ -2,6 +2,7 @@
 
 class Service {
   constructor (serviceData) {
+    this.id = serviceData.id
     this.externalId = serviceData.external_id
     this.name = serviceData.name
     this.serviceName = serviceData.service_name
@@ -18,6 +19,7 @@ class Service {
    */
   toJson () {
     return {
+      id: this.id,
       external_id: this.externalId,
       name: this.name,
       serviceName: this.serviceName,
