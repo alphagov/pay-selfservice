@@ -11,7 +11,7 @@ const addMetadataPage = function addMetadataPage (req, res) {
     self: formattedPathFor(paths.paymentLinks.metadata.add, req.params.productExternalId),
     cancelRoute: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId)
   }
-  response(req, res, 'payment-links/metadata/edit-metadata', pageData)
+  response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
 }
 
 const editMetadataPage = async function editMetadataPage (req, res) {
@@ -37,7 +37,7 @@ const editMetadataPage = async function editMetadataPage (req, res) {
       self: formattedPathFor(paths.paymentLinks.metadata.edit, req.params.productExternalId, metadataKey),
       cancelRoute: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId)
     }
-    response(req, res, 'payment-links/metadata/edit-metadata', pageData)
+    response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
   } catch (error) {
     renderErrorView(req, res, 'Failed to load metadata page')
   }
@@ -57,7 +57,7 @@ const updateMetadataPage = function updateMetadataPage (updateMethod, path) {
       pageContext.self = formattedPathFor(path, req.params.productExternalId, form.values[form.fields.metadataKey.id])
 
       if (tested.errors.length) {
-        response(req, res, 'payment-links/metadata/edit-metadata', { ...pageContext, tested, form })
+        response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', { ...pageContext, tested, form })
         return
       } else {
         await updateMethod(
@@ -74,7 +74,7 @@ const updateMetadataPage = function updateMetadataPage (updateMethod, path) {
       if (submissionError.field) {
         tested.errorMaps[submissionError.field.id] = submissionError.text
       }
-      response(req, res, 'payment-links/metadata/edit-metadata', { ...pageContext, tested, form })
+      response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', { ...pageContext, tested, form })
     }
   }
 }

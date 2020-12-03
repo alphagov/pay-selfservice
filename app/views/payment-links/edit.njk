@@ -124,43 +124,7 @@
     })
   }}
 
-  <h2 class="govuk-heading-m">Reporting columns</h2>
-  <p class="govuk-body">You can download reports about your payments from your account. <p>
-  <p class="govuk-body">You can add extra columns about your transactions to these reports. For example, to include your cost centre code or business area. This will help finance teams track and reconcile your payments.<p>
-
-  {% if product.metadata %}
-    <dl id="reporting-columns-summary" class="govuk-summary-list">
-      {% for metadataKey, metadataValue in product.metadata | dictsort %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              {{metadataKey}}
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {{metadataValue}}
-            </dd>
-            <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" href="{{ formattedPathFor(paths.paymentLinks.metadata.edit, product.externalId, metadataKey) }}">
-                Change<span class="govuk-visually-hidden"> ‘{{ metadataKey }}’</span>
-              </a>
-            </dd>
-          </div>
-      {% endfor %}
-    </dl>
-    {% endif %}
-
-    {% set addReportingColumnButtonText %}
-      {% if product.metadata %}
-        Add another reporting column
-      {% else %}
-        Add a reporting column
-      {% endif %}
-    {% endset %}
-
-    {{ govukButton({
-      text: addReportingColumnButtonText,
-      classes: "govuk-button--secondary",
-      href: addMetadata
-    }) }}
+  {% include "./reporting-columns/_manage-reporting-columns.njk" %}
 
   <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
