@@ -25,11 +25,13 @@ describe('service switch controller: list of accounts', function () {
     const directDebitGatewayAccountIds = ['DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'DIRECT_DEBIT:ksdfhjhfd;sfksd34']
 
     connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${allServiceGatewayAccountIds.join(',')}`)
-      .reply(200, { accounts: allServiceGatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
-        gateway_account_id: iter,
-        service_name: `account ${iter}`,
-        type: _.sample(['test', 'live'])
-      }).getPlain()) })
+      .reply(200, {
+        accounts: allServiceGatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
+          gateway_account_id: iter,
+          service_name: `account ${iter}`,
+          type: _.sample(['test', 'live'])
+        }).getPlain())
+      })
 
     const req = {
       correlationId: 'correlationId',
@@ -38,6 +40,7 @@ describe('service switch controller: list of accounts', function () {
         service_roles: [
           {
             service: {
+              id: 201,
               name: 'My Service 1',
               external_id: 'service-external-id-1',
               gateway_account_ids: service1gatewayAccountIds
@@ -49,6 +52,7 @@ describe('service switch controller: list of accounts', function () {
           },
           {
             service: {
+              id: 120,
               name: 'My Service 2',
               external_id: 'service-external-id-2',
               gateway_account_ids: service2gatewayAccountIds
@@ -60,6 +64,7 @@ describe('service switch controller: list of accounts', function () {
           },
           {
             service: {
+              id: 12,
               name: 'System Generated',
               external_id: 'service-external-id-3',
               gateway_account_ids: service3gatewayAccountIds
@@ -71,6 +76,7 @@ describe('service switch controller: list of accounts', function () {
           },
           {
             service: {
+              id: 3,
               name: 'Direct Debit service',
               external_id: 'service-external-id-4',
               gateway_account_ids: directDebitGatewayAccountIds
@@ -90,7 +96,8 @@ describe('service switch controller: list of accounts', function () {
         const renderData = arguments[1]
 
         expect(path).to.equal('services/index')
-        expect(renderData.services.map(service => service.name)).to.have.lengthOf(4).and.to.include('My Service 1', 'My Service 2', '', 'Direct Debit service')
+        const renderedServiceNames = renderData.services.map(service => service.name)
+        expect(renderedServiceNames).to.have.lengthOf(4).and.to.have.ordered.members(['Direct Debit service', 'Temporary Service Name', 'My Service 2', 'My Service 1'])
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')

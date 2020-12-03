@@ -28,24 +28,26 @@ module.exports = async (req, res) => {
 
   const aggregatedGatewayAccounts = await serviceService.getGatewayAccounts(aggregatedGatewayAccountIds, req.correlationId)
 
-  const servicesData = servicesRoles.map(serviceRole => {
-    // For Direct Debit currently we initialise req.user.serviceRoles[].service.gatewayAccountIds with external ids,
-    // but for Cards we initialise with internal ids.
-    // We check the gateway accounts' external id first as not to overlap/skip between card payment and direct debit gateway accounts.
-    const gatewayAccounts =
-      aggregatedGatewayAccounts.filter(gatewayAccount => serviceRole.service.gatewayAccountIds.includes(gatewayAccount.external_id.toString()) ||
-        serviceRole.service.gatewayAccountIds.includes(gatewayAccount.id.toString()))
-    const cardAccounts = gatewayAccounts.filter(gatewayAccount => !isDirectDebitAccount(gatewayAccount))
-    const payload = {
-      name: serviceRole.service.name === 'System Generated' ? 'Temporary Service Name' : serviceRole.service.name,
-      external_id: serviceRole.service.externalId,
-      gateway_accounts: {
-        cardAccounts: _.sortBy(cardAccounts, 'type', 'asc')
-      },
-      permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
-    }
-    return payload
-  })
+  const servicesData = servicesRoles
+    .sort((a,b) => a.service.id - b.service.id)
+    .map(serviceRole => {
+      // For Direct Debit currently we initialise req.user.serviceRoles[].service.gatewayAccountIds with external ids,
+      // but for Cards we initialise with internal ids.
+      // We check the gateway accounts' external id first as not to overlap/skip between card payment and direct debit gateway accounts.
+      const gatewayAccounts =
+        aggregatedGatewayAccounts.filter(gatewayAccount => serviceRole.service.gatewayAccountIds.includes(gatewayAccount.external_id.toString()) ||
+          serviceRole.service.gatewayAccountIds.includes(gatewayAccount.id.toString()))
+      const cardAccounts = gatewayAccounts.filter(gatewayAccount => !isDirectDebitAccount(gatewayAccount))
+      const payload = {
+        name: serviceRole.service.name === 'System Generated' ? 'Temporary Service Name' : serviceRole.service.name,
+        external_id: serviceRole.service.externalId,
+        gateway_accounts: {
+          cardAccounts: _.sortBy(cardAccounts, 'type', 'asc')
+        },
+        permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
+      }
+      return payload
+    })
 
   const data = {
     services: servicesData,
