@@ -350,6 +350,10 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.amount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postAmount)
   app.get(paymentLinks.review, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getReview)
   app.post(paymentLinks.review, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postReview)
+
+  app.get(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn)
+  app.post(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postAddReportingColumn)
+
   app.get(paymentLinks.manage, xraySegmentCls, permission('transactions:read'), getAccount, paymentLinksController.getManage)
   app.get(paymentLinks.disable, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getDisable)
   app.get(paymentLinks.delete, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getDelete)

@@ -35,6 +35,7 @@ module.exports = async function showEditPaymentLink (req, res, next) {
     const productCheck = lodash.cloneDeep(product)
     delete editPaymentLinkData.metadata
     pageData.product = lodash.merge(product, editPaymentLinkData)
+    pageData.metadata = product.metadata
     pageData.changed = !lodash.isEqual(productCheck, pageData.product)
     lodash.set(req, 'session.editPaymentLinkData', pageData.product)
     return response(req, res, 'payment-links/edit', pageData)

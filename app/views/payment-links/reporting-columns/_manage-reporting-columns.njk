@@ -2,9 +2,9 @@
 <p class="govuk-body">You can download reports about your payments from your account. <p>
 <p class="govuk-body">You can add extra columns about your transactions to these reports. For example, to include your cost centre code or business area. This will help finance teams track and reconcile your payments.<p>
 
-{% if product.metadata %}
+{% if metadata %}
   <dl id="reporting-columns-summary" class="govuk-summary-list">
-    {% for metadataKey, metadataValue in product.metadata | dictsort %}
+    {% for metadataKey, metadataValue in metadata | dictsort %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
             {{metadataKey}}
@@ -13,9 +13,10 @@
             {{metadataValue}}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="{{ formattedPathFor(paths.paymentLinks.metadata.edit, product.externalId, metadataKey) }}">
+            <a class="govuk-link" href="{{ addMetadata }}/{{ metadataKey }}">
               Change<span class="govuk-visually-hidden"> ‘{{ metadataKey }}’</span>
             </a>
+            {% endif %}
           </dd>
         </div>
     {% endfor %}
@@ -23,7 +24,7 @@
 {% endif %}
 
 {% set addReportingColumnButtonText %}
-  {% if product.metadata %}
+  {% if metadata %}
     Add another reporting column
   {% else %}
     Add a reporting column

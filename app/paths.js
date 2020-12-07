@@ -153,6 +153,8 @@ module.exports = {
     reference: '/create-payment-link/reference',
     amount: '/create-payment-link/amount',
     review: '/create-payment-link/review',
+    addMetadata: '/create-payment-link/add-reporting-column',
+    editMetadata: '/create-payment-link/edit-reporting-column',
     manage: '/create-payment-link/manage',
     disable: '/create-payment-link/manage/disable/:productExternalId',
     delete: '/create-payment-link/manage/delete/:productExternalId',
