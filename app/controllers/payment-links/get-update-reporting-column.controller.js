@@ -1,9 +1,8 @@
 'use strict'
 
-const lodash = require('lodash')
-
 const paths = require('../../paths')
 const MetadataForm = require('./metadata/metadata-form')
+const { getPaymentLinksSession } = require('../../utils/payment-links')
 
 const { response } = require('../../utils/response.js')
 
@@ -18,7 +17,7 @@ function showAddMetadataPage (req, res) {
 }
 
 function showEditMetadataPage (req, res) {
-  const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
+  const sessionData = getPaymentLinksSession(req)
   const key = req.params.metadataKey
   const currentMetadata = sessionData.metadata || {}
   const prefilledPage = {

@@ -1,13 +1,13 @@
 'use strict'
 
-const lodash = require('lodash')
 const paths = require('../../paths')
 const MetadataForm = require('./metadata/metadata-form')
+const { getPaymentLinksSession, metadata } = require('../../utils/payment-links')
 
 const { response } = require('../../utils/response.js')
 
 function addMetadata (req, res) {
-  const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
+  const sessionData = getPaymentLinksSession(req)
   const pageData = {
     self: paths.paymentLinks.addMetadata,
     cancelRoute: paths.paymentLinks.review,
@@ -23,22 +23,16 @@ function addMetadata (req, res) {
     return
   }
 
-  const reportingColumnToAdd = {}
-  reportingColumnToAdd[form.values[form.fields.metadataKey.id]] = form.values[form.fields.metadataValue.id]
-  sessionData.metadata = {
-    ...sessionData.metadata,
-    ...reportingColumnToAdd
-  }
-
+  metadata.addMetadata(
+    sessionData,
+    form.values[form.fields.metadataKey.id],
+    form.values[form.fields.metadataValue.id]
+  )
   res.redirect(paths.paymentLinks.review)
 }
 
-// @TMP(sfount)
-// editing and adding locally are functionally equivalent, for validation (which currently doesn't happen for existing keys!) it should remove
-// the key being edited from a COPY of the metadata to make sure the validation doesn't think we're failing to override
-// to allow editing of the key, the requested key can be removed and a new key (which can be the same!) is added
 function editMetadata (req, res) {
-  const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
+  const sessionData = getPaymentLinksSession(req)
   const form = new MetadataForm(req.body)
   const key = req.params.metadataKey
   const pageData = {
@@ -57,24 +51,20 @@ function editMetadata (req, res) {
     return
   }
 
-  const reportingColumnToAdd = {}
-  reportingColumnToAdd[form.values[form.fields.metadataKey.id]] = form.values[form.fields.metadataValue.id]
-
-  delete sessionData.metadata[key]
-  sessionData.metadata = {
-    ...sessionData.metadata,
-    ...reportingColumnToAdd
-  }
+  metadata.updateMetadata(
+    sessionData,
+    key,
+    form.values[form.fields.metadataKey.id],
+    form.values[form.fields.metadataValue.id]
+  )
   res.redirect(paths.paymentLinks.review)
 }
 
 function deleteMetadata (req, res) {
-  const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
+  const sessionData = getPaymentLinksSession(req)
   const key = req.params.metadataKey
 
-  if (sessionData.metadata) {
-    delete sessionData.metadata[key]
-  }
+  metadata.removeMetadata(sessionData, key)
   res.redirect(paths.paymentLinks.review)
 }
 
