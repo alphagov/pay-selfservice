@@ -15,6 +15,7 @@ const StripeAccount = require('../../models/StripeAccount.class')
 const SERVICE_NAME = 'connector'
 const ACCOUNTS_API_PATH = '/v1/api/accounts'
 const ACCOUNT_API_PATH = ACCOUNTS_API_PATH + '/{accountId}'
+const ACCOUNT_API_BY_EXTERNAL_ID_PATH = ACCOUNTS_API_PATH + '/external-id/{externalId}'
 const CHARGES_API_PATH = ACCOUNT_API_PATH + '/charges'
 const CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
 const CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
@@ -80,6 +81,11 @@ function _accountApiUrlFor (gatewayAccountId, url) {
 /** @private */
 function _accountUrlFor (gatewayAccountId, url) {
   return url + ACCOUNT_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
+}
+
+/** @private */
+function _accountByExternalIdUrlFor (gatewayAccountExternalId, url) {
+  return url + ACCOUNT_API_BY_EXTERNAL_ID_PATH.replace('{externalId}', gatewayAccountExternalId)
 }
 
 /** @private */
@@ -166,6 +172,25 @@ ConnectorClient.prototype = {
       oldBaseClient.get(url, params, callbackToPromiseConverter, null)
         .on('error', callbackToPromiseConverter)
     })
+  },
+  /**
+   * Retrieves gateway account by external ID
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountExternalId (required)
+   *            correlationId (optional)
+   *@return {Promise}
+   */
+  getAccountByExternalId: function (params) {
+    let url = _accountByExternalIdUrlFor(params.gatewayAccountExternalId, this.connectorUrl)
+    let context = {
+      url: url,
+      correlationId: params.correlationId,
+      description: 'get an account',
+      service: SERVICE_NAME
+    }
+
+    return baseClient.get(url, context)
   },
 
   /**

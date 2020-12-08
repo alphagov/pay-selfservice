@@ -556,6 +556,51 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   * Get a service by externalId
+   *
+   * @param externalId
+   * @returns {*|promise|Constructor}
+   */
+  const getServiceByExternalId = (serviceExternalId) => {
+    return baseClient.get(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}`,
+        json: true,
+        correlationId: correlationId,
+        description: 'find a service',
+        service: SERVICE_NAME,
+        transform: responseBodyToServiceTransformer,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
+  /**
+   * Get service for a given gateway account ID
+   *
+   * @param gatewayAccountId
+   * @returns {*|promise|Constructor}
+   */
+  const getServiceForGatewayAccount = (gatewayAccountId) => {
+    return baseClient.get(
+      {
+        baseUrl,
+        url: `${serviceResource}`,
+        qs: {
+          gatewayAccountId: gatewayAccountId
+        },
+        json: true,
+        correlationId: correlationId,
+        description: 'find a service for a given gateway account',
+        service: SERVICE_NAME,
+        transform: responseBodyToServiceTransformer,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
+  /**
    * Update service
    *
    * @param serviceExternalId
@@ -824,6 +869,8 @@ module.exports = function (clientOptions = {}) {
     addGatewayAccountsToService,
     updateCurrentGoLiveStage,
     addStripeAgreementIpAddress,
-    addGovUkAgreementEmailAddress
+    addGovUkAgreementEmailAddress,
+    getServiceByExternalId,
+    getServiceForGatewayAccount
   }
 }
