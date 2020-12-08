@@ -351,8 +351,11 @@ module.exports.bind = function (app) {
   app.get(paymentLinks.review, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getReview)
   app.post(paymentLinks.review, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postReview)
 
-  app.get(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn)
-  app.post(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postAddReportingColumn)
+  app.get(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showAddMetadataPage)
+  app.get(paymentLinks.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showEditMetadataPage)
+  app.post(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.addMetadata)
+  app.post(paymentLinks.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
+  app.post(paymentLinks.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
   app.get(paymentLinks.manage, xraySegmentCls, permission('transactions:read'), getAccount, paymentLinksController.getManage)
   app.get(paymentLinks.disable, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getDisable)

@@ -26,9 +26,9 @@
     <p class="govuk-body">If you are adding reporting columns to more than one service or payment link, use consistent wording. This will make it easier to read your payment report.</p>
 
     {% set metadataKeyField = form.fields.metadataKey %}
-    {% set metadataKeyAttributes = { "readonly": "readonly" } if isEditing else { "autofocus": "true" } %}
+    {% set metadataKeyAttributes = { "readonly": "readonly" } if (isEditing and not canEditKey) else { "autofocus": "true" } %}
     {% set columnHeaderHeading = "Column header" %}
-    {% if isEditing %}
+    {% if isEditing and not canEditKey %}
       <p class="govuk-body edit-reporting-column--bottom-spacing">{{columnHeaderHeading}}</p>
       <p class="govuk-body govuk-hint edit-reporting-column--bottom-spacing">You can't edit column headers.</span>
       <p class="govuk-body govuk-!-font-weight-bold" >{{form.values[metadataKeyField.id]}}</p>
@@ -44,7 +44,7 @@
           },
           value: form.values[metadataKeyField.id],
           hint: {
-            html: "You could, for example, add your ‘cost centre’ or ‘fee type’. You can’t edit column headers, but you can delete them."
+            html: "You could, for example, add your ‘cost centre’ or ‘fee type’."
           },
           errorMessage: tested.errorMaps[metadataKeyField.id] and {
             text: tested.errorMaps[metadataKeyField.id]
