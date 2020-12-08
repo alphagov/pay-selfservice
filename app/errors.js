@@ -15,6 +15,12 @@ class NotAuthenticatedError extends DomainError {
 }
 
 /**
+ * Thrown when the account is disabled for the logged in user.
+ */
+class UserAccountDisabledError extends DomainError {
+}
+
+/**
  * Thrown when the user does not have permission to access a resource.
  */
 class NotAuthorisedError extends DomainError {
@@ -28,6 +34,7 @@ class NotFoundError extends DomainError {
 
 module.exports = {
   NotAuthenticatedError,
+  UserAccountDisabledError,
   NotAuthorisedError,
   NotFoundError
 }
