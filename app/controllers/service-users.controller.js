@@ -22,7 +22,7 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
       }
       if (currentUser.externalId === user.externalId) {
         mappedUser.is_current = true
-        mappedUser.link = paths.user.profile
+        mappedUser.link = paths.user.profile.index
       } else {
         mappedUser.link = formattedPathFor(paths.teamMembers.show, externalServiceId, user.externalId)
       }
@@ -101,7 +101,7 @@ module.exports = {
     const externalServiceId = req.service.externalId
     const externalUserId = req.params.externalUserId
     if (externalUserId === req.user.externalId) {
-      res.redirect(paths.user.profile)
+      res.redirect(paths.user.profile.index)
     }
 
     const onSuccess = (user) => {
@@ -184,7 +184,7 @@ module.exports = {
         email: user.email,
         telephone_number: user.telephoneNumber,
         two_factor_auth: user.secondFactor,
-        two_factor_auth_link: paths.user.twoFactorAuth.index
+        two_factor_auth_link: paths.user.profile.twoFactorAuth.index
       })
     }
 

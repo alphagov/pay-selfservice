@@ -27,7 +27,7 @@ describe('Two factor authenticator configure index GET', () => {
 
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.user.twoFactorAuth.index)
+        .get(paths.user.profile.twoFactorAuth.index)
         .end((err, res) => {
           result = res
           $ = cheerio.load(res.text)
@@ -43,11 +43,11 @@ describe('Two factor authenticator configure index GET', () => {
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile.index)
     })
 
     it(`should have itself as the form action`, () => {
-      expect($('form').attr('action')).to.equal(paths.user.twoFactorAuth.index)
+      expect($('form').attr('action')).to.equal(paths.user.profile.twoFactorAuth.index)
     })
 
     it(`should a button with “Use an authenticator app instead”`, () => {
@@ -71,7 +71,7 @@ describe('Two factor authenticator configure index GET', () => {
 
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.user.twoFactorAuth.index)
+        .get(paths.user.profile.twoFactorAuth.index)
         .end((err, res) => {
           result = res
           $ = cheerio.load(res.text)
@@ -87,11 +87,11 @@ describe('Two factor authenticator configure index GET', () => {
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile.index)
     })
 
     it(`should have itself as the form action`, () => {
-      expect($('form').attr('action')).to.equal(paths.user.twoFactorAuth.index)
+      expect($('form').attr('action')).to.equal(paths.user.profile.twoFactorAuth.index)
     })
 
     it(`should a radio with “A different authenticator app”`, () => {

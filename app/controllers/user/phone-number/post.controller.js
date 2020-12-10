@@ -21,7 +21,7 @@ module.exports = async function updatePhoneNumber (req, res) {
     await userService.updatePhoneNumber(req.user.externalId, telephoneNumber)
 
     req.flash('generic', 'Phone number updated')
-    return res.redirect(paths.user.profile)
+    return res.redirect(paths.user.profile.index)
   } catch (error) {
     return renderErrorView(req, res, 'Unable to update phone number. Please try again or contact support team.')
   }

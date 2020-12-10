@@ -202,7 +202,7 @@ module.exports.bind = function (app) {
     ...lodash.values(prototyping.demoPayment),
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
-    ...lodash.values(user.twoFactorAuth),
+    ...lodash.values(user.profile),
     ...lodash.values(partnerApp),
     ...lodash.values(billingAddress),
     ...lodash.values(requestToGoLive),
@@ -213,7 +213,6 @@ module.exports.bind = function (app) {
     ...lodash.values(settings),
     ...lodash.values(yourPsp),
     ...lodash.values(payouts),
-    user.profile,
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -304,7 +303,7 @@ module.exports.bind = function (app) {
   app.get(teamMembers.permissions, xraySegmentCls, permission('users-service:create'), serviceRolesUpdateController.index)
   app.post(teamMembers.permissions, xraySegmentCls, permission('users-service:create'), serviceRolesUpdateController.update)
   app.post(teamMembers.delete, xraySegmentCls, permission('users-service:delete'), serviceUsersController.delete)
-  app.get(user.profile, xraySegmentCls, enforceUserAuthenticated, serviceUsersController.profile)
+  app.get(user.profile.index, xraySegmentCls, enforceUserAuthenticated, serviceUsersController.profile)
 
   // TEAM MEMBERS - INVITE
   app.get(teamMembers.invite, xraySegmentCls, permission('users-service:create'), inviteUserController.index)
@@ -376,11 +375,11 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.metadata.delete, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.metadata.deletePagePost)
 
   // Configure 2FA
-  app.get(user.twoFactorAuth.index, xraySegmentCls, twoFactorAuthController.getIndex)
-  app.post(user.twoFactorAuth.index, xraySegmentCls, twoFactorAuthController.postIndex)
-  app.get(user.twoFactorAuth.configure, xraySegmentCls, twoFactorAuthController.getConfigure)
-  app.post(user.twoFactorAuth.configure, xraySegmentCls, twoFactorAuthController.postConfigure)
-  app.post(user.twoFactorAuth.resend, xraySegmentCls, twoFactorAuthController.postResend)
+  app.get(user.profile.twoFactorAuth.index, xraySegmentCls, twoFactorAuthController.getIndex)
+  app.post(user.profile.twoFactorAuth.index, xraySegmentCls, twoFactorAuthController.postIndex)
+  app.get(user.profile.twoFactorAuth.configure, xraySegmentCls, twoFactorAuthController.getConfigure)
+  app.post(user.profile.twoFactorAuth.configure, xraySegmentCls, twoFactorAuthController.postConfigure)
+  app.post(user.profile.twoFactorAuth.resend, xraySegmentCls, twoFactorAuthController.postResend)
 
   // Feedback
   app.get(paths.feedback, xraySegmentCls, hasServices, resolveService, getAccount, feedbackController.getIndex)
@@ -506,12 +505,12 @@ module.exports.bind = function (app) {
     stripeSetupAddPspAccountDetailsController.get
   )
 
-  app.get(user.phoneNumber,
+  app.get(user.profile.phoneNumber ,
     xraySegmentCls,
     userPhoneNumberController.get
   )
 
-  app.post(user.phoneNumber,
+  app.post(user.profile.phoneNumber ,
     xraySegmentCls,
     userPhoneNumberController.post
   )

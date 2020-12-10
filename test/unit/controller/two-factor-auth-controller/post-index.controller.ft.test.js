@@ -42,7 +42,7 @@ describe('Two factor authenticator configure index POST', () => {
 
     before('Act', done => {
       supertest(app)
-        .post(paths.user.twoFactorAuth.index)
+        .post(paths.user.profile.twoFactorAuth.index)
         .send({
           csrfToken: csrf().create('123'),
           'two-fa-method': 'APP'
@@ -61,7 +61,7 @@ describe('Two factor authenticator configure index POST', () => {
     })
 
     it('should redirect to the configure page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.user.twoFactorAuth.configure)
+      expect(result.headers).to.have.property('location').to.equal(paths.user.profile.twoFactorAuth.configure)
     })
   })
 
@@ -80,7 +80,7 @@ describe('Two factor authenticator configure index POST', () => {
 
     before('Act', done => {
       supertest(app)
-        .post(paths.user.twoFactorAuth.index)
+        .post(paths.user.profile.twoFactorAuth.index)
         .send({
           csrfToken: csrf().create('123'),
           'two-fa-method': 'SMS'
@@ -99,7 +99,7 @@ describe('Two factor authenticator configure index POST', () => {
     })
 
     it('should redirect to the configure page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.user.twoFactorAuth.configure)
+      expect(result.headers).to.have.property('location').to.equal(paths.user.profile.twoFactorAuth.configure)
     })
   })
 })

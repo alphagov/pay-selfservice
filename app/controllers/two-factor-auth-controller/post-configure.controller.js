@@ -12,7 +12,7 @@ module.exports = async function postUpdateSecondFactorMethod (req, res) {
   try {
     await userService.configureNewOtpKey(req.user.externalId, code, method, req.correlationId)
     req.flash('otpMethodUpdated', method)
-    return res.redirect(paths.user.profile)
+    return res.redirect(paths.user.profile.index)
   } catch (err) {
     if (err.errorCode === 401 || err.errorCode === 400) {
       lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
@@ -24,6 +24,6 @@ module.exports = async function postUpdateSecondFactorMethod (req, res) {
       req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       logger.error(`[requestId=${req.correlationId}] Activating new OTP key failed, server error`)
     }
-    return res.redirect(paths.user.twoFactorAuth.configure)
+    return res.redirect(paths.user.profile.twoFactorAuth.configure)
   }
 }

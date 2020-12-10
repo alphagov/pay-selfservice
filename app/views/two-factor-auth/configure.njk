@@ -16,7 +16,7 @@
   {{
     govukBackLink({
       text: "My profile",
-      href: routes.user.profile
+      href: routes.user.profile.index
     })
   }}
 {% endblock %}
@@ -58,7 +58,7 @@
     })
   }}
 {% endif %}
-  <form method="post" action="{{routes.user.twoFactorAuth.configure}}" novalidate data-validate>
+  <form method="post" action="{{routes.user.profile.twoFactorAuth.configure}}" novalidate data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set codeHint = "Enter the code shown in your app to complete the setup" %}
@@ -92,7 +92,7 @@
   </form>
 
   {% if method === 'SMS' %}
-  <form method="post" action="{{routes.user.twoFactorAuth.resend}}">
+  <form method="post" action="{{routes.user.profile.twoFactorAuth.resend}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="govuk-form-group">
       <button class="pay-button--as-link govuk-!-font-size-19" type="submit">
@@ -103,7 +103,7 @@
   {% endif %}
 
   <p class="govuk-body">
-    <a class="govuk-link govuk-link--no-visited-state" id="service-name-cancel-link" href="{{routes.user.twoFactorAuth.index}}">
+    <a class="govuk-link govuk-link--no-visited-state" id="service-name-cancel-link" href="{{routes.user.profile.twoFactorAuth.index}}">
       Cancel
     </a>
   </p>
