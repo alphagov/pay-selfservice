@@ -359,6 +359,9 @@ module.exports.bind = function (app) {
 
   app.get(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showAddMetadataPage)
   app.post(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.addMetadata)
+  app.get(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showEditMetadataPage)
+  app.post(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
+  app.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
   app.get(paymentLinks.managePage, xraySegmentCls, permission('transactions:read'), getAccount, paymentLinksController.getManage)
   app.get(paymentLinks.disable, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getDisable)

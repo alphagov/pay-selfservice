@@ -23,7 +23,7 @@
 {% endif %}
 
 {% set addReportingColumnButtonText %}
-  {% if metadata %}
+  {% if metadata and metadata | length %}
     Add another reporting column
   {% else %}
     Add a reporting column

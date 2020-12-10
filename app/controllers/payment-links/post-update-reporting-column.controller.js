@@ -1,6 +1,5 @@
 'use strict'
 
-const paths = require('../../paths')
 const MetadataForm = require('./metadata/metadata-form')
 const { getPaymentLinksContext, metadata } = require('../../utils/payment-links')
 
@@ -35,15 +34,19 @@ function addMetadata (req, res) {
 }
 
 function editMetadata (req, res) {
-  const sessionData = getPaymentLinksContext(req).sessionData
-  const form = new MetadataForm(req.body, sessionData.metadata)
+  const paymentLinksContext = getPaymentLinksContext(req)
   const key = req.params.metadataKey
+
+  const existingMetadata = { ...paymentLinksContext.sessionData.metadata }
+  delete existingMetadata[key]
+  const form = new MetadataForm(req.body, existingMetadata)
+
   const pageData = {
-    self: `${paths.paymentLinks.addMetadata}/${key}`,
-    cancelRoute: paths.paymentLinks.review,
+    self: `${paymentLinksContext.self}/${key}`,
+    cancelRoute: paymentLinksContext.cancelUrl,
     isEditing: true,
     canEditKey: true,
-    createLink: true
+    createLink: paymentLinksContext.createLink
   }
   const validated = form.validate()
 
@@ -55,20 +58,24 @@ function editMetadata (req, res) {
   }
 
   metadata.updateMetadata(
-    sessionData,
+    paymentLinksContext.sessionData,
     key,
     form.values[form.fields.metadataKey.id],
     form.values[form.fields.metadataValue.id]
   )
-  res.redirect(paths.paymentLinks.review)
+
+  // @TODO(sfount) naming!
+  res.redirect(paymentLinksContext.cancelUrl)
 }
 
 function deleteMetadata (req, res) {
-  const sessionData = getPaymentLinksContext(req).sessionData
+  const paymentLinksContext = getPaymentLinksContext(req)
   const key = req.params.metadataKey
 
-  metadata.removeMetadata(sessionData, key)
-  res.redirect(paths.paymentLinks.review)
+  metadata.removeMetadata(paymentLinksContext.sessionData, key)
+
+  // @TODO(sfount) naming!
+  res.redirect(paymentLinksContext.cancelUrl)
 }
 
 module.exports = {

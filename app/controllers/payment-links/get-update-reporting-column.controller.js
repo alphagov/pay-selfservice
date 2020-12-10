@@ -1,6 +1,5 @@
 'use strict'
 
-const paths = require('../../paths')
 const MetadataForm = require('./metadata/metadata-form')
 const { getPaymentLinksContext } = require('../../utils/payment-links')
 
@@ -18,9 +17,9 @@ function showAddMetadataPage (req, res) {
 }
 
 function showEditMetadataPage (req, res) {
-  const sessionData = getPaymentLinksContext(req).sessionData
+  const paymentLinksContext = getPaymentLinksContext(req)
   const key = req.params.metadataKey
-  const currentMetadata = sessionData.metadata || {}
+  const currentMetadata = paymentLinksContext.sessionData && paymentLinksContext.sessionData.metadata
   const prefilledPage = {
     'metadata-column-header': key,
     'metadata-cell-value': currentMetadata[key]
@@ -28,11 +27,11 @@ function showEditMetadataPage (req, res) {
   const form = new MetadataForm(prefilledPage)
   const pageData = {
     form: form,
-    self: `${paths.paymentLinks.addMetadata}/${key}`,
-    cancelRoute: paths.paymentLinks.review,
+    self: `${paymentLinksContext.self}/${key}`,
+    cancelRoute: paymentLinksContext.cancelUrl,
     isEditing: true,
     canEditKey: true,
-    createLink: true
+    createLink: paymentLinksContext.createLink
   }
   return response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
 }
