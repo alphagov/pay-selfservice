@@ -8,9 +8,9 @@ const { response } = require('../../utils/response.js')
 function addMetadata (req, res) {
   const paymentLinksContext = getPaymentLinksContext(req)
   const pageData = {
-    self: paymentLinksContext.self,
-    cancelRoute: paymentLinksContext.cancelUrl,
-    createLink: paymentLinksContext.createLink
+    self: paymentLinksContext.addMetadataPageUrl,
+    cancelRoute: paymentLinksContext.listMetadataPageUrl,
+    createLink: paymentLinksContext.isCreatingPaymentLink
   }
   const form = new MetadataForm(req.body, paymentLinksContext.sessionData && paymentLinksContext.sessionData.metadata)
   const validated = form.validate()
@@ -28,9 +28,7 @@ function addMetadata (req, res) {
     form.values[form.fields.metadataValue.id]
   )
 
-  // @TODO(sfount) rename cancelUrl to listReportingColumnsPageUrl
-  // @TODO(sfount) rename self to addMetadataPageUrl, this can be assigned to self
-  res.redirect(paymentLinksContext.cancelUrl)
+  res.redirect(paymentLinksContext.listMetadataPageUrl)
 }
 
 function editMetadata (req, res) {
@@ -42,11 +40,11 @@ function editMetadata (req, res) {
   const form = new MetadataForm(req.body, existingMetadata)
 
   const pageData = {
-    self: `${paymentLinksContext.self}/${key}`,
-    cancelRoute: paymentLinksContext.cancelUrl,
+    self: `${paymentLinksContext.addMetadataPageUrl}/${key}`,
+    cancelRoute: paymentLinksContext.listMetadataPageUrl,
     isEditing: true,
     canEditKey: true,
-    createLink: paymentLinksContext.createLink
+    createLink: paymentLinksContext.isCreatingPaymentLink
   }
   const validated = form.validate()
 
@@ -64,8 +62,7 @@ function editMetadata (req, res) {
     form.values[form.fields.metadataValue.id]
   )
 
-  // @TODO(sfount) naming!
-  res.redirect(paymentLinksContext.cancelUrl)
+  res.redirect(paymentLinksContext.listMetadataPageUrl)
 }
 
 function deleteMetadata (req, res) {
@@ -74,8 +71,7 @@ function deleteMetadata (req, res) {
 
   metadata.removeMetadata(paymentLinksContext.sessionData, key)
 
-  // @TODO(sfount) naming!
-  res.redirect(paymentLinksContext.cancelUrl)
+  res.redirect(paymentLinksContext.listMetadataPageUrl)
 }
 
 module.exports = {

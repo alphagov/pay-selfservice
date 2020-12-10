@@ -1,9 +1,13 @@
 const { expect } = require('chai')
+
+const paths = require('../paths')
 const { getPaymentLinksContext, metadata } = require('./payment-links')
 
 function getMockRequest (mockPaymentLinkSession = {}) {
   return {
-    originalUrl: '/create-payment-link/review',
+    route: {
+      path: '/create-payment-link/review'
+    },
     session: {
       pageData: {
         createPaymentLink: mockPaymentLinkSession
@@ -13,18 +17,37 @@ function getMockRequest (mockPaymentLinkSession = {}) {
 }
 
 describe('payment links helper methods', () => {
-  describe('payment link sessions', () => {
-    it('gets the current session for payment links', () => {
+  describe('payment link session context', () => {
+    it('gets the current context for payment links session', () => {
       const mockPaymentLinkSession = {}
       const mockRequest = getMockRequest(mockPaymentLinkSession)
-      const result = getPaymentLinksContext(mockRequest).sessionData
-      expect(result).to.equal(mockPaymentLinkSession)
+      const result = getPaymentLinksContext(mockRequest)
+      expect(result.sessionData).to.equal(mockPaymentLinkSession)
     })
 
     it('correctly gets nothing if there is no payment links session', () => {
-      const mockRequest = { originalUrl: '/create-payment-link/review' }
-      const result = getPaymentLinksContext(mockRequest).sessionData
-      expect(result).to.be.undefined // eslint-disable-line
+      const mockRequest = { route: { path: '/create-payment-link/review' } }
+      const result = getPaymentLinksContext(mockRequest)
+      expect(result.sessionData).to.be.undefined // eslint-disable-line
+    })
+
+    it('correctly flags context as creating payment link if not in manage list', () => {
+      const mockRequest = { route: { path: paths.paymentLinks.review } }
+      const result = getPaymentLinksContext(mockRequest)
+      expect(result.isCreatingPaymentLink).to.be.true // eslint-disable-line
+      expect(result.listMetadataPageUrl).to.equal(paths.paymentLinks.review)
+      expect(result.addMetadataPageUrl).to.equal(paths.paymentLinks.addMetadata)
+    })
+
+    it('correctly flags context as managing payment link if in manage link and interpolates relevant product id', () => {
+      const mockRequest = {
+        route: { path: paths.paymentLinks.manage.edit },
+        params: { productExternalId: 'an-external-id' }
+      }
+      const result = getPaymentLinksContext(mockRequest)
+      expect(result.isCreatingPaymentLink).to.be.false // eslint-disable-line
+      expect(result.listMetadataPageUrl).to.equal('/create-payment-link/manage/edit/an-external-id')
+      expect(result.addMetadataPageUrl).to.equal('/create-payment-link/manage/an-external-id/add-reporting-column')
     })
   })
 

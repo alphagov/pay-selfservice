@@ -9,9 +9,9 @@ function showAddMetadataPage (req, res) {
   const paymentLinksContext = getPaymentLinksContext(req)
   const pageData = {
     form: new MetadataForm(),
-    self: paymentLinksContext.addMetadataUrl,
-    cancelRoute: paymentLinksContext.cancelUrl,
-    createLink: paymentLinksContext.createLink
+    self: paymentLinksContext.addMetadataPageUrl,
+    cancelRoute: paymentLinksContext.listMetadataPageUrl,
+    createLink: paymentLinksContext.isCreatingPaymentLink
   }
   return response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
 }
@@ -27,11 +27,11 @@ function showEditMetadataPage (req, res) {
   const form = new MetadataForm(prefilledPage)
   const pageData = {
     form: form,
-    self: `${paymentLinksContext.self}/${key}`,
-    cancelRoute: paymentLinksContext.cancelUrl,
+    self: `${paymentLinksContext.addMetadataPageUrl}/${key}`,
+    cancelRoute: paymentLinksContext.listMetadataPageUrl,
     isEditing: true,
     canEditKey: true,
-    createLink: paymentLinksContext.createLink
+    createLink: paymentLinksContext.isCreatingPaymentLink
   }
   return response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
 }
