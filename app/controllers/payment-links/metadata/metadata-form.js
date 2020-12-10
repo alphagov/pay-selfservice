@@ -1,19 +1,43 @@
+const METADATA_MAX_HEADER_LENGTH = 30
+const METADATA_MAX_VALUE_LENGTH = 100
+const MAX_NO_OF_METADATA_COLUMNS = 10
+
 const fields = {
   metadataKey: {
     id: 'metadata-column-header',
     name: 'metadata-column-header',
-    validation: [ {
-      validator: isNotEmpty,
-      message: 'Enter a column header'
-    } ]
+    validation: [
+      {
+        validator: isNotEmpty,
+        message: 'Enter a column header'
+      },
+      {
+        validator: isValidLengthForColumnHeader,
+        message: `Column header must be ${METADATA_MAX_HEADER_LENGTH} characters or fewer`
+      },
+      {
+        validator: isNotDuplicate,
+        message: 'Column header must not already exist'
+      },
+      {
+        validator: isNotExceedingMaxNoOfReportingColumns,
+        message: `Number of reporting columns must be ${MAX_NO_OF_METADATA_COLUMNS} or fewer`
+      }
+    ]
   },
   metadataValue: {
     id: 'metadata-cell-value',
     name: 'metadata-cell-value',
-    validation: [ {
-      validator: isNotEmpty,
-      message: 'Enter cell content'
-    } ]
+    validation: [
+      {
+        validator: isNotEmpty,
+        message: 'Enter cell content'
+      },
+      {
+        validator: isValidLengthForCellContent,
+        message: `Cell content must be ${METADATA_MAX_VALUE_LENGTH} characters or fewer`
+      }
+    ]
   }
 }
 
@@ -31,11 +55,12 @@ const defaultFallbackError = {
 }
 
 class MetadataForm {
-  constructor (formData = {}) {
+  constructor (formData = {}, existingMetadata = {}) {
     this.values = {}
     this.fields = fields
     this.values[fields.metadataKey.id] = formData[fields.metadataKey.name]
     this.values[fields.metadataValue.id] = formData[fields.metadataValue.name]
+    this.existingMetadata = existingMetadata
   }
 
   // returns list of errors which may be on the form, both a map of ids to errors and a top level array
@@ -45,7 +70,7 @@ class MetadataForm {
     for (const fieldKey in fields) {
       const field = fields[fieldKey]
       field.validation.some((validationEntry) => {
-        const valid = validationEntry.validator(this.values[field.id])
+        const valid = validationEntry.validator(this.values[field.id], this.existingMetadata)
         if (!valid) {
           errors.push({
             href: `#${field.id}`,
@@ -78,6 +103,31 @@ class MetadataForm {
 
 function isNotEmpty (value) {
   return value && value.length !== 0
+}
+
+function isValidLengthForColumnHeader (value) {
+  return value && value.length !== 0 && value.length <= METADATA_MAX_HEADER_LENGTH
+}
+
+function isValidLengthForCellContent (value) {
+  return value && value.length !== 0 && value.length <= METADATA_MAX_VALUE_LENGTH
+}
+
+function isNotDuplicate (value, existingMetadata) {
+  if (existingMetadata) {
+    const found = Object.keys(existingMetadata).find(metadataKey => value === metadataKey)
+    return !found
+  }
+
+  return true
+}
+
+function isNotExceedingMaxNoOfReportingColumns (value, existingMetadata) {
+  if (Object.keys(existingMetadata) && Object.keys(existingMetadata).length >= MAX_NO_OF_METADATA_COLUMNS) {
+    return false
+  }
+
+  return true
 }
 
 module.exports = MetadataForm
