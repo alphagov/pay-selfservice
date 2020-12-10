@@ -75,7 +75,10 @@
     {{
       govukButton({
         text: "Update reporting column" if isEditing else "Add reporting column",
-        classes: "button"
+        classes: "button",
+        attributes: {
+          'id': 'submit-reporting-column'
+        }
       })
     }}
 

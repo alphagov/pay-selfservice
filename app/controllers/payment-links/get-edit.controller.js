@@ -57,9 +57,6 @@ module.exports = async function showEditPaymentLink (req, res, next) {
       : product.metadata
 
     pageData.changed = !lodash.isEqual(productCheck, pageData.product)
-
-    // IF we _are_ doing inline editing of reporting columns, it should be populated ONCE
-    // but then it shouldn't be continually merged
     lodash.set(req, 'session.editPaymentLinkData', pageData.product)
     return response(req, res, 'payment-links/edit', pageData)
   } catch (err) {
