@@ -213,6 +213,7 @@ module.exports.bind = function (app) {
     ...lodash.values(settings),
     ...lodash.values(yourPsp),
     ...lodash.values(payouts),
+    ...lodash.values(toggleMotoMaskCardNumberAndSecurityCode),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
