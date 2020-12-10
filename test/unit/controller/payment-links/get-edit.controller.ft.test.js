@@ -52,7 +52,7 @@ describe('Edit a payment link', () => {
       mockGetByProductExternalIdEndpoint(GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID).reply(200, PAYMENT_1)
 
       supertest(createAppWithSession(getApp(), session))
-        .get(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+        .get(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -65,7 +65,7 @@ describe('Edit a payment link', () => {
     })
 
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('self', formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(response.body).to.have.property('self', formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
       expect(response.body).to.have.property('editInformation', formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
       expect(response.body).to.have.property('editAmount', formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
     })
@@ -107,7 +107,7 @@ describe('Edit a payment link', () => {
       })
 
       supertest(createAppWithSession(getApp(), session))
-        .get(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+        .get(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res

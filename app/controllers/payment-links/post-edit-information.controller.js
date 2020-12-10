@@ -11,7 +11,7 @@ module.exports = function postEditInformation (req, res) {
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
-    return res.redirect(paths.paymentLinks.manage)
+    return res.redirect(paths.paymentLinks.managePage)
   }
 
   const name = req.body['payment-link-title']
@@ -32,5 +32,5 @@ module.exports = function postEditInformation (req, res) {
   sessionData.name = name
   sessionData.description = description
 
-  return res.redirect(formattedPathFor(paths.paymentLinks.edit, productExternalId))
+  return res.redirect(formattedPathFor(paths.paymentLinks.manage.edit, productExternalId))
 }

@@ -357,11 +357,14 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
   app.post(paymentLinks.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  app.get(paymentLinks.manage, xraySegmentCls, permission('transactions:read'), getAccount, paymentLinksController.getManage)
+  app.get(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showAddMetadataPage)
+  app.post(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.addMetadata)
+
+  app.get(paymentLinks.managePage, xraySegmentCls, permission('transactions:read'), getAccount, paymentLinksController.getManage)
   app.get(paymentLinks.disable, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getDisable)
   app.get(paymentLinks.delete, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getDelete)
-  app.get(paymentLinks.edit, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEdit)
-  app.post(paymentLinks.edit, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEdit)
+  app.get(paymentLinks.manage.edit, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEdit)
+  app.post(paymentLinks.manage.edit, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEdit)
   app.get(paymentLinks.editInformation, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEditInformation)
   app.post(paymentLinks.editInformation, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEditInformation)
   app.get(paymentLinks.editReference, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEditReference)

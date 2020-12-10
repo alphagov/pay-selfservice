@@ -19,7 +19,7 @@
       label: "#reference-label"
     }
   }) }}
-  
+
   <form action="{{ self }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
@@ -142,7 +142,7 @@
         classes: "button"
       })
     }}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.manage }}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.managePage }}">Cancel</a></p>
   </form>
 
   {% if not isWelsh %}

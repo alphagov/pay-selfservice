@@ -2,18 +2,18 @@
 
 const paths = require('../../paths')
 const MetadataForm = require('./metadata/metadata-form')
-const { getPaymentLinksSession, metadata } = require('../../utils/payment-links')
+const { getPaymentLinksContext, metadata } = require('../../utils/payment-links')
 
 const { response } = require('../../utils/response.js')
 
 function addMetadata (req, res) {
-  const sessionData = getPaymentLinksSession(req)
+  const paymentLinksContext = getPaymentLinksContext(req)
   const pageData = {
-    self: paths.paymentLinks.addMetadata,
-    cancelRoute: paths.paymentLinks.review,
-    createLink: true
+    self: paymentLinksContext.self,
+    cancelRoute: paymentLinksContext.cancelUrl,
+    createLink: paymentLinksContext.createLink
   }
-  const form = new MetadataForm(req.body)
+  const form = new MetadataForm(req.body, paymentLinksContext.sessionData && paymentLinksContext.sessionData.metadata)
   const validated = form.validate()
 
   if (validated.errors.length) {
@@ -24,16 +24,19 @@ function addMetadata (req, res) {
   }
 
   metadata.addMetadata(
-    sessionData,
+    paymentLinksContext.sessionData,
     form.values[form.fields.metadataKey.id],
     form.values[form.fields.metadataValue.id]
   )
-  res.redirect(paths.paymentLinks.review)
+
+  // @TODO(sfount) rename cancelUrl to listReportingColumnsPageUrl
+  // @TODO(sfount) rename self to addMetadataPageUrl, this can be assigned to self
+  res.redirect(paymentLinksContext.cancelUrl)
 }
 
 function editMetadata (req, res) {
-  const sessionData = getPaymentLinksSession(req)
-  const form = new MetadataForm(req.body)
+  const sessionData = getPaymentLinksContext(req).sessionData
+  const form = new MetadataForm(req.body, sessionData.metadata)
   const key = req.params.metadataKey
   const pageData = {
     self: `${paths.paymentLinks.addMetadata}/${key}`,
@@ -61,7 +64,7 @@ function editMetadata (req, res) {
 }
 
 function deleteMetadata (req, res) {
-  const sessionData = getPaymentLinksSession(req)
+  const sessionData = getPaymentLinksContext(req).sessionData
   const key = req.params.metadataKey
 
   metadata.removeMetadata(sessionData, key)

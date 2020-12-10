@@ -11,7 +11,7 @@ module.exports = function postEditReference (req, res) {
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
-    return res.redirect(paths.paymentLinks.manage)
+    return res.redirect(paths.paymentLinks.managePage)
   }
 
   const referenceEnabled = req.body['reference-type-group'] === 'custom'
@@ -35,5 +35,5 @@ module.exports = function postEditReference (req, res) {
   sessionData.referenceLabel = referenceLabel
   sessionData.referenceHint = referenceHint
 
-  return res.redirect(formattedPathFor(paths.paymentLinks.edit, productExternalId))
+  return res.redirect(formattedPathFor(paths.paymentLinks.manage.edit, productExternalId))
 }

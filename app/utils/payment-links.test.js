@@ -1,8 +1,9 @@
 const { expect } = require('chai')
-const { getPaymentLinksSession, metadata } = require('./payment-links')
+const { getPaymentLinksContext, metadata } = require('./payment-links')
 
 function getMockRequest (mockPaymentLinkSession = {}) {
   return {
+    originalUrl: '/create-payment-link/review',
     session: {
       pageData: {
         createPaymentLink: mockPaymentLinkSession
@@ -16,13 +17,13 @@ describe('payment links helper methods', () => {
     it('gets the current session for payment links', () => {
       const mockPaymentLinkSession = {}
       const mockRequest = getMockRequest(mockPaymentLinkSession)
-      const result = getPaymentLinksSession(mockRequest)
+      const result = getPaymentLinksContext(mockRequest).sessionData
       expect(result).to.equal(mockPaymentLinkSession)
     })
 
     it('correctly gets nothing if there is no payment links session', () => {
-      const mockRequest = {}
-      const result = getPaymentLinksSession(mockRequest)
+      const mockRequest = { originalUrl: '/create-payment-link/review' }
+      const result = getPaymentLinksContext(mockRequest).sessionData
       expect(result).to.be.undefined // eslint-disable-line
     })
   })

@@ -55,7 +55,7 @@ describe('POST edit payment link controller', () => {
   })
   before('Act', done => {
     supertest(app)
-      .post(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      .post(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
       .send(VALID_PAYLOAD)
       .end((err, res) => {
         result = res
@@ -71,7 +71,7 @@ describe('POST edit payment link controller', () => {
   })
 
   it('should redirect to the manage page with a success message', () => {
-    expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage)
+    expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.managePage)
     expect(session.flash).to.have.property('generic')
     expect(session.flash.generic.length).to.equal(1)
     expect(session.flash.generic[0]).to.equal('Your payment link has been updated')

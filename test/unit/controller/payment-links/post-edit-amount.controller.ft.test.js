@@ -48,7 +48,7 @@ describe('POST payment link edit amount controller', () => {
     })
 
     it('should redirect to edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
     })
 
     it('should set price in session', () => {
@@ -56,7 +56,7 @@ describe('POST payment link edit amount controller', () => {
     })
 
     it('should redirect to the edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
     })
   })
 
@@ -89,7 +89,7 @@ describe('POST payment link edit amount controller', () => {
     })
 
     it('should redirect to edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
     })
 
     it('should set price in session', () => {
@@ -97,7 +97,7 @@ describe('POST payment link edit amount controller', () => {
     })
 
     it('should redirect to the edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
     })
   })
 
