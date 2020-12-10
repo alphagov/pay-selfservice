@@ -6,12 +6,14 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
 const userFixtures = require('../../fixtures/user.fixtures')
+const stripeAccountSetupFixture = require('../../fixtures/stripe-account-setup.fixtures')
 
-let req, res, next, connectorGetAccountMock
+let req, res, next, connectorGetAccountMock, connectorGetStripeAccountSetupMock
 
 const connectorMock = {
   ConnectorClient: function () {
     this.getAccountByExternalId = connectorGetAccountMock
+    this.getStripeAccountSetup = connectorGetStripeAccountSetupMock
   }
 }
 
@@ -40,6 +42,12 @@ const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAcco
       payment_provider: paymentProvider
     })
   })
+
+  if (paymentProvider === 'stripe') {
+    connectorGetStripeAccountSetupMock = sinon.spy((params) => {
+      return Promise.resolve(stripeAccountSetupFixture.buildGetStripeAccountSetupResponse())
+    })
+  }
 
   return proxyquire(path.join(__dirname, '../../../app/middleware/get-service-and-gateway-account.middleware'), {
     '../services/clients/connector.client.js': connectorMock
@@ -157,5 +165,65 @@ describe('middleware: getGatewayAccountAndService', () => {
       expect(err).to.be.instanceOf(NotFoundError)
     }
     return getGatewayAccountAndService(req, res, next)
+  })
+  describe('extend gateway account data with disableToggle3ds field', () => {
+    ['worldpay', 'smartpay', 'epdq'].forEach(function (value) {
+      it('should extend the account data with disableToggle3ds set to false if account type is ' + value, () => {
+        const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', value, 'some-service-external-id')
+        next = function () {
+          expect(req.account.disableToggle3ds).to.equal(false)
+          expect(req.account.external_id).to.equal('some-gateway-external-id')
+        }
+        return getGatewayAccountAndService(req, res, next)
+      })
+    })
+    it('should extend the account data with disableToggle3ds set to true if account type is stripe', () => {
+      const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'stripe', 'some-service-external-id')
+      next = function () {
+        expect(req.account.disableToggle3ds).to.equal(true)
+        expect(req.account.external_id).to.equal('some-gateway-external-id')
+      }
+      return getGatewayAccountAndService(req, res, next)
+    })
+  })
+  describe('extend gateway account data with supports3ds field', () => {
+    ['worldpay', 'smartpay', 'epdq', 'stripe'].forEach(function (value) {
+      it('should extend the account data with supports3ds set to true if account type is ' + value, () => {
+        const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', value, 'some-service-external-id')
+        next = function () {
+          expect(req.account.supports3ds).to.equal(true)
+          expect(req.account.external_id).to.equal('some-gateway-external-id')
+        }
+        return getGatewayAccountAndService(req, res, next)
+      })
+    })
+    it('should extend the account data with supports3ds set to false if account type is sandbox', () => {
+      const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'sandbox', 'some-service-external-id')
+      next = function () {
+        expect(req.account.supports3ds).to.equal(false)
+        expect(req.account.external_id).to.equal('some-gateway-external-id')
+      }
+      return getGatewayAccountAndService(req, res, next)
+    })
+  })
+  describe('extend gateway account data stripe setup', () => {
+    ['worldpay', 'smartpay', 'epdq', 'sandbox'].forEach(function (value) {
+      it('should not extend the account data with stripe setup if account type is ' + value, () => {
+        const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', value, 'some-service-external-id')
+        next = function () {
+          expect(req.account.external_id).to.equal('some-gateway-external-id')
+          expect(req.account).to.not.have.property('connectorGatewayAccountStripeProgress')
+        }
+        return getGatewayAccountAndService(req, res, next)
+      })
+    })
+    it('should extend the account data with supports3ds set to false if account type is stripe', () => {
+      const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'stripe', 'some-service-external-id')
+      next = function () {
+        expect(req.account.external_id).to.equal('some-gateway-external-id')
+        expect(req.account).to.have.property('connectorGatewayAccountStripeProgress')
+      }
+      return getGatewayAccountAndService(req, res, next)
+    })
   })
 })
