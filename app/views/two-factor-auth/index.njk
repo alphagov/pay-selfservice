@@ -9,7 +9,7 @@
   {{
     govukBackLink({
       text: "My profile",
-      href: routes.user.profile
+      href: routes.user.profile.index
     })
   }}
 {% endblock %}
@@ -21,7 +21,7 @@
   </h1>
 </div>
 <div class="govuk-grid-column-two-thirds">
-  <form method="post" action="{{routes.user.twoFactorAuth.index}}">
+  <form method="post" action="{{routes.user.profile.twoFactorAuth.index}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if authenticatorMethod === 'SMS' %}
       <p class="govuk-body">You currently use text message codes to sign in to GOV.UK Pay.</p>

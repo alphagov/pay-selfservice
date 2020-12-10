@@ -29,7 +29,7 @@ describe('Two factor authenticator configure page POST', () => {
 
     before('Act', done => {
       supertest(app)
-        .post(paths.user.twoFactorAuth.configure)
+        .post(paths.user.profile.twoFactorAuth.configure)
         .send({
           csrfToken: csrf().create('123'),
           code: '398262'
@@ -48,7 +48,7 @@ describe('Two factor authenticator configure page POST', () => {
     })
 
     it('should redirect to the profile page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.user.profile)
+      expect(result.headers).to.have.property('location').to.equal(paths.user.profile.index)
     })
   })
 
@@ -65,7 +65,7 @@ describe('Two factor authenticator configure page POST', () => {
 
     before('Act', done => {
       supertest(app)
-        .post(paths.user.twoFactorAuth.configure)
+        .post(paths.user.profile.twoFactorAuth.configure)
         .send({
           csrfToken: csrf().create('123'),
           code: ''
@@ -84,7 +84,7 @@ describe('Two factor authenticator configure page POST', () => {
     })
 
     it('should redirect to the configure page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.user.twoFactorAuth.configure)
+      expect(result.headers).to.have.property('location').to.equal(paths.user.profile.twoFactorAuth.configure)
     })
 
     it('should have a recovered object stored on the session containing errors', () => {

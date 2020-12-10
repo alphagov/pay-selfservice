@@ -35,13 +35,6 @@ module.exports = {
   },
   user: {
     logIn: '/login',
-    profile: '/my-profile',
-    twoFactorAuth: {
-      index: '/my-profile/two-factor-auth',
-      configure: '/my-profile/two-factor-auth/configure',
-      resend: '/my-profile/two-factor-auth/resend'
-    },
-    phoneNumber: '/my-profile/phone-number',
     otpLogIn: '/otp-login',
     otpSendAgain: '/otp-send-again',
     logOut: '/logout',
@@ -49,7 +42,16 @@ module.exports = {
     noAccess: '/noaccess',
     forgottenPassword: '/reset-password',
     passwordRequested: '/reset-password-requested',
-    forgottenPasswordReset: '/reset-password/:id'
+    forgottenPasswordReset: '/reset-password/:id',
+    profile: {
+      index: '/my-profile',
+      phoneNumber: '/my-profile/phone-number',
+      twoFactorAuth: {
+        index: '/my-profile/two-factor-auth',
+        configure: '/my-profile/two-factor-auth/configure',
+        resend: '/my-profile/two-factor-auth/resend'
+      },
+    },
   },
   dashboard: {
     index: '/'

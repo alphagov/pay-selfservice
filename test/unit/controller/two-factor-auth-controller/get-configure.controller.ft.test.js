@@ -30,7 +30,7 @@ describe('Two factor authenticator configure page GET', () => {
       session = getMockSession(user)
       lodash.set(session, 'pageData.twoFactorAuthMethod', 'APP')
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.user.twoFactorAuth.configure)
+        .get(paths.user.profile.twoFactorAuth.configure)
         .end((err, res) => {
           result = res
           $ = cheerio.load(res.text)
@@ -46,11 +46,11 @@ describe('Two factor authenticator configure page GET', () => {
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile.index)
     })
 
     it(`should have itself as the form action`, () => {
-      expect($('form').attr('action')).to.equal(paths.user.twoFactorAuth.configure)
+      expect($('form').attr('action')).to.equal(paths.user.profile.twoFactorAuth.configure)
     })
 
     it(`should have a base64 encoded image in the image src for the QR code`, () => {
@@ -74,7 +74,7 @@ describe('Two factor authenticator configure page GET', () => {
       session = getMockSession(user)
       lodash.set(session, 'pageData.twoFactorAuthMethod', 'SMS')
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.user.twoFactorAuth.configure)
+        .get(paths.user.profile.twoFactorAuth.configure)
         .end((err, res) => {
           result = res
           $ = cheerio.load(res.text)
@@ -90,11 +90,11 @@ describe('Two factor authenticator configure page GET', () => {
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile.index)
     })
 
     it(`should have itself as the form action`, () => {
-      expect($('form').attr('action')).to.equal(paths.user.twoFactorAuth.configure)
+      expect($('form').attr('action')).to.equal(paths.user.profile.twoFactorAuth.configure)
     })
 
     it(`should not show a QR code`, () => {
@@ -124,7 +124,7 @@ describe('Two factor authenticator configure page GET', () => {
         }
       })
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.user.twoFactorAuth.configure)
+        .get(paths.user.profile.twoFactorAuth.configure)
         .end((err, res) => {
           result = res
           $ = cheerio.load(res.text)

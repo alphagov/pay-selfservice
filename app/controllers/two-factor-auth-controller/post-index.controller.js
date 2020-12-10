@@ -20,11 +20,11 @@ module.exports = (req, res) => {
   userService.provisionNewOtpKey(req.user.externalId, req.correlationId)
     .then(user => sendSMS(method, user))
     .then(() => {
-      return res.redirect(paths.user.twoFactorAuth.configure)
+      return res.redirect(paths.user.profile.twoFactorAuth.configure)
     })
     .catch(err => {
       logger.error(`[requestId=${req.correlationId}] Provisioning new OTP key failed - ${err.message}`)
       req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-      return res.redirect(paths.user.twoFactorAuth.index)
+      return res.redirect(paths.user.profile.twoFactorAuth.index)
     })
 }
