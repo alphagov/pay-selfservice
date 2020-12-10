@@ -106,11 +106,11 @@ function isNotEmpty (value) {
 }
 
 function isValidLengthForColumnHeader (value) {
-  return value && value.length !== 0 && value.length <= METADATA_MAX_HEADER_LENGTH
+  return value && value.length <= METADATA_MAX_HEADER_LENGTH
 }
 
 function isValidLengthForCellContent (value) {
-  return value && value.length !== 0 && value.length <= METADATA_MAX_VALUE_LENGTH
+  return value && value.length <= METADATA_MAX_VALUE_LENGTH
 }
 
 function isNotDuplicate (value, existingMetadata) {
