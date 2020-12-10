@@ -3,6 +3,10 @@
 const path = require('path')
 
 module.exports = {
+  keys: {
+    SERVICE_EXTERNAL_ID: 'serviceExternalId',
+    GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId'
+  },
   transactions: {
     index: '/transactions',
     download: '/transactions/download',
