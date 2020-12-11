@@ -65,7 +65,7 @@ module.exports = async function createPaymentLink (req, res) {
 
     lodash.unset(req, 'session.pageData.createPaymentLink')
     req.flash('createPaymentLinkSuccess', true)
-    res.redirect(paths.paymentLinks.manage.managePage)
+    res.redirect(paths.paymentLinks.manage.index)
   } catch (error) {
     logger.error(`[requestId=${req.correlationId}] Creating a payment link failed - ${error.message}`)
     req.flash('genericError', 'Something went wrong. Please try again or contact support.')

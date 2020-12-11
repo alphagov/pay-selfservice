@@ -363,7 +363,7 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
   app.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  app.get(paymentLinks.manage.managePage, xraySegmentCls, permission('transactions:read'), getAccount, paymentLinksController.getManage)
+  app.get(paymentLinks.manage.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentLinksController.getManage)
   app.get(paymentLinks.manage.disable, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getDisable)
   app.get(paymentLinks.manage.delete, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getDelete)
   app.get(paymentLinks.manage.edit, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEdit)
