@@ -12,7 +12,7 @@ module.exports = function postEditAmount (req, res) {
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
-    return res.redirect(paths.paymentLinks.manage)
+    return res.redirect(paths.paymentLinks.manage.managePage)
   }
 
   const type = req.body['amount-type-group']
@@ -35,11 +35,11 @@ module.exports = function postEditAmount (req, res) {
       type,
       amount: ''
     }
-    return res.redirect(formattedPathFor(paths.paymentLinks.editAmount, productExternalId))
+    return res.redirect(formattedPathFor(paths.paymentLinks.manage.editAmount, productExternalId))
   }
 
   sessionData.price = amountInPence
   lodash.set(req, 'session.editPaymentLinkData', sessionData)
 
-  return res.redirect(formattedPathFor(paths.paymentLinks.edit, productExternalId))
+  return res.redirect(formattedPathFor(paths.paymentLinks.manage.edit, productExternalId))
 }

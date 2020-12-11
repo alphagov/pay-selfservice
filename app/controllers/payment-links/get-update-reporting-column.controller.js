@@ -1,25 +1,25 @@
 'use strict'
 
-const paths = require('../../paths')
 const MetadataForm = require('./metadata/metadata-form')
-const { getPaymentLinksSession } = require('../../utils/payment-links')
+const { getPaymentLinksContext } = require('../../utils/payment-links')
 
 const { response } = require('../../utils/response.js')
 
 function showAddMetadataPage (req, res) {
+  const paymentLinksContext = getPaymentLinksContext(req)
   const pageData = {
     form: new MetadataForm(),
-    self: paths.paymentLinks.addMetadata,
-    cancelRoute: paths.paymentLinks.review,
-    createLink: true
+    self: paymentLinksContext.addMetadataPageUrl,
+    cancelRoute: paymentLinksContext.listMetadataPageUrl,
+    createLink: paymentLinksContext.isCreatingPaymentLink
   }
   return response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
 }
 
 function showEditMetadataPage (req, res) {
-  const sessionData = getPaymentLinksSession(req)
+  const paymentLinksContext = getPaymentLinksContext(req)
   const key = req.params.metadataKey
-  const currentMetadata = sessionData.metadata || {}
+  const currentMetadata = paymentLinksContext.sessionData && paymentLinksContext.sessionData.metadata
   const prefilledPage = {
     'metadata-column-header': key,
     'metadata-cell-value': currentMetadata[key]
@@ -27,11 +27,11 @@ function showEditMetadataPage (req, res) {
   const form = new MetadataForm(prefilledPage)
   const pageData = {
     form: form,
-    self: `${paths.paymentLinks.addMetadata}/${key}`,
-    cancelRoute: paths.paymentLinks.review,
+    self: `${paymentLinksContext.addMetadataPageUrl}/${key}`,
+    cancelRoute: paymentLinksContext.listMetadataPageUrl,
     isEditing: true,
     canEditKey: true,
-    createLink: true
+    createLink: paymentLinksContext.isCreatingPaymentLink
   }
   return response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
 }

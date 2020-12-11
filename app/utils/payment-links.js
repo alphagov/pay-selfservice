@@ -3,12 +3,31 @@
 
 const lodash = require('lodash')
 
+const paths = require('../paths')
+
 // the edit and create flows handle storing cookie session data in separate places,
 // abstract this away from the controller by adding accessors that can be based
 // based on the request
-function getPaymentLinksSession (req) {
-  const key = 'createPaymentLink'
-  return lodash.get(req, `session.pageData.${key}`)
+function getPaymentLinksContext (req) {
+  const isCreatingPaymentLink = !Object.values(paths.paymentLinks.manage).includes(req.route && req.route.path)
+
+  if (isCreatingPaymentLink) {
+    return {
+      sessionData: lodash.get(req, 'session.pageData.createPaymentLink'),
+      addMetadataPageUrl: paths.paymentLinks.addMetadata,
+      listMetadataPageUrl: paths.paymentLinks.review,
+      isCreatingPaymentLink
+    }
+  } else {
+    const { productExternalId } = req.params
+
+    return {
+      sessionData: lodash.get(req, 'session.editPaymentLinkData'),
+      addMetadataPageUrl: paths.generateRoute(paths.paymentLinks.manage.addMetadata, { productExternalId }),
+      listMetadataPageUrl: paths.generateRoute(paths.paymentLinks.manage.edit, { productExternalId }),
+      isCreatingPaymentLink
+    }
+  }
 }
 
 function addMetadata (paymentLinkSession = {}, key, value) {
@@ -30,7 +49,7 @@ function updateMetadata (paymentLinkSession = {}, originalKey, key, value) {
 }
 
 module.exports = {
-  getPaymentLinksSession,
+  getPaymentLinksContext,
   metadata: {
     addMetadata,
     updateMetadata,

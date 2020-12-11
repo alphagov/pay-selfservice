@@ -10,11 +10,11 @@ module.exports = (req, res) => {
   productsClient.product.disable(gatewayAccountId, req.params.productExternalId)
     .then(() => {
       req.flash('generic', 'The payment link was successfully deleted')
-      res.redirect(paths.paymentLinks.manage)
+      res.redirect(paths.paymentLinks.manage.managePage)
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Disable product failed - ${err.message}`)
       req.flash('genericError', 'Something went wrong when deleting the payment link. Please try again or contact support.')
-      res.redirect(paths.paymentLinks.manage)
+      res.redirect(paths.paymentLinks.manage.managePage)
     })
 }

@@ -204,6 +204,35 @@ describe('The create payment link flow', () => {
         cy.get('button').should('exist').should('contain', 'Create payment link')
       })
 
+      it('should show reporting column component', () => {
+        cy.get('a#add-reporting-column').should('exist').should('contain', 'Add a reporting column')
+        cy.get('a#add-reporting-column').click()
+        cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/add-reporting-column'))
+      })
+
+      it('should reject empty values and accept valid input', () => {
+        cy.get('button#submit-reporting-column').click()
+        cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/add-reporting-column'))
+        cy.get('div.govuk-error-summary').should('exist')
+      })
+
+      it('should accept valid values', () => {
+        cy.get('input#metadata-column-header').type('key')
+        cy.get('input#metadata-cell-value').type('value')
+        cy.get('button#submit-reporting-column').click()
+        cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/review'))
+      })
+
+      it('should list added reporting columns', () => {
+        cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').should('have.length', 1)
+
+        cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
+          cy.get('.govuk-summary-list__key').should('contain', 'key')
+          cy.get('.govuk-summary-list__value').should('contain', 'value')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/add-reporting-column/key')
+        })
+      })
+
       it('should redirect to information page when "Change" clicked', () => {
         cy.get('dl').find('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
 

@@ -23,7 +23,7 @@
 {% endif %}
 
 {% set addReportingColumnButtonText %}
-  {% if metadata %}
+  {% if metadata and metadata | length %}
     Add another reporting column
   {% else %}
     Add a reporting column
@@ -33,5 +33,8 @@
 {{ govukButton({
   text: addReportingColumnButtonText,
   classes: "govuk-button--secondary",
-  href: addMetadata
+  href: addMetadata,
+  attributes: {
+    'id': 'add-reporting-column'
+  }
 }) }}

@@ -5,7 +5,7 @@
 {% endif %}
 
 <div class="govuk-grid-column-full flex-grid links-container" data-click-events data-click-category="Dashboard" data-click-action="First steps link clicked">
-  
+
   <div class="flex-grid--row">
     {% if links.demoPayment in linksToDisplay %}
     <article class="{{columnClass}} links__box" id="demo-payment-link">
@@ -31,7 +31,7 @@
       <a href="{{routes.paymentLinks.start}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Create and manage payment links</h2>
       {% else %}
-      <a href="{{routes.paymentLinks.manage}}">
+      <a href="{{routes.paymentLinks.manage.managePage}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">View payment links</h2>
       {% endif %}
         <p class="govuk-body govuk-!-margin-bottom-0">A payment link lets you take card payments online, even if you don't have a digital&nbsp;service.</p>

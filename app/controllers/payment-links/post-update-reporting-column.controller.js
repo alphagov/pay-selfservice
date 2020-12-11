@@ -1,19 +1,18 @@
 'use strict'
 
-const paths = require('../../paths')
 const MetadataForm = require('./metadata/metadata-form')
-const { getPaymentLinksSession, metadata } = require('../../utils/payment-links')
+const { getPaymentLinksContext, metadata } = require('../../utils/payment-links')
 
 const { response } = require('../../utils/response.js')
 
 function addMetadata (req, res) {
-  const sessionData = getPaymentLinksSession(req)
+  const paymentLinksContext = getPaymentLinksContext(req)
   const pageData = {
-    self: paths.paymentLinks.addMetadata,
-    cancelRoute: paths.paymentLinks.review,
-    createLink: true
+    self: paymentLinksContext.addMetadataPageUrl,
+    cancelRoute: paymentLinksContext.listMetadataPageUrl,
+    createLink: paymentLinksContext.isCreatingPaymentLink
   }
-  const form = new MetadataForm(req.body)
+  const form = new MetadataForm(req.body, paymentLinksContext.sessionData && paymentLinksContext.sessionData.metadata)
   const validated = form.validate()
 
   if (validated.errors.length) {
@@ -24,23 +23,28 @@ function addMetadata (req, res) {
   }
 
   metadata.addMetadata(
-    sessionData,
+    paymentLinksContext.sessionData,
     form.values[form.fields.metadataKey.id],
     form.values[form.fields.metadataValue.id]
   )
-  res.redirect(paths.paymentLinks.review)
+
+  res.redirect(paymentLinksContext.listMetadataPageUrl)
 }
 
 function editMetadata (req, res) {
-  const sessionData = getPaymentLinksSession(req)
-  const form = new MetadataForm(req.body)
+  const paymentLinksContext = getPaymentLinksContext(req)
   const key = req.params.metadataKey
+
+  const existingMetadata = { ...paymentLinksContext.sessionData.metadata }
+  delete existingMetadata[key]
+  const form = new MetadataForm(req.body, existingMetadata)
+
   const pageData = {
-    self: `${paths.paymentLinks.addMetadata}/${key}`,
-    cancelRoute: paths.paymentLinks.review,
+    self: `${paymentLinksContext.addMetadataPageUrl}/${key}`,
+    cancelRoute: paymentLinksContext.listMetadataPageUrl,
     isEditing: true,
     canEditKey: true,
-    createLink: true
+    createLink: paymentLinksContext.isCreatingPaymentLink
   }
   const validated = form.validate()
 
@@ -52,20 +56,22 @@ function editMetadata (req, res) {
   }
 
   metadata.updateMetadata(
-    sessionData,
+    paymentLinksContext.sessionData,
     key,
     form.values[form.fields.metadataKey.id],
     form.values[form.fields.metadataValue.id]
   )
-  res.redirect(paths.paymentLinks.review)
+
+  res.redirect(paymentLinksContext.listMetadataPageUrl)
 }
 
 function deleteMetadata (req, res) {
-  const sessionData = getPaymentLinksSession(req)
+  const paymentLinksContext = getPaymentLinksContext(req)
   const key = req.params.metadataKey
 
-  metadata.removeMetadata(sessionData, key)
-  res.redirect(paths.paymentLinks.review)
+  metadata.removeMetadata(paymentLinksContext.sessionData, key)
+
+  res.redirect(paymentLinksContext.listMetadataPageUrl)
 }
 
 module.exports = {

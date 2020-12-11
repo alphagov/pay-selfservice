@@ -9,7 +9,7 @@ const addMetadataPage = function addMetadataPage (req, res) {
   const pageData = {
     form: new MetadataForm(),
     self: formattedPathFor(paths.paymentLinks.metadata.add, req.params.productExternalId),
-    cancelRoute: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId)
+    cancelRoute: formattedPathFor(paths.paymentLinks.manage.edit, req.params.productExternalId)
   }
   response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
 }
@@ -35,7 +35,7 @@ const editMetadataPage = async function editMetadataPage (req, res) {
       form: new MetadataForm(prefilledPage),
       isEditing: true,
       self: formattedPathFor(paths.paymentLinks.metadata.edit, req.params.productExternalId, metadataKey),
-      cancelRoute: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId)
+      cancelRoute: formattedPathFor(paths.paymentLinks.manage.edit, req.params.productExternalId)
     }
     response(req, res, 'payment-links/reporting-columns/edit-reporting-columns', pageData)
   } catch (error) {
@@ -48,7 +48,7 @@ const updateMetadataPage = function updateMetadataPage (updateMethod, path) {
   return async (req, res, next) => {
     let form, tested
     const pageContext = {
-      cancelRoute: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId),
+      cancelRoute: formattedPathFor(paths.paymentLinks.manage.edit, req.params.productExternalId),
       isEditing: path === paths.paymentLinks.metadata.edit,
       canEditKey: false
     }
@@ -67,7 +67,7 @@ const updateMetadataPage = function updateMetadataPage (updateMethod, path) {
           form.values[form.fields.metadataValue.id]
         )
         req.flash('generic', `Updated reporting column ${form.values[form.fields.metadataKey.id]}`)
-        res.redirect(formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId))
+        res.redirect(formattedPathFor(paths.paymentLinks.manage.edit, req.params.productExternalId))
       }
     } catch (error) {
       const submissionError = form.parseSubmissionError(error)
@@ -89,7 +89,7 @@ const deleteMetadataPost = async function deleteMetadaPost (req, res, next) {
   try {
     await product.deleteProductMetadata(productExternalId, metadataKey)
     req.flash('generic', `Deleted reporting column ${metadataKey}`)
-    res.redirect(formattedPathFor(paths.paymentLinks.edit, productExternalId))
+    res.redirect(formattedPathFor(paths.paymentLinks.manage.edit, productExternalId))
   } catch (error) {
     renderErrorView(req, res, 'Failed to delete metadata for product')
   }

@@ -28,7 +28,7 @@ describe('POST payment link edit information controller', () => {
     })
     before('Act', done => {
       supertest(app)
-        .post(formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
+        .post(formattedPathFor(paths.paymentLinks.manage.editInformation, PRODUCT_EXTERNAL_ID))
         .send({
           csrfToken: csrf().create('123'),
           'payment-link-title': 'hello world',
@@ -48,7 +48,7 @@ describe('POST payment link edit information controller', () => {
     })
 
     it('should redirect to edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
     })
 
     it('should set title in session', () => {
@@ -60,7 +60,7 @@ describe('POST payment link edit information controller', () => {
     })
 
     it('should redirect to the edit page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.edit, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
     })
   })
   describe('if title is blank', () => {
@@ -72,7 +72,7 @@ describe('POST payment link edit information controller', () => {
     })
     before('Act', done => {
       supertest(app)
-        .post(formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
+        .post(formattedPathFor(paths.paymentLinks.manage.editInformation, PRODUCT_EXTERNAL_ID))
         .send({
           csrfToken: csrf().create('123'),
           'payment-link-title': '',
@@ -92,7 +92,7 @@ describe('POST payment link edit information controller', () => {
     })
 
     it('should redirect to same page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.editInformation, PRODUCT_EXTERNAL_ID))
     })
 
     it('should have a recovered object stored on the session containing errors and submitted data', () => {

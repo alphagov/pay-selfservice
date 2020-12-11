@@ -46,7 +46,7 @@ describe('Manage payment links - delete controller', () => {
       nock(PRODUCTS_URL).delete(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${productExternalId}`).reply(204)
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.delete.replace(':productExternalId', productExternalId))
+        .get(paths.paymentLinks.manage.delete.replace(':productExternalId', productExternalId))
         .end((err, res) => {
           response = res
           done(err)
@@ -61,7 +61,7 @@ describe('Manage payment links - delete controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage)
+      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
 
     it('should add a relevant generic message to the session \'flash\'', () => {
@@ -90,7 +90,7 @@ describe('Manage payment links - delete controller', () => {
         .replyWithError('Ruhroh! Something terrible has happened Shaggy!')
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.delete.replace(':productExternalId', productExternalId))
+        .get(paths.paymentLinks.manage.delete.replace(':productExternalId', productExternalId))
         .end((err, res) => {
           response = res
           done(err)
@@ -105,7 +105,7 @@ describe('Manage payment links - delete controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage)
+      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {
@@ -131,7 +131,7 @@ describe('Manage payment links - delete controller', () => {
       nock(PRODUCTS_URL).delete(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${productExternalId}`).reply(204)
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.delete.replace(':productExternalId', productExternalId))
+        .get(paths.paymentLinks.manage.delete.replace(':productExternalId', productExternalId))
         .end((err, res) => {
           response = res
           done(err)
@@ -146,7 +146,7 @@ describe('Manage payment links - delete controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage)
+      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {
@@ -174,7 +174,7 @@ describe('Manage payment links - delete controller', () => {
       nock(PRODUCTS_URL).delete(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${productExternalId}`).reply(204)
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.delete.replace(':productExternalId', productExternalId))
+        .get(paths.paymentLinks.manage.delete.replace(':productExternalId', productExternalId))
         .end((err, res) => {
           response = res
           done(err)
@@ -189,7 +189,7 @@ describe('Manage payment links - delete controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage)
+      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {
