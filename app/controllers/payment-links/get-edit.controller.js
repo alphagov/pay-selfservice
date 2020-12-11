@@ -27,9 +27,9 @@ module.exports = async function showEditPaymentLink (req, res, next) {
 
   const pageData = {
     self: formattedPathFor(paths.paymentLinks.manage.edit, productExternalId),
-    editInformation: formattedPathFor(paths.paymentLinks.editInformation, productExternalId),
-    editReference: formattedPathFor(paths.paymentLinks.editReference, productExternalId),
-    editAmount: formattedPathFor(paths.paymentLinks.editAmount, productExternalId),
+    editInformation: formattedPathFor(paths.paymentLinks.manage.editInformation, productExternalId),
+    editReference: formattedPathFor(paths.paymentLinks.manage.editReference, productExternalId),
+    editAmount: formattedPathFor(paths.paymentLinks.manage.editAmount, productExternalId),
     addMetadata: addMetadataUrl,
     formattedPathFor,
     paths
@@ -40,16 +40,16 @@ module.exports = async function showEditPaymentLink (req, res, next) {
     const product = await productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId)
     const productCheck = lodash.cloneDeep(product)
 
-    if (!shouldUseInlineReportingColumns) {
-      // this is an existing workaround because the existing code should always directly reflect the backend
-      // this should be removed when we remove the feature flag and are fully in-flow editing
-      delete editPaymentLinkData.metadata
-    } else {
-      // if this is the first time we're loading the product, update the edit copy
+    if (shouldUseInlineReportingColumns) {
+      // if this is the first time we're loading the product, update the session editing copy
       if (!editPaymentLinkData.metadata) {
         editPaymentLinkData.metadata = product.metadata
         delete product.metadata
       }
+    } else {
+      // this is an existing workaround because the existing code should always directly reflect the backend
+      // this should be removed when we remove the feature flag and are fully in-flow editing
+      delete editPaymentLinkData.metadata
     }
     pageData.product = lodash.merge(product, editPaymentLinkData)
     pageData.metadata = shouldUseInlineReportingColumns

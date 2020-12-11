@@ -13,13 +13,13 @@ module.exports = function showEditInformationPage (req, res, next) {
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
-    return res.redirect(paths.paymentLinks.managePage)
+    return res.redirect(paths.paymentLinks.manage.managePage)
   }
 
   const recovered = sessionData.informationPageRecovered || {}
   delete sessionData.informationPageRecovered
 
-  const self = formattedPathFor(paths.paymentLinks.editInformation, productExternalId)
+  const self = formattedPathFor(paths.paymentLinks.manage.editInformation, productExternalId)
   const change = lodash.get(req, 'query.field', {})
   const paymentLinkTitle = recovered.name || sessionData.name
   const paymentLinkDescription = recovered.description || sessionData.description

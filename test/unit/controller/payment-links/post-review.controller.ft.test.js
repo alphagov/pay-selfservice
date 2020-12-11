@@ -88,7 +88,7 @@ describe('Create payment link review controller', () => {
 
     it('should redirect to the manage page with a success message', () => {
       expect(session.flash).to.have.property('createPaymentLinkSuccess')
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.managePage)
+      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
   })
   describe('successful submission for a Welsh payment link', () => {
@@ -126,7 +126,7 @@ describe('Create payment link review controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.managePage)
+      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
   })
   describe('the product creation fails', () => {
@@ -250,7 +250,7 @@ describe('Create payment link review controller', () => {
 
     it('should redirect to the manage page with a success message', () => {
       expect(session.flash).to.have.property('createPaymentLinkSuccess')
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.managePage)
+      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
   })
   describe('when paymentLinkTitle is missing from the session', () => {

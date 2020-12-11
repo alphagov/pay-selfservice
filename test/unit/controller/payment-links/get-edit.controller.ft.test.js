@@ -66,8 +66,8 @@ describe('Edit a payment link', () => {
 
     it('should display the correct page links', () => {
       expect(response.body).to.have.property('self', formattedPathFor(paths.paymentLinks.manage.edit, PRODUCT_EXTERNAL_ID))
-      expect(response.body).to.have.property('editInformation', formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
-      expect(response.body).to.have.property('editAmount', formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+      expect(response.body).to.have.property('editInformation', formattedPathFor(paths.paymentLinks.manage.editInformation, PRODUCT_EXTERNAL_ID))
+      expect(response.body).to.have.property('editAmount', formattedPathFor(paths.paymentLinks.manage.editAmount, PRODUCT_EXTERNAL_ID))
     })
 
     it('should pass the product', () => {

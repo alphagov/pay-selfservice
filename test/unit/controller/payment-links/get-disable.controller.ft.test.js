@@ -27,7 +27,7 @@ describe('Manage payment links - disable controller', () => {
       nock(PRODUCTS_URL).patch(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${productExternalId}/disable`).reply(200)
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.disable.replace(':productExternalId', productExternalId))
+        .get(paths.paymentLinks.manage.disable.replace(':productExternalId', productExternalId))
         .end((err, res) => {
           response = res
           done(err)
@@ -42,7 +42,7 @@ describe('Manage payment links - disable controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.managePage)
+      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
 
     it('should add a relevant generic message to the session \'flash\'', () => {
@@ -67,7 +67,7 @@ describe('Manage payment links - disable controller', () => {
         .replyWithError('Ruhroh! Something terrible has happened Shaggy!')
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.disable.replace(':productExternalId', productExternalId))
+        .get(paths.paymentLinks.manage.disable.replace(':productExternalId', productExternalId))
         .end((err, res) => {
           response = res
           done(err)
@@ -82,7 +82,7 @@ describe('Manage payment links - disable controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.managePage)
+      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {

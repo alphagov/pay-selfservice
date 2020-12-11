@@ -214,14 +214,16 @@ describe('The create payment link flow', () => {
         cy.get('button#submit-reporting-column').click()
         cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/add-reporting-column'))
         cy.get('div.govuk-error-summary').should('exist')
+      })
+
+      it('should accept valid values', () => {
         cy.get('input#metadata-column-header').type('key')
         cy.get('input#metadata-cell-value').type('value')
         cy.get('button#submit-reporting-column').click()
+        cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/review'))
       })
 
       it('should list added reporting columns', () => {
-        cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/review'))
-
         cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').should('have.length', 1)
 
         cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {

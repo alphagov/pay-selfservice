@@ -28,7 +28,7 @@ describe('POST payment link edit amount controller', () => {
     })
     before('Act', done => {
       supertest(app)
-        .post(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+        .post(formattedPathFor(paths.paymentLinks.manage.editAmount, PRODUCT_EXTERNAL_ID))
         .send({
           csrfToken: csrf().create('123'),
           'amount-type-group': 'fixed',
@@ -69,7 +69,7 @@ describe('POST payment link edit amount controller', () => {
     })
     before('Act', done => {
       supertest(app)
-        .post(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+        .post(formattedPathFor(paths.paymentLinks.manage.editAmount, PRODUCT_EXTERNAL_ID))
         .send({
           csrfToken: csrf().create('123'),
           'amount-type-group': 'variable',
@@ -110,7 +110,7 @@ describe('POST payment link edit amount controller', () => {
     })
     before('Act', done => {
       supertest(app)
-        .post(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+        .post(formattedPathFor(paths.paymentLinks.manage.editAmount, PRODUCT_EXTERNAL_ID))
         .send({
           csrfToken: csrf().create('123'),
           'amount-type-group': ''
@@ -129,7 +129,7 @@ describe('POST payment link edit amount controller', () => {
     })
 
     it('should redirect to same page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.editAmount, PRODUCT_EXTERNAL_ID))
     })
 
     it('should have a recovered object stored on the session containing errors and submitted data', () => {
@@ -150,7 +150,7 @@ describe('POST payment link edit amount controller', () => {
     })
     before('Act', done => {
       supertest(app)
-        .post(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+        .post(formattedPathFor(paths.paymentLinks.manage.editAmount, PRODUCT_EXTERNAL_ID))
         .send({
           csrfToken: csrf().create('123'),
           'amount-type-group': 'fixed',
@@ -170,7 +170,7 @@ describe('POST payment link edit amount controller', () => {
     })
 
     it('should redirect to same page', () => {
-      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.editAmount, PRODUCT_EXTERNAL_ID))
+      expect(result.headers).to.have.property('location').to.equal(formattedPathFor(paths.paymentLinks.manage.editAmount, PRODUCT_EXTERNAL_ID))
     })
 
     it('should have a recovered object stored on the session containing errors and submitted data', () => {
