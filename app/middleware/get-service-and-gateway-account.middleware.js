@@ -16,8 +16,21 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlat
       gatewayAccountExternalId: gatewayAccountExternalId,
       correlationId: correlationId
     }
-    // TODO: PP-7489 - add additional attributes derived by getAccount middleware
-    return await connectorClient.getAccountByExternalId(params)
+    let account = await connectorClient.getAccountByExternalId(params)
+
+    account = _.extend({}, account, {
+      supports3ds: ['worldpay', 'stripe', 'epdq', 'smartpay'].includes(account.payment_provider),
+      disableToggle3ds: account.payment_provider === 'stripe'
+    })
+
+    if (account.payment_provider === 'stripe') {
+      const stripeAccountSetup = await connectorClient.getStripeAccountSetup(account.gateway_account_id, correlationId)
+      if (stripeAccountSetup) {
+        account.connectorGatewayAccountStripeProgress = stripeAccountSetup
+      }
+    }
+
+    return account
   } catch (err) {
     const logContext = {}
     logContext['error'] = err.message
