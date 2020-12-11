@@ -4,6 +4,7 @@ const path = require('path')
 const _ = require('lodash')
 
 const pactBase = require(path.join(__dirname, '/pact-base'))
+const Service = require('../../app/models/Service.class')
 
 // Global setup
 const pactServices = pactBase({ array: ['service_ids'] })
@@ -236,6 +237,9 @@ module.exports = {
     return {
       getPactified: () => {
         return pactServices.pactify(service)
+      },
+      getAsObject: () => {
+        return new Service(service)
       },
       getPlain: () => {
         return _.clone(service)
