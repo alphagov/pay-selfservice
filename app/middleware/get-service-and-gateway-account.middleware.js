@@ -55,12 +55,12 @@ function getService (user, serviceExternalId, gatewayAccount, correlationId) {
     if (serviceExternalId) {
       service = _.get(serviceRoles.find(serviceRole => {
         return (serviceRole.service.externalId === serviceExternalId &&
-          (!gatewayAccount || serviceRole.service.gatewayAccountIds.includes(gatewayAccount.gateway_account_id)))
+          (!gatewayAccount || serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))))
       }), 'service')
     } else {
       if (gatewayAccount) {
         service = _.get(serviceRoles.find(serviceRole => {
-          return serviceRole.service.gatewayAccountIds.includes(gatewayAccount.gateway_account_id)
+          return serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))
         }), 'service')
       }
     }

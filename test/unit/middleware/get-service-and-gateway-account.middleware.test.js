@@ -33,7 +33,7 @@ const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAcco
     params: { gatewayAccountExternalId: gatewayAccountExternalId, serviceExternalId: serviceExternalId },
     correlationId: 'some-correlation-id'
   }
-  req.user = buildUser(serviceExternalId, [gatewayAccountID])
+  req.user = buildUser(serviceExternalId, [ `${gatewayAccountID}` ])
   next = sinon.spy()
   connectorGetAccountMock = sinon.spy((params) => {
     return Promise.resolve({
@@ -71,7 +71,7 @@ const setupGetGatewayAccountClientError = function (gatewayAccountExternalId, er
 
 describe('middleware: getGatewayAccountAndService', () => {
   it('should set gateway account and service on request object ', () => {
-    const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
+    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
     next = function () {
       expect(connectorGetAccountMock.called).to.equal(true)
       expect(connectorGetAccountMock.calledWith({
@@ -83,12 +83,12 @@ describe('middleware: getGatewayAccountAndService', () => {
       expect(req.service.externalId).to.equal('some-service-external-id')
       expect(req.service.hasCardGatewayAccount).to.equal(true)
 
-      expect(req.gateway_account.currentGatewayAccountId).to.equal('1')
+      expect(req.gateway_account.currentGatewayAccountId).to.equal(1)
     }
     return getGatewayAccountAndService(req, res, next)
   })
   it('should not set gateway account, if gateway account external ID is not resolved', () => {
-    const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
+    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
     req.params['gatewayAccountExternalId'] = undefined
 
     next = function () {
@@ -100,7 +100,7 @@ describe('middleware: getGatewayAccountAndService', () => {
     return getGatewayAccountAndService(req, res, next)
   })
   it('should error, if both gateway account external ID and service external ID cannot be resolved', () => {
-    const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
+    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
     req.params['gatewayAccountExternalId'] = undefined
     req.params['serviceExternalId'] = undefined
 
@@ -129,7 +129,7 @@ describe('middleware: getGatewayAccountAndService', () => {
     return getGatewayAccountAndService(req, res, next)
   })
   it('should set service based on gateway account, when serviceExternalId cannot be resolved', () => {
-    const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
+    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
     req.params['serviceExternalId'] = undefined
     next = function () {
       expect(req.service.externalId).to.equal('some-service-external-id')
@@ -137,7 +137,7 @@ describe('middleware: getGatewayAccountAndService', () => {
     return getGatewayAccountAndService(req, res, next)
   })
   it('should error, when service cannot be resolved for serviceExternalId and gateway account (if available)', () => {
-    const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
+    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
     req.params['serviceExternalId'] = 'non-existent-service'
 
     next = function (err) {
@@ -147,7 +147,7 @@ describe('middleware: getGatewayAccountAndService', () => {
     return getGatewayAccountAndService(req, res, next)
   })
   it('should error, when the gateway account from connector does not belong to service for serviceExternalId', () => {
-    const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
+    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
     req.user.serviceRoles[0].service.gatewayAccountIds = ['some-other-gateway-account']
 
     next = function (err) {
@@ -157,7 +157,7 @@ describe('middleware: getGatewayAccountAndService', () => {
     return getGatewayAccountAndService(req, res, next)
   })
   it('should error, when serviceExternalId is not available and service cannot be resolved for gateway account', () => {
-    const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
+    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
     req.params['serviceExternalId'] = undefined
     req.user.serviceRoles[0].service.gatewayAccountIds = ['some-other-gateway-accounts']
     next = function (err) {
@@ -169,7 +169,7 @@ describe('middleware: getGatewayAccountAndService', () => {
   describe('extend gateway account data with disableToggle3ds field', () => {
     ['worldpay', 'smartpay', 'epdq'].forEach(function (value) {
       it('should extend the account data with disableToggle3ds set to false if account type is ' + value, () => {
-        const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', value, 'some-service-external-id')
+        const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', value, 'some-service-external-id')
         next = function () {
           expect(req.account.disableToggle3ds).to.equal(false)
           expect(req.account.external_id).to.equal('some-gateway-external-id')
@@ -178,7 +178,7 @@ describe('middleware: getGatewayAccountAndService', () => {
       })
     })
     it('should extend the account data with disableToggle3ds set to true if account type is stripe', () => {
-      const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'stripe', 'some-service-external-id')
+      const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'stripe', 'some-service-external-id')
       next = function () {
         expect(req.account.disableToggle3ds).to.equal(true)
         expect(req.account.external_id).to.equal('some-gateway-external-id')
@@ -189,7 +189,7 @@ describe('middleware: getGatewayAccountAndService', () => {
   describe('extend gateway account data with supports3ds field', () => {
     ['worldpay', 'smartpay', 'epdq', 'stripe'].forEach(function (value) {
       it('should extend the account data with supports3ds set to true if account type is ' + value, () => {
-        const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', value, 'some-service-external-id')
+        const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', value, 'some-service-external-id')
         next = function () {
           expect(req.account.supports3ds).to.equal(true)
           expect(req.account.external_id).to.equal('some-gateway-external-id')
@@ -198,7 +198,7 @@ describe('middleware: getGatewayAccountAndService', () => {
       })
     })
     it('should extend the account data with supports3ds set to false if account type is sandbox', () => {
-      const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'sandbox', 'some-service-external-id')
+      const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'sandbox', 'some-service-external-id')
       next = function () {
         expect(req.account.supports3ds).to.equal(false)
         expect(req.account.external_id).to.equal('some-gateway-external-id')
@@ -209,7 +209,7 @@ describe('middleware: getGatewayAccountAndService', () => {
   describe('extend gateway account data stripe setup', () => {
     ['worldpay', 'smartpay', 'epdq', 'sandbox'].forEach(function (value) {
       it('should not extend the account data with stripe setup if account type is ' + value, () => {
-        const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', value, 'some-service-external-id')
+        const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', value, 'some-service-external-id')
         next = function () {
           expect(req.account.external_id).to.equal('some-gateway-external-id')
           expect(req.account).to.not.have.property('connectorGatewayAccountStripeProgress')
@@ -218,7 +218,7 @@ describe('middleware: getGatewayAccountAndService', () => {
       })
     })
     it('should extend the account data with supports3ds set to false if account type is stripe', () => {
-      const getGatewayAccountAndService = setupGetGatewayAccountAndService('1', 'some-gateway-external-id', 'stripe', 'some-service-external-id')
+      const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'stripe', 'some-service-external-id')
       next = function () {
         expect(req.account.external_id).to.equal('some-gateway-external-id')
         expect(req.account).to.have.property('connectorGatewayAccountStripeProgress')
