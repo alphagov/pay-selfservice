@@ -6,10 +6,12 @@
 
 {% block beforeContent %}
   {{ super() }}
+
+  <!-- dashboard.index -->
   {{
     govukBackLink({
       text: "Back to dashboard",
-      href: routes.dashboard.index })
+      href: routes.account.dashboard.index })
     }}
 {% endblock %}
 

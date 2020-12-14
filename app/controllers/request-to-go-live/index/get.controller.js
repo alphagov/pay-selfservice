@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 
+const paths = require('./../../../paths')
 const goLiveStage = require('../../../models/go-live-stage')
 const response = require('../../../utils/response')
 
@@ -95,7 +96,8 @@ module.exports = (req, res) => {
     startedButStillStepsToComplete: startedButStillStepsToComplete.includes(currentGoLiveStage),
     showNextSteps: showNextSteps.includes(currentGoLiveStage),
     denied: currentGoLiveStage === DENIED,
-    pspIsStripe: pspIsStripe.includes(currentGoLiveStage)
+    pspIsStripe: pspIsStripe.includes(currentGoLiveStage),
+    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId)
   }
 
   return response.response(req, res, 'request-to-go-live/index', pageData)

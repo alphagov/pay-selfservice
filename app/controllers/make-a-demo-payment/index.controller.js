@@ -37,6 +37,7 @@ module.exports = (req, res) => {
 
   response(req, res, 'dashboard/demo-payment/index', {
     paymentAmount,
-    paymentDescription
+    paymentDescription,
+    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId)
   })
 }

@@ -12,7 +12,8 @@ module.exports = (req, res) => {
     productsTab: true,
     createPage: paths.prototyping.demoService.create,
     indexPage: paths.prototyping.demoService.index,
-    linksPage: paths.prototyping.demoService.links
+    linksPage: paths.prototyping.demoService.links,
+    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account && req.account.externalId)
   }
 
   productsClient.product.getByGatewayAccountId(authService.getCurrentGatewayAccountId(req))

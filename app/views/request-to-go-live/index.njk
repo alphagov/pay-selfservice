@@ -38,7 +38,8 @@
           <p class="govuk-body">When we activate your live account, we’ll email you with next steps.</p>
       {% endif %}
 
-      <p class="govuk-body"><a href="{{routes.dashboard.index}}" class="govuk-link">Return to dashboard</a></p>
+      <!-- dashboard.index -->
+      <p class="govuk-body"><a href="{{ dashboardLink }}" class="govuk-link">Return to dashboard</a></p>
     </div>
   {% elif denied %}
     <div class="govuk-grid-column-full">

@@ -1,12 +1,31 @@
 'use strict'
 
-const generateRoute = require('./utils/generate-route')
+const urlJoin = require('url-join')
 const formattedPathFor = require('./utils/replace-params-in-path')
+const generateRoute = require('./utils/generate-route')
+
+const keys = {
+  SERVICE_EXTERNAL_ID: 'serviceExternalId',
+  GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId'
+}
+
+const basePaths = {
+  account: `/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}/`
+}
 
 module.exports = {
-  keys: {
-    SERVICE_EXTERNAL_ID: 'serviceExternalId',
-    GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId'
+  keys: keys,
+  generateRoute,
+  formattedPathFor,
+  account: {
+    root: basePaths.account,
+    formatPathFor: (path, accountExternalId, ...params) => {
+      const fullPath = urlJoin(basePaths.account, path)
+      return formattedPathFor(fullPath, accountExternalId, ...params)
+    },
+    dashboard: {
+      index: '/dashboard'
+    }
   },
   transactions: {
     index: '/transactions',
@@ -53,9 +72,6 @@ module.exports = {
         resend: '/my-profile/two-factor-auth/resend'
       }
     }
-  },
-  dashboard: {
-    index: '/'
   },
   apiKeys: {
     index: '/api-keys',
@@ -186,8 +202,6 @@ module.exports = {
     linkAccount: '/link-account',
     oauthComplete: '/oauth/complete'
   },
-  generateRoute: generateRoute,
-  formattedPathFor: formattedPathFor,
   requestToGoLive: {
     index: '/service/:externalServiceId/request-to-go-live',
     organisationName: '/service/:externalServiceId/request-to-go-live/organisation-name',

@@ -55,7 +55,7 @@ describe('create service - service naming', function () {
         csrfToken: csrf().create('123')
       })
       .expect(303)
-      .expect('Location', paths.dashboard.index)
+      .expect('Location', paths.account.dashboard.index)
       .end(done)
   })
   it('should redirect to name your service page if user input invalid', function (done) {

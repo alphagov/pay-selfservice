@@ -19,6 +19,8 @@ module.exports = async (req, res) => {
   } else if (!stripeAccountSetup.companyNumber) {
     res.redirect(303, paths.stripeSetup.companyNumber)
   } else {
-    response(req, res, 'stripe-setup/go-live-complete')
+    response(req, res, 'stripe-setup/go-live-complete', {
+      dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId)
+    })
   }
 }

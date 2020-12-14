@@ -20,6 +20,7 @@ module.exports = async (req, res) => {
     const liveGatewayAccounts = result.accounts.filter((gatewayAccount) => gatewayAccount.type === 'live')
     if (liveGatewayAccounts && liveGatewayAccounts.length === 1) {
       req.gateway_account.currentGatewayAccountId = `${liveGatewayAccounts[0].gateway_account_id}`
+      res.redirect(302, paths.account.formatPathFor(paths.account.dashboard.index, liveGatewayAccounts[0].externalId))
     }
   } else {
     const logContext = {}
@@ -27,5 +28,5 @@ module.exports = async (req, res) => {
     logContext[keys.SERVICE_EXTERNAL_ID] = externalServiceId
     logger.warn('User has no access to this service for dashboard redirect', logContext)
   }
-  res.redirect(302, paths.dashboard.index)
+  res.redirect(302, paths.serviceSwitcher.index)
 }

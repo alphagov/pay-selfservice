@@ -23,6 +23,7 @@ class GatewayAccount {
    **/
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
+    this.externalId = gatewayAccountData.external_id
     this.name = gatewayAccountData.service_name
     this.type = gatewayAccountData.type
     this.paymentProvider = gatewayAccountData.payment_provider
@@ -39,7 +40,7 @@ class GatewayAccount {
     // until we have external ids for card accounts, the external id is the internal one
     return {
       id: this.id,
-      external_id: this.id,
+      external_id: this.externalId,
       payment_provider: this.paymentProvider,
       service_name: this.name,
       type: this.type

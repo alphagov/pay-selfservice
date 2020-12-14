@@ -1,5 +1,5 @@
 
-<form class="govuk-grid-column-full" action="/" method="get">
+<form class="govuk-grid-column-full" method="get">
 
   {{ govukSelect({
     formGroup: {
@@ -49,7 +49,7 @@
       <h2 class="dashboard-total-group__title">
         <a class="govuk-link" href="{{routes.transactions.index}}?state=Success&amp;{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
           Successful payments
-        </a>    
+        </a>
       </h2>
     </header>
     <dl class="dashboard-total-group__values dashboard-total-group__values--blue">

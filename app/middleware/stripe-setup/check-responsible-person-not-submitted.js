@@ -15,7 +15,7 @@ module.exports = function checkResponsiblePersonNotSubmitted (req, res, next) {
   } else {
     if (stripeAccountSetup.responsiblePerson) {
       req.flash('genericError', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
-      res.redirect(303, paths.dashboard.index)
+      res.redirect(303, paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId))
     } else {
       next()
     }

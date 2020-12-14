@@ -1,5 +1,6 @@
 'use strict'
 
+const { Router } = require('express')
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
 const { getNamespace, createNamespace } = require('continuation-local-storage')
@@ -7,7 +8,12 @@ const { getNamespace, createNamespace } = require('continuation-local-storage')
 const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate-route')
-const paths = require('./paths.js')
+
+const paths = require('./paths')
+const controllers = require('./controllers')
+
+const userIsAuthorised = require('./middleware/user-is-authorised')
+const getServiceAndAccount = require('./middleware/get-service-and-gateway-account.middleware')
 
 // Middleware
 const { lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
@@ -39,7 +45,6 @@ const transactionRefundController = require('./controllers/transactions/transact
 const transactionDetailRedirectController = require('./controllers/transactions/transaction-detail-redirect.controller')
 const credentialsController = require('./controllers/credentials.controller')
 const loginController = require('./controllers/login')
-const dashboardController = require('./controllers/dashboard')
 const healthcheckController = require('./controllers/healthcheck.controller')
 const apiKeysController = require('./controllers/api-keys')
 const digitalWalletController = require('./controllers/digital-wallet')
@@ -87,7 +92,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 
 // Assignments
 const {
-  healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
+  healthcheck, registerUser, user, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
   partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
@@ -147,12 +152,12 @@ module.exports.bind = function (app) {
   app.post(registerUser.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.submitOtpVerify)
   app.get(registerUser.reVerifyPhone, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.showReVerifyPhone)
   app.post(registerUser.reVerifyPhone, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.submitReVerifyPhone)
-  app.get(registerUser.logUserIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginController.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardController.dashboardActivity)
+  app.get(registerUser.logUserIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginController.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, authorisedRedirectHome)
 
   // LOGIN
   app.get(user.logIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginController.loginGet)
   app.post(user.logIn, xraySegmentCls, validateAndRefreshCsrf, trimUsername, loginController.loginUser, hasServices, resolveService, getAccount, loginController.postLogin)
-  app.get(dashboard.index, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardController.dashboardActivity)
+
   app.get(user.noAccess, xraySegmentCls, loginController.noAccess)
   app.get(user.logOut, xraySegmentCls, loginController.logout)
   app.get(user.otpSendAgain, xraySegmentCls, enforceUserFirstFactor, validateAndRefreshCsrf, loginController.sendAgainGet)
@@ -522,10 +527,41 @@ module.exports.bind = function (app) {
     userPhoneNumberController.post
   )
 
+  // app.get(account.dashboard.index, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardController.dashboardActivity)
+
+  const account = new Router({ mergeParams: true })
+
+  // @TODO(sfount) what do we do if the route isn't authorised - this is likely the case for the util that checks if
+  // a certain flag is set to figure out if it should direct us to the account dashboard or my services
+  // IF the flag isn't set - continue to the dashboard as well as possible (check for an ID on the session etc.), this might need some polyfill and fetching with IDs vs. external IDs
+  // IF the flag is set - that means we're okay to try out the my services as the default page, redirect to that page
+  // in a future PR/ story this could be transitioned from feature flag to `req.user` default page setting
+  app.get('/', userIsAuthorised(), authorisedRedirectHome)
+  // all account specific routes with ensure request data is fetched and is
+  // consistent
+  account.use(getServiceAndAccount)
+
+  account.get(paths.account.dashboard.index, userIsAuthorised(), controllers.dashboard)
+
+  app.use(paths.account.root, account)
+
   app.all('*', (req, res) => {
     res.status(404)
     res.render('404')
   })
 
   app.use(AWSXRay.express.closeSegment())
+}
+
+function authorisedRedirectHome (req, res) {
+  const accountExternalId =
+    (req.account && req.account.external_id) ||
+    (req.gateway_account && req.gateway_account.currentGatewayAccountExternalId)
+
+  // in the future this could be replaced with a "Default home page" setting on the `req.user`
+  if (accountExternalId && !process.env.FUTURE_ADMIN_TOOL_LANDING_PAGE_STRATEGY) {
+    res.redirect(paths.account.formatPathFor(paths.account.dashboard.index, accountExternalId))
+  } else {
+    res.redirect(paths.serviceSwitcher.index)
+  }
 }

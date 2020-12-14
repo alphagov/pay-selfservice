@@ -294,7 +294,7 @@ const submitYourServiceName = async function submitYourServiceName (req, res) {
     try {
       await serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, serviceNameCy, correlationId)
       lodash.unset(req, 'session.pageData.submitYourServiceName')
-      res.redirect(303, paths.dashboard.index)
+      res.redirect(303, paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId))
     } catch (err) {
       logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
       renderErrorView(req, res, err)

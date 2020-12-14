@@ -15,7 +15,7 @@ module.exports = function checkBankDetailsNotSubmitted (req, res, next) {
   } else {
     if (stripeAccountSetup.bankAccount) {
       req.flash('genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
-      res.redirect(303, paths.dashboard.index)
+      res.redirect(303, paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId))
     } else {
       next()
     }

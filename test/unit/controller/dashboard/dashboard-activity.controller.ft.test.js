@@ -72,7 +72,7 @@ const mockStripeRetrieveAccount = (isChargesEnabled, currentDeadlineUnixDate) =>
 
 const getDashboard = (testApp = app) => {
   return supertest(testApp)
-    .get(paths.dashboard.index)
+    .get(paths.account.dashboard.index)
 }
 
 const mockLedgerGetTransactionsSummary = () => {
@@ -111,7 +111,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.dashboard.index)
+          .get(paths.account.dashboard.index)
           .end((err, res) => {
             result = res
             $ = cheerio.load(res.text)
@@ -187,7 +187,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.dashboard.index)
+          .get(paths.account.dashboard.index)
           .query({
             period: 'today'
           })
@@ -240,7 +240,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.dashboard.index)
+          .get(paths.account.dashboard.index)
           .query({
             period: 'yesterday'
           })
@@ -293,7 +293,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.dashboard.index)
+          .get(paths.account.dashboard.index)
           .query({
             period: 'previous-seven-days'
           })
@@ -346,7 +346,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.dashboard.index)
+          .get(paths.account.dashboard.index)
           .query({
             period: 'previous-thirty-days'
           })
@@ -401,7 +401,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.dashboard.index)
+          .get(paths.account.dashboard.index)
           .end((err, res) => {
             result = res
             $ = cheerio.load(res.text)
