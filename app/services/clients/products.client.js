@@ -98,9 +98,10 @@ function updateProduct (gatewayAccountId, productExternalId, options) {
   }).then(product => new Product(product))
 }
 
-function addMetadataToProduct (productExternalId, key, value) {
+function addMetadataToProduct (productExternalId, key, value, existingMetadata) {
   const body = {}
   body[key] = value
+  body['existingMetadata'] = existingMetadata
   return baseClient.post({
     baseUrl,
     body,
@@ -110,9 +111,10 @@ function addMetadataToProduct (productExternalId, key, value) {
   })
 }
 
-function updateProductMetadata (productExternalId, key, value) {
+function updateProductMetadata (productExternalId, key, value, existingMetadata) {
   const body = {}
   body[key] = value
+  body['existingMetadata'] = existingMetadata
   return baseClient.patch({
     baseUrl,
     body,

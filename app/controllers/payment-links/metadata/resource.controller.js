@@ -64,7 +64,8 @@ const updateMetadataPage = function updateMetadataPage (updateMethod, path) {
         await updateMethod(
           req.params.productExternalId,
           form.values[form.fields.metadataKey.id],
-          form.values[form.fields.metadataValue.id]
+          form.values[form.fields.metadataValue.id],
+          form.existingMetadata
         )
         req.flash('generic', `Updated reporting column ${form.values[form.fields.metadataKey.id]}`)
         res.redirect(formattedPathFor(paths.paymentLinks.manage.edit, req.params.productExternalId))
