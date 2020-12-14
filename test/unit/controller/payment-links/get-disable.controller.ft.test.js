@@ -42,7 +42,7 @@ describe('Manage payment links - disable controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
+      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.index)
     })
 
     it('should add a relevant generic message to the session \'flash\'', () => {
@@ -82,7 +82,7 @@ describe('Manage payment links - disable controller', () => {
     })
 
     it('should redirect to the manage page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.managePage)
+      expect(response.header).to.have.property('location').to.equal(paths.paymentLinks.manage.index)
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {

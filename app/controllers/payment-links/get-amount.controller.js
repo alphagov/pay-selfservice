@@ -22,7 +22,7 @@ module.exports = function showAmountPage (req, res, next) {
     paymentAmountType,
     nextPage: paths.paymentLinks.amount,
     returnToStart: paths.paymentLinks.start,
-    manage: paths.paymentLinks.manage.managePage,
+    manage: paths.paymentLinks.manage.index,
     isWelsh: sessionData.isWelsh,
     errors: recovered.errors
   })

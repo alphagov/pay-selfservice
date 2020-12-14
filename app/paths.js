@@ -163,8 +163,8 @@ module.exports = {
     editMetadata: '/create-payment-link/add-reporting-column/:metadataKey',
     deleteMetadata: '/create-payment-link/add-reporting-column/:metadataKey/delete',
     manage: {
+      index: '/create-payment-link/manage',
       edit: '/create-payment-link/manage/edit/:productExternalId',
-      managePage: '/create-payment-link/manage',
       disable: '/create-payment-link/manage/disable/:productExternalId',
       delete: '/create-payment-link/manage/delete/:productExternalId',
       editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
