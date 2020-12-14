@@ -1,7 +1,8 @@
 <li class="service--{{ account.type }}">
   <form method="post" action="{{routes.serviceSwitcher.switch}}">
     <input name="csrfToken" type="hidden" value="{{csrf}}" />
-    <input name="gatewayAccountId" type="hidden" value="{{ account.external_id }}"/>
+    <input name="gatewayAccountId" type="hidden" value="{{ account.id }}"/>
+    <input name="gatewayAccountExternalId" type="hidden" value="{{ account.external_id }}"/>
     <button
       class="govuk-link pay-button--as-link service-switcher {{ account.type }} {{ account.payment_provider }}"
       type="submit"

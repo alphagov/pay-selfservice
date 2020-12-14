@@ -6,10 +6,11 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
 
 {% block beforeContent %}
   {{ super() }}
+  <!-- dashboard.index -->
   {{
     govukBackLink({
       text: "Back to dashboard",
-      href: routes.dashboard.index
+      href: dashboardLink
     })
   }}
 {% endblock %}
@@ -35,7 +36,7 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
         </div>
       </dd>
 
-      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6"> 
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
       <dt class="demo-payment-settings__setting govuk-!-margin-bottom-2">
         <div class="govuk-heading-s govuk-!-margin-0">Payment amount</div>

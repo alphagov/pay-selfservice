@@ -5,13 +5,14 @@ const paths = require('./../paths')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
 
-const serviceNavigationItems = (originalUrl, permissions, type) => {
+const serviceNavigationItems = (originalUrl, permissions, type, account = {}) => {
   const navigationItems = []
+  const dashboardPath = paths.account.formatPathFor(paths.account.dashboard.index, account.external_id)
   navigationItems.push({
     id: 'navigation-menu-home',
     name: 'Dashboard',
-    url: paths.dashboard.index,
-    current: originalUrl === paths.dashboard.index,
+    url: dashboardPath,
+    current: originalUrl === dashboardPath || originalUrl === '/',
     permissions: true
   })
   if (type === 'card') {

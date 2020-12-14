@@ -42,7 +42,7 @@ describe('Check responsible person not submitted middleware', () => {
     await checkResponsiblePersonNotSubmitted(req, res, next)
     sinon.assert.notCalled(next)
     sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
-    sinon.assert.calledWith(res.redirect, 303, paths.dashboard.index)
+    sinon.assert.calledWith(res.redirect, 303, paths.account.dashboard.index)
   })
 
   it('should render an error page when req.account is undefined', async () => {

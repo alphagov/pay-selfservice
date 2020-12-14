@@ -101,7 +101,7 @@ module.exports = function (req, data, template) {
   const paymentProvider = _.get(convertedData, 'currentGatewayAccount.payment_provider')
   convertedData.currentService = _.get(req, 'service')
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(url.parse(originalUrl).pathname, permissions, paymentMethod)
+    convertedData.serviceNavigationItems = serviceNavigationItems(url.parse(originalUrl).pathname, permissions, paymentMethod, account)
     convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, paymentMethod, paymentProvider)
   }
   convertedData._features = {}
