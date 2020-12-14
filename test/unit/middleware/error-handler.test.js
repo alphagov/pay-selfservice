@@ -1,20 +1,25 @@
 'use strict'
 
 const sinon = require('sinon')
+const proxyquire = require('proxyquire')
 const { expect } = require('chai')
-const errorHandler = require('../../../app/middleware/error-handler')
-const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError } = require('../../../app/errors')
+const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError } = require('../../../app/errors')
 const paths = require('../../../app/paths')
+const userFixtures = require('../../fixtures/user.fixtures')
+const serviceFixtures = require('../../fixtures/service.fixtures')
+const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 
+const correlationId = 'a-request-id'
 const req = {
   headers: {
-    'x-request-id': 'a-request-id'
+    'x-request-id': correlationId
   },
   session: {}
 }
-let res, next
 
 describe('Error handler middleware', () => {
+  let res, next, errorHandler, infoLoggerSpy, errorLoggerSpy
+
   beforeEach(() => {
     next = sinon.spy()
     res = {
@@ -24,6 +29,17 @@ describe('Error handler middleware', () => {
       redirect: sinon.spy(),
       setHeader: sinon.stub()
     }
+
+    infoLoggerSpy = sinon.spy()
+    errorLoggerSpy = sinon.spy()
+    errorHandler = proxyquire('../../../app/middleware/error-handler', {
+      '../utils/logger': () => {
+        return {
+          info: infoLoggerSpy,
+          error: errorLoggerSpy
+        }
+      }
+    })
   })
 
   it('should pass error to next when headers have already been set on the response', () => {
@@ -71,5 +87,67 @@ describe('Error handler middleware', () => {
     sinon.assert.calledWith(res.status, 500)
     sinon.assert.calledOnce(res.render)
     sinon.assert.calledWith(res.render, 'error')
+  })
+
+  describe('Logging', () => {
+    const userExternalId = 'a-user-external-id'
+    const serviceExternalId = 'a-service-external-id'
+    const gatewayAccountId = 'a-gateway-account-id'
+    const reqWithSessionData = {
+      ...req,
+      user: userFixtures.validUserResponse({ external_id: userExternalId }).getAsObject(),
+      service: serviceFixtures.validServiceResponse({ external_id: serviceExternalId}).getAsObject(),
+      account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId }).getPlain()
+    }
+    const expectedLogContext = {
+      'x_request_id': correlationId,
+      'user_external_id': userExternalId,
+      'service_external_id': serviceExternalId,
+      'gateway_account_id': gatewayAccountId
+    }
+
+    it('should log at info level for NotAuthenticatedError', () => {
+      const err = new NotAuthenticatedError('not authenticated')
+      const notAuthorisedReq = {
+        ...reqWithSessionData,
+        originalUrl: '/foo/bar'
+      }
+      errorHandler(err, notAuthorisedReq, res, null)
+  
+      const expectedMessage = 'NotAuthenticatedError handled: not authenticated. Redirecting attempt to access /foo/bar to /login'
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+    })
+
+    it('should log at info level for UserAccountDisabledError', () => {
+      const err = new UserAccountDisabledError('user account disabled')
+      errorHandler(err, reqWithSessionData, res, null)
+  
+      const expectedMessage = 'UserAccountDisabledError handled, rendering no access page'
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+    })
+
+    it('should log at info level for NotAuthorisedError', () => {
+      const err = new NotAuthorisedError('user does not have permission')
+      errorHandler(err, reqWithSessionData, res, null)
+  
+      const expectedMessage = 'NotAuthorisedError handled: user does not have permission. Rendering error page'
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+    })
+
+    it('should log at info level for NotFoundError', () => {
+      const err = new NotFoundError('Transaction not found')
+      errorHandler(err, reqWithSessionData, res, null)
+  
+      const expectedMessage = 'NotFoundError handled: Transaction not found. Rendering 404 page'
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+    })
+
+    it('should log at error level for generic Error', () => {
+      const err = new Error('A generic error')
+      errorHandler(err, reqWithSessionData, res, null)
+  
+      const expectedMessage = 'Unhandled error caught: A generic error'
+      sinon.assert.calledWithMatch(errorLoggerSpy, expectedMessage, expectedLogContext)
+    })
   })
 })
