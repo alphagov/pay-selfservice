@@ -27,7 +27,7 @@ function showEditMetadataPage (req, res) {
   const form = new MetadataForm(prefilledPage)
   const pageData = {
     form: form,
-    self: `${paymentLinksContext.addMetadataPageUrl}/${key}`,
+    self: paymentLinksContext.editMetadataPageUrl,
     cancelRoute: paymentLinksContext.listMetadataPageUrl,
     isEditing: true,
     canEditKey: true,

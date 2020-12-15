@@ -40,7 +40,7 @@ function editMetadata (req, res) {
   const form = new MetadataForm(req.body, existingMetadata)
 
   const pageData = {
-    self: `${paymentLinksContext.addMetadataPageUrl}/${key}`,
+    self: paymentLinksContext.editMetadataPageUrl,
     cancelRoute: paymentLinksContext.listMetadataPageUrl,
     isEditing: true,
     canEditKey: true,

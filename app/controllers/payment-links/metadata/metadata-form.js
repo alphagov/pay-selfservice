@@ -2,7 +2,7 @@ const METADATA_MAX_HEADER_LENGTH = 30
 const METADATA_MAX_VALUE_LENGTH = 100
 const MAX_NO_OF_METADATA_COLUMNS = 10
 
-const SPECIAL_CHARACTERS = [ '/', '\\', '?', '&' ]
+const SPECIAL_CHARACTERS = [ '\\' ]
 const fields = {
   metadataKey: {
     id: 'metadata-column-header',
@@ -41,10 +41,6 @@ const fields = {
       {
         validator: isValidLengthForCellContent,
         message: `Cell content must be ${METADATA_MAX_VALUE_LENGTH} characters or fewer`
-      },
-      {
-        validator: doesNotContainSpecialCharacters,
-        message: `Cell content must not include ${SPECIAL_CHARACTERS.join(' ')}`
       }
     ]
   }

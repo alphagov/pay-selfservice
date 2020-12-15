@@ -1,6 +1,7 @@
 'use strict'
 
-const path = require('path')
+const generateRoute = require('./utils/generate-route')
+const formattedPathFor = require('./utils/replace-params-in-path')
 
 module.exports = {
   keys: {
@@ -50,8 +51,8 @@ module.exports = {
         index: '/my-profile/two-factor-auth',
         configure: '/my-profile/two-factor-auth/configure',
         resend: '/my-profile/two-factor-auth/resend'
-      },
-    },
+      }
+    }
   },
   dashboard: {
     index: '/'
@@ -185,7 +186,8 @@ module.exports = {
     linkAccount: '/link-account',
     oauthComplete: '/oauth/complete'
   },
-  generateRoute: require(path.join(__dirname, '/utils/generate-route.js')),
+  generateRoute: generateRoute,
+  formattedPathFor: formattedPathFor,
   requestToGoLive: {
     index: '/service/:externalServiceId/request-to-go-live',
     organisationName: '/service/:externalServiceId/request-to-go-live/organisation-name',

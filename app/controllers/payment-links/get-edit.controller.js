@@ -24,6 +24,9 @@ module.exports = async function showEditPaymentLink (req, res, next) {
   const addMetadataUrl = shouldUseInlineReportingColumns
     ? formattedPathFor(paths.paymentLinks.manage.addMetadata, productExternalId)
     : formattedPathFor(paths.paymentLinks.metadata.add, productExternalId)
+  const editMetadataPath = shouldUseInlineReportingColumns
+    ? paths.paymentLinks.manage.editMetadata
+    : paths.paymentLinks.metadata.edit
 
   const pageData = {
     self: formattedPathFor(paths.paymentLinks.manage.edit, productExternalId),
@@ -31,6 +34,7 @@ module.exports = async function showEditPaymentLink (req, res, next) {
     editReference: formattedPathFor(paths.paymentLinks.manage.editReference, productExternalId),
     editAmount: formattedPathFor(paths.paymentLinks.manage.editAmount, productExternalId),
     addMetadata: addMetadataUrl,
+    editMetadata: editMetadataPath,
     formattedPathFor,
     paths
   }

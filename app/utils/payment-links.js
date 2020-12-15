@@ -10,20 +10,25 @@ const paths = require('../paths')
 // based on the request
 function getPaymentLinksContext (req) {
   const isCreatingPaymentLink = !Object.values(paths.paymentLinks.manage).includes(req.route && req.route.path)
+  const params = req.params || {}
 
   if (isCreatingPaymentLink) {
+    const { metadataKey } = params
+
     return {
       sessionData: lodash.get(req, 'session.pageData.createPaymentLink'),
       addMetadataPageUrl: paths.paymentLinks.addMetadata,
+      editMetadataPageUrl: paths.formattedPathFor(paths.paymentLinks.editMetadata, metadataKey),
       listMetadataPageUrl: paths.paymentLinks.review,
       isCreatingPaymentLink
     }
   } else {
-    const { productExternalId } = req.params
+    const { productExternalId, metadataKey } = params
 
     return {
       sessionData: lodash.get(req, 'session.editPaymentLinkData'),
       addMetadataPageUrl: paths.generateRoute(paths.paymentLinks.manage.addMetadata, { productExternalId }),
+      editMetadataPageUrl: paths.formattedPathFor(paths.paymentLinks.manage.editMetadata, productExternalId, metadataKey),
       listMetadataPageUrl: paths.generateRoute(paths.paymentLinks.manage.edit, { productExternalId }),
       isCreatingPaymentLink
     }

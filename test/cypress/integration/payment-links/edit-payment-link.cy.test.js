@@ -96,7 +96,7 @@ describe('Editing a payment link', () => {
       cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Finance team')
         cy.get('.govuk-summary-list__value').should('contain', 'Licensing')
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/${productId}/metadata/Finance team`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/${productId}/metadata/Finance%20team`)
       })
       cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'group')

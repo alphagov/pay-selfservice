@@ -80,21 +80,12 @@ describe('Payment link metadata form model', () => {
   })
 
   it('correctly validates when special characters are used for the header', () => {
-    const body = { 'metadata-column-header': 'key1/', 'metadata-cell-value': 'value' }
+    const body = { 'metadata-column-header': 'key1\\', 'metadata-cell-value': 'value' }
     const form = new MetadataForm(body)
     const tested = form.validate()
 
     expect(tested.errors.length).to.eq(1)
     expect(tested.errorMaps['metadata-column-header']).to.contain('Column header must not include')
-  })
-
-  it('correctly validates when special characters are used for the cell content', () => {
-    const body = { 'metadata-column-header': 'key1', 'metadata-cell-value': 'value\&' } // eslint-disable-line
-    const form = new MetadataForm(body)
-    const tested = form.validate()
-
-    expect(tested.errors.length).to.eq(1)
-    expect(tested.errorMaps['metadata-cell-value']).to.contain('Cell content must not include')
   })
 
   it('correctly passes with all valid inputs', () => {
