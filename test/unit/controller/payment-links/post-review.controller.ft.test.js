@@ -37,7 +37,7 @@ const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
 }
 const VALID_CREATE_TOKEN_RESPONSE = { token: randomUuid() }
 
-const buildCreateProductRequest = (language) => {
+const buildCreateProductRequest = (language, hasMetadata) => {
   return validCreateProductRequest({
     name: PAYMENT_TITLE,
     description: PAYMENT_DESCRIPTION,
@@ -47,15 +47,16 @@ const buildCreateProductRequest = (language) => {
     price: PAYMENT_LINK_AMOUNT,
     type: 'ADHOC',
     reference_enabled: false,
-    language: language
+    language: language,
+    ...hasMetadata && { metadata: { 'a-key': 'a-value' } }
   }).getPlain()
 }
 
 describe('Create payment link review controller', () => {
-  describe('successfull submission', () => {
+  describe('successfull submission with metadata', () => {
     let result, session, app
     before('Arrange', () => {
-      const expectedProductRequest = buildCreateProductRequest('en')
+      const expectedProductRequest = buildCreateProductRequest('en', true)
       const productResponse = validProductResponse(expectedProductRequest).getPlain()
       nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
       nock(PRODUCTS_URL).post('/v1/api/products', expectedProductRequest).reply(201, productResponse)
@@ -65,7 +66,10 @@ describe('Create payment link review controller', () => {
         paymentLinkTitle: PAYMENT_TITLE,
         paymentLinkDescription: PAYMENT_DESCRIPTION,
         paymentLinkAmount: PAYMENT_LINK_AMOUNT,
-        isWelsh: false
+        isWelsh: false,
+        metadata: {
+          'a-key': 'a-value'
+        }
       })
       app = createAppWithSession(getApp(), session)
     })
@@ -91,7 +95,7 @@ describe('Create payment link review controller', () => {
       expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage.index)
     })
   })
-  describe('successful submission for a Welsh payment link', () => {
+  describe('successful submission for a Welsh payment link without metadata', () => {
     let result, session, app
     before('Arrange', () => {
       const expectedProductRequest = buildCreateProductRequest('cy')
