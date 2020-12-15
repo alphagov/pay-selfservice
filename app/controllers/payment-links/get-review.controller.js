@@ -12,6 +12,7 @@ module.exports = (req, res) => {
   return response(req, res, 'payment-links/review', {
     pageData,
     addMetadata: paths.paymentLinks.addMetadata,
+    editMetadata: paths.paymentLinks.editMetadata,
     metadata: pageData.metadata
   })
 }

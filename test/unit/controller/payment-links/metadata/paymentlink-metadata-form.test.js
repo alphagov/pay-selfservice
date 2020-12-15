@@ -22,7 +22,7 @@ describe('Payment link metadata form model', () => {
   })
 
   it('correctly validates given input that is too long', () => {
-    const body = { 
+    const body = {
       'metadata-column-header': 'aaaaaaaaaabbbbbbbbbbcccccccccc1',
       'metadata-cell-value': 'aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeaaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeee2'
     }
@@ -77,6 +77,15 @@ describe('Payment link metadata form model', () => {
     expect(tested.errors.length).to.eq(1)
     expect(tested.errorMaps['metadata-column-header']).to.not.be.null // eslint-disable-line
     expect(tested.errorMaps['metadata-cell-value']).to.be.undefined // eslint-disable-line
+  })
+
+  it('correctly validates when special characters are used for the header', () => {
+    const body = { 'metadata-column-header': 'key1\\', 'metadata-cell-value': 'value' }
+    const form = new MetadataForm(body)
+    const tested = form.validate()
+
+    expect(tested.errors.length).to.eq(1)
+    expect(tested.errorMaps['metadata-column-header']).to.contain('Column header must not include')
   })
 
   it('correctly passes with all valid inputs', () => {

@@ -13,7 +13,8 @@
             {{metadataValue}}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="{{ addMetadata }}/{{ metadataKey }}">
+            {% set editMetadataLink = routes.formattedPathFor(editMetadata, product.externalId, metadataKey) if product else routes.formattedPathFor(editMetadata, metadataKey) %}
+            <a class="govuk-link" href="{{ editMetadataLink }}">
               Change<span class="govuk-visually-hidden"> ‘{{ metadataKey }}’</span>
             </a>
           </dd>

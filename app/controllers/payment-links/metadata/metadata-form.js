@@ -2,6 +2,7 @@ const METADATA_MAX_HEADER_LENGTH = 30
 const METADATA_MAX_VALUE_LENGTH = 100
 const MAX_NO_OF_METADATA_COLUMNS = 10
 
+const SPECIAL_CHARACTERS = [ '\\' ]
 const fields = {
   metadataKey: {
     id: 'metadata-column-header',
@@ -22,6 +23,10 @@ const fields = {
       {
         validator: isNotExceedingMaxNoOfReportingColumns,
         message: `Number of reporting columns must be ${MAX_NO_OF_METADATA_COLUMNS} or fewer`
+      },
+      {
+        validator: doesNotContainSpecialCharacters,
+        message: `Column header must not include ${SPECIAL_CHARACTERS.join(' ')}`
       }
     ]
   },
@@ -128,6 +133,10 @@ function isNotExceedingMaxNoOfReportingColumns (value, existingMetadata) {
   }
 
   return true
+}
+
+function doesNotContainSpecialCharacters (value) {
+  return !SPECIAL_CHARACTERS.some((character) => value.includes(character))
 }
 
 module.exports = MetadataForm
