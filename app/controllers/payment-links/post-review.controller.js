@@ -8,6 +8,8 @@ const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const auth = require('../../services/auth.service.js')
 const supportedLanguage = require('../../models/supported-language')
+const { keys } = require('@govuk-pay/pay-js-commons').logging
+const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 
 module.exports = async function createPaymentLink (req, res) {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
@@ -62,6 +64,18 @@ module.exports = async function createPaymentLink (req, res) {
         productPayload.referenceHint = paymentReferenceHint
       }
     }
+
+    const correlationId = req.headers[CORRELATION_HEADER] || ''
+
+    const logContext = {
+      internal_user: req.user.internalUser,
+      product_external_id: req.params.productExternalId,
+      metadata: metadata
+    }
+    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
+    logContext[keys.CORRELATION_ID] = correlationId
+
+    logger.info(`Creating Payment link`, logContext)
 
     await productsClient.product.create(productPayload)
 
