@@ -8,6 +8,7 @@ var userFixtures = require('../../../../fixtures/user.fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
 chai.use(chaiAsPromised)
+chai.should()
 
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
