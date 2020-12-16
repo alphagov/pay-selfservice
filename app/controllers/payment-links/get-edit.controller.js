@@ -48,8 +48,8 @@ module.exports = async function showEditPaymentLink (req, res, next) {
       // if this is the first time we're loading the product, update the session editing copy
       if (!editPaymentLinkData.metadata) {
         editPaymentLinkData.metadata = product.metadata
-        delete product.metadata
       }
+      delete product.metadata
     } else {
       // this is an existing workaround because the existing code should always directly reflect the backend
       // this should be removed when we remove the feature flag and are fully in-flow editing
