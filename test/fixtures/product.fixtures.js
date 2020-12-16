@@ -27,6 +27,7 @@ module.exports = {
       data.reference_label = opts.reference_label
       data.reference_hint = opts.reference_hint
     }
+    if (opts.metadata) data.metadata = opts.metadata
     return {
       getPactified: () => {
         return pactProducts.pactify(data)

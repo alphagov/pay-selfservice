@@ -20,7 +20,8 @@ module.exports = async function createPaymentLink (req, res) {
     paymentReferenceType,
     paymentReferenceLabel,
     paymentReferenceHint,
-    isWelsh
+    isWelsh,
+    metadata
   } = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
@@ -47,6 +48,7 @@ module.exports = async function createPaymentLink (req, res) {
       type: productTypes.ADHOC,
       serviceNamePath,
       productNamePath,
+      metadata,
       language: isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH,
       referenceEnabled: paymentReferenceType === 'custom',
       ...paymentLinkDescription && { description: paymentLinkDescription },

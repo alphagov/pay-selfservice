@@ -65,7 +65,8 @@ function createProduct (options) {
       reference_enabled: options.referenceEnabled,
       reference_label: options.referenceLabel,
       reference_hint: options.referenceHint,
-      language: options.language || supportedLanguage.ENGLISH
+      language: options.language || supportedLanguage.ENGLISH,
+      ...options.metadata && { metadata: options.metadata }
     },
     description: 'create a product for a service',
     service: SERVICE_NAME
@@ -91,7 +92,8 @@ function updateProduct (gatewayAccountId, productExternalId, options) {
       price: options.price,
       reference_enabled: options.referenceEnabled,
       reference_label: options.referenceLabel,
-      reference_hint: options.referenceHint
+      reference_hint: options.referenceHint,
+      ...options.metadata && { metadata: options.metadata }
     },
     description: 'update an existing product',
     service: SERVICE_NAME
