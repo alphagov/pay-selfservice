@@ -512,12 +512,12 @@ module.exports.bind = function (app) {
     stripeSetupAddPspAccountDetailsController.get
   )
 
-  app.get(user.profile.phoneNumber ,
+  app.get(user.profile.phoneNumber,
     xraySegmentCls,
     userPhoneNumberController.get
   )
 
-  app.post(user.profile.phoneNumber ,
+  app.post(user.profile.phoneNumber,
     xraySegmentCls,
     userPhoneNumberController.post
   )

@@ -26,6 +26,12 @@ class UserAccountDisabledError extends DomainError {
 class NotAuthorisedError extends DomainError {
 }
 
+class PermissionDeniedError extends DomainError {
+  constructor (permission) {
+    super(`User does not have permission ${permission} for service`)
+  }
+}
+
 /**
  * Thrown when the resource that a route is trying to access cannot be found.
  */
@@ -36,5 +42,6 @@ module.exports = {
   NotAuthenticatedError,
   UserAccountDisabledError,
   NotAuthorisedError,
+  PermissionDeniedError,
   NotFoundError
 }

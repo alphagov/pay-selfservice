@@ -3,7 +3,7 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
-const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError } = require('../../../app/errors')
+const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError } = require('../../../app/errors')
 const paths = require('../../../app/paths')
 const userFixtures = require('../../fixtures/user.fixtures')
 const serviceFixtures = require('../../fixtures/service.fixtures')
@@ -96,7 +96,7 @@ describe('Error handler middleware', () => {
     const reqWithSessionData = {
       ...req,
       user: userFixtures.validUserResponse({ external_id: userExternalId }).getAsObject(),
-      service: serviceFixtures.validServiceResponse({ external_id: serviceExternalId}).getAsObject(),
+      service: serviceFixtures.validServiceResponse({ external_id: serviceExternalId }).getAsObject(),
       account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId }).getPlain()
     }
     const expectedLogContext = {
@@ -113,7 +113,7 @@ describe('Error handler middleware', () => {
         originalUrl: '/foo/bar'
       }
       errorHandler(err, notAuthorisedReq, res, null)
-  
+
       const expectedMessage = 'NotAuthenticatedError handled: not authenticated. Redirecting attempt to access /foo/bar to /login'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
     })
@@ -121,23 +121,31 @@ describe('Error handler middleware', () => {
     it('should log at info level for UserAccountDisabledError', () => {
       const err = new UserAccountDisabledError('user account disabled')
       errorHandler(err, reqWithSessionData, res, null)
-  
+
       const expectedMessage = 'UserAccountDisabledError handled, rendering no access page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
     })
 
     it('should log at info level for NotAuthorisedError', () => {
-      const err = new NotAuthorisedError('user does not have permission')
+      const err = new NotAuthorisedError('user does not have authorisation')
       errorHandler(err, reqWithSessionData, res, null)
-  
-      const expectedMessage = 'NotAuthorisedError handled: user does not have permission. Rendering error page'
+
+      const expectedMessage = 'NotAuthorisedError handled: user does not have authorisation. Rendering error page'
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+    })
+
+    it('should log at info level for PermissionDeniedError', () => {
+      const err = new PermissionDeniedError('do-cool-things')
+      errorHandler(err, reqWithSessionData, res, null)
+
+      const expectedMessage = 'PermissionDeniedError handled: User does not have permission do-cool-things for service. Rendering error page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
     })
 
     it('should log at info level for NotFoundError', () => {
       const err = new NotFoundError('Transaction not found')
       errorHandler(err, reqWithSessionData, res, null)
-  
+
       const expectedMessage = 'NotFoundError handled: Transaction not found. Rendering 404 page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
     })
@@ -145,7 +153,7 @@ describe('Error handler middleware', () => {
     it('should log at error level for generic Error', () => {
       const err = new Error('A generic error')
       errorHandler(err, reqWithSessionData, res, null)
-  
+
       const expectedMessage = 'Unhandled error caught: A generic error'
       sinon.assert.calledWithMatch(errorLoggerSpy, expectedMessage, expectedLogContext)
     })
