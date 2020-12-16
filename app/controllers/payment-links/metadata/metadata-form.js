@@ -120,7 +120,7 @@ function isValidLengthForCellContent (value) {
 
 function isNotDuplicate (value, existingMetadata) {
   if (existingMetadata) {
-    const found = Object.keys(existingMetadata).find(metadataKey => value === metadataKey)
+    const found = Object.keys(existingMetadata).find(metadataKey => String(value).toLowerCase() === String(metadataKey).toLowerCase())
     return !found
   }
 

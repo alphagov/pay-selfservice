@@ -1,6 +1,6 @@
 'use strict'
 
-const logger = require('../../utils/logger')
+const logger = require('../../utils/logger')(__filename)
 const MetadataForm = require('./metadata/metadata-form')
 const { getPaymentLinksContext, metadata } = require('../../utils/payment-links')
 const { keys } = require('@govuk-pay/pay-js-commons').logging
@@ -32,7 +32,7 @@ function addMetadata (req, res, next) {
     )
 
     const logContext = {
-      is_internal_user: req.user && req.user.internal_user,
+      is_internal_user: req.user && req.user.internalUser,
       reporting_column_key: form.values[form.fields.metadataKey.id],
       product_external_id: req.params && req.params.productExternalId
     }
@@ -80,7 +80,7 @@ function editMetadata (req, res, next) {
     )
 
     const logContext = {
-      is_internal_user: req.user && req.user.internal_user,
+      is_internal_user: req.user && req.user.internalUser,
       original_reporting_column_key: key,
       reporting_column_key: form.values[form.fields.metadataKey.id],
       product_external_id: req.params && req.params.productExternalId
@@ -104,7 +104,7 @@ function deleteMetadata (req, res, next) {
     metadata.removeMetadata(paymentLinksContext.sessionData, key)
 
     const logContext = {
-      is_internal_user: req.user && req.user.internal_user,
+      is_internal_user: req.user && req.user.internalUser,
       reporting_column_key: key,
       product_external_id: req.params && req.params.productExternalId
     }

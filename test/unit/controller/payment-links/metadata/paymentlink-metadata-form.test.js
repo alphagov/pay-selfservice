@@ -53,6 +53,22 @@ describe('Payment link metadata form model', () => {
     expect(tested.errorMaps['metadata-cell-value']).to.be.undefined // eslint-disable-line
   })
 
+  it('correctly validates case insensitive duplicate keys', () => {
+    const newMetadata = {
+      'metadata-column-header': 'DuPlicAte-Key',
+      'metadata-cell-value': 'a-value'
+    }
+
+    const existingMetadata = {
+      'duplicate-key': 'a-value'
+    }
+
+    const form = new MetadataForm(newMetadata, existingMetadata)
+    const tested = form.validate()
+    expect(tested.errors.length).to.eq(1)
+    expect(tested.errorMaps['metadata-column-header']).to.include('Column header must not already exist') // eslint-disable-line
+  })
+
   it('correctly validates when the number of metadata columns exceeds the max number of allowed metadata columns', () => {
     const body = {
       'metadata-column-header': 'test 11 header',
