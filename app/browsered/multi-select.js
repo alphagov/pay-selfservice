@@ -85,7 +85,7 @@ const closeMultiSelectOnEscapeKeypress = function () {
       mulitSelectElements.forEach(element => {
         if (element.style.visibility === 'visible') {
           element.style.visibility = 'hidden'
-          element.closest(TOP_LEVEL_SELECTOR).querySelector(OPEN_BUTTON_SELECTOR).focus()     
+          element.closest(TOP_LEVEL_SELECTOR).querySelector(OPEN_BUTTON_SELECTOR).focus()
         }
       })
     }

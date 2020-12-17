@@ -17,7 +17,7 @@ function submitServiceInviteOtpCode (code, otpCode, correlationId) {
 
 async function createPopulatedService (inviteCode, correlationId) {
   const adminusersClient = getAdminUsersClient({ correlationId })
-  
+
   const gatewayAccount = await connectorClient().createGatewayAccount('sandbox', 'test', null, null, correlationId)
   const completeInviteResponse = await adminusersClient.completeInvite(inviteCode, [gatewayAccount.gateway_account_id])
   const user = await adminusersClient.getUserByExternalId(completeInviteResponse.user_external_id)

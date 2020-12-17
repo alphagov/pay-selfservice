@@ -23,7 +23,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
       setHeader: sinon.stub(),
       status: sinon.spy(),
       redirect: sinon.spy(),
-      render: sinon.spy(),
+      render: sinon.spy()
     }
   })
 
@@ -105,7 +105,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
       },
       '../../utils/response': {
         renderErrorView: renderErrorViewMock
-      },
+      }
     })
   }
 })

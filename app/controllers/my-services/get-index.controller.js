@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
   const aggregatedGatewayAccounts = await serviceService.getGatewayAccounts(aggregatedGatewayAccountIds, req.correlationId)
 
   const servicesData = servicesRoles
-    .sort((a,b) => a.service.id - b.service.id)
+    .sort((a, b) => a.service.id - b.service.id)
     .map(serviceRole => {
       // For Direct Debit currently we initialise req.user.serviceRoles[].service.gatewayAccountIds with external ids,
       // but for Cards we initialise with internal ids.
