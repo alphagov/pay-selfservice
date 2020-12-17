@@ -16,7 +16,6 @@ module.exports = (req, res) => {
     req.gateway_account.currentGatewayAccountId = newAccountId
     req.gateway_account.currentGatewayAccountExternalId = newAccountExternalId
 
-    // @TODO(sfount) we'll probably need to get account manually here
     res.redirect(302, paths.account.formatPathFor(paths.account.dashboard.index, newAccountExternalId))
   } else {
     logger.warn(`Attempted to switch to invalid account ${newAccountId}`)

@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
     res.redirect(303, paths.stripeSetup.companyNumber)
   } else {
     response(req, res, 'stripe-setup/go-live-complete', {
-      dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId)
+      dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.external_id)
     })
   }
 }

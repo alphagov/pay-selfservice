@@ -97,7 +97,7 @@ module.exports = (req, res) => {
     showNextSteps: showNextSteps.includes(currentGoLiveStage),
     denied: currentGoLiveStage === DENIED,
     pspIsStripe: pspIsStripe.includes(currentGoLiveStage),
-    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId)
+    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.external_id)
   }
 
   return response.response(req, res, 'request-to-go-live/index', pageData)

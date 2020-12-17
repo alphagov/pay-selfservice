@@ -3,6 +3,7 @@
 const chai = require('chai')
 const nock = require('nock')
 const _ = require('lodash')
+const paths = require('../../../app/paths')
 const connectorMock = nock(process.env.CONNECTOR_URL)
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const serviceSwitchController = require('../../../app/controllers/my-services')
@@ -28,6 +29,7 @@ describe('service switch controller: list of accounts', function () {
       .reply(200, {
         accounts: allServiceGatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
           gateway_account_id: iter,
+          external_id: `a-valid-external-id-${iter}`,
           service_name: `account ${iter}`,
           type: _.sample(['test', 'live'])
         }).getPlain())
@@ -154,15 +156,17 @@ describe('service switch controller: switching', function () {
       session: session,
       gateway_account: gatewayAccount,
       body: {
-        gatewayAccountId: '6'
+        gatewayAccountId: '6',
+        gatewayAccountExternalId: 'a-valid-external-id-6'
       }
     }
 
     const res = {
       redirect: function () {
         expect(gatewayAccount.currentGatewayAccountId).to.be.equal('6')
+        expect(gatewayAccount.currentGatewayAccountExternalId).to.be.equal('a-valid-external-id-6')
         expect(arguments[0]).to.equal(302)
-        expect(arguments[1]).to.equal('/')
+        expect(arguments[1]).to.equal(paths.account.formatPathFor(paths.account.dashboard.index, 'a-valid-external-id-6'))
       }
     }
 
@@ -207,6 +211,7 @@ describe('service switch controller: display added to the new service msg', func
       .reply(200, {
         accounts: gatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
           gateway_account_id: iter,
+          external_id: `a-valid-external-id-${iter}`,
           service_name: `account ${iter}`,
           type: _.sample(['test', 'live'])
         }).getPlain())

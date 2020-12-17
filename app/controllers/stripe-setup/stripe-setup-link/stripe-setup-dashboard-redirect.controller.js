@@ -20,7 +20,8 @@ module.exports = async (req, res) => {
     const liveGatewayAccounts = result.accounts.filter((gatewayAccount) => gatewayAccount.type === 'live')
     if (liveGatewayAccounts && liveGatewayAccounts.length === 1) {
       req.gateway_account.currentGatewayAccountId = `${liveGatewayAccounts[0].gateway_account_id}`
-      res.redirect(302, paths.account.formatPathFor(paths.account.dashboard.index, liveGatewayAccounts[0].externalId))
+      req.gateway_account.currentGatewayAccountExternalId = `${liveGatewayAccounts[0].external_id}`
+      res.redirect(302, paths.account.formatPathFor(paths.account.dashboard.index, liveGatewayAccounts[0].external_id))
     }
   } else {
     const logContext = {}

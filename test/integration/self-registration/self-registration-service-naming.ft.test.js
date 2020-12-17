@@ -39,7 +39,8 @@ describe('create service - service naming', function () {
     const gatewayAccount = {
       bob: 'bob',
       type: 'test',
-      payment_provider: 'sandbox'
+      payment_provider: 'sandbox',
+      external_id: 'a-valid-external-id'
     }
 
     connectorMock.get(`${ACCOUNT_RESOURCE}/${gatewayAccountId}`).reply(200, gatewayAccount)
@@ -55,7 +56,7 @@ describe('create service - service naming', function () {
         csrfToken: csrf().create('123')
       })
       .expect(303)
-      .expect('Location', paths.account.dashboard.index)
+      .expect('Location', paths.account.formatPathFor(paths.account.dashboard.index, 'a-valid-external-id'))
       .end(done)
   })
   it('should redirect to name your service page if user input invalid', function (done) {

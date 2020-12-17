@@ -25,7 +25,7 @@ describe('An endpoint not protected', () => {
     request(app)
       .get(paths.user.logIn)
       .expect(302)
-      .expect('Location', paths.account.dashboard.index)
+      .expect('Location', paths.serviceSwitcher.index)
       .end(done)
   })
 
@@ -34,7 +34,7 @@ describe('An endpoint not protected', () => {
     user.disabled = true
     app = getAppWithLoggedInUser(server.getApp(), user)
     request(app)
-      .get(paths.account.dashboard.index)
+      .get(paths.serviceSwitcher.index)
       .expect(302)
       .expect('Location', paths.user.noAccess)
       .end(done)
@@ -49,19 +49,19 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   it('redirects to /login if not authenticated', done => {
     app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), {})
     request(app)
-      .get(paths.account.dashboard.index)
+      .get(paths.serviceSwitcher.index)
       .expect(302)
       .expect('Location', paths.user.logIn)
       .end(done)
   })
 
-  it('allows access if authenticated (redirects to dashboard)', done => {
+  it('allows access if authenticated (redirects to home page)', done => {
     const user = getUser()
     app = getAppWithLoggedInUser(server.getApp(), user)
     request(app)
       .get(paths.user.logIn)
       .expect(302)
-      .expect('Location', paths.account.dashboard.index)
+      .expect('Location', paths.serviceSwitcher.index)
       .end(done)
   })
 
@@ -70,7 +70,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
 
     app = getAppWithSessionWithoutSecondFactor(server.getApp(), user)
     request(app)
-      .get(paths.account.dashboard.index)
+      .get(paths.serviceSwitcher.index)
       .expect(302)
       .expect('Location', paths.user.otpLogIn)
       .end(done)

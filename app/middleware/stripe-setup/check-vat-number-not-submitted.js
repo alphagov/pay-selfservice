@@ -15,7 +15,7 @@ module.exports = function checkVatNumberNotSubmitted (req, res, next) {
   } else {
     if (stripeAccountSetup.vatNumber) {
       req.flash('genericError', 'You’ve already provided your VAT number. Contact GOV.UK Pay support if you need to update it.')
-      res.redirect(303, paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId))
+      res.redirect(303, paths.account.formatPathFor(paths.account.dashboard.index, req.account.external_id))
     } else {
       next()
     }

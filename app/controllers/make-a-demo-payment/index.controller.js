@@ -38,6 +38,6 @@ module.exports = (req, res) => {
   response(req, res, 'dashboard/demo-payment/index', {
     paymentAmount,
     paymentDescription,
-    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.externalId)
+    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account.external_id)
   })
 }

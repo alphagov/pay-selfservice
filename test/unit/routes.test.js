@@ -5,6 +5,7 @@ const sinon = require('sinon')
 const paths = require('../../app/paths')
 const routes = require('../../app/routes')
 const oldAuthorisationMiddleware = require('../../app/services/auth.service').enforceUserAuthenticated
+const authorisationMiddlewareName = require('../../app/middleware/user-is-authorised')().name
 
 const pathsNotRequiringAuthentication = [
   '/style-guide',
@@ -58,7 +59,7 @@ describe('The Express router', () => {
     const authenticatedPathsArg = app.use.getCalls()
       .find(call => {
         return Array.isArray(call.args[0]) &&
-          call.args.includes(oldAuthorisationMiddleware)
+          (call.args.includes(oldAuthorisationMiddleware) || call.args.filter(arg => !!arg.name).map(arg => arg.name).includes(authorisationMiddlewareName))
       })
       .args[0]
     const authenticatedPaths = flattenPaths(authenticatedPathsArg)
@@ -73,10 +74,9 @@ describe('The Express router', () => {
         const path = call.args[0]
         return !pathsNotRequiringAuthentication.includes(path) &&
           !authenticatedPaths.includes(path) &&
-          !call.args.includes(oldAuthorisationMiddleware)
+          !(call.args.includes(oldAuthorisationMiddleware) || call.args.filter(arg => !!arg.name).map(arg => arg.name).includes(authorisationMiddlewareName))
       })
       .map(call => call.args[0])
-
     if (pathsMissingAuthorisation.length) {
       const pathsStr = Array.from(new Set(pathsMissingAuthorisation)).join('\n\t')
       throw new Error(`The authentication middleware is not called for the following paths:\n\t${pathsStr}`)

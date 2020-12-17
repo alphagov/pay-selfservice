@@ -14,6 +14,7 @@ const { CONNECTOR_URL } = process.env
 const { LEDGER_URL } = process.env
 const { STRIPE_PORT, STRIPE_HOST } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
 const DASHBOARD_RESPONSE = {
   payments: {
     count: 10,
@@ -29,9 +30,10 @@ let app
 
 const mockConnectorGetGatewayAccount = (paymentProvider, type) => {
   nock(CONNECTOR_URL)
-    .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+    .get(`/v1/api/accounts/external-id/${GATEWAY_ACCOUNT_EXTERNAL_ID}`)
     .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({
       gateway_account_id: GATEWAY_ACCOUNT_ID,
+      external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
       payment_provider: paymentProvider,
       type: type
     }).getPlain())
@@ -70,9 +72,11 @@ const mockStripeRetrieveAccount = (isChargesEnabled, currentDeadlineUnixDate) =>
     .persist()
 }
 
+const accountDashboardPath = paths.account.formatPathFor(paths.account.dashboard.index, GATEWAY_ACCOUNT_EXTERNAL_ID)
+
 const getDashboard = (testApp = app) => {
   return supertest(testApp)
-    .get(paths.account.dashboard.index)
+    .get(accountDashboardPath)
 }
 
 const mockLedgerGetTransactionsSummary = () => {
@@ -111,7 +115,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.account.dashboard.index)
+          .get(accountDashboardPath)
           .end((err, res) => {
             result = res
             $ = cheerio.load(res.text)
@@ -187,7 +191,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.account.dashboard.index)
+          .get(accountDashboardPath)
           .query({
             period: 'today'
           })
@@ -240,7 +244,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.account.dashboard.index)
+          .get(accountDashboardPath)
           .query({
             period: 'yesterday'
           })
@@ -293,7 +297,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.account.dashboard.index)
+          .get(accountDashboardPath)
           .query({
             period: 'previous-seven-days'
           })
@@ -346,7 +350,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.account.dashboard.index)
+          .get(accountDashboardPath)
           .query({
             period: 'previous-thirty-days'
           })
@@ -401,7 +405,7 @@ describe('dashboard-activity-controller', () => {
 
       before('Act', done => {
         supertest(app)
-          .get(paths.account.dashboard.index)
+          .get(accountDashboardPath)
           .end((err, res) => {
             result = res
             $ = cheerio.load(res.text)

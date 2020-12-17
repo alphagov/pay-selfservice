@@ -11,6 +11,7 @@ function validGatewayAccount (opts) {
   const gatewayAccount = {
     payment_provider: opts.payment_provider || 'sandbox',
     gateway_account_id: opts.gateway_account_id || 31,
+    external_id: opts.external_id || 'a-valid-external-id',
     allow_apple_pay: opts.allow_apple_pay || false,
     allow_google_pay: opts.allow_google_pay || false,
     service_name: opts.service_name || '8b9370c1a83c4d71a538a1691236acc2',

@@ -13,7 +13,7 @@ module.exports = (req, res) => {
     createPage: paths.prototyping.demoService.create,
     indexPage: paths.prototyping.demoService.index,
     linksPage: paths.prototyping.demoService.links,
-    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account && req.account.externalId)
+    dashboardLink: paths.account.formatPathFor(paths.account.dashboard.index, req.account && req.account.external_id)
   }
 
   productsClient.product.getByGatewayAccountId(authService.getCurrentGatewayAccountId(req))

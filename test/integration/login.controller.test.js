@@ -15,7 +15,7 @@ const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const userFixtures = require('../fixtures/user.fixtures')
 const { buildGetStripeAccountSetupResponse } = require('../fixtures/stripe-account-setup.fixtures')
 const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const paths = require('../../app/paths')
 const mockSession = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const loginController = require(path.join(__dirname, '/../../app/controllers/login'))
 const mockRes = require('../fixtures/response')
@@ -27,8 +27,8 @@ const expect = chai.expect
 
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const ACCOUNT_ID = '182364'
+const ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
 const USER_RESOURCE = '/v1/api/users'
-const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts'
 
 let user = mockSession.getUser()
 user.serviceRoles[0].service.gatewayAccountIds = [ACCOUNT_ID]
@@ -38,8 +38,8 @@ describe('The logged in endpoint', function () {
     const app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
     nock(CONNECTOR_URL)
-      .get(`/v1/frontend/accounts/${ACCOUNT_ID}`)
-      .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: ACCOUNT_ID }))
+      .get(`/v1/api/accounts/external-id/${ACCOUNT_EXTERNAL_ID}`)
+      .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: ACCOUNT_ID, external_id: ACCOUNT_EXTERNAL_ID }).getPlain())
     nock(CONNECTOR_URL)
       .get(`/v1/api/accounts/${ACCOUNT_ID}/stripe-setup`)
       .reply(200, buildGetStripeAccountSetupResponse({
@@ -64,7 +64,7 @@ describe('The logged in endpoint', function () {
       })
 
     request(app)
-      .get('/')
+      .get(paths.account.formatPathFor(paths.account.dashboard.index, ACCOUNT_EXTERNAL_ID))
       .expect(200)
       .expect(function (res) {
         assert(res.text.indexOf('Dashboard') !== -1)
@@ -78,15 +78,6 @@ describe('The logged in endpoint', function () {
       .get('/')
       .expect(302)
       .expect('Location', '/login')
-      .end(done)
-  })
-
-  it('should redirect to otp login if no otp', function (done) {
-    const app = mockSession.getAppWithSessionWithoutSecondFactor(getApp(), mockSession.getUser({ gateway_account_ids: [ACCOUNT_ID] }))
-    request(app)
-      .get('/')
-      .expect(302)
-      .expect('Location', '/otp-login')
       .end(done)
   })
 })
@@ -333,46 +324,22 @@ describe('direct login after user registration', function () {
       }]
     }).getPlain()
 
-    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
-      .reply(200, userResponse)
-
-    let connectorMock = nock(process.env.CONNECTOR_URL)
-    const ledgerMock = nock(process.env.LEDGER_URL)
-
-    connectorMock.get(`${CONNECTOR_ACCOUNT_PATH}/${gatewayAccountId}`)
-      .reply(200, { foo: 'bar', gateway_account_id: gatewayAccountId })
-
-    ledgerMock
-      .get('/v1/report/transactions-summary')
-      .query(() => true)
-      .reply(200, {
-        payments: {
-          count: 0,
-          gross_amount: 0
-        },
-        refunds: {
-          count: 0,
-          gross_amount: 0
-        },
-        net_income: 0
-      })
-
     let destroyStub = sinon.stub()
     let gatewayAccountData = {
       userExternalId: userExternalId,
       destroy: destroyStub
     }
 
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
+      .reply(200, userResponse)
+
     let app2 = mockSession.getAppWithRegisterInvitesCookie(getApp(), gatewayAccountData)
 
     request(app2)
       .get(paths.registerUser.logUserIn)
       .set('Accept', 'application/json')
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.name).to.equal(email)
-        expect(destroyStub.called).to.equal(true)
-      })
+      .expect(302)
+      .expect('Location', paths.serviceSwitcher.index)
       .end(done)
   })
 })

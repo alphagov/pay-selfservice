@@ -351,7 +351,7 @@ describe('auth service', function () {
       const req = _.cloneDeep(validRequest())
       auth.redirectLoggedInUser(req, response, next)
       expect(next.called).to.be.false // eslint-disable-line
-      assert(redirect.calledWith(paths.account.dashboard.index))
+      assert(redirect.calledWith(paths.serviceSwitcher.index))
       done()
     })
 
