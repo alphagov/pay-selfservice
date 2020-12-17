@@ -8,6 +8,7 @@ const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const auth = require('../../services/auth.service.js')
 const supportedLanguage = require('../../models/supported-language')
+const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 module.exports = async function createPaymentLink (req, res) {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
@@ -64,6 +65,19 @@ module.exports = async function createPaymentLink (req, res) {
     }
 
     await productsClient.product.create(productPayload)
+
+    const numberOfMetadataKeys = (metadata && Object.keys(metadata).length) || 0
+    const logContext = {
+      is_internal_user: req.user && req.user.internalUser,
+      product_external_id: req.params && req.params.productExternalId,
+      has_metadata: !!numberOfMetadataKeys,
+      number_of_metadata_keys: numberOfMetadataKeys
+    }
+    logContext[keys.GATEWAY_ACCOUNT_TYPE] = req.account && req.account.type
+    logContext[keys.GATEWAY_ACCOUNT_ID] = req.account && req.account.gateway_account_id
+    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
+
+    logger.info('Created payment link', logContext)
 
     lodash.unset(req, 'session.pageData.createPaymentLink')
     req.flash('createPaymentLinkSuccess', true)
