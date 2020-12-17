@@ -46,30 +46,19 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlat
 }
 
 function getService (user, serviceExternalId, gatewayAccount, correlationId) {
-  let service
-  const serviceRoles = _.get(user, 'serviceRoles', [])
-
-  if (serviceRoles.length > 0) {
-    if (serviceExternalId) {
-      service = _.get(serviceRoles.find(serviceRole => {
-        return (serviceRole.service.externalId === serviceExternalId &&
-          (!gatewayAccount || serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))))
-      }), 'service')
-    } else {
-      if (gatewayAccount) {
-        service = _.get(serviceRoles.find(serviceRole => {
-          return serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))
-        }), 'service')
-      }
-    }
-  }
-
-  if (service) {
-    // hasCardGatewayAccount is needed to show relevant message (card or directdebit or both) on merchant details page.
-    // Since it is only card currently supported, value is always 'true'
-    service.hasCardGatewayAccount = true
-    return service
-  }
+  return user.serviceRoles
+    .filter(serviceRole => {
+      return (serviceExternalId && serviceRole.service.externalId === serviceExternalId) ||
+        (gatewayAccount && serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id)))
+    })
+    .map(serviceRole => serviceRole.service)
+    .map(service => {
+      // hasCardGatewayAccount is needed to show relevant message (card or directdebit or both) on merchant details page.
+      // Since it is only card currently supported, value is always 'true'
+      service.hasCardGatewayAccount = true
+      return service
+    })
+    .shift()
 }
 
 module.exports = async function getServiceAndGatewayAccount (req, res, next) {
