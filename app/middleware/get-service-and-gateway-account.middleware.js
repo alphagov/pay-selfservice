@@ -3,8 +3,7 @@
 const _ = require('lodash')
 
 const logger = require('../utils/logger')(__filename)
-const paths = require('../../app/paths')
-const { NotFoundError } = require('../../app/errors')
+const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID } = require('../paths').keys
 const Connector = require('../services/clients/connector.client.js').ConnectorClient
 
 const { keys } = require('@govuk-pay/pay-js-commons').logging
@@ -34,15 +33,14 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlat
   } catch (err) {
     const logContext = {}
     logContext['error'] = err.message
+    logContext['error_code'] = err.errorCode
     logContext['GATEWAY_ACCOUNT_EXTERNAL_ID'] = gatewayAccountExternalId
     logContext[keys.CORRELATION_ID] = correlationId
 
     if (err.errorCode === 404) {
       logger.info('Gateway account not found', logContext)
-      throw new NotFoundError('Gateway account not found')
     } else {
-      logger.error('Error when attempting to retrieve gateway account', logContext)
-      throw new Error('Error retrieving Gateway account')
+      logger.error('Error retrieving gateway account', logContext)
     }
   }
 }
@@ -71,47 +69,35 @@ function getService (user, serviceExternalId, gatewayAccount, correlationId) {
     // Since it is only card currently supported, value is always 'true'
     service.hasCardGatewayAccount = true
     return service
-  } else {
-    const logContext = {}
-    logContext[keys.USER_EXTERNAL_ID] = user.externalId
-    logContext[keys.SERVICE_EXTERNAL_ID] = serviceExternalId
-    if (gatewayAccount) {
-      logContext[keys.GATEWAY_ACCOUNT_ID] = gatewayAccount.gateway_account_id
-    }
-    logContext[keys.CORRELATION_ID] = correlationId
-    logger.info('Service not found for user', logContext)
-    throw new NotFoundError('Service not found for user')
   }
 }
 
-module.exports = async function (req, res, next) {
+module.exports = async function getServiceAndGatewayAccount (req, res, next) {
   try {
-    const correlationId = req.correlationId
-    const serviceExternalId = req.params[paths.keys.SERVICE_EXTERNAL_ID]
-    const gatewayAccountExternalId = req.params[paths.keys.GATEWAY_ACCOUNT_EXTERNAL_ID]
+    if (req.user) {
+      const correlationId = req.correlationId
+      const serviceExternalId = req.params[SERVICE_EXTERNAL_ID]
+      const gatewayAccountExternalId = req.params[GATEWAY_ACCOUNT_EXTERNAL_ID]
 
-    if (!serviceExternalId && !gatewayAccountExternalId) {
-      const logContext = {}
-      logContext[keys.CORRELATION_ID] = correlationId
-      logger.info('Could not resolve gateway account external ID or service external ID from request params')
-      throw new Error('Could not resolve gateway account external ID or service external ID from request params')
-    }
-
-    let gatewayAccount
-    if (gatewayAccountExternalId) {
-      gatewayAccount = await getGatewayAccountByExternalId(gatewayAccountExternalId, correlationId)
-      if (gatewayAccount) {
-        req.account = gatewayAccount
-        // TODO: To be removed once URLs are updated to use the format /service/:serviceExternalId/account/:gatewayAccountExternalId/xxx.
-        // Currently authService.getCurrentGatewayAccountId() sets below if account is available on session or derives one from user services.
-        req.gateway_account = { currentGatewayAccountId: gatewayAccount.gateway_account_id }
+      if (!serviceExternalId && !gatewayAccountExternalId) {
+        throw new Error('Could not resolve gateway account external ID or service external ID from request params')
       }
+
+      let gatewayAccount
+      if (gatewayAccountExternalId) {
+        gatewayAccount = await getGatewayAccountByExternalId(gatewayAccountExternalId, correlationId)
+        if (gatewayAccount) {
+          req.account = gatewayAccount
+          // TODO: To be removed once URLs are updated to use the format /service/:serviceExternalId/account/:gatewayAccountExternalId/xxx.
+          // Currently authService.getCurrentGatewayAccountId() sets below if account is available on session or derives one from user services.
+          req.gateway_account = { currentGatewayAccountId: gatewayAccount.gateway_account_id }
+        }
+      }
+
+      // uses req.user object which is set by passport (auth.service.js) and has all user services information to find service by serviceExternalId or gatewayAccountId.
+      // A separate API call to adminusers to find service makes it independent of user object but most of tests setup currently relies on req.user
+      req.service = getService(req.user, serviceExternalId, gatewayAccount, correlationId)
     }
-
-    // uses req.user object which is set by passport (auth.service.js) and has all user services information to find service by serviceExternalId or gatewayAccountId.
-    // A separate API call to adminusers to find service makes it independent of user object but most of tests setup currently relies on req.user
-    req.service = getService(req.user, serviceExternalId, gatewayAccount, correlationId)
-
     next()
   } catch (err) {
     next(err)
