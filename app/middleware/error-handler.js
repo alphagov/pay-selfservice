@@ -6,6 +6,7 @@ const {
   NotAuthenticatedError,
   UserAccountDisabledError,
   NotAuthorisedError,
+  PermissionDeniedError,
   NotFoundError
 } = require('../errors')
 const paths = require('../paths')
@@ -45,6 +46,11 @@ module.exports = function errorHandler (err, req, res, next) {
 
   if (err instanceof NotAuthorisedError) {
     logger.info(`NotAuthorisedError handled: ${err.message}. Rendering error page`, logContext)
+    return renderErrorView(req, res, 'You do not have the rights to access this service.', 403)
+  }
+
+  if (err instanceof PermissionDeniedError) {
+    logger.info(`PermissionDeniedError handled: ${err.message}. Rendering error page`, logContext)
     return renderErrorView(req, res, 'You do not have the administrator rights to perform this operation.', 403)
   }
 
