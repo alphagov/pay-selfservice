@@ -31,6 +31,15 @@ const gatewayAccountType = req => {
 
 // This middleware resolves the current service in context
 module.exports = (req, res, next) => {
+  if (req.service) {
+    // Skip running this middleware if the service has already been resolved. This is because
+    // the ./permissions.js middleware also returns this middleware. We are changing to a different
+    // middleware to resolve the service as part of 
+    // https://payments-platform.atlassian.net/browse/PP-7520 so this is to enable that switchover
+    // while it is in progress. We can remove the resolve-service middleware when this is done.
+    return next()
+  }
+
   const { externalServiceId } = req.params
   const gatewayAccountId = _.get(req, 'gateway_account.currentGatewayAccountId')
 
