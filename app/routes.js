@@ -131,6 +131,8 @@ module.exports.bind = function (app) {
 
   app.all(lockOutDisabledUsers) // On all requests, if there is a user, and its disabled, lock out.
 
+  app.get('/', userIsAuthorised, authorisedRedirectHome)
+
   // ----------------------
   // UNAUTHENTICATED ROUTES
   // ----------------------
@@ -527,21 +529,11 @@ module.exports.bind = function (app) {
     userPhoneNumberController.post
   )
 
-  // app.get(account.dashboard.index, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardController.dashboardActivity)
-
   const account = new Router({ mergeParams: true })
 
-  // @TODO(sfount) what do we do if the route isn't authorised - this is likely the case for the util that checks if
-  // a certain flag is set to figure out if it should direct us to the account dashboard or my services
-  // IF the flag isn't set - continue to the dashboard as well as possible (check for an ID on the session etc.), this might need some polyfill and fetching with IDs vs. external IDs
-  // IF the flag is set - that means we're okay to try out the my services as the default page, redirect to that page
-  // in a future PR/ story this could be transitioned from feature flag to `req.user` default page setting
-  app.get('/', userIsAuthorised(), authorisedRedirectHome)
-  // all account specific routes with ensure request data is fetched and is
-  // consistent
-  account.use(getServiceAndAccount)
+  account.use(getServiceAndAccount, userIsAuthorised)
 
-  account.get(paths.account.dashboard.index, userIsAuthorised(), controllers.dashboard)
+  account.get(paths.account.dashboard.index, controllers.dashboard)
 
   app.use(paths.account.root, account)
 
@@ -558,7 +550,7 @@ function authorisedRedirectHome (req, res) {
     (req.account && req.account.external_id) ||
     (req.gateway_account && req.gateway_account.currentGatewayAccountExternalId)
 
-  // in the future this could be replaced with a "Default home page" setting on the `req.user`
+  // @TODO(sfount) replace future flag with a "Default home page" setting on the `req.user`
   if (accountExternalId && !process.env.FUTURE_ADMIN_TOOL_LANDING_PAGE_STRATEGY) {
     res.redirect(paths.account.formatPathFor(paths.account.dashboard.index, accountExternalId))
   } else {
