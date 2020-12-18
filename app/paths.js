@@ -3,10 +3,18 @@
 const generateRoute = require('./utils/generate-route')
 const formattedPathFor = require('./utils/replace-params-in-path')
 
+const keys = {
+  SERVICE_EXTERNAL_ID: 'serviceExternalId',
+  GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId'
+}
+
 module.exports = {
-  keys: {
-    SERVICE_EXTERNAL_ID: 'serviceExternalId',
-    GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId'
+  keys,
+  account: {
+    root: `/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
+    toggleBillingAddress: {
+      index: '/billing-address'
+    }
   },
   transactions: {
     index: '/transactions',
@@ -127,9 +135,6 @@ module.exports = {
   toggleMotoMaskCardNumberAndSecurityCode: {
     cardNumber: '/moto-hide-card-number',
     securityCode: '/moto-hide-security-code'
-  },
-  toggleBillingAddress: {
-    index: '/billing-address'
   },
   healthcheck: {
     path: '/healthcheck'

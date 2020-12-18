@@ -4,7 +4,8 @@ const lodash = require('lodash')
 
 const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response')
-const router = require('../../routes')
+const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { renderErrorView } = require('../../utils/response')
 const serviceService = require('../../services/service.service')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header')
@@ -29,7 +30,7 @@ const postIndex = async (req, res) => {
       req.flash('generic', 'Billing address is turned off for this service')
     }
     logger.info(`[${correlationId}] - Updated collect billing address enabled(${req.body['billing-address-toggle']}). user=${req.session.passport.user}`)
-    res.redirect(router.paths.toggleBillingAddress.index)
+    res.redirect(formatAccountPathsFor(paths.account.toggleBillingAddress.index, req.account && req.account.external_id))
   } catch (error) {
     renderErrorView(req, res, error.message)
   }
