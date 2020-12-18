@@ -22,6 +22,16 @@ describe('Your PSP settings page', () => {
     issuer: '5bd9e0e4444dce153428c940',
     jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0'
   }
+  const testInvalidFlexCredentials = {
+    organisational_unit_id: '5bd9b55e4444761ac0af1c81',
+    issuer: '5bd9e0e4444dce153428c941',
+    jwt_mac_key: 'ffffffff-aaaa-1111-1111-52805d5cd9e1'
+  }
+  const testFailureFlexCredentials = {
+    organisational_unit_id: '5bd9b55e4444761ac0af1c82',
+    issuer: '5bd9e0e4444dce153428c942',
+    jwt_mac_key: 'ffffffff-ffff-ffff-ffff-ffffffffffff'
+  }
 
   function setupYourPspStubs (opts = {}) {
     let stubs = []
@@ -57,7 +67,23 @@ describe('Your PSP settings page', () => {
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
     const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentials({ gatewayAccountId, testCredentials })
     const patchIntegrationVersion3ds = gatewayAccountStubs.patchIntegrationVersion3ds({ integrationVersion3ds: opts.integrationVersion3ds })
-    stubs.push(user, gatewayAccount, card, patchUpdateCredentials, patchIntegrationVersion3ds)
+    const postCheckWorldpay3dsFlexCredentialsReturnsValid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
+      gatewayAccountId: gatewayAccountId,
+      shouldReturnValid: true
+    })
+    const postCheckWorldpay3dsFlexCredentialsReturnsInvalid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
+      gatewayAccountId: gatewayAccountId,
+      shouldReturnValid: false
+    })
+    const postCheckWorldpay3dsFlexCredentialsFails = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsFailure({
+      gatewayAccountId: gatewayAccountId,
+      organisational_unit_id: testFailureFlexCredentials.organisational_unit_id,
+      issuer: testFailureFlexCredentials.issuer,
+      jwt_mac_key: testFailureFlexCredentials.jwt_mac_key
+    })
+    stubs.push(user, gatewayAccount, card, patchUpdateCredentials, patchIntegrationVersion3ds,
+      postCheckWorldpay3dsFlexCredentialsReturnsValid, postCheckWorldpay3dsFlexCredentialsReturnsInvalid,
+      postCheckWorldpay3dsFlexCredentialsFails)
 
     cy.task('setupStubs', stubs)
   }
@@ -131,6 +157,46 @@ describe('Your PSP settings page', () => {
       cy.get('#submitFlexCredentials').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/your-psp`)
+      })
+    })
+
+    it('should not allow invalid 3DS Flex credentials to be saved', () => {
+      cy.get('#flex-credentials-change-link').click()
+      cy.get('#organisational-unit-id').type(testInvalidFlexCredentials.organisational_unit_id)
+      cy.get('#issuer').type(testInvalidFlexCredentials.issuer)
+      cy.get('#jwt-mac-key').type(testInvalidFlexCredentials.jwt_mac_key)
+      cy.get('#submitFlexCredentials').click()
+      cy.title().should('eq', 'Error: Your PSP - Purchase a positron projection permit Worldpay test - GOV.UK Pay')
+      cy.get('.govuk-error-summary').contains('There is a problem')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Organisational unit ID may not be correct')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#organisational-unit-id')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('contain', 'Issuer may not be correct')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('have.attr', 'href', '#issuer')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(3) > a').should('contain', 'JWT MAC key may not be correct')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(3) > a').should('have.attr', 'href', '#jwt-mac-key')
+      cy.get('input#organisational-unit-id').should('have.class', 'govuk-input--error')
+      cy.get('#organisational-unit-id-error').should('contain', 'Enter your organisational unit ID in the format you received it')
+      cy.get('input#issuer').should('have.class', 'govuk-input--error')
+      cy.get('#issuer-error').should('contain', 'Enter your issuer in the format you received it')
+      cy.get('input#jwt-mac-key').should('have.class', 'govuk-input--error')
+      cy.get('#jwt-mac-key-error').should('contain', 'Enter your JWT MAC key in the format you received it')
+      cy.get('#organisational-unit-id').should('have.value', testInvalidFlexCredentials.organisational_unit_id)
+      cy.get('#issuer').should('have.value', testInvalidFlexCredentials.issuer)
+      cy.get('#jwt-mac-key').should('have.value', '')
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/your-psp/flex`)
+      })
+    })
+
+    it('should display generic problem page when checking 3DS Flex credentials fails', () => {
+      cy.get('#organisational-unit-id').clear().type(testFailureFlexCredentials.organisational_unit_id)
+      cy.get('#issuer').clear().type(testFailureFlexCredentials.issuer)
+      cy.get('#jwt-mac-key').type(testFailureFlexCredentials.jwt_mac_key)
+      cy.get('#submitFlexCredentials').click()
+      cy.get('h1').should('contain', 'An error occurred:')
+      cy.get('#errorMsg').should('contain', 'Please try again or contact support team.')
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/your-psp/flex`)
       })
     })
   })

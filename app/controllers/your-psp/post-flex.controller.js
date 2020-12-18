@@ -6,6 +6,7 @@ const paths = require('../../paths')
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
+const { validationErrors } = require('../../browsered/field-validation-checks')
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
 
 // Constants
@@ -43,6 +44,22 @@ module.exports = async (req, res) => {
         organisational_unit_id: orgUnitId,
         issuer: issuer,
         jwt_mac_key: jwtMacKey
+      }
+    }
+
+    let response = await connector.postCheckWorldpay3dsFlexCredentials(flexParams)
+    if (response.result === 'invalid') {
+      errors[ORGANISATIONAL_UNIT_ID_FIELD] = validationErrors.invalidWorldpay3dsFlexOrgUnitId
+      errors[ISSUER_FIELD] = validationErrors.invalidWorldpay3dsFlexIssuer
+      errors[JWT_MAC_KEY_FIELD] = validationErrors.invalidWorldpay3dsFlexJwtMacKey
+
+      if (!lodash.isEmpty(errors)) {
+        lodash.set(req, 'session.pageData.worldpay3dsFlex', {
+          errors: errors,
+          orgUnitId: orgUnitId,
+          issuer: issuer
+        })
+        return res.redirect(303, paths.yourPsp.flex)
       }
     }
 

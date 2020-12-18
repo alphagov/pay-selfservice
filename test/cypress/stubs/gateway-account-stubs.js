@@ -205,6 +205,28 @@ const patchUpdateFlexCredentials = function (opts) {
   }
 }
 
+const postCheckWorldpay3dsFlexCredentials = function (opts) {
+  return {
+    name: 'postCheckWorldpay3dsFlexCredentials',
+    opts: {
+      gateway_account_id: opts.gatewayAccountId,
+      shouldReturnValid: opts.shouldReturnValid
+    }
+  }
+}
+
+const postCheckWorldpay3dsFlexCredentialsFailure = function (opts) {
+  return {
+    name: 'postCheckWorldpay3dsFlexCredentialsFailure',
+    opts: {
+      gateway_account_id: opts.gatewayAccountId,
+      organisational_unit_id: opts.organisational_unit_id,
+      issuer: opts.issuer,
+      jwt_mac_key: opts.jwt_mac_key
+    }
+  }
+}
+
 module.exports = {
   getAccountAuthSuccess,
   getGatewayAccountSuccess,
@@ -221,5 +243,7 @@ module.exports = {
   patchUpdateCredentials,
   patchUpdateFlexCredentials,
   patchUpdateMotoMaskCardNumber,
-  patchUpdateMotoMaskSecurityCode
+  patchUpdateMotoMaskSecurityCode,
+  postCheckWorldpay3dsFlexCredentials,
+  postCheckWorldpay3dsFlexCredentialsFailure
 }

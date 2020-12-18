@@ -1,6 +1,9 @@
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
+  {% if errors %}
+    Error:
+  {% endif %}
   Your PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
@@ -18,7 +21,7 @@
 
           {% if errors['organisational-unit-id'] %}
             {% set errorList = (errorList.push({
-              text: 'Organisational unit ID',
+              text: 'Organisational unit ID may not be correct',
               href: '#organisational-unit-id'
             }), errorList) %}
             {% set orgUnitIdError = {
@@ -28,7 +31,7 @@
 
           {% if errors['issuer'] %}
             {% set errorList = (errorList.push({
-              text: 'Issuer',
+              text: 'Issuer may not be correct',
               href: '#issuer'
             }), errorList) %}
             {% set issuerError = {
@@ -38,7 +41,7 @@
 
           {% if errors['jwt-mac-key'] %}
             {% set errorList = (errorList.push({
-              text: 'JWT MAC key',
+              text: 'JWT MAC key may not be correct',
               href: '#jwt-mac-key'
             }), errorList) %}
             {% set jwtMacKeyError = {
@@ -47,7 +50,7 @@
           {% endif %}
 
           {{ govukErrorSummary({
-            titleText: 'There was a problem with the details you gave for:',
+            titleText: 'There is a problem',
             errorList: errorList
           }) }}
         {% endif %}

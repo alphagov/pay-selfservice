@@ -16,6 +16,7 @@ const goCardlessConnectFixtures = require('../../fixtures/go-cardless-connect.fi
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
 const inviteFixtures = require('../../fixtures/invite.fixtures')
 const tokenFixtures = require('../../fixtures/token.fixtures')
+const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
 
 const simpleStubBuilder = function simpleStubBuilder (method, path, responseCode, additionalParams = {}) {
   const request = {
@@ -558,6 +559,26 @@ module.exports = {
     const path = '/v1/api/products'
     return simpleStubBuilder('POST', path, 200, {
       response: productFixtures.validProductResponse(opts).getPlain()
+    })
+  },
+  postCheckWorldpay3dsFlexCredentials: (opts = {}) => {
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/worldpay/check-3ds-flex-config`
+    if (opts.shouldReturnValid) {
+      return simpleStubBuilder('POST', path, 200, {
+        request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest().getPlain().payload,
+        response: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse().getPlain()
+      })
+    } else {
+      return simpleStubBuilder('POST', path, 200, {
+        request: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsRequest().getPlain().payload,
+        response: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsResponse().getPlain()
+      })
+    }
+  },
+  postCheckWorldpay3dsFlexCredentialsFailure: (opts = {}) => {
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/worldpay/check-3ds-flex-config`
+    return simpleStubBuilder('POST', path, 500, {
+      request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest(opts).getPlain().payload
     })
   }
 }
