@@ -328,8 +328,6 @@ module.exports.bind = function (app) {
   app.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, xraySegmentCls, permission('moto-mask-input:read'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.get)
   app.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, xraySegmentCls, permission('moto-mask-input:update'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.post)
 
-  // app.get(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:read'), getAccount, paymentMethodIsCard, toggleBillingAddressController.getIndex)
-  // app.post(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:update'), getAccount, paymentMethodIsCard, toggleBillingAddressController.postIndex)
   account.get(billingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
   account.post(billingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
 
@@ -534,6 +532,9 @@ module.exports.bind = function (app) {
   app.use(paths.account.root, account)
 
   app.all('*', (req, res) => {
+    logger.info('Page not found', {
+      url: req.originalUrl
+    })
     res.status(404)
     res.render('404')
   })
