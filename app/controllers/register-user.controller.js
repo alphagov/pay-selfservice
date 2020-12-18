@@ -24,13 +24,11 @@ const handleError = (req, res, err) => {
 
   switch (err.errorCode) {
     case 404:
-      renderErrorView(req, res, messages.missingCookie, 404)
-      break
+      return renderErrorView(req, res, messages.missingCookie, 404)
     case 410:
-      renderErrorView(req, res, messages.linkExpired, 410)
-      break
+      return renderErrorView(req, res, messages.linkExpired, 410)
     default:
-      renderErrorView(req, res, messages.missingCookie, 500)
+      return renderErrorView(req, res, messages.missingCookie, 500)
   }
 }
 
@@ -71,7 +69,7 @@ const subscribeService = async function subscribeService (req, res) {
     const completeResponse = await registrationService.completeInvite(inviteCode, correlationId)
     return res.redirect(303, `${paths.serviceSwitcher.index}?s=${completeResponse.service_external_id}`)
   } catch (err) {
-    handleError(req, res, err)
+    return handleError(req, res, err)
   }
 }
 
@@ -111,9 +109,9 @@ const submitRegistration = async function submitRegistration (req, res) {
   try {
     await registrationService.submitRegistration(sessionData.code, telephoneNumber, password, correlationId)
     sessionData.telephone_number = telephoneNumber
-    res.redirect(303, paths.registerUser.otpVerify)
+    return res.redirect(303, paths.registerUser.otpVerify)
   } catch (err) {
-    handleError(req, res, err)
+    return handleError(req, res, err)
   }
 }
 
@@ -157,13 +155,13 @@ const submitOtpVerify = async function submitOtpVerify (req, res) {
         verificationCode: validOtp.message
       }
     }
-    res.redirect(303, paths.registerUser.otpVerify)
+    return res.redirect(303, paths.registerUser.otpVerify)
   }
 
   try {
     const user = await registrationService.verifyOtpAndCreateUser(sessionData.code, verificationCode, correlationId)
     loginController.setupDirectLoginAfterRegister(req, res, user.external_id)
-    res.redirect(303, paths.registerUser.logUserIn)
+    return res.redirect(303, paths.registerUser.logUserIn)
   } catch (err) {
     if (err.errorCode && err.errorCode === 401) {
       sessionData.recovered = {
@@ -171,9 +169,9 @@ const submitOtpVerify = async function submitOtpVerify (req, res) {
           verificationCode: 'The verification code you’ve used is incorrect or has expired'
         }
       }
-      res.redirect(303, paths.registerUser.otpVerify)
+      return res.redirect(303, paths.registerUser.otpVerify)
     } else {
-      handleError(req, res, err)
+      return handleError(req, res, err)
     }
   }
 }
@@ -226,9 +224,9 @@ const submitReVerifyPhone = async function submitReVerifyPhone (req, res) {
   try {
     await registrationService.resendOtpCode(sessionData.code, telephoneNumber, correlationId)
     sessionData.telephone_number = telephoneNumber
-    res.redirect(303, paths.registerUser.otpVerify)
+    return res.redirect(303, paths.registerUser.otpVerify)
   } catch (err) {
-    handleError(req, res, err)
+    return handleError(req, res, err)
   }
 }
 
