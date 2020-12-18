@@ -270,10 +270,6 @@ module.exports.bind = function (app) {
   app.post(apiKeys.revoke, xraySegmentCls, permission('tokens:delete'), getAccount, apiKeysController.postRevoke)
   app.post(apiKeys.update, xraySegmentCls, permission('tokens:update'), getAccount, apiKeysController.postUpdate)
 
-  // PAYMENT TYPES
-  app.get(pt.index, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesController.getIndex)
-  app.post(pt.index, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesController.postIndex)
-
   // DIGITAL WALLET
   app.get(digitalWallet.applePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getApplePay)
   app.post(digitalWallet.applePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postApplePay)
@@ -534,6 +530,10 @@ module.exports.bind = function (app) {
   account.use(getServiceAndAccount, userIsAuthorised)
 
   account.get(paths.account.dashboard.index, controllers.dashboard)
+
+  // PAYMENT TYPES
+  account.get(pt.index, permission('payment-types:read'), paymentTypesController.getIndex)
+  account.post(pt.index, permission('payment-types:update'), paymentTypesController.postIndex)
 
   app.use(paths.account.root, account)
 

@@ -13,7 +13,7 @@ describe('Go live link on dashboard', () => {
   describe('Card gateway account', () => {
     describe('Go live link shown', () => {
       beforeEach(() => {
-        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
+        utils.setupGetUserAndGatewayAccountsStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
         cy.visit('/')
       })
 

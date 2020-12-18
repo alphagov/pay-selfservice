@@ -38,6 +38,13 @@ const getUserAndGatewayAccountStubs = (serviceRole) => {
   ]
 }
 
+const getUserAndGatewayAccountsStubs = (serviceRole) => {
+  return [
+    userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: variables.gatewayAccountId })
+  ]
+}
+
 const patchUpdateGoLiveStageSuccessStub = (currentGoLiveStage) => {
   return serviceStubs.patchUpdateServiceGoLiveStageSuccess({
     serviceExternalId: variables.serviceExternalId,
@@ -65,6 +72,10 @@ const setupGetUserAndGatewayAccountStubs = (serviceRole) => {
   cy.task('setupStubs', getUserAndGatewayAccountStubs(serviceRole))
 }
 
+const setupGetUserAndGatewayAccountsStubs = (serviceRole) => {
+  cy.task('setupStubs', getUserAndGatewayAccountsStubs(serviceRole))
+}
+
 module.exports = {
   variables,
   buildServiceRoleForGoLiveStage,
@@ -73,5 +84,6 @@ module.exports = {
   patchUpdateGoLiveStageSuccessStub,
   patchUpdateGoLiveStageErrorStub,
   patchUpdateServiceSuccessCatchAllStub,
-  setupGetUserAndGatewayAccountStubs
+  setupGetUserAndGatewayAccountStubs,
+  setupGetUserAndGatewayAccountsStubs
 }
