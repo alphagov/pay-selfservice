@@ -9,12 +9,14 @@ const csrf = require('csrf')
 const mockSession = require('../../../test-helpers/mock-session.js')
 const getApp = require('../../../../server.js').getApp
 const userFixtures = require('../../../fixtures/user.fixtures')
-const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
+const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
 const paths = require('../../../../app/paths.js')
+const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
 // Constants
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
+const connectorMock = nock(process.env.CONNECTOR_URL)
 const USER_RESOURCE = '/v1/api/users'
 const SERVICES_RESOURCE = '/v1/api/services'
 let response, user, $
@@ -25,6 +27,8 @@ describe('Toggle billing address collection controller', () => {
   })
   const EXTERNAL_ID_IN_SESSION = 'exsfjpwoi34op23i4'
   const EXTERNAL_SERVICE_ID = 'dsfkbskjalksjdlk342'
+  const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
+  const toggleBillingAddressPath = formatAccountPathsFor(paths.account.toggleBillingAddress.index, EXTERNAL_GATEWAY_ACCOUNT_ID)
 
   const buildUserWithCollectBillingAddress = (collectBillingAddress) => {
     return userFixtures.validUserResponse({
@@ -40,11 +44,13 @@ describe('Toggle billing address collection controller', () => {
   describe('should get index with billing address on', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(true)
+      connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
-        .get(formattedPathFor(paths.toggleBillingAddress.index, EXTERNAL_SERVICE_ID))
+        .get(toggleBillingAddressPath)
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -62,11 +68,13 @@ describe('Toggle billing address collection controller', () => {
   describe('should get index with billing address off', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(false)
+      connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
-        .get(formattedPathFor(paths.toggleBillingAddress.index, EXTERNAL_SERVICE_ID))
+        .get(toggleBillingAddressPath)
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -84,6 +92,8 @@ describe('Toggle billing address collection controller', () => {
   describe('should redirect to index on enable billing address', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(true)
+      connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
@@ -93,7 +103,7 @@ describe('Toggle billing address collection controller', () => {
 
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
-        .post(paths.toggleBillingAddress.index)
+        .post(toggleBillingAddressPath)
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'a-request-id')
         .send({
@@ -110,12 +120,14 @@ describe('Toggle billing address collection controller', () => {
       expect(response.statusCode).to.equal(302)
     })
     it('should redirect to the index page', () => {
-      expect(response.headers).to.have.property('location').to.equal(paths.toggleBillingAddress.index)
+      expect(response.headers).to.have.property('location').to.equal(toggleBillingAddressPath)
     })
   })
   describe('should redirect to index on disable billing address', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(false)
+      connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
@@ -125,7 +137,7 @@ describe('Toggle billing address collection controller', () => {
 
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
-        .post(paths.toggleBillingAddress.index)
+        .post(toggleBillingAddressPath)
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'a-request-id')
         .send({
@@ -142,7 +154,7 @@ describe('Toggle billing address collection controller', () => {
       expect(response.statusCode).to.equal(302)
     })
     it('should redirect to the index page', () => {
-      expect(response.headers).to.have.property('location').to.equal(paths.toggleBillingAddress.index)
+      expect(response.headers).to.have.property('location').to.equal(toggleBillingAddressPath)
     })
   })
 })

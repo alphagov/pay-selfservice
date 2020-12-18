@@ -1,5 +1,6 @@
 'use strict'
 
+const { Router } = require('express')
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
 const { getNamespace, createNamespace } = require('continuation-local-storage')
@@ -8,6 +9,9 @@ const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate-route')
 const paths = require('./paths.js')
+
+const userIsAuthorised = require('./middleware/user-is-authorised')
+const getServiceAndAccount = require('./middleware/get-service-and-gateway-account.middleware')
 
 // Middleware
 const { lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
@@ -90,9 +94,10 @@ const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
+  partnerApp, requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
+const { toggleBillingAddress: billingAddress } = paths.account
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -102,6 +107,9 @@ module.exports.paths = paths
 const clsXrayConfig = require('../config/xray-cls')
 
 module.exports.bind = function (app) {
+  const account = new Router({ mergeParams: true })
+  account.use(getServiceAndAccount, userIsAuthorised)
+
   AWSXRay.enableManualMode()
   AWSXRay.setLogger(logger)
   AWSXRay.middleware.setSamplingRules('aws-xray.rules')
@@ -320,9 +328,8 @@ module.exports.bind = function (app) {
   app.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, xraySegmentCls, permission('moto-mask-input:read'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.get)
   app.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, xraySegmentCls, permission('moto-mask-input:update'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.post)
 
-  // BILLING ADDRESS TOGGLE
-  app.get(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:read'), getAccount, paymentMethodIsCard, toggleBillingAddressController.getIndex)
-  app.post(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:update'), getAccount, paymentMethodIsCard, toggleBillingAddressController.postIndex)
+  account.get(billingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
+  account.post(billingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
 
   // Prototyping
   app.get(prototyping.demoService.index, xraySegmentCls, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsersController.index)
@@ -522,7 +529,12 @@ module.exports.bind = function (app) {
     userPhoneNumberController.post
   )
 
+  app.use(paths.account.root, account)
+
   app.all('*', (req, res) => {
+    logger.info('Page not found', {
+      url: req.originalUrl
+    })
     res.status(404)
     res.render('404')
   })

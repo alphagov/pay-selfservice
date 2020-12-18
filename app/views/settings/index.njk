@@ -121,7 +121,7 @@
               classes: 'govuk-!-width-one-quarter',
               items: [
                 {
-                  href: routes.toggleBillingAddress.index,
+                  href: formatAccountPathsFor(routes.account.toggleBillingAddress.index, currentGatewayAccount.external_id),
                   classes: 'govuk-link--no-visited-state',
                   text: 'Change' if permissions.toggle_billing_address_update else 'View',
                   visuallyHiddenText: 'collect billing address settings'
@@ -207,7 +207,7 @@
       })
     }}
     <p class="govuk-body"><a class="govuk-link" href="{{routes.emailNotifications.index}}" id="templates-link">See templates and add a custom paragraph.</a></p>
-    
+
     {% if allowMoto %}
       <h1 id="moto-mask-security-settings-heading" class="govuk-heading-m govuk-!-margin-top-8">Security</h1>
       <p class="govuk-body">Hide sensitive details being viewed on a call agent’s screen.</p>
@@ -261,6 +261,6 @@
           ]
         })
       }}
-    {% endif %} 
+    {% endif %}
   </div>
 {% endblock %}

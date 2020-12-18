@@ -24,6 +24,7 @@ const logger = require('./app/utils/logger')(__filename)
 const loggingMiddleware = require('./app/middleware/logging-middleware')
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 const formatPSPname = require('./app/utils/format-PSP-name')
+const formatAccountPathsFor = require('./app/utils/format-account-paths-for')
 
 // Global constants
 const port = (process.env.PORT || 3000)
@@ -54,6 +55,7 @@ function initialiseGlobalMiddleware (app) {
   app.use(function (req, res, next) {
     res.locals.asset_path = '/public/'
     res.locals.routes = router.paths
+    res.locals.formatAccountPathsFor = formatAccountPathsFor
     res.locals.analyticsTrackingId = ANALYTICS_TRACKING_ID
     noCache(res)
     next()
