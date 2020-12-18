@@ -140,6 +140,12 @@ module.exports = {
       response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
     })
   },
+  getGatewayAccountByExternalIdSuccess: (opts = {}) => {
+    const path = '/v1/api/accounts/external-id/' + opts.external_id
+    return simpleStubBuilder('GET', path, 200, {
+      response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
+    })
+  },
   getGatewayAccountSuccessRepeat: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0]).getPlain()
     const aDifferentValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[1]).getPlain()

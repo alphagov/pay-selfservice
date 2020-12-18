@@ -2,6 +2,7 @@
 
 const _ = require('lodash')
 const paths = require('./../paths')
+const formatAccountPathsFor = require('./format-account-paths-for')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
 
@@ -55,7 +56,9 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
   return navigationItems
 }
 
-const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) => {
+const adminNavigationItems = (originalUrl, permissions, type, paymentProvider, account = {}) => {
+  const paymentTypesPath = formatAccountPathsFor(paths.paymentTypes.index, account.external_id)
+
   return [
     {
       id: 'navigation-menu-settings-home',
@@ -81,8 +84,8 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
     {
       id: 'navigation-menu-payment-types',
       name: 'Card types',
-      url: paths.paymentTypes.index,
-      current: pathLookup(originalUrl, paths.paymentTypes.index) || pathLookup(originalUrl, paths.digitalWallet.summary),
+      url: paymentTypesPath,
+      current: pathLookup(originalUrl, paymentTypesPath) || pathLookup(originalUrl, paths.digitalWallet.summary),
       permissions: permissions.payment_types_read && type === 'card'
     }
   ]

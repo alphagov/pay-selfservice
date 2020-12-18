@@ -1,10 +1,10 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
-function setupStubs (userExternalId, gatewayAccountId, serviceName, updated = false) {
+function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, updated = false) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
     gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated }),
     gatewayAccountStubs.getCardTypesSuccess()
   ])
@@ -12,7 +12,8 @@ function setupStubs (userExternalId, gatewayAccountId, serviceName, updated = fa
 
 describe('Payment types', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = 42
+  const gatewayAccountId = '42'
+  const gatewayAccountExternalId = 'a-valid-external-id'
   const serviceName = 'Purchase a positron projection permit'
 
   beforeEach(() => {
@@ -21,12 +22,12 @@ describe('Payment types', () => {
 
   describe('Card types', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName)
+      setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
     })
 
     it('should show page title', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/payment-types')
+      cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
       cy.title().should('eq', `Manage payment types - ${serviceName} - GOV.UK Pay`)
     })
     it('should show accepted debit cards', () => {
@@ -52,7 +53,7 @@ describe('Payment types', () => {
 
   describe('Card types', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName, true)
+      setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, true)
     })
 
     it('should update if we add Diners Club', () => {
@@ -65,7 +66,7 @@ describe('Payment types', () => {
 
   describe('Card types', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName)
+      setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
     })
 
     it('should show error if user tries to disable all card types', () => {
