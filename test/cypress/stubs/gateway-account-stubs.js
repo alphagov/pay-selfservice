@@ -1,6 +1,6 @@
 'use strict'
 
-const getGatewayAccountSuccess = function (opts) {
+function parseGatewayAccountOptions (opts) {
   let stubOptions = { gateway_account_id: opts.gatewayAccountId }
 
   if (opts.paymentProvider) {
@@ -47,8 +47,26 @@ const getGatewayAccountSuccess = function (opts) {
     stubOptions.notificationCredentials = opts.notificationCredentials
   }
 
+  if (opts.gatewayAccountExternalId) {
+    stubOptions.external_id = opts.gatewayAccountExternalId
+  }
+  return stubOptions
+}
+
+const getGatewayAccountSuccess = function (opts) {
+  const stubOptions = parseGatewayAccountOptions(opts)
+
   return {
     name: 'getGatewayAccountSuccess',
+    opts: stubOptions
+  }
+}
+
+const getGatewayAccountByExternalIdSuccess = function (opts) {
+  const stubOptions = parseGatewayAccountOptions(opts)
+
+  return {
+    name: 'getGatewayAccountByExternalIdSuccess',
     opts: stubOptions
   }
 }
@@ -59,7 +77,8 @@ const getGatewayAccountsSuccess = function (opts) {
     opts: {
       gateway_account_id: opts.gatewayAccountId,
       type: opts.type,
-      payment_provider: opts.paymentProvider
+      payment_provider: opts.paymentProvider,
+      external_id: '42'
     }
   }
 }
@@ -231,6 +250,7 @@ module.exports = {
   getAccountAuthSuccess,
   getGatewayAccountSuccess,
   getGatewayAccountsSuccess,
+  getGatewayAccountByExternalIdSuccess,
   getAcceptedCardTypesSuccess,
   getDirectDebitGatewayAccountSuccess,
   postCreateGatewayAccountSuccess,
