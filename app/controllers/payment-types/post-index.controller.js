@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 
 const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
@@ -18,7 +19,9 @@ module.exports = async (req, res) => {
 
   if (typeof acceptedDebitCards === 'undefined' && typeof acceptedCreditCards === 'undefined') {
     req.flash('genericError', 'You must choose at least one card')
-    return res.redirect(paths.paymentTypes.index)
+    return res.redirect(
+      formatAccountPathsFor(paths.paymentTypes.index, req.account && req.account.external_id)
+    )
   }
 
   const payload = {
@@ -28,7 +31,9 @@ module.exports = async (req, res) => {
   try {
     await connector.postAcceptedCardsForAccount(accountId, payload, correlationId)
     req.flash('generic', 'Accepted card types have been updated')
-    return res.redirect(paths.paymentTypes.index)
+    return res.redirect(
+      formatAccountPathsFor(paths.paymentTypes.index, req.account && req.account.external_id)
+    )
   } catch (error) {
     return renderErrorView(req, res, error.message.message[0], error.errorCode)
   }

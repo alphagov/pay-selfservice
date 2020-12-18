@@ -102,7 +102,7 @@ module.exports = function (req, data, template) {
   convertedData.currentService = _.get(req, 'service')
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(url.parse(originalUrl).pathname, permissions, paymentMethod)
-    convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, paymentMethod, paymentProvider)
+    convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, paymentMethod, paymentProvider, account)
   }
   convertedData._features = {}
   if (req.user && req.user.features) {
