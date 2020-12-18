@@ -134,7 +134,7 @@ module.exports = {
     })
   },
   getGatewayAccountSuccess: (opts = {}) => {
-    const path = '/v1/frontend/accounts/' + opts.gateway_account_id
+    const path = '/v1/api/accounts/external-id/' + opts.gateway_account_id
     return simpleStubBuilder('GET', path, 200, {
       response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
     })
@@ -147,7 +147,7 @@ module.exports = {
         predicates: [{
           equals: {
             method: 'GET',
-            path: '/v1/frontend/accounts/' + opts[0].gateway_account_id,
+            path: '/v1/api/accounts/' + opts[0].gateway_account_id,
             headers: {
               'Accept': 'application/json'
             }

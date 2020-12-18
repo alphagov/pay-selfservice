@@ -58,7 +58,11 @@ function getService (user, serviceExternalId, gatewayAccount, correlationId) {
     } else {
       if (gatewayAccount) {
         service = _.get(serviceRoles.find(serviceRole => {
-          return serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))
+          // TODO: Cypress Stubs use numbers for gateways accound ids
+          // where as real data uses string.
+          // Need to update stubs and tests to use strings.
+          const gatewayAccountIds = serviceRole.service.gatewayAccountIds.map(accountId => String(accountId))
+          return gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))
         }), 'service')
       }
     }

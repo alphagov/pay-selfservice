@@ -47,6 +47,8 @@ const getGatewayAccountSuccess = function (opts) {
     stubOptions.notificationCredentials = opts.notificationCredentials
   }
 
+  stubOptions.external_id = '42'
+
   return {
     name: 'getGatewayAccountSuccess',
     opts: stubOptions
@@ -59,7 +61,8 @@ const getGatewayAccountsSuccess = function (opts) {
     opts: {
       gateway_account_id: opts.gatewayAccountId,
       type: opts.type,
-      payment_provider: opts.paymentProvider
+      payment_provider: opts.paymentProvider,
+      external_id: '42'
     }
   }
 }
