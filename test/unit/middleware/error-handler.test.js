@@ -6,6 +6,7 @@ const { expect } = require('chai')
 const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError } = require('../../../app/errors')
 const paths = require('../../../app/paths')
 const User = require('../../../app/models/User.class')
+const Service = require('../../../app/models/Service.class')
 const userFixtures = require('../../fixtures/user.fixtures')
 const serviceFixtures = require('../../fixtures/service.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
@@ -97,7 +98,7 @@ describe('Error handler middleware', () => {
     const reqWithSessionData = {
       ...req,
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
-      service: serviceFixtures.validServiceResponse({ external_id: serviceExternalId }).getAsObject(),
+      service: new Service(serviceFixtures.validServiceResponse({ external_id: serviceExternalId })),
       account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId }).getPlain()
     }
     const expectedLogContext = {

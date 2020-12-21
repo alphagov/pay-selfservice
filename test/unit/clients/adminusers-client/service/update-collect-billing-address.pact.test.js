@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const serviceFixtures = require('../../../../fixtures/service.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -46,9 +47,9 @@ describe('adminusers client - patch collect billing address toggle', function ()
           .withUponReceiving('a valid patch collect billing address toggle (disabled) request')
           .withState(`a service exists with external id ${serviceExternalId}`)
           .withMethod('PATCH')
-          .withRequestBody(validUpdateCollectBillingAddressRequest.getPactified())
+          .withRequestBody(validUpdateCollectBillingAddressRequest)
           .withStatusCode(200)
-          .withResponseBody(validUpdateCollectBillingAddressResponse.getPactified())
+          .withResponseBody(pactify(validUpdateCollectBillingAddressResponse))
           .build()
       )
         .then(() => done())

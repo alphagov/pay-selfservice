@@ -207,7 +207,7 @@ const defaultPermissions = [
 
 const buildServiceRole = (opts = {}) => {
   return {
-    service: serviceFixtures.validServiceResponse(opts.service).getPlain(),
+    service: serviceFixtures.validServiceResponse(opts.service),
     role: buildRoleWithDefaults(opts.role)
   }
 }

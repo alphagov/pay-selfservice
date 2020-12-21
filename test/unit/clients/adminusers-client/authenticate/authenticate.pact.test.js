@@ -41,7 +41,7 @@ describe('adminusers client - authenticate', () => {
     const request = userFixtures
       .validPasswordAuthenticateRequest({
         username: existingUsername,
-        password: validPassword,
+        password: validPassword
       })
 
     before((done) => {
@@ -73,7 +73,7 @@ describe('adminusers client - authenticate', () => {
     const request = userFixtures
       .validPasswordAuthenticateRequest({
         username: existingUsername,
-        password: invalidPassword,
+        password: invalidPassword
       })
 
     before((done) => {

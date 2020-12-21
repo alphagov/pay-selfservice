@@ -6,15 +6,16 @@ const { expect } = require('chai')
 const getPermissionMiddleware = require('../../../app/middleware/permission')
 const { PermissionDeniedError } = require('../../../app/errors')
 const User = require('../../../app/models/User.class')
+const Service = require('../../../app/models/Service.class')
 const userFixtures = require('../../fixtures/user.fixtures')
 const serviceFixtures = require('../../fixtures/service.fixtures')
 
 const serviceExternalId = 'a-service-external-id'
 const permission = 'do-cool-things'
 
-const service = serviceFixtures.validServiceResponse({
+const service = new Service(serviceFixtures.validServiceResponse({
   external_id: serviceExternalId
-}).getAsObject()
+}))
 
 const userWithPermissionForService = new User(userFixtures.validUserResponse({
   service_roles: [{

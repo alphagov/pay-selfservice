@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const serviceFixtures = require('../../../../fixtures/service.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -47,9 +48,9 @@ describe('admin users client - add gateway accounts to service', () => {
           .withUponReceiving('a valid request to add a gateway account to a service')
           .withState(`a service exists with external id ${serviceExternalId} with gateway account with id 111`)
           .withMethod('PATCH')
-          .withRequestBody(request.getPlain())
+          .withRequestBody(request)
           .withStatusCode(200)
-          .withResponseBody(response.getPactified())
+          .withResponseBody(pactify(response))
           .build()
       )
         .then(() => done())
@@ -77,7 +78,7 @@ describe('admin users client - add gateway accounts to service', () => {
           .withUponReceiving('a invalid request to add a gateway account to a service with a conflicting gateway account id')
           .withState(`a service exists with external id ${serviceExternalId} with gateway account with id 111`)
           .withMethod('PATCH')
-          .withRequestBody(request.getPlain())
+          .withRequestBody(request)
           .withStatusCode(409)
           .withResponseBody({
             errors: [
@@ -118,7 +119,7 @@ describe('admin users client - add gateway accounts to service', () => {
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${nonExistentServiceId}`)
           .withUponReceiving('a invalid request to add a gateway account to a service with a non-extant service external id')
           .withMethod('PATCH')
-          .withRequestBody(request.getPlain())
+          .withRequestBody(request)
           .withStatusCode(404)
           .withResponseHeaders({})
           .build()

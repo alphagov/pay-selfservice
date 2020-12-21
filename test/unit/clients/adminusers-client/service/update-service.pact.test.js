@@ -10,6 +10,7 @@ const getAdminUsersClient = require('../../../../../app/services/clients/adminus
 const serviceFixtures = require('../../../../fixtures/service.fixtures')
 const { validPaths, ServiceUpdateRequest } = require('../../../../../app/models/ServiceUpdateRequest.class')
 const goLiveStage = require('../../../../../app/models/go-live-stage')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -57,7 +58,7 @@ describe('adminusers client - patch request to update service', function () {
           .withMethod('PATCH')
           .withRequestBody(validUpdateServiceRequest)
           .withStatusCode(200)
-          .withResponseBody(validUpdateServiceResponse.getPactified())
+          .withResponseBody(pactify(validUpdateServiceResponse))
           .build())
     })
 
@@ -110,7 +111,7 @@ describe('adminusers client - patch request to update service', function () {
           .withMethod('PATCH')
           .withRequestBody(validUpdateServiceRequest)
           .withStatusCode(200)
-          .withResponseBody(validUpdateServiceResponse.getPactified())
+          .withResponseBody(pactify(validUpdateServiceResponse))
           .build())
     })
 
