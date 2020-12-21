@@ -322,23 +322,8 @@ module.exports = {
     }
   },
 
-  /**
-   * @param request Params override response
-   * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
-   */
   validMultipleUserResponse: (opts = []) => {
-    const data = opts.map(buildUserWithDefaults)
-    return {
-      getPactified: () => {
-        return data.map(pactUsers.pactify)
-      },
-      getAsObject: () => {
-        return data.map(datum => new User(datum))
-      },
-      getPlain: () => {
-        return data
-      }
-    }
+    return opts.map(buildUserWithDefaults)
   },
 
   validAuthenticateRequest: (options) => {
