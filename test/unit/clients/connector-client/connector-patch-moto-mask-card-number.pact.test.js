@@ -21,7 +21,7 @@ chai.use(chaiAsPromised)
 
 describe('connector client - patch MOTO mask card number toggle (enabled) request', () => {
   const patchRequestParams = { path: 'moto_mask_card_number_input', value: true }
-  const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams).getPlain()
+  const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams)
 
   let provider = new Pact({
     consumer: 'selfservice',

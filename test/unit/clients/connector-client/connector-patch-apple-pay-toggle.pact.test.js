@@ -21,7 +21,7 @@ chai.use(chaiAsPromised)
 
 describe('connector client - patch apple pay toggle (enabled) request', () => {
   const patchRequestParams = { path: 'allow_apple_pay', value: true }
-  const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams).getPlain()
+  const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams)
 
   let provider = new Pact({
     consumer: 'selfservice',

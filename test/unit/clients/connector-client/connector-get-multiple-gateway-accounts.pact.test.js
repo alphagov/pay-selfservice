@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/frontend/accounts'
@@ -47,7 +48,7 @@ describe('connector client - get multiple gateway accounts', function () {
           .withState('gateway accounts with ids 111, 222 exist in the database')
           .withMethod('GET')
           .withQuery('accountIds', '111,222')
-          .withResponseBody(validGetGatewayAccountsResponse.getPactified())
+          .withResponseBody(pactify(validGetGatewayAccountsResponse))
           .withStatusCode(200)
           .build()
       )
@@ -58,10 +59,9 @@ describe('connector client - get multiple gateway accounts', function () {
     afterEach(() => provider.verify())
 
     it('should get multiple gateway accounts successfully', function (done) {
-      const getGatewayAccounts = validGetGatewayAccountsResponse.getPlain()
       connectorClient.getAccounts({ gatewayAccountIds: [111, 222], correlationId: null })
         .should.be.fulfilled.then((response) => {
-          expect(response).to.deep.equal(getGatewayAccounts)
+          expect(response).to.deep.equal(validGetGatewayAccountsResponse)
         }).should.notify(done)
     })
   })

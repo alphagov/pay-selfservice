@@ -34,7 +34,7 @@ const mockConnectorGetGatewayAccount = (paymentProvider, type) => {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       payment_provider: paymentProvider,
       type: type
-    }).getPlain())
+    }))
 }
 
 const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, companyNumber) => {

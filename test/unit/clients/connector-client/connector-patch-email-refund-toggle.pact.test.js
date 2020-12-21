@@ -44,7 +44,7 @@ describe('connector client - patch email refund toggle', function () {
           .withUponReceiving('a valid patch email refund toggle (enabled) request')
           .withState(defaultState)
           .withMethod('PATCH')
-          .withRequestBody(validGatewayAccountEmailRefundToggleRequest.getPactified())
+          .withRequestBody(validGatewayAccountEmailRefundToggleRequest)
           .withStatusCode(200)
           .build()
       )
@@ -57,7 +57,7 @@ describe('connector client - patch email refund toggle', function () {
     it('should toggle successfully', function (done) {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
-        payload: validGatewayAccountEmailRefundToggleRequest.getPlain()
+        payload: validGatewayAccountEmailRefundToggleRequest
       }
       connectorClient.updateRefundEmailEnabled(params, (connectorData, connectorResponse) => {
         expect(connectorResponse.statusCode).to.equal(200)

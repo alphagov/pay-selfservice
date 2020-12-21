@@ -1,14 +1,8 @@
 'use strict'
 
-const path = require('path')
-
-// Global setup
-const pactBase = require(path.join(__dirname, '/pact-base'))
-const pactRegister = pactBase()
-
 module.exports = {
   validCardTypesResponse: () => {
-    let data = {
+    return {
       card_types: [{
         id: 'a1200c73-204d-45f5-8fca-e4ee5ed1b1a7',
         brand: 'visa',
@@ -71,15 +65,6 @@ module.exports = {
         requires3ds: true
       }]
     }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
   },
   validAcceptedCardTypesResponse: opts => {
     let data = {
@@ -126,17 +111,10 @@ module.exports = {
       })
     }
 
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
+    return data
   },
   validUpdatedAcceptedCardTypesResponse: () => {
-    let data = {
+    return {
       card_types: [{
         id: 'a1200c73-204d-45f5-8fca-e4ee5ed1b1a7',
         brand: 'visa',
@@ -174,15 +152,6 @@ module.exports = {
         type: 'CREDIT',
         requires3ds: false
       }]
-    }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
     }
   }
 }

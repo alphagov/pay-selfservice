@@ -45,7 +45,7 @@ describe('Dashboard redirect controller', () => {
         payment_provider: 'stripe',
         type: 'live'
       }]
-    }).getPlain()
+    })
     accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => gatewayAccountResponse)
 
     await dashboardRedirectController(req, res)
@@ -69,7 +69,7 @@ describe('Dashboard redirect controller', () => {
       accounts: [{
         gateway_account_id: '2'
       }]
-    }).getPlain()
+    })
     accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => gatewayAccountResponse)
 
     await dashboardRedirectController(req, res)
@@ -87,7 +87,7 @@ describe('Dashboard redirect controller', () => {
         gateway_account_id: '5',
         type: 'live'
       }]
-    }).getPlain()
+    })
     accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => gatewayAccountResponse)
 
     await dashboardRedirectController(req, res)

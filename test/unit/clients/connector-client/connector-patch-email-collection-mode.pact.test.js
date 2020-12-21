@@ -45,7 +45,7 @@ describe('connector client - patch email collection mode', function () {
           .withUponReceiving('a valid patch email collection mode (mandatory) request')
           .withState(defaultState)
           .withMethod('PATCH')
-          .withRequestBody(validGatewayAccountEmailCollectionModeRequest.getPactified())
+          .withRequestBody(validGatewayAccountEmailCollectionModeRequest)
           .withStatusCode(200)
           .build()
       )
@@ -58,7 +58,7 @@ describe('connector client - patch email collection mode', function () {
     it('should set email collection mode to mandatory', function (done) {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
-        payload: validGatewayAccountEmailCollectionModeRequest.getPlain()
+        payload: validGatewayAccountEmailCollectionModeRequest
       }
       connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
         expect(connectorResponse.statusCode).to.equal(200)
@@ -77,7 +77,7 @@ describe('connector client - patch email collection mode', function () {
           .withUponReceiving('a valid patch email collection mode (optional) request')
           .withState(defaultState)
           .withMethod('PATCH')
-          .withRequestBody(validGatewayAccountEmailCollectionModeRequest.getPactified())
+          .withRequestBody(validGatewayAccountEmailCollectionModeRequest)
           .withStatusCode(200)
           .build()
       )
@@ -90,7 +90,7 @@ describe('connector client - patch email collection mode', function () {
     it('should set email collection mode to optional', function (done) {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
-        payload: validGatewayAccountEmailCollectionModeRequest.getPlain()
+        payload: validGatewayAccountEmailCollectionModeRequest
       }
       connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
         expect(connectorResponse.statusCode).to.equal(200)
@@ -109,7 +109,7 @@ describe('connector client - patch email collection mode', function () {
           .withUponReceiving('a valid patch email collection mode (off) request')
           .withState(`Gateway account ${existingGatewayAccountId} exists in the database`)
           .withMethod('PATCH')
-          .withRequestBody(validGatewayAccountEmailCollectionModeRequest.getPactified())
+          .withRequestBody(validGatewayAccountEmailCollectionModeRequest)
           .withStatusCode(200)
           .build()
       )
@@ -122,7 +122,7 @@ describe('connector client - patch email collection mode', function () {
     it('should set email collection mode to mandatory', function (done) {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
-        payload: validGatewayAccountEmailCollectionModeRequest.getPlain()
+        payload: validGatewayAccountEmailCollectionModeRequest
       }
       connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
         expect(connectorResponse.statusCode).to.equal(200)

@@ -14,6 +14,7 @@ process.env.PUBLIC_AUTH_URL = `http://localhost:${port}${TOKENS_PATH}`
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
 const publicauthClient = require('../../../../app/services/clients/public-auth.client')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 chai.use(chaiAsPromised)
 
@@ -43,7 +44,7 @@ describe('publicauth client - get tokens', function () {
         new PactInteractionBuilder(`${TOKENS_PATH}/${params.accountId}`)
           .withState(`Gateway account ${params.accountId} exists in the database`)
           .withUponReceiving('a valid service auth request')
-          .withResponseBody(getServiceAuthResponse.getPactified())
+          .withResponseBody(pactify(getServiceAuthResponse))
           .build()
       ).then(() => { done() })
     })
@@ -51,10 +52,8 @@ describe('publicauth client - get tokens', function () {
     afterEach(() => provider.verify())
 
     it('should return service tokens information successfully', function (done) {
-      const expectedTokensData = getServiceAuthResponse.getPlain()
-
       publicauthClient.getActiveTokensForAccount(params).then(function (tokens) {
-        expect(tokens).to.deep.equal(expectedTokensData)
+        expect(tokens).to.deep.equal(getServiceAuthResponse)
         done()
       })
     })

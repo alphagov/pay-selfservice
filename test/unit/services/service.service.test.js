@@ -34,7 +34,7 @@ const getGatewayAccounts = function () {
             gateway_account_id: iter,
             service_name: `account ${iter}`,
             type: _.sample(['test', 'live'])
-          }).getPlain())
+          }))
         })
       })
     }

@@ -44,7 +44,7 @@ describe('connector client - patch email confirmation toggle', function () {
           .withUponReceiving('a valid patch email confirmation toggle (enabled) request')
           .withState(defaultState)
           .withMethod('PATCH')
-          .withRequestBody(validGatewayAccountEmailConfirmationToggleRequest.getPactified())
+          .withRequestBody(validGatewayAccountEmailConfirmationToggleRequest)
           .withStatusCode(200)
           .build()
       )
@@ -57,7 +57,7 @@ describe('connector client - patch email confirmation toggle', function () {
     it('should toggle successfully', function (done) {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
-        payload: validGatewayAccountEmailConfirmationToggleRequest.getPlain()
+        payload: validGatewayAccountEmailConfirmationToggleRequest
       }
       connectorClient.updateConfirmationEmailEnabled(params, (connectorData, connectorResponse) => {
         expect(connectorResponse.statusCode).to.equal(200)

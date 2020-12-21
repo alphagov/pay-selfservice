@@ -7,6 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const { PactInteractionBuilder } = require('../../../fixtures/pact-interaction-builder')
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 const getDirectDebitConnectorClient = require('../../../../app/services/clients/direct-debit-connector.client2')
 const GatewayAccount = require('../../../../app/models/DirectDebitGatewayAccount.class')
 
@@ -45,7 +46,7 @@ describe('connector client - get gateway account', function () {
           .withUponReceiving('a valid get gateway account request')
           .withState(`Direct Debit gateway account with id ${existingDirectDebitGatewayAccountId} exists in the database`)
           .withMethod('GET')
-          .withResponseBody(validGetGatewayAccountResponse.getPactified())
+          .withResponseBody(pactify(validGetGatewayAccountResponse))
           .withStatusCode(200)
           .build()
       )
@@ -56,7 +57,7 @@ describe('connector client - get gateway account', function () {
     afterEach(() => provider.verify())
 
     it('should get gateway account successfully', function (done) {
-      const gatewayAccount = new GatewayAccount(validGetGatewayAccountResponse.getPlain())
+      const gatewayAccount = new GatewayAccount(validGetGatewayAccountResponse)
       const params = {
         gatewayAccountId: existingDirectDebitGatewayAccountId,
         correlationId: null

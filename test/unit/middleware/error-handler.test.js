@@ -99,7 +99,7 @@ describe('Error handler middleware', () => {
       ...req,
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
       service: new Service(serviceFixtures.validServiceResponse({ external_id: serviceExternalId })),
-      account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId }).getPlain()
+      account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId })
     }
     const expectedLogContext = {
       'x_request_id': correlationId,

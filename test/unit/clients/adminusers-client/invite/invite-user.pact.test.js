@@ -1,10 +1,10 @@
 const { Pact } = require('@pact-foundation/pact')
-var path = require('path')
-var chai = require('chai')
-var chaiAsPromised = require('chai-as-promised')
-var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
-var inviteFixtures = require('../../../../fixtures/invite.fixtures')
-var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const path = require('path')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
+const inviteFixtures = require('../../../../fixtures/invite.fixtures')
+const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
 chai.use(chaiAsPromised)
 
@@ -14,8 +14,8 @@ const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - invite user', function () {
-  let externalServiceId = '12345'
-  let provider = new Pact({
+  const externalServiceId = '12345'
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
@@ -29,10 +29,10 @@ describe('adminusers client - invite user', function () {
   after(() => provider.finalize())
 
   describe('success', function () {
-    let validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
+    const validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
 
     before((done) => {
-      let pactified = validInvite.getPactified()
+      const pactified = validInvite.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITES_PATH}`)
           .withUponReceiving('a valid user invite user request')
@@ -48,7 +48,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should create a invite successfully', function (done) {
-      let invite = validInvite.getPlain()
+      const invite = validInvite.getPlain()
 
       adminusersClient.inviteUser(invite.email, invite.sender, externalServiceId, invite.role_name).should.be.fulfilled.then(function (inviteResponse) {
         expect(inviteResponse.email).to.be.equal(invite.email)
@@ -57,11 +57,11 @@ describe('adminusers client - invite user', function () {
   })
 
   describe('not found', () => {
-    let nonExistentServiceId = '111111'
-    let validInvite = inviteFixtures.validInviteRequest({ externalServiceId: nonExistentServiceId })
+    const nonExistentServiceId = '111111'
+    const validInvite = inviteFixtures.validInviteRequest({ externalServiceId: nonExistentServiceId })
 
     before((done) => {
-      let pactified = validInvite.getPactified()
+      const pactified = validInvite.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITES_PATH}`)
           .withUponReceiving('a valid user invite user request for a non-existent service')
@@ -76,7 +76,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return not found', function (done) {
-      let invite = validInvite.getPlain()
+      const invite = validInvite.getPlain()
 
       adminusersClient.inviteUser(invite.email, invite.sender, nonExistentServiceId, invite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
@@ -85,11 +85,11 @@ describe('adminusers client - invite user', function () {
   })
 
   describe('bad request', () => {
-    let invalidInvite = inviteFixtures.invalidInviteRequest({ externalServiceId: externalServiceId })
-    let errorResponse = inviteFixtures.invalidInviteCreateResponseWhenFieldsMissing()
+    const invalidInvite = inviteFixtures.invalidInviteRequest({ externalServiceId: externalServiceId })
+    const errorResponse = inviteFixtures.invalidInviteCreateResponseWhenFieldsMissing()
 
     before((done) => {
-      let pactified = invalidInvite.getPactified()
+      const pactified = invalidInvite.getPactified()
 
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITES_PATH}`)
@@ -107,7 +107,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return bad request', function (done) {
-      let invite = invalidInvite.getPlain()
+      const invite = invalidInvite.getPlain()
 
       adminusersClient.inviteUser(invite.email, invite.sender, externalServiceId, invite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
@@ -118,11 +118,11 @@ describe('adminusers client - invite user', function () {
   })
 
   describe('conflicting request', () => {
-    let validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
-    let errorResponse = inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(validInvite.getPlain().email).getPactified()
+    const validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
+    const errorResponse = inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(validInvite.getPlain().email).getPactified()
 
     before((done) => {
-      let pactified = validInvite.getPactified()
+      const pactified = validInvite.getPactified()
 
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITES_PATH}`)
@@ -139,7 +139,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return conflict', function (done) {
-      let invite = validInvite.getPlain()
+      const invite = validInvite.getPlain()
 
       adminusersClient.inviteUser(invite.email, invite.sender, externalServiceId, invite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(409)
@@ -150,11 +150,11 @@ describe('adminusers client - invite user', function () {
   })
 
   describe('not permitted', () => {
-    let validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
-    let errorResponse = inviteFixtures.notPermittedInviteResponse(validInvite.getPlain().email, externalServiceId)
+    const validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
+    const errorResponse = inviteFixtures.notPermittedInviteResponse(validInvite.getPlain().email, externalServiceId)
 
     before((done) => {
-      let pactified = validInvite.getPactified()
+      const pactified = validInvite.getPactified()
 
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITES_PATH}`)
@@ -171,7 +171,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return not permitted', function (done) {
-      let invite = validInvite.getPlain()
+      const invite = validInvite.getPlain()
 
       adminusersClient.inviteUser(invite.email, invite.sender, externalServiceId, invite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(403)

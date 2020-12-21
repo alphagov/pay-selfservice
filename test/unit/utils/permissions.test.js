@@ -50,10 +50,10 @@ describe('gateway account filter utiltiies', () => {
                 accounts: [
                   validGatewayAccountResponse({
                     payment_provider: 'stripe'
-                  }).getPlain(),
+                  }),
                   validGatewayAccountResponse({
                     allow_moto: true
-                  }).getPlain()
+                  })
                 ]
               }
             }
@@ -73,7 +73,7 @@ describe('gateway account filter utiltiies', () => {
             async getAccounts () {
               return {
                 accounts: [
-                  validGatewayAccountResponse().getPlain()
+                  validGatewayAccountResponse()
                 ]
               }
             }
@@ -96,15 +96,15 @@ describe('gateway account filter utiltiies', () => {
                   validGatewayAccountResponse({
                     gateway_account_id: '1',
                     type: 'live'
-                  }).getPlain(),
+                  }),
                   validGatewayAccountResponse({
                     gateway_account_id: '2',
                     type: 'test'
-                  }).getPlain(),
+                  }),
                   validGatewayAccountResponse({
                     gateway_account_id: '3',
                     type: 'live'
-                  }).getPlain()
+                  })
                 ]
               }
             }
