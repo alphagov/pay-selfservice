@@ -87,7 +87,7 @@ module.exports = {
     loadIndex(req, res, EDIT_NOTIFICATION_CREDENTIALS_MODE)
   },
 
-  updateNotificationCredentials: function (req, res) {
+  updateNotificationCredentials: async function (req, res) {
     const accountId = auth.getCurrentGatewayAccountId((req))
     const connectorUrl = CONNECTOR_URL + '/v1/api/accounts/{accountId}/notification-credentials'
     const { username, password } = _.get(req, 'body')
@@ -118,23 +118,25 @@ module.exports = {
     var url = connectorUrl.replace('{accountId}', accountId)
     var correlationId = req.headers[CORRELATION_HEADER] || ''
 
-    connectorClient().postAccountNotificationCredentials({
-      payload: { username, password },
-      correlationId: correlationId,
-      gatewayAccountId: accountId
-    }, function (connectorData, connectorResponse) {
-      var duration = new Date() - startTime
+    try {
+      await connectorClient().postAccountNotificationCredentials({
+        payload: { username, password },
+        correlationId: correlationId,
+        gatewayAccountId: accountId
+      })
+
+      let duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
-      res.redirect(303, router.paths.yourPsp.index)
-    }).on('connectorError', function (err, connectorResponse) {
-      var duration = new Date() - startTime
+      return res.redirect(303, router.paths.yourPsp.index)
+    } catch (err) {
+      let duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
-      if (connectorResponse && connectorResponse.statusCode) {
+      if (err && err.errorCode) {
         logger.error(`[${correlationId}] Calling connector to update provider notification credentials failed`, {
           service: 'connector',
           method: 'POST',
           url: connectorUrl,
-          status: connectorResponse.statusCode
+          status: err.errorCode
         })
       } else {
         logger.error(`[${correlationId}] Calling connector to update provider notification credentials threw exception`, {
@@ -145,11 +147,11 @@ module.exports = {
         })
       }
 
-      renderErrorView(req, res)
-    })
+      return renderErrorView(req, res)
+    }
   },
 
-  update: function (req, res) {
+  update: async function (req, res) {
     logger.debug('Calling connector to update provider credentials', {
       service: 'connector',
       method: 'PATCH',
@@ -167,24 +169,25 @@ module.exports = {
     var correlationId = req.headers[CORRELATION_HEADER] || ''
 
     var startTime = new Date()
-    connectorClient().patchAccountCredentials({
-      payload: credentialsPatchRequestValueOf(req),
-      correlationId: correlationId,
-      gatewayAccountId: accountId
-    }, function (connectorData, connectorResponse) {
-      var duration = new Date() - startTime
+
+    try {
+      await connectorClient().patchAccountCredentials({
+        payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
+      })
+
+      let duration = new Date() - startTime
       logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)
-      res.redirect(303, router.paths.yourPsp.index)
-    }).on('connectorError', function (err, connectorResponse) {
-      var duration = new Date() - startTime
+      return res.redirect(303, router.paths.yourPsp.index)
+    } catch (err) {
+      let duration = new Date() - startTime
       logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)
 
-      if (connectorResponse && connectorResponse.statusCode) {
+      if (err && err.errorCode) {
         logger.error(`[${correlationId}] Calling connector to update provider credentials failed. Redirecting back to credentials view`, {
           service: 'connector',
           method: 'PATCH',
           url: connectorUrl,
-          status: connectorResponse.statusCode
+          status: err.errorCode
         })
       } else {
         logger.error(`[${correlationId}] Calling connector to update provider credentials threw exception`, {
@@ -194,7 +197,7 @@ module.exports = {
           error: err
         })
       }
-      renderErrorView(req, res)
-    })
+      return renderErrorView(req, res)
+    }
   }
 }
