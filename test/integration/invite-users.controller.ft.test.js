@@ -43,7 +43,7 @@ describe('invite user controller', function () {
     it('should invite a new team member successfully', function (done) {
       const validInvite = inviteFixtures.validInviteRequest()
       adminusersMock.post(INVITE_RESOURCE)
-        .reply(201, inviteFixtures.validInviteResponse(validInvite.getPlain()))
+        .reply(201, inviteFixtures.validInviteResponse(validInvite))
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
@@ -64,7 +64,7 @@ describe('invite user controller', function () {
     it('should error if the user is already invited/exists', function (done) {
       const existingUser = 'existing-user@example.com'
       adminusersMock.post(INVITE_RESOURCE)
-        .reply(412, inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(existingUser).getPlain())
+        .reply(412, inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(existingUser))
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)

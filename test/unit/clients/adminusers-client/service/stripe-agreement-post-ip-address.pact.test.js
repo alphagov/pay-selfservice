@@ -35,7 +35,7 @@ describe('adminusers client - post stripe agreement - ip address', () => {
   describe('post ip address', () => {
     const ipAddress = '93.184.216.34' // example.org
     const opts = { ip_address: ipAddress }
-    const validStripeAgreementRequest = validPostStripeAgreementRequest(opts).getPlain()
+    const validStripeAgreementRequest = validPostStripeAgreementRequest(opts)
 
     before(done => {
       provider.addInteraction(

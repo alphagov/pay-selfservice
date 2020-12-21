@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const inviteFixtures = require('../../../../fixtures/invite.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
@@ -57,9 +58,9 @@ describe('adminusers client - complete an invite', function () {
           .withState('a valid service invite exists with the given invite code')
           .withUponReceiving('a valid complete service invite request')
           .withMethod('POST')
-          .withRequestBody(validInviteCompleteRequest.getPactified())
+          .withRequestBody(validInviteCompleteRequest)
           .withStatusCode(200)
-          .withResponseBody(validInviteCompleteResponse.getPactified())
+          .withResponseBody(pactify(validInviteCompleteResponse))
           .build()
       ).then(() => done())
         .catch(done)
@@ -68,9 +69,8 @@ describe('adminusers client - complete an invite', function () {
     afterEach(() => provider.verify())
 
     it('should complete a service invite successfully', function (done) {
-      const expectedData = validInviteCompleteResponse.getPlain()
       adminusersClient.completeInvite(inviteCode, gatewayAccountIds).should.be.fulfilled.then(response => {
-        expect(response.invite).to.deep.equal(expectedData.invite)
+        expect(response.invite).to.deep.equal(validInviteCompleteResponse.invite)
         expect(response.user_external_id).to.equal(userExternalId)
         expect(response.service_external_id).to.equal(serviceExternalId)
       }).should.notify(done)
@@ -91,7 +91,7 @@ describe('adminusers client - complete an invite', function () {
           .withState('invite not exists for the given invite code')
           .withUponReceiving('a valid complete service invite request of a non existing invite')
           .withMethod('POST')
-          .withRequestBody(validInviteCompleteRequest.getPactified())
+          .withRequestBody(validInviteCompleteRequest)
           .withStatusCode(404)
           .build()
       ).then(() => done())
@@ -120,7 +120,7 @@ describe('adminusers client - complete an invite', function () {
           .withState('invite conflict for the given invite code')
           .withUponReceiving('a valid complete service invite request with the user with same email exists')
           .withMethod('POST')
-          .withRequestBody(validInviteCompleteRequest.getPactified())
+          .withRequestBody(validInviteCompleteRequest)
           .withStatusCode(409)
           .build()
       ).then(() => done())
@@ -150,9 +150,9 @@ describe('adminusers client - complete an invite', function () {
           .withState('invite expired for the given invite code')
           .withUponReceiving('a valid complete service invite request of an expired invite')
           .withMethod('POST')
-          .withRequestBody(invalidInviteCompleteRequest.getPactified())
+          .withRequestBody(invalidInviteCompleteRequest)
           .withStatusCode(400)
-          .withResponseBody(errorResponse.getPactified())
+          .withResponseBody(pactify(errorResponse))
           .build()
       ).then(() => done())
     })

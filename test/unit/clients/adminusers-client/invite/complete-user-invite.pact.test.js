@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const inviteFixtures = require('../../../../fixtures/invite.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
@@ -53,7 +54,7 @@ describe('adminusers client - complete a user invite', function () {
           .withUponReceiving('a valid complete user invite request')
           .withMethod('POST')
           .withStatusCode(200)
-          .withResponseBody(validInviteCompleteResponse.getPactified())
+          .withResponseBody(pactify(validInviteCompleteResponse))
           .build()
       ).then(() => done())
         .catch(done)
@@ -62,9 +63,8 @@ describe('adminusers client - complete a user invite', function () {
     afterEach(() => provider.verify())
 
     it('should complete a service invite successfully', function (done) {
-      const expectedData = validInviteCompleteResponse.getPlain()
       adminusersClient.completeInvite(inviteCode).should.be.fulfilled.then(response => {
-        expect(response.invite).to.deep.equal(expectedData.invite)
+        expect(response.invite).to.deep.equal(validInviteCompleteResponse.invite)
         expect(response.user_external_id).to.equal(userExternalId)
         expect(response.service_external_id).to.equal(serviceExternalId)
       }).should.notify(done)

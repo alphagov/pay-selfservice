@@ -38,7 +38,7 @@ describe('create populated service', function () {
     const mockAdminUsersInviteCompleteRequest =
       inviteFixtures.validInviteCompleteRequest({
         gateway_account_ids: [gatewayAccountId]
-      }).getPlain()
+      })
     const mockAdminUsersInviteCompleteResponse =
       inviteFixtures.validInviteCompleteResponse({
         invite: {
@@ -48,7 +48,7 @@ describe('create populated service', function () {
         },
         user_external_id: userExternalId,
         service_external_id: serviceExternalId
-      }).getPlain()
+      })
     const getUserResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
     const createGatewayAccountMock = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
@@ -89,7 +89,7 @@ describe('create populated service', function () {
     const mockAdminUsersInviteCompleteRequest =
       inviteFixtures.validInviteCompleteRequest({
         gateway_account_ids: [gatewayAccountId]
-      }).getPlain()
+      })
 
     const createGatewayAccountMock = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
       .reply(201, mockConnectorCreateGatewayAccountResponse)
@@ -117,7 +117,7 @@ describe('create populated service', function () {
     const mockAdminUsersInviteCompleteRequest =
       inviteFixtures.validInviteCompleteRequest({
         gateway_account_ids: [gatewayAccountId]
-      }).getPlain()
+      })
 
     const createGatewayAccountMock = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
       .reply(201, mockConnectorCreateGatewayAccountResponse)

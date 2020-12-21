@@ -40,7 +40,7 @@ describe('create service otp resend validation', function () {
 
   describe('post to otp resend page', function () {
     it('should redirect to otp verify page on valid telephone number submission', function (done) {
-      const validServiceInviteOtpResendRequestPlain = inviteFixtures.validResendOtpCodeRequest().getPlain()
+      const validServiceInviteOtpResendRequestPlain = inviteFixtures.validResendOtpCodeRequest()
       const registerInviteData = {
         code: validServiceInviteOtpResendRequestPlain.code,
         telephone_number: validServiceInviteOtpResendRequestPlain.telephone_number,
@@ -64,7 +64,7 @@ describe('create service otp resend validation', function () {
 
     it('should ignore cookie telephone number', function (done) {
       const submittedTelephoneNumber = '07451234567'
-      const validServiceInviteOtpResendRequestPlain = inviteFixtures.validResendOtpCodeRequest().getPlain()
+      const validServiceInviteOtpResendRequestPlain = inviteFixtures.validResendOtpCodeRequest()
       const registerInviteData = {
         code: validServiceInviteOtpResendRequestPlain.code,
         telephone_number: validServiceInviteOtpResendRequestPlain.telephone_number,
@@ -92,7 +92,7 @@ describe('create service otp resend validation', function () {
     })
 
     it('should return error when register_invite cookie not present', function (done) {
-      const validServiceInviteOtpResendRequestPlain = inviteFixtures.validResendOtpCodeRequest().getPlain()
+      const validServiceInviteOtpResendRequestPlain = inviteFixtures.validResendOtpCodeRequest()
 
       app = mockSession.getAppWithLoggedOutSession(getApp())
       supertest(app)

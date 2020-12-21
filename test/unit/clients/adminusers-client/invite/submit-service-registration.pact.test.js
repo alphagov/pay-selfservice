@@ -8,6 +8,7 @@ const path = require('path')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const registerFixtures = require('../../../../fixtures/self-register.fixtures')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Globals
 
@@ -36,13 +37,12 @@ describe('adminusers client - self register service', function () {
   describe('success', () => {
     const validRegistration = registerFixtures.validRegisterRequest()
 
-    const pactified = validRegistration.getPactified()
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_PATH}/service`)
           .withUponReceiving('a valid self create service request')
           .withMethod('POST')
-          .withRequestBody(pactified)
+          .withRequestBody(validRegistration)
           .withStatusCode(201)
           .build()
       ).then(() => done())
@@ -52,27 +52,23 @@ describe('adminusers client - self register service', function () {
     afterEach(() => provider.verify())
 
     it('should send a notification successfully', function (done) {
-      const register = validRegistration.getPlain()
-
-      adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).should.be.fulfilled.then(function (response) {
+      adminusersClient.submitServiceRegistration(validRegistration.email, validRegistration.telephone_number, validRegistration.password).should.be.fulfilled.then(function (response) {
       }).should.notify(done)
     })
   })
 
   describe('bad request', () => {
-    const invalidInvite = registerFixtures.invalidEmailRegisterRequest()
+    const invalidInvite = registerFixtures.validRegisterRequest()
     const errorResponse = registerFixtures.badRequestResponseWhenFieldsMissing(['email'])
 
     before((done) => {
-      const pactified = invalidInvite.getPactified()
-
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_PATH}/service`)
           .withUponReceiving('an invalid service registration request for an empty email')
           .withMethod('POST')
-          .withRequestBody(pactified)
+          .withRequestBody(invalidInvite)
           .withStatusCode(400)
-          .withResponseBody(errorResponse.getPactified())
+          .withResponseBody(pactify(errorResponse))
           .build()
       ).then(() => done())
         .catch(done)
@@ -81,12 +77,10 @@ describe('adminusers client - self register service', function () {
     afterEach(() => provider.verify())
 
     it('should return bad request', function (done) {
-      const register = invalidInvite.getPlain()
-
-      adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).should.be.rejected.then(function (response) {
+      adminusersClient.submitServiceRegistration(invalidInvite.email, invalidInvite.telephone_number, invalidInvite.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
+        expect(response.message.errors).to.deep.equal(errorResponse.errors)
       }).should.notify(done)
     })
   })

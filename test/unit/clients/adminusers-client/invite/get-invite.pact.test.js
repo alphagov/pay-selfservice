@@ -7,6 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 const inviteFixtures = require('../../../../fixtures/invite.fixtures')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 chai.use(chaiAsPromised)
 
@@ -45,7 +46,7 @@ describe('adminusers client - get a validated invite', function () {
         new PactInteractionBuilder(`${INVITES_PATH}/${inviteCode}`)
           .withState('a valid invite exists with the given invite code')
           .withUponReceiving('a valid get invite request')
-          .withResponseBody(getInviteResponse.getPactified())
+          .withResponseBody(pactify(getInviteResponse))
           .build()
       ).then(() => done())
     })
@@ -53,12 +54,10 @@ describe('adminusers client - get a validated invite', function () {
     afterEach(() => provider.verify())
 
     it('should find an invite successfully', function (done) {
-      const expectedInviteData = getInviteResponse.getPlain()
-
       adminusersClient.getValidatedInvite(params.invite_code).should.be.fulfilled.then(function (invite) {
-        expect(invite.email).to.be.equal(expectedInviteData.email)
-        expect(invite.telephone_number).to.be.equal(expectedInviteData.telephone_number)
-        expect(invite.type).to.be.equal(expectedInviteData.type)
+        expect(invite.email).to.be.equal(getInviteResponse.email)
+        expect(invite.telephone_number).to.be.equal(getInviteResponse.telephone_number)
+        expect(invite.type).to.be.equal(getInviteResponse.type)
       }).should.notify(done)
     })
   })
