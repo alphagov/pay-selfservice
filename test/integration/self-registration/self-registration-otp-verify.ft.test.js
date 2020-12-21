@@ -91,7 +91,7 @@ describe('create service otp validation', function () {
           user_external_id: userExternalId,
           service_external_id: serviceExternalId
         }).getPlain()
-      const getUserResponse = userFixtures.validUserResponse({ external_id: userExternalId }).getPlain()
+      const getUserResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
       connectorMock.post(CONNECTOR_ACCOUNTS_URL)
         .reply(201, mockConnectorCreateGatewayAccountResponse)

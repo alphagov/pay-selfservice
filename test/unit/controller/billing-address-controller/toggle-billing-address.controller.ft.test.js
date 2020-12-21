@@ -12,6 +12,7 @@ const userFixtures = require('../../../fixtures/user.fixtures')
 const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
 const paths = require('../../../../app/paths.js')
 const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
+const User = require('../../../../app/models/User.class')
 
 // Constants
 const expect = chai.expect
@@ -47,8 +48,8 @@ describe('Toggle billing address collection controller', () => {
       connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(toggleBillingAddressPath)
         .end((err, res) => {
@@ -71,8 +72,8 @@ describe('Toggle billing address collection controller', () => {
       connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(toggleBillingAddressPath)
         .end((err, res) => {
@@ -95,13 +96,13 @@ describe('Toggle billing address collection controller', () => {
       connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
+        .reply(200, user)
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
         .reply(200, {
           collect_billing_address: false
         })
 
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .post(toggleBillingAddressPath)
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -129,13 +130,13 @@ describe('Toggle billing address collection controller', () => {
       connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
+        .reply(200, user)
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
         .reply(200, {
           collect_billing_address: false
         })
 
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .post(toggleBillingAddressPath)
         .set('Content-Type', 'application/x-www-form-urlencoded')

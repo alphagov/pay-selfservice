@@ -30,7 +30,7 @@ const ACCOUNT_ID = '182364'
 const USER_RESOURCE = '/v1/api/users'
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts'
 
-let user = mockSession.getUser()
+const user = mockSession.getUser()
 user.serviceRoles[0].service.gatewayAccountIds = [ACCOUNT_ID]
 
 describe('The logged in endpoint', function () {
@@ -318,11 +318,11 @@ describe('otp send again post endpoint', function () {
 
 describe('direct login after user registration', function () {
   it('should redirect user to homepage on a successful registration', function (done) {
-    let userExternalId = 'an-externalid'
-    let email = 'bob@example.com'
-    let gatewayAccountId = '2'
+    const userExternalId = 'an-externalid'
+    const email = 'bob@example.com'
+    const gatewayAccountId = '2'
 
-    let userResponse = userFixtures.validUserResponse({
+    const userResponse = userFixtures.validUserResponse({
       external_id: userExternalId,
       username: email,
       email: email,
@@ -331,12 +331,12 @@ describe('direct login after user registration', function () {
           gateway_account_ids: [gatewayAccountId]
         }
       }]
-    }).getPlain()
+    })
 
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse)
 
-    let connectorMock = nock(process.env.CONNECTOR_URL)
+    const connectorMock = nock(process.env.CONNECTOR_URL)
     const ledgerMock = nock(process.env.LEDGER_URL)
 
     connectorMock.get(`${CONNECTOR_ACCOUNT_PATH}/${gatewayAccountId}`)
@@ -357,13 +357,13 @@ describe('direct login after user registration', function () {
         net_income: 0
       })
 
-    let destroyStub = sinon.stub()
-    let gatewayAccountData = {
+    const destroyStub = sinon.stub()
+    const gatewayAccountData = {
       userExternalId: userExternalId,
       destroy: destroyStub
     }
 
-    let app2 = mockSession.getAppWithRegisterInvitesCookie(getApp(), gatewayAccountData)
+    const app2 = mockSession.getAppWithRegisterInvitesCookie(getApp(), gatewayAccountData)
 
     request(app2)
       .get(paths.registerUser.logUserIn)

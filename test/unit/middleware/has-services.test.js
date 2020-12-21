@@ -6,6 +6,7 @@ const chai = require('chai')
 const { expect } = chai
 const chaiAsPromised = require('chai-as-promised')
 const paths = require('../../../app/paths')
+const User = require('../../../app/models/User.class')
 const hasServices = require(path.join(__dirname, '/../../../app/middleware/has-services.js'))
 const userFixtures = require('../../fixtures/user.fixtures')
 
@@ -23,10 +24,10 @@ describe('user has services middleware', function () {
   })
 
   it('should call next when user has services', function (done) {
-    const user = userFixtures.validUserResponse({
+    const user = new User(userFixtures.validUserResponse({
       services_roles: [{ service: { external_id: '1' } }],
       external_id: 'external-id'
-    }).getAsObject()
+    }))
 
     const req = { user: user, headers: {} }
 

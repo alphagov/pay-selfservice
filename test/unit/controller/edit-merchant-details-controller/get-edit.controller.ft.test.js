@@ -8,6 +8,7 @@ const supertest = require('supertest')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const paths = require('../../../../app/paths.js')
 const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
+const User = require('../../../../app/models/User.class')
 
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
@@ -48,8 +49,8 @@ describe('edit merchant details controller - get', () => {
         email: ''
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -84,8 +85,8 @@ describe('edit merchant details controller - get', () => {
       })
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -121,8 +122,8 @@ describe('edit merchant details controller - get', () => {
         email: ''
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -160,8 +161,8 @@ describe('edit merchant details controller - get', () => {
       })
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -201,8 +202,8 @@ describe('edit merchant details controller - get', () => {
       })
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -240,12 +241,12 @@ describe('edit merchant details controller - get', () => {
       const user = buildUserResponse(['20'])
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
+        .reply(200, user)
       session = {
         csrfSecret: '123',
         12345: { refunded_amount: 5 },
         passport: {
-          user: user.getAsObject()
+          user: new User(user)
         },
         secondFactor: 'totp',
         last_url: 'last_url',
@@ -324,12 +325,12 @@ describe('edit merchant details controller - get', () => {
     before(done => {
       const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere'])
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
+        .reply(200, user)
       session = {
         csrfSecret: '123',
         12345: { refunded_amount: 5 },
         passport: {
-          user: user.getAsObject()
+          user: new User(user)
         },
         secondFactor: 'totp',
         last_url: 'last_url',

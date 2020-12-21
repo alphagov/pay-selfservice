@@ -3,6 +3,7 @@ const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 const { ConnectorClient } = require('../../../app/services/clients/connector.client')
+const User = require('../../../app/models/User.class')
 
 const { validUser } = require('../../fixtures/user.fixtures')
 const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
@@ -14,7 +15,7 @@ describe('gateway account filter utiltiies', () => {
       const opts = {
         gateway_account_ids: ['1', '2', '3']
       }
-      const user = validUser(opts).getAsObject()
+      const user = new User(validUser(opts))
       const valid = userServicesContainsGatewayAccount('2', user)
       expect(valid).to.equal(true)
     })
@@ -22,7 +23,7 @@ describe('gateway account filter utiltiies', () => {
       const opts = {
         gateway_account_ids: ['1', '2', '3']
       }
-      const user = validUser(opts).getAsObject()
+      const user = new User(validUser(opts))
       const valid = userServicesContainsGatewayAccount('4', user)
       expect(valid).to.equal(false)
     })
@@ -33,7 +34,7 @@ describe('gateway account filter utiltiies', () => {
     const opts = {
       gateway_account_ids: ['1', '2', '3']
     }
-    const user = validUser(opts).getAsObject()
+    const user = new User(validUser(opts))
 
     beforeEach(() => {
       accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => Promise.resolve({ accounts: [] }))

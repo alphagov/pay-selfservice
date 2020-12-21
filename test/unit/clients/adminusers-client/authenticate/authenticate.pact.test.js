@@ -11,6 +11,7 @@ const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-bu
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const User = require('../../../../../app/models/User.class')
+const { userResponsePactifier } = require('../../../../test-helpers/pact/pactifier')
 
 // Constants
 const AUTHENTICATE_PATH = '/v1/api/users/authenticate'
@@ -37,12 +38,10 @@ describe('adminusers client - authenticate', () => {
 
   describe('user is authenticated successfully', () => {
     const validPasswordResponse = userFixtures.validUserResponse({ username: existingUsername })
-    const validPasswordRequestPactified = userFixtures
+    const request = userFixtures
       .validPasswordAuthenticateRequest({
         username: existingUsername,
-        usernameMatcher: existingUsername,
         password: validPassword,
-        passwordMatcher: validPassword
       })
 
     before((done) => {
@@ -51,8 +50,8 @@ describe('adminusers client - authenticate', () => {
           .withUponReceiving('a correct password for a user')
           .withState(`a user exists with username ${existingUsername} and password ${validPassword}`)
           .withMethod('POST')
-          .withRequestBody(validPasswordRequestPactified)
-          .withResponseBody(validPasswordResponse.getPactified())
+          .withRequestBody(request)
+          .withResponseBody(userResponsePactifier.pactify(validPasswordResponse))
           .withStatusCode(200)
           .build()
       ).then(() => done())
@@ -62,7 +61,7 @@ describe('adminusers client - authenticate', () => {
 
     it('should return the right authentication success response', done => {
       adminusersClient.authenticateUser(existingUsername, validPassword).then((response) => {
-        expect(response).to.deep.equal(new User(validPasswordResponse.getPlain()))
+        expect(response).to.deep.equal(new User(validPasswordResponse))
         done()
       })
     })
@@ -71,12 +70,10 @@ describe('adminusers client - authenticate', () => {
   describe('user authentication fails', () => {
     const invalidPassword = 'some-password'
     const invalidPasswordResponse = userFixtures.invalidPasswordAuthenticateResponse()
-    const invalidPasswordRequestPactified = userFixtures
-      .invalidPasswordAuthenticateRequest({
+    const request = userFixtures
+      .validPasswordAuthenticateRequest({
         username: existingUsername,
-        usernameMatcher: existingUsername,
         password: invalidPassword,
-        passwordMatcher: invalidPassword
       })
 
     before((done) => {
@@ -85,8 +82,8 @@ describe('adminusers client - authenticate', () => {
           .withUponReceiving('an incorrect password for a user')
           .withState(`a user exists with username ${existingUsername} and password ${validPassword}`)
           .withMethod('POST')
-          .withRequestBody(invalidPasswordRequestPactified)
-          .withResponseBody(invalidPasswordResponse.getPactified())
+          .withRequestBody(request)
+          .withResponseBody(userResponsePactifier.pactify(invalidPasswordResponse))
           .withStatusCode(401)
           .build()
       ).then(() => done())
@@ -99,7 +96,7 @@ describe('adminusers client - authenticate', () => {
         done('should not resolve here')
       }).catch(err => {
         expect(err.errorCode).to.equal(401)
-        expect(err.message.errors).to.deep.equal(invalidPasswordResponse.getPlain().errors)
+        expect(err.message.errors).to.deep.equal(invalidPasswordResponse.errors)
         done()
       })
     })

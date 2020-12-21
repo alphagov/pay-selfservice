@@ -17,7 +17,7 @@ module.exports = {
   validServiceUsersResponse: (users) => {
     let data = []
     for (let user of users) {
-      data.push(userFixtures.validUserResponse(user).getPlain())
+      data.push(userFixtures.validUserResponse(user))
     }
     return {
       getPactified: () => {

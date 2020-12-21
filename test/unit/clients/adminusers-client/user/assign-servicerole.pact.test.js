@@ -1,10 +1,11 @@
 const { Pact } = require('@pact-foundation/pact')
-let path = require('path')
-let chai = require('chai')
-let chaiAsPromised = require('chai-as-promised')
-let getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
-let userFixtures = require('../../../../fixtures/user.fixtures')
-let PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const path = require('path')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
+const userFixtures = require('../../../../fixtures/user.fixtures')
+const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const { userResponsePactifier } = require('../../../../test-helpers/pact/pactifier')
 
 chai.use(chaiAsPromised)
 
@@ -17,7 +18,7 @@ const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const existingServiceExternalId = 'cp5wa'
 
 describe('adminusers client - assign service role to user', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
@@ -57,9 +58,9 @@ describe('adminusers client - assign service role to user', function () {
           .withUponReceiving('a valid assign service role request')
           .withState(`a user exists external id ${existingUserExternalId} and a service exists with external id ${existingServiceExternalId}`)
           .withMethod('POST')
-          .withRequestBody(request.getPlain())
+          .withRequestBody(request)
           .withStatusCode(200)
-          .withResponseBody(userFixture.getPactified())
+          .withResponseBody(userResponsePactifier.pactify(userFixture))
           .build()
       ).then(() => done())
         .catch(reason => console.log('PACT SETUP FAILED ' + reason))
@@ -88,7 +89,7 @@ describe('adminusers client - assign service role to user', function () {
         new PactInteractionBuilder(`${USER_PATH}/${nonExistentUserExternalId}/services`)
           .withUponReceiving('a service role request for non existent-user')
           .withMethod('POST')
-          .withRequestBody(request.getPlain())
+          .withRequestBody(request)
           .withStatusCode(404)
           .withResponseHeaders({})
           .build()
@@ -105,8 +106,8 @@ describe('adminusers client - assign service role to user', function () {
   })
 
   describe('assign user service role API - 400 response', () => {
-    let role = 'admin'
-    let serviceExternalId = 'XXXXXXXXXXX-invalid-id'
+    const role = 'admin'
+    const serviceExternalId = 'XXXXXXXXXXX-invalid-id'
     const request = userFixtures.validAssignServiceRoleRequest({
       service_external_id: serviceExternalId,
       role_name: role
@@ -118,7 +119,7 @@ describe('adminusers client - assign service role to user', function () {
           .withUponReceiving('an assign service role request for non existent service')
           .withState(`a user exists external id ${existingUserExternalId} and a service exists with external id ${existingServiceExternalId}`)
           .withMethod('POST')
-          .withRequestBody(request.getPlain())
+          .withRequestBody(request)
           .withStatusCode(400)
           .build()
       ).then(() => done())

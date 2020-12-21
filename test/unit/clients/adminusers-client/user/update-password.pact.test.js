@@ -14,7 +14,7 @@ var port = Math.floor(Math.random() * 48127) + 1024
 var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - update password', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
@@ -28,7 +28,7 @@ describe('adminusers client - update password', function () {
   after(() => provider.finalize())
 
   describe('update password for user API - success', () => {
-    let request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')
+    const request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')
 
     before((done) => {
       provider.addInteraction(
@@ -36,7 +36,7 @@ describe('adminusers client - update password', function () {
           .withState('a valid forgotten password entry and a related user exists')
           .withUponReceiving('a valid update password request')
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request)
           .withStatusCode(204)
           .withResponseHeaders({})
           .build()
@@ -46,13 +46,12 @@ describe('adminusers client - update password', function () {
     afterEach(() => provider.verify())
 
     it('should update password successfully', function (done) {
-      let requestData = request.getPlain()
-      adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.fulfilled.notify(done)
+      adminusersClient.updatePasswordForUser(request.forgotten_password_code, request.new_password).should.be.fulfilled.notify(done)
     })
   })
 
   describe('update password for user API - not found', () => {
-    let request = userFixtures.validUpdatePasswordRequest()
+    const request = userFixtures.validUpdatePasswordRequest()
 
     before((done) => {
       provider.addInteraction(
@@ -60,7 +59,7 @@ describe('adminusers client - update password', function () {
           .withState('a forgotten password does not exists')
           .withUponReceiving('a valid update password request')
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request)
           .withStatusCode(404)
           .build()
       ).then(() => done())
@@ -69,8 +68,7 @@ describe('adminusers client - update password', function () {
     afterEach(() => provider.verify())
 
     it('should error if forgotten password code is not found/expired', function (done) {
-      let requestData = request.getPlain()
-      adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.rejected.then(function (response) {
+      adminusersClient.updatePasswordForUser(request.forgotten_password_code, request.new_password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

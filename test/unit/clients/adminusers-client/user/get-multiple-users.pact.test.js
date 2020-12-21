@@ -47,7 +47,7 @@ describe('adminusers client - get users', function () {
       }
     })
 
-    const expectedUsers = userFixtures.validMultipleUserResponse(params)
+    const expectedUsers = userFixtures.validUsersResponse(params)
     const usersPactified = userResponsePactifier.pactifySimpleArray(expectedUsers)
 
     before((done) => {

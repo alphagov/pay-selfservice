@@ -217,7 +217,7 @@ describe('register user controller', () => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
       const newUserExtId = 'new-user-ext-id'
-      const validUserResponse = userFixtures.validUserResponse({ external_id: newUserExtId }).getPlain()
+      const validUserResponse = userFixtures.validUserResponse({ external_id: newUserExtId })
 
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
         .reply(201, validUserResponse)

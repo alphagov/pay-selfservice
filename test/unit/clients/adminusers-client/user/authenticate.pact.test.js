@@ -1,11 +1,12 @@
 const { Pact } = require('@pact-foundation/pact')
-var path = require('path')
-var chai = require('chai')
-var _ = require('lodash')
-var chaiAsPromised = require('chai-as-promised')
-var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
-var userFixtures = require('../../../../fixtures/user.fixtures')
-var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const path = require('path')
+const chai = require('chai')
+const _ = require('lodash')
+const chaiAsPromised = require('chai-as-promised')
+const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
+const userFixtures = require('../../../../fixtures/user.fixtures')
+const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const { userResponsePactifier } = require('../../../../test-helpers/pact/pactifier')
 
 chai.use(chaiAsPromised)
 chai.should()
@@ -16,7 +17,7 @@ const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - authenticate', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
@@ -30,8 +31,8 @@ describe('adminusers client - authenticate', function () {
   after(() => provider.finalize())
 
   describe('authenticate user API - success', () => {
-    let request = userFixtures.validAuthenticateRequest({ username: 'existing-user' })
-    let validUserResponse = userFixtures.validUserResponse()
+    const request = userFixtures.validAuthenticateRequest({ username: 'existing-user' })
+    const validUserResponse = userFixtures.validUserResponse()
 
     before((done) => {
       provider.addInteraction(
@@ -39,9 +40,9 @@ describe('adminusers client - authenticate', function () {
           .withState('a user exists')
           .withUponReceiving('a valid user authenticate request')
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request)
           .withStatusCode(200)
-          .withResponseBody(validUserResponse.getPactified())
+          .withResponseBody(userResponsePactifier.pactify(validUserResponse))
           .build()
       ).then(() => done())
     })
@@ -49,25 +50,22 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should authenticate a user successfully', function (done) {
-      let requestData = request.getPlain()
-
-      adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.fulfilled.then(function (user) {
-        let expectedUser = validUserResponse.getPlain()
-        expect(user.username).to.be.equal(expectedUser.username)
-        expect(user.email).to.be.equal(expectedUser.email)
-        expect(_.isEqual(user.serviceRoles[0].gatewayAccountIds, expectedUser.service_roles[0].gateway_account_ids)).to.be.equal(true)
-        expect(user.telephoneNumber).to.be.equal(expectedUser.telephone_number)
-        expect(user.otpKey).to.be.equal(expectedUser.otp_key)
-        expect(user.serviceRoles[0].role.name).to.be.equal(expectedUser.service_roles[0].role.name)
-        expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUser.service_roles[0].role.permissions.length)
+      adminusersClient.authenticateUser(request.username, request.password).should.be.fulfilled.then(function (user) {
+        expect(user.username).to.be.equal(validUserResponse.username)
+        expect(user.email).to.be.equal(validUserResponse.email)
+        expect(_.isEqual(user.serviceRoles[0].gatewayAccountIds, validUserResponse.service_roles[0].gateway_account_ids)).to.be.equal(true)
+        expect(user.telephoneNumber).to.be.equal(validUserResponse.telephone_number)
+        expect(user.otpKey).to.be.equal(validUserResponse.otp_key)
+        expect(user.serviceRoles[0].role.name).to.be.equal(validUserResponse.service_roles[0].role.name)
+        expect(user.serviceRoles[0].role.permissions.length).to.be.equal(validUserResponse.service_roles[0].role.permissions.length)
       }).should.notify(done)
     })
   })
 
   describe('authenticate user API - unauthorized', () => {
-    let request = userFixtures.validAuthenticateRequest({ username: 'nonexisting' })
+    const request = userFixtures.validAuthenticateRequest({ username: 'nonexisting' })
 
-    let unauthorizedResponse = userFixtures.unauthorizedUserResponse()
+    const unauthorizedResponse = userFixtures.unauthorizedUserResponse()
 
     before((done) => {
       provider.addInteraction(
@@ -75,9 +73,9 @@ describe('adminusers client - authenticate', function () {
           .withState('a user not exists with a given username password')
           .withUponReceiving('a user authenticate request with no matching user')
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request)
           .withStatusCode(401)
-          .withResponseBody(unauthorizedResponse.getPactified())
+          .withResponseBody(userResponsePactifier.pactify(unauthorizedResponse))
           .build()
       ).then(() => done())
     })
@@ -85,19 +83,18 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should fail authentication if invalid username / password', function (done) {
-      let requestData = request.getPlain()
-      adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.rejected.then(function (response) {
+      adminusersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(401)
         expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(unauthorizedResponse.getPlain().errors)
+        expect(response.message.errors).to.deep.equal(unauthorizedResponse.errors)
       }).should.notify(done)
     })
   })
 
   describe('authenticate user API - bad request', () => {
-    let request = { username: '', password: '' }
+    const request = { username: '', password: '' }
 
-    let badAuthenticateResponse = userFixtures.badAuthenticateResponse()
+    const badAuthenticateResponse = userFixtures.badAuthenticateResponse()
 
     before((done) => {
       provider.addInteraction(
@@ -107,7 +104,7 @@ describe('adminusers client - authenticate', function () {
           .withMethod('POST')
           .withRequestBody(request)
           .withStatusCode(400)
-          .withResponseBody(badAuthenticateResponse.getPactified())
+          .withResponseBody(userResponsePactifier.pactify(badAuthenticateResponse))
           .build()
       ).then(() => done())
     })
@@ -118,7 +115,7 @@ describe('adminusers client - authenticate', function () {
       adminusersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(2)
-        expect(response.message.errors).to.deep.equal(badAuthenticateResponse.getPlain().errors)
+        expect(response.message.errors).to.deep.equal(badAuthenticateResponse.errors)
       }).should.notify(done)
     })
   })

@@ -9,7 +9,7 @@ let user, service, result, permission, role
 
 describe('Class: User', () => {
   before(() => {
-    user = new User(userFixtures.validUserResponse().getPlain())
+    user = new User(userFixtures.validUserResponse())
     service = user.serviceRoles[0].service
     permission = user.serviceRoles[0].role.permissions[0].name
     role = user.serviceRoles[0].role
@@ -66,13 +66,13 @@ describe('Class: User', () => {
   describe('is internal user', () => {
     it('should return false', () => {
       process.env.GDS_INTERNAL_USER_EMAIL_DOMAIN = '@example.org'
-      user = new User(userFixtures.validUserResponse().getPlain())
+      user = new User(userFixtures.validUserResponse())
       result = user.internalUser
       expect(result).to.equal(false)
     })
     it('should return true', function () {
       process.env.GDS_INTERNAL_USER_EMAIL_DOMAIN = '@example.com'
-      user = new User(userFixtures.validUserResponse().getPlain())
+      user = new User(userFixtures.validUserResponse())
       result = user.internalUser
       expect(result).to.equal(true)
     })
@@ -107,7 +107,7 @@ describe('Class: User', () => {
       }]
     }
     it('should return the number of live services', function () {
-      user = new User(userFixtures.validUserResponse(opts).getPlain())
+      user = new User(userFixtures.validUserResponse(opts))
       result = user.numberOfLiveServices
       expect(result).to.equal(2)
     })
