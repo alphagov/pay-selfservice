@@ -40,7 +40,8 @@ const getProductsByGatewayAccountIdFailure = function (gatewayAccountId) {
 
 const postCreateProductSuccess = function () {
   return {
-    name: 'postCreateProductSuccess'
+    name: 'postCreateProductSuccess',
+    opts: {}
   }
 }
 

@@ -1,5 +1,8 @@
 'use strict'
 
+const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
+const { stubBuilder } = require('./stub-builder')
+
 function parseGatewayAccountOptions (opts) {
   let stubOptions = { gateway_account_id: opts.gatewayAccountId }
 
@@ -53,13 +56,12 @@ function parseGatewayAccountOptions (opts) {
   return stubOptions
 }
 
-const getGatewayAccountSuccess = function (opts) {
-  const stubOptions = parseGatewayAccountOptions(opts)
-
-  return {
-    name: 'getGatewayAccountSuccess',
-    opts: stubOptions
-  }
+function getGatewayAccountSuccess (opts) {
+  const path = '/v1/frontend/accounts/' + opts.gatewayAccountId
+  const fixtureOpts = parseGatewayAccountOptions(opts)
+  return stubBuilder('GET', path, 200, {
+    response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)
+  })
 }
 
 const getGatewayAccountByExternalIdSuccess = function (opts) {
@@ -130,7 +132,8 @@ const getAcceptedCardTypesSuccess = function (opts) {
 
 const getCardTypesSuccess = function () {
   return {
-    name: 'getCardTypesSuccess'
+    name: 'getCardTypesSuccess',
+    opts: {}
   }
 }
 
