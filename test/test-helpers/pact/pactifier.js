@@ -1,6 +1,6 @@
 'use strict'
 
-const pactBase = require('../../fixtures/pact-base')
+const pactBase = require('./pact-base')
 
 const defaultPactifier = pactBase()
 

@@ -13,7 +13,7 @@ process.env.PUBLIC_AUTH_URL = `http://localhost:${port}${TOKENS_PATH}`
 
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
 const publicauthClient = require('../../../../app/services/clients/public-auth.client')
-const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 chai.use(chaiAsPromised)

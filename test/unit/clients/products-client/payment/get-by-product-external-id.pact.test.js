@@ -6,7 +6,7 @@ const proxyquire = require('proxyquire')
 
 const Payment = require('../../../../../app/models/Payment.class')
 const path = require('path')
-const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const PactInteractionBuilder = require('../../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const productFixtures = require('../../../../fixtures/product.fixtures')
 const { pactifySimpleArray } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
