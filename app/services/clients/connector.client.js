@@ -6,8 +6,6 @@ const EventEmitter = require('events').EventEmitter
 const logger = require('../../utils/logger')(__filename)
 const oldBaseClient = require('./old-base.client')
 const baseClient = require('./base-client/base.client')
-const requestLogger = require('../../utils/request-logger')
-const createCallbackToPromiseConverter = require('../../utils/response-converter').createCallbackToPromiseConverter
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 const StripeAccount = require('../../models/StripeAccount.class')
 
@@ -120,17 +118,17 @@ function _serviceNameUrlFor (gatewayAccountId, url) {
 }
 
 /** @private */
-var _getNotificationEmailUrlFor = function (accountID, url) {
+function _getNotificationEmailUrlFor (accountID, url) {
   return url + EMAIL_NOTIFICATION__PATH.replace('{accountId}', accountID)
 }
 
 /** @private */
-var _get3dsFlexCredentialsUrlFor = function (accountID, url) {
+function _get3dsFlexCredentialsUrlFor (accountID, url) {
   return url + FLEX_CREDENTIALS_PATH.replace('{accountId}', accountID)
 }
 
 /** @private */
-var _getToggle3dsUrlFor = function (accountID, url) {
+function _getToggle3dsUrlFor (accountID, url) {
   return url + TOGGLE_3DS_PATH.replace('{accountId}', accountID)
 }
 
@@ -155,7 +153,7 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccount: function (params) {
-    let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
+    const url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
     return baseClient.get(url, {
       correlationId: params.correlationId,
       description: 'get an account',
@@ -171,8 +169,8 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccountByExternalId: function (params) {
-    let url = _accountByExternalIdUrlFor(params.gatewayAccountExternalId, this.connectorUrl)
-    let context = {
+    const url = _accountByExternalIdUrlFor(params.gatewayAccountExternalId, this.connectorUrl)
+    const context = {
       url: url,
       correlationId: params.correlationId,
       description: 'get an account',
@@ -191,8 +189,8 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccounts: function (params) {
-    let url = _accountsUrlFor(params.gatewayAccountIds, this.connectorUrl)
-    let context = {
+    const url = _accountsUrlFor(params.gatewayAccountIds, this.connectorUrl)
+    const context = {
       url: url,
       correlationId: params.correlationId,
       description: 'get an account',
@@ -213,7 +211,7 @@ ConnectorClient.prototype = {
    * @param analyticsId
    * @param correlationId
    *
-   * @returns {*|Constructor|promise}
+   * @returns {Promise}
    */
   createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, correlationId) {
     const url = this.connectorUrl + ACCOUNTS_API_PATH
@@ -357,53 +355,22 @@ ConnectorClient.prototype = {
 
   /**
    * Retrieves all card types
-   * @param params (optional)
-   *          And object with the following elements;
-   *            correlationId
-   * @param successCallback
-   *          Callback function upon successful card type retrieval
+   * @param correlationId
+   * @returns {Promise<Object>}
    */
-  getAllCardTypes: function (params, successCallback) {
-    if (typeof params === 'function') {
-      successCallback = params
-    }
-
-    let url = _cardTypesUrlFor(this.connectorUrl)
+  getAllCardTypes: function (correlationId) {
+    const url = _cardTypesUrlFor(this.connectorUrl)
     logger.debug('Calling connector to get all card types', {
       service: 'connector',
       method: 'GET',
       url: url
     })
-    oldBaseClient.get(url, params, this.responseHandler(successCallback))
-    return this
-  },
 
-  /**
-   * This will replace the callback version soon
-   * Retrieves all card types
-   * @param correlationId
-   * @returns {Promise<Object>}
-   */
-  getAllCardTypesPromise: function (correlationId) {
-    return new Promise((resolve, reject) => {
-      const url = _cardTypesUrlFor(this.connectorUrl)
-      const params = { correlationId }
-      const startTime = new Date()
-      const context = {
-        description: 'get all card types',
-        method: 'GET',
-        service: 'connector',
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId
-      }
-      requestLogger.logRequestStart(context)
-
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-      oldBaseClient.get(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
+    return baseClient.get(url, {
+      url: url,
+      correlationId: correlationId,
+      description: 'Retrieves all card types',
+      service: SERVICE_NAME
     })
   },
 
@@ -414,33 +381,16 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   patchServiceName: function (gatewayAccountId, serviceName, correlationId) {
-    return new Promise((resolve, reject) => {
-      const params = {
-        gatewayAccountId: gatewayAccountId,
-        payload: {
-          service_name: serviceName
-        },
-        correlationId: correlationId
-      }
+    const url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl)
 
-      const url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl)
-      const startTime = new Date()
-      const context = {
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId: correlationId,
-        method: 'PATCH',
-        description: 'update service name',
-        service: SERVICE_NAME
-      }
-
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-      requestLogger.logRequestStart(context)
-
-      oldBaseClient.patch(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
+    return baseClient.patch(url, {
+      url: url,
+      body: {
+        service_name: serviceName
+      },
+      correlationId: correlationId,
+      description: 'update service name',
+      service: SERVICE_NAME
     })
   },
 
@@ -638,23 +588,14 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   update3dsEnabled: function (params) {
-    return new Promise((resolve, reject) => {
-      const url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
-      const startTime = new Date()
-      const context = {
-        description: 'Update whether 3DS is on or off',
-        method: 'PATCH',
-        service: 'connector',
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId: params.correlationId
-      }
-      requestLogger.logRequestStart(context)
+    const url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-      oldBaseClient.patch(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
+    return baseClient.patch(url, {
+      url: url,
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'Update whether 3DS is on or off',
+      service: SERVICE_NAME
     })
   },
 

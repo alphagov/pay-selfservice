@@ -58,7 +58,7 @@ module.exports = async (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
 
   try {
-    const { card_types: allCards } = await connector.getAllCardTypesPromise(correlationId)
+    const { card_types: allCards } = await connector.getAllCardTypes(correlationId)
     const { card_types: acceptedCards } = await connector.getAcceptedCardsForAccountPromise(accountId, correlationId)
 
     response(req, res, 'payment-types/card-types', formatCardsForTemplate(allCards, acceptedCards, req.account.requires3ds))

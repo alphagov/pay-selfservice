@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
       return
     }
     const searchResultOutput = await transactionService.search(userPermittedAccountsSummary.gatewayAccountIds, filters.result)
-    const cardTypes = await client.getAllCardTypesPromise(correlationId)
+    const cardTypes = await client.getAllCardTypes(correlationId)
     const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, router.paths.allServiceTransactions.download, req.session.backPath)
     delete req.session.backPath
     model.search_path = router.paths.allServiceTransactions.index
