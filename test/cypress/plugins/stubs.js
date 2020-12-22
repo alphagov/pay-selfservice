@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const userFixtures = require('../../fixtures/user.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const transactionDetailsFixtures = require('../../fixtures/transaction.fixtures')
+const transactionDetailsFixtures = require('../../fixtures/refund.fixtures')
 const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
@@ -284,39 +284,27 @@ module.exports = {
     const path = `/v1/api/users/${opts.external_id}/second-factor`
     return simpleStubBuilder('POST', path, 200)
   },
-  getChargeSuccess: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.chargeDetails.charge_id}`
-    return simpleStubBuilder('GET', path, 200, {
-      response: transactionDetailsFixtures.validTransactionDetailsResponse(opts.chargeDetails).getPlain()
-    })
-  },
-  getChargeEventsSuccess: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/events`
-    return simpleStubBuilder('GET', path, 200, {
-      response: transactionDetailsFixtures.validChargeEventsResponse(opts).getPlain()
-    })
-  },
   postRefundSuccess: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
     return simpleStubBuilder('POST', path, 200, {
-      request: transactionDetailsFixtures.validTransactionRefundRequest(opts).getPlain(),
+      request: transactionDetailsFixtures.validTransactionRefundRequest(opts),
       verifyCalledTimes: opts.verifyCalledTimes
     })
   },
   postRefundAmountNotAvailable: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
     return simpleStubBuilder('POST', path, 400, {
-      request: transactionDetailsFixtures.validTransactionRefundRequest(opts).getPlain(),
+      request: transactionDetailsFixtures.validTransactionRefundRequest(opts),
       response: transactionDetailsFixtures.invalidTransactionRefundResponse({
         error_identifier: 'REFUND_NOT_AVAILABLE',
         reason: 'amount_not_available'
-      }).getPlain()
+      })
     })
   },
   getLedgerTransactionSuccess: (opts = {}) => {
     const path = `/v1/transaction/${opts.transaction_id}`
     return simpleStubBuilder('GET', path, 200, {
-      response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts).getPlain()
+      response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts)
     })
   },
   getLedgerPayoutSuccess: (opts = {}) => {
@@ -335,7 +323,7 @@ module.exports = {
   getLedgerEventsSuccess: (opts = {}) => {
     const path = `/v1/transaction/${opts.transaction_id}/event`
     return simpleStubBuilder('GET', path, 200, {
-      response: ledgerTransactionFixtures.validTransactionEventsResponse(opts).getPlain()
+      response: ledgerTransactionFixtures.validTransactionEventsResponse(opts)
     })
   },
   getLedgerTransactionsSuccess: (opts = {}) => {
@@ -348,7 +336,7 @@ module.exports = {
         limit_total: true,
         limit_total_size: 5001
       }),
-      response: ledgerTransactionFixtures.validTransactionSearchResponse(opts).getPlain()
+      response: ledgerTransactionFixtures.validTransactionSearchResponse(opts)
     })
   },
   getCardTypesSuccess: () => {
@@ -497,7 +485,7 @@ module.exports = {
   getDashboardStatisticsStub: (opts = {}) => {
     const path = '/v1/report/transactions-summary'
     return simpleStubBuilder('GET', path, 200, {
-      response: ledgerFixture.validTransactionSummaryDetails(opts).getPlain()
+      response: ledgerFixture.validTransactionSummaryDetails(opts)
     })
   },
   patchUpdateCredentials: (opts = {}) => {

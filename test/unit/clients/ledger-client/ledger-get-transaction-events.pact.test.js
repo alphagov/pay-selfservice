@@ -8,6 +8,7 @@ const ledgerClient = require('../../../../app/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../../fixtures/ledger-transaction.fixtures')
 const legacyConnectorParityTransformer = require('../../../../app/services/clients/utils/ledger-legacy-connector-parity')
 const pactTestProvider = require('./ledger-pact-test-provider')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'
@@ -47,7 +48,6 @@ describe('ledger client', function () {
       ]
     })
     before(() => {
-      const pactified = validTransactionEventsResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}/${params.transaction_id}/event`)
           .withQuery('gateway_account_id', params.account_id)
@@ -55,7 +55,7 @@ describe('ledger client', function () {
           .withState(defaultTransactionState)
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(pactified)
+          .withResponseBody(pactify(validTransactionEventsResponse))
           .build()
       )
     })
@@ -63,7 +63,7 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction events successfully', function () {
-      const getTransactionEventsDetails = legacyConnectorParityTransformer.legacyConnectorEventsParity(validTransactionEventsResponse.getPlain())
+      const getTransactionEventsDetails = legacyConnectorParityTransformer.legacyConnectorEventsParity(validTransactionEventsResponse)
       return ledgerClient.events(params.transaction_id, params.account_id)
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionEventsDetails)

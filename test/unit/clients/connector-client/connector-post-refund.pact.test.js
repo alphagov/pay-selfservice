@@ -7,7 +7,8 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
-const transactionDetailsFixtures = require('../../../fixtures/transaction.fixtures')
+const transactionDetailsFixtures = require('../../../fixtures/refund.fixtures')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const CHARGES_RESOURCE = '/v1/api/accounts'
@@ -44,13 +45,12 @@ describe('connector client', function () {
       })
 
       before(() => {
-        const pactified = validPostRefundRequest.getPactified()
         return provider.addInteraction(
           new PactInteractionBuilder(`${CHARGES_RESOURCE}/${gatewayAccountId}/charges/${chargeId}/refunds`)
             .withUponReceiving('a valid post refund request')
             .withState(defaultChargeState)
             .withMethod('POST')
-            .withRequestBody(pactified)
+            .withRequestBody(validPostRefundRequest)
             .withStatusCode(202)
             .build()
         )
@@ -59,8 +59,7 @@ describe('connector client', function () {
       afterEach(() => provider.verify())
 
       it('should post a refund request successfully', () => {
-        const payload = validPostRefundRequest.getPlain()
-        return connectorClient.postChargeRefund(gatewayAccountId, chargeId, payload, 'correlation-id')
+        return connectorClient.postChargeRefund(gatewayAccountId, chargeId, validPostRefundRequest, 'correlation-id')
           .should.be.fulfilled
       })
     })
@@ -73,17 +72,14 @@ describe('connector client', function () {
       const invalidTransactionRefundResponse = transactionDetailsFixtures.invalidTransactionRefundResponse()
 
       before(() => {
-        const pactifiedRequest = invalidTransactionRefundRequest.getPactified()
-        const pactifiedResponse = invalidTransactionRefundResponse.getPactified()
-
         return provider.addInteraction(
           new PactInteractionBuilder(`${CHARGES_RESOURCE}/${gatewayAccountId}/charges/${chargeId}/refunds`)
             .withUponReceiving('an invalid transaction refund request')
             .withState(defaultChargeState)
             .withMethod('POST')
-            .withRequestBody(pactifiedRequest)
+            .withRequestBody(invalidTransactionRefundRequest)
             .withStatusCode(400)
-            .withResponseBody(pactifiedResponse)
+            .withResponseBody(pactify(invalidTransactionRefundResponse))
             .build()
         )
       })
@@ -91,13 +87,11 @@ describe('connector client', function () {
       afterEach(() => provider.verify())
 
       it('should fail with a refund amount greater than the refund amount available', () => {
-        const refundFailureResponse = invalidTransactionRefundResponse.getPlain()
-        const payload = invalidTransactionRefundRequest.getPlain()
-        return connectorClient.postChargeRefund(gatewayAccountId, chargeId, payload, 'correlation-id')
+        return connectorClient.postChargeRefund(gatewayAccountId, chargeId, invalidTransactionRefundRequest, 'correlation-id')
           .should.be.rejected.then(response => {
             expect(response.errorCode).to.equal(400)
-            expect(response.errorIdentifier).to.equal(refundFailureResponse.error_identifier)
-            expect(response.reason).to.equal(refundFailureResponse.reason)
+            expect(response.errorIdentifier).to.equal(invalidTransactionRefundResponse.error_identifier)
+            expect(response.reason).to.equal(invalidTransactionRefundResponse.reason)
           })
       })
     })

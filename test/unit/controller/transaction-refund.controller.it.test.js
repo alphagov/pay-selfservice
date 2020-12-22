@@ -4,7 +4,7 @@ const sinon = require('sinon')
 const nock = require('nock')
 
 const refundController = require('../../../app/controllers/transactions/transaction-refund.controller.js')
-const transactionFixtures = require('../../fixtures/transaction.fixtures')
+const transactionFixtures = require('../../fixtures/refund.fixtures')
 
 const ACCOUNT_ID = '123'
 const CHARGE_ID = '123456'
@@ -52,7 +52,7 @@ describe('Refund scenario:', function () {
       user_email: req.user.email,
       amount: 5000,
       refund_amount_available: 5000
-    }).getPlain()
+    })
     connectorMock.post(connectorRefundUrl, request)
       .reply(202)
 
@@ -74,7 +74,7 @@ describe('Refund scenario:', function () {
       user_email: req.user.email,
       amount: 1990,
       refund_amount_available: 5000
-    }).getPlain()
+    })
     connectorMock.post(connectorRefundUrl, request)
       .reply(202)
 
@@ -109,11 +109,11 @@ describe('Refund scenario:', function () {
       user_email: req.user.email,
       amount: 6000,
       refund_amount_available: 5000
-    }).getPlain()
+    })
     const response = transactionFixtures.invalidTransactionRefundResponse({
       error_identifier: 'REFUND_NOT_AVAILABLE',
       reason: 'amount_not_available'
-    }).getPlain()
+    })
 
     connectorMock.post(connectorRefundUrl, request)
       .reply(400, response)
@@ -136,11 +136,11 @@ describe('Refund scenario:', function () {
       user_email: req.user.email,
       amount: 1,
       refund_amount_available: 5000
-    }).getPlain()
+    })
     const response = transactionFixtures.invalidTransactionRefundResponse({
       error_identifier: 'REFUND_NOT_AVAILABLE',
       reason: 'amount_min_validation'
-    }).getPlain()
+    })
 
     connectorMock.post(connectorRefundUrl, request)
       .reply(400, response)
@@ -163,10 +163,10 @@ describe('Refund scenario:', function () {
       user_email: req.user.email,
       amount: 1990,
       refund_amount_available: 5000
-    }).getPlain()
+    })
     const response = transactionFixtures.invalidTransactionRefundResponse({
       error_identifier: 'REFUND_AMOUNT_AVAILABLE_MISMATCH'
-    }).getPlain()
+    })
 
     connectorMock.post(connectorRefundUrl, request)
       .reply(400, response)
@@ -188,11 +188,11 @@ describe('Refund scenario:', function () {
       user_email: req.user.email,
       amount: 5000,
       refund_amount_available: 5000
-    }).getPlain()
+    })
     const response = transactionFixtures.invalidTransactionRefundResponse({
       error_identifier: 'REFUND_NOT_AVAILABLE',
       reason: 'full'
-    }).getPlain()
+    })
 
     connectorMock.post(connectorRefundUrl, request)
       .reply(400, response)
@@ -214,10 +214,10 @@ describe('Refund scenario:', function () {
       user_email: req.user.email,
       amount: 5000,
       refund_amount_available: 5000
-    }).getPlain()
+    })
     const response = transactionFixtures.invalidTransactionRefundResponse({
       error_identifier: 'UNKNOWN_ERROR_IDENTIFIER'
-    }).getPlain()
+    })
 
     connectorMock.post(connectorRefundUrl, request)
       .reply(400, response)
