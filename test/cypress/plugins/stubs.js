@@ -137,18 +137,18 @@ module.exports = {
   getGatewayAccountSuccess: (opts = {}) => {
     const path = '/v1/frontend/accounts/' + opts.gateway_account_id
     return simpleStubBuilder('GET', path, 200, {
-      response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
+      response: gatewayAccountFixtures.validGatewayAccountResponse(opts)
     })
   },
   getGatewayAccountByExternalIdSuccess: (opts = {}) => {
     const path = '/v1/api/accounts/external-id/' + opts.external_id
     return simpleStubBuilder('GET', path, 200, {
-      response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
+      response: gatewayAccountFixtures.validGatewayAccountResponse(opts)
     })
   },
   getGatewayAccountSuccessRepeat: (opts = {}) => {
-    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0]).getPlain()
-    const aDifferentValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[1]).getPlain()
+    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0])
+    const aDifferentValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[1])
     return [
       {
         predicates: [{
@@ -233,37 +233,37 @@ module.exports = {
       query: {
         accountIds: opts.gateway_account_id.toString()
       },
-      response: gatewayAccountFixtures.validGatewayAccountsResponse({ accounts: [opts] }).getPlain()
+      response: gatewayAccountFixtures.validGatewayAccountsResponse({ accounts: [opts] })
     })
   },
   getDirectDebitGatewayAccountSuccess: (opts = {}) => {
     const path = '/v1/api/accounts/' + opts.gateway_account_id
     return simpleStubBuilder('GET', path, 200, {
-      response: gatewayAccountFixtures.validDirectDebitGatewayAccountResponse(opts).getPlain()
+      response: gatewayAccountFixtures.validDirectDebitGatewayAccountResponse(opts)
     })
   },
   getAccountAuthSuccess: (opts = {}) => {
     const path = '/v1/frontend/auth/' + opts.gateway_account_id
     return simpleStubBuilder('GET', path, 200, {
-      response: gatewayAccountFixtures.validGatewayAccountTokensResponse(opts).getPlain()
+      response: gatewayAccountFixtures.validGatewayAccountTokensResponse(opts)
     })
   },
   patchAccountEmailCollectionModeSuccess: (opts = {}) => {
     const path = '/v1/api/accounts/' + opts.gateway_account_id
     return simpleStubBuilder('PATCH', path, 200, {
-      request: gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest(opts.collectionMode).getPlain()
+      request: gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest(opts.collectionMode)
     })
   },
   patchConfirmationEmailToggleSuccess: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/email-notification`
     return simpleStubBuilder('PATCH', path, 200, {
-      request: gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(opts.enabled).getPlain()
+      request: gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(opts.enabled)
     })
   },
   patchRefundEmailToggleSuccess: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/email-notification`
     return simpleStubBuilder('PATCH', path, 200, {
-      request: gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(opts.enabled).getPlain()
+      request: gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(opts.enabled)
     })
   },
   postUserAuthenticateSuccess: (opts = {}) => {
@@ -354,20 +354,20 @@ module.exports = {
   getCardTypesSuccess: () => {
     const path = '/v1/api/card-types'
     return simpleStubBuilder('GET', path, 200, {
-      response: cardFixtures.validCardTypesResponse().getPlain()
+      response: cardFixtures.validCardTypesResponse()
     })
   },
   getAcceptedCardTypesSuccess: opts => {
     const path = `/v1/frontend/accounts/${opts.account_id}/card-types`
     const response = opts.updated
-      ? cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
-      : cardFixtures.validAcceptedCardTypesResponse(opts).getPlain()
+      ? cardFixtures.validUpdatedAcceptedCardTypesResponse()
+      : cardFixtures.validAcceptedCardTypesResponse(opts)
     return simpleStubBuilder('GET', path, 200, { response: response })
   },
   getAcceptedCardsForAccountSuccess: opts => {
     const path = `/v1/frontend/accounts/${opts.account_id}/card-types`
     return simpleStubBuilder('GET', path, 200, {
-      response: cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
+      response: cardFixtures.validUpdatedAcceptedCardTypesResponse()
     })
   },
   patchUpdateServiceGoLiveStageSuccess: (opts = {}) => {
@@ -542,8 +542,8 @@ module.exports = {
   postCreateGatewayAccountSuccess: (opts = {}) => {
     const path = '/v1/api/accounts'
     return simpleStubBuilder('POST', path, 200, {
-      request: gatewayAccountFixtures.validCreateGatewayAccountRequest(opts).getPlain(),
-      response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain(),
+      request: gatewayAccountFixtures.validCreateGatewayAccountRequest(opts),
+      response: gatewayAccountFixtures.validGatewayAccountResponse(opts),
       verifyCalledTimes: opts.verifyCalledTimes
     })
   },

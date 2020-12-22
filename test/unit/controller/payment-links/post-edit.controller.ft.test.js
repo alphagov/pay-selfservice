@@ -43,7 +43,7 @@ describe('POST edit payment link controller', () => {
   let result, session, app
   before('Arrange', () => {
     connectorMock.get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-      .reply(200, validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }).getPlain())
+      .reply(200, validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
     productsMock.patch(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${PRODUCT_EXTERNAL_ID}`).reply(200, PAYMENT_1)
     session = getMockSession(VALID_USER)
     session.editPaymentLinkData = {

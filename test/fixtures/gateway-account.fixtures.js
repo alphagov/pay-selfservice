@@ -1,12 +1,5 @@
 'use strict'
 
-const path = require('path')
-const _ = require('lodash')
-
-// Global setup
-const pactBase = require(path.join(__dirname, '/pact-base'))
-const pactRegister = pactBase()
-
 function validGatewayAccount (opts) {
   const gatewayAccount = {
     payment_provider: opts.payment_provider || 'sandbox',
@@ -66,71 +59,35 @@ function validGatewayAccount (opts) {
 
 module.exports = {
   validGatewayAccountPatchRequest: (opts = {}) => {
-    const data = {
+    return {
       op: 'replace',
       path: opts.path,
       value: opts.value
     }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
   validGatewayAccountEmailRefundToggleRequest: (enabled = true) => {
-    const data = {
+    return {
       op: 'replace',
       path: '/refund/enabled',
       value: enabled
     }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
   validGatewayAccountEmailConfirmationToggleRequest: (enabled = true) => {
-    const data = {
+    return {
       op: 'replace',
       path: '/confirmation/enabled',
       value: enabled
     }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
   validGatewayAccountEmailCollectionModeRequest: (collectionMode = 'MANDATORY') => {
-    const data = {
+    return {
       op: 'replace',
       path: 'email_collection_mode',
       value: collectionMode
     }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
   validGatewayAccountTokensResponse: (opts = {}) => {
-    let data = {
+    return {
       tokens:
         [{
           issued_date: opts.issued_date || '03 Sep 2018 - 10:05',
@@ -141,60 +98,24 @@ module.exports = {
           created_by: opts.created_by || 'System generated'
         }]
     }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
   },
   validGatewayAccountResponse: (opts = {}) => {
-    let data = validGatewayAccount(opts)
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
+    return validGatewayAccount(opts)
   },
   validGatewayAccountsResponse: (opts = {}) => {
     const accounts = opts.accounts.map(validGatewayAccount)
-    let data = {
-      accounts: accounts
-    }
-
     return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
+      accounts: accounts
     }
   },
   validDirectDebitGatewayAccountResponse: (opts = {}) => {
-    const data = {
+    return {
       gateway_account_id: opts.gateway_account_id || 73,
       gateway_account_external_id: opts.gateway_account_external_id || 'DIRECT_DEBIT:' + 'a9c797ab271448bdba21359e15672076',
       payment_provider: opts.payment_provider || 'sandbox',
       type: opts.type || 'test',
       analytics_id: opts.analytics_id || 'd82dae5bcb024828bb686574a932b5a5',
       is_connected: opts.is_connected || false
-    }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
     }
   },
   validCreateGatewayAccountRequest: (opts = {}) => {
@@ -207,14 +128,6 @@ module.exports = {
     if (opts.analytics_id) {
       data.analytics_id = opts.analytics_id
     }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
+    return data
   }
 }

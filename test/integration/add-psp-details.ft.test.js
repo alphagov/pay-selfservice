@@ -35,7 +35,7 @@ describe('Add stripe psp details route', function () {
           gateway_account_id: GATEWAY_ACCOUNT_ID,
           payment_provider: 'stripe',
           type: 'live'
-        }).getPlain())
+        }))
 
       connectorMock
         .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/stripe-setup`)

@@ -37,7 +37,7 @@ describe('Update 3DS integration version', () => {
 
   describe('Update 3DS integration version to 1', () => {
     const patchRequestParams = { path: 'integration_version_3ds', value: 1 }
-    const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams).getPlain()
+    const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams)
 
     before(() => {
       return provider.addInteraction(
@@ -62,7 +62,7 @@ describe('Update 3DS integration version', () => {
 
   describe('Update 3DS integration version to 2', () => {
     const patchRequestParams = { path: 'integration_version_3ds', value: 2 }
-    const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams).getPlain()
+    const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams)
 
     before(() => {
       return provider.addInteraction(

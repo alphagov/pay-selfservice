@@ -36,12 +36,11 @@ describe('connector client - create gateway account', function () {
     const validCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
 
     before((done) => {
-      const pactified = validCreateGatewayAccountRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
           .withUponReceiving('a valid create gateway account request')
           .withMethod('POST')
-          .withRequestBody(pactified)
+          .withRequestBody(validCreateGatewayAccountRequest)
           .withStatusCode(201)
           .build()
       )
@@ -52,12 +51,11 @@ describe('connector client - create gateway account', function () {
     afterEach(() => provider.verify())
 
     it('should submit create gateway account successfully', function (done) {
-      const createGatewayAccount = validCreateGatewayAccountRequest.getPlain()
       connectorClient.createGatewayAccount(
-        createGatewayAccount.payment_provider,
-        createGatewayAccount.type,
-        createGatewayAccount.service_name,
-        createGatewayAccount.analytics_id
+        validCreateGatewayAccountRequest.payment_provider,
+        validCreateGatewayAccountRequest.type,
+        validCreateGatewayAccountRequest.service_name,
+        validCreateGatewayAccountRequest.analytics_id
       ).should.be.fulfilled.should.notify(done)
     })
   })
@@ -71,12 +69,11 @@ describe('connector client - create gateway account', function () {
     }
 
     before((done) => {
-      const pactified = invalidCreateGatewayAccountRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
           .withUponReceiving('an invalid create gateway account request')
           .withMethod('POST')
-          .withRequestBody(pactified)
+          .withRequestBody(invalidCreateGatewayAccountRequest)
           .withStatusCode(400)
           .withResponseBody(errorResponse)
           .build()
@@ -88,12 +85,11 @@ describe('connector client - create gateway account', function () {
     afterEach(() => provider.verify())
 
     it('should return 400 on missing fields', function (done) {
-      const createGatewayAccount = invalidCreateGatewayAccountRequest.getPlain()
       connectorClient.createGatewayAccount(
-        createGatewayAccount.payment_provider,
-        createGatewayAccount.type,
-        createGatewayAccount.service_name,
-        createGatewayAccount.analytics_id
+        invalidCreateGatewayAccountRequest.payment_provider,
+        invalidCreateGatewayAccountRequest.type,
+        invalidCreateGatewayAccountRequest.service_name,
+        invalidCreateGatewayAccountRequest.analytics_id
       ).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message).to.deep.equal(errorResponse)

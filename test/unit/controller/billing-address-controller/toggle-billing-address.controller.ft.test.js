@@ -46,7 +46,7 @@ describe('Toggle billing address collection controller', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(true)
       connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
-        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
+        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }))
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user)
       const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
@@ -70,7 +70,7 @@ describe('Toggle billing address collection controller', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(false)
       connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
-        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
+        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }))
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user)
       const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
@@ -94,7 +94,7 @@ describe('Toggle billing address collection controller', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(true)
       connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
-        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
+        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }))
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user)
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
@@ -128,7 +128,7 @@ describe('Toggle billing address collection controller', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(false)
       connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
-        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }).getPlain())
+        .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }))
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user)
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)

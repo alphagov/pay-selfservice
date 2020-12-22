@@ -28,7 +28,7 @@ describe('Service dashboard redirect to live account controller', function () {
       }]
     })
     connectorMock.get('/v1/frontend/accounts?accountIds=540')
-      .reply(200, accountsResponse.getPlain())
+      .reply(200, accountsResponse)
   })
 
   it('correctly redirects to the dashboard page', () => {

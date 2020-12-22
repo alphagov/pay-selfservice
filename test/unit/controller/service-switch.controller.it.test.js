@@ -31,7 +31,7 @@ describe('service switch controller: list of accounts', function () {
           gateway_account_id: iter,
           service_name: `account ${iter}`,
           type: _.sample(['test', 'live'])
-        }).getPlain())
+        }))
       })
 
     const req = {
@@ -210,7 +210,7 @@ describe('service switch controller: display added to the new service msg', func
           gateway_account_id: iter,
           service_name: `account ${iter}`,
           type: _.sample(['test', 'live'])
-        }).getPlain())
+        }))
       })
 
     const newServiceName = 'My New Service'

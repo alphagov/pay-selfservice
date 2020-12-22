@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/frontend/accounts'
@@ -45,7 +46,7 @@ describe('connector client - get gateway account', function () {
           .withUponReceiving('a valid get gateway account request')
           .withState(`User ${existingGatewayAccountId} exists in the database`)
           .withMethod('GET')
-          .withResponseBody(validGetGatewayAccountResponse.getPactified())
+          .withResponseBody(pactify(validGetGatewayAccountResponse))
           .withStatusCode(200)
           .build()
       )
@@ -56,14 +57,13 @@ describe('connector client - get gateway account', function () {
     afterEach(() => provider.verify())
 
     it('should get gateway account successfully', function (done) {
-      const getGatewayAccount = validGetGatewayAccountResponse.getPlain()
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         correlationId: null
       }
       connectorClient.getAccount(params)
         .should.be.fulfilled.then((response) => {
-          expect(response).to.deep.equal(getGatewayAccount)
+          expect(response).to.deep.equal(validGetGatewayAccountResponse)
         }).should.notify(done)
     })
   })

@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
 const cardFixtures = require('../../../fixtures/card.fixtures')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const CARD_TYPES_RESOURCE = '/v1/api/card-types'
@@ -36,14 +37,13 @@ describe('connector client', function () {
     const validCardTypesResponse = cardFixtures.validCardTypesResponse()
 
     before((done) => {
-      const pactified = validCardTypesResponse.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${CARD_TYPES_RESOURCE}`)
           .withUponReceiving('a valid card types request')
           .withState('Card types exist in the database')
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(pactified)
+          .withResponseBody(pactify(validCardTypesResponse))
           .build()
       ).then(() => done())
         .catch(done)
@@ -52,7 +52,7 @@ describe('connector client', function () {
     afterEach(() => provider.verify())
 
     it('should get card types successfully', function (done) {
-      const getCardTypes = validCardTypesResponse.getPlain()
+      const getCardTypes = validCardTypesResponse
       connectorClient.getAllCardTypes((connectorData, connectorResponse) => {
         expect(connectorResponse.body).to.deep.equal(getCardTypes)
         done()
