@@ -14,7 +14,6 @@ const session = require('../test-helpers/mock-session.js')
 const { getApp } = require('../../server.js')
 const inviteFixtures = require('../fixtures/invite.fixtures')
 const userFixtures = require('../fixtures/user.fixtures')
-const userServiceFixtures = require('../fixtures/user-service.fixture')
 const paths = require('../../app/paths.js')
 const formattedPathFor = require('../../app/utils/replace-params-in-path')
 const User = require('../../app/models/User.class')
@@ -60,12 +59,12 @@ describe('service users resource', () => {
         }
       }]
     }
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([userOpts])
+    const serviceUsersRes = userFixtures.validUsersResponse([userOpts])
     const getInvitesRes = inviteFixtures.validListInvitesResponse()
     const user = new User(userFixtures.validUserResponse(userOpts))
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
-      .reply(200, serviceUsersRes.getPlain())
+      .reply(200, serviceUsersRes)
     adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
       .reply(200, getInvitesRes.getPlain())
     app = session.getAppWithLoggedInUser(getApp(), user)
@@ -106,7 +105,7 @@ describe('service users resource', () => {
       service_roles: serviceRoles
     })
 
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{
+    const serviceUsersRes = userFixtures.validUsersResponse([{
       service_roles: serviceRoles
     }, {
       external_id: EXTERNAL_ID_OTHER_USER,
@@ -115,7 +114,7 @@ describe('service users resource', () => {
     const getInvitesRes = inviteFixtures.validListInvitesResponse()
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
-      .reply(200, serviceUsersRes.getPlain())
+      .reply(200, serviceUsersRes)
     adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
       .reply(200, getInvitesRes.getPlain())
     app = session.getAppWithLoggedInUser(getApp(), user)
@@ -149,7 +148,7 @@ describe('service users resource', () => {
       service_roles: serviceRoles
     })
 
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{
+    const serviceUsersRes = userFixtures.validUsersResponse([{
       service_roles: []
     }, {
       external_id: EXTERNAL_ID_OTHER_USER,
@@ -158,7 +157,7 @@ describe('service users resource', () => {
     const getInvitesRes = inviteFixtures.validListInvitesResponse()
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${noAccessServiceId}/users`)
-      .reply(200, serviceUsersRes.getPlain())
+      .reply(200, serviceUsersRes)
     adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${noAccessServiceId}`)
       .reply(200, getInvitesRes.getPlain())
 
@@ -435,11 +434,11 @@ describe('service users resource', () => {
       user_exist: false,
       attempt_counter: 0
     }]
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{ service_roles: serviceRoles }])
+    const serviceUsersRes = userFixtures.validUsersResponse([{ service_roles: serviceRoles }])
     const getInvitesRes = inviteFixtures.validListInvitesResponse(invites)
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
-      .reply(200, serviceUsersRes.getPlain())
+      .reply(200, serviceUsersRes)
     adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
       .reply(200, getInvitesRes.getPlain())
     app = session.getAppWithLoggedInUser(getApp(), user)

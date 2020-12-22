@@ -6,8 +6,9 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
-const userServiceFixtures = require('../../../../fixtures/user-service.fixture')
+const userFixtures = require('../../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const { pactifyNestedArray } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -35,7 +36,7 @@ describe('adminusers client - service users', () => {
   after(() => provider.finalize())
 
   describe('single user is returned for service', () => {
-    const getServiceUsersResponse = userServiceFixtures.validServiceUsersResponse([{
+    const getServiceUsersResponse = userFixtures.validUsersResponse([{
       service_roles: [{
         service: {
           external_id: existingServiceExternalId
@@ -48,7 +49,7 @@ describe('adminusers client - service users', () => {
         new PactInteractionBuilder(`${SERVICES_PATH}/${existingServiceExternalId}/users`)
           .withUponReceiving('a valid get service users request')
           .withState(`a user exists with role for service with id ${existingServiceExternalId}`)
-          .withResponseBody(getServiceUsersResponse.getPactified())
+          .withResponseBody(pactifyNestedArray(getServiceUsersResponse))
           .withStatusCode(200)
           .build()
       ).then(() => done())
@@ -59,8 +60,7 @@ describe('adminusers client - service users', () => {
     it('should return service users successfully', done => {
       adminusersClient.getServiceUsers(existingServiceExternalId).should.be.fulfilled.then(
         users => {
-          const expectedResponse = getServiceUsersResponse.getPlain()
-          expect(users[0].serviceRoles.length).to.be.equal(expectedResponse[0].service_roles.length)
+          expect(users[0].serviceRoles.length).to.be.equal(getServiceUsersResponse[0].service_roles.length)
           expect(users[0].hasService(existingServiceExternalId)).to.be.equal(true)
         }
       ).should.notify(done)
