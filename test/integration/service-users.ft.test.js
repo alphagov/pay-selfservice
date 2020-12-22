@@ -12,7 +12,7 @@ const { expect } = chai
 // Local modules
 const session = require('../test-helpers/mock-session.js')
 const { getApp } = require('../../server.js')
-const serviceFixtures = require('../fixtures/service.fixtures')
+const inviteFixtures = require('../fixtures/invite.fixtures')
 const userFixtures = require('../fixtures/user.fixtures')
 const userServiceFixtures = require('../fixtures/user-service.fixture')
 const paths = require('../../app/paths.js')
@@ -61,7 +61,7 @@ describe('service users resource', () => {
       }]
     }
     const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([userOpts])
-    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
+    const getInvitesRes = inviteFixtures.validListInvitesResponse()
     const user = new User(userFixtures.validUserResponse(userOpts))
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
@@ -112,7 +112,7 @@ describe('service users resource', () => {
       external_id: EXTERNAL_ID_OTHER_USER,
       service_roles: serviceRoles
     }])
-    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
+    const getInvitesRes = inviteFixtures.validListInvitesResponse()
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain())
@@ -155,7 +155,7 @@ describe('service users resource', () => {
       external_id: EXTERNAL_ID_OTHER_USER,
       service_roles: []
     }])
-    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
+    const getInvitesRes = inviteFixtures.validListInvitesResponse()
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${noAccessServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain())
@@ -436,7 +436,7 @@ describe('service users resource', () => {
       attempt_counter: 0
     }]
     const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{ service_roles: serviceRoles }])
-    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse(invites)
+    const getInvitesRes = inviteFixtures.validListInvitesResponse(invites)
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain())

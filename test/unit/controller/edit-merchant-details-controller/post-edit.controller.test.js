@@ -32,7 +32,7 @@ const setupMocks = () => {
 const getMockServiceService = (serviceExternalId, shouldSucceed = true) => {
   const updatedService = new Service(serviceFixtures.validServiceResponse({
     external_id: serviceExternalId
-  }).getPlain())
+  }))
 
   const mockUpdateService = sinon.spy(() => {
     return new Promise((resolve, reject) => {
@@ -50,7 +50,7 @@ const getMockServiceService = (serviceExternalId, shouldSucceed = true) => {
 const buildServiceModel = (serviceExternalId) => {
   return new Service(serviceFixtures.validServiceResponse({
     external_id: serviceExternalId
-  }).getPlain())
+  }))
 }
 
 describe('edit merchant details controller - post', () => {

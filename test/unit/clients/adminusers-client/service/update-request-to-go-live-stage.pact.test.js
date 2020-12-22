@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const serviceFixtures = require('../../../../fixtures/service.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -47,9 +48,9 @@ describe('adminusers client - patch request to go live stage', function () {
           .withUponReceiving('a valid patch current go live stage request')
           .withState(`a service exists with external id ${serviceExternalId}`)
           .withMethod('PATCH')
-          .withRequestBody(validUpdateRequestToGoLiveRequest.getPlain())
+          .withRequestBody(validUpdateRequestToGoLiveRequest)
           .withStatusCode(200)
-          .withResponseBody(validUpdateRequestToGoLiveResponse.getPactified())
+          .withResponseBody(pactify(validUpdateRequestToGoLiveResponse))
           .build()
       )
         .then(() => done())

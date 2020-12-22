@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const userFixtures = require('../../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
-const { defaultPactifier } = require('../../../../test-helpers/pact/pactifier')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
@@ -63,7 +63,7 @@ describe('adminusers client - create forgotten password', function () {
           .withMethod('POST')
           .withRequestBody(request)
           .withStatusCode(400)
-          .withResponseBody(defaultPactifier.pactify(badForgottenPasswordResponse))
+          .withResponseBody(pactify(badForgottenPasswordResponse))
           .build()
       ).then(() => done())
     })

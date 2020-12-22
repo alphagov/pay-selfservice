@@ -373,35 +373,35 @@ module.exports = {
   patchUpdateServiceGoLiveStageSuccess: (opts = {}) => {
     const path = `/v1/api/services/${opts.external_id}`
     return simpleStubBuilder('PATCH', path, 200, {
-      request: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.current_go_live_stage).getPlain(),
-      response: serviceFixtures.validServiceResponse(opts).getPlain()
+      request: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.current_go_live_stage),
+      response: serviceFixtures.validServiceResponse(opts)
     })
   },
   patchUpdateMerchantDetailsSuccess: (opts = {}) => {
     const path = `/v1/api/services/${opts.external_id}`
     return simpleStubBuilder('PATCH', path, 200, {
-      request: serviceFixtures.validUpdateMerchantDetailsRequest(opts.merchant_details).getPlain(),
-      response: serviceFixtures.validServiceResponse(opts).getPlain()
+      request: serviceFixtures.validUpdateMerchantDetailsRequest(opts.merchant_details),
+      response: serviceFixtures.validServiceResponse(opts)
     })
   },
   patchUpdateServiceNameSuccess: (opts = {}) => {
     const path = `/v1/api/services/${opts.external_id}`
     return simpleStubBuilder('PATCH', path, 200, {
-      request: serviceFixtures.validUpdateServiceNameRequest(opts.serviceName).getPlain(),
-      response: serviceFixtures.validServiceResponse(opts).getPlain(),
+      request: serviceFixtures.validUpdateServiceNameRequest(opts.serviceName),
+      response: serviceFixtures.validServiceResponse(opts),
       verifyCalledTimes: opts.verifyCalledTimes
     })
   },
   patchUpdateServiceSuccessCatchAll: (opts = {}) => {
     const path = `/v1/api/services/${opts.external_id}`
     return simpleStubBuilder('PATCH', path, 200, {
-      response: serviceFixtures.validServiceResponse(opts).getPlain()
+      response: serviceFixtures.validServiceResponse(opts)
     })
   },
   patchGoLiveStageFailure: (opts = {}) => {
     const path = `/v1/api/services/${opts.external_id}`
     return simpleStubBuilder('PATCH', path, 404, {
-      request: serviceFixtures.validUpdateServiceRequest(opts).getPlain()
+      request: serviceFixtures.validUpdateServiceRequest(opts)
     })
   },
   postGovUkPayAgreement: (opts) => {
@@ -550,8 +550,8 @@ module.exports = {
   postCreateServiceSuccess: (opts = {}) => {
     const path = '/v1/api/services'
     return simpleStubBuilder('POST', path, 200, {
-      request: serviceFixtures.validCreateServiceRequest(opts).getPlain(),
-      response: serviceFixtures.validServiceResponse(opts).getPlain(),
+      request: serviceFixtures.validCreateServiceRequest(opts),
+      response: serviceFixtures.validServiceResponse(opts),
       verifyCalledTimes: opts.verifyCalledTimes
     })
   },

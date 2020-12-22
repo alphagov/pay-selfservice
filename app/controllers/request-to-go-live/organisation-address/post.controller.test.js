@@ -35,7 +35,7 @@ describe('request to go live organisation address post controller', () => {
     const service = new Service(serviceFixtures.validServiceResponse({
       external_id: serviceExternalId,
       current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
-    }).getPlain())
+    }))
 
     const req = {
       correlationId,
@@ -65,7 +65,7 @@ describe('request to go live organisation address post controller', () => {
       const updatedService = new Service(serviceFixtures.validServiceResponse({
         external_id: serviceExternalId,
         current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
-      }).getPlain())
+      }))
 
       const mockUpdateService = sinon.spy(() => {
         return new Promise(resolve => {

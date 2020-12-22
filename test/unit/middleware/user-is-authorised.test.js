@@ -5,6 +5,7 @@ const { expect } = require('chai')
 const { NotAuthorisedError, NotAuthenticatedError, UserAccountDisabledError } = require('../../../app/errors')
 const userIsAuthorised = require('../../../app/middleware/user-is-authorised')
 const User = require('../../../app/models/User.class')
+const Service = require('../../../app/models/Service.class')
 const userFixtures = require('../../fixtures/user.fixtures')
 const serviceFixtures = require('../../fixtures/service.fixtures')
 
@@ -27,9 +28,9 @@ const userWithoutServiceRole = new User(userFixtures.validUserResponse({
   }]
 }))
 
-const service = serviceFixtures.validServiceResponse({
+const service = new Service(serviceFixtures.validServiceResponse({
   external_id: serviceExternalId
-}).getAsObject()
+}))
 
 const res = {}
 let next

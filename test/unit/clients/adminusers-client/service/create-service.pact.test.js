@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const serviceFixtures = require('../../../../fixtures/service.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -49,7 +50,7 @@ describe('adminusers client - create a new service', function () {
           .withMethod('POST')
           .withRequestBody({})
           .withStatusCode(201)
-          .withResponseBody(validCreateServiceResponse.getPactified())
+          .withResponseBody(pactify(validCreateServiceResponse))
           .build()
       )
         .then(() => done())
@@ -85,9 +86,9 @@ describe('adminusers client - create a new service', function () {
         new PactInteractionBuilder(SERVICE_RESOURCE)
           .withUponReceiving('a valid create service request with gateway account ids')
           .withMethod('POST')
-          .withRequestBody(validRequest.getPactified())
+          .withRequestBody(validRequest)
           .withStatusCode(201)
-          .withResponseBody(validCreateServiceResponse.getPactified())
+          .withResponseBody(pactify(validCreateServiceResponse))
           .build()
       )
         .then(() => done())
@@ -97,10 +98,10 @@ describe('adminusers client - create a new service', function () {
     afterEach(() => provider.verify())
 
     it('should create a new service', function (done) {
-      adminusersClient.createService(null, null, validRequest.getPlain().gateway_account_ids).should.be.fulfilled.then(service => {
+      adminusersClient.createService(null, null, validRequest.gateway_account_ids).should.be.fulfilled.then(service => {
         expect(service.externalId).to.equal(externalId)
         expect(service.name).to.equal(name)
-        expect(service.gatewayAccountIds).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
+        expect(service.gatewayAccountIds).to.deep.equal(validCreateServiceResponse.gateway_account_ids)
       }).should.notify(done)
     })
   })
@@ -125,9 +126,9 @@ describe('adminusers client - create a new service', function () {
         new PactInteractionBuilder(SERVICE_RESOURCE)
           .withUponReceiving('a valid create service request with service name')
           .withMethod('POST')
-          .withRequestBody(validRequest.getPactified())
+          .withRequestBody(validRequest)
           .withStatusCode(201)
-          .withResponseBody(validCreateServiceResponse.getPactified())
+          .withResponseBody(pactify(validCreateServiceResponse))
           .build()
       )
         .then(() => done())

@@ -1,16 +1,9 @@
 'use strict'
 
-const path = require('path')
-const _ = require('lodash')
-
-const pactBase = require(path.join(__dirname, '/pact-base'))
-const Service = require('../../app/models/Service.class')
-
-// Global setup
-const pactServices = pactBase({ array: ['service_ids'] })
+const lodash = require('lodash')
 
 const buildServiceNameWithDefaults = (opts = {}) => {
-  _.defaults(opts, {
+  lodash.defaults(opts, {
     en: 'System Generated'
   })
 
@@ -25,30 +18,6 @@ const buildServiceNameWithDefaults = (opts = {}) => {
 }
 
 module.exports = {
-  /**
-   * @param invites Array params override get invites for service response
-   * @return {{getPactified: (function()) Pact response, getPlain: (function()) request with overrides applied}}
-   */
-  validListInvitesForServiceResponse: (invites) => {
-    const data = invites || [{
-      email: 'esdfkjh@email.test',
-      telephone_number: '',
-      disabled: false,
-      role: 'admin',
-      expired: false,
-      user_exist: false,
-      attempt_counter: 0
-    }]
-    return {
-      getPactified: () => {
-        return pactServices.pactifyNestedArray(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
-
   validCreateServiceRequest: (opts = {}) => {
     const data = {}
     if (opts.service_name) {
@@ -57,24 +26,16 @@ module.exports = {
     if (opts.gateway_account_ids) {
       data.gateway_account_ids = opts.gateway_account_ids
     }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
+    return data
   },
 
   validUpdateServiceNameRequest: (opts = {}) => {
-    _.defaults(opts, {
+    lodash.defaults(opts, {
       en: 'new-en-name',
       cy: 'new-cy-name'
     })
 
-    const data = [
+    return [
       {
         op: 'replace',
         path: 'service_name/en',
@@ -86,117 +47,52 @@ module.exports = {
         value: opts.cy
       }
     ]
-
-    return {
-      getPactified: () => {
-        return pactServices.pactifyNestedArray(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
-  badRequestResponseWhenNonNumericGatewayAccountIds: (nonNumericGatewayAccountIds) => {
-    const responseData = _.map(nonNumericGatewayAccountIds, (field) => {
-      return `Field [${field}] must contain numeric values`
-    })
-    const response = {
-      errors: responseData
-    }
-
-    return pactServices.withPactified(response)
   },
 
   addGatewayAccountsRequest: (gatewayAccountIds = ['666']) => {
-    const data = {
+    return {
       op: 'add',
       path: 'gateway_account_ids',
       value: gatewayAccountIds
     }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
 
   validCollectBillingAddressToggleRequest: (opts = {}) => {
-    const data = {
+    return {
       op: 'replace',
       path: 'collect_billing_address',
       value: opts.enabled || false
     }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
 
   validUpdateRequestToGoLiveRequest: (value = 'AGREED_TO_STRIPE') => {
-    const data = {
+    return {
       op: 'replace',
       path: 'current_go_live_stage',
       value: value
     }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
 
   validUpdateMerchantDetailsRequest: (merchantDetails) => {
-    const data = Object.keys(merchantDetails).map(key => {
+    return Object.keys(merchantDetails).map(key => {
       return {
         op: 'replace',
         path: `merchant_details/${key}`,
         value: merchantDetails[key]
       }
     })
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
 
   validUpdateServiceRequest: (opts = {}) => {
-    const data = {
+    return {
       op: 'replace',
       path: opts.path,
       value: opts.value
     }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactifySimpleArray(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
   },
 
   validServiceResponse: (opts = {}) => {
-    _.defaults(opts, {
+    lodash.defaults(opts, {
       id: 857,
       external_id: 'cp5wa',
       name: 'System Generated',
@@ -222,7 +118,7 @@ module.exports = {
     }
 
     if (opts.merchant_details) {
-      service.merchant_details = _.pick(opts.merchant_details, [
+      service.merchant_details = lodash.pick(opts.merchant_details, [
         'name',
         'address_line1',
         'address_line2',
@@ -234,16 +130,6 @@ module.exports = {
       ])
     }
 
-    return {
-      getPactified: () => {
-        return pactServices.pactify(service)
-      },
-      getAsObject: () => {
-        return new Service(service)
-      },
-      getPlain: () => {
-        return _.clone(service)
-      }
-    }
+    return service
   }
 }
