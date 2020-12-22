@@ -62,7 +62,7 @@ describe('The transaction view scenarios', function () {
         net_amount: 95,
         refund_summary_available: 100,
         gateway_account_id: gatewayAccountId
-      }).getPlain()
+      })
 
       ledgerMock.get(ledgerTransactionPathFor(transactionId))
         .query({
@@ -86,7 +86,7 @@ describe('The transaction view scenarios', function () {
         net_amount: 95,
         refund_summary_available: 100,
         gateway_account_id: 1337
-      }).getPlain()
+      })
 
       ledgerMock.get(ledgerTransactionPathFor(transactionId))
         .query({

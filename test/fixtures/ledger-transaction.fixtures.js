@@ -1,11 +1,6 @@
 'use strict'
 
-const path = require('path')
 const lodash = require('lodash')
-
-// Global setup
-const pactBase = require(path.join(__dirname, '/pact-base'))
-const pactRegister = pactBase()
 
 const buildChargeEventWithDefaults = (opts = {}) => {
   const chargeEvent = {
@@ -184,43 +179,17 @@ const buildRefundDetails = (opts = {}) => {
 }
 
 module.exports = {
-  validTransactionsResponse: (opts = {}) => {
-    opts.includeSearchResultCardDetails = true
-    const results = lodash.flatMap(opts.transactions, buildTransactionDetails(opts))
-
-    const data = {
-      total: opts.transactions.length,
-      count: opts.transactions.length,
-      page: opts.page || 1,
-      results: results
-    }
-
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
-    }
-  },
   validTransactionDetailsResponse: (opts = {}) => {
     opts.includeCardDetails = true
     opts.includeRefundSummary = true
     opts.includeSettlementSummary = true
     opts.includeAddress = opts.includeAddress || true
-    const data = buildTransactionDetails(opts)
-
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
-    }
+    return buildTransactionDetails(opts)
   },
   validTransactionCreatedDetailsResponse: (opts = {}) => {
     opts.includeRefundSummary = true
     opts.includeSettlementSummary = true
-    const data = buildTransactionDetails(opts)
-
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
-    }
+    return buildTransactionDetails(opts)
   },
   validChargeEventsResponse: (opts = {}) => {
     const defaultEvents = [
@@ -241,37 +210,22 @@ module.exports = {
 
     const events = opts.events ? lodash.flatMap(opts.events, buildChargeEventWithDefaults) : defaultEvents
 
-    const data = {
+    return {
       transaction_id: opts.transaction_id || 'ht439nfg2l1e303k0dmifrn4fc',
       events: events
     }
-
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
-    }
   },
   validTransactionRefundRequest: (opts = {}) => {
-    const data = {
+    return {
       amount: opts.amount || 101,
       refund_amount_available: opts.refund_amount_available || 100,
       user_external_id: opts.user_external_id || '3b7b5f33-24ea-4405-88d2-0a1b13efb20c'
     }
-
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
-    }
   },
   validTransactionEventsResponse: (opts = {}) => {
-    const data = {
+    return {
       transaction_id: opts.transaction_id || 'ht439nfg2l1e303k0dmifrn4fc',
       events: (opts.payment_states) ? buildPaymentEvents(opts) : []
-    }
-
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
     }
   },
   validTransactionSearchResponse: (opts = {}) => {
@@ -295,13 +249,10 @@ module.exports = {
     if (opts.links) {
       data._links = opts.links
     }
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
-    }
+    return data
   },
   validTransactionSummaryDetails: (opts = {}) => {
-    const data = {
+    return {
       payments: {
         count: opts.paymentCount || 10,
         gross_amount: opts.paymentTotal || 12000
@@ -311,10 +262,6 @@ module.exports = {
         gross_amount: opts.refundTotal || 2300
       },
       net_income: opts.paymentTotal && opts.refundTotal ? (opts.paymentTotal - opts.refundTotal) : (12000 - 2300)
-    }
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
     }
   }
 }

@@ -9,6 +9,7 @@ const ledgerClient = require('../../../../app/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../../fixtures/ledger-transaction.fixtures')
 const legacyConnectorParityTransformer = require('../../../../app/services/clients/utils/ledger-legacy-connector-parity')
 const pactTestProvider = require('./ledger-pact-test-provider')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const TRANSACTION_SUMMARY_RESOURCE = '/v1/report/transactions-summary'
@@ -37,7 +38,6 @@ describe('ledger client transaction summary', function () {
     const validTransactionSummaryResponse = transactionDetailsFixtures.validTransactionSummaryDetails(params)
 
     before(() => {
-      const pactified = validTransactionSummaryResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_SUMMARY_RESOURCE}`)
           .withQuery('account_id', params.account_id)
@@ -47,7 +47,7 @@ describe('ledger client transaction summary', function () {
           .withState(defaultTransactionState)
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(pactified)
+          .withResponseBody(pactify(validTransactionSummaryResponse))
           .build()
       )
     })
@@ -55,7 +55,7 @@ describe('ledger client transaction summary', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction summary successfully', function () {
-      const getTransactionSummaryDetails = legacyConnectorParityTransformer.legacyConnectorTransactionSummaryParity(validTransactionSummaryResponse.getPlain())
+      const getTransactionSummaryDetails = legacyConnectorParityTransformer.legacyConnectorTransactionSummaryParity(validTransactionSummaryResponse)
       return ledgerClient.transactionSummary(params.account_id, params.from_date, params.to_date)
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionSummaryDetails)

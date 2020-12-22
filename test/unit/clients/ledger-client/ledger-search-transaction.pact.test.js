@@ -8,6 +8,7 @@ const ledgerClient = require('../../../../app/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../../fixtures/ledger-transaction.fixtures')
 const legacyConnectorParityTransformer = require('../../../../app/services/clients/utils/ledger-legacy-connector-parity')
 const pactTestProvider = require('./ledger-pact-test-provider')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'
@@ -68,7 +69,6 @@ describe('ledger client', function () {
       ]
     })
     before(() => {
-      const pactified = validTransactionSearchResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
@@ -80,7 +80,7 @@ describe('ledger client', function () {
           .withState('two payments and a refund transactions exist for selfservice search')
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(pactified)
+          .withResponseBody(pactify(validTransactionSearchResponse))
           .build()
       )
     })
@@ -88,7 +88,7 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search transaction successfully', function () {
-      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse.getPlain())
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
       return ledgerClient.transactions(params.account_id)
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
@@ -127,7 +127,6 @@ describe('ledger client', function () {
       ]
     })
     before(() => {
-      const pactified = validFilterTransactionResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
@@ -141,7 +140,7 @@ describe('ledger client', function () {
           .withState('a payment with success state exists')
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(pactified)
+          .withResponseBody(pactify(validFilterTransactionResponse))
           .build()
       )
     })
@@ -149,7 +148,7 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search transaction successfully', function () {
-      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse.getPlain())
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
       return ledgerClient.transactions(params.account_id, params.filters)
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
@@ -197,7 +196,6 @@ describe('ledger client', function () {
       ]
     })
     before(() => {
-      const pactified = validFilterTransactionResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
@@ -213,7 +211,7 @@ describe('ledger client', function () {
           .withState('a payment with success state exists')
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(pactified)
+          .withResponseBody(pactify(validFilterTransactionResponse))
           .build()
       )
     })
@@ -221,7 +219,7 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search transaction successfully', function () {
-      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse.getPlain())
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
       return ledgerClient.transactions(params.account_id, params.filters)
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
@@ -277,7 +275,6 @@ describe('ledger client', function () {
       ]
     })
     before(() => {
-      const pactified = validTransactionSearchResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
@@ -290,7 +287,7 @@ describe('ledger client', function () {
           .withState('a payment with all fields and a corresponding refund exists')
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(pactified)
+          .withResponseBody(pactify(validTransactionSearchResponse))
           .build()
       )
     })
@@ -298,7 +295,7 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should filter transaction successfully', function () {
-      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse.getPlain())
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
       return ledgerClient.transactions(params.account_id, params.filters)
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
@@ -341,7 +338,6 @@ describe('ledger client', function () {
       ]
     })
     before(() => {
-      const pactified = validTransactionSearchResponse.getPactified()
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
@@ -354,7 +350,7 @@ describe('ledger client', function () {
           .withState('a payment with all fields and a corresponding refund exists')
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(pactified)
+          .withResponseBody(pactify(validTransactionSearchResponse))
           .build()
       )
     })
@@ -362,7 +358,7 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should filter transaction successfully', function () {
-      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse.getPlain())
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
       return ledgerClient.transactions(params.account_id, params.filters)
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
