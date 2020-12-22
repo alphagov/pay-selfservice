@@ -4,6 +4,7 @@ const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
+const User = require('../../../app/models/User.class')
 const userFixtures = require('../../fixtures/user.fixtures')
 const stripeAccountSetupFixture = require('../../fixtures/stripe-account-setup.fixtures')
 
@@ -17,14 +18,14 @@ const connectorMock = {
 }
 
 const buildUser = (serviceExternalId, gatewayAccountIds) => {
-  return userFixtures.validUserResponse({
+  return new User(userFixtures.validUserResponse({
     service_roles: [{
       service: {
         external_id: serviceExternalId,
         gateway_account_ids: gatewayAccountIds
       }
     }]
-  }).getAsObject()
+  }))
 }
 
 const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAccountExternalId, paymentProvider, serviceExternalId) {

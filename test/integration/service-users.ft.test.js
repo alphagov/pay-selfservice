@@ -17,6 +17,7 @@ const userFixtures = require('../fixtures/user.fixtures')
 const userServiceFixtures = require('../fixtures/user-service.fixture')
 const paths = require('../../app/paths.js')
 const formattedPathFor = require('../../app/utils/replace-params-in-path')
+const User = require('../../app/models/User.class')
 
 // Local constants
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
@@ -61,7 +62,7 @@ describe('service users resource', () => {
     }
     const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([userOpts])
     const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
-    const user = userFixtures.validUserResponse(userOpts).getAsObject()
+    const user = new User(userFixtures.validUserResponse(userOpts))
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain())
@@ -200,7 +201,7 @@ describe('service users resource', () => {
     const getUserResponse = userFixtures.validUserResponse(userToView)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
-      .reply(200, getUserResponse.getPlain())
+      .reply(200, getUserResponse)
 
     app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
@@ -234,7 +235,7 @@ describe('service users resource', () => {
     const getUserResponse = userFixtures.validUserResponse(user)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_LOGGED_IN}`)
-      .reply(200, getUserResponse.getPlain())
+      .reply(200, getUserResponse)
 
     app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
@@ -266,7 +267,7 @@ describe('service users resource', () => {
     const getUserResponse = userFixtures.validUserResponse(user)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_LOGGED_IN}`)
-      .reply(200, getUserResponse.getPlain())
+      .reply(200, getUserResponse)
 
     app = session.getAppWithSessionWithoutSecondFactor(getApp(), userInSession)
 
@@ -327,7 +328,7 @@ describe('service users resource', () => {
     })
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
-      .reply(200, getUserResponse.getPlain())
+      .reply(200, getUserResponse)
 
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -357,7 +358,7 @@ describe('service users resource', () => {
     const getUserResponse = userFixtures.validUserResponse(userToDelete)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
-      .reply(200, getUserResponse.getPlain())
+      .reply(200, getUserResponse)
 
     adminusersMock.delete(`${SERVICE_RESOURCE}/${externalServiceId}/users/${EXTERNAL_ID_OTHER_USER}`)
       .reply(200)

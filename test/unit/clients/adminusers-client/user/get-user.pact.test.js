@@ -9,6 +9,7 @@ const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../../fixtures/user.fixtures')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const { userResponsePactifier } = require('../../../../test-helpers/pact/pactifier')
 
 // constants
 const port = Math.floor(Math.random() * 48127) + 1024
@@ -40,7 +41,7 @@ describe('adminusers client - get user', () => {
         new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
           .withState(`a user exists with the given external id ${existingExternalId}`)
           .withUponReceiving('a valid get user request')
-          .withResponseBody(getUserResponse.getPactified())
+          .withResponseBody(userResponsePactifier.pactify(getUserResponse))
           .build()
       ).then(() => { done() })
     })
@@ -48,19 +49,17 @@ describe('adminusers client - get user', () => {
     afterEach(() => provider.verify())
 
     it('should find a user successfully', done => {
-      const expectedUserData = getUserResponse.getPlain()
-
-      adminusersClient.getUserByExternalId(expectedUserData.external_id).should.be.fulfilled.then(user => {
-        expect(user.externalId).to.be.equal(expectedUserData.external_id)
-        expect(user.username).to.be.equal(expectedUserData.username)
-        expect(user.email).to.be.equal(expectedUserData.email)
+      adminusersClient.getUserByExternalId(getUserResponse.external_id).should.be.fulfilled.then(user => {
+        expect(user.externalId).to.be.equal(getUserResponse.external_id)
+        expect(user.username).to.be.equal(getUserResponse.username)
+        expect(user.email).to.be.equal(getUserResponse.email)
         expect(user.serviceRoles.length).to.be.equal(1)
         expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(1)
-        expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number)
-        expect(user.otpKey).to.be.equal(expectedUserData.otp_key)
-        expect(user.provisionalOtpKey).to.be.equal(expectedUserData.provisional_otp_key)
-        expect(user.secondFactor).to.be.equal(expectedUserData.second_factor)
-        expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData.service_roles[0].role.permissions.length)
+        expect(user.telephoneNumber).to.be.equal(getUserResponse.telephone_number)
+        expect(user.otpKey).to.be.equal(getUserResponse.otp_key)
+        expect(user.provisionalOtpKey).to.be.equal(getUserResponse.provisional_otp_key)
+        expect(user.secondFactor).to.be.equal(getUserResponse.second_factor)
+        expect(user.serviceRoles[0].role.permissions.length).to.be.equal(getUserResponse.service_roles[0].role.permissions.length)
       }).should.notify(done)
     })
   })

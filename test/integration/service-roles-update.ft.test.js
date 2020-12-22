@@ -14,8 +14,8 @@ let app
 
 chai.use(chaiAsPromised)
 
-let expect = chai.expect
-let adminusersMock = nock(process.env.ADMINUSERS_URL)
+const expect = chai.expect
+const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const USER_RESOURCE = '/v1/api/users'
 
@@ -28,7 +28,7 @@ describe('user permissions update controller', function () {
   const EXTERNAL_ID_TO_VIEW = '393266e872594f1593558549caad95ec'
   const USERNAME_TO_VIEW = 'other-user'
 
-  let userInSession = session.getUser({
+  const userInSession = session.getUser({
     external_id: EXTERNAL_ID_IN_SESSION,
     username: USERNAME_IN_SESSION,
     email: USERNAME_IN_SESSION + '@example.com',
@@ -41,7 +41,7 @@ describe('user permissions update controller', function () {
     }]
   })
 
-  let userToView = {
+  const userToView = {
     external_id: EXTERNAL_ID_TO_VIEW,
     username: USERNAME_TO_VIEW,
     email: `${USERNAME_TO_VIEW}@example.com`,
@@ -62,10 +62,10 @@ describe('user permissions update controller', function () {
 
   describe('user permissions update view', function () {
     it('should render the permission update view', function (done) {
-      let getUserResponse = userFixtures.validUserResponse(userToView)
+      const getUserResponse = userFixtures.validUserResponse(userToView)
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
-        .reply(200, getUserResponse.getPlain())
+        .reply(200, getUserResponse)
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
@@ -103,12 +103,12 @@ describe('user permissions update controller', function () {
     })
 
     it('should error if admin does not belong to users service', function (done) {
-      let targetUser = _.cloneDeep(userToView)
+      const targetUser = _.cloneDeep(userToView)
       targetUser.service_roles[0].service.external_id = 'other-service-id'
 
-      let getUserResponse = userFixtures.validUserResponse(targetUser)
+      const getUserResponse = userFixtures.validUserResponse(targetUser)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
-        .reply(200, getUserResponse.getPlain())
+        .reply(200, getUserResponse)
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
@@ -138,13 +138,13 @@ describe('user permissions update controller', function () {
 
   describe('user permissions update', function () {
     it('should update users permission successfully', function (done) {
-      let getUserResponse = userFixtures.validUserResponse(userToView)
+      const getUserResponse = userFixtures.validUserResponse(userToView)
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
-        .reply(200, getUserResponse.getPlain())
+        .reply(200, getUserResponse)
 
       adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'admin' })
-        .reply(200, getUserResponse.getPlain())
+        .reply(200, getUserResponse)
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
@@ -163,13 +163,13 @@ describe('user permissions update controller', function () {
     })
 
     it('should update users permission successfully, even if selected role is the same as existing', function (done) {
-      let getUserResponse = userFixtures.validUserResponse(userToView)
+      const getUserResponse = userFixtures.validUserResponse(userToView)
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
-        .reply(200, getUserResponse.getPlain())
+        .reply(200, getUserResponse)
 
       adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'view-only' })
-        .reply(200, getUserResponse.getPlain())
+        .reply(200, getUserResponse)
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
@@ -229,12 +229,12 @@ describe('user permissions update controller', function () {
     })
 
     it('should error if admin does not belong to users service', function (done) {
-      let targetUser = _.cloneDeep(userToView)
+      const targetUser = _.cloneDeep(userToView)
       targetUser.service_roles[0].service.external_id = 'other-service-id'
 
-      let getUserResponse = userFixtures.validUserResponse(targetUser)
+      const getUserResponse = userFixtures.validUserResponse(targetUser)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
-        .reply(200, getUserResponse.getPlain())
+        .reply(200, getUserResponse)
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
@@ -257,7 +257,7 @@ describe('user permissions update controller', function () {
     it('should error if role id cannot be resolved', function (done) {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
-      let nonExistentRoleId = '999'
+      const nonExistentRoleId = '999'
       supertest(app)
         .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
@@ -275,11 +275,11 @@ describe('user permissions update controller', function () {
     })
 
     it('should error on permission update error in adminusers', function (done) {
-      let getUserResponse = userFixtures.validUserResponse(userToView)
+      const getUserResponse = userFixtures.validUserResponse(userToView)
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
-        .reply(200, getUserResponse.getPlain())
+        .reply(200, getUserResponse)
 
       adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'admin' })
         .reply(409)

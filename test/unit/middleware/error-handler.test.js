@@ -5,6 +5,7 @@ const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError } = require('../../../app/errors')
 const paths = require('../../../app/paths')
+const User = require('../../../app/models/User.class')
 const userFixtures = require('../../fixtures/user.fixtures')
 const serviceFixtures = require('../../fixtures/service.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
@@ -95,7 +96,7 @@ describe('Error handler middleware', () => {
     const gatewayAccountId = 'a-gateway-account-id'
     const reqWithSessionData = {
       ...req,
-      user: userFixtures.validUserResponse({ external_id: userExternalId }).getAsObject(),
+      user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
       service: serviceFixtures.validServiceResponse({ external_id: serviceExternalId }).getAsObject(),
       account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId }).getPlain()
     }

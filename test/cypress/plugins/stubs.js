@@ -66,7 +66,7 @@ module.exports = {
   getUserSuccess: (opts = {}) => {
     const path = '/v1/api/users/' + opts.external_id
     return simpleStubBuilder('GET', path, 200, {
-      response: userFixtures.validUserResponse(opts).getPlain()
+      response: userFixtures.validUserResponse(opts)
     })
   },
   getUsersSuccess: (opts = {}) => {
@@ -75,12 +75,12 @@ module.exports = {
       query: {
         ids: opts.userIds ? opts.userIds.join() : ''
       },
-      response: userFixtures.validUsersResponse(opts.users).getPlain()
+      response: userFixtures.validUsersResponse(opts.users)
     })
   },
   getUserSuccessRespondDifferentlySecondTime: (opts = {}) => {
-    const aValidUserResponse = userFixtures.validUserResponse(opts.firstResponseOpts).getPlain()
-    const aSecondValidUserResponse = userFixtures.validUserResponse(opts.secondResponseOpts).getPlain()
+    const aValidUserResponse = userFixtures.validUserResponse(opts.firstResponseOpts)
+    const aSecondValidUserResponse = userFixtures.validUserResponse(opts.secondResponseOpts)
     return [
       {
         predicates: [{
@@ -122,7 +122,7 @@ module.exports = {
   getServiceUsersSuccess: (opts = {}) => {
     const path = `/v1/api/services/${opts.serviceExternalId}/users`
     return simpleStubBuilder('GET', path, 200, {
-      response: userFixtures.validUsersResponse(opts.users).getPlain()
+      response: userFixtures.validUsersResponse(opts.users)
     })
   },
   getInvitedUsersSuccess: (opts = {}) => {
@@ -269,15 +269,15 @@ module.exports = {
   postUserAuthenticateSuccess: (opts = {}) => {
     const path = '/v1/api/users/authenticate'
     return simpleStubBuilder('POST', path, 200, {
-      request: userFixtures.validAuthenticateRequest(opts).getPlain(),
-      response: userFixtures.validUserResponse(opts).getPlain()
+      request: userFixtures.validAuthenticateRequest(opts),
+      response: userFixtures.validUserResponse(opts)
     })
   },
   postUserAuthenticateInvalidPassword: (opts = {}) => {
     const path = '/v1/api/users/authenticate'
     return simpleStubBuilder('POST', path, 401, {
-      request: userFixtures.validAuthenticateRequest(opts).getPlain(),
-      response: userFixtures.invalidPasswordAuthenticateResponse().getPlain()
+      request: userFixtures.validAuthenticateRequest(opts),
+      response: userFixtures.invalidPasswordAuthenticateResponse()
     })
   },
   postSecondFactorSuccess: (opts = {}) => {
@@ -527,15 +527,15 @@ module.exports = {
   putUpdateServiceRoleSuccess: (opts = {}) => {
     const path = `/v1/api/users/${opts.external_id}/services/${opts.serviceExternalId}`
     return simpleStubBuilder('PUT', path, 200, {
-      request: userFixtures.validUpdateServiceRoleRequest(opts.role).getPlain(),
-      response: userFixtures.validUserResponse(opts).getPlain()
+      request: userFixtures.validUpdateServiceRoleRequest(opts.role),
+      response: userFixtures.validUserResponse(opts)
     })
   },
   postAssignServiceRoleSuccess: (opts = {}) => {
     const path = `/v1/api/users/${opts.external_id}/services`
     return simpleStubBuilder('POST', path, 200, {
-      request: userFixtures.validAssignServiceRoleRequest(opts).getPlain(),
-      response: userFixtures.validUserResponse(opts).getPlain(),
+      request: userFixtures.validAssignServiceRoleRequest(opts),
+      response: userFixtures.validUserResponse(opts),
       verifyCalledTimes: opts.verifyCalledTimes
     })
   },

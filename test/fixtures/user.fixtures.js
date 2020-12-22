@@ -1,9 +1,6 @@
 'use strict'
 
 const lodash = require('lodash')
-
-const User = require('../../app/models/User.class')
-const pactBase = require('./pact-base')
 const goLiveStage = require('../../app/models/go-live-stage')
 const serviceFixtures = require('./service.fixtures')
 
@@ -208,12 +205,6 @@ const defaultPermissions = [
 
 ]
 
-// Setup
-const pactUsers = pactBase({
-  array: ['service_roles', '_links'],
-  length: [{ key: 'permissions', length: 1 }]
-})
-
 const buildServiceRole = (opts = {}) => {
   return {
     service: serviceFixtures.validServiceResponse(opts.service).getPlain(),
@@ -307,174 +298,93 @@ module.exports = {
     }
 
     // pass this through the known valid structure builder to ensure structure is correct
-    const data = buildUserWithDefaults(userOpts)
-
-    return {
-      getPactified: () => {
-        return pactUsers.pactify(data)
-      },
-      getAsObject: () => {
-        return new User(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
-
-  validMultipleUserResponse: (opts = []) => {
-    return opts.map(buildUserWithDefaults)
+    return buildUserWithDefaults(userOpts)
   },
 
   validAuthenticateRequest: (options) => {
-    const request = {
+    return {
       username: options.username || 'username',
       password: options.password || 'password'
     }
-
-    return pactUsers.withPactified(request)
   },
 
   unauthorizedUserResponse: () => {
-    const response = {
+    return {
       errors: ['invalid username and/or password']
     }
-
-    return pactUsers.withPactified(response)
   },
 
   badAuthenticateResponse: () => {
-    const response = {
+    return {
       errors: ['Field [username] is required', 'Field [password] is required']
     }
-
-    return pactUsers.withPactified(response)
   },
 
   validIncrementSessionVersionRequest: () => {
-    const request = {
+    return {
       op: 'append',
       path: 'sessionVersion',
       value: 1
     }
-
-    return pactUsers.withPactified(request)
   },
 
   validAuthenticateSecondFactorRequest: (code) => {
-    const request = {
+    return {
       code: code || '123456'
     }
-
-    return pactUsers.withPactified(request)
   },
 
   validUpdatePasswordRequest: (token, newPassword) => {
-    const request = {
+    return {
       forgotten_password_code: token || '5ylaem',
       new_password: newPassword || 'G0VUkPay2017Rocks'
     }
-
-    return pactUsers.withPactified(request)
   },
 
   validUpdateServiceRoleRequest: (role) => {
-    const request = {
+    return {
       role_name: role || 'admin'
     }
-
-    return pactUsers.withPactified(request)
   },
 
   validAssignServiceRoleRequest: (opts = {}) => {
-    const request = {
+    return {
       service_external_id: opts.service_external_id || '9en17v',
       role_name: opts.role_name || 'admin'
     }
-
-    return pactUsers.withPactified(request)
   },
 
   validPasswordAuthenticateRequest: (opts = {}) => {
-    const usernameGenerate = opts.username || 'validuser'
-    const usernameMatcher = opts.usernameMatcher || 'validuser'
-
-    const passwordGenerate = opts.password || 'validpassword'
-    const passwordMatcher = opts.passwordMatcher || 'validpassword'
-
     return {
-      username: pactUsers.pactifyMatch(usernameGenerate, usernameMatcher),
-      password: pactUsers.pactifyMatch(passwordGenerate, passwordMatcher)
-    }
-  },
-
-  invalidPasswordAuthenticateRequest: (opts = {}) => {
-    const usernameGenerate = opts.username || 'validuser'
-    const usernameMatcher = opts.usernameMatcher || 'validuser'
-
-    const passwordGenerate = opts.password || 'invalidpassword'
-    const passwordMatcher = opts.passwordMatcher || 'invalidpassword'
-
-    return {
-      username: pactUsers.pactifyMatch(usernameGenerate, usernameMatcher),
-      password: pactUsers.pactifyMatch(passwordGenerate, passwordMatcher)
+      username: opts.username || 'validuser',
+      password: opts.password || 'validpassword'
     }
   },
 
   validUserResponse: (opts = {}) => {
-    const data = buildUserWithDefaults(opts)
-
-    return {
-      getPactified: () => {
-        return pactUsers.pactify(data)
-      },
-      getAsObject: () => {
-        return new User(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
+    return buildUserWithDefaults(opts)
   },
 
   validUsersResponse: (opts = []) => {
-    const users = opts.map(buildUserWithDefaults)
-
-    return {
-      getPactified: () => {
-        return pactUsers.pactify(users)
-      },
-      getAsObject: () => {
-        const usersObject = []
-        users.forEach(user => usersObject.push(new User(user)))
-        return new User(usersObject)
-      },
-      getPlain: () => {
-        return users
-      }
-    }
+    return opts.map(buildUserWithDefaults)
   },
 
   invalidPasswordAuthenticateResponse: () => {
-    const response = {
+    return {
       errors: ['invalid username and/or password']
     }
-
-    return pactUsers.withPactified(response)
   },
 
   validForgottenPasswordCreateRequest: (username) => {
-    const request = {
+    return {
       username: username || 'username@email.com'
     }
-
-    return pactUsers.withPactified(request)
   },
 
   validForgottenPasswordResponse: (payload) => {
     const request = payload || {}
     const code = 'h41ne'
-    const response = {
+    return {
       user_external_id: request.userExternalId || 'userExternalId',
       code: request.code || code,
       date: '2010-12-31T22:59:59.132Z',
@@ -484,26 +394,11 @@ module.exports = {
         'method': 'GET'
       }]
     }
-
-    return pactUsers.withPactified(response)
   },
 
   badForgottenPasswordResponse: () => {
-    const response = {
+    return {
       errors: ['Field [username] is required']
     }
-
-    return pactUsers.withPactified(response)
-  },
-
-  badRequestResponseWhenFieldsMissing: (missingFields) => {
-    const responseData = lodash.map(missingFields, (field) => {
-      return `Field [${field}] is required`
-    })
-    const response = {
-      errors: responseData
-    }
-
-    return pactUsers.withPactified(response)
   }
 }

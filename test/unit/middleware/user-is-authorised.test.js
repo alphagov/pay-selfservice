@@ -4,27 +4,28 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const { NotAuthorisedError, NotAuthenticatedError, UserAccountDisabledError } = require('../../../app/errors')
 const userIsAuthorised = require('../../../app/middleware/user-is-authorised')
+const User = require('../../../app/models/User.class')
 const userFixtures = require('../../fixtures/user.fixtures')
 const serviceFixtures = require('../../fixtures/service.fixtures')
 
 const serviceExternalId = 'a-service-external-id'
 const sessionVersion = 1
 const loggedInSession = { version: sessionVersion, secondFactor: 'totp' }
-const authorisedUser = userFixtures.validUserResponse({
+const authorisedUser = new User(userFixtures.validUserResponse({
   session_version: sessionVersion,
   service_roles: [{
     service: {
       external_id: serviceExternalId
     }
   }]
-}).getAsObject()
+}))
 
-const userWithoutServiceRole = userFixtures.validUserResponse({
+const userWithoutServiceRole = new User(userFixtures.validUserResponse({
   session_version: sessionVersion,
   service_roles: [{
     service: { external_id: 'some-other-service-id' }
   }]
-}).getAsObject()
+}))
 
 const service = serviceFixtures.validServiceResponse({
   external_id: serviceExternalId
@@ -73,7 +74,7 @@ describe('User is authorised middleware', () => {
       it('should call next with error', () => {
         const req = {
           session: { version: 1 },
-          user: userFixtures.validUserResponse({ session_version: 2 }).getAsObject(),
+          user: new User(userFixtures.validUserResponse({ session_version: 2 })),
           params: {}
         }
 
@@ -109,7 +110,7 @@ describe('User is authorised middleware', () => {
         }
         const req = {
           session: loggedInSession,
-          user: userFixtures.validUserResponse(userOpts).getAsObject(),
+          user: new User(userFixtures.validUserResponse(userOpts)),
           params: {}
         }
 

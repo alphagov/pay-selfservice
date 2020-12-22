@@ -2,6 +2,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 
 const { ConnectorClient } = require('../../../../app/services/clients/connector.client')
+const User = require('../../../../app/models/User.class')
 const { validUser } = require('../../../fixtures/user.fixtures')
 const { validGatewayAccountsResponse } = require('../../../fixtures/gateway-account.fixtures')
 const dashboardRedirectController = require('../../../../app/controllers/stripe-setup/stripe-setup-link/stripe-setup-dashboard-redirect.controller')
@@ -12,7 +13,7 @@ describe('Dashboard redirect controller', () => {
   let accountSpy, res, req
 
   beforeEach(() => {
-    const user = validUser({
+    const user = new User(validUser({
       username: 'valid-user',
       service_roles: [{
         service: {
@@ -20,7 +21,7 @@ describe('Dashboard redirect controller', () => {
           gateway_account_ids: serviceGatewayAccountIds
         }
       }]
-    }).getAsObject()
+    }))
 
     req = {
       correlationId: 'correlationId',

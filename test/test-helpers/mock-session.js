@@ -4,10 +4,11 @@ const express = require('express')
 const _ = require('lodash')
 const sinon = require('sinon')
 
+const User = require('../../app/models/User.class')
 const userFixture = require('../fixtures/user.fixtures')
 
 const getUser = (opts) => {
-  return userFixture.validUser(opts).getAsObject()
+  return new User(userFixture.validUser(opts))
 }
 
 const createAppWithSession = function (app, sessionData, gatewayAccountData, registerInviteData) {

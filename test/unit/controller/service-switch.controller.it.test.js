@@ -6,6 +6,7 @@ const _ = require('lodash')
 const connectorMock = nock(process.env.CONNECTOR_URL)
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const serviceSwitchController = require('../../../app/controllers/my-services')
+const User = require('../../../app/models/User.class')
 const userFixtures = require('../../fixtures/user.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 const chaiAsPromised = require('chai-as-promised')
@@ -35,7 +36,7 @@ describe('service switch controller: list of accounts', function () {
 
     const req = {
       correlationId: 'correlationId',
-      user: userFixtures.validUserResponse({
+      user: new User(userFixtures.validUserResponse({
         username: 'bob',
         service_roles: [
           {
@@ -86,7 +87,7 @@ describe('service switch controller: list of accounts', function () {
               permissions: [{ name: 'blah-blah:blah' }]
             }
           }]
-      }).getAsObject(),
+      })),
       session: {}
     }
 
@@ -115,10 +116,10 @@ describe('service switch controller: list of accounts', function () {
       .reply(200, { accounts: [] })
 
     const req = {
-      user: userFixtures.validUserResponse({
+      user: new User(userFixtures.validUserResponse({
         username: 'bob',
         service_roles: []
-      }).getAsObject(),
+      })),
       session: {}
     }
 
@@ -143,14 +144,14 @@ describe('service switch controller: switching', function () {
 
     const req = {
       originalUrl: 'http://bob.com?accountId=6',
-      user: userFixtures.validUserResponse({
+      user: new User(userFixtures.validUserResponse({
         username: 'bob',
         service_roles: [{
           service: {
             gateway_account_ids: ['6', '5']
           }
         }]
-      }).getAsObject(),
+      })),
       session: session,
       gateway_account: gatewayAccount,
       body: {
@@ -174,10 +175,10 @@ describe('service switch controller: switching', function () {
 
     const req = {
       originalUrl: 'http://bob.com?accountId=6',
-      user: userFixtures.validUserResponse({
+      user: new User(userFixtures.validUserResponse({
         username: 'bob',
         gateway_account_ids: ['8', '666']
-      }).getAsObject(),
+      })),
       session: session
     }
 
@@ -217,7 +218,7 @@ describe('service switch controller: display added to the new service msg', func
 
     const req = {
       correlationId: 'correlationId',
-      user: userFixtures.validUserResponse({
+      user: new User(userFixtures.validUserResponse({
         username: 'bob',
         service_roles: [
           {
@@ -242,7 +243,7 @@ describe('service switch controller: display added to the new service msg', func
               permissions: [{ name: 'blah-blah:blah' }]
             }
           }]
-      }).getAsObject(),
+      })),
       session: {},
       query: {
         s: newServiceExternalId

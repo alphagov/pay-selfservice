@@ -10,10 +10,11 @@ const getApp = require('../../../../server.js').getApp
 const userFixtures = require('../../../fixtures/user.fixtures')
 const paths = require('../../../../app/paths.js')
 const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
+const User = require('../../../../app/models/User.class')
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const USER_RESOURCE = '/v1/api/users'
 
-let response, user, $
+let response, $
 
 describe('Organisation details controller - get', () => {
   afterEach(() => {
@@ -29,7 +30,7 @@ describe('Organisation details controller - get', () => {
 
   describe('when the organisation already has details (CREDIT CARD GATEWAY ACCOUNT)', () => {
     before(done => {
-      user = userFixtures.validUserResponse({
+      const user = userFixtures.validUserResponse({
         service_roles: [{
           service: {
             external_id: EXTERNAL_SERVICE_ID,
@@ -49,8 +50,8 @@ describe('Organisation details controller - get', () => {
         }]
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -93,8 +94,8 @@ describe('Organisation details controller - get', () => {
         }]
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -130,8 +131,8 @@ describe('Organisation details controller - get', () => {
         }]
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -162,8 +163,8 @@ describe('Organisation details controller - get', () => {
         }]
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -195,8 +196,8 @@ describe('Organisation details controller - get', () => {
         }]
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -226,8 +227,8 @@ describe('Organisation details controller - get', () => {
         }]
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -257,8 +258,8 @@ describe('Organisation details controller - get', () => {
         }]
       })
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
+        .reply(200, user)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {

@@ -1,20 +1,20 @@
 const { Pact } = require('@pact-foundation/pact')
-var path = require('path')
-var chai = require('chai')
-var chaiAsPromised = require('chai-as-promised')
-var getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
-var userFixtures = require('../../../../fixtures/user.fixtures')
-var PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const path = require('path')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
+const userFixtures = require('../../../../fixtures/user.fixtures')
+const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 
 chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
-var port = Math.floor(Math.random() * 48127) + 1024
-var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+const port = Math.floor(Math.random() * 48127) + 1024
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - session', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
@@ -28,8 +28,8 @@ describe('adminusers client - session', function () {
   after(() => provider.finalize())
 
   describe('increment session version  API - success', () => {
-    let request = userFixtures.validIncrementSessionVersionRequest()
-    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const request = userFixtures.validIncrementSessionVersionRequest()
+    const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
     before((done) => {
       provider.addInteraction(
@@ -37,7 +37,7 @@ describe('adminusers client - session', function () {
           .withState('a user exists')
           .withUponReceiving('a valid increment session version update request')
           .withMethod('PATCH')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request)
           .build()
       ).then(() => done())
     })
@@ -50,8 +50,8 @@ describe('adminusers client - session', function () {
   })
 
   describe('increment session version API - user not found', () => {
-    let nonExistentExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-    let request = userFixtures.validIncrementSessionVersionRequest()
+    const nonExistentExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    const request = userFixtures.validIncrementSessionVersionRequest()
 
     before((done) => {
       provider.addInteraction(
@@ -59,7 +59,7 @@ describe('adminusers client - session', function () {
           .withState('a user does not exist')
           .withUponReceiving('a valid increment session version request')
           .withMethod('PATCH')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request)
           .withResponseHeaders({})
           .withStatusCode(404)
           .build()

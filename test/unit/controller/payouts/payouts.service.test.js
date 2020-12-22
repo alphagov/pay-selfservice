@@ -1,6 +1,7 @@
 const chai = require('chai')
 const { expect } = chai
 const { groupPayoutsByDate } = require('../../../../app/controllers/payouts/payouts.service')
+const User = require('../../../../app/models/User.class')
 const payoutFixtures = require('../../../fixtures/payout.fixtures')
 const userFixtures = require('../../../fixtures/user.fixtures')
 
@@ -35,11 +36,7 @@ describe('payout service data transforms', () => {
         }])
         .getPlain()
 
-      const user = userFixtures
-        .validUser({
-          gateway_account_ids: [ '300' ]
-        })
-        .getAsObject()
+      const user = new User(userFixtures.validUser({ gateway_account_ids: ['300'] }))
 
       const grouped = groupPayoutsByDate(payouts.results, user)
 
