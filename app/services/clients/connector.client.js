@@ -155,23 +155,11 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccount: function (params) {
-    return new Promise((resolve, reject) => {
-      let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
-      let startTime = new Date()
-      let context = {
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId: params.correlationId,
-        method: 'GET',
-        description: 'get an account',
-        service: SERVICE_NAME
-      }
-
-      let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-      oldBaseClient.get(url, params, callbackToPromiseConverter, null)
-        .on('error', callbackToPromiseConverter)
+    let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
+    return baseClient.get(url, {
+      correlationId: params.correlationId,
+      description: 'get an account',
+      service: SERVICE_NAME
     })
   },
   /**
@@ -228,77 +216,72 @@ ConnectorClient.prototype = {
    * @returns {*|Constructor|promise}
    */
   createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, correlationId) {
-    return new Promise((resolve, reject) => {
-      const url = this.connectorUrl + ACCOUNTS_API_PATH
-      const startTime = new Date()
-      const context = {
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId: correlationId,
-        method: 'POST',
-        description: 'create a gateway account',
-        service: SERVICE_NAME
-      }
+    const url = this.connectorUrl + ACCOUNTS_API_PATH
 
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    let payload = {
+      payment_provider: paymentProvider
+    }
+    if (type) {
+      payload.type = type
+    }
+    if (serviceName) {
+      payload.service_name = serviceName
+    }
+    if (analyticsId) {
+      payload.analytics_id = analyticsId
+    }
 
-      const params = {
-        payload: {
-          payment_provider: paymentProvider
-        }
-      }
-      if (type) {
-        params.payload.type = type
-      }
-      if (serviceName) {
-        params.payload.service_name = serviceName
-      }
-      if (analyticsId) {
-        params.payload.analytics_id = analyticsId
-      }
-
-      oldBaseClient.post(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
+    return baseClient.post(url, {
+      body: payload,
+      correlationId: correlationId,
+      description: 'create a gateway account',
+      service: SERVICE_NAME,
+      baseClientErrorHandler: 'old'
     })
   },
 
   /**
    *
    * @param {Object} params
-   * @param {Function} successCallback
    * @returns {ConnectorClient}
    */
-  patchAccountCredentials: function (params, successCallback) {
-    let url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
+  patchAccountCredentials: function (params) {
+    const url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-    logger.debug('Calling connector to get account', {
+    logger.debug('Calling connector to patch account credentials', {
       service: 'connector',
       method: 'PATCH',
       url: url
     })
 
-    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
-    return this
+    return baseClient.patch(url, {
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'patch gateway account credentials',
+      service: SERVICE_NAME
+    })
   },
 
   /**
    *
    * @param {Object} params
-   * @param {Function} successCallback
    * @returns {ConnectorClient}
    */
-  postAccountNotificationCredentials: function (params, successCallback) {
-    let url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
+  postAccountNotificationCredentials: function (params) {
+    const url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-    logger.debug('Calling connector to get account', {
+    logger.debug('Calling connector to update notification credentials', {
       service: 'connector',
       method: 'POST',
       url: url
     })
 
-    oldBaseClient.post(url, params, this.responseHandler(successCallback))
-    return this
+    return baseClient.post(url, {
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'patch gateway account credentials',
+      service: SERVICE_NAME
+    })
   },
 
   /**
@@ -324,58 +307,32 @@ ConnectorClient.prototype = {
   /**
    *
    * @param {Object} params
-   * @param {Function} successCallback
    * @returns {Promise}
    */
   post3dsFlexAccountCredentials: function (params) {
-    return new Promise((resolve, reject) => {
-      const url = _get3dsFlexCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
-      const startTime = new Date()
-      const context = {
-        description: 'Update 3DS Flex credentials',
-        method: 'POST',
-        service: 'connector',
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId: params.correlationId,
-        body: params.payload
-      }
-      requestLogger.logRequestStart(context)
+    const url = _get3dsFlexCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-      oldBaseClient.post(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
+    return baseClient.post(url, {
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'Update 3DS Flex credentials',
+      service: SERVICE_NAME
     })
   },
 
   /**
-   * This will replace the callback version soon
    * Retrieves the accepted card Types for the given account
    * @param gatewayAccountId (required)
    * @param correlationId (optional)
    * @returns {Promise<Object>}
    */
   getAcceptedCardsForAccountPromise: function (gatewayAccountId, correlationId) {
-    return new Promise((resolve, reject) => {
-      const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
-      const params = { correlationId }
-      const startTime = new Date()
-      const context = {
-        description: 'get accepted card types for account',
-        method: 'GET',
-        service: 'connector',
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId
-      }
-      requestLogger.logRequestStart(context)
+    const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
 
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-      oldBaseClient.get(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
+    return baseClient.get(url, {
+      correlationId: correlationId,
+      description: 'get accepted card types for account',
+      service: SERVICE_NAME
     })
   },
 
@@ -387,25 +344,14 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   postAcceptedCardsForAccount: function (gatewayAccountId, payload, correlationId) {
-    return new Promise((resolve, reject) => {
-      const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
-      const params = { gatewayAccountId, payload, correlationId }
-      const startTime = new Date()
-      const context = {
-        description: 'post accepted card types for account',
-        method: 'POST',
-        service: 'connector',
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId
-      }
-      requestLogger.logRequestStart(context)
+    const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
+    const params = { gatewayAccountId, payload, correlationId }
 
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-      oldBaseClient.post(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
+    return baseClient.post(url, {
+      body: params,
+      correlationId: correlationId,
+      description: 'post accepted card types for account',
+      service: SERVICE_NAME
     })
   },
 
@@ -528,7 +474,6 @@ ConnectorClient.prototype = {
    * @param correlationId
    * @returns {Promise<Object>}
    */
-
   toggleGooglePay: function (gatewayAccountId, allowGooglePay, correlationId) {
     return baseClient.patch(
       {
@@ -553,7 +498,6 @@ ConnectorClient.prototype = {
    * @param correlationId
    * @returns {Promise<Object>}
    */
-
   toggleMotoMaskCardNumberInput: function (gatewayAccountId, isMaskCardNumber, correlationId) {
     return baseClient.patch(
       {
@@ -578,7 +522,6 @@ ConnectorClient.prototype = {
    * @param correlationId
    * @returns {Promise<Object>}
    */
-
   toggleMotoMaskSecurityCodeInput: function (gatewayAccountId, isMaskSecurityCode, correlationId) {
     return baseClient.patch(
       {
@@ -603,7 +546,6 @@ ConnectorClient.prototype = {
    * @param correlationId
    * @returns {Promise<Object>}
    */
-
   setGatewayMerchantId: function (gatewayAccountId, gatewayMerchantId, correlationId) {
     return baseClient.patch(
       {
