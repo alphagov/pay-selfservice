@@ -41,7 +41,7 @@ describe('Create payment link information controller', () => {
         type: 'ADHOC',
         service_name_path: SERVICE_NAME_SLUGIFIED,
         product_name_path: PAYMENT_TITLE_SLUGIFIED
-      }).getPlain()
+      })
     })
 
     describe(`and URL isnt taken already`, () => {

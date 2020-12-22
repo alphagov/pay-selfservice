@@ -1,25 +1,11 @@
 'use strict'
 
-const lodash = require('lodash')
-
-const pactBase = require('./pact-base')
-
-// Global setup
-const pactRegister = pactBase()
+function buildGetStripeAccountResponse (opts = {}) {
+  return {
+    'stripe_account_id': opts.stripe_account_id
+  }
+}
 
 module.exports = {
-  buildGetStripeAccountResponse (opts = {}) {
-    const data = {
-      'stripe_account_id': opts.stripe_account_id
-    }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return lodash.clone(data)
-      }
-    }
-  }
+  buildGetStripeAccountResponse
 }

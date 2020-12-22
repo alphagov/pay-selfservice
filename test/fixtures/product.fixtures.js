@@ -1,14 +1,6 @@
 'use strict'
-const pactBase = require('./pact-base')
-
-// Global setup
-const pactProducts = pactBase()
 
 module.exports = {
-  pactifyRandomData: (opts = {}) => {
-    pactProducts.pactify(opts)
-  },
-
   validCreateProductRequest: (opts = {}) => {
     const data = {
       gateway_account_id: opts.gatewayAccountId || 'd5gzn',
@@ -28,14 +20,8 @@ module.exports = {
       data.reference_hint = opts.reference_hint
     }
     if (opts.metadata) data.metadata = opts.metadata
-    return {
-      getPactified: () => {
-        return pactProducts.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
+
+    return data
   },
 
   validCreatePaymentResponse: (opts = {}) => {
@@ -62,14 +48,7 @@ module.exports = {
       }]
     }
 
-    return {
-      getPactified: () => {
-        return pactProducts.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
+    return data
   },
 
   validProductResponse: (opts = {}) => {
@@ -110,28 +89,6 @@ module.exports = {
       }
     }
 
-    return {
-      getPactified: () => {
-        return pactProducts.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
-
-  validGetProductByPath: (opts = {}) => {
-    const data = {
-      serviceNamePath: opts.serviceNamePath || 'service-name',
-      productNamePath: opts.productNamePath || 'product-name'
-    }
-    return {
-      getPactified: () => {
-        return pactProducts.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
+    return data
   }
 }

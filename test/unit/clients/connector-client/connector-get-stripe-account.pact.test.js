@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
 const stripeAccountFixtures = require('../../../fixtures/stripe-account.fixtures')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
@@ -48,7 +49,7 @@ describe('connector client - get stripe account', () => {
           .withState(defaultState)
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(response.getPactified())
+          .withResponseBody(pactify(response))
           .build()
       )
         .then(() => done())

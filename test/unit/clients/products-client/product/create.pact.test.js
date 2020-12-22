@@ -7,11 +7,12 @@ const proxyquire = require('proxyquire')
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const productFixtures = require('../../../../fixtures/product.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const PRODUCT_RESOURCE = '/v1/api/products'
 const port = Math.floor(Math.random() * 48127) + 1024
-let request, response, result
+let result
 
 const randomPrice = () => Math.round(Math.random() * 10000) + 1
 
@@ -39,33 +40,32 @@ describe('products client - create a new product', () => {
 
   describe('when a product is successfully created', () => {
     const language = 'cy'
+    const request = productFixtures.validCreateProductRequest({
+      description: 'a test product',
+      returnUrl: 'https://example.gov.uk/paid-for-somet',
+      price: randomPrice(),
+      language
+    })
+    const response = productFixtures.validProductResponse(request)
 
     before(done => {
       const productsClient = getProductsClient()
-      request = productFixtures.validCreateProductRequest({
-        description: 'a test product',
-        returnUrl: 'https://example.gov.uk/paid-for-somet',
-        price: randomPrice(),
-        language
-      })
-      const requestPlain = request.getPlain()
-      response = productFixtures.validProductResponse(requestPlain)
       provider.addInteraction(
         new PactInteractionBuilder(PRODUCT_RESOURCE)
           .withUponReceiving('a valid create product request')
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request)
           .withStatusCode(201)
-          .withResponseBody(response.getPactified())
+          .withResponseBody(pactify(response))
           .build()
       )
         .then(() => productsClient.product.create({
-          gatewayAccountId: requestPlain.gateway_account_id,
-          payApiToken: requestPlain.pay_api_token,
-          name: requestPlain.name,
-          price: requestPlain.price,
-          description: requestPlain.description,
-          returnUrl: requestPlain.return_url,
+          gatewayAccountId: request.gateway_account_id,
+          payApiToken: request.pay_api_token,
+          name: request.name,
+          price: request.price,
+          description: request.description,
+          returnUrl: request.return_url,
           type: 'DEMO',
           language
         }))
@@ -79,48 +79,46 @@ describe('products client - create a new product', () => {
     afterEach(() => provider.verify())
 
     it('should create a new product', () => {
-      const plainRequest = request.getPlain()
-      const plainResponse = response.getPlain()
-      expect(result.gatewayAccountId).to.equal(plainRequest.gateway_account_id)
-      expect(result.name).to.equal(plainRequest.name)
-      expect(result.description).to.equal(plainRequest.description)
-      expect(result.price).to.equal(plainRequest.price)
+      expect(result.gatewayAccountId).to.equal(request.gateway_account_id)
+      expect(result.name).to.equal(request.name)
+      expect(result.description).to.equal(request.description)
+      expect(result.price).to.equal(request.price)
       expect(result.returnUrl).to.equal('https://example.gov.uk/paid-for-somet')
       expect(result.type).to.equal('DEMO')
       expect(result.language).to.equal(language)
       expect(result).to.have.property('links')
       expect(Object.keys(result.links).length).to.equal(2)
       expect(result.links).to.have.property('self')
-      expect(result.links.self).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'self').method)
-      expect(result.links.self).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'self').href)
+      expect(result.links.self).to.have.property('method').to.equal(response._links.find(link => link.rel === 'self').method)
+      expect(result.links.self).to.have.property('href').to.equal(response._links.find(link => link.rel === 'self').href)
       expect(result.links).to.have.property('pay')
-      expect(result.links.pay).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'pay').method)
-      expect(result.links.pay).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'pay').href)
+      expect(result.links.pay).to.have.property('method').to.equal(response._links.find(link => link.rel === 'pay').method)
+      expect(result.links.pay).to.have.property('href').to.equal(response._links.find(link => link.rel === 'pay').href)
     })
   })
 
   describe('create a product - bad request', () => {
+    const request = productFixtures.validCreateProductRequest({ pay_api_token: '' })
+
     before(done => {
       const productsClient = getProductsClient()
-      request = productFixtures.validCreateProductRequest({ pay_api_token: '' })
-      const requestPlain = request.getPlain()
       provider.addInteraction(
         new PactInteractionBuilder(PRODUCT_RESOURCE)
           .withUponReceiving('an invalid create product request')
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request)
           .withStatusCode(400)
           .build()
       )
         .then(() => productsClient.product.create({
-          gatewayAccountId: requestPlain.gateway_account_id,
-          payApiToken: requestPlain.pay_api_token,
-          name: requestPlain.name,
-          price: requestPlain.price,
-          description: requestPlain.description,
-          returnUrl: requestPlain.return_url,
-          type: requestPlain.type,
-          language: requestPlain.language
+          gatewayAccountId: request.gateway_account_id,
+          payApiToken: request.pay_api_token,
+          name: request.name,
+          price: request.price,
+          description: request.description,
+          returnUrl: request.return_url,
+          type: request.type,
+          language: request.language
         }), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {

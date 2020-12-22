@@ -41,7 +41,7 @@ describe('Create payment link web address post controller', () => {
         type: 'ADHOC',
         service_name_path: SERVICE_NAME_SLUGIFIED,
         product_name_path: PAYMENT_TITLE_SLUGIFIED
-      }).getPlain()
+      })
       nock(PRODUCTS_URL)
         .get(`/v1/api/products`)
         .query({ 'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path })
@@ -86,7 +86,7 @@ describe('Create payment link web address post controller', () => {
         type: 'ADHOC',
         service_name_path: SERVICE_NAME_SLUGIFIED,
         product_name_path: PAYMENT_TITLE_SLUGIFIED
-      }).getPlain()
+      })
       nock(PRODUCTS_URL)
         .get(`/v1/api/products`)
         .query({ 'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path })

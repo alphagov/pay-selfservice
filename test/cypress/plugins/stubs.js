@@ -11,6 +11,7 @@ const cardFixtures = require('../../fixtures/card.fixtures')
 const serviceFixtures = require('../../fixtures/service.fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go-live-requests.fixture')
 const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
+const stripeAccountFixtures = require('../../fixtures/stripe-account.fixtures')
 const productFixtures = require('../../fixtures/product.fixtures')
 const goCardlessConnectFixtures = require('../../fixtures/go-cardless-connect.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
@@ -189,7 +190,7 @@ module.exports = {
   getGatewayAccountStripeSetupSuccess: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/stripe-setup`
     return simpleStubBuilder('GET', path, 200, {
-      response: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(opts).getPlain()
+      response: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(opts)
     })
   },
   getGatewayAccountStripeSetupFlagChanged: (opts = {}) => {
@@ -201,7 +202,7 @@ module.exports = {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(item).getPlain()
+          body: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(item)
         }
       })
     })
@@ -224,7 +225,7 @@ module.exports = {
   getStripeAccountSuccess: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/stripe-account`
     return simpleStubBuilder('GET', path, 200, {
-      response: stripeAccountSetupFixtures.buildGetStripeAccountResponse(opts).getPlain()
+      response: stripeAccountFixtures.buildGetStripeAccountResponse(opts)
     })
   },
   getGatewayAccountsSuccess: (opts = {}) => {
@@ -317,7 +318,7 @@ module.exports = {
         page: opts.page || 1,
         display_size: opts.display_size || 15
       },
-      response: ledgerPayoutFixtures.validPayoutSearchResponse(opts.payouts || [], { total, page }).getPlain()
+      response: ledgerPayoutFixtures.validPayoutSearchResponse(opts.payouts || [], { total, page })
     })
   },
   getLedgerEventsSuccess: (opts = {}) => {
@@ -410,7 +411,7 @@ module.exports = {
     const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products`
     return simpleStubBuilder('GET', path, 200, {
       response: opts.products.map(product =>
-        productFixtures.validProductResponse(product).getPlain())
+        productFixtures.validProductResponse(product))
     })
   },
   getProductsByGatewayAccountIdFailure: (opts) => {
@@ -420,7 +421,7 @@ module.exports = {
   getProductByExternalIdSuccess: (opts) => {
     const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products/${opts.product.external_id}`
     return simpleStubBuilder('GET', path, 200, {
-      response: productFixtures.validProductResponse(opts.product).getPlain()
+      response: productFixtures.validProductResponse(opts.product)
     })
   },
   deleteProductSuccess: (opts) => {
@@ -546,33 +547,33 @@ module.exports = {
   postCreateTokenForAccountSuccess: (opts = {}) => {
     const path = '/v1/frontend/auth'
     return simpleStubBuilder('POST', path, 200, {
-      response: tokenFixtures.validCreateTokenForGatewayAccountResponse().getPlain()
+      response: tokenFixtures.validCreateTokenForGatewayAccountResponse()
     })
   },
   postCreateProductSuccess: (opts = {}) => {
     const path = '/v1/api/products'
     return simpleStubBuilder('POST', path, 200, {
-      response: productFixtures.validProductResponse(opts).getPlain()
+      response: productFixtures.validProductResponse(opts)
     })
   },
   postCheckWorldpay3dsFlexCredentials: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/worldpay/check-3ds-flex-config`
     if (opts.shouldReturnValid) {
       return simpleStubBuilder('POST', path, 200, {
-        request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest().getPlain().payload,
-        response: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse().getPlain()
+        request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest().payload,
+        response: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse()
       })
     } else {
       return simpleStubBuilder('POST', path, 200, {
-        request: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsRequest().getPlain().payload,
-        response: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsResponse().getPlain()
+        request: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsRequest().payload,
+        response: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsResponse()
       })
     }
   },
   postCheckWorldpay3dsFlexCredentialsFailure: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/worldpay/check-3ds-flex-config`
     return simpleStubBuilder('POST', path, 500, {
-      request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest(opts).getPlain().payload
+      request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest(opts).payload
     })
   }
 }

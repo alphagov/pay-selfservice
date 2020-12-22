@@ -49,7 +49,7 @@ const buildCreateProductRequest = (language, hasMetadata) => {
     reference_enabled: false,
     language: language,
     ...hasMetadata && { metadata: { 'a-key': 'a-value' } }
-  }).getPlain()
+  })
 }
 
 describe('Create payment link review controller', () => {
@@ -57,7 +57,7 @@ describe('Create payment link review controller', () => {
     let result, session, app
     before('Arrange', () => {
       const expectedProductRequest = buildCreateProductRequest('en', true)
-      const productResponse = validProductResponse(expectedProductRequest).getPlain()
+      const productResponse = validProductResponse(expectedProductRequest)
       nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
       nock(PRODUCTS_URL).post('/v1/api/products', expectedProductRequest).reply(201, productResponse)
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
@@ -99,7 +99,7 @@ describe('Create payment link review controller', () => {
     let result, session, app
     before('Arrange', () => {
       const expectedProductRequest = buildCreateProductRequest('cy')
-      const productResponse = validProductResponse(expectedProductRequest).getPlain()
+      const productResponse = validProductResponse(expectedProductRequest)
       nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
       nock(PRODUCTS_URL).post('/v1/api/products', expectedProductRequest).reply(201, productResponse)
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
@@ -223,7 +223,7 @@ describe('Create payment link review controller', () => {
     let result, session, app
     before('Arrange', () => {
       const expectedProductRequest = buildCreateProductRequest('en')
-      const productResponse = validProductResponse(expectedProductRequest).getPlain()
+      const productResponse = validProductResponse(expectedProductRequest)
       nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
       nock(PRODUCTS_URL).post('/v1/api/products', lodash.omit(expectedProductRequest, 'description')).reply(201, productResponse)
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)

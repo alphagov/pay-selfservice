@@ -40,8 +40,8 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   price: PAYMENT_AMOUNT,
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
   type: 'DEMO'
-}).getPlain()
-const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
+})
+const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST)
 
 describe('make a demo payment - go to payment controller', () => {
   describe(`when both paymentDescription and paymentAmount exist in the session`, () => {

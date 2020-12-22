@@ -1,6 +1,4 @@
 'use strict'
-const pactBase = require('./pact-base')
-const pact = pactBase()
 
 function buildPayout (opts) {
   return {
@@ -16,22 +14,14 @@ function buildPayout (opts) {
   }
 }
 
-function decoratePactOptions (response) {
-  return {
-    getPactified: () => pact.pactify(response),
-    getPlain: () => response
-  }
-}
-
 module.exports = {
   validPayoutSearchResponse: (payoutOpts = [], opts = {}) => {
     const payouts = payoutOpts.map(buildPayout)
-    const response = {
+    return {
       results: payouts,
       total: opts.total || payouts.length,
       count: payouts.length,
       page: opts.page || 1
     }
-    return decoratePactOptions(response)
   }
 }

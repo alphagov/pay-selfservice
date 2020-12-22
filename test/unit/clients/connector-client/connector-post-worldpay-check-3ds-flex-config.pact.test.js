@@ -11,6 +11,8 @@ chai.use(chaiAsPromised)
 const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const worldpay3dsFlexCredentialsFixtures = require('../../../fixtures/worldpay-3ds-flex-credentials.fixtures')
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
+
 const PORT = Math.floor(Math.random() * 48127) + 1024
 const connectorClient = new Connector(`http://localhost:${PORT}`)
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
@@ -37,29 +39,24 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
       const checkValidWorldpay3dsFlexCredentialsRequest = worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest()
       const checkValidWorldpay3dsFlexCredentialsResponse = worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse()
       before(() => {
-        const pactifiedRequest = checkValidWorldpay3dsFlexCredentialsRequest.getPactified()
-        const pactifiedResponse = checkValidWorldpay3dsFlexCredentialsResponse.getPactified()
-
         provider.addInteraction(
           new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${EXISTING_GATEWAY_ACCOUNT_ID}/${CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS}`)
             .withState(`a gateway account ${EXISTING_GATEWAY_ACCOUNT_ID} with Worldpay 3DS Flex credentials exists`)
             .withUponReceiving('a request to check Worldpay 3DS Flex credentials')
             .withMethod('POST')
             .withRequestHeaders({ 'Content-Type': 'application/json' })
-            .withRequestBody(pactifiedRequest.payload)
+            .withRequestBody(checkValidWorldpay3dsFlexCredentialsRequest.payload)
             .withStatusCode(200)
             .withResponseHeaders({ 'Content-Type': 'application/json' })
-            .withResponseBody(pactifiedResponse)
+            .withResponseBody(pactify(checkValidWorldpay3dsFlexCredentialsResponse))
             .build()
         )
       })
 
       it('should return valid', () => {
-        const valid3dsFlexCredentials = checkValidWorldpay3dsFlexCredentialsRequest.getPlain()
-        const validResult = checkValidWorldpay3dsFlexCredentialsResponse.getPlain()
-        return connectorClient.postCheckWorldpay3dsFlexCredentials(valid3dsFlexCredentials)
+        return connectorClient.postCheckWorldpay3dsFlexCredentials(checkValidWorldpay3dsFlexCredentialsRequest)
           .should.be.fulfilled.then((response) => {
-            expect(response).to.deep.equal(validResult)
+            expect(response).to.deep.equal(checkValidWorldpay3dsFlexCredentialsResponse)
           })
       })
     })

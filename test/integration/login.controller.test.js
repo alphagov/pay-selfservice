@@ -47,7 +47,7 @@ describe('The logged in endpoint', function () {
         responsible_person: true,
         vat_number: true,
         company_number: true
-      }).getPlain())
+      }))
     nock(LEDGER_URL)
       .get('/v1/report/transactions-summary')
       .query(() => true)
