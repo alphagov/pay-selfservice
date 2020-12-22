@@ -67,7 +67,7 @@ describe('The /transactions endpoint', function () {
   })
 
   it('should show error message on a bad request while retrieving the list of transactions', function (done) {
-    const errorMessage = 'Unable to retrieve list of transactions.'
+    const errorMessage = 'There is a problem with the payments platform. Please contact the support team.'
     ledgerMockResponds(400, { 'message': errorMessage }, ledgerSearchParameters)
 
     getTransactionList()
@@ -79,7 +79,7 @@ describe('The /transactions endpoint', function () {
     ledgerMockResponds(500, { 'message': 'some error from connector' }, ledgerSearchParameters)
 
     getTransactionList()
-      .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
+      .expect(500, { 'message': 'There is a problem with the payments platform. Please contact the support team.' })
       .end(done)
   })
 
@@ -87,7 +87,7 @@ describe('The /transactions endpoint', function () {
     // No ledgerMock defined on purpose to mock a network failure
 
     getTransactionList()
-      .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
+      .expect(500, { 'message': 'There is a problem with the payments platform. Please contact the support team.' })
       .end(done)
   })
 })

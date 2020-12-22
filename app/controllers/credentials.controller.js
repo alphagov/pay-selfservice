@@ -125,11 +125,11 @@ module.exports = {
         gatewayAccountId: accountId
       })
 
-      let duration = new Date() - startTime
+      const duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
       return res.redirect(303, router.paths.yourPsp.index)
     } catch (err) {
-      let duration = new Date() - startTime
+      const duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
       if (err && err.errorCode) {
         logger.error(`[${correlationId}] Calling connector to update provider notification credentials failed`, {

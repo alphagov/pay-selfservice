@@ -53,8 +53,8 @@ describe('connector client', function () {
 
     it('should get card types successfully', function (done) {
       const getCardTypes = validCardTypesResponse
-      connectorClient.getAllCardTypes((connectorData, connectorResponse) => {
-        expect(connectorResponse.body).to.deep.equal(getCardTypes)
+      connectorClient.getAllCardTypes().then(response => {
+        expect(response).to.deep.equal(getCardTypes)
         done()
       })
     })
