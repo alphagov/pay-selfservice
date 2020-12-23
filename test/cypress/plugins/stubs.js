@@ -1,10 +1,6 @@
 'use strict'
 
-const lodash = require('lodash')
-
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const transactionDetailsFixtures = require('../../fixtures/refund.fixtures')
-const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
 const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
@@ -61,48 +57,6 @@ module.exports = {
         }]
       }
     ]
-  },
-  postRefundSuccess: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
-    return simpleStubBuilder('POST', path, 200, {
-      request: transactionDetailsFixtures.validTransactionRefundRequest(opts),
-      verifyCalledTimes: opts.verifyCalledTimes
-    })
-  },
-  postRefundAmountNotAvailable: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
-    return simpleStubBuilder('POST', path, 400, {
-      request: transactionDetailsFixtures.validTransactionRefundRequest(opts),
-      response: transactionDetailsFixtures.invalidTransactionRefundResponse({
-        error_identifier: 'REFUND_NOT_AVAILABLE',
-        reason: 'amount_not_available'
-      })
-    })
-  },
-  getLedgerTransactionSuccess: (opts = {}) => {
-    const path = `/v1/transaction/${opts.transaction_id}`
-    return simpleStubBuilder('GET', path, 200, {
-      response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts)
-    })
-  },
-  getLedgerEventsSuccess: (opts = {}) => {
-    const path = `/v1/transaction/${opts.transaction_id}/event`
-    return simpleStubBuilder('GET', path, 200, {
-      response: ledgerTransactionFixtures.validTransactionEventsResponse(opts)
-    })
-  },
-  getLedgerTransactionsSuccess: (opts = {}) => {
-    const path = '/v1/transaction'
-    return simpleStubBuilder('GET', path, 200, {
-      query: lodash.defaults(opts.filters, {
-        account_id: opts.gateway_account_id,
-        page: opts.page || 1,
-        display_size: opts.display_size || 100,
-        limit_total: true,
-        limit_total_size: 5001
-      }),
-      response: ledgerTransactionFixtures.validTransactionSearchResponse(opts)
-    })
   },
   getAcceptedCardsForAccountSuccess: opts => {
     const path = `/v1/frontend/accounts/${opts.account_id}/card-types`

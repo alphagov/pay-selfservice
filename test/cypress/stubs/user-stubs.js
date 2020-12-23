@@ -181,7 +181,7 @@ function buildServiceRoleOpts (opts) {
     serviceRole.service.external_id = opts.serviceExternalId
   }
   if (opts.serviceName) {
-    serviceRole.service.name = opts.serviceName.en
+    serviceRole.service.name = opts.serviceName.en || opts.serviceName
     serviceRole.service.service_name = opts.serviceName
   }
   if (opts.goLiveStage) {
