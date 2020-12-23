@@ -15,7 +15,7 @@ let req, res
 
 describe('Controller: editServiceName, Method: get', () => {
   describe('when the service name is not empty', () => {
-    before(done => {
+    before(async function () {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
@@ -29,11 +29,11 @@ describe('Controller: editServiceName, Method: get', () => {
       res = {
         redirect: sinon.spy()
       }
-      const result = editServiceNameCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
+
+      try {
+        await editServiceNameCtrl.post(req, res)
+      } catch (err) {
+        throw new Error('Didn\'t return a promise')
       }
     })
 
@@ -44,7 +44,7 @@ describe('Controller: editServiceName, Method: get', () => {
   })
 
   describe('when the service name is not empty, but the update call fails', () => {
-    before(done => {
+    before(async function () {
       mockServiceService.updateServiceName = sinon.stub().rejects(new Error('somet went wrong'))
       mockResponses.renderErrorView = sinon.spy()
       req = {
@@ -56,11 +56,11 @@ describe('Controller: editServiceName, Method: get', () => {
         }
       }
       res = {}
-      const result = editServiceNameCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
+
+      try {
+        await editServiceNameCtrl.post(req, res) 
+      } catch (err) {
+        throw new Error('Didn\'t return a promise')
       }
     })
 
@@ -74,7 +74,7 @@ describe('Controller: editServiceName, Method: get', () => {
   })
 
   describe('when the service name is empty', () => {
-    before(done => {
+    before(async function () {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
@@ -88,11 +88,11 @@ describe('Controller: editServiceName, Method: get', () => {
       res = {
         redirect: sinon.spy()
       }
-      const result = editServiceNameCtrl.post(req, res)
-      if (result) {
-        done(new Error('Returned a promise'))
-      } else {
-        done()
+
+      try {
+        editServiceNameCtrl.post(req, res)
+      } catch (err) {
+        throw new Error('Returned a promise')
       }
     })
 
