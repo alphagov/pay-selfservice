@@ -5,7 +5,6 @@ const lodash = require('lodash')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 const transactionDetailsFixtures = require('../../fixtures/refund.fixtures')
 const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
-const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
 const productFixtures = require('../../fixtures/product.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
@@ -86,19 +85,6 @@ module.exports = {
     const path = `/v1/transaction/${opts.transaction_id}`
     return simpleStubBuilder('GET', path, 200, {
       response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts)
-    })
-  },
-  getLedgerPayoutSuccess: (opts = {}) => {
-    const path = '/v1/payout'
-    const { total, page } = opts
-    return simpleStubBuilder('GET', path, 200, {
-      query: {
-        gateway_account_id: opts.gateway_account_id,
-        state: 'paidout',
-        page: opts.page || 1,
-        display_size: opts.display_size || 15
-      },
-      response: ledgerPayoutFixtures.validPayoutSearchResponse(opts.payouts || [], { total, page })
     })
   },
   getLedgerEventsSuccess: (opts = {}) => {
