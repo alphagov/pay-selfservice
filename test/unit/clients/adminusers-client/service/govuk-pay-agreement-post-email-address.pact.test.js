@@ -35,7 +35,7 @@ describe('adminusers client - post govuk pay agreement - email address', () => {
 
   describe('post email address', () => {
     const payload = { user_external_id: userExternalId }
-    const validGovUkAgreementUserEmailRequest = validPostGovUkPayAgreementRequest(payload).getPlain()
+    const validGovUkAgreementUserEmailRequest = validPostGovUkPayAgreementRequest(payload)
 
     before(done => {
       provider.addInteraction(

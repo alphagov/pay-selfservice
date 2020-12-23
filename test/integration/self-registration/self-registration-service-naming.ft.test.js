@@ -8,7 +8,6 @@ const chaiAsPromised = require('chai-as-promised')
 
 const mockSession = require('../../test-helpers/mock-session')
 const getApp = require('../../../server').getApp
-const selfRegisterFixtures = require('../../fixtures/self-register.fixtures')
 const paths = require('../../../app/paths')
 
 // Constants
@@ -31,8 +30,7 @@ describe('create service - service naming', function () {
 
   it('should redirect to home page on successful submission', function (done) {
     const serviceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const validServiceNameRequest = selfRegisterFixtures.validServiceNameRequest()
-    const request = validServiceNameRequest.getPlain()
+    const request = { service_name: 'My Service name' }
     const session = mockSession.getUser({ default_service_id: serviceExternalId })
     const service = session.serviceRoles[0].service
     const gatewayAccountId = service.gatewayAccountIds[0]
@@ -59,9 +57,7 @@ describe('create service - service naming', function () {
       .end(done)
   })
   it('should redirect to name your service page if user input invalid', function (done) {
-    const invalidServiceNameRequest = selfRegisterFixtures.invalidServiceNameRequest()
-
-    const request = invalidServiceNameRequest.getPlain()
+    const request = { service_name: '' }
     let session = mockSession.getUser()
     app = mockSession.getAppWithLoggedInUser(getApp(), session)
     supertest(app)

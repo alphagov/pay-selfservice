@@ -54,9 +54,7 @@ describe('create service otp validation', function () {
   })
 
   it('should redirect to confirmation page on successful registration', function (done) {
-    const validServiceRegistrationRequest = selfRegisterFixtures.validRegisterRequest()
-
-    const request = validServiceRegistrationRequest.getPlain()
+    const request = selfRegisterFixtures.validRegisterRequest()
     adminusersMock.post(`${SERVICE_INVITE_RESOURCE}`, request)
       .reply(201)
 
@@ -75,9 +73,8 @@ describe('create service otp validation', function () {
   })
 
   it('should redirect to register page if user input invalid', function (done) {
-    const invalidServiceRegistrationRequest = selfRegisterFixtures.invalidEmailRegisterRequest()
+    const request = selfRegisterFixtures.invalidEmailRegisterRequest()
 
-    const request = invalidServiceRegistrationRequest.getPlain()
     let session = {}
     app = mockSession.getAppWithLoggedOutSession(getApp(), session)
     supertest(app)

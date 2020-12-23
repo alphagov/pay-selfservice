@@ -80,7 +80,7 @@ describe('create service otp validation', function () {
       const mockAdminUsersInviteCompleteRequest =
         inviteFixtures.validInviteCompleteRequest({
           gateway_account_ids: [gatewayAccountId]
-        }).getPlain()
+        })
       const mockAdminUsersInviteCompleteResponse =
         inviteFixtures.validInviteCompleteResponse({
           invite: {
@@ -90,7 +90,7 @@ describe('create service otp validation', function () {
           },
           user_external_id: userExternalId,
           service_external_id: serviceExternalId
-        }).getPlain()
+        })
       const getUserResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
       connectorMock.post(CONNECTOR_ACCOUNTS_URL)
@@ -103,7 +103,7 @@ describe('create service otp validation', function () {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest({
         code: inviteCode
       })
-      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
+      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
         .reply(200)
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), {
@@ -114,7 +114,7 @@ describe('create service otp validation', function () {
       supertest(app)
         .post(paths.selfCreateService.otpVerify)
         .send({
-          'verify-code': validServiceInviteOtpRequest.getPlain().otp,
+          'verify-code': validServiceInviteOtpRequest.otp,
           csrfToken: csrf().create('123')
         })
         .expect(303)
@@ -129,8 +129,8 @@ describe('create service otp validation', function () {
       supertest(app)
         .post(paths.selfCreateService.otpVerify)
         .send({
-          code: validServiceInviteOtpRequest.getPlain().code,
-          'verify-code': validServiceInviteOtpRequest.getPlain().otp,
+          code: validServiceInviteOtpRequest.code,
+          'verify-code': validServiceInviteOtpRequest.otp,
           csrfToken: csrf().create('123')
         })
         .expect(404)
@@ -140,14 +140,14 @@ describe('create service otp validation', function () {
     it('should redirect to verify otp page on verification code with incorrect format', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
-        code: validServiceInviteOtpRequest.getPlain().code,
+        code: validServiceInviteOtpRequest.code,
         email: 'bob@bob.com'
       }
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
       supertest(app)
         .post(paths.selfCreateService.otpVerify)
         .send({
-          code: validServiceInviteOtpRequest.getPlain().code,
+          code: validServiceInviteOtpRequest.code,
           'verify-code': 'abc',
           csrfToken: csrf().create('123')
         })
@@ -166,17 +166,17 @@ describe('create service otp validation', function () {
     it('should redirect to verify otp page on invalid otp code', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
-        code: validServiceInviteOtpRequest.getPlain().code,
+        code: validServiceInviteOtpRequest.code,
         email: 'bob@bob.com'
       }
-      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
+      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
         .reply(401)
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
       supertest(app)
         .post(paths.selfCreateService.otpVerify)
         .send({
-          code: validServiceInviteOtpRequest.getPlain().code,
-          'verify-code': validServiceInviteOtpRequest.getPlain().otp,
+          code: validServiceInviteOtpRequest.code,
+          'verify-code': validServiceInviteOtpRequest.otp,
           csrfToken: csrf().create('123')
         })
         .expect(303)
@@ -194,11 +194,11 @@ describe('create service otp validation', function () {
     it('should error if invite code is not found', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
-        code: validServiceInviteOtpRequest.getPlain().code,
+        code: validServiceInviteOtpRequest.code,
         email: 'bob@bob.com'
       }
 
-      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
+      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
         .reply(404)
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
@@ -208,8 +208,8 @@ describe('create service otp validation', function () {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
-          code: validServiceInviteOtpRequest.getPlain().code,
-          'verify-code': validServiceInviteOtpRequest.getPlain().otp,
+          code: validServiceInviteOtpRequest.code,
+          'verify-code': validServiceInviteOtpRequest.otp,
           csrfToken: csrf().create('123')
         })
         .expect(404)
@@ -222,11 +222,11 @@ describe('create service otp validation', function () {
     it('should error if invite code is no longer valid (expired)', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
-        code: validServiceInviteOtpRequest.getPlain().code,
+        code: validServiceInviteOtpRequest.code,
         email: 'bob@bob.com'
       }
 
-      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
+      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
         .reply(410)
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
@@ -236,8 +236,8 @@ describe('create service otp validation', function () {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
-          code: validServiceInviteOtpRequest.getPlain().code,
-          'verify-code': validServiceInviteOtpRequest.getPlain().otp,
+          code: validServiceInviteOtpRequest.code,
+          'verify-code': validServiceInviteOtpRequest.otp,
           csrfToken: csrf().create('123')
         })
         .expect(410)

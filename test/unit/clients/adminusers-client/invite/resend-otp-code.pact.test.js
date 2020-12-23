@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const inviteFixtures = require('../../../../fixtures/invite.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
@@ -36,12 +37,11 @@ describe('submit resend otp code API', function () {
     const validOtpResend = inviteFixtures.validResendOtpCodeRequest()
 
     before((done) => {
-      const pactified = validOtpResend.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/resend`)
           .withUponReceiving('a resend otp code submission')
           .withMethod('POST')
-          .withRequestBody(pactified)
+          .withRequestBody(validOtpResend)
           .withStatusCode(200)
           .build()
       ).then(() => done())
@@ -51,9 +51,7 @@ describe('submit resend otp code API', function () {
     afterEach(() => provider.verify())
 
     it('should submit otp code resend successfully', function (done) {
-      const registration = validOtpResend.getPlain()
-
-      adminusersClient.resendOtpCode(registration.code, registration.telephone_number).should.be.fulfilled
+      adminusersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.fulfilled
         .should.notify(done)
     })
   })
@@ -64,14 +62,13 @@ describe('submit resend otp code API', function () {
     const errorResponse = inviteFixtures.badRequestResponseWhenFieldsMissing(['code'])
 
     before((done) => {
-      const pactified = validOtpResend.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/resend`)
           .withUponReceiving('a resend otp code submission with missing code')
           .withMethod('POST')
-          .withRequestBody(pactified)
+          .withRequestBody(validOtpResend)
           .withStatusCode(400)
-          .withResponseBody(errorResponse.getPactified())
+          .withResponseBody(pactify(errorResponse))
           .build()
       ).then(() => done())
         .catch(done)
@@ -80,8 +77,7 @@ describe('submit resend otp code API', function () {
     afterEach(() => provider.verify())
 
     it('should return 400 on missing fields', function (done) {
-      const resendData = validOtpResend.getPlain()
-      adminusersClient.resendOtpCode(resendData.code, resendData.telephone_number).should.be.rejected.then(function (response) {
+      adminusersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors[0]).to.equal('Field [code] is required')
@@ -93,12 +89,11 @@ describe('submit resend otp code API', function () {
     const validOtpResend = inviteFixtures.validResendOtpCodeRequest()
 
     before((done) => {
-      const pactified = validOtpResend.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/resend`)
           .withUponReceiving('a resend otp code submission of non existent code')
           .withMethod('POST')
-          .withRequestBody(pactified)
+          .withRequestBody(validOtpResend)
           .withStatusCode(404)
           .build()
       ).then(() => done())
@@ -108,8 +103,7 @@ describe('submit resend otp code API', function () {
     afterEach(() => provider.verify())
 
     it('should return 404 when code is not found/expired', function (done) {
-      const resendData = validOtpResend.getPlain()
-      adminusersClient.resendOtpCode(resendData.code, resendData.telephone_number).should.be.rejected.then(function (response) {
+      adminusersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

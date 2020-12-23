@@ -66,7 +66,7 @@ describe('service users resource', () => {
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes)
     adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
-      .reply(200, getInvitesRes.getPlain())
+      .reply(200, getInvitesRes)
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
@@ -116,7 +116,7 @@ describe('service users resource', () => {
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes)
     adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
-      .reply(200, getInvitesRes.getPlain())
+      .reply(200, getInvitesRes)
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
@@ -159,7 +159,7 @@ describe('service users resource', () => {
     adminusersMock.get(`${SERVICE_RESOURCE}/${noAccessServiceId}/users`)
       .reply(200, serviceUsersRes)
     adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${noAccessServiceId}`)
-      .reply(200, getInvitesRes.getPlain())
+      .reply(200, getInvitesRes)
 
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -440,7 +440,7 @@ describe('service users resource', () => {
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes)
     adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
-      .reply(200, getInvitesRes.getPlain())
+      .reply(200, getInvitesRes)
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)

@@ -40,7 +40,7 @@ describe('Invite validation tests', () => {
         type,
         user_exist: false
       }
-      const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts)
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
         .reply(200, validInviteResponse)
@@ -64,7 +64,7 @@ describe('Invite validation tests', () => {
         type,
         user_exist: true
       }
-      const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts)
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
         .reply(200, validInviteResponse)
@@ -90,7 +90,7 @@ describe('Invite validation tests', () => {
         telephone_number: telephoneNumber,
         user_exist: false
       }
-      const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts)
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
         .reply(200, validInviteResponse)
@@ -116,7 +116,7 @@ describe('Invite validation tests', () => {
         type,
         user_exist: true
       }
-      const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts)
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
         .reply(200, validInviteResponse)
@@ -132,7 +132,7 @@ describe('Invite validation tests', () => {
     it('should redirect to register with telephone number, if user did not complete previous attempt after entering registration details', done => {
       const code = '7s8ftgw76rwgu'
       const telephoneNumber = '+441134960000'
-      const validInviteResponse = inviteFixtures.validInviteResponse({ telephone_number: telephoneNumber }).getPlain()
+      const validInviteResponse = inviteFixtures.validInviteResponse({ telephone_number: telephoneNumber })
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
         .reply(200, validInviteResponse)

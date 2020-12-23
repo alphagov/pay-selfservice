@@ -8,6 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const inviteFixtures = require('../../../../fixtures/invite.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
@@ -42,7 +43,7 @@ describe('adminusers client - generate otp code for user invite', function () {
           .withState('a valid invite exists with the given invite code')
           .withUponReceiving('a valid generate user invite otp code request')
           .withMethod('POST')
-          .withRequestBody(validRegistrationRequest.getPactified())
+          .withRequestBody(pactify(validRegistrationRequest))
           .withStatusCode(200)
           .build()
       ).then(() => done())
@@ -52,8 +53,7 @@ describe('adminusers client - generate otp code for user invite', function () {
     afterEach(() => provider.verify())
 
     it('should generate user invite otp code successfully', function (done) {
-      const registration = validRegistrationRequest.getPlain()
-      adminusersClient.generateInviteOtpCode(inviteCode, registration.telephone_number, registration.password).should.be.fulfilled.notify(done)
+      adminusersClient.generateInviteOtpCode(inviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.fulfilled.notify(done)
     })
   })
 
@@ -69,9 +69,9 @@ describe('adminusers client - generate otp code for user invite', function () {
           .withState('a valid invite exists with the given invite code')
           .withUponReceiving('invalid generate user invite otp code request')
           .withMethod('POST')
-          .withRequestBody(validRegistrationRequest.getPactified())
+          .withRequestBody(validRegistrationRequest)
           .withStatusCode(400)
-          .withResponseBody(errorResponse.getPactified())
+          .withResponseBody(pactify(errorResponse))
           .build()
       ).then(() => done())
         .catch(done)
@@ -80,8 +80,7 @@ describe('adminusers client - generate otp code for user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 400 BAD REQUEST telephone number is not valid', function (done) {
-      const registration = validRegistrationRequest.getPlain()
-      adminusersClient.generateInviteOtpCode(inviteCode, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
+      adminusersClient.generateInviteOtpCode(inviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors[0]).to.equal('Field [telephone_number] is required')
@@ -99,7 +98,7 @@ describe('adminusers client - generate otp code for user invite', function () {
           .withState('invite not exists for the given invite code')
           .withUponReceiving('a valid generate user invite otp code of a non existing invite')
           .withMethod('POST')
-          .withRequestBody(validRegistrationRequest.getPactified())
+          .withRequestBody(pactify(validRegistrationRequest))
           .withStatusCode(404)
           .build()
       ).then(() => done())
@@ -108,8 +107,7 @@ describe('adminusers client - generate otp code for user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 404 NOT FOUND if user invite code not found', function (done) {
-      const registration = validRegistrationRequest.getPlain()
-      adminusersClient.generateInviteOtpCode(nonExistingInviteCode, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
+      adminusersClient.generateInviteOtpCode(nonExistingInviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

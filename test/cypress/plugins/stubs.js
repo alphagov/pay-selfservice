@@ -131,7 +131,7 @@ module.exports = {
       query: {
         serviceId: opts.serviceExternalId
       },
-      response: inviteFixtures.validListInvitesResponse(opts.invites).getPlain()
+      response: inviteFixtures.validListInvitesResponse(opts.invites)
     })
   },
   getGatewayAccountSuccess: (opts = {}) => {
@@ -395,14 +395,14 @@ module.exports = {
   postGovUkPayAgreement: (opts) => {
     const path = `/v1/api/services/${opts.external_id}/govuk-pay-agreement`
     return simpleStubBuilder('POST', path, 201, {
-      request: goLiveRequestFixtures.validPostGovUkPayAgreementRequest(opts).getPlain(),
-      response: goLiveRequestFixtures.validPostGovUkPayAgreementResponse(opts).getPlain()
+      request: goLiveRequestFixtures.validPostGovUkPayAgreementRequest(opts),
+      response: goLiveRequestFixtures.validPostGovUkPayAgreementResponse(opts)
     })
   },
   postStripeAgreementIpAddress: (opts) => {
     const path = `/v1/api/services/${opts.external_id}/stripe-agreement`
     return simpleStubBuilder('POST', path, 201, {
-      request: goLiveRequestFixtures.validPostStripeAgreementRequest(opts).getPlain(),
+      request: goLiveRequestFixtures.validPostStripeAgreementRequest(opts),
       responseHeaders: {}
     })
   },
