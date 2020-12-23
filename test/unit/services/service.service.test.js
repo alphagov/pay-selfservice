@@ -43,7 +43,7 @@ const getGatewayAccounts = function () {
 
 describe('service service', function () {
   describe('when getting gateway accounts', function () {
-    it('should return card gateway accounts only for the valid ids', function (done) {
+    it('should return card gateway accounts only for the valid ids', async function () {
       connectorClientStub = {
         ConnectorClient: getGatewayAccounts
       }
@@ -53,15 +53,14 @@ describe('service service', function () {
           '../services/clients/connector.client': connectorClientStub
         })
 
-      serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId, directDebitAccountId1, nonExistentDirectDebitId], correlationId).then(gatewayAccounts => {
-        expect(gatewayAccounts).to.have.lengthOf(2)
-        expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
-          .to.have.all.members(['1', '2'])
-        done()
-      })
+      const gatewayAccounts = await serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId, directDebitAccountId1, nonExistentDirectDebitId], correlationId)
+
+      expect(gatewayAccounts).to.have.lengthOf(2)
+      expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
+        .to.have.all.members(['1', '2'])
     })
 
-    it('should not call direct debit connector for card accounts', function (done) {
+    it('should not call direct debit connector for card accounts', async function () {
       connectorClientStub = {
         ConnectorClient: getGatewayAccounts
       }
@@ -71,15 +70,14 @@ describe('service service', function () {
           '../services/clients/connector.client': connectorClientStub
         })
 
-      serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2], correlationId).should.be.fulfilled.then(gatewayAccounts => {
-        expect(gatewayAccounts).to.have.lengthOf(2)
-        expect(gatewayAccounts.map(accountObj => accountObj.id)).to.have.all.members(['1', '2'])
-      }).should.notify(done)
+      const gatewayAccounts = await serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2], correlationId)
+      expect(gatewayAccounts).to.have.lengthOf(2)
+      expect(gatewayAccounts.map(accountObj => accountObj.id)).to.have.all.members(['1', '2'])
     })
   })
 
   describe('when editing service name', function () {
-    it('should not call direct debit connector for card accounts', function (done) {
+    it('should not call direct debit connector for card accounts', async function () {
       const externalServiceId = 'sdfjksdnfkjn'
       const newServiceName = 'blabla'
 
@@ -114,11 +112,11 @@ describe('service service', function () {
           './clients/adminusers.client': adminusersClientStub
         })
 
-      serviceService.updateServiceName(externalServiceId, newServiceName, correlationId).should.be.fulfilled.then((service) => {
-        expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[1]}')
-      }).should.notify(done)
+      const service = await serviceService.updateServiceName(externalServiceId, newServiceName, correlationId)
+      expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[1]}')
     })
-    it('should not call connector for direct debit accounts', function (done) {
+
+    it('should not call connector for direct debit accounts', async function () {
       const externalServiceId = 'sdfjksdnfkjn'
       const newServiceName = 'blabla'
       connectorClientStub = {
@@ -127,7 +125,6 @@ describe('service service', function () {
             patchServiceName: () => {
               return new Promise(() => {
                 console.log('---> connector should not be called')
-                done('should not be called')
               })
             }
           }
@@ -143,7 +140,9 @@ describe('service service', function () {
         }
       }
       directDebitClientStub = {
-        isADirectDebitAccount: () => true
+        isADirectDebitAccount: () => {
+          return true
+        }
       }
 
       serviceService = proxyquire('../../../app/services/service.service',
@@ -153,14 +152,13 @@ describe('service service', function () {
           './clients/adminusers.client': adminusersClientStub
         })
 
-      serviceService.updateServiceName(externalServiceId, newServiceName, correlationId).should.be.fulfilled.then((service) => {
-        expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10]}')
-      }).should.notify(done)
+      const service = await serviceService.updateServiceName(externalServiceId, newServiceName, correlationId)
+      expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10]}')
     })
   })
 
   describe('update current go live stage', function () {
-    it('should update current go live stage', (done) => {
+    it('should update current go live stage', async () => {
       const serviceExternalId = 'fjdjsf33onesdf'
       const newStage = 'CHOSEN_PSP_STRIPE'
       adminusersClientStub = () => {
@@ -176,14 +174,15 @@ describe('service service', function () {
         {
           './clients/adminusers.client': adminusersClientStub
         })
-      serviceService.updateCurrentGoLiveStage(serviceExternalId, newStage, correlationId).should.be.fulfilled.then((updatedStage) => {
-        expect(JSON.stringify(updatedStage)).to.deep.equal('{"current_go_live_stage":"CHOSEN_PSP_STRIPE"}')
-      }).should.notify(done)
+
+      const updatedStage = await serviceService.updateCurrentGoLiveStage(serviceExternalId, newStage, correlationId)
+
+      expect(JSON.stringify(updatedStage)).to.deep.equal('{"current_go_live_stage":"CHOSEN_PSP_STRIPE"}')
     })
   })
 
   describe('when editing service name with multiple gateway accounts', function () {
-    it('should call connector 2 times and not call direct debit connector at all', function (done) {
+    it('should call connector 2 times and not call direct debit connector at all', async function () {
       const externalServiceId = 'ext3rnalserv1ce1d'
       const newServiceName = 'New Name'
       const gatewayAccountIds = [10, 9, directDebitAccountId1]
@@ -193,7 +192,7 @@ describe('service service', function () {
         return {
           updateServiceName: () => {
             return new Promise(resolve => {
-              resolve({ gateway_account_ids: gatewayAccountIds })
+              return resolve({ gateway_account_ids: gatewayAccountIds })
             })
           }
         }
@@ -206,6 +205,16 @@ describe('service service', function () {
         }
       }
 
+      directDebitClientStub = {
+        isADirectDebitAccount: (gatewayId) => {
+          if (gatewayId === directDebitAccountId1) {
+            return true
+          } else {
+            return false
+          }
+        }
+      }
+
       serviceService = proxyquire('../../../app/services/service.service',
         {
           '../services/clients/connector.client': connectorClientStub,
@@ -213,13 +222,10 @@ describe('service service', function () {
           './clients/adminusers.client': adminusersClientStub
         })
 
-      serviceService.updateServiceName(externalServiceId, newServiceName, correlationId).should.be.fulfilled
-        .then((service) => {
-          setTimeout(() => {
-            expect(patchServiceName.callCount).to.equal(2)
-          }, 250)
-          expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10,9,"DIRECT_DEBIT:adashdkjlq3434lk"]}')
-        }).should.notify(done)
+      const service = await serviceService.updateServiceName(externalServiceId, newServiceName, correlationId)
+
+      expect(patchServiceName.callCount).to.equal(2)
+      expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10,9,"DIRECT_DEBIT:adashdkjlq3434lk"]}')
     })
   })
 })

@@ -11,11 +11,11 @@ const editServiceNameCtrl = proxyquire('../../../../app/controllers/edit-service
   '../utils/response': mockResponses,
   '../services/service.service': mockServiceService
 })
-let req, res
+let req, res, next
 
 describe('Controller: editServiceName, Method: get', () => {
   describe('when the service name is not empty', () => {
-    before(done => {
+    before(async function () {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
@@ -29,12 +29,8 @@ describe('Controller: editServiceName, Method: get', () => {
       res = {
         redirect: sinon.spy()
       }
-      const result = editServiceNameCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
-      }
+
+      await editServiceNameCtrl.post(req, res)
     })
 
     it(`should call 'res.redirect' with '/my-service'`, () => {
@@ -44,8 +40,8 @@ describe('Controller: editServiceName, Method: get', () => {
   })
 
   describe('when the service name is not empty, but the update call fails', () => {
-    before(done => {
-      mockServiceService.updateServiceName = sinon.stub().rejects(new Error('somet went wrong'))
+    before(async function () {
+      mockServiceService.updateServiceName = sinon.stub().rejects(new Error('something went wrong'))
       mockResponses.renderErrorView = sinon.spy()
       req = {
         correlationId: random.randomUuid(),
@@ -56,25 +52,20 @@ describe('Controller: editServiceName, Method: get', () => {
         }
       }
       res = {}
-      const result = editServiceNameCtrl.post(req, res)
-      if (result) {
-        result.then(() => done()).catch(done)
-      } else {
-        done(new Error('Didn\'t return a promise'))
-      }
+
+      next = sinon.spy()
+
+      await editServiceNameCtrl.post(req, res, next)
     })
 
-    it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
-      expect(mockResponses.renderErrorView.called).to.equal(true)
-      expect(mockResponses.renderErrorView.args[0]).to.include(req)
-      expect(mockResponses.renderErrorView.args[0]).to.include(res)
-      expect(mockResponses.renderErrorView.args[0][2] instanceof Error).to.equal(true)
-      expect(mockResponses.renderErrorView.args[0][2].message).to.equal('somet went wrong')
+    it(`should call 'next' with the error`, () => {
+      expect(next.called).to.equal(true)
+      expect(next.args[0].toString()).to.equal('Error: something went wrong')
     })
   })
 
   describe('when the service name is empty', () => {
-    before(done => {
+    before(async function () {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
@@ -88,12 +79,8 @@ describe('Controller: editServiceName, Method: get', () => {
       res = {
         redirect: sinon.spy()
       }
-      const result = editServiceNameCtrl.post(req, res)
-      if (result) {
-        done(new Error('Returned a promise'))
-      } else {
-        done()
-      }
+
+      editServiceNameCtrl.post(req, res)
     })
 
     it(`should call 'res.redirect' with a properly formatted edit-service url`, () => {

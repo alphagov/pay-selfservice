@@ -8,7 +8,7 @@ const formatPath = require('../utils/replace-params-in-path')
 const serviceService = require('../services/service.service')
 const { validateServiceName } = require('../utils/service-name-validation')
 
-exports.get = (req, res) => {
+function getServiceName (req, res) {
   let pageData = lodash.get(req, 'session.pageData.editServiceName')
 
   if (pageData) {
@@ -24,7 +24,7 @@ exports.get = (req, res) => {
   return responses.response(req, res, 'services/edit-service-name', pageData)
 }
 
-exports.post = (req, res) => {
+async function postEditServiceName (req, res, next) {
   const correlationId = lodash.get(req, 'correlationId')
   const serviceExternalId = lodash.get(req, 'service.externalId')
   const serviceName = lodash.get(req, 'body.service-name')
@@ -40,12 +40,16 @@ exports.post = (req, res) => {
     })
     res.redirect(formatPath(paths.editServiceName.index, req.service.externalId))
   } else {
-    return serviceService.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
-      .then(() => {
-        res.redirect(paths.serviceSwitcher.index)
-      })
-      .catch(err => {
-        responses.renderErrorView(req, res, err)
-      })
+    try {
+      await serviceService.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
+      res.redirect(paths.serviceSwitcher.index)
+    } catch (err) {
+      next(err)
+    }
   }
+}
+
+module.exports = {
+  get: getServiceName,
+  post: postEditServiceName
 }
