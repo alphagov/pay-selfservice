@@ -1,48 +1,40 @@
 'use strict'
 
-const getProductsStub = function getProductsStub (products, gatewayAccountId) {
-  return {
-    name: 'getProductsByGatewayAccountIdSuccess',
-    opts: {
-      gateway_account_id: gatewayAccountId,
-      products: products
-    }
-  }
+const productFixtures = require('../../fixtures/product.fixtures')
+const { stubBuilder } = require('./stub-builder')
+
+function getProductsStub (products, gatewayAccountId) {
+  const path = `/v1/api/gateway-account/${gatewayAccountId}/products`
+  return stubBuilder('GET', path, 200, {
+    response: products.map(product =>
+      productFixtures.validProductResponse(product))
+  })
 }
 
-const getProductByExternalIdStub = function getProductByExternalIdStub (product, gatewayAccountId) {
-  return {
-    name: 'getProductByExternalIdSuccess',
-    opts: {
-      gateway_account_id: gatewayAccountId,
-      product: product
-    }
-  }
+function getProductByExternalIdStub (product, gatewayAccountId) {
+  const path = `/v1/api/gateway-account/${gatewayAccountId}/products/${product.external_id}`
+  return stubBuilder('GET', path, 200, {
+    response: productFixtures.validProductResponse(product)
+  })
 }
 
-const deleteProductStub = function deleteProductStub (product, gatewayAccountId, verifyCalledTimes) {
-  return {
-    name: 'deleteProductSuccess',
-    opts: {
-      gateway_account_id: gatewayAccountId,
-      product: product,
-      verifyCalledTimes: verifyCalledTimes
-    }
-  }
+function deleteProductStub (product, gatewayAccountId, verifyCalledTimes) {
+  const path = `/v1/api/gateway-account/${gatewayAccountId}/products/${product.external_id}`
+  return stubBuilder('DELETE', path, 200, {
+    verifyCalledTimes: verifyCalledTimes
+  })
 }
 
-const getProductsByGatewayAccountIdFailure = function (gatewayAccountId) {
-  return {
-    name: 'getProductsByGatewayAccountIdFailure',
-    opts: { gateway_account_id: gatewayAccountId }
-  }
+function getProductsByGatewayAccountIdFailure (gatewayAccountId) {
+  const path = `/v1/api/gateway-account/${gatewayAccountId}/products`
+  return stubBuilder('GET', path, 500)
 }
 
-const postCreateProductSuccess = function () {
-  return {
-    name: 'postCreateProductSuccess',
-    opts: {}
-  }
+function postCreateProductSuccess () {
+  const path = '/v1/api/products'
+  return stubBuilder('POST', path, 200, {
+    response: productFixtures.validProductResponse()
+  })
 }
 
 module.exports = {

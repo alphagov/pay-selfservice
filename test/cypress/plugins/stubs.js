@@ -6,7 +6,6 @@ const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures'
 const transactionDetailsFixtures = require('../../fixtures/refund.fixtures')
 const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
-const productFixtures = require('../../fixtures/product.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
 const tokenFixtures = require('../../fixtures/token.fixtures')
 const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
@@ -112,29 +111,6 @@ module.exports = {
       response: cardFixtures.validUpdatedAcceptedCardTypesResponse()
     })
   },
-  getProductsByGatewayAccountIdSuccess: (opts) => {
-    const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products`
-    return simpleStubBuilder('GET', path, 200, {
-      response: opts.products.map(product =>
-        productFixtures.validProductResponse(product))
-    })
-  },
-  getProductsByGatewayAccountIdFailure: (opts) => {
-    const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products`
-    return simpleStubBuilder('GET', path, 500)
-  },
-  getProductByExternalIdSuccess: (opts) => {
-    const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products/${opts.product.external_id}`
-    return simpleStubBuilder('GET', path, 200, {
-      response: productFixtures.validProductResponse(opts.product)
-    })
-  },
-  deleteProductSuccess: (opts) => {
-    const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products/${opts.product.external_id}`
-    return simpleStubBuilder('DELETE', path, 200, {
-      verifyCalledTimes: opts.verifyCalledTimes
-    })
-  },
   redirectToGoCardlessConnectFailure: (opts = {}) => {
     const path = '/oauth/authorize'
     return simpleStubBuilder('GET', path, 500, {
@@ -151,12 +127,6 @@ module.exports = {
     const path = '/v1/frontend/auth'
     return simpleStubBuilder('POST', path, 200, {
       response: tokenFixtures.validCreateTokenForGatewayAccountResponse()
-    })
-  },
-  postCreateProductSuccess: (opts = {}) => {
-    const path = '/v1/api/products'
-    return simpleStubBuilder('POST', path, 200, {
-      response: productFixtures.validProductResponse(opts)
     })
   },
   postCheckWorldpay3dsFlexCredentialsFailure: (opts = {}) => {
