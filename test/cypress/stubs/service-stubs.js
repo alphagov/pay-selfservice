@@ -42,7 +42,9 @@ function patchUpdateServiceGoLiveStageSuccess (opts) {
   return stubBuilder('PATCH', path, 200, {
     request: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.currentGoLiveStage),
     response: serviceFixtures.validServiceResponse({
-      external_id: opts.serviceExternalId
+      external_id: opts.serviceExternalId,
+      current_go_live_stage: opts.currentGoLiveStage,
+      gateway_account_ids: [opts.gatewayAccountId]
     })
   })
 }

@@ -137,7 +137,7 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
     predicates: [{
       equals: {
         method: 'GET',
-        path: '/v1/api/users/' + aValidUserResponse.external_id,
+        path: `/v1/api/users/${userExternalId}`,
         headers: {
           'Accept': 'application/json'
         }

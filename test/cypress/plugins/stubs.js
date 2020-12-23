@@ -7,7 +7,6 @@ const transactionDetailsFixtures = require('../../fixtures/refund.fixtures')
 const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
-const goLiveRequestFixtures = require('../../fixtures/go-live-requests.fixture')
 const productFixtures = require('../../fixtures/product.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
 const inviteFixtures = require('../../fixtures/invite.fixtures')
@@ -134,20 +133,6 @@ module.exports = {
     const path = `/v1/frontend/accounts/${opts.account_id}/card-types`
     return simpleStubBuilder('GET', path, 200, {
       response: cardFixtures.validUpdatedAcceptedCardTypesResponse()
-    })
-  },
-  postGovUkPayAgreement: (opts) => {
-    const path = `/v1/api/services/${opts.external_id}/govuk-pay-agreement`
-    return simpleStubBuilder('POST', path, 201, {
-      request: goLiveRequestFixtures.validPostGovUkPayAgreementRequest(opts),
-      response: goLiveRequestFixtures.validPostGovUkPayAgreementResponse(opts)
-    })
-  },
-  postStripeAgreementIpAddress: (opts) => {
-    const path = `/v1/api/services/${opts.external_id}/stripe-agreement`
-    return simpleStubBuilder('POST', path, 201, {
-      request: goLiveRequestFixtures.validPostStripeAgreementRequest(opts),
-      responseHeaders: {}
     })
   },
   getProductsByGatewayAccountIdSuccess: (opts) => {
