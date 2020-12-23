@@ -7,7 +7,6 @@ const transactionDetailsFixtures = require('../../fixtures/refund.fixtures')
 const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
-const tokenFixtures = require('../../fixtures/token.fixtures')
 const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
 const { stubBuilder } = require('../stubs/stub-builder')
 
@@ -121,12 +120,6 @@ module.exports = {
     const path = '/v1/report/transactions-summary'
     return simpleStubBuilder('GET', path, 200, {
       response: ledgerFixture.validTransactionSummaryDetails(opts)
-    })
-  },
-  postCreateTokenForAccountSuccess: (opts = {}) => {
-    const path = '/v1/frontend/auth'
-    return simpleStubBuilder('POST', path, 200, {
-      response: tokenFixtures.validCreateTokenForGatewayAccountResponse()
     })
   },
   postCheckWorldpay3dsFlexCredentialsFailure: (opts = {}) => {
