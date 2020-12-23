@@ -9,7 +9,6 @@ const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
 const productFixtures = require('../../fixtures/product.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
-const inviteFixtures = require('../../fixtures/invite.fixtures')
 const tokenFixtures = require('../../fixtures/token.fixtures')
 const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
 const { stubBuilder } = require('../stubs/stub-builder')
@@ -25,15 +24,7 @@ const simpleStubBuilder = function simpleStubBuilder (method, path, responseCode
  * should be written in a strict enough way the JSON they produce will adhere to a validated structure.
  */
 module.exports = {
-  getInvitedUsersSuccess: (opts = {}) => {
-    const path = '/v1/api/invites'
-    return simpleStubBuilder('GET', path, 200, {
-      query: {
-        serviceId: opts.serviceExternalId
-      },
-      response: inviteFixtures.validListInvitesResponse(opts.invites)
-    })
-  },
+
   getGatewayAccountSuccessRepeat: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0])
     const aDifferentValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[1])
