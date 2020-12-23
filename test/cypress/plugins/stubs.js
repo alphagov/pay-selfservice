@@ -8,8 +8,6 @@ const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fix
 const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go-live-requests.fixture')
-const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
-const stripeAccountFixtures = require('../../fixtures/stripe-account.fixtures')
 const productFixtures = require('../../fixtures/product.fixtures')
 const goCardlessConnectFixtures = require('../../fixtures/go-cardless-connect.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
@@ -77,47 +75,6 @@ module.exports = {
         }]
       }
     ]
-  },
-  getGatewayAccountStripeSetupSuccess: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/stripe-setup`
-    return simpleStubBuilder('GET', path, 200, {
-      response: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(opts)
-    })
-  },
-  getGatewayAccountStripeSetupFlagChanged: (opts = {}) => {
-    const responses = []
-    opts.data.forEach(item => {
-      responses.push({
-        is: {
-          statusCode: 200,
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(item)
-        }
-      })
-    })
-
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/stripe-setup`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses
-      }
-    ]
-  },
-  getStripeAccountSuccess: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/stripe-account`
-    return simpleStubBuilder('GET', path, 200, {
-      response: stripeAccountFixtures.buildGetStripeAccountResponse(opts)
-    })
   },
   postRefundSuccess: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
