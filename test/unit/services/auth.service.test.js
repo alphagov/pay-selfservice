@@ -2,7 +2,6 @@
 
 const path = require('path')
 const assert = require('assert')
-const AWSXRay = require('aws-xray-sdk')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const _ = require('lodash')
@@ -68,11 +67,6 @@ describe('auth service', function () {
       const authService = (userMock) => {
         return proxyquire(path.join(__dirname, '/../../../app/services/auth.service.js'),
           { './user.service.js': userMock,
-            'aws-xray-sdk': {
-              captureAsyncFunc: function (name, callback) {
-                callback(new AWSXRay.Segment('stub-subsegment'))
-              }
-            },
             'continuation-local-storage': {
               getNamespace: function () {
                 return {

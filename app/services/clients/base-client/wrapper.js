@@ -3,20 +3,15 @@
 const lodash = require('lodash')
 const joinURL = require('url-join')
 const correlator = require('correlation-id')
-const { getNamespace } = require('continuation-local-storage')
-const AWSXRay = require('aws-xray-sdk')
 
 const requestLogger = require('../../../utils/request-logger')
 const { CORRELATION_HEADER } = require('../../../utils/correlation-header')
 
 // Constants
 const SUCCESS_CODES = [200, 201, 202, 204, 206]
-const clsXrayConfig = require('../../../../config/xray-cls')
 
 module.exports = function (method, verb) {
   return (uri, opts, cb) => new Promise((resolve, reject) => {
-    const namespace = getNamespace(clsXrayConfig.nameSpaceName)
-    const clsSegment = namespace ? namespace.get(clsXrayConfig.segmentKeyName) : null
 
     const args = [uri, opts, cb]
     uri = args.find(arg => typeof arg === 'string')
@@ -36,10 +31,6 @@ module.exports = function (method, verb) {
 
     // Set headers and optional x-ray trace headers
     lodash.set(opts, `headers.${CORRELATION_HEADER}`, context.correlationId)
-    if (clsSegment) {
-      const subSegment = opts.subSegment || new AWSXRay.Segment('_request_nbc', null, clsSegment.trace_id)
-      opts.headers['X-Amzn-Trace-Id'] = 'Root=' + clsSegment.trace_id + ';Parent=' + subSegment.id + ';Sampled=1'
-    }
     opts.headers['Content-Type'] = opts.headers['Content-Type'] || 'application/json'
 
     // Set up post response and error handling method
