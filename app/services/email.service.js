@@ -15,117 +15,103 @@ const connectorClient = function () {
   return new ConnectorClient(process.env.CONNECTOR_URL)
 }
 
-const getEmailSettings = function (accountID, correlationId) {
-  return new Promise(function (resolve, reject) {
-    const startTime = new Date()
-    connectorClient().getAccount({
+const getEmailSettings = async function (accountID, correlationId) {
+  const startTime = new Date()
+  try {
+    const data = await connectorClient().getAccount({
       gatewayAccountId: accountID,
       correlationId: correlationId
     })
-      .then(data => {
-        logger.info(`[${correlationId}] - GET account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
-        resolve({
-          customEmailText: data.email_notifications.PAYMENT_CONFIRMED.template_body,
-          emailEnabled: data.email_notifications.PAYMENT_CONFIRMED.enabled,
-          emailCollectionMode: data.email_collection_mode,
-          refundEmailEnabled: data.email_notifications.REFUND_ISSUED && data.email_notifications.REFUND_ISSUED.enabled
-        })
-      })
-      .catch(err => {
-        logger.info(`[${correlationId}] - GET account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
-        clientFailure(err, reject, 'GET', correlationId, false)
-      })
-  })
+    logger.info(`[${correlationId}] - GET account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
+    return {
+      customEmailText: data.email_notifications.PAYMENT_CONFIRMED.template_body,
+      emailEnabled: data.email_notifications.PAYMENT_CONFIRMED.enabled,
+      emailCollectionMode: data.email_collection_mode,
+      refundEmailEnabled: data.email_notifications.REFUND_ISSUED && data.email_notifications.REFUND_ISSUED.enabled
+    }
+  } catch (err) {
+    logger.info(`[${correlationId}] - GET account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
+    clientFailure(err, 'GET', false)
+  }
 }
 
-const updateConfirmationTemplate = function (accountID, emailText, correlationId) {
-  return new Promise(function (resolve, reject) {
-    const startTime = new Date()
+const updateConfirmationTemplate = async function (accountID, emailText, correlationId) {
+  const startTime = new Date()
+  try {
     const patch = { 'op': 'replace', 'path': '/payment_confirmed/template_body', 'value': emailText }
-    connectorClient().updateConfirmationEmail({
+
+    await connectorClient().updateConfirmationEmail({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
-    },
-    function () {
-      logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
-      resolve()
-    }).on('connectorError', function (err, connectorResponse) {
-      if (connectorResponse) return reject(new Error('POST_FAILED'))
-
-      logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
-      clientFailure(err, reject, 'PATCH', correlationId, true)
     })
-  })
+
+    logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
+  } catch (err) {
+    logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
+    clientFailure(err, 'PATCH', true)
+  }
 }
 
-const setEmailCollectionMode = function (accountID, collectionMode, correlationId) {
-  return new Promise(function (resolve, reject) {
-    const startTime = new Date()
+const setEmailCollectionMode = async function (accountID, collectionMode, correlationId) {
+  const startTime = new Date()
+  try {
     const patch = { 'op': 'replace', 'path': 'email_collection_mode', 'value': collectionMode }
-    connectorClient().updateEmailCollectionMode({
+    await connectorClient().updateEmailCollectionMode({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
-    }, function () {
-      logger.info(`[${correlationId}] - PATCH to account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
-      resolve()
-    }).on('connectorError', function (err, connectorResponse) {
-      if (connectorResponse) return reject(new Error('PATCH_FAILED'))
-      logger.info(`[${correlationId}] - PATCH to account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
-      clientFailure(err, reject, 'PATCH', correlationId, false)
     })
-  })
+    logger.info(`[${correlationId}] - PATCH to account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
+  } catch (err) {
+    logger.info(`[${correlationId}] - PATCH to account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
+    clientFailure(err, 'PATCH', false)
+  }
 }
 
-const setConfirmationEnabled = function (accountID, enabled, correlationId) {
-  return new Promise(function (resolve, reject) {
-    const startTime = new Date()
-    const patch = { 'op': 'replace', 'path': '/payment_confirmed/enabled', 'value': enabled }
-    connectorClient().updateConfirmationEmailEnabled({
+const setConfirmationEnabled = async function (accountID, enabled, correlationId) {
+  const startTime = new Date()
+  const patch = { 'op': 'replace', 'path': '/payment_confirmed/enabled', 'value': enabled }
+
+  try {
+    await connectorClient().updateConfirmationEmailEnabled({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
-    }, function () {
-      logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
-      resolve()
-    }).on('connectorError', function (err, connectorResponse) {
-      if (connectorResponse) return reject(new Error('PATCH_FAILED'))
-      logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
-      clientFailure(err, reject, 'PATCH', correlationId, true)
     })
-  })
+    logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
+  } catch (err) {
+    logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
+    clientFailure(err, 'PATCH', true)
+  }
 }
 
-const setRefundEmailEnabled = function (accountID, enabled, correlationId) {
-  return new Promise(function (resolve, reject) {
-    const startTime = new Date()
+const setRefundEmailEnabled = async function (accountID, enabled, correlationId) {
+  const startTime = new Date()
+  try {
     const patch = { 'op': 'replace', 'path': '/refund_issued/enabled', 'value': enabled }
-    connectorClient().updateRefundEmailEnabled({
+    await connectorClient().updateRefundEmailEnabled({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
-    }, function () {
-      logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
-      resolve()
-    }).on('connectorError', function (err, connectorResponse) {
-      if (connectorResponse) return reject(new Error('PATCH_FAILED'))
-      logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
-      clientFailure(err, reject, 'PATCH', correlationId, true)
     })
-  })
+    logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
+  } catch (err) {
+    logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, notificationUpdateUrl(accountID), new Date() - startTime)
+    clientFailure(err, 'PATCH', true)
+  }
 }
 
-const clientFailure = function (error, reject, methodType, correlationId, isPatchEndpoint) {
+const clientFailure = function (err, methodType, isPatchEndpoint) {
   const errMsg = isPatchEndpoint
-    ? `[${correlationId}] Calling connector to update email notifications for an account threw exception`
-    : `[${correlationId}] Calling connector to get/patch account data threw exception`
+    ? `Calling connector to update email notifications for an account threw exception`
+    : `Calling connector to get/patch account data threw exception`
   logger.error(errMsg, {
     service: 'connector',
     method: methodType,
-    error: error
+    error: err
   })
-  reject(new Error('CONNECTOR_FAILED'), error)
+  throw new Error(errMsg)
 }
 
 module.exports = {

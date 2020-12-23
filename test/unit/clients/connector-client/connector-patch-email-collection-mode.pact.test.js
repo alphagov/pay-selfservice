@@ -55,15 +55,12 @@ describe('connector client - patch email collection mode', function () {
 
     afterEach(() => provider.verify())
 
-    it('should set email collection mode to mandatory', function (done) {
+    it('should set email collection mode to mandatory', function () {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         payload: validGatewayAccountEmailCollectionModeRequest
       }
-      connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
-        expect(connectorResponse.statusCode).to.equal(200)
-        done()
-      })
+      return expect(connectorClient.updateEmailCollectionMode(params)).to.be.fulfilled
     })
   })
 
@@ -87,15 +84,12 @@ describe('connector client - patch email collection mode', function () {
 
     afterEach(() => provider.verify())
 
-    it('should set email collection mode to optional', function (done) {
+    it('should set email collection mode to optional', function () {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         payload: validGatewayAccountEmailCollectionModeRequest
       }
-      connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
-        expect(connectorResponse.statusCode).to.equal(200)
-        done()
-      })
+      return expect(connectorClient.updateEmailCollectionMode(params)).to.be.fulfilled
     })
   })
 
@@ -119,15 +113,12 @@ describe('connector client - patch email collection mode', function () {
 
     afterEach(() => provider.verify())
 
-    it('should set email collection mode to mandatory', function (done) {
+    it('should set email collection mode to mandatory', function () {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         payload: validGatewayAccountEmailCollectionModeRequest
       }
-      connectorClient.updateEmailCollectionMode(params, (connectorData, connectorResponse) => {
-        expect(connectorResponse.statusCode).to.equal(200)
-        done()
-      })
+      return expect(connectorClient.updateEmailCollectionMode(params)).to.be.fulfilled
     })
   })
 })
