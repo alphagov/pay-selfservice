@@ -5,7 +5,6 @@ const proxyquire = require('proxyquire')
 const lodash = require('lodash')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const AWSXRay = require('aws-xray-sdk')
 
 const DirectDebitGatewayAccount = require('../../../app/models/DirectDebitGatewayAccount.class')
 let req, res, next, connectorGetAccountMock, directDebitConnectorGetAccountMock
@@ -47,21 +46,7 @@ const setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvide
   return proxyquire(path.join(__dirname, '../../../app/middleware/get-gateway-account'), {
     '../services/auth.service.js': authServiceMock,
     '../services/clients/connector.client.js': connectorMock,
-    '../services/clients/direct-debit-connector.client.js': directDebitConnectorMock,
-    'aws-xray-sdk': {
-      captureAsyncFunc: function (name, callback) {
-        callback(new AWSXRay.Segment('stub-subsegment'))
-      }
-    },
-    'continuation-local-storage': {
-      getNamespace: function () {
-        return {
-          get: function () {
-            return new AWSXRay.Segment('stub-segment')
-          }
-        }
-      }
-    }
+    '../services/clients/direct-debit-connector.client.js': directDebitConnectorMock
   })
 }
 

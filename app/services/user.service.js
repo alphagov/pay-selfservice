@@ -40,8 +40,8 @@ module.exports = {
    * @param correlationId
    * @returns {Promise<User>}
    */
-  findByExternalId: (externalId, correlationId, subSegment) => {
-    return getAdminUsersClient({ correlationId: correlationId }).getUserByExternalId(externalId, subSegment)
+  findByExternalId: (externalId, correlationId) => {
+    return getAdminUsersClient({ correlationId: correlationId }).getUserByExternalId(externalId)
   },
 
   /**
