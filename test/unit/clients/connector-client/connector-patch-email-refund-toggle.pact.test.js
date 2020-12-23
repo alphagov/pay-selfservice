@@ -54,15 +54,13 @@ describe('connector client - patch email refund toggle', function () {
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', function (done) {
+    it('should toggle successfully', function () {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
         payload: validGatewayAccountEmailRefundToggleRequest
       }
-      connectorClient.updateRefundEmailEnabled(params, (connectorData, connectorResponse) => {
-        expect(connectorResponse.statusCode).to.equal(200)
-        done()
-      })
+
+      return expect(connectorClient.updateRefundEmailEnabled(params)).to.be.fulfilled
     })
   })
 })

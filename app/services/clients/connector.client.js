@@ -4,7 +4,6 @@ const util = require('util')
 const EventEmitter = require('events').EventEmitter
 
 const logger = require('../../utils/logger')(__filename)
-const oldBaseClient = require('./old-base.client')
 const baseClient = require('./base-client/base.client')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 const StripeAccount = require('../../models/StripeAccount.class')
@@ -34,43 +33,6 @@ const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 
 const responseBodyToStripeAccountSetupTransformer = body => new StripeAccountSetup(body)
 const responseBodyToStripeAccountTransformer = body => new StripeAccount(body)
-
-/**
- * @private
- * @param  {object} self
- */
-function _createResponseHandler (self) {
-  return function (callback) {
-    return function (error, response, body) {
-      if (error || !isInArray(response.statusCode, [200, 202])) {
-        if (error) {
-          logger.error('Calling connector error', {
-            service: 'connector',
-            error: JSON.stringify(error)
-          })
-        } else {
-          logger.info('Calling connector response failed', {
-            service: 'connector',
-            status: response.statusCode
-          })
-        }
-        self.emit('connectorError', error, response, body)
-        return
-      }
-
-      callback(body, response)
-    }
-  }
-}
-
-/**
- * @private
- * @param  {Object} value - value to find into the array
- * @param {Object[]} array - array source for finding the given value
- */
-function isInArray (value, array) {
-  return array.indexOf(value) > -1
-}
 
 /** @private */
 function _accountApiUrlFor (gatewayAccountId, url) {
@@ -138,7 +100,6 @@ function _getToggle3dsUrlFor (accountID, url) {
  */
 function ConnectorClient (connectorUrl) {
   this.connectorUrl = connectorUrl
-  this.responseHandler = _createResponseHandler(this)
 
   EventEmitter.call(this)
 }
@@ -537,49 +498,61 @@ ConnectorClient.prototype = {
   /**
    *
    * @param {Object} params
-   * @param {Function} successCallback
    */
-  updateConfirmationEmail: function (params, successCallback) {
-    let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
-    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
+  updateConfirmationEmail: function (params) {
+    const url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-    return this
+    return baseClient.patch(url, {
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'update confirmation email',
+      service: SERVICE_NAME
+    })
   },
 
   /**
    *
    * @param {Object} params
-   * @param {Function} successCallback
    */
-  updateConfirmationEmailEnabled: function (params, successCallback) {
-    let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
-    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
+  updateConfirmationEmailEnabled: function (params) {
+    const url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-    return this
+    return baseClient.patch(url, {
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'update confirmation email enabled',
+      service: SERVICE_NAME
+    })
   },
 
   /**
    *
    * @param {Object} params
-   * @param {Function} successCallback
    */
-  updateEmailCollectionMode: function (params, successCallback) {
-    let url = _accountApiUrlFor(params.gatewayAccountId, this.connectorUrl)
-    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
+  updateEmailCollectionMode: function (params) {
+    const url = _accountApiUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-    return this
+    return baseClient.patch(url, {
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'update email collection mode',
+      service: SERVICE_NAME
+    })
   },
 
   /**
    *
    * @param {Object} params
-   * @param {Function} successCallback
    */
-  updateRefundEmailEnabled: function (params, successCallback) {
-    let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
-    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
+  updateRefundEmailEnabled: function (params) {
+    const url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-    return this
+    return baseClient.patch(url, {
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'update refund email enabled',
+      service: SERVICE_NAME
+    })
   },
 
   /**
