@@ -18,43 +18,10 @@ const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
 const inviteFixtures = require('../../fixtures/invite.fixtures')
 const tokenFixtures = require('../../fixtures/token.fixtures')
 const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
+const { stubBuilder } = require('../stubs/stub-builder')
 
 const simpleStubBuilder = function simpleStubBuilder (method, path, responseCode, additionalParams = {}) {
-  const request = {
-    method,
-    path
-  }
-  if (additionalParams.request) {
-    request.body = additionalParams.request
-  }
-  if (additionalParams.query) {
-    request.query = additionalParams.query
-  }
-
-  const response = {
-    statusCode: responseCode,
-    headers: additionalParams.responseHeaders || { 'Content-Type': 'application/json' }
-  }
-  if (additionalParams.response) {
-    response.body = additionalParams.response
-  }
-
-  const stub = {
-    name: `${method} ${path} ${responseCode}`,
-    predicates: [{
-      deepEquals: request
-    }],
-    responses: [{
-      is: response
-    }]
-  }
-
-  // NOTE: if the "verifyCalledTimes" is specified, we will attempt to verify for all `it` blocks
-  // the stub is setup for, and the counter is reset for every `it`.
-  if (additionalParams.verifyCalledTimes) {
-    stub.verifyCalledTimes = additionalParams.verifyCalledTimes
-  }
-
+  const stub = stubBuilder(method, path, responseCode, additionalParams)
   return [stub]
 }
 

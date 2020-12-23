@@ -1,5 +1,8 @@
 'use strict'
 
+const userFixtures = require('../../fixtures/user.fixtures')
+const { stubBuilder } = require('./stub-builder')
+
 const getUserWithServiceRoleStubOpts = function (userExternalId, email, serviceExternalId, roleName, roleDescription) {
   return {
     external_id: userExternalId,
@@ -45,13 +48,13 @@ const getUsersSuccess = function () {
 }
 
 const getUserSuccessWithServiceRole = function (opts) {
-  return {
-    name: 'getUserSuccess',
-    opts: {
+  const path = '/v1/api/users/' + opts.userExternalId
+  return stubBuilder('GET', path, 200, {
+    response: userFixtures.validUserResponse({
       external_id: opts.userExternalId,
       service_roles: [opts.serviceRole]
-    }
-  }
+    })
+  })
 }
 
 const getUserWithNoPermissions = function (userExternalId, gatewayAccountIds) {

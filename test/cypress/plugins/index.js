@@ -7,7 +7,6 @@
 
 'use strict'
 
-const lodash = require('lodash')
 const request = require('request-promise-native')
 
 const cookieMonster = require('./cookie-monster')
@@ -33,17 +32,25 @@ module.exports = (on, config) => {
       return { encryptedSessionCookie, encryptedGatewayAccountCookie }
     },
     /**
-     * Makes a post request to Mountebank to setup an Imposter with stubs built using the array of stub specifications
-     * provided.
+     * Makes a post request to Mountebank to setup an Imposter with stubs built using the array of
+     * stubs
      *
-     * Note: this task can only be called once per test, so all stubs for a test must be set up in the same call.
-     *
-     * @param stubSpecs - an array of stub specification objects, each having a `name` and `opts`. The name refers to
-     * the name of a function defined in plugins/stubs.js, and the opts is an object passed to this function providing
-     * the configuration options for building the stub predicates and responses.
+     * Note: this task can only be called once per test, so all stubs for a test must be set up in
+     * the same call.
      */
     setupStubs (stubSpecs) {
-      const stubsArray = lodash.flatMap(stubSpecs, spec => stubs[spec.name](spec.opts))
+      const stubsArray = stubSpecs.map(spec => {
+        // TODO: this handles both the case where we are given a "spec" which describes how to
+        // construct a stub from the `stubs.js` file and when we are given an already constructed
+        // stub. This is while we switch to constructing stubs directly in the Cypress test code.
+        if (spec.hasOwnProperty('name') && spec.hasOwnProperty('opts')) {
+          // TODO: We get the first element because we are returning a single element array from the
+          // stubs file for no good reason. There's no point in fixing this as we're about to remove
+          // it.
+          return stubs[spec.name](spec.opts)[0]
+        }
+        return spec
+      })
       return request({
         method: 'POST',
         url: mountebankImpostersUrl,

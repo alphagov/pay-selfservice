@@ -1,11 +1,11 @@
 'use strict'
 
 const exchangeGoCardlessAccessCodeAccountAlreadyConnected = function () {
-  return { name: 'exchangeGoCardlessAccessCodeAccountAlreadyConnected' }
+  return { name: 'exchangeGoCardlessAccessCodeAccountAlreadyConnected', opts: {} }
 }
 
 const redirectToGoCardlessConnectFailure = function () {
-  return { name: 'redirectToGoCardlessConnectFailure' }
+  return { name: 'redirectToGoCardlessConnectFailure', opts: {} }
 }
 
 module.exports = {
