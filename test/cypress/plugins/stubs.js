@@ -9,7 +9,6 @@ const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go-live-requests.fixture')
 const productFixtures = require('../../fixtures/product.fixtures')
-const goCardlessConnectFixtures = require('../../fixtures/go-cardless-connect.fixtures')
 const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
 const inviteFixtures = require('../../fixtures/invite.fixtures')
 const tokenFixtures = require('../../fixtures/token.fixtures')
@@ -178,12 +177,6 @@ module.exports = {
     const path = '/oauth/authorize'
     return simpleStubBuilder('GET', path, 500, {
       responseHeaders: {}
-    })
-  },
-  exchangeGoCardlessAccessCodeAccountAlreadyConnected: (opts = {}) => {
-    const path = '/v1/api/gocardless/partnerapp/tokens'
-    return simpleStubBuilder('POST', path, 400, {
-      response: goCardlessConnectFixtures.exchangeAccessTokenAccountAlreadyConnectedResponse()
     })
   },
   getDashboardStatisticsStub: (opts = {}) => {
