@@ -44,7 +44,7 @@ describe('Add stripe psp details route', function () {
           responsible_person: true,
           vat_number: true,
           company_number: true
-        }).getPlain())
+        }))
         .persist()
     })
 

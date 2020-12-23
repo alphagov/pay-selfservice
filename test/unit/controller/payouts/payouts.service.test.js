@@ -15,7 +15,7 @@ describe('payout service data transforms', () => {
         { paidOutDate: '2019-01-28T08:00:00.000000Z' },
         { paidOutDate: '2019-01-21T08:00:00.000000Z' }
       ]
-      const payouts = payoutFixtures.validPayoutSearchResponse(opts).getPlain()
+      const payouts = payoutFixtures.validPayoutSearchResponse(opts)
 
       const grouped = groupPayoutsByDate(payouts.results)
 
@@ -34,7 +34,6 @@ describe('payout service data transforms', () => {
           paidOutDate: '2019-01-21T08:00:00.000000Z',
           gatewayAccountId: '300'
         }])
-        .getPlain()
 
       const user = new User(userFixtures.validUser({ gateway_account_ids: ['300'] }))
 
@@ -57,7 +56,7 @@ describe('payout service data transforms', () => {
         { paidOutDate: '2019-01-12T08:00:00.000000Z' },
         { paidOutDate: '2019-01-02T08:00:00.000000Z' }
       ]
-      const payouts = payoutFixtures.validPayoutSearchResponse(opts).getPlain()
+      const payouts = payoutFixtures.validPayoutSearchResponse(opts)
 
       const grouped = groupPayoutsByDate(payouts.results)
       const keys = Object.keys(grouped)

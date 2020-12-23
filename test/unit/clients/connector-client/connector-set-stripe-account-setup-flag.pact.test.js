@@ -35,7 +35,7 @@ describe('connector client - set stripe account setup flag', () => {
   after(() => provider.finalize())
 
   describe('set bank account flag', () => {
-    const request = stripeAccountSetupFixtures.buildUpdateBankAccountDetailsFlagRequest(true).getPlain()
+    const request = stripeAccountSetupFixtures.buildUpdateBankAccountDetailsFlagRequest(true)
 
     before(done => {
       provider.addInteraction(
@@ -62,7 +62,7 @@ describe('connector client - set stripe account setup flag', () => {
   })
 
   describe('set vat number flag', () => {
-    const request = stripeAccountSetupFixtures.buildUpdateVatNumberFlagRequest(true).getPlain()
+    const request = stripeAccountSetupFixtures.buildUpdateVatNumberFlagRequest(true)
 
     before(done => {
       provider.addInteraction(
@@ -89,7 +89,7 @@ describe('connector client - set stripe account setup flag', () => {
   })
 
   describe('set company number flag', () => {
-    const request = stripeAccountSetupFixtures.buildUpdateCompanyNumberFlagRequest(true).getPlain()
+    const request = stripeAccountSetupFixtures.buildUpdateCompanyNumberFlagRequest(true)
 
     before(done => {
       provider.addInteraction(
@@ -116,7 +116,7 @@ describe('connector client - set stripe account setup flag', () => {
   })
 
   describe('set responsible person flag', () => {
-    const request = stripeAccountSetupFixtures.buildUpdateResponsiblePersonFlagRequest(true).getPlain()
+    const request = stripeAccountSetupFixtures.buildUpdateResponsiblePersonFlagRequest(true)
 
     before(done => {
       provider.addInteraction(

@@ -1,29 +1,13 @@
 'use strict'
 
-const path = require('path')
-const _ = require('lodash')
-
-// Global setup
-const pactBase = require(path.join(__dirname, '/pact-base'))
-const pactRegister = pactBase()
-
 function buildUpdateStripeAccountSetupFlagRequest (path, completed) {
-  const data = [
+  return [
     {
       op: 'replace',
       path,
       value: completed
     }
   ]
-
-  return {
-    getPactified: () => {
-      return pactRegister.pactify(data)
-    },
-    getPlain: () => {
-      return _.clone(data)
-    }
-  }
 }
 
 module.exports = {
@@ -44,35 +28,11 @@ module.exports = {
   },
 
   buildGetStripeAccountSetupResponse (opts = {}) {
-    const data = {
+    return {
       'bank_account': opts.bank_account || false,
       'responsible_person': opts.responsible_person || false,
       'company_number': opts.company_number || false,
       'vat_number': opts.vat_number || false
-    }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
-  buildGetStripeAccountResponse (opts = {}) {
-    const data = {
-      'stripe_account_id': opts.stripe_account_id || 'acct_123example123'
-    }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
     }
   }
 }

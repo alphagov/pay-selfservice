@@ -39,8 +39,8 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   serviceName: VALID_USER.serviceRoles[0].service.name,
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
   type: 'PROTOTYPE'
-}).getPlain()
-const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
+})
+const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST)
 
 describe('test with your users - submit controller', () => {
   describe('when it is called on a gateway account that is from a payment provider other than sandbox', () => {

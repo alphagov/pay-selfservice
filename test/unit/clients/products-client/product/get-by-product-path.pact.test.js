@@ -7,11 +7,12 @@ const proxyquire = require('proxyquire')
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const productFixtures = require('../../../../fixtures/product.fixtures')
+const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const PRODUCT_RESOURCE = '/v1/api/products'
 const port = Math.floor(Math.random() * 48127) + 1024
-let response, result, productExternalId, serviceNamePath, productNamePath
+let result
 
 function getProductsClient (baseUrl = `http://localhost:${port}`) {
   return proxyquire('../../../../../app/services/clients/products.client', {
@@ -36,20 +37,21 @@ describe('products client - find a product by it\'s product path', function () {
   after(() => provider.finalize())
 
   describe('when a product is successfully found', () => {
+    const productExternalId = 'existing-id'
+    const serviceNamePath = 'service-name-path'
+    const productNamePath = 'product-name-path'
+    const response = productFixtures.validProductResponse({
+      external_id: productExternalId,
+      price: 1000,
+      name: 'A Product Name',
+      description: 'About this product',
+      return_url: 'https://example.gov.uk',
+      service_name_path: serviceNamePath,
+      product_name_path: productNamePath
+    })
+
     before(done => {
       const productsClient = getProductsClient()
-      productExternalId = 'existing-id'
-      serviceNamePath = 'service-name-path'
-      productNamePath = 'product-name-path'
-      response = productFixtures.validProductResponse({
-        external_id: productExternalId,
-        price: 1000,
-        name: 'A Product Name',
-        description: 'About this product',
-        return_url: 'https://example.gov.uk',
-        service_name_path: serviceNamePath,
-        product_name_path: productNamePath
-      })
       provider.addInteraction(
         new PactInteractionBuilder(`${PRODUCT_RESOURCE}`)
           .withQuery('serviceNamePath', serviceNamePath)
@@ -58,7 +60,7 @@ describe('products client - find a product by it\'s product path', function () {
           .withMethod('GET')
           .withState('a product with path service-name-path/product-name-path exists')
           .withStatusCode(200)
-          .withResponseBody(response.getPactified())
+          .withResponseBody(pactify(response))
           .build()
       )
         .then(() => productsClient.product.getByProductPath(serviceNamePath, productNamePath))
@@ -66,38 +68,36 @@ describe('products client - find a product by it\'s product path', function () {
           result = res
           done()
         })
-        .catch(e => done(e))
     })
 
     after(() => provider.verify())
 
     it('should find an existing product', () => {
-      const plainResponse = response.getPlain()
       expect(result.externalId).to.equal(productExternalId)
-      expect(result.name).to.exist.and.equal(plainResponse.name)
-      expect(result.description).to.exist.and.equal(plainResponse.description)
-      expect(result.price).to.exist.and.equal(plainResponse.price)
-      expect(result.returnUrl).to.exist.and.equal(plainResponse.return_url)
-      expect(result.language).to.exist.and.equal(plainResponse.language)
+      expect(result.name).to.exist.and.equal(response.name)
+      expect(result.description).to.exist.and.equal(response.description)
+      expect(result.price).to.exist.and.equal(response.price)
+      expect(result.returnUrl).to.exist.and.equal(response.return_url)
+      expect(result.language).to.exist.and.equal(response.language)
       expect(result).to.have.property('links')
       expect(Object.keys(result.links).length).to.equal(3)
       expect(result.links).to.have.property('self')
-      expect(result.links.self).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'self').method)
-      expect(result.links.self).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'self').href)
+      expect(result.links.self).to.have.property('method').to.equal(response._links.find(link => link.rel === 'self').method)
+      expect(result.links.self).to.have.property('href').to.equal(response._links.find(link => link.rel === 'self').href)
       expect(result.links).to.have.property('pay')
-      expect(result.links.pay).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'pay').method)
-      expect(result.links.pay).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'pay').href)
+      expect(result.links.pay).to.have.property('method').to.equal(response._links.find(link => link.rel === 'pay').method)
+      expect(result.links.pay).to.have.property('href').to.equal(response._links.find(link => link.rel === 'pay').href)
       expect(result.links).to.have.property('friendly')
-      expect(result.links.friendly).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'friendly').method)
-      expect(result.links.friendly).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'friendly').href)
+      expect(result.links.friendly).to.have.property('method').to.equal(response._links.find(link => link.rel === 'friendly').method)
+      expect(result.links.friendly).to.have.property('href').to.equal(response._links.find(link => link.rel === 'friendly').href)
     })
   })
 
   describe('when a product is not found', () => {
     before(done => {
       const productsClient = getProductsClient()
-      serviceNamePath = 'non-existing-service-name-path'
-      productNamePath = 'non-existing-product-name-path'
+      const serviceNamePath = 'non-existing-service-name-path'
+      const productNamePath = 'non-existing-product-name-path'
       provider.addInteraction(
         new PactInteractionBuilder(`${PRODUCT_RESOURCE}`)
           .withQuery('serviceNamePath', serviceNamePath)

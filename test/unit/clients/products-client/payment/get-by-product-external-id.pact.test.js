@@ -8,11 +8,12 @@ const Payment = require('../../../../../app/models/Payment.class')
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact-interaction-builder').PactInteractionBuilder
 const productFixtures = require('../../../../fixtures/product.fixtures')
+const { pactifySimpleArray } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const PRODUCT_RESOURCE = '/v1/api/products'
 const port = Math.floor(Math.random() * 48127) + 1024
-let response, result, productExternalId
+let result
 
 function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products.client', {
@@ -37,19 +38,20 @@ describe('products client - find a payment by it\'s associated product external 
   after(() => provider.finalize())
 
   describe('when a product is successfully found', () => {
+    const productExternalId = 'existing-id'
+    const response = [
+      productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId }),
+      productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId }),
+      productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId })
+    ]
+
     before(done => {
       const productsClient = getProductsClient()
-      productExternalId = 'existing-id'
-      response = [
-        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId }),
-        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId }),
-        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId })
-      ]
       const interaction = new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}/payments`)
         .withUponReceiving('a valid get payment by product request')
         .withMethod('GET')
         .withStatusCode(200)
-        .withResponseBody(response.map(item => item.getPactified()))
+        .withResponseBody(pactifySimpleArray(response))
         .build()
       provider.addInteraction(interaction)
         .then(() => productsClient.payment.getByProductExternalId(productExternalId))
@@ -66,19 +68,19 @@ describe('products client - find a payment by it\'s associated product external 
       expect(result.length).to.equal(3)
       expect(result.map(item => item.constructor)).to.deep.equal([Payment, Payment, Payment])
       result.forEach((payment, index) => {
-        const plainResponse = response[index].getPlain()
-        expect(payment.productExternalId).to.equal(plainResponse.product_external_id).and.to.equal(productExternalId)
-        expect(payment.externalId).to.equal(plainResponse.external_id)
-        expect(payment.status).to.equal(plainResponse.status)
-        expect(payment.nextUrl).to.equal(plainResponse.next_url)
+        const result = response[index]
+        expect(payment.productExternalId).to.equal(result.product_external_id).and.to.equal(productExternalId)
+        expect(payment.externalId).to.equal(result.external_id)
+        expect(payment.status).to.equal(result.status)
+        expect(payment.nextUrl).to.equal(result.next_url)
         expect(payment).to.have.property('links')
         expect(Object.keys(payment.links).length).to.equal(2)
         expect(payment.links).to.have.property('self')
-        expect(payment.links.self).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'self').method)
-        expect(payment.links.self).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'self').href)
+        expect(payment.links.self).to.have.property('method').to.equal(result._links.find(link => link.rel === 'self').method)
+        expect(payment.links.self).to.have.property('href').to.equal(result._links.find(link => link.rel === 'self').href)
         expect(payment.links).to.have.property('next')
-        expect(payment.links.next).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'next').method)
-        expect(payment.links.next).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'next').href)
+        expect(payment.links.next).to.have.property('method').to.equal(result._links.find(link => link.rel === 'next').method)
+        expect(payment.links.next).to.have.property('href').to.equal(result._links.find(link => link.rel === 'next').href)
       })
     })
   })
@@ -86,7 +88,7 @@ describe('products client - find a payment by it\'s associated product external 
   describe('when a product is not found', () => {
     before(done => {
       const productsClient = getProductsClient()
-      productExternalId = 'non-existing-id'
+      const productExternalId = 'non-existing-id'
       provider.addInteraction(
         new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}/payments`)
           .withUponReceiving('a valid find product payments request with non existing id')

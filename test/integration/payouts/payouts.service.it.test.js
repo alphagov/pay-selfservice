@@ -21,7 +21,7 @@ describe('payouts service list payouts helper', () => {
       { gatewayAccountId, paidOutDate: '2019-01-29T09:00:00.000000Z' }
     ]
     ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
-      .reply(200, fixtures.validPayoutSearchResponse(payouts).getPlain())
+      .reply(200, fixtures.validPayoutSearchResponse(payouts))
 
     const { groups, pages } = await payoutService.payouts([ gatewayAccountId ])
 
@@ -34,7 +34,7 @@ describe('payouts service list payouts helper', () => {
   it('responds with an empty well formed object given no payouts', async () => {
     const payouts = []
     ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
-      .reply(200, fixtures.validPayoutSearchResponse(payouts).getPlain())
+      .reply(200, fixtures.validPayoutSearchResponse(payouts))
 
     const { groups, pages } = await payoutService.payouts([ gatewayAccountId ])
 

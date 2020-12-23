@@ -7,6 +7,7 @@ const payoutFixture = require('../../../fixtures/payout.fixtures')
 const ledgerClient = require('../../../../app/services/clients/ledger.client')
 
 const pactTestProvider = require('./ledger-pact-test-provider')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 const { expect } = chai
 
@@ -42,7 +43,7 @@ describe('ledger client', () => {
           .withState('two payouts exist for selfservice search')
           .withMethod('GET')
           .withStatusCode(200)
-          .withResponseBody(response.getPactified())
+          .withResponseBody(pactify(response))
           .build()
       )
     })
@@ -50,7 +51,7 @@ describe('ledger client', () => {
 
     it('should search payouts successfully', async () => {
       const ledgerResult = await ledgerClient.payouts([ GATEWAY_ACCOUNT_ID ], 1)
-      expect(ledgerResult).to.deep.equal(response.getPlain())
+      expect(ledgerResult).to.deep.equal(response)
     })
   })
 })
