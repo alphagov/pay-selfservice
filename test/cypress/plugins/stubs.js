@@ -39,18 +39,6 @@ module.exports = {
       response: inviteFixtures.validListInvitesResponse(opts.invites)
     })
   },
-  getGatewayAccountSuccess: (opts = {}) => {
-    const path = '/v1/frontend/accounts/' + opts.gateway_account_id
-    return simpleStubBuilder('GET', path, 200, {
-      response: gatewayAccountFixtures.validGatewayAccountResponse(opts)
-    })
-  },
-  getGatewayAccountByExternalIdSuccess: (opts = {}) => {
-    const path = '/v1/api/accounts/external-id/' + opts.external_id
-    return simpleStubBuilder('GET', path, 200, {
-      response: gatewayAccountFixtures.validGatewayAccountResponse(opts)
-    })
-  },
   getGatewayAccountSuccessRepeat: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0])
     const aDifferentValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[1])
@@ -132,45 +120,6 @@ module.exports = {
       response: stripeAccountFixtures.buildGetStripeAccountResponse(opts)
     })
   },
-  getGatewayAccountsSuccess: (opts = {}) => {
-    const path = '/v1/frontend/accounts'
-    return simpleStubBuilder('GET', path, 200, {
-      query: {
-        accountIds: opts.gateway_account_id.toString()
-      },
-      response: gatewayAccountFixtures.validGatewayAccountsResponse({ accounts: [opts] })
-    })
-  },
-  getDirectDebitGatewayAccountSuccess: (opts = {}) => {
-    const path = '/v1/api/accounts/' + opts.gateway_account_id
-    return simpleStubBuilder('GET', path, 200, {
-      response: gatewayAccountFixtures.validDirectDebitGatewayAccountResponse(opts)
-    })
-  },
-  getAccountAuthSuccess: (opts = {}) => {
-    const path = '/v1/frontend/auth/' + opts.gateway_account_id
-    return simpleStubBuilder('GET', path, 200, {
-      response: gatewayAccountFixtures.validGatewayAccountTokensResponse(opts)
-    })
-  },
-  patchAccountEmailCollectionModeSuccess: (opts = {}) => {
-    const path = '/v1/api/accounts/' + opts.gateway_account_id
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest(opts.collectionMode)
-    })
-  },
-  patchConfirmationEmailToggleSuccess: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/email-notification`
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(opts.enabled)
-    })
-  },
-  patchRefundEmailToggleSuccess: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/email-notification`
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(opts.enabled)
-    })
-  },
   postRefundSuccess: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
     return simpleStubBuilder('POST', path, 200, {
@@ -225,19 +174,6 @@ module.exports = {
       }),
       response: ledgerTransactionFixtures.validTransactionSearchResponse(opts)
     })
-  },
-  getCardTypesSuccess: () => {
-    const path = '/v1/api/card-types'
-    return simpleStubBuilder('GET', path, 200, {
-      response: cardFixtures.validCardTypesResponse()
-    })
-  },
-  getAcceptedCardTypesSuccess: opts => {
-    const path = `/v1/frontend/accounts/${opts.account_id}/card-types`
-    const response = opts.updated
-      ? cardFixtures.validUpdatedAcceptedCardTypesResponse()
-      : cardFixtures.validAcceptedCardTypesResponse(opts)
-    return simpleStubBuilder('GET', path, 200, { response: response })
   },
   getAcceptedCardsForAccountSuccess: opts => {
     const path = `/v1/frontend/accounts/${opts.account_id}/card-types`
@@ -316,47 +252,6 @@ module.exports = {
       verifyCalledTimes: opts.verifyCalledTimes
     })
   },
-
-  patchUpdateMotoMaskSecurityCode: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}`
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: {
-        op: 'replace',
-        path: 'moto_mask_security_code_input',
-        value: opts.motoMaskCardSecurityCode
-      }
-    })
-  },
-
-  patchUpdateMotoMaskCardNumber: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}`
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: {
-        op: 'replace',
-        path: 'moto_mask_card_number_input',
-        value: opts.motoMaskCardNumber
-      }
-    })
-  },
-  patchUpdate3DS: (opts = {}) => {
-    const path = `/v1/api/frontend/accounts/${opts.gateway_account_id}/3ds-toggle`
-    // TODO: this should use a fixture to construct the request body
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: {
-        toggle_3ds: opts.enable
-      }
-    })
-  },
-  patchIntegrationVersion3ds: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}`
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: {
-        op: 'replace',
-        path: 'integration_version_3ds',
-        value: opts.patchIntegrationVersion3ds
-      }
-    })
-  },
   redirectToGoCardlessConnectFailure: (opts = {}) => {
     const path = '/oauth/authorize'
     return simpleStubBuilder('GET', path, 500, {
@@ -373,38 +268,6 @@ module.exports = {
     const path = '/v1/report/transactions-summary'
     return simpleStubBuilder('GET', path, 200, {
       response: ledgerFixture.validTransactionSummaryDetails(opts)
-    })
-  },
-  patchUpdateCredentials: (opts = {}) => {
-    const path = `/v1/api/frontend/accounts/${opts.gateway_account_id}/credentials`
-    // TODO: this should use a fixture to construct the request body
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: {
-        credentials: {
-          merchant_id: opts.merchantId,
-          username: opts.username,
-          password: opts.password
-        }
-      }
-    })
-  },
-  patchUpdateFlexCredentials: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/3ds-flex-credentials`
-    // TODO: this should use a fixture to construct the request body
-    return simpleStubBuilder('POST', path, 200, {
-      request: {
-        organisational_unit_id: opts.unitId,
-        issuer: opts.issuer,
-        jwt_mac_key: opts.jwtKey
-      }
-    })
-  },
-  postCreateGatewayAccountSuccess: (opts = {}) => {
-    const path = '/v1/api/accounts'
-    return simpleStubBuilder('POST', path, 200, {
-      request: gatewayAccountFixtures.validCreateGatewayAccountRequest(opts),
-      response: gatewayAccountFixtures.validGatewayAccountResponse(opts),
-      verifyCalledTimes: opts.verifyCalledTimes
     })
   },
   postCreateServiceSuccess: (opts = {}) => {
@@ -426,20 +289,6 @@ module.exports = {
     return simpleStubBuilder('POST', path, 200, {
       response: productFixtures.validProductResponse(opts)
     })
-  },
-  postCheckWorldpay3dsFlexCredentials: (opts = {}) => {
-    const path = `/v1/api/accounts/${opts.gateway_account_id}/worldpay/check-3ds-flex-config`
-    if (opts.shouldReturnValid) {
-      return simpleStubBuilder('POST', path, 200, {
-        request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest().payload,
-        response: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse()
-      })
-    } else {
-      return simpleStubBuilder('POST', path, 200, {
-        request: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsRequest().payload,
-        response: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsResponse()
-      })
-    }
   },
   postCheckWorldpay3dsFlexCredentialsFailure: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/worldpay/check-3ds-flex-config`
