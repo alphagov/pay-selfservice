@@ -7,7 +7,6 @@ const transactionDetailsFixtures = require('../../fixtures/refund.fixtures')
 const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
-const serviceFixtures = require('../../fixtures/service.fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go-live-requests.fixture')
 const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
 const stripeAccountFixtures = require('../../fixtures/stripe-account.fixtures')
@@ -181,40 +180,6 @@ module.exports = {
       response: cardFixtures.validUpdatedAcceptedCardTypesResponse()
     })
   },
-  patchUpdateServiceGoLiveStageSuccess: (opts = {}) => {
-    const path = `/v1/api/services/${opts.external_id}`
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.current_go_live_stage),
-      response: serviceFixtures.validServiceResponse(opts)
-    })
-  },
-  patchUpdateMerchantDetailsSuccess: (opts = {}) => {
-    const path = `/v1/api/services/${opts.external_id}`
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: serviceFixtures.validUpdateMerchantDetailsRequest(opts.merchant_details),
-      response: serviceFixtures.validServiceResponse(opts)
-    })
-  },
-  patchUpdateServiceNameSuccess: (opts = {}) => {
-    const path = `/v1/api/services/${opts.external_id}`
-    return simpleStubBuilder('PATCH', path, 200, {
-      request: serviceFixtures.validUpdateServiceNameRequest(opts.serviceName),
-      response: serviceFixtures.validServiceResponse(opts),
-      verifyCalledTimes: opts.verifyCalledTimes
-    })
-  },
-  patchUpdateServiceSuccessCatchAll: (opts = {}) => {
-    const path = `/v1/api/services/${opts.external_id}`
-    return simpleStubBuilder('PATCH', path, 200, {
-      response: serviceFixtures.validServiceResponse(opts)
-    })
-  },
-  patchGoLiveStageFailure: (opts = {}) => {
-    const path = `/v1/api/services/${opts.external_id}`
-    return simpleStubBuilder('PATCH', path, 404, {
-      request: serviceFixtures.validUpdateServiceRequest(opts)
-    })
-  },
   postGovUkPayAgreement: (opts) => {
     const path = `/v1/api/services/${opts.external_id}/govuk-pay-agreement`
     return simpleStubBuilder('POST', path, 201, {
@@ -268,14 +233,6 @@ module.exports = {
     const path = '/v1/report/transactions-summary'
     return simpleStubBuilder('GET', path, 200, {
       response: ledgerFixture.validTransactionSummaryDetails(opts)
-    })
-  },
-  postCreateServiceSuccess: (opts = {}) => {
-    const path = '/v1/api/services'
-    return simpleStubBuilder('POST', path, 200, {
-      request: serviceFixtures.validCreateServiceRequest(opts),
-      response: serviceFixtures.validServiceResponse(opts),
-      verifyCalledTimes: opts.verifyCalledTimes
     })
   },
   postCreateTokenForAccountSuccess: (opts = {}) => {
