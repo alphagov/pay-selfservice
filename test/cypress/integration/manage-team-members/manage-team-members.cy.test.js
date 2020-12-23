@@ -29,12 +29,7 @@ describe('Manage team members page', () => {
     ]
 
     cy.task('setupStubs', [
-      getUserSuccess({
-        userExternalId: AUTHENTICATED_USER_ID,
-        email: 'logged-in-user@example.com',
-        serviceExternalId: SERVICE_EXTERNAL_ID,
-        role: { name: 'admin' }
-      }),
+      getUserSuccess(authenticatedUserStubOpts),
       getServiceUsersSuccess({
         serviceExternalId: SERVICE_EXTERNAL_ID,
         users: [authenticatedUserStubOpts, adminUserStubOpts, viewOnlyUserStubOpts, viewAndRefundUserStubOpts]
