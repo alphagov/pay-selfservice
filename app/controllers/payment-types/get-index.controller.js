@@ -4,6 +4,7 @@ const { response, renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
 const auth = require('../../services/auth.service')
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 function formatLabel (card) {
   if (card.brand === 'visa' || card.brand === 'master-card') {
@@ -53,7 +54,6 @@ function formatCardsForTemplate (allCards, acceptedCards, threeDSEnabled) {
 }
 
 module.exports = async (req, res) => {
-  const connector = new ConnectorClient(process.env.CONNECTOR_URL)
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = auth.getCurrentGatewayAccountId(req)
 

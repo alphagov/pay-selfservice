@@ -13,18 +13,13 @@ const { CONNECTOR_URL } = process.env
 const { CORRELATION_HEADER } = require('../utils/correlation-header')
 const { isPasswordLessThanTenChars } = require('../browsered/field-validation-checks')
 
-const connectorClient = () => new ConnectorClient(CONNECTOR_URL)
+const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
 function showSuccessView (viewMode, req, res) {
   let responsePayload = {}
 
-  switch (viewMode) {
-    case EDIT_NOTIFICATION_CREDENTIALS_MODE:
-      responsePayload.editNotificationCredentialsMode = true
-      break
-    default:
-      responsePayload.editNotificationCredentialsMode = false
-  }
+  responsePayload.editNotificationCredentialsMode = (viewMode === EDIT_NOTIFICATION_CREDENTIALS_MODE)
+
   const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
   if (invalidCreds) {
     responsePayload.lastNotificationsData = invalidCreds
@@ -119,7 +114,7 @@ module.exports = {
     var correlationId = req.headers[CORRELATION_HEADER] || ''
 
     try {
-      await connectorClient().postAccountNotificationCredentials({
+      await connectorClient.postAccountNotificationCredentials({
         payload: { username, password },
         correlationId: correlationId,
         gatewayAccountId: accountId
@@ -171,7 +166,7 @@ module.exports = {
     var startTime = new Date()
 
     try {
-      await connectorClient().patchAccountCredentials({
+      await connectorClient.patchAccountCredentials({
         payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
       })
 

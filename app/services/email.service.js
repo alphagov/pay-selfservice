@@ -11,14 +11,12 @@ const notificationUpdateUrl = function (accountID) {
   return process.env.CONNECTOR_URL + EMAIL_NOTIFICATION_UPDATE_API_PATH.replace('{accountId}', accountID)
 }
 
-const connectorClient = function () {
-  return new ConnectorClient(process.env.CONNECTOR_URL)
-}
+const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const getEmailSettings = async function (accountID, correlationId) {
   const startTime = new Date()
   try {
-    const data = await connectorClient().getAccount({
+    const data = await connectorClient.getAccount({
       gatewayAccountId: accountID,
       correlationId: correlationId
     })
@@ -40,7 +38,7 @@ const updateConfirmationTemplate = async function (accountID, emailText, correla
   try {
     const patch = { 'op': 'replace', 'path': '/payment_confirmed/template_body', 'value': emailText }
 
-    await connectorClient().updateConfirmationEmail({
+    await connectorClient.updateConfirmationEmail({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
@@ -57,7 +55,7 @@ const setEmailCollectionMode = async function (accountID, collectionMode, correl
   const startTime = new Date()
   try {
     const patch = { 'op': 'replace', 'path': 'email_collection_mode', 'value': collectionMode }
-    await connectorClient().updateEmailCollectionMode({
+    await connectorClient.updateEmailCollectionMode({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
@@ -74,7 +72,7 @@ const setConfirmationEnabled = async function (accountID, enabled, correlationId
   const patch = { 'op': 'replace', 'path': '/payment_confirmed/enabled', 'value': enabled }
 
   try {
-    await connectorClient().updateConfirmationEmailEnabled({
+    await connectorClient.updateConfirmationEmailEnabled({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
@@ -90,7 +88,7 @@ const setRefundEmailEnabled = async function (accountID, enabled, correlationId)
   const startTime = new Date()
   try {
     const patch = { 'op': 'replace', 'path': '/refund_issued/enabled', 'value': enabled }
-    await connectorClient().updateRefundEmailEnabled({
+    await connectorClient.updateRefundEmailEnabled({
       payload: patch,
       correlationId: correlationId,
       gatewayAccountId: accountID
