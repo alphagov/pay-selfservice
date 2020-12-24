@@ -50,26 +50,27 @@
   {% endif %}
   <h1 class="govuk-heading-l page-title">Organisation details</h1>
   {% if has_card_and_dd_gateway_account %}
-    <p class="govuk-hint govuk-!-margin-bottom-7" id="merchant-details-info">Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the
+    <p class="govuk-body" id="merchant-details-info">Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the
       payer. This information is displayed in emails and on payment pages.</p>
   {% elif has_direct_debit_gateway_account %}
-    <p class="govuk-hint govuk-!-margin-bottom-7" id="merchant-details-info">Direct Debit requires the details of the organisation taking payment to be shown to the payer. This information is
+    <p class="govuk-body" id="merchant-details-info">Direct Debit requires the details of the organisation taking payment to be shown to the payer. This information is
       displayed in emails and on payment pages.</p>
   {% elif has_card_gateway_account %}
-    <p class="govuk-hint govuk-!-margin-bottom-7" id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
+    <p class="govuk-body" id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
   {% endif %}
 
   <form id="merchant-details-form" method="post" action="/organisation-details/edit/{{currentService.externalId}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
 
     <div class="govuk-form-group {% if errors['merchant-name'] %} govuk-form-group--error {% endif %}">
-      <label class="govuk-label" for="merchant-name">
-        Name
+      <label class="govuk-label govuk-label--s" for="merchant-name">
+        Organisation Name
       </label>
-      <span id="merchant-name-hint" class="govuk-hint govuk-!-width-two-thirds">
-        <p>Enter the main name of your organisation, not your local office or individual department.</p>
-        <p>Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>
-      </span>
+
+      <div id="merchant-name-hint" class="govuk-hint govuk-!-width-two-thirds">
+        <p class="govuk-hint">Enter the main name of your organisation, not your local office or individual department.</p>
+        <p class="govuk-hint">Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>
+      </div>
       {% if errors['merchant-name'] %}
       <span id="merchant-name-error" class="govuk-error-message">
         <span class="govuk-visually-hidden">Error:</span> {{errors["merchant-name"]}}
@@ -91,7 +92,8 @@
       govukInput({
       value: merchant_details.telephone_number,
         label: {
-          text: "Phone number"
+          text: "Phone number",
+          classes: "govuk-label--s"
         },
         errorMessage: phoneError,
         id: "telephone-number",
