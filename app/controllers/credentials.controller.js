@@ -2,7 +2,6 @@ const EDIT_CREDENTIALS_MODE = 'editCredentials'
 const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials'
 
 const _ = require('lodash')
-const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
 const { response } = require('../utils/response')
 const { renderErrorView } = require('../utils/response')
@@ -84,7 +83,6 @@ module.exports = {
 
   updateNotificationCredentials: async function (req, res) {
     const accountId = auth.getCurrentGatewayAccountId((req))
-    const connectorUrl = CONNECTOR_URL + '/v1/api/accounts/{accountId}/notification-credentials'
     const { username, password } = _.get(req, 'body')
 
     if (!username) {
@@ -103,15 +101,7 @@ module.exports = {
       return res.redirect(paths.notificationCredentials.edit)
     }
 
-    logger.info('Calling connector to update provider notification credentials', {
-      service: 'connector',
-      method: 'POST',
-      url: '/frontend/accounts/{id}/notification-credentials'
-    })
-
-    var startTime = new Date()
-    var url = connectorUrl.replace('{accountId}', accountId)
-    var correlationId = req.headers[CORRELATION_HEADER] || ''
+    const correlationId = req.headers[CORRELATION_HEADER] || ''
 
     try {
       await connectorClient.postAccountNotificationCredentials({
@@ -120,78 +110,23 @@ module.exports = {
         gatewayAccountId: accountId
       })
 
-      const duration = new Date() - startTime
-      logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
       return res.redirect(303, router.paths.yourPsp.index)
     } catch (err) {
-      const duration = new Date() - startTime
-      logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
-      if (err && err.errorCode) {
-        logger.error(`[${correlationId}] Calling connector to update provider notification credentials failed`, {
-          service: 'connector',
-          method: 'POST',
-          url: connectorUrl,
-          status: err.errorCode
-        })
-      } else {
-        logger.error(`[${correlationId}] Calling connector to update provider notification credentials threw exception`, {
-          service: 'connector',
-          method: 'POST',
-          url: connectorUrl,
-          error: err
-        })
-      }
-
       return renderErrorView(req, res)
     }
   },
 
   update: async function (req, res) {
-    logger.debug('Calling connector to update provider credentials', {
-      service: 'connector',
-      method: 'PATCH',
-      url: '/frontend/accounts/{id}/credentials'
-    })
-    var accountId = auth.getCurrentGatewayAccountId(req)
-    var connectorUrl = CONNECTOR_URL + '/v1/frontend/accounts/{accountId}/credentials'
-
-    logger.info('Calling connector to update provider credentials', {
-      service: 'connector',
-      method: 'PATCH',
-      url: '/frontend/accounts/{id}/credentials'
-    })
-    var url = connectorUrl.replace('{accountId}', accountId)
-    var correlationId = req.headers[CORRELATION_HEADER] || ''
-
-    var startTime = new Date()
+    const accountId = auth.getCurrentGatewayAccountId(req)
+    const correlationId = req.headers[CORRELATION_HEADER] || ''
 
     try {
       await connectorClient.patchAccountCredentials({
         payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
       })
 
-      let duration = new Date() - startTime
-      logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)
       return res.redirect(303, router.paths.yourPsp.index)
     } catch (err) {
-      let duration = new Date() - startTime
-      logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)
-
-      if (err && err.errorCode) {
-        logger.error(`[${correlationId}] Calling connector to update provider credentials failed. Redirecting back to credentials view`, {
-          service: 'connector',
-          method: 'PATCH',
-          url: connectorUrl,
-          status: err.errorCode
-        })
-      } else {
-        logger.error(`[${correlationId}] Calling connector to update provider credentials threw exception`, {
-          service: 'connector',
-          method: 'PATCH',
-          url: connectorUrl,
-          error: err
-        })
-      }
       return renderErrorView(req, res)
     }
   }
