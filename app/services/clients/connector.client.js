@@ -1,8 +1,5 @@
 'use strict'
 
-const util = require('util')
-const EventEmitter = require('events').EventEmitter
-
 const logger = require('../../utils/logger')(__filename)
 const baseClient = require('./base-client/base.client')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
@@ -100,8 +97,6 @@ function _getToggle3dsUrlFor (accountID, url) {
  */
 function ConnectorClient (connectorUrl) {
   this.connectorUrl = connectorUrl
-
-  EventEmitter.call(this)
 }
 
 ConnectorClient.prototype = {
@@ -206,12 +201,6 @@ ConnectorClient.prototype = {
    */
   patchAccountCredentials: function (params) {
     const url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
-
-    logger.debug('Calling connector to patch account credentials', {
-      service: 'connector',
-      method: 'PATCH',
-      url: url
-    })
 
     return baseClient.patch(url, {
       body: params.payload,
@@ -647,7 +636,5 @@ ConnectorClient.prototype = {
     )
   }
 }
-
-util.inherits(ConnectorClient, EventEmitter)
 
 module.exports.ConnectorClient = ConnectorClient

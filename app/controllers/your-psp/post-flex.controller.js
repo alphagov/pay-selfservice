@@ -9,13 +9,13 @@ const { correlationHeader } = require('../../utils/correlation-header')
 const { validationErrors } = require('../../browsered/field-validation-checks')
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
 
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 // Constants
 const ORGANISATIONAL_UNIT_ID_FIELD = 'organisational-unit-id'
 const ISSUER_FIELD = 'issuer'
 const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 
 module.exports = async (req, res) => {
-  const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
   const correlationId = req.headers[correlationHeader] || ''
 

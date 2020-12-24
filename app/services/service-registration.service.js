@@ -5,7 +5,7 @@ const { keys } = require('@govuk-pay/pay-js-commons').logging
 const logger = require('../utils/logger')(__filename)
 const getAdminUsersClient = require('./clients/adminusers.client')
 const ConnectorClient = require('./clients/connector.client').ConnectorClient
-const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
+const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 function submitRegistration (email, phoneNumber, password, correlationId) {
   return getAdminUsersClient({ correlationId }).submitServiceRegistration(email, phoneNumber, password)
@@ -18,7 +18,7 @@ function submitServiceInviteOtpCode (code, otpCode, correlationId) {
 async function createPopulatedService (inviteCode, correlationId) {
   const adminusersClient = getAdminUsersClient({ correlationId })
 
-  const gatewayAccount = await connectorClient().createGatewayAccount('sandbox', 'test', null, null, correlationId)
+  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, correlationId)
   const completeInviteResponse = await adminusersClient.completeInvite(inviteCode, [gatewayAccount.gateway_account_id])
   const user = await adminusersClient.getUserByExternalId(completeInviteResponse.user_external_id)
 
