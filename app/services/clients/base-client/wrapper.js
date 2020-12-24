@@ -12,7 +12,6 @@ const SUCCESS_CODES = [200, 201, 202, 204, 206]
 
 module.exports = function (method, verb) {
   return (uri, opts, cb) => new Promise((resolve, reject) => {
-
     const args = [uri, opts, cb]
     uri = args.find(arg => typeof arg === 'string')
     opts = args.find(arg => typeof arg === 'object') || {}
