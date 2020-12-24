@@ -74,7 +74,7 @@ module.exports = (req, res) => {
           ipAddress: ipAddress || '',
           email: agreement.email,
           timestamp: agreement.agreement_time,
-          serviceCreated: req.service.created_date || '(service was created before we captured this date)'
+          serviceCreated: req.service.createdDate || '(service was created before we captured this date)'
         }
         const zendeskOpts = {
           correlationId: req.correlationId,
