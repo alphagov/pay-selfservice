@@ -21,7 +21,7 @@ _If you get an error with message `Port 8000 is already in use` when running Cyp
 
 ## How we validate stubs used for Cypress tests
 
-All API stubs created for use in Cypress tests (defined in [plugins/stubs.js](./plugins/stubs.js)) must use the [fixture builders](test/fixtures/fixture-builders.md) to generate the body in the request/response. 
+All API stubs created for use in Cypress tests must use the [fixture builders](test/fixtures/fixture-builders.md) to generate the body in the request/response. 
 
 These fixture builders generate a well defined JSON structure which should be validated by a well defined suite of Pact tests. This means that if an API contract changes, there is one central place in test code that needs to be updated which will propogate through to the Cypress tests.
 

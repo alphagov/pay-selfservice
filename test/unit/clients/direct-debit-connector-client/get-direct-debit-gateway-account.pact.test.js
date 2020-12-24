@@ -5,7 +5,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
-const { PactInteractionBuilder } = require('../../../fixtures/pact-interaction-builder')
+const { PactInteractionBuilder } = require('../../../test-helpers/pact/pact-interaction-builder')
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 const getDirectDebitConnectorClient = require('../../../../app/services/clients/direct-debit-connector.client2')

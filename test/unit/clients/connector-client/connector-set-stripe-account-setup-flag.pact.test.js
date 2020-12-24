@@ -5,7 +5,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 
-const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
 const stripeAccountSetupFixtures = require('../../../fixtures/stripe-account-setup.fixtures')
 

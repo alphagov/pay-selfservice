@@ -7,7 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 
 // Custom dependencies
 const path = require('path')
-const PactInteractionBuilder = require('../../../fixtures/pact-interaction-builder').PactInteractionBuilder
+const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
 
