@@ -2,7 +2,6 @@
 
 const lodash = require('lodash')
 
-const userFixtures = require('../../fixtures/user.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 const transactionDetailsFixtures = require('../../fixtures/refund.fixtures')
 const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
@@ -31,68 +30,6 @@ const simpleStubBuilder = function simpleStubBuilder (method, path, responseCode
  * should be written in a strict enough way the JSON they produce will adhere to a validated structure.
  */
 module.exports = {
-  getUserSuccess: (opts = {}) => {
-    const path = '/v1/api/users/' + opts.external_id
-    return simpleStubBuilder('GET', path, 200, {
-      response: userFixtures.validUserResponse(opts)
-    })
-  },
-  getUsersSuccess: (opts = {}) => {
-    const path = '/v1/api/users'
-    return simpleStubBuilder('GET', path, 200, {
-      query: {
-        ids: opts.userIds ? opts.userIds.join() : ''
-      },
-      response: userFixtures.validUsersResponse(opts.users)
-    })
-  },
-  getUserSuccessRespondDifferentlySecondTime: (opts = {}) => {
-    const aValidUserResponse = userFixtures.validUserResponse(opts.firstResponseOpts)
-    const aSecondValidUserResponse = userFixtures.validUserResponse(opts.secondResponseOpts)
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: '/v1/api/users/' + aValidUserResponse.external_id,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidUserResponse
-          },
-          _behaviors: {
-            repeat: opts.firstResponseOpts.repeat
-          }
-        }, {
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aSecondValidUserResponse
-          },
-          _behaviors: {
-            repeat: opts.secondResponseOpts.repeat
-          }
-        }
-        ]
-      }
-    ]
-  },
-  getServiceUsersSuccess: (opts = {}) => {
-    const path = `/v1/api/services/${opts.serviceExternalId}/users`
-    return simpleStubBuilder('GET', path, 200, {
-      response: userFixtures.validUsersResponse(opts.users)
-    })
-  },
   getInvitedUsersSuccess: (opts = {}) => {
     const path = '/v1/api/invites'
     return simpleStubBuilder('GET', path, 200, {
@@ -233,24 +170,6 @@ module.exports = {
     return simpleStubBuilder('PATCH', path, 200, {
       request: gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(opts.enabled)
     })
-  },
-  postUserAuthenticateSuccess: (opts = {}) => {
-    const path = '/v1/api/users/authenticate'
-    return simpleStubBuilder('POST', path, 200, {
-      request: userFixtures.validAuthenticateRequest(opts),
-      response: userFixtures.validUserResponse(opts)
-    })
-  },
-  postUserAuthenticateInvalidPassword: (opts = {}) => {
-    const path = '/v1/api/users/authenticate'
-    return simpleStubBuilder('POST', path, 401, {
-      request: userFixtures.validAuthenticateRequest(opts),
-      response: userFixtures.invalidPasswordAuthenticateResponse()
-    })
-  },
-  postSecondFactorSuccess: (opts = {}) => {
-    const path = `/v1/api/users/${opts.external_id}/second-factor`
-    return simpleStubBuilder('POST', path, 200)
   },
   postRefundSuccess: (opts = {}) => {
     const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
@@ -478,21 +397,6 @@ module.exports = {
         issuer: opts.issuer,
         jwt_mac_key: opts.jwtKey
       }
-    })
-  },
-  putUpdateServiceRoleSuccess: (opts = {}) => {
-    const path = `/v1/api/users/${opts.external_id}/services/${opts.serviceExternalId}`
-    return simpleStubBuilder('PUT', path, 200, {
-      request: userFixtures.validUpdateServiceRoleRequest(opts.role),
-      response: userFixtures.validUserResponse(opts)
-    })
-  },
-  postAssignServiceRoleSuccess: (opts = {}) => {
-    const path = `/v1/api/users/${opts.external_id}/services`
-    return simpleStubBuilder('POST', path, 200, {
-      request: userFixtures.validAssignServiceRoleRequest(opts),
-      response: userFixtures.validUserResponse(opts),
-      verifyCalledTimes: opts.verifyCalledTimes
     })
   },
   postCreateGatewayAccountSuccess: (opts = {}) => {

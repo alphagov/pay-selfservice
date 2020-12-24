@@ -24,15 +24,13 @@ describe('Edit service user permissions', () => {
       serviceExternalId: SERVICE_EXTERNAL_ID,
       role: { name: 'admin' }
     }
-    const authenticatedUserSuccess = userStubs.getUserSuccess(userWeAreEditingStubOpts)
-    const userWeAreEditingSuccess = userStubs.getUserSuccess(authenticatedUserStubOpts)
 
     cy.task('setupStubs', [
       userStubs.getUserSuccess(authenticatedUserStubOpts),
       userStubs.getUserSuccess(userWeAreEditingStubOpts),
       userStubs.getServiceUsersSuccess({
         serviceExternalId: SERVICE_EXTERNAL_ID,
-        users: [userWeAreEditingSuccess.opts, authenticatedUserSuccess.opts]
+        users: [authenticatedUserStubOpts, userWeAreEditingStubOpts]
       }),
       inviteStubs.getInvitedUsersSuccess({ serviceExternalId: SERVICE_EXTERNAL_ID, invites: [] }),
       userStubs.putUpdateServiceRoleSuccess({

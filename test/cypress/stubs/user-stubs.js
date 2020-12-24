@@ -3,126 +3,113 @@
 const userFixtures = require('../../fixtures/user.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
-const getUserWithServiceRoleStubOpts = function (userExternalId, email, serviceExternalId, roleName, roleDescription) {
+function getUserWithServiceRoleStubOpts (userExternalId, email, serviceExternalId, roleName) {
   return {
-    external_id: userExternalId,
-    username: email,
-    email: email,
-    service_roles: [
-      {
-        service: {
-          external_id: serviceExternalId
-        },
-        role: {
-          name: roleName
-        }
-      }
-    ]
-  }
-}
-
-const getUserSuccess = function (opts) {
-  const serviceRole = buildServiceRoleOpts(opts)
-
-  const stubOptions = {
-    external_id: opts.userExternalId,
-    service_roles: [serviceRole],
-    username: opts.email,
-    email: opts.email,
-    telephone_number: opts.telephoneNumber
-  }
-
-  return {
-    name: 'getUserSuccess',
-    opts: stubOptions
-  }
-}
-
-const getUsersSuccess = function () {
-  return {
-    name: 'getUsersSuccess',
-    opts: {
-      users: []
+    userExternalId,
+    email,
+    serviceExternalId,
+    role: {
+      name: roleName
     }
   }
 }
 
-const getUserSuccessWithServiceRole = function (opts) {
-  const path = '/v1/api/users/' + opts.userExternalId
+function builGetUserSuccessStub (userExternalId, fixtureOpts) {
+  const path = '/v1/api/users/' + userExternalId
   return stubBuilder('GET', path, 200, {
+    response: userFixtures.validUserResponse(fixtureOpts)
+  })
+}
+
+function getUserSuccess (opts) {
+  const fixtureOpts = buildUserWithServiceRoleOpts(opts)
+  return builGetUserSuccessStub(opts.userExternalId, fixtureOpts)
+}
+
+function getUsersSuccess () {
+  const path = '/v1/api/users'
+  return stubBuilder('GET', path, 200, {
+    query: {
+      ids: ''
+    },
+    response: userFixtures.validUsersResponse()
+  })
+}
+
+function getUserSuccessWithServiceRole (opts) {
+  const fixtureOpts = {
+    external_id: opts.userExternalId,
+    service_roles: [opts.serviceRole]
+  }
+  return builGetUserSuccessStub(opts.userExternalId, fixtureOpts)
+}
+
+function getUserWithNoPermissions (userExternalId, gatewayAccountIds) {
+  return getUserSuccess({ userExternalId, gatewayAccountIds, goLiveStage: 'NOT_STARTED', role: { permissions: [] } })
+}
+
+function postUserAuthenticateSuccess (userExternalId, username, password) {
+  const fixtureOpts = {
+    external_id: userExternalId,
+    username: username,
+    password: password
+  }
+  const path = '/v1/api/users/authenticate'
+  return stubBuilder('POST', path, 200, {
+    request: userFixtures.validAuthenticateRequest(fixtureOpts),
+    response: userFixtures.validUserResponse(fixtureOpts)
+  })
+}
+
+function postUserAuthenticateInvalidPassword (username, password) {
+  const fixtureOpts = {
+    username: username,
+    password: password
+  }
+  const path = '/v1/api/users/authenticate'
+  return stubBuilder('POST', path, 401, {
+    request: userFixtures.validAuthenticateRequest(fixtureOpts),
+    response: userFixtures.invalidPasswordAuthenticateResponse()
+  })
+}
+
+function postSecondFactorSuccess (userExternalId) {
+  const path = `/v1/api/users/${userExternalId}/second-factor`
+  return stubBuilder('POST', path, 200)
+}
+
+function getServiceUsersSuccess (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}/users`
+  const fixtureOpts = opts.users.map(buildUserWithServiceRoleOpts)
+  return stubBuilder('GET', path, 200, {
+    response: userFixtures.validUsersResponse(fixtureOpts)
+  })
+}
+
+function putUpdateServiceRoleSuccess (opts) {
+  const path = `/v1/api/users/${opts.userExternalId}/services/${opts.serviceExternalId}`
+  return stubBuilder('PUT', path, 200, {
+    request: userFixtures.validUpdateServiceRoleRequest(opts.role),
     response: userFixtures.validUserResponse({
+      role: opts.role,
       external_id: opts.userExternalId,
-      service_roles: [opts.serviceRole]
+      serviceExternalId: opts.serviceExternalId
     })
   })
 }
 
-const getUserWithNoPermissions = function (userExternalId, gatewayAccountIds) {
-  return getUserSuccess({ userExternalId, gatewayAccountIds, goLiveStage: 'NOT_STARTED', role: { permissions: [] } })
-}
-
-const postUserAuthenticateSuccess = function (userExternalId, username, password) {
-  return {
-    name: 'postUserAuthenticateSuccess',
-    opts: {
-      external_id: userExternalId,
-      username: username,
-      password: password
-    }
+function postAssignServiceRoleSuccess (opts) {
+  const fixtureOpts = {
+    external_id: opts.userExternalId,
+    service_external_id: opts.serviceExternalId,
+    role_name: 'admin'
   }
-}
-
-const postUserAuthenticateInvalidPassword = function (username, password) {
-  return {
-    name: 'postUserAuthenticateInvalidPassword',
-    opts: {
-      username: username,
-      password: password
-    }
-  }
-}
-
-const postSecondFactorSuccess = function (userExternalId) {
-  return {
-    name: 'postSecondFactorSuccess',
-    opts:
-    {
-      external_id: userExternalId
-    }
-  }
-}
-
-const getServiceUsersSuccess = function (opts) {
-  return {
-    name: 'getServiceUsersSuccess',
-    opts: {
-      serviceExternalId: opts.serviceExternalId,
-      users: opts.users
-    }
-  }
-}
-
-const putUpdateServiceRoleSuccess = function (opts) {
-  return {
-    name: 'putUpdateServiceRoleSuccess',
-    opts: {
-      role: opts.role,
-      external_id: opts.userExternalId,
-      serviceExternalId: opts.serviceExternalId
-    }
-  }
-}
-
-const postAssignServiceRoleSuccess = function (opts) {
-  return {
-    name: 'postAssignServiceRoleSuccess',
-    opts: {
-      external_id: opts.userExternalId,
-      service_external_id: opts.serviceExternalId,
-      role_name: 'admin',
-      verifyCalledTimes: 1
-    }
-  }
+  const path = `/v1/api/users/${opts.userExternalId}/services`
+  return stubBuilder('POST', path, 200, {
+    request: userFixtures.validAssignServiceRoleRequest(fixtureOpts),
+    response: userFixtures.validUserResponse(fixtureOpts),
+    verifyCalledTimes: opts.verifyCalledTimes
+  })
 }
 
 /**
@@ -136,19 +123,50 @@ const postAssignServiceRoleSuccess = function (opts) {
  * @param {*} firstResponseOpts the user options for the first response
  * @param {*} secondResponseOpts  the user options for the second response
  */
-const getUserSuccessRespondDifferentlySecondTime = function (userExternalId, firstResponseOpts, secondResponseOpts) {
+function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstResponseOpts, secondResponseOpts) {
+  const aValidUserResponse = userFixtures.validUserResponse({
+    external_id: userExternalId,
+    service_roles: [buildServiceRoleOpts(firstResponseOpts)]
+  })
+  const aSecondValidUserResponse = userFixtures.validUserResponse({
+    external_id: userExternalId,
+    service_roles: [buildServiceRoleOpts(secondResponseOpts)]
+  })
+
   return {
-    name: 'getUserSuccessRespondDifferentlySecondTime',
-    opts: {
-      firstResponseOpts: {
-        external_id: userExternalId,
-        service_roles: [buildServiceRoleOpts(firstResponseOpts)]
+    predicates: [{
+      equals: {
+        method: 'GET',
+        path: '/v1/api/users/' + aValidUserResponse.external_id,
+        headers: {
+          'Accept': 'application/json'
+        }
+      }
+    }],
+    responses: [{
+      is: {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: aValidUserResponse
       },
-      secondResponseOpts: {
-        external_id: userExternalId,
-        service_roles: [buildServiceRoleOpts(secondResponseOpts)]
+      _behaviors: {
+        repeat: 1
+      }
+    }, {
+      is: {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: aSecondValidUserResponse
+      },
+      _behaviors: {
+        repeat: 1
       }
     }
+    ]
   }
 }
 
@@ -179,6 +197,17 @@ function buildServiceRoleOpts (opts) {
   }
 
   return serviceRole
+}
+
+function buildUserWithServiceRoleOpts (opts) {
+  const serviceRole = buildServiceRoleOpts(opts)
+  return {
+    external_id: opts.userExternalId,
+    service_roles: [serviceRole],
+    username: opts.email,
+    email: opts.email,
+    telephone_number: opts.telephoneNumber
+  }
 }
 
 module.exports = {
