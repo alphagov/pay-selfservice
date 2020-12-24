@@ -72,9 +72,6 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
     })
   })
 
-  cy.log('DATA ' + JSON.stringify(data))
-  cy.log('RESPONSES ' + JSON.stringify(data))
-
   return {
     predicates: [{
       equals: {

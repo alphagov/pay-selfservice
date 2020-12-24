@@ -15,7 +15,6 @@ module.exports = async function getStripeAccount (req, res, next) {
     res.locals.stripeAccount = stripeAccountResponse
     next()
   } catch (err) {
-    console.log('error')
     renderErrorView(req, res)
   }
 }
