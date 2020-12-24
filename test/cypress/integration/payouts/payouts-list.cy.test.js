@@ -32,7 +32,7 @@ describe('Payout list page', () => {
     cy.get('#pagination').should('not.exist')
   })
 
-  it('pagination component should correclty link for a large set', () => {
+  it('pagination component should correctly link for a large set', () => {
     const payouts = [
       { gatewayAccountId: GATEWAY_ACCOUNT_ID, paidOutDate: '2019-01-28T08:00:00.000000Z' },
       { gatewayAccountId: GATEWAY_ACCOUNT_ID, paidOutDate: '2019-01-28T08:00:00.000000Z' }

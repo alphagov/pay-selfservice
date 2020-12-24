@@ -1,28 +1,33 @@
-const getGatewayAccountStripeSetupSuccess = function (opts) {
-  let stubOptions = {
+'use strict'
+
+const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
+const { stubBuilder } = require('./stub-builder')
+
+function getGatewayAccountStripeSetupSuccess (opts) {
+  let fixtureOpts = {
     gateway_account_id: opts.gatewayAccountId
   }
 
   if (opts.responsiblePerson !== undefined) {
-    stubOptions.responsible_person = opts.responsiblePerson
+    fixtureOpts.responsible_person = opts.responsiblePerson
   }
   if (opts.bankAccount !== undefined) {
-    stubOptions.bank_account = opts.bankAccount
+    fixtureOpts.bank_account = opts.bankAccount
   }
   if (opts.vatNumber !== undefined) {
-    stubOptions.vat_number = opts.vatNumber
+    fixtureOpts.vat_number = opts.vatNumber
   }
   if (opts.companyNumber !== undefined) {
-    stubOptions.company_number = opts.companyNumber
+    fixtureOpts.company_number = opts.companyNumber
   }
 
-  return {
-    name: 'getGatewayAccountStripeSetupSuccess',
-    opts: stubOptions
-  }
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`
+  return stubBuilder('GET', path, 200, {
+    response: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(fixtureOpts)
+  })
 }
 
-const getGatewayAccountStripeSetupFlagForMultipleCalls = function (opts) {
+function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
   let data
 
   if (opts.companyNumber) {
@@ -54,12 +59,30 @@ const getGatewayAccountStripeSetupFlagForMultipleCalls = function (opts) {
     ))
   }
 
+  const responses = []
+  data.forEach(item => {
+    responses.push({
+      is: {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(item)
+      }
+    })
+  })
+
   return {
-    name: 'getGatewayAccountStripeSetupFlagChanged',
-    opts: {
-      gateway_account_id: opts.gatewayAccountId,
-      data: data
-    }
+    predicates: [{
+      equals: {
+        method: 'GET',
+        path: `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`,
+        headers: {
+          'Accept': 'application/json'
+        }
+      }
+    }],
+    responses
   }
 }
 

@@ -1,3 +1,8 @@
+'use strict'
+
+const serviceFixtures = require('../../fixtures/service.fixtures')
+const { stubBuilder } = require('./stub-builder')
+
 function postCreateServiceSuccess (opts) {
   const serviceName = {
     en: opts.serviceName.en
@@ -6,78 +11,78 @@ function postCreateServiceSuccess (opts) {
     serviceName.cy = opts.serviceName.cy
   }
 
-  return {
-    name: 'postCreateServiceSuccess',
-    opts: {
-      gateway_account_ids: [opts.gatewayAccountId],
-      service_name: serviceName,
-      external_id: opts.serviceExternalId,
-      verifyCalledTimes: 1
-    }
+  const fixtureOpts = {
+    gateway_account_ids: [opts.gatewayAccountId],
+    service_name: serviceName,
+    external_id: opts.serviceExternalId
   }
+  const path = '/v1/api/services'
+  return stubBuilder('POST', path, 200, {
+    request: serviceFixtures.validCreateServiceRequest(fixtureOpts),
+    response: serviceFixtures.validServiceResponse(fixtureOpts),
+    verifyCalledTimes: opts.verifyCalledTimes
+  })
 }
 
-const patchUpdateServiceNameSuccess = function (opts) {
-  return {
-    name: 'patchUpdateServiceNameSuccess',
-    opts: {
-      external_id: opts.serviceExternalId,
-      serviceName: {
-        en: opts.serviceName.en,
-        cy: opts.serviceName.cy || ''
-      },
-      verifyCalledTimes: 1
-    }
-  }
+function patchUpdateServiceNameSuccess (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: serviceFixtures.validUpdateServiceNameRequest({
+      en: opts.serviceName.en,
+      cy: opts.serviceName.cy || ''
+    }),
+    response: serviceFixtures.validServiceResponse({
+      external_id: opts.serviceExternalId
+    }),
+    verifyCalledTimes: opts.verifyCalledTimes
+  })
 }
-const patchUpdateServiceGoLiveStageSuccess = function (opts) {
-  return {
-    name: 'patchUpdateServiceGoLiveStageSuccess',
-    opts: {
+function patchUpdateServiceGoLiveStageSuccess (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.currentGoLiveStage),
+    response: serviceFixtures.validServiceResponse({
+      external_id: opts.serviceExternalId,
+      current_go_live_stage: opts.currentGoLiveStage,
+      gateway_account_ids: [opts.gatewayAccountId]
+    })
+  })
+}
+
+function patchUpdateMerchantDetailsSuccess (opts) {
+  const merchantDetails = {
+    name: opts.organisationName
+  }
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: serviceFixtures.validUpdateMerchantDetailsRequest(merchantDetails),
+    response: serviceFixtures.validServiceResponse({
       external_id: opts.serviceExternalId,
       gateway_account_ids: [opts.gatewayAccountId],
       current_go_live_stage: opts.currentGoLiveStage,
-      path: 'current_go_live_stage',
-      value: opts.currentGoLiveStage
-    }
-  }
+      merchant_details: merchantDetails
+    })
+  })
 }
 
-const patchUpdateMerchantDetailsSuccess = function (opts) {
-  return {
-    name: 'patchUpdateMerchantDetailsSuccess',
-    opts: {
-      external_id: opts.serviceExternalId,
-      gateway_account_ids: [opts.gatewayAccountId],
-      current_go_live_stage: opts.currentGoLiveStage,
-      merchant_details: {
-        name: opts.organisationName
-      }
-    }
-  }
-}
-
-const patchUpdateServiceSuccessCatchAll = function (opts) {
-  return {
-    name: 'patchUpdateServiceSuccessCatchAll',
-    opts: {
+function patchUpdateServiceSuccessCatchAll (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    response: serviceFixtures.validServiceResponse({
       external_id: opts.serviceExternalId,
       current_go_live_stage: opts.currentGoLiveStage
-    }
-  }
+    })
+  })
 }
 
-const patchGoLiveStageFailure = (opts) => {
-  return {
-    name: 'patchGoLiveStageFailure',
-    opts: {
-      external_id: opts.serviceExternalId,
-      gateway_account_ids: [opts.gatewayAccountId],
-      current_go_live_stage: opts.currentGoLiveStage,
+function patchGoLiveStageFailure (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 404, {
+    request: serviceFixtures.validUpdateServiceRequest({
       path: 'current_go_live_stage',
       value: opts.currentGoLiveStage
-    }
-  }
+    })
+  })
 }
 
 module.exports = {

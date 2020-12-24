@@ -10,7 +10,6 @@
 const request = require('request-promise-native')
 
 const cookieMonster = require('./cookie-monster')
-const stubs = require('./stubs')
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
@@ -38,19 +37,7 @@ module.exports = (on, config) => {
      * Note: this task can only be called once per test, so all stubs for a test must be set up in
      * the same call.
      */
-    setupStubs (stubSpecs) {
-      const stubsArray = stubSpecs.map(spec => {
-        // TODO: this handles both the case where we are given a "spec" which describes how to
-        // construct a stub from the `stubs.js` file and when we are given an already constructed
-        // stub. This is while we switch to constructing stubs directly in the Cypress test code.
-        if (spec.hasOwnProperty('name') && spec.hasOwnProperty('opts')) {
-          // TODO: We get the first element because we are returning a single element array from the
-          // stubs file for no good reason. There's no point in fixing this as we're about to remove
-          // it.
-          return stubs[spec.name](spec.opts)[0]
-        }
-        return spec
-      })
+    setupStubs (stubs) {
       return request({
         method: 'POST',
         url: mountebankImpostersUrl,
@@ -58,7 +45,7 @@ module.exports = (on, config) => {
         body: {
           port: config.env.MOUNTEBANK_IMPOSTERS_PORT,
           protocol: 'http',
-          stubs: stubsArray
+          stubs
         }
       })
     },

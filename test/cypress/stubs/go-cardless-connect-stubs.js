@@ -1,11 +1,20 @@
 'use strict'
 
-const exchangeGoCardlessAccessCodeAccountAlreadyConnected = function () {
-  return { name: 'exchangeGoCardlessAccessCodeAccountAlreadyConnected', opts: {} }
+const goCardlessConnectFixtures = require('../../fixtures/go-cardless-connect.fixtures')
+const { stubBuilder } = require('./stub-builder')
+
+function exchangeGoCardlessAccessCodeAccountAlreadyConnected () {
+  const path = '/v1/api/gocardless/partnerapp/tokens'
+  return stubBuilder('POST', path, 400, {
+    response: goCardlessConnectFixtures.exchangeAccessTokenAccountAlreadyConnectedResponse()
+  })
 }
 
-const redirectToGoCardlessConnectFailure = function () {
-  return { name: 'redirectToGoCardlessConnectFailure', opts: {} }
+function redirectToGoCardlessConnectFailure () {
+  const path = '/oauth/authorize'
+  return stubBuilder('GET', path, 500, {
+    responseHeaders: {}
+  })
 }
 
 module.exports = {

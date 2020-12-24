@@ -40,7 +40,6 @@ function processPayload (req, res, getPayload) {
       response(req, res, 'oauth/gocardless-complete')
     })
     .catch(err => {
-      console.log(err)
       if (err.errorIdentifier === GO_CARDLESS_ACCOUNT_ALREADY_LINKED_TO_ANOTHER_ACCOUNT) {
         renderErrorView(req, res, 'This GoCardless account is already connected to a GOV.UK Pay account. You’ll need to use a different account.', 400)
       } else {

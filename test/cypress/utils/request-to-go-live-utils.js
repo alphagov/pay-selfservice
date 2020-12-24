@@ -10,7 +10,7 @@ const variables = {
   serviceExternalId: 'afe452323dd04d1898672bfaba25e3a6'
 }
 
-const buildServiceRoleForGoLiveStage = (goLiveStage) => {
+function buildServiceRoleForGoLiveStage (goLiveStage) {
   return {
     service: {
       external_id: variables.serviceExternalId,
@@ -20,7 +20,7 @@ const buildServiceRoleForGoLiveStage = (goLiveStage) => {
   }
 }
 
-const buildServiceRoleWithMerchantDetails = (merchantDetails, goLiveStage) => {
+function buildServiceRoleWithMerchantDetails (merchantDetails, goLiveStage) {
   return {
     service: {
       external_id: variables.serviceExternalId,
@@ -31,21 +31,21 @@ const buildServiceRoleWithMerchantDetails = (merchantDetails, goLiveStage) => {
   }
 }
 
-const getUserAndGatewayAccountStubs = (serviceRole) => {
+function getUserAndGatewayAccountStubs (serviceRole) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
     gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId: variables.gatewayAccountId })
   ]
 }
 
-const getUserAndGatewayAccountsStubs = (serviceRole) => {
+function getUserAndGatewayAccountsStubs (serviceRole) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
     gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: variables.gatewayAccountId })
   ]
 }
 
-const patchUpdateGoLiveStageSuccessStub = (currentGoLiveStage) => {
+function patchUpdateGoLiveStageSuccessStub (currentGoLiveStage) {
   return serviceStubs.patchUpdateServiceGoLiveStageSuccess({
     serviceExternalId: variables.serviceExternalId,
     gatewayAccountId: variables.gatewayAccountId,
@@ -53,7 +53,7 @@ const patchUpdateGoLiveStageSuccessStub = (currentGoLiveStage) => {
   })
 }
 
-const patchUpdateGoLiveStageErrorStub = (currentGoLiveStage) => {
+function patchUpdateGoLiveStageErrorStub (currentGoLiveStage) {
   return serviceStubs.patchGoLiveStageFailure({
     serviceExternalId: variables.serviceExternalId,
     gatewayAccountId: variables.gatewayAccountId,
@@ -61,18 +61,18 @@ const patchUpdateGoLiveStageErrorStub = (currentGoLiveStage) => {
   })
 }
 
-const patchUpdateServiceSuccessCatchAllStub = (currentGoLiveStage) => {
+function patchUpdateServiceSuccessCatchAllStub (currentGoLiveStage) {
   return serviceStubs.patchUpdateServiceSuccessCatchAll({
     serviceExternalId: variables.serviceExternalId,
     currentGoLiveStage: currentGoLiveStage
   })
 }
 
-const setupGetUserAndGatewayAccountStubs = (serviceRole) => {
+function setupGetUserAndGatewayAccountStubs (serviceRole) {
   cy.task('setupStubs', getUserAndGatewayAccountStubs(serviceRole))
 }
 
-const setupGetUserAndGatewayAccountsStubs = (serviceRole) => {
+function setupGetUserAndGatewayAccountsStubs (serviceRole) {
   cy.task('setupStubs', getUserAndGatewayAccountsStubs(serviceRole))
 }
 

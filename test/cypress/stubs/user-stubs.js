@@ -137,7 +137,7 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
     predicates: [{
       equals: {
         method: 'GET',
-        path: '/v1/api/users/' + aValidUserResponse.external_id,
+        path: `/v1/api/users/${userExternalId}`,
         headers: {
           'Accept': 'application/json'
         }
@@ -181,7 +181,7 @@ function buildServiceRoleOpts (opts) {
     serviceRole.service.external_id = opts.serviceExternalId
   }
   if (opts.serviceName) {
-    serviceRole.service.name = opts.serviceName
+    serviceRole.service.name = opts.serviceName.en || opts.serviceName
     serviceRole.service.service_name = opts.serviceName
   }
   if (opts.goLiveStage) {
