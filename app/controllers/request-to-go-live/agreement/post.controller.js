@@ -54,6 +54,7 @@ const createZendeskMessage = opts => ` Service name: ${opts.serviceName}
  IP address: ${opts.ipAddress}
  Email address: ${opts.email}
  Time: ${opts.timestamp}
+ Service created at: ${opts.serviceCreated}
 `
 
 module.exports = (req, res) => {
@@ -72,7 +73,8 @@ module.exports = (req, res) => {
           psp: req.service.currentGoLiveStage,
           ipAddress: ipAddress || '',
           email: agreement.email,
-          timestamp: agreement.agreement_time
+          timestamp: agreement.agreement_time,
+          serviceCreated: req.service.created_date || '(service was created before we captured this date)'
         }
         const zendeskOpts = {
           correlationId: req.correlationId,
