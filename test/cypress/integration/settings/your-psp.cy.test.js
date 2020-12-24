@@ -24,17 +24,16 @@ describe('Your PSP settings page', () => {
   }
   const testInvalidFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c81',
-    issuer: '5bd9e0e4444dce153428c941',
+    issuer: '5bd9e0e4444dce153428c941', // pragma: allowlist secret
     jwt_mac_key: 'ffffffff-aaaa-1111-1111-52805d5cd9e1'
   }
   const testFailureFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c82',
-    issuer: '5bd9e0e4444dce153428c942',
+    issuer: '5bd9e0e4444dce153428c942', // pragma: allowlist secret
     jwt_mac_key: 'ffffffff-ffff-ffff-ffff-ffffffffffff'
   }
 
   function setupYourPspStubs (opts = {}) {
-    let stubs = []
     let user
     const role = {
       permissions: [
@@ -65,8 +64,6 @@ describe('Your PSP settings page', () => {
       notificationCredentials: opts.notificationCredentials
     })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
-    const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentials({ gatewayAccountId, testCredentials })
-    const patchIntegrationVersion3ds = gatewayAccountStubs.patchIntegrationVersion3ds({ integrationVersion3ds: opts.integrationVersion3ds })
     const postCheckWorldpay3dsFlexCredentialsReturnsValid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
       gatewayAccountId: gatewayAccountId,
       shouldReturnValid: true
@@ -81,9 +78,14 @@ describe('Your PSP settings page', () => {
       issuer: testFailureFlexCredentials.issuer,
       jwt_mac_key: testFailureFlexCredentials.jwt_mac_key
     })
-    stubs.push(user, gatewayAccount, card, patchUpdateCredentials, patchIntegrationVersion3ds,
-      postCheckWorldpay3dsFlexCredentialsReturnsValid, postCheckWorldpay3dsFlexCredentialsReturnsInvalid,
-      postCheckWorldpay3dsFlexCredentialsFails)
+    const stubs = [
+      user,
+      gatewayAccount,
+      card,
+      postCheckWorldpay3dsFlexCredentialsReturnsValid,
+      postCheckWorldpay3dsFlexCredentialsReturnsInvalid,
+      postCheckWorldpay3dsFlexCredentialsFails
+    ]
 
     cy.task('setupStubs', stubs)
   }

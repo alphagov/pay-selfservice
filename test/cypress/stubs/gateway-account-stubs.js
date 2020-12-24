@@ -1,10 +1,12 @@
 'use strict'
 
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
+const cardFixtures = require('../../fixtures/card.fixtures')
+const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function parseGatewayAccountOptions (opts) {
-  let stubOptions = { gateway_account_id: opts.gatewayAccountId }
+  const stubOptions = { gateway_account_id: opts.gatewayAccountId }
 
   if (opts.paymentProvider) {
     stubOptions.payment_provider = opts.paymentProvider
@@ -57,196 +59,135 @@ function parseGatewayAccountOptions (opts) {
 }
 
 function getGatewayAccountSuccess (opts) {
-  const path = '/v1/frontend/accounts/' + opts.gatewayAccountId
+  const path = `/v1/frontend/accounts/${opts.gatewayAccountId}`
   const fixtureOpts = parseGatewayAccountOptions(opts)
   return stubBuilder('GET', path, 200, {
     response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)
   })
 }
 
-const getGatewayAccountByExternalIdSuccess = function (opts) {
-  const stubOptions = parseGatewayAccountOptions(opts)
-
-  return {
-    name: 'getGatewayAccountByExternalIdSuccess',
-    opts: stubOptions
-  }
+function getGatewayAccountByExternalIdSuccess (opts) {
+  const fixtureOpts = parseGatewayAccountOptions(opts)
+  const path = `/v1/api/accounts/external-id/${opts.gatewayAccountExternalId}`
+  return stubBuilder('GET', path, 200, {
+    response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)
+  })
 }
 
-const getGatewayAccountsSuccess = function (opts) {
-  return {
-    name: 'getGatewayAccountsSuccess',
-    opts: {
-      gateway_account_id: opts.gatewayAccountId,
-      type: opts.type,
-      payment_provider: opts.paymentProvider,
-      external_id: '42'
-    }
-  }
+function getGatewayAccountsSuccess (opts) {
+  const path = '/v1/frontend/accounts'
+  return stubBuilder('GET', path, 200, {
+    query: {
+      accountIds: opts.gatewayAccountId.toString()
+    },
+    response: gatewayAccountFixtures.validGatewayAccountsResponse({
+      accounts: [{
+        gateway_account_id: opts.gatewayAccountId,
+        type: opts.type,
+        payment_provider: opts.paymentProvider,
+        external_id: '42'
+      }]
+    })
+  })
 }
 
-const getAccountAuthSuccess = function (opts) {
-  return {
-    name: 'getAccountAuthSuccess',
-    opts: {
+function getAccountAuthSuccess (opts) {
+  const path = `/v1/frontend/auth/${opts.gatewayAccountId}`
+  return stubBuilder('GET', path, 200, {
+    response: gatewayAccountFixtures.validGatewayAccountTokensResponse({
       gateway_account_id: opts.gatewayAccountId
-    }
-  }
+    })
+  })
 }
 
-const getDirectDebitGatewayAccountSuccess = function (opts) {
-  return {
-    name: 'getDirectDebitGatewayAccountSuccess',
-    opts: {
+function getDirectDebitGatewayAccountSuccess (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}`
+  return stubBuilder('GET', path, 200, {
+    response: gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
       gateway_account_id: opts.gatewayAccountId,
       type: opts.type,
       payment_provider: opts.paymentProvider,
       is_connected: opts.isConnected
-    }
-  }
+    })
+  })
 }
 
-const postCreateGatewayAccountSuccess = function (opts) {
-  return {
-    name: 'postCreateGatewayAccountSuccess',
-    opts: {
-      service_name: opts.serviceName,
-      payment_provider: opts.paymentProvider,
-      type: opts.type,
-      gateway_account_id: opts.gatewayAccountId,
-      verifyCalledTimes: opts.verifyCalledTimes
-    }
+function postCreateGatewayAccountSuccess (opts) {
+  const fixtureOpts = {
+    service_name: opts.serviceName,
+    payment_provider: opts.paymentProvider,
+    type: opts.type,
+    gateway_account_id: opts.gatewayAccountId
   }
+
+  const path = '/v1/api/accounts'
+  return stubBuilder('POST', path, 200, {
+    request: gatewayAccountFixtures.validCreateGatewayAccountRequest(fixtureOpts),
+    response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts),
+    verifyCalledTimes: opts.verifyCalledTimes
+  })
 }
 
-const getAcceptedCardTypesSuccess = function (opts) {
-  return {
-    name: 'getAcceptedCardTypesSuccess',
-    opts: {
+function getAcceptedCardTypesSuccess (opts) {
+  const path = `/v1/frontend/accounts/${opts.gatewayAccountId}/card-types`
+  const response = opts.updated
+    ? cardFixtures.validUpdatedAcceptedCardTypesResponse()
+    : cardFixtures.validAcceptedCardTypesResponse({
       account_id: opts.gatewayAccountId,
       updated: opts.updated,
       maestro: opts.maestro || ''
-    }
+    })
+  return stubBuilder('GET', path, 200, { response: response })
+}
+
+function getCardTypesSuccess () {
+  const path = '/v1/api/card-types'
+  return stubBuilder('GET', path, 200, {
+    response: cardFixtures.validCardTypesResponse()
+  })
+}
+
+function patchConfirmationEmailToggleSuccess (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/email-notification`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(true)
+  })
+}
+
+function patchRefundEmailToggleSuccess (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/email-notification`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(true)
+  })
+}
+
+function patchAccountEmailCollectionModeSuccess (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest('MANDATORY')
+  })
+}
+
+function postCheckWorldpay3dsFlexCredentials (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
+  if (opts.shouldReturnValid) {
+    return stubBuilder('POST', path, 200, {
+      request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest().payload,
+      response: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse()
+    })
+  } else {
+    return stubBuilder('POST', path, 200, {
+      request: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsRequest().payload,
+      response: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsResponse()
+    })
   }
 }
 
-const getCardTypesSuccess = function () {
-  return {
-    name: 'getCardTypesSuccess',
-    opts: {}
-  }
-}
-
-const patchUpdate3DS = function (opts) {
-  return {
-    name: 'patchUpdate3DS',
-    opts: {
-      toggle_3ds: opts.toggle3ds
-    }
-  }
-}
-
-const patchIntegrationVersion3ds = function (opts) {
-  return {
-    name: 'patchIntegrationVersion3ds',
-    opts: {
-      integration_version_3ds: opts.integrationVersion3ds
-    }
-  }
-}
-
-const patchUpdateMotoMaskSecurityCode = function (opts) {
-  return {
-    name: 'patchUpdateMotoMaskSecurityCode',
-    opts: {
-      moto_mask_card_security_code_input: opts.motoMaskCardSecurityCode
-    }
-  }
-}
-
-const patchUpdateMotoMaskCardNumber = function (opts) {
-  return {
-    name: 'patchUpdateMotoMaskCardNumber',
-    opts: {
-      moto_mask_card_number_input: opts.motoMaskCardNumber
-    }
-  }
-}
-
-const patchConfirmationEmailToggleSuccess = function (opts) {
-  return {
-    name: 'patchConfirmationEmailToggleSuccess',
-    opts:
-      {
-        gateway_account_id: opts.gatewayAccountId,
-        enabled: true
-      }
-  }
-}
-const patchRefundEmailToggleSuccess = function (opts) {
-  return {
-    name: 'patchRefundEmailToggleSuccess',
-    opts: {
-      gateway_account_id: opts.gatewayAccountId,
-      enabled: true
-    }
-  }
-}
-
-const patchAccountEmailCollectionModeSuccess = function (opts) {
-  return {
-    name: 'patchAccountEmailCollectionModeSuccess',
-    opts: {
-      gateway_account_id: opts.gatewayAccountId,
-      collectionMode: 'MANDATORY'
-    }
-  }
-}
-
-const patchUpdateCredentials = function (opts) {
-  return {
-    name: 'patchUpdateCredentials',
-    opts: {
-      gateway_account_id: opts.gatewayAccountId,
-      merchant_id: opts.merchant_id,
-      username: opts.username,
-      password: opts.password
-    }
-  }
-}
-
-const patchUpdateFlexCredentials = function (opts) {
-  return {
-    name: 'patchUpdateFlexCredentials',
-    opts: {
-      gateway_account_id: opts.gatewayAccountId,
-      organisational_unit_id: opts.organisational_unit_id,
-      issuer: opts.issuer,
-      jwt_mac_key: opts.jwt_mac_key
-    }
-  }
-}
-
-const postCheckWorldpay3dsFlexCredentials = function (opts) {
-  return {
-    name: 'postCheckWorldpay3dsFlexCredentials',
-    opts: {
-      gateway_account_id: opts.gatewayAccountId,
-      shouldReturnValid: opts.shouldReturnValid
-    }
-  }
-}
-
-const postCheckWorldpay3dsFlexCredentialsFailure = function (opts) {
-  return {
-    name: 'postCheckWorldpay3dsFlexCredentialsFailure',
-    opts: {
-      gateway_account_id: opts.gatewayAccountId,
-      organisational_unit_id: opts.organisational_unit_id,
-      issuer: opts.issuer,
-      jwt_mac_key: opts.jwt_mac_key
-    }
-  }
+function postCheckWorldpay3dsFlexCredentialsFailure (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
+  return stubBuilder('POST', path, 500, {
+    request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest(opts).payload
+  })
 }
 
 module.exports = {
@@ -258,15 +199,9 @@ module.exports = {
   getDirectDebitGatewayAccountSuccess,
   postCreateGatewayAccountSuccess,
   getCardTypesSuccess,
-  patchUpdate3DS,
-  patchIntegrationVersion3ds,
   patchConfirmationEmailToggleSuccess,
   patchRefundEmailToggleSuccess,
   patchAccountEmailCollectionModeSuccess,
-  patchUpdateCredentials,
-  patchUpdateFlexCredentials,
-  patchUpdateMotoMaskCardNumber,
-  patchUpdateMotoMaskSecurityCode,
   postCheckWorldpay3dsFlexCredentials,
   postCheckWorldpay3dsFlexCredentialsFailure
 }

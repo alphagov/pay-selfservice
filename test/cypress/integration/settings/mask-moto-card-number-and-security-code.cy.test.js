@@ -32,10 +32,8 @@ describe('MOTO mask security section', () => {
 
     const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: opts.gateway, allowMoto: opts.allowMoto, motoMaskCardNumber: opts.motoMaskCardNumber, motoMaskSecurityCode: opts.motoMaskSecurityCode })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false, maestro: opts.maestro })
-    const patchUpdateMotoMaskCardNumber = gatewayAccountStubs.patchUpdateMotoMaskCardNumber({ motoMaskCardNumber: opts.motoMaskCardNumber })
-    const patchUpdateMotoMaskSecurityCode = gatewayAccountStubs.patchUpdateMotoMaskSecurityCode({ motoMaskCardSecurityCode: opts.motoMaskCardSecurityCode })
 
-    stubs.push(user, gatewayAccount, card, patchUpdateMotoMaskCardNumber, patchUpdateMotoMaskSecurityCode)
+    stubs.push(user, gatewayAccount, card)
 
     cy.task('setupStubs', stubs)
   }

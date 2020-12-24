@@ -33,9 +33,8 @@ describe('3DS settings page', () => {
     const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: opts.gateway, requires3ds: opts.requires3ds })
 
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false, maestro: opts.maestro })
-    const patchUpdate = gatewayAccountStubs.patchUpdate3DS({ toggle3ds: true })
 
-    stubs.push(user, gatewayAccount, card, patchUpdate)
+    stubs.push(user, gatewayAccount, card)
 
     cy.task('setupStubs', stubs)
   }
