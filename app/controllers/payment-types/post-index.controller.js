@@ -35,6 +35,6 @@ module.exports = async (req, res) => {
       formatAccountPathsFor(paths.paymentTypes.index, req.account && req.account.external_id)
     )
   } catch (error) {
-    return renderErrorView(req, res, error.message.message[0], error.errorCode)
+    return renderErrorView(req, res, 'Unable to update payment types. Please try again or contact support team.', error.errorCode)
   }
 }
