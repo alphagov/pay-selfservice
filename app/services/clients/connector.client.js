@@ -293,10 +293,9 @@ ConnectorClient.prototype = {
    */
   postAcceptedCardsForAccount: function (gatewayAccountId, payload, correlationId) {
     const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
-    const params = { gatewayAccountId, payload, correlationId }
 
     return baseClient.post(url, {
-      body: params,
+      body: payload,
       correlationId: correlationId,
       description: 'post accepted card types for account',
       service: SERVICE_NAME
