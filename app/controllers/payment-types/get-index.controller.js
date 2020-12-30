@@ -63,6 +63,6 @@ module.exports = async (req, res) => {
 
     response(req, res, 'payment-types/card-types', formatCardsForTemplate(allCards, acceptedCards, req.account.requires3ds))
   } catch (error) {
-    renderErrorView(req, res, error.message.message[0], error.errorCode)
+    renderErrorView(req, res, 'Unable to fetch payment types. Please try again or contact support team.', error.errorCode)
   }
 }
