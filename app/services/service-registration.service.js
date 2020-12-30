@@ -7,20 +7,20 @@ const getAdminUsersClient = require('./clients/adminusers.client')
 const ConnectorClient = require('./clients/connector.client').ConnectorClient
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
+const adminUsersClient = getAdminUsersClient()
+
 function submitRegistration (email, phoneNumber, password, correlationId) {
-  return getAdminUsersClient({ correlationId }).submitServiceRegistration(email, phoneNumber, password)
+  return adminUsersClient.submitServiceRegistration(email, phoneNumber, password, correlationId)
 }
 
 function submitServiceInviteOtpCode (code, otpCode, correlationId) {
-  return getAdminUsersClient({ correlationId }).verifyOtpForServiceInvite(code, otpCode)
+  return adminUsersClient.verifyOtpForServiceInvite(code, otpCode, correlationId)
 }
 
 async function createPopulatedService (inviteCode, correlationId) {
-  const adminusersClient = getAdminUsersClient({ correlationId })
-
   const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, correlationId)
-  const completeInviteResponse = await adminusersClient.completeInvite(inviteCode, [gatewayAccount.gateway_account_id])
-  const user = await adminusersClient.getUserByExternalId(completeInviteResponse.user_external_id)
+  const completeInviteResponse = await adminUsersClient.completeInvite(correlationId, inviteCode, [gatewayAccount.gateway_account_id])
+  const user = await adminUsersClient.getUserByExternalId(completeInviteResponse.user_external_id, correlationId)
 
   const logContext = {
     internal_user: user.internalUser
@@ -34,11 +34,11 @@ async function createPopulatedService (inviteCode, correlationId) {
 }
 
 function generateServiceInviteOtpCode (inviteCode, correlationId) {
-  return getAdminUsersClient({ correlationId }).generateInviteOtpCode(inviteCode)
+  return adminUsersClient.generateInviteOtpCode(inviteCode, null, null, correlationId)
 }
 
 function resendOtpCode (code, phoneNumber, correlationId) {
-  return getAdminUsersClient({ correlationId }).resendOtpCode(code, phoneNumber)
+  return adminUsersClient.resendOtpCode(code, phoneNumber, correlationId)
 }
 
 module.exports = {

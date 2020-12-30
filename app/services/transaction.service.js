@@ -63,7 +63,7 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
   logger.info('Completed file stream', logContext)
 }
 
-const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, chargeId) {
+const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, chargeId, correlationId) {
   try {
     const charge = await Ledger.transaction(chargeId, accountId)
     const transactionEvents = await Ledger.events(chargeId, accountId)
@@ -75,7 +75,7 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
       .uniq()
       .value()
 
-    const users = await userService.findMultipleByExternalIds(userIds)
+    const users = await userService.findMultipleByExternalIds(userIds, correlationId)
 
     return transactionView.buildPaymentView(charge, transactionEvents, users)
   } catch (error) {

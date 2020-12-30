@@ -21,7 +21,6 @@ const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
   const baseUrl = clientOptions.baseUrl || ADMINUSERS_URL
-  const correlationId = clientOptions.correlationId || ''
   const userResource = `/v1/api/users`
   const forgottenPasswordResource = `/v1/api/forgotten-passwords`
   const resetPasswordResource = `/v1/api/reset-password`
@@ -29,12 +28,13 @@ module.exports = function (clientOptions = {}) {
   const inviteResource = `/v1/api/invites`
 
   /**
-     * Get a User by external id
-     *
-     * @param {string} externalId
-     * @return {Promise<User>} A promise of a User
-     */
-  const getUserByExternalId = (externalId) => {
+   * Get a User by external id
+   *
+   * @param {string} externalId
+   * @param correlationId
+   * @return {Promise<User>} A promise of a User
+   */
+  const getUserByExternalId = (externalId, correlationId) => {
     return baseClient.get(
       {
         baseUrl,
@@ -50,12 +50,13 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     * Get a User by external id
-     *
-     * @param {string} externalId
-     * @return {Promise<User>} A promise of a User
-     */
-  const getUsersByExternalIds = (externalIds = []) => {
+   * Get a User by external id
+   *
+   * @return {Promise<User>} A promise of a User
+   * @param externalIds
+   * @param correlationId
+   */
+  const getUsersByExternalIds = (externalIds = [], correlationId) => {
     return baseClient.get(
       {
         baseUrl,
@@ -74,11 +75,12 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     * @param username
-     * @param password
-     * @returns {Promise<User>}
-     */
-  const authenticateUser = (username, password) => {
+   * @param username
+   * @param password
+   * @param correlationId
+   * @returns {Promise<User>}
+   */
+  const authenticateUser = (username, password, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -98,11 +100,12 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param externalId
-     * @returns {Promise}
-     */
-  const incrementSessionVersionForUser = (externalId) => {
+   *
+   * @param externalId
+   * @param correlationId
+   * @returns {Promise}
+   */
+  const incrementSessionVersionForUser = (externalId, correlationId) => {
     return baseClient.patch(
       {
         baseUrl,
@@ -122,11 +125,12 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param username
-     * @returns {Promise<ForgottenPassword>}
-     */
-  const createForgottenPassword = (username) => {
+   *
+   * @param username
+   * @param correlationId
+   * @returns {Promise<ForgottenPassword>}
+   */
+  const createForgottenPassword = (username, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -144,11 +148,12 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param code
-     * @returns {Promise<ForgottenPassword>}
-     */
-  const getForgottenPassword = (code) => {
+   *
+   * @param code
+   * @param correlationId
+   * @returns {Promise<ForgottenPassword>}
+   */
+  const getForgottenPassword = (code, correlationId) => {
     return baseClient.get(
       {
         baseUrl,
@@ -163,12 +168,13 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param token
-     * @param newPassword
-     * @returns {Promise}
-     */
-  const updatePasswordForUser = (token, newPassword) => {
+   *
+   * @param token
+   * @param newPassword
+   * @param correlationId
+   * @returns {Promise}
+   */
+  const updatePasswordForUser = (token, newPassword, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -187,11 +193,13 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param externalId
-     * @returns {Promise}
-     */
-  const sendSecondFactor = (externalId, provisional) => {
+   *
+   * @param externalId
+   * @param provisional
+   * @param correlationId
+   * @returns {Promise}
+   */
+  const sendSecondFactor = (externalId, provisional, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -207,12 +215,13 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param externalId
-     * @param code
-     * @returns {Promise}
-     */
-  const authenticateSecondFactor = (externalId, code) => {
+   *
+   * @param externalId
+   * @param code
+   * @param correlationId
+   * @returns {Promise}
+   */
+  const authenticateSecondFactor = (externalId, code, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -228,7 +237,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const getServiceUsers = (serviceExternalId) => {
+  const getServiceUsers = (serviceExternalId, correlationId) => {
     return baseClient.get(
       {
         baseUrl,
@@ -244,12 +253,13 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param userExternalId
-     * @param serviceExternalId
-     * @param roleName
-     */
-  const assignServiceRole = (userExternalId, serviceExternalId, roleName) => {
+   *
+   * @param userExternalId
+   * @param serviceExternalId
+   * @param roleName
+   * @param correlationId
+   */
+  const assignServiceRole = (userExternalId, serviceExternalId, roleName, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -269,13 +279,14 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param externalId
-     * @param serviceExternalId
-     * @param roleName
-     * @returns {Promise<User>}
-     */
-  const updateServiceRole = (externalId, serviceExternalId, roleName) => {
+   *
+   * @param externalId
+   * @param serviceExternalId
+   * @param roleName
+   * @param correlationId
+   * @returns {Promise<User>}
+   */
+  const updateServiceRole = (externalId, serviceExternalId, roleName, correlationId) => {
     return baseClient.put(
       {
         baseUrl,
@@ -294,14 +305,15 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param invitee
-     * @param senderId
-     * @param serviceExternalId
-     * @param roleName
-     * @returns {Promise}
-     */
-  const inviteUser = (invitee, senderId, serviceExternalId, roleName) => {
+   *
+   * @param invitee
+   * @param senderId
+   * @param serviceExternalId
+   * @param roleName
+   * @param correlationId
+   * @returns {Promise}
+   */
+  const inviteUser = (invitee, senderId, serviceExternalId, roleName, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -324,8 +336,9 @@ module.exports = function (clientOptions = {}) {
   /**
    * Get a invited users for a given service
    * @param serviceExternalId
+   * @param correlationId
    */
-  const getInvitedUsersList = (serviceExternalId) => {
+  const getInvitedUsersList = (serviceExternalId, correlationId) => {
     return baseClient.get(
       {
         baseUrl,
@@ -346,8 +359,9 @@ module.exports = function (clientOptions = {}) {
   /**
    * Get a valid invite or error if it's expired
    * @param inviteCode
+   * @param correlationId
    */
-  const getValidatedInvite = (inviteCode) => {
+  const getValidatedInvite = (inviteCode, correlationId) => {
     return baseClient.get(
       {
         baseUrl,
@@ -362,14 +376,15 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     * Generate OTP code for an invite
-     *
-     * @param inviteCode
-     * @param telephoneNumber
-     * @param password
-     * @returns {*|Constructor}
-     */
-  const generateInviteOtpCode = (inviteCode, telephoneNumber, password) => {
+   * Generate OTP code for an invite
+   *
+   * @param inviteCode
+   * @param telephoneNumber
+   * @param password
+   * @param correlationId
+   * @returns {*|Constructor}
+   */
+  const generateInviteOtpCode = (inviteCode, telephoneNumber, password, correlationId) => {
     let postData = {
       baseUrl,
       url: `${inviteResource}/${inviteCode}/otp/generate`,
@@ -393,13 +408,14 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     * Complete a service invite
-     *
-     * @param inviteCode
-     * @param gatewayAccountIds
-     * @returns {*|promise|Constructor}
-     */
-  const completeInvite = (inviteCode, gatewayAccountIds) => {
+   * Complete a service invite
+   *
+   * @param correlationId
+   * @param inviteCode
+   * @param gatewayAccountIds
+   * @returns {*|promise|Constructor}
+   */
+  const completeInvite = (correlationId, inviteCode, gatewayAccountIds) => {
     return baseClient.post(
       {
         baseUrl,
@@ -416,7 +432,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const verifyOtpAndCreateUser = (code, verificationCode) => {
+  const verifyOtpAndCreateUser = (code, verificationCode, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -434,7 +450,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const verifyOtpForServiceInvite = (inviteCode, verificationCode) => {
+  const verifyOtpForServiceInvite = (inviteCode, verificationCode, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -452,7 +468,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const resendOtpCode = (code, phoneNumber) => {
+  const resendOtpCode = (code, phoneNumber, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -471,13 +487,14 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     * Submit service registration details
-     *
-     * @param email
-     * @param phoneNumber
-     * @param password
-     */
-  const submitServiceRegistration = (email, phoneNumber, password) => {
+   * Submit service registration details
+   *
+   * @param email
+   * @param phoneNumber
+   * @param password
+   * @param correlationId
+   */
+  const submitServiceRegistration = (email, phoneNumber, password, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -496,7 +513,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const deleteUser = (serviceExternalId, removerExternalId, userExternalId) => {
+  const deleteUser = (serviceExternalId, removerExternalId, userExternalId, correlationId) => {
     let headers = {}
     headers[HEADER_USER_CONTEXT] = removerExternalId
 
@@ -521,13 +538,15 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     * Create a service
-     *
-     * @param serviceName
-     * @param gatewayAccountIds
-     * @returns {*|promise|Constructor}
-     */
-  const createService = (serviceName, serviceNameCy, gatewayAccountIds) => {
+   * Create a service
+   *
+   * @param serviceName
+   * @param serviceNameCy
+   * @param gatewayAccountIds
+   * @param correlationId
+   * @returns {*|promise|Constructor}
+   */
+  const createService = (serviceName, serviceNameCy, gatewayAccountIds, correlationId) => {
     let postBody = {
       baseUrl,
       url: `${serviceResource}`,
@@ -559,9 +578,10 @@ module.exports = function (clientOptions = {}) {
    *
    * @param serviceExternalId
    * @param body
+   * @param correlationId
    * @returns {*|Constructor|promise}
    */
-  const updateService = (serviceExternalId, body) => {
+  const updateService = (serviceExternalId, body, correlationId) => {
     return baseClient.patch({
       baseUrl,
       url: `${serviceResource}/${serviceExternalId}`,
@@ -576,13 +596,15 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     * Update service name
-     *
-     * @param serviceExternalId
-     * @param serviceName
-     * @returns {*|Constructor|promise}
-     */
-  const updateServiceName = (serviceExternalId, serviceName, serviceNameCy) => {
+   * Update service name
+   *
+   * @param serviceExternalId
+   * @param serviceName
+   * @param serviceNameCy
+   * @param correlationId
+   * @returns {*|Constructor|promise}
+   */
+  const updateServiceName = (serviceExternalId, serviceName, serviceNameCy, correlationId) => {
     return baseClient.patch(
       {
         baseUrl,
@@ -613,9 +635,10 @@ module.exports = function (clientOptions = {}) {
    *
    * @param serviceExternalId
    * @param collectBillingAddress
+   * @param correlationId
    * @returns {*|Constructor|promise}
    */
-  const updateCollectBillingAddress = (serviceExternalId, collectBillingAddress) => {
+  const updateCollectBillingAddress = (serviceExternalId, collectBillingAddress, correlationId) => {
     return baseClient.patch(
       {
         baseUrl,
@@ -636,13 +659,14 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     * Add gateway accounts to service
-     *
-     * @param serviceExternalId
-     * @param gatewayAccountIds {String[]} a list of (unassigned) gateway account ids to add to the service
-     * @returns {Promise<Service|Error>}
-     */
-  const addGatewayAccountsToService = (serviceExternalId, gatewayAccountIds) => {
+   * Add gateway accounts to service
+   *
+   * @param serviceExternalId
+   * @param gatewayAccountIds {String[]} a list of (unassigned) gateway account ids to add to the service
+   * @param correlationId
+   * @returns {Promise<Service|Error>}
+   */
+  const addGatewayAccountsToService = (serviceExternalId, gatewayAccountIds, correlationId) => {
     return baseClient.patch(
       {
         baseUrl,
@@ -663,12 +687,12 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param externalId
-     * @param code
-     * @returns {Promise}
-     */
-  const provisionNewOtpKey = (externalId) => {
+   *
+   * @param externalId
+   * @param correlationId
+   * @returns {Promise}
+   */
+  const provisionNewOtpKey = (externalId, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -684,13 +708,14 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param externalId
-     * @param code
-     * @param secondFactor {String} 'SMS' or 'APP'
-     * @returns {Promise}
-     */
-  const configureNewOtpKey = (externalId, code, secondFactor) => {
+   *
+   * @param externalId
+   * @param code
+   * @param secondFactor {String} 'SMS' or 'APP'
+   * @param correlationId
+   * @returns {Promise}
+   */
+  const configureNewOtpKey = (externalId, code, secondFactor, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -708,7 +733,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const updateCurrentGoLiveStage = (serviceExternalId, newStage) => {
+  const updateCurrentGoLiveStage = (serviceExternalId, newStage, correlationId) => {
     return baseClient.patch(
       {
         baseUrl,
@@ -728,7 +753,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const addStripeAgreementIpAddress = (serviceExternalId, ipAddress) => {
+  const addStripeAgreementIpAddress = (serviceExternalId, ipAddress, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -743,7 +768,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const addGovUkAgreementEmailAddress = (serviceExternalId, userExternalId) => {
+  const addGovUkAgreementEmailAddress = (serviceExternalId, userExternalId, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
@@ -759,12 +784,13 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-     *
-     * @param externalId
-     * @param newPhoneNumber
-     * @returns {Promise}
-     */
-  const updatePhoneNumberForUser = (externalId, newPhoneNumber) => {
+   *
+   * @param externalId
+   * @param newPhoneNumber
+   * @param correlationId
+   * @returns {Promise}
+   */
+  const updatePhoneNumberForUser = (externalId, newPhoneNumber, correlationId) => {
     return baseClient.patch(
       {
         baseUrl,

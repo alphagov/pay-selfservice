@@ -125,7 +125,7 @@ module.exports = {
       }
     }
 
-    return userService.findByExternalId(externalUserId)
+    return userService.findByExternalId(externalUserId, req.correlationId)
       .then(onSuccess)
       .catch(() => renderErrorView(req, res, 'Unable to retrieve user'))
   },
@@ -188,7 +188,7 @@ module.exports = {
       })
     }
 
-    return userService.findByExternalId(req.user.externalId)
+    return userService.findByExternalId(req.user.externalId, req.correlationId)
       .then(onSuccess)
       .catch(() => renderErrorView(req, res, 'Unable to retrieve user'))
   }

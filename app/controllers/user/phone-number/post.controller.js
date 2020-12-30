@@ -18,7 +18,7 @@ module.exports = async function updatePhoneNumber (req, res) {
   }
 
   try {
-    await userService.updatePhoneNumber(req.user.externalId, telephoneNumber)
+    await userService.updatePhoneNumber(req.user.externalId, telephoneNumber, req.correlationId)
 
     req.flash('generic', 'Phone number updated')
     return res.redirect(paths.user.profile.index)

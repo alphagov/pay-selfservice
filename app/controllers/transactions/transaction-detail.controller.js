@@ -12,7 +12,7 @@ module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
 
-  ledgerFindWithEvents(accountId, chargeId)
+  ledgerFindWithEvents(accountId, chargeId, req.correlationId)
     .then(data => {
       data.indexFilters = req.session.filters
       if (req.session.backLink) {

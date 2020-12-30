@@ -11,6 +11,7 @@ const { isADirectDebitAccount } = directDebitConnectorClient
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
+const adminUsersClient = getAdminUsersClient()
 
 async function getGatewayAccounts (gatewayAccountIds, correlationId) {
   const cardGatewayAccountIds = gatewayAccountIds.filter(id => !isADirectDebitAccount(id))
@@ -28,7 +29,7 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
   if (!serviceExternalId) {
     return Promise.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
   }
-  return getAdminUsersClient({ correlationId }).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
+  return adminUsersClient.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
     .then(result => {
       // Update gateway account service names in connector
       const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
@@ -46,7 +47,7 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
 }
 
 function updateService (serviceExternalId, serviceUpdateRequest, correlationId) {
-  return getAdminUsersClient({ correlationId }).updateService(serviceExternalId, serviceUpdateRequest)
+  return adminUsersClient.updateService(serviceExternalId, serviceUpdateRequest, correlationId)
 }
 
 async function createService (serviceName, serviceNameCy, user, correlationId) {
@@ -54,7 +55,7 @@ async function createService (serviceName, serviceNameCy, user, correlationId) {
   if (!serviceNameCy) serviceNameCy = ''
 
   const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
-  const service = await getAdminUsersClient({ correlationId }).createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id])
+  const service = await adminUsersClient.createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id], correlationId)
 
   const logContext = {
     internal_user: user.internalUser
@@ -68,19 +69,19 @@ async function createService (serviceName, serviceNameCy, user, correlationId) {
 }
 
 function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, correlationId) {
-  return getAdminUsersClient({ correlationId }).updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
+  return adminUsersClient.updateCollectBillingAddress(serviceExternalId, collectBillingAddress, correlationId)
 }
 
 function updateCurrentGoLiveStage (serviceExternalId, newStage, correlationId) {
-  return getAdminUsersClient({ correlationId }).updateCurrentGoLiveStage(serviceExternalId, newStage)
+  return adminUsersClient.updateCurrentGoLiveStage(serviceExternalId, newStage, correlationId)
 }
 
 function addStripeAgreementIpAddress (serviceExternalId, ipAddress, correlationId) {
-  return getAdminUsersClient({ correlationId }).addStripeAgreementIpAddress(serviceExternalId, ipAddress)
+  return adminUsersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress, correlationId)
 }
 
 function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId, correlationId) {
-  return getAdminUsersClient({ correlationId }).addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
+  return adminUsersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId, correlationId)
 }
 
 module.exports = {

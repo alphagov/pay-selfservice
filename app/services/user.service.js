@@ -1,6 +1,7 @@
 'use strict'
 
 const getAdminUsersClient = require('./clients/adminusers.client')
+const adminUsersClient = getAdminUsersClient()
 
 module.exports = {
 
@@ -16,7 +17,7 @@ module.exports = {
         reject(new Error('Failed to authenticate'))
       })
     }
-    return getAdminUsersClient({ correlationId: correlationId }).authenticateUser(username, submittedPassword)
+    return adminUsersClient.authenticateUser(username, submittedPassword, correlationId)
   },
 
   /**
@@ -32,7 +33,7 @@ module.exports = {
       })
     }
 
-    return getAdminUsersClient({ correlationId: correlationId }).authenticateSecondFactor(externalId, code)
+    return adminUsersClient.authenticateSecondFactor(externalId, code, correlationId)
   },
 
   /**
@@ -41,16 +42,16 @@ module.exports = {
    * @returns {Promise<User>}
    */
   findByExternalId: (externalId, correlationId) => {
-    return getAdminUsersClient({ correlationId: correlationId }).getUserByExternalId(externalId)
+    return adminUsersClient.getUserByExternalId(externalId, correlationId)
   },
 
   /**
-   * @param {Array} externalId
+   * @param {Array} externalIds
    * @param {String} correlationId
    * @returns {Promise<User>}
    */
   findMultipleByExternalIds: function (externalIds, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).getUsersByExternalIds(externalIds)
+    return adminUsersClient.getUsersByExternalIds(externalIds, correlationId)
   },
 
   /**
@@ -59,7 +60,7 @@ module.exports = {
    * @returns {Promise}
    */
   sendOTP: function (user, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).sendSecondFactor(user.externalId, false)
+    return adminUsersClient.sendSecondFactor(user.externalId, false, correlationId)
   },
 
   /**
@@ -67,27 +68,26 @@ module.exports = {
    * @param correlationId
    * @returns {Promise}
    */
-  sendProvisonalOTP: function (user, correlationId) {
-    return getAdminUsersClient({
-      correlationId: correlationId
-    }).sendSecondFactor(user.externalId, true)
+  sendProvisionalOTP: function (user, correlationId) {
+    return adminUsersClient.sendSecondFactor(user.externalId, true, correlationId)
   },
 
   /**
-   * @param user
+   * @param username
    * @param correlationId
    * @returns {Promise}
    */
   sendPasswordResetToken: function (username, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).createForgottenPassword(username)
+    return adminUsersClient.createForgottenPassword(username, correlationId)
   },
 
   /**
    * @param token
+   * @param correlationId
    * @returns {Promise}
    */
-  findByResetToken: function (token) {
-    return getAdminUsersClient().getForgottenPassword(token)
+  findByResetToken: function (token, correlationId) {
+    return adminUsersClient.getForgottenPassword(token, correlationId)
   },
 
   /**
@@ -96,7 +96,7 @@ module.exports = {
    * @returns {Promise}
    */
   logOut: function (user, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).incrementSessionVersionForUser(user.externalId)
+    return adminUsersClient.incrementSessionVersionForUser(user.externalId, correlationId)
   },
 
   /**
@@ -105,16 +105,17 @@ module.exports = {
    * @returns {Promise}
    */
   getServiceUsers: function (externalServiceId, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).getServiceUsers(externalServiceId)
+    return adminUsersClient.getServiceUsers(externalServiceId, correlationId)
   },
 
   /**
    * @param token
    * @param newPassword
+   * @param correlationId
    * @returns {Promise}
    */
-  updatePassword: function updatePassword (token, newPassword) {
-    return getAdminUsersClient().updatePasswordForUser(token, newPassword)
+  updatePassword: function updatePassword (token, newPassword, correlationId) {
+    return adminUsersClient.updatePasswordForUser(token, newPassword, correlationId)
   },
 
   /**
@@ -125,7 +126,7 @@ module.exports = {
    * @returns {Promise.<User>}
    */
   updateServiceRole: function (externalId, roleName, externalServiceId, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).updateServiceRole(externalId, externalServiceId, roleName)
+    return adminUsersClient.updateServiceRole(externalId, externalServiceId, roleName, correlationId)
   },
 
   /**
@@ -137,7 +138,7 @@ module.exports = {
    * @returns {Promise.<User>}
    */
   assignServiceRole: function (externalId, externalServiceId, roleName, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).assignServiceRole(externalId, externalServiceId, roleName)
+    return adminUsersClient.assignServiceRole(externalId, externalServiceId, roleName, correlationId)
   },
 
   /**
@@ -148,7 +149,7 @@ module.exports = {
    * @param correlationId
    */
   inviteUser: function (invitee, senderId, externalServiceId, roleName, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).inviteUser(invitee, senderId, externalServiceId, roleName)
+    return adminUsersClient.inviteUser(invitee, senderId, externalServiceId, roleName, correlationId)
   },
 
   /**
@@ -156,7 +157,7 @@ module.exports = {
    * @param correlationId
    */
   getInvitedUsersList: function (externalServiceId, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).getInvitedUsersList(externalServiceId)
+    return adminUsersClient.getInvitedUsersList(externalServiceId, correlationId)
   },
 
   /**
@@ -167,7 +168,7 @@ module.exports = {
    * @param correlationId
    */
   delete: function (externalServiceId, removerExternalId, userExternalId, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).deleteUser(externalServiceId, removerExternalId, userExternalId)
+    return adminUsersClient.deleteUser(externalServiceId, removerExternalId, userExternalId, correlationId)
   },
 
   /**
@@ -180,7 +181,7 @@ module.exports = {
       return Promise.reject(new Error('No externalId specified'))
     }
 
-    return getAdminUsersClient({ correlationId: correlationId }).provisionNewOtpKey(externalId)
+    return adminUsersClient.provisionNewOtpKey(externalId, correlationId)
   },
 
   /**
@@ -195,14 +196,16 @@ module.exports = {
       Promise.reject(new Error('No externalId specified'))
     }
 
-    return getAdminUsersClient({ correlationId: correlationId }).configureNewOtpKey(externalId, code, secondFactor)
+    return adminUsersClient.configureNewOtpKey(externalId, code, secondFactor, correlationId)
   },
 
   /**
+   * @param externalId
    * @param newPhoneNumber
+   * @param correlationId
    * @returns {Promise}
    */
-  updatePhoneNumber: function (externalId, newPhoneNumber) {
-    return getAdminUsersClient().updatePhoneNumberForUser(externalId, newPhoneNumber)
+  updatePhoneNumber: function (externalId, newPhoneNumber, correlationId) {
+    return adminUsersClient.updatePhoneNumberForUser(externalId, newPhoneNumber, correlationId)
   }
 }

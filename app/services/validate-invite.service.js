@@ -1,6 +1,7 @@
 'use strict'
 
 const getAdminUsersClient = require('./clients/adminusers.client')
+const adminUsersClient = getAdminUsersClient()
 
 module.exports = {
 
@@ -10,6 +11,6 @@ module.exports = {
    * @param correlationId
    */
   getValidatedInvite: function (code, correlationId) {
-    return getAdminUsersClient({ correlationId: correlationId }).getValidatedInvite(code)
+    return adminUsersClient.getValidatedInvite(code, correlationId)
   }
 }

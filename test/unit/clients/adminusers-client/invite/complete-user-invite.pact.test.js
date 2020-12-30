@@ -63,7 +63,7 @@ describe('adminusers client - complete a user invite', function () {
     afterEach(() => provider.verify())
 
     it('should complete a service invite successfully', function (done) {
-      adminusersClient.completeInvite(inviteCode).should.be.fulfilled.then(response => {
+      adminusersClient.completeInvite('correlation-id', inviteCode).should.be.fulfilled.then(response => {
         expect(response.invite).to.deep.equal(validInviteCompleteResponse.invite)
         expect(response.user_external_id).to.equal(userExternalId)
         expect(response.service_external_id).to.equal(serviceExternalId)
@@ -89,7 +89,7 @@ describe('adminusers client - complete a user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 404 NOT FOUND if invite code not found', function (done) {
-      adminusersClient.completeInvite(nonExistingInviteCode).should.be.rejected.then(function (response) {
+      adminusersClient.completeInvite('correlation-id', nonExistingInviteCode).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
@@ -113,7 +113,7 @@ describe('adminusers client - complete a user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 410 GONE if invite is expired', function (done) {
-      adminusersClient.completeInvite(inviteCode).should.be.rejected.then(function (response) {
+      adminusersClient.completeInvite('correlation-id', inviteCode).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(410)
       }).should.notify(done)
     })

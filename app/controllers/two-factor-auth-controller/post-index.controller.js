@@ -12,7 +12,7 @@ module.exports = (req, res) => {
 
   const sendSMS = (method, user) => {
     if (method === 'SMS') {
-      return userService.sendProvisonalOTP(user, req.correlationId)
+      return userService.sendProvisionalOTP(user, req.correlationId)
     }
     return Promise.resolve()
   }

@@ -49,7 +49,7 @@ const passwordRequested = function passwordRequested (req, res) {
 const newPasswordGet = async function newPasswordGet (req, res) {
   const { id } = req.params
   try {
-    await userService.findByResetToken(id)
+    await userService.findByResetToken(id, req.correlationId)
     res.render('forgotten-password/new-password', { id: id })
   } catch (err) {
     req.flash('genericError', 'The password reset request has expired or is invalid. Please try again.')
@@ -62,7 +62,7 @@ const newPasswordPost = async function newPasswordPost (req, res) {
     const { id } = req.params
     const password = req.body.password
 
-    const forgottenPassword = await userService.findByResetToken(id)
+    const forgottenPassword = await userService.findByResetToken(id, req.correlationId)
     const user = await userService.findByExternalId(forgottenPassword.user_external_id, req.correlationId)
 
     const validPassword = validatePassword(password)
@@ -75,9 +75,9 @@ const newPasswordPost = async function newPasswordPost (req, res) {
       })
     }
 
-    await userService.updatePassword(id, password)
+    await userService.updatePassword(id, password, req.correlationId)
     try {
-      await userService.logOut(user)
+      await userService.logOut(user, req.correlationId)
     } catch (err) {
       // treat as success even if updating session version fails
     }
