@@ -35,7 +35,7 @@ module.exports = async function updatePaymentLink (req, res, next) {
 
     lodash.unset(req, 'session.editPaymentLinkData')
     req.flash('generic', 'Your payment link has been updated')
-    res.redirect(paths.paymentLinks.manage.index)
+    return res.redirect(paths.paymentLinks.manage.index)
   } catch (err) {
     return next(new Error(`Update of payment link failed. Error: ${err.message}`))
   }
