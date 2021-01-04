@@ -12,7 +12,7 @@ const authService = require('../../services/auth.service.js')
 const { isCurrency, isHttps, isAboveMaxAmount } = require('../../browsered/field-validation-checks')
 const { penceToPounds, safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   const gatewayAccountId = authService.getCurrentGatewayAccountId(req)
   const confirmationPage = req.body['confirmation-page']
   const paymentDescription = req.body['payment-description']
@@ -33,31 +33,33 @@ module.exports = (req, res) => {
     return res.redirect(paths.prototyping.demoService.create)
   }
 
-  publicAuthClient.createTokenForAccount({
-    accountId: gatewayAccountId,
-    correlationId: req.correlationId,
-    payload: {
-      account_id: gatewayAccountId,
-      created_by: req.user.email,
-      description: `Token for Prototype: ${req.body['payment-description']}`,
-      type: 'PRODUCTS'
-    } })
-    .then(publicAuthData => productsClient.product.create({
+  try {
+    const publicAuthData = await publicAuthClient.createTokenForAccount({
+      accountId: gatewayAccountId,
+      correlationId: req.correlationId,
+      payload: {
+        account_id: gatewayAccountId,
+        created_by: req.user.email,
+        description: `Token for Prototype: ${req.body['payment-description']}`,
+        type: 'PRODUCTS'
+      }
+    })
+
+    const product = await productsClient.product.create({
       payApiToken: publicAuthData.token,
       gatewayAccountId,
       name: req.body['payment-description'],
       returnUrl: req.body['confirmation-page'],
       price: paymentAmountInPence,
       type: productTypes.PROTOTYPE
-    }))
-    .then(product => {
-      const prototypeLink = lodash.get(product, 'links.pay.href')
-      lodash.set(req, 'session.pageData.createPrototypeLink', {})
-      return response(req, res, 'dashboard/demo-service/confirm', { prototypeLink })
     })
-    .catch((err) => {
-      logger.error(`[requestId=${req.correlationId}] Create product failed - ${err.message}`)
-      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-      return res.redirect(paths.prototyping.demoService.create)
-    })
+
+    const prototypeLink = lodash.get(product, 'links.pay.href')
+    lodash.set(req, 'session.pageData.createPrototypeLink', {})
+    return response(req, res, 'dashboard/demo-service/confirm', { prototypeLink })
+  } catch (err) {
+    logger.error(`[requestId=${req.correlationId}] Create product failed - ${err.message}`)
+    req.flash('genericError', 'Something went wrong. Please try again or contact support.')
+    return res.redirect(paths.prototyping.demoService.create)
+  }
 }
