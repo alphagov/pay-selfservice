@@ -2,15 +2,13 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response')
 const productsClient = require('../../services/clients/products.client')
 const authService = require('../../services/auth.service')
-const { renderErrorView } = require('../../utils/response')
 const supportedLanguage = require('../../models/supported-language')
 const paths = require('../../paths')
 
-module.exports = async (req, res) => {
+module.exports = async (req, res, next) => {
   const externalServiceId = req.service && req.service.externalId
   lodash.unset(req, 'session.editPaymentLinkData')
 
@@ -28,7 +26,6 @@ module.exports = async (req, res) => {
     }
     return response(req, res, 'payment-links/manage', pageData)
   } catch (err) {
-    logger.error(`[requestId=${req.correlationId}] Get ADHOC product by gateway account id failed - ${err.message}`)
-    return renderErrorView(req, res)
+    return next(err)
   }
 }
