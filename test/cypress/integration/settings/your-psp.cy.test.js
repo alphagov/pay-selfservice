@@ -32,6 +32,11 @@ describe('Your PSP settings page', () => {
     issuer: '5bd9e0e4444dce153428c942', // pragma: allowlist secret
     jwt_mac_key: 'ffffffff-ffff-ffff-ffff-ffffffffffff'
   }
+  const testBadResultFlexCredentials = {
+    organisational_unit_id: '5bd9b55e4444761ac0af1c83',
+    issuer: '5bd9e0e4444dce153428c943', // pragma: allowlist secret
+    jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e3'
+  }
 
   function setupYourPspStubs (opts = {}) {
     let user
@@ -73,18 +78,17 @@ describe('Your PSP settings page', () => {
       shouldReturnValid: false
     })
     const postCheckWorldpay3dsFlexCredentialsFails = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsFailure({
-      gatewayAccountId: gatewayAccountId,
-      organisational_unit_id: testFailureFlexCredentials.organisational_unit_id,
-      issuer: testFailureFlexCredentials.issuer,
-      jwt_mac_key: testFailureFlexCredentials.jwt_mac_key
-    })
+      gatewayAccountId: gatewayAccountId, ...testFailureFlexCredentials })
+    const postCheckWorldpay3dsFlexCredentialsReturnsBadResult = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsWithBadResult({
+      gatewayAccountId: gatewayAccountId, ...testBadResultFlexCredentials })
     const stubs = [
       user,
       gatewayAccount,
       card,
       postCheckWorldpay3dsFlexCredentialsReturnsValid,
       postCheckWorldpay3dsFlexCredentialsReturnsInvalid,
-      postCheckWorldpay3dsFlexCredentialsFails
+      postCheckWorldpay3dsFlexCredentialsFails,
+      postCheckWorldpay3dsFlexCredentialsReturnsBadResult
     ]
 
     cy.task('setupStubs', stubs)
@@ -194,6 +198,21 @@ describe('Your PSP settings page', () => {
       cy.get('#organisational-unit-id').clear().type(testFailureFlexCredentials.organisational_unit_id)
       cy.get('#issuer').clear().type(testFailureFlexCredentials.issuer)
       cy.get('#jwt-mac-key').type(testFailureFlexCredentials.jwt_mac_key)
+      cy.get('#submitFlexCredentials').click()
+      cy.get('h1').should('contain', 'An error occurred:')
+      cy.get('#errorMsg').should('contain', 'Please try again or contact support team.')
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/your-psp/flex`)
+      })
+    })
+
+    it('should display generic problem page when getting a bad result from connector', () => {
+      cy.visit('/settings')
+      cy.get('#navigation-menu-your-psp').click()
+      cy.get('#flex-credentials-change-link').click()
+      cy.get('#organisational-unit-id').type(testBadResultFlexCredentials.organisational_unit_id)
+      cy.get('#issuer').type(testBadResultFlexCredentials.issuer)
+      cy.get('#jwt-mac-key').type(testBadResultFlexCredentials.jwt_mac_key)
       cy.get('#submitFlexCredentials').click()
       cy.get('h1').should('contain', 'An error occurred:')
       cy.get('#errorMsg').should('contain', 'Please try again or contact support team.')

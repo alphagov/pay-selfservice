@@ -16,7 +16,6 @@ const ISSUER_FIELD = 'issuer'
 const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 
 module.exports = async (req, res) => {
-
   const correlationId = req.headers[correlationHeader] || ''
 
   const accountId = req.account.gateway_account_id
@@ -61,6 +60,10 @@ module.exports = async (req, res) => {
         })
         return res.redirect(303, paths.yourPsp.flex)
       }
+    }
+
+    if (response.result !== 'valid') {
+      return renderErrorView(req, res, false)
     }
 
     await connector.post3dsFlexAccountCredentials(flexParams)
