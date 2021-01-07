@@ -25,25 +25,25 @@ async function getGatewayAccounts (gatewayAccountIds, correlationId) {
     .map(gatewayAccount => new CardGatewayAccount(gatewayAccount).toMinimalJson())
 }
 
-function updateServiceName (serviceExternalId, serviceName, serviceNameCy, correlationId) {
+async function updateServiceName (serviceExternalId, serviceName, serviceNameCy, correlationId) {
   if (!serviceExternalId) {
     return Promise.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
   }
-  return adminUsersClient.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
-    .then(result => {
-      // Update gateway account service names in connector
-      const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
-      return Promise.all(gatewayAccountIds.map(gatewayAccountId => {
-        if (gatewayAccountId && !isADirectDebitAccount(gatewayAccountId)) {
-          return connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)
-        }
-      })
-      )
-        .then(() => result)
+
+  const result = await adminUsersClient.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
+
+  const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
+
+  await Promise.all(
+    gatewayAccountIds.map(async gatewayAccountId => {
+      if (gatewayAccountId && !isADirectDebitAccount(gatewayAccountId)) {
+        const value = await connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)
+        return value
+      }
     })
-    .then(result => {
-      return new Service(result)
-    })
+  )
+
+  return new Service(result)
 }
 
 function updateService (serviceExternalId, serviceUpdateRequest, correlationId) {
