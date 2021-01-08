@@ -1,5 +1,5 @@
 {% extends "../layout.njk" %}
-{% from "../macro/success-notification.njk" import successNotification %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block pageTitle %}
   {% if permissions.tokens_create %}Manage{% else %}View{% endif %} a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -13,26 +13,28 @@
 <section class="govuk-grid-column-two-thirds">
 {% if flash.createPaymentLinkSuccess %}
   {% if isTestGateway %}
-    {% set heading = "Your Payment link is ready to test" %}
-    {% set body %}
-      <span>
-        To start collecting payments, you need to
-        <a class="govuk-link" href="{{ paths.generateRoute(paths.requestToGoLive.index, { externalServiceId: externalServiceId }) }}">
-          Request a live account
-        </a>.
-        Once live, you’ll need to recreate your Payment link before you can give it to users.
-      </span>
+        {% set html %}
+        <p class="govuk-notification-banner__heading">
+          Your Payment link is ready to test
+        </p>
+        <p class="govuk-body">
+          To start collecting payments, you need to <a class="govuk-link" href="{{ paths.generateRoute(paths.requestToGoLive.index, { externalServiceId: externalServiceId }) }}">Request a live account</a>. Once live, you’ll need to recreate your Payment link before you can give it to users.
+        </p>
     {% endset %}
   {% else %}
-    {% set heading = "Your payment link is now live" %}
-    {% set body %}
-      <span>Give this link to your users to collect payments for your service.</span>
+        {% set html %}
+        <p class="govuk-notification-banner__heading">
+          Your payment link is now live
+        </p>
+        <p class="govuk-body">
+          Give this link to your users to collect payments for your service.
+        </p>
     {% endset %}
   {% endif %}
 
-  {{ successNotification({
-    heading: heading,
-    body: body
+      {{ govukNotificationBanner({
+        html: html,
+        type: 'success'
   }) }}
 {% endif %}
 

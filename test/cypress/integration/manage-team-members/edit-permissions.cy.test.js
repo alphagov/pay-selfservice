@@ -67,6 +67,6 @@ describe('Edit service user permissions', () => {
   it('should update permission', () => {
     cy.get('#role-view-and-refund-input').click()
     cy.get('button').contains('Save changes').click()
-    cy.get('.flash-container--good').contains('Permissions have been updated')
+    cy.get('.govuk-notification-banner--success').contains('Permissions have been updated')
   })
 })

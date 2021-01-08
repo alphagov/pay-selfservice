@@ -34,6 +34,6 @@ describe('Should delete payment link', () => {
     cy.get('a').contains('Yes, delete this link').click()
 
     cy.get('h1').should('contain', 'Manage payment links')
-    cy.get('div.flash-container > div').contains('The payment link was successfully deleted')
+    cy.get('.govuk-notification-banner--success').contains('The payment link was successfully deleted')
   })
 })

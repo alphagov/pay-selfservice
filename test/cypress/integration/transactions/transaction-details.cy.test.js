@@ -304,9 +304,9 @@ describe('Transaction details page', () => {
       cy.get('#refund-button').click()
 
       // Ensure the flash container is showing
-      cy.get('.flash-container.flash-container--good').should('be.visible')
+      cy.get('.govuk-notification-banner--success').should('be.visible')
 
-      cy.get('.flash-container').find('h2').should('contain', 'Refund successful')
+      cy.get('.govuk-notification-banner__heading').should('contain', 'Refund successful')
     })
 
     it('should fail when an invalid refund amount is specified', () => {

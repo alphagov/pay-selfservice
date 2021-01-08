@@ -261,7 +261,7 @@ describe('The create payment link flow', () => {
           expect(location.pathname).to.eq(`/create-payment-link/review`)
         })
 
-        cy.get('.notification').find('h2').should('contain', 'The details have been updated')
+        cy.get('.govuk-notification-banner--success').should('contain', 'The details have been updated')
       })
 
       it('should redirect to the manage payment link page with a success message', () => {
@@ -270,7 +270,7 @@ describe('The create payment link flow', () => {
           expect(location.pathname).to.eq(`/create-payment-link/manage`)
         })
 
-        cy.get('.notification').find('h2').should('contain', 'Your Payment link is ready to test')
+        cy.get('.govuk-notification-banner--success').should('contain', 'Your Payment link is ready to test')
       })
     })
   })
