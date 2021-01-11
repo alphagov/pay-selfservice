@@ -1,4 +1,4 @@
-{% from "../macro/success-notification.njk" import successNotification %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block flash %}
   {% if flash.genericError %}
@@ -13,9 +13,16 @@
 
   {% if flash.generic %}
     <div class="govuk-grid-column-two-thirds">
-      {{ successNotification
-        ({heading: flash.generic | safe}) 
-      }}
+      {% set html %}
+        <p class="govuk-notification-banner__heading">
+          {{ flash.generic | safe }}
+        </p>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        html: html,
+        type: 'success'
+      }) }}
     </div>
   {% endif %}
 {% endblock %}

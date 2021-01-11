@@ -104,7 +104,7 @@ describe('MOTO mask security section', () => {
         cy.get('#save-moto-mask-changes').click()
         cy.get('input[value="on"]').should('be.checked')
         cy.get('input[value="off"]').should('not.be.checked')
-        cy.get('.notification').contains('Your changes have saved')
+        cy.get('.govuk-notification-banner--success').contains('Your changes have saved')
       })
     })
 
@@ -158,7 +158,7 @@ describe('MOTO mask security section', () => {
         cy.title().should('eq', `MOTO - hide security codes for ${serviceName} - GOV.UK Pay`)
         cy.get('input[value="on"]').should('be.checked')
         cy.get('input[value="off"]').should('not.be.checked')
-        cy.get('.notification').contains('Your changes have saved')
+        cy.get('.govuk-notification-banner--success').contains('Your changes have saved')
       })
     })
   })
