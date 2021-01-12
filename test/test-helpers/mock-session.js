@@ -5,22 +5,22 @@ const _ = require('lodash')
 const sinon = require('sinon')
 
 const User = require('../../app/models/User.class')
-const userFixture = require('../fixtures/user.fixtures')
+const userFixtures = require('../fixtures/user.fixtures')
 
 const getUser = (opts) => {
-  return new User(userFixture.validUser(opts))
+  return new User(userFixtures.validUser(opts))
 }
 
-const createAppWithSession = function (app, sessionData, gatewayAccountData, registerInviteData) {
+const createAppWithSession = function (app, sessionData, gatewayAccountCookie, registerInviteData) {
   let proxyApp = express()
   proxyApp.all('*', function (req, res, next) {
     sessionData.destroy = sinon.stub()
     req.session = req.session || sessionData || {}
-    req.gateway_account = gatewayAccountData || {
+    req.register_invite = registerInviteData || {}
+    req.gateway_account = gatewayAccountCookie || {
       currentGatewayAccountId: _.get(sessionData, 'passport.user.serviceRoles[0].service.gatewayAccountIds[0]')
     }
-    req.account = gatewayAccountData
-    req.register_invite = registerInviteData || {}
+
     next()
   })
   proxyApp.use(app)
@@ -29,28 +29,32 @@ const createAppWithSession = function (app, sessionData, gatewayAccountData, reg
 
 const getAppWithLoggedInUser = function (app, user) {
   const validSession = getMockSession(user)
-  return createAppWithSession(app, validSession)
+  return createAppWithSession(app, validSession, null)
 }
 
-const getAppWithSessionAndGatewayAccountCookies = function (app, sessionData, gatewayAccountData) {
-  return createAppWithSession(app, sessionData, gatewayAccountData)
+const getAppWithSessionAndGatewayAccountCookies = function (app, sessionData, gatewayAccountCookie) {
+  return createAppWithSession(app, sessionData, gatewayAccountCookie, null)
+}
+
+const getAppWithSessionData = function (app, sessionData) {
+  return createAppWithSession(app, sessionData, null, null)
 }
 
 const getAppWithRegisterInvitesCookie = function (app, registerInviteData) {
-  return createAppWithSession(app, { csrfSecret: '123' }, {}, registerInviteData)
+  return createAppWithSession(app, { csrfSecret: '123' }, null, registerInviteData)
 }
 
 const getAppWithLoggedOutSession = function (app, session) {
   session = session || {}
   session.csrfSecret = '123'
-  return createAppWithSession(app, session, {})
+  return createAppWithSession(app, session, null, null)
 }
 
 const getAppWithSessionWithoutSecondFactor = function (app, user) {
   const session = getMockSession(user)
   delete session.secondFactor
 
-  return createAppWithSession(app, session)
+  return createAppWithSession(app, session, null, null)
 }
 
 const getMockSession = function (user) {
@@ -67,12 +71,13 @@ const getMockSession = function (user) {
 }
 
 module.exports = {
-  createAppWithSession: createAppWithSession,
-  getAppWithLoggedInUser: getAppWithLoggedInUser,
-  getAppWithSessionAndGatewayAccountCookies: getAppWithSessionAndGatewayAccountCookies,
-  getMockSession: getMockSession,
-  getUser: getUser,
-  getAppWithSessionWithoutSecondFactor: getAppWithSessionWithoutSecondFactor,
-  getAppWithRegisterInvitesCookie: getAppWithRegisterInvitesCookie,
-  getAppWithLoggedOutSession: getAppWithLoggedOutSession
+  createAppWithSession,
+  getAppWithLoggedInUser,
+  getAppWithSessionAndGatewayAccountCookies,
+  getAppWithSessionData,
+  getMockSession,
+  getUser,
+  getAppWithSessionWithoutSecondFactor,
+  getAppWithRegisterInvitesCookie,
+  getAppWithLoggedOutSession
 }
