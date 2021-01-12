@@ -100,7 +100,7 @@ module.exports.paths = paths
 
 module.exports.bind = function (app) {
   const account = new Router({ mergeParams: true })
-  account.use(getServiceAndAccount, userIsAuthorised)
+  account.use(getServiceAndAccount, userIsAuthorised, ensureSessionHasCsrfSecret, validateAndRefreshCsrf)
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 

@@ -3,6 +3,7 @@
 const request = require('supertest')
 const nock = require('nock')
 const chai = require('chai')
+const csrf = require('csrf')
 
 require('../../test-helpers/serialize-mock.js')
 const { expect } = chai
@@ -28,6 +29,10 @@ function whenGetPaymentTypes (baseApp) {
 }
 
 function whenPaymentTypesUpdated (baseApp, payload) {
+  payload = {
+    ...payload,
+    csrfToken: csrf().create('123')
+  }
   return request(baseApp)
     .post(formatAccountPathsFor(paths.paymentTypes.index, gatewayAccountExternalId))
     .send(payload)
