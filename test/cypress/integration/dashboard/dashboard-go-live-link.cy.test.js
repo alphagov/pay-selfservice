@@ -1,8 +1,6 @@
 'use strict'
 
 const utils = require('../../utils/request-to-go-live-utils')
-const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 
 describe('Go live link on dashboard', () => {
@@ -129,27 +127,6 @@ describe('Go live link on dashboard', () => {
 
         cy.get('#request-to-go-live-link').should('not.exist')
       })
-    })
-  })
-
-  describe('Direct debit gateway account', () => {
-    it('should display next steps to go live link', () => {
-      const directDebitGatewayAccountId = 'DIRECT_DEBIT:101'
-
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({
-          userExternalId,
-          gatewayAccountId: directDebitGatewayAccountId,
-          serviceExternalId,
-          goLiveStage: 'NOT_STARTED'
-        }),
-        gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId: directDebitGatewayAccountId, type: 'test', paymentProvider: 'sandbox' })
-      ])
-      cy.visit('/')
-
-      cy.get('#request-to-go-live-link').should('exist')
-      cy.get('#request-to-go-live-link h2').should('contain', 'Next steps to go live')
-      cy.get('#request-to-go-live-link a').should('have.attr', 'href', 'https://docs.payments.service.gov.uk/switching_to_live/#switching-to-live')
     })
   })
 })

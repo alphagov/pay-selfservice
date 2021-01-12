@@ -79,8 +79,6 @@ const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-
 const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
-const goCardlessRedirect = require('./controllers/partnerapp/handle-redirect-to-gocardless-connect.controller')
-const goCardlessOAuthGet = require('./controllers/partnerapp/handle-gocardless-connect-get.controller')
 const yourPspController = require('./controllers/your-psp')
 const allTransactionsController = require('./controllers/all-service-transactions/index')
 const payoutsController = require('./controllers/payouts/payout-list.controller')
@@ -91,7 +89,7 @@ const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
-  partnerApp, requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
+  requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
 const { toggleBillingAddress: billingAddress } = paths.account
@@ -164,9 +162,6 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceController.showNameYourService)
   app.post(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceController.submitYourServiceName)
 
-  // GOCARDLESS PARTNER APP
-  app.get(partnerApp.oauthComplete, resolveService, getAccount, goCardlessOAuthGet.index)
-
   // ----------------------
   // AUTHENTICATED ROUTES
   // ----------------------
@@ -188,7 +183,6 @@ module.exports.bind = function (app) {
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
     ...lodash.values(user.profile),
-    ...lodash.values(partnerApp),
     ...lodash.values(billingAddress),
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
@@ -374,9 +368,6 @@ module.exports.bind = function (app) {
   // Feedback
   app.get(paths.feedback, hasServices, resolveService, getAccount, feedbackController.getIndex)
   app.post(paths.feedback, hasServices, resolveService, getAccount, feedbackController.postIndex)
-
-  // Partner app link GoCardless account
-  app.get(paths.partnerApp.linkAccount, permission('connected-gocardless-account:update'), getAccount, goCardlessRedirect.index)
 
   // Request to go live: index
   app.get(requestToGoLive.index, permission('go-live-stage:read'), getAccount, requestToGoLiveIndexController.get)

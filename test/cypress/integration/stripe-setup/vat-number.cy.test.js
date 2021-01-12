@@ -164,24 +164,4 @@ describe('Stripe setup: VAT number page', () => {
       })
     })
   })
-
-  describe('Direct Debit gateway account', () => {
-    const directDebitGatewayAccountId = 'DIRECT_DEBIT:101'
-
-    it('should show an error page', () => {
-      cy.setEncryptedCookies(userExternalId, directDebitGatewayAccountId)
-
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId: directDebitGatewayAccountId }),
-        gatewayAccountStubs.getDirectDebitGatewayAccountSuccess({ gatewayAccountId: directDebitGatewayAccountId, type: 'live', paymentProvider: 'gocardless' })
-      ])
-
-      cy.visit('/vat-number', {
-        failOnStatusCode: false
-      })
-
-      cy.get('h1').should('contain', 'An error occurred:')
-      cy.get('#errorMsg').should('contain', 'This page is only available to card accounts not direct debit accounts.')
-    })
-  })
 })

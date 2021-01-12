@@ -5,27 +5,13 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
 {% endblock %}
 
 {% block mainContent %}
-  {% if gatewayAccount.paymentMethod === 'direct debit' and gatewayAccount.paymentProvider === 'gocardless' %}
-    {% if gatewayAccount.isConnected === false %}
-      <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l first-steps__title">Connect to GoCardless</h1>
-        {% include "./_link-to-gocardless.njk" %}
-      </div>
-    {% else %}
-      <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l first-steps__title">Connected to GoCardless</h1>
-        {% include "./_connected-to-gocardless.njk" %}
-      </div>
-    {% endif %}
-  {% else %}
-    {% include "./_live-account-requested-banner.njk" %}
-    {% include "./_stripe-account-setup-banner.njk" %}
-    <div class="govuk-grid-column-full">
-      <h1 class="govuk-heading-l first-steps__title">Dashboard</h1>
-    </div>
-    {% if paymentMethod === 'card' %}
-      {% include "./_activity.njk" %}
-    {% endif %}
-    {% include "./_links.njk" %}
+  {% include "./_live-account-requested-banner.njk" %}
+  {% include "./_stripe-account-setup-banner.njk" %}
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l first-steps__title">Dashboard</h1>
+  </div>
+  {% if paymentMethod === 'card' %}
+    {% include "./_activity.njk" %}
   {% endif %}
+  {% include "./_links.njk" %}
 {% endblock %}

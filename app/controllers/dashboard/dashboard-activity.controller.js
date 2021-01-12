@@ -69,8 +69,6 @@ const getLinksToDisplay = function getLinksToDisplay (service, account, user) {
   if (account.payment_provider === 'sandbox') {
     linksToDisplay.push(links.demoPayment)
     linksToDisplay.push(links.testPaymentLink)
-  } else if (account.paymentMethod === 'direct debit') {
-    linksToDisplay.push(links.directDebitPaymentFlow)
   } else {
     linksToDisplay.push(links.paymentLinks)
   }
