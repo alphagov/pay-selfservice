@@ -4,7 +4,6 @@ const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
-const authService = require('../../services/auth.service.js')
 const { renderErrorView } = require('../../utils/response.js')
 
 module.exports = (req, res) => {
@@ -15,7 +14,7 @@ module.exports = (req, res) => {
     linksPage: paths.prototyping.demoService.links
   }
 
-  productsClient.product.getByGatewayAccountId(authService.getCurrentGatewayAccountId(req))
+  productsClient.product.getByGatewayAccountId(req.account.gateway_account_id)
     .then(products => {
       const prototypeProducts = products.filter(product => product.type === 'PROTOTYPE')
       params.productsLength = prototypeProducts.length

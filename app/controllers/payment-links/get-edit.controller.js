@@ -5,7 +5,6 @@ const lodash = require('lodash')
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
-const auth = require('../../services/auth.service.js')
 const formattedPathFor = require('../../utils/replace-params-in-path')
 
 module.exports = async function showEditPaymentLink (req, res, next) {
@@ -39,7 +38,7 @@ module.exports = async function showEditPaymentLink (req, res, next) {
     paths
   }
 
-  const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
+  const gatewayAccountId = req.account.gateway_account_id
   try {
     const product = await productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId)
     const productCheck = lodash.cloneDeep(product)

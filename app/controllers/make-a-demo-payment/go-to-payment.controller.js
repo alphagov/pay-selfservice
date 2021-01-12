@@ -7,10 +7,9 @@ const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
-const auth = require('../../services/auth.service.js')
 
 module.exports = async function makeDemoPayment (req, res) {
-  const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
+  const gatewayAccountId = req.account.gateway_account_id
   const { paymentAmount, paymentDescription } = lodash.get(req, 'session.pageData.makeADemoPayment', {})
 
   if (!paymentAmount || !paymentDescription) {

@@ -9,6 +9,7 @@ const { getApp } = require('../../../../server')
 const mockSession = require('../../../test-helpers/mock-session')
 const userCreator = require('../../../test-helpers/user-creator')
 const paths = require('../../../../app/paths')
+const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '182364'
@@ -22,6 +23,14 @@ const VALID_PAYLOAD = {
   'description': ''
 }
 
+function mockConnectorGetAccount (type) {
+  nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+    .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+      type
+    }))
+}
+
 describe('POST to create an API key', () => {
   describe('without description', () => {
     let app
@@ -32,6 +41,7 @@ describe('POST to create an API key', () => {
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
       userCreator.mockUserResponse(user.toJson())
+      mockConnectorGetAccount('live')
 
       nock(PUBLIC_AUTH_URL).post('',
         {
@@ -44,12 +54,6 @@ describe('POST to create an API key', () => {
         }
       )
         .reply(200, TOKEN_RESPONSE)
-
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-        .reply(200, {
-          payment_provider: 'sandbox',
-          type: 'live'
-        })
 
       supertest(app)
         .post(paths.apiKeys.create)
@@ -83,6 +87,7 @@ describe('POST to create an API key', () => {
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
       userCreator.mockUserResponse(user.toJson())
+      mockConnectorGetAccount('test')
 
       nock(PUBLIC_AUTH_URL).post('',
         {
@@ -95,12 +100,6 @@ describe('POST to create an API key', () => {
         }
       )
         .reply(200, TOKEN_RESPONSE)
-
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-        .reply(200, {
-          payment_provider: 'sandbox',
-          type: 'test'
-        })
 
       VALID_PAYLOAD.description = DESCRIPTION
 
@@ -122,7 +121,7 @@ describe('POST to create an API key', () => {
     it('should return with the API key', () => {
       expect(response.body.token).to.equal(TOKEN_RESPONSE.token)
     })
-    it('and a blank description', () => {
+    it('and a description', () => {
       expect(response.body.description).to.equal(DESCRIPTION)
     })
   })
