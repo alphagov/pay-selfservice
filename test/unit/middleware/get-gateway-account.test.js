@@ -6,8 +6,7 @@ const lodash = require('lodash')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const DirectDebitGatewayAccount = require('../../../app/models/DirectDebitGatewayAccount.class')
-let req, res, next, connectorGetAccountMock, directDebitConnectorGetAccountMock
+let req, res, next, connectorGetAccountMock
 
 const connectorMock = {
   ConnectorClient: function () {
@@ -29,24 +28,10 @@ const setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvide
       payment_provider: paymentProvider
     })
   })
-  directDebitConnectorGetAccountMock = sinon.spy((params) => {
-    return Promise.resolve(new DirectDebitGatewayAccount({
-      gateway_account_id: '3',
-      gateway_account_external_id: params.gatewayAccountId,
-      payment_provider: paymentProvider,
-      type: 'test'
-    }))
-  })
-  const directDebitConnectorMock = {
-    gatewayAccount: {
-      get: directDebitConnectorGetAccountMock
-    }
-  }
 
   return proxyquire(path.join(__dirname, '../../../app/middleware/get-gateway-account'), {
     '../services/auth.service.js': authServiceMock,
-    '../services/clients/connector.client.js': connectorMock,
-    '../services/clients/direct-debit-connector.client.js': directDebitConnectorMock
+    '../services/clients/connector.client.js': connectorMock
   })
 }
 
@@ -94,20 +79,6 @@ describe('middleware: getGatewayAccount', () => {
     const getGatewayAccount = setupGetGatewayAccount('1', 'stripe')
     next = function () {
       expect(req.account).to.deep.equal({ id: '1', payment_provider: 'stripe', supports3ds: true, disableToggle3ds: true })
-      done()
-    }
-    getGatewayAccount(req, res, next)
-  })
-  it('should call direct debit connector if the token is a direct debit token', done => {
-    lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['DIRECT_DEBIT:1sadasd'] })
-    const getGatewayAccount = setupGetGatewayAccount('DIRECT_DEBIT:1sadasd', 'sandbox')
-    next = function () {
-      expect(directDebitConnectorGetAccountMock.called).to.equal(true)
-      expect(directDebitConnectorGetAccountMock.calledWith({
-        gatewayAccountId: 'DIRECT_DEBIT:1sadasd',
-        correlationId: 'sdfghjk'
-      })).to.equal(true)
-      expect(res.redirect.called).to.equal(false)
       done()
     }
     getGatewayAccount(req, res, next)

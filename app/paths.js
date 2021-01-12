@@ -187,10 +187,6 @@ module.exports = {
     }
   },
   feedback: '/feedback',
-  partnerApp: {
-    linkAccount: '/link-account',
-    oauthComplete: '/oauth/complete'
-  },
   generateRoute: generateRoute,
   formattedPathFor: formattedPathFor,
   requestToGoLive: {
