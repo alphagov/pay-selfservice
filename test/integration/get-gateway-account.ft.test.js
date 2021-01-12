@@ -34,9 +34,7 @@ describe('get account', function () {
       ]
 
     })
-    const mockSession = session.getMockSession(user)
-    session.currentGatewayAccountId = '2'
-    app = session.getAppWithSessionAndGatewayAccountCookies(getApp(), mockSession)
+    app = session.getAppWithLoggedInUser(getApp(), user)
     const connectorMock = nock(process.env.CONNECTOR_URL)
     const ledgerMock = nock(process.env.LEDGER_URL)
     connectorMock.get('/v1/frontend/accounts/1').times(2).reply(200, {

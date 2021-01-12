@@ -73,7 +73,7 @@ describe('The logged in endpoint', function () {
   })
 
   it('should redirect to login if not logged in', function (done) {
-    const app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), {})
+    const app = mockSession.getAppWithLoggedOutSession(getApp(), {})
     request(app)
       .get('/')
       .expect(302)
@@ -93,7 +93,7 @@ describe('The logged in endpoint', function () {
 
 describe('The logout endpoint', function () {
   it('should redirect to login', function (done) {
-    const app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), {})
+    const app = mockSession.getAppWithLoggedOutSession(getApp(), {})
     request(app)
       .get('/logout')
       .expect(302)
@@ -152,7 +152,7 @@ describe('The otplogin endpoint', function () {
     adminusersMock.post(`${USER_RESOURCE}/${user.externalId}/second-factor`)
       .reply(200)
 
-    const app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData)
+    const app = mockSession.getAppWithSessionData(getApp(), sessionData)
     request(app)
       .get('/otp-login')
       .expect(200)
@@ -173,7 +173,7 @@ describe('The otplogin endpoint', function () {
       sentCode: true
     }
 
-    const app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData)
+    const app = mockSession.getAppWithSessionData(getApp(), sessionData)
 
     request(app)
       .get('/otp-login')
@@ -286,7 +286,7 @@ describe('otp login post endpoint', function () {
     const session = mockSession.getMockSession(user)
     delete session.csrfSecret
 
-    const app2 = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), session)
+    const app2 = mockSession.getAppWithSessionData(getApp(), session)
 
     request(app2)
       .post(paths.user.otpLogIn)
@@ -304,7 +304,7 @@ describe('otp send again post endpoint', function () {
     const session = mockSession.getMockSession(user)
     delete session.csrfSecret
 
-    const app2 = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), session)
+    const app2 = mockSession.getAppWithSessionData(getApp(), session)
 
     request(app2)
       .post(paths.user.otpSendAgain)

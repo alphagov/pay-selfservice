@@ -1,6 +1,6 @@
 require('../test-helpers/serialize-mock.js')
 const request = require('supertest')
-const { getAppWithLoggedInUser, getAppWithSessionAndGatewayAccountCookies, getUser, getAppWithSessionWithoutSecondFactor } = require('../test-helpers/mock-session.js')
+const { getAppWithLoggedInUser, getUser, getAppWithSessionWithoutSecondFactor, getAppWithLoggedOutSession } = require('../test-helpers/mock-session.js')
 const paths = require('../../app/paths.js')
 const server = require('../../server.js')
 
@@ -12,7 +12,7 @@ describe('An endpoint not protected', () => {
   })
 
   it('allows access if not authenticated', done => {
-    app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), {})
+    app = getAppWithLoggedOutSession(server.getApp(), {})
     request(app)
       .get(paths.user.logIn)
       .expect(200)
@@ -47,7 +47,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   })
 
   it('redirects to /login if not authenticated', done => {
-    app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), {})
+    app = getAppWithLoggedOutSession(server.getApp(), {})
     request(app)
       .get(paths.dashboard.index)
       .expect(302)
