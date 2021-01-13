@@ -40,6 +40,13 @@ module.exports = {
     toggleMotoMaskCardNumberAndSecurityCode: {
       cardNumber: '/moto-hide-card-number',
       securityCode: '/moto-hide-security-code'
+    },
+    apiKeys: {
+      index: '/api-keys',
+      revoked: '/api-keys/revoked',
+      create: '/api-keys/create',
+      revoke: '/api-keys/revoke',
+      update: '/api-keys/update'
     }
   },
   transactions: {
@@ -90,13 +97,6 @@ module.exports = {
   },
   dashboard: {
     index: '/'
-  },
-  apiKeys: {
-    index: '/api-keys',
-    revoked: '/api-keys/revoked',
-    create: '/api-keys/create',
-    revoke: '/api-keys/revoke',
-    update: '/api-keys/update'
   },
   serviceSwitcher: {
     index: '/my-services',

@@ -9,10 +9,14 @@ const mockSession = require('../../../test-helpers/mock-session')
 const userCreator = require('../../../test-helpers/user-creator')
 const paths = require('../../../../app/paths')
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
+const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
 
 const GATEWAY_ACCOUNT_ID = '182364'
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
+
+const apiKeysRevokedIndexPath = formatAccountPathsFor(paths.account.apiKeys.revoked, EXTERNAL_GATEWAY_ACCOUNT_ID)
 
 const TOKEN_1 = {
   issued_date: '14 May 2018 - 15:33',
@@ -39,10 +43,13 @@ const mockGetRevokedAPIKeys = gatewayAccountId => {
 }
 
 function mockConnectorGetAccount () {
-  nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-    .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({
-      gateway_account_id: GATEWAY_ACCOUNT_ID
-    }))
+  nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+    .reply(200, gatewayAccountFixtures.validGatewayAccountResponse(
+      {
+        external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+        gateway_account_id: GATEWAY_ACCOUNT_ID
+      }
+    ))
 }
 
 describe('Revoked API keys index', () => {
@@ -62,7 +69,7 @@ describe('Revoked API keys index', () => {
       mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, [])
 
       supertest(app)
-        .get(paths.apiKeys.revoked)
+        .get(apiKeysRevokedIndexPath)
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -89,7 +96,7 @@ describe('Revoked API keys index', () => {
       mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, { tokens: [TOKEN_1] })
 
       supertest(app)
-        .get(paths.apiKeys.revoked)
+        .get(apiKeysRevokedIndexPath)
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -121,7 +128,7 @@ describe('Revoked API keys index', () => {
       mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, { tokens: [TOKEN_1, TOKEN_2] })
 
       supertest(app)
-        .get(paths.apiKeys.revoked)
+        .get(apiKeysRevokedIndexPath)
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res

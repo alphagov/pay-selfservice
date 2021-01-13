@@ -37,7 +37,7 @@
     {% endif %}
 
     {% if permissions.tokens_delete %}
-    <form class="target-to-show" id="delete-{{token.token_link}}" method="POST" action="{{routes.apiKeys.revoke}}">
+    <form class="target-to-show" id="delete-{{token.token_link}}" method="POST" action="{{formatAccountPathsFor(routes.account.apiKeys.revoke, currentGatewayAccount.external_id)}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
       <input type="hidden" name="token_link" value="{{token.token_link}}"/>
       <div class="govuk-error-summary govuk-!-margin-top-6" role="group" aria-labelledby="error-summary" tabindex="-1">
@@ -64,7 +64,7 @@ govuk-link--no-visited-state target-to-show--cancel" href="#main">Cancel</a>
     </form>
     {% endif %}
     {% if permissions.tokens_update %}
-      <form class="target-to-show govuk-!-margin-top-6" id="update-{{token.token_link}}" method="POST" action="{{routes.apiKeys.update}}">
+      <form class="target-to-show govuk-!-margin-top-6" id="update-{{token.token_link}}" method="POST" action="{{formatAccountPathsFor(routes.account.apiKeys.update, currentGatewayAccount.external_id)}}">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
         <input type="hidden" name="token_link" value="{{token.token_link}}"/>
         {{

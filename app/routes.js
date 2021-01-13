@@ -86,12 +86,13 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
-  apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
+  serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials, prototyping, paymentLinks,
   requestToGoLive, policyPages, stripeSetup, stripe,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
 const {
+  apiKeys,
   digitalWallet,
   emailNotifications,
   paymentTypes,
@@ -235,12 +236,12 @@ module.exports.bind = function (app) {
   app.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.postEdit)
 
   // API KEYS
-  app.get(apiKeys.index, permission('tokens-active:read'), getAccount, apiKeysController.getIndex)
-  app.get(apiKeys.revoked, permission('tokens-revoked:read'), getAccount, apiKeysController.getRevoked)
-  app.get(apiKeys.create, permission('tokens:create'), getAccount, apiKeysController.getCreate)
-  app.post(apiKeys.create, permission('tokens:create'), getAccount, apiKeysController.postCreate)
-  app.post(apiKeys.revoke, permission('tokens:delete'), getAccount, apiKeysController.postRevoke)
-  app.post(apiKeys.update, permission('tokens:update'), getAccount, apiKeysController.postUpdate)
+  account.get(apiKeys.index, permission('tokens-active:read'), apiKeysController.getIndex)
+  account.get(apiKeys.revoked, permission('tokens-revoked:read'), apiKeysController.getRevoked)
+  account.get(apiKeys.create, permission('tokens:create'), apiKeysController.getCreate)
+  account.post(apiKeys.create, permission('tokens:create'), apiKeysController.postCreate)
+  account.post(apiKeys.revoke, permission('tokens:delete'), apiKeysController.postRevoke)
+  account.post(apiKeys.update, permission('tokens:update'), apiKeysController.postUpdate)
 
   account.get(paymentTypes.index, permission('payment-types:read'), paymentTypesController.getIndex)
   account.post(paymentTypes.index, permission('payment-types:update'), paymentTypesController.postIndex)

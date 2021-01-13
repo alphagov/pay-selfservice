@@ -11,17 +11,17 @@
 </h2>
 
 {% if active %}
-  {% set apiKeyLinkRoute = routes.apiKeys.revoked %}
+  {% set apiKeyLinkRoute = routes.account.apiKeys.revoked %}
   {% set apiKeyLinkText = 'revoked' %}
   {% set apiKeyLinkId = 'revoked-keys-link' %}
 {% else %}
-  {% set apiKeyLinkRoute = routes.apiKeys.index %}
+  {% set apiKeyLinkRoute = routes.account.apiKeys.index %}
   {% set apiKeyLinkText = 'active' %}
   {% set apiKeyLinkId = 'active-keys-link' %}
 {% endif %}
 
 <div class="govuk-body">
-  <a class="govuk-link" href="{{ apiKeyLinkRoute }}" id="{{apiKeyLinkId}}">View {{apiKeyLinkText}} keys</a>
+  <a class="govuk-link" href="{{ formatAccountPathsFor(apiKeyLinkRoute, currentGatewayAccount.external_id) }}" id="{{apiKeyLinkId}}">View {{apiKeyLinkText}} keys</a>
 </div>
 
 {% if permissions.tokens_create %}
@@ -29,7 +29,7 @@
     {{
       govukButton({
         text: "Create a new API key",
-        href: routes.apiKeys.create,
+        href: formatAccountPathsFor(routes.account.apiKeys.create, currentGatewayAccount.external_id),
         classes: "generate-key",
         attributes: {
           id: "create-api-key"

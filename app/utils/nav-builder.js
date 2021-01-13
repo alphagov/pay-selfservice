@@ -49,11 +49,11 @@ const serviceNavigationItems = (currentPath, permissions, type) => {
   navigationItems.push({
     id: 'navigation-menu-settings',
     name: 'Settings',
-    url: type === 'card' ? paths.settings.index : paths.apiKeys.index,
+    url: paths.settings.index,
     current: currentPath !== '/' ? pathLookup(currentPath, [
       ...mainSettingsPaths,
       ...yourPspPaths,
-      paths.apiKeys,
+      paths.account.apiKeys,
       paths.account.paymentTypes
     ]) : false,
     permissions: _.some([
@@ -69,6 +69,8 @@ const serviceNavigationItems = (currentPath, permissions, type) => {
 }
 
 const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}) => {
+  const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, account.external_id)
+
   return [
     {
       id: 'navigation-menu-settings-home',
@@ -80,8 +82,8 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
     {
       id: 'navigation-menu-api-keys',
       name: 'API keys',
-      url: paths.apiKeys.index,
-      current: pathLookup(currentPath, paths.apiKeys.index),
+      url: apiKeysPath,
+      current: pathLookup(currentPath, paths.account.apiKeys.index),
       permissions: permissions.tokens_update
     },
     {

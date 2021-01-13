@@ -22,7 +22,7 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
     <button type="submit" id="save-description-{{token.token_link}}" href="#{{token.token_link}}" class="button">
       Save changes<span class="visuallyhidden"> to {{token.description}}</span>
     </button>
-    <a id="cancel-{{token.token_link}}" href="{{routes.apiKeys.index}}" class="button-link">
+    <a id="cancel-{{token.token_link}}" href="{{formatAccountPathsFor(routes.account.apiKeys.index, currentGatewayAccount.external_id)}}" class="button-link">
       Cancel<span class="visuallyhidden"> edits to {{token.description}}</span>
     </a>
   </div>
