@@ -11,6 +11,7 @@ const { getMockSession, createAppWithSession, getUser } = require('../../../test
 const paths = require('../../../../app/paths')
 const { randomUuid } = require('../../../../app/utils/random')
 const { validCreateProductRequest, validProductResponse } = require('../../../fixtures/product.fixtures')
+const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
 const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
@@ -31,10 +32,7 @@ const VALID_CREATE_TOKEN_REQUEST = {
   description: `Token for “${PAYMENT_TITLE}” payment link`,
   token_account_type: 'test'
 }
-const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
-  payment_provider: 'sandbox',
-  type: 'test'
-}
+const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID })
 const VALID_CREATE_TOKEN_RESPONSE = { token: randomUuid() }
 
 const buildCreateProductRequest = (language, hasMetadata) => {

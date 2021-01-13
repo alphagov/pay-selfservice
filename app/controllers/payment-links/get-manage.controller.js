@@ -4,7 +4,6 @@ const lodash = require('lodash')
 
 const { response } = require('../../utils/response')
 const productsClient = require('../../services/clients/products.client')
-const authService = require('../../services/auth.service')
 const supportedLanguage = require('../../models/supported-language')
 const paths = require('../../paths')
 
@@ -13,7 +12,7 @@ module.exports = async (req, res, next) => {
   lodash.unset(req, 'session.editPaymentLinkData')
 
   try {
-    const products = await productsClient.product.getByGatewayAccountId(authService.getCurrentGatewayAccountId(req))
+    const products = await productsClient.product.getByGatewayAccountId(req.account.gateway_account_id)
     const paymentLinks = products.filter(product => product.type === 'ADHOC')
     const englishPaymentLinks = paymentLinks.filter(link => link.language === supportedLanguage.ENGLISH)
     const welshPaymentLinks = paymentLinks.filter(link => link.language === supportedLanguage.WELSH)

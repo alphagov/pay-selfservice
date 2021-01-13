@@ -4,10 +4,9 @@ const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const publicAuthClient = require('../../services/clients/public-auth.client.js')
-const auth = require('../../services/auth.service.js')
 
 module.exports = async (req, res) => {
-  const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
+  const gatewayAccountId = req.account.gateway_account_id
 
   try {
     const product = await productsClient.product.getByProductExternalId(gatewayAccountId, req.params.productExternalId)

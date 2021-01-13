@@ -8,6 +8,7 @@ const paths = require('../../../../app/paths')
 const { expect } = require('chai')
 const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
 const lodash = require('lodash')
+const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
 const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 
@@ -46,9 +47,7 @@ describe('Edit a payment link', () => {
     let response
     before(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-        .reply(200, {
-          payment_provider: 'sandbox'
-        })
+        .reply(200, validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
       mockGetByProductExternalIdEndpoint(GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID).reply(200, PAYMENT_1)
 
       supertest(createAppWithSession(getApp(), session))
@@ -97,9 +96,7 @@ describe('Edit a payment link', () => {
     let response
     before(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-        .reply(200, {
-          payment_provider: 'sandbox'
-        })
+        .reply(200, validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
       mockGetByProductExternalIdEndpoint(GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID).reply(200, PAYMENT_1)
 
       lodash.set(session, 'editPaymentLinkData', {

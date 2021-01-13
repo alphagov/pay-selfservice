@@ -1,15 +1,17 @@
 'use strict'
 
-const path = require('path')
-require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
-const userCreator = require(path.join(__dirname, '/../test-helpers/user-creator.js'))
 const request = require('supertest')
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const nock = require('nock')
 const csrf = require('csrf')
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const mockSession = require('../test-helpers/mock-session.js')
 const { expect } = require('chai')
+
+const userCreator = require('../test-helpers/user-creator.js')
+require('../test-helpers/serialize-mock.js')
+const getApp = require('../../server.js').getApp
+const paths = require('../../app/paths.js')
+const mockSession = require('../test-helpers/mock-session.js')
+const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
+
 const ACCOUNT_ID = '182364'
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID
 const CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + '/credentials'
@@ -393,6 +395,11 @@ describe('Credentials endpoints', () => {
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
       userCreator.mockUserResponse(user.toJson(), done)
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(200,
+          gatewayAccountFixtures.validGatewayAccountResponse({
+            gateway_account_id: ACCOUNT_ID
+          }))
     })
 
     it('should send new username, password and merchant_id credentials to connector', function (done) {
@@ -516,6 +523,7 @@ describe('Credentials endpoints', () => {
       app = mockSession.createAppWithSession(getApp(), session)
 
       userCreator.mockUserResponse(user.toJson(), done)
+      mockConnectorGetAccount()
     })
 
     it('should send new username and password notification credentials to connector', function (done) {
@@ -573,6 +581,14 @@ describe('Credentials endpoints', () => {
     })
   })
 })
+
+function mockConnectorGetAccount () {
+  connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+    .reply(200,
+      gatewayAccountFixtures.validGatewayAccountResponse({
+        gateway_account_id: ACCOUNT_ID
+      }))
+}
 
 function buildGetRequest (path, app) {
   return request(app)

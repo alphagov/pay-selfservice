@@ -3,7 +3,6 @@ const formattedPathFor = require('../../../utils/replace-params-in-path')
 const paths = require('../../../paths')
 const { product } = require('../../../services/clients/products.client.js')
 const MetadataForm = require('./metadata-form')
-const auth = require('../../../services/auth.service.js')
 
 const addMetadataPage = function addMetadataPage (req, res) {
   const pageData = {
@@ -16,7 +15,7 @@ const addMetadataPage = function addMetadataPage (req, res) {
 
 const editMetadataPage = async function editMetadataPage (req, res) {
   const { productExternalId, metadataKey } = req.params
-  const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
+  const gatewayAccountId = req.account.gateway_account_id
 
   try {
     const currentProduct = await product.getByProductExternalId(gatewayAccountId, productExternalId)

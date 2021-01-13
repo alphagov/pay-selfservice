@@ -1,9 +1,8 @@
 'use strict'
 
 const { response } = require('../../utils/response.js')
-const auth = require('../../services/auth.service.js')
 
 module.exports = (req, res) => {
-  const accountId = auth.getCurrentGatewayAccountId(req)
+  const accountId = req.account.gateway_account_id
   response(req, res, 'api-keys/create', { 'account_id': accountId })
 }

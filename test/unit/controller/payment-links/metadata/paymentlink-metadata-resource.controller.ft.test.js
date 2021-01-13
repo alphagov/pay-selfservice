@@ -10,6 +10,7 @@ const { getApp } = require('../../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../../test-helpers/mock-session')
 const paths = require('../../../../../app/paths')
 const formattedPathFor = require('../../../../../app/utils/replace-params-in-path')
+const { validGatewayAccountResponse } = require('../../../../fixtures/gateway-account.fixtures')
 
 const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
@@ -23,9 +24,7 @@ const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
   permissions: [{ name: 'tokens:create' }]
 })
-const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
-  payment_provider: 'sandbox'
-}
+const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID })
 
 describe('Add payment link metadata', () => {
   describe('successfull add metadata submission', () => {

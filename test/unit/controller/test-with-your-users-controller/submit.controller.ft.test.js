@@ -11,6 +11,7 @@ const { getMockSession, getUser, createAppWithSession } = require('../../../test
 const paths = require('../../../../app/paths')
 const { randomUuid } = require('../../../../app/utils/random')
 const { validCreateProductRequest, validProductResponse } = require('../../../fixtures/product.fixtures')
+const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
 const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
@@ -21,9 +22,6 @@ const VALID_PAYLOAD = {
   'payment-amount': '20',
   'payment-description': 'Test service name',
   'confirmation-page': 'https://www.example.com'
-}
-const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
-  payment_provider: 'sandbox'
 }
 const VALID_CREATE_TOKEN_REQUEST = {
   account_id: GATEWAY_ACCOUNT_ID,
@@ -41,6 +39,11 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   type: 'PROTOTYPE'
 })
 const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST)
+
+function mockConnectorGetGatewayAccount () {
+  nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200,
+    validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
+}
 
 describe('test with your users - submit controller', () => {
   describe('when it is called on a gateway account that is from a payment provider other than sandbox', () => {
@@ -83,9 +86,7 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, { token: API_TOKEN })
-        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
-          payment_provider: 'sandbox'
-        })
+        mockConnectorGetGatewayAccount()
         nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST)
           .reply(201, VALID_CREATE_PRODUCT_RESPONSE)
         supertest(createAppWithSession(getApp(), session))
@@ -123,9 +124,7 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .replyWithError('Somet nasty happened')
-        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
-          payment_provider: 'sandbox'
-        })
+        mockConnectorGetGatewayAccount()
         supertest(createAppWithSession(getApp(), session))
           .post(paths.prototyping.demoService.confirm)
           .send(VALID_PAYLOAD)
@@ -158,10 +157,7 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, { token: API_TOKEN })
-        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-          .reply(200, {
-            payment_provider: 'sandbox'
-          })
+        mockConnectorGetGatewayAccount()
         nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST)
           .replyWithError('Somet went wrong')
         supertest(createAppWithSession(getApp(), session))
@@ -195,7 +191,7 @@ describe('test with your users - submit controller', () => {
       describe('because the value includes text', () => {
         let result, session, app
         before('Arrange', () => {
-          nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+          mockConnectorGetGatewayAccount()
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
@@ -231,7 +227,7 @@ describe('test with your users - submit controller', () => {
       describe('because the value has too many digits to the right of the decimal point', () => {
         let result, session, app
         before('Arrange', () => {
-          nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+          mockConnectorGetGatewayAccount()
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
@@ -267,7 +263,7 @@ describe('test with your users - submit controller', () => {
       describe('because the value exceeds 100,000', () => {
         let result, session, app
         before('Arrange', () => {
-          nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+          mockConnectorGetGatewayAccount()
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
@@ -340,10 +336,7 @@ describe('test with your users - submit controller', () => {
         const app = createAppWithSession(getApp(), session)
         const payload = Object.assign({}, VALID_PAYLOAD)
         delete payload['payment-description']
-        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-          .reply(200, {
-            payment_provider: 'sandbox'
-          })
+        mockConnectorGetGatewayAccount()
         supertest(app)
           .post(paths.prototyping.demoService.confirm)
           .send(payload)

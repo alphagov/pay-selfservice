@@ -8,6 +8,7 @@ const { getApp } = require('../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../test-helpers/mock-session')
 const paths = require('../../../../app/paths')
 const { randomUuid } = require('../../../../app/utils/random')
+const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
 const GATEWAY_ACCOUNT_ID = '929'
 const { PRODUCTS_URL, CONNECTOR_URL, PUBLIC_AUTH_URL } = process.env
@@ -36,9 +37,7 @@ describe('Manage payment links - delete controller', () => {
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'tokens:create' }]
       })
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
-        payment_provider: 'sandbox'
-      })
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
       nock(PUBLIC_AUTH_URL).delete(`/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         revoked: '07/09/2018'
       })
