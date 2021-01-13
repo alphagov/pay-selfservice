@@ -1,11 +1,12 @@
 'use strict'
 
 const { response } = require('../../utils/response.js')
+const auth = require('../../services/auth.service.js')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const { isADirectDebitAccount } = require('../../services/clients/direct-debit-connector.client.js')
 
 module.exports = async function createAPIKey (req, res, next) {
-  const accountId = req.account.gateway_account_id
+  const accountId = auth.getCurrentGatewayAccountId(req)
   const correlationId = req.correlationId
   const description = req.body.description
   const payload = {

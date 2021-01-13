@@ -3,6 +3,7 @@
 const url = require('url')
 const _ = require('lodash')
 
+const auth = require('../../services/auth.service.js')
 const router = require('../../routes.js')
 const transactionService = require('../../services/transaction.service')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
@@ -20,7 +21,7 @@ function error (req, res, msg) {
 }
 
 module.exports = async (req, res, next) => {
-  const accountId = req.account.gateway_account_id
+  const accountId = auth.getCurrentGatewayAccountId(req)
   const filters = getFilters(req)
 
   const correlationId = req.headers[CORRELATION_HEADER] || ''

@@ -1,22 +1,19 @@
 'use strict'
 
-const nock = require('nock')
-const querystring = require('querystring')
+const path = require('path')
+require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
+const userCreator = require(path.join(__dirname, '/../test-helpers/user-creator.js'))
 const request = require('supertest')
-
-require('../test-helpers/serialize-mock.js')
-const userCreator = require('../test-helpers/user-creator.js')
-const getApp = require('../../server.js').getApp
-const paths = require('../../app/paths.js')
-const session = require('../test-helpers/mock-session.js')
-const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
-
+const nock = require('nock')
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
+const querystring = require('querystring')
 let app
 
 const gatewayAccountId = '452345'
 
 const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
-const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + gatewayAccountId
 const connectorMock = nock(process.env.CONNECTOR_URL)
 
 const ALL_CARD_TYPES = {
@@ -51,11 +48,6 @@ describe('Pagination', function () {
 
     userCreator.mockUserResponse(user.toJson(), done)
 
-    connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-      .reply(200,
-        gatewayAccountFixtures.validGatewayAccountResponse({
-          gateway_account_id: gatewayAccountId
-        }))
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
   })

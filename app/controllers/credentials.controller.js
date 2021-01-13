@@ -6,6 +6,7 @@ const paths = require('../paths')
 const { response } = require('../utils/response')
 const { renderErrorView } = require('../utils/response')
 const { ConnectorClient } = require('../services/clients/connector.client')
+const auth = require('../services/auth.service')
 const router = require('../routes')
 const { CONNECTOR_URL } = process.env
 const { CORRELATION_HEADER } = require('../utils/correlation-header')
@@ -81,7 +82,7 @@ module.exports = {
   },
 
   updateNotificationCredentials: async function (req, res) {
-    const accountId = req.account.gateway_account_id
+    const accountId = auth.getCurrentGatewayAccountId((req))
     const { username, password } = _.get(req, 'body')
 
     if (!username) {
@@ -116,7 +117,7 @@ module.exports = {
   },
 
   update: async function (req, res) {
-    const accountId = req.account.gateway_account_id
+    const accountId = auth.getCurrentGatewayAccountId(req)
     const correlationId = req.headers[CORRELATION_HEADER] || ''
 
     try {

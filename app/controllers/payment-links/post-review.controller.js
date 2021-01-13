@@ -6,11 +6,12 @@ const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
+const auth = require('../../services/auth.service.js')
 const supportedLanguage = require('../../models/supported-language')
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 module.exports = async function createPaymentLink (req, res) {
-  const gatewayAccountId = req.account.gateway_account_id
+  const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
   const {
     paymentLinkTitle,
     paymentLinkDescription,

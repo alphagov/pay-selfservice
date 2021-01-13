@@ -10,6 +10,7 @@ const LedgerClient = require('../../services/clients/ledger.client')
 const { isADirectDebitAccount } = require('../../services/clients/direct-debit-connector.client.js')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const auth = require('../../services/auth.service.js')
 const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 const {
@@ -86,7 +87,7 @@ const displayGoLiveLink = (service, account, user) => {
 }
 
 module.exports = async (req, res) => {
-  const gatewayAccountId = req.account.gateway_account_id
+  const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
 
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const period = _.get(req, 'query.period', 'today')

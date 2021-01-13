@@ -1,13 +1,14 @@
 'use strict'
 
 const transactionService = require('../../services/transaction.service')
+const auth = require('../../services/auth.service')
 const date = require('../../utils/dates')
 const { renderErrorView } = require('../../utils/response')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 const Stream = require('../../services/clients/stream.client')
 
 const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (req, res) {
-  const accountId = req.account.gateway_account_id
+  const accountId = auth.getCurrentGatewayAccountId(req)
   const filters = req.query
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
   const correlationId = req.headers[CORRELATION_HEADER]

@@ -1,11 +1,12 @@
 'use strict'
 
 const paths = require('../../paths')
+const auth = require('../../services/auth.service.js')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const logger = require('../../utils/logger')(__filename)
 
 module.exports = async (req, res) => {
-  const accountId = req.account.gateway_account_id
+  const accountId = auth.getCurrentGatewayAccountId(req)
   const payload = {
     token_link: req.body.token_link
   }

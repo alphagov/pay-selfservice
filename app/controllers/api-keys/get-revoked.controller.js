@@ -1,10 +1,11 @@
 'use strict'
 
 const { response, renderErrorView } = require('../../utils/response.js')
+const auth = require('../../services/auth.service.js')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 
 module.exports = (req, res) => {
-  const accountId = req.account.gateway_account_id
+  const accountId = auth.getCurrentGatewayAccountId(req)
   publicAuthClient.getRevokedTokensForAccount({
     correlationId: req.correlationId,
     accountId: accountId

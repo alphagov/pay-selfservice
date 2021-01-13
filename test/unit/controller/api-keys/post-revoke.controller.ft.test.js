@@ -9,7 +9,6 @@ const { getApp } = require('../../../../server')
 const mockSession = require('../../../test-helpers/mock-session')
 const userCreator = require('../../../test-helpers/user-creator')
 const paths = require('../../../../app/paths')
-const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '182364'
@@ -42,7 +41,9 @@ describe('POST to revoke an API key', () => {
       .reply(200, TOKEN_RESPONSE)
 
     nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-      .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
+      .reply(200, {
+        payment_provider: 'sandbox'
+      })
 
     supertest(app)
       .post(paths.apiKeys.revoke)
