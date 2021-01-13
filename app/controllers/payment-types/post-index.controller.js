@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
   if (typeof acceptedDebitCards === 'undefined' && typeof acceptedCreditCards === 'undefined') {
     req.flash('genericError', 'You must choose at least one card')
     return res.redirect(
-      formatAccountPathsFor(paths.paymentTypes.index, req.account && req.account.external_id)
+      formatAccountPathsFor(paths.account.paymentTypes.index, req.account && req.account.external_id)
     )
   }
 
@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
     await connector.postAcceptedCardsForAccount(accountId, payload, correlationId)
     req.flash('generic', 'Accepted card types have been updated')
     return res.redirect(
-      formatAccountPathsFor(paths.paymentTypes.index, req.account && req.account.external_id)
+      formatAccountPathsFor(paths.account.paymentTypes.index, req.account && req.account.external_id)
     )
   } catch (error) {
     return renderErrorView(req, res, 'Unable to update payment types. Please try again or contact support team.', error.errorCode)

@@ -88,11 +88,15 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
+  notificationCredentials, emailNotifications: emailNotifications, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
   requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
-const { toggleBillingAddress: billingAddress } = paths.account
+const { 
+  paymentTypes,
+  toggle3ds,
+  toggleBillingAddress
+ } = paths.account
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -170,20 +174,20 @@ module.exports.bind = function (app) {
     ...lodash.values(transactions),
     ...lodash.values(allServiceTransactions),
     ...lodash.values(credentials),
-    ...lodash.values(nc),
+    ...lodash.values(notificationCredentials),
     ...lodash.values(apiKeys),
-    ...lodash.values(pt),
-    ...lodash.values(en),
+    ...lodash.values(paymentTypes),
+    ...lodash.values(emailNotifications),
     ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
-    ...lodash.values(t3ds),
+    ...lodash.values(toggle3ds),
     ...lodash.values(merchantDetails),
     ...lodash.values(prototyping.demoPayment),
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
     ...lodash.values(user.profile),
-    ...lodash.values(billingAddress),
+    ...lodash.values(toggleBillingAddress),
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
     ...lodash.values(stripeSetup),
@@ -225,9 +229,9 @@ module.exports.bind = function (app) {
   app.get(credentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editCredentials)
   app.post(credentials.index, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.update)
 
-  app.get(nc.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsController.index)
-  app.get(nc.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editNotificationCredentials)
-  app.post(nc.update, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.updateNotificationCredentials)
+  app.get(notificationCredentials.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsController.index)
+  app.get(notificationCredentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editNotificationCredentials)
+  app.post(notificationCredentials.update, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.updateNotificationCredentials)
 
   // MERCHANT DETAILS
   app.get(merchantDetails.index, permission('merchant-details:read'), merchantDetailsController.getIndex)
@@ -242,8 +246,8 @@ module.exports.bind = function (app) {
   app.post(apiKeys.revoke, permission('tokens:delete'), getAccount, apiKeysController.postRevoke)
   app.post(apiKeys.update, permission('tokens:update'), getAccount, apiKeysController.postUpdate)
 
-  account.get(pt.index, permission('payment-types:read'), paymentTypesController.getIndex)
-  account.post(pt.index, permission('payment-types:update'), paymentTypesController.postIndex)
+  account.get(paymentTypes.index, permission('payment-types:read'), paymentTypesController.getIndex)
+  account.post(paymentTypes.index, permission('payment-types:update'), paymentTypesController.postIndex)
 
   // DIGITAL WALLET
   app.get(digitalWallet.applePay, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getApplePay)
@@ -252,19 +256,19 @@ module.exports.bind = function (app) {
   app.post(digitalWallet.googlePay, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postGooglePay)
 
   // EMAIL
-  app.get(en.index, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.index)
-  app.get(en.indexRefundTabEnabled, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.indexRefundTabEnabled)
-  app.get(en.edit, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.edit)
-  app.post(en.confirm, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirm)
-  app.post(en.update, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.update)
-  app.get(en.collection, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.collectionEmailIndex)
-  app.post(en.collection, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.collectionEmailUpdate)
-  app.get(en.confirmation, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailIndex)
-  app.post(en.confirmation, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailUpdate)
-  app.post(en.off, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailOff)
-  app.post(en.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailOn)
-  app.get(en.refund, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailIndex)
-  app.post(en.refund, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailUpdate)
+  app.get(emailNotifications.index, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.index)
+  app.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.indexRefundTabEnabled)
+  app.get(emailNotifications.edit, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.edit)
+  app.post(emailNotifications.confirm, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirm)
+  app.post(emailNotifications.update, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.update)
+  app.get(emailNotifications.collection, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.collectionEmailIndex)
+  app.post(emailNotifications.collection, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.collectionEmailUpdate)
+  app.get(emailNotifications.confirmation, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailIndex)
+  app.post(emailNotifications.confirmation, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailUpdate)
+  app.post(emailNotifications.off, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailOff)
+  app.post(emailNotifications.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailOn)
+  app.get(emailNotifications.refund, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailIndex)
+  app.post(emailNotifications.refund, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailUpdate)
 
   // SERVICE SWITCHER
   app.get(serviceSwitcher.index, myServicesController.getIndex)
@@ -289,8 +293,8 @@ module.exports.bind = function (app) {
   app.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
 
   // 3D SECURE TOGGLE
-  app.get(t3ds.index, permission('toggle-3ds:read'), getAccount, paymentMethodIsCard, toggle3dsController.get)
-  app.post(t3ds.index, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3dsController.post)
+  account.get(toggle3ds.index, permission('toggle-3ds:read'), paymentMethodIsCard, toggle3dsController.get)
+  account.post(toggle3ds.index, permission('toggle-3ds:update'), paymentMethodIsCard, toggle3dsController.post)
 
   // MOTO MASK CARD NUMBER & SECURITY CODE TOGGLE
   app.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:read'), getAccount, paymentMethodIsCard, toggleMotoMaskCardNumber.get)
@@ -298,8 +302,8 @@ module.exports.bind = function (app) {
   app.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:read'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.get)
   app.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:update'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.post)
 
-  account.get(billingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
-  account.post(billingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
+  account.get(toggleBillingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
+  account.post(toggleBillingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
 
   // Prototyping
   app.get(prototyping.demoService.index, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsersController.index)

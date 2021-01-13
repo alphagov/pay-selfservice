@@ -7,6 +7,7 @@ const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 describe('3DS settings page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
+  const gatewayAccountExternalId = 'a-valid-external-id'
   const serviceName = 'Purchase a positron projection permit'
 
   function setup3dsStubs (opts = {}) {
@@ -31,10 +32,11 @@ describe('3DS settings page', () => {
       user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
     }
     const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: opts.gateway, requires3ds: opts.requires3ds })
+    const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, paymentProvider: opts.gateway, requires3ds: opts.requires3ds })
 
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false, maestro: opts.maestro })
 
-    stubs.push(user, gatewayAccount, card)
+    stubs.push(user, gatewayAccount, gatewayAccountByExternalId, card)
 
     cy.task('setupStubs', stubs)
   }
@@ -52,7 +54,7 @@ describe('3DS settings page', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
       cy.visit('/settings')
       cy.get('.govuk-summary-list__key').first().should('not.contain', '3D Secure')
-      cy.visit('/3ds')
+      cy.visit(`/account/${gatewayAccountExternalId}/3ds`)
       cy.title().should('eq', `3D Secure - ${serviceName} - GOV.UK Pay`)
       cy.get('#threeds-not-supported').should('be.visible')
       cy.get('#threeds-not-supported').should('contain', '3D Secure is not currently supported for this payment service provider (PSP).')
@@ -182,6 +184,7 @@ describe('3DS settings page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe', requires3ds: true }),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe', requires3ds: true }),
         gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false }),
         stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true, bankAccount: true, companyNumber: true, responsiblePerson: true })
       ])

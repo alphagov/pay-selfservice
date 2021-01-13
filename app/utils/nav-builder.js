@@ -9,7 +9,7 @@ const formatPSPname = require('./format-PSP-name')
 const mainSettingsPaths = [
   paths.settings,
   paths.digitalWallet,
-  paths.toggle3ds,
+  paths.account.toggle3ds,
   paths.account.toggleBillingAddress,
   paths.emailNotifications,
   paths.toggleMotoMaskCardNumberAndSecurityCode
@@ -54,7 +54,7 @@ const serviceNavigationItems = (currentPath, permissions, type) => {
       ...mainSettingsPaths,
       ...yourPspPaths,
       paths.apiKeys,
-      paths.paymentTypes
+      paths.account.paymentTypes
     ]) : false,
     permissions: _.some([
       permissions.tokens_read,
@@ -94,12 +94,16 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
     {
       id: 'navigation-menu-payment-types',
       name: 'Card types',
-      url: formatAccountPathsFor(paths.paymentTypes.index, account.external_id),
-      current: pathLookup(currentPath, paths.paymentTypes.index),
+      url: formatAccountPathsFor(paths.account.paymentTypes.index, account.external_id),
+      current: pathLookup(currentPath, paths.account.paymentTypes.index),
       permissions: permissions.payment_types_read && type === 'card'
     }
   ]
 }
+
+// const pathMatches(url, paths) {
+
+// }
 
 module.exports = {
   serviceNavigationItems: serviceNavigationItems,

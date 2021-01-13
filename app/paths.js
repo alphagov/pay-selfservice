@@ -12,6 +12,12 @@ module.exports = {
   keys,
   account: {
     root: `/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
+    paymentTypes: {
+      index: '/payment-types'
+    },
+    toggle3ds: {
+      index: '/3ds'
+    },
     toggleBillingAddress: {
       index: '/billing-address'
     }
@@ -72,9 +78,6 @@ module.exports = {
     revoke: '/api-keys/revoke',
     update: '/api-keys/update'
   },
-  paymentTypes: {
-    index: '/payment-types'
-  },
   digitalWallet: {
     applePay: '/digital-wallet/apple-pay',
     googlePay: '/digital-wallet/google-pay'
@@ -128,9 +131,6 @@ module.exports = {
     otpResend: '/create-service/resend-otp',
     logUserIn: '/create-service/proceed-to-login',
     serviceNaming: '/service/set-name'
-  },
-  toggle3ds: {
-    index: '/3ds'
   },
   toggleMotoMaskCardNumberAndSecurityCode: {
     cardNumber: '/moto-hide-card-number',
