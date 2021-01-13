@@ -83,10 +83,8 @@ const getAccount = account => {
 
 module.exports = function (req, data, template) {
   const convertedData = _.clone(data)
-  const user = req.user
-  const account = req.account
-  const originalUrl = req.originalUrl || ''
-  const permissions = getPermissions(user, req.service)
+  const { user, account, service, url: relativeUrl } = req
+  const permissions = getPermissions(user, service)
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
   convertedData.paymentMethod = paymentMethod
   convertedData.permissions = permissions
@@ -99,10 +97,11 @@ module.exports = function (req, data, template) {
   convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
   convertedData.isDigitalWalletSupported = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'worldpay'
   const paymentProvider = _.get(convertedData, 'currentGatewayAccount.payment_provider')
-  convertedData.currentService = _.get(req, 'service')
+  convertedData.currentService = service
+  const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(url.parse(originalUrl).pathname, permissions, paymentMethod)
-    convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, paymentMethod, paymentProvider, account)
+    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod)
+    convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account)
   }
   convertedData._features = {}
   if (req.user && req.user.features) {

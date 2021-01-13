@@ -6,13 +6,28 @@ const formatAccountPathsFor = require('./format-account-paths-for')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
 
-const serviceNavigationItems = (originalUrl, permissions, type) => {
+const mainSettingsPaths = [
+  paths.settings,
+  paths.digitalWallet,
+  paths.toggle3ds,
+  paths.account.toggleBillingAddress,
+  paths.emailNotifications,
+  paths.toggleMotoMaskCardNumberAndSecurityCode
+]
+
+const yourPspPaths = [
+  paths.yourPsp,
+  paths.credentials,
+  paths.notificationCredentials
+]
+
+const serviceNavigationItems = (currentPath, permissions, type) => {
   const navigationItems = []
   navigationItems.push({
     id: 'navigation-menu-home',
     name: 'Dashboard',
     url: paths.dashboard.index,
-    current: originalUrl === paths.dashboard.index,
+    current: currentPath === paths.dashboard.index,
     permissions: true
   })
   if (type === 'card') {
@@ -20,14 +35,14 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
       id: 'navigation-menu-transactions',
       name: 'Transactions',
       url: paths.transactions.index,
-      current: pathLookup(originalUrl, paths.transactions.index),
+      current: pathLookup(currentPath, paths.transactions.index),
       permissions: permissions.transactions_read
     })
     navigationItems.push({
       id: 'navigation-menu-payment-links',
       name: 'Payment links',
       url: paths.paymentLinks.start,
-      current: pathLookup(originalUrl, paths.paymentLinks.start),
+      current: pathLookup(currentPath, paths.paymentLinks.start),
       permissions: permissions.tokens_create
     })
   }
@@ -35,13 +50,10 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: type === 'card' ? paths.settings.index : paths.apiKeys.index,
-    current: originalUrl !== '/' ? pathLookup(originalUrl.replace(/([a-z])\/$/g, '$1'), [
-      paths.settings.index,
-      paths.yourPsp,
-      paths.notificationCredentials,
-      paths.toggle3ds,
+    current: currentPath !== '/' ? pathLookup(currentPath, [
+      ...mainSettingsPaths,
+      ...yourPspPaths,
       paths.apiKeys,
-      paths.emailNotifications,
       paths.paymentTypes
     ]) : false,
     permissions: _.some([
@@ -56,36 +68,34 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
   return navigationItems
 }
 
-const adminNavigationItems = (originalUrl, permissions, type, paymentProvider, account = {}) => {
-  const paymentTypesPath = formatAccountPathsFor(paths.paymentTypes.index, account.external_id)
-
+const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}) => {
   return [
     {
       id: 'navigation-menu-settings-home',
       name: 'Settings',
       url: paths.settings.index,
-      current: pathLookup(originalUrl, paths.settings.index),
+      current: pathLookup(currentPath, mainSettingsPaths),
       permissions: type === 'card'
     },
     {
       id: 'navigation-menu-api-keys',
       name: 'API keys',
       url: paths.apiKeys.index,
-      current: pathLookup(originalUrl, paths.apiKeys.index),
+      current: pathLookup(currentPath, paths.apiKeys.index),
       permissions: permissions.tokens_update
     },
     {
       id: 'navigation-menu-your-psp',
       name: `Your PSP - ${formatPSPname(paymentProvider)}`,
       url: paths.yourPsp.index,
-      current: pathLookup(originalUrl, paths.yourPsp.index),
+      current: pathLookup(currentPath, yourPspPaths),
       permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox')
     },
     {
       id: 'navigation-menu-payment-types',
       name: 'Card types',
-      url: paymentTypesPath,
-      current: pathLookup(originalUrl, paymentTypesPath) || pathLookup(originalUrl, paths.digitalWallet.summary),
+      url: formatAccountPathsFor(paths.paymentTypes.index, account.external_id),
+      current: pathLookup(currentPath, paths.paymentTypes.index),
       permissions: permissions.payment_types_read && type === 'card'
     }
   ]
