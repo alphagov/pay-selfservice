@@ -43,13 +43,13 @@
             </a>
           </li>
           <li class="govuk-tabs__list-item">
-            <a id="refund-tab" class="govuk-tabs__tab govuk-tabs__tab" href="{{ routes.emailNotifications.indexRefundTabEnabled }}">
+            <a id="refund-tab" class="govuk-tabs__tab govuk-tabs__tab" href="{{ formatAccountPathsFor(routes.account.emailNotifications.indexRefundTabEnabled, currentGatewayAccount.external_id) }}">
               Refund email
             </a>
           </li>
         {% else %}
           <li class="govuk-tabs__list-item">
-            <a class="govuk-tabs__tab" href="{{ routes.emailNotifications.index }}">
+            <a class="govuk-tabs__tab" href="{{ formatAccountPathsFor(routes.account.emailNotifications.index, currentGatewayAccount.external_id) }}">
               Confirmation email
             </a>
           </li>
@@ -73,7 +73,7 @@
           {% if permissions.email_notification_toggle_update %}
             {{
               govukButton({
-                href: routes.emailNotifications.edit,
+                href: formatAccountPathsFor(routes.account.emailNotifications.edit, currentGatewayAccount.external_id),
                 text: "Add a custom paragraph",
                 attributes: {
                   id: "add-custom-paragraph-link"

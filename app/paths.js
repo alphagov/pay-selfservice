@@ -16,6 +16,18 @@ module.exports = {
       applePay: '/digital-wallet/apple-pay',
       googlePay: '/digital-wallet/google-pay'
     },
+    emailNotifications: {
+      index: '/email-notifications',
+      indexRefundTabEnabled: '/email-notifications-refund',
+      edit: '/email-notifications/edit',
+      confirm: '/email-notifications/confirm',
+      update: '/email-notifications/update',
+      off: '/email-notifications/off',
+      on: '/email-notifications/on',
+      collection: '/email-settings-collection',
+      confirmation: '/email-settings-confirmation',
+      refund: '/email-settings-refund'
+    },
     paymentTypes: {
       index: '/payment-types'
     },
@@ -81,18 +93,6 @@ module.exports = {
     create: '/api-keys/create',
     revoke: '/api-keys/revoke',
     update: '/api-keys/update'
-  },
-  emailNotifications: {
-    index: '/email-notifications',
-    indexRefundTabEnabled: '/email-notifications-refund',
-    edit: '/email-notifications/edit',
-    confirm: '/email-notifications/confirm',
-    update: '/email-notifications/update',
-    off: '/email-notifications/off',
-    on: '/email-notifications/on',
-    collection: '/email-settings-collection',
-    confirmation: '/email-settings-confirmation',
-    refund: '/email-settings-refund'
   },
   serviceSwitcher: {
     index: '/my-services',

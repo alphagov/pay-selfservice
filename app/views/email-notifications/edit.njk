@@ -46,7 +46,7 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
       <li>use redirects or tracking links</li>
   </ul>
 
-  <form method="post" action="{{routes.emailNotifications.confirm}}" data-validate>
+  <form method="post" action="{{ formatAccountPathsFor(routes.account.emailNotifications.confirm, currentGatewayAccount.external_id) }}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{
@@ -74,7 +74,7 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
         }
       })
     }}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.emailNotifications.index, currentGatewayAccount.external_id) }}">Cancel</a></p>
   </form>
 </div>
 {% endblock %}

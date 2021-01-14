@@ -11,7 +11,7 @@ const mainSettingsPaths = [
   paths.account.digitalWallet,
   paths.account.toggle3ds,
   paths.account.toggleBillingAddress,
-  paths.emailNotifications,
+  paths.account.emailNotifications,
   paths.toggleMotoMaskCardNumberAndSecurityCode
 ]
 
