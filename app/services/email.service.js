@@ -5,23 +5,6 @@ const ConnectorClient = require('./clients/connector.client.js').ConnectorClient
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
-const getEmailSettings = async function (accountID, correlationId) {
-  try {
-    const data = await connectorClient.getAccount({
-      gatewayAccountId: accountID,
-      correlationId: correlationId
-    })
-    return {
-      customEmailText: data.email_notifications.PAYMENT_CONFIRMED.template_body,
-      emailEnabled: data.email_notifications.PAYMENT_CONFIRMED.enabled,
-      emailCollectionMode: data.email_collection_mode,
-      refundEmailEnabled: data.email_notifications.REFUND_ISSUED && data.email_notifications.REFUND_ISSUED.enabled
-    }
-  } catch (err) {
-    clientFailure(err, 'GET', false)
-  }
-}
-
 const updateConfirmationTemplate = async function (accountID, emailText, correlationId) {
   try {
     const patch = { 'op': 'replace', 'path': '/payment_confirmed/template_body', 'value': emailText }
@@ -89,7 +72,6 @@ const clientFailure = function (err, methodType, isPatchEndpoint) {
 }
 
 module.exports = {
-  getEmailSettings,
   updateConfirmationTemplate,
   setEmailCollectionMode,
   setConfirmationEnabled,
