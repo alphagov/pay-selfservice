@@ -7,6 +7,7 @@ const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate-route')
 const paths = require('./paths.js')
+const accountUrls = require('./utils/gateway-account-urls')
 
 const userIsAuthorised = require('./middleware/user-is-authorised')
 const getServiceAndAccount = require('./middleware/get-service-and-gateway-account.middleware')
@@ -488,6 +489,18 @@ module.exports.bind = function (app) {
   app.use(paths.account.root, account)
 
   app.all('*', (req, res) => {
+    const currentSessionAccountExternalId = req.gateway_account && req.gateway_account.currentGatewayAccountExternalId
+    if (accountUrls.isLegacyAccountsUrl(req.url) && currentSessionAccountExternalId) {
+      const upgradedPath = accountUrls.getUpgradedAccountStructureUrl(req.url, currentSessionAccountExternalId)
+      logger.info('Accounts URL utility upgraded a request to a legacy account URL', {
+        url: req.originalUrl,
+        redirected_url: upgradedPath,
+        session_has_user: !!req.user,
+        is_internal_user: req.user && req.user.internalUser
+      })
+      res.redirect(upgradedPath)
+      return
+    }
     logger.info('Page not found', {
       url: req.originalUrl
     })
