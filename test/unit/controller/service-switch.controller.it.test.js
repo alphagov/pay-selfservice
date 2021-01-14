@@ -155,13 +155,15 @@ describe('service switch controller: switching', function () {
       session: session,
       gateway_account: gatewayAccount,
       body: {
-        gatewayAccountId: '6'
+        gatewayAccountId: '6',
+        gatewayAccountExternalId: 'some-external-id'
       }
     }
 
     const res = {
       redirect: function () {
         expect(gatewayAccount.currentGatewayAccountId).to.be.equal('6')
+        expect(gatewayAccount.currentGatewayAccountExternalId).to.be.equal('some-external-id')
         expect(arguments[0]).to.equal(302)
         expect(arguments[1]).to.equal('/')
       }

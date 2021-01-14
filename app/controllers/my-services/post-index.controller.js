@@ -9,13 +9,15 @@ const validAccountId = (accountId, user) => {
 }
 
 module.exports = (req, res) => {
-  let newAccountId = _.get(req, 'body.gatewayAccountId')
+  const gatewayAccountId = req.body && req.body.gatewayAccountId
+  const gatewayAccountExternalId = req.body && req.body.gatewayAccountExternalId
 
-  if (validAccountId(newAccountId, req.user)) {
-    req.gateway_account.currentGatewayAccountId = newAccountId
+  if (validAccountId(gatewayAccountId, req.user)) {
+    req.gateway_account.currentGatewayAccountId = gatewayAccountId
+    req.gateway_account.currentGatewayAccountExternalId = gatewayAccountExternalId
     res.redirect(302, paths.dashboard.index)
   } else {
-    logger.warn(`Attempted to switch to invalid account ${newAccountId}`)
+    logger.warn(`Attempted to switch to invalid account ${gatewayAccountId}`)
     res.redirect(302, paths.serviceSwitcher.index)
   }
 }
