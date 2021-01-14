@@ -25,7 +25,7 @@ let app
 
 function whenGetPaymentTypes (baseApp) {
   return request(baseApp)
-    .get(formatAccountPathsFor(paths.paymentTypes.index, gatewayAccountExternalId))
+    .get(formatAccountPathsFor(paths.account.paymentTypes.index, gatewayAccountExternalId))
 }
 
 function whenPaymentTypesUpdated (baseApp, payload) {
@@ -34,7 +34,7 @@ function whenPaymentTypesUpdated (baseApp, payload) {
     csrfToken: csrf().create('123')
   }
   return request(baseApp)
-    .post(formatAccountPathsFor(paths.paymentTypes.index, gatewayAccountExternalId))
+    .post(formatAccountPathsFor(paths.account.paymentTypes.index, gatewayAccountExternalId))
     .send(payload)
 }
 

@@ -1,6 +1,7 @@
 'use strict'
 
 const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
@@ -23,7 +24,7 @@ module.exports = async (req, res) => {
 
     await connector.update3dsEnabled(params)
     req.flash('generic', '3D secure settings have been updated')
-    return res.redirect(paths.toggle3ds.index)
+    return res.redirect(formatAccountPathsFor(paths.account.toggle3ds.index, req.account && req.account.external_id))
   } catch (error) {
     return renderErrorView(req, res, false, error.errorCode)
   }
