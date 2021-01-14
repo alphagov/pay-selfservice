@@ -27,7 +27,7 @@
         You’ll need a Google Pay merchant ID. Refer to the <a class="govuk-link" href="https://docs.payments.service.gov.uk/digital_wallets/#enable-google-pay">GOV.UK Pay documentation on enabling Google Pay</a> to learn where to find your merchant ID.
       </p>
 
-      <form method="post" action="{{routes.digitalWallet.googlePay}}">
+      <form method="post">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
         {% set merchantID %}

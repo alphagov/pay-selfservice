@@ -12,6 +12,10 @@ module.exports = {
   keys,
   account: {
     root: `/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
+    digitalWallet: {
+      applePay: '/digital-wallet/apple-pay',
+      googlePay: '/digital-wallet/google-pay'
+    },
     paymentTypes: {
       index: '/payment-types'
     },
@@ -77,10 +81,6 @@ module.exports = {
     create: '/api-keys/create',
     revoke: '/api-keys/revoke',
     update: '/api-keys/update'
-  },
-  digitalWallet: {
-    applePay: '/digital-wallet/apple-pay',
-    googlePay: '/digital-wallet/google-pay'
   },
   emailNotifications: {
     index: '/email-notifications',

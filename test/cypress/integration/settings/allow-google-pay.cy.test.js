@@ -1,11 +1,22 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
-function setupStubs (userExternalId, gatewayAccountId, serviceName, allowGooglePay) {
+const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+const gatewayAccountId = 42
+const gatewayAccountExternalId = 'a-valid-external-id'
+const serviceName = 'My Awesome Service'
+
+function setupStubs (allowGooglePay) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.getGatewayAccountSuccess({
       gatewayAccountId,
+      paymentProvider: 'worldpay',
+      allowGooglePay: allowGooglePay
+    }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+      gatewayAccountId,
+      gatewayAccountExternalId,
       paymentProvider: 'worldpay',
       allowGooglePay: allowGooglePay
     })
@@ -13,17 +24,13 @@ function setupStubs (userExternalId, gatewayAccountId, serviceName, allowGoogleP
 }
 
 describe('Google Pay', () => {
-  const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = 42
-  const serviceName = 'My Awesome Service'
-
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
   describe('is disabled', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName, false)
+      setupStubs(false)
     })
 
     it('should show it is disabled', () => {
@@ -41,7 +48,7 @@ describe('Google Pay', () => {
 
   describe('but allow us to enable when supported', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName, false)
+      setupStubs(false)
     })
 
     it('should allow us to enable', () => {
@@ -54,7 +61,7 @@ describe('Google Pay', () => {
 
   describe('Show enabled after turning on', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName, true)
+      setupStubs(true)
     })
 
     it('should allow us to enable', () => {

@@ -39,7 +39,7 @@
       }}
     {% endif %}
 
-    <form class="permission-main" method="post" action="{{ routes.toggleBillingAddress.index }}">
+    <form class="permission-main" method="post">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
       {{
         govukRadios({

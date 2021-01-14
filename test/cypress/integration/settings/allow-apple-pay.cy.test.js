@@ -1,11 +1,22 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
-function setupStubs (userExternalId, gatewayAccountId, serviceName, allowApplePay) {
+const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+const gatewayAccountId = 42
+const gatewayAccountExternalId = 'a-valid-external-id'
+const serviceName = 'My Awesome Service'
+
+function setupStubs (allowApplePay) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.getGatewayAccountSuccess({
       gatewayAccountId,
+      paymentProvider: 'worldpay',
+      allowApplePay: allowApplePay
+    }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+      gatewayAccountId,
+      gatewayAccountExternalId,
       paymentProvider: 'worldpay',
       allowApplePay: allowApplePay
     })
@@ -13,17 +24,13 @@ function setupStubs (userExternalId, gatewayAccountId, serviceName, allowApplePa
 }
 
 describe('Apple Pay', () => {
-  const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = 42
-  const serviceName = 'My Awesome Service'
-
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
   describe('is disabled when unsupported', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName, false)
+      setupStubs(false)
     })
 
     it('should show it is disabled', () => {
@@ -41,7 +48,7 @@ describe('Apple Pay', () => {
 
   describe('but allow us to enable when supported', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName, false)
+      setupStubs(false)
     })
 
     it('Show that is is disabled', () => {
@@ -54,7 +61,7 @@ describe('Apple Pay', () => {
 
   describe('Show enabled after turning on', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, serviceName, true)
+      setupStubs(true)
     })
 
     it('should allow us to enable', () => {
