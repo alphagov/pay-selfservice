@@ -36,6 +36,10 @@ module.exports = {
     },
     toggleBillingAddress: {
       index: '/billing-address'
+    },
+    toggleMotoMaskCardNumberAndSecurityCode: {
+      cardNumber: '/moto-hide-card-number',
+      securityCode: '/moto-hide-security-code'
     }
   },
   transactions: {
@@ -131,10 +135,6 @@ module.exports = {
     otpResend: '/create-service/resend-otp',
     logUserIn: '/create-service/proceed-to-login',
     serviceNaming: '/service/set-name'
-  },
-  toggleMotoMaskCardNumberAndSecurityCode: {
-    cardNumber: '/moto-hide-card-number',
-    securityCode: '/moto-hide-security-code'
   },
   healthcheck: {
     path: '/healthcheck'

@@ -6,6 +6,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 describe('MOTO mask security section', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
+  const gatewayAccountExternalId = 'a-valid-external-id'
   const serviceName = 'Purchase a positron projection permit'
 
   function setupMotoStubs (opts = {}) {
@@ -30,10 +31,24 @@ describe('MOTO mask security section', () => {
       user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
     }
 
-    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider: opts.gateway, allowMoto: opts.allowMoto, motoMaskCardNumber: opts.motoMaskCardNumber, motoMaskSecurityCode: opts.motoMaskSecurityCode })
+    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({
+      gatewayAccountId,
+      paymentProvider: opts.gateway,
+      allowMoto: opts.allowMoto,
+      motoMaskCardNumber: opts.motoMaskCardNumber,
+      motoMaskSecurityCode: opts.motoMaskSecurityCode
+    })
+    const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+      gatewayAccountId,
+      gatewayAccountExternalId,
+      paymentProvider: opts.gateway,
+      allowMoto: opts.allowMoto,
+      motoMaskCardNumber: opts.motoMaskCardNumber,
+      motoMaskSecurityCode: opts.motoMaskSecurityCode
+    })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false, maestro: opts.maestro })
 
-    stubs.push(user, gatewayAccount, card)
+    stubs.push(user, gatewayAccount, gatewayAccountByExternalId, card)
 
     cy.task('setupStubs', stubs)
   }
@@ -99,7 +114,7 @@ describe('MOTO mask security section', () => {
         setupMotoStubs({ readonly: false, allowMoto: true, motoMaskCardNumber: true })
       })
 
-      it(`should show 'save chanegs' notification`, () => {
+      it(`should show 'save changes' notification`, () => {
         cy.get('input[value="on"]').click()
         cy.get('#save-moto-mask-changes').click()
         cy.get('input[value="on"]').should('be.checked')

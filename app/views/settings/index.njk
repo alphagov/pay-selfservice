@@ -229,7 +229,7 @@
                 classes: 'govuk-!-width-one-quarter',
                 items: [
                   {
-                    href: routes.toggleMotoMaskCardNumberAndSecurityCode.cardNumber,
+                    href: formatAccountPathsFor(routes.account.toggleMotoMaskCardNumberAndSecurityCode.cardNumber, currentGatewayAccount.external_id),
                     classes: 'govuk-link--no-visited-state',
                     text: 'Change' if permissions.moto_mask_input_update else 'View',
                     visuallyHiddenText: 'Moto Secure settings'
@@ -250,7 +250,7 @@
                 classes: 'govuk-!-width-one-quarter',
                 items: [
                   {
-                    href: routes.toggleMotoMaskCardNumberAndSecurityCode.securityCode,
+                    href: formatAccountPathsFor(routes.account.toggleMotoMaskCardNumberAndSecurityCode.securityCode, currentGatewayAccount.external_id),
                     classes: 'govuk-link--no-visited-state',
                     text: 'Change' if permissions.moto_mask_input_update else 'View',
                     visuallyHiddenText: 'Moto Secure settings'
