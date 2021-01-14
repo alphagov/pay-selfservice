@@ -12,7 +12,7 @@ const mainSettingsPaths = [
   paths.account.toggle3ds,
   paths.account.toggleBillingAddress,
   paths.account.emailNotifications,
-  paths.toggleMotoMaskCardNumberAndSecurityCode
+  paths.account.toggleMotoMaskCardNumberAndSecurityCode
 ]
 
 const yourPspPaths = [

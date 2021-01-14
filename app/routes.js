@@ -88,7 +88,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
+  notificationCredentials, prototyping, paymentLinks,
   requestToGoLive, policyPages, stripeSetup, stripe,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
@@ -97,7 +97,8 @@ const {
   emailNotifications,
   paymentTypes,
   toggle3ds,
-  toggleBillingAddress
+  toggleBillingAddress,
+  toggleMotoMaskCardNumberAndSecurityCode
  } = paths.account
 
 // Exports
@@ -193,7 +194,6 @@ module.exports.bind = function (app) {
     ...lodash.values(settings),
     ...lodash.values(yourPsp),
     ...lodash.values(payouts),
-    ...lodash.values(toggleMotoMaskCardNumberAndSecurityCode),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -294,10 +294,10 @@ module.exports.bind = function (app) {
   account.post(toggle3ds.index, permission('toggle-3ds:update'), paymentMethodIsCard, toggle3dsController.post)
 
   // MOTO MASK CARD NUMBER & SECURITY CODE TOGGLE
-  app.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:read'), getAccount, paymentMethodIsCard, toggleMotoMaskCardNumber.get)
-  app.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:update'), getAccount, paymentMethodIsCard, toggleMotoMaskCardNumber.post)
-  app.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:read'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.get)
-  app.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:update'), getAccount, paymentMethodIsCard, toggleMotoMaskSecurityCode.post)
+  account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:read'), paymentMethodIsCard, toggleMotoMaskCardNumber.get)
+  account.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:update'), paymentMethodIsCard, toggleMotoMaskCardNumber.post)
+  account.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:read'), paymentMethodIsCard, toggleMotoMaskSecurityCode.get)
+  account.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:update'), paymentMethodIsCard, toggleMotoMaskSecurityCode.post)
 
   account.get(toggleBillingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
   account.post(toggleBillingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
