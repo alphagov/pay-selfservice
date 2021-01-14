@@ -19,7 +19,7 @@ Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.fu
     {% include "./email-confirmation-body.njk" %}
   </div>
 
-  <form method="post" action="{{routes.emailNotifications.update}}">
+  <form method="post" action="{{ formatAccountPathsFor(routes.account.emailNotifications.update, currentGatewayAccount.external_id) }}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input type="hidden" value="{{customEmailText}}" name="custom-email-text" class="qa-custom-p" />
 
@@ -32,7 +32,7 @@ Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.fu
         }
       })
     }}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.emailNotifications.index, currentGatewayAccount.external_id) }}">Cancel</a></p>
   </form>
 </div>
 {% endblock %}

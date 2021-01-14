@@ -1,10 +1,17 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
-function setupStubs (userExternalId, gatewayAccountId, serviceName, role) {
+const settingsUrl = `/settings`
+const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+const gatewayAccountId = 42
+const gatewayAccountExternalId = 'a-valid-external-id'
+const serviceName = 'Test Service'
+
+function setupStubs (role) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role }),
     gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
     gatewayAccountStubs.getAccountAuthSuccess({ gatewayAccountId }),
     gatewayAccountStubs.patchConfirmationEmailToggleSuccess({ gatewayAccountId }),
     gatewayAccountStubs.patchRefundEmailToggleSuccess({ gatewayAccountId }),
@@ -13,15 +20,10 @@ function setupStubs (userExternalId, gatewayAccountId, serviceName, role) {
 }
 
 describe('Settings', () => {
-  const settingsUrl = `/settings`
-  const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = 42
-  const serviceName = 'Test Service'
-
   describe('For an admin user', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      setupStubs(userExternalId, gatewayAccountId, serviceName)
+      setupStubs()
 
       cy.visit(settingsUrl)
     })
@@ -134,7 +136,7 @@ describe('Settings', () => {
           }
         ]
       }
-      setupStubs(userExternalId, gatewayAccountId, serviceName, role)
+      setupStubs(role)
 
       cy.visit(settingsUrl)
     })

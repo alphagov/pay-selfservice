@@ -88,12 +88,13 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials, emailNotifications: emailNotifications, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
+  notificationCredentials, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
   requestToGoLive, policyPages, stripeSetup, stripe,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
 const { 
   digitalWallet,
+  emailNotifications,
   paymentTypes,
   toggle3ds,
   toggleBillingAddress
@@ -177,7 +178,6 @@ module.exports.bind = function (app) {
     ...lodash.values(credentials),
     ...lodash.values(notificationCredentials),
     ...lodash.values(apiKeys),
-    ...lodash.values(emailNotifications),
     ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
@@ -253,19 +253,19 @@ module.exports.bind = function (app) {
   account.post(digitalWallet.googlePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.postGooglePay)
 
   // EMAIL
-  app.get(emailNotifications.index, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.index)
-  app.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.indexRefundTabEnabled)
-  app.get(emailNotifications.edit, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.edit)
-  app.post(emailNotifications.confirm, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirm)
-  app.post(emailNotifications.update, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.update)
-  app.get(emailNotifications.collection, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.collectionEmailIndex)
-  app.post(emailNotifications.collection, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.collectionEmailUpdate)
-  app.get(emailNotifications.confirmation, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailIndex)
-  app.post(emailNotifications.confirmation, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailUpdate)
-  app.post(emailNotifications.off, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailOff)
-  app.post(emailNotifications.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailOn)
-  app.get(emailNotifications.refund, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailIndex)
-  app.post(emailNotifications.refund, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailUpdate)
+  account.get(emailNotifications.index, permission('email-notification-template:read'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.index)
+  account.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.indexRefundTabEnabled)
+  account.get(emailNotifications.edit, permission('email-notification-paragraph:update'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.edit)
+  account.post(emailNotifications.confirm, permission('email-notification-paragraph:update'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirm)
+  account.post(emailNotifications.update, permission('email-notification-paragraph:update'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.update)
+  account.get(emailNotifications.collection, permission('email-notification-template:read'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.collectionEmailIndex)
+  account.post(emailNotifications.collection, permission('email-notification-toggle:update'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.collectionEmailUpdate)
+  account.get(emailNotifications.confirmation, permission('email-notification-template:read'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailIndex)
+  account.post(emailNotifications.confirmation, permission('email-notification-toggle:update'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailUpdate)
+  account.post(emailNotifications.off, permission('email-notification-toggle:update'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailOff)
+  account.post(emailNotifications.on, permission('email-notification-toggle:update'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.confirmationEmailOn)
+  account.get(emailNotifications.refund, permission('email-notification-template:read'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailIndex)
+  account.post(emailNotifications.refund, permission('email-notification-toggle:update'), getEmailNotification, paymentMethodIsCard, emailNotificationsController.refundEmailUpdate)
 
   // SERVICE SWITCHER
   app.get(serviceSwitcher.index, myServicesController.getIndex)

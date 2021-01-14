@@ -20,7 +20,7 @@
     })
   }}
 
-  <form method="post" action="{{routes.emailNotifications.off}}">
+  <form method="post" action="{{ formatAccountPathsFor(routes.account.emailNotifications.off, currentGatewayAccount.external_id) }}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{ govukButton({
         text: 'Turn off email notifications',

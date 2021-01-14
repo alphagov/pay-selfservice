@@ -20,7 +20,7 @@
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
-  <form id="collection-email-form" method="post" action="{{routes.emailNotifications.collection}}">
+  <form id="collection-email-form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{

@@ -153,7 +153,7 @@
               classes: 'govuk-!-width-one-quarter',
               items: [
                 {
-                  href: routes.emailNotifications.collection,
+                  href: formatAccountPathsFor(routes.account.emailNotifications.collection, currentGatewayAccount.external_id),
                   classes: 'govuk-link--no-visited-state email-notifications-toggle-collection',
                   text: 'Change' if permissions.toggle_billing_address_update else 'View',
                   visuallyHiddenText: 'enter an email address settings'
@@ -174,7 +174,7 @@
               classes: 'govuk-!-width-one-quarter',
               items: [
                 {
-                  href: routes.emailNotifications.confirmation,
+                  href: formatAccountPathsFor(routes.account.emailNotifications.confirmation, currentGatewayAccount.external_id),
                   classes: 'govuk-link--no-visited-state email-notifications-toggle-confirmation',
                   text: 'Change' if permissions.toggle_billing_address_update else 'View',
                   visuallyHiddenText: 'payment confirmation emails settings'
@@ -195,7 +195,7 @@
               classes: 'govuk-!-width-one-quarter',
               items: [
                 {
-                  href: routes.emailNotifications.refund,
+                  href: formatAccountPathsFor(routes.account.emailNotifications.refund, currentGatewayAccount.external_id),
                   classes: 'govuk-link--no-visited-state email-notifications-toggle-refund',
                   text: 'Change' if permissions.toggle_billing_address_update else 'View',
                   visuallyHiddenText: 'refund emails settings'
@@ -206,7 +206,7 @@
         ]
       })
     }}
-    <p class="govuk-body"><a class="govuk-link" href="{{routes.emailNotifications.index}}" id="templates-link">See templates and add a custom paragraph.</a></p>
+    <p class="govuk-body"><a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.emailNotifications.index, currentGatewayAccount.external_id) }}" id="templates-link">See templates and add a custom paragraph.</a></p>
 
     {% if allowMoto %}
       <h1 id="moto-mask-security-settings-heading" class="govuk-heading-m govuk-!-margin-top-8">Security</h1>
