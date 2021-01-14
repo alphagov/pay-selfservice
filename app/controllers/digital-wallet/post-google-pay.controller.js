@@ -1,6 +1,7 @@
 'use strict'
 
 const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const logger = require('../../utils/logger')(__filename)
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
@@ -12,10 +13,11 @@ module.exports = async (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const enable = req.body['google-pay'] === 'on'
   const gatewayMerchantId = req.body.merchantId
+  const formattedPath = formatAccountPathsFor(paths.account.digitalWallet.googlePay, req.account && req.account.external_id)
 
   if (enable && !gatewayMerchantId) {
     req.flash('genericError', 'Enter a valid Merchant ID')
-    return res.redirect(paths.digitalWallet.googlePay)
+    return res.redirect(formattedPath)
   }
 
   if (enable) {
@@ -26,7 +28,7 @@ module.exports = async (req, res) => {
       logger.info(`${correlationId} error setting google pay merchant ID for ${gatewayAccountId}: `, error)
       if (error.errorCode === 400) {
         req.flash('genericError', 'There was an error enabling google pay. Check that the Merchant ID you entered is correct and that your PSP account credentials have been set.')
-        return res.redirect(paths.digitalWallet.googlePay)
+        return res.redirect(formattedPath)
       } else {
         return renderErrorView(req, res, false, error.errorCode)
       }
@@ -38,7 +40,7 @@ module.exports = async (req, res) => {
     logger.info(`${correlationId} ${enable ? 'enabled' : 'disabled'} google pay boolean for ${gatewayAccountId}`)
 
     req.flash('generic', `Google Pay successfully ${enable ? 'enabled' : 'disabled'}.`)
-    return res.redirect(paths.digitalWallet.googlePay)
+    return res.redirect(formattedPath)
   } catch (error) {
     logger.error(`${correlationId} error enabling google pay for ${gatewayAccountId}: ${error}`)
     return renderErrorView(req, res, false, error.errorCode)

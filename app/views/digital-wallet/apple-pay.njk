@@ -22,7 +22,7 @@
         <li>corporate card fees cannot be applied to payments made with Apple Pay.</li>
       </ul>
 
-      <form method="post" action="{{routes.digitalWallet.applePay}}">
+      <form method="post">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
         {{
           govukRadios({

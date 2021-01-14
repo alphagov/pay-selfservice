@@ -33,7 +33,7 @@
               classes: 'govuk-!-width-one-quarter',
               items: [
                 {
-                  href: routes.digitalWallet.applePay,
+                  href: formatAccountPathsFor(routes.account.digitalWallet.applePay, currentGatewayAccount.external_id),
                   classes: 'govuk-link--no-visited-state',
                   text: 'Change' if permissions.toggle_billing_address_update else 'View',
                   visuallyHiddenText: 'Apple Pay settings'
@@ -54,7 +54,7 @@
               classes: 'govuk-!-width-one-quarter',
               items: [
                 {
-                  href: routes.digitalWallet.googlePay,
+                  href: formatAccountPathsFor(routes.account.digitalWallet.googlePay, currentGatewayAccount.external_id),
                   classes: 'govuk-link--no-visited-state',
                   text: 'Change' if permissions.toggle_billing_address_update else 'View',
                   visuallyHiddenText: 'Google Pay settings'

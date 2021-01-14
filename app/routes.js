@@ -89,10 +89,11 @@ const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials, emailNotifications: emailNotifications, toggleMotoMaskCardNumberAndSecurityCode, prototyping, paymentLinks,
-  requestToGoLive, policyPages, stripeSetup, stripe, digitalWallet,
+  requestToGoLive, policyPages, stripeSetup, stripe,
   settings, yourPsp, allServiceTransactions, payouts
 } = paths
 const { 
+  digitalWallet,
   paymentTypes,
   toggle3ds,
   toggleBillingAddress
@@ -176,23 +177,19 @@ module.exports.bind = function (app) {
     ...lodash.values(credentials),
     ...lodash.values(notificationCredentials),
     ...lodash.values(apiKeys),
-    ...lodash.values(paymentTypes),
     ...lodash.values(emailNotifications),
     ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
-    ...lodash.values(toggle3ds),
     ...lodash.values(merchantDetails),
     ...lodash.values(prototyping.demoPayment),
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
     ...lodash.values(user.profile),
-    ...lodash.values(toggleBillingAddress),
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
     ...lodash.values(stripeSetup),
     ...lodash.values(stripe),
-    ...lodash.values(digitalWallet),
     ...lodash.values(settings),
     ...lodash.values(yourPsp),
     ...lodash.values(payouts),
@@ -250,10 +247,10 @@ module.exports.bind = function (app) {
   account.post(paymentTypes.index, permission('payment-types:update'), paymentTypesController.postIndex)
 
   // DIGITAL WALLET
-  app.get(digitalWallet.applePay, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getApplePay)
-  app.post(digitalWallet.applePay, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postApplePay)
-  app.get(digitalWallet.googlePay, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getGooglePay)
-  app.post(digitalWallet.googlePay, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postGooglePay)
+  account.get(digitalWallet.applePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.getApplePay)
+  account.post(digitalWallet.applePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.postApplePay)
+  account.get(digitalWallet.googlePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.getGooglePay)
+  account.post(digitalWallet.googlePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.postGooglePay)
 
   // EMAIL
   app.get(emailNotifications.index, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.index)

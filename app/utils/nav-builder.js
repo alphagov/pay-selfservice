@@ -8,7 +8,7 @@ const formatPSPname = require('./format-PSP-name')
 
 const mainSettingsPaths = [
   paths.settings,
-  paths.digitalWallet,
+  paths.account.digitalWallet,
   paths.account.toggle3ds,
   paths.account.toggleBillingAddress,
   paths.emailNotifications,
@@ -100,10 +100,6 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
     }
   ]
 }
-
-// const pathMatches(url, paths) {
-
-// }
 
 module.exports = {
   serviceNavigationItems: serviceNavigationItems,
