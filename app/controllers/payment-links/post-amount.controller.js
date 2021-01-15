@@ -40,9 +40,5 @@ module.exports = function postAmount (req, res, next) {
     req.flash('generic', 'The details have been updated')
   }
 
-  if (process.env.PAYMENT_LINKS_INLINE_REPORTING_COLUMNS === 'true') {
-    sessionData.isPaymentLinksInlineReportingColumns = true
-  }
-
   return res.redirect(paths.paymentLinks.review)
 }

@@ -329,18 +329,11 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.amount, permission('tokens:create'), getAccount, paymentLinksController.postAmount)
   app.get(paymentLinks.review, permission('tokens:create'), getAccount, paymentLinksController.getReview)
   app.post(paymentLinks.review, permission('tokens:create'), getAccount, paymentLinksController.postReview)
-
   app.get(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showAddMetadataPage)
   app.get(paymentLinks.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showEditMetadataPage)
   app.post(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.addMetadata)
   app.post(paymentLinks.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
   app.post(paymentLinks.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
-
-  app.get(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showAddMetadataPage)
-  app.post(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.addMetadata)
-  app.get(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showEditMetadataPage)
-  app.post(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
-  app.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
   app.get(paymentLinks.manage.index, permission('transactions:read'), getAccount, paymentLinksController.getManage)
   app.get(paymentLinks.manage.disable, permission('tokens:create'), getAccount, paymentLinksController.getDisable)
@@ -353,12 +346,11 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.manage.editReference, permission('tokens:create'), getAccount, paymentLinksController.postEditReference)
   app.get(paymentLinks.manage.editAmount, permission('tokens:create'), getAccount, paymentLinksController.getEditAmount)
   app.post(paymentLinks.manage.editAmount, permission('tokens:create'), getAccount, paymentLinksController.postEditAmount)
-
-  app.get(paymentLinks.metadata.add, permission('tokens:create'), getAccount, paymentLinksController.metadata.add)
-  app.post(paymentLinks.metadata.add, permission('tokens:create'), getAccount, paymentLinksController.metadata.post)
-  app.get(paymentLinks.metadata.edit, permission('tokens:create'), getAccount, paymentLinksController.metadata.editPage)
-  app.post(paymentLinks.metadata.edit, permission('tokens:create'), getAccount, paymentLinksController.metadata.editPagePost)
-  app.post(paymentLinks.metadata.delete, permission('tokens:create'), getAccount, paymentLinksController.metadata.deletePagePost)
+  app.get(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showAddMetadataPage)
+  app.post(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.addMetadata)
+  app.get(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showEditMetadataPage)
+  app.post(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
+  app.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
   // Configure 2FA
   app.get(user.profile.twoFactorAuth.index, twoFactorAuthController.getIndex)

@@ -91,17 +91,17 @@ describe('Editing a payment link', () => {
       cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'cost_code')
         cy.get('.govuk-summary-list__value').should('contain', '12345')
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/${productId}/metadata/cost_code`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/${productId}/add-reporting-column/cost_code`)
       })
       cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Finance team')
         cy.get('.govuk-summary-list__value').should('contain', 'Licensing')
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/${productId}/metadata/Finance%20team`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/${productId}/add-reporting-column/Finance%20team`)
       })
       cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'group')
         cy.get('.govuk-summary-list__value').should('contain', 'A')
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/${productId}/metadata/group`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/${productId}/add-reporting-column/group`)
       })
       cy.get('a.govuk-button--secondary').should('exist').should('contain', 'Add another reporting column')
     })
