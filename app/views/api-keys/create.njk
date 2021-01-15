@@ -12,7 +12,7 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
 <div class="govuk-grid-column-two-thirds">
   {% if not token %}
   <h1 class="govuk-heading-l page-title">Create an API key</h1>
-    <form class="form" method="post" action="{{routes.apiKeys.create}}">
+    <form class="form" method="post" action="{{formatAccountPathsFor(routes.account.apiKeys.create, currentGatewayAccount.external_id)}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
 
       {{
@@ -44,7 +44,7 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
       }}
     </form>
     <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.apiKeys.index}}">Cancel</a>
+      <a class="govuk-link govuk-link--no-visited-state" href="{{formatAccountPathsFor(routes.account.apiKeys.index, currentGatewayAccount.external_id)}}">Cancel</a>
     </p>
   {% else %}
     <h1 class="govuk-heading-l page-title">New API key</h1>
@@ -74,7 +74,7 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
     <div class="copy-this-api-key-notification govuk-visually-hidden" aria-live="assertive"></div>
 
     <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.apiKeys.index}}" id="finish-link">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{formatAccountPathsFor(routes.account.apiKeys.index, currentGatewayAccount.external_id)}}" id="finish-link">
         Back to API keys
       </a>
     </p>

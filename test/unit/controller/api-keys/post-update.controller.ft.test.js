@@ -9,6 +9,8 @@ const { getApp } = require('../../../../server')
 const mockSession = require('../../../test-helpers/mock-session')
 const userCreator = require('../../../test-helpers/user-creator')
 const paths = require('../../../../app/paths')
+const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
+const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '182364'
@@ -22,6 +24,9 @@ const VALID_PAYLOAD = {
   token_link: '398763986398739673',
   description: DESCRIPTION
 }
+
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
+const apiKeyUpdatePath = formatAccountPathsFor(paths.account.apiKeys.update, EXTERNAL_GATEWAY_ACCOUNT_ID)
 
 describe('POST to update an API key description', () => {
   let app
@@ -43,13 +48,11 @@ describe('POST to update an API key description', () => {
     )
       .reply(200, TOKEN_RESPONSE)
 
-    nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-      .reply(200, {
-        payment_provider: 'sandbox'
-      })
+    nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: GATEWAY_ACCOUNT_ID }))
 
     supertest(app)
-      .post(paths.apiKeys.update)
+      .post(apiKeyUpdatePath)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('x-request-id', REQUEST_ID)
@@ -66,7 +69,7 @@ describe('POST to update an API key description', () => {
 
   it('should redirect back to index', () => {
     expect(response.statusCode).to.equal(302)
-    expect(response.headers).to.have.property('location').to.equal(paths.apiKeys.index)
+    expect(response.headers).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.apiKeys.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
   })
 
   it('should have success message', () => {

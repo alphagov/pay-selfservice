@@ -9,7 +9,8 @@ const { getApp } = require('../../../../server')
 const mockSession = require('../../../test-helpers/mock-session')
 const userCreator = require('../../../test-helpers/user-creator')
 const paths = require('../../../../app/paths')
-const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
+const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
+const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '182364'
@@ -21,6 +22,9 @@ const VALID_PAYLOAD = {
   csrfToken: csrf().create('123'),
   token_link: '398763986398739673'
 }
+
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
+const apiKeyRevokePath = formatAccountPathsFor(paths.account.apiKeys.revoke, EXTERNAL_GATEWAY_ACCOUNT_ID)
 
 describe('POST to revoke an API key', () => {
   let app
@@ -41,11 +45,11 @@ describe('POST to revoke an API key', () => {
     )
       .reply(200, TOKEN_RESPONSE)
 
-    nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-      .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
+    nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: GATEWAY_ACCOUNT_ID }))
 
     supertest(app)
-      .post(paths.apiKeys.revoke)
+      .post(apiKeyRevokePath)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('x-request-id', REQUEST_ID)
@@ -62,7 +66,7 @@ describe('POST to revoke an API key', () => {
 
   it('should redirect back to index', () => {
     expect(response.statusCode).to.equal(302)
-    expect(response.headers).to.have.property('location').to.equal(paths.apiKeys.index)
+    expect(response.headers).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.apiKeys.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
   })
 
   it('should have success message', () => {

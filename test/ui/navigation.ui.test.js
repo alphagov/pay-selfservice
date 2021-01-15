@@ -1,5 +1,6 @@
 const { render } = require('../test-helpers/html-assertions')
 const { serviceNavigationItems, adminNavigationItems } = require('../../app/utils/nav-builder')
+const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
 
 describe('navigation menu', function () {
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {
@@ -15,7 +16,8 @@ describe('navigation menu', function () {
       hideServiceNav: false,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card'),
       links: [],
-      linksToDisplay: []
+      linksToDisplay: [],
+      formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('dashboard/index', templateData)
@@ -72,7 +74,8 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox'),
+      formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -93,7 +96,8 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay'),
+      formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -114,7 +118,8 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'stripe')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'stripe'),
+      formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -135,7 +140,8 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox'),
+      formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -155,7 +161,8 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox'),
+      formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -178,7 +185,8 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit'),
+      formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -206,7 +214,8 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay'),
+      formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
