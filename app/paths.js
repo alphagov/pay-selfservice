@@ -31,9 +31,6 @@ module.exports = {
     paymentTypes: {
       index: '/payment-types'
     },
-    settings: {
-      index: '/settings'
-    },
     toggle3ds: {
       index: '/3ds'
     },
@@ -211,6 +208,9 @@ module.exports = {
   },
   stripe: {
     addPspAccountDetails: '/stripe/add-psp-account-details'
+  },
+  settings: {
+    index: '/settings'
   },
   payouts: {
     list: '/payments-to-your-bank-account'

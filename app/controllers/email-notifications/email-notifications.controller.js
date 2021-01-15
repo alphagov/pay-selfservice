@@ -6,8 +6,10 @@ const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response.js').response
 const emailService = require('../../services/email.service.js')
 const paths = require('../../paths.js')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const CORRELATION_HEADER = require('../../utils/correlation-header.js').CORRELATION_HEADER
+
+// Constants
+const indexPath = paths.settings.index
 
 const showEmail = function (req, res, resource, locals) {
   const template = 'email-notifications/' + resource
@@ -35,7 +37,7 @@ const toggleConfirmationEmail = function (req, res, enabled) {
   emailService.setConfirmationEnabled(accountID, enabled, correlationId)
     .then(() => {
       logger.info(`[${correlationId}] - Updated confirmation email enabled(${enabled}). user=${req.session.passport.user}, gateway_account=${accountID}`)
-      res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
+      res.redirect(303, indexPath)
     })
 }
 
@@ -57,7 +59,7 @@ module.exports.collectionEmailUpdate = (req, res) => {
   emailService.setEmailCollectionMode(accountID, emailCollectionMode, correlationId)
     .then(() => {
       logger.info(`[${correlationId}] - Updated email collection mode (${emailCollectionMode}). user=${req.session.passport.user}, gateway_account=${accountID}`)
-      res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
+      res.redirect(303, indexPath)
     })
 }
 
@@ -99,7 +101,7 @@ module.exports.refundEmailUpdate = (req, res) => {
   emailService.setRefundEmailEnabled(accountID, emailRefundEnabled, correlationId)
     .then(() => {
       logger.info(`[${correlationId}] - Updated refund email enabled(${emailRefundEnabled}). user=${req.session.passport.user}, gateway_account=${accountID}`)
-      res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
+      res.redirect(303, indexPath)
     })
 }
 
@@ -146,6 +148,6 @@ module.exports.update = (req, res) => {
   emailService.updateConfirmationTemplate(accountID, newEmailText, correlationId)
     .then(() => {
       logger.info(`[${correlationId}] - Updated email notifications custom paragraph. user=${req.session.passport.user}, gateway_account=${accountID}`)
-      res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
+      res.redirect(303, indexPath)
     })
 }

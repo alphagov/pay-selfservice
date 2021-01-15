@@ -30,6 +30,14 @@ describe('MOTO mask security section', () => {
     } else {
       user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
     }
+
+    const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({
+      gatewayAccountId,
+      paymentProvider: opts.gateway,
+      allowMoto: opts.allowMoto,
+      motoMaskCardNumber: opts.motoMaskCardNumber,
+      motoMaskSecurityCode: opts.motoMaskSecurityCode
+    })
     const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
@@ -40,7 +48,7 @@ describe('MOTO mask security section', () => {
     })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false, maestro: opts.maestro })
 
-    stubs.push(user, gatewayAccountByExternalId, card)
+    stubs.push(user, gatewayAccount, gatewayAccountByExternalId, card)
 
     cy.task('setupStubs', stubs)
   }
@@ -57,7 +65,7 @@ describe('MOTO mask security section', () => {
 
       it('should not show mask security section', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.visit('/settings')
         cy.get('#moto-mask-security-settings-heading').should('not.exist')
       })
     })
@@ -68,7 +76,7 @@ describe('MOTO mask security section', () => {
       })
 
       it('should show radios as disabled and card number mask disabled', () => {
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.visit('/settings')
         cy.get('.govuk-summary-list__key').eq(4).should('contain', 'Hide card numbers')
         cy.get('.govuk-summary-list__value').eq(4).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(4).contains('View')
@@ -88,7 +96,7 @@ describe('MOTO mask security section', () => {
       })
 
       it('should show radios as enabled and card number mask disabled', () => {
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.visit('/settings')
         cy.get('.govuk-summary-list__key').eq(4).should('contain', 'Hide card numbers')
         cy.get('.govuk-summary-list__value').eq(4).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(4).contains('Change')
@@ -121,7 +129,7 @@ describe('MOTO mask security section', () => {
       })
 
       it('should show radios as disabled and card number mask disabled', () => {
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.visit('/settings')
         cy.get('.govuk-summary-list__key').eq(5).should('contain', 'Hide card security codes')
         cy.get('.govuk-summary-list__value').eq(5).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(5).contains('View')
@@ -141,7 +149,7 @@ describe('MOTO mask security section', () => {
       })
 
       it('should show radios as enabled and no masking', () => {
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.visit('/settings')
         cy.get('.govuk-summary-list__key').eq(5).should('contain', 'Hide card security codes')
         cy.get('.govuk-summary-list__value').eq(5).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(5).contains('Change')
