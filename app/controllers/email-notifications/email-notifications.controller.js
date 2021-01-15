@@ -48,7 +48,7 @@ module.exports.collectionEmailIndex = (req, res) => {
       optional: 'OPTIONAL',
       no: 'OFF'
     },
-    emailCollectionMode: req.account.emailCollectionMode
+    emailCollectionMode: req.account.email_collection_mode
   })
 }
 
@@ -65,8 +65,8 @@ module.exports.collectionEmailUpdate = (req, res) => {
 
 module.exports.confirmationEmailIndex = (req, res) => {
   showConfirmationEmail(req, res, 'confirmation-email-toggle', {
-    confirmationEnabled: req.account.emailEnabled,
-    emailCollectionMode: req.account.emailCollectionMode
+    confirmationEnabled: req.account.email_notifications.PAYMENT_CONFIRMED.enabled,
+    emailCollectionMode: req.account.email_collection_mode
   })
 }
 
@@ -89,8 +89,8 @@ module.exports.confirmationEmailOff = (req, res) => {
 
 module.exports.refundEmailIndex = (req, res) => {
   showRefundEmail(req, res, 'refund-email-toggle', {
-    refundEmailEnabled: req.account.refundEmailEnabled,
-    emailCollectionMode: req.account.emailCollectionMode
+    refundEmailEnabled: req.account.email_notifications.REFUND_ISSUED && req.account.email_notifications.REFUND_ISSUED.enabled,
+    emailCollectionMode: req.account.email_collection_mode
   })
 }
 
@@ -108,28 +108,28 @@ module.exports.refundEmailUpdate = (req, res) => {
 module.exports.index = (req, res) => {
   showEmail(req, res, 'index', {
     confirmationTabActive: true,
-    customEmailText: req.account.customEmailText,
+    customEmailText: req.account.email_notifications.PAYMENT_CONFIRMED.template_body,
     serviceName: req.account.service_name,
-    emailEnabled: req.account.emailEnabled,
-    emailCollectionMode: req.account.emailCollectionMode,
-    refundEmailEnabled: req.account.refundEmailEnabled
+    emailEnabled: req.account.email_notifications.PAYMENT_CONFIRMED.enabled,
+    emailCollectionMode: req.account.email_collection_mode,
+    refundEmailEnabled: req.account.email_notifications.REFUND_ISSUED && req.account.email_notifications.REFUND_ISSUED.enabled
   })
 }
 
 module.exports.indexRefundTabEnabled = (req, res) => {
   showEmail(req, res, 'index', {
     confirmationTabActive: false,
-    customEmailText: req.account.customEmailText,
+    customEmailText: req.account.email_notifications.PAYMENT_CONFIRMED.template_body,
     serviceName: req.account.service_name,
-    emailEnabled: req.account.emailEnabled,
-    emailCollectionMode: req.account.emailCollectionMode,
-    refundEmailEnabled: req.account.refundEmailEnabled
+    emailEnabled: req.account.email_notifications.PAYMENT_CONFIRMED.enabled,
+    emailCollectionMode: req.account.email_collection_mode,
+    refundEmailEnabled: req.account.email_notifications.REFUND_ISSUED && req.account.email_notifications.REFUND_ISSUED.enabled
   })
 }
 
 module.exports.edit = (req, res) => {
   showEmail(req, res, 'edit', {
-    customEmailText: req.account.customEmailText,
+    customEmailText: req.account.email_notifications.PAYMENT_CONFIRMED.template_body,
     serviceName: req.account.service_name
   })
 }
