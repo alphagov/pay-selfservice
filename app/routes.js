@@ -218,7 +218,7 @@ module.exports.bind = function (app) {
   // Payouts
   app.get(payouts.list, payoutsController.listAllServicesPayouts)
 
-  // Private policy document downloads
+  // Policy document downloads
   app.get(policyPages.download, policyDocumentsController.download)
 
   // Feedback
@@ -275,8 +275,16 @@ module.exports.bind = function (app) {
   app.post(transactions.refund, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
   app.get(transactions.redirectDetail, permission('transactions-details:read'), getAccount, transactionDetailRedirectController)
 
+  account.get(transactions.index, permission('transactions:read'), paymentMethodIsCard, transactionsListController)
+  account.get(transactions.download, permission('transactions-download:read'), paymentMethodIsCard, transactionsDownloadController)
+  account.get(transactions.detail, permission('transactions-details:read'), paymentMethodIsCard, transactionDetailController)
+  account.post(transactions.refund, permission('refunds:create'), paymentMethodIsCard, transactionRefundController)
+  account.get(transactions.redirectDetail, permission('transactions-details:read'), transactionDetailRedirectController)
+
   // Settings
   app.get(settings.index, permission('transactions-details:read'), getAccount, settingsController.index)
+
+  account.get(settings.index, permission('transactions-details:read'), settingsController.index)
 
   // Your PSP
   app.get(yourPsp.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
@@ -284,14 +292,25 @@ module.exports.bind = function (app) {
   app.get(yourPsp.flex, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.getFlex)
   app.post(yourPsp.flex, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.postFlex)
 
+  account.get(yourPsp.index, permission('gateway-credentials:read'), paymentMethodIsCard, yourPspController.getIndex)
+  account.post(yourPsp.worldpay3dsFlex, permission('toggle-3ds:update'), paymentMethodIsCard, yourPspController.postToggleWorldpay3dsFlex)
+  account.get(yourPsp.flex, permission('gateway-credentials:update'), paymentMethodIsCard, yourPspController.getFlex)
+  account.post(yourPsp.flex, permission('gateway-credentials:update'), paymentMethodIsCard, yourPspController.postFlex)
+
   // Credentials
   app.get(credentials.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsController.index)
   app.get(credentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editCredentials)
   app.post(credentials.index, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.update)
-
   app.get(notificationCredentials.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsController.index)
   app.get(notificationCredentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editNotificationCredentials)
   app.post(notificationCredentials.update, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.updateNotificationCredentials)
+
+  account.get(credentials.index, permission('gateway-credentials:read'), paymentMethodIsCard, credentialsController.index)
+  account.get(credentials.edit, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.editCredentials)
+  account.post(credentials.index, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.update)
+  account.get(notificationCredentials.index, permission('gateway-credentials:read'), paymentMethodIsCard, credentialsController.index)
+  account.get(notificationCredentials.edit, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.editNotificationCredentials)
+  account.post(notificationCredentials.update, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.updateNotificationCredentials)
 
   // API keys
   account.get(apiKeys.index, permission('tokens-active:read'), apiKeysController.getIndex)
@@ -353,6 +372,19 @@ module.exports.bind = function (app) {
   app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPaymentController.mockCardDetails)
   app.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPaymentController.goToPayment)
 
+  account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.index)
+  account.get(prototyping.demoService.links, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.links)
+  account.get(prototyping.demoService.create, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.create)
+  account.post(prototyping.demoService.confirm, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.submit)
+  account.get(prototyping.demoService.disable, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.disable)
+
+  account.get(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.index)
+  account.post(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.index)
+  account.get(prototyping.demoPayment.editDescription, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.edit)
+  account.get(prototyping.demoPayment.editAmount, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.edit)
+  account.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.mockCardDetails)
+  account.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.goToPayment)
+
   // Payment links
   app.get(paymentLinks.start, permission('tokens:create'), getAccount, paymentLinksController.getStart)
   app.get(paymentLinks.information, permission('tokens:create'), getAccount, paymentLinksController.getInformation)
@@ -388,6 +420,40 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
   app.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
+  account.get(paymentLinks.start, permission('tokens:create'), paymentLinksController.getStart)
+  account.get(paymentLinks.information, permission('tokens:create'), paymentLinksController.getInformation)
+  account.post(paymentLinks.information, permission('tokens:create'), paymentLinksController.postInformation)
+  account.get(paymentLinks.webAddress, permission('tokens:create'), paymentLinksController.getWebAddress)
+  account.post(paymentLinks.webAddress, permission('tokens:create'), paymentLinksController.postWebAddress)
+  account.get(paymentLinks.reference, permission('tokens:create'), paymentLinksController.getReference)
+  account.post(paymentLinks.reference, permission('tokens:create'), paymentLinksController.postReference)
+  account.get(paymentLinks.amount, permission('tokens:create'), paymentLinksController.getAmount)
+  account.post(paymentLinks.amount, permission('tokens:create'), paymentLinksController.postAmount)
+  account.get(paymentLinks.review, permission('tokens:create'), paymentLinksController.getReview)
+  account.post(paymentLinks.review, permission('tokens:create'), paymentLinksController.postReview)
+  account.get(paymentLinks.addMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showAddMetadataPage)
+  account.get(paymentLinks.editMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showEditMetadataPage)
+  account.post(paymentLinks.addMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.addMetadata)
+  account.post(paymentLinks.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
+  account.post(paymentLinks.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
+
+  account.get(paymentLinks.manage.index, permission('transactions:read'), paymentLinksController.getManage)
+  account.get(paymentLinks.manage.disable, permission('tokens:create'), paymentLinksController.getDisable)
+  account.get(paymentLinks.manage.delete, permission('tokens:create'), paymentLinksController.getDelete)
+  account.get(paymentLinks.manage.edit, permission('tokens:create'), paymentLinksController.getEdit)
+  account.post(paymentLinks.manage.edit, permission('tokens:create'), paymentLinksController.postEdit)
+  account.get(paymentLinks.manage.editInformation, permission('tokens:create'), paymentLinksController.getEditInformation)
+  account.post(paymentLinks.manage.editInformation, permission('tokens:create'), paymentLinksController.postEditInformation)
+  account.get(paymentLinks.manage.editReference, permission('tokens:create'), paymentLinksController.getEditReference)
+  account.post(paymentLinks.manage.editReference, permission('tokens:create'), paymentLinksController.postEditReference)
+  account.get(paymentLinks.manage.editAmount, permission('tokens:create'), paymentLinksController.getEditAmount)
+  account.post(paymentLinks.manage.editAmount, permission('tokens:create'), paymentLinksController.postEditAmount)
+  account.get(paymentLinks.manage.addMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showAddMetadataPage)
+  account.post(paymentLinks.manage.addMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.addMetadata)
+  account.get(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showEditMetadataPage)
+  account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
+  account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
+
   // Request to go live
   app.get(requestToGoLive.index, permission('go-live-stage:read'), getAccount, requestToGoLiveIndexController.get)
   app.post(requestToGoLive.index, permission('go-live-stage:update'), getAccount, requestToGoLiveIndexController.post)
@@ -400,6 +466,17 @@ module.exports.bind = function (app) {
   app.get(requestToGoLive.agreement, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.get)
   app.post(requestToGoLive.agreement, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.post)
 
+  account.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
+  account.post(requestToGoLive.index, permission('go-live-stage:update'), requestToGoLiveIndexController.post)
+  account.get(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.get)
+  account.post(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.post)
+  account.get(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.get)
+  account.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.post)
+  account.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.get)
+  account.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.post)
+  account.get(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.get)
+  account.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
+
   // Stripe setup
   app.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.get)
   app.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.post)
@@ -410,6 +487,16 @@ module.exports.bind = function (app) {
   app.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.get)
   app.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.post)
   app.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
+
+  account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.get)
+  account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.post)
+  account.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.get)
+  account.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.post)
+  account.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.get)
+  account.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.post)
+  account.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.get)
+  account.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.post)
+  account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), paymentMethodIsCard, restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
 
   app.use(paths.account.root, account)
 
