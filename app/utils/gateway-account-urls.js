@@ -14,7 +14,12 @@ const templatedAccountPaths = allAccountPaths.filter((path) => path.includes(':'
 
 const removeEmptyValues = (value) => !!value
 
-function isLegacyAccountsUrl (url) {
+function removeTrailingPathForwardSlash (path = '') {
+  return path.replace(/\/+$/, '')
+}
+
+function isLegacyAccountsUrl (targetUrl) {
+  const url = removeTrailingPathForwardSlash(targetUrl)
   if (allAccountPaths.includes(url)) {
     return true
   } else {
