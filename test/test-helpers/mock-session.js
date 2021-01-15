@@ -18,7 +18,8 @@ const createAppWithSession = function (app, sessionData, gatewayAccountCookie, r
     req.session = req.session || sessionData || {}
     req.register_invite = registerInviteData || {}
     req.gateway_account = gatewayAccountCookie || {
-      currentGatewayAccountId: _.get(sessionData, 'passport.user.serviceRoles[0].service.gatewayAccountIds[0]')
+      currentGatewayAccountId: _.get(sessionData, 'passport.user.serviceRoles[0].service.gatewayAccountIds[0]'),
+      currentGatewayAccountExternalId: 'external-id-set-by-create-app-with-session'
     }
 
     next()
