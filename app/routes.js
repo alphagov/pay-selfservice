@@ -90,13 +90,14 @@ const {
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials, prototyping, paymentLinks,
   requestToGoLive, policyPages, stripeSetup, stripe,
-  settings, yourPsp, allServiceTransactions, payouts
+  yourPsp, allServiceTransactions, payouts
 } = paths
 const {
   apiKeys,
   digitalWallet,
   emailNotifications,
   paymentTypes,
+  settings,
   toggle3ds,
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode
@@ -192,7 +193,6 @@ module.exports.bind = function (app) {
     ...lodash.values(policyPages),
     ...lodash.values(stripeSetup),
     ...lodash.values(stripe),
-    ...lodash.values(settings),
     ...lodash.values(yourPsp),
     ...lodash.values(payouts),
     paths.feedback
@@ -201,7 +201,7 @@ module.exports.bind = function (app) {
   app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
-  app.get(settings.index, permission('transactions-details:read'), getAccount, settingsController.index)
+  account.get(settings.index, permission('transactions-details:read'), settingsController.index)
 
   //  TRANSACTIONS
   app.get(transactions.index, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListController)
