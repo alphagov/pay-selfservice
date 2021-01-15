@@ -9,7 +9,7 @@
   {{
     govukBackLink({
       text: "Back to prototype links",
-      href: routes.prototyping.demoService.links,
+      href: formatAccountPathsFor(routes.account.prototyping.demoService.links,  currentGatewayAccount.external_id),
       attributes: {
         id: "prototyping__links-link-back"
       }
@@ -37,7 +37,7 @@
   {{
     govukButton({
       text: "See prototype links",
-      href: routes.prototyping.demoService.links,
+      href: formatAccountPathsFor(routes.account.prototyping.demoService.links,  currentGatewayAccount.external_id),
       attributes: {
         id: "see-prototype-links"
       }

@@ -28,7 +28,7 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
         <div class="govuk-body govuk-!-margin-0" id="payment-description">
           {{ paymentDescription | striptags(true) | escape | nl2br }}
           <span class="demo-payment-settings__edit-link">
-            <a class="govuk-link govuk-link--no-visited-state" href="{{routes.prototyping.demoPayment.editDescription}}">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.editDescription,  currentGatewayAccount.external_id)}}">
               Edit <span class="govuk-visually-hidden">description</span>
             </a>
           </span>
@@ -44,7 +44,7 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
         <div class="govuk-body govuk-!-margin-0" id="payment-amount">
           {{ paymentAmount | penceToPoundsWithCurrency }}
           <span class="demo-payment-settings__edit-link">
-            <a class="govuk-link govuk-link--no-visited-state" href="{{routes.prototyping.demoPayment.editAmount}}">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.editAmount,  currentGatewayAccount.external_id)}}">
               Edit <span class="govuk-visually-hidden">amount</span>
             </a>
           </span>
@@ -57,7 +57,7 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
     {{
       govukButton({
         text: "Continue",
-        href: routes.prototyping.demoPayment.mockCardDetails,
+        href: formatAccountPathsFor(routes.account.prototyping.demoPayment.mockCardDetails,  currentGatewayAccount.external_id),
         attributes: {
           id: "prototyping__continue"
         }

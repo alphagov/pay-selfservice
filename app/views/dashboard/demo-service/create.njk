@@ -9,7 +9,7 @@
   {{
     govukBackLink({
       text: "Back to prototype links",
-      href: routes.prototyping.demoService.links
+      href: formatAccountPathsFor(routes.account.prototyping.demoService.links,  currentGatewayAccount.external_id)
     })
   }}
 {% endblock %}
@@ -17,7 +17,7 @@
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Create a prototype link</h1>
-  <form method="post" action="{{routes.prototyping.demoService.confirm}}" data-validate>
+  <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoService.confirm,  currentGatewayAccount.external_id)}}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{

@@ -21,7 +21,7 @@
   {{
     govukButton({
       text: "Create prototype link",
-      href: routes.prototyping.demoService.create,
+      href: formatAccountPathsFor(routes.account.prototyping.demoService.create,  currentGatewayAccount.external_id),
       attributes: {
         id: "prototyping__links-button-create"
       }
@@ -32,13 +32,13 @@
     <ul class="govuk-tabs__list">
       <li class="govuk-tabs__list-item">
         <a class="govuk-tabs__tab {% if not productsTab %}
-govuk-tabs__tab--selected{% endif %}" href="{{routes.prototyping.demoService.index}}">
+govuk-tabs__tab--selected{% endif %}" href="{{formatAccountPathsFor(routes.account.prototyping.demoService.index,  currentGatewayAccount.external_id)}}">
           Mock card numbers
         </a>
       </li>
       <li class="govuk-tabs__list-item">
         <a class="govuk-tabs__tab {% if productsTab %}
-govuk-tabs__tab--selected{% endif %}" href="{{routes.prototyping.demoService.links}}">
+govuk-tabs__tab--selected{% endif %}" href="{{formatAccountPathsFor(routes.account.prototyping.demoService.links,  currentGatewayAccount.external_id)}}">
           Prototype links
         </a>
       </li>

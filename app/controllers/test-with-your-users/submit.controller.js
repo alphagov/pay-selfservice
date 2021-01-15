@@ -10,6 +10,7 @@ const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const { isCurrency, isHttps, isAboveMaxAmount } = require('../../browsered/field-validation-checks')
 const { penceToPounds, safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 module.exports = async (req, res) => {
   const gatewayAccountId = req.account.gateway_account_id
@@ -29,7 +30,7 @@ module.exports = async (req, res) => {
   }
 
   if (lodash.get(req, 'session.flash.genericError.length')) {
-    return res.redirect(paths.prototyping.demoService.create)
+    return res.redirect(formatAccountPathsFor(paths.account.prototyping.demoService.create, req.account.external_id))
   }
 
   try {
@@ -59,6 +60,6 @@ module.exports = async (req, res) => {
   } catch (err) {
     logger.error(`[requestId=${req.correlationId}] Create product failed - ${err.message}`)
     req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-    return res.redirect(paths.prototyping.demoService.create)
+    return res.redirect(formatAccountPathsFor(paths.account.prototyping.demoService.create, req.account.external_id))
   }
 }

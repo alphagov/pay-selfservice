@@ -5,13 +5,14 @@ const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const { renderErrorView } = require('../../utils/response.js')
+const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
 
 module.exports = (req, res) => {
   const params = {
     productsTab: true,
-    createPage: paths.prototyping.demoService.create,
-    indexPage: paths.prototyping.demoService.index,
-    linksPage: paths.prototyping.demoService.links
+    createPage: formatAccountPathsFor(paths.account.prototyping.demoService.create, req.account.external_id),
+    indexPage: formatAccountPathsFor(paths.account.prototyping.demoService.index, req.account.external_id),
+    linksPage: formatAccountPathsFor(paths.account.prototyping.demoService.links, req.account.external_id)
   }
 
   productsClient.product.getByGatewayAccountId(req.account.gateway_account_id)
