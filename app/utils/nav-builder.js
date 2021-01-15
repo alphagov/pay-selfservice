@@ -7,7 +7,7 @@ const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
 
 const mainSettingsPaths = [
-  paths.settings,
+  paths.account.settings,
   paths.account.digitalWallet,
   paths.account.toggle3ds,
   paths.account.toggleBillingAddress,
@@ -21,7 +21,7 @@ const yourPspPaths = [
   paths.notificationCredentials
 ]
 
-const serviceNavigationItems = (currentPath, permissions, type) => {
+const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {
   const navigationItems = []
   navigationItems.push({
     id: 'navigation-menu-home',
@@ -49,7 +49,7 @@ const serviceNavigationItems = (currentPath, permissions, type) => {
   navigationItems.push({
     id: 'navigation-menu-settings',
     name: 'Settings',
-    url: paths.settings.index,
+    url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
     current: currentPath !== '/' ? pathLookup(currentPath, [
       ...mainSettingsPaths,
       ...yourPspPaths,
@@ -75,7 +75,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
     {
       id: 'navigation-menu-settings-home',
       name: 'Settings',
-      url: paths.settings.index,
+      url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
       current: pathLookup(currentPath, mainSettingsPaths),
       permissions: type === 'card'
     },
