@@ -201,28 +201,90 @@ module.exports.bind = function (app) {
   app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
-  app.get(settings.index, permission('transactions-details:read'), getAccount, settingsController.index)
+  // -------------------------
+  // OUTSIDE OF SERVICE ROUTES
+  // -------------------------
 
-  //  TRANSACTIONS
+  // Service switcher
+  app.get(serviceSwitcher.index, myServicesController.getIndex)
+  app.post(serviceSwitcher.switch, myServicesController.postIndex)
+  app.get(serviceSwitcher.create, createServiceController.get)
+  app.post(serviceSwitcher.create, createServiceController.post)
+
+  // All service transactions
+  app.get(allServiceTransactions.index, allTransactionsController.getController)
+  app.get(allServiceTransactions.download, allTransactionsController.downloadTransactions)
+
+  // Payouts
+  app.get(payouts.list, payoutsController.listAllServicesPayouts)
+
+  // Private policy document downloads
+  app.get(policyPages.download, policyDocumentsController.download)
+
+  // Feedback
+  app.get(paths.feedback, hasServices, resolveService, feedbackController.getIndex)
+  app.post(paths.feedback, hasServices, resolveService, feedbackController.postIndex)
+
+  // User profile
+  app.get(user.profile.index, enforceUserAuthenticated, serviceUsersController.profile)
+  app.get(user.profile.phoneNumber, userPhoneNumberController.get)
+  app.post(user.profile.phoneNumber, userPhoneNumberController.post)
+
+  // Configure 2FA
+  app.get(user.profile.twoFactorAuth.index, twoFactorAuthController.getIndex)
+  app.post(user.profile.twoFactorAuth.index, twoFactorAuthController.postIndex)
+  app.get(user.profile.twoFactorAuth.configure, twoFactorAuthController.getConfigure)
+  app.post(user.profile.twoFactorAuth.configure, twoFactorAuthController.postConfigure)
+  app.post(user.profile.twoFactorAuth.resend, twoFactorAuthController.postResend)
+
+  // --------------------
+  // SERVICE LEVEL ROUTES
+  // --------------------
+
+  // Edit service name
+  app.get(editServiceName.index, permission('service-name:update'), editServiceNameController.get)
+  app.post(editServiceName.update, permission('service-name:update'), editServiceNameController.post)
+
+  // Team members
+  app.get(teamMembers.index, resolveService, serviceUsersController.index)
+  app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
+  app.get(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.index)
+  app.post(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.update)
+  app.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete)
+
+  // Invite team member
+  app.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index)
+  app.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
+
+  // Merchant details
+  app.get(merchantDetails.index, permission('merchant-details:read'), merchantDetailsController.getIndex)
+  app.get(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.getEdit)
+  app.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.postEdit)
+
+  // Service live account dashboard link
+  app.get(stripeSetup.stripeSetupLink, stripeSetupDashboardRedirectController.get)
+
+  // ----------------------------
+  // GATEWAY ACCOUNT LEVEL ROUTES
+  // ----------------------------
+
+  // Transactions
   app.get(transactions.index, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListController)
   app.get(transactions.download, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadController)
   app.get(transactions.detail, permission('transactions-details:read'), resolveService, getAccount, paymentMethodIsCard, transactionDetailController)
   app.post(transactions.refund, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
   app.get(transactions.redirectDetail, permission('transactions-details:read'), getAccount, transactionDetailRedirectController)
 
-  // ALL SERVICE TRANSACTIONS
-  app.get(allServiceTransactions.index, permission('transactions:read'), getAccount, allTransactionsController.getController)
-  app.get(allServiceTransactions.download, permission('transactions-download:read'), getAccount, allTransactionsController.downloadTransactions)
+  // Settings
+  app.get(settings.index, permission('transactions-details:read'), getAccount, settingsController.index)
 
-  app.get(payouts.list, permission('transactions:read'), payoutsController.listAllServicesPayouts)
-
-  // YOUR PSP
+  // Your PSP
   app.get(yourPsp.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
   app.post(yourPsp.worldpay3dsFlex, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, yourPspController.postToggleWorldpay3dsFlex)
   app.get(yourPsp.flex, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.getFlex)
   app.post(yourPsp.flex, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.postFlex)
 
-  // CREDENTIALS
+  // Credentials
   app.get(credentials.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsController.index)
   app.get(credentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editCredentials)
   app.post(credentials.index, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.update)
@@ -231,12 +293,7 @@ module.exports.bind = function (app) {
   app.get(notificationCredentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editNotificationCredentials)
   app.post(notificationCredentials.update, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.updateNotificationCredentials)
 
-  // MERCHANT DETAILS
-  app.get(merchantDetails.index, permission('merchant-details:read'), merchantDetailsController.getIndex)
-  app.get(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.getEdit)
-  app.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.postEdit)
-
-  // API KEYS
+  // API keys
   account.get(apiKeys.index, permission('tokens-active:read'), apiKeysController.getIndex)
   account.get(apiKeys.revoked, permission('tokens-revoked:read'), apiKeysController.getRevoked)
   account.get(apiKeys.create, permission('tokens:create'), apiKeysController.getCreate)
@@ -244,16 +301,17 @@ module.exports.bind = function (app) {
   account.post(apiKeys.revoke, permission('tokens:delete'), apiKeysController.postRevoke)
   account.post(apiKeys.update, permission('tokens:update'), apiKeysController.postUpdate)
 
+  // Payment types
   account.get(paymentTypes.index, permission('payment-types:read'), paymentTypesController.getIndex)
   account.post(paymentTypes.index, permission('payment-types:update'), paymentTypesController.postIndex)
 
-  // DIGITAL WALLET
+  // Digital wallet
   account.get(digitalWallet.applePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.getApplePay)
   account.post(digitalWallet.applePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.postApplePay)
   account.get(digitalWallet.googlePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.getGooglePay)
   account.post(digitalWallet.googlePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.postGooglePay)
 
-  // EMAIL
+  // Email notifications
   account.get(emailNotifications.index, permission('email-notification-template:read'), paymentMethodIsCard, emailNotificationsController.index)
   account.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), paymentMethodIsCard, emailNotificationsController.indexRefundTabEnabled)
   account.get(emailNotifications.edit, permission('email-notification-paragraph:update'), paymentMethodIsCard, emailNotificationsController.edit)
@@ -268,33 +326,11 @@ module.exports.bind = function (app) {
   account.get(emailNotifications.refund, permission('email-notification-template:read'), paymentMethodIsCard, emailNotificationsController.refundEmailIndex)
   account.post(emailNotifications.refund, permission('email-notification-toggle:update'), paymentMethodIsCard, emailNotificationsController.refundEmailUpdate)
 
-  // SERVICE SWITCHER
-  app.get(serviceSwitcher.index, myServicesController.getIndex)
-  app.post(serviceSwitcher.switch, myServicesController.postIndex)
-  app.get(serviceSwitcher.create, createServiceController.get)
-  app.post(serviceSwitcher.create, createServiceController.post)
-
-  // EDIT SERVICE NAME
-  app.get(editServiceName.index, permission('service-name:update'), editServiceNameController.get)
-  app.post(editServiceName.update, permission('service-name:update'), editServiceNameController.post)
-
-  // TEAM MEMBERS - USER PROFILE
-  app.get(teamMembers.index, resolveService, serviceUsersController.index)
-  app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
-  app.get(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.index)
-  app.post(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.update)
-  app.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete)
-  app.get(user.profile.index, enforceUserAuthenticated, serviceUsersController.profile)
-
-  // TEAM MEMBERS - INVITE
-  app.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index)
-  app.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
-
-  // 3D SECURE TOGGLE
+  // 3D secure
   account.get(toggle3ds.index, permission('toggle-3ds:read'), paymentMethodIsCard, toggle3dsController.get)
   account.post(toggle3ds.index, permission('toggle-3ds:update'), paymentMethodIsCard, toggle3dsController.post)
 
-  // MOTO MASK CARD NUMBER & SECURITY CODE TOGGLE
+  // MOTO mask card number & security code
   account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:read'), paymentMethodIsCard, toggleMotoMaskCardNumber.get)
   account.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:update'), paymentMethodIsCard, toggleMotoMaskCardNumber.post)
   account.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:read'), paymentMethodIsCard, toggleMotoMaskSecurityCode.get)
@@ -303,7 +339,7 @@ module.exports.bind = function (app) {
   account.get(toggleBillingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
   account.post(toggleBillingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
 
-  // Prototyping
+  // Prototype links
   app.get(prototyping.demoService.index, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsersController.index)
   app.get(prototyping.demoService.links, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsersController.links)
   app.get(prototyping.demoService.create, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsersController.create)
@@ -317,7 +353,7 @@ module.exports.bind = function (app) {
   app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPaymentController.mockCardDetails)
   app.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPaymentController.goToPayment)
 
-  // Create payment link
+  // Payment links
   app.get(paymentLinks.start, permission('tokens:create'), getAccount, paymentLinksController.getStart)
   app.get(paymentLinks.information, permission('tokens:create'), getAccount, paymentLinksController.getInformation)
   app.post(paymentLinks.information, permission('tokens:create'), getAccount, paymentLinksController.postInformation)
@@ -352,132 +388,28 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
   app.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  // Configure 2FA
-  app.get(user.profile.twoFactorAuth.index, twoFactorAuthController.getIndex)
-  app.post(user.profile.twoFactorAuth.index, twoFactorAuthController.postIndex)
-  app.get(user.profile.twoFactorAuth.configure, twoFactorAuthController.getConfigure)
-  app.post(user.profile.twoFactorAuth.configure, twoFactorAuthController.postConfigure)
-  app.post(user.profile.twoFactorAuth.resend, twoFactorAuthController.postResend)
-
-  // Feedback
-  app.get(paths.feedback, hasServices, resolveService, getAccount, feedbackController.getIndex)
-  app.post(paths.feedback, hasServices, resolveService, getAccount, feedbackController.postIndex)
-
-  // Request to go live: index
+  // Request to go live
   app.get(requestToGoLive.index, permission('go-live-stage:read'), getAccount, requestToGoLiveIndexController.get)
   app.post(requestToGoLive.index, permission('go-live-stage:update'), getAccount, requestToGoLiveIndexController.post)
-  // Request to go live: organisation name
   app.get(requestToGoLive.organisationName, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.get)
   app.post(requestToGoLive.organisationName, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.post)
-  // Request to go live: organisation address
   app.get(requestToGoLive.organisationAddress, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationAddressController.get)
   app.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationAddressController.post)
-  // Request to go live: choose how to process payments
   app.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.get)
   app.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.post)
-  // Request to go live: agreement
   app.get(requestToGoLive.agreement, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.get)
   app.post(requestToGoLive.agreement, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.post)
 
-  // Private policy document downloads
-  app.get(policyPages.download, policyDocumentsController.download)
-
-  // Stripe setup: bank details
-  app.get(
-    stripeSetup.bankDetails,
-    permission('stripe-bank-details:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    checkBankDetailsNotSubmitted,
-    getStripeAccount,
-    stripeSetupBankDetailsController.get
-  )
-  app.post(
-    stripeSetup.bankDetails,
-    permission('stripe-bank-details:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    checkBankDetailsNotSubmitted,
-    getStripeAccount,
-    stripeSetupBankDetailsController.post
-  )
-
-  // Stripe setup: responsible person
-  app.get(stripeSetup.responsiblePerson,
-    permission('stripe-responsible-person:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    getStripeAccount,
-    checkResponsiblePersonNotSubmitted,
-    stripeSetupResponsiblePersonController.get
-  )
-  app.post(stripeSetup.responsiblePerson,
-    permission('stripe-responsible-person:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    getStripeAccount,
-    checkResponsiblePersonNotSubmitted,
-    stripeSetupResponsiblePersonController.post)
-
-  // Stripe setup: VAT number
-  app.get(stripeSetup.vatNumber,
-    permission('stripe-vat-number-company-number:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    checkVatNumberNotSubmitted,
-    stripeSetupVatNumberController.get
-  )
-  app.post(stripeSetup.vatNumber,
-    permission('stripe-vat-number-company-number:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    getStripeAccount,
-    checkVatNumberNotSubmitted,
-    stripeSetupVatNumberController.post
-  )
-
-  // Stripe setup: company number
-  app.get(stripeSetup.companyNumber,
-    permission('stripe-vat-number-company-number:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    checkCompanyNumberNotSubmitted,
-    stripeSetupCompanyNumberController.get
-  )
-  app.post(stripeSetup.companyNumber,
-    permission('stripe-vat-number-company-number:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    getStripeAccount,
-    checkCompanyNumberNotSubmitted,
-    stripeSetupCompanyNumberController.post
-  )
-
-  app.get(stripeSetup.stripeSetupLink, stripeSetupDashboardRedirectController.get)
-
-  app.get(stripe.addPspAccountDetails,
-    permission('stripe-account-details:update'),
-    getAccount,
-    paymentMethodIsCard,
-    restrictToLiveStripeAccount,
-    stripeSetupAddPspAccountDetailsController.get
-  )
-
-  app.get(user.profile.phoneNumber,
-    userPhoneNumberController.get
-  )
-
-  app.post(user.profile.phoneNumber,
-    userPhoneNumberController.post
-  )
+  // Stripe setup
+  app.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.get)
+  app.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.post)
+  app.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.get)
+  app.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.post)
+  app.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.get)
+  app.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.post)
+  app.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.get)
+  app.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.post)
+  app.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
 
   app.use(paths.account.root, account)
 
