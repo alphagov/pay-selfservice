@@ -92,7 +92,7 @@
           })
         }}
       </form>
-      <p class="govuk-body">or <a href="{{ formatAccountPathsFor(routes.account.settings.index, currentGatewayAccount.external_id) }}" class="govuk-link govuk-link--no-visited-state">cancel</a></p>
+      <p class="govuk-body">or <a href="{{routes.settings.index}}" class="govuk-link govuk-link--no-visited-state">cancel</a></p>
     {% else %}
       <h1 class="govuk-heading-l govuk-!-margin-top-6">3D Secure</h1>
       <p class="govuk-body" id="threeds-not-supported">3D Secure is not currently supported for this payment service provider (PSP).</p>

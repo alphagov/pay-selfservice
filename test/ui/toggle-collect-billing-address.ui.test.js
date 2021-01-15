@@ -1,6 +1,7 @@
 'use strict'
 
-const renderTemplate = require('../test-helpers/html-assertions.js').render
+const path = require('path')
+const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
 
 describe('The toggle Billing Address page', function () {
   it('should show collections are turned off', () => {

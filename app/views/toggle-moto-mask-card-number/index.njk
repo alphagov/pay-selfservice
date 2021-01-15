@@ -60,7 +60,7 @@
           })
         }}
       </form>
-      <p class="govuk-body">or <a href="{{ formatAccountPathsFor(routes.account.settings.index, currentGatewayAccount.external_id) }}" class="govuk-link govuk-link--no-visited-state">cancel</a></p>
+      <p class="govuk-body">or <a href="{{routes.settings.index}}" class="govuk-link govuk-link--no-visited-state">cancel</a></p>
     {% else %}
       <h1 class="govuk-heading-l govuk-!-margin-top-6">This feature is not available</h1>
       <p class="govuk-body" id="threeds-not-supported">Masking of card numbers and security codes is not allowed for this account.</p>

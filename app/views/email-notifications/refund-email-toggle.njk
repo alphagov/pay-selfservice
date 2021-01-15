@@ -76,7 +76,7 @@
       }}
     {% endif %}
     <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state"href="{{ formatAccountPathsFor(routes.account.settings.index, currentGatewayAccount.external_id) }}">
+        <a class="govuk-link govuk-link--no-visited-state"href="{{routes.settings.index}}">
         {{ 'Go back' if isReadyOnly else 'Cancel' }}
       </a>
     </p>

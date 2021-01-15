@@ -6,7 +6,6 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 describe('Your PSP settings page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
-  const gatewayAccountExternalId = 'a-valid-external-id'
   const serviceName = 'Purchase a positron projection permit'
   const testCredentials = {
     merchant_id: 'positron-permit-people',
@@ -69,16 +68,6 @@ describe('Your PSP settings page', () => {
       paymentProvider: opts.gateway,
       notificationCredentials: opts.notificationCredentials
     })
-    const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
-      gatewayAccountId,
-      gatewayAccountExternalId,
-      requires3ds: opts.requires3ds,
-      integrationVersion3ds: opts.integrationVersion3ds,
-      worldpay3dsFlex: opts.worldpay3dsFlex,
-      credentials: opts.credentials,
-      paymentProvider: opts.gateway,
-      notificationCredentials: opts.notificationCredentials
-    })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
     const postCheckWorldpay3dsFlexCredentialsReturnsValid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
       gatewayAccountId: gatewayAccountId,
@@ -95,7 +84,6 @@ describe('Your PSP settings page', () => {
     const stubs = [
       user,
       gatewayAccount,
-      gatewayAccountByExternalId,
       card,
       postCheckWorldpay3dsFlexCredentialsReturnsValid,
       postCheckWorldpay3dsFlexCredentialsReturnsInvalid,
@@ -117,7 +105,7 @@ describe('Your PSP settings page', () => {
 
     it('should not show link to Your PSP in the side navigation', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.visit('/settings')
       cy.get('#navigation-menu-your-psp').should('have.length', 0)
     })
   })
@@ -131,7 +119,7 @@ describe('Your PSP settings page', () => {
 
     it('should show link to "Your PSP - Worldpay" in the side navigation', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.visit('/settings')
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Worldpay')
       cy.get('#navigation-menu-your-psp').click()
     })
@@ -219,7 +207,7 @@ describe('Your PSP settings page', () => {
     })
 
     it('should display generic problem page when getting a bad result from connector', () => {
-      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.visit('/settings')
       cy.get('#navigation-menu-your-psp').click()
       cy.get('#flex-credentials-change-link').click()
       cy.get('#organisational-unit-id').type(testBadResultFlexCredentials.organisational_unit_id)
@@ -341,7 +329,7 @@ describe('Your PSP settings page', () => {
 
     it('should show link to "Your PSP - Smartpay" in the side navigation', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.visit('/settings')
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Smartpay')
       cy.get('#navigation-menu-your-psp').click()
     })
@@ -407,7 +395,7 @@ describe('Your PSP settings page', () => {
 
     it('should show link to "Your PSP - ePDQ" in the side navigation', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.visit('/settings')
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - ePDQ')
       cy.get('#navigation-menu-your-psp').click()
     })
