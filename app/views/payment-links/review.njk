@@ -127,9 +127,7 @@
     })
   }}
 
-  {% if pageData.isPaymentLinksInlineReportingColumns %}
-    {% include "./reporting-columns/_manage-reporting-columns.njk" %}
-  {% endif %}
+  {% include "./reporting-columns/_manage-reporting-columns.njk" %}
 
   <form action="{{ routes.paymentLinks.review }}" class="form" method="post" data-virtual-pageview="/create-payment-link/success" data-parameters="dimension1:service-name">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

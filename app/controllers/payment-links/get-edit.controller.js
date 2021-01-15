@@ -18,15 +18,8 @@ module.exports = async function showEditPaymentLink (req, res, next) {
     editPaymentLinkData = {}
   }
 
-  // @TODO(sfount) feature flag to be removed with PP-7509
-  const shouldUseInlineReportingColumns = process.env.MANAGING_PAYMENT_LINKS_INLINE_REPORTING_COLUMNS === 'true'
-  const addMetadataUrl = shouldUseInlineReportingColumns
-    ? formattedPathFor(paths.paymentLinks.manage.addMetadata, productExternalId)
-    : formattedPathFor(paths.paymentLinks.metadata.add, productExternalId)
-  const editMetadataPath = shouldUseInlineReportingColumns
-    ? paths.paymentLinks.manage.editMetadata
-    : paths.paymentLinks.metadata.edit
-
+  const addMetadataUrl = formattedPathFor(paths.paymentLinks.manage.addMetadata, productExternalId)
+  const editMetadataPath = paths.paymentLinks.manage.editMetadata
   const pageData = {
     self: formattedPathFor(paths.paymentLinks.manage.edit, productExternalId),
     editInformation: formattedPathFor(paths.paymentLinks.manage.editInformation, productExternalId),
@@ -37,29 +30,23 @@ module.exports = async function showEditPaymentLink (req, res, next) {
     formattedPathFor,
     paths
   }
-
   const gatewayAccountId = req.account.gateway_account_id
+
   try {
     const product = await productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId)
     const productCheck = lodash.cloneDeep(product)
 
-    if (shouldUseInlineReportingColumns) {
-      // if this is the first time we're loading the product, update the session editing copy
-      if (!editPaymentLinkData.metadata) {
-        editPaymentLinkData.metadata = product.metadata
-      }
-      delete product.metadata
-    } else {
-      // this is an existing workaround because the existing code should always directly reflect the backend
-      // this should be removed when we remove the feature flag and are fully in-flow editing
-      delete editPaymentLinkData.metadata
+    // if this is the first time we're loading the product, update the session editing copy
+    // and remove the local copy of backend metadata as that may be out of date with our editing session
+    if (!editPaymentLinkData.metadata) {
+      editPaymentLinkData.metadata = product.metadata
     }
-    pageData.product = lodash.merge(product, editPaymentLinkData)
-    pageData.metadata = shouldUseInlineReportingColumns
-      ? editPaymentLinkData.metadata
-      : product.metadata
+    delete product.metadata
 
+    pageData.product = lodash.merge(product, editPaymentLinkData)
+    pageData.metadata = editPaymentLinkData.metadata
     pageData.changed = !lodash.isEqual(productCheck, pageData.product)
+
     lodash.set(req, 'session.editPaymentLinkData', pageData.product)
     return response(req, res, 'payment-links/edit', pageData)
   } catch (err) {

@@ -24,11 +24,3 @@ exports.getEditReference = require('./get-edit-reference.controller')
 exports.postEditReference = require('./post-edit-reference.controller')
 exports.getEditAmount = require('./get-edit-amount.controller')
 exports.postEditAmount = require('./post-edit-amount.controller')
-
-exports.metadata = {
-  add: require('./metadata/resource.controller').addMetadataPage,
-  post: require('./metadata/resource.controller').postMetadataPage,
-  editPage: require('./metadata/resource.controller').editMetadataPage,
-  editPagePost: require('./metadata/resource.controller').editMetadataPost,
-  deletePagePost: require('./metadata/resource.controller').deleteMetadataPost
-}
