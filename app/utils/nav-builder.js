@@ -16,7 +16,7 @@ const mainSettingsPaths = [
 ]
 
 const yourPspPaths = [
-  paths.account.yourPsp,
+  paths.yourPsp,
   paths.credentials,
   paths.notificationCredentials
 ]
@@ -89,7 +89,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
     {
       id: 'navigation-menu-your-psp',
       name: `Your PSP - ${formatPSPname(paymentProvider)}`,
-      url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id),
+      url: paths.yourPsp.index,
       current: pathLookup(currentPath, yourPspPaths),
       permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox')
     },
