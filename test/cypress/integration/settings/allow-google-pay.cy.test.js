@@ -9,11 +9,6 @@ const serviceName = 'My Awesome Service'
 function setupStubs (allowGooglePay) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-    gatewayAccountStubs.getGatewayAccountSuccess({
-      gatewayAccountId,
-      paymentProvider: 'worldpay',
-      allowGooglePay: allowGooglePay
-    }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
@@ -35,7 +30,7 @@ describe('Google Pay', () => {
 
     it('should show it is disabled', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/settings')
+      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
       cy.get('a').contains('Change Google Pay settings').click()
       cy.get('input[type="radio"]').should('have.length', 2)
@@ -53,7 +48,7 @@ describe('Google Pay', () => {
 
     it('should allow us to enable', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/settings')
+      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
       cy.get('a').contains('Change Google Pay settings').click()
     })
