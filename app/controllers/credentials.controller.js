@@ -3,10 +3,10 @@ const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials'
 
 const _ = require('lodash')
 const paths = require('../paths')
+const formatAccountPathsFor = require('../utils/format-account-paths-for')
 const { response } = require('../utils/response')
 const { renderErrorView } = require('../utils/response')
 const { ConnectorClient } = require('../services/clients/connector.client')
-const router = require('../routes')
 const { CONNECTOR_URL } = process.env
 const { CORRELATION_HEADER } = require('../utils/correlation-header')
 const { isPasswordLessThanTenChars } = require('../browsered/field-validation-checks')
@@ -109,7 +109,7 @@ module.exports = {
         gatewayAccountId: accountId
       })
 
-      return res.redirect(303, router.paths.yourPsp.index)
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id))
     } catch (err) {
       return renderErrorView(req, res)
     }
@@ -124,7 +124,7 @@ module.exports = {
         payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
       })
 
-      return res.redirect(303, router.paths.yourPsp.index)
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id))
     } catch (err) {
       return renderErrorView(req, res)
     }
