@@ -9,7 +9,7 @@
   {{
     govukBackLink({
       text: "Back to make a demo payment",
-      href: routes.prototyping.demoPayment.index
+      href: formatAccountPathsFor(routes.account.prototyping.demoPayment.index,  currentGatewayAccount.external_id)
     })
   }}
 {% endblock %}
@@ -28,7 +28,7 @@
   <p class="govuk-body">You can enter any valid value for the other details. For example, it doesn’t matter what expiry date you enter, but it must be in the future.</p>
   <p class="govuk-body">You can also use other card types and see errors. <a class="govuk-link" href="https://docs.payments.service.gov.uk/testing_govuk_pay/#mock-card-numbers-for-testing-purposes">See more card types in our documentation</a>.</p>
 
-  <form method="post" action="{{routes.prototyping.demoPayment.goToPaymentScreens}}" >
+  <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.goToPaymentScreens,  currentGatewayAccount.external_id)}}" >
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{
       govukButton({

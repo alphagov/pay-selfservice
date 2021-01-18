@@ -31,6 +31,22 @@ module.exports = {
     paymentTypes: {
       index: '/payment-types'
     },
+    prototyping: {
+      demoService: {
+        index: '/test-with-your-users',
+        links: '/test-with-your-users/links',
+        create: '/test-with-your-users/create',
+        confirm: '/test-with-your-users/confirm',
+        disable: '/test-with-your-users/links/disable/:productExternalId'
+      },
+      demoPayment: {
+        index: '/make-a-demo-payment',
+        editDescription: '/make-a-demo-payment/edit-description',
+        editAmount: '/make-a-demo-payment/edit-amount',
+        mockCardDetails: '/make-a-demo-payment/mock-card-numbers',
+        goToPaymentScreens: '/make-a-demo-payment/go-to-payment'
+      }
+    },
     settings: {
       index: '/settings'
     },
@@ -144,22 +160,6 @@ module.exports = {
   },
   staticPaths: {
     naxsiError: '/request-denied'
-  },
-  prototyping: {
-    demoService: {
-      index: '/test-with-your-users',
-      links: '/test-with-your-users/links',
-      create: '/test-with-your-users/create',
-      confirm: '/test-with-your-users/confirm',
-      disable: '/test-with-your-users/links/disable/:productExternalId'
-    },
-    demoPayment: {
-      index: '/make-a-demo-payment',
-      editDescription: '/make-a-demo-payment/edit-description',
-      editAmount: '/make-a-demo-payment/edit-amount',
-      mockCardDetails: '/make-a-demo-payment/mock-card-numbers',
-      goToPaymentScreens: '/make-a-demo-payment/go-to-payment'
-    }
   },
   paymentLinks: {
     start: '/create-payment-link',

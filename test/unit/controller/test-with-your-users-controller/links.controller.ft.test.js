@@ -9,10 +9,13 @@ const mockSession = require('../../../test-helpers/mock-session')
 const userCreator = require('../../../test-helpers/user-creator')
 const paths = require('../../../../app/paths')
 const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
+const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
 
 const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 
 const GATEWAY_ACCOUNT_ID = '182364'
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
+
 const PAYMENT_1 = {
   external_id: 'product-external-id-1',
   gateway_account_id: 'product-gateway-account-id-1',
@@ -63,10 +66,13 @@ function mockGetProductsByGatewayAccountEndpoint (gatewayAccountId) {
 }
 
 function mockConnectorGetAccount () {
-  nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-    .reply(200, validGatewayAccountResponse({
-      gateway_account_id: GATEWAY_ACCOUNT_ID
-    }))
+  nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+    .reply(200, validGatewayAccountResponse(
+      {
+        external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+        gateway_account_id: GATEWAY_ACCOUNT_ID
+      }
+    ))
 }
 
 describe('Show the prototype links', () => {
@@ -86,7 +92,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [])
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -103,9 +109,9 @@ describe('Show the prototype links', () => {
     })
 
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).to.have.property('createPage', formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
+      expect(response.body).to.have.property('indexPage', formatAccountPathsFor(paths.account.prototyping.demoService.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
+      expect(response.body).to.have.property('linksPage', formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
 
     it('should not display any link', () => {
@@ -120,7 +126,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1])
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -137,9 +143,9 @@ describe('Show the prototype links', () => {
     })
 
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).to.have.property('createPage', formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
+      expect(response.body).to.have.property('indexPage', formatAccountPathsFor(paths.account.prototyping.demoService.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
+      expect(response.body).to.have.property('linksPage', formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
 
     it('should display all the links', () => {
@@ -169,7 +175,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_2])
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -186,9 +192,9 @@ describe('Show the prototype links', () => {
     })
 
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).to.have.property('createPage', formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
+      expect(response.body).to.have.property('indexPage', formatAccountPathsFor(paths.account.prototyping.demoService.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
+      expect(response.body).to.have.property('linksPage', formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
 
     it('should display all the links', () => {
@@ -232,7 +238,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_3])
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -267,7 +273,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).replyWithError('an error')
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res

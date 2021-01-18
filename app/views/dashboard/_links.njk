@@ -9,7 +9,7 @@
   <div class="flex-grid--row">
     {% if links.demoPayment in linksToDisplay %}
     <article class="{{columnClass}} links__box" id="demo-payment-link">
-      <a href="{{routes.prototyping.demoPayment.index}}">
+      <a href="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.index,  currentGatewayAccount.external_id)}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Make a demo payment</h2>
         <p class="govuk-body govuk-!-margin-bottom-0">Try the payment experience as a user. Then view the completed payment as an administrator on GOV.UK&nbsp;Pay.</p>
       </a>
@@ -18,7 +18,7 @@
 
     {% if links.testPaymentLink in linksToDisplay %}
     <article class="{{columnClass}} links__box" id="test-payment-link-link">
-      <a href="{{routes.prototyping.demoService.index}}">
+      <a href="{{formatAccountPathsFor(routes.account.prototyping.demoService.index,  currentGatewayAccount.external_id)}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Test with your users</h2>
         <p class="govuk-body govuk-!-margin-bottom-0">Create a reusable link to integrate your service prototype with GOV.UK&nbsp;Pay and test with users.</p>
       </a>

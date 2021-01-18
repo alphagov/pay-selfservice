@@ -6,6 +6,7 @@ const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const { isCurrency, isAboveMaxAmount } = require('../../browsered/field-validation-checks')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 const DEFAULTS = {
   paymentDescription: 'An example payment description',
@@ -20,13 +21,13 @@ module.exports = (req, res) => {
   if (!paymentAmount || isCurrency(paymentAmount)) {
     lodash.set(req, 'session.pageData.makeADemoPayment.paymentAmount', paymentAmount)
     req.flash('genericError', isCurrency(paymentAmount))
-    return res.redirect(paths.prototyping.demoPayment.editAmount)
+    return res.redirect(formatAccountPathsFor(paths.account.prototyping.demoPayment.editAmount, req.account.external_id))
   }
   const isAboveMaxAmountError = isAboveMaxAmount(paymentAmount)
   if (isAboveMaxAmountError) {
     lodash.set(req, 'session.pageData.makeADemoPayment.paymentAmount', paymentAmount)
     req.flash('genericError', isAboveMaxAmountError)
-    return res.redirect(paths.prototyping.demoPayment.editAmount)
+    return res.redirect(formatAccountPathsFor(paths.account.prototyping.demoPayment.editAmount, req.account.external_id))
   }
 
   if (req.body['payment-amount']) {

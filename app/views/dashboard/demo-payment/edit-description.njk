@@ -9,7 +9,7 @@
   {{
     govukBackLink({
       text: "Back to make a demo payment",
-      href: routes.prototyping.demoPayment.index
+      href: formatAccountPathsFor(routes.account.prototyping.demoPayment.index,  currentGatewayAccount.external_id)
     })
   }}
 {% endblock %}
@@ -17,7 +17,7 @@
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Edit payment description</h1>
-    <form method="post" action="{{routes.prototyping.demoPayment.index}}" data-validate="true">
+    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.index,  currentGatewayAccount.external_id)}}" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
       {{
         govukTextarea({

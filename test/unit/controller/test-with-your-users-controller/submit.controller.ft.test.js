@@ -12,8 +12,10 @@ const paths = require('../../../../app/paths')
 const { randomUuid } = require('../../../../app/utils/random')
 const { validCreateProductRequest, validProductResponse } = require('../../../fixtures/product.fixtures')
 const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
+const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
 
 const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 const GATEWAY_ACCOUNT_ID = '929'
 const API_TOKEN = randomUuid()
 const VALID_USER = getUser({ gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'transactions:read' }] })
@@ -40,9 +42,15 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
 })
 const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST)
 
-function mockConnectorGetGatewayAccount () {
-  nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200,
-    validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
+function mockConnectorGetAccount (opts = {}) {
+  nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+    .reply(200, validGatewayAccountResponse(
+      {
+        external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+        gateway_account_id: GATEWAY_ACCOUNT_ID,
+        payment_provider: opts.payment_provider || 'sandbox'
+      }
+    ))
 }
 
 describe('test with your users - submit controller', () => {
@@ -50,11 +58,9 @@ describe('test with your users - submit controller', () => {
     let session, response, $
     before(done => {
       session = getMockSession(VALID_USER)
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
-        payment_provider: 'worldpay'
-      })
+      mockConnectorGetAccount({ payment_provider: 'worldpay' })
       supertest(createAppWithSession(getApp(), session))
-        .post(paths.prototyping.demoService.confirm)
+        .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .send(VALID_PAYLOAD)
         .end((err, res) => {
           response = res
@@ -86,11 +92,11 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, { token: API_TOKEN })
-        mockConnectorGetGatewayAccount()
+        mockConnectorGetAccount()
         nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST)
           .reply(201, VALID_CREATE_PRODUCT_RESPONSE)
         supertest(createAppWithSession(getApp(), session))
-          .post(paths.prototyping.demoService.confirm)
+          .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
           .send(VALID_PAYLOAD)
           .end((err, res) => {
             response = res
@@ -114,8 +120,8 @@ describe('test with your users - submit controller', () => {
       })
 
       it('should have a back link and a button that link back to the links page', () => {
-        expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoService.links)
-        expect($('#see-prototype-links').attr('href')).to.equal(paths.prototyping.demoService.links)
+        expect($('.govuk-back-link').attr('href')).to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
+        expect($('#see-prototype-links').attr('href')).to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
       })
     })
     describe('but it is unable to create an API token', () => {
@@ -124,9 +130,9 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .replyWithError('Somet nasty happened')
-        mockConnectorGetGatewayAccount()
+        mockConnectorGetAccount()
         supertest(createAppWithSession(getApp(), session))
-          .post(paths.prototyping.demoService.confirm)
+          .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
           .send(VALID_PAYLOAD)
           .end((err, res) => {
             response = res
@@ -142,7 +148,7 @@ describe('test with your users - submit controller', () => {
       })
 
       it('should redirect to the create prototype link page', () => {
-        expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+        expect(response.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
@@ -157,11 +163,11 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, { token: API_TOKEN })
-        mockConnectorGetGatewayAccount()
+        mockConnectorGetAccount()
         nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST)
           .replyWithError('Somet went wrong')
         supertest(createAppWithSession(getApp(), session))
-          .post(paths.prototyping.demoService.confirm)
+          .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
           .send(VALID_PAYLOAD)
           .end((err, res) => {
             response = res
@@ -176,7 +182,7 @@ describe('test with your users - submit controller', () => {
       })
 
       it('should redirect to the create prototype link page', () => {
-        expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+        expect(response.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
@@ -191,14 +197,14 @@ describe('test with your users - submit controller', () => {
       describe('because the value includes text', () => {
         let result, session, app
         before('Arrange', () => {
-          mockConnectorGetGatewayAccount()
+          mockConnectorGetAccount()
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
 
         before('Act', done => {
           supertest(app)
-            .post(paths.prototyping.demoService.confirm)
+            .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
             .send(Object.assign({}, VALID_PAYLOAD, {
               'payment-amount': 'One Hundred and Eighty Pounds and No Pence'
             }))
@@ -216,7 +222,7 @@ describe('test with your users - submit controller', () => {
           expect(result.statusCode).to.equal(302)
         })
         it('should redirect to the create prototype link page', () => {
-          expect(result.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+          expect(result.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
         })
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
@@ -227,14 +233,14 @@ describe('test with your users - submit controller', () => {
       describe('because the value has too many digits to the right of the decimal point', () => {
         let result, session, app
         before('Arrange', () => {
-          mockConnectorGetGatewayAccount()
+          mockConnectorGetAccount()
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
 
         before('Act', done => {
           supertest(app)
-            .post(paths.prototyping.demoService.confirm)
+            .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
             .send(Object.assign({}, VALID_PAYLOAD, {
               'payment-amount': '£1234.567'
             }))
@@ -252,7 +258,7 @@ describe('test with your users - submit controller', () => {
           expect(result.statusCode).to.equal(302)
         })
         it('should redirect to the create prototype link page', () => {
-          expect(result.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+          expect(result.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
         })
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
@@ -263,14 +269,14 @@ describe('test with your users - submit controller', () => {
       describe('because the value exceeds 100,000', () => {
         let result, session, app
         before('Arrange', () => {
-          mockConnectorGetGatewayAccount()
+          mockConnectorGetAccount()
           session = getMockSession(VALID_USER)
           app = createAppWithSession(getApp(), session)
         })
 
         before('Act', done => {
           supertest(app)
-            .post(paths.prototyping.demoService.confirm)
+            .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
             .send(Object.assign({}, VALID_PAYLOAD, {
               'payment-amount': '10000000.01'
             }))
@@ -288,7 +294,7 @@ describe('test with your users - submit controller', () => {
           expect(result.statusCode).to.equal(302)
         })
         it('should redirect to the create prototype link page', () => {
-          expect(result.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+          expect(result.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
         })
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
@@ -302,12 +308,9 @@ describe('test with your users - submit controller', () => {
       before(done => {
         session = getMockSession(VALID_USER)
         const app = createAppWithSession(getApp(), session)
-        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-          .reply(200, {
-            payment_provider: 'sandbox'
-          })
+        mockConnectorGetAccount()
         supertest(app)
-          .post(paths.prototyping.demoService.confirm)
+          .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
           .send(Object.assign({}, VALID_PAYLOAD, { 'confirmation-page': 'http://example.com' }))
           .end((err, res) => {
             response = res
@@ -320,7 +323,7 @@ describe('test with your users - submit controller', () => {
       })
 
       it('should redirect to the create prototype link page', () => {
-        expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+        expect(response.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
@@ -336,9 +339,9 @@ describe('test with your users - submit controller', () => {
         const app = createAppWithSession(getApp(), session)
         const payload = Object.assign({}, VALID_PAYLOAD)
         delete payload['payment-description']
-        mockConnectorGetGatewayAccount()
+        mockConnectorGetAccount()
         supertest(app)
-          .post(paths.prototyping.demoService.confirm)
+          .post(formatAccountPathsFor(paths.account.prototyping.demoService.confirm, EXTERNAL_GATEWAY_ACCOUNT_ID))
           .send(payload)
           .end((err, res) => {
             response = res
@@ -354,7 +357,7 @@ describe('test with your users - submit controller', () => {
       })
 
       it('should redirect to the create prototype link page', () => {
-        expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.create)
+        expect(response.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.create, EXTERNAL_GATEWAY_ACCOUNT_ID))
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {

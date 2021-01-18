@@ -11,10 +11,12 @@ const { getMockSession, createAppWithSession, getUser } = require('../../../test
 const paths = require('../../../../app/paths')
 const { randomUuid } = require('../../../../app/utils/random')
 const { validCreateProductRequest, validProductResponse } = require('../../../fixtures/product.fixtures')
+const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
 const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
 const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 const PAYMENT_DESCRIPTION = 'Pay your window tax'
 const PAYMENT_AMOUNT = '2000'
 const VALID_PAYLOAD = {
@@ -30,7 +32,7 @@ const VALID_CREATE_TOKEN_REQUEST = {
   description: 'Token for Demo Payment',
   type: 'PRODUCTS'
 }
-const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID })
+
 const VALID_CREATE_TOKEN_RESPONSE = { token: randomUuid() }
 const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   name: PAYMENT_DESCRIPTION,
@@ -42,6 +44,16 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
 })
 const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST)
 
+function mockConnectorGetAccount () {
+  nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+    .reply(200, validGatewayAccountResponse(
+      {
+        external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+        gateway_account_id: GATEWAY_ACCOUNT_ID
+      }
+    ))
+}
+
 describe('make a demo payment - go to payment controller', () => {
   describe(`when both paymentDescription and paymentAmount exist in the session`, () => {
     describe(`when the API token is successfully created`, () => {
@@ -50,7 +62,9 @@ describe('make a demo payment - go to payment controller', () => {
         before('Arrange', () => {
           nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
           nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST).reply(201, VALID_CREATE_PRODUCT_RESPONSE)
-          nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+
+          mockConnectorGetAccount()
+
           session = getMockSession(VALID_USER)
           lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
           lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
@@ -58,7 +72,7 @@ describe('make a demo payment - go to payment controller', () => {
         })
         before('Act', done => {
           supertest(app)
-            .post(paths.prototyping.demoPayment.goToPaymentScreens)
+            .post(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
             .send(VALID_PAYLOAD)
             .end((err, res) => {
               result = res
@@ -84,7 +98,9 @@ describe('make a demo payment - go to payment controller', () => {
         before('Arrange', () => {
           nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
           nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST).replyWithError('Something went wrong')
-          nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+
+          mockConnectorGetAccount()
+
           session = getMockSession(VALID_USER)
           lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
           lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
@@ -92,7 +108,7 @@ describe('make a demo payment - go to payment controller', () => {
         })
         before('Act', done => {
           supertest(app)
-            .post(paths.prototyping.demoPayment.goToPaymentScreens)
+            .post(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
             .send(VALID_PAYLOAD)
             .end((err, res) => {
               result = res
@@ -108,7 +124,7 @@ describe('make a demo payment - go to payment controller', () => {
         })
 
         it('should redirect back to the index page', () => {
-          expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+          expect(result.headers).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
         })
 
         it('should add a relevant error message to the session \'flash\'', () => {
@@ -121,7 +137,9 @@ describe('make a demo payment - go to payment controller', () => {
     describe(`when the API token creation fails`, () => {
       let result, session, app
       before('Arrange', () => {
-        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+
+        mockConnectorGetAccount()
+
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).replyWithError('Something went wrong')
         session = getMockSession(VALID_USER)
         lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
@@ -130,7 +148,7 @@ describe('make a demo payment - go to payment controller', () => {
       })
       before('Act', done => {
         supertest(app)
-          .post(paths.prototyping.demoPayment.goToPaymentScreens)
+          .post(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
           .send({
             'csrfToken': csrf().create('123')
           })
@@ -148,7 +166,7 @@ describe('make a demo payment - go to payment controller', () => {
       })
 
       it('should redirect back to the index page', () => {
-        expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+        expect(result.headers).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
       })
 
       it('should add a relevant error message to the session \'flash\'', () => {
@@ -162,14 +180,15 @@ describe('make a demo payment - go to payment controller', () => {
     let result, app
 
     before('Arrange', () => {
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+      mockConnectorGetAccount()
+
       const session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
       supertest(app)
-        .post(paths.prototyping.demoPayment.goToPaymentScreens)
+        .post(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .send({
           'csrfToken': csrf().create('123')
         })
@@ -188,21 +207,22 @@ describe('make a demo payment - go to payment controller', () => {
     })
 
     it('should redirect back to the index page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+      expect(result.headers).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
   })
   describe(`when paymentAmount is missing from the session`, () => {
     let result, app
 
     before('Arrange', () => {
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+      mockConnectorGetAccount()
+
       const session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {
       supertest(app)
-        .post(paths.prototyping.demoPayment.goToPaymentScreens)
+        .post(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .send({
           'csrfToken': csrf().create('123')
         })
@@ -221,7 +241,7 @@ describe('make a demo payment - go to payment controller', () => {
     })
 
     it('should redirect back to the index page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.prototyping.demoPayment.index)
+      expect(result.headers).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
   })
 })

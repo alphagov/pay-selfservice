@@ -11,7 +11,20 @@ const { randomUuid } = require('../../../../app/utils/random')
 const { validGatewayAccountResponse } = require('../../../fixtures/gateway-account.fixtures')
 
 const GATEWAY_ACCOUNT_ID = '929'
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
+
 const { PRODUCTS_URL, CONNECTOR_URL } = process.env
+const formatAccountPathsFor = require('../../../../app/utils/format-account-paths-for')
+
+function mockConnectorGetAccount () {
+  nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+    .reply(200, validGatewayAccountResponse(
+      {
+        external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+        gateway_account_id: GATEWAY_ACCOUNT_ID
+      }
+    ))
+}
 
 describe('test with your users - disable controller', () => {
   describe('when the prototype link is successfully disabled', () => {
@@ -22,11 +35,11 @@ describe('test with your users - disable controller', () => {
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }]
       })
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
+      mockConnectorGetAccount()
       nock(PRODUCTS_URL).patch(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${productExternalId}/disable`).reply(200)
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.prototyping.demoService.disable.replace(':productExternalId', productExternalId))
+        .get(formatAccountPathsFor(paths.account.prototyping.demoService.disable, EXTERNAL_GATEWAY_ACCOUNT_ID).replace(':productExternalId', productExternalId))
         .end((err, res) => {
           response = res
           done(err)
@@ -41,7 +54,7 @@ describe('test with your users - disable controller', () => {
     })
 
     it('should redirect to the create prototype link page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.links)
+      expect(response.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
 
     it('should add a relevant generic message to the session \'flash\'', () => {
@@ -59,14 +72,12 @@ describe('test with your users - disable controller', () => {
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }]
       })
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
-        payment_provider: 'sandbox'
-      })
+      mockConnectorGetAccount()
       nock(PRODUCTS_URL).patch(`/v1/api/products/${productExternalId}/disable`)
         .replyWithError('Ruhroh! Something terrible has happened Shaggy!')
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.prototyping.demoService.disable.replace(':productExternalId', productExternalId))
+        .get(formatAccountPathsFor(paths.account.prototyping.demoService.disable, EXTERNAL_GATEWAY_ACCOUNT_ID).replace(':productExternalId', productExternalId))
         .end((err, res) => {
           response = res
           done(err)
@@ -81,7 +92,7 @@ describe('test with your users - disable controller', () => {
     })
 
     it('should redirect to the create prototype link page', () => {
-      expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.links)
+      expect(response.header).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
 
     it('should add a relevant error message to the session \'flash\'', () => {

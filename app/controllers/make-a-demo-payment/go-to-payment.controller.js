@@ -7,13 +7,14 @@ const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 module.exports = async function makeDemoPayment (req, res) {
   const gatewayAccountId = req.account.gateway_account_id
   const { paymentAmount, paymentDescription } = lodash.get(req, 'session.pageData.makeADemoPayment', {})
 
   if (!paymentAmount || !paymentDescription) {
-    return res.redirect(paths.prototyping.demoPayment.index)
+    return res.redirect(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, req.account.external_id))
   }
 
   try {
@@ -40,6 +41,6 @@ module.exports = async function makeDemoPayment (req, res) {
   } catch (error) {
     logger.error(`[requestId=${req.correlationId}] Making a demo payment failed - ${error.message}`)
     req.flash('genericError', 'Something went wrong. Please try again.')
-    res.redirect(paths.prototyping.demoPayment.index)
+    res.redirect(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, req.account.external_id))
   }
 }
