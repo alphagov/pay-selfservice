@@ -15,7 +15,7 @@ describe('Your PSP settings page', () => {
   }
   const testNotificationCredentials = {
     version: 1,
-    userName: 'someone',
+    username: 'someone',
     password: 'email-me'
   }
   const testFlexCredentials = {
@@ -393,7 +393,7 @@ describe('Your PSP settings page', () => {
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
-      cy.get('.value-notification-username').should('contain', testNotificationCredentials.userName)
+      cy.get('.value-notification-username').should('contain', testNotificationCredentials.username)
       cy.get('.value-notification-password').should('contain', '●●●●●●●●')
     })
   })

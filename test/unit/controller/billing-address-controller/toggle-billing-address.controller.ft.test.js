@@ -45,7 +45,7 @@ describe('Toggle billing address collection controller', () => {
   describe('should get index with billing address on', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(true)
-      connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }))
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user)
@@ -69,7 +69,7 @@ describe('Toggle billing address collection controller', () => {
   describe('should get index with billing address off', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(false)
-      connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }))
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user)
@@ -93,7 +93,7 @@ describe('Toggle billing address collection controller', () => {
   describe('should redirect to index on enable billing address', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(true)
-      connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }))
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user)
@@ -127,7 +127,7 @@ describe('Toggle billing address collection controller', () => {
   describe('should redirect to index on disable billing address', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(false)
-      connectorMock.get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({ external_id: EXTERNAL_GATEWAY_ACCOUNT_ID, gateway_account_id: '666' }))
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user)

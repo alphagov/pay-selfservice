@@ -19,7 +19,7 @@ const gatewayAccountId = '15486734'
 const gatewayAccountExternalId = 'account-external-id'
 const connectorMock = nock(process.env.CONNECTOR_URL)
 const CONNECTOR_ACCOUNT_CARD_TYPES_PATH = `/v1/frontend/accounts/${gatewayAccountId}/card-types`
-const CONNECTOR_ACCOUNT_BY_EXTERNAL_ID = `/v1/api/accounts/external-id/${gatewayAccountExternalId}`
+const CONNECTOR_ACCOUNT_BY_EXTERNAL_ID = `/v1/frontend/accounts/external-id/${gatewayAccountExternalId}`
 
 let app
 
