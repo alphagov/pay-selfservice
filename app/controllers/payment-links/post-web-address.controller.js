@@ -6,6 +6,8 @@ const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const { slugify, removeIndefiniteArticles } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+
 const makeNiceURL = string => {
   return slugify(removeIndefiniteArticles(string))
 }
@@ -32,7 +34,7 @@ module.exports = async function postWebAddress (req, res, next) {
     } catch (err) {
       // URL not in use, continue
       paymentLinkData.productNamePath = resolvedURLPath
-      return res.redirect(paths.paymentLinks.reference)
+      return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.reference, req.account && req.account.external_id))
     }
   }
 
@@ -41,5 +43,5 @@ module.exports = async function postWebAddress (req, res, next) {
     errors,
     paymentLinkURLPath
   })
-  return res.redirect(paths.paymentLinks.webAddress)
+  return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.webAddress, req.account && req.account.external_id))
 }

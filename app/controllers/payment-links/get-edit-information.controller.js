@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
-const formattedPathFor = require('../../utils/replace-params-in-path')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const supportedLanguage = require('../../models/supported-language')
 
 module.exports = function showEditInformationPage (req, res, next) {
@@ -13,13 +13,14 @@ module.exports = function showEditInformationPage (req, res, next) {
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
-    return res.redirect(paths.paymentLinks.manage.index)
+
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
   }
 
   const recovered = sessionData.informationPageRecovered || {}
   delete sessionData.informationPageRecovered
 
-  const self = formattedPathFor(paths.paymentLinks.manage.editInformation, productExternalId)
+  const self = formatAccountPathsFor(paths.account.paymentLinks.manage.editInformation, req.account && req.account.external_id, productExternalId)
   const change = lodash.get(req, 'query.field', {})
   const paymentLinkTitle = recovered.name || sessionData.name
   const paymentLinkDescription = recovered.description || sessionData.description

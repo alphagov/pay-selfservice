@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 
 const paths = require('../../paths')
-const formattedPathFor = require('../../utils/replace-params-in-path')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 module.exports = function postEditInformation (req, res) {
   const { productExternalId } = req.params
@@ -11,7 +11,7 @@ module.exports = function postEditInformation (req, res) {
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
-    return res.redirect(paths.paymentLinks.manage.index)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
   }
 
   const name = req.body['payment-link-title']
@@ -26,11 +26,11 @@ module.exports = function postEditInformation (req, res) {
       name,
       description
     }
-    return res.redirect(formattedPathFor(paths.paymentLinks.manage.editInformation, productExternalId))
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.editInformation, req.account && req.account.external_id, productExternalId))
   }
 
   sessionData.name = name
   sessionData.description = description
 
-  return res.redirect(formattedPathFor(paths.paymentLinks.manage.edit, productExternalId))
+  return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.edit, req.account && req.account.external_id, productExternalId))
 }

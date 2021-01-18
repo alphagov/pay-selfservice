@@ -4,6 +4,8 @@ const lodash = require('lodash')
 const { slugify, removeIndefiniteArticles } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
 const paths = require('../../paths')
+
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const productsClient = require('../../services/clients/products.client.js')
 
 const makeNiceURL = string => {
@@ -29,7 +31,7 @@ module.exports = async function postInformation (req, res, next) {
       title,
       description
     }
-    return res.redirect(paths.paymentLinks.information)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.information, req.account && req.account.external_id))
   }
 
   sessionData.paymentLinkTitle = title
@@ -39,15 +41,15 @@ module.exports = async function postInformation (req, res, next) {
 
   if (req.body['change'] === 'true') {
     req.flash('generic', 'The details have been updated')
-    return res.redirect(paths.paymentLinks.review)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, req.account && req.account.external_id))
   }
 
   try {
     await productsClient.product.getByProductPath(sessionData.serviceNamePath, sessionData.productNamePath)
     // if product exists we need to alert the user they must use a different URL
-    return res.redirect(paths.paymentLinks.webAddress)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.webAddress, req.account && req.account.external_id))
   } catch (err) {
     // if it errors then it means no product was found and that’s good
-    return res.redirect(paths.paymentLinks.reference)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.reference, req.account && req.account.external_id))
   }
 }

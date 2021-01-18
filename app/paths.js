@@ -66,6 +66,29 @@ module.exports = {
       create: '/api-keys/create',
       revoke: '/api-keys/revoke',
       update: '/api-keys/update'
+    },
+    paymentLinks: {
+      start: '/create-payment-link',
+      information: '/create-payment-link/information',
+      webAddress: '/create-payment-link/web-address',
+      reference: '/create-payment-link/reference',
+      amount: '/create-payment-link/amount',
+      review: '/create-payment-link/review',
+      addMetadata: '/create-payment-link/add-reporting-column',
+      editMetadata: '/create-payment-link/add-reporting-column/:metadataKey',
+      deleteMetadata: '/create-payment-link/add-reporting-column/:metadataKey/delete',
+      manage: {
+        index: '/create-payment-link/manage',
+        edit: '/create-payment-link/manage/edit/:productExternalId',
+        disable: '/create-payment-link/manage/disable/:productExternalId',
+        delete: '/create-payment-link/manage/delete/:productExternalId',
+        editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
+        editReference: '/create-payment-link/manage/edit/reference/:productExternalId',
+        editAmount: '/create-payment-link/manage/edit/amount/:productExternalId',
+        addMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column',
+        editMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey',
+        deleteMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey/delete'
+      }
     }
   },
   transactions: {
@@ -160,34 +183,6 @@ module.exports = {
   },
   staticPaths: {
     naxsiError: '/request-denied'
-  },
-  paymentLinks: {
-    start: '/create-payment-link',
-    information: '/create-payment-link/information',
-    webAddress: '/create-payment-link/web-address',
-    reference: '/create-payment-link/reference',
-    amount: '/create-payment-link/amount',
-    review: '/create-payment-link/review',
-    addMetadata: '/create-payment-link/add-reporting-column',
-    editMetadata: '/create-payment-link/add-reporting-column/:metadataKey',
-    deleteMetadata: '/create-payment-link/add-reporting-column/:metadataKey/delete',
-    manage: {
-      index: '/create-payment-link/manage',
-      edit: '/create-payment-link/manage/edit/:productExternalId',
-      disable: '/create-payment-link/manage/disable/:productExternalId',
-      delete: '/create-payment-link/manage/delete/:productExternalId',
-      editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
-      editReference: '/create-payment-link/manage/edit/reference/:productExternalId',
-      editAmount: '/create-payment-link/manage/edit/amount/:productExternalId',
-      addMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column',
-      editMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey',
-      deleteMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey/delete'
-    },
-    metadata: {
-      add: '/create-payment-link/manage/edit/:productExternalId/metadata',
-      edit: '/create-payment-link/manage/edit/:productExternalId/metadata/:metadataKey',
-      delete: '/create-payment-link/manage/edit/:productExternalId/metadata/:metadataKey/delete'
-    }
   },
   feedback: '/feedback',
   generateRoute: generateRoute,

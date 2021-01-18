@@ -88,7 +88,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials, paymentLinks,
+  notificationCredentials,
   requestToGoLive, policyPages, stripeSetup, stripe,
   yourPsp, allServiceTransactions, payouts
 } = paths
@@ -101,7 +101,8 @@ const {
   settings,
   toggle3ds,
   toggleBillingAddress,
-  toggleMotoMaskCardNumberAndSecurityCode
+  toggleMotoMaskCardNumberAndSecurityCode,
+  paymentLinks
 } = paths.account
 
 // Exports
@@ -369,41 +370,7 @@ module.exports.bind = function (app) {
   account.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.mockCardDetails)
   account.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.goToPayment)
 
-  // Payment links
-  app.get(paymentLinks.start, permission('tokens:create'), getAccount, paymentLinksController.getStart)
-  app.get(paymentLinks.information, permission('tokens:create'), getAccount, paymentLinksController.getInformation)
-  app.post(paymentLinks.information, permission('tokens:create'), getAccount, paymentLinksController.postInformation)
-  app.get(paymentLinks.webAddress, permission('tokens:create'), getAccount, paymentLinksController.getWebAddress)
-  app.post(paymentLinks.webAddress, permission('tokens:create'), getAccount, paymentLinksController.postWebAddress)
-  app.get(paymentLinks.reference, permission('tokens:create'), getAccount, paymentLinksController.getReference)
-  app.post(paymentLinks.reference, permission('tokens:create'), getAccount, paymentLinksController.postReference)
-  app.get(paymentLinks.amount, permission('tokens:create'), getAccount, paymentLinksController.getAmount)
-  app.post(paymentLinks.amount, permission('tokens:create'), getAccount, paymentLinksController.postAmount)
-  app.get(paymentLinks.review, permission('tokens:create'), getAccount, paymentLinksController.getReview)
-  app.post(paymentLinks.review, permission('tokens:create'), getAccount, paymentLinksController.postReview)
-  app.get(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showAddMetadataPage)
-  app.get(paymentLinks.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showEditMetadataPage)
-  app.post(paymentLinks.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.addMetadata)
-  app.post(paymentLinks.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
-  app.post(paymentLinks.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
-
-  app.get(paymentLinks.manage.index, permission('transactions:read'), getAccount, paymentLinksController.getManage)
-  app.get(paymentLinks.manage.disable, permission('tokens:create'), getAccount, paymentLinksController.getDisable)
-  app.get(paymentLinks.manage.delete, permission('tokens:create'), getAccount, paymentLinksController.getDelete)
-  app.get(paymentLinks.manage.edit, permission('tokens:create'), getAccount, paymentLinksController.getEdit)
-  app.post(paymentLinks.manage.edit, permission('tokens:create'), getAccount, paymentLinksController.postEdit)
-  app.get(paymentLinks.manage.editInformation, permission('tokens:create'), getAccount, paymentLinksController.getEditInformation)
-  app.post(paymentLinks.manage.editInformation, permission('tokens:create'), getAccount, paymentLinksController.postEditInformation)
-  app.get(paymentLinks.manage.editReference, permission('tokens:create'), getAccount, paymentLinksController.getEditReference)
-  app.post(paymentLinks.manage.editReference, permission('tokens:create'), getAccount, paymentLinksController.postEditReference)
-  app.get(paymentLinks.manage.editAmount, permission('tokens:create'), getAccount, paymentLinksController.getEditAmount)
-  app.post(paymentLinks.manage.editAmount, permission('tokens:create'), getAccount, paymentLinksController.postEditAmount)
-  app.get(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showAddMetadataPage)
-  app.post(paymentLinks.manage.addMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.addMetadata)
-  app.get(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.getAddReportingColumn.showEditMetadataPage)
-  app.post(paymentLinks.manage.editMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.editMetadata)
-  app.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), getAccount, paymentLinksController.postUpdateReportingColumn.deleteMetadata)
-
+  // Create payment link
   account.get(paymentLinks.start, permission('tokens:create'), paymentLinksController.getStart)
   account.get(paymentLinks.information, permission('tokens:create'), paymentLinksController.getInformation)
   account.post(paymentLinks.information, permission('tokens:create'), paymentLinksController.postInformation)

@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 
 const paths = require('../../paths')
-const formattedPathFor = require('../../utils/replace-params-in-path')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
 module.exports = function postEditAmount (req, res) {
@@ -12,7 +12,7 @@ module.exports = function postEditAmount (req, res) {
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
-    return res.redirect(paths.paymentLinks.manage.index)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
   }
 
   const type = req.body['amount-type-group']
@@ -35,11 +35,11 @@ module.exports = function postEditAmount (req, res) {
       type,
       amount: ''
     }
-    return res.redirect(formattedPathFor(paths.paymentLinks.manage.editAmount, productExternalId))
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.editAmount, req.account && req.account.external_id, productExternalId))
   }
 
   sessionData.price = amountInPence
   lodash.set(req, 'session.editPaymentLinkData', sessionData)
 
-  return res.redirect(formattedPathFor(paths.paymentLinks.manage.edit, productExternalId))
+  return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.edit, req.account && req.account.external_id, productExternalId))
 }

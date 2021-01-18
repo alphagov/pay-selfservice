@@ -52,7 +52,7 @@
     {% elif not permissions.tokens_create %}
       There are no payment links.
     {% else %}
-      There are no payment links, you can <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.paymentLinks.start }}">create one now</a>.
+      There are no payment links, you can <a class="govuk-link govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}">create one now</a>.
     {% endif %}
   </p>
 
