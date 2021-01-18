@@ -137,7 +137,6 @@ describe('make a demo payment - go to payment controller', () => {
     describe(`when the API token creation fails`, () => {
       let result, session, app
       before('Arrange', () => {
-
         mockConnectorGetAccount()
 
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).replyWithError('Something went wrong')
