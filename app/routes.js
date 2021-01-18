@@ -90,7 +90,7 @@ const {
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials, prototyping, paymentLinks,
   requestToGoLive, policyPages, stripeSetup, stripe,
-  allServiceTransactions, payouts
+  yourPsp, allServiceTransactions, payouts
 } = paths
 const {
   apiKeys,
@@ -100,8 +100,7 @@ const {
   settings,
   toggle3ds,
   toggleBillingAddress,
-  toggleMotoMaskCardNumberAndSecurityCode,
-  yourPsp
+  toggleMotoMaskCardNumberAndSecurityCode
 } = paths.account
 
 // Exports
@@ -181,6 +180,7 @@ module.exports.bind = function (app) {
     ...lodash.values(allServiceTransactions),
     ...lodash.values(credentials),
     ...lodash.values(notificationCredentials),
+    ...lodash.values(apiKeys),
     ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
@@ -193,6 +193,7 @@ module.exports.bind = function (app) {
     ...lodash.values(policyPages),
     ...lodash.values(stripeSetup),
     ...lodash.values(stripe),
+    ...lodash.values(yourPsp),
     ...lodash.values(payouts),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
@@ -284,6 +285,11 @@ module.exports.bind = function (app) {
   account.get(settings.index, permission('transactions-details:read'), settingsController.index)
 
   // Your PSP
+  app.get(yourPsp.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
+  app.post(yourPsp.worldpay3dsFlex, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, yourPspController.postToggleWorldpay3dsFlex)
+  app.get(yourPsp.flex, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.getFlex)
+  app.post(yourPsp.flex, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.postFlex)
+
   account.get(yourPsp.index, permission('gateway-credentials:read'), paymentMethodIsCard, yourPspController.getIndex)
   account.post(yourPsp.worldpay3dsFlex, permission('toggle-3ds:update'), paymentMethodIsCard, yourPspController.postToggleWorldpay3dsFlex)
   account.get(yourPsp.flex, permission('gateway-credentials:update'), paymentMethodIsCard, yourPspController.getFlex)

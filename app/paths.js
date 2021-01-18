@@ -12,13 +12,6 @@ module.exports = {
   keys,
   account: {
     root: `/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
-    apiKeys: {
-      index: '/api-keys',
-      revoked: '/api-keys/revoked',
-      create: '/api-keys/create',
-      revoke: '/api-keys/revoke',
-      update: '/api-keys/update'
-    },
     digitalWallet: {
       applePay: '/digital-wallet/apple-pay',
       googlePay: '/digital-wallet/google-pay'
@@ -51,10 +44,12 @@ module.exports = {
       cardNumber: '/moto-hide-card-number',
       securityCode: '/moto-hide-security-code'
     },
-    yourPsp: {
-      index: '/your-psp',
-      flex: '/your-psp/flex',
-      worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
+    apiKeys: {
+      index: '/api-keys',
+      revoked: '/api-keys/revoked',
+      create: '/api-keys/create',
+      revoke: '/api-keys/revoke',
+      update: '/api-keys/update'
     }
   },
   transactions: {
@@ -67,6 +62,11 @@ module.exports = {
   allServiceTransactions: {
     index: '/all-service-transactions',
     download: '/all-service-transactions/download'
+  },
+  yourPsp: {
+    index: '/your-psp',
+    flex: '/your-psp/flex',
+    worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
   },
   credentials: {
     index: '/credentials',

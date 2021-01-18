@@ -3,7 +3,6 @@
 const lodash = require('lodash')
 
 const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
@@ -18,9 +17,8 @@ const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 
 module.exports = async (req, res) => {
   const correlationId = req.headers[correlationHeader] || ''
+
   const accountId = req.account.gateway_account_id
-  const flexUrl = formatAccountPathsFor(paths.account.yourPsp.flex, req.account && req.account.external_id)
-  const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id)
 
   const orgUnitId = lodash.get(req.body, ORGANISATIONAL_UNIT_ID_FIELD, '').trim()
   const issuer = lodash.get(req.body, ISSUER_FIELD, '').trim()
@@ -34,7 +32,7 @@ module.exports = async (req, res) => {
       orgUnitId: orgUnitId,
       issuer: issuer
     })
-    return res.redirect(303, flexUrl)
+    return res.redirect(303, paths.yourPsp.flex)
   }
 
   try {
@@ -60,7 +58,7 @@ module.exports = async (req, res) => {
           orgUnitId: orgUnitId,
           issuer: issuer
         })
-        return res.redirect(303, flexUrl)
+        return res.redirect(303, paths.yourPsp.flex)
       }
     }
 
@@ -70,7 +68,7 @@ module.exports = async (req, res) => {
 
     await connector.post3dsFlexAccountCredentials(flexParams)
     req.flash('generic', 'Your Worldpay 3DS Flex settings have been updated')
-    return res.redirect(indexUrl)
+    return res.redirect(paths.yourPsp.index)
   } catch (error) {
     return renderErrorView(req, res, false, error.errorCode)
   }
