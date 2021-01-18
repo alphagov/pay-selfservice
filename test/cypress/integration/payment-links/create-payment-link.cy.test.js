@@ -4,6 +4,7 @@ const tokenStubs = require('../../stubs/token-stubs')
 const productStubs = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
+const gatewayAccountExternalId = 'a-valid-account-id'
 const serviceName = {
   en: 'pay for something',
   cy: 'talu am rywbeth'
@@ -13,7 +14,7 @@ describe('The create payment link flow', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId: userExternalId, gatewayAccountId, serviceName }),
-      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
       tokenStubs.postCreateTokenForAccountSuccess({ gatewayAccountId }),
       productStubs.postCreateProductSuccess(),
       productStubs.getProductsStub([{ name: 'A payment link' }], gatewayAccountId)
@@ -31,22 +32,22 @@ describe('The create payment link flow', () => {
     describe('The create payment link start page', () => {
       it('Should display page content', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit('/create-payment-link')
+        cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
 
         cy.get('h1').should('contain', 'Create a payment link')
         cy.get('a#create-payment-link').should('exist')
-        cy.get('a[href="/create-payment-link/information?language=cy"]').should('exist')
+        cy.get(`a[href="/account/${gatewayAccountExternalId}/create-payment-link/information?language=cy"]`).should('exist')
           .should('contain', 'Create a payment link in Welsh')
       })
 
       it('Should navigate to create payment link in English information page', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit('/create-payment-link')
+        cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
 
         cy.get('a#create-payment-link').click()
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/information`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/information`)
         })
       })
     })
@@ -55,7 +56,7 @@ describe('The create payment link flow', () => {
       it('Should display instructions for an English payment link', () => {
         cy.get('h1').should('contain', 'Set payment link information')
 
-        cy.get('form[method=post][action="/create-payment-link/information"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/information"]`).should('exist')
           .within(() => {
             cy.get('input#payment-link-title').should('exist')
             cy.get('input#payment-link-title').should('have.attr', 'lang', 'en')
@@ -81,7 +82,7 @@ describe('The create payment link flow', () => {
       })
 
       it('Should display URL when title is entered', () => {
-        cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/information"]`).within(() => {
           cy.get('input#payment-link-title').type(name)
           cy.get('textarea#payment-link-description').type(description)
 
@@ -93,12 +94,12 @@ describe('The create payment link flow', () => {
       })
 
       it('Should continue to the reference page', () => {
-        cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/information"]`).within(() => {
           cy.get('button').click()
         })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/reference`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/reference`)
         })
       })
     })
@@ -108,7 +109,7 @@ describe('The create payment link flow', () => {
         cy.get('h1').should('contain', 'Do your users already have a payment reference?')
         cy.get('#reference-type-group-hint').should('contain', `You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.`)
 
-        cy.get('form[method=post][action="/create-payment-link/reference"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/reference"]`).should('exist')
           .within(() => {
             cy.get('input[type=radio]#reference-type-custom').should('exist')
             cy.get('input[type=radio]#reference-type-standard').should('exist')
@@ -134,7 +135,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should continue to the amount page', () => {
-        cy.get('form[method=post][action="/create-payment-link/reference"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/reference"]`).should('exist')
           .within(() => {
             cy.get('input#reference-label').type(referenceName)
             cy.get('textarea#reference-hint-text').type(referenceHint)
@@ -142,14 +143,14 @@ describe('The create payment link flow', () => {
           })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/amount`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/amount`)
         })
       })
     })
 
     describe('Amount page', () => {
       it('should display content', () => {
-        cy.get('form[method=post][action="/create-payment-link/amount"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/amount"]`).should('exist')
           .within(() => {
             cy.get('input[type=radio]#amount-type-fixed').should('exist')
             cy.get('input[type=radio]#amount-type-variable').should('exist')
@@ -164,7 +165,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should continue to the confirm page', () => {
-        cy.get('form[method=post][action="/create-payment-link/amount"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/amount"]`).should('exist')
           .within(() => {
             cy.get('input[type=radio]#amount-type-fixed').click()
             cy.get('input#payment-amount').type(amount)
@@ -172,7 +173,7 @@ describe('The create payment link flow', () => {
           })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/review`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/review`)
         })
       })
     })
@@ -182,23 +183,23 @@ describe('The create payment link flow', () => {
         cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
           cy.get('.govuk-summary-list__key').should('contain', 'Title')
           cy.get('.govuk-summary-list__value').should('contain', name)
-          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/information?field=payment-link-title')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/information?field=payment-link-title`)
         })
         cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
           cy.get('.govuk-summary-list__key').should('contain', 'More details')
           cy.get('.govuk-summary-list__value').should('contain', description)
-          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/information?field=payment-link-description')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/information?field=payment-link-description`)
         })
         cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
           cy.get('.govuk-summary-list__key').should('contain', 'Reference number')
           cy.get('.govuk-summary-list__value').should('contain', referenceName)
           cy.get('.govuk-summary-list__value').get('span').should('contain', referenceHint)
-          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/reference?change=true')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/reference?change=true`)
         })
         cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
           cy.get('.govuk-summary-list__key').should('contain', 'Payment amount')
           cy.get('.govuk-summary-list__value').should('contain', '£10.00')
-          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/amount')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/amount`)
         })
 
         cy.get('button').should('exist').should('contain', 'Create payment link')
@@ -207,12 +208,12 @@ describe('The create payment link flow', () => {
       it('should show reporting column component', () => {
         cy.get('a#add-reporting-column').should('exist').should('contain', 'Add a reporting column')
         cy.get('a#add-reporting-column').click()
-        cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/add-reporting-column'))
+        cy.location().should((location) => expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/add-reporting-column`))
       })
 
       it('should reject empty values and accept valid input', () => {
         cy.get('button#submit-reporting-column').click()
-        cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/add-reporting-column'))
+        cy.location().should((location) => expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/add-reporting-column`))
         cy.get('div.govuk-error-summary').should('exist')
       })
 
@@ -220,7 +221,7 @@ describe('The create payment link flow', () => {
         cy.get('input#metadata-column-header').type('key')
         cy.get('input#metadata-cell-value').type('value')
         cy.get('button#submit-reporting-column').click()
-        cy.location().should((location) => expect(location.pathname).to.eq('/create-payment-link/review'))
+        cy.location().should((location) => expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/review`))
       })
 
       it('should list added reporting columns', () => {
@@ -229,7 +230,7 @@ describe('The create payment link flow', () => {
         cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
           cy.get('.govuk-summary-list__key').should('contain', 'key')
           cy.get('.govuk-summary-list__value').should('contain', 'value')
-          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/add-reporting-column/key')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/add-reporting-column/key`)
         })
       })
 
@@ -237,7 +238,7 @@ describe('The create payment link flow', () => {
         cy.get('dl').find('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/information`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/information`)
         })
       })
 
@@ -252,13 +253,13 @@ describe('The create payment link flow', () => {
       })
 
       it('should go back to the review page', () => {
-        cy.get('form[method=post][action="/create-payment-link/information"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/information"]`).should('exist')
           .within(() => {
             cy.get('button').click()
           })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/review`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/review`)
         })
 
         cy.get('.govuk-notification-banner--success').should('contain', 'The details have been updated')
@@ -267,7 +268,7 @@ describe('The create payment link flow', () => {
       it('should redirect to the manage payment link page with a success message', () => {
         cy.get('button').contains('Create payment link').click()
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/manage`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
         })
 
         cy.get('.govuk-notification-banner--success').should('contain', 'Your Payment link is ready to test')
@@ -285,12 +286,12 @@ describe('The create payment link flow', () => {
     describe('The create payment link start page', () => {
       it('Should navigate to create payment link in Welsh information page', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit('/create-payment-link')
+        cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
 
-        cy.get('a[href="/create-payment-link/information?language=cy"]').click()
+        cy.get(`a[href="/account/${gatewayAccountExternalId}/create-payment-link/information?language=cy"]`).click()
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/information`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/information`)
         })
       })
     })
@@ -299,7 +300,7 @@ describe('The create payment link flow', () => {
       it('Should display Welsh-specific instructions', () => {
         cy.get('h1').should('contain', 'Set Welsh payment link information')
 
-        cy.get('form[method=post][action="/create-payment-link/information"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/information"]`).should('exist')
           .within(() => {
             cy.get('input#payment-link-title').should('exist')
             cy.get('input#payment-link-title').should('have.attr', 'lang', 'cy')
@@ -320,7 +321,7 @@ describe('The create payment link flow', () => {
       })
 
       it('Should display URL with Welsh service name when title is entered', () => {
-        cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/information"]`).within(() => {
           cy.get('input#payment-link-title').type(name)
           cy.get('textarea#payment-link-description').type(description)
 
@@ -332,12 +333,12 @@ describe('The create payment link flow', () => {
       })
 
       it('Should continue to the reference page', () => {
-        cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/information"]`).within(() => {
           cy.get('button').click()
         })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/reference`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/reference`)
         })
       })
     })
@@ -347,7 +348,7 @@ describe('The create payment link flow', () => {
         cy.get('h1').should('contain', 'Do your users already have a payment reference?')
         cy.get('#reference-type-group-hint').should('contain', `You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.`)
 
-        cy.get('form[method=post][action="/create-payment-link/reference"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/reference"]`).should('exist')
           .within(() => {
             cy.get('input[type=radio]#reference-type-custom').should('exist')
             cy.get('input[type=radio]#reference-type-custom').click()
@@ -369,7 +370,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should continue to the amount page', () => {
-        cy.get('form[method=post][action="/create-payment-link/reference"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/reference"]`).should('exist')
           .within(() => {
             cy.get('input#reference-label').type(referenceName)
             cy.get('textarea#reference-hint-text').type(referenceHint)
@@ -377,14 +378,14 @@ describe('The create payment link flow', () => {
           })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/amount`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/amount`)
         })
       })
     })
 
     describe('Amount page', () => {
       it('should display content', () => {
-        cy.get('form[method=post][action="/create-payment-link/amount"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/amount"]`).should('exist')
           .within(() => {
             cy.get('input[type=radio]#amount-type-fixed').should('exist')
             cy.get('input[type=radio]#amount-type-variable').should('exist')
@@ -396,7 +397,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should continue to the confirm page', () => {
-        cy.get('form[method=post][action="/create-payment-link/amount"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/amount"]`).should('exist')
           .within(() => {
             cy.get('input[type=radio]#amount-type-fixed').click()
             cy.get('input#payment-amount').type(amount)
@@ -404,7 +405,7 @@ describe('The create payment link flow', () => {
           })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/review`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/review`)
         })
       })
     })
@@ -419,7 +420,7 @@ describe('The create payment link flow', () => {
       it('should return to the start page', () => {
         cy.get('nav').contains('Create a payment link').click()
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link`)
         })
       })
 
@@ -427,14 +428,14 @@ describe('The create payment link flow', () => {
         cy.get('a#create-payment-link').click()
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/create-payment-link/information`)
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/information`)
         })
 
         cy.get('h1').should('contain', 'Set payment link information')
       })
 
       it('should have empty inputs', () => {
-        cy.get('form[method=post][action="/create-payment-link/information"]').should('exist')
+        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/information"]`).should('exist')
           .within(() => {
             cy.get('input#payment-link-title').should('be.empty')
             cy.get('textarea#payment-link-description').should('be.empty')

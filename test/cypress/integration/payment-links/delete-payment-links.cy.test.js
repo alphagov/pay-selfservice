@@ -2,6 +2,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const userStubs = require('../../stubs/user-stubs')
 const { getProductsStub, getProductByExternalIdStub, deleteProductStub } = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
+const gatewayAccountExternalId = 'a-valid-account-id'
 const gatewayAccountId = 42
 const productExternalId = 'a-product-id'
 
@@ -14,7 +15,7 @@ describe('Should delete payment link', () => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
       getProductsStub([product], gatewayAccountId),
       getProductByExternalIdStub(product, gatewayAccountId),
       deleteProductStub(product, gatewayAccountId, 1)
@@ -22,7 +23,7 @@ describe('Should delete payment link', () => {
   })
 
   it('should list a single English payment links and have no Welsh payment links section', () => {
-    cy.visit('/create-payment-link/manage')
+    cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
     cy.get('h1').should('contain', 'Manage payment links')
     cy.get('.payment-links-list--header').should('contain',

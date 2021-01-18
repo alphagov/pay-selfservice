@@ -4,6 +4,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const productStubs = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
+const gatewayAccountExternalId = 'a-valid-account-id'
 
 const buildPaymentLinkOpts = function buildPaymentLinkOpts (name, href, language) {
   return {
@@ -39,7 +40,7 @@ const buildPaymentLinkWithMetadataOpts = function buildPaymentLinkWithMetadataOp
 function setupStubs (products) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
     productStubs.getProductsStub(products, gatewayAccountId)
   ])
 }
@@ -55,12 +56,12 @@ describe('The manage payment links page', () => {
     })
 
     it('should state that there are no payment links', () => {
-      cy.visit('/create-payment-link/manage')
+      cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
         'There are no payment links, you can create one now')
-      cy.get('.payment-links-list--header > a').should('have.attr', 'href', '/create-payment-link')
+      cy.get('.payment-links-list--header > a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link`)
     })
   })
 
@@ -77,7 +78,7 @@ describe('The manage payment links page', () => {
     })
 
     it('should list English payment links and have no Welsh payment links section', () => {
-      cy.visit('/create-payment-link/manage')
+      cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
@@ -114,7 +115,7 @@ describe('The manage payment links page', () => {
     })
 
     it('should list English payment links and Welsh payment links separately', () => {
-      cy.visit('/create-payment-link/manage')
+      cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
@@ -159,7 +160,7 @@ describe('The manage payment links page', () => {
     })
 
     it('should list Welsh payment links', () => {
-      cy.visit('/create-payment-link/manage')
+      cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
@@ -186,13 +187,13 @@ describe('The manage payment links page', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
         productStubs.getProductsByGatewayAccountIdFailure()
       ])
     })
 
     it('should display an error', () => {
-      cy.visit('/create-payment-link/manage', { failOnStatusCode: false })
+      cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`, { failOnStatusCode: false })
       cy.get('h1').should('contain', 'An error occurred:')
     })
   })

@@ -3,6 +3,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const { getProductsStub, getProductByExternalIdStub } = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
+const gatewayAccountExternalId = 'a-valid-account-id'
 
 const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, language, description, price, referenceEnabled, referenceLabel, referenceHint, metadata = null) {
   return {
@@ -22,7 +23,7 @@ const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, la
 function setupStubs (product) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'test', paymentProvider: 'worldpay' }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
     getProductsStub([product], gatewayAccountId),
     getProductByExternalIdStub(product, gatewayAccountId)
   ])
@@ -49,12 +50,12 @@ describe('Editing a payment link', () => {
 
     it('should navigate to the edit page', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/create-payment-link/manage')
+      cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
       cy.get('ul.payment-links-list > li > div > a').contains('Edit').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
       })
     })
 
@@ -64,23 +65,23 @@ describe('Editing a payment link', () => {
       cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Title')
         cy.get('.govuk-summary-list__value').should('contain', name)
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-title`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}?field=payment-link-title`)
       })
       cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'More details')
         cy.get('.govuk-summary-list__value').should('contain', description)
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-description`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}?field=payment-link-description`)
       })
       cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Reference number')
         cy.get('.govuk-summary-list__value').should('contain', referenceLabel)
         cy.get('.govuk-summary-list__value').should('contain', referenceHint)
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/reference/${productId}?change=true`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}?change=true`)
       })
       cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Payment amount')
         cy.get('.govuk-summary-list__value').should('contain', '£10.00')
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/amount/${productId}`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}`)
       })
       cy.get('button').should('exist').should('contain', 'Save changes')
     })
@@ -91,17 +92,17 @@ describe('Editing a payment link', () => {
       cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'cost_code')
         cy.get('.govuk-summary-list__value').should('contain', '12345')
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/${productId}/add-reporting-column/cost_code`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage/${productId}/add-reporting-column/cost_code`)
       })
       cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Finance team')
         cy.get('.govuk-summary-list__value').should('contain', 'Licensing')
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/${productId}/add-reporting-column/Finance%20team`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage/${productId}/add-reporting-column/Finance%20team`)
       })
       cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'group')
         cy.get('.govuk-summary-list__value').should('contain', 'A')
-        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/${productId}/add-reporting-column/group`)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage/${productId}/add-reporting-column/group`)
       })
       cy.get('a.govuk-button--secondary').should('exist').should('contain', 'Add another reporting column')
     })
@@ -110,14 +111,14 @@ describe('Editing a payment link', () => {
       cy.get('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/information/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}`)
       })
     })
 
     it('should have English instructions', () => {
       cy.get('h1').should('contain', 'Edit payment link information')
 
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/information/${productId}"]`).should('exist')
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}"]`).should('exist')
         .within(() => {
           cy.get('input#payment-link-title').should('exist')
           cy.get('input#payment-link-title').should('have.attr', 'lang', 'en')
@@ -148,12 +149,12 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/information/${productId}"]`).within(() => {
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}"]`).within(() => {
         cy.get('button').click()
       })
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
       })
     })
 
@@ -161,12 +162,12 @@ describe('Editing a payment link', () => {
       cy.get('.govuk-summary-list__row').eq(2).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/reference/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}`)
       })
     })
 
     it('should have English instructions', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).should('exist')
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}"]`).should('exist')
         .within(() => {
           cy.get('input[type="radio"]').should('have.length', 2)
 
@@ -198,12 +199,12 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
         cy.get('button').click()
       })
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
       })
     })
 
@@ -211,12 +212,12 @@ describe('Editing a payment link', () => {
       cy.get('.govuk-summary-list__row').eq(3).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/amount/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}`)
       })
     })
 
     it('should display content', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/amount/${productId}"]`).should('exist')
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}"]`).should('exist')
         .within(() => {
           cy.get('input[type=radio]#amount-type-fixed').should('exist')
           cy.get('input[type=radio]#amount-type-variable').should('exist')
@@ -231,19 +232,19 @@ describe('Editing a payment link', () => {
     })
 
     it('should have amount pre-filled', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/amount/${productId}"]`).should('exist')
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}"]`).should('exist')
         .within(() => {
           cy.get('input#payment-amount').should('have.value', '10.00')
         })
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/amount/${productId}"]`).within(() => {
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}"]`).within(() => {
         cy.get('button').click()
       })
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
       })
     })
   })
@@ -260,12 +261,12 @@ describe('Editing a payment link', () => {
 
     it('should navigate to the edit page', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/create-payment-link/manage')
+      cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
       cy.get('ul.payment-links-list > li > div > a').contains('Edit').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
       })
     })
 
@@ -273,14 +274,14 @@ describe('Editing a payment link', () => {
       cy.get('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/information/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}`)
       })
     })
 
     it('should have Welsh instructions', () => {
       cy.get('h1').should('contain', 'Edit payment link information')
 
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/information/${productId}"]`).should('exist')
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}"]`).should('exist')
         .within(() => {
           cy.get('input#payment-link-title').should('exist')
           cy.get('input#payment-link-title').should('have.attr', 'lang', 'cy')
@@ -303,12 +304,12 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/information/${productId}"]`).within(() => {
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}"]`).within(() => {
         cy.get('button').click()
       })
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
       })
     })
 
@@ -316,12 +317,12 @@ describe('Editing a payment link', () => {
       cy.get('.govuk-summary-list__row').eq(2).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/reference/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}`)
       })
     })
 
     it('should have Welsh instructions', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).should('exist')
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}"]`).should('exist')
         .within(() => {
           cy.get('input[type="radio"]').should('have.length', 2)
 
@@ -343,12 +344,12 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
-      cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
+      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
         cy.get('button').click()
       })
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
       })
     })
 
@@ -356,7 +357,7 @@ describe('Editing a payment link', () => {
       cy.get('.govuk-summary-list__row').eq(3).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/amount/${productId}`)
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}`)
       })
     })
 

@@ -32,22 +32,22 @@ describe('payment links helper methods', () => {
     })
 
     it('correctly flags context as creating payment link if not in manage list', () => {
-      const mockRequest = { route: { path: paths.paymentLinks.review } }
+      const mockRequest = { route: { path: paths.account.paymentLinks.review } }
       const result = getPaymentLinksContext(mockRequest)
       expect(result.isCreatingPaymentLink).to.be.true // eslint-disable-line
-      expect(result.listMetadataPageUrl).to.equal(paths.paymentLinks.review)
-      expect(result.addMetadataPageUrl).to.equal(paths.paymentLinks.addMetadata)
+      expect(result.listMetadataPageUrl).to.include(paths.account.paymentLinks.review)
+      expect(result.addMetadataPageUrl).to.include(paths.account.paymentLinks.addMetadata)
     })
 
     it('correctly flags context as managing payment link if in manage link and interpolates relevant product id', () => {
       const mockRequest = {
-        route: { path: paths.paymentLinks.manage.edit },
+        route: { path: paths.account.paymentLinks.manage.edit },
         params: { productExternalId: 'an-external-id' }
       }
       const result = getPaymentLinksContext(mockRequest)
       expect(result.isCreatingPaymentLink).to.be.false // eslint-disable-line
-      expect(result.listMetadataPageUrl).to.equal('/create-payment-link/manage/edit/an-external-id')
-      expect(result.addMetadataPageUrl).to.equal('/create-payment-link/manage/an-external-id/add-reporting-column')
+      expect(result.listMetadataPageUrl).to.include('/create-payment-link/manage/edit/an-external-id')
+      expect(result.addMetadataPageUrl).to.include('/create-payment-link/manage/an-external-id/add-reporting-column')
     })
   })
 
