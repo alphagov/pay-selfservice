@@ -55,7 +55,7 @@
         }}
       </form>
       <p class="govuk-body">
-        <a href="{{routes.settings.index}}" class="govuk-link govuk-link--no-visited-state">
+        <a href="{{ formatAccountPathsFor(routes.account.settings.index, currentGatewayAccount.external_id) }}" class="govuk-link govuk-link--no-visited-state">
           No, cancel
         </a>
       </p>

@@ -9,11 +9,6 @@ const serviceName = 'My Awesome Service'
 function setupStubs (allowApplePay) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-    gatewayAccountStubs.getGatewayAccountSuccess({
-      gatewayAccountId,
-      paymentProvider: 'worldpay',
-      allowApplePay: allowApplePay
-    }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
@@ -35,7 +30,7 @@ describe('Apple Pay', () => {
 
     it('should show it is disabled', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/settings')
+      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__value').first().should('contain', 'Off')
       cy.get('a').contains('Change Apple Pay settings').click()
       cy.get('input[type="radio"]').should('have.length', 2)
@@ -53,7 +48,7 @@ describe('Apple Pay', () => {
 
     it('Show that is is disabled', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/settings')
+      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__value').first().should('contain', 'Off')
       cy.get('a').contains('Change Apple Pay settings').click()
     })

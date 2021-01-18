@@ -7,6 +7,7 @@ const nunjucks = require('nunjucks')
 const router = require('../../app/routes.js')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const formatPSPname = require('../../app/utils/format-PSP-name')
+const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
 
 const environment = nunjucks.configure([
   './node_modules/govuk-frontend/',
@@ -26,6 +27,7 @@ environment.addFilter('formatPSPname', formatPSPname)
 
 const render = (templateName, templateData) => {
   templateData.routes = router.paths
+  templateData.formatAccountPathsFor = formatAccountPathsFor
   return environment.render(`${templateName}.njk`, templateData)
 }
 

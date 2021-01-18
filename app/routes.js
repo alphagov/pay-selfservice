@@ -90,13 +90,14 @@ const {
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials, prototyping, paymentLinks,
   requestToGoLive, policyPages, stripeSetup, stripe,
-  settings, yourPsp, allServiceTransactions, payouts
+  yourPsp, allServiceTransactions, payouts
 } = paths
 const {
   apiKeys,
   digitalWallet,
   emailNotifications,
   paymentTypes,
+  settings,
   toggle3ds,
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode
@@ -192,7 +193,6 @@ module.exports.bind = function (app) {
     ...lodash.values(policyPages),
     ...lodash.values(stripeSetup),
     ...lodash.values(stripe),
-    ...lodash.values(settings),
     ...lodash.values(yourPsp),
     ...lodash.values(payouts),
     paths.feedback
@@ -282,8 +282,6 @@ module.exports.bind = function (app) {
   account.get(transactions.redirectDetail, permission('transactions-details:read'), transactionDetailRedirectController)
 
   // Settings
-  app.get(settings.index, permission('transactions-details:read'), getAccount, settingsController.index)
-
   account.get(settings.index, permission('transactions-details:read'), settingsController.index)
 
   // Your PSP
