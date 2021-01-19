@@ -73,7 +73,7 @@
 
     <p class="govuk-body">Stripe will store the responsible person’s details, not GOV.UK Pay.</p>
 
-    <form id="responsible-person-form" method="post" action="/responsible-person" class="govuk-!-margin-top-4" novalidate>
+    <form id="responsible-person-form" method="post" class="govuk-!-margin-top-4" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% call govukFieldset({

@@ -4,6 +4,7 @@ const lodash = require('lodash')
 const ukPostcode = require('uk-postcode')
 
 const paths = require('../../../paths')
+const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const logger = require('../../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../../utils/response')
 const {
@@ -110,7 +111,7 @@ module.exports = async function (req, res) {
       await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
 
-      return res.redirect(303, paths.stripe.addPspAccountDetails)
+      return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
     } catch (error) {
       logger.error(`[requestId=${req.correlationId}] Error creating responsible person with Stripe - ${error.message}`)
       return renderErrorView(req, res, 'Please try again or contact support team')

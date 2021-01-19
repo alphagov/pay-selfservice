@@ -44,8 +44,8 @@ function getUserSuccessWithServiceRole (opts) {
   return builGetUserSuccessStub(opts.userExternalId, fixtureOpts)
 }
 
-function getUserWithNoPermissions (userExternalId, gatewayAccountIds) {
-  return getUserSuccess({ userExternalId, gatewayAccountIds, goLiveStage: 'NOT_STARTED', role: { permissions: [] } })
+function getUserWithNoPermissions (userExternalId, gatewayAccountId) {
+  return getUserSuccess({ userExternalId, gatewayAccountId, goLiveStage: 'NOT_STARTED', role: { permissions: [] } })
 }
 
 function postUserAuthenticateSuccess (userExternalId, username, password) {

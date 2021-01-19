@@ -6,6 +6,8 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
+
 function setupStubs (userExternalId, gatewayAccountId, companyNumber, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
@@ -20,7 +22,7 @@ function setupStubs (userExternalId, gatewayAccountId, companyNumber, type = 'li
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type, paymentProvider }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type, paymentProvider }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     transactionSummaryStubs.getDashboardStatistics()
@@ -37,7 +39,7 @@ describe('Stripe setup: company number page', () => {
         setupStubs(userExternalId, gatewayAccountId, false)
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
-        cy.visit('/company-number')
+        cy.visit('/account/a-valid-external-id/company-number')
       })
 
       it('should display page correctly', () => {
@@ -109,7 +111,7 @@ describe('Stripe setup: company number page', () => {
       it('should redirect to Dashboard with an error message when displaying the page', () => {
         setupStubs(userExternalId, gatewayAccountId, true)
 
-        cy.visit('/company-number')
+        cy.visit('/account/a-valid-external-id/company-number')
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
@@ -122,7 +124,7 @@ describe('Stripe setup: company number page', () => {
       it('should redirect to Dashboard with an error message when submitting the form', () => {
         setupStubs(userExternalId, gatewayAccountId, [false, true])
 
-        cy.visit('/company-number')
+        cy.visit('/account/a-valid-external-id/company-number')
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
@@ -149,7 +151,7 @@ describe('Stripe setup: company number page', () => {
       it('should show a 404 error when gateway account is not Stripe', () => {
         setupStubs(userExternalId, gatewayAccountId, [false, true], 'live', 'sandbox')
 
-        cy.visit('/company-number', {
+        cy.visit('/account/a-valid-external-id/company-number', {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -164,7 +166,7 @@ describe('Stripe setup: company number page', () => {
       it('should show a 404 error when gateway account is not live', () => {
         setupStubs(userExternalId, gatewayAccountId, [false, true], 'test', 'stripe')
 
-        cy.visit('/company-number', {
+        cy.visit('/account/a-valid-external-id/company-number', {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -179,10 +181,11 @@ describe('Stripe setup: company number page', () => {
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
           userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' })
+          gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type: 'live', paymentProvider: 'stripe' }),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: true })
         ])
 
-        cy.visit('/company-number', { failOnStatusCode: false })
+        cy.visit('/account/a-valid-external-id/company-number', { failOnStatusCode: false })
         cy.get('h1').should('contain', 'An error occurred:')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })
