@@ -3,6 +3,8 @@
 const lodash = require('lodash')
 const paths = require('../../paths')
 
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+
 module.exports = function postReference (req, res, next) {
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
   if (!sessionData) {
@@ -27,7 +29,7 @@ module.exports = function postReference (req, res, next) {
       label,
       hint
     }
-    return res.redirect(paths.paymentLinks.reference)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.reference, req.account && req.account.external_id))
   }
 
   sessionData.paymentReferenceType = type
@@ -36,8 +38,8 @@ module.exports = function postReference (req, res, next) {
 
   if (req.body['change'] === 'true') {
     req.flash('generic', 'The details have been updated')
-    return res.redirect(paths.paymentLinks.review)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, req.account && req.account.external_id))
   }
 
-  return res.redirect(paths.paymentLinks.amount)
+  return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.amount, req.account && req.account.external_id))
 }

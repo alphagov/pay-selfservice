@@ -20,7 +20,7 @@
     }
   }) }}
 
-  <form action="{{ routes.paymentLinks.reference }}" class="form" method="post" data-validate>
+  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.reference, currentGatewayAccount.external_id) }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>
@@ -142,7 +142,7 @@
         classes: "button"
       })
     }}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}">Cancel</a></p>
   </form>
 
   {% if not isWelsh %}

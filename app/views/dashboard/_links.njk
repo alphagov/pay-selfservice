@@ -28,10 +28,10 @@
     {% if links.paymentLinks in linksToDisplay %}
     <article class="{{columnClass}} links__box" id="payment-links-link">
       {% if permissions.tokens_create %}
-      <a href="{{routes.paymentLinks.start}}">
+      <a href="{{formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id)}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Create and manage payment links</h2>
       {% else %}
-      <a href="{{routes.paymentLinks.manage.index}}">
+      <a href="{{formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id)}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">View payment links</h2>
       {% endif %}
         <p class="govuk-body govuk-!-margin-bottom-0">A payment link lets you take card payments online, even if you don't have a digital&nbsp;service.</p>

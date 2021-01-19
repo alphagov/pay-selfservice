@@ -21,7 +21,7 @@
 
   <h1 class="govuk-heading-l">The website address is already taken</h1>
 
-  <form action="{{ routes.paymentLinks.webAddress }}" class="form" method="post" data-validate>
+  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.webAddress, currentGatewayAccount.external_id) }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     <div class="govuk-form-group {% if flash.genericError %}govuk-form-group--error{% endif %}">
@@ -51,7 +51,7 @@
       })
     }}
 
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}">Cancel</a></p>
   </form>
 </section>
 {% endblock %}

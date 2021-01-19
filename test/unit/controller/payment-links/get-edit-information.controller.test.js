@@ -14,6 +14,9 @@ describe('GET edit information controller', () => {
       params: {
         productExternalId
       },
+      account: {
+        external_id: 'some-external-id'
+      },
       flash: sinon.spy()
     }
     res = {
@@ -27,7 +30,7 @@ describe('GET edit information controller', () => {
 
   it('should return to "Manage payment links" with an error if session data not found', () => {
     getEditInformationController(req, res, next)
-    sinon.assert.calledWith(res.redirect, '/create-payment-link/manage')
+    sinon.assert.calledWith(res.redirect, '/account/some-external-id/create-payment-link/manage')
   })
 
   it('should return to "Manage payment links" with an error if ID in URL does not match ID in session', () => {
@@ -35,7 +38,7 @@ describe('GET edit information controller', () => {
       externalId: 'a-different-id'
     })
     getEditInformationController(req, res, next)
-    sinon.assert.calledWith(res.redirect, '/create-payment-link/manage')
+    sinon.assert.calledWith(res.redirect, '/account/some-external-id/create-payment-link/manage')
   })
 
   it('should send field values from session when rendering page', () => {

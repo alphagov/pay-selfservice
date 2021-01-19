@@ -4,12 +4,14 @@
 const lodash = require('lodash')
 
 const paths = require('../paths')
+const formatAccountPathsFor = require('../utils/format-account-paths-for')
 
 // the edit and create flows handle storing cookie session data in separate places,
 // abstract this away from the controller by adding accessors that can be based
 // based on the request
 function getPaymentLinksContext (req) {
-  const isCreatingPaymentLink = !Object.values(paths.paymentLinks.manage).includes(req.route && req.route.path)
+  const isCreatingPaymentLink = !Object.values(paths.account.paymentLinks.manage).includes(req.route && req.route.path)
+  const accountExternalId = req.account && req.account.external_id
   const params = req.params || {}
 
   if (isCreatingPaymentLink) {
@@ -17,9 +19,9 @@ function getPaymentLinksContext (req) {
 
     return {
       sessionData: lodash.get(req, 'session.pageData.createPaymentLink'),
-      addMetadataPageUrl: paths.paymentLinks.addMetadata,
-      editMetadataPageUrl: paths.formattedPathFor(paths.paymentLinks.editMetadata, metadataKey),
-      listMetadataPageUrl: paths.paymentLinks.review,
+      addMetadataPageUrl: formatAccountPathsFor(paths.account.paymentLinks.addMetadata, accountExternalId),
+      editMetadataPageUrl: formatAccountPathsFor(paths.account.paymentLinks.editMetadata, accountExternalId, metadataKey),
+      listMetadataPageUrl: formatAccountPathsFor(paths.account.paymentLinks.review, accountExternalId),
       isCreatingPaymentLink
     }
   } else {
@@ -27,9 +29,9 @@ function getPaymentLinksContext (req) {
 
     return {
       sessionData: lodash.get(req, 'session.editPaymentLinkData'),
-      addMetadataPageUrl: paths.generateRoute(paths.paymentLinks.manage.addMetadata, { productExternalId }),
-      editMetadataPageUrl: paths.formattedPathFor(paths.paymentLinks.manage.editMetadata, productExternalId, metadataKey),
-      listMetadataPageUrl: paths.generateRoute(paths.paymentLinks.manage.edit, { productExternalId }),
+      addMetadataPageUrl: formatAccountPathsFor(paths.account.paymentLinks.manage.addMetadata, accountExternalId, productExternalId),
+      editMetadataPageUrl: formatAccountPathsFor(paths.account.paymentLinks.manage.editMetadata, accountExternalId, productExternalId, metadataKey),
+      listMetadataPageUrl: formatAccountPathsFor(paths.account.paymentLinks.manage.edit, accountExternalId, productExternalId),
       isCreatingPaymentLink
     }
   }

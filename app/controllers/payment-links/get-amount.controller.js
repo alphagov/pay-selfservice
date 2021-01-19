@@ -4,6 +4,7 @@ const lodash = require('lodash')
 
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 module.exports = function showAmountPage (req, res, next) {
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
@@ -20,9 +21,9 @@ module.exports = function showAmountPage (req, res, next) {
   return response(req, res, 'payment-links/amount', {
     paymentLinkAmount,
     paymentAmountType,
-    nextPage: paths.paymentLinks.amount,
-    returnToStart: paths.paymentLinks.start,
-    manage: paths.paymentLinks.manage.index,
+    nextPage: formatAccountPathsFor(paths.account.paymentLinks.amount, req.account && req.account.external_id),
+    returnToStart: formatAccountPathsFor(paths.account.paymentLinks.start, req.account && req.account.external_id),
+    manage: formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id),
     isWelsh: sessionData.isWelsh,
     errors: recovered.errors
   })

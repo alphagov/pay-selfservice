@@ -5,10 +5,11 @@ const lodash = require('lodash')
 const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
-const formattedPathFor = require('../../utils/replace-params-in-path')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 module.exports = async function showEditPaymentLink (req, res, next) {
   const { productExternalId } = req.params
+  const accountExternalId = req.account && req.account.external_id
 
   let editPaymentLinkData = lodash.get(req, 'session.editPaymentLinkData', {})
   if (editPaymentLinkData.externalId && editPaymentLinkData.externalId !== productExternalId) {
@@ -18,16 +19,15 @@ module.exports = async function showEditPaymentLink (req, res, next) {
     editPaymentLinkData = {}
   }
 
-  const addMetadataUrl = formattedPathFor(paths.paymentLinks.manage.addMetadata, productExternalId)
-  const editMetadataPath = paths.paymentLinks.manage.editMetadata
+  const addMetadataUrl = formatAccountPathsFor(paths.account.paymentLinks.manage.addMetadata, accountExternalId, productExternalId)
+  const editMetadataPath = formatAccountPathsFor(paths.account.paymentLinks.manage.editMetadata, accountExternalId)
   const pageData = {
-    self: formattedPathFor(paths.paymentLinks.manage.edit, productExternalId),
-    editInformation: formattedPathFor(paths.paymentLinks.manage.editInformation, productExternalId),
-    editReference: formattedPathFor(paths.paymentLinks.manage.editReference, productExternalId),
-    editAmount: formattedPathFor(paths.paymentLinks.manage.editAmount, productExternalId),
+    self: formatAccountPathsFor(paths.account.paymentLinks.manage.edit, accountExternalId, productExternalId),
+    editInformation: formatAccountPathsFor(paths.account.paymentLinks.manage.editInformation, accountExternalId, productExternalId),
+    editReference: formatAccountPathsFor(paths.account.paymentLinks.manage.editReference, accountExternalId, productExternalId),
+    editAmount: formatAccountPathsFor(paths.account.paymentLinks.manage.editAmount, accountExternalId, productExternalId),
     addMetadata: addMetadataUrl,
     editMetadata: editMetadataPath,
-    formattedPathFor,
     paths
   }
   const gatewayAccountId = req.account.gateway_account_id

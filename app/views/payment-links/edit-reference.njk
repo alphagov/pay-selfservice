@@ -142,7 +142,7 @@
         classes: "button"
       })
     }}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.manage.index }}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id) }}">Cancel</a></p>
   </form>
 
   {% if not isWelsh %}

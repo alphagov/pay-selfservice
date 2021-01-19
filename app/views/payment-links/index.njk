@@ -18,7 +18,7 @@
   {{
     govukButton({
       text: "Create a payment link",
-      href: routes.paymentLinks.information,
+      href: formatAccountPathsFor(routes.account.paymentLinks.information, currentGatewayAccount.external_id),
       classes: "govuk-!-margin-bottom-4",
       attributes: {
         id: "create-payment-link"
@@ -27,7 +27,7 @@
   }}
 
   <p class="govuk-body govuk-!-margin-bottom-6">
-    <a class="govuk-link govuk-link--no-visited-state" href="{{routes.paymentLinks.information}}?language=cy">Create a payment link in Welsh</a>
+    <a class="govuk-link govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.paymentLinks.information, currentGatewayAccount.external_id) }}?language=cy">Create a payment link in Welsh</a>
   </p>
 
   {% set example %}

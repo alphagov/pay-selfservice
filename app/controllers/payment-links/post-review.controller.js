@@ -3,6 +3,8 @@
 const lodash = require('lodash')
 const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
+
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const productsClient = require('../../services/clients/products.client.js')
 const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
@@ -25,7 +27,7 @@ module.exports = async function createPaymentLink (req, res) {
   } = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
-    return res.redirect(paths.paymentLinks.start)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.start, req.account && req.account.external_id))
   }
 
   try {
@@ -80,10 +82,11 @@ module.exports = async function createPaymentLink (req, res) {
 
     lodash.unset(req, 'session.pageData.createPaymentLink')
     req.flash('createPaymentLinkSuccess', true)
-    res.redirect(paths.paymentLinks.manage.index)
+
+    res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
   } catch (error) {
     logger.error(`[requestId=${req.correlationId}] Creating a payment link failed - ${error.message}`)
     req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-    res.redirect(paths.paymentLinks.review)
+    res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, req.account && req.account.external_id))
   }
 }

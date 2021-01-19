@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 
 const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
 module.exports = function postAmount (req, res, next) {
@@ -30,7 +31,7 @@ module.exports = function postAmount (req, res, next) {
       errors,
       type
     }
-    return res.redirect(paths.paymentLinks.amount)
+    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.amount, req.account && req.account.external_id))
   }
 
   sessionData.paymentLinkAmount = amountInPence
@@ -40,5 +41,5 @@ module.exports = function postAmount (req, res, next) {
     req.flash('generic', 'The details have been updated')
   }
 
-  return res.redirect(paths.paymentLinks.review)
+  return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, req.account && req.account.external_id))
 }

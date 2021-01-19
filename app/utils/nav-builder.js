@@ -31,6 +31,7 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     permissions: true
   })
   if (type === 'card') {
+    const paymentLinksStartUrl = formatAccountPathsFor(paths.account.paymentLinks.start, account.external_id)
     navigationItems.push({
       id: 'navigation-menu-transactions',
       name: 'Transactions',
@@ -41,8 +42,8 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     navigationItems.push({
       id: 'navigation-menu-payment-links',
       name: 'Payment links',
-      url: paths.paymentLinks.start,
-      current: pathLookup(currentPath, paths.paymentLinks.start),
+      url: paymentLinksStartUrl,
+      current: pathLookup(currentPath, paymentLinksStartUrl),
       permissions: permissions.tokens_create
     })
   }
