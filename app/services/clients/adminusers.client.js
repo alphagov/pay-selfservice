@@ -16,7 +16,9 @@ const ADMINUSERS_URL = process.env.ADMINUSERS_URL
  * @param body
  */
 const responseBodyToUserTransformer = body => new User(body)
-const responseBodyToUserListTransformer = body => body.map(userData => new User(userData))
+const responseBodyToUserListTransformer = body => {
+  return body.map(userData => new User(userData))
+}
 const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {

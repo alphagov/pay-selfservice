@@ -90,6 +90,12 @@ module.exports = {
       cardNumber: '/moto-hide-card-number',
       securityCode: '/moto-hide-security-code'
     },
+    transactions: {
+      index: '/transactions',
+      download: '/transactions/download',
+      detail: '/transactions/:chargeId',
+      refund: '/transactions/:chargeId/refund',
+    },
     yourPsp: {
       index: '/your-psp',
       flex: '/your-psp/flex',
@@ -108,16 +114,10 @@ module.exports = {
   redirects: {
     stripeSetupLiveDashboardRedirect: '/service/:externalServiceId/dashboard/live'
   },
-  transactions: {
-    index: '/transactions',
-    download: '/transactions/download',
-    detail: '/transactions/:chargeId',
-    refund: '/transactions/:chargeId/refund',
-    redirectDetail: '/redirect/transactions/:chargeId'
-  },
   allServiceTransactions: {
     index: '/all-service-transactions',
-    download: '/all-service-transactions/download'
+    download: '/all-service-transactions/download',
+    redirectDetail: '/redirect/transactions/:chargeId'
   },
   credentials: {
     index: '/credentials',

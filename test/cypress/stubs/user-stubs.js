@@ -1,5 +1,6 @@
 'use strict'
 
+const { array } = require('joi')
 const userFixtures = require('../../fixtures/user.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
@@ -23,6 +24,33 @@ function builGetUserSuccessStub (userExternalId, fixtureOpts) {
 
 function getUserSuccess (opts) {
   const fixtureOpts = buildUserWithServiceRoleOpts(opts)
+  return builGetUserSuccessStub(opts.userExternalId, fixtureOpts)
+}
+
+function getUserSuccessWithMultipleServices (opts) {
+  const serviceRoles = [
+    {
+      service: {
+        external_id: opts.gatewayAccountExternalId1,
+        gateway_account_ids: [String(opts.gatewayAccountId1)]
+      }
+    },
+    {
+      service: {
+        external_id: opts.gatewayAccountExternalId2,
+        gateway_account_ids: [opts.gatewayAccountId2]
+      }
+    }
+  ]
+
+  const fixtureOpts = {
+    external_id: opts.userExternalId,
+    service_roles: serviceRoles,
+    username: opts.email,
+    email: opts.email,
+    telephone_number: opts.telephoneNumber
+  }
+
   return builGetUserSuccessStub(opts.userExternalId, fixtureOpts)
 }
 
@@ -171,6 +199,7 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
 }
 
 function buildServiceRoleOpts (opts) {
+
   const serviceRole = {
     service: {
       gateway_account_ids: [String(opts.gatewayAccountId)]
@@ -222,5 +251,6 @@ module.exports = {
   postUserAuthenticateSuccess,
   postUserAuthenticateInvalidPassword,
   postSecondFactorSuccess,
-  putUpdateServiceRoleSuccess
+  putUpdateServiceRoleSuccess,
+  getUserSuccessWithMultipleServices
 }

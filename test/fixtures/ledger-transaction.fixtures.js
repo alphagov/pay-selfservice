@@ -78,6 +78,8 @@ const buildTransactionDetails = (opts = {}) => {
     data.gateway_transaction_id = opts.gateway_transaction_id
   }
 
+  
+
   if (opts.gateway_account_id) {
     data.gateway_account_id = opts.gateway_account_id
   }
@@ -146,6 +148,7 @@ const buildTransactionDetails = (opts = {}) => {
   if (opts.net_amount) data.net_amount = opts.net_amount
   if (opts.wallet_type) data.wallet_type = opts.wallet_type
   if (opts.metadata) data.metadata = opts.metadata
+
   return data
 }
 
@@ -231,7 +234,7 @@ module.exports = {
   validTransactionSearchResponse: (opts = {}) => {
     let results = []
     opts.transactions.forEach(transaction => {
-      transaction.gateway_account_id = opts.gateway_account_id
+      // transaction.gateway_account_id = opts.gateway_account_id
       if (transaction.type === 'payment') {
         transaction.includeRefundSummary = true
         transaction.includeSettlementSummary = true

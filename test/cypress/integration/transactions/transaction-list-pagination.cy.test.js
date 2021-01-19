@@ -7,7 +7,8 @@ const transactionStubs = require('../../stubs/transaction-stubs')
 describe('Transactions list pagination', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
-  const transactionsUrl = '/transactions'
+  const gatewayAccountExternalId = 'a-valid-external-id'
+  const transactionsUrl = `/account/${gatewayAccountExternalId}/transactions`
   const serviceName = 'Test Service'
   const defaultAmount = 1000
 
@@ -17,7 +18,8 @@ describe('Transactions list pagination', () => {
       transactions.push({
         reference: 'transaction' + i,
         amount: defaultAmount,
-        type: 'payment'
+        type: 'payment',
+        charge_id: 'charge_id'
       })
     }
     return transactions
@@ -40,7 +42,7 @@ describe('Transactions list pagination', () => {
     return [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
       userStubs.getUsersSuccess(),
-      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
       gatewayAccountStubs.getCardTypesSuccess(),
       transactionStubs.getLedgerTransactionsSuccess(transactionDetails)
     ]
@@ -74,7 +76,7 @@ describe('Transactions list pagination', () => {
         cy.get('button.pagination.Next').should('exist')
       })
 
-      it('should have both next and previous pagination links enabled, when ledger return both links ', () => {
+      it.only('should have both next and previous pagination links enabled, when ledger return both links ', () => {
         const opts = transactionSearchResultOpts(30, 5, 3, {},
           {
             self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
