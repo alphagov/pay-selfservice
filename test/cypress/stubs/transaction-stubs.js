@@ -24,10 +24,11 @@ function getLedgerEventsSuccess (opts) {
 }
 
 function getLedgerTransactionsSuccess (opts) {
+
   const path = '/v1/transaction'
   return stubBuilder('GET', path, 200, {
     query: lodash.defaults({ ...opts.filters }, {
-      account_id: opts.gatewayAccountId,
+      account_id: opts.gatewayAccountIds ? opts.gatewayAccountIds.join(',') : opts.gatewayAccountId,
       page: opts.page || 1,
       display_size: opts.displaySize || 100,
       limit_total: true,

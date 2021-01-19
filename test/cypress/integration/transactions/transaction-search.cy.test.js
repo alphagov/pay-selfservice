@@ -3,10 +3,11 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const transactionsStubs = require('../../stubs/transaction-stubs')
 
-const transactionsUrl = `/transactions`
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = 42
+const gatewayAccountExternalId = 'a-valid-external-id'
 const serviceName = 'Test Service'
+const transactionsUrl = `/account/${gatewayAccountExternalId}/transactions`
 
 const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
 
@@ -84,6 +85,11 @@ const sharedStubs = (paymentProvider = 'sandbox') => {
   return [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ 
+      gatewayAccountId,
+      gatewayAccountExternalId,
+      paymentProvider
+    }),
     gatewayAccountStubs.getCardTypesSuccess(),
     stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId })
   ]
@@ -244,9 +250,9 @@ describe('Transactions List', () => {
       // Ensure the right number of transactions is displayed
       cy.get('#transactions-list tbody').find('tr').should('have.length', filteredByMultipleFieldsTransactions.length)
       // Ensure the expected transactions are shown
-      assertTransactionRow(0, filteredByMultipleFieldsTransactions[0].reference, '/transactions/payment-transaction-id',
+      assertTransactionRow(0, filteredByMultipleFieldsTransactions[0].reference, `/account/${gatewayAccountExternalId}/transactions/payment-transaction-id`,
         'test2@example.org', '£15.00', 'Mastercard', 'In progress')
-      assertTransactionRow(1, filteredByMultipleFieldsTransactions[1].reference, '/transactions/payment-transaction-id2',
+      assertTransactionRow(1, filteredByMultipleFieldsTransactions[1].reference, `/account/${gatewayAccountExternalId}/transactions/payment-transaction-id2`,
         'test@example.org', '–£15.00', 'Visa', 'Refund submitted')
     })
   })
@@ -267,7 +273,7 @@ describe('Transactions List', () => {
 
       // Ensure the card fee is displayed correctly
       cy.get('#transactions-list tbody').find('tr').eq(2).find('td').eq(1).should('contain', convertPenceToPoundsFormatted(unfilteredTransactions[2].total_amount)).and('contain', '(with card fee)')
-      cy.get('#download-transactions-link').should('have.attr', 'href', '/transactions/download')
+      cy.get('#download-transactions-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/transactions/download`)
     })
 
     it('should display the fee and total columns for a stripe gateway with fees', () => {

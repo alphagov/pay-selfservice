@@ -9,14 +9,15 @@ const userCreator = require('../test-helpers/user-creator.js')
 const getApp = require('../../server.js').getApp
 const paths = require('../../app/paths.js')
 const session = require('../test-helpers/mock-session.js')
-const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
+const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fixtures')
+const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
 
 let app
 
 const gatewayAccountId = '452345'
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 
 const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
-const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + gatewayAccountId
 const connectorMock = nock(process.env.CONNECTOR_URL)
 
 const ALL_CARD_TYPES = {
@@ -31,7 +32,7 @@ function searchTransactions (data) {
   let query = querystring.stringify(data)
 
   return request(app)
-    .get(paths.transactions.index + '?' + query)
+    .get(formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?' + query)
     .set('Accept', 'application/json')
     .send()
 }
@@ -51,11 +52,14 @@ describe('Pagination', function () {
 
     userCreator.mockUserResponse(user.toJson(), done)
 
-    connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-      .reply(200,
-        gatewayAccountFixtures.validGatewayAccountResponse({
+    connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      .reply(200, validGatewayAccountResponse(
+        {
+          external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
           gateway_account_id: gatewayAccountId
-        }))
+        }
+      ))
+
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
   })

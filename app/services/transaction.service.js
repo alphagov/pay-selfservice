@@ -75,9 +75,12 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
       .uniq()
       .value()
 
-    const users = await userService.findMultipleByExternalIds(userIds, correlationId)
-
-    return transactionView.buildPaymentView(charge, transactionEvents, users)
+    if (userIds.length !== 0) {
+      const users = await userService.findMultipleByExternalIds(userIds, correlationId)
+      return transactionView.buildPaymentView(charge, transactionEvents, users)
+    } else {
+      return transactionView.buildPaymentView(charge, transactionEvents)
+    }
   } catch (error) {
     throw getStatusCodeForError(error)
   }
