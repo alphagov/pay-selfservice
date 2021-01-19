@@ -19,6 +19,10 @@ module.exports = {
       revoke: '/api-keys/revoke',
       update: '/api-keys/update'
     },
+    credentials: {
+      index: '/credentials',
+      edit: '/credentials/edit'
+    },
     digitalWallet: {
       applePay: '/digital-wallet/apple-pay',
       googlePay: '/digital-wallet/google-pay'
@@ -34,6 +38,10 @@ module.exports = {
       collection: '/email-settings-collection',
       confirmation: '/email-settings-confirmation',
       refund: '/email-settings-refund'
+    },
+    notificationCredentials: {
+      edit: '/notification-credentials/edit',
+      update: '/notification-credentials'
     },
     paymentLinks: {
       start: '/create-payment-link',
@@ -79,6 +87,15 @@ module.exports = {
     },
     settings: {
       index: '/settings'
+    },  
+    stripe: {
+      addPspAccountDetails: '/stripe/add-psp-account-details'
+    },
+    stripeSetup: {
+      bankDetails: '/bank-details',
+      responsiblePerson: '/responsible-person',
+      vatNumber: '/vat-number',
+      companyNumber: '/company-number'
     },
     toggle3ds: {
       index: '/3ds'
@@ -94,15 +111,6 @@ module.exports = {
       index: '/your-psp',
       flex: '/your-psp/flex',
       worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
-    },
-    stripeSetup: {
-      bankDetails: '/bank-details',
-      responsiblePerson: '/responsible-person',
-      vatNumber: '/vat-number',
-      companyNumber: '/company-number'
-    },
-    stripe: {
-      addPspAccountDetails: '/stripe/add-psp-account-details'
     }
   },
   redirects: {
@@ -119,16 +127,7 @@ module.exports = {
     index: '/all-service-transactions',
     download: '/all-service-transactions/download'
   },
-  credentials: {
-    index: '/credentials',
-    edit: '/credentials/edit',
-    create: '/credentials'
-  },
-  notificationCredentials: {
-    index: '/credentials',
-    edit: '/notification-credentials/edit',
-    update: '/notification-credentials'
-  },
+
   user: {
     logIn: '/login',
     otpLogIn: '/otp-login',
