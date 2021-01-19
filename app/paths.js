@@ -12,6 +12,13 @@ module.exports = {
   keys,
   account: {
     root: `/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
+    apiKeys: {
+      index: '/api-keys',
+      revoked: '/api-keys/revoked',
+      create: '/api-keys/create',
+      revoke: '/api-keys/revoke',
+      update: '/api-keys/update'
+    },
     digitalWallet: {
       applePay: '/digital-wallet/apple-pay',
       googlePay: '/digital-wallet/google-pay'
@@ -27,6 +34,29 @@ module.exports = {
       collection: '/email-settings-collection',
       confirmation: '/email-settings-confirmation',
       refund: '/email-settings-refund'
+    },
+    paymentLinks: {
+      start: '/create-payment-link',
+      information: '/create-payment-link/information',
+      webAddress: '/create-payment-link/web-address',
+      reference: '/create-payment-link/reference',
+      amount: '/create-payment-link/amount',
+      review: '/create-payment-link/review',
+      addMetadata: '/create-payment-link/add-reporting-column',
+      editMetadata: '/create-payment-link/add-reporting-column/:metadataKey',
+      deleteMetadata: '/create-payment-link/add-reporting-column/:metadataKey/delete',
+      manage: {
+        index: '/create-payment-link/manage',
+        edit: '/create-payment-link/manage/edit/:productExternalId',
+        disable: '/create-payment-link/manage/disable/:productExternalId',
+        delete: '/create-payment-link/manage/delete/:productExternalId',
+        editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
+        editReference: '/create-payment-link/manage/edit/reference/:productExternalId',
+        editAmount: '/create-payment-link/manage/edit/amount/:productExternalId',
+        addMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column',
+        editMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey',
+        deleteMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey/delete'
+      }
     },
     paymentTypes: {
       index: '/payment-types'
@@ -60,35 +90,10 @@ module.exports = {
       cardNumber: '/moto-hide-card-number',
       securityCode: '/moto-hide-security-code'
     },
-    apiKeys: {
-      index: '/api-keys',
-      revoked: '/api-keys/revoked',
-      create: '/api-keys/create',
-      revoke: '/api-keys/revoke',
-      update: '/api-keys/update'
-    },
-    paymentLinks: {
-      start: '/create-payment-link',
-      information: '/create-payment-link/information',
-      webAddress: '/create-payment-link/web-address',
-      reference: '/create-payment-link/reference',
-      amount: '/create-payment-link/amount',
-      review: '/create-payment-link/review',
-      addMetadata: '/create-payment-link/add-reporting-column',
-      editMetadata: '/create-payment-link/add-reporting-column/:metadataKey',
-      deleteMetadata: '/create-payment-link/add-reporting-column/:metadataKey/delete',
-      manage: {
-        index: '/create-payment-link/manage',
-        edit: '/create-payment-link/manage/edit/:productExternalId',
-        disable: '/create-payment-link/manage/disable/:productExternalId',
-        delete: '/create-payment-link/manage/delete/:productExternalId',
-        editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
-        editReference: '/create-payment-link/manage/edit/reference/:productExternalId',
-        editAmount: '/create-payment-link/manage/edit/amount/:productExternalId',
-        addMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column',
-        editMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey',
-        deleteMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey/delete'
-      }
+    yourPsp: {
+      index: '/your-psp',
+      flex: '/your-psp/flex',
+      worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
     }
   },
   transactions: {
@@ -101,11 +106,6 @@ module.exports = {
   allServiceTransactions: {
     index: '/all-service-transactions',
     download: '/all-service-transactions/download'
-  },
-  yourPsp: {
-    index: '/your-psp',
-    flex: '/your-psp/flex',
-    worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
   },
   credentials: {
     index: '/credentials',

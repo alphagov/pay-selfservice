@@ -14,7 +14,7 @@
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Your Worldpay 3DS Flex credentials</h1>
-    <form method="post" action="{{routes.yourPsp.flex}}">
+    <form method="post" action="{{ formatAccountPathsFor(routes.account.yourPsp.flex, currentGatewayAccount.external_id) }}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
         {% if errors %}
           {% set errorList = [] %}
@@ -174,7 +174,7 @@
       }}
     </form>
     <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.yourPsp.index }}">Cancel</a>
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id) }}">Cancel</a>
     </p>
 </div>
 {% endblock %}
