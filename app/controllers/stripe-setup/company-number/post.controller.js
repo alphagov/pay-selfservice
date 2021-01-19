@@ -9,6 +9,7 @@ const companyNumberValidations = require('./company-number-validations')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const paths = require('../../../paths')
+const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 
 // Constants
 const COMPANY_NUMBER_DECLARATION_FIELD = 'company-number-declaration'
@@ -34,7 +35,7 @@ module.exports = async (req, res) => {
       await updateCompany(res.locals.stripeAccount.stripeAccountId, stripeCompanyBody)
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'company_number', req.correlationId)
 
-      return res.redirect(303, paths.stripe.addPspAccountDetails)
+      return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
     } catch (error) {
       logger.error(`[${req.correlationId}] Error submitting "Company registration number" details, error = `, error)
       return renderErrorView(req, res, 'Please try again or contact support team')

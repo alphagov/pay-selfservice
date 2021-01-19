@@ -9,6 +9,7 @@ const { updateBankAccount } = require('../../../services/clients/stripe/stripe.c
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const paths = require('../../../paths')
+const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const fieldValidationChecks = require('../../../browsered/field-validation-checks')
 
 // Constants
@@ -38,7 +39,7 @@ module.exports = (req, res) => {
       return connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account', req.correlationId)
     })
     .then(() => {
-      return res.redirect(303, paths.stripe.addPspAccountDetails)
+      return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
     })
     .catch(error => {
       // check if it is Stripe related error

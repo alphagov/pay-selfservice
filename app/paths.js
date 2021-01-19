@@ -94,7 +94,49 @@ module.exports = {
       index: '/your-psp',
       flex: '/your-psp/flex',
       worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
+    },
+    apiKeys: {
+      index: '/api-keys',
+      revoked: '/api-keys/revoked',
+      create: '/api-keys/create',
+      revoke: '/api-keys/revoke',
+      update: '/api-keys/update'
+    },
+    paymentLinks: {
+      start: '/create-payment-link',
+      information: '/create-payment-link/information',
+      webAddress: '/create-payment-link/web-address',
+      reference: '/create-payment-link/reference',
+      amount: '/create-payment-link/amount',
+      review: '/create-payment-link/review',
+      addMetadata: '/create-payment-link/add-reporting-column',
+      editMetadata: '/create-payment-link/add-reporting-column/:metadataKey',
+      deleteMetadata: '/create-payment-link/add-reporting-column/:metadataKey/delete',
+      manage: {
+        index: '/create-payment-link/manage',
+        edit: '/create-payment-link/manage/edit/:productExternalId',
+        disable: '/create-payment-link/manage/disable/:productExternalId',
+        delete: '/create-payment-link/manage/delete/:productExternalId',
+        editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
+        editReference: '/create-payment-link/manage/edit/reference/:productExternalId',
+        editAmount: '/create-payment-link/manage/edit/amount/:productExternalId',
+        addMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column',
+        editMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey',
+        deleteMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey/delete'
+      }
+    },
+    stripeSetup: {
+      bankDetails: '/bank-details',
+      responsiblePerson: '/responsible-person',
+      vatNumber: '/vat-number',
+      companyNumber: '/company-number'
+    },
+    stripe: {
+      addPspAccountDetails: '/stripe/add-psp-account-details'
     }
+  },
+  redirects: {
+    stripeSetupLiveDashboardRedirect: '/service/:externalServiceId/dashboard/live'
   },
   transactions: {
     index: '/transactions',
@@ -196,16 +238,6 @@ module.exports = {
   },
   policyPages: {
     download: '/policy/download/:key'
-  },
-  stripeSetup: {
-    bankDetails: '/bank-details',
-    responsiblePerson: '/responsible-person',
-    vatNumber: '/vat-number',
-    companyNumber: '/company-number',
-    stripeSetupLink: '/service/:externalServiceId/dashboard/live'
-  },
-  stripe: {
-    addPspAccountDetails: '/stripe/add-psp-account-details'
   },
   payouts: {
     list: '/payments-to-your-bank-account'

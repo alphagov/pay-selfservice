@@ -19,7 +19,8 @@ describe('Bank details post controller', () => {
     req = {
       correlationId: 'correlation-id',
       account: {
-        gateway_account_id: '1'
+        gateway_account_id: '1',
+        external_id: 'a-valid-external-id'
       },
       body: {
         'account-number': rawAccountNumber,
@@ -52,7 +53,7 @@ describe('Bank details post controller', () => {
       bank_account_number: sanitisedAccountNumber
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, paths.stripe.addPspAccountDetails)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/${paths.account.stripe.addPspAccountDetails}`)
   })
 
   it('should render error page when Stripe returns unknown error', async () => {

@@ -51,7 +51,7 @@
         govukButton({
           text: 'Add details',
           classes: 'govuk-!-margin-bottom-0',
-          href: routes.stripe.addPspAccountDetails,
+          href: formatAccountPathsFor(routes.account.stripe.addPspAccountDetails, currentGatewayAccount.external_id),
           attributes: {
             id: "add-account-details"
           }

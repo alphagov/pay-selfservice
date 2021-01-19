@@ -33,6 +33,7 @@ describe('Add stripe psp details route', function () {
         .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
         .reply(200, validGatewayAccountResponse({
           gateway_account_id: GATEWAY_ACCOUNT_ID,
+          external_id: 'a-valid-external-id',
           payment_provider: 'stripe',
           type: 'live'
         }))
@@ -50,7 +51,7 @@ describe('Add stripe psp details route', function () {
 
     it('should load the "Go live complete" page', async () => {
       const res = await supertest(app)
-        .get(paths.stripe.addPspAccountDetails)
+        .get(`/account/a-valid-external-id/${paths.account.stripe.addPspAccountDetails}`)
       const $ = cheerio.load(res.text)
       expect(res.statusCode).to.equal(200)
       expect($('h1').text()).to.contain('Go live complete')

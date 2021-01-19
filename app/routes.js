@@ -89,8 +89,8 @@ const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials,
-  requestToGoLive, policyPages, stripeSetup, stripe,
-  allServiceTransactions, payouts
+  requestToGoLive, policyPages,
+  allServiceTransactions, payouts, redirects
 } = paths
 const {
   apiKeys,
@@ -103,7 +103,9 @@ const {
   toggle3ds,
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode,
-  yourPsp
+  yourPsp,
+  stripeSetup,
+  stripe
 } = paths.account
 
 // Exports
@@ -261,7 +263,7 @@ module.exports.bind = function (app) {
   app.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.postEdit)
 
   // Service live account dashboard link
-  app.get(stripeSetup.stripeSetupLink, stripeSetupDashboardRedirectController.get)
+  app.get(redirects.stripeSetupLiveDashboardRedirect, stripeSetupDashboardRedirectController.get)
 
   // ----------------------------
   // GATEWAY ACCOUNT LEVEL ROUTES
@@ -423,16 +425,6 @@ module.exports.bind = function (app) {
   account.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
 
   // Stripe setup
-  app.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.get)
-  app.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.post)
-  app.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.get)
-  app.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.post)
-  app.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.get)
-  app.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.post)
-  app.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.get)
-  app.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.post)
-  app.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
-
   account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.get)
   account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.post)
   account.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.get)
