@@ -68,7 +68,7 @@ function getGatewayAccountSuccess (opts) {
 
 function getGatewayAccountByExternalIdSuccess (opts) {
   const fixtureOpts = parseGatewayAccountOptions(opts)
-  const path = `/v1/api/accounts/external-id/${opts.gatewayAccountExternalId}`
+  const path = `/v1/frontend/accounts/external-id/${opts.gatewayAccountExternalId}`
   return stubBuilder('GET', path, 200, {
     response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)
   })

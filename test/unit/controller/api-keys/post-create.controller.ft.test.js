@@ -28,7 +28,7 @@ const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 const apiKeyCreatePath = formatAccountPathsFor(paths.account.apiKeys.create, EXTERNAL_GATEWAY_ACCOUNT_ID)
 
 function mockConnectorGetAccount (type) {
-  nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+  nock(CONNECTOR_URL).get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
     .reply(200, validGatewayAccountResponse(
       {
         external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,

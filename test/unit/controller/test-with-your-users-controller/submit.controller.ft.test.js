@@ -43,7 +43,7 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
 const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST)
 
 function mockConnectorGetAccount (opts = {}) {
-  nock(CONNECTOR_URL).get(`/v1/api/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+  nock(CONNECTOR_URL).get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
     .reply(200, validGatewayAccountResponse(
       {
         external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,

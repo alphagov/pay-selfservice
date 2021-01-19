@@ -369,13 +369,13 @@ describe('Credentials endpoints', () => {
             'username': 'a-username',
             'merchant_id': 'a-merchant-id'
           },
-          'notification_credentials': { username: 'a-notification-username' }
+          'notificationCredentials': { username: 'a-notification-username' }
         })
 
       buildGetRequest(paths.notificationCredentials.index, app)
         .expect(200)
         .expect(response => {
-          expect(response.body.currentGatewayAccount.notification_credentials).to.deep.equal({ username: 'a-notification-username' })
+          expect(response.body.currentGatewayAccount.notificationCredentials).to.deep.equal({ username: 'a-notification-username' })
         })
         .end(done)
     })

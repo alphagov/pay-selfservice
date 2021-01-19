@@ -9,7 +9,6 @@ const StripeAccount = require('../../models/StripeAccount.class')
 const SERVICE_NAME = 'connector'
 const ACCOUNTS_API_PATH = '/v1/api/accounts'
 const ACCOUNT_API_PATH = ACCOUNTS_API_PATH + '/{accountId}'
-const ACCOUNT_API_BY_EXTERNAL_ID_PATH = ACCOUNTS_API_PATH + '/external-id/{externalId}'
 const CHARGES_API_PATH = ACCOUNT_API_PATH + '/charges'
 const CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
 const CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
@@ -19,6 +18,7 @@ const STRIPE_ACCOUNT_PATH = ACCOUNT_API_PATH + '/stripe-account'
 
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
+const ACCOUNT_BY_EXTERNAL_ID_PATH = ACCOUNTS_FRONTEND_PATH + '/external-id/{externalId}'
 const SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename'
 const ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types'
 const ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials'
@@ -43,7 +43,7 @@ function _accountUrlFor (gatewayAccountId, url) {
 
 /** @private */
 function _accountByExternalIdUrlFor (gatewayAccountExternalId, url) {
-  return url + ACCOUNT_API_BY_EXTERNAL_ID_PATH.replace('{externalId}', gatewayAccountExternalId)
+  return url + ACCOUNT_BY_EXTERNAL_ID_PATH.replace('{externalId}', gatewayAccountExternalId)
 }
 
 /** @private */
