@@ -55,6 +55,7 @@ function parseGatewayAccountOptions (opts) {
   if (opts.gatewayAccountExternalId) {
     stubOptions.external_id = opts.gatewayAccountExternalId
   }
+
   return stubOptions
 }
 
@@ -86,6 +87,28 @@ function getGatewayAccountsSuccess (opts) {
         type: opts.type,
         payment_provider: opts.paymentProvider,
         external_id: '42'
+      }]
+    })
+  })
+}
+
+function getGatewayAccountsSuccessForMultipleAccounts (opts) {
+  const path = '/v1/frontend/accounts'
+  return stubBuilder('GET', path, 200, {
+    query: {
+      accountIds: opts.gatewayAccountIds.join(',')
+    },
+    response: gatewayAccountFixtures.validGatewayAccountsResponse({
+      accounts: [{
+        gateway_account_id: opts.gatewayAccountId1,
+        type: opts.type,
+        payment_provider: opts.paymentProvider,
+        external_id: opts.externalId1
+      }, {
+        gateway_account_id: opts.gatewayAccountId2,
+        type: opts.type,
+        payment_provider: opts.paymentProvider,
+        external_id: opts.externalId2
       }]
     })
   })
@@ -205,6 +228,7 @@ module.exports = {
   getGatewayAccountSuccess,
   getGatewayAccountsSuccess,
   getGatewayAccountByExternalIdSuccess,
+  getGatewayAccountsSuccessForMultipleAccounts,
   getAcceptedCardTypesSuccess,
   getDirectDebitGatewayAccountSuccess,
   postCreateGatewayAccountSuccess,

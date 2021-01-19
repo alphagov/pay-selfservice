@@ -82,7 +82,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 
 // Assignments
 const {
-  registerUser, user, selfCreateService, transactions,
+  registerUser, user, selfCreateService,
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   requestToGoLive, policyPages,
   allServiceTransactions, payouts, redirects, index
@@ -103,6 +103,7 @@ const {
   toggle3ds,
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode,
+  transactions,
   yourPsp
 } = paths.account
 
@@ -175,7 +176,6 @@ module.exports.bind = function (app) {
   // ----------------------
 
   const authenticatedPaths = [
-    ...lodash.values(transactions),
     ...lodash.values(allServiceTransactions),
     ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
@@ -208,6 +208,7 @@ module.exports.bind = function (app) {
   // All service transactions
   app.get(allServiceTransactions.index, allTransactionsController.getController)
   app.get(allServiceTransactions.download, allTransactionsController.downloadTransactions)
+  app.get(allServiceTransactions.redirectDetail, transactionDetailRedirectController)
 
   // Payouts
   app.get(payouts.list, payoutsController.listAllServicesPayouts)
@@ -266,17 +267,10 @@ module.exports.bind = function (app) {
   account.get(dashboard.index, dashboardController.dashboardActivity)
 
   // Transactions
-  app.get(transactions.index, permission('transactions:read'), getAccount, transactionsListController)
-  app.get(transactions.download, permission('transactions-download:read'), getAccount, transactionsDownloadController)
-  app.get(transactions.detail, permission('transactions-details:read'), resolveService, getAccount, transactionDetailController)
-  app.post(transactions.refund, permission('refunds:create'), getAccount, transactionRefundController)
-  app.get(transactions.redirectDetail, permission('transactions-details:read'), getAccount, transactionDetailRedirectController)
-
   account.get(transactions.index, permission('transactions:read'), transactionsListController)
   account.get(transactions.download, permission('transactions-download:read'), transactionsDownloadController)
   account.get(transactions.detail, permission('transactions-details:read'), transactionDetailController)
   account.post(transactions.refund, permission('refunds:create'), transactionRefundController)
-  account.get(transactions.redirectDetail, permission('transactions-details:read'), transactionDetailRedirectController)
 
   // Settings
   account.get(settings.index, permission('transactions-details:read'), settingsController.index)

@@ -46,7 +46,7 @@
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">
-        <a class="govuk-link" href="{{routes.transactions.index}}?state=Success&amp;{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
+        <a class="govuk-link" href="{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}?state=Success&amp;{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
           Successful payments
         </a>
       </h2>
@@ -61,7 +61,7 @@
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">
-        <a class="govuk-link" href="{{routes.transactions.index}}?state=Refund+success&amp;{{ transactionsPeriodString }}" title="View refunded transactions for chosen time period">
+        <a class="govuk-link" href="{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}?state=Refund+success&amp;{{ transactionsPeriodString }}" title="View refunded transactions for chosen time period">
           Successful refunds
         </a>
       </h2>
@@ -76,7 +76,7 @@
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">
-        <a class="govuk-link" href="{{routes.transactions.index}}?state=Success&amp;state=Refund+success&amp;{{ transactionsPeriodString }}" title="View successful payments and refunded transactions for chosen time period">
+        <a class="govuk-link" href="{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}?state=Success&amp;state=Refund+success&amp;{{ transactionsPeriodString }}" title="View successful payments and refunded transactions for chosen time period">
           Net income
         </a>
       </h2>

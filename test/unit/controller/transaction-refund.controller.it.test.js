@@ -28,7 +28,8 @@ describe('Refund scenario:', function () {
         email: 'test@example.com'
       },
       account: {
-        gateway_account_id: ACCOUNT_ID
+        gateway_account_id: ACCOUNT_ID,
+        external_id: 'an-external-id'
       },
       params: {
         chargeId: CHARGE_ID
@@ -57,7 +58,7 @@ describe('Refund scenario:', function () {
       .reply(202)
 
     await refundController(req, res)
-    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
     sinon.assert.calledWith(req.flash, 'refundSuccess', 'true')
   })
 
@@ -79,7 +80,7 @@ describe('Refund scenario:', function () {
       .reply(202)
 
     await refundController(req, res)
-    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
     sinon.assert.calledWith(req.flash, 'refundSuccess', 'true')
   })
 
@@ -92,7 +93,7 @@ describe('Refund scenario:', function () {
     }
 
     await refundController(req, res)
-    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
     sinon.assert.calledWith(req.flash, 'refundError', 'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”')
   })
 
@@ -119,7 +120,7 @@ describe('Refund scenario:', function () {
       .reply(400, response)
 
     await refundController(req, res)
-    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
     sinon.assert.calledWith(req.flash, 'refundError', 'The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
   })
 
@@ -146,7 +147,7 @@ describe('Refund scenario:', function () {
       .reply(400, response)
 
     await refundController(req, res)
-    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
     sinon.assert.calledWith(req.flash, 'refundError', 'The amount you tried to refund is too low. Please try again.')
   })
 
@@ -172,7 +173,7 @@ describe('Refund scenario:', function () {
       .reply(400, response)
 
     await refundController(req, res)
-    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
     sinon.assert.calledWith(req.flash, 'refundError', 'This refund request has already been submitted.')
   })
 
@@ -198,7 +199,7 @@ describe('Refund scenario:', function () {
       .reply(400, response)
 
     await refundController(req, res)
-    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
     sinon.assert.calledWith(req.flash, 'refundError', 'This refund request has already been submitted.')
   })
 
@@ -223,7 +224,7 @@ describe('Refund scenario:', function () {
       .reply(400, response)
 
     await refundController(req, res)
-    sinon.assert.calledWith(res.redirect, '/transactions/123456')
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
     sinon.assert.calledWith(req.flash, 'refundError', 'We couldn’t process this refund. Please try again or contact support.')
   })
 })

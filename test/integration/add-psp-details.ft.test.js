@@ -51,7 +51,6 @@ describe('Add stripe psp details route', function () {
 
     it('should load the "Go live complete" page', async () => {
       const url = `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`
-      console.log('going to url', url)
       const res = await supertest(app)
         .get(url)
       const $ = cheerio.load(res.text)
