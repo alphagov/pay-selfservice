@@ -29,7 +29,7 @@
     <p class="govuk-body govuk-!-margin-bottom-6">This is the bank account payments will go into.</p>
 
     <form id="bank-details-form" method="post"
-          action="/bank-details" data-validate="true">
+          data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set sortCodeError = false %}

@@ -10,8 +10,8 @@ const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fix
 const { buildGetStripeAccountSetupResponse } = require('../fixtures/stripe-account-setup.fixtures')
 
 const connectorMock = nock(process.env.CONNECTOR_URL)
-const GATEWAY_ACCOUNT_ID = 111
-
+const GATEWAY_ACCOUNT_ID = '111'
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
 const { getApp } = require('../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../test-helpers/mock-session')
 
@@ -30,10 +30,10 @@ describe('Add stripe psp details route', function () {
       app = createAppWithSession(getApp(), session)
 
       connectorMock
-        .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+        .get(`/v1/frontend/accounts/external-id/${GATEWAY_ACCOUNT_EXTERNAL_ID}`)
         .reply(200, validGatewayAccountResponse({
           gateway_account_id: GATEWAY_ACCOUNT_ID,
-          external_id: 'a-valid-external-id',
+          external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
           payment_provider: 'stripe',
           type: 'live'
         }))
@@ -50,8 +50,10 @@ describe('Add stripe psp details route', function () {
     })
 
     it('should load the "Go live complete" page', async () => {
+      const url = `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`
+      console.log('going to url', url)
       const res = await supertest(app)
-        .get(`/account/a-valid-external-id/${paths.account.stripe.addPspAccountDetails}`)
+        .get(url)
       const $ = cheerio.load(res.text)
       expect(res.statusCode).to.equal(200)
       expect($('h1').text()).to.contain('Go live complete')

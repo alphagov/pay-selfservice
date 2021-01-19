@@ -35,13 +35,13 @@ describe('get controller', () => {
   it('should redirect to bank account setup page', async () => {
     req.account.connectorGatewayAccountStripeProgress.bankAccount = false
     getController(req, res)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/${paths.account.stripeSetup.bankDetails}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.bankDetails}`)
   })
 
   it('should redirect to responsible person page', async () => {
     req.account.connectorGatewayAccountStripeProgress.bankAccount = true
     getController(req, res)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/${paths.account.stripeSetup.responsiblePerson}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.responsiblePerson}`)
   })
 
   it('should redirect to VAT number page', async () => {
@@ -50,7 +50,7 @@ describe('get controller', () => {
       responsiblePerson: true
     }
     getController(req, res)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/${paths.account.stripeSetup.vatNumber}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.vatNumber}`)
   })
 
   it('should redirect to company registration number page', async () => {
@@ -60,7 +60,7 @@ describe('get controller', () => {
       vatNumber: true
     }
     getController(req, res)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/${paths.account.stripeSetup.companyNumber}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.companyNumber}`)
   })
 
   it('should render go live complete page when all steps are completed', async () => {

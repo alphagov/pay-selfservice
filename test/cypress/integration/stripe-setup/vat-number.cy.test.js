@@ -6,6 +6,8 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
+
 function setupStubs (userExternalId, gatewayAccountId, vatNumber, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
@@ -20,7 +22,7 @@ function setupStubs (userExternalId, gatewayAccountId, vatNumber, type = 'live',
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type, paymentProvider }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type, paymentProvider }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     transactionSummaryStubs.getDashboardStatistics()
@@ -28,7 +30,7 @@ function setupStubs (userExternalId, gatewayAccountId, vatNumber, type = 'live',
 }
 
 describe('Stripe setup: VAT number page', () => {
-  const gatewayAccountId = 42
+  const gatewayAccountId = '42'
   const userExternalId = 'userExternalId'
 
   describe('Card gateway account', () => {
@@ -38,7 +40,7 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
 
-        cy.visit('/vat-number')
+        cy.visit('/account/a-valid-external-id/vat-number')
       })
 
       it('should display page correctly', () => {
@@ -89,7 +91,7 @@ describe('Stripe setup: VAT number page', () => {
       it('should redirect to Dashboard with an error message when displaying the page', () => {
         setupStubs(userExternalId, gatewayAccountId, true)
 
-        cy.visit('/vat-number')
+        cy.visit('/account/a-valid-external-id/vat-number')
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
@@ -102,7 +104,7 @@ describe('Stripe setup: VAT number page', () => {
       it('should redirect to Dashboard with an error message when submitting the form', () => {
         setupStubs(userExternalId, gatewayAccountId, [false, true])
 
-        cy.visit('/vat-number')
+        cy.visit('/account/a-valid-external-id/vat-number')
 
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
 
@@ -125,7 +127,7 @@ describe('Stripe setup: VAT number page', () => {
       it('should show a 404 error when gateway account is not Stripe', () => {
         setupStubs(userExternalId, gatewayAccountId, false, 'live', 'sandbox')
 
-        cy.visit('/vat-number', {
+        cy.visit('/account/a-valid-external-id/vat-number', {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -140,7 +142,7 @@ describe('Stripe setup: VAT number page', () => {
       it('should show a 404 error when gateway account is not live', () => {
         setupStubs(userExternalId, gatewayAccountId, false, 'test', 'stripe')
 
-        cy.visit('/vat-number', {
+        cy.visit('/account/a-valid-external-id/vat-number', {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -155,10 +157,11 @@ describe('Stripe setup: VAT number page', () => {
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
           userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-          gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' })
+          gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type: 'live', paymentProvider: 'stripe' }),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true })
         ])
 
-        cy.visit('/vat-number', { failOnStatusCode: false })
+        cy.visit('/account/a-valid-external-id/vat-number', { failOnStatusCode: false })
         cy.get('h1').should('contain', 'An error occurred:')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })

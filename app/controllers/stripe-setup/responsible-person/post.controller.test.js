@@ -109,7 +109,7 @@ describe('Responsible person POST controller', () => {
       dob_year: dobYearNormalised
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/${paths.account.stripe.addPspAccountDetails}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
   it('should call Stripe with normalised details (no second address line), then connector, then redirect to add details redirect route', async function () {
@@ -138,7 +138,7 @@ describe('Responsible person POST controller', () => {
       dob_year: dobYearNormalised
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/${paths.account.stripe.addPspAccountDetails}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
   it('should render error when Stripe returns error, not call connector, and not redirect', async function () {

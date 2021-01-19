@@ -6,6 +6,8 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
+
 function setupStubs (userExternalId, gatewayAccountId, responsiblePerson, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
@@ -20,7 +22,7 @@ function setupStubs (userExternalId, gatewayAccountId, responsiblePerson, type =
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type, paymentProvider }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type, paymentProvider }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     transactionSummaryStubs.getDashboardStatistics()
@@ -52,7 +54,7 @@ describe('Stripe setup: responsible person page', () => {
     beforeEach(() => {
       setupStubs(userExternalId, gatewayAccountId, false)
 
-      cy.visit('/responsible-person')
+      cy.visit('/account/a-valid-external-id/responsible-person')
     })
 
     it('should display form', () => {
@@ -149,7 +151,7 @@ describe('Stripe setup: responsible person page', () => {
     beforeEach(() => {
       setupStubs(userExternalId, gatewayAccountId, true)
 
-      cy.visit('/responsible-person')
+      cy.visit('/account/a-valid-external-id/responsible-person')
     })
 
     it('should redirect to dashboard with error message instead of showing form', () => {
@@ -165,7 +167,7 @@ describe('Stripe setup: responsible person page', () => {
     beforeEach(() => {
       setupStubs(userExternalId, gatewayAccountId, [false, true])
 
-      cy.visit('/responsible-person')
+      cy.visit('/account/a-valid-external-id/responsible-person')
     })
 
     it('should redirect to dashboard with error message instead of saving details', () => {
@@ -194,7 +196,7 @@ describe('Stripe setup: responsible person page', () => {
     beforeEach(() => {
       setupStubs(userExternalId, gatewayAccountId, false, 'live', 'worldpay')
 
-      cy.visit('/responsible-person', { failOnStatusCode: false })
+      cy.visit('/account/a-valid-external-id/responsible-person', { failOnStatusCode: false })
     })
 
     it('should return a 404', () => {
@@ -206,10 +208,11 @@ describe('Stripe setup: responsible person page', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' })
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type: 'live', paymentProvider: 'stripe' }),
+        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: true })
       ])
 
-      cy.visit('/responsible-person', { failOnStatusCode: false })
+      cy.visit('/account/a-valid-external-id/responsible-person', { failOnStatusCode: false })
     })
 
     it('should show a permission denied error', () => {
