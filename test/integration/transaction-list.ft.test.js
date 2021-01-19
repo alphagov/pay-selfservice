@@ -13,11 +13,13 @@ const getApp = require('../../server').getApp
 const paths = require('../../app/paths')
 const session = require('../test-helpers/mock-session')
 const getQueryStringForParams = require('../../app/utils/get-query-string-for-params')
+const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
+const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fixtures')
 
 // Setup
 const gatewayAccountId = '651342'
 const ledgerSearchParameters = {}
-const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + gatewayAccountId
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 const LEDGER_TRANSACTION_PATH = '/v1/transaction?account_id=' + gatewayAccountId
 const requestId = 'unique-request-id'
 const aCorrelationHeader = {
@@ -38,7 +40,7 @@ function ledgerMockResponds (code, data, searchParameters) {
 
 function getTransactionList () {
   return request(app)
-    .get(paths.transactions.index)
+    .get(formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
     .set('Accept', 'application/json')
     .set('x-request-id', requestId)
 }
@@ -58,12 +60,16 @@ describe('The /transactions endpoint', function () {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     userCreator.mockUserResponse(user.toJson(), done)
-    connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-      .reply(200, {
-        'payment_provider': 'sandbox',
-        'gateway_account_id': gatewayAccountId,
-        'credentials': { 'username': 'a-username' }
-      })
+
+    connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      .reply(200, validGatewayAccountResponse(
+        {
+          external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+          gateway_account_id: gatewayAccountId,
+          payment_provider: 'sandbox',
+          credentials: { 'username': 'a-username' }
+        }
+      ))
   })
 
   it('should show error message on a bad request while retrieving the list of transactions', function (done) {

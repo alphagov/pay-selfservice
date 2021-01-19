@@ -86,7 +86,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 
 // Assignments
 const {
-  healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
+  healthcheck, registerUser, user, dashboard, selfCreateService, credentials,
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials,
   requestToGoLive, policyPages,
@@ -100,6 +100,7 @@ const {
   paymentTypes,
   prototyping,
   settings,
+  transactions,
   toggle3ds,
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode,
@@ -181,7 +182,6 @@ module.exports.bind = function (app) {
   // ----------------------
 
   const authenticatedPaths = [
-    ...lodash.values(transactions),
     ...lodash.values(allServiceTransactions),
     ...lodash.values(credentials),
     ...lodash.values(notificationCredentials),
@@ -269,12 +269,6 @@ module.exports.bind = function (app) {
   // ----------------------------
 
   // Transactions
-  app.get(transactions.index, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListController)
-  app.get(transactions.download, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadController)
-  app.get(transactions.detail, permission('transactions-details:read'), resolveService, getAccount, paymentMethodIsCard, transactionDetailController)
-  app.post(transactions.refund, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
-  app.get(transactions.redirectDetail, permission('transactions-details:read'), getAccount, transactionDetailRedirectController)
-
   account.get(transactions.index, permission('transactions:read'), paymentMethodIsCard, transactionsListController)
   account.get(transactions.download, permission('transactions-download:read'), paymentMethodIsCard, transactionsDownloadController)
   account.get(transactions.detail, permission('transactions-details:read'), paymentMethodIsCard, transactionDetailController)

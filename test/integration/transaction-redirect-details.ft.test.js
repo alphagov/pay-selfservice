@@ -10,16 +10,19 @@ const paths = require('../../app/paths.js')
 const session = require('../test-helpers/mock-session.js')
 const gatewayAccountId = '15486734'
 const { validTransactionDetailsResponse } = require('../fixtures/ledger-transaction.fixtures')
+const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
+const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fixtures')
+
 let app
 
 const connectorMock = nock(process.env.CONNECTOR_URL)
-const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + gatewayAccountId
 const LEDGER_TRANSACTION_PATH = '/v1/transaction/{transactionId}'
 const ledgerMock = nock(process.env.LEDGER_URL)
+const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 
 function whenGetRedirectTransactionRoute (transactionId, baseApp) {
   return request(baseApp)
-    .get(paths.generateRoute(paths.transactions.redirectDetail, { chargeId: transactionId }))
+    .get(paths.generateRoute(formatAccountPathsFor(paths.account.transactions.redirectDetail, EXTERNAL_GATEWAY_ACCOUNT_ID), { chargeId: transactionId }))
     .set('Accept', 'application/json')
 }
 
@@ -42,12 +45,16 @@ describe('The transaction view scenarios', function () {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     userCreator.mockUserResponse(user.toJson(), done)
-    connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-      .reply(200, {
-        'payment_provider': 'sandbox',
-        'gateway_account_id': gatewayAccountId,
-        'credentials': { 'username': 'a-username' }
-      })
+
+    connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
+      .reply(200, validGatewayAccountResponse(
+        {
+          external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+          gateway_account_id: gatewayAccountId,
+          payment_provider: 'sandbox',
+          credentials: { 'username': 'a-username' }
+        }
+      ))
   })
 
   describe('The transaction redirect endpoint', function () {

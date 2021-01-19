@@ -11,13 +11,14 @@ const states = require('./states')
 const check = require('check-types')
 const url = require('url')
 const TransactionEvent = require('../models/TransactionEvent.class')
+const formatAccountPathsFor = require('../utils/format-account-paths-for')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
 const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 module.exports = {
   /** prepares the transaction list view */
-  buildPaymentList: function (connectorData, allCards, gatewayAccountId, filtersResult, route, backPath) {
+  buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, route, backPath) {
     connectorData.filters = filtersResult
     connectorData.hasFilters = Object.keys(filtersResult).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
@@ -57,12 +58,13 @@ module.exports = {
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '…' : element.email
       element.updated = dates.utcToDisplay(element.updated)
       element.created = dates.utcToDisplay(element.created_date)
-      if (!gatewayAccountId) {
-        element.link = router.generateRoute(router.paths.transactions.redirectDetail, {
+      if (!gatewayAccountExternalId) {
+        element.link = router.generateRoute(router.paths.account.transactions.redirectDetail, {
           chargeId: element.charge_id
         })
       } else {
-        element.link = router.generateRoute(router.paths.transactions.detail, {
+        const transactionDetailUrl = formatAccountPathsFor(router.paths.account.transactions.detail, gatewayAccountExternalId)
+        element.link = router.generateRoute(transactionDetailUrl, {
           chargeId: element.charge_id
         })
       }

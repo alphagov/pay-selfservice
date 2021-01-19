@@ -3,6 +3,8 @@
 const { ledgerFindWithEvents } = require('../../services/transaction.service')
 const { response } = require('../../utils/response.js')
 const { renderErrorView } = require('../../utils/response.js')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const router = require('../../routes')
 
 const defaultMsg = 'Error processing transaction view'
 const notFound = 'Charge not found'
@@ -19,6 +21,10 @@ module.exports = (req, res) => {
         delete req.session.backLink
       }
       data.service = req.service
+
+      const refundUrl = router.generateRoute(formatAccountPathsFor(router.paths.account.transactions.refund, req.account.external_id), { chargeId })
+
+      data.refundUrl = refundUrl
       response(req, res, 'transaction-detail/index', data)
     })
     .catch(err => {

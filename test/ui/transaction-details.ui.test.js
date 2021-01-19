@@ -4,6 +4,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const cheerio = require('cheerio')
+
 chai.should()
 chai.use(chaiAsPromised)
 
@@ -66,13 +67,16 @@ describe('The transaction details view', () => {
         'transactions_card_type_read': true,
         'transactions_description_read': true,
         'transactions_events_read': true
+      },
+      currentGatewayAccount: {
+        external_id: 'an-external-id'
       }
     }
 
     const body = renderTemplate('transaction-detail/index', templateData)
     const $ = cheerio.load(body)
     body.should.not.containSelector('.refund__toggle-container')
-    $('.govuk-back-link').attr('href').should.equal('/transactions?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
+    $('.govuk-back-link').attr('href').should.equal('/account/an-external-id/transactions?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
     $('#email').html().should.equal('alice.111@mail.fake')
@@ -173,13 +177,16 @@ describe('The transaction details view', () => {
         'transactions_card_type_read': true,
         'transactions_description_read': true,
         'transactions_events_read': true
+      },
+      currentGatewayAccount: {
+        external_id: 'an-external-id'
       }
     }
 
     const body = renderTemplate('transaction-detail/index', templateData)
     const $ = cheerio.load(body)
     body.should.not.containSelector('.refund__toggle-container')
-    $('.govuk-back-link').attr('href').should.equal('/transactions?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
+    $('.govuk-back-link').attr('href').should.equal('/account/an-external-id/transactions?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
     $('#email').html().should.equal('alice.111@mail.fake')
