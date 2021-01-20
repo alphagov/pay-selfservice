@@ -97,7 +97,7 @@ module.exports = {
 
     if (_.get(req, 'session.flash.genericError.length')) {
       _.set(req, 'session.pageData.editNotificationCredentials', { username, password })
-      return res.redirect(formatAccountPathsFor(paths.account.notificationCredentials.edit, req.account && req.account.external_id))
+      return res.redirect(paths.notificationCredentials.edit)
     }
 
     const correlationId = req.headers[CORRELATION_HEADER] || ''
