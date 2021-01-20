@@ -17,8 +17,8 @@ const mainSettingsPaths = [
 
 const yourPspPaths = [
   paths.account.yourPsp,
-  paths.credentials,
-  paths.notificationCredentials
+  paths.account.credentials,
+  paths.account.notificationCredentials
 ]
 
 const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {

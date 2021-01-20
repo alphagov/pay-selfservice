@@ -86,26 +86,27 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 
 // Assignments
 const {
-  healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
-  serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials,
+  healthcheck, registerUser, user, dashboard, selfCreateService, transactions,
+  serviceSwitcher,teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   requestToGoLive, policyPages,
   allServiceTransactions, payouts, redirects
 } = paths
 const {
   apiKeys,
+  credentials,
   digitalWallet,
   emailNotifications,
+  notificationCredentials,
   paymentLinks,
   paymentTypes,
   prototyping,
   settings,
+  stripe,
+  stripeSetup,
   toggle3ds,
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode,
-  yourPsp,
-  stripeSetup,
-  stripe
+  yourPsp
 } = paths.account
 
 // Exports
@@ -183,13 +184,10 @@ module.exports.bind = function (app) {
   const authenticatedPaths = [
     ...lodash.values(transactions),
     ...lodash.values(allServiceTransactions),
-    ...lodash.values(credentials),
-    ...lodash.values(notificationCredentials),
     ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
     ...lodash.values(merchantDetails),
-    ...lodash.values(paymentLinks),
     ...lodash.values(user.profile),
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
@@ -291,17 +289,9 @@ module.exports.bind = function (app) {
   account.post(yourPsp.flex, permission('gateway-credentials:update'), paymentMethodIsCard, yourPspController.postFlex)
 
   // Credentials
-  app.get(credentials.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsController.index)
-  app.get(credentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editCredentials)
-  app.post(credentials.index, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.update)
-  app.get(notificationCredentials.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsController.index)
-  app.get(notificationCredentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.editNotificationCredentials)
-  app.post(notificationCredentials.update, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsController.updateNotificationCredentials)
-
   account.get(credentials.index, permission('gateway-credentials:read'), paymentMethodIsCard, credentialsController.index)
   account.get(credentials.edit, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.editCredentials)
   account.post(credentials.index, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.update)
-  account.get(notificationCredentials.index, permission('gateway-credentials:read'), paymentMethodIsCard, credentialsController.index)
   account.get(notificationCredentials.edit, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.editNotificationCredentials)
   account.post(notificationCredentials.update, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.updateNotificationCredentials)
 
