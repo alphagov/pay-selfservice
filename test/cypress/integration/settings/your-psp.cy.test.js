@@ -9,7 +9,7 @@ describe('Your PSP settings page', () => {
   const gatewayAccountExternalId = 'a-valid-external-id'
   const serviceName = 'Purchase a positron projection permit'
   const yourPspPath = `/account/${gatewayAccountExternalId}/your-psp`
-  
+
   const testCredentials = {
     merchant_id: 'positron-permit-people',
     username: 'jonheslop',
