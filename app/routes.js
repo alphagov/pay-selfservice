@@ -193,6 +193,7 @@ module.exports.bind = function (app) {
     ...lodash.values(policyPages),
     ...lodash.values(payouts),
     ...lodash.values(redirects),
+    ...lodash.values(apiKeys),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
