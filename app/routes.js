@@ -87,7 +87,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions,
-  serviceSwitcher,teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
+  serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   requestToGoLive, policyPages,
   allServiceTransactions, payouts, redirects
 } = paths
@@ -193,7 +193,6 @@ module.exports.bind = function (app) {
     ...lodash.values(policyPages),
     ...lodash.values(payouts),
     ...lodash.values(redirects),
-    ...lodash.values(apiKeys),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -428,17 +427,27 @@ module.exports.bind = function (app) {
   app.use(paths.account.root, account)
 
   app.all('*', (req, res) => {
-    const currentSessionAccountExternalId = req.gateway_account && req.gateway_account.currentGatewayAccountExternalId
-    if (accountUrls.isLegacyAccountsUrl(req.url) && currentSessionAccountExternalId) {
-      const upgradedPath = accountUrls.getUpgradedAccountStructureUrl(req.url, currentSessionAccountExternalId)
-      logger.info('Accounts URL utility upgraded a request to a legacy account URL', {
-        url: req.originalUrl,
-        redirected_url: upgradedPath,
-        session_has_user: !!req.user,
-        is_internal_user: req.user && req.user.internalUser
-      })
-      res.redirect(upgradedPath)
-      return
+    if (accountUrls.isLegacyAccountsUrl(req.url)) {
+      if (req.user) {
+        const currentSessionAccountExternalId = req.gateway_account && req.gateway_account.currentGatewayAccountExternalId
+        if (currentSessionAccountExternalId) {
+          const upgradedPath = accountUrls.getUpgradedAccountStructureUrl(req.url, currentSessionAccountExternalId)
+          logger.info('Accounts URL utility upgraded a request to a legacy account URL', {
+            url: req.originalUrl,
+            redirected_url: upgradedPath,
+            session_has_user: !!req.user,
+            is_internal_user: req.user && req.user.internalUser
+          })
+          res.redirect(upgradedPath)
+          return
+        }
+      } else {
+        if (req.session) {
+          req.session.last_url = req.url
+        }
+        res.redirect(user.logIn)
+        return
+      }
     }
     logger.info('Page not found', {
       url: req.originalUrl
