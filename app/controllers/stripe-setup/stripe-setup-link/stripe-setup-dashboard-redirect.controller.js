@@ -1,6 +1,7 @@
 'use strict'
 
 const paths = require('../../../../app/paths')
+const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const { isADirectDebitAccount } = require('../../../services/clients/direct-debit-connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -19,14 +20,14 @@ module.exports = async (req, res) => {
     const result = await connectorClient.getAccounts({ gatewayAccountIds: cardGatewayAccountIds })
     const liveGatewayAccounts = result.accounts.filter((gatewayAccount) => gatewayAccount.type === 'live')
     if (liveGatewayAccounts && liveGatewayAccounts.length === 1) {
-      req.gateway_account.currentGatewayAccountId = `${liveGatewayAccounts[0].gateway_account_id}`
-      req.gateway_account.currentGatewayAccountExternalId = liveGatewayAccounts[0].external_id
+      const gatewayAccountExternalId = liveGatewayAccounts[0].external_id
+      return res.redirect(302, formatAccountPathsFor(paths.account.dashboard.index, gatewayAccountExternalId))
     }
-  } else {
-    const logContext = {}
-    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logContext[keys.SERVICE_EXTERNAL_ID] = externalServiceId
-    logger.warn('User has no access to this service for dashboard redirect', logContext)
   }
-  res.redirect(302, paths.dashboard.index)
+
+  const logContext = {}
+  logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
+  logContext[keys.SERVICE_EXTERNAL_ID] = externalServiceId
+  logger.warn('User has no access to this service for dashboard redirect', logContext)
+  res.redirect(302, paths.index)
 }

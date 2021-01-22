@@ -140,7 +140,7 @@ describe('service switch controller: list of accounts', function () {
 describe('service switch controller: switching', function () {
   it('should redirect to / with correct account id set', function () {
     const session = {}
-    const gatewayAccount = {}
+    const gatewayAccountExternalId = 'some-external-id'
 
     const req = {
       originalUrl: 'http://bob.com?accountId=6',
@@ -153,19 +153,16 @@ describe('service switch controller: switching', function () {
         }]
       })),
       session: session,
-      gateway_account: gatewayAccount,
       body: {
         gatewayAccountId: '6',
-        gatewayAccountExternalId: 'some-external-id'
+        gatewayAccountExternalId
       }
     }
 
     const res = {
       redirect: function () {
-        expect(gatewayAccount.currentGatewayAccountId).to.be.equal('6')
-        expect(gatewayAccount.currentGatewayAccountExternalId).to.be.equal('some-external-id')
         expect(arguments[0]).to.equal(302)
-        expect(arguments[1]).to.equal('/')
+        expect(arguments[1]).to.equal(`/account/${gatewayAccountExternalId}/dashboard`)
       }
     }
 

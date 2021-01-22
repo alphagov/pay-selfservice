@@ -6,7 +6,8 @@ const serviceStubs = require('../stubs/service-stubs')
 
 const variables = {
   userExternalId: 'userExternalId',
-  gatewayAccountId: 42,
+  gatewayAccountId: '42',
+  gatewayAccountExternalId: 'a-gateway-account-external-id',
   serviceExternalId: 'afe452323dd04d1898672bfaba25e3a6'
 }
 
@@ -34,14 +35,30 @@ function buildServiceRoleWithMerchantDetails (merchantDetails, goLiveStage) {
 function getUserAndGatewayAccountStubs (serviceRole) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId: variables.gatewayAccountId })
+    gatewayAccountStubs.getGatewayAccountSuccess({
+      gatewayAccountId: variables.gatewayAccountId,
+      gatewayAccountExternalId: variables.gatewayAccountExternalId
+    })
   ]
 }
 
 function getUserAndGatewayAccountsStubs (serviceRole) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
-    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: variables.gatewayAccountId })
+    gatewayAccountStubs.getGatewayAccountSuccess({
+      gatewayAccountId: variables.gatewayAccountId,
+      gatewayAccountExternalId: variables.gatewayAccountExternalId
+    })
+  ]
+}
+
+function getUserAndGatewayAccountByExternalIdStubs (serviceRole) {
+  return [
+    userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+      gatewayAccountId: variables.gatewayAccountId,
+      gatewayAccountExternalId: variables.gatewayAccountExternalId
+    })
   ]
 }
 
@@ -76,6 +93,10 @@ function setupGetUserAndGatewayAccountsStubs (serviceRole) {
   cy.task('setupStubs', getUserAndGatewayAccountsStubs(serviceRole))
 }
 
+function setupGetUserAndGatewayAccountByExternalIdStubs (serviceRole) {
+  cy.task('setupStubs', getUserAndGatewayAccountByExternalIdStubs(serviceRole))
+}
+
 module.exports = {
   variables,
   buildServiceRoleForGoLiveStage,
@@ -85,5 +106,6 @@ module.exports = {
   patchUpdateGoLiveStageErrorStub,
   patchUpdateServiceSuccessCatchAllStub,
   setupGetUserAndGatewayAccountStubs,
-  setupGetUserAndGatewayAccountsStubs
+  setupGetUserAndGatewayAccountsStubs,
+  setupGetUserAndGatewayAccountByExternalIdStubs
 }

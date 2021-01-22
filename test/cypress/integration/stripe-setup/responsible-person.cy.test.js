@@ -6,9 +6,26 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
-const GATEWAY_ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
+const gatewayAccountId = 42
+const userExternalId = 'userExternalId'
+const gatewayAccountExternalId = 'a-valid-external-id'
+const responsiblePersonUrl = `/account/${gatewayAccountExternalId}/responsible-person`
+const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
-function setupStubs (userExternalId, gatewayAccountId, responsiblePerson, type = 'live', paymentProvider = 'stripe') {
+const firstName = 'William'
+const typedFirstName = 'William '
+const typedLastName = ' Benn'
+const addressLine1 = '52 Festive Road'
+const typedAddressLine1 = ' 52 Festive Road'
+const typedAddressLine2 = 'Putney '
+const city = 'London'
+const typedCity = 'London '
+const typedPostcode = 'sw151lp '
+const typedDobDay = '25 '
+const typedDobMonth = ' 02'
+const typedDobYear = '1971 '
+
+function setupStubs (responsiblePerson, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
   if (Array.isArray(responsiblePerson)) {
@@ -22,7 +39,7 @@ function setupStubs (userExternalId, gatewayAccountId, responsiblePerson, type =
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type, paymentProvider }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: gatewayAccountExternalId, type, paymentProvider }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     transactionSummaryStubs.getDashboardStatistics()
@@ -30,31 +47,15 @@ function setupStubs (userExternalId, gatewayAccountId, responsiblePerson, type =
 }
 
 describe('Stripe setup: responsible person page', () => {
-  const gatewayAccountId = 42
-  const userExternalId = 'userExternalId'
-
-  const firstName = 'William'
-  const typedFirstName = 'William '
-  const typedLastName = ' Benn'
-  const addressLine1 = '52 Festive Road'
-  const typedAddressLine1 = ' 52 Festive Road'
-  const typedAddressLine2 = 'Putney '
-  const city = 'London'
-  const typedCity = 'London '
-  const typedPostcode = 'sw151lp '
-  const typedDobDay = '25 '
-  const typedDobMonth = ' 02'
-  const typedDobYear = '1971 '
-
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
   })
 
   describe('when user is admin, account is Stripe and responsible person not already nominated', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, false)
+      setupStubs(false)
 
-      cy.visit('/account/a-valid-external-id/responsible-person')
+      cy.visit(responsiblePersonUrl)
     })
 
     it('should display form', () => {
@@ -149,15 +150,15 @@ describe('Stripe setup: responsible person page', () => {
 
   describe('trying to view form when responsible person already nominated', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, true)
+      setupStubs(true)
 
-      cy.visit('/account/a-valid-external-id/responsible-person')
+      cy.visit(responsiblePersonUrl)
     })
 
     it('should redirect to dashboard with error message instead of showing form', () => {
       cy.get('h1').should('contain', 'Dashboard')
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/')
+        expect(location.pathname).to.eq(dashboardUrl)
       })
       cy.get('.flash-container .generic-error').should('contain', 'responsible person')
     })
@@ -165,9 +166,9 @@ describe('Stripe setup: responsible person page', () => {
 
   describe('trying to save details when responsible person already nominated', function () {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, [false, true])
+      setupStubs([false, true])
 
-      cy.visit('/account/a-valid-external-id/responsible-person')
+      cy.visit(responsiblePersonUrl)
     })
 
     it('should redirect to dashboard with error message instead of saving details', () => {
@@ -186,7 +187,7 @@ describe('Stripe setup: responsible person page', () => {
 
       cy.get('h1').should('contain', 'Dashboard')
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/')
+        expect(location.pathname).to.eq(dashboardUrl)
       })
       cy.get('.flash-container .generic-error').should('contain', 'responsible person')
     })
@@ -194,9 +195,9 @@ describe('Stripe setup: responsible person page', () => {
 
   describe('when it’s not a Stripe gateway account', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, false, 'live', 'worldpay')
+      setupStubs(false, 'live', 'worldpay')
 
-      cy.visit('/account/a-valid-external-id/responsible-person', { failOnStatusCode: false })
+      cy.visit(responsiblePersonUrl, { failOnStatusCode: false })
     })
 
     it('should return a 404', () => {
@@ -208,11 +209,11 @@ describe('Stripe setup: responsible person page', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type: 'live', paymentProvider: 'stripe' }),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe' }),
         stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, responsiblePerson: true })
       ])
 
-      cy.visit('/account/a-valid-external-id/responsible-person', { failOnStatusCode: false })
+      cy.visit(responsiblePersonUrl, { failOnStatusCode: false })
     })
 
     it('should show a permission denied error', () => {

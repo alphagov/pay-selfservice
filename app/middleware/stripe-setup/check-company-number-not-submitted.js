@@ -2,6 +2,7 @@
 
 const { renderErrorView } = require('../../utils/response')
 const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 module.exports = function checkCompanyNumberNotSubmitted (req, res, next) {
   if (!req.account) {
@@ -15,7 +16,7 @@ module.exports = function checkCompanyNumberNotSubmitted (req, res, next) {
   } else {
     if (stripeAccountSetup.companyNumber) {
       req.flash('genericError', 'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
-      res.redirect(303, paths.dashboard.index)
+      res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
     } else {
       next()
     }

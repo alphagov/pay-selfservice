@@ -6,7 +6,15 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
-function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId, bankAccount, type = 'live', paymentProvider = 'stripe') {
+const gatewayAccountId = '42'
+const gatewayAccountExternalId = 'a-valid-external-id'
+const userExternalId = 'userExternalId'
+const accountNumber = '00012345'
+const sortCode = '108800'
+const bankDetailsUrl = `/account/${gatewayAccountExternalId}/bank-details`
+const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
+
+function setupStubs (bankAccount, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
   if (Array.isArray(bankAccount)) {
@@ -28,12 +36,6 @@ function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId,
 }
 
 describe('Stripe setup: bank details page', () => {
-  const gatewayAccountId = '42'
-  const gatewayAccountExternalId = 'a-valid-external-id'
-  const userExternalId = 'userExternalId'
-  const accountNumber = '00012345'
-  const sortCode = '108800'
-
   describe('Card gateway account', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
@@ -41,8 +43,8 @@ describe('Stripe setup: bank details page', () => {
 
     describe('Bank details page is shown', () => {
       beforeEach(() => {
-        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, false)
-        cy.visit('/account/a-valid-external-id/bank-details')
+        setupStubs(false)
+        cy.visit(bankDetailsUrl)
       })
 
       it('should display page correctly', () => {
@@ -76,22 +78,22 @@ describe('Stripe setup: bank details page', () => {
 
     describe('Bank account flag already true', () => {
       it('should redirect to Dashboard with an error message when on Bank details page', () => {
-        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, true)
+        setupStubs(true)
 
-        cy.visit('/account/a-valid-external-id/bank-details')
+        cy.visit(bankDetailsUrl)
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/`)
+          expect(location.pathname).to.eq(dashboardUrl)
         })
         cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
         cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
-        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, [false, true], 'live', 'stripe')
+        setupStubs([false, true], 'live', 'stripe')
 
-        cy.visit('/account/a-valid-external-id/bank-details')
+        cy.visit(bankDetailsUrl)
 
         cy.get('input#account-number[name="account-number"]').type(accountNumber)
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
@@ -99,7 +101,7 @@ describe('Stripe setup: bank details page', () => {
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/`)
+          expect(location.pathname).to.eq(dashboardUrl)
         })
         cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
         cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
@@ -108,9 +110,9 @@ describe('Stripe setup: bank details page', () => {
 
     describe('Not a Stripe gateway account', () => {
       it('should show a 404 error when gateway account is not Stripe', () => {
-        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, true, 'live', 'sandbox')
+        setupStubs(true, 'live', 'sandbox')
 
-        cy.visit('/account/a-valid-external-id/bank-details', {
+        cy.visit(bankDetailsUrl, {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -119,9 +121,9 @@ describe('Stripe setup: bank details page', () => {
 
     describe('Not a live gateway account', () => {
       it('should show a 404 error when gateway account is not live', () => {
-        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, false, 'test', 'sandbox')
+        setupStubs(false, 'test', 'sandbox')
 
-        cy.visit('/account/a-valid-external-id/bank-details', {
+        cy.visit(bankDetailsUrl, {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -136,7 +138,7 @@ describe('Stripe setup: bank details page', () => {
           stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: false })
         ])
 
-        cy.visit('/account/a-valid-external-id/bank-details', {
+        cy.visit(bankDetailsUrl, {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'An error occurred:')

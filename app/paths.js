@@ -90,7 +90,7 @@ module.exports = {
     },
     settings: {
       index: '/settings'
-    },  
+    },
     stripe: {
       addPspAccountDetails: '/stripe/add-psp-account-details'
     },
@@ -116,6 +116,7 @@ module.exports = {
       worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
     }
   },
+  index: '/',
   redirects: {
     stripeSetupLiveDashboardRedirect: '/service/:externalServiceId/dashboard/live'
   },
@@ -130,7 +131,6 @@ module.exports = {
     index: '/all-service-transactions',
     download: '/all-service-transactions/download'
   },
-
   user: {
     logIn: '/login',
     otpLogIn: '/otp-login',
@@ -150,9 +150,6 @@ module.exports = {
         resend: '/my-profile/two-factor-auth/resend'
       }
     }
-  },
-  dashboard: {
-    index: '/'
   },
   serviceSwitcher: {
     index: '/my-services',

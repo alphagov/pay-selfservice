@@ -6,9 +6,13 @@ const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
-const GATEWAY_ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
+const gatewayAccountId = '42'
+const userExternalId = 'userExternalId'
+const gatewayAccountExternalId = 'a-valid-external-id'
+const vatNumberUrl = `/account/${gatewayAccountExternalId}/vat-number`
+const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
-function setupStubs (userExternalId, gatewayAccountId, vatNumber, type = 'live', paymentProvider = 'stripe') {
+function setupStubs (vatNumber, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
   if (Array.isArray(vatNumber)) {
@@ -22,7 +26,7 @@ function setupStubs (userExternalId, gatewayAccountId, vatNumber, type = 'live',
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type, paymentProvider }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: gatewayAccountExternalId, type, paymentProvider }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     transactionSummaryStubs.getDashboardStatistics()
@@ -30,17 +34,14 @@ function setupStubs (userExternalId, gatewayAccountId, vatNumber, type = 'live',
 }
 
 describe('Stripe setup: VAT number page', () => {
-  const gatewayAccountId = '42'
-  const userExternalId = 'userExternalId'
-
   describe('Card gateway account', () => {
     describe('when user is admin, account is Stripe and "VAT number" is not already submitted', () => {
       beforeEach(() => {
-        setupStubs(userExternalId, gatewayAccountId, false)
+        setupStubs(false)
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
 
-        cy.visit('/account/a-valid-external-id/vat-number')
+        cy.visit(vatNumberUrl)
       })
 
       it('should display page correctly', () => {
@@ -89,22 +90,22 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should redirect to Dashboard with an error message when displaying the page', () => {
-        setupStubs(userExternalId, gatewayAccountId, true)
+        setupStubs(true)
 
-        cy.visit('/account/a-valid-external-id/vat-number')
+        cy.visit(vatNumberUrl)
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
-          expect(location.pathname).to.eq('/')
+          expect(location.pathname).to.eq(dashboardUrl)
         })
         cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your VAT number.')
         cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
       })
 
       it('should redirect to Dashboard with an error message when submitting the form', () => {
-        setupStubs(userExternalId, gatewayAccountId, [false, true])
+        setupStubs([false, true])
 
-        cy.visit('/account/a-valid-external-id/vat-number')
+        cy.visit(vatNumberUrl)
 
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
 
@@ -112,7 +113,7 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
-          expect(location.pathname).to.eq('/')
+          expect(location.pathname).to.eq(dashboardUrl)
         })
         cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your VAT number.')
         cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
@@ -125,9 +126,9 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should show a 404 error when gateway account is not Stripe', () => {
-        setupStubs(userExternalId, gatewayAccountId, false, 'live', 'sandbox')
+        setupStubs(false, 'live', 'sandbox')
 
-        cy.visit('/account/a-valid-external-id/vat-number', {
+        cy.visit(vatNumberUrl, {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -140,9 +141,9 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should show a 404 error when gateway account is not live', () => {
-        setupStubs(userExternalId, gatewayAccountId, false, 'test', 'stripe')
+        setupStubs(false, 'test', 'stripe')
 
-        cy.visit('/account/a-valid-external-id/vat-number', {
+        cy.visit(vatNumberUrl, {
           failOnStatusCode: false
         })
         cy.get('h1').should('contain', 'Page not found')
@@ -157,11 +158,11 @@ describe('Stripe setup: VAT number page', () => {
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
           userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-          gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID, type: 'live', paymentProvider: 'stripe' }),
+          gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe' }),
           stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true })
         ])
 
-        cy.visit('/account/a-valid-external-id/vat-number', { failOnStatusCode: false })
+        cy.visit(vatNumberUrl, { failOnStatusCode: false })
         cy.get('h1').should('contain', 'An error occurred:')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })

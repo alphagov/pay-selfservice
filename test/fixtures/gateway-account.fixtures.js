@@ -17,7 +17,7 @@ function validCredentials (opts = {}) {
 
 function validNotificationCredentials (opts = {}) {
   return {
-    userName: opts.username || 'username',
+    userName: opts.username || 'username'
   }
 }
 
@@ -156,7 +156,6 @@ function validCreateGatewayAccountRequest (opts = {}) {
   }
   return data
 }
-
 
 module.exports = {
   validGatewayAccountPatchRequest,

@@ -14,7 +14,7 @@ function getUserWithServiceRoleStubOpts (userExternalId, email, serviceExternalI
   }
 }
 
-function builGetUserSuccessStub (userExternalId, fixtureOpts) {
+function buildGetUserSuccessStub (userExternalId, fixtureOpts) {
   const path = '/v1/api/users/' + userExternalId
   return stubBuilder('GET', path, 200, {
     response: userFixtures.validUserResponse(fixtureOpts)
@@ -23,7 +23,7 @@ function builGetUserSuccessStub (userExternalId, fixtureOpts) {
 
 function getUserSuccess (opts) {
   const fixtureOpts = buildUserWithServiceRoleOpts(opts)
-  return builGetUserSuccessStub(opts.userExternalId, fixtureOpts)
+  return buildGetUserSuccessStub(opts.userExternalId, fixtureOpts)
 }
 
 function getUsersSuccess () {
@@ -41,7 +41,7 @@ function getUserSuccessWithServiceRole (opts) {
     external_id: opts.userExternalId,
     service_roles: [opts.serviceRole]
   }
-  return builGetUserSuccessStub(opts.userExternalId, fixtureOpts)
+  return buildGetUserSuccessStub(opts.userExternalId, fixtureOpts)
 }
 
 function getUserWithNoPermissions (userExternalId, gatewayAccountId) {
@@ -211,6 +211,7 @@ function buildUserWithServiceRoleOpts (opts) {
 }
 
 module.exports = {
+  buildGetUserSuccessStub,
   getUserSuccess,
   getUsersSuccess,
   getUserWithNoPermissions,
