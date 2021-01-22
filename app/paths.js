@@ -23,6 +23,9 @@ module.exports = {
       index: '/credentials',
       edit: '/credentials/edit'
     },
+    dashboard: {
+      index: '/dashboard'
+    },
     digitalWallet: {
       applePay: '/digital-wallet/apple-pay',
       googlePay: '/digital-wallet/google-pay'
