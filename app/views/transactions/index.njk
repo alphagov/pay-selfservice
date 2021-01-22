@@ -59,7 +59,7 @@
     {{ filtersDescription | safe }}
   </h3>
 
-  {% if permissions.transactions_download_read %}
+  {% if allServiceTransactions or permissions.transactions_download_read %}
 
     {% if (hasResults) %}
       {% if (showCsvDownload) %}
