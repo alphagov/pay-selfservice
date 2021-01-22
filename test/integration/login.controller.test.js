@@ -27,6 +27,7 @@ const expect = chai.expect
 
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const ACCOUNT_ID = '182364'
+const ACCOUNT_EXTERNAL_ID = 'an-external-id'
 const USER_RESOURCE = '/v1/api/users'
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts'
 
@@ -39,7 +40,10 @@ describe('The logged in endpoint', function () {
 
     nock(CONNECTOR_URL)
       .get(`/v1/frontend/accounts/${ACCOUNT_ID}`)
-      .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: ACCOUNT_ID }))
+      .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({
+        gateway_account_id: ACCOUNT_ID,
+        external_id: ACCOUNT_EXTERNAL_ID
+      }))
     nock(CONNECTOR_URL)
       .get(`/v1/api/accounts/${ACCOUNT_ID}/stripe-setup`)
       .reply(200, buildGetStripeAccountSetupResponse({
@@ -65,10 +69,8 @@ describe('The logged in endpoint', function () {
 
     request(app)
       .get('/')
-      .expect(200)
-      .expect(function (res) {
-        assert(res.text.indexOf('Dashboard') !== -1)
-      })
+      .expect(303)
+      .expect('Location', `/account/${ACCOUNT_EXTERNAL_ID}/dashboard`)
       .end(done)
   })
 

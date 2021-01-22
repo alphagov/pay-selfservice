@@ -2,6 +2,7 @@
 
 const { renderErrorView } = require('../../utils/response')
 const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 module.exports = function checkBankDetailsNotSubmitted (req, res, next) {
   if (!req.account) {
@@ -15,7 +16,7 @@ module.exports = function checkBankDetailsNotSubmitted (req, res, next) {
   } else {
     if (stripeAccountSetup.bankAccount) {
       req.flash('genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
-      res.redirect(303, paths.dashboard.index)
+      res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
     } else {
       next()
     }

@@ -1,8 +1,9 @@
 'use strict'
 
 const sinon = require('sinon')
-const paths = require('../../paths')
 const checkBankDetailsNotSubmitted = require('./check-bank-details-not-submitted')
+
+const accountExternalId = 'an-external-id'
 
 describe('Check bank details not submitted middleware', () => {
   let req
@@ -14,6 +15,7 @@ describe('Check bank details not submitted middleware', () => {
       correlationId: 'correlation-id',
       account: {
         gateway_account_id: '1',
+        external_id: accountExternalId,
         connectorGatewayAccountStripeProgress: {}
       },
       flash: sinon.spy()
@@ -42,7 +44,7 @@ describe('Check bank details not submitted middleware', () => {
     await checkBankDetailsNotSubmitted(req, res, next)
     sinon.assert.notCalled(next)
     sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
-    sinon.assert.calledWith(res.redirect, 303, paths.dashboard.index)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/dashboard`)
   })
 
   it('should render an error page when req.account is undefined', async () => {

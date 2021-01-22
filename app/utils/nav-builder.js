@@ -26,12 +26,11 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
   navigationItems.push({
     id: 'navigation-menu-home',
     name: 'Dashboard',
-    url: paths.dashboard.index,
-    current: currentPath === paths.dashboard.index,
+    url: formatAccountPathsFor(paths.account.dashboard.index, account.external_id),
+    current: pathLookup(currentPath, paths.account.dashboard.index),
     permissions: true
   })
   if (type === 'card') {
-    const paymentLinksStartUrl = formatAccountPathsFor(paths.account.paymentLinks.start, account.external_id)
     navigationItems.push({
       id: 'navigation-menu-transactions',
       name: 'Transactions',
@@ -42,8 +41,8 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     navigationItems.push({
       id: 'navigation-menu-payment-links',
       name: 'Payment links',
-      url: paymentLinksStartUrl,
-      current: pathLookup(currentPath, paymentLinksStartUrl),
+      url: formatAccountPathsFor(paths.account.paymentLinks.start, account.external_id),
+      current: pathLookup(currentPath, paths.account.paymentLinks.start),
       permissions: permissions.tokens_create
     })
   }

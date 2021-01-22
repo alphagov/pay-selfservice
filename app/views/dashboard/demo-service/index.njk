@@ -9,8 +9,9 @@
   {{
     govukBackLink({
       text: "Back to dashboard",
-      href: routes.dashboard.index })
-    }}
+      href: formatAccountPathsFor(routes.account.dashboard.index,  currentGatewayAccount.external_id)
+    })
+  }}
 {% endblock %}
 
 {% block mainContent %}

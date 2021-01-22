@@ -1,5 +1,4 @@
 const sinon = require('sinon')
-const { expect } = require('chai')
 
 const { ConnectorClient } = require('../../../../app/services/clients/connector.client')
 const User = require('../../../../app/models/User.class')
@@ -26,7 +25,6 @@ describe('Dashboard redirect controller', () => {
     req = {
       correlationId: 'correlationId',
       params: { externalServiceId },
-      gateway_account: { currentGatewayAccountId: '1' },
       user: user
     }
 
@@ -36,12 +34,14 @@ describe('Dashboard redirect controller', () => {
   })
   afterEach(() => accountSpy.restore())
 
-  it('should assign a new current gateway account the user has access to the service and there is only one live account', async () => {
+  it('should redirect to live account dashboard if the user has access to the service and there is only one live account', async () => {
     const gatewayAccountResponse = validGatewayAccountsResponse({
       accounts: [{
-        gateway_account_id: '2'
+        gateway_account_id: '2',
+        external_id: 'account-2'
       }, {
         gateway_account_id: '5',
+        external_id: 'account-5',
         payment_provider: 'stripe',
         type: 'live'
       }]
@@ -49,9 +49,8 @@ describe('Dashboard redirect controller', () => {
     accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => gatewayAccountResponse)
 
     await dashboardRedirectController(req, res)
-    expect(req.gateway_account.currentGatewayAccountId).to.be.equal('5')
     sinon.assert.calledWith(accountSpy, { gatewayAccountIds: ['2', '5'] })
-    sinon.assert.calledWith(res.redirect, 302, '/')
+    sinon.assert.calledWith(res.redirect, 302, `/account/account-5/dashboard`)
   })
 
   it('should not request gateway accounts if the user has no access to the service', async () => {
@@ -59,12 +58,11 @@ describe('Dashboard redirect controller', () => {
     accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts')
 
     await dashboardRedirectController(req, res)
-    expect(req.gateway_account.currentGatewayAccountId).to.be.equal('1')
     sinon.assert.neverCalledWith(accountSpy, { gatewayAccountIds: ['6', '10'] })
     sinon.assert.calledWith(res.redirect, 302, '/')
   })
 
-  it('should not set the session gateway account if the service has no live accounts', async () => {
+  it('should redirect to the index page if the service has no live accounts', async () => {
     const gatewayAccountResponse = validGatewayAccountsResponse({
       accounts: [{
         gateway_account_id: '2'
@@ -73,12 +71,11 @@ describe('Dashboard redirect controller', () => {
     accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => gatewayAccountResponse)
 
     await dashboardRedirectController(req, res)
-    expect(req.gateway_account.currentGatewayAccountId).to.be.equal('1')
     sinon.assert.calledWith(accountSpy, { gatewayAccountIds: ['2', '5'] })
     sinon.assert.calledWith(res.redirect, 302, '/')
   })
 
-  it('should not set the session gateway account if the service has multiple live accounts', async () => {
+  it('should redirect to the index page if the service has multiple live accounts', async () => {
     const gatewayAccountResponse = validGatewayAccountsResponse({
       accounts: [{
         gateway_account_id: '2',
@@ -91,7 +88,6 @@ describe('Dashboard redirect controller', () => {
     accountSpy = sinon.stub(ConnectorClient.prototype, 'getAccounts').callsFake(() => gatewayAccountResponse)
 
     await dashboardRedirectController(req, res)
-    expect(req.gateway_account.currentGatewayAccountId).to.be.equal('1')
     sinon.assert.calledWith(accountSpy, { gatewayAccountIds: ['2', '5'] })
     sinon.assert.calledWith(res.redirect, 302, '/')
   })
