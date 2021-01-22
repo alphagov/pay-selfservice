@@ -3,19 +3,13 @@
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
       <th class="govuk-table__header" scope="col" id="reference-header">Reference number</th>
-      {% if permissions.transactions_email_read %}
       <th class="govuk-table__header" scope="col" id="email-header">Email</th>
-      {% endif %}
-      {% if permissions.transactions_amount_read %}
       <th class="govuk-table__header" scope="col" id="amount-header">Amount</th>
         {% if isStripeAccount %}
         <th class="govuk-table__header" scope="col" id="amount-header">PSP Fee</th>
         <th class="govuk-table__header" scope="col" id="amount-header">Net</th>
         {% endif %}
-      {% endif %}
-      {% if permissions.transactions_card_type_read %}
       <th class="govuk-table__header" scope="col" id="brand-header">Card brand</th>
-      {% endif %}
       <th class="govuk-table__header" scope="col" id="state-header">State</th>
       <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="time-header">Date created</th>
     </tr>
@@ -28,28 +22,22 @@
           {{result.reference}}
         </a>
       </th>
-      {% if permissions.transactions_email_read %}
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email">{{result.email}}</td>
+      <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount">
+        {%- if result.total_amount and result.corporate_card_surcharge -%}
+          {{result.total_amount}}
+          <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
+        {%- else -%}
+          <span style="white-space: pre">{{result.amount}}</span>
+        {%- endif -%}
+      </td>
+      {% if isStripeAccount %}
+        <td data-cell-type="fee" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.fee}}</td>
+        <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
+          <span style="white-space: pre">{{result.net_amount or result.total_amount or result.amount}}</span>
+        </td>
       {% endif %}
-      {% if permissions.transactions_amount_read %}
-            <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount">
-                  {%- if result.total_amount and result.corporate_card_surcharge -%}
-                    {{result.total_amount}}
-                    <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
-                  {%- else -%}
-                    <span style="white-space: pre">{{result.amount}}</span>
-                  {%- endif -%}
-            </td>
-            {% if isStripeAccount %}
-              <td data-cell-type="fee" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.fee}}</td>
-              <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
-                <span style="white-space: pre">{{result.net_amount or result.total_amount or result.amount}}</span>
-              </td>
-            {% endif %}
-      {% endif %}
-      {% if permissions.transactions_card_type_read %}
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand">{{result.card_details.card_brand}}</td>
-      {% endif %}
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.state_friendly}}</td>
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time">{{result.created}}</td>
     </tr>

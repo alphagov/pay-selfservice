@@ -89,12 +89,6 @@ describe('The transaction list view', function () {
       'results': [
         buildTransaction(100, '£50.00', 'Declined', 'failed', 'Visa', 'example1@mail.fake')
       ],
-      permissions: {
-        'transactions_email_read': true,
-        'transactions_amount_read': true,
-        'transactions_card_type_read': true,
-        'transactions_download_read': true
-      },
       hasResults: true,
       total: 9999,
       showCsvDownload: true,
@@ -154,60 +148,6 @@ describe('The transaction list view', function () {
         .withTableDataAt(6, templateData.results[ix].created)
     })
     body.should.containSelector('p#csv-download').withExactText('Filter results to download a CSV of transactions')
-  })
-
-  it('should not render amount if no permission', function () {
-    const templateData = {
-      'results': [
-        buildTransaction(100, '£50.00', 'Success', 'success', 'Visa', 'example1@mail.fake'),
-        buildTransaction(101, '£20.00', 'Refund error', 'error', 'Mastercard', 'example2@mail.fake')
-      ],
-      permissions: {
-        'transactions_email_read': true,
-        'transactions_card_type_read': true
-      }
-    }
-
-    const body = renderTemplate('transactions/index', templateData)
-
-    body.should.not.containSelector('#transactions-list .amount')
-    body.should.not.containSelector('#amount-header')
-  })
-
-  it('should not render email if no permission', function () {
-    const templateData = {
-      'results': [
-        buildTransaction(100, '£50.00', 'Timed out', 'failed', 'Visa', 'example1@mail.fake'),
-        buildTransaction(101, '£20.00', 'Success', 'success', 'Mastercard', 'example2@mail.fake')
-      ],
-      permissions: {
-        'transactions_amount_read': true,
-        'transactions_card_type_read': true
-      }
-    }
-
-    const body = renderTemplate('transactions/index', templateData)
-
-    body.should.not.containSelector('#transactions-list .email')
-    body.should.not.containSelector('#email-header')
-  })
-
-  it('should not render card brand if no permission', function () {
-    const templateData = {
-      'results': [
-        buildTransaction(100, '£50.00', 'Success', 'success', 'Visa', 'example1@mail.fake'),
-        buildTransaction(101, '£20.00', 'Success', 'success', 'Mastercard', 'example2@mail.fake')
-      ],
-      permissions: {
-        'transactions_email_read': true,
-        'transactions_amount_read': true
-      }
-    }
-
-    const body = renderTemplate('transactions/index', templateData)
-
-    body.should.not.containSelector('#transactions-list .brand')
-    body.should.not.containSelector('#brand-header')
   })
 
   it('should render all transactions with corporate surcharge', function () {
