@@ -51,6 +51,8 @@ function enforceUserFirstFactor (req, res, next) {
 
   if (!hasUser) return redirectToLogin(req, res)
   if (disabled === true) return noAccess(req, res, next)
+
+  return next()
 }
 
 function noAccess (req, res, next) {

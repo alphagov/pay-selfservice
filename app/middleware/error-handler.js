@@ -60,6 +60,11 @@ module.exports = function errorHandler (err, req, res, next) {
     return res.render('404')
   }
 
+  if (err && err.code === 'EBADCSRFTOKEN') {
+    logger.warn('CSRF secret provided is invalid')
+    return renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team', 400)
+  }
+
   logContext.stack = err.stack
   logger.error(`Unhandled error caught: ${err.message}`, logContext)
   renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team.', 500)
