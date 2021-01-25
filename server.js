@@ -8,6 +8,7 @@ const nunjucks = require('nunjucks')
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const csrf = require('csurf')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
 const staticify = require('staticify')('./public')
@@ -37,6 +38,19 @@ function warnIfAnalyticsNotSet () {
   if (ANALYTICS_TRACKING_ID === '') {
     logger.warn('Google Analytics Tracking ID [ANALYTICS_TRACKING_ID] is not set')
   }
+}
+
+function addCsrfMiddleware (app) {
+  app.use(csrf({
+    value: function (req) {
+      return req.body && req.body.csrfToken
+    }
+  }))
+  // sets the csrf token on response local variable scoped to request, so token is available to the views
+  app.use(function (req, res, next) {
+    res.locals.csrf = req.csrfToken()
+    next()
+  })
 }
 
 function initialiseGlobalMiddleware (app) {
@@ -69,6 +83,8 @@ function initialiseGlobalMiddleware (app) {
 
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
+
+  addCsrfMiddleware(app)
 }
 
 function initialiseTemplateEngine (app) {
