@@ -20,11 +20,16 @@ function stubBuilder (method, path, responseCode, additionalParams = {}) {
     response.body = additionalParams.response
   }
 
+  let predicate
+  if (!additionalParams.hasOwnProperty('deepMatchRequest') || additionalParams.deepMatchRequest) {
+    predicate = { deepEquals: request }
+  } else {
+    predicate = { equals: request }
+  }
+
   const stub = {
     name: `${method} ${path} ${responseCode}`,
-    predicates: [{
-      deepEquals: request
-    }],
+    predicates: [predicate],
     responses: [{
       is: response
     }]
