@@ -26,7 +26,8 @@ const loggingMiddleware = require('./app/middleware/logging-middleware')
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 const formatPSPname = require('./app/utils/format-PSP-name')
 const formatAccountPathsFor = require('./app/utils/format-account-paths-for')
-
+const healthcheckController = require('./app/controllers/healthcheck.controller')
+const { healthcheck } = require('./app/paths.js')
 // Global constants
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
@@ -75,6 +76,7 @@ function initialiseGlobalMiddleware (app) {
     next()
   })
 
+  app.use(healthcheck.path, healthcheckController.healthcheck)
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], function (req, res, next) {
     // flash requires sessions which also excludes healthcheck endpoint (see below)
     res.locals.flash = req.flash()

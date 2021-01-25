@@ -40,7 +40,6 @@ const transactionDetailRedirectController = require('./controllers/transactions/
 const credentialsController = require('./controllers/credentials.controller')
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
-const healthcheckController = require('./controllers/healthcheck.controller')
 const apiKeysController = require('./controllers/api-keys')
 const digitalWalletController = require('./controllers/digital-wallet')
 const emailNotificationsController = require('./controllers/email-notifications/email-notifications.controller')
@@ -85,7 +84,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 
 // Assignments
 const {
-  healthcheck, registerUser, user, selfCreateService, transactions,
+  registerUser, user, selfCreateService, transactions,
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   requestToGoLive, policyPages,
   allServiceTransactions, payouts, redirects, index
@@ -127,9 +126,6 @@ module.exports.bind = function (app) {
   // ----------------------
   // UNAUTHENTICATED ROUTES
   // ----------------------
-
-  // HEALTHCHECK
-  app.get(healthcheck.path, healthcheckController.healthcheck)
 
   // STATIC
   app.all(staticPaths.naxsiError, staticController.naxsiError)
