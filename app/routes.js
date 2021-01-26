@@ -218,8 +218,8 @@ module.exports.bind = function (app) {
   app.get(policyPages.download, policyDocumentsController.download)
 
   // Feedback
-  app.get(paths.feedback, hasServices, resolveService, feedbackController.getIndex)
-  app.post(paths.feedback, hasServices, resolveService, feedbackController.postIndex)
+  app.get(paths.feedback, hasServices, resolveService, getAccount, feedbackController.getIndex)
+  app.post(paths.feedback, hasServices, resolveService, getAccount, feedbackController.postIndex)
 
   // User profile
   app.get(user.profile.index, enforceUserAuthenticated, serviceUsersController.profile)
