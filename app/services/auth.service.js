@@ -17,7 +17,6 @@ const logger = require('../utils/logger')(__filename)
 const sessionValidator = require('./session-validator.js')
 const paths = require('../paths.js')
 const userService = require('./user.service.js')
-const csrf = require('../middleware/csrf')
 const CORRELATION_HEADER = require('../utils/correlation-header.js').CORRELATION_HEADER
 
 // Exports
@@ -52,7 +51,8 @@ function enforceUserFirstFactor (req, res, next) {
 
   if (!hasUser) return redirectToLogin(req, res)
   if (disabled === true) return noAccess(req, res, next)
-  csrf.ensureSessionHasCsrfSecret(req, res, next)
+
+  return next()
 }
 
 function noAccess (req, res, next) {

@@ -8,6 +8,7 @@ const nunjucks = require('nunjucks')
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const csrf = require('csurf')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
 const staticify = require('staticify')('./public')
@@ -25,7 +26,8 @@ const loggingMiddleware = require('./app/middleware/logging-middleware')
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 const formatPSPname = require('./app/utils/format-PSP-name')
 const formatAccountPathsFor = require('./app/utils/format-account-paths-for')
-
+const healthcheckController = require('./app/controllers/healthcheck.controller')
+const { healthcheck } = require('./app/paths.js')
 // Global constants
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
@@ -37,6 +39,19 @@ function warnIfAnalyticsNotSet () {
   if (ANALYTICS_TRACKING_ID === '') {
     logger.warn('Google Analytics Tracking ID [ANALYTICS_TRACKING_ID] is not set')
   }
+}
+
+function addCsrfMiddleware (app) {
+  app.use(csrf({
+    value: function (req) {
+      return req.body && req.body.csrfToken
+    }
+  }))
+  // sets the csrf token on response local variable scoped to request, so token is available to the views
+  app.use(function (req, res, next) {
+    res.locals.csrf = req.csrfToken()
+    next()
+  })
 }
 
 function initialiseGlobalMiddleware (app) {
@@ -61,6 +76,7 @@ function initialiseGlobalMiddleware (app) {
     next()
   })
 
+  app.use(healthcheck.path, healthcheckController.healthcheck)
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], function (req, res, next) {
     // flash requires sessions which also excludes healthcheck endpoint (see below)
     res.locals.flash = req.flash()
@@ -69,6 +85,8 @@ function initialiseGlobalMiddleware (app) {
 
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
+
+  addCsrfMiddleware(app)
 }
 
 function initialiseTemplateEngine (app) {

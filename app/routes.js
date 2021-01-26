@@ -14,7 +14,6 @@ const getServiceAndAccount = require('./middleware/get-service-and-gateway-accou
 
 // Middleware
 const { lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
-const { validateAndRefreshCsrf, ensureSessionHasCsrfSecret } = require('./middleware/csrf')
 const getAccount = require('./middleware/get-gateway-account')
 const hasServices = require('./middleware/has-services')
 const resolveService = require('./middleware/resolve-service')
@@ -41,7 +40,6 @@ const transactionDetailRedirectController = require('./controllers/transactions/
 const credentialsController = require('./controllers/credentials.controller')
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
-const healthcheckController = require('./controllers/healthcheck.controller')
 const apiKeysController = require('./controllers/api-keys')
 const digitalWalletController = require('./controllers/digital-wallet')
 const emailNotificationsController = require('./controllers/email-notifications/email-notifications.controller')
@@ -86,7 +84,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 
 // Assignments
 const {
-  healthcheck, registerUser, user, selfCreateService, transactions,
+  registerUser, user, selfCreateService, transactions,
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   requestToGoLive, policyPages,
   allServiceTransactions, payouts, redirects, index
@@ -116,7 +114,7 @@ module.exports.paths = paths
 
 module.exports.bind = function (app) {
   const account = new Router({ mergeParams: true })
-  account.use(getServiceAndAccount, userIsAuthorised, ensureSessionHasCsrfSecret, validateAndRefreshCsrf)
+  account.use(getServiceAndAccount, userIsAuthorised)
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 
@@ -129,53 +127,50 @@ module.exports.bind = function (app) {
   // UNAUTHENTICATED ROUTES
   // ----------------------
 
-  // HEALTHCHECK
-  app.get(healthcheck.path, healthcheckController.healthcheck)
-
   // STATIC
   app.all(staticPaths.naxsiError, staticController.naxsiError)
 
   // VALIDATE INVITE
-  app.get(inviteValidation.validateInvite, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, inviteValidationController.validateInvite)
+  app.get(inviteValidation.validateInvite, inviteValidationController.validateInvite)
 
   // REGISTER USER
-  app.get(registerUser.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.showRegistration)
-  app.get(registerUser.subscribeService, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.subscribeService)
-  app.post(registerUser.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.submitRegistration)
-  app.get(registerUser.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.showOtpVerify)
-  app.post(registerUser.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.submitOtpVerify)
-  app.get(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.showReVerifyPhone)
-  app.post(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerController.submitReVerifyPhone)
-  app.get(registerUser.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginController.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardController.dashboardActivity)
+  app.get(registerUser.registration, registerController.showRegistration)
+  app.get(registerUser.subscribeService, registerController.subscribeService)
+  app.post(registerUser.registration, registerController.submitRegistration)
+  app.get(registerUser.otpVerify, registerController.showOtpVerify)
+  app.post(registerUser.otpVerify, registerController.submitOtpVerify)
+  app.get(registerUser.reVerifyPhone, registerController.showReVerifyPhone)
+  app.post(registerUser.reVerifyPhone, registerController.submitReVerifyPhone)
+  app.get(registerUser.logUserIn, loginController.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardController.dashboardActivity)
 
   // LOGIN
-  app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginController.loginGet)
-  app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginController.loginUser, hasServices, resolveService, getAccount, loginController.postLogin)
+  app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
+  app.post(user.logIn, trimUsername, loginController.loginUser, hasServices, resolveService, getAccount, loginController.postLogin)
   app.get(user.noAccess, loginController.noAccess)
   app.get(user.logOut, loginController.logout)
-  app.get(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginController.sendAgainGet)
-  app.post(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginController.sendAgainPost)
-  app.get(user.otpLogIn, enforceUserFirstFactor, validateAndRefreshCsrf, loginController.otpLogin)
-  app.post(user.otpLogIn, validateAndRefreshCsrf, loginController.loginUserOTP, loginController.afterOTPLogin)
+  app.get(user.otpSendAgain, enforceUserFirstFactor, loginController.sendAgainGet)
+  app.post(user.otpSendAgain, enforceUserFirstFactor, loginController.sendAgainPost)
+  app.get(user.otpLogIn, enforceUserFirstFactor, loginController.otpLogin)
+  app.post(user.otpLogIn, loginController.loginUserOTP, loginController.afterOTPLogin)
 
   // FORGOTTEN PASSWORD
-  app.get(user.forgottenPassword, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPasswordController.emailGet)
-  app.post(user.forgottenPassword, trimUsername, validateAndRefreshCsrf, forgotPasswordController.emailPost)
+  app.get(user.forgottenPassword, forgotPasswordController.emailGet)
+  app.post(user.forgottenPassword, trimUsername, forgotPasswordController.emailPost)
   app.get(user.passwordRequested, forgotPasswordController.passwordRequested)
-  app.get(user.forgottenPasswordReset, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPasswordController.newPasswordGet)
-  app.post(user.forgottenPasswordReset, validateAndRefreshCsrf, forgotPasswordController.newPasswordPost)
+  app.get(user.forgottenPasswordReset, forgotPasswordController.newPasswordGet)
+  app.post(user.forgottenPasswordReset, forgotPasswordController.newPasswordPost)
 
   // SELF CREATE SERVICE
-  app.get(selfCreateService.register, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceController.showRegistration)
-  app.post(selfCreateService.register, trimUsername, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceController.submitRegistration)
+  app.get(selfCreateService.register, selfCreateServiceController.showRegistration)
+  app.post(selfCreateService.register, trimUsername, selfCreateServiceController.submitRegistration)
   app.get(selfCreateService.confirm, selfCreateServiceController.showConfirmation)
-  app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceController.showOtpVerify)
-  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceController.createPopulatedService)
-  app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceController.showOtpResend)
-  app.post(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceController.submitOtpResend)
-  app.get(selfCreateService.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginController.loginAfterRegister, enforceUserAuthenticated, getAccount, selfCreateServiceController.loggedIn)
-  app.get(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceController.showNameYourService)
-  app.post(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceController.submitYourServiceName)
+  app.get(selfCreateService.otpVerify, selfCreateServiceController.showOtpVerify)
+  app.post(selfCreateService.otpVerify, selfCreateServiceController.createPopulatedService)
+  app.get(selfCreateService.otpResend, selfCreateServiceController.showOtpResend)
+  app.post(selfCreateService.otpResend, selfCreateServiceController.submitOtpResend)
+  app.get(selfCreateService.logUserIn, loginController.loginAfterRegister, enforceUserAuthenticated, getAccount, selfCreateServiceController.loggedIn)
+  app.get(selfCreateService.serviceNaming, enforceUserAuthenticated, hasServices, getAccount, selfCreateServiceController.showNameYourService)
+  app.post(selfCreateService.serviceNaming, enforceUserAuthenticated, hasServices, getAccount, selfCreateServiceController.submitYourServiceName)
 
   // ----------------------
   // AUTHENTICATED ROUTES
@@ -196,11 +191,11 @@ module.exports.bind = function (app) {
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
-  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
+  app.use(authenticatedPaths, enforceUserAuthenticated) // Enforce authentication on all get requests
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
   // Site index - redirect to dashboard for last visited account
-  app.get(index, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardController.redirectToDashboard)
+  app.get(index, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardController.redirectToDashboard)
 
   // -------------------------
   // OUTSIDE OF SERVICE ROUTES
