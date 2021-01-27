@@ -19,7 +19,6 @@ const hasServices = require('./middleware/has-services')
 const resolveService = require('./middleware/resolve-service')
 const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
-const paymentMethodIsCard = require('./middleware/payment-method-card')
 const correlationIdMiddleware = require('./middleware/correlation-id')
 const getRequestContext = require('./middleware/get-request-context').middleware
 const restrictToSandbox = require('./middleware/restrict-to-sandbox')
@@ -268,33 +267,33 @@ module.exports.bind = function (app) {
   account.get(dashboard.index, dashboardController.dashboardActivity)
 
   // Transactions
-  app.get(transactions.index, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListController)
-  app.get(transactions.download, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadController)
-  app.get(transactions.detail, permission('transactions-details:read'), resolveService, getAccount, paymentMethodIsCard, transactionDetailController)
-  app.post(transactions.refund, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
+  app.get(transactions.index, permission('transactions:read'), getAccount, transactionsListController)
+  app.get(transactions.download, permission('transactions-download:read'), getAccount, transactionsDownloadController)
+  app.get(transactions.detail, permission('transactions-details:read'), resolveService, getAccount, transactionDetailController)
+  app.post(transactions.refund, permission('refunds:create'), getAccount, transactionRefundController)
   app.get(transactions.redirectDetail, permission('transactions-details:read'), getAccount, transactionDetailRedirectController)
 
-  account.get(transactions.index, permission('transactions:read'), paymentMethodIsCard, transactionsListController)
-  account.get(transactions.download, permission('transactions-download:read'), paymentMethodIsCard, transactionsDownloadController)
-  account.get(transactions.detail, permission('transactions-details:read'), paymentMethodIsCard, transactionDetailController)
-  account.post(transactions.refund, permission('refunds:create'), paymentMethodIsCard, transactionRefundController)
+  account.get(transactions.index, permission('transactions:read'), transactionsListController)
+  account.get(transactions.download, permission('transactions-download:read'), transactionsDownloadController)
+  account.get(transactions.detail, permission('transactions-details:read'), transactionDetailController)
+  account.post(transactions.refund, permission('refunds:create'), transactionRefundController)
   account.get(transactions.redirectDetail, permission('transactions-details:read'), transactionDetailRedirectController)
 
   // Settings
   account.get(settings.index, permission('transactions-details:read'), settingsController.index)
 
   // Your PSP
-  account.get(yourPsp.index, permission('gateway-credentials:read'), paymentMethodIsCard, yourPspController.getIndex)
-  account.post(yourPsp.worldpay3dsFlex, permission('toggle-3ds:update'), paymentMethodIsCard, yourPspController.postToggleWorldpay3dsFlex)
-  account.get(yourPsp.flex, permission('gateway-credentials:update'), paymentMethodIsCard, yourPspController.getFlex)
-  account.post(yourPsp.flex, permission('gateway-credentials:update'), paymentMethodIsCard, yourPspController.postFlex)
+  account.get(yourPsp.index, permission('gateway-credentials:read'), yourPspController.getIndex)
+  account.post(yourPsp.worldpay3dsFlex, permission('toggle-3ds:update'), yourPspController.postToggleWorldpay3dsFlex)
+  account.get(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.getFlex)
+  account.post(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.postFlex)
 
   // Credentials
-  account.get(credentials.index, permission('gateway-credentials:read'), paymentMethodIsCard, credentialsController.index)
-  account.get(credentials.edit, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.editCredentials)
-  account.post(credentials.index, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.update)
-  account.get(notificationCredentials.edit, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.editNotificationCredentials)
-  account.post(notificationCredentials.update, permission('gateway-credentials:update'), paymentMethodIsCard, credentialsController.updateNotificationCredentials)
+  account.get(credentials.index, permission('gateway-credentials:read'), credentialsController.index)
+  account.get(credentials.edit, permission('gateway-credentials:update'), credentialsController.editCredentials)
+  account.post(credentials.index, permission('gateway-credentials:update'), credentialsController.update)
+  account.get(notificationCredentials.edit, permission('gateway-credentials:update'), credentialsController.editNotificationCredentials)
+  account.post(notificationCredentials.update, permission('gateway-credentials:update'), credentialsController.updateNotificationCredentials)
 
   // API keys
   account.get(apiKeys.index, permission('tokens-active:read'), apiKeysController.getIndex)
@@ -309,35 +308,35 @@ module.exports.bind = function (app) {
   account.post(paymentTypes.index, permission('payment-types:update'), paymentTypesController.postIndex)
 
   // Digital wallet
-  account.get(digitalWallet.applePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.getApplePay)
-  account.post(digitalWallet.applePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.postApplePay)
-  account.get(digitalWallet.googlePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.getGooglePay)
-  account.post(digitalWallet.googlePay, permission('payment-types:update'), paymentMethodIsCard, digitalWalletController.postGooglePay)
+  account.get(digitalWallet.applePay, permission('payment-types:update'), digitalWalletController.getApplePay)
+  account.post(digitalWallet.applePay, permission('payment-types:update'), digitalWalletController.postApplePay)
+  account.get(digitalWallet.googlePay, permission('payment-types:update'), digitalWalletController.getGooglePay)
+  account.post(digitalWallet.googlePay, permission('payment-types:update'), digitalWalletController.postGooglePay)
 
   // Email notifications
-  account.get(emailNotifications.index, permission('email-notification-template:read'), paymentMethodIsCard, emailNotificationsController.index)
-  account.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), paymentMethodIsCard, emailNotificationsController.indexRefundTabEnabled)
-  account.get(emailNotifications.edit, permission('email-notification-paragraph:update'), paymentMethodIsCard, emailNotificationsController.edit)
-  account.post(emailNotifications.confirm, permission('email-notification-paragraph:update'), paymentMethodIsCard, emailNotificationsController.confirm)
-  account.post(emailNotifications.update, permission('email-notification-paragraph:update'), paymentMethodIsCard, emailNotificationsController.update)
-  account.get(emailNotifications.collection, permission('email-notification-template:read'), paymentMethodIsCard, emailNotificationsController.collectionEmailIndex)
-  account.post(emailNotifications.collection, permission('email-notification-toggle:update'), paymentMethodIsCard, emailNotificationsController.collectionEmailUpdate)
-  account.get(emailNotifications.confirmation, permission('email-notification-template:read'), paymentMethodIsCard, emailNotificationsController.confirmationEmailIndex)
-  account.post(emailNotifications.confirmation, permission('email-notification-toggle:update'), paymentMethodIsCard, emailNotificationsController.confirmationEmailUpdate)
-  account.post(emailNotifications.off, permission('email-notification-toggle:update'), paymentMethodIsCard, emailNotificationsController.confirmationEmailOff)
-  account.post(emailNotifications.on, permission('email-notification-toggle:update'), paymentMethodIsCard, emailNotificationsController.confirmationEmailOn)
-  account.get(emailNotifications.refund, permission('email-notification-template:read'), paymentMethodIsCard, emailNotificationsController.refundEmailIndex)
-  account.post(emailNotifications.refund, permission('email-notification-toggle:update'), paymentMethodIsCard, emailNotificationsController.refundEmailUpdate)
+  account.get(emailNotifications.index, permission('email-notification-template:read'), emailNotificationsController.index)
+  account.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), emailNotificationsController.indexRefundTabEnabled)
+  account.get(emailNotifications.edit, permission('email-notification-paragraph:update'), emailNotificationsController.edit)
+  account.post(emailNotifications.confirm, permission('email-notification-paragraph:update'), emailNotificationsController.confirm)
+  account.post(emailNotifications.update, permission('email-notification-paragraph:update'), emailNotificationsController.update)
+  account.get(emailNotifications.collection, permission('email-notification-template:read'), emailNotificationsController.collectionEmailIndex)
+  account.post(emailNotifications.collection, permission('email-notification-toggle:update'), emailNotificationsController.collectionEmailUpdate)
+  account.get(emailNotifications.confirmation, permission('email-notification-template:read'), emailNotificationsController.confirmationEmailIndex)
+  account.post(emailNotifications.confirmation, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailUpdate)
+  account.post(emailNotifications.off, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailOff)
+  account.post(emailNotifications.on, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailOn)
+  account.get(emailNotifications.refund, permission('email-notification-template:read'), emailNotificationsController.refundEmailIndex)
+  account.post(emailNotifications.refund, permission('email-notification-toggle:update'), emailNotificationsController.refundEmailUpdate)
 
   // 3D secure
-  account.get(toggle3ds.index, permission('toggle-3ds:read'), paymentMethodIsCard, toggle3dsController.get)
-  account.post(toggle3ds.index, permission('toggle-3ds:update'), paymentMethodIsCard, toggle3dsController.post)
+  account.get(toggle3ds.index, permission('toggle-3ds:read'), toggle3dsController.get)
+  account.post(toggle3ds.index, permission('toggle-3ds:update'), toggle3dsController.post)
 
   // MOTO mask card number & security code
-  account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:read'), paymentMethodIsCard, toggleMotoMaskCardNumber.get)
-  account.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:update'), paymentMethodIsCard, toggleMotoMaskCardNumber.post)
-  account.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:read'), paymentMethodIsCard, toggleMotoMaskSecurityCode.get)
-  account.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:update'), paymentMethodIsCard, toggleMotoMaskSecurityCode.post)
+  account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:read'), toggleMotoMaskCardNumber.get)
+  account.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:update'), toggleMotoMaskCardNumber.post)
+  account.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:read'), toggleMotoMaskSecurityCode.get)
+  account.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:update'), toggleMotoMaskSecurityCode.post)
 
   account.get(toggleBillingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
   account.post(toggleBillingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
@@ -415,15 +414,15 @@ module.exports.bind = function (app) {
   account.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
 
   // Stripe setup
-  account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.get)
-  account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.post)
-  account.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.get)
-  account.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.post)
-  account.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.get)
-  account.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.post)
-  account.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), paymentMethodIsCard, restrictToLiveStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.get)
-  account.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), paymentMethodIsCard, restrictToLiveStripeAccount, getStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.post)
-  account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), paymentMethodIsCard, restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
+  account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.get)
+  account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, getStripeAccount, stripeSetupBankDetailsController.post)
+  account.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.get)
+  account.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, getStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.post)
+  account.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.get)
+  account.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, getStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.post)
+  account.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.get)
+  account.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, getStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.post)
+  account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
 
   app.use(paths.account.root, account)
 
