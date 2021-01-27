@@ -14,7 +14,7 @@
       </div>
     {% endif %}
 
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-3 service-count">
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6 service-count">
       {% if services_singular %}
         You have {{services.length}} service
       {% else %}
@@ -23,9 +23,11 @@
     </h1>
 
     <p class="govuk-body">
-      <a href="{{routes.serviceSwitcher.create}}" class="govuk-link govuk-link--no-visited-state create-service">
-        Add a new service
-      </a>
+        {{ govukButton({
+          classes: "govuk-button--secondary",
+          text: "Add a new service",
+          href: routes.serviceSwitcher.create
+        }) }}
     </p>
 
     {% if has_live_account %}
