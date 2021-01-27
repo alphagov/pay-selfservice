@@ -44,6 +44,7 @@ function warnIfAnalyticsNotSet () {
 function addCsrfMiddleware (app) {
   app.use(csrf({
     value: function (req) {
+      // supports CSRF validation only through POST requests and ignores csrf tokens in headers/query strings.
       return req.body && req.body.csrfToken
     }
   }))
