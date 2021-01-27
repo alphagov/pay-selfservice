@@ -4,6 +4,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 
 const restrictToLiveStripeAccount = require('./restrict-to-live-stripe-account')
+const { NotFoundError } = require('../../errors')
 
 describe('Restrict to live stripe account middleware', () => {
   let res
@@ -33,17 +34,16 @@ describe('Restrict to live stripe account middleware', () => {
     expect(res.render.notCalled).to.be.true // eslint-disable-line
   })
 
-  it('should render 404 error when the gateway account is not in the request', () => {
+  it('should throw NotFoundError when the gateway account is not in the request', () => {
     const req = {}
 
     restrictToLiveStripeAccount(req, res, next)
 
-    expect(next.notCalled).to.be.true // eslint-disable-line
-    expect(res.status.calledWith(404))
-    expect(res.render.calledWith('404'))
+    const expectedError = sinon.match.instanceOf(NotFoundError)
+    sinon.assert.calledWith(next, expectedError)
   })
 
-  it('should render 404 error when the gateway account is not Stripe', () => {
+  it('should throw NotFoundError when the gateway account is not Stripe', () => {
     const req = {
       account: {
         type: 'live',
@@ -53,12 +53,11 @@ describe('Restrict to live stripe account middleware', () => {
 
     restrictToLiveStripeAccount(req, res, next)
 
-    expect(next.notCalled).to.be.true // eslint-disable-line
-    expect(res.status.calledWith(404))
-    expect(res.render.calledWith('404'))
+    const expectedError = sinon.match.instanceOf(NotFoundError)
+    sinon.assert.calledWith(next, expectedError)
   })
 
-  it('should render 404 error when the gateway account is not live', () => {
+  it('should throw NotFoundError when the gateway account is not live', () => {
     const req = {
       account: {
         type: 'test',
@@ -68,8 +67,7 @@ describe('Restrict to live stripe account middleware', () => {
 
     restrictToLiveStripeAccount(req, res, next)
 
-    expect(next.notCalled).to.be.true // eslint-disable-line
-    expect(res.status.calledWith(404))
-    expect(res.render.calledWith('404'))
+    const expectedError = sinon.match.instanceOf(NotFoundError)
+    sinon.assert.calledWith(next, expectedError)
   })
 })

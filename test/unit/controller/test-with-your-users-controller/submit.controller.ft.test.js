@@ -73,16 +73,12 @@ describe('test with your users - submit controller', () => {
       nock.cleanAll()
     })
 
-    it('should respond with a code of 403: forbidden', () => {
-      expect(response.statusCode).to.equal(403)
+    it('should respond with a code of 404', () => {
+      expect(response.statusCode).to.equal(404)
     })
 
     it('should show the error page', () => {
-      expect($('.page-title').text()).to.equal('An error occurred:')
-    })
-
-    it('should inform the user that this page is only available via sandbox', () => {
-      expect($('#errorMsg').text()).to.equal('This page is only available on Sandbox accounts')
+      expect($('.govuk-heading-l').text()).to.equal('Page not found')
     })
   })
   describe('when it is called with valid inputs', () => {
