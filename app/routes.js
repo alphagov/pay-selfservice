@@ -23,7 +23,6 @@ const correlationIdMiddleware = require('./middleware/correlation-id')
 const getRequestContext = require('./middleware/get-request-context').middleware
 const restrictToSandbox = require('./middleware/restrict-to-sandbox')
 const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-to-live-stripe-account')
-const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-bank-details-not-submitted')
 const checkResponsiblePersonNotSubmitted = require('./middleware/stripe-setup/check-responsible-person-not-submitted')
 const checkVatNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-not-submitted')
 const checkCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-company-number-not-submitted')
@@ -407,8 +406,8 @@ module.exports.bind = function (app) {
   account.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
 
   // Stripe setup
-  account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, stripeSetupBankDetailsController.get)
-  account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, stripeSetupBankDetailsController.post)
+  account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.get)
+  account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.post)
   account.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.get)
   account.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, checkResponsiblePersonNotSubmitted, stripeSetupResponsiblePersonController.post)
   account.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.get)

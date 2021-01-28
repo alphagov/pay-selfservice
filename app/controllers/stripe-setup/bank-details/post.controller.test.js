@@ -12,6 +12,7 @@ describe('Bank details post controller', () => {
 
   let req
   let res
+  let next
   let setStripeAccountSetupFlagMock
   let updateBankAccountMock
 
@@ -20,13 +21,15 @@ describe('Bank details post controller', () => {
       correlationId: 'correlation-id',
       account: {
         gateway_account_id: '1',
-        external_id: 'a-valid-external-id'
+        external_id: 'a-valid-external-id',
+        connectorGatewayAccountStripeProgress: {}
       },
       body: {
         'account-number': rawAccountNumber,
         'sort-code': rawSortCode,
         'answers-checked': true
-      }
+      },
+      flash: sinon.spy()
     }
     res = {
       setHeader: sinon.stub(),
@@ -39,6 +42,7 @@ describe('Bank details post controller', () => {
         }
       }
     }
+    next = sinon.spy()
   })
 
   it('should call stripe and connector and redirect to add psp account details redirect route', async () => {
@@ -71,6 +75,28 @@ describe('Bank details post controller', () => {
     sinon.assert.notCalled(res.redirect)
     sinon.assert.calledWith(res.status, 500)
     sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
+  })
+
+  it('should render error page when stripe setup is not available on request', async () => {
+    const controller = getControllerWithMocks()
+    req.account.connectorGatewayAccountStripeProgress = undefined
+
+    await controller(req, res, next)
+
+    sinon.assert.notCalled(res.redirect)
+    const expectedError = sinon.match.instanceOf(Error)
+      .and(sinon.match.has('message', 'Stripe setup progress is not available on request'))
+    sinon.assert.calledWith(next, expectedError)
+  })
+
+  it('should redirect to dashboard if bank details are already provided ', async () => {
+    const controller = getControllerWithMocks()
+    req.account.connectorGatewayAccountStripeProgress = { bankAccount: true }
+
+    await controller(req, res)
+
+    sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
   })
 
   it('should re-render the form page when Stripe returns "routing_number_invalid" error', async () => {
