@@ -23,7 +23,6 @@ const correlationIdMiddleware = require('./middleware/correlation-id')
 const getRequestContext = require('./middleware/get-request-context').middleware
 const restrictToSandbox = require('./middleware/restrict-to-sandbox')
 const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-to-live-stripe-account')
-const checkVatNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-not-submitted')
 const checkCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-company-number-not-submitted')
 
 // Controllers
@@ -409,8 +408,8 @@ module.exports.bind = function (app) {
   account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.post)
   account.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, stripeSetupResponsiblePersonController.get)
   account.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, stripeSetupResponsiblePersonController.post)
-  account.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.get)
-  account.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, checkVatNumberNotSubmitted, stripeSetupVatNumberController.post)
+  account.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupVatNumberController.get)
+  account.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupVatNumberController.post)
   account.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.get)
   account.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, checkCompanyNumberNotSubmitted, stripeSetupCompanyNumberController.post)
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
