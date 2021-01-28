@@ -29,7 +29,8 @@ module.exports = async (req, res) => {
       const stripeCompanyBody = {
         vat_id: sanitisedVatNumber
       }
-      await updateCompany(res.locals.stripeAccount.stripeAccountId, stripeCompanyBody)
+      const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
+      await updateCompany(stripeAccount.stripeAccountId, stripeCompanyBody)
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'vat_number', req.correlationId)
 
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))

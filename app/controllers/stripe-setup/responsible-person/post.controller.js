@@ -105,7 +105,8 @@ module.exports = async function (req, res) {
     return response(req, res, 'stripe-setup/responsible-person/index', pageData)
   } else {
     try {
-      const stripeAccountId = res.locals.stripeAccount.stripeAccountId
+      const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
+      const stripeAccountId = stripeAccount.stripeAccountId
       const personsResponse = await listPersons(stripeAccountId)
       const person = personsResponse.data.pop()
       await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))

@@ -16,7 +16,7 @@ const fieldValidationChecks = require('../../../browsered/field-validation-check
 const ACCOUNT_NUMBER_FIELD = 'account-number'
 const SORT_CODE_FIELD = 'sort-code'
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   const rawAccountNumber = lodash.get(req.body, ACCOUNT_NUMBER_FIELD, '')
   const rawSortCode = lodash.get(req.body, SORT_CODE_FIELD, '')
   const sanitisedAccountNumber = rawAccountNumber.replace(/\D/g, '')
@@ -31,44 +31,44 @@ module.exports = (req, res) => {
     })
   }
 
-  return updateBankAccount(res.locals.stripeAccount.stripeAccountId, {
-    bank_account_sort_code: sanitisedSortCode,
-    bank_account_number: sanitisedAccountNumber
-  })
-    .then(() => {
-      return connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account', req.correlationId)
+  try {
+    const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
+
+    await updateBankAccount(stripeAccount.stripeAccountId, {
+      bank_account_sort_code: sanitisedSortCode,
+      bank_account_number: sanitisedAccountNumber
     })
-    .then(() => {
-      return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
-    })
-    .catch(error => {
-      // check if it is Stripe related error
-      if (error.code) {
-        if (error.code === 'routing_number_invalid') {
-          // invalid sort code
-          return response(req, res, 'stripe-setup/bank-details/index', {
-            accountNumber: rawAccountNumber,
-            sortCode: rawSortCode,
-            errors: {
-              [SORT_CODE_FIELD]: fieldValidationChecks.validationErrors.invalidSortCode
-            }
-          })
-        }
-        if (error.code === 'account_number_invalid') {
-          // invalid account number
-          return response(req, res, 'stripe-setup/bank-details/index', {
-            accountNumber: rawAccountNumber,
-            sortCode: rawSortCode,
-            errors: {
-              [ACCOUNT_NUMBER_FIELD]: fieldValidationChecks.validationErrors.invalidBankAccountNumber
-            }
-          })
-        }
+
+    await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account', req.correlationId)
+    return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
+  } catch (error) {
+    // check if it is Stripe related error
+    if (error.code) {
+      if (error.code === 'routing_number_invalid') {
+        // invalid sort code
+        return response(req, res, 'stripe-setup/bank-details/index', {
+          accountNumber: rawAccountNumber,
+          sortCode: rawSortCode,
+          errors: {
+            [SORT_CODE_FIELD]: fieldValidationChecks.validationErrors.invalidSortCode
+          }
+        })
       }
-      // the error is generic
-      logger.error(`[${req.correlationId}] Error submitting bank details, error = `, error)
-      return renderErrorView(req, res, 'Please try again or contact support team')
-    })
+      if (error.code === 'account_number_invalid') {
+        // invalid account number
+        return response(req, res, 'stripe-setup/bank-details/index', {
+          accountNumber: rawAccountNumber,
+          sortCode: rawSortCode,
+          errors: {
+            [ACCOUNT_NUMBER_FIELD]: fieldValidationChecks.validationErrors.invalidBankAccountNumber
+          }
+        })
+      }
+    }
+    // the error is generic
+    logger.error(`[${req.correlationId}] Error submitting bank details, error = `, error)
+    return renderErrorView(req, res, 'Please try again or contact support team')
+  }
 }
 
 function validateBankDetails (accountNumber, sortCode) {
