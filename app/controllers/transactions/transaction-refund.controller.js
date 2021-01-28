@@ -4,6 +4,7 @@ const { refund } = require('../../services/transaction.service')
 const router = require('../../routes.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 const refundTransaction = async function refundTransaction (req, res, next) {
   try {
@@ -12,7 +13,7 @@ const refundTransaction = async function refundTransaction (req, res, next) {
     const userEmail = req.user.email
     const accountId = req.account.gateway_account_id
     const { chargeId } = req.params
-    const transactionDetailPath = router.generateRoute(router.paths.transactions.detail, { chargeId })
+    const transactionDetailPath = formatAccountPathsFor(router.paths.account.transactions.detail, req.account.external_id, chargeId)
 
     const isFullRefund = req.body['refund-type'] === 'full'
     const refundAmount = isFullRefund ? req.body['full-amount'] : req.body['refund-amount']

@@ -26,6 +26,33 @@ function getUserSuccess (opts) {
   return buildGetUserSuccessStub(opts.userExternalId, fixtureOpts)
 }
 
+function getUserSuccessWithMultipleServices (opts) {
+  const serviceRoles = [
+    {
+      service: {
+        external_id: opts.gatewayAccountExternalId1,
+        gateway_account_ids: [String(opts.gatewayAccountId1)]
+      }
+    },
+    {
+      service: {
+        external_id: opts.gatewayAccountExternalId2,
+        gateway_account_ids: [opts.gatewayAccountId2]
+      }
+    }
+  ]
+
+  const fixtureOpts = {
+    external_id: opts.userExternalId,
+    service_roles: serviceRoles,
+    username: opts.email,
+    email: opts.email,
+    telephone_number: opts.telephoneNumber
+  }
+
+  return buildGetUserSuccessStub(opts.userExternalId, fixtureOpts)
+}
+
 function getUsersSuccess () {
   const path = '/v1/api/users'
   return stubBuilder('GET', path, 200, {
@@ -171,6 +198,7 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
 }
 
 function buildServiceRoleOpts (opts) {
+
   const serviceRole = {
     service: {
       gateway_account_ids: [String(opts.gatewayAccountId)]
@@ -223,5 +251,6 @@ module.exports = {
   postUserAuthenticateSuccess,
   postUserAuthenticateInvalidPassword,
   postSecondFactorSuccess,
-  putUpdateServiceRoleSuccess
+  putUpdateServiceRoleSuccess,
+  getUserSuccessWithMultipleServices
 }

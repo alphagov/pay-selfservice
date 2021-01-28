@@ -10,7 +10,7 @@
 
 {% block beforeContent %}
   {{ super() }}
-  {% set defaultBackLink %}{{routes.transactions.index}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
+  {% set defaultBackLink %}{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
   {% set backLink = redirectBackLink if contextIsAllServiceTransactions else defaultBackLink %}
   {% set backLinkText = 'Transactions for all live services' if contextIsAllServiceTransactions else 'Transactions list' %}
   {{

@@ -34,8 +34,8 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     navigationItems.push({
       id: 'navigation-menu-transactions',
       name: 'Transactions',
-      url: paths.transactions.index,
-      current: pathLookup(currentPath, paths.transactions.index),
+      url: formatAccountPathsFor(paths.account.transactions.index, account.external_id),
+      current: pathLookup(currentPath, paths.account.transactions.index),
       permissions: permissions.transactions_read
     })
     navigationItems.push({

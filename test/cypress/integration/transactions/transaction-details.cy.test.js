@@ -8,6 +8,7 @@ const transactionStubs = require('../../stubs/transaction-stubs')
 const capitalise = string => string[0].toUpperCase() + string.slice(1)
 const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
 const defaultAmount = 1000
+const gatewayAccountExternalId = 'a-valid-external-id'
 const transactionId = 'adb123def456'
 const gatewayAccountId = 42
 const serviceName = 'Test Service'
@@ -69,16 +70,16 @@ function defaultTransactionDetails (events, opts = {}) {
 }
 
 describe('Transaction details page', () => {
-  const transactionsUrl = `/transactions`
+  const transactionsUrl = `/account/${gatewayAccountExternalId}/transactions`
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const userEmail = 'a-user@example.com'
 
   const getStubs = (transactionDetails, additionalGatewayAccountOpts = {}) => {
     return [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, email: userEmail }),
-      userStubs.getUsersSuccess(),
-      gatewayAccountStubs.getGatewayAccountSuccess({
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
         gatewayAccountId,
+        gatewayAccountExternalId,
         paymentProvider: transactionDetails.payment_provider,
         allowMoto: additionalGatewayAccountOpts.allow_moto
       }),

@@ -10,7 +10,6 @@ const notFound = 'Charge not found'
 module.exports = (req, res) => {
   const accountId = req.account.gateway_account_id
   const chargeId = req.params.chargeId
-
   ledgerFindWithEvents(accountId, chargeId, req.correlationId)
     .then(data => {
       data.indexFilters = req.session.filters
@@ -19,6 +18,7 @@ module.exports = (req, res) => {
         delete req.session.backLink
       }
       data.service = req.service
+
       response(req, res, 'transaction-detail/index', data)
     })
     .catch(err => {

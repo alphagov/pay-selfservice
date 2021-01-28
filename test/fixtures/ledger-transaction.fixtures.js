@@ -231,7 +231,6 @@ module.exports = {
   validTransactionSearchResponse: (opts = {}) => {
     let results = []
     opts.transactions.forEach(transaction => {
-      transaction.gateway_account_id = opts.gateway_account_id
       if (transaction.type === 'payment') {
         transaction.includeRefundSummary = true
         transaction.includeSettlementSummary = true

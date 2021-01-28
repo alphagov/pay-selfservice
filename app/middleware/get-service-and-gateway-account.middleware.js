@@ -101,6 +101,7 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
       // A separate API call to adminusers to find service makes it independent of user object but most of tests setup currently relies on req.user
       req.service = getService(req.user, serviceExternalId, gatewayAccount, correlationId)
     }
+
     next()
   } catch (err) {
     next(err)
