@@ -142,6 +142,9 @@ describe('Bank details post controller', () => {
       '../../../services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
+          this.getStripeAccount = () => Promise.resolve({
+            stripeAccountId: 'acct_123example123'
+          })
         }
       }
     })
