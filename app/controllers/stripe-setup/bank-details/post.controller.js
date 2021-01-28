@@ -20,11 +20,10 @@ module.exports = async (req, res, next) => {
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   if (!stripeAccountSetup) {
     return next(new Error('Stripe setup progress is not available on request'))
-  } else {
-    if (stripeAccountSetup.bankAccount) {
-      req.flash('genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
-      return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
-    }
+  }
+  if (stripeAccountSetup.bankAccount) {
+    req.flash('genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+    return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
   }
 
   const rawAccountNumber = lodash.get(req.body, ACCOUNT_NUMBER_FIELD, '')

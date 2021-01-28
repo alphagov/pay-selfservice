@@ -58,7 +58,17 @@ const validationRules = [
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
-module.exports = async function (req, res) {
+module.exports = async function (req, res, next) {
+  const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
+
+  if (!stripeAccountSetup) {
+    return next(new Error('Stripe setup progress is not available on request'))
+  }
+  if (stripeAccountSetup.responsiblePerson) {
+    req.flash('genericError', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
+    return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
+  }
+
   const fields = [
     FIRST_NAME_FIELD,
     LAST_NAME_FIELD,

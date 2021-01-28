@@ -41,6 +41,7 @@ describe('Responsible person POST controller', () => {
   }
 
   let req
+  let next
   let res
   let setStripeAccountSetupFlagMock
   let listPersonsMock
@@ -68,8 +69,10 @@ describe('Responsible person POST controller', () => {
       correlationId: 'correlation-id',
       account: {
         gateway_account_id: '1',
-        external_id: 'a-valid-external-id'
-      }
+        external_id: 'a-valid-external-id',
+        connectorGatewayAccountStripeProgress: {}
+      },
+      flash: sinon.spy()
     }
     res = {
       setHeader: sinon.stub(),
@@ -82,6 +85,7 @@ describe('Responsible person POST controller', () => {
         }
       }
     }
+    next = sinon.spy()
   })
 
   it('should call Stripe with normalised details (with second address line), then connector, then redirect to add details redirect route', async function () {
@@ -142,6 +146,28 @@ describe('Responsible person POST controller', () => {
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
+  })
+
+  it('should render error page when stripe setup is not available on request', async () => {
+    const controller = getControllerWithMocks()
+    req.account.connectorGatewayAccountStripeProgress = undefined
+
+    await controller(req, res, next)
+
+    sinon.assert.notCalled(res.redirect)
+    const expectedError = sinon.match.instanceOf(Error)
+      .and(sinon.match.has('message', 'Stripe setup progress is not available on request'))
+    sinon.assert.calledWith(next, expectedError)
+  })
+
+  it('should redirect to dashboard if bank details are already provided ', async () => {
+    const controller = getControllerWithMocks()
+    req.account.connectorGatewayAccountStripeProgress = { responsiblePerson: true }
+
+    await controller(req, res)
+
+    sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
   })
 
   it('should render error when Stripe returns error, not call connector, and not redirect', async function () {
