@@ -114,7 +114,7 @@ module.exports = {
       index: '/transactions',
       download: '/transactions/download',
       detail: '/transactions/:chargeId',
-      refund: '/transactions/:chargeId/refund',
+      refund: '/transactions/:chargeId/refund'
     },
     yourPsp: {
       index: '/your-psp',

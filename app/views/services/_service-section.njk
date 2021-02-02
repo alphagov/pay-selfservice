@@ -10,9 +10,9 @@
     </h2>
   </div>
   <div class="flex-grid--column-two-thirds tight marked">
-    {% if service.gateway_accounts.cardAccounts.length %}
+    {% if service.gatewayAccounts.length %}
     <ul class="govuk-list">
-    {% for account in service.gateway_accounts.cardAccounts %}
+    {% for account in service.gatewayAccounts %}
       {% include "./_service-switch.njk" %}
     {% endfor %}
     </ul>

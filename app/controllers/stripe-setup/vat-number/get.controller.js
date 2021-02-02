@@ -17,4 +17,3 @@ module.exports = (req, res, next) => {
 
   return response(req, res, 'stripe-setup/vat-number/index')
 }
-

@@ -198,7 +198,6 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
 }
 
 function buildServiceRoleOpts (opts) {
-
   const serviceRole = {
     service: {
       gateway_account_ids: [String(opts.gatewayAccountId)]

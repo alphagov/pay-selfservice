@@ -24,7 +24,6 @@ function getLedgerEventsSuccess (opts) {
 }
 
 function getLedgerTransactionsSuccess (opts) {
-
   const path = '/v1/transaction'
   return stubBuilder('GET', path, 200, {
     query: lodash.defaults({ ...opts.filters }, {

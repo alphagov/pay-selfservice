@@ -85,7 +85,7 @@ const sharedStubs = (paymentProvider = 'sandbox') => {
   return [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ 
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
       paymentProvider

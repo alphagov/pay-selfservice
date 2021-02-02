@@ -10,7 +10,7 @@ function getDashboardStatistics (opts = {}) {
   })
 }
 
-function getDashboardStatisticsWithFromDate(fromDate, opts = {}) {
+function getDashboardStatisticsWithFromDate (fromDate, opts = {}) {
   const path = '/v1/report/transactions-summary'
   return stubBuilder('GET', path, 200, {
     query: {
