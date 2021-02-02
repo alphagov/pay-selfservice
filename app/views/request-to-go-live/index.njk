@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "./layout.njk" %}
 
 {% block pageTitle %}
   Request a live account - {{ currentService.name }} - GOV.UK Pay
@@ -38,7 +38,7 @@
           <p class="govuk-body">When we activate your live account, we’ll email you with next steps.</p>
       {% endif %}
 
-      <p class="govuk-body"><a href="{{formatAccountPathsFor(routes.account.dashboard.index, currentGatewayAccount.external_id)}}" class="govuk-link">Return to dashboard</a></p>
+      <p class="govuk-body"><a href="{{routes.serviceSwitcher.index}}" class="govuk-link">Go to My services</a></p>
     </div>
   {% elif denied %}
     <div class="govuk-grid-column-full">
@@ -54,7 +54,7 @@
   {% else %}
     <div class="govuk-grid-column-two-thirds">
       {% if notStarted or startedButStillStepsToComplete %}
-        <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Request a live account</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Request a live account</h1>
         <p class="govuk-body-l intro">Complete these steps to request a live account.</p>
       {% endif %}
       <div class="request-to-go-live-list">
