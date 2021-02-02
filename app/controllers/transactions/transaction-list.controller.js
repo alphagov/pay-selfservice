@@ -23,7 +23,7 @@ function error (req, res, msg) {
 module.exports = async (req, res, next) => {
   const accountId = req.account.gateway_account_id
   const gatewayAccountExternalId = req.account.external_id
-  
+
   const filters = getFilters(req)
 
   const correlationId = req.headers[CORRELATION_HEADER] || ''

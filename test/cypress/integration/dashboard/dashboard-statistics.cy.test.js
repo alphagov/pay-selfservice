@@ -5,7 +5,7 @@ const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs'
 
 describe('Account dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = "42"
+  const gatewayAccountId = '42'
   const gatewayAccountExternalId = 'a-gateway-account-external-id'
   const serviceName = 'Test Service'
 
@@ -18,7 +18,7 @@ describe('Account dashboard', () => {
         paymentCount: 10,
         paymentTotal: 12000,
         refundCount: 2,
-        refundTotal: 2300,
+        refundTotal: 2300
       })
     const prevSevenDaysStatisticsStub = transactionsSummaryStubs.getDashboardStatisticsWithFromDate(
       moment().subtract(8, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
@@ -26,7 +26,7 @@ describe('Account dashboard', () => {
         paymentCount: 50,
         paymentTotal: 70000,
         refundCount: 10,
-        refundTotal: 5000,
+        refundTotal: 5000
       })
 
     cy.task('setupStubs', [
@@ -36,7 +36,6 @@ describe('Account dashboard', () => {
       prevSevenDaysStatisticsStub
     ])
   })
-
 
   it('should display dashboard page', () => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)

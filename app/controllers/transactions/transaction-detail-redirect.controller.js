@@ -13,7 +13,7 @@ const notFound = 'Charge not found'
 
 module.exports = async function redirectToTransactionDetail (req, res) {
   const chargeId = req.params.chargeId
-  
+
   try {
     const charge = await Ledger.transactionWithAccountOverride(chargeId)
     if (userServicesContainsGatewayAccount(charge.gateway_account_id, req.user)) {
