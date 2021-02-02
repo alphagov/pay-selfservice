@@ -4,6 +4,16 @@
 Give feedback — GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "My services",
+      href: routes.serviceSwitcher.index
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Give feedback</h1>
