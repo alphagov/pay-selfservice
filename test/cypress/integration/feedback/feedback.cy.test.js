@@ -5,7 +5,7 @@ const userStubs = require('../../stubs/user-stubs')
 const authenticatedUserId = 'authenticated-user-id'
 
 function getUserAndAccountStubs (type, paymentProvider) {
-  return [userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
+  return [userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' })
   ]
 }
 

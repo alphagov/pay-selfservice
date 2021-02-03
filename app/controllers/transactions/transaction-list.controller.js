@@ -8,7 +8,6 @@ const transactionService = require('../../services/transaction.service')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
 const { buildPaymentList } = require('../../utils/transaction-view.js')
 const { response } = require('../../utils/response.js')
-const { renderErrorView } = require('../../utils/response.js')
 const { getFilters, describeFilters } = require('../../utils/filters.js')
 const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -16,11 +15,7 @@ const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 
-function error (req, res, msg) {
-  return renderErrorView(req, res, msg)
-}
-
-module.exports = async (req, res, next) => {
+module.exports = async function showTransactionList (req, res, next) {
   const accountId = req.account.gateway_account_id
   const gatewayAccountExternalId = req.account.external_id
 
@@ -30,7 +25,7 @@ module.exports = async (req, res, next) => {
   req.session.filters = url.parse(req.url).query
 
   if (!filters.valid) {
-    return error(req, res, 'Invalid search')
+    return next(new Error('Invalid search'))
   }
 
   let result
