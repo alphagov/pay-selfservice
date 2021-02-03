@@ -33,6 +33,9 @@ describe('The organisation address page', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
         cy.visit(pageUrl)
 
+        cy.get('.govuk-back-link').should('have.text', 'My services')
+        cy.get('.service-navigation').should('not.exist')
+
         cy.get('h1').should('contain', `What is your organisation’s address?`)
 
         cy.get(`form[method=post][action="/service/${serviceExternalId}/request-to-go-live/organisation-address"]`)

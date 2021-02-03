@@ -252,6 +252,18 @@ module.exports.bind = function (app) {
   app.get(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.getEdit)
   app.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.postEdit)
 
+  // Request to go live
+  app.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
+  app.post(requestToGoLive.index, permission('go-live-stage:update'), requestToGoLiveIndexController.post)
+  app.get(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.get)
+  app.post(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.post)
+  app.get(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.get)
+  app.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.post)
+  app.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.get)
+  app.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.post)
+  app.get(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.get)
+  app.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
+
   // Service live account dashboard link
   app.get(redirects.stripeSetupLiveDashboardRedirect, stripeSetupDashboardRedirectController.get)
 
@@ -378,29 +390,6 @@ module.exports.bind = function (app) {
   account.get(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showEditMetadataPage)
   account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
-
-  // Request to go live
-  app.get(requestToGoLive.index, permission('go-live-stage:read'), getAccount, requestToGoLiveIndexController.get)
-  app.post(requestToGoLive.index, permission('go-live-stage:update'), getAccount, requestToGoLiveIndexController.post)
-  app.get(requestToGoLive.organisationName, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.get)
-  app.post(requestToGoLive.organisationName, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.post)
-  app.get(requestToGoLive.organisationAddress, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationAddressController.get)
-  app.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationAddressController.post)
-  app.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.get)
-  app.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.post)
-  app.get(requestToGoLive.agreement, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.get)
-  app.post(requestToGoLive.agreement, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.post)
-
-  account.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
-  account.post(requestToGoLive.index, permission('go-live-stage:update'), requestToGoLiveIndexController.post)
-  account.get(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.get)
-  account.post(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.post)
-  account.get(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.get)
-  account.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.post)
-  account.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.get)
-  account.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.post)
-  account.get(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.get)
-  account.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
 
   // Stripe setup
   account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.get)
