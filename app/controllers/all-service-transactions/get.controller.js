@@ -2,7 +2,7 @@
 
 const _ = require('lodash')
 
-const { response, renderErrorView } = require('../../utils/response')
+const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
 const transactionService = require('../../services/transaction.service')
 const { buildPaymentList } = require('../../utils/transaction-view.js')
@@ -13,10 +13,11 @@ const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 const logger = require('../../utils/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
+const { NoServicesWithPermissionError } = require('../../errors')
 
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 
-module.exports = async (req, res) => {
+module.exports = async function getTransactionsForAllServices (req, res, next) {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
   try {
@@ -32,8 +33,7 @@ module.exports = async (req, res) => {
     logger.info('Listing all live services transactions', logContext)
 
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
-      res.status(401).render('error', { message: 'You do not have any associated services with rights to view live transactions.' })
-      return
+      return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view live transactions.'))
     }
     const searchResultOutput = await transactionService.search(userPermittedAccountsSummary.gatewayAccountIds, filters.result)
     const cardTypes = await client.getAllCardTypes(correlationId)
@@ -67,6 +67,6 @@ module.exports = async (req, res) => {
 
     return response(req, res, 'transactions/index', model)
   } catch (err) {
-    renderErrorView(req, res, 'Unable to fetch transaction information')
+    next(new Error('Unable to fetch transaction information'))
   }
 }
