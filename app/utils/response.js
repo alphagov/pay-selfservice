@@ -32,7 +32,7 @@ function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500) {
   res.setHeader('Content-Type', 'text/html')
 
   res.status(status)
-  render(req, res, ERROR_VIEW, data)
+  response(req, res, ERROR_VIEW, data)
 }
 
 function render (req, res, template, data) {

@@ -38,6 +38,7 @@
     "cypress:server": "mb --debug | DISABLE_APPMETRICS=true node --inspect -r dotenv/config start.js dotenv_config_path=test/cypress/test.env",
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
+    "cypress:test-no-watch": "cypress open --config watchForFileChanges=false",
     "publish-pacts": "./bin/publish-pacts.js"
   },
   "husky": {

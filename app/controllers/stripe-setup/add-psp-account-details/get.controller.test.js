@@ -1,12 +1,6 @@
 'use strict'
 
-const chai = require('chai')
-
-const chaiAsPromised = require('chai-as-promised')
 const sinon = require('sinon')
-
-const { expect } = chai
-chai.use(chaiAsPromised)
 
 const paths = require('../../../paths')
 const getController = require('./get.controller')
@@ -34,13 +28,13 @@ describe('get controller', () => {
 
   it('should redirect to bank account setup page', async () => {
     req.account.connectorGatewayAccountStripeProgress.bankAccount = false
-    getController(req, res)
+    await getController(req, res)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.bankDetails}`)
   })
 
   it('should redirect to responsible person page', async () => {
     req.account.connectorGatewayAccountStripeProgress.bankAccount = true
-    getController(req, res)
+    await getController(req, res)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.responsiblePerson}`)
   })
 
@@ -49,7 +43,7 @@ describe('get controller', () => {
       bankAccount: true,
       responsiblePerson: true
     }
-    getController(req, res)
+    await getController(req, res)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.vatNumber}`)
   })
 
@@ -59,7 +53,7 @@ describe('get controller', () => {
       responsiblePerson: true,
       vatNumber: true
     }
-    getController(req, res)
+    await getController(req, res)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.companyNumber}`)
   })
 
@@ -70,31 +64,23 @@ describe('get controller', () => {
       vatNumber: true,
       companyNumber: true
     }
-    getController(req, res)
+    await getController(req, res)
     sinon.assert.calledWith(res.render, 'stripe-setup/go-live-complete')
   })
 
-  it('should render an error page when req.account is undefined', done => {
+  it('should render an error page when req.account is undefined', async () => {
     req.account = undefined
 
-    getController(req, res)
-
-    setTimeout(() => {
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await getController(req, res)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
   })
 
-  it('should render an error page when req.account.connectorGatewayAccountStripeProgress is undefined', done => {
+  it('should render an error page when req.account.connectorGatewayAccountStripeProgress is undefined', async () => {
     req.account.connectorGatewayAccountStripeProgress = undefined
 
-    getController(req, res)
-
-    setTimeout(() => {
-      expect(res.status.calledWith(500)).to.be.true // eslint-disable-line
-      expect(res.render.calledWith('error', { message: 'Please try again or contact support team' })).to.be.true // eslint-disable-line
-      done()
-    }, 250)
+    await getController(req, res)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
   })
 })

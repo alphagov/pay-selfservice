@@ -3,16 +3,9 @@
 const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
-
-chai.use(chaiAsPromised)
-
-// Constants
-const expect = chai.expect
 
 describe('Error handler', function () {
-  let correlationId, req, res, setHeaderStub, statusStub, renderStub
+  let correlationId, req, res
 
   beforeEach(() => {
     correlationId = 'abcde12345'
@@ -23,21 +16,11 @@ describe('Error handler', function () {
       }
     }
 
-    setHeaderStub = sinon.spy()
-    statusStub = sinon.spy()
-    renderStub = sinon.spy()
-
     res = {
-      setHeader: setHeaderStub,
-      status: statusStub,
-      render: renderStub
+      setHeader: sinon.spy(),
+      status: sinon.spy(),
+      render: sinon.spy()
     }
-  })
-
-  afterEach(() => {
-    setHeaderStub = sinon.spy()
-    statusStub = sinon.spy()
-    renderStub = sinon.spy()
   })
 
   const controller = function (errorCode) {
@@ -55,33 +38,27 @@ describe('Error handler', function () {
       })
   }
 
-  it('should handle 404 as unable to process registration at this time', function (done) {
+  it('should handle 404 as unable to process registration at this time', async () => {
     const errorCode = 404
 
-    controller(errorCode).validateInvite(req, res).should.be.fulfilled
-      .then(() => {
-        expect(statusStub.calledWith(errorCode)).to.eq(true)
-        expect(renderStub.calledWith('error', { message: 'Unable to process registration at this time' })).to.eq(true)
-      }).should.notify(done)
+    await controller(errorCode).validateInvite(req, res)
+    sinon.assert.calledWith(res.status, errorCode)
+    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Unable to process registration at this time' }))
   })
 
-  it('should handle 410 as this invitation link has expired', function (done) {
+  it('should handle 410 as this invitation link has expired', async () => {
     const errorCode = 410
 
-    controller(errorCode).validateInvite(req, res).should.be.fulfilled
-      .then(() => {
-        expect(statusStub.calledWith(errorCode)).to.eq(true)
-        expect(renderStub.calledWith('error', { message: 'This invitation is no longer valid' })).to.eq(true)
-      }).should.notify(done)
+    await controller(errorCode).validateInvite(req, res)
+    sinon.assert.calledWith(res.status, errorCode)
+    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'This invitation is no longer valid' }))
   })
 
-  it('should handle undefined as unable to process registration at this time with error code 500', function (done) {
+  it('should handle undefined as unable to process registration at this time with error code 500', async () => {
     const errorCode = undefined
 
-    controller(errorCode).validateInvite(req, res).should.be.fulfilled
-      .then(() => {
-        expect(statusStub.calledWith(500)).to.eq(true)
-        expect(renderStub.calledWith('error', { message: 'Unable to process registration at this time' })).to.eq(true)
-      }).should.notify(done)
+    await controller(errorCode).validateInvite(req, res)
+    sinon.assert.calledWith(res.status, 500)
+    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Unable to process registration at this time' }))
   })
 })

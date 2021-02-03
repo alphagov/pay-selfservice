@@ -83,7 +83,7 @@ module.exports = {
         .catch(err => {
           switch (err.errorCode) {
             case 412:
-              response(req, res, 'error-logged-in', messages.emailConflict(invitee, externalServiceId))
+              response(req, res, 'error-with-link', messages.emailConflict(invitee, externalServiceId))
               break
             default:
               logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err))

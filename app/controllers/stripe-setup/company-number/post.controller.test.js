@@ -107,7 +107,7 @@ describe('Company number POST controller', () => {
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
     sinon.assert.notCalled(res.redirect)
     sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
+    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
   })
 
   it('should render error when connector returns error', async function () {
@@ -123,6 +123,6 @@ describe('Company number POST controller', () => {
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'company_number', req.correlationId)
     sinon.assert.notCalled(res.redirect)
     sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', { message: 'Please try again or contact support team' })
+    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
   })
 })
