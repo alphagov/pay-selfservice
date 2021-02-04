@@ -11,10 +11,9 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const PAYMENT_RESOURCE = '/v1/api/payments'
-const port = Math.floor(Math.random() * 48127) + 1024
-let result
+let result, productsClient
 
-function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
+function getProductsClient (baseUrl) {
   return proxyquire('../../../../../app/services/clients/products.client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
@@ -26,14 +25,16 @@ describe('products client - find a payment by it\'s own external id', function (
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'products',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    productsClient = getProductsClient(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('when a product is successfully found', () => {
@@ -41,7 +42,6 @@ describe('products client - find a payment by it\'s own external id', function (
     const response = productFixtures.validCreatePaymentResponse({ external_id: paymentExternalId })
 
     before(done => {
-      const productsClient = getProductsClient()
       const interaction = new PactInteractionBuilder(`${PAYMENT_RESOURCE}/${paymentExternalId}`)
         .withUponReceiving('a valid get payment request')
         .withMethod('GET')
@@ -77,7 +77,6 @@ describe('products client - find a payment by it\'s own external id', function (
 
   describe('when a product is not found', () => {
     before(done => {
-      const productsClient = getProductsClient()
       const paymentExternalId = 'non-existing-id'
       provider.addInteraction(
         new PactInteractionBuilder(`${PAYMENT_RESOURCE}/${paymentExternalId}`)

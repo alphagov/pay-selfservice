@@ -16,8 +16,7 @@ chai.use(chaiAsPromised)
 // Constants
 const expect = chai.expect
 const SERVICES_PATH = '/v1/api/services'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 const existingServiceExternalId = 'cp5wa'
 
@@ -25,14 +24,16 @@ describe('adminusers client - service users', () => {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('single user is returned for service', () => {
@@ -58,7 +59,7 @@ describe('adminusers client - service users', () => {
     afterEach(() => provider.verify())
 
     it('should return service users successfully', done => {
-      adminusersClient.getServiceUsers(existingServiceExternalId).should.be.fulfilled.then(
+      adminUsersClient.getServiceUsers(existingServiceExternalId).should.be.fulfilled.then(
         users => {
           expect(users[0].serviceRoles.length).to.be.equal(getServiceUsersResponse[0].service_roles.length)
           expect(users[0].hasService(existingServiceExternalId)).to.be.equal(true)
@@ -82,7 +83,7 @@ describe('adminusers client - service users', () => {
     afterEach(() => provider.verify())
 
     it('should return service not found', done => {
-      adminusersClient.getServiceUsers(nonExistingServiceId).should.be.rejected.then(
+      adminUsersClient.getServiceUsers(nonExistingServiceId).should.be.rejected.then(
         err => {
           expect(err.errorCode).to.equal(404)
         }

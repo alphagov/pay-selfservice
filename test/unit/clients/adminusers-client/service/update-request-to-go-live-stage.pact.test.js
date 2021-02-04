@@ -12,8 +12,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 
@@ -24,14 +23,16 @@ describe('adminusers client - patch request to go live stage', function () {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('patch request to go live stage', () => {
@@ -60,7 +61,7 @@ describe('adminusers client - patch request to go live stage', function () {
     afterEach(() => provider.verify())
 
     it('should update successfully', function (done) {
-      adminusersClient.updateCurrentGoLiveStage(serviceExternalId, 'ENTERED_ORGANISATION_NAME')
+      adminUsersClient.updateCurrentGoLiveStage(serviceExternalId, 'ENTERED_ORGANISATION_NAME')
         .should.be.fulfilled.then(service => {
           expect(service.externalId).to.equal(serviceExternalId)
           expect(service.currentGoLiveStage).to.equal('ENTERED_ORGANISATION_NAME')

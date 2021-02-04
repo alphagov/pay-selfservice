@@ -8,13 +8,13 @@ const chaiAsPromised = require('chai-as-promised')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const userFixtures = require('../../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const User = require('../../../../../app/models/User.class')
 const { userResponsePactifier } = require('../../../../test-helpers/pact/pactifier')
 
 // Constants
 const AUTHENTICATE_PATH = '/v1/api/users/authenticate'
+
+let adminUsersClient
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
@@ -23,14 +23,16 @@ describe('adminusers client - authenticate', () => {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   const existingUsername = 'existing-user'
@@ -60,7 +62,7 @@ describe('adminusers client - authenticate', () => {
     afterEach(() => provider.verify())
 
     it('should return the right authentication success response', done => {
-      adminusersClient.authenticateUser(existingUsername, validPassword).then((response) => {
+      adminUsersClient.authenticateUser(existingUsername, validPassword).then((response) => {
         expect(response).to.deep.equal(new User(validPasswordResponse))
         done()
       })
@@ -92,7 +94,7 @@ describe('adminusers client - authenticate', () => {
     afterEach(() => provider.verify())
 
     it('should return the right authentication failure response', done => {
-      adminusersClient.authenticateUser(existingUsername, invalidPassword).then(() => {
+      adminUsersClient.authenticateUser(existingUsername, invalidPassword).then(() => {
         done('should not resolve here')
       }).catch(err => {
         expect(err.errorCode).to.equal(401)

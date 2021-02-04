@@ -12,8 +12,7 @@ const PactInteractionBuilder = require('../../../../test-helpers/pact/pact-inter
 const { userResponsePactifier } = require('../../../../test-helpers/pact/pactifier')
 
 // constants
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const USER_PATH = '/v1/api/users'
 
 chai.use(chaiAsPromised)
@@ -22,14 +21,16 @@ describe('adminusers client - get user', () => {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('find a valid user', () => {
@@ -49,7 +50,7 @@ describe('adminusers client - get user', () => {
     afterEach(() => provider.verify())
 
     it('should find a user successfully', done => {
-      adminusersClient.getUserByExternalId(getUserResponse.external_id).should.be.fulfilled.then(user => {
+      adminUsersClient.getUserByExternalId(getUserResponse.external_id).should.be.fulfilled.then(user => {
         expect(user.externalId).to.be.equal(getUserResponse.external_id)
         expect(user.username).to.be.equal(getUserResponse.username)
         expect(user.email).to.be.equal(getUserResponse.email)
@@ -83,7 +84,7 @@ describe('adminusers client - get user', () => {
     afterEach(() => provider.verify())
 
     it('should respond 404 if user not found', done => {
-      adminusersClient.getUserByExternalId(params.external_id).should.be.rejected.then(response => {
+      adminUsersClient.getUserByExternalId(params.external_id).should.be.rejected.then(response => {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

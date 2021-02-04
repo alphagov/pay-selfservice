@@ -5,31 +5,41 @@ const path = require('path')
 const chai = require('chai')
 const { expect } = chai
 const chaiAsPromised = require('chai-as-promised')
+const proxyquire = require('proxyquire')
 
 // constants
-const port = Math.floor(Math.random() * 48127) + 1024
 const TOKENS_PATH = '/v1/frontend/auth'
-process.env.PUBLIC_AUTH_URL = `http://localhost:${port}${TOKENS_PATH}`
 
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
-const publicauthClient = require('../../../../app/services/clients/public-auth.client')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 chai.use(chaiAsPromised)
 
+let publicAuthClient
+
+function getPublicAuthClient (baseUrl) {
+  return proxyquire('../../../../app/services/clients/public-auth.client', {
+    '../../../config': {
+      PUBLIC_AUTH_URL: baseUrl
+    }
+  })
+}
+
 describe('publicauth client - get tokens', function () {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'publicauth',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    publicAuthClient = getPublicAuthClient(`http://localhost:${opts.port}/${TOKENS_PATH}`)
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -52,7 +62,7 @@ describe('publicauth client - get tokens', function () {
     afterEach(() => provider.verify())
 
     it('should return service tokens information successfully', function (done) {
-      publicauthClient.getActiveTokensForAccount(params).then(function (tokens) {
+      publicAuthClient.getActiveTokensForAccount(params).then(function (tokens) {
         expect(tokens).to.deep.equal(getServiceAuthResponse)
         done()
       })

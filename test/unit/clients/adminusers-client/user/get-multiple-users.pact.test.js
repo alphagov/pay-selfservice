@@ -7,8 +7,7 @@ const userFixtures = require('../../../../fixtures/user.fixtures')
 const random = require('../../../../../app/utils/random')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const { userResponsePactifier } = require('../../../../test-helpers/pact/pactifier')
 
 chai.use(chaiAsPromised)
@@ -20,14 +19,16 @@ describe('adminusers client - get users', function () {
   const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -64,7 +65,7 @@ describe('adminusers client - get users', function () {
     afterEach(() => provider.verify())
 
     it('should find users successfully', function () {
-      const result = expect(adminusersClient.getUsersByExternalIds(existingExternalIds))
+      const result = expect(adminUsersClient.getUsersByExternalIds(existingExternalIds))
 
       return result.to.be.fulfilled.then(function (users) {
         users.forEach((user, index) => {
@@ -102,7 +103,7 @@ describe('adminusers client - get users', function () {
     afterEach(() => provider.verify())
 
     it('should respond 404 if user not found', function () {
-      return expect(adminusersClient.getUsersByExternalIds(existingExternalIds)).to.be.rejected.then(function (response) {
+      return expect(adminUsersClient.getUsersByExternalIds(existingExternalIds)).to.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       })
     })

@@ -12,8 +12,7 @@ const Connector = require('../../../../app/services/clients/connector.client').C
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
 
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
-const port = Math.floor(Math.random() * 48127) + 1024
-const connectorClient = new Connector(`http://localhost:${port}`)
+let connectorClient
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -25,14 +24,16 @@ describe('Update 3DS integration version', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    connectorClient = new Connector(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('Update 3DS integration version to 1', () => {

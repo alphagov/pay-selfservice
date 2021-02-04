@@ -11,10 +11,9 @@ const { pactifySimpleArray } = require('../../../../test-helpers/pact/pactifier'
 
 // Constants
 const API_RESOURCE = '/v1/api'
-const port = Math.floor(Math.random() * 48127) + 1024
-let result
+let result, productsClient
 
-function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
+function getProductsClient (baseUrl) {
   return proxyquire('../../../../../app/services/clients/products.client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
@@ -26,14 +25,16 @@ describe('products client - find a product with metadata associated with a parti
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'products',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    productsClient = getProductsClient(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('when the product is successfully found', () => {
@@ -42,7 +43,6 @@ describe('products client - find a product with metadata associated with a parti
       productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 1000, metadata: { key: 'value' } })
     ]
     before(done => {
-      const productsClient = getProductsClient()
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withUponReceiving('a valid get product with metadata by gateway account id request')
         .withMethod('GET')

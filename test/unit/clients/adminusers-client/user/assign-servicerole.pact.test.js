@@ -11,8 +11,7 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const existingServiceExternalId = 'cp5wa'
@@ -21,14 +20,16 @@ describe('adminusers client - assign service role to user', function () {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('assign user service role API - success', () => {
@@ -69,7 +70,7 @@ describe('adminusers client - assign service role to user', function () {
     afterEach(() => provider.verify())
 
     it('should assign service role to a user successfully', function (done) {
-      adminusersClient.assignServiceRole(existingUserExternalId, existingServiceExternalId, role).should.be.fulfilled.then(function (updatedUser) {
+      adminUsersClient.assignServiceRole(existingUserExternalId, existingServiceExternalId, role).should.be.fulfilled.then(function (updatedUser) {
         const newServiceRole = updatedUser.serviceRoles.find(serviceRole => serviceRole.service.externalId === existingServiceExternalId)
         expect(newServiceRole.role.name).to.be.equal(role)
       }).should.notify(done)
@@ -99,7 +100,7 @@ describe('adminusers client - assign service role to user', function () {
     afterEach(() => provider.verify())
 
     it('should error not found for non existent user when updating service role', function (done) {
-      adminusersClient.assignServiceRole(nonExistentUserExternalId, existingServiceExternalId, role).should.be.rejected.then(function (response) {
+      adminUsersClient.assignServiceRole(nonExistentUserExternalId, existingServiceExternalId, role).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
@@ -128,7 +129,7 @@ describe('adminusers client - assign service role to user', function () {
     afterEach(() => provider.verify())
 
     it('should error bad request if service cannot be located', function (done) {
-      adminusersClient.assignServiceRole(existingUserExternalId, serviceExternalId, role).should.be.rejected.then(function (response) {
+      adminUsersClient.assignServiceRole(existingUserExternalId, serviceExternalId, role).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
       }).should.notify(done)
     })

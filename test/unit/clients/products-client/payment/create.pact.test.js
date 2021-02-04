@@ -11,10 +11,9 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const PRODUCTS_RESOURCE = '/v1/api/products'
-const port = Math.floor(Math.random() * 48127) + 1024
-let result
+let result, productsClient
 
-function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
+function getProductsClient (baseUrl) {
   return proxyquire('../../../../../app/services/clients/products.client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
@@ -26,14 +25,16 @@ describe('products client - creating a new payment', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'products',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    productsClient = getProductsClient(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('when a charge is successfully created', () => {
@@ -41,7 +42,6 @@ describe('products client - creating a new payment', () => {
     const response = productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId })
 
     before((done) => {
-      const productsClient = getProductsClient()
       provider.addInteraction(
         new PactInteractionBuilder(`${PRODUCTS_RESOURCE}/${productExternalId}/payments`)
           .withUponReceiving('a valid create charge create request')
@@ -77,7 +77,6 @@ describe('products client - creating a new payment', () => {
 
   describe('when creating a charge using a malformed request', () => {
     beforeEach(done => {
-      const productsClient = getProductsClient()
       const productExternalId = 'invalid-id'
       provider.addInteraction(
         new PactInteractionBuilder(`${PRODUCTS_RESOURCE}/${productExternalId}/payments`)

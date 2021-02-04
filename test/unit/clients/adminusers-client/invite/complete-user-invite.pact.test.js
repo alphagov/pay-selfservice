@@ -12,8 +12,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
-let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const expect = chai.expect
 
 // Global setup
@@ -23,14 +22,16 @@ describe('adminusers client - complete a user invite', function () {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -63,7 +64,7 @@ describe('adminusers client - complete a user invite', function () {
     afterEach(() => provider.verify())
 
     it('should complete a service invite successfully', function (done) {
-      adminusersClient.completeInvite('correlation-id', inviteCode).should.be.fulfilled.then(response => {
+      adminUsersClient.completeInvite('correlation-id', inviteCode).should.be.fulfilled.then(response => {
         expect(response.invite).to.deep.equal(validInviteCompleteResponse.invite)
         expect(response.user_external_id).to.equal(userExternalId)
         expect(response.service_external_id).to.equal(serviceExternalId)
@@ -89,7 +90,7 @@ describe('adminusers client - complete a user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 404 NOT FOUND if invite code not found', function (done) {
-      adminusersClient.completeInvite('correlation-id', nonExistingInviteCode).should.be.rejected.then(function (response) {
+      adminUsersClient.completeInvite('correlation-id', nonExistingInviteCode).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
@@ -113,7 +114,7 @@ describe('adminusers client - complete a user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 410 GONE if invite is expired', function (done) {
-      adminusersClient.completeInvite('correlation-id', inviteCode).should.be.rejected.then(function (response) {
+      adminUsersClient.completeInvite('correlation-id', inviteCode).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(410)
       }).should.notify(done)
     })

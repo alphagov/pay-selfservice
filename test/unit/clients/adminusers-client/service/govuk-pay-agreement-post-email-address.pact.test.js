@@ -11,8 +11,7 @@ const validPostGovUkPayAgreementRequest = require('../../../../fixtures/go-live-
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const serviceExternalId = 'cp5wa'
@@ -23,14 +22,16 @@ describe('adminusers client - post govuk pay agreement - email address', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('post email address', () => {
@@ -54,7 +55,7 @@ describe('adminusers client - post govuk pay agreement - email address', () => {
     afterEach(() => provider.verify())
 
     it('should post email address successfully', done => {
-      adminusersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
+      adminUsersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
         .should.be.fulfilled.should.notify(done)
     })
   })

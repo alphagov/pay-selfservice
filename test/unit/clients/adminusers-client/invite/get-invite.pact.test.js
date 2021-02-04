@@ -14,21 +14,22 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 const INVITES_PATH = '/v1/api/invites'
-let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 describe('adminusers client - get a validated invite', function () {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -54,7 +55,7 @@ describe('adminusers client - get a validated invite', function () {
     afterEach(() => provider.verify())
 
     it('should find an invite successfully', function (done) {
-      adminusersClient.getValidatedInvite(params.invite_code).should.be.fulfilled.then(function (invite) {
+      adminUsersClient.getValidatedInvite(params.invite_code).should.be.fulfilled.then(function (invite) {
         expect(invite.email).to.be.equal(getInviteResponse.email)
         expect(invite.telephone_number).to.be.equal(getInviteResponse.telephone_number)
         expect(invite.type).to.be.equal(getInviteResponse.type)
@@ -79,7 +80,7 @@ describe('adminusers client - get a validated invite', function () {
     afterEach(() => provider.verify())
 
     it('should respond 410 if invite expired', function (done) {
-      adminusersClient.getValidatedInvite(expiredCode).should.be.rejected.then(function (response) {
+      adminUsersClient.getValidatedInvite(expiredCode).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(410)
       }).should.notify(done)
     })
@@ -102,7 +103,7 @@ describe('adminusers client - get a validated invite', function () {
     afterEach(() => provider.verify())
 
     it('should respond 404 if invite not found', function (done) {
-      adminusersClient.getValidatedInvite(nonExistingCode).should.be.rejected.then(function (response) {
+      adminUsersClient.getValidatedInvite(nonExistingCode).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

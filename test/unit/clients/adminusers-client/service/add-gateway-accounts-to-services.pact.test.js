@@ -12,8 +12,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 let result, request
@@ -27,14 +26,16 @@ describe('admin users client - add gateway accounts to service', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('a successful add gateway account to service request', () => {
@@ -60,7 +61,7 @@ describe('admin users client - add gateway accounts to service', () => {
     afterEach(() => provider.verify())
 
     it('should update service name', () => {
-      result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountsIdsToAdd)
+      result = adminUsersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountsIdsToAdd)
 
       return expect(result)
         .to.be.fulfilled
@@ -94,7 +95,7 @@ describe('admin users client - add gateway accounts to service', () => {
     afterEach(() => provider.verify())
 
     it('should reject with an error detailing the conflicting', () => {
-      result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
+      result = adminUsersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
 
       return expect(result)
         .to.be.rejected
@@ -131,7 +132,7 @@ describe('admin users client - add gateway accounts to service', () => {
     afterEach(() => provider.verify())
 
     it('should reject with an error detailing the conflicting', () => {
-      result = adminusersClient.addGatewayAccountsToService(nonExistentServiceId, gatewayAccountIds)
+      result = adminUsersClient.addGatewayAccountsToService(nonExistentServiceId, gatewayAccountIds)
 
       return expect(result)
         .to.be.rejected

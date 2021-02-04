@@ -1,13 +1,14 @@
 'use strict'
 
 const baseClient = require('./base-client/base.client')
+const { PUBLIC_AUTH_URL } = require('../../../config')
 // Constants
 const SERVICE_NAME = 'publicauth'
 
 /**
  * @param {string} accountId
  */
-const getUrlForAccountId = accountId => `${process.env.PUBLIC_AUTH_URL}/${accountId}`
+const getUrlForAccountId = accountId => `${PUBLIC_AUTH_URL}/${accountId}`
 
 /**
  * Get active tokens for account

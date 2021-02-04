@@ -11,8 +11,7 @@ const validPostStripeAgreementRequest = require('../../../../fixtures/go-live-re
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const serviceExternalId = 'rtglNotStarted'
 
 // Global setup
@@ -22,14 +21,16 @@ describe('adminusers client - post stripe agreement - ip address', () => {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('post ip address', () => {
@@ -54,7 +55,7 @@ describe('adminusers client - post stripe agreement - ip address', () => {
     afterEach(() => provider.verify())
 
     it('should post ip address successfully', done => {
-      adminusersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress)
+      adminUsersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress)
         .should.be.fulfilled.should.notify(done)
     })
   })

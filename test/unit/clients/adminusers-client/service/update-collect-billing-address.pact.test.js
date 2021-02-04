@@ -12,8 +12,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 
@@ -24,14 +23,16 @@ describe('adminusers client - patch collect billing address toggle', function ()
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('patch collect billing address toggle - disabled', () => {
@@ -59,7 +60,7 @@ describe('adminusers client - patch collect billing address toggle', function ()
     afterEach(() => provider.verify())
 
     it('should toggle successfully', function (done) {
-      adminusersClient.updateCollectBillingAddress(serviceExternalId, false)
+      adminUsersClient.updateCollectBillingAddress(serviceExternalId, false)
         .should.be.fulfilled.then(service => {
           expect(service.external_id).to.equal(serviceExternalId)
           expect(service.collect_billing_address).to.equal(false)

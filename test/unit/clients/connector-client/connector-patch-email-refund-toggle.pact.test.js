@@ -11,8 +11,7 @@ const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtur
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
-const port = Math.floor(Math.random() * 48127) + 1024
-const connectorClient = new Connector(`http://localhost:${port}`)
+let connectorClient
 const expect = chai.expect
 
 // Global setup
@@ -25,14 +24,16 @@ describe('connector client - patch email refund toggle', function () {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    connectorClient = new Connector(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('patch email refund toggle - enabled', () => {

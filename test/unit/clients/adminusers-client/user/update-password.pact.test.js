@@ -11,20 +11,22 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const RESET_PASSWORD_PATH = '/v1/api/reset-password'
 var port = Math.floor(Math.random() * 48127) + 1024
-var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+var adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - update password', function () {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('update password for user API - success', () => {
@@ -46,7 +48,7 @@ describe('adminusers client - update password', function () {
     afterEach(() => provider.verify())
 
     it('should update password successfully', function (done) {
-      adminusersClient.updatePasswordForUser(request.forgotten_password_code, request.new_password).should.be.fulfilled.notify(done)
+      adminUsersClient.updatePasswordForUser(request.forgotten_password_code, request.new_password).should.be.fulfilled.notify(done)
     })
   })
 
@@ -68,7 +70,7 @@ describe('adminusers client - update password', function () {
     afterEach(() => provider.verify())
 
     it('should error if forgotten password code is not found/expired', function (done) {
-      adminusersClient.updatePasswordForUser(request.forgotten_password_code, request.new_password).should.be.rejected.then(function (response) {
+      adminUsersClient.updatePasswordForUser(request.forgotten_password_code, request.new_password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

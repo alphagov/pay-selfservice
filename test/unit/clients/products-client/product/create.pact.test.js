@@ -11,12 +11,11 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const PRODUCT_RESOURCE = '/v1/api/products'
-const port = Math.floor(Math.random() * 48127) + 1024
-let result
+let result, productsClient
 
 const randomPrice = () => Math.round(Math.random() * 10000) + 1
 
-function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
+function getProductsClient (baseUrl) {
   return proxyquire('../../../../../app/services/clients/products.client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
@@ -28,14 +27,16 @@ describe('products client - create a new product', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'products',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    productsClient = getProductsClient(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('when a product is successfully created', () => {
@@ -49,7 +50,6 @@ describe('products client - create a new product', () => {
     const response = productFixtures.validProductResponse(request)
 
     before(done => {
-      const productsClient = getProductsClient()
       provider.addInteraction(
         new PactInteractionBuilder(PRODUCT_RESOURCE)
           .withUponReceiving('a valid create product request')
@@ -101,7 +101,6 @@ describe('products client - create a new product', () => {
     const request = productFixtures.validCreateProductRequest({ pay_api_token: '' })
 
     before(done => {
-      const productsClient = getProductsClient()
       provider.addInteraction(
         new PactInteractionBuilder(PRODUCT_RESOURCE)
           .withUponReceiving('an invalid create product request')

@@ -13,21 +13,22 @@ chai.should()
 
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 describe('adminusers client - authenticate', function () {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('authenticate user API - success', () => {
@@ -50,7 +51,7 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should authenticate a user successfully', function (done) {
-      adminusersClient.authenticateUser(request.username, request.password).should.be.fulfilled.then(function (user) {
+      adminUsersClient.authenticateUser(request.username, request.password).should.be.fulfilled.then(function (user) {
         expect(user.username).to.be.equal(validUserResponse.username)
         expect(user.email).to.be.equal(validUserResponse.email)
         expect(_.isEqual(user.serviceRoles[0].gatewayAccountIds, validUserResponse.service_roles[0].gateway_account_ids)).to.be.equal(true)
@@ -83,7 +84,7 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should fail authentication if invalid username / password', function (done) {
-      adminusersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
+      adminUsersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(401)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors).to.deep.equal(unauthorizedResponse.errors)
@@ -112,7 +113,7 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should error bad request if mandatory fields are missing', function (done) {
-      adminusersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
+      adminUsersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(2)
         expect(response.message.errors).to.deep.equal(badAuthenticateResponse.errors)
