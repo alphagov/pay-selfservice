@@ -163,7 +163,7 @@ module.exports = {
         },
         enable_link: true
       }
-      response(req, res, 'error-logged-in', messageUserHasBeenDeleted)
+      response(req, res, 'error-with-link', messageUserHasBeenDeleted)
     }
 
     return userService.findByExternalId(userToRemoveExternalId, correlationId)

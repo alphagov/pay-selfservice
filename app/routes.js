@@ -11,6 +11,7 @@ const accountUrls = require('./utils/gateway-account-urls')
 
 const userIsAuthorised = require('./middleware/user-is-authorised')
 const getServiceAndAccount = require('./middleware/get-service-and-gateway-account.middleware')
+const { NotFoundError } = require('./errors')
 
 // Middleware
 const { lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
@@ -404,7 +405,7 @@ module.exports.bind = function (app) {
 
   app.use(paths.account.root, account)
 
-  app.all('*', (req, res) => {
+  app.all('*', (req, res, next) => {
     if (accountUrls.isLegacyAccountsUrl(req.url)) {
       if (req.user) {
         const currentSessionAccountExternalId = req.gateway_account && req.gateway_account.currentGatewayAccountExternalId
@@ -430,7 +431,6 @@ module.exports.bind = function (app) {
     logger.info('Page not found', {
       url: req.originalUrl
     })
-    res.status(404)
-    res.render('404')
+    next(new NotFoundError('Route not found'))
   })
 }

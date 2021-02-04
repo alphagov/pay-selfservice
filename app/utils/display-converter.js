@@ -9,7 +9,10 @@ const hideServiceHeaderTemplates = [
   'services/edit-service-name',
   'services/add-service',
   'payouts/list',
-  'feedback/index'
+  'feedback/index',
+  'error',
+  'error-with-link',
+  '404'
 ]
 
 const hideServiceNavTemplates = [
@@ -89,9 +92,10 @@ const getAccount = account => {
 
 module.exports = function (req, data, template) {
   const convertedData = _.clone(data)
-  const { user, account, service, url: relativeUrl } = req
+  const { user, account, service, session, url: relativeUrl } = req
   const permissions = getPermissions(user, service)
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
+  convertedData.loggedIn = user && session && user.sessionVersion === session.version
   convertedData.paymentMethod = paymentMethod
   convertedData.permissions = permissions
   convertedData.hideServiceHeader = hideServiceHeader(template)

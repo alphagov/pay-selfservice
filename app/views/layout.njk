@@ -19,7 +19,6 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
-{% set loggedIn = true %}
 {% set accountType = currentGatewayAccount.type %}
 
 {% block pageTitle %}GOV.UK Pay{% endblock %}
@@ -47,7 +46,7 @@
 {% block content %}
   <div class="govuk-grid-row">
     {% block side_navigation %}{% endblock %}
-      {% include "includes/flash.njk" %}
+    {% include "includes/flash.njk" %}
     {% block mainContent %}{% endblock %}
   </div>
 {% endblock %}
