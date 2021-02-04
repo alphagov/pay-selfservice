@@ -1,31 +1,27 @@
 'use strict'
 
+const { NotFoundError } = require('../../errors')
 const { ledgerFindWithEvents } = require('../../services/transaction.service')
 const { response } = require('../../utils/response.js')
-const { renderErrorView } = require('../../utils/response.js')
 
-const defaultMsg = 'Error processing transaction view'
-const notFound = 'Charge not found'
-
-module.exports = (req, res) => {
+module.exports = async function showTransactionDetails (req, res, next) {
   const accountId = req.account.gateway_account_id
   const chargeId = req.params.chargeId
-  ledgerFindWithEvents(accountId, chargeId, req.correlationId)
-    .then(data => {
-      data.indexFilters = req.session.filters
-      if (req.session.backLink) {
-        data.redirectBackLink = req.session.backLink
-        delete req.session.backLink
-      }
-      data.service = req.service
+  try {
+    const data = await ledgerFindWithEvents(accountId, chargeId, req.correlationId)
+    data.indexFilters = req.session.filters
+    if (req.session.backLink) {
+      data.redirectBackLink = req.session.backLink
+      delete req.session.backLink
+    }
+    data.service = req.service
 
-      response(req, res, 'transaction-detail/index', data)
-    })
-    .catch(err => {
-      if (err === 'NOT_FOUND') {
-        renderErrorView(req, res, notFound, 404)
-      } else {
-        renderErrorView(req, res, defaultMsg, 500)
-      }
-    })
+    response(req, res, 'transaction-detail/index', data)
+  } catch (err) {
+    if (err === 'NOT_FOUND') {
+      next(new NotFoundError('Transaction was not found in ledger'))
+    } else {
+      next(new Error('Error getting transaction from ledger'))
+    }
+  }
 }
