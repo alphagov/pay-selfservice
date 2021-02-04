@@ -545,7 +545,7 @@ describe('dashboard-activity-controller', () => {
         let $ = cheerio.load(res.text)
         expect($('.account-status-panel').length).to.equal(1)
         const resultText = $('.account-status-panel').text()
-        expect(resultText).to.contain('Stripe have restricted your account')
+        expect(resultText).to.contain('Stripe has restricted your account')
       })
 
       it('it should display RESTRICTED account status panel when payouts=false, account is fully setup', async () => {
@@ -556,7 +556,7 @@ describe('dashboard-activity-controller', () => {
         let $ = cheerio.load(res.text)
         expect($('.account-status-panel').length).to.equal(1)
         const resultText = $('.account-status-panel').text()
-        expect(resultText).to.contain('Stripe have restricted your account')
+        expect(resultText).to.contain('Stripe has restricted your account')
         expect(resultText).to.contain('To start taking payments again, please contact support.')
       })
     })
