@@ -26,7 +26,13 @@ ${req.body['feedback-suggestion']}`
     req.flash('generic', 'Thanks for your feedback')
     return res.redirect(paths.feedback)
   } catch (err) {
-    logger.error(`Error posting request to Zendesk - ${err}`)
+    logger.error('Error posting request to Zendesk', { 
+      error: {
+        message: err.message,
+        stack: err.stack,
+        statusCode: err.statusCode
+      }
+    })
     req.flash('genericError', 'We couldn’t send your feedback. Please try again')
     return res.redirect(paths.feedback)
   }
