@@ -21,15 +21,25 @@ class UserAccountDisabledError extends DomainError {
 }
 
 /**
- * Thrown when the user does not have permission to access a resource.
+ * Thrown when the user does not have access to a resource.
  */
 class NotAuthorisedError extends DomainError {
 }
 
+/**
+ * Thrown when the user does not have the permission for the given service to access a resource.
+ */
 class PermissionDeniedError extends DomainError {
   constructor (permission) {
     super(`User does not have permission ${permission} for service`)
   }
+}
+
+/**
+ * Thrown when access is denied because the user does not have access to any services with the
+ * required permission.
+ */
+class NoServicesWithPermissionError extends DomainError {
 }
 
 /**
@@ -43,5 +53,6 @@ module.exports = {
   UserAccountDisabledError,
   NotAuthorisedError,
   PermissionDeniedError,
+  NoServicesWithPermissionError,
   NotFoundError
 }

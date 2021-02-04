@@ -7,11 +7,12 @@ const {
   UserAccountDisabledError,
   NotAuthorisedError,
   PermissionDeniedError,
+  NoServicesWithPermissionError,
   NotFoundError
 } = require('../errors')
 const paths = require('../paths')
 const { CORRELATION_HEADER } = require('../utils/correlation-header')
-const { renderErrorView } = require('../utils/response')
+const { renderErrorView, response } = require('../utils/response')
 
 module.exports = function errorHandler (err, req, res, next) {
   const logContext = {}
@@ -54,10 +55,15 @@ module.exports = function errorHandler (err, req, res, next) {
     return renderErrorView(req, res, 'You do not have the administrator rights to perform this operation.', 403)
   }
 
+  if (err instanceof NoServicesWithPermissionError) {
+    logger.info(`NoServicesWithPermissionError handled: ${err.message}. Rendering error page`, logContext)
+    return renderErrorView(req, res, err.message, 403)
+  }
+
   if (err instanceof NotFoundError) {
     logger.info(`NotFoundError handled: ${err.message}. Rendering 404 page`, logContext)
     res.status(404)
-    return res.render('404')
+    return response(req, res, '404')
   }
 
   if (err && err.code === 'EBADCSRFTOKEN') {

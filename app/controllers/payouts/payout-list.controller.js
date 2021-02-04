@@ -2,11 +2,12 @@ const moment = require('moment')
 const paths = require('../../../app/paths')
 const logger = require('../../utils/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
-const { response, renderErrorView } = require('../../utils/response.js')
+const { response } = require('../../utils/response.js')
 const permissions = require('../../utils/permissions')
 const payoutService = require('./payouts.service')
+const { NoServicesWithPermissionError } = require('../../errors')
 
-const listAllServicesPayouts = async function listAllServicesPayouts (req, res) {
+const listAllServicesPayouts = async function listAllServicesPayouts (req, res, next) {
   const { page } = req.query
 
   try {
@@ -14,8 +15,7 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res) 
     const userPermittedAccountsSummary = await permissions.getLiveGatewayAccountsFor(req.user, 'payouts:read')
 
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
-      res.status(401).render('error', { message: 'You do not have any associated services with rights to view payments to bank accounts.' })
-      return
+      return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view payments to bank accounts.'))
     }
     const payoutSearchResult = await payoutService.payouts(userPermittedAccountsSummary.gatewayAccountIds, req.user, page)
     const logContext = {
@@ -32,7 +32,7 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res) 
     }
     response(req, res, 'payouts/list', { payoutSearchResult, paths, payoutsReleaseDate })
   } catch (error) {
-    renderErrorView(req, res, 'Failed to fetch payouts')
+    return next(new Error('Failed to fetch payouts'))
   }
 }
 
