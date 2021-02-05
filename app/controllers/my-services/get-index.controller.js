@@ -27,9 +27,21 @@ function sortServicesByLiveThenName (a, b) {
   return 0
 }
 
+function isNotificationDismissed (cookies) {
+  try {
+    return cookies.govuk_pay_notifications &&
+      JSON.parse(cookies.govuk_pay_notifications).my_services_default_page_dismissed
+  } catch (err) {
+    // malformed cookie - continue
+    return false
+  }
+}
+
 module.exports = async function getServiceList (req, res) {
   const servicesRoles = lodash.get(req, 'user.serviceRoles', [])
-  const newServiceId = lodash.get(req, 'query.s')
+  const newServiceId = req.query && req.query.s
+
+  const isMyServicesDefaultView = process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW === 'true'
 
   const aggregatedGatewayAccountIds = servicesRoles
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
@@ -49,19 +61,22 @@ module.exports = async function getServiceList (req, res) {
       return serviceData
     })
     .sort((a, b) => {
-      if (process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW === 'true') {
+      if (isMyServicesDefaultView) {
         return sortServicesByLiveThenName(a, b)
       } else {
         return a.id - b.id
       }
     })
 
+  const isNotificatonsDismissed = isNotificationDismissed(req.cookies)
+
   const data = {
     services: servicesData,
     services_singular: servicesData.length === 1,
     env: process.env,
     has_account_with_payouts: hasLiveStripeAccount(aggregatedGatewayAccounts),
-    has_live_account: getLiveGatewayAccountIds(aggregatedGatewayAccounts).length
+    has_live_account: getLiveGatewayAccountIds(aggregatedGatewayAccounts).length,
+    show_whats_new_notification: !isNotificatonsDismissed && isMyServicesDefaultView
   }
   if (newServiceId) {
     servicesData.find(service => {
