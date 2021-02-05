@@ -11,8 +11,7 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const existingServiceExternalId = 'cp5wa'
@@ -21,14 +20,16 @@ describe('adminusers client - update user service role', function () {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('update user service role API - success', () => {
@@ -58,7 +59,7 @@ describe('adminusers client - update user service role', function () {
     afterEach(() => provider.verify())
 
     it('should update service role of a user successfully', function (done) {
-      adminusersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, request.role_name).should.be.fulfilled.then(function (updatedUser) {
+      adminUsersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, request.role_name).should.be.fulfilled.then(function (updatedUser) {
         const updatedServiceRole = updatedUser.serviceRoles.find(serviceRole => serviceRole.service.externalId === existingServiceExternalId)
         expect(updatedServiceRole.role.name).to.be.equal(role)
       }).should.notify(done)
@@ -85,7 +86,7 @@ describe('adminusers client - update user service role', function () {
     afterEach(() => provider.verify())
 
     it('should error not found for non existent user when updating service role', function (done) {
-      adminusersClient.updateServiceRole(externalId, existingServiceExternalId, request.role_name).should.be.rejected.then(function (response) {
+      adminUsersClient.updateServiceRole(externalId, existingServiceExternalId, request.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
@@ -110,7 +111,7 @@ describe('adminusers client - update user service role', function () {
     afterEach(() => provider.verify())
 
     it('should error conflict if user does not have access to the given service id', function (done) {
-      adminusersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, request.role_name).should.be.rejected.then(function (response) {
+      adminUsersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, request.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(409)
       }).should.notify(done)
     })
@@ -135,7 +136,7 @@ describe('adminusers client - update user service role', function () {
     afterEach(() => provider.verify())
 
     it('should error precondition failed, if number of remaining admins for the service is going to be less than 1', function (done) {
-      adminusersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, request.role_name).should.be.rejected.then(function (response) {
+      adminUsersClient.updateServiceRole(existingUserExternalId, existingServiceExternalId, request.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(412)
       }).should.notify(done)
     })

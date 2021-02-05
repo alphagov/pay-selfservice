@@ -10,21 +10,22 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 describe('adminusers client - session', function () {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('increment session version  API - success', () => {
@@ -45,7 +46,7 @@ describe('adminusers client - session', function () {
     afterEach(() => provider.verify())
 
     it('should increment session version successfully', function (done) {
-      adminusersClient.incrementSessionVersionForUser(existingExternalId).should.be.fulfilled.notify(done)
+      adminUsersClient.incrementSessionVersionForUser(existingExternalId).should.be.fulfilled.notify(done)
     })
   })
 
@@ -69,7 +70,7 @@ describe('adminusers client - session', function () {
     afterEach(() => provider.verify())
 
     it('should return not found if user not exist', function (done) {
-      adminusersClient.incrementSessionVersionForUser(nonExistentExternalId).should.be.rejected.then(function (response) {
+      adminUsersClient.incrementSessionVersionForUser(nonExistentExternalId).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

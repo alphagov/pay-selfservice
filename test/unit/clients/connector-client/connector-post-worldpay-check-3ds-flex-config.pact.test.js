@@ -13,8 +13,7 @@ const worldpay3dsFlexCredentialsFixtures = require('../../../fixtures/worldpay-3
 const Connector = require('../../../../app/services/clients/connector.client').ConnectorClient
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
-const PORT = Math.floor(Math.random() * 48127) + 1024
-const connectorClient = new Connector(`http://localhost:${PORT}`)
+let connectorClient
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
 const EXISTING_GATEWAY_ACCOUNT_ID = 333
 const CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS = 'worldpay/check-3ds-flex-config'
@@ -23,14 +22,16 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
-    port: PORT,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    connectorClient = new Connector(`http://localhost:${opts.port}`)
+  })
   afterEach(() => provider.verify())
   after(() => provider.finalize())
 

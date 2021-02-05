@@ -11,21 +11,22 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const INVITE_RESOURCE = '/v1/api/invites'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 describe('adminusers client - submit verification details', function () {
   const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   context('verify otp code - success', () => {
@@ -46,7 +47,7 @@ describe('adminusers client - submit verification details', function () {
     afterEach(() => provider.verify())
 
     it('should verify otp code successfully', function (done) {
-      adminusersClient.verifyOtpAndCreateUser(validRequest.code, validRequest.otp).should.be.fulfilled
+      adminUsersClient.verifyOtpAndCreateUser(validRequest.code, validRequest.otp).should.be.fulfilled
         .should.notify(done)
     })
   })
@@ -72,7 +73,7 @@ describe('adminusers client - submit verification details', function () {
     afterEach(() => provider.verify())
 
     it('should return 400 on missing fields', function (done) {
-      adminusersClient.verifyOtpAndCreateUser(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
+      adminUsersClient.verifyOtpAndCreateUser(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors[0]).to.equal('Field [code] is required')
@@ -98,7 +99,7 @@ describe('adminusers client - submit verification details', function () {
     afterEach(() => provider.verify())
 
     it('should return 404 if code cannot be found', function (done) {
-      adminusersClient.verifyOtpAndCreateUser(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
+      adminUsersClient.verifyOtpAndCreateUser(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
@@ -122,7 +123,7 @@ describe('adminusers client - submit verification details', function () {
     afterEach(() => provider.verify())
 
     it('return 410 if code locked', function (done) {
-      adminusersClient.verifyOtpAndCreateUser(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
+      adminUsersClient.verifyOtpAndCreateUser(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(410)
       }).should.notify(done)
     })

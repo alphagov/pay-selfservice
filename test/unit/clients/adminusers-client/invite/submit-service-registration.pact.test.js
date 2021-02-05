@@ -15,8 +15,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 chai.use(chaiAsPromised)
 
 const expect = chai.expect
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 const INVITE_PATH = '/v1/api/invites'
 
@@ -24,14 +23,16 @@ describe('adminusers client - self register service', function () {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -52,7 +53,7 @@ describe('adminusers client - self register service', function () {
     afterEach(() => provider.verify())
 
     it('should send a notification successfully', function (done) {
-      adminusersClient.submitServiceRegistration(validRegistration.email, validRegistration.telephone_number, validRegistration.password).should.be.fulfilled.then(function (response) {
+      adminUsersClient.submitServiceRegistration(validRegistration.email, validRegistration.telephone_number, validRegistration.password).should.be.fulfilled.then(function (response) {
       }).should.notify(done)
     })
   })
@@ -77,7 +78,7 @@ describe('adminusers client - self register service', function () {
     afterEach(() => provider.verify())
 
     it('should return bad request', function (done) {
-      adminusersClient.submitServiceRegistration(invalidInvite.email, invalidInvite.telephone_number, invalidInvite.password).should.be.rejected.then(function (response) {
+      adminUsersClient.submitServiceRegistration(invalidInvite.email, invalidInvite.telephone_number, invalidInvite.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors).to.deep.equal(errorResponse.errors)

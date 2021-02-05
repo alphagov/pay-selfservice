@@ -11,22 +11,23 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const INVITES_PATH = '/v1/api/invites/user'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 
 describe('adminusers client - invite user', function () {
   const externalServiceId = '12345'
   const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', function () {
@@ -48,7 +49,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should create a invite successfully', function (done) {
-      adminusersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.fulfilled.then(function (inviteResponse) {
+      adminUsersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.fulfilled.then(function (inviteResponse) {
         expect(inviteResponse.email).to.be.equal(validInvite.email)
       }).should.notify(done)
     })
@@ -73,7 +74,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return not found', function (done) {
-      adminusersClient.inviteUser(validInvite.email, validInvite.sender, nonExistentServiceId, validInvite.role_name).should.be.rejected.then(function (response) {
+      adminUsersClient.inviteUser(validInvite.email, validInvite.sender, nonExistentServiceId, validInvite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
@@ -100,7 +101,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return bad request', function (done) {
-      adminusersClient.inviteUser(invalidInvite.email, invalidInvite.sender, externalServiceId, invalidInvite.role_name).should.be.rejected.then(function (response) {
+      adminUsersClient.inviteUser(invalidInvite.email, invalidInvite.sender, externalServiceId, invalidInvite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors).to.deep.equal(errorResponse.errors)
@@ -128,7 +129,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return conflict', function (done) {
-      adminusersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.rejected.then(function (response) {
+      adminUsersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(409)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors).to.deep.equal(errorResponse.errors)
@@ -156,7 +157,7 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return not permitted', function (done) {
-      adminusersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.rejected.then(function (response) {
+      adminUsersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(403)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors).to.deep.equal(errorResponse.errors)

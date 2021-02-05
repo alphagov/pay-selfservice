@@ -12,8 +12,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const expect = chai.expect
 
 // Global setup
@@ -23,14 +22,16 @@ describe('submit resend otp code API', function () {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -51,7 +52,7 @@ describe('submit resend otp code API', function () {
     afterEach(() => provider.verify())
 
     it('should submit otp code resend successfully', function (done) {
-      adminusersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.fulfilled
+      adminUsersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.fulfilled
         .should.notify(done)
     })
   })
@@ -77,7 +78,7 @@ describe('submit resend otp code API', function () {
     afterEach(() => provider.verify())
 
     it('should return 400 on missing fields', function (done) {
-      adminusersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.rejected.then(function (response) {
+      adminUsersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors[0]).to.equal('Field [code] is required')
@@ -103,7 +104,7 @@ describe('submit resend otp code API', function () {
     afterEach(() => provider.verify())
 
     it('should return 404 when code is not found/expired', function (done) {
-      adminusersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.rejected.then(function (response) {
+      adminUsersClient.resendOtpCode(validOtpResend.code, validOtpResend.telephone_number).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

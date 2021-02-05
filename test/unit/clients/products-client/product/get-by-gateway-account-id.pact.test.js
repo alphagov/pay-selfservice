@@ -11,10 +11,9 @@ const { pactifySimpleArray } = require('../../../../test-helpers/pact/pactifier'
 
 // Constants
 const API_RESOURCE = '/v1/api'
-const port = Math.floor(Math.random() * 48127) + 1024
-let result
+let result, productsClient
 
-function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
+function getProductsClient (baseUrl) {
   return proxyquire('../../../../../app/services/clients/products.client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
@@ -26,14 +25,16 @@ describe('products client - find products associated with a particular gateway a
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'products',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    productsClient = getProductsClient(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('when products are successfully found', () => {
@@ -45,7 +46,6 @@ describe('products client - find products associated with a particular gateway a
     ]
 
     before(done => {
-      const productsClient = getProductsClient()
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withUponReceiving('a valid get product by gateway account id request')
         .withMethod('GET')
@@ -85,7 +85,6 @@ describe('products client - find products associated with a particular gateway a
 
   describe('when no products are found', () => {
     before(done => {
-      const productsClient = getProductsClient()
       const gatewayAccountId = 98765
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withUponReceiving('a valid get product by gateway account id where the gateway account has no products')

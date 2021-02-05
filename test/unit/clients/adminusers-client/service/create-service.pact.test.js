@@ -12,8 +12,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const expect = chai.expect
 
 // Global setup
@@ -23,14 +22,16 @@ describe('adminusers client - create a new service', function () {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -60,7 +61,7 @@ describe('adminusers client - create a new service', function () {
     afterEach(() => provider.verify())
 
     it('should create a new service', function (done) {
-      adminusersClient.createService().should.be.fulfilled.then(service => {
+      adminUsersClient.createService().should.be.fulfilled.then(service => {
         expect(service.externalId).to.equal(externalId)
         expect(service.name).to.equal(name)
         expect(service.gatewayAccountIds).to.deep.equal(gatewayAccountIds)
@@ -98,7 +99,7 @@ describe('adminusers client - create a new service', function () {
     afterEach(() => provider.verify())
 
     it('should create a new service', function (done) {
-      adminusersClient.createService(null, null, validRequest.gateway_account_ids).should.be.fulfilled.then(service => {
+      adminUsersClient.createService(null, null, validRequest.gateway_account_ids).should.be.fulfilled.then(service => {
         expect(service.externalId).to.equal(externalId)
         expect(service.name).to.equal(name)
         expect(service.gatewayAccountIds).to.deep.equal(validCreateServiceResponse.gateway_account_ids)
@@ -138,7 +139,7 @@ describe('adminusers client - create a new service', function () {
     afterEach(() => provider.verify())
 
     it('should create a new service', function (done) {
-      adminusersClient.createService('Service name', null, null).should.be.fulfilled.then(service => {
+      adminUsersClient.createService('Service name', null, null).should.be.fulfilled.then(service => {
         expect(service.externalId).to.equal(externalId)
         expect(service.name).to.equal(name)
         expect(service.gatewayAccountIds).to.deep.equal(gatewayAccountIds)

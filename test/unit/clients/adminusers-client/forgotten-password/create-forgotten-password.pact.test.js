@@ -7,8 +7,7 @@ const userFixtures = require('../../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
-const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 chai.use(chaiAsPromised)
 const expect = chai.expect
 const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords'
@@ -17,14 +16,16 @@ describe('adminusers client - create forgotten password', function () {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -47,7 +48,7 @@ describe('adminusers client - create forgotten password', function () {
     afterEach(() => provider.verify())
 
     it('should create a forgotten password entry successfully', function (done) {
-      adminusersClient.createForgottenPassword(request.username).should.notify(done)
+      adminUsersClient.createForgottenPassword(request.username).should.notify(done)
     })
   })
 
@@ -71,7 +72,7 @@ describe('adminusers client - create forgotten password', function () {
     afterEach(() => provider.verify())
 
     it('should error when forgotten password creation if mandatory fields are missing', function (done) {
-      adminusersClient.createForgottenPassword(request.username).should.be.rejected.then(function (response) {
+      adminUsersClient.createForgottenPassword(request.username).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors).to.deep.equal(badForgottenPasswordResponse.errors)
@@ -98,7 +99,7 @@ describe('adminusers client - create forgotten password', function () {
     afterEach(() => provider.verify())
 
     it('should error when forgotten password creation if no user found', function (done) {
-      adminusersClient.createForgottenPassword(request.username).should.be.rejected.then(function (response) {
+      adminUsersClient.createForgottenPassword(request.username).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

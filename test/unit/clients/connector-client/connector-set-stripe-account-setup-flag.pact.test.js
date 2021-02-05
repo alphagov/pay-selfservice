@@ -11,8 +11,7 @@ const stripeAccountSetupFixtures = require('../../../fixtures/stripe-account-set
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
-const port = Math.floor(Math.random() * 48127) + 1024
-const connectorClient = new Connector(`http://localhost:${port}`)
+let connectorClient
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -24,14 +23,16 @@ describe('connector client - set stripe account setup flag', () => {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    connectorClient = new Connector(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('set bank account flag', () => {

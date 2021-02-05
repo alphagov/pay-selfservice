@@ -12,8 +12,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
-let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const expect = chai.expect
 
 // Global setup
@@ -23,14 +22,16 @@ describe('adminusers client - generate otp code for user invite', function () {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -53,7 +54,7 @@ describe('adminusers client - generate otp code for user invite', function () {
     afterEach(() => provider.verify())
 
     it('should generate user invite otp code successfully', function (done) {
-      adminusersClient.generateInviteOtpCode(inviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.fulfilled.notify(done)
+      adminUsersClient.generateInviteOtpCode(inviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.fulfilled.notify(done)
     })
   })
 
@@ -80,7 +81,7 @@ describe('adminusers client - generate otp code for user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 400 BAD REQUEST telephone number is not valid', function (done) {
-      adminusersClient.generateInviteOtpCode(inviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.rejected.then(function (response) {
+      adminUsersClient.generateInviteOtpCode(inviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors[0]).to.equal('Field [telephone_number] is required')
@@ -107,7 +108,7 @@ describe('adminusers client - generate otp code for user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 404 NOT FOUND if user invite code not found', function (done) {
-      adminusersClient.generateInviteOtpCode(nonExistingInviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.rejected.then(function (response) {
+      adminUsersClient.generateInviteOtpCode(nonExistingInviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

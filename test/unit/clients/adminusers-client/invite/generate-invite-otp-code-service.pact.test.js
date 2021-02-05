@@ -10,8 +10,7 @@ const getAdminUsersClient = require('../../../../../app/services/clients/adminus
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
-let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminUsersClient
 const expect = chai.expect
 
 // Global setup
@@ -21,14 +20,16 @@ describe('adminusers client - generate otp code for service invite', function ()
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+  })
   after(() => provider.finalize())
 
   describe('success', () => {
@@ -49,7 +50,7 @@ describe('adminusers client - generate otp code for service invite', function ()
     afterEach(() => provider.verify())
 
     it('should generate service invite otp code successfully', function (done) {
-      adminusersClient.generateInviteOtpCode(inviteCode).should.be.fulfilled.notify(done)
+      adminUsersClient.generateInviteOtpCode(inviteCode).should.be.fulfilled.notify(done)
     })
   })
 
@@ -70,7 +71,7 @@ describe('adminusers client - generate otp code for service invite', function ()
     afterEach(() => provider.verify())
 
     it('should 404 NOT FOUND if service invite code not found', function (done) {
-      adminusersClient.generateInviteOtpCode(nonExistingInviteCode).should.be.rejected.then(function (response) {
+      adminUsersClient.generateInviteOtpCode(nonExistingInviteCode).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })

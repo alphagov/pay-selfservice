@@ -9,10 +9,9 @@ const PactInteractionBuilder = require('../../../../test-helpers/pact/pact-inter
 
 // Constants
 const API_RESOURCE = '/v1/api'
-const port = Math.floor(Math.random() * 48127) + 1024
-let result, productExternalId, gatewayAccountId
+let result, productExternalId, gatewayAccountId, productsClient
 
-function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
+function getProductsClient (baseUrl) {
   return proxyquire('../../../../../app/services/clients/products.client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
@@ -24,19 +23,20 @@ describe('products client - delete a product', () => {
   let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'products',
-    port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge'
   })
 
-  before(() => provider.setup())
+  before(async () => {
+    const opts = await provider.setup()
+    productsClient = getProductsClient(`http://localhost:${opts.port}`)
+  })
   after(() => provider.finalize())
 
   describe('when a product is successfully deleted', () => {
     before(done => {
-      const productsClient = getProductsClient()
       gatewayAccountId = '999'
       productExternalId = 'a_valid_external_id'
       provider.addInteraction(
@@ -63,7 +63,6 @@ describe('products client - delete a product', () => {
 
   describe('delete a product - bad request', () => {
     before(done => {
-      const productsClient = getProductsClient()
       productExternalId = 'a_non_existant_external_id'
       provider.addInteraction(
         new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
