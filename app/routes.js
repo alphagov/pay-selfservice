@@ -27,6 +27,7 @@ const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-
 
 // Controllers
 const staticController = require('./controllers/static.controller')
+const rootController = require('./controllers/root/index.controller')
 const transactionsDownloadController = require('./controllers/transactions/transaction-download.controller')
 const transactionsListController = require('./controllers/transactions/transaction-list.controller')
 const transactionDetailController = require('./controllers/transactions/transaction-detail.controller')
@@ -137,7 +138,7 @@ module.exports.bind = function (app) {
   app.post(registerUser.otpVerify, registerController.submitOtpVerify)
   app.get(registerUser.reVerifyPhone, registerController.showReVerifyPhone)
   app.post(registerUser.reVerifyPhone, registerController.submitReVerifyPhone)
-  app.get(registerUser.logUserIn, loginController.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardController.dashboardActivity)
+  app.get(registerUser.logUserIn, loginController.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, rootController.get)
 
   // LOGIN
   app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
@@ -189,8 +190,8 @@ module.exports.bind = function (app) {
   app.use(authenticatedPaths, enforceUserAuthenticated) // Enforce authentication on all get requests
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
-  // Site index - redirect to dashboard for last visited account
-  app.get(index, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardController.redirectToDashboard)
+  // Site index
+  app.get(index, enforceUserAuthenticated, hasServices, resolveService, getAccount, rootController.get)
 
   // -------------------------
   // OUTSIDE OF SERVICE ROUTES
