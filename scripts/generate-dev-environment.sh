@@ -65,5 +65,6 @@ SELFSERVICE_URL=https://selfservice.pymnt.localdomain
 ZENDESK_URL=https://govuk.zendesk.com/api/v2
 STRIPE_HOST=localhost
 STRIPE_PORT=8000
+ENABLE_MY_SERVICES_AS_DEFAULT_VIEW=true
 $URL_MAP
 EOM
