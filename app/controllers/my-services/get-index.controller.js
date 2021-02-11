@@ -1,6 +1,7 @@
 'use strict'
 
 const lodash = require('lodash')
+const moment = require('moment')
 
 const { response } = require('../../utils/response')
 const serviceService = require('../../services/service.service')
@@ -37,6 +38,15 @@ function isNotificationDismissed (cookies) {
   }
 }
 
+function shouldShowNotification (isMyServicesDefaultView, cookies) {
+  let isBeforeEndDate = true
+  if (process.env.MY_SERVICES_DEFAULT_NOTIFICATION_END_DATE) {
+    const notificationEndDate = moment.unix(process.env.MY_SERVICES_DEFAULT_NOTIFICATION_END_DATE)
+    isBeforeEndDate = moment().isBefore(notificationEndDate)
+  }
+  return isMyServicesDefaultView && isBeforeEndDate && !isNotificationDismissed(cookies)
+}
+
 module.exports = async function getServiceList (req, res) {
   const servicesRoles = lodash.get(req, 'user.serviceRoles', [])
   const newServiceId = req.query && req.query.s
@@ -68,15 +78,13 @@ module.exports = async function getServiceList (req, res) {
       }
     })
 
-  const isNotificatonsDismissed = isNotificationDismissed(req.cookies)
-
   const data = {
     services: servicesData,
     services_singular: servicesData.length === 1,
     env: process.env,
     has_account_with_payouts: hasLiveStripeAccount(aggregatedGatewayAccounts),
     has_live_account: getLiveGatewayAccountIds(aggregatedGatewayAccounts).length,
-    show_whats_new_notification: !isNotificatonsDismissed && isMyServicesDefaultView
+    show_whats_new_notification: shouldShowNotification(isMyServicesDefaultView, req.cookies)
   }
   if (newServiceId) {
     servicesData.find(service => {
