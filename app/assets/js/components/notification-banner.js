@@ -1,5 +1,6 @@
 (function() {
   var BANNER_ID = 'my-services-whats-new-notification'
+  var HIDE_BUTTON_ID = 'my-services-whats-new-notification__hide-button'
   var SIX_MONTHS_IN_SECS = 60 * 60 * 24 * 30 * 6
 
   function hideBanner(e) {
@@ -35,10 +36,11 @@
 
   function init(){
     const banner = document.getElementById(BANNER_ID)
+    const hideButton = document.getElementById(HIDE_BUTTON_ID)
 
-    if (banner){
+    if (banner && hideButton){
       initAnalytics()
-      banner.addEventListener('click', hideBanner, false)
+      hideButton.addEventListener('click', hideBanner, false)
     }    
   } 
 
