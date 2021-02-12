@@ -13,8 +13,8 @@
   }
   
   function runAnalytics(){
-    if (window._gaq){
-      _gaq.push(['_trackEvent', 'button', 'clicked', 'close', undefined, 'true'])
+    if (window.ga){
+      ga('send', 'event', { eventCategory: 'Banner', eventAction: 'Click', eventLabel: 'BannerClose', eventValue: 0})
     }
   }
 
