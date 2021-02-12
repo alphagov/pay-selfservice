@@ -18,23 +18,22 @@
   <h1 class="govuk-heading-l page-title">Create an account</h1>
   <form action="{{routes.selfCreateService.register}}" method="post" id="submit-service-creation" class="form submit-registration">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    {{
-      govukInput({
-        id: "email",
-        name: "email",
-        type: "email",
-        classes: "govuk-input--width-20",
-        label: {
-            text: "Email",
-            classes: "govuk-label--s"
-        },
-        value: email,
-        hint: {
-          text: "Must be from a government organisation"
-        },
-        errorMessage: { text: errors.email } if errors.email else false
-      })
-    }}
+    <div class="govuk-form-group {% if errors['email'] %} govuk-form-group--error {% endif %}">
+        <label class="govuk-label govuk-label--s" for="email">
+            Email
+        </label>
+        <div id="email-hint" class="govuk-hint">
+            <p class="govuk-hint">Must be from a government organisation</p>
+        </div>
+        {% if errors['email'] %}
+            <span id="email-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> {{errors["email"]}}. If you cannot create an account using your public sector email address, please <a href="https://www.payments.service.gov.uk/support/" id='support-link'>contact support</a>.
+            </span>
+        {% endif %}
+        <input class="govuk-input govuk-input--width-20 {% if errors['email'] %} govuk-input--error {% endif %}"
+            id="email" name="email" type="email" aria-describedby="email-hint"
+            data-validate="required" value="{{email}}"/>
+    </div>
     {{
       govukInput({
         id: "telephone-number",
