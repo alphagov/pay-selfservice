@@ -1,11 +1,9 @@
 .nyc_output
-.idea
 .sass-cache
 .DS_Store
 .start.pid
 .project
 .settings
-.start.pid
 config/dev-env.json
 .env
 public
@@ -17,6 +15,7 @@ pacts/
 *.txt
 *.log
 *.pid
+.pre-commit-config.yaml
 
 # IntelliJ gubbins
 .idea

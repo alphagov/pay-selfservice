@@ -96,4 +96,27 @@ describe('Self-create service view', () => {
 
     done()
   })
+
+  it('should render email error', done => {
+    const telephoneNumber = '01134960000'
+    const email = 'bob@example.com'
+    const templateData = {
+      telephoneNumber: telephoneNumber,
+      email,
+      errors: { email: 'Enter a public sector email address' }
+    }
+
+    const body = renderTemplate('self-create-service/register', templateData)
+
+    body.should.containSelector('h1').withExactText('Create an account')
+
+    body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.register)
+    body.should.containInputField('email', 'email')
+    body.should.containSelector('#email-error').withText('Error: Enter a public sector email address. If you cannot create an account using your public sector email address, please contact support.')
+    body.should.containSelector('#support-link').withAttribute('href', 'https://www.payments.service.gov.uk/support/')
+    body.should.containInputField('telephone-number', 'tel')
+    body.should.containInputField('password', 'password')
+
+    done()
+  })
 })
