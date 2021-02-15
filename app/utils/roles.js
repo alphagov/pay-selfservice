@@ -3,7 +3,9 @@ const _ = require('lodash')
 const roles = {
   'admin': { extId: 200, name: 'admin', description: 'Administrator' },
   'view-and-refund': { extId: 300, name: 'view-and-refund', description: 'View and refund' },
-  'view-only': { extId: 400, name: 'view-only', description: 'View only' }
+  'view-only': { extId: 400, name: 'view-only', description: 'View only' },
+  'view-and-initiate-moto': { extId: 500, name: 'view-and-initiate-moto', description: 'View and take telephone payments' },
+  'view-refund-and-initiate-moto': { extId: 600, name: 'view-refund-and-initiate-moto', description: 'View, refund and take telephone payments' }
 }
 
 module.exports = {
@@ -13,7 +15,7 @@ module.exports = {
   getRoleByExtId: roleExtId => {
     let found
     _.toArray(roles).forEach(role => {
-      if (role.extId === roleExtId) {
+      if (role.extId === roleExtId && role.extId !== 500 && role.extId !== 600) {
         found = role
       }
     })

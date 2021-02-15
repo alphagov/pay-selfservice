@@ -42,19 +42,18 @@ Team members - GOV.UK Pay
       </h3>
       <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
-          {% for admin in team_members["admin"] %}
+          {% for team_member in team_members["admin"] %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
+                {% set team_member_label %}
+                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                {% endset %}
                 {% if permissions.users_service_read %}
-                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block " id="admin-{{ loop.index }}-trnk" href="{{ admin.link }}">
-                {% else %}
-                  <span>
-                {% endif %}
-                {{ admin.username }} {% if admin.is_current %}(you){% endif %}
-                {% if permissions.users_service_read %}
+                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="admin-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
+                    {{ team_member_label }}
                   </a>
                 {% else %}
-                  </span>
+                  <span>{{ team_member_label }}</span>
                 {% endif %}
               </td>
             </tr>
@@ -72,16 +71,15 @@ Team members - GOV.UK Pay
           {% for team_member in team_members["view-and-refund"] %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
+                {% set team_member_label %}
+                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                {% endset %}
                 {% if permissions.users_service_read %}
-                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block " id="view-refund-member-{{ loop.index }}-link" href="{{ team_member.link }}">
-                {% else %}
-                  <span>
-                {% endif %}
-                {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
-                {% if permissions.users_service_read %}
+                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="view-and-refund-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
+                    {{ team_member_label }}
                   </a>
                 {% else %}
-                  </span>
+                  <span>{{ team_member_label }}</span>
                 {% endif %}
               </td>
             </tr>
@@ -100,16 +98,69 @@ Team members - GOV.UK Pay
           {% for team_member in team_members["view-only"] %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
+                {% set team_member_label %}
+                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                {% endset %}
                 {% if permissions.users_service_read %}
-                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block " id="view-only-member-{{ loop.index }}-link" href="{{ team_member.link }}">
-                {% else %}
-                  <span>
-                {% endif %}
-                {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
-                {% if permissions.users_service_read %}
+                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="view-only-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
+                    {{ team_member_label }}
                   </a>
                 {% else %}
-                  </span>
+                  <span>{{ team_member_label }}</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+    {% if team_members["view-and-initiate-moto"].length %}
+    <div class="admin-list" id="team-members-view-and-initiate-moto-list">
+      <h3 id="view-and-initiate-moto-role-header" class="govuk-heading-m">
+        View and take telephone payments <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["view-and-initiate-moto"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
+        <tbody class="govuk-table__body">
+          {% for team_member in team_members["view-and-initiate-moto"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                {% set team_member_label %}
+                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                {% endset %}
+                {% if permissions.users_service_read %}
+                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="view-and-intiate-moto-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
+                    {{ team_member_label }}
+                  </a>
+                {% else %}
+                  <span>{{ team_member_label }}</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+    {% if team_members["view-refund-and-initiate-moto"].length %}
+    <div class="admin-list" id="team-members-view-refund-and-initiate-moto-list">
+      <h3 id="view-refund-and-initiate-moto-role-header" class="govuk-heading-m">
+        View, refund and take telephone payments <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["view-refund-and-initiate-moto"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
+        <tbody class="govuk-table__body">
+          {% for team_member in team_members["view-refund-and-initiate-moto"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                {% set team_member_label %}
+                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                {% endset %}
+                {% if permissions.users_service_read %}
+                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="view-refund-and-initiate-moto-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
+                    {{ team_member_label }}
+                  </a>
+                {% else %}
+                  <span>{{ team_member_label }}</span>
                 {% endif %}
               </td>
             </tr>
@@ -181,6 +232,46 @@ Team members - GOV.UK Pay
         </tbody>
       </table>
     </div>
-  {% endif %}
+    {% endif %}
+    {% if invited_team_members["view-and-initiate-moto"].length %}
+    <div class="admin-list" id="invited-team-members-view-and-initiate-moto-list">
+      <h3 id="invited-team-members-view-and-initiate-moto-role-header" class="govuk-heading-s">
+        View and take telephone payments <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["view-and-initiate-moto"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
+        <tbody class="govuk-table__body">
+          {% for team_member in invited_team_members["view-and-initiate-moto"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>
+                  {{ team_member.username }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+    {% if invited_team_members["view-refund-and-initiate-moto"].length %}
+    <div class="admin-list" id="invited-team-members-view-refund-and-initiate-moto-list">
+      <h3 id="invited-team-members-view-refund-and-initiate-moto-role-header" class="govuk-heading-s">
+        View, refund and take telephone payments <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["view-refund-and-initiate-moto"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
+        <tbody class="govuk-table__body">
+          {% for team_member in invited_team_members["view-refund-and-initiate-moto"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>
+                  {{ team_member.username }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
   {% endif %}
 {% endblock %}
