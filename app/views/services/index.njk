@@ -22,11 +22,11 @@
             <form method="POST" action="{{routes.serviceSwitcher.removeNotification}}">
               <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
               {{ govukButton({
-                text: "Hide message",
+                text: "Close",
                 classes: "govuk-button--secondary govuk-!-margin-bottom-0",
                 type: "submit",
                 attributes: {
-                  "id": "my-services-whats-new-notification__hide-button"
+                  "id": "my-services-whats-new-notification__close-button"
                 }
               }) }}
             </form>

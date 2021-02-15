@@ -13,13 +13,13 @@ describe('My services notification banner', () => {
     ])
   })
 
-  it(`should display the notification banner and hide it after clicking the 'hide message' button`, () => {
+  it(`should display the notification banner and hide it after clicking the 'Close' button`, () => {
     cy.setEncryptedCookies(userExternalId, 1)
     cy.visit('/my-services')
     cy.get('#my-services-whats-new-notification').should('exist')
 
     // click hide button and check hidden
-    cy.get('#my-services-whats-new-notification__hide-button').click()
+    cy.get('#my-services-whats-new-notification__close-button').click()
     cy.get('#my-services-whats-new-notification').should('not.exist')
 
     // check not shown when page is reloaded
