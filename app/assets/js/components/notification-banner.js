@@ -1,6 +1,6 @@
 (function() {
   var BANNER_ID = 'my-services-whats-new-notification'
-  var HIDE_BUTTON_ID = 'my-services-whats-new-notification__hide-button'
+  var HIDE_BUTTON_ID = 'my-services-whats-new-notification__close-button'
   var SIX_MONTHS_IN_SECS = 60 * 60 * 24 * 30 * 6
 
   function hideBanner(e) {
