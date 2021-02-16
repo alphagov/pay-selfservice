@@ -13,6 +13,7 @@ class Service {
     this.experimentalFeaturesEnabled = serviceData.experimental_features_enabled
     this.createdDate = serviceData.created_date
     this.currentPspTestAccountStage = serviceData.current_psp_test_account_stage
+    this.agentInitiatedMotoEnabled = serviceData.agent_initiated_moto_enabled
   }
 
   /**
@@ -31,7 +32,8 @@ class Service {
       current_go_live_stage: this.currentGoLiveStage,
       experimental_features_enabled: this.experimentalFeaturesEnabled,
       created_date: this.createdDate,
-      current_psp_test_account_stage: this.currentPspTestAccountStage
+      current_psp_test_account_stage: this.currentPspTestAccountStage,
+      agent_initiated_moto_enabled: this.agentInitiatedMotoEnabled
     }
   }
 }

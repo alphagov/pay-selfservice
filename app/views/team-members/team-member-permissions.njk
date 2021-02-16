@@ -30,62 +30,154 @@ Edit team member permissions - GOV.UK Pay
   </dl>
   <form id="role-update-form" method="post" action="{{editPermissionsLink}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    {{
-      govukRadios({
-        idPrefix: 'role-input',
-        name: 'role-input',
-        fieldset: {
-          legend: {
-            text: 'Permission level',
-            classes: 'govuk-fieldset__legend--s'
-          }
-        },
-        items: [
-          {
-              value: admin.id,
-              id: "role-admin-input",
-              text: 'Administrator',
-              classes: 'govuk-label--s',
-              checked: admin.checked,
-              hint: {
-                html: '<ul class="govuk-list pay-text-grey">
-                        <li>View transactions</li>
-                        <li>Refund payments</li>
-                        <li>Manage settings</li>
-                      </ul>'
-              }
+    {% if serviceHasAgentInitiatedMotoEnabled %}
+      {{
+        govukRadios({
+          idPrefix: 'role-input',
+          name: 'role-input',
+          fieldset: {
+            legend: {
+              text: 'Permission level',
+              classes: 'govuk-fieldset__legend--s'
+            }
           },
-          {
-              value: viewAndRefund.id,
-              id: "role-view-and-refund-input",
-              text: 'View and refund',
-              classes: 'govuk-label--s',
-              checked: viewAndRefund.checked,
-              hint: {
-                html: '<ul class="govuk-list pay-text-grey">
-                        <li>View transactions</li>
-                        <li>Refund payments</li>
-                        <li>Cannot manage settings</li>
-                      </ul>'
-              }
+          items: [
+            {
+                value: admin.id,
+                id: "role-admin-input",
+                text: 'Administrator',
+                classes: 'govuk-label--s',
+                checked: admin.checked,
+                hint: {
+                  html: '<ul class="govuk-list pay-text-grey">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Take telephone payments</li>
+                          <li>Manage settings</li>
+                        </ul>'
+                }
+            },
+            {
+                value: viewAndRefund.id,
+                id: "role-view-and-refund-input",
+                text: 'View and refund',
+                classes: 'govuk-label--s',
+                checked: viewAndRefund.checked,
+                hint: {
+                  html: '<ul class="govuk-list pay-text-grey">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Cannot take telephone payments</li>
+                          <li>Cannot manage settings</li>
+                        </ul>'
+                }
+            },
+            {
+                value: view.id,
+                id: "role-view-input",
+                text: 'View only',
+                classes: 'govuk-label--s',
+                checked: view.checked,
+                hint: {
+                  html: '<ul class="govuk-list pay-text-grey">
+                          <li>View transactions</li>
+                          <li>Cannot refund payments</li>
+                          <li>Cannot take telephone payments</li>
+                          <li>Cannot manage settings</li>
+                        </ul>'
+                }
+            },
+            {
+                value: viewAndInitiateMoto.id,
+                id: "role-view-and-initiate-moto-input",
+                text: 'View and take telephone payments',
+                classes: 'govuk-label--s',
+                checked: viewAndInitiateMoto.checked,
+                hint: {
+                  html: '<ul class="govuk-list pay-text-grey">
+                          <li>View transactions</li>
+                          <li>Cannot refund payments</li>
+                          <li>Take telephone payments</li>
+                          <li>Cannot manage settings</li>
+                        </ul>'
+                }
+            },
+            {
+                value: viewRefundAndInitiateMoto.id,
+                id: "role-view-refund-and-initiate-moto-input",
+                text: 'View, refund and take telephone payments',
+                classes: 'govuk-label--s',
+                checked: viewRefundAndInitiateMoto.checked,
+                hint: {
+                  html: '<ul class="govuk-list pay-text-grey">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Take telephone payments</li>
+                          <li>Cannot manage settings</li>
+                        </ul>'
+                }
+            }
+          ]
+        })
+      }}
+    {% else %}
+      {{
+        govukRadios({
+          idPrefix: 'role-input',
+          name: 'role-input',
+          fieldset: {
+            legend: {
+              text: 'Permission level',
+              classes: 'govuk-fieldset__legend--s'
+            }
           },
-          {
-              value: view.id,
-              id: "role-view-input",
-              text: 'View only',
-              classes: 'govuk-label--s',
-              checked: view.checked,
-              hint: {
-                html: '<ul class="govuk-list pay-text-grey">
-                        <li>View transactions</li>
-                        <li>Cannot refund payments</li>
-                        <li>Cannot manage settings</li>
-                      </ul>'
-              }
-          }
-        ]
-      })
-    }}
+          items: [
+            {
+                value: admin.id,
+                id: "role-admin-input",
+                text: 'Administrator',
+                classes: 'govuk-label--s',
+                checked: admin.checked,
+                hint: {
+                  html: '<ul class="govuk-list pay-text-grey">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Manage settings</li>
+                        </ul>'
+                }
+            },
+            {
+                value: viewAndRefund.id,
+                id: "role-view-and-refund-input",
+                text: 'View and refund',
+                classes: 'govuk-label--s',
+                checked: viewAndRefund.checked,
+                hint: {
+                  html: '<ul class="govuk-list pay-text-grey">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Cannot manage settings</li>
+                        </ul>'
+                }
+            },
+            {
+                value: view.id,
+                id: "role-view-input",
+                text: 'View only',
+                classes: 'govuk-label--s',
+                checked: view.checked,
+                hint: {
+                  html: '<ul class="govuk-list pay-text-grey">
+                          <li>View transactions</li>
+                          <li>Cannot refund payments</li>
+                          <li>Cannot manage settings</li>
+                        </ul>'
+                }
+            }
+          ]
+        })
+      }}
+    {% endif %}
 
     {{
       govukWarningText({

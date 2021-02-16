@@ -15,7 +15,7 @@ module.exports = {
   getRoleByExtId: roleExtId => {
     let found
     _.toArray(roles).forEach(role => {
-      if (role.extId === roleExtId && role.extId !== 500 && role.extId !== 600) {
+      if (role.extId === roleExtId) {
         found = role
       }
     })
