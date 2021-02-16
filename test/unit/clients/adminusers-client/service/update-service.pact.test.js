@@ -10,6 +10,7 @@ const getAdminUsersClient = require('../../../../../app/services/clients/adminus
 const serviceFixtures = require('../../../../fixtures/service.fixtures')
 const { validPaths, ServiceUpdateRequest } = require('../../../../../app/models/ServiceUpdateRequest.class')
 const goLiveStage = require('../../../../../app/models/go-live-stage')
+const pspTestAccountStage = require('../../../../../app/models/psp-test-account-stage')
 const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
@@ -85,6 +86,7 @@ describe('adminusers client - patch request to update service', function () {
       email: 'foo@example.com'
     }
     const currentGoLiveStage = goLiveStage.ENTERED_ORGANISATION_NAME
+    const currentPspTestAccountStage = pspTestAccountStage.REQUEST_SUBMITTED
 
     const validUpdateServiceRequest = new ServiceUpdateRequest()
       .replace(validPaths.merchantDetails.name, merchantDetails.name)
@@ -96,12 +98,14 @@ describe('adminusers client - patch request to update service', function () {
       .replace(validPaths.merchantDetails.telephoneNumber, merchantDetails.telephone_number)
       .replace(validPaths.merchantDetails.email, merchantDetails.email)
       .replace(validPaths.currentGoLiveStage, currentGoLiveStage)
+      .replace(validPaths.currentPspTestAccountStage, currentPspTestAccountStage)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({
       external_id: existingServiceExternalId,
       merchant_details: merchantDetails,
-      current_go_live_stage: currentGoLiveStage
+      current_go_live_stage: currentGoLiveStage,
+      current_psp_test_account_stage: currentPspTestAccountStage
     })
 
     before(() => {
@@ -123,6 +127,7 @@ describe('adminusers client - patch request to update service', function () {
       expect(service.externalId).to.equal(existingServiceExternalId)
       expect(service.merchantDetails).to.deep.equal(merchantDetails)
       expect(service.currentGoLiveStage).to.equal(currentGoLiveStage)
+      expect(service.currentPspTestAccountStage).to.equal(currentPspTestAccountStage)
     })
   })
 

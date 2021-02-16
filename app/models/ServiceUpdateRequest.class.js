@@ -11,7 +11,8 @@ const validPaths = {
     telephoneNumber: 'merchant_details/telephone_number',
     email: 'merchant_details/email'
   },
-  currentGoLiveStage: 'current_go_live_stage'
+  currentGoLiveStage: 'current_go_live_stage',
+  currentPspTestAccountStage: 'current_psp_test_account_stage'
 }
 
 const ops = {
