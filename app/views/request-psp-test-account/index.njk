@@ -1,0 +1,73 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+  Request Stripe test account - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "My services",
+      href: routes.serviceSwitcher.index
+    })
+  }}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+
+  {% if isServiceLive %}
+    <h1 class="govuk-heading-l">
+      Test account cannot be requested
+    <h1>
+    <p class="govuk-body">
+      Stripe test accounts cannot be requested for a live service. You can create another service and request a Stripe test account
+    </p>
+  {% else %}
+      {% if requestForPspTestAccountNotStarted %}
+        <form id="submit-request-for-psp-test-account-form" method="post">
+            <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+            <h1 class="govuk-heading-l">Request Stripe test account</h1>
+            <p class="govuk-body">
+              We can usually set up a test account for your service within 2 working days. You’ll be able to access:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                      <li>net payments</li>
+                      <li>fees</li>
+                      <li>transaction reports</li>
+            </ul>
+            <p class="govuk-body">
+              You can also integrate with our reporting and reconciliation API and test the full end-to-end process.
+            </p>
+
+          <div class="button-group">
+            <button type="submit" id="submit-request" href="" class="govuk-button govuk-!-margin-bottom-0">
+              Submit request
+            </button>
+          </div>
+        </form>
+    {% elif requestForPspTestAccountSubmitted %}
+      <h1 class="govuk-heading-l">
+        Account already requested
+      </h1>
+      <p class="govuk-body">
+        A user has requested a Stripe test account for this service. We usually set up the account within 2 working days.
+      </p>
+      <p class="govuk-body">
+        When it is ready, you’ll find it in
+        <a href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
+      </p>
+    {% elif pspTestAccountCreated %}
+      <h1 class="govuk-heading-l">
+        Test account already set up
+      <h1>
+      <p class="govuk-body">
+        There is already a test account for this service. Find it in
+        <a href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
+      </p>
+    {% endif %}
+  {% endif %}
+
+  </div>
+{% endblock %}

@@ -211,5 +211,8 @@ module.exports = {
   },
   payouts: {
     list: '/payments-to-your-bank-account'
+  },
+  requestPspTestAccount: {
+    index: '/service/:externalServiceId/request-stripe-test-account'
   }
 }

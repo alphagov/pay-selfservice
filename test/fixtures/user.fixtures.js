@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 const goLiveStage = require('../../app/models/go-live-stage')
+const stripeTestAccountStage = require('../../app/models/psp-test-account-stage')
 const serviceFixtures = require('./service.fixtures')
 
 // Constants
@@ -203,7 +204,7 @@ const defaultPermissions = [
     description: 'View moto mask for card number and security code'
   },
   {
-    name: 'psp_test_account_stage:update',
+    name: 'psp-test-account-stage:update',
     description: 'Update PSP Test Account stage'
   }
 
@@ -273,6 +274,7 @@ module.exports = {
     const gatewayAccountIds = opts.gateway_account_ids || ['540']
     const collectBillingAddress = (opts.collect_billing_address && opts.collect_billing_address === true)
     const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.NOT_STARTED
+    const currentPspTestAccountStage = opts.current_psp_test_account_stage || stripeTestAccountStage.NOT_STARTED
 
     const userOpts = {
       external_id: opts.external_id || newExternalId,
@@ -284,7 +286,8 @@ module.exports = {
           external_id: defaultServiceId,
           gateway_account_ids: gatewayAccountIds,
           collect_billing_address: collectBillingAddress,
-          current_go_live_stage: currentGoLiveStage
+          current_go_live_stage: currentGoLiveStage,
+          current_psp_test_account_stage: currentPspTestAccountStage
         },
         role: opts.role || {
           name: 'admin',
