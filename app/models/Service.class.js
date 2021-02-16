@@ -12,6 +12,7 @@ class Service {
     this.currentGoLiveStage = serviceData.current_go_live_stage
     this.experimentalFeaturesEnabled = serviceData.experimental_features_enabled
     this.createdDate = serviceData.created_date
+    this.currentPspTestAccountStage = serviceData.current_psp_test_account_stage
   }
 
   /**
@@ -29,7 +30,8 @@ class Service {
       collect_billing_address: this.collectBillingAddress,
       current_go_live_stage: this.currentGoLiveStage,
       experimental_features_enabled: this.experimentalFeaturesEnabled,
-      created_date: this.createdDate
+      created_date: this.createdDate,
+      current_psp_test_account_stage: this.currentPspTestAccountStage
     }
   }
 }
