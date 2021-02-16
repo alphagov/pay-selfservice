@@ -60,25 +60,14 @@ module.exports = {
 
     const onSuccess = function ([members, invitedMembers]) {
       const teamMembers = mapByRoles(members, externalServiceId, req.user)
-      const numberOfAdminMembers = teamMembers.admin.length
-      const numberOfViewOnlyMembers = teamMembers[roles['view-only'].name].length
-      const numberOfViewAndRefundMembers = teamMembers[roles['view-and-refund'].name].length
-      const numberActiveMembers = numberOfAdminMembers + numberOfViewOnlyMembers + numberOfViewAndRefundMembers
       const invitedTeamMembers = mapInvitesByRoles(invitedMembers)
       const inviteTeamMemberLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
 
       response(req, res, 'team-members/team-members', {
         team_members: teamMembers,
-        number_active_members: numberActiveMembers,
         inviteTeamMemberLink: inviteTeamMemberLink,
-        number_admin_members: numberOfAdminMembers,
-        'number_view-only_members': numberOfViewOnlyMembers,
-        'number_view-and-refund_members': numberOfViewAndRefundMembers,
         invited_team_members: invitedTeamMembers,
-        number_invited_members: invitedMembers.length,
-        number_admin_invited_members: invitedTeamMembers.admin.length,
-        'number_view-only_invited_members': invitedTeamMembers[roles['view-only'].name].length,
-        'number_view-and-refund_invited_members': invitedTeamMembers[roles['view-and-refund'].name].length
+        number_invited_members: invitedMembers.length
       })
     }
     return Promise.all([
