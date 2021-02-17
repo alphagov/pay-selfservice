@@ -26,7 +26,8 @@ const hideServiceNavTemplates = [
   'request-to-go-live/choose-how-to-process-payments',
   'request-to-go-live/index',
   'request-to-go-live/organisation-address',
-  'request-to-go-live/organisation-name'
+  'request-to-go-live/organisation-name',
+  'request-psp-test-account/index'
 ]
 
 /**

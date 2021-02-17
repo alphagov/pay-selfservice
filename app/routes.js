@@ -77,13 +77,14 @@ const yourPspController = require('./controllers/your-psp')
 const allTransactionsController = require('./controllers/all-service-transactions/index')
 const payoutsController = require('./controllers/payouts/payout-list.controller')
 const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
+const requestPspTestAccountController = require('./controllers/request-psp-test-account')
 
 // Assignments
 const {
   registerUser, user, selfCreateService,
   serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   requestToGoLive, policyPages,
-  allServiceTransactions, payouts, redirects, index
+  allServiceTransactions, payouts, redirects, index, requestPspTestAccount
 } = paths
 const {
   apiKeys,
@@ -184,6 +185,7 @@ module.exports.bind = function (app) {
     ...lodash.values(policyPages),
     ...lodash.values(payouts),
     ...lodash.values(redirects),
+    ...lodash.values(requestPspTestAccount),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -269,6 +271,9 @@ module.exports.bind = function (app) {
 
   // Service live account dashboard link
   app.get(redirects.stripeSetupLiveDashboardRedirect, stripeSetupDashboardRedirectController.get)
+
+  // Request Stripe test account
+  app.get(requestPspTestAccount.index, permission('psp-test-account-stage:update'), requestPspTestAccountController.get)
 
   // ----------------------------
   // GATEWAY ACCOUNT LEVEL ROUTES
