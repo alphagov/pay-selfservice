@@ -203,7 +203,7 @@ const defaultPermissions = [
     description: 'View moto mask for card number and security code'
   },
   {
-    name: 'psp_test_account_stage:update',
+    name: 'psp-test-account-stage:update',
     description: 'Update PSP Test Account stage'
   }
 
