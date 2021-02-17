@@ -1,6 +1,6 @@
 'use strict'
 
-const { renderErrorView } = require('../../../utils/response')
+const { renderErrorView, response } = require('../../../utils/response')
 const userService = require('../../../services/user.service')
 const paths = require('../../../paths')
 const { invalidTelephoneNumber } = require('../../../utils/validation/telephone-number-validation')
@@ -14,7 +14,7 @@ module.exports = async function updatePhoneNumber (req, res) {
         phone: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
       }
     }
-    return res.render('team-members/edit-phone-number', pageData)
+    return response(req, res, 'team-members/edit-phone-number', pageData)
   }
 
   try {
