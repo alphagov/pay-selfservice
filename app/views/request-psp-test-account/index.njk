@@ -56,7 +56,7 @@
       </p>
       <p class="govuk-body">
         When it is ready, you’ll find it in
-        <a href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
+        <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
       </p>
     {% elif pspTestAccountCreated %}
       <h1 class="govuk-heading-l">
@@ -64,7 +64,21 @@
       <h1>
       <p class="govuk-body">
         There is already a test account for this service. Find it in
-        <a href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
+        <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
+      </p>
+    {% elif pspTestAccountRequestSubmitted %}
+      <h1 class="govuk-heading-l">
+        Request submitted for Stripe test account
+      <h1>
+      <p class="govuk-body">
+        Thank you for requesting a Stripe test account.
+      </p>
+      <p class="govuk-body">
+        We’ll respond within two working days, and we usually create test account at the same time.
+        Your service’s test account will be ready within 2 working days. We’ll email to confirm set up and give you further information.
+      </p>
+      <p class="govuk-body">
+        Access your live and test services in <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
       </p>
     {% endif %}
   {% endif %}

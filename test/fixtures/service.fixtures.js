@@ -73,6 +73,14 @@ module.exports = {
     }
   },
 
+  validUpdatePspTestAccountStage: (value) => {
+    return {
+      op: 'replace',
+      path: 'current_psp_test_account_stage',
+      value: value
+    }
+  },
+
   validUpdateMerchantDetailsRequest: (merchantDetails) => {
     return Object.keys(merchantDetails).map(key => {
       return {

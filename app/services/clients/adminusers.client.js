@@ -753,6 +753,26 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  const updatePspTestAccountStage = (serviceExternalId, newStage, correlationId) => {
+    return baseClient.patch(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}`,
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'current_psp_test_account_stage',
+          value: newStage
+        },
+        correlationId: correlationId,
+        description: 'update PSP test account stage',
+        transform: responseBodyToServiceTransformer,
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
   const addStripeAgreementIpAddress = (serviceExternalId, ipAddress, correlationId) => {
     return baseClient.post(
       {
@@ -849,6 +869,7 @@ module.exports = function (clientOptions = {}) {
     addGatewayAccountsToService,
     updateCurrentGoLiveStage,
     addStripeAgreementIpAddress,
-    addGovUkAgreementEmailAddress
+    addGovUkAgreementEmailAddress,
+    updatePspTestAccountStage
   }
 }
