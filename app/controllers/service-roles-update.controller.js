@@ -32,6 +32,7 @@ module.exports = {
     let correlationId = req.correlationId
     let externalUserId = req.params.externalUserId
     let serviceExternalId = req.service.externalId
+    let serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
 
     let viewData = user => {
       const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, serviceExternalId, user.externalId)
@@ -44,6 +45,7 @@ module.exports = {
         editPermissionsLink,
         teamMemberIndexLink,
         teamMemberProfileLink,
+        serviceHasAgentInitiatedMotoEnabled,
         admin: {
           id: roles['admin'].extId,
           checked: _.get(role, 'name') === 'admin' ? 'checked' : ''
@@ -55,6 +57,14 @@ module.exports = {
         view: {
           id: roles['view-only'].extId,
           checked: _.get(role, 'name') === 'view-only' ? 'checked' : ''
+        },
+        viewAndInitiateMoto: {
+          id: roles['view-and-initiate-moto'].extId,
+          checked: _.get(role, 'name') === 'view-and-initiate-moto' ? 'checked' : ''
+        },
+        viewRefundAndInitiateMoto: {
+          id: roles['view-refund-and-initiate-moto'].extId,
+          checked: _.get(role, 'name') === 'view-refund-and-initiate-moto' ? 'checked' : ''
         }
       }
     }
