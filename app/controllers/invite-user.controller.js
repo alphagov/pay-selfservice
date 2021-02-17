@@ -39,13 +39,17 @@ module.exports = {
     const externalServiceId = req.service.externalId
     const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
     const teamMemberInviteSubmitLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
+    const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
     const invitee = lodash.get(req, 'session.pageData.invitee', '')
     let data = {
       teamMemberIndexLink: teamMemberIndexLink,
       teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
+      serviceHasAgentInitiatedMotoEnabled: serviceHasAgentInitiatedMotoEnabled,
       admin: { id: roles['admin'].extId },
       viewAndRefund: { id: roles['view-and-refund'].extId },
       view: { id: roles['view-only'].extId },
+      viewAndInitiateMoto: { id: roles['view-and-initiate-moto'].extId },
+      viewRefundAndInitiateMoto: { id: roles['view-refund-and-initiate-moto'].extId },
       invitee
     }
 

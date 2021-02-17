@@ -34,7 +34,7 @@ describe('The service role update view', function () {
     body.should.not.containSelector('#role-view-refund-and-intiate-moto-input')
   })
 
-  it('should render the agent-initiated-MOTO-enahnced service role update view', function () {
+  it('should render the agent-initiated-MOTO-enhanced service role update view', function () {
     let templateData = {
       email: 'oscar.smith@example.com',
       admin: { id: 2, checked: '' },
