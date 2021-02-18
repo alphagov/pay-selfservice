@@ -112,7 +112,7 @@ describe('The transaction list view', function () {
     body.should.containSelector('#download-transactions-link')
 
     body.should.containSelector('.govuk-back-link')
-    body.should.containSelector('.govuk-heading-l').withText('Transactions for all live services')
+    body.should.containSelector('.govuk-heading-l').withText('Transactions for all services')
   })
 
   it('should render all transactions without download link', function () {
