@@ -185,7 +185,7 @@ module.exports.bind = function (app) {
     ...lodash.values(policyPages),
     ...lodash.values(payouts),
     ...lodash.values(redirects),
-    ...lodash.values(requestPspTestAccount),
+    paths.requestPspTestAccount,
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -273,7 +273,8 @@ module.exports.bind = function (app) {
   app.get(redirects.stripeSetupLiveDashboardRedirect, stripeSetupDashboardRedirectController.get)
 
   // Request Stripe test account
-  app.get(requestPspTestAccount.index, permission('psp-test-account-stage:update'), requestPspTestAccountController.get)
+  app.get(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.get)
+  app.post(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.post)
 
   // ----------------------------
   // GATEWAY ACCOUNT LEVEL ROUTES

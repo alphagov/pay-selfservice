@@ -204,6 +204,10 @@ function buildServiceRoleOpts (opts) {
     }
   }
 
+  if (opts.pspTestAccountStage) {
+    serviceRole.service.current_psp_test_account_stage = opts.pspTestAccountStage
+  }
+
   if (opts.serviceExternalId) {
     serviceRole.service.external_id = opts.serviceExternalId
   }

@@ -1,12 +1,11 @@
 const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
 describe('Request PSP test account: index', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
   const serviceExternalId = 'afe452323dd04d1898672bfaba25e3a6'
 
-  const buildServiceRoleForGoLiveStage = (goLiveStage, pspTestAccountStage) => {
+  const buildServiceRoleForPspTestAccountStage = (goLiveStage, pspTestAccountStage) => {
     return {
       service: {
         external_id: serviceExternalId,
@@ -18,7 +17,7 @@ describe('Request PSP test account: index', () => {
   }
 
   const setupStubs = (goLiveStage, pspTestAccountStage, permissions) => {
-    const serviceRole = buildServiceRoleForGoLiveStage(goLiveStage, pspTestAccountStage)
+    const serviceRole = buildServiceRoleForPspTestAccountStage(goLiveStage, pspTestAccountStage)
     if (permissions) {
       serviceRole.role = {
         permissions: permissions
@@ -26,7 +25,6 @@ describe('Request PSP test account: index', () => {
     }
     cy.task('setupStubs', [
       userStubs.getUserSuccessWithServiceRole({ userExternalId, serviceRole }),
-      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
     ])
   }
 
@@ -73,7 +71,7 @@ describe('Request PSP test account: index', () => {
 
   describe('User does not have the correct permissions', () => {
     beforeEach(() => {
-      const serviceRole = buildServiceRoleForGoLiveStage('NOT_STARTED', 'NOT_STARTED')
+      const serviceRole = buildServiceRoleForPspTestAccountStage('NOT_STARTED', 'NOT_STARTED')
       serviceRole.role = {
         permissions: []
       }

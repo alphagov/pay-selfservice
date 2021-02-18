@@ -49,6 +49,18 @@ function patchUpdateServiceGoLiveStageSuccess (opts) {
   })
 }
 
+function patchUpdateServicePspTestAccountStage (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: serviceFixtures.validUpdatePspTestAccountStage(opts.pspTestAccountStage),
+    response: serviceFixtures.validServiceResponse({
+      external_id: opts.serviceExternalId,
+      current_psp_test_account_stage: opts.pspTestAccountStage,
+      gateway_account_ids: [opts.gatewayAccountId]
+    })
+  })
+}
+
 function patchUpdateMerchantDetailsSuccess (opts) {
   const merchantDetails = {
     name: opts.organisationName
@@ -91,5 +103,6 @@ module.exports = {
   patchUpdateServiceGoLiveStageSuccess,
   patchUpdateMerchantDetailsSuccess,
   patchUpdateServiceSuccessCatchAll,
-  patchGoLiveStageFailure
+  patchGoLiveStageFailure,
+  patchUpdateServicePspTestAccountStage
 }
