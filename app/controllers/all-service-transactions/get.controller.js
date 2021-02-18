@@ -20,8 +20,9 @@ const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 module.exports = async function getTransactionsForAllServices (req, res, next) {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
+
   try {
-    const userPermittedAccountsSummary = await permissions.getLiveGatewayAccountsFor(req.user, 'transactions:read')
+    const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, true, 'transactions:read')
 
     const logContext = {
       gateway_account_ids: userPermittedAccountsSummary.gatewayAccountIds,

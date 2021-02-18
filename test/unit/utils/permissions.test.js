@@ -42,7 +42,7 @@ describe('gateway account filter utiltiies', () => {
     afterEach(() => accountSpy.restore())
 
     it('correctly identifies stripe and moto headers for relavent accounts', async () => {
-      const { getLiveGatewayAccountsFor } = proxyquire('./../../../app/utils/permissions', {
+      const { getGatewayAccountsFor } = proxyquire('./../../../app/utils/permissions', {
         '../services/clients/connector.client.js': {
           ConnectorClient: class {
             async getAccounts () {
@@ -60,14 +60,14 @@ describe('gateway account filter utiltiies', () => {
           }
         }
       })
-      const result = await getLiveGatewayAccountsFor(user, 'perm-1')
+      const result = await getGatewayAccountsFor(user, true, 'perm-1')
 
       expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-line
       expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-line
     })
 
     it('correctly identifies non stripe and moto headers', async () => {
-      const { getLiveGatewayAccountsFor } = proxyquire('./../../../app/utils/permissions', {
+      const { getGatewayAccountsFor } = proxyquire('./../../../app/utils/permissions', {
         '../services/clients/connector.client.js': {
           ConnectorClient: class {
             async getAccounts () {
@@ -80,14 +80,14 @@ describe('gateway account filter utiltiies', () => {
           }
         }
       })
-      const result = await getLiveGatewayAccountsFor(user, 'perm-1')
+      const result = await getGatewayAccountsFor(user, true, 'perm-1')
 
       expect(result.headers.shouldGetStripeHeaders).to.be.false // eslint-disable-line
       expect(result.headers.shouldGetMotoHeaders).to.be.false // eslint-disable-line
     })
 
-    it('correctly filters live accounts', async () => {
-      const { getLiveGatewayAccountsFor } = proxyquire('./../../../app/utils/permissions', {
+    it('correctly filters accounts', async () => {
+      const { getGatewayAccountsFor } = proxyquire('./../../../app/utils/permissions', {
         '../services/clients/connector.client.js': {
           ConnectorClient: class {
             async getAccounts () {
@@ -111,25 +111,28 @@ describe('gateway account filter utiltiies', () => {
           }
         }
       })
-      const result = await getLiveGatewayAccountsFor(user, 'perm-1')
-      expect(result.gatewayAccountIds).to.deep.equal([ '1', '3' ])
+      const liveResult = await getGatewayAccountsFor(user, true, 'perm-1')
+      expect(liveResult.gatewayAccountIds).to.deep.equal([ '1', '3' ])
+
+      const testResult = await getGatewayAccountsFor(user, false, 'perm-1')
+      expect(testResult.gatewayAccountIds).to.deep.equal([ '2' ])
     })
 
     it('correctly filters services by users permission role', async () => {
-      const { getLiveGatewayAccountsFor } = proxyquire(
+      const { getGatewayAccountsFor } = proxyquire(
         './../../../app/utils/permissions', { '../services/clients/connector.client.js': ConnectorClient }
       )
 
-      getLiveGatewayAccountsFor(user, 'perm-1')
+      getGatewayAccountsFor(user, true, 'perm-1')
       sinon.assert.calledWith(accountSpy, { gatewayAccountIds: ['1', '2', '3'] })
     })
 
     it('does not interract with the backend if no services have the required permissions', () => {
-      const { getLiveGatewayAccountsFor } = proxyquire(
+      const { getGatewayAccountsFor } = proxyquire(
         './../../../app/utils/permissions', { '../services/clients/connector.client.js': ConnectorClient }
       )
 
-      getLiveGatewayAccountsFor(user, 'permission-user-does-not-have')
+      getGatewayAccountsFor(user, true, 'permission-user-does-not-have')
       sinon.assert.notCalled(accountSpy)
     })
   })
