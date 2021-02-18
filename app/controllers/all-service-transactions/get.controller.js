@@ -32,11 +32,12 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
     const logContext = {
       gateway_account_ids: userPermittedAccountsSummary.gatewayAccountIds,
       user_number_of_live_services: req.user.numberOfLiveServices,
-      internal_user: req.user.internalUser
+      internal_user: req.user.internalUser,
+      is_live: filterLiveAccounts
     }
     logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
     logContext[keys.CORRELATION_ID] = correlationId
-    logger.info('Listing all live services transactions', logContext)
+    logger.info('Listing all services transactions', logContext)
 
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
       return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view these transactions.'))
@@ -70,6 +71,8 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
     model.clearRedirect = model.search_path
     model.isStripeAccount = userPermittedAccountsSummary.headers.shouldGetStripeHeaders
     model.allServiceTransactions = true
+    model.filterLiveAccounts = filterLiveAccounts
+    model.hasLiveAccounts = userPermittedAccountsSummary.hasLiveAccounts
 
     return response(req, res, 'transactions/index', model)
   } catch (err) {

@@ -42,10 +42,22 @@
   <h1 class="govuk-heading-l">
     {% if allServiceTransactions %}
        Transactions for all services
+       <strong class="govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
     {% else %}
        Transactions
     {% endif %}
   </h1>
+
+  {% if allServiceTransactions %}
+    {% if filterLiveAccounts %}
+      <p><a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') }}">Switch to test</a></p>
+    {% else %}
+      {% if hasLiveAccounts %}
+        <p><a class="govuk-link govuk-link--no-visited-state" href="{{ routes.allServiceTransactions.index }}">Switch to live</a></p>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
   {% include "transactions/filter.njk" %}
 
   {% include "transactions/display-size.njk" %}

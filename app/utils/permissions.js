@@ -14,7 +14,8 @@ const getGatewayAccountsFor = async function getGatewayAccountsFor (user, filter
 
   return {
     gatewayAccountIds: filterGatewayAccountIds(userGatewayAccounts, filterLiveAccounts),
-    headers: getAllAccountDetailHeaders(userGatewayAccounts)
+    headers: getAllAccountDetailHeaders(userGatewayAccounts),
+    hasLiveAccounts: filterGatewayAccountIds(userGatewayAccounts, true).length > 0
   }
 }
 
