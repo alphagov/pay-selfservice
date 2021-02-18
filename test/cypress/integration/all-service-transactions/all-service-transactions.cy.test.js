@@ -75,7 +75,7 @@ describe('All service transactions', () => {
       ])
 
       cy.visit(transactionsUrl + '?pageSize=5&page=')
-      cy.title().should('eq', `Transactions for all live services`)
+      cy.title().should('eq', `Transactions for all services`)
     })
 
     it('should display Transaction Detail page', () => {

@@ -2,7 +2,7 @@
 
 {% block pageTitle %}
     {% if allServiceTransactions %}
-       Transactions for all live services
+       Transactions for all services
     {% else %}
        Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
     {% endif %}
@@ -41,7 +41,7 @@
 <div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">
     {% if allServiceTransactions %}
-       Transactions for all live services
+       Transactions for all services
     {% else %}
        Transactions
     {% endif %}

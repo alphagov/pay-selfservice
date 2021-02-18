@@ -51,14 +51,14 @@ describe('Service does not have a live account that supports payouts', () => {
 })
 
 describe('User has access to no live services', () => {
-  it('should not display link to all service transactions', () => {
+  it('should link to all service transactions test', () => {
     cy.task('setupStubs', getUserAndAccountStubs('test', 'sandbox'))
 
     cy.setEncryptedCookies(authenticatedUserId, 1)
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
-    cy.contains('a', 'View transactions for all live services').should('not.exist')
+    cy.contains('a', 'View transactions for all services').should('have.attr', 'href', '/all-service-transactions/test')
   })
 })
 
@@ -70,6 +70,6 @@ describe('User has access to one or more live services', () => {
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
-    cy.contains('a', 'View transactions for all live services')
+    cy.contains('a', 'View transactions for all services')
   })
 })

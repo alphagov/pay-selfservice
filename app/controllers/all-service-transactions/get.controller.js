@@ -8,7 +8,7 @@ const transactionService = require('../../services/transaction.service')
 const { buildPaymentList } = require('../../utils/transaction-view.js')
 const permissions = require('../../utils/permissions')
 const { getFilters, describeFilters } = require('../../utils/filters.js')
-const router = require('../../routes.js')
+const paths = require('../../paths')
 const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 const logger = require('../../utils/logger')(__filename)
@@ -21,8 +21,13 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
 
+  // a filter param will be set on status specific routes, if they're not set the
+  // default behaviour should be live
+  const { statusFilter } = req.params
+  const filterLiveAccounts = statusFilter !== 'test'
+
   try {
-    const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, true, 'transactions:read')
+    const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, filterLiveAccounts, 'transactions:read')
 
     const logContext = {
       gateway_account_ids: userPermittedAccountsSummary.gatewayAccountIds,
@@ -34,13 +39,14 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
     logger.info('Listing all live services transactions', logContext)
 
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
-      return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view live transactions.'))
+      return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view these transactions.'))
     }
     const searchResultOutput = await transactionService.search(userPermittedAccountsSummary.gatewayAccountIds, filters.result)
     const cardTypes = await client.getAllCardTypes(correlationId)
-    const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, router.paths.allServiceTransactions.download, req.session.backPath)
+    const route = filterLiveAccounts ? paths.allServiceTransactions.download : paths.formattedPathFor(paths.allServiceTransactions.downloadStatusFilter, 'test')
+    const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, route, req.session.backPath)
     delete req.session.backPath
-    model.search_path = router.paths.allServiceTransactions.index
+    model.search_path = filterLiveAccounts ? paths.allServiceTransactions.index : paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test')
     model.filtersDescription = describeFilters(filters.result)
     model.eventStates = states.allDisplayStateSelectorObjects()
       .map(state => {
@@ -61,8 +67,7 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
         brand.selected = filters.result.brand.includes(brand.value)
       })
     }
-    model.filterRedirect = router.paths.allServiceTransactions.index
-    model.clearRedirect = router.paths.allServiceTransactions.index
+    model.clearRedirect = model.search_path
     model.isStripeAccount = userPermittedAccountsSummary.headers.shouldGetStripeHeaders
     model.allServiceTransactions = true
 
