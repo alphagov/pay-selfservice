@@ -13,7 +13,7 @@ module.exports = async function dowmloadTransactions (req, res, next) {
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
 
   try {
-    const userPermittedAccountsSummary = await permissions.getLiveGatewayAccountsFor(req.user, 'transactions:read')
+    const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, true, 'transactions:read')
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
       return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view live transactions.'))
     }
