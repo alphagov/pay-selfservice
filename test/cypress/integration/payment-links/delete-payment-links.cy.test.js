@@ -1,6 +1,6 @@
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const userStubs = require('../../stubs/user-stubs')
-const { getProductsStub, getProductByExternalIdStub, deleteProductStub } = require('../../stubs/products-stubs')
+const { getProductsByGatewayAccountIdAndTypeStub, getProductByExternalIdStub, deleteProductStub } = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountExternalId = 'a-valid-account-id'
 const gatewayAccountId = 42
@@ -16,7 +16,7 @@ describe('Should delete payment link', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
-      getProductsStub([product], gatewayAccountId),
+      getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
       getProductByExternalIdStub(product, gatewayAccountId),
       deleteProductStub(product, gatewayAccountId, 1)
     ])

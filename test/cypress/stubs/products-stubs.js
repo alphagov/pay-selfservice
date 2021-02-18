@@ -3,9 +3,12 @@
 const productFixtures = require('../../fixtures/product.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
-function getProductsStub (products, gatewayAccountId) {
+function getProductsByGatewayAccountIdAndTypeStub (products, gatewayAccountId, productType) {
   const path = `/v1/api/gateway-account/${gatewayAccountId}/products`
   return stubBuilder('GET', path, 200, {
+    query: {
+      type: productType
+    },
     response: products.map(product =>
       productFixtures.validProductResponse(product))
   })
@@ -25,9 +28,13 @@ function deleteProductStub (product, gatewayAccountId, verifyCalledTimes) {
   })
 }
 
-function getProductsByGatewayAccountIdFailure (gatewayAccountId) {
+function getProductsByGatewayAccountIdAndTypeFailure (gatewayAccountId, productType) {
   const path = `/v1/api/gateway-account/${gatewayAccountId}/products`
-  return stubBuilder('GET', path, 500)
+  return stubBuilder('GET', path, 500, {
+    query: {
+      type: productType
+    },
+  })
 }
 
 function postCreateProductSuccess () {
@@ -38,9 +45,9 @@ function postCreateProductSuccess () {
 }
 
 module.exports = {
-  getProductsStub,
+  getProductsByGatewayAccountIdAndTypeStub,
   getProductByExternalIdStub,
   deleteProductStub,
-  getProductsByGatewayAccountIdFailure,
+  getProductsByGatewayAccountIdAndTypeFailure,
   postCreateProductSuccess
 }

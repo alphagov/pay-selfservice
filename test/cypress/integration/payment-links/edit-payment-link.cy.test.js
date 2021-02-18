@@ -1,6 +1,6 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const { getProductsStub, getProductByExternalIdStub } = require('../../stubs/products-stubs')
+const { getProductsByGatewayAccountIdAndTypeStub, getProductByExternalIdStub } = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-valid-account-id'
@@ -24,7 +24,7 @@ function setupStubs (product) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
-    getProductsStub([product], gatewayAccountId),
+    getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
     getProductByExternalIdStub(product, gatewayAccountId)
   ])
 }

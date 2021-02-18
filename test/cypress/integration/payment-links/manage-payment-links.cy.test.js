@@ -41,7 +41,7 @@ function setupStubs (products) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
-    productStubs.getProductsStub(products, gatewayAccountId)
+    productStubs.getProductsByGatewayAccountIdAndTypeStub(products, gatewayAccountId, 'ADHOC')
   ])
 }
 
@@ -188,7 +188,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
-        productStubs.getProductsByGatewayAccountIdFailure()
+        productStubs.getProductsByGatewayAccountIdAndTypeFailure()
       ])
     })
 
