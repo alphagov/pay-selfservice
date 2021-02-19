@@ -1,3 +1,4 @@
+
 {% if linksToDisplay.length % 3 == 0 %}
   {% set columnClass = "flex-grid--column-third" %}
 {% else %}
@@ -48,18 +49,25 @@
     </article>
     {% endif %}
 
-    {% if links.manageService in linksToDisplay %}
-    <article class="{{columnClass}} links__box" id="manage-service-link">
-      <a href="/service/{{ currentService.externalId }}">
-      {% if permissions.users_service_create %}
-        <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Manage team members</h2>
-        <p class="govuk-body govuk-!-margin-bottom-0">Administrators can manage team members in My&nbsp;services.</p>
+    {% if links.requestPspTestAccount in linksToDisplay %}
+      {% if requestedStripeTestAccount %}
+        <article class="{{columnClass}} links__box" id="stripe-test-account-requested">
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Stripe test account requested</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">
+            You’ve requested a stripe account from the GOV.UK Pay team.
+            We’re setting up your test account. It will be ready within 2 working days.
+          </p>
+        </article>
       {% else %}
-        <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Manage your service</h2>
-        <p class="govuk-body govuk-!-margin-bottom-0">Add a new service and view team members in My&nbsp;services.</p>
+        <article class="{{columnClass}} links__box" id="request-stripe-test-account">
+          <a href="/service/{{ currentService.externalId }}/request-stripe-test-account" class="govuk-link">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Request Stripe test account</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">Use GOV.UK’s Payment Service Provider (PSP) to view transaction fee from each payment.
+             Set up a Stripe account to test payments, reporting, and reconciliation.
+            </p>
+          </a>
+        </article>
       {% endif %}
-      </a>
-    </article>
     {% endif %}
 
     {% if links.goLive in linksToDisplay %}
