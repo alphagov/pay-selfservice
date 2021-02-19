@@ -60,12 +60,12 @@ describe('Request PSP test account: index', () => {
   })
 
   describe('PSP test account stage is CREATED', () => {
-    it('should show "Test account already set up" page', () => {
+    it('should show "Stripe test account already set up" page', () => {
       setupStubs('NOT_STARTED', 'CREATED')
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl)
 
-      cy.get('h1').should('contain', 'Test account already set up')
+      cy.get('h1').should('contain', 'Stripe test account already set up')
     })
   })
 
