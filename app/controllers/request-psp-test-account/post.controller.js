@@ -21,7 +21,7 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
     email: req.user.email,
     name: req.user.username,
     type: 'task',
-    subject: `Request for test Stripe account from service (${req.service.name})`,
+    subject: `Request for Stripe test account from service (${req.service.name})`,
     tags: ['govuk_pay_support'],
     message: message
   }
@@ -35,7 +35,7 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
   logContext[keys.USER_EXTERNAL_ID] = req.user.externalId
   logContext[keys.SERVICE_EXTERNAL_ID] = req.service.externalId
 
-  logger.info('Submitted request for test Stripe account', logContext)
+  logger.info('Request submitted for Stripe test account', logContext)
 }
 
 module.exports = async function submitRequestForPspTestAccount (req, res, next) {

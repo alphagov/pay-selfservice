@@ -29,13 +29,14 @@ const {
   LIVE,
   DENIED
 } = require('../../models/go-live-stage')
+const pspTestAccountStage = require('../../models/psp-test-account-stage')
 
 const links = {
-  manageService: 0,
-  demoPayment: 1,
-  testPaymentLink: 2,
-  directDebitPaymentFlow: 3,
-  paymentLinks: 4,
+  demoPayment: 0,
+  testPaymentLink: 1,
+  directDebitPaymentFlow: 2,
+  paymentLinks: 3,
+  requestPspTestAccount: 4,
   goLive: 5
 }
 
@@ -63,7 +64,7 @@ const goLiveLinkNotDisplayedStages = [
 ]
 
 const getLinksToDisplay = function getLinksToDisplay (service, account, user) {
-  const linksToDisplay = [links.manageService]
+  const linksToDisplay = []
 
   if (account.payment_provider === 'sandbox') {
     linksToDisplay.push(links.demoPayment)
@@ -76,6 +77,10 @@ const getLinksToDisplay = function getLinksToDisplay (service, account, user) {
     linksToDisplay.push(links.goLive)
   }
 
+  if (displayRequestTestStripeAccountLink(service, account, user)) {
+    linksToDisplay.push(links.requestPspTestAccount)
+  }
+
   return linksToDisplay
 }
 
@@ -83,6 +88,13 @@ const displayGoLiveLink = (service, account, user) => {
   return account.type === 'test' &&
     (!goLiveLinkNotDisplayedStages.includes(service.currentGoLiveStage) &&
       user.hasPermission(service.externalId, 'go-live-stage:read'))
+}
+
+const displayRequestTestStripeAccountLink = (service, account, user) => {
+  return account.payment_provider === 'sandbox' && service.currentGoLiveStage !== LIVE &&
+    service.currentPspTestAccountStage !== pspTestAccountStage.CREATED &&
+    user.hasPermission(service.externalId, 'psp-test-account-stage:update') &&
+    process.env.ENABLE_STRIPE_TEST_ACCOUNT_REQUEST === 'true'
 }
 
 module.exports = async (req, res) => {
@@ -97,6 +109,7 @@ module.exports = async (req, res) => {
     period,
     links,
     linksToDisplay,
+    requestedStripeTestAccount: req.service.currentPspTestAccountStage === pspTestAccountStage.REQUEST_SUBMITTED && req.account.payment_provider === 'sandbox',
     goLiveNotStarted: req.service.currentGoLiveStage === NOT_STARTED,
     goLiveStarted: goLiveStartedStages.includes(req.service.currentGoLiveStage),
     goLiveRequested: goLiveRequestedStages.includes(req.service.currentGoLiveStage),
