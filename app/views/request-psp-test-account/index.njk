@@ -30,15 +30,19 @@
             <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
             <h1 class="govuk-heading-l">Request Stripe test account</h1>
             <p class="govuk-body">
-              We can usually set up a test account for your service within 2 working days. You’ll be able to access:
+              Stripe is GOV.UK Pay's centrally-procured Payment Service Provider (PSP). With a Stripe test account, you can access the same reports and functionality as a live account, including:
             </p>
             <ul class="govuk-list govuk-list--bullet">
-                      <li>net payments</li>
-                      <li>fees</li>
-                      <li>transaction reports</li>
+                      <li>transaction fees</li>
+                      <li>gross and net payments</li>
+                      <li>payments into your bank account</li>
             </ul>
             <p class="govuk-body">
-              You can also integrate with our reporting and reconciliation API and test the full end-to-end process.
+              You can also integrate with our reporting and reconciliation API.
+              Learn more <a class="govuk-link" href="https://docs.payments.service.gov.uk/integrate_with_govuk_pay/#integrate-with-the-gov-uk-pay-api"> about Pay's API</a>.
+            </p>
+            <p class="govuk-body">
+              We can usually set up a Stripe test account for your service within 2 working days.
             </p>
 
           <div class="button-group">
@@ -55,15 +59,15 @@
         A user has requested a Stripe test account for this service. We usually set up the account within 2 working days.
       </p>
       <p class="govuk-body">
-        When it is ready, you’ll find it in
+        When it's ready, you'll find it in
         <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
       </p>
     {% elif pspTestAccountCreated %}
       <h1 class="govuk-heading-l">
-        Test account already set up
+        Stripe test account already set up
       <h1>
       <p class="govuk-body">
-        There is already a test account for this service. Find it in
+        There is a test account for this service. Find it in
         <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>
       </p>
     {% elif pspTestAccountRequestSubmitted %}
@@ -71,11 +75,11 @@
         Request submitted for Stripe test account
       <h1>
       <p class="govuk-body">
-        Thank you for requesting a Stripe test account.
+        Thank you for requesting a Stripe test account
       </p>
       <p class="govuk-body">
         We’ll respond within two working days, and we usually create test account at the same time.
-        Your service’s test account will be ready within 2 working days. We’ll email to confirm set up and give you further information.
+        Your service’s test account will be ready within 2 working days. We’ll email with confirmation and further information.
       </p>
       <p class="govuk-body">
         Access your live and test services in <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a>

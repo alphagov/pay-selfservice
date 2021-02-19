@@ -51,12 +51,12 @@ describe('Request PSP test account: submit request', () => {
   })
 
   describe('PSP test account stage is CREATED', () => {
-    it('should show "Test account already set up" page', () => {
+    it('should show "Stripe test account already set up" page', () => {
       setupStubs('NOT_STARTED', 'CREATED')
       cy.visit(requestStripeTestAccountUrl)
 
       cy.get('button').contains('Submit request').click()
-      cy.get('h1').should('contain', 'Test account already set up')
+      cy.get('h1').should('contain', 'Stripe test account already set up')
     })
   })
 })
