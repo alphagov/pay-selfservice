@@ -13,7 +13,7 @@
   <div class="govuk-grid-column-two-thirds">
     {% if show_whats_new_notification %}
       {% set bannerHtml %}
-          <div>  
+          <div>
             <ol class="govuk-list govuk-list--number">
               <li>When you log in, you'll land on this page, 'My services'.</li>
               <li>Your live services now appear alphabetically at the beginning of the list.</li>
@@ -31,7 +31,7 @@
               }) }}
             </form>
           </div>
-      {% endset %} 
+      {% endset %}
 
       {{ govukNotificationBanner({
           html: bannerHtml,
@@ -66,12 +66,14 @@
         }) }}
     </p>
 
-    {% if has_live_account %}
-      <p class="govuk-body">
-        <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-          View transactions for all live services
-        </a>
-      </p>
+    {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
+
+    {% if has_live_account or env.ENABLE_TEST_REPORTS === 'true' %}
+    <p class="govuk-body">
+      <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
+        View transactions for all services
+      </a>
+    </p>
     {% endif %}
 
     {% if has_account_with_payouts %}
@@ -81,7 +83,7 @@
         </a>
       </p>
     {% endif %}
-    
+
     {% if services.length > 7 %}
       <div class="js-show flex-grid--row">
         <div class="flex-grid--column-two-thirds tight">
@@ -98,6 +100,6 @@
       {% for service in services %}
           {% include "./_service-section.njk" %}
       {% endfor %}
-    </div>    
+    </div>
   </div>
 {% endblock %}

@@ -9,12 +9,13 @@ const userServicesContainsGatewayAccount = function userServicesContainsGatewayA
   return accountId && gatewayAccountIds.indexOf(accountId) !== -1
 }
 
-const getLiveGatewayAccountsFor = async function getLiveGatewayAccountsFor (user, permissionName) {
+const getGatewayAccountsFor = async function getGatewayAccountsFor (user, filterLiveAccounts, permissionName) {
   const userGatewayAccounts = await fetchGatewayAccountsFor(user, permissionName)
 
   return {
-    gatewayAccountIds: getLiveGatewayAccountIds(userGatewayAccounts),
-    headers: getAllAccountDetailHeaders(userGatewayAccounts)
+    gatewayAccountIds: filterGatewayAccountIds(userGatewayAccounts, filterLiveAccounts),
+    headers: getAllAccountDetailHeaders(userGatewayAccounts),
+    hasLiveAccounts: filterGatewayAccountIds(userGatewayAccounts, true).length > 0
   }
 }
 
@@ -45,14 +46,15 @@ const getAllAccountDetailHeaders = function getAllAccountDetailHeaders (gatewayA
   }
 }
 
-const getLiveGatewayAccountIds = function getLiveGatewayAccountIds (gatewayAccounts) {
+const filterGatewayAccountIds = function filterGatewayAccountIds (gatewayAccounts, filterLiveAccounts = true) {
+  const gatewayAccountTypeFilter = filterLiveAccounts ? 'live' : 'test'
   return gatewayAccounts
-    .filter((account) => account.type === 'live')
+    .filter((account) => account.type === gatewayAccountTypeFilter)
     .map((account) => account.gateway_account_id)
 }
 
 module.exports = {
   userServicesContainsGatewayAccount,
-  getLiveGatewayAccountsFor,
-  getLiveGatewayAccountIds
+  getGatewayAccountsFor,
+  filterGatewayAccountIds
 }

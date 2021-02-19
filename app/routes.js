@@ -208,7 +208,9 @@ module.exports.bind = function (app) {
 
   // All service transactions
   app.get(allServiceTransactions.index, allTransactionsController.getController)
+  app.get(allServiceTransactions.indexStatusFilter, allTransactionsController.getController)
   app.get(allServiceTransactions.download, allTransactionsController.downloadTransactions)
+  app.get(allServiceTransactions.downloadStatusFilter, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.redirectDetail, transactionDetailRedirectController)
 
   // Payouts

@@ -5,7 +5,7 @@ const moment = require('moment')
 
 const { response } = require('../../utils/response')
 const serviceService = require('../../services/service.service')
-const { getLiveGatewayAccountIds } = require('../../utils/permissions')
+const { filterGatewayAccountIds } = require('../../utils/permissions')
 const getHeldPermissions = require('../../utils/get-held-permissions')
 
 function hasLiveStripeAccount (gatewayAccounts) {
@@ -83,7 +83,7 @@ module.exports = async function getServiceList (req, res) {
     services_singular: servicesData.length === 1,
     env: process.env,
     has_account_with_payouts: hasLiveStripeAccount(aggregatedGatewayAccounts),
-    has_live_account: getLiveGatewayAccountIds(aggregatedGatewayAccounts).length,
+    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length,
     show_whats_new_notification: shouldShowNotification(isMyServicesDefaultView, req.cookies)
   }
   if (newServiceId) {
