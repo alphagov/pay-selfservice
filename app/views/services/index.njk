@@ -76,9 +76,11 @@
     </p>
     {% endif %}
 
+    {% set payoutsPath = routes.payouts.list if has_live_account else routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
+
     {% if has_account_with_payouts %}
       <p class="govuk-body">
-        <a href="{{routes.payouts.list}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
+        <a href="{{ payoutsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
           View payments to your bank account
         </a>
       </p>

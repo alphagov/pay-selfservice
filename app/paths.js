@@ -212,7 +212,8 @@ module.exports = {
     download: '/policy/download/:key'
   },
   payouts: {
-    list: '/payments-to-your-bank-account'
+    list: '/payments-to-your-bank-account',
+    listStatusFilter: '/payments-to-your-bank-account/:statusFilter(test|live)'
   },
   requestPspTestAccount: '/service/:externalServiceId/request-stripe-test-account'
 }

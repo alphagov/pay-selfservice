@@ -215,6 +215,7 @@ module.exports.bind = function (app) {
 
   // Payouts
   app.get(payouts.list, payoutsController.listAllServicesPayouts)
+  app.get(payouts.listStatusFilter, payoutsController.listAllServicesPayouts)
 
   // Policy document downloads
   app.get(policyPages.download, policyDocumentsController.download)

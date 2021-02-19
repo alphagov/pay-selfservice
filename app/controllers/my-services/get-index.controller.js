@@ -8,10 +8,9 @@ const serviceService = require('../../services/service.service')
 const { filterGatewayAccountIds } = require('../../utils/permissions')
 const getHeldPermissions = require('../../utils/get-held-permissions')
 
-function hasLiveStripeAccount (gatewayAccounts) {
+function hasStripeAccount (gatewayAccounts) {
   return gatewayAccounts.some(gatewayAccount =>
-    gatewayAccount.payment_provider === 'stripe' &&
-    gatewayAccount.type === 'live')
+    gatewayAccount.payment_provider === 'stripe')
 }
 
 function sortServicesByLiveThenName (a, b) {
@@ -82,7 +81,7 @@ module.exports = async function getServiceList (req, res) {
     services: servicesData,
     services_singular: servicesData.length === 1,
     env: process.env,
-    has_account_with_payouts: hasLiveStripeAccount(aggregatedGatewayAccounts),
+    has_account_with_payouts: hasStripeAccount(aggregatedGatewayAccounts),
     has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length,
     show_whats_new_notification: shouldShowNotification(isMyServicesDefaultView, req.cookies)
   }
