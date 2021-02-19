@@ -40,7 +40,7 @@ describe('Service has a live account that supports payouts', () => {
 
 describe('Service does not have a live account that supports payouts', () => {
   it('should display link to view payouts', () => {
-    cy.task('setupStubs', getUserAndAccountStubs('test', 'stripe'))
+    cy.task('setupStubs', getUserAndAccountStubs('test', 'sandbox'))
 
     cy.setEncryptedCookies(authenticatedUserId, 1)
     cy.visit('/my-services')
