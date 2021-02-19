@@ -50,10 +50,10 @@
 
   {% if allServiceTransactions %}
     {% if filterLiveAccounts %}
-      <p><a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') }}">Switch to test</a></p>
+      <p><a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') }}">Switch to test accounts</a></p>
     {% else %}
       {% if hasLiveAccounts %}
-        <p><a class="govuk-link govuk-link--no-visited-state" href="{{ routes.allServiceTransactions.index }}">Switch to live</a></p>
+        <p><a class="govuk-link govuk-link--no-visited-state" href="{{ routes.allServiceTransactions.index }}">Switch to live accounts</a></p>
       {% endif %}
     {% endif %}
   {% endif %}
