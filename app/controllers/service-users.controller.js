@@ -90,7 +90,7 @@ module.exports = {
     const externalServiceId = req.service.externalId
     const externalUserId = req.params.externalUserId
     if (externalUserId === req.user.externalId) {
-      res.redirect(paths.user.profile.index)
+      return res.redirect(paths.user.profile.index)
     }
 
     const onSuccess = (user) => {
@@ -101,7 +101,7 @@ module.exports = {
       const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
 
       if (roleInList && hasSameService) {
-        response(req, res, 'team-members/team-member-details', {
+        return response(req, res, 'team-members/team-member-details', {
           username: user.username,
           email: user.email,
           role: roleInList.description,
@@ -110,7 +110,7 @@ module.exports = {
           removeTeamMemberLink: removeTeamMemberLink
         })
       } else {
-        renderErrorView(req, res, 'You do not have the rights to access this service.', 403)
+        return renderErrorView(req, res, 'You do not have the rights to access this service.', 403)
       }
     }
 
