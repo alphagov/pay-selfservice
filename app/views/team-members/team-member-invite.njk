@@ -25,60 +25,144 @@ Invite a new team member - GOV.UK Pay
   <form id="invite-member-form" method="post" action="{{teamMemberInviteSubmitLink}}" class="govuk-grid-column-two-thirds">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{ govukInput({
-        label: {
-          text: "Email address"
-        },
-        id: "invitee-email",
-        name: "invitee-email",
-        classes: "govuk-!-width-two-thirds",
-        type: "email"
-      })
-    }}
-
-    {{ govukRadios({
-      idPrefix: "role-input",
-      name: "role-input",
-      fieldset: {
-        legend: {
-          text: "Permission level",
-          classes: "govuk-label--s"
-        }
+      label: {
+        text: "Email address"
       },
-      items: [
-        {
-          value: admin.id,
-          text: "Administrator",
-          label: {
-            classes: "govuk-label--s"
-          },
-          hint: {
-            html: "View transactions<br/>Refund payments</br/>Manage settings"
-          }
-        },
-        {
-          value: viewAndRefund.id,
-          text: "View and refund",
-          label: {
-            classes: "govuk-label--s"
-          },
-          hint: {
-            html: "View transactions<br/>Refund payments</br/>Cannot manage settings"
-          }
-        },
-        {
-          value: view.id,
-          text: "View only",
-          label: {
-            classes: "govuk-label--s"
-          },
-          checked: true,
-          hint: {
-            html: "View transactions<br/>Cannot
-            refund payments</br/>Cannot manage settings"
-          }
-        }
-      ]
+      id: "invitee-email",
+      name: "invitee-email",
+      classes: "govuk-!-width-two-thirds",
+      type: "email"
     }) }}
+    {% if serviceHasAgentInitiatedMotoEnabled %}
+      {{ govukRadios({
+        idPrefix: "role-input",
+        name: "role-input",
+        fieldset: {
+          legend: {
+            text: "Permission level",
+            classes: "govuk-label--s"
+          }
+        },
+        items: [
+          {
+            value: admin.id,
+            text: "Administrator",
+            label: {
+              classes: "govuk-label--s"
+            },
+            hint: {
+              html: "View transactions<br>
+              Refund payments<br>
+              Take telephone payments<br>
+              Manage settings"
+            }
+          },
+          {
+            value: viewAndRefund.id,
+            text: "View and refund",
+            label: {
+              classes: "govuk-label--s"
+            },
+            hint: {
+              html: "View transactions<br>
+              Refund payments<br>
+              Cannot take telephone payments<br>
+              Cannot manage settings"
+            }
+          },
+          {
+            value: view.id,
+            text: "View only",
+            label: {
+              classes: "govuk-label--s"
+            },
+            checked: true,
+            hint: {
+              html: "View transactions<br>
+              Cannot refund payments<br>
+              Cannot take telephone payments<br>
+              Cannot manage settings"
+            }
+          },
+          {
+            value: viewAndInitiateMoto.id,
+            text: "View and take telephone payments",
+            label: {
+              classes: "govuk-label--s"
+            },
+            hint: {
+              html: "View transactions<br>
+              Cannot refund payments<br>
+              Take telephone payments<br>
+              Cannot manage settings"
+            }
+          },
+          {
+            value: viewRefundAndInitiateMoto.id,
+            text: "View, refund and take telephone payments",
+            label: {
+              classes: "govuk-label--s"
+            },
+            hint: {
+              html: "View transactions<br>
+              Refund payments<br>
+              Take telephone payments<br>
+              Cannot manage settings"
+            }
+          }
+        ]
+      }) }}
+    {% else %}
+      {{ govukRadios({
+        idPrefix: "role-input",
+        name: "role-input",
+        fieldset: {
+          legend: {
+            text: "Permission level",
+            classes: "govuk-label--s"
+          }
+        },
+        items: [
+          {
+            value: admin.id,
+            text: "Administrator",
+            label: {
+              classes: "govuk-label--s"
+            },
+            hint: {
+              html: "View transactions<br>
+              Refund payments<br>
+              Manage settings"
+            }
+          },
+          {
+            value: viewAndRefund.id,
+            text: "View and refund",
+            label: {
+              classes: "govuk-label--s"
+            },
+            hint: {
+              html: "View transactions<br>
+              Refund payments<br>
+              Cannot manage settings"
+            }
+          },
+          {
+            value: view.id,
+            text: "View only",
+            label: {
+              classes: "govuk-label--s"
+            },
+            checked: true,
+            hint: {
+              html: "View transactions<br>
+              Cannot refund payments<br>
+              Cannot manage settings"
+            }
+          }
+        ]
+      }) }}
+    {% endif %}
 
     {{ govukButton({ text: "Send invitation email" }) }}
     <p class="govuk-body">

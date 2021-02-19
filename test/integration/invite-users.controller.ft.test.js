@@ -34,6 +34,8 @@ describe('invite user controller', function () {
           expect(res.body.admin.id).to.equal(roles['admin'].extId)
           expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId)
           expect(res.body.view.id).to.equal(roles['view-only'].extId)
+          expect(res.body.viewAndInitiateMoto.id).to.equal(roles['view-and-initiate-moto'].extId)
+          expect(res.body.viewRefundAndInitiateMoto.id).to.equal(roles['view-refund-and-initiate-moto'].extId)
         })
         .end(done)
     })
