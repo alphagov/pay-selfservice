@@ -23,6 +23,7 @@ Payments to your bank account - GOV.UK Pay
 </div>
 <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-8">
   <p class="govuk-body">Payments Stripe has made to your bank account.</p>
+  {% if enableTestReports %}
   <p class="govuk-body">
     {% if filterLiveAccounts %}
       <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') }}">Switch to test accounts</a>
@@ -32,9 +33,10 @@ Payments to your bank account - GOV.UK Pay
       {% endif %}
     {% endif %}
   </p>
+  {% endif %}
 </div>
 
-{% set transactionsDownloadPath = paths.allServiceTransactions.download if filterLiveAccounts else paths.formattedPathFor(paths.allServiceTransactions.downloadStatusFilter, 'test') %}
+{% set transactionsDownloadPath = routes.allServiceTransactions.download if filterLiveAccounts else routes.formattedPathFor(routes.allServiceTransactions.downloadStatusFilter, 'test') %}
 <div class="govuk-grid-column-two-thirds">
   {% for key, group in payoutSearchResult.groups %}
     {% set dateString = group.date.format('DD MMMM') %}

@@ -1,5 +1,4 @@
 const moment = require('moment')
-const paths = require('../../../app/paths')
 const logger = require('../../utils/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { response } = require('../../utils/response.js')
@@ -36,7 +35,7 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res, 
     if (process.env.PAYOUTS_RELEASE_DATE) {
       payoutsReleaseDate = moment.unix(process.env.PAYOUTS_RELEASE_DATE)
     }
-    response(req, res, 'payouts/list', { payoutSearchResult, paths, payoutsReleaseDate, filterLiveAccounts, hasLiveAccounts: userPermittedAccountsSummary.hasLiveAccounts })
+    response(req, res, 'payouts/list', { payoutSearchResult, payoutsReleaseDate, filterLiveAccounts, hasLiveAccounts: userPermittedAccountsSummary.hasLiveAccounts, enableTestReports: process.env.ENABLE_TEST_REPORTS === 'true' })
   } catch (error) {
     return next(new Error('Failed to fetch payouts'))
   }
