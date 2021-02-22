@@ -38,7 +38,7 @@ const mockConnectorGetGatewayAccount = (paymentProvider, type) => {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
       payment_provider: paymentProvider,
-      type: type
+      type
     }))
 }
 
@@ -501,7 +501,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       beforeEach('Arrange', () => {
-        mockConnectorGetGatewayAccount('stripe', 'test')
+        mockConnectorGetGatewayAccount('stripe', 'live')
         mockConnectorGetStripeAccount()
       })
 
