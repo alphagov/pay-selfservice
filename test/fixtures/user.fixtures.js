@@ -275,6 +275,7 @@ module.exports = {
     const collectBillingAddress = (opts.collect_billing_address && opts.collect_billing_address === true)
     const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.NOT_STARTED
     const currentPspTestAccountStage = opts.current_psp_test_account_stage || stripeTestAccountStage.NOT_STARTED
+    const agentInitiatedMotoEnabled = opts.agent_initiated_moto_enabled || false
 
     const userOpts = {
       external_id: opts.external_id || newExternalId,
@@ -287,7 +288,8 @@ module.exports = {
           gateway_account_ids: gatewayAccountIds,
           collect_billing_address: collectBillingAddress,
           current_go_live_stage: currentGoLiveStage,
-          current_psp_test_account_stage: currentPspTestAccountStage
+          current_psp_test_account_stage: currentPspTestAccountStage,
+          agent_initiated_moto_enabled: agentInitiatedMotoEnabled
         },
         role: opts.role || {
           name: 'admin',
