@@ -8,7 +8,6 @@ const response = require('../../utils/response').response
 const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
 const LedgerClient = require('../../services/clients/ledger.client')
 const ProductsClient = require('../../services/clients/products.client.js')
-const { isADirectDebitAccount } = require('../../services/clients/direct-debit-connector.client.js')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
@@ -124,7 +123,7 @@ module.exports = async (req, res) => {
     gatewayAccount: req.account
   }
 
-  if (req.account.payment_provider === 'stripe') {
+  if (req.account.payment_provider === 'stripe' && req.account.type === 'live') {
     model.stripeAccount = await getStripeAccountDetails(req.account.gateway_account_id, req.correlationId)
   }
 
@@ -134,13 +133,6 @@ module.exports = async (req, res) => {
     const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
 
     logger.info(`[${correlationId}] successfully logged in`)
-
-    if (isADirectDebitAccount(gatewayAccountId)) {
-      // todo implement transaction list for direct debit
-      return response(req, res, 'dashboard/index', Object.assign(model, {
-        activityError: true
-      }))
-    }
 
     try {
       const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
