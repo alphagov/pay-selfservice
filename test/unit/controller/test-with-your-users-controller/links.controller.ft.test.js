@@ -46,23 +46,8 @@ const PAYMENT_2 = {
   }]
 }
 
-const PAYMENT_3 = {
-  external_id: 'product-external-id-3',
-  gateway_account_id: 'product-gateway-account-id-3',
-  description: 'product-description-3',
-  name: 'payment-name-3',
-  price: '150',
-  type: 'LIVE',
-  return_url: 'http://return.url',
-  _links: [{
-    rel: 'pay',
-    href: 'http://pay.url',
-    method: 'GET'
-  }]
-}
-
-function mockGetProductsByGatewayAccountEndpoint (gatewayAccountId) {
-  return nock(PRODUCTS_URL).get(`/v1/api/gateway-account/${gatewayAccountId}/products`)
+function mockGetProductsByGatewayAccountAndTypeEndpoint (gatewayAccountId, productType) {
+  return nock(PRODUCTS_URL).get(`/v1/api/gateway-account/${gatewayAccountId}/products?type=${productType}`)
 }
 
 function mockConnectorGetAccount () {
@@ -89,7 +74,7 @@ describe('Show the prototype links', () => {
     let response
     before(function (done) {
       mockConnectorGetAccount()
-      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [])
+      mockGetProductsByGatewayAccountAndTypeEndpoint(GATEWAY_ACCOUNT_ID, 'PROTOTYPE').reply(200, [])
 
       supertest(app)
         .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
@@ -123,7 +108,7 @@ describe('Show the prototype links', () => {
     let response
     before(function (done) {
       mockConnectorGetAccount()
-      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1])
+      mockGetProductsByGatewayAccountAndTypeEndpoint(GATEWAY_ACCOUNT_ID, 'PROTOTYPE').reply(200, [PAYMENT_1])
 
       supertest(app)
         .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
@@ -172,7 +157,7 @@ describe('Show the prototype links', () => {
     let response
     before(function (done) {
       mockConnectorGetAccount()
-      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_2])
+      mockGetProductsByGatewayAccountAndTypeEndpoint(GATEWAY_ACCOUNT_ID, 'PROTOTYPE').reply(200, [PAYMENT_1, PAYMENT_2])
 
       supertest(app)
         .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
@@ -231,46 +216,11 @@ describe('Show the prototype links', () => {
     })
   })
 
-  describe('when one prototype link and one live link exists', () => {
-    let response
-    before(function (done) {
-      mockConnectorGetAccount()
-      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_3])
-
-      supertest(app)
-        .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          response = res
-          done(err)
-        })
-    })
-
-    it('should display only prototype links', () => {
-      expect(response.body).to.have.property('productsLength', 1)
-      expect(response.body).to.have.deep.property('products', [{
-        description: 'product-description-1',
-        externalId: 'product-external-id-1',
-        gatewayAccountId: 'product-gateway-account-id-1',
-        name: 'payment-name-1',
-        price: '150',
-        returnUrl: 'http://return.url',
-        links: {
-          pay: {
-            href: 'http://pay.url',
-            method: 'GET'
-          }
-        },
-        type: 'PROTOTYPE'
-      }])
-    })
-  })
-
   describe('when there is a problem retrieving the products', () => {
     let response
     before(function (done) {
       mockConnectorGetAccount()
-      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).replyWithError('an error')
+      mockGetProductsByGatewayAccountAndTypeEndpoint(GATEWAY_ACCOUNT_ID, 'PROTOTYPE').replyWithError('an error')
 
       supertest(app)
         .get(formatAccountPathsFor(paths.account.prototyping.demoService.links, EXTERNAL_GATEWAY_ACCOUNT_ID))

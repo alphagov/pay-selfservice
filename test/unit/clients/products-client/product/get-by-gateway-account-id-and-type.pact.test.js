@@ -21,7 +21,7 @@ function getProductsClient (baseUrl) {
   })
 }
 
-describe('products client - find products associated with a particular gateway account id', function () {
+describe('products client - find products associated with a particular gateway account id and type', function () {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'products',
@@ -39,22 +39,24 @@ describe('products client - find products associated with a particular gateway a
 
   describe('when products are successfully found', () => {
     const gatewayAccountId = 42
+    const productType = 'ADHOC'
     const response = [
-      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 1000 }),
-      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 2000 }),
-      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 3000 })
+      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 1000, type: productType }),
+      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 2000, type: productType }),
+      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 3000, type: productType })
     ]
 
     before(done => {
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
+        .withQuery('type', productType)
         .withUponReceiving('a valid get product by gateway account id request')
         .withMethod('GET')
-        .withState('three products with gateway account id 42 exist')
+        .withState('three products with gateway account id 42 and type ADHOC exist')
         .withStatusCode(200)
         .withResponseBody(pactifySimpleArray(response))
         .build()
       provider.addInteraction(interaction)
-        .then(() => productsClient.product.getByGatewayAccountId(gatewayAccountId))
+        .then(() => productsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, productType))
         .then(res => {
           result = res
           done()
@@ -70,6 +72,7 @@ describe('products client - find products associated with a particular gateway a
         expect(product.externalId).to.exist.and.equal(response[index].external_id)
         expect(product.name).to.exist.and.equal(response[index].name)
         expect(product.price).to.exist.and.equal(response[index].price)
+        expect(product.type).to.exist.and.equal(response[index].type)
         expect(product.language).to.exist.and.equal(response[index].language)
         expect(product).to.have.property('links')
         expect(Object.keys(product.links).length).to.equal(2)
@@ -86,14 +89,16 @@ describe('products client - find products associated with a particular gateway a
   describe('when no products are found', () => {
     before(done => {
       const gatewayAccountId = 98765
+      const productType = 'PROTOTYPE'
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
+        .withQuery('type', productType)
         .withUponReceiving('a valid get product by gateway account id where the gateway account has no products')
         .withMethod('GET')
         .withStatusCode(200)
         .withResponseBody([])
         .build()
       provider.addInteraction(interaction)
-        .then(() => productsClient.product.getByGatewayAccountId(gatewayAccountId), done)
+        .then(() => productsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, productType), done)
         .then(res => {
           result = res
           done()

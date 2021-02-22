@@ -17,7 +17,7 @@ describe('The create payment link flow', () => {
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
       tokenStubs.postCreateTokenForAccountSuccess({ gatewayAccountId }),
       productStubs.postCreateProductSuccess(),
-      productStubs.getProductsStub([{ name: 'A payment link' }], gatewayAccountId)
+      productStubs.getProductsByGatewayAccountIdAndTypeStub([{ name: 'A payment link'}], gatewayAccountId, 'ADHOC')
     ])
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })

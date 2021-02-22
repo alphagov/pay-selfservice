@@ -20,7 +20,7 @@ module.exports = {
     disable: disableProduct,
     delete: deleteProduct,
     getByProductExternalId: getProductByExternalId,
-    getByGatewayAccountId: getProductsByGatewayAccountId,
+    getByGatewayAccountIdAndType: getProductsByGatewayAccountIdAndType,
     getByProductPath: getProductByPath,
     addMetadataToProduct: addMetadataToProduct,
     updateProductMetadata: updateProductMetadata,
@@ -150,11 +150,11 @@ function getProductByExternalId (gatewayAccountId, productExternalId) {
  * @param {String} gatewayAccountId - The id of the gateway account to retrieve products associated with
  * @returns {Promise<Array<Product>>}
  */
-function getProductsByGatewayAccountId (gatewayAccountId) {
+function getProductsByGatewayAccountIdAndType (gatewayAccountId, productType) {
   return baseClient.get({
     baseUrl,
-    url: `/gateway-account/${gatewayAccountId}/products`,
-    description: 'find a list products associated with a gateway account',
+    url: `/gateway-account/${gatewayAccountId}/products?type=${productType}`,
+    description: 'find a list products associated with a gateway account and a specific type',
     service: SERVICE_NAME
   }).then(products => products.map(product => new Product(product)))
 }

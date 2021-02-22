@@ -15,9 +15,8 @@ module.exports = (req, res) => {
     linksPage: formatAccountPathsFor(paths.account.prototyping.demoService.links, req.account.external_id)
   }
 
-  productsClient.product.getByGatewayAccountId(req.account.gateway_account_id)
-    .then(products => {
-      const prototypeProducts = products.filter(product => product.type === 'PROTOTYPE')
+  productsClient.product.getByGatewayAccountIdAndType(req.account.gateway_account_id, 'PROTOTYPE')
+    .then(prototypeProducts => {
       params.productsLength = prototypeProducts.length
       params.products = prototypeProducts
       return response(req, res, 'dashboard/demo-service/index', params)
