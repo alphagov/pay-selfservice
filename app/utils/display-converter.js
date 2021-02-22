@@ -5,8 +5,6 @@ const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder'
 const formatPSPname = require('./format-PSP-name')
 
 const hideServiceHeaderTemplates = [
-  'services/index',
-  'services/edit-service-name',
   'services/add-service',
   'payouts/list',
   'feedback/index',
@@ -16,7 +14,9 @@ const hideServiceHeaderTemplates = [
 ]
 
 const hideServiceNavTemplates = [
-  'merchant_details/edit-merchant_details',
+  'services/edit-service-name',
+  'merchant-details/merchant-details',
+  'merchant-details/edit-merchant-details',
   'team-members/team-members',
   'team-members/team-member-invite',
   'team-members/team-member-details',
@@ -107,6 +107,7 @@ module.exports = function (req, data, template) {
   convertedData.isTestGateway = _.get(convertedData, 'currentGatewayAccount.type') === 'test'
   convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
   convertedData.isDigitalWalletSupported = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'worldpay'
+  convertedData.enabledMyServicesAsDefaultView = process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW === 'true'
   const paymentProvider = _.get(convertedData, 'currentGatewayAccount.payment_provider')
   convertedData.currentService = service
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash

@@ -1,3 +1,4 @@
+{% from '../macro/breadcrumbs.njk' import breadcrumbs %}
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
@@ -5,13 +6,20 @@ Payments to your bank account - GOV.UK Pay
 {% endblock %}
 
 {% block beforeContent %}
-  {{ super() }}
+  {% if enabledMyServicesAsDefaultView %}
+
+  {{ breadcrumbs([
+    { text: "My services", href: routes.serviceSwitcher.index },
+    { text: "Payments to your bank account" }
+  ]) }}
+  {% else %}
   {{
     govukBackLink({
       text: "Back to My services",
       href: routes.serviceSwitcher.index
     })
   }}
+  {% endif %}
 {% endblock %}
 
 {% block mainContent %}

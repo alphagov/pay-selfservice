@@ -2,10 +2,12 @@
 
 {% block beforeContent %}
   {{ super() }}
+  {% if not enabledMyServicesAsDefaultView %}
   {{
     govukBackLink({
       text: "My services",
       href: routes.serviceSwitcher.index
     })
   }}
+  {% endif %}
 {% endblock %}

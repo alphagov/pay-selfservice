@@ -26,7 +26,12 @@
 
   @include govuk-media-query(tablet) {
     margin: 0;
-    float: right;
+  }
+
+  &--old {
+    @include govuk-media-query(tablet) {
+      float: right;
+    }
   }
 
   &--list {
@@ -41,9 +46,15 @@
 
     @include govuk-media-query(tablet) {
       display: inline-block;
-      margin: 0 0 0 govuk-spacing(6);
+      margin: 0 govuk-spacing(6) 0 0;
       border-bottom: 5px solid transparent;
       border-left: 0;
+    }
+
+    &--old {
+      @include govuk-media-query(tablet) {
+        margin: 0 0 0 govuk-spacing(6);
+      }
     }
 
     a:link,

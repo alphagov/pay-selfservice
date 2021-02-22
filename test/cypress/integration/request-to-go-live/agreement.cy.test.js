@@ -67,9 +67,6 @@ describe('Request to go live: agreement', () => {
 
       cy.visit(requestToGoLiveAgreementUrl)
 
-      cy.get('.govuk-back-link').should('have.text', 'My services')
-      cy.get('.service-navigation').should('not.exist')
-
       cy.get('h1').should('contain', 'Read and accept our legal terms')
 
       cy.get('fieldset').should('contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')

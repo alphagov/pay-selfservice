@@ -21,7 +21,6 @@ describe('Feedback page', () => {
     cy.visit('/feedback')
 
     cy.title().should('eq', 'Give feedback — GOV.UK Pay')
-    cy.get('.govuk-back-link').contains('My services')
   })
 
   it('should submit Feedback form and display Success notification', () => {
