@@ -111,7 +111,8 @@ module.exports = {
       redirect_to_service_immediately_on_terminal_state: false,
       collect_billing_address: false,
       current_go_live_stage: 'NOT_STARTED',
-      current_psp_test_account_stage: 'NOT_STARTED'
+      current_psp_test_account_stage: 'NOT_STARTED',
+      agent_initiated_moto_enabled: false
     })
 
     const service = {
@@ -124,7 +125,8 @@ module.exports = {
       collect_billing_address: opts.collect_billing_address,
       current_go_live_stage: opts.current_go_live_stage,
       experimental_features_enabled: true,
-      current_psp_test_account_stage: opts.current_psp_test_account_stage
+      current_psp_test_account_stage: opts.current_psp_test_account_stage,
+      agent_initiated_moto_enabled: opts.agent_initiated_moto_enabled
     }
 
     if (opts.merchant_details) {

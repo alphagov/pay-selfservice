@@ -9,11 +9,14 @@ const moment = require('moment-timezone')
 const { getApp } = require('../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../test-helpers/mock-session')
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
+const productFixtures = require('../../../fixtures/product.fixtures')
 const { CONNECTOR_URL } = process.env
 const { LEDGER_URL } = process.env
+const { PRODUCTS_URL } = process.env
 const { STRIPE_PORT, STRIPE_HOST } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'an-external-id'
+const AGENT_INITIATED_MOTO_PRODUCT_EXTERNAL_ID = 'a-product-external-id'
 const DASHBOARD_RESPONSE = {
   payments: {
     count: 10,
@@ -613,6 +616,105 @@ describe('dashboard-activity-controller', () => {
       let res = await getDashboard()
       let $ = cheerio.load(res.text)
       expect($('.account-status-panel').length).to.equal(0)
+    })
+  })
+  describe('When the the account has a telephone payment link', () => {
+    let session
+
+    before('Arrange', () => {
+      mockConnectorGetGatewayAccount()
+
+      nock(PRODUCTS_URL)
+        .get(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products?type=AGENT_INITIATED_MOTO`)
+        .reply(200, [productFixtures.validProductResponse({
+          type: 'AGENT_INITIATED_MOTO',
+          external_id: AGENT_INITIATED_MOTO_PRODUCT_EXTERNAL_ID,
+          gateway_account_id: GATEWAY_ACCOUNT_ID
+        })])
+        .persist()
+      })
+
+    after(() => {
+      nock.cleanAll()
+    })
+    describe('Service has agent-initiated MOTO payments enabled', () => {
+      it('should display the telephone payment link if the user has permission to take telephone payments', async () => {
+        session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          permissions: [{ name: 'agent-initiated-moto:create' }],
+          agent_initiated_moto_enabled: true
+        }))
+
+        app = createAppWithSession(getApp(), session)
+
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
+
+        expect($('#take-a-telephone-payment-link a:first-of-type').attr('href'))
+            .to.equal(`http://products-ui.url/pay/${AGENT_INITIATED_MOTO_PRODUCT_EXTERNAL_ID}`)
+      })
+
+      it('should not display the telephone payment link if the user does not have permission to take telephone payments', async () => {
+        session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          agent_initiated_moto_enabled: true
+        }))
+
+        app = createAppWithSession(getApp(), session)
+
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
+
+        expect($('#take-a-telephone-payment-link').length).to.equal(0)
+      })
+    })
+    describe('Service does not have agent-initiated MOTO payments enabled', () => {
+      it('should not display the telephone payment link even if the user has permission to take telephone payments', async () => {
+        session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          permissions: [{ name: 'agent-initiated-moto:create' }],
+          agent_initiated_moto_enabled: false
+        }))
+
+        app = createAppWithSession(getApp(), session)
+
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
+
+        expect($('#take-a-telephone-payment-link').length).to.equal(0)
+      })
+    })
+  })
+  describe('When the the account does not have a telephone payment link', () => {
+    let session
+
+    before('Arrange', () => {
+      mockConnectorGetGatewayAccount()
+
+      nock(PRODUCTS_URL)
+        .get(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products?type=AGENT_INTIATED_MOTO`)
+        .reply(200, [])
+        .persist()
+      })
+
+    after(() => {
+      nock.cleanAll()
+    })
+    describe('Service has agent-initiated MOTO payments enabled', () => {
+      it('should not display a telephone payment link even if the user has permission to take telephone payments', async () => {
+        session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          permissions: [{ name: 'agent-initiated-moto:create' }],
+          agent_initiated_moto_enabled: true
+        }))
+
+        app = createAppWithSession(getApp(), session)
+
+        let res = await getDashboard()
+        let $ = cheerio.load(res.text)
+
+        expect($('#take-a-telephone-payment-link').length).to.equal(0)
+      })
     })
   })
 })

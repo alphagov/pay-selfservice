@@ -8,6 +8,15 @@
 <div class="govuk-grid-column-full flex-grid links-container" data-click-events data-click-category="Dashboard" data-click-action="First steps link clicked">
 
   <div class="flex-grid--row">
+    {% if links.telephonePaymentLink in linksToDisplay %}
+    <article class="{{columnClass}} links__box" id="take-a-telephone-payment-link">
+      <a href="{{ telephonePaymentLink }}">
+        <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Take a telephone payment</h2>
+        <p class="govuk-body govuk-!-margin-bottom-0">Take a payment now by having a user give their card details over the phone.</p>
+      </a>
+    </article>
+    {% endif %}
+
     {% if links.demoPayment in linksToDisplay %}
     <article class="{{columnClass}} links__box" id="demo-payment-link">
       <a href="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.index,  currentGatewayAccount.external_id)}}">

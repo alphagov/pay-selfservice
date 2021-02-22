@@ -7,6 +7,7 @@ const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response').response
 const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
 const LedgerClient = require('../../services/clients/ledger.client')
+const ProductsClient = require('../../services/clients/products.client.js')
 const { isADirectDebitAccount } = require('../../services/clients/direct-debit-connector.client.js')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -37,7 +38,8 @@ const links = {
   directDebitPaymentFlow: 2,
   paymentLinks: 3,
   requestPspTestAccount: 4,
-  goLive: 5
+  goLive: 5,
+  telephonePaymentLink: 6
 }
 
 const goLiveStartedStages = [
@@ -63,7 +65,7 @@ const goLiveLinkNotDisplayedStages = [
   DENIED
 ]
 
-const getLinksToDisplay = function getLinksToDisplay (service, account, user) {
+const getLinksToDisplay = function getLinksToDisplay (service, account, user, telephonePaymentLink) {
   const linksToDisplay = []
 
   if (account.payment_provider === 'sandbox') {
@@ -79,6 +81,10 @@ const getLinksToDisplay = function getLinksToDisplay (service, account, user) {
 
   if (displayRequestTestStripeAccountLink(service, account, user)) {
     linksToDisplay.push(links.requestPspTestAccount)
+  }
+
+  if (telephonePaymentLink) {
+    linksToDisplay.push(links.telephonePaymentLink)
   }
 
   return linksToDisplay
@@ -102,13 +108,15 @@ module.exports = async (req, res) => {
 
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const period = _.get(req, 'query.period', 'today')
-  const linksToDisplay = getLinksToDisplay(req.service, req.account, req.user)
+  const telephonePaymentLink  = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId, correlationId)
+  const linksToDisplay = getLinksToDisplay(req.service, req.account, req.user, telephonePaymentLink)
   const model = {
     name: req.user.username,
     serviceId: req.service.externalId,
     period,
     links,
     linksToDisplay,
+    telephonePaymentLink,
     requestedStripeTestAccount: req.service.currentPspTestAccountStage === pspTestAccountStage.REQUEST_SUBMITTED && req.account.payment_provider === 'sandbox',
     goLiveNotStarted: req.service.currentGoLiveStage === NOT_STARTED,
     goLiveStarted: goLiveStartedStages.includes(req.service.currentGoLiveStage),
@@ -219,4 +227,23 @@ async function getStripeAccountDetails (gatewayAccountId, correlationId) {
   }
 
   return null
+}
+
+async function getTelephonePaymentLink(user, service, gatewayAccountId, correlationId) {
+  if (service.agentInitiatedMotoEnabled && user.hasPermission(service.externalId, 'agent-initiated-moto:create')) {
+    const telephonePaymentLinks = await getTelephonePaymentLinks(gatewayAccountId, correlationId)
+    if (telephonePaymentLinks.length >= 1) {
+      return telephonePaymentLinks[0].links.pay.href
+    }
+  }
+  return null
+}
+
+async function getTelephonePaymentLinks(gatewayAccountId, correlationId) {
+  try {
+    return await ProductsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, 'AGENT_INITIATED_MOTO')
+  } catch (e) {
+    logger.error(`[${correlationId}] Calling products failed for ${gatewayAccountId}`)
+  }
+  return []
 }
