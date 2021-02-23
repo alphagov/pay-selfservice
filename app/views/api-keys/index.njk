@@ -11,6 +11,12 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l page-title">API Keys</h1>
+
+  <p class="govuk-body">Use these to connect your digital service to Pay, and to access the reporting API.</p>
+  <p class="govuk-body">
+    You do not need API keys to use 
+    <a class="govuk-link" href="https://www.payments.service.gov.uk/govuk-payment-pages/">payment links</a>.
+  </p>
   
   {% include "./_keys.njk" %}
 </div>
