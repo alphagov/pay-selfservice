@@ -3,35 +3,59 @@ govuk-width-container govuk-header__container--{{accountType}}
 {%- endset -%}
 
 {% if loggedIn %}
-{% set payHeaderNavigation = [
-  {
-    text: "My services",
-    href: routes.serviceSwitcher.index,
-    active: services.length > 0,
-    attributes: {
-      id: "my-services"
-    }
-  },
-  {
-    text: "My profile",
-    href: routes.user.profile.index,
-    active: username.length > 0,
-    attributes: {
-      id: "my-profile"
-    }
-  },
-  {
-    text: "Documentation",
-    href: "https://docs.payments.service.gov.uk"
-  },
-  {
-    text: "Sign out",
-    href: routes.user.logOut,
-    attributes: {
-      id: "logout"
-    }
-  }
-] %}
+  {% if enabledMyServicesAsDefaultView %}
+    {% set payHeaderNavigation = [
+      {
+        text: "My profile",
+        href: routes.user.profile.index,
+        active: username.length > 0,
+        attributes: {
+          id: "my-profile"
+        }
+      },
+      {
+        text: "Documentation",
+        href: "https://docs.payments.service.gov.uk"
+      },
+      {
+        text: "Sign out",
+        href: routes.user.logOut,
+        attributes: {
+          id: "logout"
+        }
+      }
+    ] %}
+    {% else %}
+    {% set payHeaderNavigation = [
+      {
+        text: "My services",
+        href: routes.serviceSwitcher.index,
+        active: services.length > 0,
+        attributes: {
+          id: "my-services"
+        }
+      },
+      {
+        text: "My profile",
+        href: routes.user.profile.index,
+        active: username.length > 0,
+        attributes: {
+          id: "my-profile"
+        }
+      },
+      {
+        text: "Documentation",
+        href: "https://docs.payments.service.gov.uk"
+      },
+      {
+        text: "Sign out",
+        href: routes.user.logOut,
+        attributes: {
+          id: "logout"
+        }
+      }
+    ] %}
+    {% endif %}
 {% else %}
 {% set payHeaderNavigation = [
   {

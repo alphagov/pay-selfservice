@@ -38,15 +38,14 @@
   {% include "includes/header.njk" %}
 {% endblock %}
 
-{# {% if not hideServiceHeader %} #}
 {% block beforeContent %}
-  {# {% if loggedIn %} #}
-    {% if enabledMyServicesAsDefaultView %}
-      {% include "includes/phase-banner.njk" %}
-    {% else %}
+  {% if enabledMyServicesAsDefaultView and loggedIn %}
+    {% include "includes/phase-banner.njk" %}
+  {% else %}
+    {% if not hideServiceHeader %}
       {% include "includes/phase-banner-old.njk" %}
     {% endif %}
-  {# {% endif %} #}
+  {% endif %}
 {% endblock %}
 
 {% block content %}
