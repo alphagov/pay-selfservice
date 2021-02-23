@@ -33,7 +33,7 @@ describe('express unhandled error handler', () => {
     })
 
     it('should show the error page', () => {
-      expect($('.page-title').text()).to.equal('An error occurred:')
+      expect($('.page-title').text()).to.equal('An error occurred')
     })
 
     it('should tell the user to contact support', () => {

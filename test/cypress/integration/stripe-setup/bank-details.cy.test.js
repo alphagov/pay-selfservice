@@ -141,7 +141,7 @@ describe('Stripe setup: bank details page', () => {
         cy.visit(bankDetailsUrl, {
           failOnStatusCode: false
         })
-        cy.get('h1').should('contain', 'An error occurred:')
+        cy.get('h1').should('contain', 'An error occurred')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })
     })

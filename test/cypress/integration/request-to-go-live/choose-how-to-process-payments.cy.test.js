@@ -176,7 +176,7 @@ describe('Request to go live: choose how to process payments', () => {
 
     it('should show an error when the user does not have enough permissions', () => {
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl, { failOnStatusCode: false })
-      cy.get('h1').should('contain', 'An error occurred:')
+      cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
   })
@@ -195,7 +195,7 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('#choose-how-to-process-payments-mode').click()
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
 
-      cy.get('h1').should('contain', 'An error occurred:')
+      cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'There is a problem with the payments platform')
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)

@@ -163,7 +163,7 @@ describe('Stripe setup: VAT number page', () => {
         ])
 
         cy.visit(vatNumberUrl, { failOnStatusCode: false })
-        cy.get('h1').should('contain', 'An error occurred:')
+        cy.get('h1').should('contain', 'An error occurred')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })
     })

@@ -63,17 +63,15 @@
         <article class="{{columnClass}} links__box" id="stripe-test-account-requested">
           <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Stripe test account requested</h2>
           <p class="govuk-body govuk-!-margin-bottom-0">
-            You've requested a stripe account from the GOV.UK Pay team.
-            We're setting up your test account. It will be ready within 2 working days.
+            You’ve requested a stripe account from the GOV.UK Pay team.
+            We’re setting up your test account. It will be ready within 2 working days.
           </p>
         </article>
       {% else %}
         <article class="{{columnClass}} links__box" id="request-stripe-test-account">
           <a href="/service/{{ currentService.externalId }}/request-stripe-test-account" class="govuk-link">
-            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Request Stripe test account</h2>
-            <p class="govuk-body govuk-!-margin-bottom-0">Use GOV.UK’s Payment Service Provider (PSP) to view transaction fee from each payment.
-             Set up a Stripe account to test payments, reporting, and reconciliation.
-            </p>
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Test Stripe’s reporting functionality</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">Access transaction fee and payout reports to test reconciliation.</p>
           </a>
         </article>
       {% endif %}

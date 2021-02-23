@@ -194,7 +194,7 @@ describe('The manage payment links page', () => {
 
     it('should display an error', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`, { failOnStatusCode: false })
-      cy.get('h1').should('contain', 'An error occurred:')
+      cy.get('h1').should('contain', 'An error occurred')
     })
   })
 })

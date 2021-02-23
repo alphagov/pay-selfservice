@@ -36,7 +36,7 @@ describe('Request PSP test account: submit request', () => {
 
       cy.get('button').contains('Submit request').click()
 
-      cy.get('h1').should('contain', 'Request submitted for Stripe test account')
+      cy.get('h1').should('contain', 'Thanks for requesting a Stripe test account')
     })
   })
 
