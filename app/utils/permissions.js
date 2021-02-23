@@ -15,7 +15,8 @@ const getGatewayAccountsFor = async function getGatewayAccountsFor (user, filter
   return {
     gatewayAccountIds: filterGatewayAccountIds(userGatewayAccounts, filterLiveAccounts),
     headers: getAllAccountDetailHeaders(userGatewayAccounts),
-    hasLiveAccounts: filterGatewayAccountIds(userGatewayAccounts, true).length > 0
+    hasLiveAccounts: filterGatewayAccountIds(userGatewayAccounts, true).length > 0,
+    hasTestStripeAccount: userGatewayAccounts.filter((account) => account.type === 'test' && account.payment_provider === 'stripe').length > 0
   }
 }
 

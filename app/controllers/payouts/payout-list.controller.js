@@ -35,7 +35,7 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res, 
     if (process.env.PAYOUTS_RELEASE_DATE) {
       payoutsReleaseDate = moment.unix(process.env.PAYOUTS_RELEASE_DATE)
     }
-    response(req, res, 'payouts/list', { payoutSearchResult, payoutsReleaseDate, filterLiveAccounts, hasLiveAccounts: userPermittedAccountsSummary.hasLiveAccounts, enableTestReports: process.env.ENABLE_TEST_REPORTS === 'true' })
+    response(req, res, 'payouts/list', { payoutSearchResult, payoutsReleaseDate, filterLiveAccounts, hasLiveAccounts: userPermittedAccountsSummary.hasLiveAccounts, enableTestReports: process.env.ENABLE_TEST_REPORTS === 'true', hasTestStripeAccount: userPermittedAccountsSummary.hasTestStripeAccount })
   } catch (error) {
     return next(new Error('Failed to fetch payouts'))
   }

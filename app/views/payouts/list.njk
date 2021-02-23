@@ -26,7 +26,9 @@ Payments to your bank account - GOV.UK Pay
   {% if enableTestReports %}
   <p class="govuk-body">
     {% if filterLiveAccounts %}
+      {% if hasTestStripeAccount %}
       <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') }}">Switch to test accounts</a>
+      {% endif %}
     {% else %}
       {% if hasLiveAccounts %}
         <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.payouts.list }}">Switch to live accounts</a>
