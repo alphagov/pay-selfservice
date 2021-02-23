@@ -27,7 +27,7 @@ describe('Error pages', () => {
 
     it('should display logged in header on error page', () => {
       cy.visit('/account/no-access-to-account-id/dashboard', { failOnStatusCode: false })
-      cy.get('h1').should('have.text', 'An error occurred:')
+      cy.get('h1').should('have.text', 'An error occurred')
       cy.get('nav').contains('My profile')
     })
   })

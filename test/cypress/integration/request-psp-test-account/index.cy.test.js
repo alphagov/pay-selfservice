@@ -81,7 +81,7 @@ describe('Request PSP test account: index', () => {
     it('should show an error when the user does not have enough permissions', () => {
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl, { failOnStatusCode: false })
-      cy.get('h1').should('contain', 'An error occurred:')
+      cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
   })

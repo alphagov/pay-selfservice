@@ -111,6 +111,6 @@ describe('The transaction list view', function () {
     const $ = cheerio.load(body)
 
     expect($('#download-transactions-link').length).to.equal(0)
-    expect($('p#no-results').text()).to.equal('No results match the search criteria.')
+    expect($('p#no-results').text()).to.equal('There are no results for the filters you used.')
   })
 })

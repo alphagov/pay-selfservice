@@ -71,7 +71,7 @@
     {% if has_live_account or env.ENABLE_TEST_REPORTS === 'true' %}
     <p class="govuk-body">
       <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-        View transactions for all services
+        Show transactions for all your services
       </a>
     </p>
     {% endif %}
@@ -79,7 +79,7 @@
     {% if has_account_with_payouts %}
       <p class="govuk-body">
         <a href="{{routes.payouts.list}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-          View payments to your bank account
+          Show payments to your bank account
         </a>
       </p>
     {% endif %}

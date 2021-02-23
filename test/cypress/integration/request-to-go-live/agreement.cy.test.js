@@ -38,7 +38,7 @@ describe('Request to go live: agreement', () => {
 
     it('should show an error when the user does not have enough permissions', () => {
       cy.visit(requestToGoLiveAgreementUrl, { failOnStatusCode: false })
-      cy.get('h1').should('contain', 'An error occurred:')
+      cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
   })
@@ -175,7 +175,7 @@ describe('Request to go live: agreement', () => {
       cy.get('#agreement').click()
       cy.get('#request-to-go-live-agreement-form > button').click()
 
-      cy.get('h1').should('contain', 'An error occurred:')
+      cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'There is a problem with the payments platform')
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)

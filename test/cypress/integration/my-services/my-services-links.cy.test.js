@@ -25,7 +25,7 @@ describe('Service has a live account that supports payouts', () => {
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
-    cy.contains('a', 'View payments to your bank account')
+    cy.contains('a', 'Show payments to your bank account')
   })
 
   it('should direct to the list payouts page', () => {
@@ -33,7 +33,7 @@ describe('Service has a live account that supports payouts', () => {
       ...getUserAndAccountStubs('live', 'stripe'),
       payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: '1' })
     ])
-    cy.contains('a', 'View payments to your bank account').click()
+    cy.contains('a', 'Show payments to your bank account').click()
     cy.get('h1').contains('Payments to your bank account')
   })
 })
@@ -46,7 +46,7 @@ describe('Service does not have a live account that supports payouts', () => {
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
-    cy.contains('a', 'View payments to your bank account').should('not.exist')
+    cy.contains('a', 'Show payments to your bank account').should('not.exist')
   })
 })
 
@@ -58,7 +58,7 @@ describe('User has access to no live services', () => {
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
-    cy.contains('a', 'View transactions for all services').should('have.attr', 'href', '/all-service-transactions/test')
+    cy.contains('a', 'Show transactions for all your services').should('have.attr', 'href', '/all-service-transactions/test')
   })
 })
 
@@ -70,6 +70,6 @@ describe('User has access to one or more live services', () => {
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
-    cy.contains('a', 'View transactions for all services')
+    cy.contains('a', 'Show transactions for all your services')
   })
 })
