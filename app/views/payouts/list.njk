@@ -16,12 +16,29 @@ Payments to your bank account - GOV.UK Pay
 
 {% block mainContent %}
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">Payments to your bank account</h1>
+  <h1 class="govuk-heading-l">
+    Payments to your bank account
+    <strong class="govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
+  </h1>
 </div>
-<div class="govuk-grid-column-two-thirds">
-  <p class="govuk-body govuk-!-margin-bottom-8">Payments Stripe has made to your bank account.</p>
+<div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-8">
+  <p class="govuk-body">Payments Stripe has made to your bank account.</p>
+  {% if enableTestReports %}
+  <p class="govuk-body">
+    {% if filterLiveAccounts %}
+      {% if hasTestStripeAccount %}
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') }}">Switch to test accounts</a>
+      {% endif %}
+    {% else %}
+      {% if hasLiveAccounts %}
+        <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.payouts.list }}">Switch to live accounts</a>
+      {% endif %}
+    {% endif %}
+  </p>
+  {% endif %}
 </div>
 
+{% set transactionsDownloadPath = routes.allServiceTransactions.download if filterLiveAccounts else routes.formattedPathFor(routes.allServiceTransactions.downloadStatusFilter, 'test') %}
 <div class="govuk-grid-column-two-thirds">
   {% for key, group in payoutSearchResult.groups %}
     {% set dateString = group.date.format('DD MMMM') %}
@@ -43,7 +60,7 @@ Payments to your bank account - GOV.UK Pay
             {{ payoutEntry.amount | penceToPoundsWithCurrency }}
           </td>
           <td class="govuk-table__cell">
-            <a class="govuk-link govuk-link--no-visited-state" href="{{ paths.allServiceTransactions.download }}?gatewayPayoutId={{payoutEntry.gateway_payout_id}}">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ transactionsDownloadPath }}?gatewayPayoutId={{payoutEntry.gateway_payout_id}}">
               Download CSV <span class="govuk-visually-hidden">for {{ payoutEntry.serviceName }} on {{ dateString }}</span>
             </a>
           </td>
