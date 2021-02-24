@@ -18,6 +18,7 @@
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
 {% set accountType = currentGatewayAccount.type %}
 
@@ -38,8 +39,12 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% if not hideServiceHeader %}
+  {% if enabledMyServicesAsDefaultView and loggedIn %}
     {% include "includes/phase-banner.njk" %}
+  {% else %}
+    {% if not hideServiceHeader %}
+      {% include "includes/phase-banner-old.njk" %}
+    {% endif %}
   {% endif %}
 {% endblock %}
 

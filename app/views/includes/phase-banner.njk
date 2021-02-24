@@ -1,40 +1,51 @@
-{% if currentService.name %}
-<div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
-  <div class="service-info">
-    <h4 class="service-info--name govuk-heading-s">
-      {{currentService.name}}
-      {% if currentGatewayAccount %}
-        {% set paymentProvider = currentGatewayAccount.payment_provider and currentGatewayAccount.payment_provider.toLowerCase() %}
-        {% set isLive = currentGatewayAccount.type === "live" %}
-        {% set stripeAccountIsSetup = (currentGatewayAccount.connectorGatewayAccountStripeProgress.bankAccount and currentGatewayAccount.connectorGatewayAccountStripeProgress.responsiblePerson
-           and currentGatewayAccount.connectorGatewayAccountStripeProgress.vatNumber and currentGatewayAccount.connectorGatewayAccountStripeProgress.companyNumber) %}
+{% from "../macro/breadcrumbs.njk" import breadcrumbs %}
+{% set accountLabelWithTag %}
+  <strong>{{currentService.name}}</strong>
+  {% if currentGatewayAccount %}
+    {% set paymentProvider = currentGatewayAccount.payment_provider and currentGatewayAccount.payment_provider.toLowerCase() %}
+    {% set isLive = currentGatewayAccount.type === "live" %}
+    {% set stripeAccountIsSetup = (currentGatewayAccount.connectorGatewayAccountStripeProgress.bankAccount and currentGatewayAccount.connectorGatewayAccountStripeProgress.responsiblePerson
+      and currentGatewayAccount.connectorGatewayAccountStripeProgress.vatNumber and currentGatewayAccount.connectorGatewayAccountStripeProgress.companyNumber) %}
 
-        {% set tagModifierClass %}
-          {% if not isLive %}
-            govuk-tag--grey
-          {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
-            govuk-tag--blue
-          {% endif %}
-        {% endset %}
-
-        {% set tagText %}
-          {% if not isLive %}
-            {% if paymentProvider === 'sandbox' %}
-              Test
-            {% else %}
-              {{ paymentProvider }} Test
-            {% endif %}
-          {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
-            Live - information needed
-          {% else %}
-            Live
-          {% endif %}
-        {% endset %}
-        <strong class="service-info--tag govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
+    {% set tagModifierClass %}
+      {% if not isLive %}
+        govuk-tag--grey
+      {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
+        govuk-tag--blue
       {% endif %}
-    </h4>
-  </div>
-  {% if not hideServiceNav %}
+    {% endset %}
+
+    {% set tagText %}
+      {% if not isLive %}
+        {% if paymentProvider === 'sandbox' %}
+          Test
+        {% else %}
+          {{ paymentProvider }} Test
+        {% endif %}
+      {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
+        Live - information needed
+      {% else %}
+        Live
+      {% endif %}
+    {% endset %}
+    <strong class="service-info--tag govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
+  {% endif %}
+{% endset %}
+
+{% set breadcrumbItems = [
+  { text: "My services", href: routes.serviceSwitcher.index }
+] %}
+
+{% if not hideServiceHeader and currentService.name %}
+{% set breadcrumbItems = (breadcrumbItems.push({
+  html: accountLabelWithTag
+}), breadcrumbItems) %}
+{% endif %}
+
+{{ breadcrumbs(breadcrumbItems) }}
+
+{% if not hideServiceNav and not hideServiceHeader %}
+<div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
   <nav role="navigation" class="service-navigation">
     <ul class="service-navigation--list">
       {% for item in serviceNavigationItems %}
@@ -48,6 +59,5 @@
       {% endfor %}
     </ul>
   </nav>
-  {% endif %}
 </div>
 {% endif %}

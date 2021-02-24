@@ -33,9 +33,6 @@ describe('Request to go live: choose how to process payments', () => {
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
-      cy.get('.govuk-back-link').should('have.text', 'My services')
-      cy.get('.service-navigation').should('not.exist')
-
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
       cy.get('#choose-how-to-process-payments-mode').should('exist')

@@ -62,9 +62,6 @@ describe('Request to go live: organisation name page', () => {
 
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
-      cy.get('.govuk-back-link').should('have.text', 'My services')
-      cy.get('.service-navigation').should('not.exist')
-
       cy.get('h1').should('contain', 'What is your organisation called?')
 
       cy.get('#request-to-go-live-current-step').should('exist')

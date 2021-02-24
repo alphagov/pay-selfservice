@@ -1,0 +1,21 @@
+{% macro breadcrumbs(items) %}
+<div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
+  <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+    {% for item in items %}
+      <li class="govuk-breadcrumbs__list-item govuk-!-font-size-19">
+      {% if item.html %}
+        {{ item.html | safe}}
+      {% elif item.text %}
+        {% if item.href %}
+          <a class="govuk-breadcrumbs__link" href="{{ item.href }}">{{ item.text }}</a>
+        {% else %}
+          {{ item.text }}
+        {% endif %}
+      {% endif %}
+      </li>
+    {% endfor %}
+    </ol>
+  </div>
+</div>
+{% endmacro %}

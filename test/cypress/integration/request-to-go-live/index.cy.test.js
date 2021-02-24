@@ -54,9 +54,6 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
-      cy.get('.govuk-back-link').should('have.text', 'My services')
-      cy.get('.service-navigation').should('not.exist')
-
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 

@@ -1,3 +1,4 @@
+{% from "../macro/breadcrumbs.njk" import breadcrumbs %}
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
@@ -26,14 +27,25 @@
 
 {% block beforeContent %}
   {% if allServiceTransactions %}
-    {{
-      govukBackLink({
-        text: "Back to My services",
-        href: routes.serviceSwitcher.index
-      })
-    }}
+    {% if enabledMyServicesAsDefaultView %}
+      {% set pageTitleBreadcrumbWithTag %}
+        <span>Transactions for all services</span>
+        <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
+      {% endset %}
+      {{ breadcrumbs([
+        { text: "My services", href: routes.serviceSwitcher.index },
+        { html: pageTitleBreadcrumbWithTag  }
+      ]) }}
+    {% else %}
+      {{
+        govukBackLink({
+          text: "Back to My services",
+          href: routes.serviceSwitcher.index
+        })
+      }}
+    {% endif %}
   {% else %}
-    {% include "includes/phase-banner.njk" %}
+    {{ super() }}
   {% endif %}
 {% endblock %}
 
