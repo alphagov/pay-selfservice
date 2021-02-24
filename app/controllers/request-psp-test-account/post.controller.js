@@ -14,7 +14,7 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
     PSP: 'Stripe'
     Email address: ${req.user.email}
     Time: ${new Date().toISOString()}
-    Service created at: ${req.service.createdDate}`
+    Service created at: ${req.service.createdDate || '(service was created before we captured this date)'}`
 
   const zendeskOpts = {
     correlationId: req.correlationId,

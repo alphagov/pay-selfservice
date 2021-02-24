@@ -21,17 +21,31 @@ Payments to your bank account - GOV.UK Pay
     <strong class="govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
   </h1>
 </div>
-<div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-8">
-  <p class="govuk-body">Payments Stripe has made to your bank account.</p>
+<div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
+  {% if filterLiveAccounts %}
+    <p class="govuk-body">Payments Stripe has made to your bank account.</p>
+  {% else %}
+    <div class="govuk-inset-text">
+    <p class="govuk-body">Test reports represent how payments to your bank account appear. They show the total amount received from Stripe in each payment and detail all the transactions.</p>
+    <p class="govuk-body">The reports are available 7 days after your test transactions. With test transactions, no payments are made to your bank account.</p>
+
+    <p class="govuk-body">Once your service is live, you should receive payments to your bank account within:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>2 working days if your user completed their payment during the week</li>
+      <li>3 working days if your user completed their payment at the weekend or on a bank holiday</li>
+    </ul>
+    </div>
+  {% endif %}
+
   {% if enableTestReports %}
   <p class="govuk-body">
     {% if filterLiveAccounts %}
       {% if hasTestStripeAccount %}
-      <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') }}">Switch to test accounts</a>
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') }}">Switch to test transactions</a>
       {% endif %}
     {% else %}
       {% if hasLiveAccounts %}
-        <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.payouts.list }}">Switch to live accounts</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.payouts.list }}">Switch to live transactions</a>
       {% endif %}
     {% endif %}
   </p>
