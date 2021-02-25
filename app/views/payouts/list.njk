@@ -7,10 +7,13 @@ Payments to your bank account - GOV.UK Pay
 
 {% block beforeContent %}
   {% if enabledMyServicesAsDefaultView %}
-
+  {% set pageTitleBreadcrumbWithTag %}
+      <span>Payments to your bank account</span>
+      <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
+  {% endset %}
   {{ breadcrumbs([
     { text: "My services", href: routes.serviceSwitcher.index },
-    { text: "Payments to your bank account" }
+    { html: pageTitleBreadcrumbWithTag  }
   ]) }}
   {% else %}
   {{
