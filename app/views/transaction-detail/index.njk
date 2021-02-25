@@ -1,5 +1,6 @@
 {% extends "../layout.njk" %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "../macro/breadcrumbs.njk" import breadcrumbs %}
 
 {% set contextIsAllServiceTransactions = redirectBackLink %}
 {% set hideServiceHeader = contextIsAllServiceTransactions %}
@@ -9,19 +10,36 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {{ super() }}
-  {% set defaultBackLink %}{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
-  {% set backLink = redirectBackLink if contextIsAllServiceTransactions else defaultBackLink %}
-  {% set backLinkText = 'Transactions for all services' if contextIsAllServiceTransactions else 'Transactions list' %}
-  {{
-    govukBackLink({
-      text: backLinkText,
-      href: backLink | safe,
-      attributes: {
-        id: 'arrowed'
-      }
-    })
-  }}
+  {% if contextIsAllServiceTransactions %}
+    {% if enabledMyServicesAsDefaultView %}
+      {% set pageTitleBreadcrumbWithTag %}
+        <span>Transactions for all services</span>
+        <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if live else "TEST" }}</strong>
+      {% endset %}
+      {{ breadcrumbs([
+        { text: "My services", href: routes.serviceSwitcher.index },
+        { html: pageTitleBreadcrumbWithTag  }
+      ]) }}
+    {% else %}
+      {{ super() }}
+    {% endif %}
+
+    {{
+      govukBackLink({
+        text: 'Back to transactions for all services',
+        href: redirectBackLink | safe
+      })
+    }}
+  {% else %}
+    {{ super() }}
+    {% set serviceTransactionsBackLink %}{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
+    {{
+      govukBackLink({
+        text: 'Transactions list',
+        href: serviceTransactionsBackLink | safe
+      })
+    }}
+  {% endif %}
 {% endblock %}
 
 {% block mainContent %}
