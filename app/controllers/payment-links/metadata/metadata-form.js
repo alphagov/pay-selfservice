@@ -1,6 +1,9 @@
-const METADATA_MAX_HEADER_LENGTH = 30
-const METADATA_MAX_VALUE_LENGTH = 100
-const MAX_NO_OF_METADATA_COLUMNS = 10
+const { constants } = require('@govuk-pay/pay-js-commons')
+
+const {
+  MAX_KEY_LENGTH,
+  MAX_VALUE_LENGTH,
+  MAX_KEY_VALUE_PAIRS } = constants.externalMetadata
 
 const SPECIAL_CHARACTERS = [ '\\' ]
 const fields = {
@@ -14,7 +17,7 @@ const fields = {
       },
       {
         validator: isValidLengthForColumnHeader,
-        message: `Column header must be ${METADATA_MAX_HEADER_LENGTH} characters or fewer`
+        message: `Column header must be ${MAX_KEY_LENGTH} characters or fewer`
       },
       {
         validator: isNotDuplicate,
@@ -22,7 +25,7 @@ const fields = {
       },
       {
         validator: isNotExceedingMaxNoOfReportingColumns,
-        message: `Number of reporting columns must be ${MAX_NO_OF_METADATA_COLUMNS} or fewer`
+        message: `Number of reporting columns must be ${MAX_KEY_VALUE_PAIRS} or fewer`
       },
       {
         validator: doesNotContainSpecialCharacters,
@@ -40,7 +43,7 @@ const fields = {
       },
       {
         validator: isValidLengthForCellContent,
-        message: `Cell content must be ${METADATA_MAX_VALUE_LENGTH} characters or fewer`
+        message: `Cell content must be ${MAX_VALUE_LENGTH} characters or fewer`
       }
     ]
   }
@@ -111,11 +114,11 @@ function isNotEmpty (value) {
 }
 
 function isValidLengthForColumnHeader (value) {
-  return value && value.length <= METADATA_MAX_HEADER_LENGTH
+  return value && value.length <= MAX_KEY_LENGTH
 }
 
 function isValidLengthForCellContent (value) {
-  return value && value.length <= METADATA_MAX_VALUE_LENGTH
+  return value && value.length <= MAX_VALUE_LENGTH
 }
 
 function isNotDuplicate (value, existingMetadata) {
@@ -128,7 +131,7 @@ function isNotDuplicate (value, existingMetadata) {
 }
 
 function isNotExceedingMaxNoOfReportingColumns (value, existingMetadata) {
-  if (Object.keys(existingMetadata) && Object.keys(existingMetadata).length >= MAX_NO_OF_METADATA_COLUMNS) {
+  if (Object.keys(existingMetadata) && Object.keys(existingMetadata).length >= MAX_KEY_VALUE_PAIRS) {
     return false
   }
 
