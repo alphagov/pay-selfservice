@@ -48,7 +48,6 @@ Payments to your bank account - GOV.UK Pay
     </div>
   {% endif %}
 
-  {% if enableTestReports %}
   <p class="govuk-body">
     {% if filterLiveAccounts %}
       {% if hasTestStripeAccount %}
@@ -60,7 +59,6 @@ Payments to your bank account - GOV.UK Pay
       {% endif %}
     {% endif %}
   </p>
-  {% endif %}
 </div>
 
 {% set transactionsDownloadPath = routes.allServiceTransactions.download if filterLiveAccounts else routes.formattedPathFor(routes.allServiceTransactions.downloadStatusFilter, 'test') %}
