@@ -91,7 +91,7 @@
     "minimist": "1.2.x",
     "moment-timezone": "0.5.33",
     "morgan": "1.10.0",
-    "node-zendesk": "2.0.3",
+    "node-zendesk": "2.0.5",
     "nunjucks": "3.2.2",
     "passport": "0.4.x",
     "passport-custom": "1.1.1",
