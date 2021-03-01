@@ -98,8 +98,7 @@ const displayGoLiveLink = (service, account, user) => {
 const displayRequestTestStripeAccountLink = (service, account, user) => {
   return account.payment_provider === 'sandbox' && service.currentGoLiveStage !== LIVE &&
     service.currentPspTestAccountStage !== pspTestAccountStage.CREATED &&
-    user.hasPermission(service.externalId, 'psp-test-account-stage:update') &&
-    process.env.ENABLE_STRIPE_TEST_ACCOUNT_REQUEST === 'true'
+    user.hasPermission(service.externalId, 'psp-test-account-stage:update')
 }
 
 module.exports = async (req, res) => {

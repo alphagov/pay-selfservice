@@ -72,13 +72,11 @@
 
     {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
 
-    {% if has_live_account or env.ENABLE_TEST_REPORTS === 'true' %}
     <p class="govuk-body">
       <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
         Show transactions for all your services
       </a>
     </p>
-    {% endif %}
 
     {% set payoutsPath = routes.payouts.list if has_live_account else routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
 
