@@ -92,24 +92,14 @@ function getGatewayAccountsSuccess (opts) {
   })
 }
 
-function getGatewayAccountsSuccessForMultipleAccounts (opts) {
+function getGatewayAccountsSuccessForMultipleAccounts (accountsOpts) {
   const path = '/v1/frontend/accounts'
   return stubBuilder('GET', path, 200, {
     query: {
-      accountIds: opts.gatewayAccountIds.join(',')
+      accountIds: accountsOpts.map(account => account.gatewayAccountId).join(',')
     },
     response: gatewayAccountFixtures.validGatewayAccountsResponse({
-      accounts: [{
-        gateway_account_id: opts.gatewayAccountId1,
-        type: opts.type,
-        payment_provider: opts.paymentProvider,
-        external_id: opts.externalId1
-      }, {
-        gateway_account_id: opts.gatewayAccountId2,
-        type: opts.type,
-        payment_provider: opts.paymentProvider,
-        external_id: opts.externalId2
-      }]
+      accounts: accountsOpts.map(parseGatewayAccountOptions)
     })
   })
 }

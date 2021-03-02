@@ -7,99 +7,155 @@ const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 
 describe('All service transactions', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId1 = 42
-  const gatewayAccountId2 = 43
-  const gatewayAccountExternalId1 = 'a-valid-external-id-1'
-  const gatewayAccountExternalId2 = 'a-valid-external-id-2'
   const transactionsUrl = `/all-service-transactions`
-  const defaultAmount = 1000
 
-  const defaultTransactionEvents = [{
-    amount: defaultAmount,
-    state: {
-      finished: false,
-      status: 'created'
+  const gatewayAccount1 = {
+    gatewayAccountId: 42,
+    gatewayAccountExternalId: 'a-valid-external-id-1',
+    type: 'live',
+    paymentProvider: 'stripe'
+  }
+  const gatewayAccount2 = {
+    gatewayAccountId: 43,
+    gatewayAccountExternalId: 'a-valid-external-id-2',
+    type: 'live'
+  }
+  const gatewayAccount3 = {
+    gatewayAccountId: 44,
+    gatewayAccountExternalId: 'a-valid-external-id-3',
+    type: 'test'
+  }
+  const userStub = userStubs.getUserSuccessWithMultipleServices(userExternalId, [
+    {
+      gatewayAccountId: gatewayAccount1.gatewayAccountId,
+      serviceName: 'Service 1'
     },
-    resource_type: 'PAYMENT',
-    event_type: 'PAYMENT_CREATED',
-    timestamp: '2019-09-18T10:06:17.152Z',
-    data: {}
-  }]
-
-  function generateTransactions (length) {
-    const transactions = []
-    for (let i = 0; i < length; i++) {
-      transactions.push({
-        reference: 'transaction' + i,
-        amount: defaultAmount,
-        type: 'payment',
-        transaction_id: 'transaction-id-' + i,
-        gateway_account_id: String(gatewayAccountId1),
-        events: defaultTransactionEvents
-      })
+    {
+      gatewayAccountIds: [gatewayAccount2.gatewayAccountId, gatewayAccount3.gatewayAccountId],
+      serviceName: 'Service 2'
     }
-    return transactions
-  }
+  ])
 
-  function transactionSearchResultOpts (transactionLength, displaySize, page, filters, links) {
-    return {
-      gatewayAccountIds: [ gatewayAccountId1, gatewayAccountId2 ],
-      transactionLength: transactionLength || 50,
-      displaySize: displaySize || 5,
-      page: page || 1,
-      transactionCount: 3,
-      transactions: generateTransactions(2),
-      filters: filters,
-      links: links || {}
+  const liveTransactions = [
+    {
+      gateway_account_id: String(gatewayAccount1.gatewayAccountId),
+      reference: 'gateway-account-1-transaction',
+      transaction_id: 'transaction-id-1',
+      live: true
+    },
+    {
+      gateway_account_id: String(gatewayAccount2.gatewayAccountId),
+      reference: 'gateway-account-2-transaction',
+      transaction_id: 'transaction-id-2',
+      live: true
     }
-  }
+  ]
+  const testTransactions = [
+    {
+      gateway_account_id: String(gatewayAccount3.gatewayAccountId),
+      reference: 'gateway-account-3-transaction',
+      transaction_id: 'transaction-id-3',
+      live: false
+    }
+  ]
 
   describe('Visiting All Service Transactions', () => {
     beforeEach(() => {
       Cypress.Cookies.preserveOnce('session', 'gateway_account')
     })
 
-    it('should display All Service Transactions list page', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId1)
-      const opts = transactionSearchResultOpts(30, 5, 1, {},
-        {
-          self: { href: '/v1/transactions?&page=&display_size=5&state=' },
-          next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
-        })
-
+    it('should display All Service Transactions list page with live transactions', () => {
+      cy.setEncryptedCookies(userExternalId, gatewayAccount1.gatewayAccountId)
       cy.task('setupStubs', [
-        userStubs.getUserSuccessWithMultipleServices({ userExternalId, gatewayAccountId1, gatewayAccountId2, gatewayAccountExternalId1, gatewayAccountExternalId2 }),
-        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts({ gatewayAccountIds: [gatewayAccountId1, gatewayAccountId2], gatewayAccountId1, gatewayAccountId2, gatewayAccountExternalId1, gatewayAccountExternalId2, type: 'live', paymentProvider: 'stripe' }),
-        transactionStubs.getLedgerTransactionsSuccess(opts),
+        userStub,
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccount1, gatewayAccount2, gatewayAccount3]),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountIds: [gatewayAccount1.gatewayAccountId, gatewayAccount2.gatewayAccountId],
+          transactions: liveTransactions
+        }),
         gatewayAccountStubs.getCardTypesSuccess()
       ])
 
-      cy.visit(transactionsUrl + '?pageSize=5&page=')
+      cy.visit(transactionsUrl)
       cy.title().should('eq', `Transactions for all services`)
+      cy.get('.transactions-list--row').should('have.length', 2)
+      cy.get('#charge-id-transaction-id-1').should('exist')
+      cy.get('#charge-id-transaction-id-2').should('exist')
+    })
+
+    it('should have correct breadcrumb navigation', () => {
+      cy.get('.govuk-breadcrumbs').within(() => {
+        cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'LIVE')
+      })
     })
 
     it('should display Transaction Detail page', () => {
-      const transactions = generateTransactions(1)
-
       cy.task('setupStubs', [
-        userStubs.getUserSuccessWithMultipleServices({ userExternalId, gatewayAccountId1, gatewayAccountId2, gatewayAccountExternalId1, gatewayAccountExternalId2 }),
-        transactionStubs.getLedgerTransactionSuccess({ transactionDetails: transactions[0] }),
-        gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId: gatewayAccountId1, gatewayAccountExternalId: gatewayAccountExternalId1 }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
-          gatewayAccountId: gatewayAccountId1,
-          gatewayAccountExternalId: gatewayAccountExternalId1,
-          paymentProvider: 'stripe',
-          allowMoto: false }),
-        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId: gatewayAccountId1, bankAccount: true, responsiblePerson: true, vatNumber: true, companyNumber: true }),
-        transactionStubs.getLedgerEventsSuccess({ transactionId: 'transaction-id-0', events: defaultTransactionEvents })
+        userStub,
+        transactionStubs.getLedgerTransactionSuccess({ transactionDetails: liveTransactions[0] }),
+        gatewayAccountStubs.getGatewayAccountSuccess(gatewayAccount1),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess(gatewayAccount1),
+        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId: gatewayAccount1.gatewayAccountId, bankAccount: true, responsiblePerson: true, vatNumber: true, companyNumber: true }),
+        transactionStubs.getLedgerEventsSuccess({ transactionId: 'transaction-id-1' })
       ])
 
-      cy.get('#charge-id-transaction-id-0').click()
+      cy.get('#charge-id-transaction-id-1').click()
 
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('contain',
-        'System Generated')
+        'Service 1')
       cy.get('.transaction-details tbody').find('tr').eq(1).find('td').first().should('contain',
-        'transaction0')
+        'gateway-account-1-transaction')
     })
+
+    it('should have correct breadcrumb navigation', () => {
+      cy.get('.govuk-breadcrumbs').within(() => {
+        cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'LIVE')
+      })
+    })
+
+    it('should go back to all services transactions when back button clicked', () => {
+      cy.task('setupStubs', [
+        userStub,
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccount1, gatewayAccount2, gatewayAccount3]),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountIds: [gatewayAccount1.gatewayAccountId, gatewayAccount2.gatewayAccountId],
+          transactions: liveTransactions
+        }),
+        gatewayAccountStubs.getCardTypesSuccess()
+      ])
+      cy.get('.govuk-back-link').should('have.text', 'Back to transactions for all services').click()
+
+      cy.title().should('eq', `Transactions for all services`)
+    })
+
+    it('should show test transactions when Swtich to test accounts link clicked', () => {
+      cy.task('setupStubs', [
+        userStub,
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccount1, gatewayAccount2, gatewayAccount3]),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountIds: [gatewayAccount3.gatewayAccountId],
+          transactions: testTransactions
+        }),
+        gatewayAccountStubs.getCardTypesSuccess()
+      ])
+
+      cy.get('a').contains('Switch to test accounts').click()
+
+      cy.get('.transactions-list--row').should('have.length', 1)
+      cy.get('#charge-id-transaction-id-3').should('exist')
+    })
+
+    it('should have correct breadcrumb navigation for test transactions', () => {
+      cy.get('.govuk-breadcrumbs').within(() => {
+        cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
+      })
+    })
+
   })
 })

@@ -28,9 +28,9 @@ function getLedgerTransactionsSuccess (opts) {
   return stubBuilder('GET', path, 200, {
     query: lodash.defaults({ ...opts.filters }, {
       account_id: opts.gatewayAccountIds ? opts.gatewayAccountIds.join(',') : opts.gatewayAccountId,
-      page: opts.page || 1,
-      display_size: opts.displaySize || 100,
-      limit_total: true,
+      page: opts.page || 1,	
+      display_size: opts.displaySize || 100,	
+      limit_total: true,	
       limit_total_size: 5001
     }),
     response: ledgerTransactionFixtures.validTransactionSearchResponse({
