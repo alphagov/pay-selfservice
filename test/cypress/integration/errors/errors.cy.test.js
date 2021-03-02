@@ -10,6 +10,7 @@ describe('Error pages', () => {
       cy.visit('/a-route-that-does-not-exist', { failOnStatusCode: false })
       cy.get('h1').should('have.text', 'Page not found')
       cy.get('nav').contains('Sign in')
+      cy.get('.govuk-breadcrumbs').should('not.exist')
     })
   })
 
@@ -23,12 +24,18 @@ describe('Error pages', () => {
       cy.visit('/a-route-that-does-not-exist', { failOnStatusCode: false })
       cy.get('h1').should('have.text', 'Page not found')
       cy.get('nav').contains('My profile')
+      cy.get('.govuk-breadcrumbs').should('exist')
+      cy.get('.govuk-breadcrumbs').find('.govuk-breadcrumbs__list-item').should('have.length', 1)
+      cy.get('.govuk-breadcrumbs').find('.govuk-breadcrumbs__list-item').contains('My services')
     })
 
     it('should display logged in header on error page', () => {
       cy.visit('/account/no-access-to-account-id/dashboard', { failOnStatusCode: false })
       cy.get('h1').should('have.text', 'An error occurred')
       cy.get('nav').contains('My profile')
+      cy.get('.govuk-breadcrumbs').should('exist')
+      cy.get('.govuk-breadcrumbs').find('.govuk-breadcrumbs__list-item').should('have.length', 1)
+      cy.get('.govuk-breadcrumbs').find('.govuk-breadcrumbs__list-item').contains('My services')
     })
   })
 })
