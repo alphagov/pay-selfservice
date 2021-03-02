@@ -185,7 +185,7 @@ function buildServiceRoleOpts (opts) {
   if (opts.gatewayAccountId) {
     service.gateway_account_ids = [String(opts.gatewayAccountId)]
   } else if (opts.gatewayAccountIds) {
-    service.gateway_account_ids = opts.gatewayAccountIds.join(',')
+    service.gateway_account_ids = opts.gatewayAccountIds.map(String)
   }
 
   if (opts.pspTestAccountStage) {
