@@ -26,31 +26,13 @@ function getUserSuccess (opts) {
   return buildGetUserSuccessStub(opts.userExternalId, fixtureOpts)
 }
 
-function getUserSuccessWithMultipleServices (opts) {
-  const serviceRoles = [
-    {
-      service: {
-        external_id: opts.gatewayAccountExternalId1,
-        gateway_account_ids: [String(opts.gatewayAccountId1)]
-      }
-    },
-    {
-      service: {
-        external_id: opts.gatewayAccountExternalId2,
-        gateway_account_ids: [opts.gatewayAccountId2]
-      }
-    }
-  ]
-
+function getUserSuccessWithMultipleServices (externalId, serviceRoles) {
+  const serviceRoleFixtureOpts = serviceRoles.map(buildServiceRoleOpts)
   const fixtureOpts = {
-    external_id: opts.userExternalId,
-    service_roles: serviceRoles,
-    username: opts.email,
-    email: opts.email,
-    telephone_number: opts.telephoneNumber
+    external_id: externalId,
+    service_roles: serviceRoleFixtureOpts
   }
-
-  return buildGetUserSuccessStub(opts.userExternalId, fixtureOpts)
+  return buildGetUserSuccessStub(externalId, fixtureOpts)
 }
 
 function getUsersSuccess () {
@@ -198,31 +180,38 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
 }
 
 function buildServiceRoleOpts (opts) {
-  const serviceRole = {
-    service: {
-      gateway_account_ids: [String(opts.gatewayAccountId)]
-    }
+  const service = {}
+
+  if (opts.gatewayAccountId) {
+    service.gateway_account_ids = [String(opts.gatewayAccountId)]
+  } else if (opts.gatewayAccountIds) {
+    service.gateway_account_ids = opts.gatewayAccountIds.join(',')
   }
 
   if (opts.pspTestAccountStage) {
-    serviceRole.service.current_psp_test_account_stage = opts.pspTestAccountStage
+    service.current_psp_test_account_stage = opts.pspTestAccountStage
   }
 
   if (opts.serviceExternalId) {
-    serviceRole.service.external_id = opts.serviceExternalId
+    service.external_id = opts.serviceExternalId
   }
   if (opts.serviceName) {
-    serviceRole.service.name = opts.serviceName.en || opts.serviceName
-    serviceRole.service.service_name = opts.serviceName
+    service.name = opts.serviceName.en || opts.serviceName
+    service.service_name = opts.serviceName
   }
   if (opts.goLiveStage) {
-    serviceRole.service.current_go_live_stage = opts.goLiveStage
+    service.current_go_live_stage = opts.goLiveStage
   }
   if (opts.merchantName) {
-    serviceRole.service.merchant_details = {
+    service.merchant_details = {
       name: opts.merchantName
     }
   }
+
+  const serviceRole = {
+    service
+  }
+
   if (opts.role) {
     serviceRole.role = opts.role
   }
