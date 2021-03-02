@@ -41,7 +41,7 @@ const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = []) 
 }
 
 const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStreamStart, filters, gatewayAccountIds, user, correlationId,
-  allServiceTransactions) {
+  allServiceTransactions, liveAccounts) {
   const timestampStreamEnd = Date.now()
   const logContext = {
     time_taken: timestampStreamEnd - timestampStreamStart,
@@ -56,6 +56,7 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
     internal_user: user.internalUser,
     all_service_transactions: allServiceTransactions,
     user_number_of_live_services: user.numberOfLiveServices,
+    is_live: liveAccounts,
     filters: Object.keys(filters).sort().join(', ')
   }
   logContext[keys.USER_EXTERNAL_ID] = user && user.externalId

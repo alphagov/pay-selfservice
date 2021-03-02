@@ -19,7 +19,7 @@ const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (re
   const timestampStreamStart = Date.now()
   const data = (chunk) => { res.write(chunk) }
   const complete = () => {
-    transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, [accountId], req.user, correlationId, false)
+    transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, [accountId], req.user, correlationId, false, req.account.type === 'live')
     res.end()
   }
   const error = () => renderErrorView(req, res, 'Unable to download list of transactions.')

@@ -29,7 +29,7 @@ module.exports = async function dowmloadTransactions (req, res, next) {
     const timestampStreamStart = Date.now()
     const data = (chunk) => { res.write(chunk) }
     const complete = () => {
-      transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, userPermittedAccountsSummary.gatewayAccountIds, req.user, correlationId, true)
+      transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, userPermittedAccountsSummary.gatewayAccountIds, req.user, correlationId, true, filterLiveAccounts)
       res.end()
     }
     const error = () => next(new Error('Unable to download list of transactions.'))
