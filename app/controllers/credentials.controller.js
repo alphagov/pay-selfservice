@@ -44,24 +44,24 @@ function loadIndex (req, res, viewMode) {
 function credentialsPatchRequestValueOf (req) {
   let requestPayload = {
     credentials: {
-      username: req.body.username,
-      password: req.body.password
+      username: req.body.username && req.body.username.trim(),
+      password: req.body.password && req.body.password.trim()
     }
   }
 
   const merchantId = _.get(req, 'body.merchantId')
   if (merchantId) {
-    requestPayload.credentials.merchant_id = req.body.merchantId
+    requestPayload.credentials.merchant_id = req.body.merchantId.trim()
   }
 
   const shaInPassphrase = _.get(req, 'body.shaInPassphrase')
   if (shaInPassphrase) {
-    requestPayload.credentials.sha_in_passphrase = req.body.shaInPassphrase
+    requestPayload.credentials.sha_in_passphrase = req.body.shaInPassphrase.trim()
   }
 
   const shaOutPassphrase = _.get(req, 'body.shaOutPassphrase')
   if (shaOutPassphrase) {
-    requestPayload.credentials.sha_out_passphrase = req.body.shaOutPassphrase
+    requestPayload.credentials.sha_out_passphrase = req.body.shaOutPassphrase.trim()
   }
 
   return requestPayload
