@@ -77,12 +77,12 @@ describe('The account switcher link', () => {
       body = render('services/index', templateData)
     })
 
-    it(`should render a blank h2 tag if service name is blank`, () => {
-      body.should.containSelector('h2.service-name').withText('')
+    it(`should render a blank h3 tag if service name is blank`, () => {
+      body.should.containSelector('h3.service-name').withText('')
     })
 
-    it(`should render the service name in a h2 tag if service name is defined`, () => {
-      body.should.containSelector('h2.service-name').withText('Super Mega Service')
+    it(`should render the service name in a h3 tag if service name is defined`, () => {
+      body.should.containSelector('h3.service-name').withText('Super Mega Service')
     })
 
     it(`should render multiple service if a user is a member of multiple services`, () => {
@@ -93,16 +93,6 @@ describe('The account switcher link', () => {
       body.should.containSelector('a.view-team-members').property('length').to.equal(2)
       body.should.containSelector('a.view-team-members').withText('View team members')
     })
-  })
-
-  it(`should render no services message if a user is a member of no services`, () => {
-    templateData = {
-      services: []
-    }
-
-    body = render('services/index', templateData)
-
-    body.should.containSelector('.service-count').withText('You have 0 services')
   })
 
   it('should render added to new service message', () => {

@@ -9,9 +9,7 @@
   <script src="/public/js/components/notification-banner.js"></script>
 {% endblock %}
 
-{% block beforeContent %}
-
-{% endblock %}
+{% block beforeContent %}{% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
@@ -19,7 +17,7 @@
       {% set bannerHtml %}
           <div>
             <ol class="govuk-list govuk-list--number">
-              <li>When you log in, you'll land on this page, 'My services'.</li>
+              <li>When you log in, you'll land on this page.</li>
               <li>Your live services now appear alphabetically at the beginning of the list.</li>
             </ol>
 
@@ -54,23 +52,12 @@
       </div>
     {% endif %}
 
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-6 service-count">
-      {% if services_singular %}
-        You have {{services.length}} service
-      {% else %}
-        You have {{services.length}} services
-      {% endif %}
-    </h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Overview</h1>
 
-    <p class="govuk-body">
-        {{ govukButton({
-          classes: "govuk-button--secondary",
-          text: "Add a new service",
-          href: routes.serviceSwitcher.create
-        }) }}
-    </p>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Reports</h2>
 
-    {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
+    {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else 
+      routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
 
     <p class="govuk-body">
       <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
@@ -78,7 +65,8 @@
       </a>
     </p>
 
-    {% set payoutsPath = routes.payouts.list if has_live_account else routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
+    {% set payoutsPath = routes.payouts.list if has_live_account else 
+      routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
 
     {% if has_account_with_payouts %}
       <p class="govuk-body">
@@ -87,6 +75,24 @@
         </a>
       </p>
     {% endif %}
+
+  </div>
+
+  <div class="govuk-grid-column-full">
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible overview-divider">
+  </div>
+
+  <div class="govuk-grid-column-two-thirds">
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-4 govuk-!-margin-bottom-6">Services</h2>
+
+    <p class="govuk-body">
+      {{ govukButton({
+          classes: "govuk-button--secondary",
+          text: "Add a new service",
+          href: routes.serviceSwitcher.create
+        }) }}
+    </p>
 
     {% if services.length > 7 %}
       <div class="js-show flex-grid--row">
@@ -102,7 +108,7 @@
 
     <div class="flex-grid">
       {% for service in services %}
-          {% include "./_service-section.njk" %}
+        {% include "./_service-section.njk" %}
       {% endfor %}
     </div>
   </div>

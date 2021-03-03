@@ -1,6 +1,6 @@
 <div class="flex-grid--row service_list_item" data-name="{{ service.name }}">
   <div class="flex-grid--heading-group marked">
-    <h2 class="govuk-heading-m service-name">
+    <h3 class="govuk-heading-s service-name">
       {{ service.name }}
       {% if service.permissions.service_name_update %}
       <a href="/service/{{ service.external_id }}/edit-name" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-regular govuk-!-margin-left-2 edit-service-name">
