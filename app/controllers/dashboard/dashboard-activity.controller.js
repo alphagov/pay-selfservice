@@ -106,7 +106,7 @@ module.exports = async (req, res) => {
 
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const period = _.get(req, 'query.period', 'today')
-  const telephonePaymentLink  = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId, correlationId)
+  const telephonePaymentLink = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId, correlationId)
   const linksToDisplay = getLinksToDisplay(req.service, req.account, req.user, telephonePaymentLink)
   const model = {
     name: req.user.username,
@@ -220,7 +220,7 @@ async function getStripeAccountDetails (gatewayAccountId, correlationId) {
   return null
 }
 
-async function getTelephonePaymentLink(user, service, gatewayAccountId, correlationId) {
+async function getTelephonePaymentLink (user, service, gatewayAccountId, correlationId) {
   if (service.agentInitiatedMotoEnabled && user.hasPermission(service.externalId, 'agent-initiated-moto:create')) {
     const telephonePaymentLinks = await getTelephonePaymentLinks(gatewayAccountId, correlationId)
     if (telephonePaymentLinks.length >= 1) {
@@ -230,7 +230,7 @@ async function getTelephonePaymentLink(user, service, gatewayAccountId, correlat
   return null
 }
 
-async function getTelephonePaymentLinks(gatewayAccountId, correlationId) {
+async function getTelephonePaymentLinks (gatewayAccountId, correlationId) {
   try {
     return await ProductsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, 'AGENT_INITIATED_MOTO')
   } catch (e) {

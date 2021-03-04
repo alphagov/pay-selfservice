@@ -156,6 +156,5 @@ describe('All service transactions', () => {
         cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
       })
     })
-
   })
 })

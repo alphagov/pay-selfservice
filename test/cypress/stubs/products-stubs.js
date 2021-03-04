@@ -33,7 +33,7 @@ function getProductsByGatewayAccountIdAndTypeFailure (gatewayAccountId, productT
   return stubBuilder('GET', path, 500, {
     query: {
       type: productType
-    },
+    }
   })
 }
 

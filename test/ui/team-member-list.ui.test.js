@@ -184,6 +184,5 @@ describe('The team members view', function () {
     body.should.not.containSelector('#invited-team-members-view-and-refund-list')
     body.should.not.containSelector('#invited-team-members-view-and-initiate-moto-list')
     body.should.not.containSelector('#invited-team-members-view-refund-and-initiate-moto-list')
-
   })
 })

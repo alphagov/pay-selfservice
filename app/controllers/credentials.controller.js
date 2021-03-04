@@ -82,7 +82,8 @@ module.exports = {
 
   updateNotificationCredentials: async function (req, res) {
     const accountId = req.account.gateway_account_id
-    const { username, password } = _.get(req, 'body')
+    const username = req.body.username && req.body.username.trim()
+    const password = req.body.password && req.body.password.trim()
 
     if (!username) {
       req.flash('genericError', 'Enter a username')

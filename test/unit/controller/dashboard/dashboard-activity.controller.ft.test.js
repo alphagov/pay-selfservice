@@ -632,7 +632,7 @@ describe('dashboard-activity-controller', () => {
           gateway_account_id: GATEWAY_ACCOUNT_ID
         })])
         .persist()
-      })
+    })
 
     after(() => {
       nock.cleanAll()
@@ -651,7 +651,7 @@ describe('dashboard-activity-controller', () => {
         let $ = cheerio.load(res.text)
 
         expect($('#take-a-telephone-payment-link a:first-of-type').attr('href'))
-            .to.equal(`http://products-ui.url/pay/${AGENT_INITIATED_MOTO_PRODUCT_EXTERNAL_ID}`)
+          .to.equal(`http://products-ui.url/pay/${AGENT_INITIATED_MOTO_PRODUCT_EXTERNAL_ID}`)
       })
 
       it('should not display the telephone payment link if the user does not have permission to take telephone payments', async () => {
@@ -695,7 +695,7 @@ describe('dashboard-activity-controller', () => {
         .get(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products?type=AGENT_INTIATED_MOTO`)
         .reply(200, [])
         .persist()
-      })
+    })
 
     after(() => {
       nock.cleanAll()
