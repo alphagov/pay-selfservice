@@ -1,10 +1,12 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-const spy = sinon.spy(() => Promise.resolve())
+const patchAccountSpy = sinon.spy(() => Promise.resolve())
+const postNotificationCredentialsSpy = sinon.spy(() => Promise.resolve())
 const connectorClientMock = {
   ConnectorClient: function () {
-    this.patchAccountCredentials = spy
+    this.patchAccountCredentials = patchAccountSpy
+    this.postAccountNotificationCredentials = postNotificationCredentialsSpy
   }
 }
 const credentialsController = proxyquire('./credentials.controller', { '../services/clients/connector.client': connectorClientMock })
@@ -29,6 +31,20 @@ describe('gateway credentials controller', () => {
       headers: {}
     }
     await credentialsController.update(req, expressResponseStub)
-    sinon.assert.calledWithMatch(spy, { payload: { credentials: { username: 'username', password: 'password', merchant_id: 'merchant-id' } } })
+    sinon.assert.calledWithMatch(patchAccountSpy, { payload: { credentials: { username: 'username', password: 'password', merchant_id: 'merchant-id' } } })
+  })
+
+  it('should remove leading and trailing whitespace from notification credentials when submitting them to the backend', async () => {
+    const req = {
+      body: {
+        username: ' username       ',
+        password: ' password '
+      },
+      account: {},
+      headers: {},
+      flash: sinon.spy()
+    }
+    await credentialsController.updateNotificationCredentials(req, expressResponseStub)
+    sinon.assert.calledWithMatch(postNotificationCredentialsSpy, { payload: { username: 'username', password: 'password' } })
   })
 })
