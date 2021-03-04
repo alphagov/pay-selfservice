@@ -72,7 +72,7 @@ const buildTransactionDetails = (opts = {}) => {
     delayed_capture: opts.delayed_capture || false,
     transaction_type: opts.transaction_type || 'PAYMENT',
     moto: opts.moto || false,
-    live: opts.live || false,
+    live: opts.live || false
   }
 
   if (opts.gateway_transaction_id) {

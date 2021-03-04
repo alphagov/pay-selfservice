@@ -82,7 +82,6 @@ describe('service users resource', () => {
         expect(res.body.team_members['view-and-refund'].length).to.equal(0)
         expect(res.body.team_members['view-and-initiate-moto'].length).to.equal(0)
         expect(res.body.team_members['view-refund-and-initiate-moto'].length).to.equal(0)
-
       })
       .end(done)
   })

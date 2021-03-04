@@ -24,7 +24,7 @@ describe('Request PSP test account: index', () => {
       }
     }
     cy.task('setupStubs', [
-      userStubs.getUserSuccessWithServiceRole({ userExternalId, serviceRole }),
+      userStubs.getUserSuccessWithServiceRole({ userExternalId, serviceRole })
     ])
   }
 

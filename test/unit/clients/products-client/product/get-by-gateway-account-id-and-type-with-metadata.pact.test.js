@@ -21,7 +21,7 @@ function getProductsClient (baseUrl) {
   })
 }
 
-describe('products client - find a product with metadata associated with a particular gateway account id and type' , function () {
+describe('products client - find a product with metadata associated with a particular gateway account id and type', function () {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'products',

@@ -66,7 +66,7 @@ describe('The service role update view', function () {
       .withAttribute('type', 'radio')
       .withAttribute('value', '5')
       .withNoAttribute('checked')
-      body.should.containSelector('#role-view-refund-and-initiate-moto-input')
+    body.should.containSelector('#role-view-refund-and-initiate-moto-input')
       .withAttribute('type', 'radio')
       .withAttribute('value', '6')
       .withNoAttribute('checked')

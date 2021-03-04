@@ -77,7 +77,7 @@ describe('Invite a team member view', function () {
       .withAttribute('type', 'radio')
       .withAttribute('value', '5')
       .withNoAttribute('checked')
-      body.should.containSelector('#role-input-5')
+    body.should.containSelector('#role-input-5')
       .withAttribute('type', 'radio')
       .withAttribute('value', '6')
       .withNoAttribute('checked')
