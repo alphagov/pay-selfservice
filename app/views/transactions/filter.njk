@@ -209,6 +209,37 @@
         </fieldset>
       </fieldset>
     </div>
+    {% if isExperimentalFeaturesEnabled %}
+      <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-one-half">
+          <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                Advanced filters
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              {{
+                  govukInput({
+                    id: 'metadata',
+                    name: 'metadata',
+                    value: filters.metadata,
+                    classes: 'govuk-!-font-size-16',
+                    label: {
+                      text: 'Search by metadata or reporting column',
+                      classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+                    },
+                    hint: {
+                      text: 'Enter full value',
+                      classes: 'govuk-!-font-size-14'
+                    }
+                  })
+                }} 
+            </div>
+          </details>
+        </div>
+      </div>
+    {% endif %} 
     <div class="govuk-grid-column-one-quarter inputs-less-margin">
       {{
         govukButton({
