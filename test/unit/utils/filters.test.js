@@ -40,6 +40,12 @@ describe('filters', () => {
         expect(result).to.have.property('refund_states').to.deep.equal(['success', 'error', 'submitted'])
         expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted', 'capturable', 'success', 'error', 'cancelled', 'timedout', 'declined'])
       })
+
+      it('should trim values from the query object', () => {
+        const { result } = filters.getFilters({ query: { email: ' some-email@email.com ', reference: ' some-ref  ' } })
+        expect(result.email).to.equal('some-email@email.com')
+        expect(result.reference).to.equal('some-ref')
+      })
     })
 
     describe('describeFilter', () => {
