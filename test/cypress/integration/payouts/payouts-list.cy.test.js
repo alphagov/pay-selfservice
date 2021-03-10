@@ -98,4 +98,25 @@ describe('Payout list page', () => {
       cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
     })
   })
+
+  it('should show no permissions to access this page if the user has no stripe test accounts', () => {
+    cy.task('setupStubs', [
+      userStubs.getUserSuccess({
+        userExternalId,
+        gatewayAccountIds: [ testGatewayAccountId ],
+        serviceName: 'some-service-name',
+        email: 'some-user@email.com'
+      }),
+      gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
+        {
+          gatewayAccountId: testGatewayAccountId,
+          paymentProvider: 'sandbox',
+          type: 'test'
+        }
+      ])
+    ])
+
+    cy.visit('/payments-to-your-bank-account/test', { failOnStatusCode: false })
+    cy.get('#errorMsg').should('have.text', 'You do not have any associated services with rights to view payments to bank accounts.')
+  })
 })
