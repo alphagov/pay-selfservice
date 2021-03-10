@@ -15,8 +15,17 @@ function validateFilters (filters) {
     (pageIsNull || pageIsPositive)
 }
 
+function trimFilterValues (filters) {
+  for (const [key, value] of Object.entries(filters)) {
+    if (typeof value === 'string') {
+      filters[key] = value.trim()
+    }
+  }
+  return filters
+}
+
 function getFilters (req) {
-  let filters = qs.parse(req.query)
+  let filters = trimFilterValues(qs.parse(req.query))
   filters.selectedStates = []
   if (filters.state) {
     filters.selectedStates = typeof filters.state === 'string' ? [filters.state] : filters.state
