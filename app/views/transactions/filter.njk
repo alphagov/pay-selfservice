@@ -130,7 +130,7 @@
             items: eventStates
           })
         }}
-        </fieldset> 
+        </fieldset>
     </div>
     <div class="govuk-grid-column-one-half">
       <fieldset class="govuk-fieldset">
@@ -221,9 +221,9 @@
             <div class="govuk-details__text">
               {{
                   govukInput({
-                    id: 'metadata',
-                    name: 'metadata',
-                    value: filters.metadata,
+                    id: 'metadataValue',
+                    name: 'metadataValue',
+                    value: filters.metadataValue,
                     classes: 'govuk-!-font-size-16',
                     label: {
                       text: 'Search by metadata or reporting column',
@@ -234,12 +234,12 @@
                       classes: 'govuk-!-font-size-14'
                     }
                   })
-                }} 
+                }}
             </div>
           </details>
         </div>
       </div>
-    {% endif %} 
+    {% endif %}
     <div class="govuk-grid-column-one-quarter inputs-less-margin">
       {{
         govukButton({
