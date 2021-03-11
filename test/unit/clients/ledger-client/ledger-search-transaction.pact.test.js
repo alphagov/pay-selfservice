@@ -365,4 +365,56 @@ describe('ledger client', function () {
         })
     })
   })
+
+  describe('search transactions with metadata value', () => {
+    const params = {
+      account_id: existingGatewayAccountId,
+      metadataValue: 'metadata',
+      filters: {
+        metadataValue: 'metadata'
+      }
+    }
+
+    const validTransactionSearchResponse = transactionDetailsFixtures.validTransactionSearchResponse({
+      gateway_account_id: existingGatewayAccountId,
+      transactions: [
+        {
+          amount: 1000,
+          transaction_id: 'ch_123abc456xyz',
+          type: 'payment',
+          metadata: {
+            external_metadata: 'metadata'
+          }
+        }
+      ]
+    })
+
+    before(() => {
+      return pactTestProvider.addInteraction(
+        new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
+          .withQuery('account_id', params.account_id)
+          .withQuery('metadata_value', 'metadata')
+          .withQuery('page', '1')
+          .withQuery('display_size', '100')
+          .withQuery('limit_total', 'true')
+          .withQuery('limit_total_size', '5001')
+          .withUponReceiving('a valid search transaction by metadata request')
+          .withState('a transaction with metadata exists')
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactify(validTransactionSearchResponse))
+          .build()
+      )
+    })
+
+    afterEach(() => pactTestProvider.verify())
+
+    it('should filter transaction successfully', function () {
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
+      return ledgerClient.transactions(params.account_id, params.filters)
+        .then((ledgerResponse) => {
+          expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
+        })
+    })
+  })
 })
