@@ -73,6 +73,7 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
     model.allServiceTransactions = true
     model.filterLiveAccounts = filterLiveAccounts
     model.hasLiveAccounts = userPermittedAccountsSummary.hasLiveAccounts
+    model.isExperimentalFeaturesEnabled = req.user.serviceRoles.some(serviceRole => serviceRole.service.experimentalFeaturesEnabled)
 
     return response(req, res, 'transactions/index', model)
   } catch (err) {
