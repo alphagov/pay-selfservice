@@ -70,7 +70,7 @@ describe('The logged in endpoint', function () {
     request(app)
       .get('/')
       .expect(302)
-      .expect('Location', `/account/${ACCOUNT_EXTERNAL_ID}/dashboard`)
+      .expect('Location', `/my-services`)
       .end(done)
   })
 
