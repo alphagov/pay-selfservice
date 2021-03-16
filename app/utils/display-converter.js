@@ -22,12 +22,15 @@ const hideServiceNavTemplates = [
   'team-members/team-member-details',
   'team-members/team-member-profile',
   'team-members/team-member-permissions',
+  'team-members/edit-phone-number',
   'request-to-go-live/agreement',
   'request-to-go-live/choose-how-to-process-payments',
   'request-to-go-live/index',
   'request-to-go-live/organisation-address',
   'request-to-go-live/organisation-name',
-  'request-psp-test-account/index'
+  'request-psp-test-account/index',
+  'two-factor-auth/index',
+  'two-factor-auth/configure'
 ]
 
 /**
