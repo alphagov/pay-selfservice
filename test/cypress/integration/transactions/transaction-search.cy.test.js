@@ -223,7 +223,8 @@ describe('Transactions List', () => {
             card_brands: 'visa,master-card',
             last_digits_card_number: '4242',
             cardholder_name: 'doe',
-            refund_states: 'submitted'
+            refund_states: 'submitted',
+            metadata_value: 'test'
           }
         })
       ])
@@ -244,6 +245,9 @@ describe('Transactions List', () => {
       cy.get('#email').type('gds4')
       cy.get('#lastDigitsCardNumber').type('4242')
       cy.get('#cardholderName').type('doe')
+
+      cy.contains('Advanced filters').click()
+      cy.get('#metadataValue').type('test')
 
       cy.get('#filter').click()
 
