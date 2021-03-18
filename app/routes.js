@@ -22,7 +22,7 @@ const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
 const correlationIdMiddleware = require('./middleware/correlation-id')
 const getRequestContext = require('./middleware/get-request-context').middleware
-const restrictToSandbox = require('./middleware/restrict-to-sandbox')
+const restrictToSandboxOrStripeTestAccount = require('./middleware/restrict-to-sandbox-or-stripe-test-account')
 const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-to-live-stripe-account')
 
 // Controllers
@@ -355,18 +355,18 @@ module.exports.bind = function (app) {
   account.post(toggleBillingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
 
   // Prototype links
-  account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.index)
-  account.get(prototyping.demoService.links, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.links)
-  account.get(prototyping.demoService.create, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.create)
-  account.post(prototyping.demoService.confirm, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.submit)
-  account.get(prototyping.demoService.disable, permission('transactions:read'), restrictToSandbox, testWithYourUsersController.disable)
+  account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)
+  account.get(prototyping.demoService.links, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.links)
+  account.get(prototyping.demoService.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create)
+  account.post(prototyping.demoService.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.submit)
+  account.get(prototyping.demoService.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable)
 
-  account.get(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.index)
-  account.post(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.index)
-  account.get(prototyping.demoPayment.editDescription, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.edit)
-  account.get(prototyping.demoPayment.editAmount, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.edit)
-  account.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.mockCardDetails)
-  account.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), restrictToSandbox, makeADemoPaymentController.goToPayment)
+  account.get(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.index)
+  account.post(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.index)
+  account.get(prototyping.demoPayment.editDescription, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit)
+  account.get(prototyping.demoPayment.editAmount, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit)
+  account.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.mockCardDetails)
+  account.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.goToPayment)
 
   // Create payment link
   account.get(paymentLinks.start, permission('tokens:create'), paymentLinksController.getStart)

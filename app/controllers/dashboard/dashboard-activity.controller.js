@@ -67,7 +67,7 @@ const goLiveLinkNotDisplayedStages = [
 const getLinksToDisplay = function getLinksToDisplay (service, account, user, telephonePaymentLink) {
   const linksToDisplay = []
 
-  if (account.payment_provider === 'sandbox') {
+  if (displayDemoAndTestPaymentLinks(account)) {
     linksToDisplay.push(links.demoPayment)
     linksToDisplay.push(links.testPaymentLink)
   } else {
@@ -87,6 +87,11 @@ const getLinksToDisplay = function getLinksToDisplay (service, account, user, te
   }
 
   return linksToDisplay
+}
+
+function displayDemoAndTestPaymentLinks (account) {
+  return account.payment_provider === 'sandbox' ||
+    (account.payment_provider === 'stripe' && account.type === 'test')
 }
 
 const displayGoLiveLink = (service, account, user) => {
