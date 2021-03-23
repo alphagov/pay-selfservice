@@ -18,6 +18,24 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
     <a class="govuk-link" href="https://www.payments.service.gov.uk/govuk-payment-pages/">payment links</a>.
   </p>
   
+  {% if permissions.tokens_create %}
+    {{
+      govukButton({
+        text: "Create a new API key",
+        href: formatAccountPathsFor(routes.account.apiKeys.create, currentGatewayAccount.external_id),
+        classes: "generate-key govuk-!-margin-top-6",
+        attributes: {
+          id: "create-api-key"
+        }
+      })
+    }}
+  {% endif %}
+
+  {% set token_state = "active" %}
   {% include "./_keys.njk" %}
+
+  <div class="govuk-body key-list-item">
+    <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.apiKeys.revoked, currentGatewayAccount.external_id) }}" id="revoked-keys-link">Show revoked keys</a>
+  </div>
 </div>
 {% endblock %}
