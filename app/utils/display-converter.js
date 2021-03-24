@@ -110,7 +110,6 @@ module.exports = function (req, data, template) {
   convertedData.isTestGateway = _.get(convertedData, 'currentGatewayAccount.type') === 'test'
   convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
   convertedData.isDigitalWalletSupported = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'worldpay'
-  convertedData.enabledMyServicesAsDefaultView = process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW === 'true'
   const paymentProvider = _.get(convertedData, 'currentGatewayAccount.payment_provider')
   convertedData.currentService = service
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash

@@ -3,94 +3,58 @@ govuk-width-container govuk-header__container--{{accountType}}
 {%- endset -%}
 
 {% if loggedIn %}
-  {% if enabledMyServicesAsDefaultView %}
-    {% set payHeaderNavigation = [
-      {
-        text: "My profile",
-        href: routes.user.profile.index,
-        active: username.length > 0,
-        attributes: {
-          id: "my-profile"
-        }
-      },
-      {
-        text: "Features",
-        href: "https://www.payments.service.gov.uk/using-govuk-pay/"
-      },
-      {
-        text: "Documentation",
-        href: "https://docs.payments.service.gov.uk"
-      },
-      {
-        text: "Sign out",
-        href: routes.user.logOut,
-        attributes: {
-          id: "logout"
-        }
+  {% set payHeaderNavigation = [
+    {
+      text: "My profile",
+      href: routes.user.profile.index,
+      active: username.length > 0,
+      attributes: {
+        id: "my-profile"
       }
-    ] %}
-    {% else %}
-    {% set payHeaderNavigation = [
-      {
-        text: "My services",
-        href: routes.serviceSwitcher.index,
-        active: services.length > 0,
-        attributes: {
-          id: "my-services"
-        }
-      },
-      {
-        text: "My profile",
-        href: routes.user.profile.index,
-        active: username.length > 0,
-        attributes: {
-          id: "my-profile"
-        }
-      },
-      {
-        text: "Features",
-        href: "https://www.payments.service.gov.uk/using-govuk-pay/"
-      },
-      {
-        text: "Documentation",
-        href: "https://docs.payments.service.gov.uk"
-      },
-      {
-        text: "Sign out",
-        href: routes.user.logOut,
-        attributes: {
-          id: "logout"
-        }
+    },
+    {
+      text: "Features",
+      href: "https://www.payments.service.gov.uk/using-govuk-pay/"
+    },
+    {
+      text: "Documentation",
+      href: "https://docs.payments.service.gov.uk"
+    },
+    {
+      text: "Sign out",
+      href: routes.user.logOut,
+      attributes: {
+        id: "logout"
       }
-    ] %}
-    {% endif %}
-{% else %}
-{% set payHeaderNavigation = [
-  {
-    text: "About",
-    href: "https://www.payments.service.gov.uk/#main"
-  },
-  {
-    text: "Features",
-    href: "https://www.payments.service.gov.uk/using-govuk-pay/"
-  },
-  {
-    text: "Documentation",
-    href: "https://docs.payments.service.gov.uk"
-  },
-  {
-    text: "Support",
-    href: "https://www.payments.service.gov.uk/support/"
-  },
-  {
-    text: "Sign in",
-    href: routes.user.logIn,
-    active: true,
-    attributes: {
-      id: "login"
     }
-  }
-] %}
+  ] %}
+{% else %}
+  {% set payHeaderNavigation = [
+    {
+      text: "About",
+      href: "https://www.payments.service.gov.uk/#main"
+    },
+    {
+      text: "Features",
+      href: "https://www.payments.service.gov.uk/using-govuk-pay/"
+    },
+    {
+      text: "Documentation",
+      href: "https://docs.payments.service.gov.uk"
+    },
+    {
+      text: "Support",
+      href: "https://www.payments.service.gov.uk/support/"
+    },
+    {
+      text: "Sign in",
+      href: routes.user.logIn,
+      active: true,
+      attributes: {
+        id: "login"
+      }
+    }
+  ] %}
 {% endif %}
 {{
   govukHeader({

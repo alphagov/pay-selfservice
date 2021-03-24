@@ -39,12 +39,8 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% if enabledMyServicesAsDefaultView and loggedIn %}
+  {% if loggedIn %}
     {% include "includes/phase-banner.njk" %}
-  {% else %}
-    {% if not hideServiceHeader %}
-      {% include "includes/phase-banner-old.njk" %}
-    {% endif %}
   {% endif %}
 {% endblock %}
 

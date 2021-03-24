@@ -4,18 +4,6 @@
 Team members - GOV.UK Pay
 {% endblock %}
 
-{% block beforeContent %}
-  {{ super() }}
-  {% if not enabledMyServicesAsDefaultView %}
-  {{
-    govukBackLink({
-      text: "Back to My services",
-      href: routes.serviceSwitcher.index
-    })
-  }}
-  {% endif %}
-{% endblock %}
-
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l page-title govuk-!-margin-bottom-2">Team members</h1>
