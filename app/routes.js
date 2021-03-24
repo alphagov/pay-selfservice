@@ -202,7 +202,6 @@ module.exports.bind = function (app) {
   // Service switcher
   app.get(serviceSwitcher.index, myServicesController.getIndex)
   app.post(serviceSwitcher.switch, myServicesController.postIndex)
-  app.post(serviceSwitcher.removeNotification, myServicesController.removeNotification)
   app.get(serviceSwitcher.create, createServiceController.get)
   app.post(serviceSwitcher.create, createServiceController.post)
 
