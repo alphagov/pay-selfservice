@@ -19,6 +19,7 @@ Revoked API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} -
     <h1 class="govuk-heading-l page-title">Revoked API Keys</h1>
 
     {% set token_state = "revoked" %}
+    {% set header_id = "revoked-tokens" %}
     {% include "./_keys.njk" %}
     
   </div>
