@@ -32,6 +32,7 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
   {% endif %}
 
   {% set token_state = "active" %}
+  {% set header_id = "active-tokens" %}
   {% include "./_keys.njk" %}
 
   <div class="govuk-body key-list-item">
