@@ -1,49 +1,13 @@
 {% extends "../layout.njk" %}
-{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block pageTitle %}
   Choose service - GOV.UK Pay
-{% endblock %}
-
-{% block pageSpecificJS %}
-  <script src="/public/js/components/notification-banner.js"></script>
 {% endblock %}
 
 {% block beforeContent %}{% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    {% if show_whats_new_notification %}
-      {% set bannerHtml %}
-          <div>
-            <ol class="govuk-list govuk-list--number">
-              <li>When you log in, you'll land on this page.</li>
-              <li>Your live services now appear alphabetically at the beginning of the list.</li>
-            </ol>
-
-            <form method="POST" action="{{routes.serviceSwitcher.removeNotification}}">
-              <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-              {{ govukButton({
-                text: "Close",
-                classes: "govuk-button--secondary govuk-!-margin-bottom-0",
-                type: "submit",
-                attributes: {
-                  "id": "my-services-whats-new-notification__close-button"
-                }
-              }) }}
-            </form>
-          </div>
-      {% endset %}
-
-      {{ govukNotificationBanner({
-          html: bannerHtml,
-          titleText: 'Admin tool changes',
-          attributes: {
-            id: 'my-services-whats-new-notification'
-          }
-      }) }}
-    {% endif %}
-
     {% if new_service_name %}
       <div class="govuk-grid-column-full govuk-!-margin-0">
         <div class="flash-container flash-container--good">

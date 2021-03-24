@@ -1,7 +1,6 @@
 'use strict'
 
 const lodash = require('lodash')
-const moment = require('moment')
 
 const { response } = require('../../utils/response')
 const serviceService = require('../../services/service.service')
@@ -25,25 +24,6 @@ function sortServicesByLiveThenName (a, b) {
   if (aName < bName) { return -1 }
   if (aName > bName) { return 1 }
   return 0
-}
-
-function isNotificationDismissed (cookies) {
-  try {
-    return cookies.govuk_pay_notifications &&
-      JSON.parse(cookies.govuk_pay_notifications).my_services_default_page_dismissed
-  } catch (err) {
-    // malformed cookie - continue
-    return false
-  }
-}
-
-function shouldShowNotification (isMyServicesDefaultView, cookies) {
-  let isBeforeEndDate = true
-  if (process.env.MY_SERVICES_DEFAULT_NOTIFICATION_END_DATE) {
-    const notificationEndDate = moment.unix(process.env.MY_SERVICES_DEFAULT_NOTIFICATION_END_DATE)
-    isBeforeEndDate = moment().isBefore(notificationEndDate)
-  }
-  return isMyServicesDefaultView && isBeforeEndDate && !isNotificationDismissed(cookies)
 }
 
 module.exports = async function getServiceList (req, res) {
@@ -82,8 +62,7 @@ module.exports = async function getServiceList (req, res) {
     services_singular: servicesData.length === 1,
     env: process.env,
     has_account_with_payouts: hasStripeAccount(aggregatedGatewayAccounts),
-    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length,
-    show_whats_new_notification: shouldShowNotification(isMyServicesDefaultView, req.cookies)
+    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length
   }
   if (newServiceId) {
     servicesData.find(service => {
