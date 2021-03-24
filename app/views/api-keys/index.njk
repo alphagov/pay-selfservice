@@ -36,7 +36,7 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
   {% include "./_keys.njk" %}
 
   <div class="govuk-body key-list-item">
-    <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.apiKeys.revoked, currentGatewayAccount.external_id) }}" id="revoked-keys-link">Show revoked keys</a>
+    <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.apiKeys.revoked, currentGatewayAccount.external_id) }}" id="revoked-keys-link">Show revoked API keys</a>
   </div>
 </div>
 {% endblock %}
