@@ -1,26 +1,22 @@
 'use strict'
 
-const { response, renderErrorView } = require('../../utils/response.js')
+const { response } = require('../../utils/response.js')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 
-module.exports = (req, res) => {
+module.exports = async function listRevokedApiKeys (req, res, next) {
   const accountId = req.account.gateway_account_id
-  publicAuthClient.getRevokedTokensForAccount({
-    correlationId: req.correlationId,
-    accountId: accountId
-  })
-    .then(publicAuthData => {
-      const revokedTokens = publicAuthData.tokens || []
+  try {
+    const publicAuthData = await publicAuthClient.getRevokedTokensForAccount({
+      correlationId: req.correlationId,
+      accountId: accountId
+    })
+    const revokedTokens = publicAuthData.tokens || []
 
-      response(req, res, 'api-keys/index', {
-        'active': false,
-        'header': 'revoked-tokens',
-        'token_state': 'revoked',
-        'tokens': revokedTokens,
-        'tokens_singular': revokedTokens.length === 1
-      })
+    response(req, res, 'api-keys/revoked-keys', {
+      'tokens': revokedTokens,
+      'tokens_singular': revokedTokens.length === 1
     })
-    .catch(() => {
-      renderErrorView(req, res)
-    })
+  } catch (err) {
+    next(err)
+  }
 }

@@ -1,26 +1,22 @@
 'use strict'
 
-const { response, renderErrorView } = require('../../utils/response.js')
+const { response } = require('../../utils/response.js')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 
-module.exports = (req, res) => {
+module.exports = async function listActiveApiKeys (req, res, next) {
   const accountId = req.account.gateway_account_id
-  publicAuthClient.getActiveTokensForAccount({
-    correlationId: req.correlationId,
-    accountId: accountId
-  })
-    .then(publicAuthData => {
-      const activeTokens = publicAuthData.tokens || []
+  try {
+    const publicAuthData = await publicAuthClient.getActiveTokensForAccount({
+      correlationId: req.correlationId,
+      accountId: accountId
+    })
 
-      response(req, res, 'api-keys/index', {
-        'active': true,
-        'header': 'available-tokens',
-        'token_state': 'active',
-        'tokens': activeTokens,
-        'tokens_singular': activeTokens.length === 1
-      })
+    const activeTokens = publicAuthData.tokens || []
+    response(req, res, 'api-keys/index', {
+      'tokens': activeTokens,
+      'tokens_singular': activeTokens.length === 1
     })
-    .catch(() => {
-      renderErrorView(req, res)
-    })
+  } catch (err) {
+    next(err)
+  }
 }

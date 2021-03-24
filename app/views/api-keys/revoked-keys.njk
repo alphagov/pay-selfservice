@@ -1,0 +1,25 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+Revoked API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {{
+      govukBackLink({
+        text: "Back to active keys",
+        href: routes.account.apiKeys.index
+      })
+    }}
+    <h1 class="govuk-heading-l page-title">Revoked API Keys</h1>
+
+    {% set token_state = "revoked" %}
+    {% include "./_keys.njk" %}
+    
+  </div>
+{% endblock %}
