@@ -83,12 +83,12 @@ describe('The logged in endpoint', function () {
       .end(done)
   })
 
-  it('should redirect to otp login if no otp', function (done) {
+  it('should redirect to login if no otp', function (done) {
     const app = mockSession.getAppWithSessionWithoutSecondFactor(getApp(), mockSession.getUser({ gateway_account_ids: [ACCOUNT_ID] }))
     request(app)
       .get('/')
       .expect(302)
-      .expect('Location', '/otp-login')
+      .expect('Location', '/login')
       .end(done)
   })
 })

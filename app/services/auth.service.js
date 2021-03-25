@@ -22,7 +22,6 @@ const CORRELATION_HEADER = require('../utils/correlation-header.js').CORRELATION
 // Exports
 module.exports = {
   enforceUserFirstFactor,
-  enforceUserAuthenticated,
   lockOutDisabledUsers,
   initialise,
   deserializeUser,
@@ -61,24 +60,6 @@ function noAccess (req, res, next) {
   } else {
     next() // don't redirect again if we're already there
   }
-}
-
-function enforceUserBothFactors (req, res, next) {
-  enforceUserFirstFactor(req, res, () => {
-    let hasLoggedInOtp = lodash.get(req, 'session.secondFactor') === 'totp'
-    if (!hasLoggedInOtp) {
-      return res.redirect(paths.user.otpLogIn)
-    }
-
-    next()
-  })
-}
-
-function enforceUserAuthenticated (req, res, next) {
-  if (!hasValidSession(req)) {
-    return redirectToLogin(req, res)
-  }
-  enforceUserBothFactors(req, res, next)
 }
 
 function redirectLoggedInUser (req, res, next) {

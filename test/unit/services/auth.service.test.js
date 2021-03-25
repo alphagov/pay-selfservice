@@ -98,23 +98,6 @@ describe('auth service', function () {
     })
   })
 
-  describe('enforceUserAndSecondFactor', function () {
-    it('should call next if has valid user', function (done) {
-      auth.enforceUserAuthenticated(validRequest(), response, next)
-      expect(next.calledOnce).to.be.true // eslint-disable-line
-      done()
-    })
-
-    it('should not call next if has a disabled user', function (done) {
-      const invalid = _.cloneDeep(validRequest())
-      invalid.user.disabled = true
-      auth.enforceUserAuthenticated(invalid, response, next)
-      expect(next.called).to.be.false // eslint-disable-line
-      assert(redirect.calledWith(paths.user.noAccess))
-      done()
-    })
-  })
-
   describe('ensureNotDisabled', function () {
     it('should call lockout user when user has a truthy disabled property', function (done) {
       const user = mockSession.getUser({ disabled: true })
