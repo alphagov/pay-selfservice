@@ -27,23 +27,14 @@
 
 {% block beforeContent %}
   {% if allServiceTransactions %}
-    {% if enabledMyServicesAsDefaultView %}
-      {% set pageTitleBreadcrumbWithTag %}
-        <span>Transactions for all services</span>
-        <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
-      {% endset %}
-      {{ breadcrumbs([
-        { text: "My services", href: routes.serviceSwitcher.index },
-        { html: pageTitleBreadcrumbWithTag  }
-      ]) }}
-    {% else %}
-      {{
-        govukBackLink({
-          text: "Back to My services",
-          href: routes.serviceSwitcher.index
-        })
-      }}
-    {% endif %}
+    {% set pageTitleBreadcrumbWithTag %}
+      <span>Transactions for all services</span>
+      <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
+    {% endset %}
+    {{ breadcrumbs([
+      { text: "My services", href: routes.serviceSwitcher.index },
+      { html: pageTitleBreadcrumbWithTag  }
+    ]) }}
   {% else %}
     {{ super() }}
   {% endif %}

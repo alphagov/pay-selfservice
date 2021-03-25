@@ -11,18 +11,14 @@
 
 {% block beforeContent %}
   {% if contextIsAllServiceTransactions %}
-    {% if enabledMyServicesAsDefaultView %}
-      {% set pageTitleBreadcrumbWithTag %}
-        <span>Transactions for all services</span>
-        <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if live else "TEST" }}</strong>
-      {% endset %}
-      {{ breadcrumbs([
-        { text: "My services", href: routes.serviceSwitcher.index },
-        { html: pageTitleBreadcrumbWithTag  }
-      ]) }}
-    {% else %}
-      {{ super() }}
-    {% endif %}
+    {% set pageTitleBreadcrumbWithTag %}
+      <span>Transactions for all services</span>
+      <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if live else "TEST" }}</strong>
+    {% endset %}
+    {{ breadcrumbs([
+      { text: "My services", href: routes.serviceSwitcher.index },
+      { html: pageTitleBreadcrumbWithTag  }
+    ]) }}
 
     {{
       govukBackLink({

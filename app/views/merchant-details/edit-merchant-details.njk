@@ -4,18 +4,6 @@
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block beforeContent %}
-  {{ super() }}
-  {% if not enabledMyServicesAsDefaultView %}
-  {{
-    govukBackLink({
-      text: "My services",
-      href: routes.serviceSwitcher.index
-    })
-  }}
-  {% endif %}
-{% endblock %}
-
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   {% if errors %}

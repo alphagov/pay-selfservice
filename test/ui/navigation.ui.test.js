@@ -14,6 +14,8 @@ describe('navigation menu', function () {
       currentService: { name: 'Service Name' },
       permissions: testPermissions,
       hideServiceNav: false,
+      hideServiceHeader: false,
+      loggedIn: true,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card'),
       links: [],
       linksToDisplay: [],
@@ -36,6 +38,8 @@ describe('navigation menu', function () {
       currentService: { name: 'Service Name' },
       permissions: testPermissions,
       hideServiceNav: false,
+      hideServiceHeader: false,
+      loggedIn: true,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card'),
       links: [],
       linksToDisplay: []
