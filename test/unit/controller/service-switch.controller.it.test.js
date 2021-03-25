@@ -87,98 +87,49 @@ describe('My services controller', () => {
 
     const accounts = Object.values(gatewayAccountsByService).flat()
     const accountIds = accounts.map(account => account.gateway_account_id)
+    let res
+
+    before(async () => {
+      connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${accountIds.join(',')}`)
+        .reply(200, gatewayAccountFixtures.validGatewayAccountsResponse({ accounts }))
+
+      res = {
+        render: sinon.spy()
+      }
+      const req = {
+        user
+      }
+      await myServicesController.getIndex(req, res)
+    })
 
     after(() => {
       nock.cleanAll()
     })
 
-    describe('ENABLE_MY_SERVICES_AS_DEFAULT_VIEW set to false', () => {
-      let res
+    it('should call render', () => {
+      sinon.assert.called(res.render)
+      expect(res.render.firstCall.args[0]).to.equal('services/index')
+    })
 
-      before(async () => {
-        process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW = false
-        connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${accountIds.join(',')}`)
-          .reply(200, gatewayAccountFixtures.validGatewayAccountsResponse({ accounts }))
+    it('should return a list sorted by live/test then alphabetically', () => {
+      const { services } = res.render.firstCall.args[1]
+      expect(services).to.have.length(4)
+      expect(services.map(service => service.external_id)).to.have.ordered.members([
+        'service-external-id-3', 'service-external-id-2', 'service-external-id-1', 'service-external-id-4'
+      ])
+    })
 
-        res = {
-          render: sinon.spy()
-        }
-        const req = {
-          user
-        }
-        await myServicesController.getIndex(req, res)
-        delete process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW
-      })
-
-      it('should call render', () => {
-        sinon.assert.called(res.render)
-        expect(res.render.firstCall.args[0]).to.equal('services/index')
-      })
-
-      it('should have a service list ordered by service ID', () => {
-        const { services } = res.render.firstCall.args[1]
-        expect(services).to.have.length(4)
-        expect(services.map(service => service.external_id)).to.have.ordered.members([
-          'service-external-id-2', 'service-external-id-4', 'service-external-id-3', 'service-external-id-1'
-        ])
-      })
-
+    it('should have gateway accounts sorted by type within services', () => {
       it('should have gateway accounts sorted by live/test within services', () => {
         const { services } = res.render.firstCall.args[1]
         expect(services[0].gatewayAccounts.map(a => a.id)).to.have.length(2)
-          .and.to.have.ordered.members(['3', '6'])
-        expect(services[1].gatewayAccounts.map(a => a.id)).to.have.length(1)
-          .and.to.have.ordered.members(['5'])
-        expect(services[2].gatewayAccounts.map(a => a.id)).to.have.length(2)
           .and.to.have.ordered.members(['9', '4'])
-        expect(services[3].gatewayAccounts.map(a => a.id)).to.have.length(1)
+        expect(services[1].gatewayAccounts.map(a => a.id)).to.have.length(2)
+          .and.to.have.ordered.members(['3', '6'])
+        expect(services[2].gatewayAccounts.map(a => a.id)).to.have.length(1)
           .and.to.have.ordered.members(['2'])
-      })
-    })
-
-    describe('ENABLE_MY_SERVICES_AS_DEFAULT_VIEW set to true', () => {
-      let res
-
-      before(async () => {
-        process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW = true
-        connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${accountIds.join(',')}`)
-          .reply(200, gatewayAccountFixtures.validGatewayAccountsResponse({ accounts }))
-
-        res = {
-          render: sinon.spy()
-        }
-        const req = {
-          user
-        }
-        await myServicesController.getIndex(req, res)
-        delete process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW
-      })
-
-      it('should call render', () => {
-        sinon.assert.called(res.render)
-        expect(res.render.firstCall.args[0]).to.equal('services/index')
-      })
-
-      it('should return a list sorted by live/test then alphabetically', () => {
-        const { services } = res.render.firstCall.args[1]
-        expect(services).to.have.length(4)
-        expect(services.map(service => service.external_id)).to.have.ordered.members([
-          'service-external-id-3', 'service-external-id-2', 'service-external-id-1', 'service-external-id-4'
-        ])
-      })
-
-      it('should have gateway accounts sorted by type within services', () => {
-        it('should have gateway accounts sorted by live/test within services', () => {
-          const { services } = res.render.firstCall.args[1]
-          expect(services[0].gatewayAccounts.map(a => a.id)).to.have.length(2)
-            .and.to.have.ordered.members(['9', '4'])
-          expect(services[1].gatewayAccounts.map(a => a.id)).to.have.length(2)
-            .and.to.have.ordered.members(['3', '6'])
-          expect(services[2].gatewayAccounts.map(a => a.id)).to.have.length(1)
-            .and.to.have.ordered.members(['2'])
-          expect(services[3].gatewayAccounts.map(a => a.id)).to.have.length(1)
-            .and.to.have.ordered.members(['5'])
-        })
+        expect(services[3].gatewayAccounts.map(a => a.id)).to.have.length(1)
+          .and.to.have.ordered.members(['5'])
       })
     })
   })

@@ -30,8 +30,6 @@ module.exports = async function getServiceList (req, res) {
   const servicesRoles = lodash.get(req, 'user.serviceRoles', [])
   const newServiceId = req.query && req.query.s
 
-  const isMyServicesDefaultView = process.env.ENABLE_MY_SERVICES_AS_DEFAULT_VIEW === 'true'
-
   const aggregatedGatewayAccountIds = servicesRoles
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
 
@@ -49,13 +47,7 @@ module.exports = async function getServiceList (req, res) {
       }
       return serviceData
     })
-    .sort((a, b) => {
-      if (isMyServicesDefaultView) {
-        return sortServicesByLiveThenName(a, b)
-      } else {
-        return a.id - b.id
-      }
-    })
+    .sort((a, b) =>  sortServicesByLiveThenName(a, b))
 
   const data = {
     services: servicesData,
