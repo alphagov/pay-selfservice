@@ -14,7 +14,7 @@ const getServiceAndAccount = require('./middleware/get-service-and-gateway-accou
 const { NotFoundError } = require('./errors')
 
 // Middleware
-const { lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
+const { lockOutDisabledUsers, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
 const getAccount = require('./middleware/get-gateway-account')
 const hasServices = require('./middleware/has-services')
 const resolveService = require('./middleware/resolve-service')
@@ -139,11 +139,11 @@ module.exports.bind = function (app) {
   app.post(registerUser.otpVerify, registerController.submitOtpVerify)
   app.get(registerUser.reVerifyPhone, registerController.showReVerifyPhone)
   app.post(registerUser.reVerifyPhone, registerController.submitReVerifyPhone)
-  app.get(registerUser.logUserIn, loginController.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, rootController.get)
+  app.get(registerUser.logUserIn, loginController.loginAfterRegister, userIsAuthorised, rootController.get)
 
   // LOGIN
   app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
-  app.post(user.logIn, trimUsername, loginController.loginUser, hasServices, resolveService, getAccount, loginController.postLogin)
+  app.post(user.logIn, trimUsername, loginController.loginUser, getAccount, loginController.postLogin)
   app.get(user.noAccess, loginController.noAccess)
   app.get(user.logOut, loginController.logout)
   app.get(user.otpSendAgain, enforceUserFirstFactor, loginController.sendAgainGet)
@@ -166,9 +166,9 @@ module.exports.bind = function (app) {
   app.post(selfCreateService.otpVerify, selfCreateServiceController.createPopulatedService)
   app.get(selfCreateService.otpResend, selfCreateServiceController.showOtpResend)
   app.post(selfCreateService.otpResend, selfCreateServiceController.submitOtpResend)
-  app.get(selfCreateService.logUserIn, loginController.loginAfterRegister, enforceUserAuthenticated, getAccount, selfCreateServiceController.loggedIn)
-  app.get(selfCreateService.serviceNaming, enforceUserAuthenticated, hasServices, getAccount, selfCreateServiceController.showNameYourService)
-  app.post(selfCreateService.serviceNaming, enforceUserAuthenticated, hasServices, getAccount, selfCreateServiceController.submitYourServiceName)
+  app.get(selfCreateService.logUserIn, loginController.loginAfterRegister, userIsAuthorised, selfCreateServiceController.loggedIn)
+  app.get(selfCreateService.serviceNaming, userIsAuthorised, selfCreateServiceController.showNameYourService)
+  app.post(selfCreateService.serviceNaming, userIsAuthorised, selfCreateServiceController.submitYourServiceName)
 
   // ----------------------
   // AUTHENTICATED ROUTES
@@ -189,11 +189,11 @@ module.exports.bind = function (app) {
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
-  app.use(authenticatedPaths, enforceUserAuthenticated) // Enforce authentication on all get requests
+  app.use(authenticatedPaths, userIsAuthorised) // Enforce authentication on all get requests
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
   // Site index
-  app.get(index, enforceUserAuthenticated, hasServices, resolveService, getAccount, rootController.get)
+  app.get(index, userIsAuthorised, rootController.get)
 
   // -------------------------
   // OUTSIDE OF SERVICE ROUTES
@@ -224,7 +224,7 @@ module.exports.bind = function (app) {
   app.post(paths.feedback, feedbackController.postIndex)
 
   // User profile
-  app.get(user.profile.index, enforceUserAuthenticated, serviceUsersController.profile)
+  app.get(user.profile.index, serviceUsersController.profile)
   app.get(user.profile.phoneNumber, userPhoneNumberController.get)
   app.post(user.profile.phoneNumber, userPhoneNumberController.post)
 

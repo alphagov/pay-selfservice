@@ -272,7 +272,7 @@ describe('service users resource', () => {
       .get('/my-profile')
       .set('Accept', 'application/json')
       .expect(302)
-      .expect('Location', '/otp-login')
+      .expect('Location', '/login')
       .end(done)
   })
 

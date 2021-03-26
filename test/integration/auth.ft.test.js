@@ -29,19 +29,18 @@ describe('An endpoint not protected', () => {
       .end(done)
   })
 
-  it('redirects to noaccess if user disabled', done => {
+  it('shows noaccess error page if user disabled', done => {
     const user = getUser()
     user.disabled = true
     app = getAppWithLoggedInUser(server.getApp(), user)
     request(app)
       .get(paths.index)
-      .expect(302)
-      .expect('Location', paths.user.noAccess)
+      .expect(401)
       .end(done)
   })
 })
 
-describe('An endpoint protected by auth.enforceUserBothFactors', function () {
+describe('An endpoint protected by is-user-authorised middleware', function () {
   afterEach(function () {
     app = null
   })
@@ -72,7 +71,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
     request(app)
       .get(paths.index)
       .expect(302)
-      .expect('Location', paths.user.otpLogIn)
+      .expect('Location', paths.user.logIn)
       .end(done)
   })
 })

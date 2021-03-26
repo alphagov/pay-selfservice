@@ -4,7 +4,7 @@ const sinon = require('sinon')
 
 const paths = require('../../app/paths')
 const routes = require('../../app/routes')
-const oldAuthorisationMiddleware = require('../../app/services/auth.service').enforceUserAuthenticated
+const userIsAuthorised = require('../../app/middleware/user-is-authorised')
 
 const pathsNotRequiringAuthentication = [
   '/style-guide',
@@ -58,7 +58,7 @@ describe('The Express router', () => {
     const authenticatedPathsArg = app.use.getCalls()
       .find(call => {
         return Array.isArray(call.args[0]) &&
-          call.args.includes(oldAuthorisationMiddleware)
+          call.args.includes(userIsAuthorised)
       })
       .args[0]
     const authenticatedPaths = flattenPaths(authenticatedPathsArg)
@@ -73,7 +73,7 @@ describe('The Express router', () => {
         const path = call.args[0]
         return !pathsNotRequiringAuthentication.includes(path) &&
           !authenticatedPaths.includes(path) &&
-          !call.args.includes(oldAuthorisationMiddleware)
+          !call.args.includes(userIsAuthorised)
       })
       .map(call => call.args[0])
 
