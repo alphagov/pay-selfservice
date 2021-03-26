@@ -2,7 +2,6 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "../macro/breadcrumbs.njk" import breadcrumbs %}
 
-{% set contextIsAllServiceTransactions = redirectBackLink %}
 {% set hideServiceHeader = contextIsAllServiceTransactions %}
 
 {% block pageTitle %}
@@ -20,10 +19,11 @@
       { html: pageTitleBreadcrumbWithTag  }
     ]) }}
 
+    {% set allServicesBackLink %}{{routes.allServiceTransactions.index}}{% if allServicesTransactionsStatusFilter %}/{{allServicesTransactionsStatusFilter}}{% endif %}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
     {{
       govukBackLink({
         text: 'Back to transactions for all services',
-        href: redirectBackLink | safe
+        href: allServicesBackLink | safe
       })
     }}
   {% else %}
@@ -36,6 +36,7 @@
       })
     }}
   {% endif %}
+
 {% endblock %}
 
 {% block mainContent %}

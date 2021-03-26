@@ -18,7 +18,7 @@ module.exports = async function redirectToTransactionDetail (req, res) {
     const charge = await Ledger.transactionWithAccountOverride(chargeId)
     if (userServicesContainsGatewayAccount(charge.gateway_account_id, req.user)) {
       req.gateway_account.currentGatewayAccountId = charge.gateway_account_id
-      req.session = { ...req.session, backLink: req.header('Referer') }
+      req.session.contextIsAllServiceTransactions = true
 
       const account = await connector.getAccount({
         gatewayAccountId: charge.gateway_account_id,

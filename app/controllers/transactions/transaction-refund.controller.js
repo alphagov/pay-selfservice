@@ -18,6 +18,7 @@ const refundTransaction = async function refundTransaction (req, res, next) {
     const isFullRefund = req.body['refund-type'] === 'full'
     const refundAmount = isFullRefund ? req.body['full-amount'] : req.body['refund-amount']
     const refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence'])
+    const contextIsAllServiceTransactions = req.body['context-is-all-services-transactions'] === 'true'
 
     const refundAmountInPence = safeConvertPoundsStringToPence(refundAmount)
     if (!refundAmountInPence) {
@@ -30,6 +31,10 @@ const refundTransaction = async function refundTransaction (req, res, next) {
       req.flash('refundSuccess', 'true')
     } catch (err) {
       req.flash('refundError', err.message)
+    }
+
+    if (contextIsAllServiceTransactions) {
+      req.session.contextIsAllServiceTransactions = true
     }
     res.redirect(transactionDetailPath)
   } catch (err) {

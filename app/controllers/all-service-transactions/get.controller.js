@@ -1,6 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
+const url = require('url')
 
 const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
@@ -25,6 +26,9 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
   // default behaviour should be live
   const { statusFilter } = req.params
   const filterLiveAccounts = statusFilter !== 'test'
+
+  req.session.filters = url.parse(req.url).query
+  req.session.allServicesTransactionsStatusFilter = statusFilter
 
   try {
     const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, filterLiveAccounts, 'transactions:read')
