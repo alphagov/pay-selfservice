@@ -10,9 +10,10 @@ module.exports = async function showTransactionDetails (req, res, next) {
   try {
     const data = await ledgerFindWithEvents(accountId, chargeId, req.correlationId)
     data.indexFilters = req.session.filters
-    if (req.session.backLink) {
-      data.redirectBackLink = req.session.backLink
-      delete req.session.backLink
+    if (req.session.contextIsAllServiceTransactions) {
+      data.contextIsAllServiceTransactions = req.session.contextIsAllServiceTransactions
+      data.allServicesTransactionsStatusFilter = req.session.allServicesTransactionsStatusFilter
+      delete req.session.contextIsAllServiceTransactions
     }
     data.service = req.service
 
