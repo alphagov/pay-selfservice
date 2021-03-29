@@ -12,7 +12,7 @@
     <form id="request-to-go-live-agreement-form" method="post"
           action="/service/{{ currentService.externalId }}/request-to-go-live/agreement" data-validate="true" >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-      <fieldset class="govuk-fieldset" aria-describedby="email-confirmation-enabled-hint">
+      <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
           <h1 class="govuk-fieldset__heading">
             Read and accept our legal terms
