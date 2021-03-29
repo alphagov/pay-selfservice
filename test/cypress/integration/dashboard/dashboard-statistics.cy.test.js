@@ -1,4 +1,4 @@
-const moment = require('moment')
+const moment = require('moment-timezone')
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
@@ -13,7 +13,7 @@ describe('Account dashboard', () => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
 
     const todayStatisticsStub = transactionsSummaryStubs.getDashboardStatisticsWithFromDate(
-      moment().format('YYYY-MM-DD') + 'T00:00:00Z',
+      moment().tz('Europe/London').startOf('day').format(),
       {
         paymentCount: 10,
         paymentTotal: 12000,
@@ -21,7 +21,7 @@ describe('Account dashboard', () => {
         refundTotal: 2300
       })
     const prevSevenDaysStatisticsStub = transactionsSummaryStubs.getDashboardStatisticsWithFromDate(
-      moment().subtract(8, 'days').format('YYYY-MM-DD') + 'T00:00:00Z',
+      moment().subtract(8, 'days').tz('Europe/London').startOf('day').format(),
       {
         paymentCount: 50,
         paymentTotal: 70000,
