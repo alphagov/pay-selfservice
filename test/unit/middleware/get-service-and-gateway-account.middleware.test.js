@@ -84,7 +84,6 @@ describe('middleware: getGatewayAccountAndService', () => {
 
     expect(req.account.external_id).to.equal('some-gateway-external-id')
     expect(req.service.externalId).to.equal('some-service-external-id')
-    expect(req.service.hasCardGatewayAccount).to.equal(true)
 
     expect(req.gateway_account.currentGatewayAccountId).to.equal('1')
   })

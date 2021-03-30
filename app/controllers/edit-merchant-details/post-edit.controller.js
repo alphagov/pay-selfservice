@@ -9,7 +9,7 @@ const serviceService = require('../../services/service.service')
 const formattedPathFor = require('../../utils/replace-params-in-path')
 const { validPaths, ServiceUpdateRequest } = require('../../models/ServiceUpdateRequest.class')
 const {
-  validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber, validateEmail
+  validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber
 } = require('../../utils/validation/server-side-form-validations')
 
 const clientFieldNames = {
@@ -55,14 +55,6 @@ const validationRules = [
   }
 ]
 
-const directDebitAccountValidationRules = [
-  {
-    field: clientFieldNames.email,
-    validator: validateEmail
-  },
-  ...validationRules
-]
-
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
 const normaliseForm = (formBody) => {
@@ -82,10 +74,8 @@ const normaliseForm = (formBody) => {
   }, {})
 }
 
-const validateForm = (formFields, hasDirectDebitGatewayAccount) => {
-  const rules = hasDirectDebitGatewayAccount ? directDebitAccountValidationRules : validationRules
-
-  const errors = rules.reduce((errors, validationRule) => {
+const validateForm = (formFields) => {
+  const errors = validationRules.reduce((errors, validationRule) => {
     const value = formFields[validationRule.field]
     const validationResponse = validationRule.validator(value, validationRule.maxLength)
     if (!validationResponse.valid) {
@@ -103,7 +93,7 @@ const validateForm = (formFields, hasDirectDebitGatewayAccount) => {
   return errors
 }
 
-const submitForm = async function (form, serviceExternalId, correlationId, hasDirectDebitGatewayAccount) {
+const submitForm = async function (form, serviceExternalId, correlationId) {
   form[clientFieldNames.telephoneNumber] = form[clientFieldNames.telephoneNumber].replace(/\s/g, '')
 
   const serviceUpdateRequest = new ServiceUpdateRequest()
@@ -114,11 +104,6 @@ const submitForm = async function (form, serviceExternalId, correlationId, hasDi
     .replace(validPaths.merchantDetails.addressCity, form[clientFieldNames.addressCity])
     .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
     .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
-
-  if (hasDirectDebitGatewayAccount) {
-    serviceUpdateRequest
-      .replace(validPaths.merchantDetails.email, form[clientFieldNames.email])
-  }
 
   const payload = serviceUpdateRequest.formatPayload()
   return serviceService.updateService(serviceExternalId, payload, correlationId)
@@ -145,13 +130,12 @@ module.exports = async function (req, res) {
   try {
     const correlationId = lodash.get(req, 'correlationId')
     const serviceExternalId = req.service.externalId
-    const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount') || lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount')
 
     const form = normaliseForm(req.body)
-    const errors = validateForm(form, hasDirectDebitGatewayAccount)
+    const errors = validateForm(form)
 
     if (lodash.isEmpty(errors)) {
-      await submitForm(form, serviceExternalId, correlationId, hasDirectDebitGatewayAccount)
+      await submitForm(form, serviceExternalId, correlationId)
       req.flash('generic', 'Organisation details updated')
       res.redirect(formattedPathFor(paths.merchantDetails.index, serviceExternalId))
     } else {
