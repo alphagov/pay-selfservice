@@ -12,7 +12,7 @@ const inviteFixtures = require(path.join(__dirname, '/../fixtures/invite.fixture
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
-const formattedPathFor = require('../../app/utils/replace-params-in-path')
+const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
 
 describe('invite user controller', function () {
   const userInSession = session.getUser({})
@@ -25,12 +25,12 @@ describe('invite user controller', function () {
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .get(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
+        .get(formatServicePathsFor(paths.service.teamMembers.invite, EXTERNAL_SERVICE_ID))
         .set('Accept', 'application/json')
         .expect(200)
         .expect((res) => {
-          expect(res.body.teamMemberIndexLink).to.equal(formattedPathFor(paths.teamMembers.index, EXTERNAL_SERVICE_ID))
-          expect(res.body.teamMemberInviteSubmitLink).to.equal(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
+          expect(res.body.teamMemberIndexLink).to.equal(formatServicePathsFor(paths.service.teamMembers.index, EXTERNAL_SERVICE_ID))
+          expect(res.body.teamMemberInviteSubmitLink).to.equal(formatServicePathsFor(paths.service.teamMembers.invite, EXTERNAL_SERVICE_ID))
           expect(res.body.admin.id).to.equal(roles['admin'].extId)
           expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId)
           expect(res.body.view.id).to.equal(roles['view-only'].extId)
@@ -49,7 +49,7 @@ describe('invite user controller', function () {
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
+        .post(formatServicePathsFor(paths.service.teamMembers.invite, EXTERNAL_SERVICE_ID))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -59,7 +59,7 @@ describe('invite user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', formattedPathFor(paths.teamMembers.index, EXTERNAL_SERVICE_ID))
+        .expect('Location', formatServicePathsFor(paths.service.teamMembers.index, EXTERNAL_SERVICE_ID))
         .end(done)
     })
 
@@ -70,7 +70,7 @@ describe('invite user controller', function () {
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
+        .post(formatServicePathsFor(paths.service.teamMembers.invite, EXTERNAL_SERVICE_ID))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -92,7 +92,7 @@ describe('invite user controller', function () {
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
+        .post(formatServicePathsFor(paths.service.teamMembers.invite, EXTERNAL_SERVICE_ID))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')

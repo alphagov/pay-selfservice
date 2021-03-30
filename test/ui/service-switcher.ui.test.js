@@ -3,6 +3,7 @@
 const _ = require('lodash')
 
 const { render } = require('../test-helpers/html-assertions.js')
+const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
 
 // Assignments e.t.c.
 let body, templateData
@@ -46,7 +47,8 @@ describe('The account switcher link', () => {
           permissions: {
             users_service_create: true
           }
-        })]
+        })],
+        formatServicePathsFor: formatServicePathsFor
       }
 
       body = render('services/index', templateData)
@@ -71,7 +73,8 @@ describe('The account switcher link', () => {
             }
           }),
           serviceTwo
-        ]
+        ],
+        formatServicePathsFor: formatServicePathsFor
       }
 
       body = render('services/index', templateData)
@@ -99,7 +102,8 @@ describe('The account switcher link', () => {
     const myNewService = 'My New Service'
     templateData = {
       services: [serviceOne],
-      new_service_name: myNewService
+      new_service_name: myNewService,
+      formatServicePathsFor: formatServicePathsFor
     }
 
     body = render('services/index', templateData)

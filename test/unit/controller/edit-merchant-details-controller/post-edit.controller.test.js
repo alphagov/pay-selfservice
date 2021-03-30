@@ -6,7 +6,7 @@ const sinon = require('sinon')
 
 const serviceFixtures = require('../../../fixtures/service.fixtures')
 const paths = require('../../../../app/paths.js')
-const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
+const formatServicePathsFor = require('../../../../app/utils/format-service-paths-for')
 const Service = require('../../../../app/models/Service.class')
 
 const mockResponse = {}
@@ -134,7 +134,7 @@ describe('edit merchant details controller - post', () => {
     })
 
     it('should redirect back to the index page', () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.index, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formatServicePathsFor(paths.service.merchantDetails.index, serviceExternalId))).to.equal(true)
     })
 
     it('should set the success notification in the session', () => {
@@ -170,7 +170,7 @@ describe('edit merchant details controller - post', () => {
     })
 
     it(`should redirect back to the page`, () => {
-      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
+      expect(res.redirect.calledWith(formatServicePathsFor(paths.service.merchantDetails.edit, serviceExternalId))).to.equal(true)
     })
 
     it(`should set errors in the session`, () => {

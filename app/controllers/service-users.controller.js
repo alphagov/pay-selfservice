@@ -6,7 +6,7 @@ const userService = require('../services/user.service.js')
 const paths = require('../paths.js')
 const roles = require('../utils/roles').roles
 
-const formattedPathFor = require('../utils/replace-params-in-path')
+const formatServicePathsFor = require('../utils/format-service-paths-for')
 
 const mapByRoles = function (users, externalServiceId, currentUser) {
   const userRolesMap = {}
@@ -24,7 +24,7 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
         mappedUser.is_current = true
         mappedUser.link = paths.user.profile.index
       } else {
-        mappedUser.link = formattedPathFor(paths.teamMembers.show, externalServiceId, user.externalId)
+        mappedUser.link = formatServicePathsFor(paths.service.teamMembers.show, externalServiceId, user.externalId)
       }
       userRolesMap[userRoleName].push(mappedUser)
     }
@@ -61,7 +61,7 @@ module.exports = {
     const onSuccess = function ([members, invitedMembers]) {
       const teamMembers = mapByRoles(members, externalServiceId, req.user)
       const invitedTeamMembers = mapInvitesByRoles(invitedMembers)
-      const inviteTeamMemberLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
+      const inviteTeamMemberLink = formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId)
 
       response(req, res, 'team-members/team-members', {
         team_members: teamMembers,
@@ -96,9 +96,9 @@ module.exports = {
     const onSuccess = (user) => {
       const hasSameService = user.hasService(externalServiceId) && req.user.hasService(externalServiceId)
       const roleInList = roles[_.get(user.getRoleForService(externalServiceId), 'name')]
-      const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, externalServiceId, externalUserId)
-      const removeTeamMemberLink = formattedPathFor(paths.teamMembers.delete, externalServiceId, externalUserId)
-      const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
+      const editPermissionsLink = formatServicePathsFor(paths.service.teamMembers.permissions, externalServiceId, externalUserId)
+      const removeTeamMemberLink = formatServicePathsFor(paths.service.teamMembers.delete, externalServiceId, externalUserId)
+      const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, externalServiceId)
 
       if (roleInList && hasSameService) {
         return response(req, res, 'team-members/team-member-details', {
@@ -137,7 +137,7 @@ module.exports = {
 
     const onSuccess = (username) => {
       req.flash('generic', username + ' was successfully removed')
-      res.redirect(formattedPathFor(paths.teamMembers.index, externalServiceId))
+      res.redirect(formatServicePathsFor(paths.service.teamMembers.index, externalServiceId))
     }
 
     const onError = () => {
@@ -147,7 +147,7 @@ module.exports = {
           message: 'This person has already been removed by another administrator.'
         },
         link: {
-          link: formattedPathFor(paths.teamMembers.index, externalServiceId),
+          link: formatServicePathsFor(paths.service.teamMembers.index, externalServiceId),
           text: 'View all team members'
         },
         enable_link: true

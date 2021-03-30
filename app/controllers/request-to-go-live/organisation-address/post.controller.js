@@ -5,13 +5,14 @@ const lodash = require('lodash')
 const logger = require('../../../utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
-const { requestToGoLive } = require('../../../paths')
+const paths = require('../../../paths')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber
 } = require('../../../utils/validation/server-side-form-validations')
 const { updateService } = require('../../../services/service.service')
 const { renderErrorView } = require('../../../utils/response')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
+const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 const clientFieldNames = {
   addressLine1: 'address-line1',
@@ -121,12 +122,12 @@ module.exports = async function (req, res) {
       const updatedService = await submitForm(form, req.service.externalId, req.correlationId)
       res.redirect(
         303,
-        goLiveStageToNextPagePath[updatedService.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
+        formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
       )
     } else {
       const pageData = buildErrorsPageData(form, errors)
       lodash.set(req, 'session.pageData.requestToGoLive.organisationAddress', pageData)
-      res.redirect(303, requestToGoLive.organisationAddress.replace(':externalServiceId', req.service.externalId))
+      res.redirect(303, formatServicePathsFor(paths.service.requestToGoLive.organisationAddress, req.service.externalId))
     }
   } catch (error) {
     logger.error(`Error submitting organisation address - ${error.stack}`)

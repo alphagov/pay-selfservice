@@ -16,8 +16,6 @@ const { NotFoundError } = require('./errors')
 // Middleware
 const { lockOutDisabledUsers, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
 const getAccount = require('./middleware/get-gateway-account')
-const hasServices = require('./middleware/has-services')
-const resolveService = require('./middleware/resolve-service')
 const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
 const correlationIdMiddleware = require('./middleware/correlation-id')
@@ -81,10 +79,16 @@ const requestPspTestAccountController = require('./controllers/request-psp-test-
 
 // Assignments
 const {
-  registerUser, user, selfCreateService,
-  serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  requestToGoLive, policyPages,
-  allServiceTransactions, payouts, redirects, index, requestPspTestAccount
+  allServiceTransactions,
+  index,
+  inviteValidation,
+  policyPages,
+  payouts,
+  registerUser,
+  selfCreateService,
+  serviceSwitcher,
+  staticPaths,
+  user
 } = paths
 const {
   apiKeys,
@@ -105,6 +109,14 @@ const {
   transactions,
   yourPsp
 } = paths.account
+const {
+  editServiceName,
+  merchantDetails,
+  redirects,
+  requestPspTestAccount,
+  requestToGoLive,
+  teamMembers
+} = paths.service
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -113,6 +125,9 @@ module.exports.paths = paths
 module.exports.bind = function (app) {
   const account = new Router({ mergeParams: true })
   account.use(getServiceAndAccount, userIsAuthorised)
+
+  const service = new Router({ mergeParams: true })
+  service.use(getServiceAndAccount, userIsAuthorised)
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 
@@ -176,21 +191,14 @@ module.exports.bind = function (app) {
 
   const authenticatedPaths = [
     ...lodash.values(allServiceTransactions),
-    ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
-    ...lodash.values(teamMembers),
-    ...lodash.values(merchantDetails),
     ...lodash.values(user.profile),
-    ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
     ...lodash.values(payouts),
-    ...lodash.values(redirects),
-    paths.requestPspTestAccount,
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
   app.use(authenticatedPaths, userIsAuthorised) // Enforce authentication on all get requests
-  app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
   // Site index
   app.get(index, userIsAuthorised, rootController.get)
@@ -240,49 +248,43 @@ module.exports.bind = function (app) {
   // --------------------
 
   // Edit service name
-  app.get(editServiceName.index, permission('service-name:update'), editServiceNameController.get)
-  app.post(editServiceName.update, permission('service-name:update'), editServiceNameController.post)
+  service.get(editServiceName.index, permission('service-name:update'), editServiceNameController.get)
+  service.post(editServiceName.update, permission('service-name:update'), editServiceNameController.post)
 
   // Team members
-  app.get(teamMembers.index, resolveService, serviceUsersController.index)
-  app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
-  app.get(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.index)
-  app.post(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.update)
-  app.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete)
+  service.get(teamMembers.index, serviceUsersController.index)
+  service.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
+  service.get(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.index)
+  service.post(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.update)
+  service.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete)
 
   // Invite team member
-  app.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index)
-  app.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
+  service.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index)
+  service.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
 
   // Merchant details
-  app.get(merchantDetails.index, permission('merchant-details:read'), merchantDetailsController.getIndex)
-  app.get(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.getEdit)
-  app.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.postEdit)
+  service.get(merchantDetails.index, permission('merchant-details:read'), merchantDetailsController.getIndex)
+  service.get(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.getEdit)
+  service.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.postEdit)
 
   // Request to go live
-  app.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
-  app.post(requestToGoLive.index, permission('go-live-stage:update'), requestToGoLiveIndexController.post)
-  app.get(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.get)
-  app.post(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.post)
-  app.get(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.get)
-  app.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.post)
-  app.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.get)
-  app.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.post)
-  app.get(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.get)
-  app.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
+  service.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
+  service.post(requestToGoLive.index, permission('go-live-stage:update'), requestToGoLiveIndexController.post)
+  service.get(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.get)
+  service.post(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.post)
+  service.get(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.get)
+  service.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.post)
+  service.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.get)
+  service.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.post)
+  service.get(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.get)
+  service.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
 
   // Service live account dashboard link
-  app.get(redirects.stripeSetupLiveDashboardRedirect, stripeSetupDashboardRedirectController.get)
+  service.get(redirects.stripeSetupLiveDashboardRedirect, stripeSetupDashboardRedirectController.get)
 
   // Request Stripe test account
-  app.get(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.get)
-  app.post(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.post)
-
-  // TODO: these routes are for old URLs and will be removed after the changes with the new URLs have been deployed
-  app.get(merchantDetails.indexOld, permission('merchant-details:read'), merchantDetailsController.getIndex)
-  app.get(merchantDetails.editOld, permission('merchant-details:update'), merchantDetailsController.getEdit)
-  app.post(merchantDetails.editOld, permission('merchant-details:update'), merchantDetailsController.postEdit)
-  app.get(teamMembers.indexOld, resolveService, serviceUsersController.index)
+  service.get(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.get)
+  service.post(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.post)
 
   // ----------------------------
   // GATEWAY ACCOUNT LEVEL ROUTES
@@ -420,6 +422,7 @@ module.exports.bind = function (app) {
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
 
   app.use(paths.account.root, account)
+  app.use(paths.service.root, service)
 
   app.all('*', (req, res, next) => {
     if (accountUrls.isLegacyAccountsUrl(req.url)) {

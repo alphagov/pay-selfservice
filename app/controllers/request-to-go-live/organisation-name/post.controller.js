@@ -4,11 +4,12 @@ const lodash = require('lodash')
 
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
-const { requestToGoLive } = require('../../../paths')
+const paths = require('../../../paths')
 const { validateOrganisationName } = require('../../../utils/organisation-name-validation')
 const { updateCurrentGoLiveStage, updateService } = require('../../../services/service.service')
 const { renderErrorView } = require('../../../utils/response')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
+const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 // Constants
 const ORGANISATION_NAME_FIELD = 'organisation-name'
@@ -28,7 +29,7 @@ module.exports = (req, res) => {
       .then(updatedService => {
         res.redirect(
           303,
-          goLiveStageToNextPagePath[updatedService.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
+          formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
         )
       })
       .catch(err => {
@@ -42,7 +43,7 @@ module.exports = (req, res) => {
     })
     return res.redirect(
       303,
-      requestToGoLive.organisationName.replace(':externalServiceId', req.service.externalId)
+      formatServicePathsFor(paths.service.requestToGoLive.organisationName, req.service.externalId)
     )
   }
 }

@@ -19,7 +19,7 @@ const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const USER_RESOURCE = '/v1/api/users'
 
-const formattedPathFor = require('../../app/utils/replace-params-in-path')
+const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
 
 describe('user permissions update controller', function () {
   const EXTERNAL_SERVICE_ID = '38745gf8y'
@@ -70,12 +70,12 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .get(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(200)
         .expect((res) => {
           expect(res.body.email).to.equal(userToView.email)
-          expect(res.body.editPermissionsLink).to.equal(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+          expect(res.body.editPermissionsLink).to.equal(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
           expect(res.body.admin.id).to.equal(roles['admin'].extId)
           expect(res.body.admin.checked).to.equal('')
           expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId)
@@ -93,7 +93,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .get(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
         .expect((res) => {
@@ -113,7 +113,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .get(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
         .expect((res) => {
@@ -126,7 +126,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, userInSession.externalId))
+        .get(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, userInSession.externalId))
         .set('Accept', 'application/json')
         .expect(403)
         .expect((res) => {
@@ -149,7 +149,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .post(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -158,7 +158,7 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', formattedPathFor(paths.teamMembers.show, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .expect('Location', formatServicePathsFor(paths.service.teamMembers.show, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .end(done)
     })
 
@@ -174,7 +174,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .post(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -183,7 +183,7 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', formattedPathFor(paths.teamMembers.show, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .expect('Location', formatServicePathsFor(paths.service.teamMembers.show, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .end(done)
     })
 
@@ -191,7 +191,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, userInSession.externalId))
+        .post(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, userInSession.externalId))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -213,7 +213,7 @@ describe('user permissions update controller', function () {
         .reply(404)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .post(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -239,7 +239,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .post(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -259,7 +259,7 @@ describe('user permissions update controller', function () {
 
       const nonExistentRoleId = '999'
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .post(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -285,7 +285,7 @@ describe('user permissions update controller', function () {
         .reply(409)
 
       supertest(app)
-        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
+        .post(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')

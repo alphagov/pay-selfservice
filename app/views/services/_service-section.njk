@@ -3,7 +3,7 @@
     <h3 class="govuk-heading-s service-name">
       {{ service.name }}
       {% if service.permissions.service_name_update %}
-      <a href="/service/{{ service.external_id }}/edit-name" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-regular govuk-!-margin-left-2 edit-service-name">
+      <a href="{{formatServicePathsFor(routes.service.editServiceName.index, service.external_id)}}" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-regular govuk-!-margin-left-2 edit-service-name">
         Edit name <span class="govuk-visually-hidden">for {{ service.name }}</span>
       </a>
       {% endif %}
@@ -23,13 +23,13 @@
       <li>
       {% if service.permissions.users_service_create %}
         <p class="govuk-!-margin-top-0 govuk-!-font-size-16">
-          <a class="govuk-link govuk-link--no-visited-state manage-team-members" href="/service/{{ service.external_id }}/team-members">
+          <a class="govuk-link govuk-link--no-visited-state manage-team-members" href="{{formatServicePathsFor(routes.service.teamMembers.index, service.external_id)}}">
             Manage team members <span class="govuk-visually-hidden">for {{ service.name }}</span>
           </a>
         </p>
       {% else %}
         <p>
-          <a class="govuk-link govuk-link--no-visited-state view-team-members govuk-!-font-size-16" href="/service/{{ service.external_id }}/team-members">
+          <a class="govuk-link govuk-link--no-visited-state view-team-members govuk-!-font-size-16" href="{{formatServicePathsFor(routes.service.teamMembers.index, service.external_id)}}">
             View team members <span class="govuk-visually-hidden">for {{ service.name }}</span>
           </a>
         </p>
@@ -37,7 +37,7 @@
       </li>
       <li>
       {% if service.permissions.merchant_details_read %}
-        <a class="govuk-link govuk-link--no-visited-state edit-merchant-details govuk-!-font-size-16" href="/service/{{ service.external_id }}/organisation-details">
+        <a class="govuk-link govuk-link--no-visited-state edit-merchant-details govuk-!-font-size-16" href="{{formatServicePathsFor(routes.service.merchantDetails.index, service.external_id)}}">
           Organisation details <span class="govuk-visually-hidden">for {{ service.name }}</span>
         </a>
       {% endif %}

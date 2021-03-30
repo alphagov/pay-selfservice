@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 
 const paths = require('../../paths')
-const formatPath = require('../../utils/replace-params-in-path')
+const formatServicePathsFor = require('../../utils/format-service-paths-for')
 const { response } = require('../../utils/response')
 
 module.exports = (req, res) => {
@@ -15,13 +15,13 @@ module.exports = (req, res) => {
     !merchantDetails.address_city ||
     !merchantDetails.address_postcode ||
     !merchantDetails.address_country) {
-    return res.redirect(formatPath(paths.merchantDetails.edit, externalServiceId))
+    return res.redirect(formatServicePathsFor(paths.service.merchantDetails.edit, externalServiceId))
   }
 
   const pageData = {
     merchant_details: merchantDetails,
     externalServiceId,
-    editPath: formatPath(paths.merchantDetails.edit, externalServiceId)
+    editPath: formatServicePathsFor(paths.service.merchantDetails.edit, externalServiceId)
   }
   return response(req, res, 'merchant-details/merchant-details', pageData)
 }

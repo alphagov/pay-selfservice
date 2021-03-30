@@ -2,13 +2,13 @@ let path = require('path')
 let renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
 let paths = require('../../app/paths.js')
 
-const formattedPathFor = require('../../app/utils/replace-params-in-path')
+const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
 
 describe('Invite a team member view', function () {
   it('should render the standard invite team member view', function () {
     const externalServiceId = 'some-external-id'
-    const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
-    const teamMemberInviteSubmitLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
+    const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, externalServiceId)
+    const teamMemberInviteSubmitLink = formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId)
 
     let templateData = {
       teamMemberIndexLink: teamMemberIndexLink,
@@ -43,8 +43,8 @@ describe('Invite a team member view', function () {
 
   it('should render the agent-initiated-MOTO-enhanced invite team member view', function () {
     const externalServiceId = 'some-external-id'
-    const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
-    const teamMemberInviteSubmitLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
+    const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, externalServiceId)
+    const teamMemberInviteSubmitLink = formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId)
 
     let templateData = {
       teamMemberIndexLink: teamMemberIndexLink,

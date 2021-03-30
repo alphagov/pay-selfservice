@@ -10,7 +10,7 @@
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 3 of 3</span>
 
     <form id="request-to-go-live-agreement-form" method="post"
-          action="/service/{{ currentService.externalId }}/request-to-go-live/agreement" data-validate="true" >
+          action="{{formatServicePathsFor(routes.service.requestToGoLive.agreement, currentService.externalId)}}" data-validate="true" >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
       <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
