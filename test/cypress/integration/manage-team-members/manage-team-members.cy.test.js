@@ -44,7 +44,7 @@ describe('Manage team members page', () => {
   it('should display the manage team members page with users in correct categories', () => {
     cy.setEncryptedCookies(AUTHENTICATED_USER_ID, 1)
 
-    cy.visit(`/service/${SERVICE_EXTERNAL_ID}`)
+    cy.visit(`/service/${SERVICE_EXTERNAL_ID}/team-members`)
 
     cy.get('#team-members-admin-list').find('tr').first().find('td').first().find('a').contains('logged-in-user@example.com (you)')
     cy.get('#team-members-admin-list').find('tr').eq(1).find('td').first().find('a').contains('admin-user@example.com')

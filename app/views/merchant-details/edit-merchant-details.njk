@@ -49,7 +49,7 @@
     <p class="govuk-body" id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
   {% endif %}
 
-  <form id="merchant-details-form" method="post" action="/organisation-details/edit/{{currentService.externalId}}">
+  <form id="merchant-details-form" method="post" action="/service/{{currentService.externalId}}/organisation-details/edit">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
 
     <div class="govuk-form-group {% if errors['merchant-name'] %} govuk-form-group--error {% endif %}">
