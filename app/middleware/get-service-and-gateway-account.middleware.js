@@ -64,12 +64,7 @@ function getService (user, serviceExternalId, gatewayAccount, correlationId) {
     }
   }
 
-  if (service) {
-    // hasCardGatewayAccount is needed to show relevant message (card or directdebit or both) on merchant details page.
-    // Since it is only card currently supported, value is always 'true'
-    service.hasCardGatewayAccount = true
-    return service
-  }
+  return service
 }
 
 module.exports = async function getServiceAndGatewayAccount (req, res, next) {

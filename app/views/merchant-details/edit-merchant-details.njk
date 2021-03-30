@@ -39,15 +39,7 @@
   </div>
   {% endif %}
   <h1 class="govuk-heading-l page-title">Organisation details</h1>
-  {% if has_card_and_dd_gateway_account %}
-    <p class="govuk-body" id="merchant-details-info">Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the
-      payer. This information is displayed in emails and on payment pages.</p>
-  {% elif has_direct_debit_gateway_account %}
-    <p class="govuk-body" id="merchant-details-info">Direct Debit requires the details of the organisation taking payment to be shown to the payer. This information is
-      displayed in emails and on payment pages.</p>
-  {% elif has_card_gateway_account %}
-    <p class="govuk-body" id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
-  {% endif %}
+  <p class="govuk-body" id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
 
   <form id="merchant-details-form" method="post" action="/service/{{currentService.externalId}}/organisation-details/edit">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -92,30 +84,6 @@
         type: "tel"
       })
     }}
-
-    {% if has_direct_debit_gateway_account or has_card_and_dd_gateway_account %}
-
-      {% set emailError = false %}
-      {% if errors["merchant-email"] %}
-        {% set emailError = {
-          text: errors["merchant-email"]
-        } %}
-      {% endif %}
-
-      {{
-        govukInput({
-          value: merchant_details.email,
-          label: {
-            text: "Email"
-          },
-          errorMessage: emailError,
-          id: "merchant-email",
-          name: "merchant-email",
-          classes: "govuk-!-width-two-thirds",
-          type: "email"
-        })
-      }}
-    {% endif %}
 
     {% set addressLine1Error = false %}
     {% if errors["address-line1"] %}

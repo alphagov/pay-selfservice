@@ -47,7 +47,7 @@ module.exports = async function getServiceList (req, res) {
       }
       return serviceData
     })
-    .sort((a, b) =>  sortServicesByLiveThenName(a, b))
+    .sort((a, b) => sortServicesByLiveThenName(a, b))
 
   const data = {
     services: servicesData,

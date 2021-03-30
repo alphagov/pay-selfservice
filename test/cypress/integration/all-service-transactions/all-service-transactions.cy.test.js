@@ -65,7 +65,7 @@ describe('All service transactions', () => {
       gateway_account_id: String(gatewayAccount3.gatewayAccountId),
       reference: 'ref4',
       transaction_id: 'transaction-id-4',
-      live: false,
+      live: false
     }
   ]
 

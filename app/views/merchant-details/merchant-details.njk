@@ -8,13 +8,7 @@
 <div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Organisation details</h1>
   <p class="govuk-body" id="merchant-details-info">
-    {% if has_card_and_dd_gateway_account %}
-      Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the payer. This information is displayed in emails and on payment pages.
-    {% elif has_direct_debit_gateway_account %}
-      Direct Debit requires the details of the organisation taking payment to be shown to the payer. This information is displayed in emails and on payment pages.
-    {% elif has_card_gateway_account %}
       Payment card schemes require the details of the organisation taking payment to be shown on payment pages.
-    {% endif %}
   </p>
 
   <table class="govuk-table">
