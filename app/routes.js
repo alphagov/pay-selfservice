@@ -278,6 +278,12 @@ module.exports.bind = function (app) {
   app.get(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.get)
   app.post(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.post)
 
+  // TODO: these routes are for old URLs and will be removed after the changes with the new URLs have been deployed
+  app.get(merchantDetails.indexOld, permission('merchant-details:read'), merchantDetailsController.getIndex)
+  app.get(merchantDetails.editOld, permission('merchant-details:update'), merchantDetailsController.getEdit)
+  app.post(merchantDetails.editOld, permission('merchant-details:update'), merchantDetailsController.postEdit)
+  app.get(teamMembers.indexOld, resolveService, serviceUsersController.index)
+
   // ----------------------------
   // GATEWAY ACCOUNT LEVEL ROUTES
   // ----------------------------

@@ -163,11 +163,14 @@ module.exports = {
     update: '/service/:externalServiceId/edit-name'
   },
   merchantDetails: {
-    index: '/organisation-details/:externalServiceId',
-    edit: '/organisation-details/edit/:externalServiceId'
+    index: '/service/:externalServiceId/organisation-details',
+    edit: '/service/:externalServiceId/organisation-details/edit',
+    indexOld: '/organisation-details/:externalServiceId',
+    editOld: '/organisation-details/edit/:externalServiceId'
   },
   teamMembers: {
-    index: '/service/:externalServiceId',
+    index: '/service/:externalServiceId/team-members',
+    indexOld: '/service/:externalServiceId',
     show: '/service/:externalServiceId/team-member/:externalUserId',
     delete: '/service/:externalServiceId/team-member/:externalUserId/delete',
     permissions: '/service/:externalServiceId/team-member/:externalUserId/permissions',

@@ -391,7 +391,7 @@ describe('service users resource', () => {
       .expect(res => {
         expect(res.body.error.title).to.equal('This person has already been removed')
         expect(res.body.error.message).to.equal('This person has already been removed by another administrator.')
-        expect(res.body.link.link).to.equal(`/service/${externalServiceId}`)
+        expect(res.body.link.link).to.equal(`/service/${externalServiceId}/team-members`)
         expect(res.body.link.text).to.equal('View all team members')
         expect(res.body.enable_link).to.equal(true)
       })
