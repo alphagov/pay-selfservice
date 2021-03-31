@@ -3,13 +3,14 @@
 const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
-const { requestToGoLive } = require('../../../paths')
+const paths = require('../../../paths')
 const goLiveStage = require('../../../models/go-live-stage')
 const { updateCurrentGoLiveStage } = require('../../../services/service.service')
 const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('../../../services/service.service')
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { isIPv4, isIPv6 } = require('net')
 const zendeskClient = require('../../../services/clients/zendesk.client')
+const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 const NOT_SELECTED_AGREEMENT_ERROR_MSG = 'You need to accept our legal terms to continue'
 const stages = {
@@ -85,7 +86,7 @@ module.exports = async (req, res, next) => {
       const updatedService = await updateCurrentGoLiveStage(req.service.externalId, stages[req.service.currentGoLiveStage], req.correlationId)
 
       return res.redirect(303,
-        goLiveStageToNextPagePath[updatedService.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
+        formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
       )
     } catch (err) {
       return next(err)
@@ -96,7 +97,7 @@ module.exports = async (req, res, next) => {
       displayStripeAgreement: (lodash.get(req, 'service.currentGoLiveStage', '') === goLiveStage.CHOSEN_PSP_STRIPE)
     })
     return res.redirect(303,
-      requestToGoLive.agreement.replace(':externalServiceId', req.service.externalId)
+      formatServicePathsFor(paths.service.requestToGoLive.agreement, req.service.externalId)
     )
   }
 }

@@ -6,7 +6,7 @@ const logger = require('../../utils/logger')(__filename)
 const { renderErrorView } = require('../../utils/response')
 const paths = require('../../paths')
 const serviceService = require('../../services/service.service')
-const formattedPathFor = require('../../utils/replace-params-in-path')
+const formatServicePathsFor = require('../../utils/format-service-paths-for')
 const { validPaths, ServiceUpdateRequest } = require('../../models/ServiceUpdateRequest.class')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber
@@ -137,11 +137,11 @@ module.exports = async function (req, res) {
     if (lodash.isEmpty(errors)) {
       await submitForm(form, serviceExternalId, correlationId)
       req.flash('generic', 'Organisation details updated')
-      res.redirect(formattedPathFor(paths.merchantDetails.index, serviceExternalId))
+      res.redirect(formatServicePathsFor(paths.service.merchantDetails.index, serviceExternalId))
     } else {
       const pageData = buildErrorsPageData(errors, form)
       lodash.set(req, 'session.pageData.editMerchantDetails', pageData)
-      res.redirect(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))
+      res.redirect(formatServicePathsFor(paths.service.merchantDetails.edit, serviceExternalId))
     }
   } catch (error) {
     logger.error(`Error submitting organisation details - ${error.stack}`)

@@ -9,7 +9,7 @@ const mockSession = require('../../../test-helpers/mock-session.js')
 const getApp = require('../../../../server.js').getApp
 const userFixtures = require('../../../fixtures/user.fixtures')
 const paths = require('../../../../app/paths.js')
-const formattedPathFor = require('../../../../app/utils/replace-params-in-path')
+const formatServicePathsFor = require('../../../../app/utils/format-service-paths-for')
 const User = require('../../../../app/models/User.class')
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const USER_RESOURCE = '/v1/api/users'
@@ -53,7 +53,7 @@ describe('Organisation details controller - get', () => {
         .reply(200, user)
       const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formatServicePathsFor(paths.service.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -88,7 +88,7 @@ describe('Organisation details controller - get', () => {
         .reply(200, user)
       const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formatServicePathsFor(paths.service.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -99,7 +99,7 @@ describe('Organisation details controller - get', () => {
       expect(response.statusCode).to.equal(302)
     })
     it('should redirect to the edit page', () => {
-      expect(response.headers).to.have.property('location').to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(response.headers).to.have.property('location').to.equal(formatServicePathsFor(paths.service.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
   })
   describe('should redirect to edit when the merchant name is set but not the address', () => {
@@ -120,7 +120,7 @@ describe('Organisation details controller - get', () => {
         .reply(200, user)
       const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formatServicePathsFor(paths.service.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -131,7 +131,7 @@ describe('Organisation details controller - get', () => {
       expect(response.statusCode).to.equal(302)
     })
     it('should redirect to the edit page', () => {
-      expect(response.headers).to.have.property('location').to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(response.headers).to.have.property('location').to.equal(formatServicePathsFor(paths.service.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
   })
   describe('should redirect to edit when the mandatory address fields have not been set', () => {
@@ -153,7 +153,7 @@ describe('Organisation details controller - get', () => {
         .reply(200, user)
       const app = mockSession.getAppWithLoggedInUser(getApp(), new User(user))
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formatServicePathsFor(paths.service.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -164,7 +164,7 @@ describe('Organisation details controller - get', () => {
       expect(response.statusCode).to.equal(302)
     })
     it('should redirect to the edit page', () => {
-      expect(response.headers).to.have.property('location').to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(response.headers).to.have.property('location').to.equal(formatServicePathsFor(paths.service.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
   })
 })

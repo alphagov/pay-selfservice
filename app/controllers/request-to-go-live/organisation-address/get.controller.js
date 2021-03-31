@@ -3,16 +3,17 @@
 const lodash = require('lodash')
 
 const goLiveStage = require('../../../models/go-live-stage')
-const { requestToGoLive } = require('../../../paths')
+const paths = require('../../../paths')
 const response = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
+const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 module.exports = (req, res) => {
   // redirect on wrong stage
   if (req.service.currentGoLiveStage !== goLiveStage.ENTERED_ORGANISATION_NAME) {
     return res.redirect(
       303,
-      requestToGoLive.index.replace(':externalServiceId', req.service.externalId)
+      formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId)
     )
   }
   // initialise pageData

@@ -19,7 +19,7 @@ let serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExterna
   return renderErrorView(req, res, 'Unable to update permissions for this user')
 }
 
-const formattedPathFor = require('../utils/replace-params-in-path')
+const formatServicePathsFor = require('../utils/format-service-paths-for')
 
 module.exports = {
   /**
@@ -35,9 +35,9 @@ module.exports = {
     let serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
 
     let viewData = user => {
-      const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, serviceExternalId, user.externalId)
-      const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, serviceExternalId)
-      const teamMemberProfileLink = formattedPathFor(paths.teamMembers.show, serviceExternalId, user.externalId)
+      const editPermissionsLink = formatServicePathsFor(paths.service.teamMembers.permissions, serviceExternalId, user.externalId)
+      const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, serviceExternalId)
+      const teamMemberProfileLink = formatServicePathsFor(paths.service.teamMembers.show, serviceExternalId, user.externalId)
 
       const role = user.getRoleForService(serviceExternalId)
       return {
@@ -100,7 +100,7 @@ module.exports = {
     let correlationId = req.correlationId
     let onSuccess = (user) => {
       req.flash('generic', 'Permissions have been updated')
-      res.redirect(303, formattedPathFor(paths.teamMembers.show, serviceExternalId, user.externalId))
+      res.redirect(303, formatServicePathsFor(paths.service.teamMembers.show, serviceExternalId, user.externalId))
     }
 
     if (req.user.externalId === externalUserId) {

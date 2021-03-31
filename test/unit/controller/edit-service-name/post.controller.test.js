@@ -84,8 +84,7 @@ describe('Controller: editServiceName, Method: get', () => {
     })
 
     it(`should call 'res.redirect' with a properly formatted edit-service url`, () => {
-      expect(res.redirect.called).to.equal(true)
-      expect(res.redirect.args[0]).to.include(`/service/${req.service.externalId}/edit-name`)
+      sinon.assert.calledWith(res.redirect, `/service/${req.service.externalId}/edit-name`)
     })
 
     it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {

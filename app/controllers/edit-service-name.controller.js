@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const responses = require('../utils/response')
 const paths = require('../paths')
-const formatPath = require('../utils/replace-params-in-path')
+const formatServicePathsFor = require('../utils/format-service-paths-for')
 const serviceService = require('../services/service.service')
 const { validateServiceName } = require('../utils/service-name-validation')
 
@@ -18,7 +18,7 @@ function getServiceName (req, res) {
     pageData.current_name = req.service.serviceName
   }
 
-  pageData.submit_link = formatPath(paths.editServiceName.update, req.service.externalId)
+  pageData.submit_link = formatServicePathsFor(paths.service.editServiceName.update, req.service.externalId)
   pageData.my_services = paths.serviceSwitcher.index
 
   return responses.response(req, res, 'services/edit-service-name', pageData)
@@ -38,7 +38,7 @@ async function postEditServiceName (req, res, next) {
       errors: validationErrors,
       current_name: lodash.merge({}, { en: serviceName, cy: serviceNameCy })
     })
-    res.redirect(formatPath(paths.editServiceName.index, req.service.externalId))
+    res.redirect(formatServicePathsFor(paths.service.editServiceName.index, req.service.externalId))
   } else {
     try {
       await serviceService.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)

@@ -122,10 +122,36 @@ module.exports = {
       worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
     }
   },
-  index: '/',
-  redirects: {
-    stripeSetupLiveDashboardRedirect: '/service/:externalServiceId/dashboard/live'
+  service: {
+    root: `/service/:${keys.SERVICE_EXTERNAL_ID}`,
+    editServiceName: {
+      index: '/edit-name',
+      update: '/edit-name'
+    },
+    merchantDetails: {
+      index: '/organisation-details',
+      edit: '/organisation-details/edit'
+    },
+    redirects: {
+      stripeSetupLiveDashboardRedirect: '/dashboard/live'
+    },
+    requestPspTestAccount: '/request-stripe-test-account',
+    requestToGoLive: {
+      index: '/request-to-go-live',
+      organisationName: '/request-to-go-live/organisation-name',
+      organisationAddress: '/request-to-go-live/organisation-address',
+      chooseHowToProcessPayments: '/request-to-go-live/choose-how-to-process-payments',
+      agreement: '/request-to-go-live/agreement'
+    },
+    teamMembers: {
+      index: '/team-members',
+      show: '/team-member/:externalUserId',
+      delete: '/team-member/:externalUserId/delete',
+      permissions: '/team-member/:externalUserId/permissions',
+      invite: '/team-members/invite'
+    }
   },
+  index: '/',
   allServiceTransactions: {
     index: '/all-service-transactions',
     indexStatusFilter: '/all-service-transactions/:statusFilter(test|live)',
@@ -158,24 +184,6 @@ module.exports = {
     switch: '/my-services/switch',
     create: '/my-services/create'
   },
-  editServiceName: {
-    index: '/service/:externalServiceId/edit-name',
-    update: '/service/:externalServiceId/edit-name'
-  },
-  merchantDetails: {
-    index: '/service/:externalServiceId/organisation-details',
-    edit: '/service/:externalServiceId/organisation-details/edit',
-    indexOld: '/organisation-details/:externalServiceId',
-    editOld: '/organisation-details/edit/:externalServiceId'
-  },
-  teamMembers: {
-    index: '/service/:externalServiceId/team-members',
-    indexOld: '/service/:externalServiceId',
-    show: '/service/:externalServiceId/team-member/:externalUserId',
-    delete: '/service/:externalServiceId/team-member/:externalUserId/delete',
-    permissions: '/service/:externalServiceId/team-member/:externalUserId/permissions',
-    invite: '/service/:externalServiceId/team-members/invite'
-  },
   inviteValidation: {
     validateInvite: '/invites/:code'
   },
@@ -203,19 +211,11 @@ module.exports = {
   feedback: '/feedback',
   generateRoute: generateRoute,
   formattedPathFor: formattedPathFor,
-  requestToGoLive: {
-    index: '/service/:externalServiceId/request-to-go-live',
-    organisationName: '/service/:externalServiceId/request-to-go-live/organisation-name',
-    organisationAddress: '/service/:externalServiceId/request-to-go-live/organisation-address',
-    chooseHowToProcessPayments: '/service/:externalServiceId/request-to-go-live/choose-how-to-process-payments',
-    agreement: '/service/:externalServiceId/request-to-go-live/agreement'
-  },
   policyPages: {
     download: '/policy/download/:key'
   },
   payouts: {
     list: '/payments-to-your-bank-account',
     listStatusFilter: '/payments-to-your-bank-account/:statusFilter(test|live)'
-  },
-  requestPspTestAccount: '/service/:externalServiceId/request-stripe-test-account'
+  }
 }

@@ -41,7 +41,7 @@
   <h1 class="govuk-heading-l page-title">Organisation details</h1>
   <p class="govuk-body" id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
 
-  <form id="merchant-details-form" method="post" action="/service/{{currentService.externalId}}/organisation-details/edit">
+  <form id="merchant-details-form" method="post" action="{{formatServicePathsFor(routes.service.merchantDetails.edit, currentService.externalId)}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
 
     <div class="govuk-form-group {% if errors['merchant-name'] %} govuk-form-group--error {% endif %}">

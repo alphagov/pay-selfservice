@@ -69,7 +69,7 @@
         </article>
       {% else %}
         <article class="{{columnClass}} links__box" id="request-stripe-test-account">
-          <a href="/service/{{ currentService.externalId }}/request-stripe-test-account" class="govuk-link">
+          <a href="{{formatServicePathsFor(routes.service.requestPspTestAccount, currentService.externalId)}}" class="govuk-link">
             <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Test Stripe’s reporting functionality</h2>
             <p class="govuk-body govuk-!-margin-bottom-0">Access transaction fee and payout reports to test reconciliation.</p>
           </a>
@@ -85,12 +85,12 @@
         <p class="govuk-body govuk-!-margin-bottom-0">Read our documentation to see how your service can go live with GOV.UK&nbsp;Pay.</p>
       </a>
       {% elif goLiveNotStarted %}
-      <a href="/service/{{ currentService.externalId }}/request-to-go-live">
+      <a href="{{formatServicePathsFor(routes.service.requestToGoLive.index, currentService.externalId)}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Request a live account</h2>
         <p class="govuk-body govuk-!-margin-bottom-0">To request a live account, tell us your organisation’s name, your payment service provider and agree to our terms and conditions. Once that’s done our team will email you.</p>
       </a>
       {% elif goLiveStarted %}
-      <a href="/service/{{ currentService.externalId }}/request-to-go-live">
+      <a href="{{formatServicePathsFor(routes.service.requestToGoLive.index, currentService.externalId)}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Setting up your live account</h2>
         <p class="govuk-body govuk-!-margin-bottom-0">You’ve started to set up your live account. There are still some steps you need to complete.</p>
       </a>

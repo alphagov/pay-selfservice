@@ -4,10 +4,11 @@ const lodash = require('lodash')
 
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { validateProcessPaymentOptions } = require('../../../utils/choose-how-to-process-payments-validation')
-const { requestToGoLive } = require('../../../paths')
+const paths = require('../../../paths')
 const { updateCurrentGoLiveStage } = require('../../../services/service.service')
 const goLiveStage = require('../../../models/go-live-stage')
 const { renderErrorView } = require('../../../utils/response.js')
+const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 const PSP = 'choose-how-to-process-payments-mode'
 const PSP_OTHER = 'choose-how-to-process-payments-mode-other'
@@ -27,7 +28,7 @@ module.exports = (req, res) => {
       .then(updatedService => {
         res.redirect(
           303,
-          goLiveStageToNextPagePath[updatedService.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
+          formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
         )
       })
       .catch(err => {
@@ -37,7 +38,7 @@ module.exports = (req, res) => {
     req.flash('genericError', errors)
     return res.redirect(
       303,
-      requestToGoLive.chooseHowToProcessPayments.replace(':externalServiceId', req.service.externalId)
+      formatServicePathsFor(paths.service.requestToGoLive.chooseHowToProcessPayments, req.service.externalId)
     )
   }
 }

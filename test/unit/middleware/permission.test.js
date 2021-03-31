@@ -58,7 +58,7 @@ describe('Permission check middleware', () => {
   })
 
   describe('middleware has permission to check', () => {
-    const middleware = getPermissionMiddleware(permission)[1]
+    const middleware = getPermissionMiddleware(permission)
 
     describe('user does not have permission for service', () => {
       it('should throw an error', () => {
@@ -91,7 +91,7 @@ describe('Permission check middleware', () => {
   })
 
   describe('middleware does not have permission to check', () => {
-    const middleware = getPermissionMiddleware()[1]
+    const middleware = getPermissionMiddleware()
     it('should call next without arguments', () => {
       const req = {
         user: userWithPermissionForDifferentService,

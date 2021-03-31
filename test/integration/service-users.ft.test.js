@@ -15,7 +15,7 @@ const { getApp } = require('../../server.js')
 const inviteFixtures = require('../fixtures/invite.fixtures')
 const userFixtures = require('../fixtures/user.fixtures')
 const paths = require('../../app/paths.js')
-const formattedPathFor = require('../../app/utils/replace-params-in-path')
+const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
 const User = require('../../app/models/User.class')
 
 // Local constants
@@ -70,7 +70,7 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
-      .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
+      .get(formatServicePathsFor(paths.service.teamMembers.index, externalServiceId))
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
@@ -118,11 +118,11 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
-      .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
+      .get(formatServicePathsFor(paths.service.teamMembers.index, externalServiceId))
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
-        expect(res.body.team_members.admin[1].link).to.equal(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
+        expect(res.body.team_members.admin[1].link).to.equal(formatServicePathsFor(paths.service.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
       })
       .end(done)
   })
@@ -162,7 +162,7 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
-      .get(formattedPathFor(paths.teamMembers.index, noAccessServiceId))
+      .get(formatServicePathsFor(paths.service.teamMembers.index, noAccessServiceId))
       .set('Accept', 'application/json')
       .expect(403)
       .end(done)
@@ -203,15 +203,15 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
-      .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
+      .get(formatServicePathsFor(paths.service.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
         expect(res.body.username).to.equal(USERNAME_OTHER_USER)
         expect(res.body.email).to.equal('other-user@example.com')
         expect(res.body.role).to.equal('View only')
-        expect(res.body.editPermissionsLink).to.equal(formattedPathFor(paths.teamMembers.permissions, externalServiceId, EXTERNAL_ID_OTHER_USER))
-        expect(res.body.removeTeamMemberLink).to.equal(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
+        expect(res.body.editPermissionsLink).to.equal(formatServicePathsFor(paths.service.teamMembers.permissions, externalServiceId, EXTERNAL_ID_OTHER_USER))
+        expect(res.body.removeTeamMemberLink).to.equal(formatServicePathsFor(paths.service.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
       })
       .end(done)
   })
@@ -286,7 +286,7 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
-      .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_LOGGED_IN))
+      .get(formatServicePathsFor(paths.service.teamMembers.show, externalServiceId, EXTERNAL_ID_LOGGED_IN))
       .set('Accept', 'application/json')
       .expect(302)
       .expect('Location', '/my-profile')
@@ -330,7 +330,7 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
-      .get(formattedPathFor(paths.teamMembers.show, externalServiceId2, EXTERNAL_ID_OTHER_USER))
+      .get(formatServicePathsFor(paths.service.teamMembers.show, externalServiceId2, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
       .expect(403)
       .expect(res => {
@@ -363,10 +363,10 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
-      .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
+      .post(formatServicePathsFor(paths.service.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
       .send({ csrfToken: csrf().create('123') })
       .expect(302)
-      .expect('Location', formattedPathFor(paths.teamMembers.index, externalServiceId))
+      .expect('Location', formatServicePathsFor(paths.service.teamMembers.index, externalServiceId))
       .end(done)
   })
 
@@ -384,7 +384,7 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
-      .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
+      .post(formatServicePathsFor(paths.service.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
       .send({ csrfToken: csrf().create('123') })
       .expect(200)
@@ -442,7 +442,7 @@ describe('service users resource', () => {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
-      .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
+      .get(formatServicePathsFor(paths.service.teamMembers.index, externalServiceId))
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
