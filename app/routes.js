@@ -1,7 +1,6 @@
 'use strict'
 
 const { Router } = require('express')
-const lodash = require('lodash')
 
 const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
@@ -189,17 +188,6 @@ module.exports.bind = function (app) {
   // AUTHENTICATED ROUTES
   // ----------------------
 
-  const authenticatedPaths = [
-    ...lodash.values(allServiceTransactions),
-    ...lodash.values(serviceSwitcher),
-    ...lodash.values(user.profile),
-    ...lodash.values(policyPages),
-    ...lodash.values(payouts),
-    paths.feedback
-  ] // Extract all the authenticated paths as a single array
-
-  app.use(authenticatedPaths, userIsAuthorised) // Enforce authentication on all get requests
-
   // Site index
   app.get(index, userIsAuthorised, rootController.get)
 
@@ -208,40 +196,40 @@ module.exports.bind = function (app) {
   // -------------------------
 
   // Service switcher
-  app.get(serviceSwitcher.index, myServicesController.getIndex)
-  app.post(serviceSwitcher.switch, myServicesController.postIndex)
-  app.get(serviceSwitcher.create, createServiceController.get)
-  app.post(serviceSwitcher.create, createServiceController.post)
+  app.get(serviceSwitcher.index, userIsAuthorised, myServicesController.getIndex)
+  app.post(serviceSwitcher.switch, userIsAuthorised, myServicesController.postIndex)
+  app.get(serviceSwitcher.create, userIsAuthorised, createServiceController.get)
+  app.post(serviceSwitcher.create, userIsAuthorised, createServiceController.post)
 
   // All service transactions
-  app.get(allServiceTransactions.index, allTransactionsController.getController)
-  app.get(allServiceTransactions.indexStatusFilter, allTransactionsController.getController)
-  app.get(allServiceTransactions.download, allTransactionsController.downloadTransactions)
-  app.get(allServiceTransactions.downloadStatusFilter, allTransactionsController.downloadTransactions)
-  app.get(allServiceTransactions.redirectDetail, transactionDetailRedirectController)
+  app.get(allServiceTransactions.index, userIsAuthorised, allTransactionsController.getController)
+  app.get(allServiceTransactions.indexStatusFilter, userIsAuthorised, allTransactionsController.getController)
+  app.get(allServiceTransactions.download, userIsAuthorised, allTransactionsController.downloadTransactions)
+  app.get(allServiceTransactions.downloadStatusFilter, userIsAuthorised, allTransactionsController.downloadTransactions)
+  app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
 
   // Payouts
-  app.get(payouts.list, payoutsController.listAllServicesPayouts)
-  app.get(payouts.listStatusFilter, payoutsController.listAllServicesPayouts)
+  app.get(payouts.list, userIsAuthorised, payoutsController.listAllServicesPayouts)
+  app.get(payouts.listStatusFilter, userIsAuthorised, payoutsController.listAllServicesPayouts)
 
   // Policy document downloads
-  app.get(policyPages.download, policyDocumentsController.download)
+  app.get(policyPages.download, userIsAuthorised, policyDocumentsController.download)
 
   // Feedback
-  app.get(paths.feedback, feedbackController.getIndex)
-  app.post(paths.feedback, feedbackController.postIndex)
+  app.get(paths.feedback, userIsAuthorised, feedbackController.getIndex)
+  app.post(paths.feedback, userIsAuthorised, feedbackController.postIndex)
 
   // User profile
-  app.get(user.profile.index, serviceUsersController.profile)
-  app.get(user.profile.phoneNumber, userPhoneNumberController.get)
-  app.post(user.profile.phoneNumber, userPhoneNumberController.post)
+  app.get(user.profile.index, userIsAuthorised, serviceUsersController.profile)
+  app.get(user.profile.phoneNumber, userIsAuthorised, userPhoneNumberController.get)
+  app.post(user.profile.phoneNumber, userIsAuthorised, userPhoneNumberController.post)
 
   // Configure 2FA
-  app.get(user.profile.twoFactorAuth.index, twoFactorAuthController.getIndex)
-  app.post(user.profile.twoFactorAuth.index, twoFactorAuthController.postIndex)
-  app.get(user.profile.twoFactorAuth.configure, twoFactorAuthController.getConfigure)
-  app.post(user.profile.twoFactorAuth.configure, twoFactorAuthController.postConfigure)
-  app.post(user.profile.twoFactorAuth.resend, twoFactorAuthController.postResend)
+  app.get(user.profile.twoFactorAuth.index, userIsAuthorised, twoFactorAuthController.getIndex)
+  app.post(user.profile.twoFactorAuth.index, userIsAuthorised, twoFactorAuthController.postIndex)
+  app.get(user.profile.twoFactorAuth.configure, userIsAuthorised, twoFactorAuthController.getConfigure)
+  app.post(user.profile.twoFactorAuth.configure, userIsAuthorised, twoFactorAuthController.postConfigure)
+  app.post(user.profile.twoFactorAuth.resend, userIsAuthorised, twoFactorAuthController.postResend)
 
   // --------------------
   // SERVICE LEVEL ROUTES

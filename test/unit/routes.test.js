@@ -30,17 +30,6 @@ const pathsNotRequiringAuthentication = [
   paths.staticPaths.naxsiError
 ]
 
-function flattenPaths (arrayThatMayContainObjects) {
-  return arrayThatMayContainObjects.reduce((paths, val) => {
-    if (typeof val === 'object' && val != null) {
-      return paths.concat(flattenPaths(Object.values(val)))
-    } else {
-      paths.push(val)
-      return paths
-    }
-  }, [])
-}
-
 describe('The Express router', () => {
   it('should include authorisation middleware in stack for all paths not in exceptions', () => {
     const app = {
@@ -52,17 +41,6 @@ describe('The Express router', () => {
 
     routes.bind(app)
 
-    // We currently call `app.use` to specify a list of paths to use certain middleware for,
-    // including the authorisation middleware. We need to check that paths are either included in
-    // the array for this call, or the middleware is added to the stack individually for the route
-    const authenticatedPathsArg = app.use.getCalls()
-      .find(call => {
-        return Array.isArray(call.args[0]) &&
-          call.args.includes(userIsAuthorised)
-      })
-      .args[0]
-    const authenticatedPaths = flattenPaths(authenticatedPathsArg)
-
     const registerRouteCalls = [
       ...app.get.getCalls(),
       ...app.post.getCalls()
@@ -72,7 +50,6 @@ describe('The Express router', () => {
       .filter(call => {
         const path = call.args[0]
         return !pathsNotRequiringAuthentication.includes(path) &&
-          !authenticatedPaths.includes(path) &&
           !call.args.includes(userIsAuthorised)
       })
       .map(call => call.args[0])
