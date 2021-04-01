@@ -85,7 +85,7 @@ describe('middleware: getGatewayAccountAndService', () => {
     expect(req.account.external_id).to.equal('some-gateway-external-id')
     expect(req.service.externalId).to.equal('some-service-external-id')
 
-    expect(req.gateway_account.currentGatewayAccountId).to.equal('1')
+    expect(req.gateway_account.currentGatewayAccountExternalId).to.equal('some-gateway-external-id')
   })
   it('should error, if both gateway account external ID and service external ID cannot be resolved', async () => {
     const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')

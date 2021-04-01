@@ -83,10 +83,9 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
         gatewayAccount = await getGatewayAccountByExternalId(gatewayAccountExternalId, correlationId)
         if (gatewayAccount) {
           req.account = gatewayAccount
-          // TODO: To be removed once URLs are updated to use the format /service/:serviceExternalId/account/:gatewayAccountExternalId/xxx.
-          // Currently authService.getCurrentGatewayAccountId() sets below if account is available on session or derives one from user services.
+          // Used to "upgrade" old account URLs that don't contain the account external ID to visit
+          // the URL for the last visited account. Can be removed when we no longer support that.
           req.gateway_account = {
-            currentGatewayAccountId: gatewayAccount.gateway_account_id && String(gatewayAccount.gateway_account_id),
             currentGatewayAccountExternalId: gatewayAccount.external_id
           }
         }
