@@ -14,7 +14,6 @@ const { NotFoundError } = require('./errors')
 
 // Middleware
 const { lockOutDisabledUsers, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
-const getAccount = require('./middleware/get-gateway-account')
 const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
 const correlationIdMiddleware = require('./middleware/correlation-id')
@@ -157,7 +156,7 @@ module.exports.bind = function (app) {
 
   // LOGIN
   app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
-  app.post(user.logIn, trimUsername, loginController.loginUser, getAccount, loginController.postLogin)
+  app.post(user.logIn, trimUsername, loginController.loginUser, loginController.postLogin)
   app.get(user.noAccess, loginController.noAccess)
   app.get(user.logOut, loginController.logout)
   app.get(user.otpSendAgain, enforceUserFirstFactor, loginController.sendAgainGet)
