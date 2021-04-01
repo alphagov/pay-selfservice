@@ -33,7 +33,7 @@ describe('Payout list page', () => {
   })
 
   it('should correctly display payouts given a successful response from Ledger', () => {
-    cy.setEncryptedCookies(userExternalId, liveGatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
 
     const payouts = [
       { gatewayAccountId: liveGatewayAccountId, paidOutDate: '2019-01-29T08:00:00.000000Z' }

@@ -8,7 +8,7 @@ const gatewayAccountId = '42'
 
 describe('The index page', () => {
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
 
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),

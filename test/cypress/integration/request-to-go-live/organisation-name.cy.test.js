@@ -20,7 +20,7 @@ describe('Request to go live: organisation name page', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
     serviceRole.role = { permissions: [] }
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
 
@@ -34,7 +34,7 @@ describe('Request to go live: organisation name page', () => {
   describe('Service has invalid go live stage', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
@@ -57,7 +57,7 @@ describe('Request to go live: organisation name page', () => {
     })
 
     it('should display an empty form', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.task('setupStubs', utils.getUserAndGatewayAccountStubs(notStartedServiceRole))
 
       cy.visit(requestToGoLivePageOrganisationNameUrl)
@@ -108,7 +108,7 @@ describe('Request to go live: organisation name page', () => {
 
   describe('Service has NOT_STARTED go live stage and organisation name is pre-filled', () => {
     it('should show form with pre-filled organisation name', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
 
       const serviceRoleWithMerchantDetails = utils.buildServiceRoleWithMerchantDetails({ name: organisationName }, 'NOT_STARTED')
       cy.task('setupStubs', utils.getUserAndGatewayAccountStubs(serviceRoleWithMerchantDetails))

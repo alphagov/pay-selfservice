@@ -1,13 +1,13 @@
 'use strict'
 
 const utils = require('../../utils/request-to-go-live-utils')
-const { userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceExternalId } = utils.variables
+const { userExternalId, gatewayAccountExternalId, serviceExternalId } = utils.variables
 
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
 describe('Go live link on dashboard', () => {
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('Card gateway account', () => {

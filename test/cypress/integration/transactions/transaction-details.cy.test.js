@@ -90,7 +90,7 @@ describe('Transaction details page', () => {
   }
 
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('page content', () => {

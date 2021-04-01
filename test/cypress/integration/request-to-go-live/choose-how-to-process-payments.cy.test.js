@@ -28,7 +28,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('Service has correct go live stage and user selects Stripe account', () => {
     it('should display the page with non-stipe payment providers collapsed', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
@@ -59,7 +59,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('Service has correct go live stage and user selects non Stripe account', () => {
     it('should expand other payment provider options', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
@@ -92,7 +92,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('Service has correct go live stage and user selects government banking account', () => {
     it('should visit page', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
@@ -111,7 +111,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('Validation', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
     })
 
@@ -145,12 +145,12 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('Service has wrong go live stage', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
     })
 
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
       cy.get('h1').should('contain', 'Request a live account')
@@ -163,7 +163,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('User does not have the correct permissions', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')
       serviceRole.role = {
         permissions: []

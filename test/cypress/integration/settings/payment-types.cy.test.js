@@ -26,7 +26,7 @@ describe('Payment types', () => {
     })
 
     it('should show page title', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
       cy.title().should('eq', `Manage payment types - ${serviceName} - GOV.UK Pay`)
     })

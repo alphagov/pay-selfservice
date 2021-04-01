@@ -25,7 +25,7 @@ describe('Request to go live: index', () => {
   }
 
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('User does not have the correct permissions', () => {

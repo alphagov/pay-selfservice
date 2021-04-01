@@ -16,7 +16,7 @@ describe('Error pages', () => {
 
   describe('User logged in', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, 1)
+      cy.setEncryptedCookies(userExternalId)
       cy.task('setupStubs', [userStubs.getUserSuccess({ userExternalId })])
     })
 

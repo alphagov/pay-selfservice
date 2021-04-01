@@ -56,7 +56,7 @@ describe('MOTO mask security section', () => {
       })
 
       it('should not show mask security section', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('#moto-mask-security-settings-heading').should('not.exist')
       })

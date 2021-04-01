@@ -21,7 +21,7 @@ describe('Service has a live account that supports payouts', () => {
   it('should display link to view payouts', () => {
     cy.task('setupStubs', getUserAndAccountStubs('live', 'stripe'))
 
-    cy.setEncryptedCookies(authenticatedUserId, 1)
+    cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
@@ -42,7 +42,7 @@ describe('Service does not have a live account that supports payouts', () => {
   it('should display link to view payouts', () => {
     cy.task('setupStubs', getUserAndAccountStubs('test', 'sandbox'))
 
-    cy.setEncryptedCookies(authenticatedUserId, 1)
+    cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
@@ -54,7 +54,7 @@ describe('User has access to no live services', () => {
   it('should link to all service transactions test', () => {
     cy.task('setupStubs', getUserAndAccountStubs('test', 'sandbox'))
 
-    cy.setEncryptedCookies(authenticatedUserId, 1)
+    cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
@@ -66,7 +66,7 @@ describe('User has access to one or more live services', () => {
   it('should display link to all service transactions', () => {
     cy.task('setupStubs', getUserAndAccountStubs('live', 'worldpay'))
 
-    cy.setEncryptedCookies(authenticatedUserId, 1)
+    cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 

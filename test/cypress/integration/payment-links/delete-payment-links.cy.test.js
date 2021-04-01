@@ -12,7 +12,7 @@ const product = {
 
 describe('Should delete payment link', () => {
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),

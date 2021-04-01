@@ -32,7 +32,7 @@ describe('Add a new service', () => {
 
   describe('Add a new service without a Welsh name', () => {
     it('should display the my services page', () => {
-      cy.setEncryptedCookies(authenticatedUserId, 1)
+      cy.setEncryptedCookies(authenticatedUserId)
       setupStubs()
 
       cy.visit('/my-services')
@@ -62,7 +62,7 @@ describe('Add a new service', () => {
 
   describe('Add a new service with a Welsh name', () => {
     it('should display the my services page', () => {
-      cy.setEncryptedCookies(authenticatedUserId, 1)
+      cy.setEncryptedCookies(authenticatedUserId)
       setupStubs()
 
       cy.visit('/my-services')

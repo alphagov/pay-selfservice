@@ -107,7 +107,7 @@ function assertTransactionRow (row, reference, transactionLink, email, amount, c
 
 describe('Transactions List', () => {
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('Filtering', () => {

@@ -50,7 +50,7 @@ describe('Transactions list pagination', () => {
 
   describe('Default sandbox gateway transactions', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
     })
     describe('Pagination', () => {
       it('should display pagination links with previous page disabled for first page', () => {

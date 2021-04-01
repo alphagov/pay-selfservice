@@ -39,7 +39,7 @@ describe('Stripe setup: VAT number page', () => {
       beforeEach(() => {
         setupStubs(false)
 
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
+        cy.setEncryptedCookies(userExternalId, {})
 
         cy.visit(vatNumberUrl)
       })
@@ -86,7 +86,7 @@ describe('Stripe setup: VAT number page', () => {
 
     describe('when user is admin, account is Stripe and "VAT number" is already submitted', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
       })
 
       it('should redirect to Dashboard with an error message when displaying the page', () => {
@@ -122,7 +122,7 @@ describe('Stripe setup: VAT number page', () => {
 
     describe('when it is not a Stripe gateway account', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
       })
 
       it('should show a 404 error when gateway account is not Stripe', () => {
@@ -137,7 +137,7 @@ describe('Stripe setup: VAT number page', () => {
 
     describe('when it is not a live gateway account', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
       })
 
       it('should show a 404 error when gateway account is not live', () => {
@@ -152,7 +152,7 @@ describe('Stripe setup: VAT number page', () => {
 
     describe('when the user does not have the correct permissions', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
       })
 
       it('should show a permission error when the user does not have enough permissions', () => {

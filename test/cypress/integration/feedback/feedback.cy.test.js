@@ -17,7 +17,7 @@ describe('Feedback page', () => {
   })
 
   it('should display Feedback page', () => {
-    cy.setEncryptedCookies(authenticatedUserId, 1)
+    cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/feedback')
 
     cy.title().should('eq', 'Give feedback — GOV.UK Pay')

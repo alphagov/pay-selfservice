@@ -28,7 +28,7 @@ describe('Request to go live: agreement', () => {
 
   describe('User does not have permission', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       const serviceRole = utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')
       serviceRole.role = {
         permissions: []
@@ -45,7 +45,7 @@ describe('Request to go live: agreement', () => {
 
   describe('The service has the wrong go live stage', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
     })
 
@@ -62,7 +62,7 @@ describe('Request to go live: agreement', () => {
 
   describe('Stripe has been chosen as the PSP', () => {
     it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_STRIPE', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE'))
 
       cy.visit(requestToGoLiveAgreementUrl)
@@ -101,7 +101,7 @@ describe('Request to go live: agreement', () => {
 
   describe('Worldpay has been chosen as the PSP', () => {
     it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_WORLDPAY', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_WORLDPAY'))
 
       cy.visit(requestToGoLiveAgreementUrl)
@@ -137,7 +137,7 @@ describe('Request to go live: agreement', () => {
 
   describe('Government bankings PSP has been chosen as the PSP', () => {
     it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_GOV_BANKING_WORLDPAY', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_GOV_BANKING_WORLDPAY'))
 
       cy.visit(requestToGoLiveAgreementUrl)

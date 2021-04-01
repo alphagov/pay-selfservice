@@ -118,7 +118,7 @@ describe('Your PSP settings page', () => {
     })
 
     it('should not show link to Your PSP in the side navigation', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('#navigation-menu-your-psp').should('have.length', 0)
     })
@@ -132,7 +132,7 @@ describe('Your PSP settings page', () => {
     })
 
     it('should show link to "Your PSP - Worldpay" in the side navigation', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Worldpay')
       cy.get('#navigation-menu-your-psp').click()
@@ -244,7 +244,7 @@ describe('Your PSP settings page', () => {
         worldpay3dsFlex: testFlexCredentials
       })
 
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(yourPspPath)
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
@@ -267,7 +267,7 @@ describe('Your PSP settings page', () => {
         worldpay3dsFlex: testFlexCredentials
       })
 
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(yourPspPath)
       cy.get('#worldpay-3ds-flex-is-off').should('exist')
       cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
@@ -288,7 +288,7 @@ describe('Your PSP settings page', () => {
         worldpay3dsFlex: testFlexCredentials
       })
 
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(yourPspPath)
       cy.get('#worldpay-3ds-flex-is-on').should('exist')
       cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
@@ -308,7 +308,7 @@ describe('Your PSP settings page', () => {
         credentials: testCredentials
       })
 
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(yourPspPath)
       cy.get('#worldpay-3ds-flex-is-off').should('exist')
       cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
@@ -325,7 +325,7 @@ describe('Your PSP settings page', () => {
         worldpay3dsFlex: testFlexCredentials
       })
 
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(yourPspPath)
       cy.get('#worldpay-3ds-flex-is-off').should('exist')
       cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
@@ -342,7 +342,7 @@ describe('Your PSP settings page', () => {
     })
 
     it('should show link to "Your PSP - Smartpay" in the side navigation', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Smartpay')
       cy.get('#navigation-menu-your-psp').click()
@@ -390,7 +390,7 @@ describe('Your PSP settings page', () => {
     })
 
     it('should show all credentials as configured', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(yourPspPath)
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
@@ -408,7 +408,7 @@ describe('Your PSP settings page', () => {
     })
 
     it('should show link to "Your PSP - ePDQ" in the side navigation', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - ePDQ')
       cy.get('#navigation-menu-your-psp').click()
@@ -447,7 +447,7 @@ describe('Your PSP settings page', () => {
     })
 
     it('should show all credentials as configured', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(yourPspPath)
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)

@@ -50,7 +50,7 @@ describe('3DS settings page', () => {
     })
 
     it('should not show on settings index and should show explainer and no radios', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__key').first().should('not.contain', '3D Secure')
       cy.visit(`/account/${gatewayAccountExternalId}/3ds`)
@@ -68,7 +68,7 @@ describe('3DS settings page', () => {
       })
 
       it('should show info box and inputs should be disabled ', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
         cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Off')
@@ -87,7 +87,7 @@ describe('3DS settings page', () => {
       })
 
       it('should show Worldpay specific merchant code stuff and radios', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
         cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Off')
@@ -106,7 +106,7 @@ describe('3DS settings page', () => {
       })
 
       it('should show Worldpay specific merchant code stuff and radios', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
         cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
@@ -125,7 +125,7 @@ describe('3DS settings page', () => {
       })
 
       it('should show Worldpay specific merchant code stuff and disabled radios', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
         cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
@@ -149,7 +149,7 @@ describe('3DS settings page', () => {
       })
 
       it('should show success message and radios should update', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
         cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Off')
@@ -190,7 +190,7 @@ describe('3DS settings page', () => {
     })
 
     it('should show Stripe specific disabled message and radios', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__key').first().should('contain', '3D Secure')
       cy.get('.govuk-summary-list__value').first().should('contain', 'On')

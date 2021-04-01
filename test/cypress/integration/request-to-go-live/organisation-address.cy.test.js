@@ -1,7 +1,7 @@
 'use strict'
 
 const utils = require('../../utils/request-to-go-live-utils')
-const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
+const { userExternalId, serviceExternalId } = utils.variables
 
 const pageUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-address`
 
@@ -30,7 +30,7 @@ describe('The organisation address page', () => {
       })
 
       it('should display form', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(pageUrl)
 
         cy.get('h1').should('contain', `What is your organisation’s address?`)
@@ -162,7 +162,7 @@ describe('The organisation address page', () => {
     serviceRole.service.merchant_details = merchantDetails
 
     it('should display form with existing details pre-filled', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(`/service/${serviceExternalId}/request-to-go-live/organisation-address`)
 
@@ -182,7 +182,7 @@ describe('The organisation address page', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     serviceRole.role = { permissions: [] }
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
 
@@ -196,7 +196,7 @@ describe('The organisation address page', () => {
   describe('Service has invalid go live stage', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
 

@@ -38,7 +38,7 @@ function setupStubs (bankAccount, type = 'live', paymentProvider = 'stripe') {
 describe('Stripe setup: bank details page', () => {
   describe('Card gateway account', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
     })
 
     describe('Bank details page is shown', () => {
