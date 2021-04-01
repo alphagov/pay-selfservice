@@ -188,7 +188,7 @@ describe('All service transactions', () => {
       ])
 
       cy.get('a.refund__toggle').click()
-      cy.get('button').contains('Refund payment').click()
+      cy.get('button').contains('Confirm refund').click()
     })
 
     it('should still have correct breadcrumb and back link', () => {
