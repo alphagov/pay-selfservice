@@ -26,7 +26,7 @@ describe('Request PSP test account: submit request', () => {
   }
 
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('PSP test account stage is NOT_STARTED', () => {

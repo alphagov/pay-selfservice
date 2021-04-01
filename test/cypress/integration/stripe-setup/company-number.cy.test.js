@@ -39,7 +39,7 @@ describe('Stripe setup: company number page', () => {
       beforeEach(() => {
         setupStubs(false)
 
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
+        cy.setEncryptedCookies(userExternalId, {})
         cy.visit(companyNumberUrl)
       })
 
@@ -106,7 +106,7 @@ describe('Stripe setup: company number page', () => {
 
     describe('when user is admin, account is Stripe and "company number" is already submitted', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
       })
 
       it('should redirect to Dashboard with an error message when displaying the page', () => {
@@ -146,7 +146,7 @@ describe('Stripe setup: company number page', () => {
 
     describe('when it is not a Stripe gateway account', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
       })
 
       it('should show a 404 error when gateway account is not Stripe', () => {
@@ -161,7 +161,7 @@ describe('Stripe setup: company number page', () => {
 
     describe('when it is not a live gateway account', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
       })
 
       it('should show a 404 error when gateway account is not live', () => {
@@ -176,7 +176,7 @@ describe('Stripe setup: company number page', () => {
 
     describe('when the user does not have the correct permissions', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
       })
 
       it('should show a permission error when the user does not have enough permissions', () => {

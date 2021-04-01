@@ -38,7 +38,7 @@ function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveSt
 describe('the links are displayed correctly on the dashboard', () => {
   describe('card gateway account', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
     })
 
     it('should display 2 links for a live sandbox account', () => {

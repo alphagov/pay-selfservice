@@ -23,12 +23,7 @@ module.exports = (on, config) => {
         opts.user_external_id,
         opts.pageData
       )
-      const encryptedGatewayAccountCookie = generateEncryptedGatewayAccountCookie(
-        config.env.TEST_SESSION_ENCRYPTION_KEY,
-        opts.gateway_account_id
-      )
-
-      return { encryptedSessionCookie, encryptedGatewayAccountCookie }
+      return { encryptedSessionCookie }
     },
     /**
      * Makes a post request to Mountebank to setup an Imposter with stubs built using the array of
@@ -103,13 +98,4 @@ function generateEncryptedSessionCookie (sessionEncyptionKey, userExternalId, pa
       pageData
     })
   return encryptedSessionCookie
-}
-
-function generateEncryptedGatewayAccountCookie (sessionEncyptionKey, gatewayAccountId) {
-  const encryptedGatewayAccountCookie = cookieMonster.getCookie('gateway_account', sessionEncyptionKey,
-    {
-      currentGatewayAccountId: gatewayAccountId,
-      icamefrom: 'cypress.io'
-    })
-  return encryptedGatewayAccountCookie
 }

@@ -42,7 +42,7 @@ describe('Edit service user permissions', () => {
   })
 
   it('should display team members page', () => {
-    cy.setEncryptedCookies(AUTHENTICATED_USER_ID, 1)
+    cy.setEncryptedCookies(AUTHENTICATED_USER_ID)
 
     cy.visit(`/service/${SERVICE_EXTERNAL_ID}/team-members`)
 

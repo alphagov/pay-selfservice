@@ -29,7 +29,7 @@ describe('Apple Pay', () => {
     })
 
     it('should show it is disabled', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__value').first().should('contain', 'Off')
       cy.get('a').contains('Change Apple Pay settings').click()
@@ -47,7 +47,7 @@ describe('Apple Pay', () => {
     })
 
     it('Show that is is disabled', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__value').first().should('contain', 'Off')
       cy.get('a').contains('Change Apple Pay settings').click()

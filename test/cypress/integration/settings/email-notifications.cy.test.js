@@ -21,7 +21,7 @@ function setupStubs (role) {
 describe('Settings', () => {
   describe('For an admin user', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       setupStubs()
 
       cy.visit(settingsUrl)
@@ -122,7 +122,7 @@ describe('Settings', () => {
 
   describe('For a read-only user', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       const role = {
         permissions: [
           {

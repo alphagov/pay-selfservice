@@ -29,7 +29,7 @@ describe('Google Pay', () => {
     })
 
     it('should show it is disabled', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
       cy.get('a').contains('Change Google Pay settings').click()
@@ -47,7 +47,7 @@ describe('Google Pay', () => {
     })
 
     it('should allow us to enable', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
       cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
       cy.get('a').contains('Change Google Pay settings').click()

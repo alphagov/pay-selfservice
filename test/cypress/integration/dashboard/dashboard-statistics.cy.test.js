@@ -38,7 +38,7 @@ describe('Account dashboard', () => {
   })
 
   it('should display dashboard page', () => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
     cy.title().should('eq', `Dashboard - ${serviceName} Sandbox test - GOV.UK Pay`)

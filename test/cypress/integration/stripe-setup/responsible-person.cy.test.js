@@ -48,7 +48,7 @@ function setupStubs (responsiblePerson, type = 'live', paymentProvider = 'stripe
 
 describe('Stripe setup: responsible person page', () => {
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('when user is admin, account is Stripe and responsible person not already nominated', () => {

@@ -49,7 +49,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to the edit page', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
       cy.get('ul.payment-links-list > li > div > a').contains('Edit').click()
@@ -260,7 +260,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to the edit page', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
       cy.get('ul.payment-links-list > li > div > a').contains('Edit').click()

@@ -31,7 +31,7 @@ describe('Update service name', () => {
 
   describe('Edit a service name without a Welsh name', () => {
     it('should display the my services page', () => {
-      cy.setEncryptedCookies(authenticatedUserId, 1)
+      cy.setEncryptedCookies(authenticatedUserId)
       setupStubs(serviceName)
 
       cy.visit('/my-services')
@@ -76,7 +76,7 @@ describe('Update service name', () => {
 
   describe('Edit a service name with a Welsh name', () => {
     it('should display the my services page', () => {
-      cy.setEncryptedCookies(authenticatedUserId, 1)
+      cy.setEncryptedCookies(authenticatedUserId)
       setupStubs(welshServiceName)
 
       cy.visit('/my-services')

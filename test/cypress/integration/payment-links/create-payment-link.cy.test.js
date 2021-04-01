@@ -31,7 +31,7 @@ describe('The create payment link flow', () => {
 
     describe('The create payment link start page', () => {
       it('Should display page content', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
 
         cy.get('h1').should('contain', 'Create a payment link')
@@ -41,7 +41,7 @@ describe('The create payment link flow', () => {
       })
 
       it('Should navigate to create payment link in English information page', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
 
         cy.get('a#create-payment-link').click()
@@ -285,7 +285,7 @@ describe('The create payment link flow', () => {
 
     describe('The create payment link start page', () => {
       it('Should navigate to create payment link in Welsh information page', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
 
         cy.get(`a[href="/account/${gatewayAccountExternalId}/create-payment-link/information?language=cy"]`).click()

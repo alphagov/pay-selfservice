@@ -17,7 +17,7 @@ describe('Edit phone number flow', () => {
 
   describe('Pre edit', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       setupStubs(userExternalId, gatewayAccountId, serviceName, testPhoneNumber)
     })
 
@@ -46,7 +46,7 @@ describe('Edit phone number flow', () => {
   })
   describe('Post edit', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       setupStubs(userExternalId, gatewayAccountId, serviceName, testPhoneNumberNew)
     })
 

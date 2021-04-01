@@ -47,7 +47,7 @@ function setupStubs (products) {
 
 describe('The manage payment links page', () => {
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('No payment links', () => {

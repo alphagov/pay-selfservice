@@ -29,7 +29,7 @@ describe('Request PSP test account: index', () => {
   }
 
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('PSP test account stage is NOT_STARTED', () => {

@@ -75,7 +75,7 @@ describe('All service transactions', () => {
     })
 
     it('should display All Service Transactions list page with live transactions', () => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccount1.gatewayAccountId)
+      cy.setEncryptedCookies(userExternalId)
       cy.task('setupStubs', [
         userStub,
         gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccount1, gatewayAccount2, gatewayAccount3]),
