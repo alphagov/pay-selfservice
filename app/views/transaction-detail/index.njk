@@ -84,11 +84,11 @@
   <div class="govuk-grid-column-one-third">
     {% if refundable %}
       {% if permissions.refunds_create %}
-        <div class="target-to-show--toggle-container {% if not flash.genericError %}active{% endif %}">
-          <a href="#refundForm" class="govuk-button govuk-button--warning refund__toggle target-to-show--toggle delete">Refund payment</a>
-          <p class="govuk-body">You can also give partial&nbsp;refunds</p>
-        </div>
         {% include "./_refund.njk" %}
+        <div class="target-to-show--toggle-container {% if not flash.genericError %}active{% endif %}">
+          <p class="govuk-body">Make a full or partial refund.</p>
+          <a href="#refundForm" class="govuk-button govuk-button--secondary refund__toggle target-to-show--toggle delete">Refund payment</a>
+        </div>
       {% endif %}
     {% endif %}
   </div>
