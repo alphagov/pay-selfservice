@@ -4,6 +4,8 @@ const lodash = require('lodash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const CustomStrategy = require('passport-custom').Strategy
+const { addLoggingField } = require('../utils/log-context')
+const { USER_EXTERNAL_ID } = require('@govuk-pay/pay-js-commons').logging.keys
 
 // TODO: Remove when issue solved
 /*
@@ -112,6 +114,14 @@ function hasValidSession (req) {
   return isValid
 }
 
+function addUserFieldsToLogContext (req, res, next) {
+  if (req.user) {
+    addLoggingField(USER_EXTERNAL_ID, req.user.externalId)
+    addLoggingField('is_internal_user', req.user.internalUser)
+  }
+  next()
+}
+
 function initialise (app) {
   app.use(passport.initialize())
   app.use(passport.session())
@@ -120,6 +130,7 @@ function initialise (app) {
   passport.use('localDirect', new CustomStrategy(localDirectStrategy))
   passport.serializeUser(serializeUser)
   passport.deserializeUser(deserializeUser)
+  app.use(addUserFieldsToLogContext)
 }
 
 function deserializeUser (req, externalId, done) {
