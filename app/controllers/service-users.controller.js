@@ -76,7 +76,7 @@ module.exports = {
     ])
       .then(onSuccess)
       .catch((err) => {
-        logger.error(`[requestId=${req.correlationId}] error retrieving users for service ${externalServiceId}. [${err}]`)
+        logger.error(`error retrieving users for service ${externalServiceId}. [${err}]`)
         renderErrorView(req, res, 'Unable to retrieve the services users')
       })
   },

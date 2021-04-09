@@ -15,7 +15,7 @@ const messages = {
 }
 
 const handleError = (req, res, err) => {
-  logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
+  logger.warn(`Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
 
   switch (err.errorCode) {
     case 404:

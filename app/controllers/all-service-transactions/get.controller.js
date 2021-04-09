@@ -13,7 +13,6 @@ const paths = require('../../paths')
 const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 const logger = require('../../utils/logger')(__filename)
-const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { NoServicesWithPermissionError } = require('../../errors')
 
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
@@ -33,15 +32,11 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
   try {
     const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, filterLiveAccounts, 'transactions:read')
 
-    const logContext = {
+    logger.info('Listing all services transactions', {
       gateway_account_ids: userPermittedAccountsSummary.gatewayAccountIds,
       user_number_of_live_services: req.user.numberOfLiveServices,
-      internal_user: req.user.internalUser,
       is_live: filterLiveAccounts
-    }
-    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logContext[keys.CORRELATION_ID] = correlationId
-    logger.info('Listing all services transactions', logContext)
+    })
 
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
       return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view these transactions.'))

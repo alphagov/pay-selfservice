@@ -38,8 +38,7 @@ module.exports = {
 // Middleware
 function lockOutDisabledUsers (req, res, next) {
   if (req.user && req.user.disabled) {
-    const correlationId = req.headers[CORRELATION_HEADER] || ''
-    logger.info(`[${correlationId}] user: ${lodash.get(req, 'user.externalId')} locked out due to many password attempts`)
+    logger.info('User locked out due to many password attempts')
     return noAccess(req, res, next)
   }
   return next()
@@ -104,20 +103,20 @@ function setSessionVersion (req) {
 
 function redirectToLogin (req, res) {
   req.session.last_url = req.originalUrl
-  logger.info(`[${req.correlationId}] Redirecting attempt to access ${req.originalUrl} to ${paths.user.logIn}`)
+  logger.info(`Redirecting attempt to access ${req.originalUrl} to ${paths.user.logIn}`)
   res.redirect(paths.user.logIn)
 }
 
 function hasValidSession (req) {
   const isValid = sessionValidator.validate(req.user, req.session)
-  if (!isValid) logger.info(`[${req.correlationId}] Invalid session version for user. User session_version: ${lodash.get(req, 'user.sessionVersion', 0)}, session version ${lodash.get(req, 'session.version')}`)
+  if (!isValid) logger.info(`Invalid session version for user. User session_version: ${lodash.get(req, 'user.sessionVersion', 0)}, session version ${lodash.get(req, 'session.version')}`)
   return isValid
 }
 
 function addUserFieldsToLogContext (req, res, next) {
   if (req.user) {
     addLoggingField(USER_EXTERNAL_ID, req.user.externalId)
-    addLoggingField('is_internal_user', req.user.internalUser)
+    addLoggingField('internal_user', req.user.internalUser)
   }
   next()
 }
@@ -139,7 +138,7 @@ function deserializeUser (req, externalId, done) {
       done(null, user)
     })
     .catch(err => {
-      logger.info(`[${req.correlationId}]: Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${err.errorCode}`)
+      logger.info(`Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${err.errorCode}`)
       done(err)
     })
 }

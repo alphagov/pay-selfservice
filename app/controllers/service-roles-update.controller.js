@@ -14,8 +14,8 @@ let hasSameService = (admin, user, externalServiceId) => {
   return admin.hasService(externalServiceId) && user.hasService(externalServiceId)
 }
 
-let serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExternalId, targetUserExternalId, correlationId) => {
-  logger.error(`[requestId=${correlationId}] service mismatch when admin:${adminUserExternalId} attempting to assign new role on service:${targetServiceExternalId} for user:${targetUserExternalId} without existing role`)
+let serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExternalId, targetUserExternalId) => {
+  logger.error(`Service mismatch when admin:${adminUserExternalId} attempting to assign new role on service:${targetServiceExternalId} for user:${targetUserExternalId} without existing role`)
   return renderErrorView(req, res, 'Unable to update permissions for this user')
 }
 
@@ -76,12 +76,12 @@ module.exports = {
     try {
       const user = await userService.findByExternalId(externalUserId, correlationId)
       if (!hasSameService(req.user, user, serviceExternalId)) {
-        return serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId, correlationId)
+        return serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId)
       } else {
         return response(req, res, 'team-members/team-member-permissions', viewData(user))
       }
     } catch (err) {
-      logger.error(`[requestId=${correlationId}] error displaying user permission view [${err}]`)
+      logger.error(`Error displaying user permission view [${err}]`)
       return renderErrorView(req, res, 'Unable to locate the user')
     }
   },
@@ -108,7 +108,7 @@ module.exports = {
     }
 
     if (!targetRole) {
-      logger.error(`[requestId=${correlationId}] cannot identify role from user input ${targetRoleExtId}. possible hack`)
+      logger.error(`Cannot identify role from user input ${targetRoleExtId}. possible hack`)
       return renderErrorView(req, res, 'Unable to update user permission')
     }
 
@@ -124,13 +124,13 @@ module.exports = {
             await userService.updateServiceRole(user.externalId, targetRole.name, serviceExternalId, correlationId)
             return onSuccess(user)
           } catch (err) {
-            logger.error(`[requestId=${correlationId}] error updating user service role [${err}]`)
+            logger.error(`Error updating user service role [${err}]`)
             return renderErrorView(req, res, 'Unable to update user permission')
           }
         }
       }
     } catch (err) {
-      logger.error(`[requestId=${correlationId}] error locating user when updating user service role [${err}]`)
+      logger.error(`Error locating user when updating user service role [${err}]`)
       return renderErrorView(req, res, 'Unable to locate the user')
     }
   }

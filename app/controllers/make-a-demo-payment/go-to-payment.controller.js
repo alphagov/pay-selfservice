@@ -39,7 +39,7 @@ module.exports = async function makeDemoPayment (req, res) {
     lodash.unset(req, 'session.pageData.makeADemoPayment')
     res.redirect(createProductResponse.links.pay.href)
   } catch (error) {
-    logger.error(`[requestId=${req.correlationId}] Making a demo payment failed - ${error.message}`)
+    logger.error(`Making a demo payment failed - ${error.message}`)
     req.flash('genericError', 'Something went wrong. Please try again.')
     res.redirect(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, req.account.external_id))
   }

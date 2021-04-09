@@ -1,6 +1,5 @@
 const moment = require('moment')
 const logger = require('../../utils/logger')(__filename)
-const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { response } = require('../../utils/response.js')
 const permissions = require('../../utils/permissions')
 const payoutService = require('./payouts.service')
@@ -24,15 +23,12 @@ const listAllServicesPayouts = async function listAllServicesPayouts (req, res, 
       return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view payments to bank accounts.'))
     }
     const payoutSearchResult = await payoutService.payouts(userPermittedAccountsSummary.gatewayAccountIds, req.user, page)
-    const logContext = {
+    logger.info('Fetched page of payouts for all services', {
       current_page: page,
-      internal_user: req.user.internalUser,
       gateway_account_ids: userPermittedAccountsSummary.gatewayAccountIds,
       user_number_of_services: req.user.numberOfLiveServices,
       is_live: filterLiveAccounts
-    }
-    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logger.info('Fetched page of payouts for all services', logContext)
+    })
 
     if (process.env.PAYOUTS_RELEASE_DATE) {
       payoutsReleaseDate = moment.unix(process.env.PAYOUTS_RELEASE_DATE)

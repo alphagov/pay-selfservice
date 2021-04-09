@@ -101,12 +101,6 @@ describe('Error handler middleware', () => {
       service: new Service(serviceFixtures.validServiceResponse({ external_id: serviceExternalId })),
       account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId })
     }
-    const expectedLogContext = {
-      'x_request_id': correlationId,
-      'user_external_id': userExternalId,
-      'service_external_id': serviceExternalId,
-      'gateway_account_id': gatewayAccountId
-    }
 
     it('should log at info level for NotAuthenticatedError', () => {
       const err = new NotAuthenticatedError('not authenticated')
@@ -117,7 +111,7 @@ describe('Error handler middleware', () => {
       errorHandler(err, notAuthorisedReq, res, null)
 
       const expectedMessage = 'NotAuthenticatedError handled: not authenticated. Redirecting attempt to access /foo/bar to /login'
-      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
     })
 
     it('should log at info level for UserAccountDisabledError', () => {
@@ -125,7 +119,7 @@ describe('Error handler middleware', () => {
       errorHandler(err, reqWithSessionData, res, null)
 
       const expectedMessage = 'UserAccountDisabledError handled, rendering no access page'
-      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
     })
 
     it('should log at info level for NotAuthorisedError', () => {
@@ -133,7 +127,7 @@ describe('Error handler middleware', () => {
       errorHandler(err, reqWithSessionData, res, null)
 
       const expectedMessage = 'NotAuthorisedError handled: user does not have authorisation. Rendering error page'
-      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
     })
 
     it('should log at info level for PermissionDeniedError', () => {
@@ -141,7 +135,7 @@ describe('Error handler middleware', () => {
       errorHandler(err, reqWithSessionData, res, null)
 
       const expectedMessage = 'PermissionDeniedError handled: User does not have permission do-cool-things for service. Rendering error page'
-      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
     })
 
     it('should log at info level for NotFoundError', () => {
@@ -149,7 +143,7 @@ describe('Error handler middleware', () => {
       errorHandler(err, reqWithSessionData, res, null)
 
       const expectedMessage = 'NotFoundError handled: Transaction not found. Rendering 404 page'
-      sinon.assert.calledWith(infoLoggerSpy, expectedMessage, expectedLogContext)
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
     })
 
     it('should log at error level for generic Error', () => {
@@ -157,7 +151,7 @@ describe('Error handler middleware', () => {
       errorHandler(err, reqWithSessionData, res, null)
 
       const expectedMessage = 'Unhandled error caught: A generic error'
-      sinon.assert.calledWithMatch(errorLoggerSpy, expectedMessage, expectedLogContext)
+      sinon.assert.calledWithMatch(errorLoggerSpy, expectedMessage)
     })
   })
 })

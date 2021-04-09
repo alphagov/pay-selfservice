@@ -22,7 +22,7 @@ module.exports = (req, res) => {
       return response(req, res, 'dashboard/demo-service/index', params)
     })
     .catch((err) => {
-      logger.error(`[requestId=${req.correlationId}] Get PROTOTYPE product by gateway account id failed - ${err.message}`)
+      logger.error(`Get PROTOTYPE product by gateway account id failed - ${err.message}`)
       renderErrorView(req, res)
     })
 }

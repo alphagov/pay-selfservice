@@ -11,7 +11,7 @@ module.exports = (req, res) => {
       return res.redirect(paths.user.profile.twoFactorAuth.configure)
     })
     .catch(err => {
-      logger.error(`[requestId=${req.correlationId}] Reseding OTP key SMS failed - ${err.message}`)
+      logger.error(`Reseding OTP key SMS failed - ${err.message}`)
       req.flash('genericError', 'Something went wrong. Please try again or contact support.')
       return res.redirect(paths.user.profile.twoFactorAuth.configure)
     })

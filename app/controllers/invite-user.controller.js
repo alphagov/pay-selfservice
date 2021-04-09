@@ -75,7 +75,7 @@ module.exports = {
       lodash.set(req, 'session.pageData', { invitee })
       res.redirect(303, formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId))
     } else if (!role) {
-      logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`)
+      logger.error(`Cannot identify role from user input ${roleId}`)
       renderErrorView(req, res, messages.inviteError, 200)
     } else {
       userService.inviteUser(invitee, senderId, externalServiceId, role.name, correlationId)
@@ -90,7 +90,7 @@ module.exports = {
               response(req, res, 'error-with-link', messages.emailConflict(invitee, externalServiceId))
               break
             default:
-              logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err))
+              logger.error(`Unable to send invitation to user - ${JSON.stringify(err)}`)
               renderErrorView(req, res, messages.inviteError, 200)
           }
         })

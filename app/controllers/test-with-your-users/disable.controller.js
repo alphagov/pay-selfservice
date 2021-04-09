@@ -13,7 +13,7 @@ module.exports = (req, res) => {
       res.redirect(formatAccountPathsFor(paths.account.prototyping.demoService.links, req.account.external_id))
     })
     .catch((err) => {
-      logger.error(`[requestId=${req.correlationId}] Disable product failed - ${err.message}`)
+      logger.error(`Disable product failed - ${err.message}`)
       req.flash('genericError', 'Something went wrong when deleting the prototype link. Please try again or contact support.')
       res.redirect(formatAccountPathsFor(paths.account.prototyping.demoService.links, req.account.external_id))
     })

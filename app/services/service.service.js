@@ -1,7 +1,6 @@
 'use strict'
 
 const lodash = require('lodash')
-const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 const logger = require('../utils/logger')(__filename)
 const getAdminUsersClient = require('./clients/adminusers.client')
@@ -56,14 +55,7 @@ async function createService (serviceName, serviceNameCy, user, correlationId) {
 
   const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
   const service = await adminUsersClient.createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id], correlationId)
-
-  const logContext = {
-    internal_user: user.internalUser
-  }
-  logContext[keys.USER_EXTERNAL_ID] = user.externalId
-  logContext[keys.SERVICE_EXTERNAL_ID] = service.externalId
-  logContext[keys.GATEWAY_ACCOUNT_ID] = gatewayAccount.gateway_account_id
-  logger.info('New service added by existing user', logContext)
+  logger.info('New service added by existing user')
 
   return service
 }

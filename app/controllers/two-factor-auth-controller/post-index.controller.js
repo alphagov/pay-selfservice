@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
     }
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
   } catch (err) {
-    logger.error(`[requestId=${req.correlationId}] Provisioning new OTP key failed - ${err.message}`)
+    logger.error(`Provisioning new OTP key failed - ${err.message}`)
     req.flash('genericError', 'Something went wrong. Please try again or contact support.')
     return res.redirect(paths.user.profile.twoFactorAuth.index)
   }

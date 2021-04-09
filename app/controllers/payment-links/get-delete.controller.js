@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
     req.flash('generic', 'The payment link was successfully deleted')
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
   } catch (err) {
-    logger.error(`[requestId=${req.correlationId}] Delete product failed - ${err.message}`)
+    logger.error(`Delete product failed - ${err.message}`)
     req.flash('genericError', 'Something went wrong when deleting the payment link. Please try again or contact support.')
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
   }

@@ -6,7 +6,6 @@ const getAdminUsersClient = require('../../services/clients/adminusers.client')
 const logger = require('../../utils/logger')(__filename)
 const { CREATED, NOT_STARTED, REQUEST_SUBMITTED } = require('../../models/psp-test-account-stage')
 const adminUsersClient = getAdminUsersClient()
-const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 async function submitRequestAndUpdatePspTestAccountStatus (req) {
   const message = `Service name: ${req.service.name}
@@ -28,14 +27,7 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
 
   await zendeskClient.createTicket(zendeskOpts)
   await adminUsersClient.updatePspTestAccountStage(req.service.externalId, REQUEST_SUBMITTED, req.correlationId)
-
-  const logContext = {
-    is_internal_user: req.user && req.user.internalUser
-  }
-  logContext[keys.USER_EXTERNAL_ID] = req.user.externalId
-  logContext[keys.SERVICE_EXTERNAL_ID] = req.service.externalId
-
-  logger.info('Request submitted for Stripe test account', logContext)
+  logger.info('Request submitted for Stripe test account')
 }
 
 module.exports = async function submitRequestForPspTestAccount (req, res, next) {

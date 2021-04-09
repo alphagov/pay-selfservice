@@ -43,7 +43,7 @@ const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = []) 
 const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStreamStart, filters, gatewayAccountIds, user, correlationId,
   allServiceTransactions, liveAccounts) {
   const timestampStreamEnd = Date.now()
-  const logContext = {
+  logger.info('Completed file stream', {
     time_taken: timestampStreamEnd - timestampStreamStart,
     from_date: filters.fromDate,
     to_date: filters.toDate,
@@ -53,15 +53,11 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
     method: 'future',
     gateway_account_ids: gatewayAccountIds,
     multiple_accounts: gatewayAccountIds.length > 1,
-    internal_user: user.internalUser,
     all_service_transactions: allServiceTransactions,
     user_number_of_live_services: user.numberOfLiveServices,
     is_live: liveAccounts,
     filters: Object.keys(filters).sort().join(', ')
-  }
-  logContext[keys.USER_EXTERNAL_ID] = user && user.externalId
-  logContext[keys.CORRELATION_ID] = correlationId
-  logger.info('Completed file stream', logContext)
+  })
 }
 
 const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, chargeId, correlationId) {
@@ -92,10 +88,7 @@ const refund = async function refundTransaction (gatewayAccountId, chargeId, amo
     refund_amount_available: refundAmountAvailable,
     amount: amount
   }
-  logContext[keys.USER_EXTERNAL_ID] = userExternalId
-  logContext[keys.GATEWAY_ACCOUNT_ID] = gatewayAccountId
   logContext[keys.PAYMENT_EXTERNAL_ID] = chargeId
-  logContext[keys.CORRELATION_ID] = correlationId
   logger.log('info', 'Submitting a refund for a charge', logContext)
 
   const payload = {

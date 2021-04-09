@@ -47,7 +47,7 @@ module.exports = async (req, res, next) => {
 
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
     } catch (error) {
-      logger.error(`[${req.correlationId}] Error submitting "Company registration number" details, error = `, error)
+      logger.error(`Error submitting "Company registration number" details, error = `, error)
       return renderErrorView(req, res, 'Please try again or contact support team')
     }
   }

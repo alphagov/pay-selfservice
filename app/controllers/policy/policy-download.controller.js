@@ -13,10 +13,10 @@ const downloadDocumentsPolicyPage = async function downloadDocumentsPolicyPage (
     const documentConfig = await supportedPolicyDocuments.lookup(key)
     const link = await policyBucket.generatePrivateLink(documentConfig)
 
-    logger.info(`[${req.correlationId}] user ${req.user.externalId} signed private link for ${key}: ${link}`)
+    logger.info(`User ${req.user.externalId} signed private link for ${key}: ${link}`)
     return response(req, res, documentConfig.template, { link })
   } catch (error) {
-    logger.error(`[${req.correlationId}] unable to generate document link ${error.message}`)
+    logger.error(`Unable to generate document link ${error.message}`)
     renderErrorView(req, res, error.message)
   }
 }

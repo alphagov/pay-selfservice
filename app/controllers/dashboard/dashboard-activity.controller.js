@@ -136,7 +136,7 @@ module.exports = async (req, res) => {
 
     const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
 
-    logger.info(`[${correlationId}] successfully logged in`)
+    logger.info(`Successfully logged in`)
 
     try {
       const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
@@ -148,7 +148,7 @@ module.exports = async (req, res) => {
       }))
     } catch (error) {
       const status = _.get(error.message, 'statusCode', 404)
-      logger.error(`[${correlationId}] Calling ledger to get transactions summary failed`, {
+      logger.error('Calling ledger to get transactions summary failed', {
         service: 'ledger',
         method: 'GET',
         status,
@@ -160,7 +160,7 @@ module.exports = async (req, res) => {
       }))
     }
   } catch (err) {
-    logger.error(`[${correlationId}] ${err.message}`, {
+    logger.error(`Error getting transaction summary: ${err.message}`, {
       service: 'frontend',
       method: 'GET',
       error: err,
@@ -216,10 +216,10 @@ async function getStripeAccountDetails (gatewayAccountId, correlationId) {
 
       return formattedStripeAccount
     } catch (e) {
-      logger.error(`[${correlationId}] Calling Stripe failed to get Stripe account details for: ${stripeAccountId}`)
+      logger.error(`Calling Stripe failed to get Stripe account details for: ${stripeAccountId}`)
     }
   } catch (e) {
-    logger.error(`[${correlationId}] Calling Connector failed to get Stripe account id for: ${gatewayAccountId}`)
+    logger.error(`Calling Connector failed to get Stripe account id for: ${gatewayAccountId}`)
   }
 
   return null
@@ -239,7 +239,7 @@ async function getTelephonePaymentLinks (gatewayAccountId, correlationId) {
   try {
     return await ProductsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, 'AGENT_INITIATED_MOTO')
   } catch (e) {
-    logger.error(`[${correlationId}] Calling products failed for ${gatewayAccountId}`)
+    logger.error(`Calling products failed for ${gatewayAccountId}`)
   }
   return []
 }

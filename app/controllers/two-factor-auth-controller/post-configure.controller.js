@@ -22,7 +22,7 @@ module.exports = async function postUpdateSecondFactorMethod (req, res) {
       })
     } else {
       req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-      logger.error(`[requestId=${req.correlationId}] Activating new OTP key failed, server error`)
+      logger.error(`Activating new OTP key failed, server error`)
     }
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
   }
