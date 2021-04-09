@@ -23,6 +23,7 @@ const errorHandler = require('./app/middleware/error-handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const logger = require('./app/utils/logger')(__filename)
 const loggingMiddleware = require('./app/middleware/logging-middleware')
+const { logContextMiddleware } = require('./app/utils/log-context')
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 const formatPSPname = require('./app/utils/format-PSP-name')
 const formatAccountPathsFor = require('./app/utils/format-account-paths-for')
@@ -58,6 +59,7 @@ function addCsrfMiddleware (app) {
 
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser())
+  app.use(logContextMiddleware)
   logger.stream = {
     write: function (message) {
       logger.info(message)
@@ -174,8 +176,8 @@ function initialise () {
   app.use(Sentry.Handlers.requestHandler())
   initialisePublic(app)
   initialiseCookies(app)
-  initialiseAuth(app)
   initialiseGlobalMiddleware(app)
+  initialiseAuth(app)
   initialiseTemplateEngine(app)
   initialiseErrorLogging(app)
   initialiseRoutes(app) // This contains the 404 overrider and so should be last

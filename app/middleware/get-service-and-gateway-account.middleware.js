@@ -7,6 +7,7 @@ const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID } = require('../paths')
 const Connector = require('../services/clients/connector.client.js').ConnectorClient
 
 const { keys } = require('@govuk-pay/pay-js-commons').logging
+const { addLoggingField } = require('../utils/log-context')
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
 async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlationId) {
@@ -35,7 +36,6 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlat
     logContext['error'] = err.message
     logContext['error_code'] = err.errorCode
     logContext['GATEWAY_ACCOUNT_EXTERNAL_ID'] = gatewayAccountExternalId
-    logContext[keys.CORRELATION_ID] = correlationId
 
     if (err.errorCode === 404) {
       logger.info('Gateway account not found', logContext)
@@ -83,6 +83,9 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
         gatewayAccount = await getGatewayAccountByExternalId(gatewayAccountExternalId, correlationId)
         if (gatewayAccount) {
           req.account = gatewayAccount
+          addLoggingField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
+          addLoggingField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
+
           // Used to "upgrade" old account URLs that don't contain the account external ID to visit
           // the URL for the last visited account. Can be removed when we no longer support that.
           req.gateway_account = {
@@ -93,7 +96,11 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
 
       // uses req.user object which is set by passport (auth.service.js) and has all user services information to find service by serviceExternalId or gatewayAccountId.
       // A separate API call to adminusers to find service makes it independent of user object but most of tests setup currently relies on req.user
-      req.service = getService(req.user, serviceExternalId, gatewayAccount, correlationId)
+      const service = getService(req.user, serviceExternalId, gatewayAccount, correlationId)
+      if (service) {
+        req.service = service
+        addLoggingField(keys.SERVICE_EXTERNAL_ID, service.externalId)
+      }
     }
 
     next()
