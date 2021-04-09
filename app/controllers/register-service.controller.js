@@ -6,6 +6,8 @@ const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
 const { renderErrorView } = require('../utils/response')
 const serviceService = require('../services/service.service')
+const { ConnectorClient } = require('../services/clients/connector.client')
+const formatAccountPathsFor = require('../utils/format-account-paths-for')
 const registrationService = require('../services/service-registration.service')
 const loginController = require('../controllers/login')
 const {
@@ -16,6 +18,7 @@ const {
 } = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
 
+const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const missingSessionErrorMessage = 'Unable to process registration at this time'
 
 const registrationSessionPresent = function registrationSessionPresent (sessionData) {
@@ -292,9 +295,11 @@ const submitYourServiceName = async function submitYourServiceName (req, res) {
     res.redirect(303, paths.selfCreateService.serviceNaming)
   } else {
     try {
-      await serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, serviceNameCy, correlationId)
+      const { service } = req.user.serviceRoles[0]
+      const account = await connectorClient.getAccount({ gatewayAccountId: service.gatewayAccountIds[0] })
+      await serviceService.updateServiceName(service.externalId, serviceName, serviceNameCy, correlationId)
       lodash.unset(req, 'session.pageData.submitYourServiceName')
-      res.redirect(303, paths.index)
+      res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, account.external_id))
     } catch (err) {
       logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
       renderErrorView(req, res, err)
