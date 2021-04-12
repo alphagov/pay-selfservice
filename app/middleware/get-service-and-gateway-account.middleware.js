@@ -32,10 +32,10 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlat
 
     return account
   } catch (err) {
-    const logContext = {}
-    logContext['error'] = err.message
-    logContext['error_code'] = err.errorCode
-    logContext['GATEWAY_ACCOUNT_EXTERNAL_ID'] = gatewayAccountExternalId
+    const logContext = {
+      error: err.message,
+      error_code: err.errorCode
+    }
 
     if (err.errorCode === 404) {
       logger.info('Gateway account not found', logContext)

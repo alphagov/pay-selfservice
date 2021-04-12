@@ -6,7 +6,6 @@ const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const productsClient = require('../../services/clients/products.client.js')
 const logger = require('../../utils/logger')(__filename)
-const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 module.exports = async function updatePaymentLink (req, res, next) {
   const { productExternalId } = req.params
@@ -23,17 +22,11 @@ module.exports = async function updatePaymentLink (req, res, next) {
     await productsClient.product.update(gatewayAccountId, productExternalId, editPaymentLinkData)
 
     const numberOfMetadataKeys = (editPaymentLinkData.metadata && Object.keys(editPaymentLinkData.metadata).length) || 0
-    const logContext = {
-      is_internal_user: req.user && req.user.internalUser,
+    logger.info('Updated payment link', {
       product_external_id: req.params && req.params.productExternalId,
       has_metadata: !!numberOfMetadataKeys,
       number_of_metadata_keys: numberOfMetadataKeys
-    }
-    logContext[keys.GATEWAY_ACCOUNT_TYPE] = req.account && req.account.type
-    logContext[keys.GATEWAY_ACCOUNT_ID] = req.account && req.account.gateway_account_id
-    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-
-    logger.info('Updated payment link', logContext)
+    })
 
     lodash.unset(req, 'session.editPaymentLinkData')
     req.flash('generic', 'Your payment link has been updated')

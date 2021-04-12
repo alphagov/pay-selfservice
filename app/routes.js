@@ -427,8 +427,7 @@ module.exports.bind = function (app) {
         logger.info('Accounts URL utility upgraded a request to a legacy account URL', {
           url: req.originalUrl,
           redirected_url: upgradedPath,
-          session_has_user: !!req.user,
-          is_internal_user: req.user && req.user.internalUser
+          session_has_user: !!req.user
         })
         res.redirect(upgradedPath)
         return

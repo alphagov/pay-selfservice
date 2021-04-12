@@ -34,7 +34,7 @@ const toggleConfirmationEmail = function (req, res, enabled) {
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   emailService.setConfirmationEnabled(accountID, enabled, correlationId)
     .then(() => {
-      logger.info(`[${correlationId}] - Updated confirmation email enabled(${enabled}). user=${req.session.passport.user}, gateway_account=${accountID}`)
+      logger.info(`Updated confirmation email enabled(${enabled})`)
       res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
     })
 }
@@ -56,7 +56,7 @@ module.exports.collectionEmailUpdate = (req, res) => {
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   emailService.setEmailCollectionMode(accountID, emailCollectionMode, correlationId)
     .then(() => {
-      logger.info(`[${correlationId}] - Updated email collection mode (${emailCollectionMode}). user=${req.session.passport.user}, gateway_account=${accountID}`)
+      logger.info(`Updated email collection mode (${emailCollectionMode})`)
       res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
     })
 }
@@ -98,7 +98,7 @@ module.exports.refundEmailUpdate = (req, res) => {
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   emailService.setRefundEmailEnabled(accountID, emailRefundEnabled, correlationId)
     .then(() => {
-      logger.info(`[${correlationId}] - Updated refund email enabled(${emailRefundEnabled}). user=${req.session.passport.user}, gateway_account=${accountID}`)
+      logger.info(`Updated refund email enabled(${emailRefundEnabled})`)
       res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
     })
 }
@@ -145,7 +145,7 @@ module.exports.update = (req, res) => {
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   emailService.updateConfirmationTemplate(accountID, newEmailText, correlationId)
     .then(() => {
-      logger.info(`[${correlationId}] - Updated email notifications custom paragraph. user=${req.session.passport.user}, gateway_account=${accountID}`)
+      logger.info('Updated email notifications custom paragraph')
       res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
     })
 }

@@ -29,7 +29,7 @@ const postIndex = async (req, res) => {
     } else {
       req.flash('generic', 'Billing address is turned off for this service')
     }
-    logger.info(`[${correlationId}] - Updated collect billing address enabled(${req.body['billing-address-toggle']}). user=${req.session.passport.user}`)
+    logger.info(`Updated collect billing address enabled(${req.body['billing-address-toggle']})`)
     res.redirect(formatAccountPathsFor(paths.account.toggleBillingAddress.index, req.account && req.account.external_id))
   } catch (error) {
     renderErrorView(req, res, error.message)

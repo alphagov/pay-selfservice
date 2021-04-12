@@ -25,7 +25,7 @@ module.exports = async function showConfigureSecondFactorMethod (req, res) {
     }
     return response(req, res, 'two-factor-auth/configure', pageData)
   } catch (err) {
-    logger.error(`[requestId=${req.correlationId}] Failed to generate QR code - ${err.message}`)
+    logger.error(`Failed to generate QR code - ${err.message}`)
     req.flash('genericError', 'Something went wrong. Please try again or contact support.')
     return res.redirect(paths.user.profile.twoFactorAuth.index)
   }

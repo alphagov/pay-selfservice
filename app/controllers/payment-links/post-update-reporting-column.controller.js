@@ -3,7 +3,6 @@
 const logger = require('../../utils/logger')(__filename)
 const MetadataForm = require('./metadata/metadata-form')
 const { getPaymentLinksContext, metadata } = require('../../utils/payment-links')
-const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 const { response } = require('../../utils/response.js')
 
@@ -31,15 +30,10 @@ function addMetadata (req, res, next) {
       form.values[form.fields.metadataValue.id]
     )
 
-    const logContext = {
-      is_internal_user: req.user && req.user.internalUser,
+    logger.info('Reporting column added', {
       reporting_column_key: form.values[form.fields.metadataKey.id],
       product_external_id: req.params && req.params.productExternalId
-    }
-    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logContext[keys.GATEWAY_ACCOUNT_TYPE] = req.account && req.account.type
-    logContext[keys.GATEWAY_ACCOUNT_ID] = req.account && req.account.gateway_account_id
-    logger.info('Reporting column added', logContext)
+    })
 
     res.redirect(paymentLinksContext.listMetadataPageUrl)
   } catch (error) {
@@ -78,17 +72,11 @@ function editMetadata (req, res, next) {
       form.values[form.fields.metadataKey.id],
       form.values[form.fields.metadataValue.id]
     )
-
-    const logContext = {
-      is_internal_user: req.user && req.user.internalUser,
+    logger.info('Reporting column updated', {
       original_reporting_column_key: key,
       reporting_column_key: form.values[form.fields.metadataKey.id],
       product_external_id: req.params && req.params.productExternalId
-    }
-    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logContext[keys.GATEWAY_ACCOUNT_TYPE] = req.account && req.account.type
-    logContext[keys.GATEWAY_ACCOUNT_ID] = req.account && req.account.gateway_account_id
-    logger.info('Reporting column updated', logContext)
+    })
 
     res.redirect(paymentLinksContext.listMetadataPageUrl)
   } catch (error) {
@@ -103,15 +91,10 @@ function deleteMetadata (req, res, next) {
 
     metadata.removeMetadata(paymentLinksContext.sessionData, key)
 
-    const logContext = {
-      is_internal_user: req.user && req.user.internalUser,
+    logger.info('Reporting column deleted', {
       reporting_column_key: key,
       product_external_id: req.params && req.params.productExternalId
-    }
-    logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-    logContext[keys.GATEWAY_ACCOUNT_TYPE] = req.account && req.account.type
-    logContext[keys.GATEWAY_ACCOUNT_ID] = req.account && req.account.gateway_account_id
-    logger.info('Reporting column deleted', logContext)
+    })
 
     res.redirect(paymentLinksContext.listMetadataPageUrl)
   } catch (error) {

@@ -124,7 +124,7 @@ module.exports = async function (req, res, next) {
 
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
     } catch (error) {
-      logger.error(`[requestId=${req.correlationId}] Error creating responsible person with Stripe - ${error.message}`)
+      logger.error(`Error creating responsible person with Stripe - ${error.message}`)
       return renderErrorView(req, res, 'Please try again or contact support team')
     }
   }

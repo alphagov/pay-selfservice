@@ -38,7 +38,7 @@ async function postUserIpAddress (req) {
   if (req.service.currentGoLiveStage === 'CHOSEN_PSP_STRIPE') {
     const ipAddress = getUserIpAddress(req)
     if (!isIPv4(ipAddress) && !isIPv6(ipAddress)) {
-      logger.error(`request ${req.correlationId} has an invalid ip address: ` + ipAddress)
+      logger.error(`Request has an invalid ip address: ${ipAddress}`)
       throw new Error('Please try again or contact support team.')
     }
     await addStripeAgreementIpAddress(req.service.externalId, ipAddress, req.correlationId)

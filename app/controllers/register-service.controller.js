@@ -251,7 +251,7 @@ const submitOtpResend = async function submitOtpResend (req, res) {
     sessionData.telephone_number = telephoneNumber
     res.redirect(303, paths.selfCreateService.otpVerify)
   } catch (err) {
-    logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
+    logger.warn(`Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
     if (err.errorCode === 404) {
       renderErrorView(req, res, 'Unable to process registration at this time', 404)
     } else {
@@ -301,7 +301,7 @@ const submitYourServiceName = async function submitYourServiceName (req, res) {
       lodash.unset(req, 'session.pageData.submitYourServiceName')
       res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, account.external_id))
     } catch (err) {
-      logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
+      logger.debug('Invalid user input - service name')
       renderErrorView(req, res, err)
     }
   }

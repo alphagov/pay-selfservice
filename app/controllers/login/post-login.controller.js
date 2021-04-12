@@ -3,7 +3,6 @@
 const _ = require('lodash')
 
 const logger = require('../../utils/logger')(__filename)
-const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
 const paths = require('../../paths')
 
 /**
@@ -14,8 +13,7 @@ const paths = require('../../paths')
  * @param res
  */
 module.exports = (req, res) => {
-  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   req.session = _.pick(req.session, ['passport', 'last_url', 'currentGatewayAccountId'])
-  logger.info(`[${correlationId}] successfully attempted username/password combination`)
+  logger.info('Successfully attempted username/password combination')
   res.redirect(paths.user.otpLogIn)
 }

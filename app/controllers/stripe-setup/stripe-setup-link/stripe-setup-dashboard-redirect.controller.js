@@ -6,7 +6,6 @@ const { ConnectorClient } = require('../../../services/clients/connector.client'
 const { isADirectDebitAccount } = require('../../../services/clients/direct-debit-connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const logger = require('../../../utils/logger')(__filename)
-const { keys } = require('@govuk-pay/pay-js-commons').logging
 
 function getTargetServiceForRedirect (user, externalServiceId) {
   return user.serviceRoles.filter((serviceRole) => serviceRole.service.externalId === externalServiceId)[0]
@@ -25,9 +24,6 @@ module.exports = async (req, res) => {
     }
   }
 
-  const logContext = {}
-  logContext[keys.USER_EXTERNAL_ID] = req.user && req.user.externalId
-  logContext[keys.SERVICE_EXTERNAL_ID] = externalServiceId
-  logger.warn('User has no access to this service for dashboard redirect', logContext)
+  logger.warn('User has no access to this service for dashboard redirect')
   res.redirect(302, paths.index)
 }

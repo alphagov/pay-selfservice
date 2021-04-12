@@ -75,7 +75,7 @@ module.exports = async (req, res, next) => {
       }
     }
     // the error is generic
-    logger.error(`[${req.correlationId}] Error submitting bank details, error = `, error)
+    logger.error(`Error submitting bank details, error = `, error)
     return renderErrorView(req, res, 'Please try again or contact support team')
   }
 }

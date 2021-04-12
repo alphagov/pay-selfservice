@@ -58,7 +58,7 @@ module.exports = async (req, res) => {
     lodash.set(req, 'session.pageData.createPrototypeLink', {})
     return response(req, res, 'dashboard/demo-service/confirm', { prototypeLink })
   } catch (err) {
-    logger.error(`[requestId=${req.correlationId}] Create product failed - ${err.message}`)
+    logger.error(`Create product failed - ${err.message}`)
     req.flash('genericError', 'Something went wrong. Please try again or contact support.')
     return res.redirect(formatAccountPathsFor(paths.account.prototyping.demoService.create, req.account.external_id))
   }
