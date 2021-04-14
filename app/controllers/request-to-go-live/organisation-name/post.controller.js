@@ -15,7 +15,7 @@ const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 const ORGANISATION_NAME_FIELD = 'organisation-name'
 
 module.exports = (req, res) => {
-  const organisationName = lodash.get(req.body, ORGANISATION_NAME_FIELD)
+  const organisationName = req.body[ORGANISATION_NAME_FIELD] && req.body[ORGANISATION_NAME_FIELD].trim()
   const errors = validateOrganisationName(organisationName, ORGANISATION_NAME_FIELD, true)
   if (lodash.isEmpty(errors)) {
     const updateServiceRequest = new ServiceUpdateRequest()
