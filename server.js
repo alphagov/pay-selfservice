@@ -58,6 +58,9 @@ function addCsrfMiddleware (app) {
 }
 
 function initialiseGlobalMiddleware (app) {
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: true }))
+
   app.use(cookieParser())
   app.use(logContextMiddleware)
   logger.stream = {
@@ -87,9 +90,6 @@ function initialiseGlobalMiddleware (app) {
     res.locals.flash = req.flash()
     next()
   }))
-
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: true }))
 
   addCsrfMiddleware(app)
 }
