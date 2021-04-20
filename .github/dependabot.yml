@@ -7,9 +7,7 @@ updates:
     time: "03:00"
   open-pull-requests-limit: 10
   labels:
-   - dependencies
-  - govuk-pay
-  - java
+  - dependencies
   - govuk-pay
   - javascript
   ignore:
