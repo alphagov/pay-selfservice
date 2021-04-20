@@ -24,9 +24,8 @@ Payments to your bank account - GOV.UK Pay
   </h1>
 </div>
 <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
-  {% if filterLiveAccounts %}
-    <p class="govuk-body">Payments Stripe has made to your bank account.</p>
-  {% else %}
+  <p class="govuk-body">Payments Stripe has made to your bank account.</p>
+  {% if not filterLiveAccounts %}
     <div class="govuk-inset-text">
     <p class="govuk-body">Test reports represent how payments to your bank account appear. They show the total amount received from Stripe in each payment and detail all the transactions.</p>
     <p class="govuk-body">The reports are available the next working day after your test transactions. With test transactions, no payments are made to your bank account.</p>
@@ -83,12 +82,40 @@ Payments to your bank account - GOV.UK Pay
       </tbody>
     </table>
   {% else %}
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-    {% if payoutsReleaseDate %}
-    <p class="govuk-body">No payments to your bank account found on or after {{ payoutsReleaseDate.format('D MMMM YYYY') }}.</p>
-    <p class="govuk-body">For historic payments to your bank account please <a class="govuk-link" href="https://www.payments.service.gov.uk/support/">contact support.</a></p>
+    {% if filterLiveAccounts %}
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      {% if payoutsReleaseDate %}
+        <p class="govuk-body">No payments to your bank account found on or after {{ payoutsReleaseDate.format('D MMMM YYYY') }}.</p>
+        <p class="govuk-body">For historic payments to your bank account please <a class="govuk-link" href="https://www.payments.service.gov.uk/support/">contact support.</a></p>
+      {% else %}
+        <p class="govuk-body">No payments to your bank account found.</p>
+      {% endif %}
     {% else %}
-    <p class="govuk-body">No payments to your bank account found.</p>
+      <h2 class="govuk-heading-m">Sample Report</h2>
+      <p class="govuk-body">This is a sample report. If you make test, payments, you'll be able to see a copy of the report using your test payment.</p>
+
+      <table class="govuk-table" id="payout-list">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Service</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Amount</th>
+            <th scope="col" class="govuk-table__header">View transactions</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td scope="row" class="govuk-table__cell">Test Service</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+              {{ 10000 | penceToPoundsWithCurrency }}
+            </td>
+            <td class="govuk-table__cell">
+              <a class="govuk-link govuk-link--no-visited-state" href="public/csv/sample_reporting_payout.csv">
+                Download CSV
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     {% endif %}
   {% endfor %}
 </div>

@@ -99,6 +99,37 @@ describe('Payout list page', () => {
     })
   })
 
+  it('should show sample report for test account account if the test account has no payouts', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: testGatewayAccountId })
+    ])
+
+    cy.visit('/payments-to-your-bank-account/test')
+    cy.get('h1').find('.govuk-tag').should('have.text', 'TEST')
+    cy.get('#payout-list').find('tr').should('have.length', 2)
+    cy.get('#pagination').should('not.exist')
+
+    cy.get('.govuk-breadcrumbs').within(() => {
+      cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Payments to your bank account')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
+    })
+  })
+
+  it('should show no payouts for live account if the live account has no payouts', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: liveGatewayAccountId })
+    ])
+
+    cy.visit('/payments-to-your-bank-account')
+    cy.get('h1').find('.govuk-tag').should('have.text', 'LIVE')
+    cy.get('#pagination').should('not.exist')
+    cy.get('#payout-list').should('not.exist')
+    cy.get('.govuk-section-break.govuk-section-break--l.govuk-section-break--visible').next('p').contains('No payments to your bank account found on or after 22 May 2020')
+  })
+
   it('should show no permissions to access this page if the user has no stripe test accounts', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({
