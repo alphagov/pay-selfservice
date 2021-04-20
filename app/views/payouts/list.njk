@@ -92,7 +92,7 @@ Payments to your bank account - GOV.UK Pay
       {% endif %}
     {% else %}
       <h2 class="govuk-heading-m">Sample Report</h2>
-      <p class="govuk-body">This is a sample report. If you make test, payments, you'll be able to see a copy of the report using your test payment.</p>
+      <p class="govuk-body">This is a sample report. If you make test payments, you'll be able to see a copy of the report using your test payments.</p>
 
       <table class="govuk-table" id="payout-list">
         <thead class="govuk-table__head">
@@ -106,10 +106,10 @@ Payments to your bank account - GOV.UK Pay
           <tr class="govuk-table__row">
             <td scope="row" class="govuk-table__cell">Test Service</td>
             <td class="govuk-table__cell govuk-table__cell--numeric">
-              {{ 10000 | penceToPoundsWithCurrency }}
+              {{ 19402 | penceToPoundsWithCurrency }}
             </td>
             <td class="govuk-table__cell">
-              <a class="govuk-link govuk-link--no-visited-state" href="public/csv/sample_reporting_payout.csv">
+              <a class="govuk-link govuk-link--no-visited-state" href="/csv/sample_reporting_payout.csv">
                 Download CSV
               </a>
             </td>

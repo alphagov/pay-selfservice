@@ -1,2 +1,3 @@
 Reference,Description,Email,Amount,Card Brand,Cardholder Name,Card Expiry Date,Card Number,State,Finished,Error Code,Error Message,Provider ID,GOV.UK Payment ID,Issued By,Date Created,Time Created,Corporate Card Surcharge,Total Amount,Wallet Type,Fee,Net,Card Type,MOTO
-4S8CKS3FN2,test kb,useremail@example.org,10,Visa,test,11/21,4242,Success,true,,,pi_1HG0y2Hj08j2jFuBmM9r9Ybe,9mim88o2gt7atngu9m7i78en6a,,14 Aug 2020,11:20:48,0,10,,0.5,9.5,credit,false
+4S8AKS1FN2,Test Payment 1,johnsmith@example.org,100.00,Visa,John Smith,11/21,2020,Success,true,,,pi_1HG0a3Aj09l2jFuNaM9r9Ybe,3abc88o2gt7atngu9m7i78en6a,,14 Aug 2020,11:20:00,0,100.00,,2.99,97.01,credit,false
+5F9BFT2FN3,Test Payment 2,johnsmith@example.org,100.00,Visa,John Smith,11/21,2020,Success,true,,,pi_1HG4y4Hk88k2jGwMmT9s3Zcf,5mim29o5az3akvof1a8i01az4z,,14 Aug 2020,11:30:34,0,100.00,,2.99,97.01,credit,false
