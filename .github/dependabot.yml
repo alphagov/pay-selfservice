@@ -1,0 +1,40 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "03:00"
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - govuk-pay
+  - javascript
+  ignore:
+  - dependency-name: change-case
+    versions:
+    - ">= 4.a"
+    - "< 5"
+  - dependency-name: joi
+    versions:
+    - ">= 17.a"
+    - "< 18"
+- package-ecosystem: docker
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "03:00"
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - govuk-pay
+  - javascript
+  ignore:
+  - dependency-name: node
+    versions:
+    - ">= 14.a"
+    - "< 15"
+  - dependency-name: node
+    versions:
+    - ">= 15.a"
+    - "< 16"
