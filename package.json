@@ -125,7 +125,7 @@
     "gaap-analytics": "3.1.0",
     "grunt": "1.0.x",
     "grunt-babel": "8.0.0",
-    "grunt-browserify": "5.3.0",
+    "grunt-browserify": "6.0.0",
     "grunt-contrib-clean": "2.0.x",
     "grunt-contrib-copy": "1.0.x",
     "grunt-contrib-uglify": "4.0.1",
