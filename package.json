@@ -142,7 +142,7 @@
     "nodemon": "1.19.1",
     "notp": "2.0.3",
     "nunjucksify": "2.2.0",
-    "portfinder": "1.0.20",
+    "portfinder": "1.0.28",
     "proxyquire": "~2.1.0",
     "sass-lint": "1.12.1",
     "sinon": "7.3.2",
