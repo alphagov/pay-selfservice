@@ -20,7 +20,12 @@ chai.use(chaiAsPromised)
 const existingGatewayAccountId = '123456'
 
 describe('ledger client', function () {
-  before(() => pactTestProvider.setup())
+  let ledgerUrl
+
+  before(async () => {
+    const opts = await pactTestProvider.setup()
+    ledgerUrl = `http://localhost:${opts.port}`
+  })
   after(() => pactTestProvider.finalize())
 
   describe('search transactions with no filters', () => {
@@ -89,7 +94,7 @@ describe('ledger client', function () {
 
     it('should search transaction successfully', function () {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
-      return ledgerClient.transactions(params.account_id)
+      return ledgerClient.transactions(params.account_id, {}, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
@@ -149,7 +154,7 @@ describe('ledger client', function () {
 
     it('should search transaction successfully', function () {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
-      return ledgerClient.transactions(params.account_id, params.filters)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
@@ -220,7 +225,7 @@ describe('ledger client', function () {
 
     it('should search transaction successfully', function () {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
-      return ledgerClient.transactions(params.account_id, params.filters)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
@@ -296,7 +301,7 @@ describe('ledger client', function () {
 
     it('should filter transaction successfully', function () {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
-      return ledgerClient.transactions(params.account_id, params.filters)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
@@ -359,7 +364,7 @@ describe('ledger client', function () {
 
     it('should filter transaction successfully', function () {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
-      return ledgerClient.transactions(params.account_id, params.filters)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
@@ -411,7 +416,7 @@ describe('ledger client', function () {
 
     it('should filter transaction successfully', function () {
       const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
-      return ledgerClient.transactions(params.account_id, params.filters)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })

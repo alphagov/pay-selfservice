@@ -21,7 +21,12 @@ const existingGatewayAccountId = '123456'
 const defaultTransactionId = 'ch_123abc456xyz'
 
 describe('ledger client', function () {
-  before(() => pactTestProvider.setup())
+  let ledgerUrl
+
+  before(async () => {
+    const opts = await pactTestProvider.setup()
+    ledgerUrl = `http://localhost:${opts.port}`
+  })
   after(() => pactTestProvider.finalize())
 
   describe('get transaction details', () => {
@@ -55,7 +60,10 @@ describe('ledger client', function () {
 
     it('should get transaction details successfully', function () {
       const getCreatedTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validCreatedTransactionDetailsResponse)
-      return ledgerClient.transaction(params.transaction_id, params.account_id, { transaction_type: 'PAYMENT' })
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getCreatedTransactionDetails)
         })
@@ -96,7 +104,10 @@ describe('ledger client', function () {
 
     it('should get transaction with corporate card surcharge details successfully', function () {
       const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
-      return ledgerClient.transaction(params.transaction_id, params.account_id, { transaction_type: 'PAYMENT' })
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionDetails)
         })
@@ -136,7 +147,10 @@ describe('ledger client', function () {
 
     it('should get transaction with metadata details successfully', function () {
       const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
-      return ledgerClient.transaction(params.transaction_id, params.account_id, { transaction_type: 'PAYMENT' })
+      return ledgerClient.transaction(params.transaction_id, params.account_id, { 
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionDetails)
         })

@@ -22,7 +22,12 @@ const defaultTransactionId = 'ch_123abc456xyz'
 const defaultTransactionState = 'a transaction has CREATED and AUTHORISATION_REJECTED payment events'
 
 describe('ledger client', function () {
-  before(() => pactTestProvider.setup())
+  let ledgerUrl
+
+  before(async () => {
+    const opts = await pactTestProvider.setup()
+    ledgerUrl = `http://localhost:${opts.port}`
+  })
   after(() => pactTestProvider.finalize())
 
   describe('get transaction events details', () => {
@@ -64,7 +69,7 @@ describe('ledger client', function () {
 
     it('should get transaction events successfully', function () {
       const getTransactionEventsDetails = legacyConnectorParityTransformer.legacyConnectorEventsParity(validTransactionEventsResponse)
-      return ledgerClient.events(params.transaction_id, params.account_id)
+      return ledgerClient.events(params.transaction_id, params.account_id, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionEventsDetails)
         })
