@@ -1,5 +1,5 @@
 --reporter spec
 --require ./test/test-helpers/test-env.js
 --require ./test/test-helpers/supress-logs.js
---timeout 5000
+--timeout 10000
 --exit
