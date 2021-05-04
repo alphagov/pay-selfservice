@@ -22,7 +22,12 @@ const existingGatewayAccountId = '123456'
 const defaultTransactionState = 'three payments and a refund all in success state exists'
 
 describe('ledger client transaction summary', function () {
-  before(() => pactTestProvider.setup())
+  let ledgerUrl
+
+  before(async () => {
+    const opts = await pactTestProvider.setup()
+    ledgerUrl = `http://localhost:${opts.port}`
+  })
   after(() => pactTestProvider.finalize())
 
   describe('get transaction summary', () => {
@@ -56,7 +61,7 @@ describe('ledger client transaction summary', function () {
 
     it('should get transaction summary successfully', function () {
       const getTransactionSummaryDetails = legacyConnectorParityTransformer.legacyConnectorTransactionSummaryParity(validTransactionSummaryResponse)
-      return ledgerClient.transactionSummary(params.account_id, params.from_date, params.to_date)
+      return ledgerClient.transactionSummary(params.account_id, params.from_date, params.to_date, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionSummaryDetails)
         })

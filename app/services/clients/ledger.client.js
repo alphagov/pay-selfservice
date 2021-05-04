@@ -93,8 +93,8 @@ const transactionSummary = function transactionSummary (gatewayAccountId, fromDa
   return baseClient.get(configuration)
 }
 
-const payouts = function payouts (gatewayAccountIds = [], page = 1, displaySize) {
-  const configuration = {
+const payouts = function payouts (gatewayAccountIds = [], page = 1, displaySize, options = {}) {
+  const configuration = Object.assign({
     url: '/v1/payout',
     qs: {
       // qsStringifyOptions doesn't seem to be accepted here and the request library is deprecated for upstream changes
@@ -103,9 +103,8 @@ const payouts = function payouts (gatewayAccountIds = [], page = 1, displaySize)
       ...displaySize && { display_size: displaySize },
       page
     },
-    description: 'List payouts for a given gateway account ID',
-    ...defaultOptions
-  }
+    description: 'List payouts for a given gateway account ID'
+  }, defaultOptions, options)
 
   return baseClient.get(configuration)
 }
