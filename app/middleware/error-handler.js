@@ -1,5 +1,7 @@
 'use strict'
 
+const Sentry = require('@sentry/node')
+
 const logger = require('../utils/logger')(__filename)
 const {
   NotAuthenticatedError,
@@ -57,8 +59,9 @@ module.exports = function errorHandler (err, req, res, next) {
     return renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team', 400)
   }
 
-  logger.error(`Unhandled error caught: ${err.message}`, {
+  logger.info(`Unhandled error caught: ${err.message}`, {
     stack: err.stack
   })
+  Sentry.captureException(err)
   renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team.', 500)
 }

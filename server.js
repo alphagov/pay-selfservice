@@ -18,7 +18,6 @@ const cookieUtil = require('./app/utils/cookie')
 const noCache = require('./app/utils/no-cache')
 const auth = require('./app/services/auth.service')
 const middlwareUtils = require('./app/utils/middleware')
-const errorLogger = require('./app/middleware/error-logger')
 const errorHandler = require('./app/middleware/error-handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const logger = require('./app/utils/logger')(__filename)
@@ -145,10 +144,6 @@ function initialiseCookies (app) {
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.registrationCookie()))
 }
 
-function initialiseErrorLogging (app) {
-  app.use(errorLogger)
-}
-
 function initialiseErrorHandling (app) {
   app.use(errorHandler)
 }
@@ -179,10 +174,8 @@ function initialise () {
   initialiseGlobalMiddleware(app)
   initialiseAuth(app)
   initialiseTemplateEngine(app)
-  initialiseErrorLogging(app)
   initialiseRoutes(app) // This contains the 404 overrider and so should be last
   warnIfAnalyticsNotSet()
-  app.use(Sentry.Handlers.errorHandler())
   initialiseErrorHandling(app)
 
   return app
