@@ -147,7 +147,7 @@ describe('ledger client', function () {
 
     it('should get transaction with metadata details successfully', function () {
       const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
-      return ledgerClient.transaction(params.transaction_id, params.account_id, { 
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
         baseUrl: ledgerUrl,
         transaction_type: 'PAYMENT'
       })

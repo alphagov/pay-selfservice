@@ -20,7 +20,7 @@ const req = {
 }
 
 describe('Error handler middleware', () => {
-  let res, next, errorHandler, infoLoggerSpy, errorLoggerSpy
+  let res, next, errorHandler, infoLoggerSpy, sentrySpy
 
   beforeEach(() => {
     next = sinon.spy()
@@ -33,13 +33,15 @@ describe('Error handler middleware', () => {
     }
 
     infoLoggerSpy = sinon.spy()
-    errorLoggerSpy = sinon.spy()
+    sentrySpy = sinon.spy()
     errorHandler = proxyquire('../../../app/middleware/error-handler', {
       '../utils/logger': () => {
         return {
-          info: infoLoggerSpy,
-          error: errorLoggerSpy
+          info: infoLoggerSpy
         }
+      },
+      '@sentry/node': {
+        captureException: sentrySpy
       }
     })
   })
@@ -112,6 +114,7 @@ describe('Error handler middleware', () => {
 
       const expectedMessage = 'NotAuthenticatedError handled: not authenticated. Redirecting attempt to access /foo/bar to /login'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
+      sinon.assert.notCalled(sentrySpy)
     })
 
     it('should log at info level for UserAccountDisabledError', () => {
@@ -120,6 +123,7 @@ describe('Error handler middleware', () => {
 
       const expectedMessage = 'UserAccountDisabledError handled, rendering no access page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
+      sinon.assert.notCalled(sentrySpy)
     })
 
     it('should log at info level for NotAuthorisedError', () => {
@@ -128,6 +132,7 @@ describe('Error handler middleware', () => {
 
       const expectedMessage = 'NotAuthorisedError handled: user does not have authorisation. Rendering error page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
+      sinon.assert.notCalled(sentrySpy)
     })
 
     it('should log at info level for PermissionDeniedError', () => {
@@ -136,6 +141,7 @@ describe('Error handler middleware', () => {
 
       const expectedMessage = 'PermissionDeniedError handled: User does not have permission do-cool-things for service. Rendering error page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
+      sinon.assert.notCalled(sentrySpy)
     })
 
     it('should log at info level for NotFoundError', () => {
@@ -144,14 +150,16 @@ describe('Error handler middleware', () => {
 
       const expectedMessage = 'NotFoundError handled: Transaction not found. Rendering 404 page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
+      sinon.assert.notCalled(sentrySpy)
     })
 
-    it('should log at error level for generic Error', () => {
+    it('should log at info level for generic Error and send error to Sentry', () => {
       const err = new Error('A generic error')
       errorHandler(err, reqWithSessionData, res, null)
 
       const expectedMessage = 'Unhandled error caught: A generic error'
-      sinon.assert.calledWithMatch(errorLoggerSpy, expectedMessage)
+      sinon.assert.calledWithMatch(infoLoggerSpy, expectedMessage)
+      sinon.assert.calledWith(sentrySpy, err)
     })
   })
 })
