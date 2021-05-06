@@ -96,9 +96,6 @@ describe('user permissions update controller', function () {
         .get(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to locate the user')
-        })
         .end(done)
     })
 
@@ -222,9 +219,6 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(500)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to locate the user')
-        })
         .end(done)
     })
 
@@ -268,9 +262,6 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(500)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to update user permission')
-        })
         .end(done)
     })
 
@@ -295,7 +286,7 @@ describe('user permissions update controller', function () {
         })
         .expect(500)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to update user permission')
+          expect(res.body.message).to.equal('There is a problem with the payments platform. Please contact the support team.')
         })
         .end(done)
     })

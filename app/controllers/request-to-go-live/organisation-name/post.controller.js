@@ -7,14 +7,13 @@ const goLiveStage = require('../../../models/go-live-stage')
 const paths = require('../../../paths')
 const { validateOrganisationName } = require('../../../utils/organisation-name-validation')
 const { updateCurrentGoLiveStage, updateService } = require('../../../services/service.service')
-const { renderErrorView } = require('../../../utils/response')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 // Constants
 const ORGANISATION_NAME_FIELD = 'organisation-name'
 
-module.exports = (req, res) => {
+module.exports = async function submitOrganisationName (req, res, next) {
   const organisationName = req.body[ORGANISATION_NAME_FIELD] && req.body[ORGANISATION_NAME_FIELD].trim()
   const errors = validateOrganisationName(organisationName, ORGANISATION_NAME_FIELD, true)
   if (lodash.isEmpty(errors)) {
@@ -22,19 +21,16 @@ module.exports = (req, res) => {
       .replace(validPaths.merchantDetails.name, organisationName)
       .formatPayload()
 
-    return updateService(req.service.externalId, updateServiceRequest, req.correlationId)
-      .then(service => {
-        return updateCurrentGoLiveStage(service.externalId, goLiveStage.ENTERED_ORGANISATION_NAME, req.correlationId)
-      })
-      .then(updatedService => {
-        res.redirect(
-          303,
-          formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
-        )
-      })
-      .catch(err => {
-        renderErrorView(req, res, err.message)
-      })
+    try {
+      await updateService(req.service.externalId, updateServiceRequest, req.correlationId)
+      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, goLiveStage.ENTERED_ORGANISATION_NAME, req.correlationId)
+      res.redirect(
+        303,
+        formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
+      )
+    } catch (err) {
+      next(err)
+    }
   } else {
     lodash.set(req, 'session.pageData.requestToGoLive.organisationName', {
       success: false,

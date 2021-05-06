@@ -50,7 +50,7 @@ describe('Bank details post controller', () => {
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
@@ -65,7 +65,7 @@ describe('Bank details post controller', () => {
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
@@ -73,8 +73,8 @@ describe('Bank details post controller', () => {
     })
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
     sinon.assert.notCalled(res.redirect)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
+    const expectedError = sinon.match.instanceOf(Error)
+    sinon.assert.calledWith(next, expectedError)
   })
 
   it('should render error page when stripe setup is not available on request', async () => {
@@ -93,7 +93,7 @@ describe('Bank details post controller', () => {
     const controller = getControllerWithMocks()
     req.account.connectorGatewayAccountStripeProgress = { bankAccount: true }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
@@ -110,7 +110,7 @@ describe('Bank details post controller', () => {
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
@@ -132,7 +132,7 @@ describe('Bank details post controller', () => {
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
@@ -148,7 +148,7 @@ describe('Bank details post controller', () => {
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.reject(new Error()))
     const controller = getControllerWithMocks()
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateBankAccountMock, res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
@@ -156,8 +156,8 @@ describe('Bank details post controller', () => {
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
     sinon.assert.notCalled(res.redirect)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
+    const expectedError = sinon.match.instanceOf(Error)
+    sinon.assert.calledWith(next, expectedError)
   })
 
   function getControllerWithMocks () {

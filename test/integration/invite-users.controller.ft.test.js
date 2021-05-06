@@ -101,9 +101,9 @@ describe('invite user controller', function () {
           'role-input': unknownRoleId,
           csrfToken: csrf().create('123')
         })
-        .expect(200)
+        .expect(500)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to send invitation at this time')
+          expect(res.body.message).to.equal('There is a problem with the payments platform. Please contact the support team.')
         })
         .end(done)
     })

@@ -62,7 +62,7 @@ describe('VAT number POST controller', () => {
 
     req.body = { ...postBody }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, {
       'vat_id': 'GB999999973'
@@ -87,7 +87,7 @@ describe('VAT number POST controller', () => {
     const controller = getControllerWithMocks()
     req.account.connectorGatewayAccountStripeProgress = { vatNumber: true }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided your VAT number. Contact GOV.UK Pay support if you need to update it.')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
@@ -100,13 +100,13 @@ describe('VAT number POST controller', () => {
 
     req.body = { ...postBody }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.called(updateCompanyMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
     sinon.assert.notCalled(res.redirect)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
+    const expectedError = sinon.match.instanceOf(Error)
+    sinon.assert.calledWith(next, expectedError)
   })
 
   it('should render error when connector returns error', async function () {
@@ -116,12 +116,12 @@ describe('VAT number POST controller', () => {
 
     req.body = { ...postBody }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.called(updateCompanyMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number', req.correlationId)
     sinon.assert.notCalled(res.redirect)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
+    const expectedError = sinon.match.instanceOf(Error)
+    sinon.assert.calledWith(next, expectedError)
   })
 })

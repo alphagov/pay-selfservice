@@ -237,7 +237,7 @@ describe('Show the prototype links', () => {
 
     it('should show an error page', () => {
       expect(response.status).to.equal(500)
-      expect(response.body).to.have.property('message', 'There is a problem with the payments platform')
+      expect(response.body).to.have.property('message', 'There is a problem with the payments platform. Please contact the support team.')
     })
   })
 })

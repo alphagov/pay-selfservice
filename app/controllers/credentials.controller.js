@@ -5,11 +5,11 @@ const _ = require('lodash')
 const paths = require('../paths')
 const formatAccountPathsFor = require('../utils/format-account-paths-for')
 const { response } = require('../utils/response')
-const { renderErrorView } = require('../utils/response')
 const { ConnectorClient } = require('../services/clients/connector.client')
 const { CONNECTOR_URL } = process.env
 const { CORRELATION_HEADER } = require('../utils/correlation-header')
 const { isPasswordLessThanTenChars } = require('../browsered/field-validation-checks')
+const { NotFoundError } = require('../errors')
 
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
@@ -28,17 +28,14 @@ function showSuccessView (viewMode, req, res) {
   response(req, res, 'credentials/' + req.account.payment_provider, responsePayload)
 }
 
-function loadIndex (req, res, viewMode) {
-  if (req.account) {
-    if (req.account.payment_provider === 'stripe') {
-      res.status(404)
-      res.render('404')
-    } else {
-      showSuccessView(viewMode, req, res)
-    }
-  } else {
-    renderErrorView(req, res)
+function loadIndex (req, res, next, viewMode) {
+  if (!req.account) {
+    return next(new Error('Account not found on request'))
   }
+  if (req.account.payment_provider === 'stripe') {
+    return next(new NotFoundError('Attempted to access credentials page for a Stripe account'))
+  }
+  showSuccessView(viewMode, req, res)
 }
 
 function credentialsPatchRequestValueOf (req) {
@@ -68,19 +65,19 @@ function credentialsPatchRequestValueOf (req) {
 }
 
 module.exports = {
-  index: function (req, res) {
-    loadIndex(req, res)
+  index: function (req, res, next) {
+    loadIndex(req, res, next)
   },
 
-  editCredentials: function (req, res) {
-    loadIndex(req, res, EDIT_CREDENTIALS_MODE)
+  editCredentials: function (req, res, next) {
+    loadIndex(req, res, next, EDIT_CREDENTIALS_MODE)
   },
 
-  editNotificationCredentials: function (req, res) {
-    loadIndex(req, res, EDIT_NOTIFICATION_CREDENTIALS_MODE)
+  editNotificationCredentials: function (req, res, next) {
+    loadIndex(req, res, next, EDIT_NOTIFICATION_CREDENTIALS_MODE)
   },
 
-  updateNotificationCredentials: async function (req, res) {
+  updateNotificationCredentials: async function (req, res, next) {
     const accountId = req.account.gateway_account_id
     const username = req.body.username && req.body.username.trim()
     const password = req.body.password && req.body.password.trim()
@@ -112,11 +109,11 @@ module.exports = {
 
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id))
     } catch (err) {
-      return renderErrorView(req, res)
+      next(err)
     }
   },
 
-  update: async function (req, res) {
+  update: async function (req, res, next) {
     const accountId = req.account.gateway_account_id
     const correlationId = req.headers[CORRELATION_HEADER] || ''
 
@@ -127,7 +124,7 @@ module.exports = {
 
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id))
     } catch (err) {
-      return renderErrorView(req, res)
+      next(err)
     }
   }
 }

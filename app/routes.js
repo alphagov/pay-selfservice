@@ -243,7 +243,7 @@ module.exports.bind = function (app) {
   service.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
   service.get(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.index)
   service.post(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.update)
-  service.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete)
+  service.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.remove)
 
   // Invite team member
   service.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index)

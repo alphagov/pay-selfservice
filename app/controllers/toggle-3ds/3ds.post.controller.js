@@ -2,12 +2,11 @@
 
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
-module.exports = async (req, res) => {
+module.exports = async function submit3dsSettings (req, res, next) {
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
 
@@ -25,7 +24,7 @@ module.exports = async (req, res) => {
     await connector.update3dsEnabled(params)
     req.flash('generic', '3D secure settings have been updated')
     return res.redirect(formatAccountPathsFor(paths.account.toggle3ds.index, req.account && req.account.external_id))
-  } catch (error) {
-    return renderErrorView(req, res, false, error.errorCode)
+  } catch (err) {
+    next(err)
   }
 }

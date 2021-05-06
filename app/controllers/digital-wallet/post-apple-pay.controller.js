@@ -2,12 +2,11 @@
 
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
-module.exports = async (req, res) => {
+module.exports = async (req, res, next) => {
   const gatewayAccountId = req.account.gateway_account_id
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const enable = req.body['apple-pay'] === 'on'
@@ -18,7 +17,7 @@ module.exports = async (req, res) => {
 
     req.flash('generic', `Apple Pay successfully ${enable ? 'enabled' : 'disabled'}.`)
     return res.redirect(formattedPath)
-  } catch (error) {
-    return renderErrorView(req, res, false, error.errorCode)
+  } catch (err) {
+    next(err)
   }
 }

@@ -102,7 +102,7 @@ describe('Responsible person POST controller', () => {
 
     req.body = { ...postBodyWithAddress2 }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
       first_name: firstNameNormalised,
@@ -132,7 +132,7 @@ describe('Responsible person POST controller', () => {
 
     req.body = { ...postBody }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
       first_name: firstNameNormalised,
@@ -164,7 +164,7 @@ describe('Responsible person POST controller', () => {
     const controller = getControllerWithMocks()
     req.account.connectorGatewayAccountStripeProgress = { responsiblePerson: true }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
@@ -183,13 +183,13 @@ describe('Responsible person POST controller', () => {
 
     req.body = { ...postBody }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.called(updatePersonMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
     sinon.assert.notCalled(res.redirect)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
+    const expectedError = sinon.match.instanceOf(Error)
+    sinon.assert.calledWith(next, expectedError)
   })
 
   it('should render error when connector returns error', async function () {
@@ -205,12 +205,12 @@ describe('Responsible person POST controller', () => {
 
     req.body = { ...postBody }
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.called(updatePersonMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
     sinon.assert.notCalled(res.redirect)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Please try again or contact support team' }))
+    const expectedError = sinon.match.instanceOf(Error)
+    sinon.assert.calledWith(next, expectedError)
   })
 })

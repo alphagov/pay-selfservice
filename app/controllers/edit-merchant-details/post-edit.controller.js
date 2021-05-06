@@ -2,8 +2,6 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
-const { renderErrorView } = require('../../utils/response')
 const paths = require('../../paths')
 const serviceService = require('../../services/service.service')
 const formatServicePathsFor = require('../../utils/format-service-paths-for')
@@ -126,7 +124,7 @@ const buildErrorsPageData = (errors, form) => {
   }
 }
 
-module.exports = async function (req, res) {
+module.exports = async function updateMerchantDetails (req, res, next) {
   try {
     const correlationId = lodash.get(req, 'correlationId')
     const serviceExternalId = req.service.externalId
@@ -143,8 +141,7 @@ module.exports = async function (req, res) {
       lodash.set(req, 'session.pageData.editMerchantDetails', pageData)
       res.redirect(formatServicePathsFor(paths.service.merchantDetails.edit, serviceExternalId))
     }
-  } catch (error) {
-    logger.error(`Error submitting organisation details - ${error.stack}`)
-    renderErrorView(req, res)
+  } catch (err) {
+    next(err)
   }
 }

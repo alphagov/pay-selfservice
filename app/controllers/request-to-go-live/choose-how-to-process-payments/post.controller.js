@@ -7,7 +7,6 @@ const { validateProcessPaymentOptions } = require('../../../utils/choose-how-to-
 const paths = require('../../../paths')
 const { updateCurrentGoLiveStage } = require('../../../services/service.service')
 const goLiveStage = require('../../../models/go-live-stage')
-const { renderErrorView } = require('../../../utils/response.js')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 const PSP = 'choose-how-to-process-payments-mode'
@@ -20,20 +19,19 @@ const stages = {
   gov_banking: goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY
 }
 
-module.exports = (req, res) => {
+module.exports = async function submitPspChoice (req, res, next) {
   const errors = validateProcessPaymentOptions(req.body)
   if (lodash.isEmpty(errors)) {
     const chosenPspStage = figureOutChosenPsp(req.body)
-    updateCurrentGoLiveStage(req.service.externalId, chosenPspStage, req.correlationId)
-      .then(updatedService => {
-        res.redirect(
-          303,
-          formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
-        )
-      })
-      .catch(err => {
-        renderErrorView(req, res, err.message)
-      })
+    try {
+      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, chosenPspStage, req.correlationId)
+      res.redirect(
+        303,
+        formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
+      )
+    } catch (err) {
+      next(err)
+    }
   } else {
     req.flash('genericError', errors)
     return res.redirect(

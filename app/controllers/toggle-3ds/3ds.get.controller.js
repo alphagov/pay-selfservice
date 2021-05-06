@@ -2,11 +2,11 @@
 
 const lodash = require('lodash')
 
-const { response, renderErrorView } = require('../../utils/response')
+const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
 
-module.exports = async (req, res) => {
+module.exports = async function get3dsSettings (req, res, next) {
   const connector = new ConnectorClient(process.env.CONNECTOR_URL)
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
     }
 
     return response(req, res, 'toggle-3ds/index', pageData)
-  } catch (error) {
-    return renderErrorView(req, res, false, error.errorCode)
+  } catch (err) {
+    next(err)
   }
 }

@@ -16,7 +16,7 @@ const ORGANISATIONAL_UNIT_ID_FIELD = 'organisational-unit-id'
 const ISSUER_FIELD = 'issuer'
 const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 
-module.exports = async (req, res) => {
+module.exports = async function submit3dsFlexCredentials (req, res, next) {
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
   const flexUrl = formatAccountPathsFor(paths.account.yourPsp.flex, req.account && req.account.external_id)
@@ -71,8 +71,8 @@ module.exports = async (req, res) => {
     await connector.post3dsFlexAccountCredentials(flexParams)
     req.flash('generic', 'Your Worldpay 3DS Flex settings have been updated')
     return res.redirect(indexUrl)
-  } catch (error) {
-    return renderErrorView(req, res, false, error.errorCode)
+  } catch (err) {
+    return next(err)
   }
 }
 
