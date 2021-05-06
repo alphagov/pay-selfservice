@@ -2,16 +2,13 @@
 
 const { userServicesContainsGatewayAccount } = require('../../utils/permissions')
 const Ledger = require('../../services/clients/ledger.client')
-const { renderErrorView } = require('../../utils/response.js')
 const router = require('../../routes')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { ConnectorClient } = require('../../services/clients/connector.client')
+const { NotFoundError } = require('../../errors')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
-const defaultMsg = 'Error processing transaction view'
-const notFound = 'Charge not found'
-
-module.exports = async function redirectToTransactionDetail (req, res) {
+module.exports = async function redirectToTransactionDetail (req, res, next) {
   const chargeId = req.params.chargeId
 
   try {
@@ -26,13 +23,13 @@ module.exports = async function redirectToTransactionDetail (req, res) {
 
       res.redirect(302, formatAccountPathsFor(router.paths.account.transactions.detail, account.external_id, chargeId))
     } else {
-      renderErrorView(req, res, notFound, 404)
+      next(new NotFoundError('User does not have access to gateway account for transaction'))
     }
   } catch (err) {
     if (err === 'NOT_FOUND') {
-      renderErrorView(req, res, notFound, 404)
+      next(new NotFoundError('Transaction not found'))
     } else {
-      renderErrorView(req, res, defaultMsg, 500)
+      next(err)
     }
   }
 }

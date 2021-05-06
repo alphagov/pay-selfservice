@@ -2,11 +2,11 @@
 
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { response, renderErrorView } = require('../../../utils/response')
+const { response } = require('../../../utils/response')
 
-module.exports = async (req, res) => {
+module.exports = async function getPspAccountDetails (req, res, next) {
   if (!req.account || !req.account.connectorGatewayAccountStripeProgress) {
-    return renderErrorView(req, res, 'Please try again or contact support team')
+    return next(new Error('Stripe setup progress is not available on request'))
   }
 
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress

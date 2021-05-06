@@ -1,6 +1,6 @@
 'use strict'
 
-const { response, renderErrorView } = require('../../utils/response')
+const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -52,7 +52,7 @@ function formatCardsForTemplate (allCards, acceptedCards, threeDSEnabled) {
   }
 }
 
-module.exports = async (req, res) => {
+module.exports = async function showCardTypes (req, res, next) {
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
 
@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
     const { card_types: acceptedCards } = await connector.getAcceptedCardsForAccountPromise(accountId, correlationId)
 
     response(req, res, 'payment-types/card-types', formatCardsForTemplate(allCards, acceptedCards, req.account.requires3ds))
-  } catch (error) {
-    renderErrorView(req, res, 'Unable to fetch payment types. Please try again or contact support team.', error.errorCode)
+  } catch (err) {
+    next(err)
   }
 }

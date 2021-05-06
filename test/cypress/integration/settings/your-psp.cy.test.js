@@ -214,7 +214,7 @@ describe('Your PSP settings page', () => {
       cy.get('#jwt-mac-key').type(testFailureFlexCredentials.jwt_mac_key)
       cy.get('#submitFlexCredentials').click()
       cy.get('h1').should('contain', 'An error occurred')
-      cy.get('#errorMsg').should('contain', 'Please try again or contact support team.')
+      cy.get('#errorMsg').should('contain', 'There is a problem with the payments platform. Please contact the support team.')
       cy.location().should((location) => {
         expect(location.pathname).to.eq(yourPspPath + '/flex')
       })

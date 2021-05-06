@@ -5,7 +5,7 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 describe('Error handler', function () {
-  let correlationId, req, res
+  let correlationId, req, res, next
 
   beforeEach(() => {
     correlationId = 'abcde12345'
@@ -21,6 +21,7 @@ describe('Error handler', function () {
       status: sinon.spy(),
       render: sinon.spy()
     }
+    next = sinon.spy()
   })
 
   const controller = function (errorCode) {
@@ -41,24 +42,24 @@ describe('Error handler', function () {
   it('should handle 404 as unable to process registration at this time', async () => {
     const errorCode = 404
 
-    await controller(errorCode).validateInvite(req, res)
+    await controller(errorCode).validateInvite(req, res, next)
     sinon.assert.calledWith(res.status, errorCode)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Unable to process registration at this time' }))
+    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'There has been a problem proceeding with this registration. Please try again.' }))
   })
 
   it('should handle 410 as this invitation link has expired', async () => {
     const errorCode = 410
 
-    await controller(errorCode).validateInvite(req, res)
+    await controller(errorCode).validateInvite(req, res, next)
     sinon.assert.calledWith(res.status, errorCode)
     sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'This invitation is no longer valid' }))
   })
 
-  it('should handle undefined as unable to process registration at this time with error code 500', async () => {
+  it('should handle unexpected error by calling next', async () => {
     const errorCode = undefined
 
-    await controller(errorCode).validateInvite(req, res)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'Unable to process registration at this time' }))
+    await controller(errorCode).validateInvite(req, res, next)
+    sinon.assert.notCalled(res.render)
+    sinon.assert.called(next)
   })
 })

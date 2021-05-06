@@ -5,8 +5,7 @@ const ukPostcode = require('uk-postcode')
 
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const logger = require('../../../utils/logger')(__filename)
-const { response, renderErrorView } = require('../../../utils/response')
+const { response } = require('../../../utils/response')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth
 } = require('../../../utils/validation/server-side-form-validations')
@@ -123,9 +122,8 @@ module.exports = async function (req, res, next) {
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
 
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
-    } catch (error) {
-      logger.error(`Error creating responsible person with Stripe - ${error.message}`)
-      return renderErrorView(req, res, 'Please try again or contact support team')
+    } catch (err) {
+      next(err)
     }
   }
 }

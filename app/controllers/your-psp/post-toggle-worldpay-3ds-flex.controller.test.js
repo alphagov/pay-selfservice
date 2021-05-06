@@ -7,6 +7,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
   const gatewayAccountExternalId = 'a-gateway-account-external-id'
   let req
   let res
+  let next
   let updateIntegrationVersion3dsMock
   let renderErrorViewMock
 
@@ -26,6 +27,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
       redirect: sinon.spy(),
       render: sinon.spy()
     }
+    next = sinon.spy()
   })
 
   it('should toggle 3DS Flex on by setting 3DS integration version to 2', async () => {
@@ -33,7 +35,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
     const controller = getControllerWithMocks()
 
     req.body['toggle-worldpay-3ds-flex'] = 'on'
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2, req.correlationId)
     sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned on.')
@@ -45,24 +47,25 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
     const controller = getControllerWithMocks()
 
     req.body['toggle-worldpay-3ds-flex'] = 'off'
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 1, req.correlationId)
     sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned off. Your payments will now use 3DS only.')
     sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp`)
   })
 
-  it('should render an error if problem calling connector', async () => {
+  it('should call next with error if problem calling connector', async () => {
     const error = new Error()
     updateIntegrationVersion3dsMock = sinon.spy(() => Promise.reject(error))
     renderErrorViewMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
     req.body['toggle-worldpay-3ds-flex'] = 'on'
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2, req.correlationId)
-    sinon.assert.calledWith(renderErrorViewMock, req, res, false, error.errorCode)
+    const expectedError = sinon.match.instanceOf(Error)
+    sinon.assert.calledWith(next, expectedError)
 
     sinon.assert.notCalled(req.flash)
     sinon.assert.notCalled(res.redirect)
@@ -74,7 +77,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
     const controller = getControllerWithMocks()
 
     req.body['toggle-worldpay-3ds-flex'] = 'oof'
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(renderErrorViewMock, req, res, false, 400)
 
@@ -88,7 +91,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
     renderErrorViewMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
-    await controller(req, res)
+    await controller(req, res, next)
 
     sinon.assert.calledWith(renderErrorViewMock, req, res, false, 400)
 

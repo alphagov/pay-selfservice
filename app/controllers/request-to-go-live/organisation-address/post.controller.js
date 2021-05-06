@@ -2,7 +2,6 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
 const paths = require('../../../paths')
@@ -10,7 +9,6 @@ const {
   validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber
 } = require('../../../utils/validation/server-side-form-validations')
 const { updateService } = require('../../../services/service.service')
-const { renderErrorView } = require('../../../utils/response')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
@@ -113,7 +111,7 @@ const buildErrorsPageData = (form, errors) => {
   }
 }
 
-module.exports = async function (req, res) {
+module.exports = async function submitOrganisationAddress (req, res, next) {
   try {
     const form = normaliseForm(req.body)
     const errors = validateForm(form)
@@ -129,8 +127,7 @@ module.exports = async function (req, res) {
       lodash.set(req, 'session.pageData.requestToGoLive.organisationAddress', pageData)
       res.redirect(303, formatServicePathsFor(paths.service.requestToGoLive.organisationAddress, req.service.externalId))
     }
-  } catch (error) {
-    logger.error(`Error submitting organisation address - ${error.stack}`)
-    renderErrorView(req, res)
+  } catch (err) {
+    next(err)
   }
 }

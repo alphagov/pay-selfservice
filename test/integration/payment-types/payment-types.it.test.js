@@ -76,7 +76,7 @@ describe('Payment types', function () {
 
       return whenGetPaymentTypes(app)
         .expect(500)
-        .expect(response => expect(response.text).to.contain('Unable to fetch payment types. Please try again or contact support team.'))
+        .expect(response => expect(response.text).to.contain('There is a problem with the payments platform. Please contact the support team.'))
     })
   })
   describe('update payment types', function () {
@@ -99,7 +99,7 @@ describe('Payment types', function () {
 
       return whenPaymentTypesUpdated(app, { debit: 'visa-id-1234' })
         .expect(500)
-        .expect(response => expect(response.text).to.contain('Unable to update payment types. Please try again or contact support team.'))
+        .expect(response => expect(response.text).to.contain('There is a problem with the payments platform. Please contact the support team.'))
     })
   })
 })

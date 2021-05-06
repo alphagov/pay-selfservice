@@ -2,8 +2,7 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
-const { response, renderErrorView } = require('../../../utils/response')
+const { response } = require('../../../utils/response')
 const bankDetailsValidations = require('./bank-details-validations')
 const { updateBankAccount } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -74,9 +73,7 @@ module.exports = async (req, res, next) => {
         })
       }
     }
-    // the error is generic
-    logger.error(`Error submitting bank details, error = `, error)
-    return renderErrorView(req, res, 'Please try again or contact support team')
+    next(error)
   }
 }
 

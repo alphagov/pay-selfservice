@@ -1,18 +1,11 @@
 'use strict'
 
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 const goLiveStage = require('../../../models/go-live-stage')
 const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
-
-// Global setup
-chai.use(chaiAsPromised)
-const { expect } = chai
-
 const mockResponse = {}
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
@@ -50,7 +43,7 @@ describe('request to go live organisation address post controller', () => {
       }
     }
 
-    let res
+    let res, next
     beforeEach(() => {
       res = {
         setHeader: sinon.stub(),
@@ -58,6 +51,7 @@ describe('request to go live organisation address post controller', () => {
         redirect: sinon.spy(),
         render: sinon.spy()
       }
+      next = sinon.spy()
       mockResponse.renderErrorView = sinon.spy()
     })
 
@@ -115,10 +109,10 @@ describe('request to go live organisation address post controller', () => {
           }
         ]
 
-        await controller(req, res)
+        await controller(req, res, next)
 
-        expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).to.equal(true)
-        expect(res.redirect.calledWith(303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)).to.equal(true)
+        sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
+        sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
       })
 
       it('should submit empty strings for optional fields left blank', async function () {
@@ -169,25 +163,22 @@ describe('request to go live organisation address post controller', () => {
           }
         ]
 
-        await controller(req, res)
+        await controller(req, res, next)
 
-        expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).to.equal(true)
-        expect(res.redirect.calledWith(303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)).to.equal(true)
+        sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
+        sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
       })
     })
 
     describe('error updating service', () => {
-      it('should show an error page if updating service throws error', async function () {
-        const mockUpdateService = sinon.spy(() => {
-          return new Promise((resolve, reject) => {
-            reject(new Error())
-          })
-        })
+      it('should call next with error', async function () {
+        const err = new Error('an error')
+        const mockUpdateService = () => Promise.reject(err)
         const mockServiceService = { updateService: mockUpdateService }
         const controller = getController(mockServiceService)
 
-        await controller(req, res)
-        expect(mockResponse.renderErrorView.called).to.equal(true)
+        await controller(req, res, next)
+        sinon.assert.calledWith(next, err)
       })
     })
   })

@@ -161,7 +161,7 @@ describe('Invite validation tests', () => {
         .set('x-request-id', 'bob')
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There has been a problem proceeding with this registration. Please try again.')
         })
         .end(done)
     })

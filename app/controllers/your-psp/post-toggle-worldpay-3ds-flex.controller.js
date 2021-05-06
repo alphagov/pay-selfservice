@@ -6,7 +6,7 @@ const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
-module.exports = async function toggleWorldpay3dsFlex (req, res) {
+module.exports = async function toggleWorldpay3dsFlex (req, res, next) {
   const accountId = req.account.gateway_account_id
   const toggleWorldpay3dsFlex = req.body['toggle-worldpay-3ds-flex']
   const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id)
@@ -19,8 +19,8 @@ module.exports = async function toggleWorldpay3dsFlex (req, res) {
       await connector.updateIntegrationVersion3ds(accountId, integrationVersion3ds, req.correlationId)
       req.flash('generic', message)
       return res.redirect(303, indexUrl)
-    } catch (error) {
-      return renderErrorView(req, res, false, error.errorCode)
+    } catch (err) {
+      next(err)
     }
   } else {
     return renderErrorView(req, res, false, 400)

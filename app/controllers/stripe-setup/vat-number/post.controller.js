@@ -2,8 +2,7 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
-const { response, renderErrorView } = require('../../../utils/response')
+const { response } = require('../../../utils/response')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const vatNumberValidations = require('./vat-number-validations')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -44,9 +43,8 @@ module.exports = async (req, res, next) => {
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'vat_number', req.correlationId)
 
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
-    } catch (error) {
-      logger.error(`Error submitting "VAT number" details, error = `, error)
-      return renderErrorView(req, res, 'Please try again or contact support team')
+    } catch (err) {
+      next(err)
     }
   }
 }
