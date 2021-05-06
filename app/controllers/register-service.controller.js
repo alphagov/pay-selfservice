@@ -17,9 +17,9 @@ const {
   validateOtp
 } = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
+const { RegistrationSessionMissingError } = require('../errors')
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
-const missingSessionErrorMessage = 'Unable to process registration at this time'
 
 const registrationSessionPresent = function registrationSessionPresent (sessionData) {
   return sessionData && sessionData.email && sessionData.code
@@ -47,7 +47,7 @@ const showRegistration = function showRegistration (req, res) {
  * @param req
  * @param res
  */
-const submitRegistration = async function submitRegistration (req, res) {
+const submitRegistration = async function submitRegistration (req, res, next) {
   const correlationId = req.correlationId
   const email = req.body['email']
   const telephoneNumber = req.body['telephone-number']
@@ -94,7 +94,7 @@ const submitRegistration = async function submitRegistration (req, res) {
       // to tell them this. We continue to the next page if this is the case as it will
       // tell them to check their email.
       lodash.unset(req, 'session.pageData.submitRegistration')
-      return renderErrorView(req, res)
+      return next(err)
     }
   }
 
@@ -125,10 +125,10 @@ const showConfirmation = function showConfirmation (req, res) {
  * @param req
  * @param res
  */
-const showOtpVerify = function showOtpVerify (req, res) {
+const showOtpVerify = function showOtpVerify (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, missingSessionErrorMessage, 404)
+    return next(new RegistrationSessionMissingError())
   }
   const recovered = sessionData.recovered || {}
   delete sessionData.recovered
@@ -148,7 +148,7 @@ const showOtpVerify = function showOtpVerify (req, res) {
 const createPopulatedService = async function createPopulatedService (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, missingSessionErrorMessage, 404)
+    return next(new RegistrationSessionMissingError())
   }
   const correlationId = req.correlationId
   const code = req.register_invite.code
@@ -177,7 +177,7 @@ const createPopulatedService = async function createPopulatedService (req, res, 
     } else if (err.errorCode === 410) {
       return renderErrorView(req, res, 'This invitation is no longer valid', 410)
     } else {
-      return renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+      return next(err)
     }
   }
 
@@ -190,7 +190,7 @@ const createPopulatedService = async function createPopulatedService (req, res, 
       const errorMessage = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
       renderErrorView(req, res, errorMessage, err.errorCode)
     } else {
-      renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+      next(err)
     }
   }
 }
@@ -211,10 +211,10 @@ const loggedIn = function loggedIn (req, res) {
  * @param req
  * @param res
  */
-const showOtpResend = function showOtpResend (req, res) {
+const showOtpResend = function showOtpResend (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, missingSessionErrorMessage, 404)
+    return next(new RegistrationSessionMissingError())
   }
   res.render('self-create-service/resend-otp', {
     telephoneNumber: sessionData.telephone_number
@@ -227,10 +227,10 @@ const showOtpResend = function showOtpResend (req, res) {
  * @param req
  * @param res
  */
-const submitOtpResend = async function submitOtpResend (req, res) {
+const submitOtpResend = async function submitOtpResend (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, missingSessionErrorMessage, 404)
+    return next(new RegistrationSessionMissingError())
   }
   const correlationId = req.correlationId
   const code = sessionData.code
@@ -255,7 +255,7 @@ const submitOtpResend = async function submitOtpResend (req, res) {
     if (err.errorCode === 404) {
       renderErrorView(req, res, 'Unable to process registration at this time', 404)
     } else {
-      renderErrorView(req, res, 'Unable to process registration at this time', 500)
+      next(err)
     }
   }
 }
@@ -280,7 +280,7 @@ const showNameYourService = function showNameYourService (req, res) {
  * @param req
  * @param res
  */
-const submitYourServiceName = async function submitYourServiceName (req, res) {
+const submitYourServiceName = async function submitYourServiceName (req, res, next) {
   const correlationId = req.correlationId
   const serviceName = req.body['service-name']
   const serviceNameCy = req.body['service-name-cy']
@@ -301,8 +301,7 @@ const submitYourServiceName = async function submitYourServiceName (req, res) {
       lodash.unset(req, 'session.pageData.submitYourServiceName')
       res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, account.external_id))
     } catch (err) {
-      logger.debug('Invalid user input - service name')
-      renderErrorView(req, res, err)
+      next(err)
     }
   }
 }

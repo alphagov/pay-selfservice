@@ -1,7 +1,6 @@
 'use strict'
 
 const lodash = require('lodash')
-const logger = require('../utils/logger')(__filename)
 const { renderErrorView, response } = require('../utils/response')
 const registrationService = require('../services/user-registration.service')
 const paths = require('../paths')
@@ -11,35 +10,18 @@ const {
   validatePassword,
   validateOtp
 } = require('../utils/validation/server-side-form-validations')
+const { RegistrationSessionMissingError } = require('../errors')
 
-// Constants
-const messages = {
-  missingCookie: 'Unable to process registration at this time',
-  internalError: 'Unable to process registration at this time',
-  linkExpired: 'This invitation is no longer valid'
-}
-
-const handleError = (req, res, err) => {
-  logger.warn(`Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
-
-  switch (err.errorCode) {
-    case 404:
-      return renderErrorView(req, res, messages.missingCookie, 404)
-    case 410:
-      return renderErrorView(req, res, messages.linkExpired, 410)
-    default:
-      return renderErrorView(req, res, messages.missingCookie, 500)
-  }
-}
+const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 
 const registrationSessionPresent = function registrationSessionPresent (sessionData) {
   return sessionData && sessionData.email && sessionData.code
 }
 
-const showRegistration = function showRegistration (req, res) {
+const showRegistration = function showRegistration (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, messages.missingCookie, 404)
+    return next(new RegistrationSessionMissingError())
   }
   const recovered = sessionData.recovered || {}
   delete sessionData.recovered
@@ -56,10 +38,10 @@ const showRegistration = function showRegistration (req, res) {
  * @param req
  * @param res
  */
-const subscribeService = async function subscribeService (req, res) {
+const subscribeService = async function subscribeService (req, res, next) {
   const sessionData = req.register_invite
   if (!sessionData || !sessionData.code) {
-    return renderErrorView(req, res, messages.missingCookie, 404)
+    return next(new RegistrationSessionMissingError())
   }
 
   const inviteCode = sessionData.code
@@ -69,7 +51,11 @@ const subscribeService = async function subscribeService (req, res) {
     const completeResponse = await registrationService.completeInvite(inviteCode, correlationId)
     return res.redirect(303, `${paths.serviceSwitcher.index}?s=${completeResponse.service_external_id}`)
   } catch (err) {
-    return handleError(req, res, err)
+    if (err.errorCode === 410) {
+      renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+    } else {
+      next(err)
+    }
   }
 }
 
@@ -78,14 +64,14 @@ const subscribeService = async function subscribeService (req, res) {
  * @param req
  * @param res
  */
-const submitRegistration = async function submitRegistration (req, res) {
+const submitRegistration = async function submitRegistration (req, res, next) {
   const telephoneNumber = req.body['telephone-number']
   const password = req.body['password']
   const correlationId = req.correlationId
 
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, messages.missingCookie, 404)
+    return next(new RegistrationSessionMissingError())
   }
 
   const errors = {}
@@ -111,7 +97,11 @@ const submitRegistration = async function submitRegistration (req, res) {
     sessionData.telephone_number = telephoneNumber
     return res.redirect(303, paths.registerUser.otpVerify)
   } catch (err) {
-    return handleError(req, res, err)
+    if (err.errorCode === 410) {
+      renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+    } else {
+      next(err)
+    }
   }
 }
 
@@ -120,10 +110,10 @@ const submitRegistration = async function submitRegistration (req, res) {
  * @param req
  * @param res
  */
-const showOtpVerify = function showOtpVerify (req, res) {
+const showOtpVerify = function showOtpVerify (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, messages.missingCookie, 404)
+    return next(new RegistrationSessionMissingError())
   }
   const recovered = sessionData.recovered || {}
   delete sessionData.recovered
@@ -139,13 +129,13 @@ const showOtpVerify = function showOtpVerify (req, res) {
  * @param req
  * @param res
  */
-const submitOtpVerify = async function submitOtpVerify (req, res) {
+const submitOtpVerify = async function submitOtpVerify (req, res, next) {
   const correlationId = req.correlationId
   const verificationCode = req.body['verify-code']
 
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, messages.missingCookie, 404)
+    return next(new RegistrationSessionMissingError())
   }
 
   const validOtp = validateOtp(verificationCode)
@@ -163,15 +153,17 @@ const submitOtpVerify = async function submitOtpVerify (req, res) {
     loginController.setupDirectLoginAfterRegister(req, res, user.external_id)
     return res.redirect(303, paths.registerUser.logUserIn)
   } catch (err) {
-    if (err.errorCode && err.errorCode === 401) {
+    if (err.errorCode === 401) {
       sessionData.recovered = {
         errors: {
           verificationCode: 'The verification code you’ve used is incorrect or has expired'
         }
       }
-      return res.redirect(303, paths.registerUser.otpVerify)
+      res.redirect(303, paths.registerUser.otpVerify)
+    } else if (err.errorCode === 410) {
+      renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
     } else {
-      return handleError(req, res, err)
+      next(err)
     }
   }
 }
@@ -181,10 +173,10 @@ const submitOtpVerify = async function submitOtpVerify (req, res) {
  * @param req
  * @param res
  */
-const showReVerifyPhone = function showReVerifyPhone (req, res) {
+const showReVerifyPhone = function showReVerifyPhone (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, messages.missingCookie, 404)
+    return next(new RegistrationSessionMissingError())
   }
   const recovered = sessionData.recovered || {}
   delete sessionData.recovered
@@ -201,13 +193,13 @@ const showReVerifyPhone = function showReVerifyPhone (req, res) {
  * @param req
  * @param res
  */
-const submitReVerifyPhone = async function submitReVerifyPhone (req, res) {
+const submitReVerifyPhone = async function submitReVerifyPhone (req, res, next) {
   const correlationId = req.correlationId
   const telephoneNumber = req.body['telephone-number']
 
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
-    return renderErrorView(req, res, messages.missingCookie, 404)
+    return next(new RegistrationSessionMissingError())
   }
 
   const validPhoneNumber = validatePhoneNumber(telephoneNumber)
@@ -226,7 +218,11 @@ const submitReVerifyPhone = async function submitReVerifyPhone (req, res) {
     sessionData.telephone_number = telephoneNumber
     return res.redirect(303, paths.registerUser.otpVerify)
   } catch (err) {
-    return handleError(req, res, err)
+    if (err.errorCode === 410) {
+      renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+    } else {
+      next(err)
+    }
   }
 }
 

@@ -34,7 +34,7 @@ describe('create service otp resend validation', function () {
       app = mockSession.getAppWithLoggedOutSession(getApp())
       supertest(app)
         .get('/create-service/resend-otp')
-        .expect(404)
+        .expect(400)
         .end(done)
     })
   })
@@ -102,7 +102,7 @@ describe('create service otp resend validation', function () {
           'telephone-number': validServiceInviteOtpResendRequestPlain.telephone_number,
           csrfToken: csrf().create('123')
         })
-        .expect(404)
+        .expect(400)
         .end(done)
     })
   })

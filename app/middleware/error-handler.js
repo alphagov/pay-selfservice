@@ -9,7 +9,8 @@ const {
   NotAuthorisedError,
   PermissionDeniedError,
   NoServicesWithPermissionError,
-  NotFoundError
+  NotFoundError,
+  RegistrationSessionMissingError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
@@ -52,6 +53,11 @@ module.exports = function errorHandler (err, req, res, next) {
     logger.info(`NotFoundError handled: ${err.message}. Rendering 404 page`)
     res.status(404)
     return response(req, res, '404')
+  }
+
+  if (err instanceof RegistrationSessionMissingError) {
+    logger.info(`RegistrationSessionMissingError handled. Rendering error page`)
+    return renderErrorView(req, res, 'There has been a problem proceeding with this registration. Please try again.', 400)
   }
 
   if (err && err.code === 'EBADCSRFTOKEN') {
