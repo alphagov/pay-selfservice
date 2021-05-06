@@ -43,7 +43,7 @@ describe('create service otp validation', function () {
       app = session.getAppWithLoggedOutSession(getApp())
       supertest(app)
         .get(paths.selfCreateService.otpVerify)
-        .expect(404)
+        .expect(400)
         .end(done)
     })
 
@@ -133,7 +133,7 @@ describe('create service otp validation', function () {
           'verify-code': validServiceInviteOtpRequest.otp,
           csrfToken: csrf().create('123')
         })
-        .expect(404)
+        .expect(400)
         .end(done)
     })
 
@@ -199,7 +199,7 @@ describe('create service otp validation', function () {
       }
 
       adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
-        .reply(404)
+        .reply(400)
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
 
@@ -212,9 +212,9 @@ describe('create service otp validation', function () {
           'verify-code': validServiceInviteOtpRequest.otp,
           csrfToken: csrf().create('123')
         })
-        .expect(404)
+        .expect(500)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There is a problem with the payments platform. Please contact the support team.')
         })
         .end(done)
     })

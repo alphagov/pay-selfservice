@@ -74,9 +74,9 @@ describe('register user controller', () => {
         .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
-        .expect(404)
+        .expect(400)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There has been a problem proceeding with this registration. Please try again.')
         })
         .end(done)
     })
@@ -96,9 +96,9 @@ describe('register user controller', () => {
         .send({
           csrfToken: csrf().create('123')
         })
-        .expect(404)
+        .expect(400)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There has been a problem proceeding with this registration. Please try again.')
         })
         .end(done)
     })
@@ -172,10 +172,7 @@ describe('register user controller', () => {
           'password': 'password1234',
           csrfToken: csrf().create('123')
         })
-        .expect(404)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
-        })
+        .expect(500)
         .end(done)
     })
   })
@@ -189,9 +186,9 @@ describe('register user controller', () => {
         .get(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
-        .expect(404)
+        .expect(400)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There has been a problem proceeding with this registration. Please try again.')
         })
         .end(done)
     })
@@ -249,9 +246,9 @@ describe('register user controller', () => {
           'verify-code': '123456',
           csrfToken: csrf().create('123')
         })
-        .expect(404)
+        .expect(400)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There has been a problem proceeding with this registration. Please try again.')
         })
         .end(done)
     })
@@ -290,10 +287,7 @@ describe('register user controller', () => {
           'verify-code': '123456',
           csrfToken: csrf().create('123')
         })
-        .expect(404)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
-        })
+        .expect(500)
         .end(done)
     })
   })
@@ -325,9 +319,9 @@ describe('register user controller', () => {
         .get(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
-        .expect(404)
+        .expect(400)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There has been a problem proceeding with this registration. Please try again.')
         })
         .end(done)
     })
@@ -378,10 +372,7 @@ describe('register user controller', () => {
           'telephone-number': telephoneNumber,
           csrfToken: csrf().create('123')
         })
-        .expect(404)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
-        })
+        .expect(500)
         .end(done)
     })
 
@@ -426,9 +417,9 @@ describe('register user controller', () => {
           'telephone-number': telephoneNumber,
           csrfToken: csrf().create('123')
         })
-        .expect(404)
+        .expect(400)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There has been a problem proceeding with this registration. Please try again.')
         })
         .end(done)
     })
@@ -460,9 +451,9 @@ describe('register user controller', () => {
         .get(paths.registerUser.subscribeService)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
-        .expect(404)
+        .expect(400)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time')
+          expect(res.body.message).to.equal('There has been a problem proceeding with this registration. Please try again.')
         })
         .end(done)
     })

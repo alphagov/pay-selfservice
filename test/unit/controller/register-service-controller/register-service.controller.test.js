@@ -7,7 +7,7 @@ const { expect } = require('chai')
 const paths = require('../../../../app/paths.js')
 
 describe('Register service', function () {
-  let req, res
+  let req, res, next
 
   beforeEach(() => {
     req = {
@@ -26,6 +26,7 @@ describe('Register service', function () {
       render: sinon.spy(),
       status: sinon.spy()
     }
+    next = sinon.spy()
   })
 
   const controllerWithStubbedAdminusersSuccess = proxyquire('../../../../app/controllers/register-service.controller.js', {
@@ -44,7 +45,7 @@ describe('Register service', function () {
   }
 
   it('should redirect to the registration submitted page when successful', async () => {
-    await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res)
+    await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res, next)
     sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
   })
 
@@ -53,7 +54,7 @@ describe('Register service', function () {
       errorCode: 403
     }
 
-    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res)
+    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res, next)
 
     const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered')
     expect(recovered).to.deep.equal({
@@ -71,14 +72,14 @@ describe('Register service', function () {
       errorCode: 409
     }
 
-    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res)
+    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res, next)
     sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
   })
 
   it('should redirect with error whan an invalid phone number is entered', async () => {
     req.body['telephone-number'] = 'acb1234567' // pragma: allowlist secret
 
-    await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res)
+    await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res, next)
     const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered')
     expect(recovered).to.deep.equal({
       email: req.body.email,
@@ -90,13 +91,12 @@ describe('Register service', function () {
     sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
   })
 
-  it('should show error page for unexpected error from adminusers', async () => {
+  it('should call next with error for unexpected error from adminusers', async () => {
     const error = {
       errorCode: 404
     }
 
-    await getControllerWithStubbedAdminusersError(error).submitRegistration(req, res)
-    sinon.assert.calledWith(res.status, 500)
-    sinon.assert.calledWith(res.render, 'error')
+    await getControllerWithStubbedAdminusersError(error).submitRegistration(req, res, next)
+    sinon.assert.calledWith(next, error)
   })
 })

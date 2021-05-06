@@ -48,11 +48,19 @@ class NoServicesWithPermissionError extends DomainError {
 class NotFoundError extends DomainError {
 }
 
+/**
+ * Thrown when data that is expected in the user's session cookie for registration is missing
+ * and it is not possible for us to recover from this, and so want to show an error page.
+ */
+class RegistrationSessionMissingError extends DomainError {
+}
+
 module.exports = {
   NotAuthenticatedError,
   UserAccountDisabledError,
   NotAuthorisedError,
   PermissionDeniedError,
   NoServicesWithPermissionError,
-  NotFoundError
+  NotFoundError,
+  RegistrationSessionMissingError
 }
