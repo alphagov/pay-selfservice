@@ -136,7 +136,7 @@
     "husky": "2.3.0",
     "jsdom": "^16.5.3",
     "lint-staged": "8.2.0",
-    "mocha": "6.1.4",
+    "mocha": "8.3.2",
     "mountebank": "2.0.0",
     "nock": "13.0.11",
     "node-sass": "5.0.0",
