@@ -21,11 +21,7 @@ function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500) {
     'error_message': msg
   }
 
-  if (status === 500) {
-    logger.error('An error has occurred. Rendering error view', errorMeta)
-  } else {
-    logger.info('An error has occurred. Rendering error view', errorMeta)
-  }
+  logger.info('An error has occurred. Rendering error view', errorMeta)
   res.setHeader('Content-Type', 'text/html')
 
   res.status(status)
