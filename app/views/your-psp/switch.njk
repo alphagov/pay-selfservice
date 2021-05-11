@@ -1,0 +1,59 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Switch PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l page-title">Switch payment service provider (PSP)</h1>
+
+  <p class="govuk-body">This service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }}.</p>
+
+  <p class="govuk-body">Before you can safely switch to taking payments with Worldpay, you need to link your Worldpay account to Pay.</p>
+
+  <ol class="app-task-list">
+    <li>
+        <h2 class="app-task-list__section">
+          <span class="app-task-list__section-number">1. </span> Get ready to switch
+        </h2>
+        <ul class="app-task-list__items">
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, 'worldpay') }}" aria-describedby="eligibility-status">
+                Link your Worldpay account with Pay
+              </a>
+            </span>
+            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="eligibility-status">not started</strong>
+          </li>
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a class="govuk-link" href="#" aria-describedby="read-declaration-status">
+                Test your Worldpay account with a live payment
+              </a>
+            </span>
+            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="read-declaration-status">not started</strong>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <h2 class="app-task-list__section">
+          <span class="app-task-list__section-number">2. </span> Switch payment service provider to Worldpay
+        </h2>
+        <ul class="app-task-list__flat_items">
+          <li class="app-task-list__item">
+            <p class="govuk-body">After linking your Worldpay account to Pay, you can safely switch from taking payments with Smartpay.</p>
+            <form>
+              <button class="govuk-button">Switch payment service provider to Worldpay</button>
+            </form>
+          </li>
+        </ul>
+      </li>
+    </ol>
+</div>
+{% endblock %}

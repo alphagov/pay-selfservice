@@ -14,5 +14,8 @@
         account ({{ account.payment_provider }})
       {% endif %}
     </button>
+    {% if service.experimental_features_enabled and account.type === "live" %}
+      <strong class="govuk-tag govuk-tag--blue" style="margin-left: 5px">switching psp</strong>
+    {% endif %}
   </form>
 </li>

@@ -68,7 +68,7 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
   return navigationItems
 }
 
-const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}) => {
+const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}, service = {}) => {
   const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, account.external_id)
 
   return [
@@ -89,9 +89,16 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
     {
       id: 'navigation-menu-your-psp',
       name: `Your PSP - ${formatPSPname(paymentProvider)}`,
-      url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id),
-      current: pathLookup(currentPath, yourPspPaths),
+      url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, paymentProvider),
+      current: currentPath.includes(paymentProvider),
       permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox')
+    },
+    {
+      id: 'navigation-menu-your-psp-target-worldpay',
+      name: `Your PSP - Worldpay`,
+      url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, 'worldpay'),
+      current: currentPath.includes('worldpay'),
+      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox') && service.experimentalFeaturesEnabled
     },
     {
       id: 'navigation-menu-payment-types',
@@ -99,6 +106,13 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       url: formatAccountPathsFor(paths.account.paymentTypes.index, account.external_id),
       current: pathLookup(currentPath, paths.account.paymentTypes.index),
       permissions: permissions.payment_types_read && type === 'card'
+    },
+    {
+      id: 'navigation-menu-your-psp-switch',
+      name: 'Switch PSP',
+      url: formatAccountPathsFor(paths.account.yourPsp.switch, account.external_id),
+      current: currentPath === '/your-psp/switch',
+      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'sandbox') && service.experimentalFeaturesEnabled
     }
   ]
 }

@@ -5,6 +5,16 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
 {% endblock %}
 
 {% block mainContent %}
+
+  {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" %}
+    <div class="account-status-panel govuk-grid-row govuk-!-margin-bottom-5" style="border-color: #d4351c">
+      <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">Information needed to switch PSP</h2>
+        <p class="govuk-body-m">Your service has been set up to switch PSP. Once credentials have been provided, you can switch to your new provider.</p>
+        <p class="govuk-body-m govuk-!-margin-bottom-0">You can provide the credentials in your settings, under <a class="govuk-link" href="your-psp/switch">Switch payment service provider (PSP)</a>.</p>
+      </div>
+    </div>
+  {% endif %}
   {% include "./_live-account-requested-banner.njk" %}
   {% include "./_stripe-account-setup-banner.njk" %}
   <div class="govuk-grid-column-full">

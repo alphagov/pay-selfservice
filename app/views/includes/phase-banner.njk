@@ -28,7 +28,12 @@
         Live
       {% endif %}
     {% endset %}
+
+    {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" %}
+    <strong class="service-info--tag govuk-tag govuk-tag--blue">live - switching psp</strong>
+    {% else %}
     <strong class="service-info--tag govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
+    {% endif %}
   {% endif %}
 {% endset %}
 

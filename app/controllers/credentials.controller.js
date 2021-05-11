@@ -14,9 +14,11 @@ const { NotFoundError } = require('../errors')
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
 function showSuccessView (viewMode, req, res) {
+  const { provider } = req.params
   let responsePayload = {}
 
   responsePayload.editNotificationCredentialsMode = (viewMode === EDIT_NOTIFICATION_CREDENTIALS_MODE)
+  responsePayload.targetProvider = provider
 
   const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
   if (invalidCreds) {
@@ -25,14 +27,14 @@ function showSuccessView (viewMode, req, res) {
   }
   responsePayload.change = _.get(req, 'query.change', {})
 
-  response(req, res, 'credentials/' + req.account.payment_provider, responsePayload)
+  response(req, res, 'credentials/' + provider, responsePayload)
 }
 
 function loadIndex (req, res, next, viewMode) {
   if (!req.account) {
     return next(new Error('Account not found on request'))
   }
-  if (req.account.payment_provider === 'stripe') {
+  if (req.params.provider === 'stripe') {
     return next(new NotFoundError('Attempted to access credentials page for a Stripe account'))
   }
   showSuccessView(viewMode, req, res)
@@ -107,7 +109,7 @@ module.exports = {
         gatewayAccountId: accountId
       })
 
-      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id))
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.account.payment_provider))
     } catch (err) {
       next(err)
     }
@@ -122,7 +124,7 @@ module.exports = {
         payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
       })
 
-      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id))
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.account.payment_provider))
     } catch (err) {
       next(err)
     }

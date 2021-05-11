@@ -21,7 +21,7 @@ module.exports = {
     },
     credentials: {
       index: '/credentials',
-      edit: '/credentials/edit'
+      edit: '/credentials/:provider/edit'
     },
     dashboard: {
       index: '/dashboard'
@@ -117,9 +117,10 @@ module.exports = {
       refund: '/transactions/:chargeId/refund'
     },
     yourPsp: {
-      index: '/your-psp',
+      index: '/your-psp/:provider',
       flex: '/your-psp/flex',
-      worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
+      worldpay3dsFlex: '/your-psp/worldpay-3ds-flex',
+      switch: '/your-psp/switch'
     }
   },
   service: {

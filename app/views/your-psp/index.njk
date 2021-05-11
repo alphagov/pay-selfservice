@@ -10,16 +10,16 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ currentGatewayAccount.payment_provider | formatPSPname }}</h1>
+  <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ targetProvider | formatPSPname }}</h1>
 
-  {% if currentGatewayAccount.payment_provider === "worldpay" %}
+  {% if targetProvider === "worldpay" %}
     {% include "./_worldpay.njk" %}
     {% include "./_worldpay-flex.njk" %}
   {% endif %}
-  {% if currentGatewayAccount.payment_provider === "smartpay" %}
+  {% if targetProvider === "smartpay" %}
     {% include "./_smartpay.njk" %}
   {% endif %}
-  {% if currentGatewayAccount.payment_provider === "epdq" %}
+  {% if targetProvider === "epdq" %}
     {% include "./_epdq.njk" %}
   {% endif %}
 </div>
