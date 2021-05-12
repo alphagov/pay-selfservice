@@ -14,6 +14,11 @@ module.exports = (req, res) => {
 
   const isWorldpay3dsFlexEnabled = is3dsEnabled && req.account.integration_version_3ds === 2
 
+  if (provider !== req.account.payment_provider) {
+    const credentials = req.session.prototype ? req.session.prototype.credentials : {}
+    req.account.credentials = credentials
+  }
+
   return response(req, res, 'your-psp/index', { isAccountCredentialsConfigured,
     targetProvider: provider,
     is3dsEnabled,

@@ -1,4 +1,5 @@
 {% extends "layout.njk" %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block pageTitle %}
   Switch PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -10,11 +11,33 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+
+  {% if flash.success %}
+  {% set html %}
+    <p class="govuk-notification-banner__heading">
+      Your payment service provider is now Worldpay
+    </p>
+    <p class="govuk-body">
+      All future payments will now be taken with Worldpay, your {{ currentGatewayAccount.payment_provider | formatPSPname }} will remain linked to process refunds.
+    </p>
+  {% endset %}
+
+  {{ govukNotificationBanner({
+    html: html,
+    type: 'success'
+  }) }}
+  {% endif %}
   <h1 class="govuk-heading-l page-title">Switch payment service provider (PSP)</h1>
 
+  {% if prototype.switchComplete %}
+  <p class="govuk-body">This service is taking payments with Worldpay.</p>
+
+  <p class="govuk-body">This service switched from taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }} on {{ prototype.switchDate }}.</p>
+
+  {% else %}
   <p class="govuk-body">This service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }}.</p>
 
-  <p class="govuk-body">Before you can safely switch to taking payments with Worldpay, you need to link your Worldpay account to Pay.</p>
+  <p class="govuk-body">Before you can safely switch to taking payments with Worldpay, you need to link your Worldpay account to GOV.UK Pay.</p>
 
   <ol class="app-task-list">
     <li>
@@ -25,18 +48,33 @@
           <li class="app-task-list__item">
             <span class="app-task-list__task-name">
               <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, 'worldpay') }}" aria-describedby="eligibility-status">
-                Link your Worldpay account with Pay
+                Link your Worldpay account with GOV.UK Pay
               </a>
             </span>
+            {% if prototype.credentialsComplete %}
+            <strong class="govuk-tag app-task-list__tag" id="eligibility-status">completed</strong>
+            {% else %}
             <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="eligibility-status">not started</strong>
+            {% endif %}
           </li>
           <li class="app-task-list__item">
+            {% set testPaymentLabel = "Test your Worldpay PSP with a live payment" %}
             <span class="app-task-list__task-name">
-              <a class="govuk-link" href="#" aria-describedby="read-declaration-status">
-                Test your Worldpay account with a live payment
+            {% if prototype.credentialsComplete %}
+              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}" aria-describedby="read-declaration-status">
+                {{ testPaymentLabel }}
               </a>
+            {% else %}
+              <span>{{ testPaymentLabel }}</span>
+            {% endif %}
             </span>
-            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="read-declaration-status">not started</strong>
+
+            {% if prototype.livePaymentCompleted %}
+            <strong class="govuk-tag app-task-list__tag" id="read-declaration-status">completed</strong>
+            {% else %}
+              {% set testPaymentStatusLabel = "not started" if prototype.credentialsComplete else "cannot start yet" %}
+              <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="read-declaration-status">{{ testPaymentStatusLabel }}</strong>
+            {% endif %}
           </li>
         </ul>
       </li>
@@ -47,13 +85,21 @@
         </h2>
         <ul class="app-task-list__flat_items">
           <li class="app-task-list__item">
-            <p class="govuk-body">After linking your Worldpay account to Pay, you can safely switch from taking payments with Smartpay.</p>
-            <form>
-              <button class="govuk-button">Switch payment service provider to Worldpay</button>
+            <p class="govuk-body">
+              After switching payment service provider, all future payments will taken by Worldpay.
+            </p>
+
+            <p class="govuk-body">
+              {{ currentGatewayAccount.payment_provider | formatPSPname }} will remain linked to process refunds.
+            </p>
+            <form method="POST" action="{{ formatAccountPathsFor(routes.account.yourPsp.switch, currentGatewayAccount.external_id) }}">
+              <input hidden name="csrfToken" value="{{ csrf }}">
+              <button {% if prototype.credentialsComplete and prototype.livePaymentCompleted %}{% else %}disabled{% endif %} class="govuk-button">Switch payment service provider to Worldpay</button>
             </form>
           </li>
         </ul>
       </li>
     </ol>
+    {% endif %}
 </div>
 {% endblock %}

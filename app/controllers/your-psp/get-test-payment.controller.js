@@ -5,9 +5,6 @@ const { response } = require('../../utils/response')
 module.exports = (req, res) => {
   const isAccountCredentialsConfigured = req.account.credentials && req.account.credentials.merchant_id !== undefined
   const is3dsEnabled = req.account.requires3ds === true
-  const prototype = req.session.prototype || {}
 
-  // delete req.session.prototype
-
-  return response(req, res, 'your-psp/switch', { isAccountCredentialsConfigured, prototype })
+  return response(req, res, 'your-psp/test-payment', { isAccountCredentialsConfigured })
 }

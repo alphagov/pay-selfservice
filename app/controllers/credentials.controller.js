@@ -27,6 +27,11 @@ function showSuccessView (viewMode, req, res) {
   }
   responsePayload.change = _.get(req, 'query.change', {})
 
+  if (provider !== req.account.payment_provider) {
+    const credentials = req.session.prototype ? req.session.prototype.credentials : {}
+    req.account.credentials = credentials
+  }
+
   response(req, res, 'credentials/' + provider, responsePayload)
 }
 
@@ -118,15 +123,24 @@ module.exports = {
   update: async function (req, res, next) {
     const accountId = req.account.gateway_account_id
     const correlationId = req.headers[CORRELATION_HEADER] || ''
+    const { provider } = req.params
 
-    try {
-      await connectorClient.patchAccountCredentials({
-        payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
-      })
+    if (provider === req.account.payment_provider) {
+      try {
+        await connectorClient.patchAccountCredentials({
+          payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
+        })
 
-      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.account.payment_provider))
-    } catch (err) {
-      next(err)
+        return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.account.payment_provider))
+      } catch (err) {
+        next(err)
+      }
+    } else {
+      req.session.prototype = req.session.prototype || {}
+      req.session.prototype.credentialsComplete = true
+
+      req.session.prototype.credentials = credentialsPatchRequestValueOf(req).credentials
+      res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
     }
   }
 }

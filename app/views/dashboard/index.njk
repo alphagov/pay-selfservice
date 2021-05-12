@@ -6,11 +6,11 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
 
 {% block mainContent %}
 
-  {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" %}
+  {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" and not prototype.switchComplete %}
     <div class="account-status-panel govuk-grid-row govuk-!-margin-bottom-5" style="border-color: #d4351c">
       <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">Information needed to switch PSP</h2>
-        <p class="govuk-body-m">Your service has been set up to switch PSP. Once credentials have been provided, you can switch to your new provider.</p>
+        <h2 class="govuk-heading-m">Action required to switch PSP to Worldpay</h2>
+        <p class="govuk-body-m">Your service has started switching PSP, once credentials have been provided you can start taking payments with Worldpay.</p>
         <p class="govuk-body-m govuk-!-margin-bottom-0">You can provide the credentials in your settings, under <a class="govuk-link" href="your-psp/switch">Switch payment service provider (PSP)</a>.</p>
       </div>
     </div>

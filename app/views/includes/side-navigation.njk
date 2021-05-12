@@ -7,17 +7,45 @@
                 <li class="govuk-!-font-weight-bold  govuk-!-margin-bottom-2">
                   <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" id="{{item.id}}" href="{{item.url}}">{{item.name}}</a>
 
-                  {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" and item.id === "navigation-menu-your-psp" %}
-                    <strong class="govuk-tag govuk-tag--green">active</strong>
+                  {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" %}
+                    {% if item.id === "navigation-menu-your-psp" %}
+                      {% if prototype.switchComplete %}
+                      <strong class="govuk-tag govuk-tag--grey">retired</strong>
+                      {% else %}
+                      <strong class="govuk-tag govuk-tag--green">active</strong>
+                      {% endif %}
+                    {% elif item.id === "navigation-menu-your-psp-target-worldpay" %}
+                      {% if prototype.switchComplete %}
+                      <strong class="govuk-tag govuk-tag--green">active</strong>
+                      {% else %}
+                      <strong class="govuk-tag govuk-tag--grey">pending</strong>
+                      {% endif %}
+                    {% endif %}
                   {% endif %}
                 </li>
               {% else %}
                 <li class="govuk-!-margin-bottom-2">
                   <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" id="{{item.id}}" href="{{item.url}}">{{item.name}}</a>
 
-                  {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" and item.id === "navigation-menu-your-psp" %}
+                  {# {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" and item.id === "navigation-menu-your-psp" %}
                     <strong class="govuk-tag govuk-tag--green">active</strong>
+                  {% endif %} #}
+                  {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" %}
+                    {% if item.id === "navigation-menu-your-psp" %}
+                      {% if prototype.switchComplete %}
+                      <strong class="govuk-tag govuk-tag--grey">retired</strong>
+                      {% else %}
+                      <strong class="govuk-tag govuk-tag--green">active</strong>
+                      {% endif %}
+                    {% elif item.id === "navigation-menu-your-psp-target-worldpay" %}
+                      {% if prototype.switchComplete %}
+                      <strong class="govuk-tag govuk-tag--green">active</strong>
+                      {% else %}
+                      <strong class="govuk-tag govuk-tag--grey">pending</strong>
+                      {% endif %}
+                    {% endif %}
                   {% endif %}
+
                 </li>
               {% endif %}
             {% endif %}

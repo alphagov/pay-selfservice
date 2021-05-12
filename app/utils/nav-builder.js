@@ -111,7 +111,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       id: 'navigation-menu-your-psp-switch',
       name: 'Switch PSP',
       url: formatAccountPathsFor(paths.account.yourPsp.switch, account.external_id),
-      current: currentPath === '/your-psp/switch',
+      current: currentPath === '/your-psp/switch' || currentPath === '/your-psp/verify',
       permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'sandbox') && service.experimentalFeaturesEnabled
     }
   ]

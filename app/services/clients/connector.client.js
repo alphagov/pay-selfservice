@@ -483,6 +483,19 @@ ConnectorClient.prototype = {
       }
     )
   },
+
+  postChargeRequest: function (gatewayAccountId, payload) {
+    return baseClient.post(
+      {
+        baseUrl: this.connectorUrl,
+        url: `/v1/api/accounts/${gatewayAccountId}/charges`,
+        json: true,
+        body: payload,
+        description: 'create payment',
+        service: SERVICE_NAME
+      }
+    )
+  },
   /**
    *
    * @param {Object} params

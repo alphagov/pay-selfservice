@@ -20,7 +20,7 @@ module.exports = {
       update: '/api-keys/update'
     },
     credentials: {
-      index: '/credentials',
+      index: '/credentials/:provider',
       edit: '/credentials/:provider/edit'
     },
     dashboard: {
@@ -120,7 +120,9 @@ module.exports = {
       index: '/your-psp/:provider',
       flex: '/your-psp/flex',
       worldpay3dsFlex: '/your-psp/worldpay-3ds-flex',
-      switch: '/your-psp/switch'
+      switch: '/your-psp/switch',
+      testPayment: '/your-psp/verify',
+      completeTestPayment: '/your-psp/verify/callback'
     }
   },
   service: {

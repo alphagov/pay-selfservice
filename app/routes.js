@@ -8,6 +8,8 @@ const generateRoute = require('./utils/generate-route')
 const paths = require('./paths.js')
 const accountUrls = require('./utils/gateway-account-urls')
 
+const formatAccountPathsFor = require('./utils/format-account-paths-for')
+
 const userIsAuthorised = require('./middleware/user-is-authorised')
 const getServiceAndAccount = require('./middleware/get-service-and-gateway-account.middleware')
 const { NotFoundError } = require('./errors')
@@ -295,6 +297,18 @@ module.exports.bind = function (app) {
   account.post(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.postFlex)
 
   account.get(yourPsp.switch, permission('gateway-credentials:read'), yourPspController.getSwitch)
+  account.post(yourPsp.switch, permission('gateway-credentials:read'), yourPspController.postSwitch)
+
+  account.get(yourPsp.testPayment, permission('gateway-credentials:read'), yourPspController.getTestPayment)
+  account.post(yourPsp.testPayment, permission('gateway-credentials:read'), yourPspController.postTestPayment)
+  account.get(yourPsp.completeTestPayment, permission('gateway-credentials:read'), (req, res, next) => {
+    req.session.prototype = req.session.prototype || {}
+    const { testPaymentChargeId } = req.session.prototype
+
+    // @TODO(sfount) only set complete if the payment actually succeeded
+    req.session.prototype.livePaymentCompleted = true
+    res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
+  })
 
   account.get(yourPsp.index, permission('gateway-credentials:read'), yourPspController.getIndex)
 

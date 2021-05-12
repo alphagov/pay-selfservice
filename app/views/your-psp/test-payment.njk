@@ -1,0 +1,57 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Test your Worldpay PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l page-title">Test your Worldpay PSP with a live payment</h1>
+
+  <p class="govuk-body">
+    Make a live payment to test that GOV.UK Pay and Worldpay are working together.
+  </p>
+
+  <p class="govuk-body">
+    To make a live payment you will need a debit or credit card. Once completed, the payment can be refunded at any time.
+  </p>
+
+  <div class="govuk-body">
+    If you have recently tested your Worldpay PSP with another GOV.UK Pay service, you can skip making a live payment.
+  </div>
+
+  <div>
+    <form method="POST" action="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}">
+    <input hidden name="request_live_payment" value="true">
+    <input hidden name="csrfToken" value="{{ csrf }}">
+    <button class="govuk-button" data-module="govuk-button">
+      Continue to live payment
+    </button>
+    </form>
+
+    <form method="POST" action="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}">
+    <input hidden name="request_live_payment" value="false">
+    <input hidden name="csrfToken" value="{{ csrf }}">
+    <div class="govuk-checkboxes govuk-checkboxes--small govuk-!-margin-top-6">
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" id="confirmed" name="confirmed" type="checkbox" value="true">
+          <label class="govuk-label govuk-checkboxes__label" for="confirmed">
+            I am confident GOV.UK Pay and my Worldpay PSP are working together.
+          </label>
+        </div>
+    </div>
+    <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        Skip live payment
+    </button>
+    </form>
+  </div>
+
+  <div class="govuk-body">
+    <a class="govuk-link govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.yourPsp.switch,  currentGatewayAccount.external_id) }}">Cancel</a>
+  </div>
+</div>
+{% endblock %}
