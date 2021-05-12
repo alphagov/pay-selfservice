@@ -302,11 +302,11 @@ module.exports.bind = function (app) {
   account.get(yourPsp.testPayment, permission('gateway-credentials:read'), yourPspController.getTestPayment)
   account.post(yourPsp.testPayment, permission('gateway-credentials:read'), yourPspController.postTestPayment)
   account.get(yourPsp.completeTestPayment, permission('gateway-credentials:read'), (req, res, next) => {
-    req.session.prototype = req.session.prototype || {}
-    const { testPaymentChargeId } = req.session.prototype
+    // req.session.prototype = req.session.prototype || {}
+    const { testPaymentChargeId } = req.currentAccountPrototype
 
     // @TODO(sfount) only set complete if the payment actually succeeded
-    req.session.prototype.livePaymentCompleted = true
+    req.currentAccountPrototype.livePaymentCompleted = true
     res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
   })
 

@@ -28,11 +28,12 @@ function showSuccessView (viewMode, req, res) {
   responsePayload.change = _.get(req, 'query.change', {})
 
   if (provider !== req.account.payment_provider) {
-    const credentials = req.session.prototype ? req.session.prototype.credentials : {}
+    // const credentials = req.session.prototype ? req.session.prototype.credentials : {}
+    const credentials = (req.currentAccountPrototype && req.currentAccountPrototype.credentials) || {}
     req.account.credentials = credentials
   }
 
-  response(req, res, 'credentials/' + provider, responsePayload)
+  response(req, res, 'credentials/' + (provider || req.account.payment_provider), responsePayload)
 }
 
 function loadIndex (req, res, next, viewMode) {
@@ -136,10 +137,12 @@ module.exports = {
         next(err)
       }
     } else {
-      req.session.prototype = req.session.prototype || {}
-      req.session.prototype.credentialsComplete = true
+      // req.session.prototype = req.session.prototype || {}
+      // req.session.prototype.credentialsComplete = true
 
-      req.session.prototype.credentials = credentialsPatchRequestValueOf(req).credentials
+      // req.session.prototype[req.account.external_id].credentials = credentialsPatchRequestValueOf(req).credentials
+      req.currentAccountPrototype.credentials = credentialsPatchRequestValueOf(req).credentials
+      req.currentAccountPrototype.credentialsComplete = true
       res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
     }
   }

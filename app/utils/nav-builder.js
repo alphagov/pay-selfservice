@@ -50,12 +50,12 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
-    current: currentPath !== '/' ? pathLookup(currentPath, [
+    current: (currentPath !== '/' ? pathLookup(currentPath, [
       ...mainSettingsPaths,
       ...yourPspPaths,
       paths.account.apiKeys,
       paths.account.paymentTypes
-    ]) : false,
+    ]) : false) || currentPath.includes('/your-psp/') || currentPath.includes('/credentials/'),
     permissions: _.some([
       permissions.tokens_read,
       permissions.gateway_credentials_read,

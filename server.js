@@ -74,8 +74,20 @@ function initialiseGlobalMiddleware (app) {
   app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
-    if (req.session && req.session.prototype) {
-      res.locals.prototype = req.session.prototype || {}
+    if (req.session) {
+
+      req.session.prototype = req.session.prototype || {}
+
+      // biggest hack ever?
+      const gatewayAccountExternalId = req.originalUrl.includes('account') && req.originalUrl.split('/')[2]
+      if (gatewayAccountExternalId) {
+        req.session.prototype[gatewayAccountExternalId] = req.session.prototype[gatewayAccountExternalId] || {}
+        req.currentAccountPrototype = req.session.prototype[gatewayAccountExternalId]
+        res.locals.prototype = req.currentAccountPrototype
+        res.locals.currentAccountPrototype = req.currentAccountPrototype
+      }
+
+      res.locals.allPrototypes = req.session.prototype
     }
     res.locals.asset_path = '/public/'
     res.locals.routes = router.paths

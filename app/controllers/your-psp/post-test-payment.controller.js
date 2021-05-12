@@ -26,16 +26,16 @@ module.exports = async (req, res) => {
           'role': 'PSP_CREDENTIAL_VALIDATION'
         }
       })
-      req.session.prototype = req.session.prototype || {}
-      req.session.prototype.testPaymentChargeId = result.charge_id
+      // req.session.prototype = req.session.prototype || {}
+      req.currentAccountPrototype.testPaymentChargeId = result.charge_id
       res.redirect(result.links[2].href)
     } catch (error) {
       console.log(error)
       res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
     }
   } else {
-    req.session.prototype = req.session.prototype || {}
-    req.session.prototype.livePaymentCompleted = true
+    // req.session.prototype = req.session.prototype || {}
+    req.currentAccountPrototype.livePaymentCompleted = true
     res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
   }
 }
