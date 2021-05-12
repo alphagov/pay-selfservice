@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
-  Test your Worldpay PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  Test the connection between Worldpay and GOV.UK Pay - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -10,19 +10,13 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l page-title">Test your Worldpay PSP with a live payment</h1>
-
-  <p class="govuk-body">
-    Make a live payment to test that GOV.UK Pay and Worldpay are working together.
-  </p>
-
-  <p class="govuk-body">
-    To make a live payment you will need a debit or credit card. Once completed, the payment can be refunded at any time.
-  </p>
-
-  <div class="govuk-body">
-    If you have recently tested your Worldpay PSP with another GOV.UK Pay service, you can skip making a live payment.
+  <h1 class="govuk-heading-l page-title">Test the connection between Worldpay and GOV.UK Pay</h1>
+  <div class="govuk-inset-text">
+    You can skip this if you've successfully used your Worldpay credentials with another service on Pay.
   </div>
+  <p class="govuk-body">
+    Check that your service can take payments with Worldpay by making a live payment. You need a debit or credit card and can refund the payment at anytime.
+  </p>
 
   <div>
     <form method="POST" action="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}">

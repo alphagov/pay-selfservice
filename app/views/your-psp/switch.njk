@@ -15,10 +15,10 @@
   {% if flash.success %}
   {% set html %}
     <p class="govuk-notification-banner__heading">
-      Your payment service provider is now Worldpay
+      You’ve switched payment service provider to Worldpay
     </p>
     <p class="govuk-body">
-      All future payments will now be taken with Worldpay, your {{ currentGatewayAccount.payment_provider | formatPSPname }} will remain linked to process refunds.
+      All future payments will be taken with Worldpay. Your {{ currentGatewayAccount.payment_provider | formatPSPname }} account is still live for processing refunds of payments made before the switch.
     </p>
   {% endset %}
 
@@ -30,19 +30,21 @@
   <h1 class="govuk-heading-l page-title">Switch payment service provider (PSP)</h1>
 
   {% if prototype.switchComplete %}
-  <p class="govuk-body">This service is taking payments with Worldpay.</p>
-
-  <p class="govuk-body">This service switched from taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }} on {{ prototype.switchDate }}.</p>
+  <p class="govuk-body">This service is taking payments with Worldpay. It switched from using {{ currentGatewayAccount.payment_provider | formatPSPname }} on {{ prototype.switchDate }}.</p>
 
   {% else %}
   <p class="govuk-body">This service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }}.</p>
 
-  <p class="govuk-body">Before you can safely switch to taking payments with Worldpay, you need to link your Worldpay account to GOV.UK Pay.</p>
+  <p class="govuk-body">To prepare for the switch, you need:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>your Worldpay account credentials: Merchant code, username and password</li>
+    <li>a debit or credit card to make a nominal live payment (refundable)</li>
+  </ul>
 
-  <ol class="app-task-list">
+  <ol class="app-task-list govuk-!-margin-top-8">
     <li>
         <h2 class="app-task-list__section">
-          <span class="app-task-list__section-number">1. </span> Get ready to switch
+          <span class="app-task-list__section-number">1. </span> Get ready to switch PSP
         </h2>
         <ul class="app-task-list__items">
           <li class="app-task-list__item">
@@ -58,7 +60,7 @@
             {% endif %}
           </li>
           <li class="app-task-list__item">
-            {% set testPaymentLabel = "Test your Worldpay PSP with a live payment" %}
+            {% set testPaymentLabel = "Make a live payment to test your Worldpay PSP" %}
             <span class="app-task-list__task-name">
             {% if prototype.credentialsComplete %}
               <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}" aria-describedby="read-declaration-status">
@@ -81,20 +83,23 @@
 
       <li>
         <h2 class="app-task-list__section">
-          <span class="app-task-list__section-number">2. </span> Switch payment service provider to Worldpay
+          <span class="app-task-list__section-number">2. </span> Switch PSP to Worldpay
         </h2>
         <ul class="app-task-list__flat_items">
           <li class="app-task-list__item">
-            <p class="govuk-body">
+            {# <p class="govuk-body">
               After switching payment service provider, all future payments will taken by Worldpay.
             </p>
 
             <p class="govuk-body">
-              {{ currentGatewayAccount.payment_provider | formatPSPname }} will remain linked to process refunds.
+              {{ currentGatewayAccount.payment_provider | formatPSPname }} will remain linked to process refunds for existing payments.
+            </p> #}
+            <p class="govuk-body">
+              After linking Worldpay and GOV.UK Pay, you can safely switch to taking payments with Worldpay.
             </p>
             <form method="POST" action="{{ formatAccountPathsFor(routes.account.yourPsp.switch, currentGatewayAccount.external_id) }}">
               <input hidden name="csrfToken" value="{{ csrf }}">
-              <button {% if prototype.credentialsComplete and prototype.livePaymentCompleted %}{% else %}disabled{% endif %} class="govuk-button">Switch payment service provider to Worldpay</button>
+              <button {% if prototype.credentialsComplete and prototype.livePaymentCompleted %}{% else %}disabled{% endif %} class="govuk-button">Switch to Worldpay</button>
             </form>
           </li>
         </ul>
