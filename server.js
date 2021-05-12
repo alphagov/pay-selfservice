@@ -74,7 +74,9 @@ function initialiseGlobalMiddleware (app) {
   app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
-    res.locals.prototype = req.session.prototype || {}
+    if (req.session && req.session.prototype) {
+      res.locals.prototype = req.session.prototype || {}
+    }
     res.locals.asset_path = '/public/'
     res.locals.routes = router.paths
     res.locals.formatAccountPathsFor = formatAccountPathsFor
