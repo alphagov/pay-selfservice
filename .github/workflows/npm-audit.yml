@@ -1,0 +1,75 @@
+name: NPM audit
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  unit-tests:
+    name: Run unit tests
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.21.0
+      - name: Cache NPM packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ./node_modules
+          key: modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-modules
+      - name: Cache Cypress
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: NPM audit fix
+        run: npm audit fix
+      - name: Raise PR
+        run: |
+          sha=$(git rev-parse HEAD)
+          echo "---- Raising PR -----"
+          branchId=npm_audit_fix_$(date +%Y%m%d%H%M%S)
+          git checkout -b $branchId
+          git add package.json package-lock.json
+          git config --global user.email "noreply@github.com"
+          git config --global user.name "Github action - npm audit [bot]"
+          git commit -m "[Security] NPM Audit ..."
+
+          echo "---- Creating branch -----"
+          postDataJson="{\"ref\":\"refs/heads/$branchId\",\"sha\":\"$sha\"}"
+          curl \
+            -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "authorization: Bearer ${{ secrets.MY_SECRET_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/git/refs \
+            -d ${postDataJson} \
+            --fail
+
+          echo "---- Push commit -----"
+          git push origin $branchId
+
+          echo "---- Creating PR -----"
+          postDataJson="{\"head\":\"refs/heads/$branchId\",\"base\":\"refs/heads/master\",\"title\":\"NPM-audit-fix-$(date +%Y%m%d)\",\"body\":\"This-issue-was-automatically-created-by-the-GitHub-Action-workflow\"}"
+          curl \
+            -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "authorization: Bearer ${{ secrets.MY_SECRET_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/pulls \
+            -d ${postDataJson} \
+            --fail
