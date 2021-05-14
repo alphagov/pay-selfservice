@@ -10,9 +10,9 @@ permissions:
   contents: read
 
 jobs:
-  unit-tests:
-    name: Run unit tests
+  install-and-compile:
     runs-on: ubuntu-18.04
+    name: Install and compile
 
     steps:
       - name: Checkout
@@ -21,12 +21,19 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.21.0
+      - name: Cache build directories
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            public
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
       - name: Cache NPM packages
         uses: actions/cache@v2
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node
+          restore-keys: ${{ runner.os }}-node-
       - name: Cache Cypress
         uses: actions/cache@v2
         with:
@@ -38,8 +45,53 @@ jobs:
         run: npm run compile
       - name: Run lint
         run: npm run lint
+
+  unit-tests:
+    runs-on: ubuntu-18.04
+    name: Run unit tests
+    needs: install-and-compile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.21.0
+      - name: Cache build directories
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            public
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
       - name: Run unit tests
         run: npm test -- --forbid-only --forbid-pending
+
+  cypress-tests:
+    runs-on: ubuntu-18.04
+    name: Run Cypress tests
+    needs: install-and-compile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.21.0
+      - name: Cache build directories
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            public
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+      - name: Cache Cypress
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress
       - name: Run cypress tests
         run: |
           npm run cypress:server > /dev/null 2>&1 &
