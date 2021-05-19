@@ -18,9 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 12.21.0
+          node-version: 12.22.1
       - name: Cache build directories
         uses: actions/cache@v2
         with:
@@ -48,16 +48,16 @@ jobs:
 
   unit-tests:
     runs-on: ubuntu-18.04
-    name: Run unit tests
+    name: Unit tests
     needs: install-and-compile
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 12.21.0
+          node-version: 12.22.1
       - name: Cache build directories
         uses: actions/cache@v2
         with:
@@ -70,7 +70,7 @@ jobs:
 
   cypress-tests:
     runs-on: ubuntu-18.04
-    name: Run Cypress tests
+    name: Cypress tests
     needs: install-and-compile
 
     steps:
@@ -79,7 +79,7 @@ jobs:
       - name: Setup
         uses: actions/setup-node@v1
         with:
-          node-version: 12.21.0
+          node-version: 12.22.1
       - name: Cache build directories
         uses: actions/cache@v2
         with:
