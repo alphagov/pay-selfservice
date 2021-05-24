@@ -139,7 +139,7 @@
     "mocha": "6.1.4",
     "mountebank": "2.0.0",
     "nock": "13.0.11",
-    "node-sass": "5.0.0",
+    "node-sass": "6.0.0",
     "nodemon": "1.19.1",
     "notp": "2.0.3",
     "nunjucksify": "2.2.0",
