@@ -118,6 +118,10 @@ const {
   teamMembers
 } = paths.service
 
+const { ConnectorClient } = require('./services/clients/connector.client')
+const { CONNECTOR_URL } = process.env
+const connectorClient = new ConnectorClient(CONNECTOR_URL)
+
 // Exports
 module.exports.generateRoute = generateRoute
 module.exports.paths = paths
@@ -301,13 +305,19 @@ module.exports.bind = function (app) {
 
   account.get(yourPsp.testPayment, permission('gateway-credentials:read'), yourPspController.getTestPayment)
   account.post(yourPsp.testPayment, permission('gateway-credentials:read'), yourPspController.postTestPayment)
-  account.get(yourPsp.completeTestPayment, permission('gateway-credentials:read'), (req, res, next) => {
+  account.get(yourPsp.completeTestPayment, permission('gateway-credentials:read'), async (req, res, next) => {
     // req.session.prototype = req.session.prototype || {}
     const { testPaymentChargeId } = req.currentAccountPrototype
 
-    // @TODO(sfount) only set complete if the payment actually succeeded
-    req.currentAccountPrototype.livePaymentCompleted = true
-    res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
+    const charge = await connectorClient.getCharge(req.account.gateway_account_id, testPaymentChargeId)
+
+    if (charge.state && charge.state.status === 'success') {
+      req.currentAccountPrototype.livePaymentCompleted = true
+      res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
+    } else {
+      req.flash('paymentError', 'test payment failed')
+      res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
+    }
   })
 
   account.get(yourPsp.index, permission('gateway-credentials:read'), yourPspController.getIndex)

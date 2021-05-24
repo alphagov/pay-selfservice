@@ -496,6 +496,13 @@ ConnectorClient.prototype = {
       }
     )
   },
+
+  getCharge: function (gatewayAccountId, chargeExternalId) {
+    return baseClient.get(`${this.connectorUrl}/v1/api/accounts/${gatewayAccountId}/charges/${chargeExternalId}`, {
+      description: 'get a charge',
+      service: SERVICE_NAME
+    })
+  },
   /**
    *
    * @param {Object} params

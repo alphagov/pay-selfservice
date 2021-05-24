@@ -11,7 +11,17 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-
+  {% if flash.paymentError %}
+    {{ govukErrorSummary({
+      "titleText": "Worldpay live payment was unsuccessful",
+      "errorList": [
+        {
+          "text": "Make a live payment to test your Worldpay PSP",
+          "href": "#make-a-test-payment"
+        }
+      ]
+    }) }}
+  {% endif %}
   {% if flash.success %}
   {% set html %}
     <p class="govuk-notification-banner__heading">
@@ -63,7 +73,7 @@
             {% set testPaymentLabel = "Make a live payment to test your Worldpay PSP" %}
             <span class="app-task-list__task-name">
             {% if prototype.credentialsComplete %}
-              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}" aria-describedby="read-declaration-status">
+              <a class="govuk-link" id="make-a-test-payment" href="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}" aria-describedby="read-declaration-status">
                 {{ testPaymentLabel }}
               </a>
             {% else %}
