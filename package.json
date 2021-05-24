@@ -146,7 +146,7 @@
     "portfinder": "1.0.28",
     "proxyquire": "~2.1.0",
     "sass-lint": "1.13.1",
-    "sinon": "7.3.2",
+    "sinon": "10.0.0",
     "standard": "12.0.1",
     "supertest": "^6.1.3"
   }
