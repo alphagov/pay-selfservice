@@ -75,7 +75,6 @@ function initialiseGlobalMiddleware (app) {
 
   app.use(function (req, res, next) {
     if (req.session) {
-
       req.session.prototype = req.session.prototype || {}
 
       // biggest hack ever?
@@ -89,6 +88,7 @@ function initialiseGlobalMiddleware (app) {
 
       res.locals.allPrototypes = req.session.prototype
     }
+
     res.locals.asset_path = '/public/'
     res.locals.routes = router.paths
     res.locals.formatAccountPathsFor = formatAccountPathsFor

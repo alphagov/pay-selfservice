@@ -10,5 +10,5 @@ module.exports = (req, res) => {
   req.currentAccountPrototype.switchDate = moment().format('D MMMM YYYY')
 
   req.flash('success', 'provider switched')
-  res.redirect(formatAccountPathsFor(paths.account.yourPsp.switch, req.account.external_id))
+  res.redirect(formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, 'worldpay'))
 }

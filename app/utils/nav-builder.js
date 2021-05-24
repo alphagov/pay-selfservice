@@ -68,7 +68,7 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
   return navigationItems
 }
 
-const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}, service = {}) => {
+const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}, service = {}, prototype = {}) => {
   const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, account.external_id)
 
   return [
@@ -78,6 +78,13 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
       current: pathLookup(currentPath, mainSettingsPaths),
       permissions: type === 'card'
+    },
+    {
+      id: 'navigation-menu-your-psp-switch',
+      name: 'Switch PSP',
+      url: formatAccountPathsFor(paths.account.yourPsp.switch, account.external_id),
+      current: currentPath === '/your-psp/switch' || currentPath === '/your-psp/verify' || currentPath === '/credentials/worldpay/edit',
+      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'sandbox') && service.experimentalFeaturesEnabled && !prototype.switchComplete
     },
     {
       id: 'navigation-menu-api-keys',
@@ -98,7 +105,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       name: `Your PSP - Worldpay`,
       url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, 'worldpay'),
       current: currentPath.includes('worldpay'),
-      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox') && service.experimentalFeaturesEnabled
+      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox') && service.experimentalFeaturesEnabled && prototype.switchComplete
     },
     {
       id: 'navigation-menu-payment-types',
@@ -106,13 +113,6 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       url: formatAccountPathsFor(paths.account.paymentTypes.index, account.external_id),
       current: pathLookup(currentPath, paths.account.paymentTypes.index),
       permissions: permissions.payment_types_read && type === 'card'
-    },
-    {
-      id: 'navigation-menu-your-psp-switch',
-      name: 'Switch PSP',
-      url: formatAccountPathsFor(paths.account.yourPsp.switch, account.external_id),
-      current: currentPath === '/your-psp/switch' || currentPath === '/your-psp/verify',
-      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'sandbox') && service.experimentalFeaturesEnabled
     }
   ]
 }

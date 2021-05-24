@@ -1,4 +1,5 @@
 {% extends "layout.njk" %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block pageTitle %}
   Your PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -10,6 +11,22 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+  {% if flash.success %}
+  {% set html %}
+    <p class="govuk-notification-banner__heading">
+      You’ve switched payment service provider to Worldpay
+    </p>
+    <p class="govuk-body">
+      All future payments will be taken with Worldpay. Your {{ currentGatewayAccount.payment_provider | formatPSPname }} account is still live for processing refunds of payments made before the switch.
+    </p>
+  {% endset %}
+
+  {{ govukNotificationBanner({
+    html: html,
+    type: 'success'
+  }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ targetProvider | formatPSPname }}</h1>
 
   {% if targetProvider === "worldpay" %}
