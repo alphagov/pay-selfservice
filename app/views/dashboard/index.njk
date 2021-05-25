@@ -9,9 +9,9 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
   {% if currentService.experimentalFeaturesEnabled and currentGatewayAccount.type === "live" and not prototype.switchComplete %}
     <div class="account-status-panel govuk-grid-row govuk-!-margin-bottom-5" style="border-color: #d4351c">
       <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">Switch your payment service provider (PSP) to Worldpay</h2>
-        <p class="govuk-body-m">Your service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }} and needs to switch to Worldpay.</p>
-        <p class="govuk-body-m govuk-!-margin-bottom-0">Find out <a class="govuk-link" href="your-psp/switch">how to switch to Worldpay</a>.</p>
+        <h2 class="govuk-heading-m">Switch your payment service provider (PSP) to Stripe</h2>
+        <p class="govuk-body-m">Your service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }} and needs to switch to Stripe.</p>
+        <p class="govuk-body-m govuk-!-margin-bottom-0">Find out <a class="govuk-link" href="your-psp/switch">how to switch to Stripe</a>.</p>
       </div>
     </div>
   {% endif %}

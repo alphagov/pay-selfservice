@@ -46,10 +46,13 @@
   <p class="govuk-body">This service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }}.</p>
 
   <p class="govuk-body">To prepare for the switch, you need:</p>
-  <ul class="govuk-list govuk-list--bullet">
-    <li>your Worldpay account credentials: Merchant code, username and password</li>
-    <li>a debit or credit card to make a nominal live payment (refundable)</li>
-  </ul>
+<ul class="govuk-list govuk-list--bullet">
+          <li>the name, date of birth and home address of the person in your organisation legally reponsible for payments (called your ‘<a href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means/" class="govuk-link">responsible person</a>’)</li>
+          <li>your bank details</li>
+          <li>your VAT number</li>
+          <li>your company registration number if you’ve registered your company</li>
+          <li>a debit or credit card to make a nominal live payment (refundable)</li>
+        </ul>
 
   <ol class="app-task-list govuk-!-margin-top-8">
     <li>
@@ -60,40 +63,61 @@
           <li class="app-task-list__item">
             <span class="app-task-list__task-name">
               <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, 'worldpay') }}" aria-describedby="eligibility-status">
-                Link your Worldpay account with GOV.UK Pay
+                Provide your bank details
               </a>
             </span>
-            {% if prototype.credentialsComplete %}
-            <strong class="govuk-tag app-task-list__tag" id="eligibility-status">completed</strong>
-            {% else %}
+            {# <strong class="govuk-tag app-task-list__tag" id="eligibility-status">completed</strong> #}
             <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="eligibility-status">not started</strong>
-            {% endif %}
           </li>
           <li class="app-task-list__item">
-            {% set testPaymentLabel = "Make a live payment to test your Worldpay PSP" %}
             <span class="app-task-list__task-name">
-            {% if prototype.credentialsComplete %}
-              <a class="govuk-link" id="make-a-test-payment" href="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}" aria-describedby="read-declaration-status">
-                {{ testPaymentLabel }}
+              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, 'worldpay') }}" aria-describedby="eligibility-status">
+                Provide details about your responsible person
               </a>
-            {% else %}
-              <span>{{ testPaymentLabel }}</span>
-            {% endif %}
+            </span>
+            {# <strong class="govuk-tag app-task-list__tag" id="eligibility-status">completed</strong> #}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="eligibility-status">not started</strong>
+          </li>
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, 'worldpay') }}" aria-describedby="eligibility-status">
+                Provide your organisation’s VAT number
+              </a>
+            </span>
+            {# <strong class="govuk-tag app-task-list__tag" id="eligibility-status">completed</strong> #}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="eligibility-status">not started</strong>
+          </li>
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, 'worldpay') }}" aria-describedby="eligibility-status">
+              Provide your company registration number
+              </a>
+            </span>
+            {# <strong class="govuk-tag app-task-list__tag" id="eligibility-status">completed</strong> #}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="eligibility-status">not started</strong>
+          </li>
+          <li class="app-task-list__item">
+            {% set testPaymentLabel = "Make a live payment to test your Stripe PSP" %}
+            <span class="app-task-list__task-name">
+              {# <a class="govuk-link" id="make-a-test-payment" href="{{ formatAccountPathsFor(routes.account.yourPsp.testPayment, currentGatewayAccount.external_id) }}" aria-describedby="read-declaration-status"> #}
+                {{ testPaymentLabel }}
+              {# </a> #}
             </span>
 
-            {% if prototype.livePaymentCompleted %}
-            <strong class="govuk-tag app-task-list__tag" id="read-declaration-status">completed</strong>
-            {% else %}
-              {% set testPaymentStatusLabel = "not started" if prototype.credentialsComplete else "cannot start yet" %}
-              <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="read-declaration-status">{{ testPaymentStatusLabel }}</strong>
-            {% endif %}
+            {# <strong class="govuk-tag app-task-list__tag" id="eligibility-status">completed</strong> #}
+            {# {% if prototype.livePaymentCompleted %} #}
+            {# <strong class="govuk-tag app-task-list__tag" id="read-declaration-status">completed</strong> #}
+            {# {% else %} #}
+              {# {% set testPaymentStatusLabel = "not started" if prototype.credentialsComplete else "cannot start yet" %} #}
+              <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="read-declaration-status">cannot start yet</strong>
+            {# {% endif %} #}
           </li>
         </ul>
       </li>
 
       <li>
         <h2 class="app-task-list__section">
-          <span class="app-task-list__section-number">2. </span> Switch PSP to Worldpay
+          <span class="app-task-list__section-number">2. </span> Switch PSP to Stripe
         </h2>
         <ul class="app-task-list__flat_items">
           <li class="app-task-list__item">
@@ -105,11 +129,11 @@
               {{ currentGatewayAccount.payment_provider | formatPSPname }} will remain linked to process refunds for existing payments.
             </p> #}
             <p class="govuk-body">
-              After linking Worldpay and GOV.UK Pay, you can safely switch to taking payments with Worldpay.
+              After providing account details for Stripe, you can safely switch to taking payments with Stripe.
             </p>
             <form method="POST" action="{{ formatAccountPathsFor(routes.account.yourPsp.switch, currentGatewayAccount.external_id) }}">
               <input hidden name="csrfToken" value="{{ csrf }}">
-              <button {% if prototype.credentialsComplete and prototype.livePaymentCompleted %}{% else %}disabled{% endif %} class="govuk-button">Switch to Worldpay</button>
+              <button disabled class="govuk-button">Switch to Stripe</button>
             </form>
           </li>
         </ul>

@@ -4,6 +4,12 @@
   Who is your responsible person? - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+
+
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     {% if errors %}

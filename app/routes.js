@@ -425,13 +425,13 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
   // Stripe setup
-  account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.get)
+  account.get(stripeSetup.bankDetails, stripeSetupBankDetailsController.get)
   account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.post)
-  account.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, stripeSetupResponsiblePersonController.get)
+  account.get(stripeSetup.responsiblePerson, stripeSetupResponsiblePersonController.get)
   account.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, stripeSetupResponsiblePersonController.post)
-  account.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupVatNumberController.get)
+  account.get(stripeSetup.vatNumber, stripeSetupVatNumberController.get)
   account.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupVatNumberController.post)
-  account.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupCompanyNumberController.get)
+  account.get(stripeSetup.companyNumber, stripeSetupCompanyNumberController.get)
   account.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupCompanyNumberController.post)
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
 

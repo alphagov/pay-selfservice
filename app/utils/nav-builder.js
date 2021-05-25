@@ -83,7 +83,11 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       id: 'navigation-menu-your-psp-switch',
       name: 'Switch PSP',
       url: formatAccountPathsFor(paths.account.yourPsp.switch, account.external_id),
-      current: currentPath === '/your-psp/switch' || currentPath === '/your-psp/verify' || currentPath === '/credentials/worldpay/edit',
+      current: currentPath === '/your-psp/switch' || currentPath === '/your-psp/verify' || currentPath === '/credentials/worldpay/edit'
+        || currentPath.includes(paths.account.stripeSetup.bankDetails)
+        || currentPath.includes(paths.account.stripeSetup.companyNumber)
+        || currentPath.includes(paths.account.stripeSetup.responsiblePerson)
+        || currentPath.includes(paths.account.stripeSetup.vatNumber),
       permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'sandbox') && service.experimentalFeaturesEnabled && !prototype.switchComplete
     },
     {
