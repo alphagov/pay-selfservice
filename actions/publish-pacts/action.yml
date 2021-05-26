@@ -1,0 +1,36 @@
+name: "Run pact provider tests"
+description: "Runs pact provider tests"
+inputs:
+  pact-broker-username:
+    description: Pact broker username
+    required: true
+  pact-broker-password:
+    description: Pact broker password
+    required: true
+  consumer:
+    description: The pact consumer name
+    required: true
+  consumer-sha:
+    description: The SHA of the consumer commit
+    required: true
+  pr-id:
+    description: The ID of the PR to tag the pact with
+    required: true
+  
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        cd pacts || exit 1
+        for pact in $(ls . | grep -v '\-to\-'); do
+          provider_name=$(jq .provider.name < "$pact" | tr -d '"')
+          curl -v --fail -X PUT -H "Content-Type: application/json" \
+          -d@"$pact" \
+          --user ${{ inputs.pact-broker-username }}:${{ inputs.pact-broker-password }} \
+          https://pay-pact-broker.cloudapps.digital/pacts/provider/"${provider_name}"/consumer/"${{ inputs.consumer }}"/version/"${{ inputs.consumer-sha }}"
+          
+          curl -v --fail -X PUT -H "Content-Type: application/json" \
+          --user ${{ inputs.pact-broker-username }}:${{ inputs.pact-broker-password }} \
+          https://pay-pact-broker.cloudapps.digital/pacticipants/"${{ inputs.consumer }}"/versions/"${{ inputs.consumer-sha }}"/tags/"${{ inputs.pr-id }}"
+        done
+      shell: bash

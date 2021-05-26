@@ -1,0 +1,26 @@
+name: 'Check pact providers'
+description: 'Check which pact providers we need to run provider pact tests for, for the given consumer version'
+inputs:
+  pact-broker-username:
+    description: Pact broker username
+    required: true
+  pact-broker-password:
+    description: Pact broker password
+    required: true
+  consumer:
+    description: The pact consumer
+    required: true
+  consumer-tag: 
+    description: The tag for consumer pact file to check for providers needing validation against
+    required: true
+outputs:
+  providers-needing-validation:
+    description: 'List of providers needing validation against consumer version'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.pact-broker-username }}
+    - ${{ inputs.pact-broker-password }}
+    - ${{ inputs.consumer }}
+    - ${{ inputs.consumer-tag }}

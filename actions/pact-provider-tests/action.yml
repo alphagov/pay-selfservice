@@ -1,0 +1,57 @@
+name: "Run pact provider tests"
+description: "Runs pact provider tests"
+inputs:
+  pact-broker-username:
+    description: Pact broker username
+    required: true
+  pact-broker-password:
+    description: Pact broker password
+    required: true
+  consumer:
+    description: The pact consumer name
+    required: true
+  consumer-tag:
+    description: The tag for consumer pact file to check for providers needing validation against
+    required: true
+  provider:
+    description: The pact provider name. This is also the name of the directory the provider repository should be checked out into.
+    required: true
+  providers-needing-validation:
+    description: List of providers that need validating for this consumer version
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        if [[ "${{ inputs.providers-needing-validation }}" != *"${{ inputs.provider }}"* ]]; then
+          echo "All pacts already verified"
+          exit 0
+        fi
+
+        cd ${{ inputs.provider }}
+
+        provider_version="$(git rev-parse HEAD)"
+        echo "Provider version: $provider_version"
+
+        # Use dedicated local maven repository for this provider so we can cache dependencies.
+        cat <<EOF > ~/.m2/settings.xml
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                  https://maven.apache.org/xsd/settings-1.0.0.xsd">
+              <localRepository>$PWD/.m2</localRepository>
+        </settings>
+        EOF
+
+        mvn test \
+          -DrunContractTests \
+          -DCONSUMER="${{ inputs.consumer }}" \
+          -DPACT_CONSUMER_TAG="${{ inputs.consumer_tag }}" \
+          -Dpact.provider.version="$provider_version" \
+          -Dpact.verifier.publishResults=true \
+          -DPACT_BROKER_HOST="pay-pact-broker.cloudapps.digital" \
+          -DPACT_BROKER_USERNAME="${{ inputs.pact-broker-username }}" \
+          -DPACT_BROKER_PASSWORD="${{ inputs.pact-broker-password }}" # pragma: allowlist secret
+
+        rm ~/.m2/settings.xml
+      shell: bash
