@@ -65,12 +65,12 @@
     ]
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "3.0.12",
+    "@govuk-pay/pay-js-commons": "3.0.13",
     "@sentry/node": "6.5.0",
     "accessible-autocomplete": "2.0.3",
     "appmetrics": "5.1.1",
     "appmetrics-statsd": "3.0.0",
-    "aws-sdk": "2.892.0",
+    "aws-sdk": "2.919.0",
     "body-parser": "1.19.0",
     "change-case": "3.1.0",
     "check-types": "11.1.x",
