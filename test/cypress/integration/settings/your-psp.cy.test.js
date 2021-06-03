@@ -86,6 +86,7 @@ describe('Your PSP settings page', () => {
       gatewayAccountId: gatewayAccountId,
       shouldReturnValid: true
     })
+    const postCheckWorldpayCredentials = gatewayAccountStubs.postCheckWorldpayCredentials({ credentials: opts.validateCredentials, gatewayAccountId })
     const postCheckWorldpay3dsFlexCredentialsReturnsInvalid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
       gatewayAccountId: gatewayAccountId,
       shouldReturnValid: false
@@ -102,7 +103,8 @@ describe('Your PSP settings page', () => {
       postCheckWorldpay3dsFlexCredentialsReturnsValid,
       postCheckWorldpay3dsFlexCredentialsReturnsInvalid,
       postCheckWorldpay3dsFlexCredentialsFails,
-      postCheckWorldpay3dsFlexCredentialsReturnsBadResult
+      postCheckWorldpay3dsFlexCredentialsReturnsBadResult,
+      postCheckWorldpayCredentials
     ]
 
     cy.task('setupStubs', stubs)
@@ -127,7 +129,8 @@ describe('Your PSP settings page', () => {
   describe('When using a Worldpay account', () => {
     beforeEach(() => {
       setupYourPspStubs({
-        gateway: 'worldpay'
+        gateway: 'worldpay',
+        validateCredentials: testCredentials
       })
     })
 
@@ -149,7 +152,7 @@ describe('Your PSP settings page', () => {
 
     it('should allow account credentials to be configured and all values must be set', () => {
       cy.get('#credentials-change-link').click()
-      cy.get('#merchantId').type(testCredentials.merchant_id)
+      cy.get('#merchant_id').type(testCredentials.merchant_id)
       cy.get('#username').type(testCredentials.username)
       cy.get('#submitCredentials').click()
       cy.get('.govuk-error-summary').should('have.length', 1)
