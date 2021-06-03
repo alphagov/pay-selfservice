@@ -3,8 +3,10 @@ const { response } = require('../../utils/response')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { ConnectorClient } = require('../../services/clients/connector.client')
-const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const { CredentialsForm, isNotEmpty, formatErrorsForSummaryList } = require('./credentials-form')
+const { CONNECTOR_URL, SKIP_PSP_CREDENTIAL_CHECKS } = process.env
+
+const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
 const credentialsForm = new CredentialsForm([
   { id: 'merchant_id', valid: [{ method: isNotEmpty, message: 'Enter a merchant code' }] },
@@ -28,11 +30,14 @@ async function updateWorldpayCredentials (req, res, next) {
   }
 
   try {
-    const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ correlationId, gatewayAccountId, payload: results.values })
-    if (checkCredentialsWithWorldpay.result !== 'valid') {
-      results.errorSummaryList = formatErrorsForSummaryList({ 'merchant_id': 'Unable to use credentials with Worldpay, check entered credentials' })
-      return response(req, res, 'credentials/worldpay', { form: results })
+    if (SKIP_PSP_CREDENTIAL_CHECKS !== 'true') {
+      const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ correlationId, gatewayAccountId, payload: results.values })
+      if (checkCredentialsWithWorldpay.result !== 'valid') {
+        results.errorSummaryList = formatErrorsForSummaryList({ 'merchant_id': 'Unable to use credentials with Worldpay, check entered credentials' })
+        return response(req, res, 'credentials/worldpay', { form: results })
+      }
     }
+
     await connectorClient.patchAccountCredentials({
       correlationId,
       gatewayAccountId,
