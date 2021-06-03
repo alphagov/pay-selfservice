@@ -9,9 +9,9 @@ const { CONNECTOR_URL, SKIP_PSP_CREDENTIAL_CHECKS } = process.env
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
 const credentialsForm = new CredentialsForm([
-  { id: 'merchant_id', valid: [{ method: isNotEmpty, message: 'Enter a merchant code' }] },
-  { id: 'username', valid: [{ method: isNotEmpty, message: 'Enter a username' }] },
-  { id: 'password', valid: [{ method: isNotEmpty, message: 'Enter a password' }] }
+  { id: 'merchant_id', valid: [{ method: isNotEmpty, message: 'Enter your merchant code' }] },
+  { id: 'username', valid: [{ method: isNotEmpty, message: 'Enter your username' }] },
+  { id: 'password', valid: [{ method: isNotEmpty, message: 'Enter your password' }] }
 ])
 
 function showWorldpayCredentialsPage (req, res, next) {
@@ -33,7 +33,7 @@ async function updateWorldpayCredentials (req, res, next) {
     if (SKIP_PSP_CREDENTIAL_CHECKS !== 'true') {
       const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ correlationId, gatewayAccountId, payload: results.values })
       if (checkCredentialsWithWorldpay.result !== 'valid') {
-        results.errorSummaryList = formatErrorsForSummaryList({ 'merchant_id': 'Unable to use credentials with Worldpay, check entered credentials' })
+        results.errorSummaryList = formatErrorsForSummaryList({ 'merchant_id': 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
         return response(req, res, 'credentials/worldpay', { form: results })
       }
     }
