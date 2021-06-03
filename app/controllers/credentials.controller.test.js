@@ -28,6 +28,7 @@ describe('gateway credentials controller', () => {
         merchantId: ' merchant-id '
       },
       account: {},
+      params: {},
       headers: {}
     }
     await credentialsController.update(req, expressResponseStub)
@@ -42,6 +43,7 @@ describe('gateway credentials controller', () => {
       },
       account: {},
       headers: {},
+      params: {},
       flash: sinon.spy()
     }
     await credentialsController.updateNotificationCredentials(req, expressResponseStub)

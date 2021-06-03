@@ -3,6 +3,7 @@
 const { response } = require('../../utils/response')
 
 module.exports = (req, res) => {
+  const { paymentProvider } = req.params
   const isAccountCredentialsConfigured = req.account.credentials && req.account.credentials.merchant_id !== undefined
 
   const isWorldpay3dsFlexCredentialsConfigured = req.account.worldpay_3ds_flex &&
@@ -16,5 +17,6 @@ module.exports = (req, res) => {
   return response(req, res, 'your-psp/index', { isAccountCredentialsConfigured,
     is3dsEnabled,
     isWorldpay3dsFlexEnabled,
-    isWorldpay3dsFlexCredentialsConfigured })
+    isWorldpay3dsFlexCredentialsConfigured,
+    paymentProvider })
 }

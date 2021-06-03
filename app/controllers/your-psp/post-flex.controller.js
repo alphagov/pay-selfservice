@@ -19,8 +19,8 @@ const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 module.exports = async function submit3dsFlexCredentials (req, res, next) {
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
-  const flexUrl = formatAccountPathsFor(paths.account.yourPsp.flex, req.account && req.account.external_id)
-  const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id)
+  const flexUrl = formatAccountPathsFor(paths.account.yourPsp.flex, req.account.external_id)
+  const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, 'worldpay')
 
   const orgUnitId = lodash.get(req.body, ORGANISATIONAL_UNIT_ID_FIELD, '').trim()
   const issuer = lodash.get(req.body, ISSUER_FIELD, '').trim()

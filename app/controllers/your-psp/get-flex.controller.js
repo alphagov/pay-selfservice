@@ -6,6 +6,7 @@ const { response } = require('../../utils/response')
 
 module.exports = (req, res) => {
   const { change } = req.query || {}
+  const { paymentProvider } = req.params
 
   const isFlexConfigured = req.account.worldpay_3ds_flex &&
     req.account.worldpay_3ds_flex.organisational_unit_id !== undefined &&
@@ -32,5 +33,5 @@ module.exports = (req, res) => {
     }
   }
 
-  return response(req, res, 'your-psp/flex', { errors, change, isFlexConfigured, orgUnitId, issuer })
+  return response(req, res, 'your-psp/flex', { errors, change, isFlexConfigured, orgUnitId, issuer, paymentProvider })
 }

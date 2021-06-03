@@ -17,7 +17,7 @@
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id) + "?change=merchantId",
+              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, paymentProvider) + "?change=merchantId",
               text: "Change",
               visuallyHiddenText: "account credentials",
               attributes: {
@@ -38,7 +38,7 @@
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id) + "?change=username",
+              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, paymentProvider) + "?change=username",
               text: "Change",
               visuallyHiddenText: "account credentials"
             }
@@ -56,7 +56,7 @@
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id) + "?change=password",
+              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, paymentProvider) + "?change=password",
               text: "Change",
               visuallyHiddenText: "account credentials"
             }
