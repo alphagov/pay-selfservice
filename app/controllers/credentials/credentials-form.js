@@ -40,18 +40,10 @@ class CredentialsForm {
       errorSummaryList: formatErrorsForSummaryList(errors)
     }
   }
-
-  // render(formData = {}) {
-  //   return this.fields.reduce((aggregate, field) => {
-  //     const key = field.key || field.id
-  //     aggregate[key] = typeof formData[field.id] === 'string' ? formData[field.id].trim() : formData[field.id]
-  //     return aggregate
-  //   }, {})
-  // }
 }
 
 function isNotEmpty (value) {
   return value && value.length !== 0
 }
 
-module.exports = { CredentialsForm, isNotEmpty }
+module.exports = { CredentialsForm, isNotEmpty, formatErrorsForSummaryList }

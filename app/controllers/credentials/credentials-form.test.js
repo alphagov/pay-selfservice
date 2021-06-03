@@ -39,12 +39,4 @@ describe('Credentials forms', () => {
     const results = form.from({ someId: 'an-initial-id' })
     expect(results.values['some-id']).to.equal('an-initial-id')
   })
-
-  // it('renders object output based on field keys', () => {
-  //   const form = new CredentialsForm([{
-  //     id: 'some-id', key: 'someId'
-  //   }])
-  //   const results = form.render({ 'some-id': 'an-initial-id' })
-  //   expect(results).to.deep.equal({ someId: 'an-initial-id' })
-  // })
 })
