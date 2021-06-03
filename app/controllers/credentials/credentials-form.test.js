@@ -27,7 +27,7 @@ describe('Credentials forms', () => {
     const results = form.validate({
       'some-id': 'some-value'
     })
-    expect(results.values['some-id']).to.equal('some-value')
+    expect(results.values['someId']).to.equal('some-value')
     expect(results.errors).to.deep.equal({})
     expect(results.errorSummaryList).to.have.length(0)
   })

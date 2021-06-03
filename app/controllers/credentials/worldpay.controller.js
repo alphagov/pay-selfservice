@@ -1,4 +1,5 @@
 const paths = require('../../paths')
+const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
@@ -9,7 +10,7 @@ const { CONNECTOR_URL, SKIP_PSP_CREDENTIAL_CHECKS } = process.env
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
 const credentialsForm = new CredentialsForm([
-  { id: 'merchant_id', valid: [{ method: isNotEmpty, message: 'Enter your merchant code' }] },
+  { id: 'merchantId', key: 'merchant_id', valid: [{ method: isNotEmpty, message: 'Enter your merchant code' }] },
   { id: 'username', valid: [{ method: isNotEmpty, message: 'Enter your username' }] },
   { id: 'password', valid: [{ method: isNotEmpty, message: 'Enter your password' }] }
 ])
@@ -33,9 +34,12 @@ async function updateWorldpayCredentials (req, res, next) {
     if (SKIP_PSP_CREDENTIAL_CHECKS !== 'true') {
       const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ correlationId, gatewayAccountId, payload: results.values })
       if (checkCredentialsWithWorldpay.result !== 'valid') {
-        results.errorSummaryList = formatErrorsForSummaryList({ 'merchant_id': 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
+        logger.warn('Provided credentials failed validation with Worldpay')
+        results.errorSummaryList = formatErrorsForSummaryList({ 'merchantId': 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
         return response(req, res, 'credentials/worldpay', { form: results })
       }
+
+      logger.info('Successfully validated credentials with Worldpay')
     }
 
     await connectorClient.patchAccountCredentials({
@@ -44,6 +48,7 @@ async function updateWorldpayCredentials (req, res, next) {
       payload: { credentials: results.values }
     })
 
+    logger.info('Successfully updated credentials for Worldpay account')
     return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, 'worldpay'))
   } catch (error) {
     next(error)
