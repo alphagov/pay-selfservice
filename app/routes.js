@@ -30,6 +30,7 @@ const transactionDetailController = require('./controllers/transactions/transact
 const transactionRefundController = require('./controllers/transactions/transaction-refund.controller')
 const transactionDetailRedirectController = require('./controllers/transactions/transaction-detail-redirect.controller')
 const credentialsController = require('./controllers/credentials.controller')
+const worldpayCredentialsController = require('./controllers/credentials/worldpay.controller')
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
 const apiKeysController = require('./controllers/api-keys')
@@ -296,6 +297,9 @@ module.exports.bind = function (app) {
   account.post(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.postFlex)
 
   // Credentials
+  account.get(credentials.worldpay, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
+  account.post(credentials.worldpay, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
+
   account.get(credentials.index, permission('gateway-credentials:read'), credentialsController.index)
   account.get(credentials.edit, permission('gateway-credentials:update'), credentialsController.editCredentials)
   account.post(credentials.index, permission('gateway-credentials:update'), credentialsController.update)

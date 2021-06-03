@@ -196,6 +196,14 @@ function postCheckWorldpay3dsFlexCredentials (opts) {
   }
 }
 
+function postCheckWorldpayCredentials (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-credentials`
+  return stubBuilder('POST', path, 200, {
+    request: opts.credentials,
+    response: { result: 'valid' }
+  })
+}
+
 function postCheckWorldpay3dsFlexCredentialsFailure (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
   return stubBuilder('POST', path, 500, {
@@ -228,5 +236,6 @@ module.exports = {
   patchAccountEmailCollectionModeSuccess,
   postCheckWorldpay3dsFlexCredentials,
   postCheckWorldpay3dsFlexCredentialsFailure,
-  postCheckWorldpay3dsFlexCredentialsWithBadResult
+  postCheckWorldpay3dsFlexCredentialsWithBadResult,
+  postCheckWorldpayCredentials
 }

@@ -20,6 +20,7 @@ module.exports = {
       update: '/api-keys/update'
     },
     credentials: {
+      worldpay: '/credentials/worldpay',
       index: '/credentials/:paymentProvider',
       edit: '/credentials/:paymentProvider/edit'
     },

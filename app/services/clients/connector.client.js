@@ -25,6 +25,7 @@ const ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}
 const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
 const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
 const CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/check-3ds-flex-config'
+const CHECK_WORLDPAY_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/check-credentials'
 const FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/3ds-flex-credentials'
 const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 
@@ -247,6 +248,20 @@ ConnectorClient.prototype = {
         body: params.payload,
         correlationId: params.correlationId,
         description: 'Check Worldpay 3DS Flex credentials',
+        service: SERVICE_NAME
+      }
+    )
+  },
+
+  postCheckWorldpayCredentials: function (params) {
+    return baseClient.post(
+      {
+        baseUrl: this.connectorUrl,
+        url: CHECK_WORLDPAY_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId),
+        json: true,
+        body: params.payload,
+        correlationId: params.correlationId,
+        description: 'Check Worldpay credentials',
         service: SERVICE_NAME
       }
     )
