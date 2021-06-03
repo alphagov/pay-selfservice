@@ -15,8 +15,10 @@ const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
 function showSuccessView (viewMode, req, res) {
   let responsePayload = {}
+  const { paymentProvider } = req.params
 
   responsePayload.editNotificationCredentialsMode = (viewMode === EDIT_NOTIFICATION_CREDENTIALS_MODE)
+  responsePayload.paymentProvider = paymentProvider
 
   const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
   if (invalidCreds) {
@@ -25,7 +27,7 @@ function showSuccessView (viewMode, req, res) {
   }
   responsePayload.change = _.get(req, 'query.change', {})
 
-  response(req, res, 'credentials/' + req.account.payment_provider, responsePayload)
+  response(req, res, 'credentials/' + paymentProvider, responsePayload)
 }
 
 function loadIndex (req, res, next, viewMode) {
@@ -79,6 +81,7 @@ module.exports = {
 
   updateNotificationCredentials: async function (req, res, next) {
     const accountId = req.account.gateway_account_id
+    const { paymentProvider } = req.params
     const username = req.body.username && req.body.username.trim()
     const password = req.body.password && req.body.password.trim()
 
@@ -95,7 +98,7 @@ module.exports = {
 
     if (_.get(req, 'session.flash.genericError.length')) {
       _.set(req, 'session.pageData.editNotificationCredentials', { username, password })
-      return res.redirect(formatAccountPathsFor(paths.account.notificationCredentials.edit, req.account && req.account.external_id))
+      return res.redirect(formatAccountPathsFor(paths.account.notificationCredentials.edit, req.account.external_id, paymentProvider))
     }
 
     const correlationId = req.headers[CORRELATION_HEADER] || ''
@@ -107,7 +110,7 @@ module.exports = {
         gatewayAccountId: accountId
       })
 
-      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id))
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, paymentProvider))
     } catch (err) {
       next(err)
     }
@@ -115,6 +118,7 @@ module.exports = {
 
   update: async function (req, res, next) {
     const accountId = req.account.gateway_account_id
+    const { paymentProvider } = req.params
     const correlationId = req.headers[CORRELATION_HEADER] || ''
 
     try {
@@ -122,7 +126,7 @@ module.exports = {
         payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
       })
 
-      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id))
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, paymentProvider))
     } catch (err) {
       next(err)
     }

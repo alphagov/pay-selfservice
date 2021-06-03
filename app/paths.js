@@ -20,8 +20,8 @@ module.exports = {
       update: '/api-keys/update'
     },
     credentials: {
-      index: '/credentials',
-      edit: '/credentials/edit'
+      index: '/credentials/:paymentProvider',
+      edit: '/credentials/:paymentProvider/edit'
     },
     dashboard: {
       index: '/dashboard'
@@ -43,8 +43,8 @@ module.exports = {
       refund: '/email-settings-refund'
     },
     notificationCredentials: {
-      edit: '/notification-credentials/edit',
-      update: '/notification-credentials'
+      edit: '/notification-credentials/:paymentProvider/edit',
+      update: '/notification-credentials/:paymentProvider'
     },
     paymentLinks: {
       start: '/create-payment-link',
@@ -117,8 +117,8 @@ module.exports = {
       refund: '/transactions/:chargeId/refund'
     },
     yourPsp: {
-      index: '/your-psp',
-      flex: '/your-psp/flex',
+      index: '/your-psp/:paymentProvider',
+      flex: '/your-psp/worldpay/flex',
       worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
     }
   },

@@ -15,11 +15,7 @@ const mainSettingsPaths = [
   paths.account.toggleMotoMaskCardNumberAndSecurityCode
 ]
 
-const yourPspPaths = [
-  paths.account.yourPsp,
-  paths.account.credentials,
-  paths.account.notificationCredentials
-]
+const yourPspPaths = [ 'your-psp', 'credentials', 'notification-credentials' ]
 
 const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {
   const navigationItems = []
@@ -50,9 +46,8 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
-    current: currentPath !== '/' ? pathLookup(currentPath, [
+    current: currentPath !== '/' ? yourPspPaths.filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
       ...mainSettingsPaths,
-      ...yourPspPaths,
       paths.account.apiKeys,
       paths.account.paymentTypes
     ]) : false,
@@ -89,8 +84,8 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
     {
       id: 'navigation-menu-your-psp',
       name: `Your PSP - ${formatPSPname(paymentProvider)}`,
-      url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id),
-      current: pathLookup(currentPath, yourPspPaths),
+      url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, paymentProvider),
+      current: yourPspPaths.filter(path => currentPath.includes(path)).length || pathLookup(currentPath, yourPspPaths),
       permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox')
     },
     {

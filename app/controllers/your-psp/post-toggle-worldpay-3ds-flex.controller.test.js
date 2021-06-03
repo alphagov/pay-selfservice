@@ -39,7 +39,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2, req.correlationId)
     sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned on.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp/worldpay`)
   })
 
   it('should toggle 3DS Flex off by setting 3DS integration version to 1', async () => {
@@ -51,7 +51,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 1, req.correlationId)
     sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned off. Your payments will now use 3DS only.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp/worldpay`)
   })
 
   it('should call next with error if problem calling connector', async () => {

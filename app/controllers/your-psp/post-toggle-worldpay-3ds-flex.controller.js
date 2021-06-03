@@ -9,7 +9,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 module.exports = async function toggleWorldpay3dsFlex (req, res, next) {
   const accountId = req.account.gateway_account_id
   const toggleWorldpay3dsFlex = req.body['toggle-worldpay-3ds-flex']
-  const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id)
+  const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, 'worldpay')
 
   if (req.body['toggle-worldpay-3ds-flex'] === 'on' || req.body['toggle-worldpay-3ds-flex'] === 'off') {
     const enabling3dsFlex = toggleWorldpay3dsFlex === 'on'
