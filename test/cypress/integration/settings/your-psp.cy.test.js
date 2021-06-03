@@ -152,7 +152,7 @@ describe('Your PSP settings page', () => {
 
     it('should allow account credentials to be configured and all values must be set', () => {
       cy.get('#credentials-change-link').click()
-      cy.get('#merchant_id').type(testCredentials.merchant_id)
+      cy.get('#merchantId').type(testCredentials.merchant_id)
       cy.get('#username').type(testCredentials.username)
       cy.get('#submitCredentials').click()
       cy.get('.govuk-error-summary').should('have.length', 1)
