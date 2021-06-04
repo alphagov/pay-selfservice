@@ -13,7 +13,7 @@ class CredentialsForm {
   from (entity = {}) {
     const values = this.fields.reduce((aggregate, field) => {
       const key = field.key || field.id
-      aggregate[field.id] = entity[key]
+      aggregate[key] = entity[key]
       return aggregate
     }, {})
     return { values }

@@ -34,9 +34,9 @@ describe('Credentials forms', () => {
 
   it('populates form values from an entity', () => {
     const form = new CredentialsForm([{
-      id: 'some-id', key: 'someId'
+      id: 'someId', key: 'some_id'
     }])
-    const results = form.from({ someId: 'an-initial-id' })
-    expect(results.values['some-id']).to.equal('an-initial-id')
+    const results = form.from({ some_id: 'an-initial-id' })
+    expect(results.values['some_id']).to.equal('an-initial-id')
   })
 })
