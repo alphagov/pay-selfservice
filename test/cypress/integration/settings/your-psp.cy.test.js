@@ -86,7 +86,7 @@ describe('Your PSP settings page', () => {
       gatewayAccountId: gatewayAccountId,
       shouldReturnValid: true
     })
-    const postCheckWorldpayCredentials = gatewayAccountStubs.postCheckWorldpayCredentials({ credentials: opts.validateCredentials, gatewayAccountId })
+    const postCheckWorldpayCredentials = gatewayAccountStubs.postCheckWorldpayCredentials({ ...opts.validateCredentials, gatewayAccountId })
     const postCheckWorldpay3dsFlexCredentialsReturnsInvalid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
       gatewayAccountId: gatewayAccountId,
       shouldReturnValid: false

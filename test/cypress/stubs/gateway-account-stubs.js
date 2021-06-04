@@ -3,6 +3,7 @@
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 const cardFixtures = require('../../fixtures/card.fixtures')
 const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
+const worldpayCredentialsFixtures = require('../../fixtures/worldpay-credentials.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function parseGatewayAccountOptions (opts) {
@@ -199,8 +200,8 @@ function postCheckWorldpay3dsFlexCredentials (opts) {
 function postCheckWorldpayCredentials (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-credentials`
   return stubBuilder('POST', path, 200, {
-    request: opts.credentials,
-    response: { result: 'valid' }
+    request: worldpayCredentialsFixtures.checkValidWorldpayCredentialsRequest(opts).payload,
+    response: worldpayCredentialsFixtures.checkValidWorldpayCredentialsResponse(opts)
   })
 }
 

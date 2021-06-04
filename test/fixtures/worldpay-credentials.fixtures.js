@@ -3,8 +3,8 @@ function checkValidWorldpayCredentialsRequest (opts = {}) {
     gatewayAccountId: opts.gatewayAccountId || 333,
     payload: {
       merchant_id: opts.merchant_id || 'a-merchant-id',
-      username: opts.issuer || 'a-username',
-      password: opts.jwt_mac_key || 'a-password'
+      username: opts.username || 'a-username',
+      password: opts.password || 'a-password'
     }
   }
 }
