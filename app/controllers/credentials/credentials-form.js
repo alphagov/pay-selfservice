@@ -25,7 +25,7 @@ class CredentialsForm {
 
     this.fields.forEach((field) => {
       const valid = field.valid || []
-      values[field.id] = typeof formData[field.id] === 'string' ? formData[field.id].trim() : formData[field.id]
+      values[field.key || field.id] = typeof formData[field.id] === 'string' ? formData[field.id].trim() : formData[field.id]
       valid.some((validator) => {
         const valid = validator.method(formData[field.id])
         if (!valid) {
