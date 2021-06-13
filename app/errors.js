@@ -55,6 +55,12 @@ class NotFoundError extends DomainError {
 class RegistrationSessionMissingError extends DomainError {
 }
 
+/**
+ * Thrown when account isn't correctly configured to access the resource
+ */
+class InvalidConfigurationError extends DomainError {
+}
+
 module.exports = {
   NotAuthenticatedError,
   UserAccountDisabledError,
@@ -62,5 +68,6 @@ module.exports = {
   PermissionDeniedError,
   NoServicesWithPermissionError,
   NotFoundError,
-  RegistrationSessionMissingError
+  RegistrationSessionMissingError,
+  InvalidConfigurationError
 }
