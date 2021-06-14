@@ -21,7 +21,8 @@ function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts 
     payment_provider: gatewayAccountOpts.payment_provider || 'sandbox',
     state: credentialOpts.state || 'ACTIVE',
     gateway_account_id: gatewayAccountOpts.gateway_account_id || 31,
-    active_start_date: credentialOpts.active_start_date || '2021-05-10T01:00:00.000Z',
+    // '2021-05-10T01:00:00.000Z'
+    active_start_date: credentialOpts.active_start_date || null,
     active_end_date: credentialOpts.active_end_date || null,
     created_date: credentialOpts.created_date || '2021-05-09T01:00:00.000Z'
   }
@@ -69,8 +70,7 @@ function validGatewayAccount (opts) {
     moto_mask_card_number_input: opts.moto_mask_card_number_input || false,
     moto_mask_card_security_code_input: opts.moto_mask_card_security_code_input || false,
     requires3ds: opts.requires3ds || false,
-    integration_version_3ds: opts.integrationVersion3ds || 1,
-    provider_switch_enabled: opts.provider_switch_enabled || false
+    integration_version_3ds: opts.integrationVersion3ds || 1
   }
 
   if (opts.description) {
@@ -95,6 +95,11 @@ function validGatewayAccount (opts) {
   }
   if (opts.worldpay_3ds_flex) {
     gatewayAccount.worldpay_3ds_flex = validWorldpay3dsFlexCredentials(opts.worldpay_3ds_flex)
+  }
+
+  // provider switch enabled is only available to the "frontend" resource, it isn't always guaranteed
+  if (opts.provider_switch_enabled) {
+    gatewayAccount.provider_switch_enabled = opts.provider_switch_enabled
   }
 
   return gatewayAccount
