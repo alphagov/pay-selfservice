@@ -5,7 +5,7 @@ const { InvalidConfigurationError } = require('../errors')
 const CREDENTIAL_STATE = {
   CREATED: 'CREATED',
   ENTERED: 'ENTERED',
-  VALIDATED: 'VALIDATED_WITH_LIVE_PAYMENT',
+  VERIFIED: 'VERIFIED_WITH_LIVE_PAYMENT',
   ACTIVE: 'ACTIVE',
   RETIRED: 'RETIRED'
 }
@@ -24,7 +24,7 @@ function getSwitchingCredential (gatewayAccount = {}) {
   // make sure there's an active credential we're switching from
   if (getCurrentCredential(gatewayAccount) && credentials.length > 1) {
     const pendingCredentials = credentials
-      .filter((credential) => [ CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VALIDATED ].includes(credential.state))
+      .filter((credential) => [ CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED ].includes(credential.state))
 
     if (pendingCredentials.length > 1) {
       throw new InvalidConfigurationError('Unable to determine which credentials are being switched to')

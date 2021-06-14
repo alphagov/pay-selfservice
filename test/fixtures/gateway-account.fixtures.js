@@ -21,7 +21,6 @@ function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts 
     payment_provider: gatewayAccountOpts.payment_provider || 'sandbox',
     state: credentialOpts.state || 'ACTIVE',
     gateway_account_id: gatewayAccountOpts.gateway_account_id || 31,
-    // '2021-05-10T01:00:00.000Z'
     active_start_date: credentialOpts.active_start_date || null,
     active_end_date: credentialOpts.active_end_date || null,
     created_date: credentialOpts.created_date || '2021-05-09T01:00:00.000Z'
@@ -98,7 +97,7 @@ function validGatewayAccount (opts) {
   }
 
   // provider switch enabled is only available to the "frontend" resource, it isn't always guaranteed
-  if (opts.provider_switch_enabled) {
+  if (opts.provider_switch_enabled !== undefined) {
     gatewayAccount.provider_switch_enabled = opts.provider_switch_enabled
   }
 
