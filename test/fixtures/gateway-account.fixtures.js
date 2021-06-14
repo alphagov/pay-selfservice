@@ -15,6 +15,21 @@ function validCredentials (opts = {}) {
   return credentials
 }
 
+function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts = {}) {
+  const gatewayAccountCredential = {
+    gateway_account_credential_id: credentialOpts.id || 1,
+    payment_provider: gatewayAccountOpts.payment_provider || 'sandbox',
+    state: credentialOpts.state || 'ACTIVE',
+    gateway_account_id: gatewayAccountOpts.gateway_account_id || 31,
+    active_start_date: credentialOpts.active_start_date || null,
+    active_end_date: credentialOpts.active_end_date || null,
+    created_date: credentialOpts.created_date || '2021-05-09T01:00:00.000Z'
+  }
+
+  gatewayAccountCredential.credentials = validCredentials(credentialOpts.credentials || gatewayAccountOpts.credentials)
+  return gatewayAccountCredential
+}
+
 function validNotificationCredentials (opts = {}) {
   return {
     userName: opts.username || 'username'
@@ -65,12 +80,25 @@ function validGatewayAccount (opts) {
   }
   if (opts.credentials) {
     gatewayAccount.credentials = validCredentials(opts.credentials)
+
+    if (!opts.gateway_account_credentials) {
+      gatewayAccount.gateway_account_credentials = [ validGatewayAccountCredential(opts) ]
+    }
+  }
+  if (opts.gateway_account_credentials) {
+    gatewayAccount.gateway_account_credentials = opts.gateway_account_credentials
+      .map((gatewayAccountCredentialOpt) => validGatewayAccountCredential(gatewayAccountCredentialOpt, opts))
   }
   if (opts.notificationCredentials) {
     gatewayAccount.notificationCredentials = validNotificationCredentials(opts.notificationCredentials)
   }
   if (opts.worldpay_3ds_flex) {
     gatewayAccount.worldpay_3ds_flex = validWorldpay3dsFlexCredentials(opts.worldpay_3ds_flex)
+  }
+
+  // provider switch enabled is only available to the "frontend" resource, it isn't always guaranteed
+  if (opts.provider_switch_enabled !== undefined) {
+    gatewayAccount.provider_switch_enabled = opts.provider_switch_enabled
   }
 
   return gatewayAccount
@@ -158,6 +186,7 @@ function validCreateGatewayAccountRequest (opts = {}) {
 }
 
 module.exports = {
+  validGatewayAccount,
   validGatewayAccountPatchRequest,
   validGatewayAccountEmailRefundToggleRequest,
   validGatewayAccountEmailConfirmationToggleRequest,
