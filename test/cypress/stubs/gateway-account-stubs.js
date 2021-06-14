@@ -57,7 +57,7 @@ function parseGatewayAccountOptions (opts) {
     stubOptions.external_id = opts.gatewayAccountExternalId
   }
 
-  if (opts.providerSwitchEnabled) {
+  if (opts.providerSwitchEnabled !== undefined) {
     stubOptions.provider_switch_enabled = opts.providerSwitchEnabled
   }
 
@@ -78,7 +78,6 @@ function getGatewayAccountSuccess (opts) {
 
 function getGatewayAccountByExternalIdSuccess (opts) {
   const fixtureOpts = parseGatewayAccountOptions(opts)
-
   const path = `/v1/frontend/accounts/external-id/${opts.gatewayAccountExternalId}`
   return stubBuilder('GET', path, 200, {
     response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)

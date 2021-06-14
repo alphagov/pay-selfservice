@@ -1,12 +1,3 @@
-{#
-  - title, into paragraph, task list category headers, final paragraph and action button all just template in the provider going to
-  - description paragraph with what you'll need selected based on provider (set innline)
-  - task list items likely set by controller, content for it can be set inline? not exactly sure how that will look
-
-  {% set tasks %}
-  - manually <li> the tasks, they come with aria descriptions etc. that will take more effort to generalise
-  - should add a `tasks` to the context, it will be based on which psp is being switched to and have an interface like task[id] = { status: }
- #}
 {% extends "layout.njk" %}
 
 {% block pageTitle %}

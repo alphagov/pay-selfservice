@@ -20,6 +20,7 @@ const correlationIdMiddleware = require('./middleware/correlation-id')
 const getRequestContext = require('./middleware/get-request-context').middleware
 const restrictToSandboxOrStripeTestAccount = require('./middleware/restrict-to-sandbox-or-stripe-test-account')
 const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-to-live-stripe-account')
+const restrictToSwitchingAccount = require('./middleware/restrict-to-switching-account')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -298,7 +299,7 @@ module.exports.bind = function (app) {
   account.get(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.getFlex)
   account.post(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.postFlex)
 
-  account.get(switchPSP.index, permission('gateway-credentials:update'), switchPSPController.switchPSPPage)
+  account.get(switchPSP.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), switchPSPController.switchPSPPage)
 
   // Credentials
   account.get(credentials.worldpay, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)

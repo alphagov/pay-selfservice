@@ -19,17 +19,17 @@ describe('Switch PSP settings page', () => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
-  // describe('When using an account with switching flag disabled', () => {
-  //   beforeEach(() => {
-  //     setupStubs('smartpay', false)
-  //   })
+  describe('When using an account with switching flag disabled', () => {
+    beforeEach(() => {
+      setupStubs('smartpay', false)
+    })
 
-  //   it('should not show link to Switch PSP in the side navigation', () => {
-  //     cy.setEncryptedCookies(userExternalId)
-  //     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-  //     cy.get('#navigation-menu-switch-psp').should('have.length', 0)
-  //   })
-  // })
+    it('should not show link to Switch PSP in the side navigation', () => {
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.get('#navigation-menu-switch-psp').should('have.length', 0)
+    })
+  })
 
   describe('When using an account with switching flag enabled', () => {
     beforeEach(() => {
