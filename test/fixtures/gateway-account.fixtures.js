@@ -18,7 +18,7 @@ function validCredentials (opts = {}) {
 function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts = {}) {
   const gatewayAccountCredential = {
     gateway_account_credential_id: credentialOpts.id || 1,
-    payment_provider: gatewayAccountOpts.payment_provider || 'sandbox',
+    payment_provider: credentialOpts.payment_provider || 'sandbox',
     state: credentialOpts.state || 'ACTIVE',
     gateway_account_id: gatewayAccountOpts.gateway_account_id || 31,
     active_start_date: credentialOpts.active_start_date || null,

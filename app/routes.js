@@ -71,6 +71,7 @@ const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
 const yourPspController = require('./controllers/your-psp')
+const switchPSPController = require('./controllers/switch-psp/switch-psp.controller')
 const allTransactionsController = require('./controllers/all-service-transactions/index')
 const payoutsController = require('./controllers/payouts/payout-list.controller')
 const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
@@ -106,7 +107,8 @@ const {
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode,
   transactions,
-  yourPsp
+  yourPsp,
+  switchPSP
 } = paths.account
 const {
   editServiceName,
@@ -295,6 +297,8 @@ module.exports.bind = function (app) {
   account.post(yourPsp.worldpay3dsFlex, permission('toggle-3ds:update'), yourPspController.postToggleWorldpay3dsFlex)
   account.get(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.getFlex)
   account.post(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.postFlex)
+
+  account.get(switchPSP.index, permission('gateway-credentials:update'), switchPSPController.switchPSPPage)
 
   // Credentials
   account.get(credentials.worldpay, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)

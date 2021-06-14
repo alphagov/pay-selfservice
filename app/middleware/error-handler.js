@@ -10,7 +10,8 @@ const {
   PermissionDeniedError,
   NoServicesWithPermissionError,
   NotFoundError,
-  RegistrationSessionMissingError
+  RegistrationSessionMissingError,
+  InvalidConfigurationError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
@@ -58,6 +59,11 @@ module.exports = function errorHandler (err, req, res, next) {
   if (err instanceof RegistrationSessionMissingError) {
     logger.info(`RegistrationSessionMissingError handled. Rendering error page`)
     return renderErrorView(req, res, 'There has been a problem proceeding with this registration. Please try again.', 400)
+  }
+
+  if (err instanceof InvalidConfigurationError) {
+    logger.info(`InvalidConigurationError handled: ${err.message}. Rendering error page`)
+    return renderErrorView(req, res, 'This account is not configured to perform this action. Please contact support the support team.', 400)
   }
 
   if (err && err.code === 'EBADCSRFTOKEN') {

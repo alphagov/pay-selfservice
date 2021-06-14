@@ -10,6 +10,8 @@ const CREDENTIAL_STATE = {
   RETIRED: 'RETIRED'
 }
 
+const pendingCredentialStates = [ CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED ]
+
 function getCurrentCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
   return credentials
@@ -24,7 +26,7 @@ function getSwitchingCredential (gatewayAccount = {}) {
   // make sure there's an active credential we're switching from
   if (getCurrentCredential(gatewayAccount) && credentials.length > 1) {
     const pendingCredentials = credentials
-      .filter((credential) => [ CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED ].includes(credential.state))
+      .filter((credential) => pendingCredentialStates.includes(credential.state))
 
     if (pendingCredentials.length > 1) {
       throw new InvalidConfigurationError('Unable to determine which credentials are being switched to')

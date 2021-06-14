@@ -16,6 +16,7 @@ const mainSettingsPaths = [
 ]
 
 const yourPspPaths = [ 'your-psp', 'credentials', 'notification-credentials' ]
+const switchPspPaths = [ 'switch-psp' ]
 
 const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {
   const navigationItems = []
@@ -46,7 +47,7 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
-    current: currentPath !== '/' ? yourPspPaths.filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
+    current: currentPath !== '/' ? yourPspPaths.concat(switchPspPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
       ...mainSettingsPaths,
       paths.account.apiKeys,
       paths.account.paymentTypes
@@ -73,6 +74,13 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
       current: pathLookup(currentPath, mainSettingsPaths),
       permissions: type === 'card'
+    },
+    {
+      id: 'navigation-menu-switch-psp',
+      name: 'Switch PSP',
+      url: formatAccountPathsFor(paths.account.switchPSP.index, account.external_id),
+      current: pathLookup(currentPath, paths.account.switchPSP.index),
+      permissions: permissions.gateway_credentials_update && account.provider_switch_enabled
     },
     {
       id: 'navigation-menu-api-keys',

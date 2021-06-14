@@ -101,6 +101,9 @@ module.exports = {
       vatNumber: '/vat-number',
       companyNumber: '/company-number'
     },
+    switchPSP: {
+      index: '/switch-psp'
+    },
     toggle3ds: {
       index: '/3ds'
     },
