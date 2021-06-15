@@ -22,6 +22,32 @@
         <li>your Worldpay account credentials: Merchant code, username and password</li>
         <li>a debit or credit card to make a nominal live payment (refundable)</li>
       </ul>
+
+      {% set tasks %}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+              {% set linkCredentials = taskList.LINK_CREDENTIALS %}
+              {# {{ taskListItem("The macro text", "/the/macro/link", "the-macro-id") }} #}
+              {% set linkCredentialsText = "Link your Worldpay account with GOV.UK Pay" %}
+              {% if linkCredentials.enabled %}
+              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.credentials.worldpay, currentGatewayAccount.external_id) }}" aria-describedby="link-worldpay-account">
+                {{ linkCredentialsText }}
+              </a>
+              {% else %}
+                <span>{{ linkCredentialsText }}</span>
+              {% endif %}
+            </span>
+
+            {# {{ taskListStatus(taskListEntry) }} #}
+            {% if not linkCredentials.enabled %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="link-worldpay-account-status">cannot start yet</strong>
+            {% elif not linkCredentials.complete %}
+            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="link-worldpay-account-status">not started</strong>
+            {% elif linkCredentials.complete %}
+            <strong class="govuk-tag app-task-list__tag" id="link-worldpay-account-status">completed</strong>
+            {% endif %}
+          </li>
+      {% endset %}
   {% endswitch %}
 
   <ol class="app-task-list govuk-!-margin-top-8">
@@ -29,7 +55,7 @@
         <h2 class="app-task-list__section">
           <span class="app-task-list__section-number">1. </span> Get ready to switch PSP
         </h2>
-        <ul class="app-task-list__items"></ul>
+        <ul class="app-task-list__items">{{ tasks | safe }}</ul>
       </li>
 
       <li>

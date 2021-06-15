@@ -37,4 +37,4 @@ function getSwitchingCredential (gatewayAccount = {}) {
   }
 }
 
-module.exports = { getCurrentCredential, getSwitchingCredential }
+module.exports = { getCurrentCredential, getSwitchingCredential, CREDENTIAL_STATE }
