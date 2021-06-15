@@ -30,7 +30,7 @@
               {# {{ taskListItem("The macro text", "/the/macro/link", "the-macro-id") }} #}
               {% set linkCredentialsText = "Link your Worldpay account with GOV.UK Pay" %}
               {% if linkCredentials.enabled %}
-              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.credentials.worldpay, currentGatewayAccount.external_id) }}" aria-describedby="link-worldpay-account">
+              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.switchPSP.worldpayCredentials, currentGatewayAccount.external_id) }}" aria-describedby="link-worldpay-account">
                 {{ linkCredentialsText }}
               </a>
               {% else %}

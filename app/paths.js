@@ -20,9 +20,8 @@ module.exports = {
       update: '/api-keys/update'
     },
     credentials: {
-      worldpay: '/credentials/worldpay',
-      index: '/credentials/:paymentProvider',
-      edit: '/credentials/:paymentProvider/edit'
+      index: '/your-psp/credentials/:paymentProvider',
+      edit: '/your-psp/credentials/:paymentProvider/edit'
     },
     dashboard: {
       index: '/dashboard'
@@ -102,7 +101,8 @@ module.exports = {
       companyNumber: '/company-number'
     },
     switchPSP: {
-      index: '/switch-psp'
+      index: '/switch-psp',
+      worldpayCredentials: '/switch-psp/credentials/worldpay'
     },
     toggle3ds: {
       index: '/3ds'
@@ -123,7 +123,8 @@ module.exports = {
     yourPsp: {
       index: '/your-psp/:paymentProvider',
       flex: '/your-psp/worldpay/flex',
-      worldpay3dsFlex: '/your-psp/worldpay-3ds-flex'
+      worldpay3dsFlex: '/your-psp/worldpay-3ds-flex',
+      worldpayCredentials: '/your-psp/credentials/worldpay'
     }
   },
   service: {

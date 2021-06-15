@@ -122,7 +122,7 @@ module.exports = {
     const correlationId = req.headers[CORRELATION_HEADER] || ''
 
     try {
-      await connectorClient.patchAccountCredentials({
+      await connectorClient.legacyPatchAccountCredentials({
         payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
       })
 

@@ -15,7 +15,7 @@ const mainSettingsPaths = [
   paths.account.toggleMotoMaskCardNumberAndSecurityCode
 ]
 
-const yourPspPaths = [ 'your-psp', 'credentials', 'notification-credentials' ]
+const yourPspPaths = [ 'your-psp', 'notification-credentials' ]
 const switchPspPaths = [ 'switch-psp' ]
 
 const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {

@@ -1,0 +1,87 @@
+const proxyquire = require('proxyquire')
+const sinon = require('sinon')
+
+const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+
+const checkCredentialsMock = sinon.spy(() => Promise.resolve({ result: 'valid' }))
+const legacyUpdateCredentialsMock = sinon.spy(() => Promise.resolve())
+const updateCredentialsMock = sinon.spy(() => Promise.resolve())
+
+describe('Worldpay credentials controller', () => {
+  let req
+  let res
+  let next
+
+  beforeEach(() => {
+    const account = gatewayAccountFixtures.validGatewayAccount({
+      external_id: 'a-valid-external-id',
+      gateway_account_credentials: [
+        { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 },
+        { state: 'CREATED', payment_provider: 'worldpay', id: 200 }
+      ]
+    })
+    req = {
+      correlationId: 'correlation-id',
+      account: account,
+      body: {
+        'merchantId': 'a-merchant-id',
+        'username': 'a-username',
+        'password': 'a-password'
+      },
+      flash: sinon.spy(),
+      route: {
+        path: '/your-psp/credentials/worldpay'
+      },
+      headers: {
+        'x-request-id': 'correlation-id'
+      }
+    }
+    res = {
+      setHeader: sinon.stub(),
+      status: sinon.spy(),
+      redirect: sinon.spy(),
+      render: sinon.spy()
+    }
+    next = sinon.spy()
+
+    checkCredentialsMock.resetHistory()
+    updateCredentialsMock.resetHistory()
+    legacyUpdateCredentialsMock.resetHistory()
+  })
+
+  it('uses the legacy patch if on a your psp route', async () => {
+    const controller = getControllerWithMocks()
+    req.route.path = '/your-psp/credentials/worldpay'
+
+    await controller.updateWorldpayCredentials(req, res, next)
+
+    sinon.assert.called(checkCredentialsMock)
+    sinon.assert.called(legacyUpdateCredentialsMock)
+    sinon.assert.notCalled(updateCredentialsMock)
+    sinon.assert.called(res.redirect)
+  })
+
+  it('uses the new patch if on a switch psp route', async () => {
+    const controller = getControllerWithMocks()
+    req.route.path = '/switch-psp/credentials/worldpay'
+
+    await controller.updateWorldpayCredentials(req, res, next)
+
+    sinon.assert.called(checkCredentialsMock)
+    sinon.assert.called(updateCredentialsMock)
+    sinon.assert.notCalled(legacyUpdateCredentialsMock)
+    sinon.assert.called(res.redirect)
+  })
+})
+
+function getControllerWithMocks () {
+  return proxyquire('./worldpay.controller', {
+    '../../services/clients/connector.client': {
+      ConnectorClient: function () {
+        this.postCheckWorldpayCredentials = checkCredentialsMock
+        this.patchAccountGatewayAccountCredentials = updateCredentialsMock
+        this.legacyPatchAccountCredentials = legacyUpdateCredentialsMock
+      }
+    }
+  })
+}
