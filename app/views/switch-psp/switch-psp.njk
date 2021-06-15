@@ -1,0 +1,49 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Switch PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l page-title">Switch payment service provider (PSP)</h1>
+
+  <p class="govuk-body">This service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }}.</p>
+
+  <p class="govuk-body">To prepare for the switch, you need:</p>
+
+  {% switch targetCredential.payment_provider %}
+    {% case 'worldpay' %}
+      <ul class="govuk-list govuk-list--bullet">
+        <li>your Worldpay account credentials: Merchant code, username and password</li>
+        <li>a debit or credit card to make a nominal live payment (refundable)</li>
+      </ul>
+  {% endswitch %}
+
+  <ol class="app-task-list govuk-!-margin-top-8">
+    <li>
+        <h2 class="app-task-list__section">
+          <span class="app-task-list__section-number">1. </span> Get ready to switch PSP
+        </h2>
+        <ul class="app-task-list__items"></ul>
+      </li>
+
+      <li>
+        <h2 class="app-task-list__section" id="switch-psp-action-step">
+          <span class="app-task-list__section-number">2. </span> Switch PSP to {{ targetCredential.payment_provider | formatPSPname }}
+        </h2>
+        <ul class="app-task-list__flat_items">
+          <li class="app-task-list__item">
+            <p class="govuk-body">
+              After linking {{ targetCredential.payment_provider | formatPSPname }} and GOV.UK Pay, you can safely switch to taking payments with {{ targetCredential.payment_provider | formatPSPname }}.
+            </p>
+          </li>
+        </ul>
+      </li>
+    </ol>
+</div>
+{% endblock %}
