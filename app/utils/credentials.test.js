@@ -32,11 +32,12 @@ describe('credentials utility', () => {
   })
 
   describe('get the credential service is switching to', () => {
-    it('returns nothing if no pending credentials available', () => {
+    it('throws an exception for upstream services/controllers if no pending credentials available', () => {
       const account = gatewayAccountFixtures.validGatewayAccount({
         gateway_account_credentials: [{ state: 'ACTIVE' }]
       })
-      expect(getSwitchingCredential(account)).to.equal(null)
+      const checkSwitchingCreds = () => getSwitchingCredential(account)
+      expect(checkSwitchingCreds).to.throw(InvalidConfigurationError)
     })
 
     it('gets the pending credential being switched to', () => {
