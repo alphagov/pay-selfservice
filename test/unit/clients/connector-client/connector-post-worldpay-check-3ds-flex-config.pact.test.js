@@ -40,7 +40,7 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
       const checkValidWorldpay3dsFlexCredentialsRequest = worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest()
       const checkValidWorldpay3dsFlexCredentialsResponse = worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse()
       before(() => {
-        provider.addInteraction(
+        return provider.addInteraction(
           new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${EXISTING_GATEWAY_ACCOUNT_ID}/${CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS}`)
             .withState(`a gateway account ${EXISTING_GATEWAY_ACCOUNT_ID} with Worldpay 3DS Flex credentials exists`)
             .withUponReceiving('a request to check Worldpay 3DS Flex credentials')
@@ -54,11 +54,9 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
         )
       })
 
-      it('should return valid', () => {
-        return connectorClient.postCheckWorldpay3dsFlexCredentials(checkValidWorldpay3dsFlexCredentialsRequest)
-          .should.be.fulfilled.then((response) => {
-            expect(response).to.deep.equal(checkValidWorldpay3dsFlexCredentialsResponse)
-          })
+      it('should return valid', async () => {
+        const response = await connectorClient.postCheckWorldpay3dsFlexCredentials(checkValidWorldpay3dsFlexCredentialsRequest)
+        expect(response).to.deep.equal(checkValidWorldpay3dsFlexCredentialsResponse)
       })
     })
   })

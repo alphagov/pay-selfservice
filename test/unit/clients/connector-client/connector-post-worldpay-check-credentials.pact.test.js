@@ -38,7 +38,7 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
       const checkValidWorldpayCredentialsRequest = worldpayCredentialsFixtures.checkValidWorldpayCredentialsRequest()
       const checkValidWorldpayCredentialsResponse = worldpayCredentialsFixtures.checkValidWorldpayCredentialsResponse()
       before(() => {
-        provider.addInteraction(
+        return provider.addInteraction(
           new PactInteractionBuilder(`/v1/api/accounts/${EXISTING_GATEWAY_ACCOUNT_ID}/worldpay/check-credentials`)
             .withState(`a Worldpay gateway account with id ${EXISTING_GATEWAY_ACCOUNT_ID} exists and stub for validating credentials is set up`)
             .withUponReceiving('a request to check Worldpay credentials')
