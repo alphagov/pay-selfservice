@@ -1,7 +1,8 @@
 const { expect } = require('chai')
+const paths = require('../paths')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
 const { InvalidConfigurationError } = require('../errors')
-const { getCurrentCredential, getSwitchingCredential } = require('./credentials')
+const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute } = require('./credentials')
 
 describe('credentials utility', () => {
   describe('get services current credential', () => {
@@ -64,6 +65,17 @@ describe('credentials utility', () => {
 
       const checkSwitchingCreds = () => getSwitchingCredential(account)
       expect(checkSwitchingCreds).to.throw(InvalidConfigurationError)
+    })
+  })
+
+  describe('credentials page utilities', () => {
+    it('correctly identifies a switch psp route', () => {
+      const req = { route: { path: paths.account.switchPSP.worldpayCredentials } }
+      expect(isSwitchingCredentialsRoute(req)).to.equal(true)
+    })
+    it('correctly identifies a non switch psp route', () => {
+      const req = { route: { path: paths.account.yourPsp.worldpayCredentials } }
+      expect(isSwitchingCredentialsRoute(req)).to.equal(false)
     })
   })
 })

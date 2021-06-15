@@ -55,6 +55,7 @@ async function updateWorldpayCredentials (req, res, next) {
         payload: { credentials: results.values }
       })
       logger.info('Successfully updated credentials for pending Worldpay credentials on account')
+      return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
     } else {
       await connectorClient.legacyPatchAccountCredentials({
         correlationId,
@@ -62,9 +63,8 @@ async function updateWorldpayCredentials (req, res, next) {
         payload: { credentials: results.values }
       })
       logger.info('Successfully updated credentials for Worldpay account')
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, 'worldpay'))
     }
-
-    return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, 'worldpay'))
   } catch (error) {
     next(error)
   }

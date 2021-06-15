@@ -58,7 +58,7 @@ describe('Worldpay credentials controller', () => {
     sinon.assert.called(checkCredentialsMock)
     sinon.assert.called(legacyUpdateCredentialsMock)
     sinon.assert.notCalled(updateCredentialsMock)
-    sinon.assert.called(res.redirect)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/worldpay')
   })
 
   it('uses the new patch if on a switch psp route', async () => {
@@ -70,7 +70,7 @@ describe('Worldpay credentials controller', () => {
     sinon.assert.called(checkCredentialsMock)
     sinon.assert.called(updateCredentialsMock)
     sinon.assert.notCalled(legacyUpdateCredentialsMock)
-    sinon.assert.called(res.redirect)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
   })
 })
 
