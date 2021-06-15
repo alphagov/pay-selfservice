@@ -24,16 +24,17 @@ function getSwitchingCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
 
   // make sure there's an active credential we're switching from
-  if (getCurrentCredential(gatewayAccount) && credentials.length > 1) {
+  if (getCurrentCredential(gatewayAccount)) {
     const pendingCredentials = credentials
       .filter((credential) => pendingCredentialStates.includes(credential.state))
 
-    if (pendingCredentials.length > 1) {
+    if (!pendingCredentials.length || pendingCredentials.length > 1) {
       throw new InvalidConfigurationError('Unable to determine which credentials are being switched to')
     }
-    return pendingCredentials[0] || null
+    return pendingCredentials[0]
+  } else {
+    throw new InvalidConfigurationError('No active credential on this account to switch from')
   }
-  return null
 }
 
 module.exports = { getCurrentCredential, getSwitchingCredential }
