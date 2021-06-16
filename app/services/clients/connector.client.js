@@ -23,6 +23,7 @@ const SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename'
 const ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types'
 const ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials'
 const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
+const ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/credentials/{credentialsId}'
 const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
 const CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/check-3ds-flex-config'
 const CHECK_WORLDPAY_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/check-credentials'
@@ -200,8 +201,21 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @returns {ConnectorClient}
    */
-  patchAccountCredentials: function (params) {
+  legacyPatchAccountCredentials: function (params) {
     const url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
+
+    return baseClient.patch(url, {
+      body: params.payload,
+      correlationId: params.correlationId,
+      description: 'patch gateway account credentials',
+      service: SERVICE_NAME
+    })
+  },
+
+  patchAccountGatewayAccountCredentials: function (params) {
+    const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
+      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{credentialsId}', params.gatewayAccountCredentialsId)
 
     return baseClient.patch(url, {
       body: params.payload,

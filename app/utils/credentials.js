@@ -1,5 +1,6 @@
 'use strict'
 
+const paths = require('../paths')
 const { InvalidConfigurationError } = require('../errors')
 
 const CREDENTIAL_STATE = {
@@ -37,4 +38,8 @@ function getSwitchingCredential (gatewayAccount = {}) {
   }
 }
 
-module.exports = { getCurrentCredential, getSwitchingCredential }
+function isSwitchingCredentialsRoute (req) {
+  return Object.values(paths.account.switchPSP).includes(req.route && req.route.path)
+}
+
+module.exports = { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, CREDENTIAL_STATE }

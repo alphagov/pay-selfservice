@@ -1,11 +1,14 @@
 'use strict'
 const { response } = require('../../utils/response')
+const switchTasks = require('./switch-tasks.service')
 const { getSwitchingCredential } = require('../../utils/credentials')
 
 function switchPSPPage (req, res, next) {
   try {
     const targetCredential = getSwitchingCredential(req.account)
-    response(req, res, 'switch-psp/switch-psp', { targetCredential })
+    const taskList = switchTasks.getTaskList(targetCredential, req.account)
+
+    response(req, res, 'switch-psp/switch-psp', { targetCredential, taskList })
   } catch (error) {
     next(error)
   }

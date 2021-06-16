@@ -5,7 +5,7 @@ const patchAccountSpy = sinon.spy(() => Promise.resolve())
 const postNotificationCredentialsSpy = sinon.spy(() => Promise.resolve())
 const connectorClientMock = {
   ConnectorClient: function () {
-    this.patchAccountCredentials = patchAccountSpy
+    this.legacyPatchAccountCredentials = patchAccountSpy
     this.postAccountNotificationCredentials = postNotificationCredentialsSpy
   }
 }
