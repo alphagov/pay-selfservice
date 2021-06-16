@@ -6,7 +6,7 @@ const { getSwitchingCredential } = require('../../utils/credentials')
 function switchPSPPage (req, res, next) {
   try {
     const targetCredential = getSwitchingCredential(req.account)
-    const taskList = switchTasks.getStatusesFor(targetCredential, req.account)
+    const taskList = switchTasks.getTaskList(targetCredential, req.account)
 
     response(req, res, 'switch-psp/switch-psp', { targetCredential, taskList })
   } catch (error) {

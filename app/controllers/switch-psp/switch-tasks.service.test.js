@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { getStatusesFor, isComplete } = require('./switch-tasks.service')
+const { getTaskList, isComplete } = require('./switch-tasks.service')
 const { getSwitchingCredential } = require('../../utils/credentials')
 const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
 
@@ -14,7 +14,7 @@ describe('Switching PSP service', () => {
           ]
         })
         const targetCredential = getSwitchingCredential(account)
-        const taskList = getStatusesFor(targetCredential, account)
+        const taskList = getTaskList(targetCredential, account)
         expect(Object.keys(taskList)).to.have.length(1)
         expect(taskList.LINK_CREDENTIALS.enabled).to.equal(true)
         expect(taskList.LINK_CREDENTIALS.complete).to.equal(false)
@@ -27,7 +27,7 @@ describe('Switching PSP service', () => {
           ]
         })
         const targetCredential = getSwitchingCredential(account)
-        const taskList = getStatusesFor(targetCredential, account)
+        const taskList = getTaskList(targetCredential, account)
         expect(Object.keys(taskList)).to.have.length(1)
         expect(taskList.LINK_CREDENTIALS.enabled).to.equal(true)
         expect(taskList.LINK_CREDENTIALS.complete).to.equal(true)
@@ -44,7 +44,7 @@ describe('Switching PSP service', () => {
         ]
       })
       const targetCredential = getSwitchingCredential(account)
-      const taskList = getStatusesFor(targetCredential, account)
+      const taskList = getTaskList(targetCredential, account)
       expect(isComplete(taskList)).to.equal(true)
     })
 
@@ -56,8 +56,9 @@ describe('Switching PSP service', () => {
         ]
       })
       const targetCredential = getSwitchingCredential(account)
-      const taskList = getStatusesFor(targetCredential, account)
+      const taskList = getTaskList(targetCredential, account)
       expect(isComplete(taskList)).to.equal(false)
     })
+  
   })
 })

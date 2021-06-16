@@ -2,38 +2,25 @@
 
 const { CREDENTIAL_STATE } = require('../../utils/credentials')
 
-const defaultTrue = () => true
-
-const credentialsComplete = function credentialsComplete (targetCredential, account) {
-  return [ CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED, CREDENTIAL_STATE.ACTIVE, CREDENTIAL_STATE.RETIRED ]
+function linkCredentialsComplete (targetCredential) {
+  return [CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED, CREDENTIAL_STATE.ACTIVE, CREDENTIAL_STATE.RETIRED]
     .includes(targetCredential.state)
 }
 
-const worldpayTaskList = [{
-  key: 'LINK_CREDENTIALS',
-  isEnabled: defaultTrue,
-  isComplete: credentialsComplete
-}]
-
-const providerTaskListMap = {
-  worldpay: worldpayTaskList
-}
-
-function getStatusesFor (targetCredential, account) {
-  const schema = providerTaskListMap[targetCredential.payment_provider]
-  const taskList = schema.reduce((aggregate, taskItem) => {
-    aggregate[taskItem.key] = {
-      enabled: taskItem.isEnabled(targetCredential, account),
-      complete: taskItem.isComplete(targetCredential, account)
+function getTaskList (targetCredential, account) {
+  if (targetCredential.payment_provider === 'worldpay') {
+    return {
+      'LINK_CREDENTIALS': {
+        enabled: true,
+        complete: linkCredentialsComplete(targetCredential)
+      }
     }
-    return aggregate
-  }, {})
-  return taskList
+  }
+  throw new Error('Unsupported payment provider')
 }
 
 function isComplete (taskList) {
-  return Object.entries(taskList)
-    .some(([ taskItemKey, taskItemStatus ]) => taskItemStatus.complete)
+  return Object.values(taskList).every(task => task.complete)
 }
 
-module.exports = { getStatusesFor, isComplete }
+module.exports = { getTaskList, isComplete }
