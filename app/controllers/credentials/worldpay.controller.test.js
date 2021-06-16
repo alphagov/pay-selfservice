@@ -2,6 +2,8 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const userFixtures = require('../../../test/fixtures/user.fixtures')
+const User = require('../../models/User.class')
 
 const checkCredentialsMock = sinon.spy(() => Promise.resolve({ result: 'valid' }))
 const legacyUpdateCredentialsMock = sinon.spy(() => Promise.resolve())
@@ -23,10 +25,11 @@ describe('Worldpay credentials controller', () => {
     req = {
       correlationId: 'correlation-id',
       account: account,
+      user: new User(userFixtures.validUserResponse()),
       body: {
         'merchantId': 'a-merchant-id',
         'username': 'a-username',
-        'password': 'a-password'
+        'password': 'a-password' // pragma: allowlist secret
       },
       flash: sinon.spy(),
       route: {

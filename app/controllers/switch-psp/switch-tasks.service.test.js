@@ -59,6 +59,5 @@ describe('Switching PSP service', () => {
       const taskList = getTaskList(targetCredential, account)
       expect(isComplete(taskList)).to.equal(false)
     })
-  
   })
 })
