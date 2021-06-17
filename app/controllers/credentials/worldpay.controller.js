@@ -52,7 +52,8 @@ async function updateWorldpayCredentials (req, res, next) {
         correlationId,
         gatewayAccountId,
         gatewayAccountCredentialId: credential.id,
-        payload: { credentials: results.values }
+        credentials: results.values,
+        userExternalId: req.user.externalId
       })
       logger.info('Successfully updated credentials for pending Worldpay credentials on account')
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))

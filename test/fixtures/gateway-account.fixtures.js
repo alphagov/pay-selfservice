@@ -82,7 +82,7 @@ function validGatewayAccount (opts) {
     gatewayAccount.credentials = validCredentials(opts.credentials)
 
     if (!opts.gateway_account_credentials) {
-      gatewayAccount.gateway_account_credentials = [ validGatewayAccountCredential(opts) ]
+      gatewayAccount.gateway_account_credentials = [validGatewayAccountCredential(opts)]
     }
   }
   if (opts.gateway_account_credentials) {
@@ -96,7 +96,7 @@ function validGatewayAccount (opts) {
     gatewayAccount.worldpay_3ds_flex = validWorldpay3dsFlexCredentials(opts.worldpay_3ds_flex)
   }
 
-  // provider switch enabled is only available to the "frontend" resource, it isn't always guaranteed
+  // provider switch enabled is only available to the frontend resource, it isn't always guaranteed
   if (opts.provider_switch_enabled !== undefined) {
     gatewayAccount.provider_switch_enabled = opts.provider_switch_enabled
   }
@@ -185,6 +185,52 @@ function validCreateGatewayAccountRequest (opts = {}) {
   return data
 }
 
+function validUpdateGatewayAccountCredentialsRequest (opts = {}) {
+  const defaultCredentials = {
+    username: 'a-username',
+    password: 'a-password', // pragma: allowlist secret
+    'merchant_id': 'a-merchant-id'
+  }
+  return [
+    {
+      op: 'replace',
+      path: 'credentials',
+      value: opts.credentials || defaultCredentials
+    },
+    {
+      op: 'replace',
+      path: 'last_updated_by_user_external_id',
+      value: opts.userExternalId || 'a-user-external-id'
+    }
+  ]
+}
+
+function validGatewayAccountCredentialsResponse (opts = {}) {
+  const defaultCredentials = {
+    username: 'a-username',
+    password: 'a-password' // pragma: allowlist secret
+  }
+  const data = {
+    external_id: opts.externalId || 'an-external-id',
+    gateway_account_id: opts.gatewayAccountId || 42,
+    gateway_account_credential_id: opts.gatewayAccountCredentialId || 888,
+    payment_provider: opts.paymentProvider || 'worldpay',
+    credentials: opts.credentials || defaultCredentials,
+    state: opts.state || 'ACTIVE',
+    created_date: opts.createdDate || '2021-06-11T13:43:51.464Z'
+  }
+  if (opts.lastUpdatedByUserExternalId !== undefined) {
+    data.last_updated_by_user_external_id = opts.lastUpdatedByUserExternalId
+  }
+  if (opts.activeStartDate !== undefined) {
+    data.active_start_date = opts.activeStartDate
+  }
+  if (opts.activeEndDate !== undefined) {
+    data.active_end_date = opts.activeEndDate
+  }
+  return data
+}
+
 module.exports = {
   validGatewayAccount,
   validGatewayAccountPatchRequest,
@@ -195,5 +241,7 @@ module.exports = {
   validGatewayAccountResponse,
   validGatewayAccountsResponse,
   validDirectDebitGatewayAccountResponse,
-  validCreateGatewayAccountRequest
+  validCreateGatewayAccountRequest,
+  validUpdateGatewayAccountCredentialsRequest,
+  validGatewayAccountCredentialsResponse
 }
