@@ -675,6 +675,27 @@ ConnectorClient.prototype = {
         baseClientErrorHandler: 'old'
       }
     )
+  },
+
+  postChargeRequest: function (gatewayAccountId, payload) {
+    return baseClient.post(
+      {
+        baseUrl: this.connectorUrl,
+        url: CHARGES_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: payload,
+        description: 'create payment',
+        service: SERVICE_NAME
+      }
+    )
+  },
+
+  getCharge: function (gatewayAccountId, chargeExternalId) {
+    const url = this.connectorUrl + CHARGE_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeExternalId)
+    return baseClient.get(url, {
+      description: 'get a charge',
+      service: SERVICE_NAME
+    })
   }
 }
 

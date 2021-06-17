@@ -27,6 +27,8 @@
     {{ govukButton ({
       text: "Continue to live payment"
     }) }}
+
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
   </form>
 </div>
 {% endblock %}
