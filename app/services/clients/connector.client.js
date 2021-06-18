@@ -215,7 +215,7 @@ ConnectorClient.prototype = {
   patchAccountGatewayAccountCredentials: function (params) {
     const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
       .replace('{accountId}', params.gatewayAccountId)
-      .replace('{credentialsId}', params.gatewayAccountCredentialsId)
+      .replace('{credentialsId}', params.gatewayAccountCredentialId)
 
     const payload = [
       {
