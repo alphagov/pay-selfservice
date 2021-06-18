@@ -301,6 +301,7 @@ module.exports.bind = function (app) {
   account.post(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.postFlex)
 
   account.get(switchPSP.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), switchPSPController.switchPSPPage)
+  account.post(switchPSP.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), switchPSPController.submitSwitchPSP)
   account.get(switchPSP.verifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.verifyPSPIntegrationPaymentPage)
   account.post(switchPSP.verifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.startPaymentJourney)
   account.get(switchPSP.receiveVerifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.completePaymentJourney)

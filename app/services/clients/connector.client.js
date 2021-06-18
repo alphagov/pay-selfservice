@@ -15,6 +15,7 @@ const CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
 const CARD_TYPES_API_PATH = '/v1/api/card-types'
 const STRIPE_ACCOUNT_SETUP_PATH = ACCOUNT_API_PATH + '/stripe-setup'
 const STRIPE_ACCOUNT_PATH = ACCOUNT_API_PATH + '/stripe-account'
+const SWITCH_PSP_PATH = ACCOUNT_API_PATH + '/switch-psp'
 
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
@@ -713,6 +714,16 @@ ConnectorClient.prototype = {
     const url = this.connectorUrl + CHARGE_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeExternalId)
     return baseClient.get(url, {
       description: 'get a charge',
+      service: SERVICE_NAME
+    })
+  },
+
+  postAccountSwitchPSP: function (gatewayAccountId, payload, correlationId) {
+    const url = this.connectorUrl + SWITCH_PSP_PATH.replace('{accountId}', gatewayAccountId)
+    return baseClient.post(url, {
+      body: payload,
+      correlationId: correlationId,
+      description: 'switch account payment service provider',
       service: SERVICE_NAME
     })
   }
