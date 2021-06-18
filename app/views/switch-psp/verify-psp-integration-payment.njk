@@ -1,0 +1,34 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Switch PSP - Verify PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  {# back link should always go before <main> content so it can be skipped, settings page layouts should be adjusted to suport this #}
+  {{ govukBackLink({
+    text: "Back to Switching payment service provider (PSP)",
+    classes: "govuk-!-margin-top-0",
+    href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+  }) }}
+
+  <h1 class="govuk-heading-l page-title">Test the connection between {{ targetCredential.payment_provider | formatPSPname }} and GOV.UK Pay</h1>
+
+  <p class="govuk-body">Check that your service can take payments with {{ targetCredential.payment_provider | formatPSPname }} by making a live payment.</p>
+
+  <p class="govuk-body">You need a debit or credit card and can refund the payment at anytime.</p>
+
+  <form method="POST">
+    {{ govukButton ({
+      text: "Continue to live payment"
+    }) }}
+
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+  </form>
+</div>
+{% endblock %}

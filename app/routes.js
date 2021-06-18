@@ -73,6 +73,7 @@ const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
 const yourPspController = require('./controllers/your-psp')
 const switchPSPController = require('./controllers/switch-psp/switch-psp.controller')
+const verifyPSPIntegrationController = require('./controllers/switch-psp/verify-psp-integration.controller')
 const allTransactionsController = require('./controllers/all-service-transactions/index')
 const payoutsController = require('./controllers/payouts/payout-list.controller')
 const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
@@ -300,6 +301,9 @@ module.exports.bind = function (app) {
   account.post(yourPsp.flex, permission('gateway-credentials:update'), yourPspController.postFlex)
 
   account.get(switchPSP.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), switchPSPController.switchPSPPage)
+  account.get(switchPSP.verifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.verifyPSPIntegrationPaymentPage)
+  account.post(switchPSP.verifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.startPaymentJourney)
+  account.get(switchPSP.recieveVerifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.completePaymentJourney)
 
   // Credentials
   account.get(yourPsp.worldpayCredentials, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)

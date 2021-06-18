@@ -102,7 +102,9 @@ module.exports = {
     },
     switchPSP: {
       index: '/switch-psp',
-      worldpayCredentials: '/switch-psp/credentials/worldpay'
+      worldpayCredentials: '/switch-psp/credentials/worldpay',
+      verifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration',
+      recieveVerifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration/callback'
     },
     toggle3ds: {
       index: '/3ds'

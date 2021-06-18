@@ -1,3 +1,4 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
@@ -8,8 +9,56 @@
   {% include "includes/side-navigation.njk" %}
 {% endblock %}
 
+{% macro taskListItem(label, url, item) %}
+  <li class="app-task-list__item">
+    <span class="app-task-list__task-name">
+      {% if item.enabled %}
+      <a class="govuk-link" href="{{ url }}" aria-describedby="{{ label }}-status">
+        {{ label }}
+      </a>
+      {% else %}
+      <span>{{ label }}</span>
+      {% endif %}
+    </span>
+
+    {% if not item.enabled %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ label }}-status">cannot start yet</strong>
+    {% elif not item.complete %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ label }}-status">not started</strong>
+    {% elif item.complete %}
+    <strong class="govuk-tag app-task-list__tag" id="{{ label }}-status">completed</strong>
+    {% endif %}
+  </li>
+{% endmacro %}
+
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+  {% if verifyPSPIntegrationResult === VERIFY_PSP_INTEGRATION_STATUS.SUCCESS %}
+    {% set bannerHtml %}
+      <h3 class="govuk-notification-banner__heading">
+        Your live payment has succeeded
+      </h3>
+      <p class="govuk-body">The connection between {{ targetCredential.payment_provider }} and GOV.UK Pay has been confirmed. You can <a class="govuk-notification-banner__link" href="{{ formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id) }}?reference=VERIFY_PSP_INTEGRATION">check the payment using reporting tools</a> and refund the payment at any time.</p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: bannerHtml,
+      type: 'success'
+    }) }}
+  {% elif verifyPSPIntegrationResult === VERIFY_PSP_INTEGRATION_STATUS.FAILURE %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list">
+          <li>
+            <span>Your live payment was not successful. <a class="govuk-link" href="https://www.payments.service.gov.uk/support/">Contact support</a> to continue switching PSP.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  {% endif %}
   <h1 class="govuk-heading-l page-title">Switch payment service provider (PSP)</h1>
 
   <p class="govuk-body">This service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }}.</p>
@@ -24,29 +73,16 @@
       </ul>
 
       {% set tasks %}
-        <li class="app-task-list__item">
-            <span class="app-task-list__task-name">
-              {% set linkCredentials = taskList.LINK_CREDENTIALS %}
-              {# {{ taskListItem("The macro text", "/the/macro/link", "the-macro-id") }} #}
-              {% set linkCredentialsText = "Link your Worldpay account with GOV.UK Pay" %}
-              {% if linkCredentials.enabled %}
-              <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.switchPSP.worldpayCredentials, currentGatewayAccount.external_id) }}" aria-describedby="link-worldpay-account">
-                {{ linkCredentialsText }}
-              </a>
-              {% else %}
-                <span>{{ linkCredentialsText }}</span>
-              {% endif %}
-            </span>
-
-            {# {{ taskListStatus(taskListEntry) }} #}
-            {% if not linkCredentials.enabled %}
-            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="link-worldpay-account-status">cannot start yet</strong>
-            {% elif not linkCredentials.complete %}
-            <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="link-worldpay-account-status">not started</strong>
-            {% elif linkCredentials.complete %}
-            <strong class="govuk-tag app-task-list__tag" id="link-worldpay-account-status">completed</strong>
-            {% endif %}
-          </li>
+        {{ taskListItem(
+          "Link your Worldpay account with GOV.UK Pay",
+          formatAccountPathsFor(routes.account.switchPSP.worldpayCredentials, currentGatewayAccount.external_id),
+          taskList.LINK_CREDENTIALS
+        ) }}
+        {{ taskListItem(
+          "Make a live payment to test your Worldpay PSP",
+          formatAccountPathsFor(routes.account.switchPSP.verifyPSPIntegrationPayment, currentGatewayAccount.external_id),
+          taskList.VERIFY_PSP_INTEGRATION
+        ) }}
       {% endset %}
   {% endswitch %}
 

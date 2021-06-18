@@ -51,7 +51,7 @@ async function updateWorldpayCredentials (req, res, next) {
       await connectorClient.patchAccountGatewayAccountCredentials({
         correlationId,
         gatewayAccountId,
-        gatewayAccountCredentialId: credential.id,
+        gatewayAccountCredentialsId: credential.gateway_account_credential_id,
         credentials: results.values,
         userExternalId: req.user.externalId
       })
