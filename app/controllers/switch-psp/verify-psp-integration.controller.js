@@ -5,6 +5,7 @@ const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { getSwitchingCredential } = require('../../utils/credentials')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const { CREDENTIAL_STATE } = require('../../utils/credentials')
 const {
   VERIFY_PSP_INTEGRATION_STATUS_KEY,
   VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY,
@@ -48,10 +49,16 @@ async function startPaymentJourney (req, res, next) {
 async function completePaymentJourney (req, res, next) {
   try {
     const chargeExternalId = req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
+    const targetCredential = getSwitchingCredential(req.account)
     if (chargeExternalId) {
-      const charge = await connectorClient.getCharge(req.account.gateway_account_id, req.session.verify_psp_integration_charge_external_id)
+      const charge = await connectorClient.getCharge(req.account.gateway_account_id, chargeExternalId)
       if (charge.state.status === 'success') {
-        // PATCH update connector for credential state
+        await connectorClient.patchAccountGatewayAccountCredentialsState({
+          correlationId: req.correlationId,
+          gatewayAccountId: req.account.gateway_account_id,
+          gatewayAccountCredentialsId: targetCredential.gateway_account_credential_id,
+          state: CREDENTIAL_STATE.VERIFIED
+        })
         req.session[VERIFY_PSP_INTEGRATION_STATUS_KEY] = VERIFY_PSP_INTEGRATION_STATUS.SUCCESS
       } else {
         logger.info('Live payment to verify PSP integration had a non-success status')

@@ -4,10 +4,11 @@ const switchTasks = require('./switch-tasks.service')
 const { getSwitchingCredential } = require('../../utils/credentials')
 const {
   VERIFY_PSP_INTEGRATION_STATUS_KEY,
+  VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY,
   VERIFY_PSP_INTEGRATION_STATUS
 } = require('../../utils/verify-psp-integration')
 
-async function switchPSPPage (req, res, next) {
+function switchPSPPage (req, res, next) {
   try {
     const targetCredential = getSwitchingCredential(req.account)
     const taskList = switchTasks.getTaskList(targetCredential, req.account)
@@ -16,6 +17,7 @@ async function switchPSPPage (req, res, next) {
     if (req.session[VERIFY_PSP_INTEGRATION_STATUS_KEY]) {
       context.verifyPSPIntegrationResult = req.session[VERIFY_PSP_INTEGRATION_STATUS_KEY]
       delete req.session[VERIFY_PSP_INTEGRATION_STATUS_KEY]
+      delete req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
     }
     response(req, res, 'switch-psp/switch-psp', context)
   } catch (error) {

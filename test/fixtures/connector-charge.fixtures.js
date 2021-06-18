@@ -6,7 +6,6 @@ function validLinks (opts = {}) {
   }]
 }
 
-// both POST new charge and GET one charge return the exact same shape of data
 function validChargeResponse (opts = {}) {
   const data = {
     charge_id: opts.charge_id || 'a-valid-charge-external-id',

@@ -215,7 +215,7 @@ ConnectorClient.prototype = {
   patchAccountGatewayAccountCredentials: function (params) {
     const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
       .replace('{accountId}', params.gatewayAccountId)
-      .replace('{credentialsId}', params.gatewayAccountCredentialId)
+      .replace('{credentialsId}', params.gatewayAccountCredentialsId)
 
     const payload = [
       {
@@ -234,6 +234,25 @@ ConnectorClient.prototype = {
       body: payload,
       correlationId: params.correlationId,
       description: 'patch gateway account credentials',
+      service: SERVICE_NAME
+    })
+  },
+
+  patchAccountGatewayAccountCredentialsState: function (params) {
+    const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
+      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{credentialsId}', params.gatewayAccountCredentialsId)
+
+    const payload = [{
+      op: 'replace',
+      path: 'state',
+      value: params.state
+    }]
+
+    return baseClient.patch(url, {
+      body: payload,
+      correlationId: params.correlationId,
+      description: 'patch gateway account credentials state',
       service: SERVICE_NAME
     })
   },
