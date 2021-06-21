@@ -61,6 +61,7 @@ describe('Switch PSP settings page', () => {
             cy.get('.app-task-list__item').eq(1).should('contain', 'Make a live payment to test your Worldpay PSP')
               .find('.app-task-list__tag').should('have.text', 'cannot start yet')
           })
+        cy.get('button').contains('Switch to Worldpay').should('have.disabled')
       })
 
       it('should navigate to link Worldpay account step', () => {
@@ -174,6 +175,20 @@ describe('Switch PSP settings page', () => {
         cy.get('button').contains('Continue to live payment').click()
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration/callback`)
         cy.get('.govuk-notification-banner__content').contains('Your live payment has succeeded')
+      })
+    })
+
+    describe('Switch PSP', () => {
+      beforeEach(() => {
+        cy.task('setupStubs', getUserAndAccountStubs('smartpay', true, [
+          { payment_provider: 'smartpay', state: 'ACTIVE' },
+          { payment_provider: 'worldpay', state: 'VERIFIED_WITH_LIVE_PAYMENT' }
+        ]))
+      })
+
+      it('submits and navigates through to success page with appropriate message', () => {
+        cy.get('button').contains('Switch to Worldpay').click()
+        cy.get('.govuk-notification-banner__heading').contains('You\'ve switched payment service provider')
       })
     })
   })
