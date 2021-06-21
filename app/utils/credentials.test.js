@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const paths = require('../paths')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
 const { InvalidConfigurationError } = require('../errors')
-const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute } = require('./credentials')
+const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, getPSPPageLinks } = require('./credentials')
 
 describe('credentials utility', () => {
   describe('get services current credential', () => {
@@ -73,9 +73,47 @@ describe('credentials utility', () => {
       const req = { route: { path: paths.account.switchPSP.worldpayCredentials } }
       expect(isSwitchingCredentialsRoute(req)).to.equal(true)
     })
+
     it('correctly identifies a non switch psp route', () => {
       const req = { route: { path: paths.account.yourPsp.worldpayCredentials } }
       expect(isSwitchingCredentialsRoute(req)).to.equal(false)
+    })
+
+    it('correctly filters out valid credentials for non-supported providers', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'RETIRED', payment_provider: 'sandbox', id: 100 },
+          { state: 'ACTIVE', payment_provider: 'stripe', id: 20 }
+        ]
+      })
+      expect(getPSPPageLinks(account)).to.have.length(0)
+    })
+
+    it('correctly returns the account starting credential', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'CREATED', payment_provider: 'worldpay', id: 100 }
+        ]
+      })
+
+      const linkCredentials = getPSPPageLinks(account)
+      expect(linkCredentials).to.have.length(1)
+      expect(linkCredentials[0].gateway_account_credential_id).to.equal(100)
+    })
+
+    it('correctly returns only terminal credentials for supported providers', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'CREATED', payment_provider: 'worldpay', id: 300 },
+          { state: 'ACTIVE', payment_provider: 'smartpay', id: 200 },
+          { state: 'RETIRED', payment_provider: 'epdq', id: 100 }
+        ]
+      })
+
+      const linkCredentials = getPSPPageLinks(account)
+      expect(linkCredentials).to.have.length(2)
+      expect(linkCredentials[0].gateway_account_credential_id).to.equal(200)
+      expect(linkCredentials[1].gateway_account_credential_id).to.equal(100)
     })
   })
 })
