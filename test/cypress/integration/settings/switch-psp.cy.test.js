@@ -2,6 +2,7 @@
 
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const connectorChargeStubs = require('../../stubs/connector-charge-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
@@ -36,7 +37,6 @@ describe('Switch PSP settings page', () => {
 
   describe('When using an account with switching flag enabled', () => {
     describe('Switching is not started', () => {
-
       beforeEach(() => {
         cy.task('setupStubs', getUserAndAccountStubs('smartpay', true, [
           { payment_provider: 'smartpay', state: 'ACTIVE' },
@@ -58,6 +58,8 @@ describe('Switch PSP settings page', () => {
           .within(() => {
             cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
               .find('.app-task-list__tag').should('have.text', 'not started')
+            cy.get('.app-task-list__item').eq(1).should('contain', 'Make a live payment to test your Worldpay PSP')
+              .find('.app-task-list__tag').should('have.text', 'cannot start yet')
           })
       })
 
@@ -94,6 +96,84 @@ describe('Switch PSP settings page', () => {
       it('should go back to task list with the link Worldpay account step complete', () => {
         cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
           .find('.app-task-list__tag').should('have.text', 'completed')
+        cy.get('.app-task-list__item').eq(1).should('contain', 'Make a live payment to test your Worldpay PSP')
+          .find('.app-task-list__tag').should('have.text', 'not started')
+      })
+    })
+
+    describe('PSP integration verified with live payment', () => {
+      it('should now be clickable and navigate to the verify PSP integration page', () => {
+        cy.task('setupStubs', [
+          ...getUserAndAccountStubs('smartpay', true, [
+            { payment_provider: 'smartpay', state: 'ACTIVE' },
+            { payment_provider: 'worldpay', state: 'ENTERED' }
+          ])
+        ])
+
+        cy.get('.app-task-list__item').contains('Make a live payment to test your Worldpay PSP').click()
+        cy.get('h1').should('contain', 'Test the connection between Worldpay and GOV.UK Pay')
+        cy.get('.govuk-back-link').should('contain', 'Back to Switching payment service provider (PSP)')
+      })
+
+      it('should create a charge and continue to charges next url on success', () => {
+        cy.task('setupStubs', [
+          ...getUserAndAccountStubs('smartpay', true, [
+            { payment_provider: 'smartpay', state: 'ACTIVE' },
+            { payment_provider: 'worldpay', state: 'ENTERED' }
+          ]),
+          connectorChargeStubs.postCreateChargeSuccess({
+            gateway_account_id: gatewayAccountId,
+            charge_id: 'a-valid-charge-external-id',
+            next_url: 'http://localhost:3000/should_follow_to_payment_page'
+          })
+        ])
+        cy.get('button').contains('Continue to live payment').click()
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/should_follow_to_payment_page`)
+        })
+      })
+
+      it('returning with a failed payment should present an error with request session charge id maintained', () => {
+        cy.task('setupStubs', [
+          ...getUserAndAccountStubs('smartpay', true, [
+            { payment_provider: 'smartpay', state: 'ACTIVE' },
+            { payment_provider: 'worldpay', state: 'ENTERED' }
+          ]),
+          connectorChargeStubs.getChargeSuccess({
+            gateway_account_id: gatewayAccountId,
+            charge_id: 'a-valid-charge-external-id',
+            status: 'cancelled',
+            next_url: 'http://localhost:3000/should_follow_to_payment_page'
+          })
+        ])
+        cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration/callback`)
+
+        cy.get('.govuk-error-summary__body').first().contains('Your live payment was not successful')
+      })
+
+      it('returning with a successful payment should present completion message with request session charge id maintained', () => {
+        cy.task('setupStubs', [
+          ...getUserAndAccountStubs('smartpay', true, [
+            { payment_provider: 'smartpay', state: 'ACTIVE' },
+            { payment_provider: 'worldpay', state: 'VERIFIED_WITH_LIVE_PAYMENT' }
+          ]),
+          connectorChargeStubs.postCreateChargeSuccess({
+            gateway_account_id: gatewayAccountId,
+            charge_id: 'a-valid-charge-external-id',
+            next_url: 'http://localhost:3000/should_follow_to_payment_page'
+          }),
+          connectorChargeStubs.getChargeSuccess({
+            gateway_account_id: gatewayAccountId,
+            charge_id: 'a-valid-charge-external-id',
+            status: 'success',
+            next_url: 'http://localhost:3000/should_follow_to_payment_page'
+          })
+        ])
+
+        cy.get('.app-task-list__item').contains('Make a live payment to test your Worldpay PSP').click()
+        cy.get('button').contains('Continue to live payment').click()
+        cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration/callback`)
+        cy.get('.govuk-notification-banner__content').contains('Your live payment has succeeded')
       })
     })
   })
