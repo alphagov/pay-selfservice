@@ -124,7 +124,7 @@ describe('Switch PSP settings page', () => {
           connectorChargeStubs.postCreateChargeSuccess({
             gateway_account_id: gatewayAccountId,
             charge_id: 'a-valid-charge-external-id',
-            next_url: 'http://localhost:3000/should_follow_to_payment_page'
+            next_url: '/should_follow_to_payment_page'
           })
         ])
         cy.get('button').contains('Continue to live payment').click()
@@ -143,7 +143,7 @@ describe('Switch PSP settings page', () => {
             gateway_account_id: gatewayAccountId,
             charge_id: 'a-valid-charge-external-id',
             status: 'cancelled',
-            next_url: 'http://localhost:3000/should_follow_to_payment_page'
+            next_url: '/should_follow_to_payment_page'
           })
         ])
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration/callback`)
@@ -160,13 +160,13 @@ describe('Switch PSP settings page', () => {
           connectorChargeStubs.postCreateChargeSuccess({
             gateway_account_id: gatewayAccountId,
             charge_id: 'a-valid-charge-external-id',
-            next_url: 'http://localhost:3000/should_follow_to_payment_page'
+            next_url: '/should_follow_to_payment_page'
           }),
           connectorChargeStubs.getChargeSuccess({
             gateway_account_id: gatewayAccountId,
             charge_id: 'a-valid-charge-external-id',
             status: 'success',
-            next_url: 'http://localhost:3000/should_follow_to_payment_page'
+            next_url: '/should_follow_to_payment_page'
           })
         ])
 
