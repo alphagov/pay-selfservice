@@ -66,7 +66,7 @@
   },
   "dependencies": {
     "@govuk-pay/pay-js-commons": "3.0.13",
-    "@sentry/node": "6.5.0",
+    "@sentry/node": "6.7.1",
     "accessible-autocomplete": "2.0.3",
     "appmetrics": "5.1.1",
     "appmetrics-statsd": "3.0.0",
@@ -117,7 +117,7 @@
     "chai": "4.3.4",
     "chai-arrays": "2.2.0",
     "chai-as-promised": "7.1.1",
-    "cheerio": "1.0.0-rc.6",
+    "cheerio": "1.0.0-rc.10",
     "chokidar-cli": "latest",
     "csrf": "^3.1.0",
     "cypress": "3.1.5",
