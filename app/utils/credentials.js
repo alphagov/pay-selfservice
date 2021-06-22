@@ -1,7 +1,7 @@
 'use strict'
 
 const paths = require('../paths')
-const { InvalidConfigurationError } = require('../errors')
+const { InvalidConfigurationError, NotFoundError } = require('../errors')
 
 const CREDENTIAL_STATE = {
   CREATED: 'CREATED',
@@ -42,4 +42,35 @@ function isSwitchingCredentialsRoute (req) {
   return Object.values(paths.account.switchPSP).includes(req.route && req.route.path)
 }
 
-module.exports = { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, CREDENTIAL_STATE }
+function getPSPPageLinks (gatewayAccount) {
+  const supportedYourPSPPageProviders = [ 'worldpay', 'smartpay', 'epdq' ]
+  const credentials = (gatewayAccount.gateway_account_credentials || [])
+    .filter((credential) => supportedYourPSPPageProviders.includes(credential.payment_provider))
+
+  if (credentials.length === 1) {
+    // if there's only one integration, that should always be shown
+    return credentials
+  } else {
+    // pending credentials should be managed through the switch process, only show terminal credential states
+    return credentials
+      .filter((credential) => [ CREDENTIAL_STATE.RETIRED, CREDENTIAL_STATE.ACTIVE ].includes(credential.state))
+  }
+}
+
+function getCredentialByExternalId (account, credentialExternalId) {
+  const credentials = account.gateway_account_credentials || []
+  const credential = credentials.filter((credential) => credential.external_id === credentialExternalId)
+  if (!credential.length) {
+    throw new NotFoundError('Credential not found on account')
+  }
+  return credential[0]
+}
+
+module.exports = {
+  getCurrentCredential,
+  getSwitchingCredential,
+  isSwitchingCredentialsRoute,
+  getPSPPageLinks,
+  getCredentialByExternalId,
+  CREDENTIAL_STATE
+}

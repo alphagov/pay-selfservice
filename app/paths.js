@@ -20,8 +20,8 @@ module.exports = {
       update: '/api-keys/update'
     },
     credentials: {
-      index: '/your-psp/credentials/:paymentProvider',
-      edit: '/your-psp/credentials/:paymentProvider/edit'
+      index: '/your-psp/:credentialId/credentials',
+      edit: '/your-psp/:credentialId/credentials/edit'
     },
     dashboard: {
       index: '/dashboard'
@@ -43,8 +43,8 @@ module.exports = {
       refund: '/email-settings-refund'
     },
     notificationCredentials: {
-      edit: '/notification-credentials/:paymentProvider/edit',
-      update: '/notification-credentials/:paymentProvider'
+      edit: '/your-psp/:credentialId/notification-credentials/edit',
+      update: '/your-psp/:credentialId/notification-credentials'
     },
     paymentLinks: {
       start: '/create-payment-link',
@@ -102,7 +102,7 @@ module.exports = {
     },
     switchPSP: {
       index: '/switch-psp',
-      worldpayCredentials: '/switch-psp/credentials/worldpay',
+      credentialsWithGatewayCheck: '/switch-psp/:credentialId/credentials-with-gateway-check',
       verifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration',
       receiveVerifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration/callback'
     },
@@ -123,10 +123,10 @@ module.exports = {
       refund: '/transactions/:chargeId/refund'
     },
     yourPsp: {
-      index: '/your-psp/:paymentProvider',
-      flex: '/your-psp/worldpay/flex',
-      worldpay3dsFlex: '/your-psp/worldpay-3ds-flex',
-      worldpayCredentials: '/your-psp/credentials/worldpay'
+      index: '/your-psp/:credentialId',
+      flex: '/your-psp/:credentialId/flex',
+      worldpay3dsFlex: '/your-psp/:credentialId/worldpay-3ds-flex',
+      credentialsWithGatewayCheck: '/your-psp/:credentialId/credentials-with-gateway-check'
     }
   },
   service: {

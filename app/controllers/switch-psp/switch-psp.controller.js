@@ -51,7 +51,7 @@ async function submitSwitchPSP (req, res, next) {
       'switchPSPSuccess',
       `All future payments will be taken with ${formatPSPName(targetCredential.payment_provider)}. Your ${formatPSPName(currentCredential.payment_provider)} account is still live for processing refunds of payments made before the switch.`
     )
-    res.redirect(formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, targetCredential.payment_provider))
+    res.redirect(formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, targetCredential.external_id))
   } catch (error) {
     next(error)
   }

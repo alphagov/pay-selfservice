@@ -11,13 +11,13 @@
           text: "Merchant account code"
         },
         value: {
-          text: currentGatewayAccount.credentials.merchant_id if isAccountCredentialsConfigured else "Not configured",
+          text: credential.credentials.merchant_id if isAccountCredentialsConfigured else "Not configured",
           classes: "value-merchant-id"
         },
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, paymentProvider) + "?change=merchantId",
+              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, credential.external_id) + "?change=merchantId",
               text: "Change",
               visuallyHiddenText: "account credentials",
               attributes: {
@@ -32,13 +32,13 @@
           text: "Username"
         },
         value: {
-          text: currentGatewayAccount.credentials.username if isAccountCredentialsConfigured else "Not configured",
+          text: credential.credentials.username if isAccountCredentialsConfigured else "Not configured",
           classes: "value-username"
         },
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, paymentProvider) + "?change=username",
+              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, credential.external_id) + "?change=username",
               text: "Change",
               visuallyHiddenText: "account credentials"
             }
@@ -56,7 +56,7 @@
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, paymentProvider) + "?change=password",
+              href: formatAccountPathsFor(routes.account.credentials.edit, currentGatewayAccount.external_id, credential.external_id) + "?change=password",
               text: "Change",
               visuallyHiddenText: "account credentials"
             }
@@ -94,7 +94,7 @@
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.notificationCredentials.edit, currentGatewayAccount.external_id, paymentProvider) + "?change=username",
+              href: formatAccountPathsFor(routes.account.notificationCredentials.edit, currentGatewayAccount.external_id, credential.external_id) + "?change=username",
               text: "Change",
               visuallyHiddenText: "account credentials",
               attributes: {
@@ -115,7 +115,7 @@
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.notificationCredentials.edit, currentGatewayAccount.external_id, paymentProvider) + "?change=password",
+              href: formatAccountPathsFor(routes.account.notificationCredentials.edit, currentGatewayAccount.external_id, credential.external_id) + "?change=password",
               text: "Change",
               visuallyHiddenText: "account credentials"
             }

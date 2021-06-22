@@ -1,22 +1,31 @@
 'use strict'
 
 const { response } = require('../../utils/response')
+const { getCredentialByExternalId } = require('../../utils/credentials')
 
-module.exports = (req, res) => {
-  const { paymentProvider } = req.params
-  const isAccountCredentialsConfigured = req.account.credentials && req.account.credentials.merchant_id !== undefined
+module.exports = (req, res, next) => {
+  const { credentialId } = req.params
 
-  const isWorldpay3dsFlexCredentialsConfigured = req.account.worldpay_3ds_flex &&
-    req.account.worldpay_3ds_flex.organisational_unit_id !== undefined &&
-    req.account.worldpay_3ds_flex.organisational_unit_id.length > 0
+  try {
+    const credential = getCredentialByExternalId(req.account, credentialId)
+    const isAccountCredentialsConfigured = credential.credentials && credential.credentials.merchant_id !== undefined
 
-  const is3dsEnabled = req.account.requires3ds === true
+    const isWorldpay3dsFlexCredentialsConfigured = req.account.worldpay_3ds_flex &&
+      req.account.worldpay_3ds_flex.organisational_unit_id !== undefined &&
+      req.account.worldpay_3ds_flex.organisational_unit_id.length > 0
 
-  const isWorldpay3dsFlexEnabled = is3dsEnabled && req.account.integration_version_3ds === 2
+    const is3dsEnabled = req.account.requires3ds === true
 
-  return response(req, res, 'your-psp/index', { isAccountCredentialsConfigured,
-    is3dsEnabled,
-    isWorldpay3dsFlexEnabled,
-    isWorldpay3dsFlexCredentialsConfigured,
-    paymentProvider })
+    const isWorldpay3dsFlexEnabled = is3dsEnabled && req.account.integration_version_3ds === 2
+
+    return response(req, res, 'your-psp/index', {
+      credential,
+      isAccountCredentialsConfigured,
+      is3dsEnabled,
+      isWorldpay3dsFlexEnabled,
+      isWorldpay3dsFlexCredentialsConfigured
+    })
+  } catch (error) {
+    next(error)
+  }
 }

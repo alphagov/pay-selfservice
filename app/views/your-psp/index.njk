@@ -2,7 +2,7 @@
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
-  Your PSP - {{currentService.name}} {{ paymentProvider | formatPSPname }} - GOV.UK Pay
+  Your PSP - {{currentService.name}} {{ credential.payment_provider | formatPSPname }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -26,16 +26,16 @@
       type: 'success'
     }) }}
   {% endif %}
-  <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ paymentProvider | formatPSPname }}</h1>
+  <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ credential.payment_provider | formatPSPname }}</h1>
 
-  {% if paymentProvider === "worldpay" %}
+  {% if credential.payment_provider === "worldpay" %}
     {% include "./_worldpay.njk" %}
     {% include "./_worldpay-flex.njk" %}
   {% endif %}
-  {% if paymentProvider === "smartpay" %}
+  {% if credential.payment_provider === "smartpay" %}
     {% include "./_smartpay.njk" %}
   {% endif %}
-  {% if paymentProvider === "epdq" %}
+  {% if credential.payment_provider === "epdq" %}
     {% include "./_epdq.njk" %}
   {% endif %}
 </div>

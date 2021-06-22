@@ -1,6 +1,7 @@
 const { render } = require('../test-helpers/html-assertions')
 const { serviceNavigationItems, adminNavigationItems } = require('../../app/utils/nav-builder')
 const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
+const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
 
 describe('navigation menu', function () {
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {
@@ -89,6 +90,11 @@ describe('navigation menu', function () {
 
   it('should render Accounts credentials navigation link when user have gateway credentials read permission' +
   ' and payment provider is NOT `stripe` ', function () {
+    const account = gatewayAccountFixtures.validGatewayAccount({
+      gateway_account_credentials: [{
+        payment_provider: 'worldpay'
+      }]
+    })
     const testPermissions = {
       tokens_update: false,
       gateway_credentials_update: true,
@@ -100,7 +106,7 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay'),
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay', account),
       formatAccountPathsFor: formatAccountPathsFor
     }
 
@@ -201,32 +207,5 @@ describe('navigation menu', function () {
     body.should.not.contain('Card types')
     body.should.not.contain('Email notifications')
     body.should.not.contain('Billing address')
-  })
-
-  it('should not render direct debit navigation links when gateway account is card', function () {
-    const testPermissions = {
-      tokens_update: true,
-      gateway_credentials_update: true,
-      service_name_read: true,
-      merchant_details_read: true,
-      payment_types_read: true,
-      toggle_3ds_read: true,
-      email_notification_template_read: true,
-      connected_gocardless_account_update: true,
-      toggle_billing_address_read: true
-    }
-    const templateData = {
-      permissions: testPermissions,
-      showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay'),
-      formatAccountPathsFor: formatAccountPathsFor
-    }
-
-    const body = render('api-keys/index', templateData)
-
-    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Settings')
-    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('API keys')
-    body.should.containSelector('.settings-navigation li:nth-child(3)').withExactText('Your PSP - Worldpay')
-    body.should.containSelector('.settings-navigation li:nth-child(4)').withExactText('Card types')
   })
 })

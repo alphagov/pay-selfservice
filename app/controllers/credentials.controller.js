@@ -5,6 +5,7 @@ const _ = require('lodash')
 const paths = require('../paths')
 const formatAccountPathsFor = require('../utils/format-account-paths-for')
 const { response } = require('../utils/response')
+const { getCredentialByExternalId } = require('../utils/credentials')
 const { ConnectorClient } = require('../services/clients/connector.client')
 const { CONNECTOR_URL } = process.env
 const { CORRELATION_HEADER } = require('../utils/correlation-header')
@@ -13,21 +14,26 @@ const { NotFoundError } = require('../errors')
 
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
-function showSuccessView (viewMode, req, res) {
+function showSuccessView (viewMode, req, res, next) {
   let responsePayload = {}
-  const { paymentProvider } = req.params
+  const { credentialId } = req.params
 
-  responsePayload.editNotificationCredentialsMode = (viewMode === EDIT_NOTIFICATION_CREDENTIALS_MODE)
-  responsePayload.paymentProvider = paymentProvider
+  try {
+    const credential = getCredentialByExternalId(req.account, credentialId)
+    responsePayload.editNotificationCredentialsMode = (viewMode === EDIT_NOTIFICATION_CREDENTIALS_MODE)
 
-  const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
-  if (invalidCreds) {
-    responsePayload.lastNotificationsData = invalidCreds
-    delete req.session.pageData.editNotificationCredentials
+    const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
+    if (invalidCreds) {
+      responsePayload.lastNotificationsData = invalidCreds
+      delete req.session.pageData.editNotificationCredentials
+    }
+    responsePayload.change = _.get(req, 'query.change', {})
+    responsePayload.credential = credential
+
+    response(req, res, 'credentials/' + credential.payment_provider, responsePayload)
+  } catch (error) {
+    next(error)
   }
-  responsePayload.change = _.get(req, 'query.change', {})
-
-  response(req, res, 'credentials/' + paymentProvider, responsePayload)
 }
 
 function loadIndex (req, res, next, viewMode) {
@@ -37,7 +43,7 @@ function loadIndex (req, res, next, viewMode) {
   if (req.account.payment_provider === 'stripe') {
     return next(new NotFoundError('Attempted to access credentials page for a Stripe account'))
   }
-  showSuccessView(viewMode, req, res)
+  showSuccessView(viewMode, req, res, next)
 }
 
 function credentialsPatchRequestValueOf (req) {
@@ -81,7 +87,6 @@ module.exports = {
 
   updateNotificationCredentials: async function (req, res, next) {
     const accountId = req.account.gateway_account_id
-    const { paymentProvider } = req.params
     const username = req.body.username && req.body.username.trim()
     const password = req.body.password && req.body.password.trim()
 
@@ -96,21 +101,22 @@ module.exports = {
       }
     }
 
-    if (_.get(req, 'session.flash.genericError.length')) {
-      _.set(req, 'session.pageData.editNotificationCredentials', { username, password })
-      return res.redirect(formatAccountPathsFor(paths.account.notificationCredentials.edit, req.account.external_id, paymentProvider))
-    }
-
-    const correlationId = req.headers[CORRELATION_HEADER] || ''
-
     try {
+      const credential = getCredentialByExternalId(req.account, req.params.credentialId)
+      if (_.get(req, 'session.flash.genericError.length')) {
+        _.set(req, 'session.pageData.editNotificationCredentials', { username, password })
+        return res.redirect(formatAccountPathsFor(paths.account.notificationCredentials.edit, req.account.external_id, credential.external_id))
+      }
+
+      const correlationId = req.headers[CORRELATION_HEADER] || ''
+
       await connectorClient.postAccountNotificationCredentials({
         payload: { username, password },
         correlationId: correlationId,
         gatewayAccountId: accountId
       })
 
-      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, paymentProvider))
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id))
     } catch (err) {
       next(err)
     }
@@ -118,15 +124,15 @@ module.exports = {
 
   update: async function (req, res, next) {
     const accountId = req.account.gateway_account_id
-    const { paymentProvider } = req.params
     const correlationId = req.headers[CORRELATION_HEADER] || ''
 
     try {
+      const credential = getCredentialByExternalId(req.account, req.params.credentialId)
       await connectorClient.legacyPatchAccountCredentials({
         payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
       })
 
-      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, paymentProvider))
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id))
     } catch (err) {
       next(err)
     }

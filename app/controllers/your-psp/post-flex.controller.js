@@ -9,6 +9,7 @@ const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
 const { validationErrors } = require('../../browsered/field-validation-checks')
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
+const { getCredentialByExternalId } = require('../../utils/credentials')
 
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 // Constants
@@ -19,25 +20,26 @@ const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 module.exports = async function submit3dsFlexCredentials (req, res, next) {
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
-  const flexUrl = formatAccountPathsFor(paths.account.yourPsp.flex, req.account.external_id)
-  const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, 'worldpay')
-
   const orgUnitId = lodash.get(req.body, ORGANISATIONAL_UNIT_ID_FIELD, '').trim()
   const issuer = lodash.get(req.body, ISSUER_FIELD, '').trim()
   const jwtMacKey = lodash.get(req.body, JWT_MAC_KEY_FIELD, '').trim()
 
-  const errors = validate3dsFlexCredentials(orgUnitId, issuer, jwtMacKey)
-
-  if (!lodash.isEmpty(errors)) {
-    lodash.set(req, 'session.pageData.worldpay3dsFlex', {
-      errors: errors,
-      orgUnitId: orgUnitId,
-      issuer: issuer
-    })
-    return res.redirect(303, flexUrl)
-  }
-
   try {
+    const credential = getCredentialByExternalId(req.account, req.params.credentialId)
+    const flexUrl = formatAccountPathsFor(paths.account.yourPsp.flex, req.account.external_id, credential.external_id)
+    const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id)
+
+    const errors = validate3dsFlexCredentials(orgUnitId, issuer, jwtMacKey)
+
+    if (!lodash.isEmpty(errors)) {
+      lodash.set(req, 'session.pageData.worldpay3dsFlex', {
+        errors: errors,
+        orgUnitId: orgUnitId,
+        issuer: issuer
+      })
+      return res.redirect(303, flexUrl)
+    }
+
     const flexParams = {
       correlationId: correlationId,
       gatewayAccountId: accountId,

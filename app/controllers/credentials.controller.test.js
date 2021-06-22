@@ -1,6 +1,6 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-
+const gatewayAccountFixture = require('../../test/fixtures/gateway-account.fixtures')
 const patchAccountSpy = sinon.spy(() => Promise.resolve())
 const postNotificationCredentialsSpy = sinon.spy(() => Promise.resolve())
 const connectorClientMock = {
@@ -19,6 +19,8 @@ const expressResponseStub = {
   redirect: sinon.spy(),
   render: sinon.spy()
 }
+const next = sinon.spy()
+const credentialId = 'a-valid-credential-id'
 describe('gateway credentials controller', () => {
   it('should remove leading and trailing whitespace from credentials when submitting them to the backend', async () => {
     const req = {
@@ -27,11 +29,15 @@ describe('gateway credentials controller', () => {
         password: ' password ',
         merchantId: ' merchant-id '
       },
-      account: {},
-      params: {},
+      account: gatewayAccountFixture.validGatewayAccount({
+        gateway_account_credentials: [{
+          external_id: credentialId
+        }]
+      }),
+      params: { credentialId },
       headers: {}
     }
-    await credentialsController.update(req, expressResponseStub)
+    await credentialsController.update(req, expressResponseStub, next)
     sinon.assert.calledWithMatch(patchAccountSpy, { payload: { credentials: { username: 'username', password: 'password', merchant_id: 'merchant-id' } } })
   })
 
@@ -41,12 +47,16 @@ describe('gateway credentials controller', () => {
         username: ' username       ',
         password: ' password '
       },
-      account: {},
+      account: gatewayAccountFixture.validGatewayAccount({
+        gateway_account_credentials: [{
+          external_id: credentialId
+        }]
+      }),
+      params: { credentialId },
       headers: {},
-      params: {},
       flash: sinon.spy()
     }
-    await credentialsController.updateNotificationCredentials(req, expressResponseStub)
+    await credentialsController.updateNotificationCredentials(req, expressResponseStub, next)
     sinon.assert.calledWithMatch(postNotificationCredentialsSpy, { payload: { username: 'username', password: 'password' } })
   })
 })

@@ -18,8 +18,8 @@ describe('Worldpay credentials controller', () => {
     const account = gatewayAccountFixtures.validGatewayAccount({
       external_id: 'a-valid-external-id',
       gateway_account_credentials: [
-        { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 },
-        { state: 'CREATED', payment_provider: 'worldpay', id: 200 }
+        { state: 'ACTIVE', payment_provider: 'smartpay', id: 100, external_id: 'a-valid-credential-id-smartpay' },
+        { state: 'CREATED', payment_provider: 'worldpay', id: 200, external_id: 'a-valid-credential-id-worldpay' }
       ]
     })
     req = {
@@ -33,8 +33,9 @@ describe('Worldpay credentials controller', () => {
       },
       flash: sinon.spy(),
       route: {
-        path: '/your-psp/credentials/worldpay'
+        path: '/your-psp/:credentialId/credentials-with-gateway-check'
       },
+      params: { credentialId: 'a-valid-credential-id-worldpay' },
       headers: {
         'x-request-id': 'correlation-id'
       }
@@ -54,19 +55,20 @@ describe('Worldpay credentials controller', () => {
 
   it('uses the legacy patch if on a your psp route', async () => {
     const controller = getControllerWithMocks()
-    req.route.path = '/your-psp/credentials/worldpay'
+    req.route.path = '/your-psp/credentials/a-valid-credential-id-worldpay'
 
     await controller.updateWorldpayCredentials(req, res, next)
 
     sinon.assert.called(checkCredentialsMock)
     sinon.assert.called(legacyUpdateCredentialsMock)
     sinon.assert.notCalled(updateCredentialsMock)
-    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/worldpay')
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-id-worldpay')
   })
 
   it('uses the new patch if on a switch psp route', async () => {
     const controller = getControllerWithMocks()
-    req.route.path = '/switch-psp/credentials/worldpay'
+
+    req.route.path = '/switch-psp/:credentialId/credentials-with-gateway-check'
 
     await controller.updateWorldpayCredentials(req, res, next)
 

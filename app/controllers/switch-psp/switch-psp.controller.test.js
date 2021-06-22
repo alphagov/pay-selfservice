@@ -18,7 +18,7 @@ describe('Verify PSP integration controller', () => {
 
       sinon.assert.called(postAccountSwitchPSPMock)
       sinon.assert.calledWith(req.flash, 'switchPSPSuccess')
-      sinon.assert.calledWith(res.redirect, '/account/a-valid-external-id/your-psp/worldpay')
+      sinon.assert.calledWith(res.redirect, '/account/a-valid-external-id/your-psp/a-valid-external-id')
     })
   })
 

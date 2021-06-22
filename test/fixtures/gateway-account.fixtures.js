@@ -1,9 +1,14 @@
 'use strict'
 
 function validCredentials (opts = {}) {
-  const credentials = {
-    merchant_id: opts.merchant_id || 'merchant-id',
-    username: opts.username || 'username'
+  const credentials = {}
+
+  if (opts.merchant_id) {
+    credentials.merchant_id = opts.merchant_id
+  }
+
+  if (opts.username) {
+    credentials.username = opts.username
   }
 
   if (opts.sha_in_passphrase) {
@@ -18,6 +23,7 @@ function validCredentials (opts = {}) {
 function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts = {}) {
   const gatewayAccountCredential = {
     gateway_account_credential_id: credentialOpts.id || 1,
+    external_id: credentialOpts.external_id || 'a-valid-external-id',
     payment_provider: credentialOpts.payment_provider || 'sandbox',
     state: credentialOpts.state || 'ACTIVE',
     gateway_account_id: gatewayAccountOpts.gateway_account_id || 31,

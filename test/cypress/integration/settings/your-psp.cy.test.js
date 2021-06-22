@@ -7,6 +7,7 @@ describe('Your PSP settings page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
   const gatewayAccountExternalId = 'a-valid-external-id'
+  const credentialExternalId = 'a-credential-external-id'
   const serviceName = 'Purchase a positron projection permit'
   const yourPspPath = `/account/${gatewayAccountExternalId}/your-psp`
 
@@ -69,7 +70,8 @@ describe('Your PSP settings page', () => {
       worldpay3dsFlex: opts.worldpay3dsFlex,
       credentials: opts.credentials,
       paymentProvider: opts.gateway,
-      notificationCredentials: opts.notificationCredentials
+      notificationCredentials: opts.notificationCredentials,
+      ...opts.gatewayAccountCredentials && { gatewayAccountCredentials: opts.gatewayAccountCredentials }
     })
     const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
@@ -79,7 +81,8 @@ describe('Your PSP settings page', () => {
       worldpay3dsFlex: opts.worldpay3dsFlex,
       credentials: opts.credentials,
       paymentProvider: opts.gateway,
-      notificationCredentials: opts.notificationCredentials
+      notificationCredentials: opts.notificationCredentials,
+      ...opts.gatewayAccountCredentials && { gatewayAccountCredentials: opts.gatewayAccountCredentials }
     })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
     const postCheckWorldpay3dsFlexCredentialsReturnsValid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
@@ -130,6 +133,13 @@ describe('Your PSP settings page', () => {
     beforeEach(() => {
       setupYourPspStubs({
         gateway: 'worldpay',
+        emptyCredentials: true,
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          external_id: credentialExternalId,
+          state: 'CREATED',
+          credentials: {}
+        }],
         validateCredentials: testCredentials
       })
     })
@@ -159,7 +169,7 @@ describe('Your PSP settings page', () => {
       cy.get('#password').type(testCredentials.password)
       cy.get('#submitCredentials').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/worldpay`)
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
     })
 
@@ -179,7 +189,7 @@ describe('Your PSP settings page', () => {
       cy.get('#jwt-mac-key').type(' ' + testFlexCredentials.jwt_mac_key + ' ')
       cy.get('#submitFlexCredentials').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/worldpay`)
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
     })
 
@@ -189,7 +199,7 @@ describe('Your PSP settings page', () => {
       cy.get('#issuer').type(testInvalidFlexCredentials.issuer)
       cy.get('#jwt-mac-key').type(testInvalidFlexCredentials.jwt_mac_key)
       cy.get('#submitFlexCredentials').click()
-      cy.title().should('eq', 'Error: Your PSP - Purchase a positron projection permit Worldpay test - GOV.UK Pay')
+      cy.title().should('eq', 'Error: Your PSP - Purchase a positron projection permit Worldpay - GOV.UK Pay')
       cy.get('.govuk-error-summary').contains('There is a problem')
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Organisational unit ID may not be correct')
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#organisational-unit-id')
@@ -207,7 +217,7 @@ describe('Your PSP settings page', () => {
       cy.get('#issuer').should('have.value', testInvalidFlexCredentials.issuer)
       cy.get('#jwt-mac-key').should('have.value', '')
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/worldpay` + '/flex')
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}/flex`)
       })
     })
 
@@ -219,7 +229,7 @@ describe('Your PSP settings page', () => {
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'There is a problem with the payments platform. Please contact the support team.')
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/worldpay` + '/flex')
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}/flex`)
       })
     })
 
@@ -234,7 +244,7 @@ describe('Your PSP settings page', () => {
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'Please try again or contact support team.')
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/worldpay` + '/flex')
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}/flex`)
       })
     })
   })
@@ -243,12 +253,16 @@ describe('Your PSP settings page', () => {
     it('should show all credentials as configured', () => {
       setupYourPspStubs({
         gateway: 'worldpay',
-        credentials: testCredentials,
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          credentials: testCredentials,
+          external_id: credentialExternalId
+        }],
         worldpay3dsFlex: testFlexCredentials
       })
 
       cy.setEncryptedCookies(userExternalId)
-      cy.visit(`${yourPspPath}/worldpay`)
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
@@ -266,19 +280,23 @@ describe('Your PSP settings page', () => {
         gateway: 'worldpay',
         requires3ds: true,
         integrationVersion3ds: 1,
-        credentials: testCredentials,
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          credentials: testCredentials,
+          external_id: credentialExternalId
+        }],
         worldpay3dsFlex: testFlexCredentials
       })
 
       cy.setEncryptedCookies(userExternalId)
-      cy.visit(`${yourPspPath}/worldpay`)
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#worldpay-3ds-flex-is-off').should('exist')
       cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
       cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
 
       cy.get('#enable-worldpay-3ds-flex-button').should('exist').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/worldpay`)
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
     })
 
@@ -287,19 +305,23 @@ describe('Your PSP settings page', () => {
         gateway: 'worldpay',
         requires3ds: true,
         integrationVersion3ds: 2,
-        credentials: testCredentials,
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          credentials: testCredentials,
+          external_id: credentialExternalId
+        }],
         worldpay3dsFlex: testFlexCredentials
       })
 
       cy.setEncryptedCookies(userExternalId)
-      cy.visit(`${yourPspPath}/worldpay`)
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#worldpay-3ds-flex-is-on').should('exist')
       cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
       cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
 
       cy.get('#disable-worldpay-3ds-flex-button').should('exist').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/worldpay`)
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
     })
 
@@ -308,11 +330,15 @@ describe('Your PSP settings page', () => {
         gateway: 'worldpay',
         requires3ds: false,
         integrationVersion3ds: 1,
-        credentials: testCredentials
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          credentials: testCredentials,
+          external_id: credentialExternalId
+        }]
       })
 
       cy.setEncryptedCookies(userExternalId)
-      cy.visit(`${yourPspPath}/worldpay`)
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#worldpay-3ds-flex-is-off').should('exist')
       cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
       cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
@@ -324,12 +350,16 @@ describe('Your PSP settings page', () => {
         gateway: 'worldpay',
         requires3ds: false,
         integrationVersion3ds: 1,
-        credentials: testCredentials,
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          credentials: testCredentials,
+          external_id: credentialExternalId
+        }],
         worldpay3dsFlex: testFlexCredentials
       })
 
       cy.setEncryptedCookies(userExternalId)
-      cy.visit(`${yourPspPath}/worldpay`)
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#worldpay-3ds-flex-is-off').should('exist')
       cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
       cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
@@ -340,7 +370,12 @@ describe('Your PSP settings page', () => {
   describe('When using a Smartpay account', () => {
     beforeEach(() => {
       setupYourPspStubs({
-        gateway: 'smartpay'
+        gateway: 'smartpay',
+        gatewayAccountCredentials: [{
+          payment_provider: 'smartpay',
+          credentials: {},
+          external_id: credentialExternalId
+        }]
       })
     })
 
@@ -366,7 +401,7 @@ describe('Your PSP settings page', () => {
       cy.get('#password').type(testCredentials.password)
       cy.get('#submitCredentials').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/smartpay`)
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
     })
 
@@ -378,7 +413,7 @@ describe('Your PSP settings page', () => {
       cy.get('#notification-password').type(testCredentials.password)
       cy.get('#submitNotificationCredentials').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/smartpay`)
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
     })
   })
@@ -387,14 +422,18 @@ describe('Your PSP settings page', () => {
     beforeEach(() => {
       setupYourPspStubs({
         gateway: 'smartpay',
-        credentials: testCredentials,
+        gatewayAccountCredentials: [{
+          payment_provider: 'smartpay',
+          credentials: testCredentials,
+          external_id: credentialExternalId
+        }],
         notificationCredentials: testNotificationCredentials
       })
     })
 
     it('should show all credentials as configured', () => {
       cy.setEncryptedCookies(userExternalId)
-      cy.visit(`${yourPspPath}/smartpay`)
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
@@ -406,7 +445,12 @@ describe('Your PSP settings page', () => {
   describe('When using an ePDQ account', () => {
     beforeEach(() => {
       setupYourPspStubs({
-        gateway: 'epdq'
+        gateway: 'epdq',
+        gatewayAccountCredentials: [{
+          payment_provider: 'epdq',
+          credentials: {},
+          external_id: credentialExternalId
+        }]
       })
     })
 
@@ -436,7 +480,7 @@ describe('Your PSP settings page', () => {
       cy.get('#shaOutPassphrase').type(testCredentials.password)
       cy.get('#submitCredentials').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`${yourPspPath}/epdq`)
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
     })
   })
@@ -445,13 +489,17 @@ describe('Your PSP settings page', () => {
     beforeEach(() => {
       setupYourPspStubs({
         gateway: 'epdq',
-        credentials: testCredentials
+        gatewayAccountCredentials: [{
+          payment_provider: 'epdq',
+          credentials: testCredentials,
+          external_id: credentialExternalId
+        }]
       })
     })
 
     it('should show all credentials as configured', () => {
       cy.setEncryptedCookies(userExternalId)
-      cy.visit(`${yourPspPath}/epdq`)
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
