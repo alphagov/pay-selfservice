@@ -108,14 +108,11 @@ function yourPSPNavigationItems (account, currentPath = '') {
   const credentialsToLink = getPSPPageLinks(account)
   const isSingleCredential = credentialsToLink.length === 1
   return credentialsToLink.map((credential) => {
-    const id = (credential.state === CREDENTIAL_STATE.ACTIVE) || isSingleCredential ? 'navigation-menu-your-psp' : `navigation-menu-your-psp-${credential.external_id}`
     const prefix = credential.state === CREDENTIAL_STATE.RETIRED ? 'Old PSP' : 'Your PSP'
-    const name = `${prefix} - ${formatPSPname(credential.payment_provider)}`
-    const url = formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, credential.external_id)
     return {
-      id,
-      name,
-      url,
+      id: (credential.state === CREDENTIAL_STATE.ACTIVE) || isSingleCredential ? 'navigation-menu-your-psp' : `navigation-menu-your-psp-${credential.external_id}`,
+      name: `${prefix} - ${formatPSPname(credential.payment_provider)}`,
+      url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, credential.external_id),
       current: currentPath.includes(credential.external_id)
     }
   })
@@ -123,5 +120,6 @@ function yourPSPNavigationItems (account, currentPath = '') {
 
 module.exports = {
   serviceNavigationItems: serviceNavigationItems,
-  adminNavigationItems: adminNavigationItems
+  adminNavigationItems: adminNavigationItems,
+  yourPSPNavigationItems
 }
