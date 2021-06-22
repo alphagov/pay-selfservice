@@ -103,6 +103,14 @@
             <p class="govuk-body">
               After linking {{ targetCredential.payment_provider | formatPSPname }} and GOV.UK Pay, you can safely switch to taking payments with {{ targetCredential.payment_provider | formatPSPname }}.
             </p>
+
+            <form method="POST">
+              {{ govukButton({
+                text: "Switch to " + (targetCredential.payment_provider | formatPSPname),
+                disabled: (not taskListIsComplete)
+              }) }}
+              <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+            </form>
           </li>
         </ul>
       </li>

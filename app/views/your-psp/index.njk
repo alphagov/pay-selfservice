@@ -1,3 +1,4 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
@@ -10,6 +11,21 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+  {% if flash.switchPSPSuccess %}
+    {% set html %}
+      <p class="govuk-notification-banner__heading">
+        You've switched payment service provider
+      </p>
+      <p class="govuk-body">
+        {{ flash.switchPSPSuccess }}
+      </p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: html,
+      type: 'success'
+    }) }}
+  {% endif %}
   <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ paymentProvider | formatPSPname }}</h1>
 
   {% if paymentProvider === "worldpay" %}
