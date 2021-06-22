@@ -1,9 +1,8 @@
 const paths = require('../../paths')
 const logger = require('../../utils/logger')(__filename)
 const { response } = require('../../utils/response')
-const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../utils/credentials')
+const { isSwitchingCredentialsRoute, getCredentialByExternalId } = require('../../utils/credentials')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { CredentialsForm, isNotEmpty, formatErrorsForSummaryList } = require('./credentials-form')
 const { CONNECTOR_URL, SKIP_PSP_CREDENTIAL_CHECKS } = process.env
@@ -17,29 +16,35 @@ const credentialsForm = new CredentialsForm([
 ])
 
 function showWorldpayCredentialsPage (req, res, next) {
-  const form = credentialsForm.from(req.account.credentials)
-  const switchingToCredentials = isSwitchingCredentialsRoute(req)
-  response(req, res, 'credentials/worldpay', { form, switchingToCredentials })
+  try {
+    const credential = getCredentialByExternalId(req.account, req.params.credentialId)
+    const form = credentialsForm.from(credential.credentials)
+    const switchingToCredentials = isSwitchingCredentialsRoute(req)
+    response(req, res, 'credentials/worldpay', { form, switchingToCredentials, credential })
+  } catch (error) {
+    next(error)
+  }
 }
 
 async function updateWorldpayCredentials (req, res, next) {
   const gatewayAccountId = req.account.gateway_account_id
   const switchingToCredentials = isSwitchingCredentialsRoute(req)
-  const correlationId = req.headers[CORRELATION_HEADER] || ''
-
-  const results = credentialsForm.validate(req.body)
-
-  if (results.errorSummaryList.length) {
-    return response(req, res, 'credentials/worldpay', { form: results, switchingToCredentials })
-  }
+  const correlationId = req.correlationId || ''
 
   try {
+    const credential = getCredentialByExternalId(req.account, req.params.credentialId)
+    const results = credentialsForm.validate(req.body)
+
+    if (results.errorSummaryList.length) {
+      return response(req, res, 'credentials/worldpay', { form: results, switchingToCredentials, credential })
+    }
+
     if (SKIP_PSP_CREDENTIAL_CHECKS !== 'true') {
       const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ correlationId, gatewayAccountId, payload: results.values })
       if (checkCredentialsWithWorldpay.result !== 'valid') {
         logger.warn('Provided credentials failed validation with Worldpay')
         results.errorSummaryList = formatErrorsForSummaryList({ 'merchantId': 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
-        return response(req, res, 'credentials/worldpay', { form: results, switchingToCredentials })
+        return response(req, res, 'credentials/worldpay', { form: results, switchingToCredentials, credential })
       }
 
       logger.info('Successfully validated credentials with Worldpay')
@@ -47,7 +52,6 @@ async function updateWorldpayCredentials (req, res, next) {
 
     if (switchingToCredentials) {
       // @TODO(PP-8209) when `credentials` are removed from the top level account, this should always use new patch
-      const credential = getSwitchingCredential(req.account)
       await connectorClient.patchAccountGatewayAccountCredentials({
         correlationId,
         gatewayAccountId,
@@ -64,7 +68,7 @@ async function updateWorldpayCredentials (req, res, next) {
         payload: { credentials: results.values }
       })
       logger.info('Successfully updated credentials for Worldpay account')
-      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, 'worldpay'))
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id))
     }
   } catch (error) {
     next(error)

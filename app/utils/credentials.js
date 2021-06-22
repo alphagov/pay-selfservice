@@ -1,7 +1,7 @@
 'use strict'
 
 const paths = require('../paths')
-const { InvalidConfigurationError } = require('../errors')
+const { InvalidConfigurationError, NotFoundError } = require('../errors')
 
 const CREDENTIAL_STATE = {
   CREATED: 'CREATED',
@@ -57,10 +57,20 @@ function getPSPPageLinks (gatewayAccount) {
   }
 }
 
+function getCredentialByExternalId (account, credentialExternalId) {
+  const credentials = account.gateway_account_credentials || []
+  const credential = credentials.filter((credential) => credential.external_id === credentialExternalId)
+  if (!credential.length) {
+    throw new NotFoundError('Credential not found on account')
+  }
+  return credential[0]
+}
+
 module.exports = {
   getCurrentCredential,
   getSwitchingCredential,
   isSwitchingCredentialsRoute,
   getPSPPageLinks,
+  getCredentialByExternalId,
   CREDENTIAL_STATE
 }

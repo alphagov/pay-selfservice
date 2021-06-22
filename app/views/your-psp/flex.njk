@@ -1,10 +1,9 @@
 {% extends "layout.njk" %}
-{% set paymentProvider = 'worldpay' %}
 {% block pageTitle %}
   {% if errors %}
     Error:
   {% endif %}
-  Your PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  Your PSP - {{currentService.name}} {{ credential.payment_provider | formatPSPname }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -14,7 +13,7 @@
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Your Worldpay 3DS Flex credentials</h1>
-    <form method="post" action="{{ formatAccountPathsFor(routes.account.yourPsp.flex, currentGatewayAccount.external_id, paymentProvider) }}">
+    <form method="post" action="{{ formatAccountPathsFor(routes.account.yourPsp.flex, currentGatewayAccount.external_id, credential.external_id) }}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
         {% if errors %}
           {% set errorList = [] %}
@@ -174,7 +173,7 @@
       }}
     </form>
     <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, paymentProvider) }}">Cancel</a>
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, credential.external_id) }}">Cancel</a>
     </p>
 </div>
 {% endblock %}

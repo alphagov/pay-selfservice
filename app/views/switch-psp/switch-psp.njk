@@ -75,7 +75,7 @@
       {% set tasks %}
         {{ taskListItem(
           "Link your Worldpay account with GOV.UK Pay",
-          formatAccountPathsFor(routes.account.switchPSP.worldpayCredentials, currentGatewayAccount.external_id),
+          formatAccountPathsFor(routes.account.switchPSP.credentialsWithGatewayCheck, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.LINK_CREDENTIALS
         ) }}
         {{ taskListItem(

@@ -5,6 +5,7 @@ const paths = require('./../paths')
 const formatAccountPathsFor = require('./format-account-paths-for')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
+const { getPSPPageLinks, CREDENTIAL_STATE } = require('./credentials')
 
 const mainSettingsPaths = [
   paths.account.settings,
@@ -89,13 +90,10 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       current: pathLookup(currentPath, paths.account.apiKeys.index),
       permissions: permissions.tokens_update
     },
-    {
-      id: 'navigation-menu-your-psp',
-      name: `Your PSP - ${formatPSPname(paymentProvider)}`,
-      url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, paymentProvider),
-      current: yourPspPaths.filter(path => currentPath.includes(path)).length || pathLookup(currentPath, yourPspPaths),
-      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox')
-    },
+    ...yourPSPNavigationItems(account, currentPath).map((yourPSPNavigationItem) => ({
+      ...yourPSPNavigationItem,
+      permissions: permissions.gateway_credentials_update
+    })),
     {
       id: 'navigation-menu-payment-types',
       name: 'Card types',
@@ -104,6 +102,23 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       permissions: permissions.payment_types_read && type === 'card'
     }
   ]
+}
+
+function yourPSPNavigationItems (account, currentPath = '') {
+  const credentialsToLink = getPSPPageLinks(account)
+  const isSingleCredential = credentialsToLink.length === 1
+  return credentialsToLink.map((credential) => {
+    const id = (credential.state === CREDENTIAL_STATE.ACTIVE) || isSingleCredential ? 'navigation-menu-your-psp' : `navigation-menu-your-psp-${credential.external_id}`
+    const prefix = credential.state === CREDENTIAL_STATE.RETIRED ? 'Old PSP' : 'Your PSP'
+    const name = `${prefix} - ${formatPSPname(credential.payment_provider)}`
+    const url = formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, credential.external_id)
+    return {
+      id,
+      name,
+      url,
+      current: currentPath.includes(credential.external_id)
+    }
+  })
 }
 
 module.exports = {

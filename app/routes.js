@@ -307,10 +307,10 @@ module.exports.bind = function (app) {
   account.get(switchPSP.receiveVerifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.completePaymentJourney)
 
   // Credentials
-  account.get(yourPsp.worldpayCredentials, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
-  account.post(yourPsp.worldpayCredentials, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
-  account.get(switchPSP.worldpayCredentials, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
-  account.post(switchPSP.worldpayCredentials, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
+  account.get(yourPsp.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
+  account.post(yourPsp.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
+  account.get(switchPSP.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
+  account.post(switchPSP.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
 
   account.get(credentials.index, permission('gateway-credentials:read'), credentialsController.index)
   account.get(credentials.edit, permission('gateway-credentials:update'), credentialsController.editCredentials)

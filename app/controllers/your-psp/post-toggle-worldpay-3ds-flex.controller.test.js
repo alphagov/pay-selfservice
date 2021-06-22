@@ -3,8 +3,11 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
+const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+
 describe('Toggle Worldpay 3DS Flex controller', () => {
   const gatewayAccountExternalId = 'a-gateway-account-external-id'
+  const credentialId = 'a-valid-credential-id'
   let req
   let res
   let next
@@ -14,10 +17,15 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
   beforeEach(() => {
     req = {
       correlationId: 'correlation-id',
-      account: {
+      account: gatewayAccountFixtures.validGatewayAccount({
         gateway_account_id: '1',
-        external_id: gatewayAccountExternalId
-      },
+        external_id: gatewayAccountExternalId,
+        gateway_account_credentials: [{
+          payment_provider: 'worldpay',
+          external_id: credentialId
+        }]
+      }),
+      params: { credentialId },
       flash: sinon.spy(),
       body: {}
     }
@@ -39,7 +47,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2, req.correlationId)
     sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned on.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp/worldpay`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp/${credentialId}`)
   })
 
   it('should toggle 3DS Flex off by setting 3DS integration version to 1', async () => {
@@ -51,7 +59,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
 
     sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 1, req.correlationId)
     sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned off. Your payments will now use 3DS only.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp/worldpay`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp/${credentialId}`)
   })
 
   it('should call next with error if problem calling connector', async () => {
