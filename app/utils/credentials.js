@@ -44,10 +44,11 @@ function isSwitchingCredentialsRoute (req) {
 
 function getPSPPageLinks (gatewayAccount) {
   const supportedYourPSPPageProviders = [ 'worldpay', 'smartpay', 'epdq' ]
+  const numberOfAllCredentials = gatewayAccount.gateway_account_credentials && gatewayAccount.gateway_account_credentials.length
   const credentials = (gatewayAccount.gateway_account_credentials || [])
     .filter((credential) => supportedYourPSPPageProviders.includes(credential.payment_provider))
 
-  if (credentials.length === 1) {
+  if (numberOfAllCredentials === 1) {
     // if there's only one integration, that should always be shown
     return credentials
   } else {
