@@ -31,6 +31,7 @@ describe('Switch PSP settings page', () => {
     it('should not show link to Switch PSP in the side navigation', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.get('.service-info--tag').should('not.contain', 'switching psp')
       cy.get('#navigation-menu-switch-psp').should('have.length', 0)
     })
   })
@@ -44,9 +45,15 @@ describe('Switch PSP settings page', () => {
         ]))
       })
 
-      it('should show the switch PSP page for switching to Worldpay', () => {
+      it('should show dashboard message for switching psp', () => {
         cy.setEncryptedCookies(userExternalId)
+        cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+        cy.get('.govuk-notification-banner__heading').should('contain', 'Switch your payment service provider (PSP) to Worldpay')
+      })
+
+      it('should show the switch PSP page for switching to Worldpay', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+        cy.get('.service-info--tag').should('contain', 'switching psp')
         cy.get('#navigation-menu-switch-psp').should('have.length', 1)
         cy.get('h1').should('contain', 'Switch payment service provider')
         cy.get('li').contains('your Worldpay account credentials: Merchant code, username and password').should('exist')
@@ -189,6 +196,21 @@ describe('Switch PSP settings page', () => {
       it('submits and navigates through to success page with appropriate message', () => {
         cy.get('button').contains('Switch to Worldpay').click()
         cy.get('.govuk-notification-banner__heading').contains('You\'ve switched payment service provider')
+      })
+    })
+
+    describe('Switched PSP', () => {
+      beforeEach(() => {
+        cy.task('setupStubs', getUserAndAccountStubs('smartpay', true, [
+          { payment_provider: 'smartpay', state: 'ACTIVE', external_id: 'a-valid-external-id-smartpay' },
+          { payment_provider: 'worldpay', state: 'RETIRED', active_end_date: '2018-05-03T00:00:00.000Z', external_id: 'a-valid-external-id-worldpay' }
+        ]))
+      })
+
+      it('sets transitioned text on the your psp page', () => {
+        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.get('a').contains('Old PSP - Worldpay').click()
+        cy.get('#switched-psp-status').should('contain', 'This service is taking payments with Smartpay. It switched from using Worldpay on 03/05/2018')
       })
     })
   })
