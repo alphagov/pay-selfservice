@@ -5,6 +5,7 @@ const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const logger = require('../../utils/logger')(__filename)
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header')
+const { getCurrentCredential } = require('../../utils/credentials')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 module.exports = async (req, res, next) => {
@@ -21,7 +22,14 @@ module.exports = async (req, res, next) => {
 
   if (enable) {
     try {
-      await connector.setGatewayMerchantId(gatewayAccountId, gatewayMerchantId, correlationId)
+      const credential = getCurrentCredential(req.account)
+      // @TODO(PP-8273) only use future strategy when backend no longer relies on top level credentials
+      const useFutureCredentialsUpdateStategy = req.account.gateway_account_credentials.length > 1
+      if (useFutureCredentialsUpdateStategy) {
+        await connector.patchGooglePayGatewayMerchantId(gatewayAccountId, credential.gateway_account_credential_id, gatewayMerchantId, req.user && req.user.externalId, correlationId)
+      } else {
+        await connector.setGatewayMerchantId(gatewayAccountId, gatewayMerchantId, correlationId)
+      }
       logger.info('Set google pay merchant ID')
     } catch (error) {
       logger.info('Error setting google pay merchant ID', { error })
