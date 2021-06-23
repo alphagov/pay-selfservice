@@ -35,7 +35,7 @@ describe('Worldpay credentials controller', () => {
       route: {
         path: '/your-psp/:credentialId/credentials-with-gateway-check'
       },
-      params: { credentialId: 'a-valid-credential-id-worldpay' },
+      params: { credentialId: 'a-valid-credential-id-smartpay' },
       headers: {
         'x-request-id': 'correlation-id'
       }
@@ -53,23 +53,27 @@ describe('Worldpay credentials controller', () => {
     legacyUpdateCredentialsMock.resetHistory()
   })
 
-  it('uses the legacy patch if on a your psp route', async () => {
+  it('uses the legacy patch if only one credential is available', async () => {
+    const account = gatewayAccountFixtures.validGatewayAccount({
+      external_id: 'a-valid-external-id',
+      gateway_account_credentials: [
+        { state: 'ACTIVE', payment_provider: 'smartpay', id: 100, external_id: 'a-valid-credential-id-smartpay' }
+      ]
+    })
     const controller = getControllerWithMocks()
-    req.route.path = '/your-psp/credentials/a-valid-credential-id-worldpay'
 
-    await controller.updateWorldpayCredentials(req, res, next)
+    await controller.updateWorldpayCredentials({ ...req, account }, res, next)
 
     sinon.assert.called(checkCredentialsMock)
     sinon.assert.called(legacyUpdateCredentialsMock)
     sinon.assert.notCalled(updateCredentialsMock)
-    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-id-worldpay')
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-id-smartpay')
   })
 
-  it('uses the new patch if on a switch psp route', async () => {
+  it('uses the new patch if any more than one credential is available and the service is opted in to some stage of a switch', async () => {
     const controller = getControllerWithMocks()
 
     req.route.path = '/switch-psp/:credentialId/credentials-with-gateway-check'
-
     await controller.updateWorldpayCredentials(req, res, next)
 
     sinon.assert.called(checkCredentialsMock)

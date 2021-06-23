@@ -128,9 +128,22 @@ module.exports = {
 
     try {
       const credential = getCredentialByExternalId(req.account, req.params.credentialId)
-      await connectorClient.legacyPatchAccountCredentials({
-        payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
-      })
+
+      // @TODO(PP-8273) only use future strategy when backend no longer relies on top level credentials
+      const useFutureCredentialsUpdateStategy = req.account.gateway_account_credentials.length > 1
+      if (useFutureCredentialsUpdateStategy) {
+        await connectorClient.patchAccountGatewayAccountCredentials({
+          correlationId,
+          gatewayAccountId: accountId,
+          gatewayAccountCredentialsId: credential.gateway_account_credential_id,
+          userExternalId: req.user.externalId,
+          ...credentialsPatchRequestValueOf(req)
+        })
+      } else {
+        await connectorClient.legacyPatchAccountCredentials({
+          payload: credentialsPatchRequestValueOf(req), correlationId: correlationId, gatewayAccountId: accountId
+        })
+      }
 
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id))
     } catch (err) {
