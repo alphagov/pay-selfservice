@@ -1,13 +1,14 @@
 'use strict'
 
 const { response } = require('../../utils/response')
-const { getCredentialByExternalId } = require('../../utils/credentials')
+const { getCredentialByExternalId, getCurrentCredential } = require('../../utils/credentials')
 
 module.exports = (req, res, next) => {
   const { credentialId } = req.params
 
   try {
     const credential = getCredentialByExternalId(req.account, credentialId)
+    const activeCredential = getCurrentCredential(req.account)
     const isAccountCredentialsConfigured = credential.credentials && credential.credentials.merchant_id !== undefined
 
     const isWorldpay3dsFlexCredentialsConfigured = req.account.worldpay_3ds_flex &&
@@ -20,6 +21,7 @@ module.exports = (req, res, next) => {
 
     return response(req, res, 'your-psp/index', {
       credential,
+      activeCredential,
       isAccountCredentialsConfigured,
       is3dsEnabled,
       isWorldpay3dsFlexEnabled,

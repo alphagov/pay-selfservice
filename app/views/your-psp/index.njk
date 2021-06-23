@@ -28,6 +28,12 @@
   {% endif %}
   <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ credential.payment_provider | formatPSPname }}</h1>
 
+  {% if credential.active_end_date %}
+  <div id="switched-psp-status" class="govuk-inset-text">
+    This service is taking payments with {{ activeCredential.payment_provider | formatPSPname }}. It switched from using {{ credential.payment_provider | formatPSPname }} on {{ credential.active_end_date | datetime('date') }}
+  </div>
+  {% endif %}
+
   {% if credential.payment_provider === "worldpay" %}
     {% include "./_worldpay.njk" %}
     {% include "./_worldpay-flex.njk" %}

@@ -5,6 +5,7 @@ const moment = require('moment-timezone')
 
 const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response').response
+const { getCurrentCredential, getSwitchingCredential } = require('../../utils/credentials')
 const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
 const LedgerClient = require('../../services/clients/ledger.client')
 const ProductsClient = require('../../services/clients/products.client.js')
@@ -132,6 +133,13 @@ module.exports = async (req, res) => {
   }
 
   try {
+    let targetCredential = {}
+    const activeCredential = getCurrentCredential(req.account)
+    try {
+      targetCredential = getSwitchingCredential(req.account)
+    } catch (notSwitchingError) {
+      // it's valid to not be switching on the dashboard, no op here
+    }
     const { fromDateTime, toDateTime } = getTransactionDateRange(period)
 
     const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
@@ -144,7 +152,9 @@ module.exports = async (req, res) => {
         activity: result,
         fromDateTime,
         toDateTime,
-        transactionsPeriodString
+        transactionsPeriodString,
+        targetCredential,
+        activeCredential
       }))
     } catch (error) {
       const status = _.get(error.message, 'statusCode', 404)
