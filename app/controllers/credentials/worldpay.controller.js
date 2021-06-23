@@ -50,8 +50,9 @@ async function updateWorldpayCredentials (req, res, next) {
       logger.info('Successfully validated credentials with Worldpay')
     }
 
-    if (switchingToCredentials) {
-      // @TODO(PP-8209) when `credentials` are removed from the top level account, this should always use new patch
+    // @TODO(PP-8273) only use future strategy when backend no longer relies on top level credentials
+    const useFutureCredentialsUpdateStategy = req.account.gateway_account_credentials.length > 1
+    if (useFutureCredentialsUpdateStategy) {
       await connectorClient.patchAccountGatewayAccountCredentials({
         correlationId,
         gatewayAccountId,
@@ -60,7 +61,6 @@ async function updateWorldpayCredentials (req, res, next) {
         userExternalId: req.user.externalId
       })
       logger.info('Successfully updated credentials for pending Worldpay credentials on account')
-      return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
     } else {
       await connectorClient.legacyPatchAccountCredentials({
         correlationId,
@@ -68,6 +68,11 @@ async function updateWorldpayCredentials (req, res, next) {
         payload: { credentials: results.values }
       })
       logger.info('Successfully updated credentials for Worldpay account')
+    }
+
+    if (switchingToCredentials) {
+      return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+    } else {
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id))
     }
   } catch (error) {

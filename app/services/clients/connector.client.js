@@ -239,6 +239,32 @@ ConnectorClient.prototype = {
     })
   },
 
+  patchGooglePayGatewayMerchantId: function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId, correlationId = '') {
+    const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
+      .replace('{accountId}', gatewayAccountId)
+      .replace('{credentialsId}', gatewayAccountCredentialsId)
+
+    const payload = [
+      {
+        op: 'replace',
+        path: 'credentials/gateway_merchant_id',
+        value: googlePayGatewayMerchantId
+      },
+      {
+        op: 'replace',
+        path: 'last_updated_by_user_external_id',
+        value: userExternalId
+      }
+    ]
+
+    return baseClient.patch(url, {
+      body: payload,
+      correlationId: correlationId,
+      description: 'patch gateway account credentials for google pay merchant id',
+      service: SERVICE_NAME
+    })
+  },
+
   patchAccountGatewayAccountCredentialsState: function (params) {
     const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
       .replace('{accountId}', params.gatewayAccountId)

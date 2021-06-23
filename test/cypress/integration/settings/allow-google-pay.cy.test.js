@@ -13,7 +13,10 @@ function setupStubs (allowGooglePay) {
       gatewayAccountId,
       gatewayAccountExternalId,
       paymentProvider: 'worldpay',
-      allowGooglePay: allowGooglePay
+      allowGooglePay: allowGooglePay,
+      gatewayAccountCredentials: [{
+        payment_provider: 'worldpay'
+      }]
     })
   ])
 }
