@@ -12,6 +12,8 @@
         govuk-tag--grey
       {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
         govuk-tag--blue
+      {% elseif currentGatewayAccount.provider_switch_enabled %}
+        govuk-tag--blue
       {% endif %}
     {% endset %}
 
@@ -26,6 +28,10 @@
         Live - information needed
       {% else %}
         Live
+      {% endif %}
+
+      {% if currentGatewayAccount.provider_switch_enabled %}
+      - switching psp
       {% endif %}
     {% endset %}
     <strong class="service-info--tag govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>

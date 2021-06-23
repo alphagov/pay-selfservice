@@ -7,6 +7,8 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
 {% block mainContent %}
   {% include "./_live-account-requested-banner.njk" %}
   {% include "./_stripe-account-setup-banner.njk" %}
+  {% include "./_switching-psp-banner.njk" %}
+
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l first-steps__title">Dashboard</h1>
   </div>
