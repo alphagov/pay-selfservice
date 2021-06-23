@@ -116,6 +116,18 @@ describe('credentials utility', () => {
       expect(linkCredentials[1].gateway_account_credential_id).to.equal(100)
     })
 
+    it('correctly returns nothing if moving from a non-credential page supported PSP', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'ACTIVE', payment_provider: 'stripe', id: 100 },
+          { state: 'CREATED', payment_provider: 'worldpay', id: 200 }
+        ]
+      })
+
+      const linkCredentials = getPSPPageLinks(account)
+      expect(linkCredentials).to.have.length(0)
+    })
+
     it('finds credential by external id', () => {
       const account = gatewayAccountFixtures.validGatewayAccount({
         gateway_account_credentials: [
