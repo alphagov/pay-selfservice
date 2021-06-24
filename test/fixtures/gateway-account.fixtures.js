@@ -195,7 +195,7 @@ function validUpdateGatewayAccountCredentialsRequest (opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
     password: 'a-password', // pragma: allowlist secret
-    'merchant_id': 'a-merchant-id'
+    merchant_id: 'a-merchant-id'
   }
   return [
     {
@@ -237,6 +237,60 @@ function validGatewayAccountCredentialsResponse (opts = {}) {
   return data
 }
 
+function validPatchGatewayMerchantIdRequest (opts = {}) {
+  return [
+    {
+      op: 'replace',
+      path: 'credentials/gateway_merchant_id',
+      value: opts.gatewayMerchantId || 'abcdef123abcdef'
+    },
+    {
+      op: 'replace',
+      path: 'last_updated_by_user_external_id',
+      value: opts.userExternalId || 'a-user-external-id'
+    }
+  ]
+}
+
+function validPatchAccountGatewayAccountCredentialsStateRequest (opts = {}) {
+  return [
+    {
+      op: 'replace',
+      path: 'state',
+      value: opts.state || 'VERIFIED_WITH_LIVE_PAYMENT'
+    }
+  ]
+}
+
+function validPatchGatewayCredentialsResponse (opts = {}) {
+  const defaultCredentials = {
+    username: 'a-username',
+    merchant_id: 'a-merchant-id'
+  }
+  if (opts.gatewayMerchantId !== undefined) {
+    defaultCredentials.gateway_merchant_id = opts.gatewayMerchantId
+  }
+  const data = {
+    external_id: opts.externalId || 'an-external-id',
+    gateway_account_id: opts.gatewayAccountId || 42,
+    gateway_account_credential_id: opts.gatewayAccountCredentialId || 888,
+    payment_provider: opts.paymentProvider || 'worldpay',
+    credentials: opts.credentials || defaultCredentials,
+    state: opts.state || 'ACTIVE',
+    created_date: opts.createdDate || '2021-06-11T13:43:51.464Z'
+  }
+  if (opts.lastUpdatedByUserExternalId !== undefined) {
+    data.last_updated_by_user_external_id = opts.lastUpdatedByUserExternalId
+  }
+  if (opts.activeStartDate !== undefined) {
+    data.active_start_date = opts.activeStartDate
+  }
+  if (opts.activeEndDate !== undefined) {
+    data.active_end_date = opts.activeEndDate
+  }
+  return data
+}
+
 module.exports = {
   validGatewayAccount,
   validGatewayAccountPatchRequest,
@@ -249,5 +303,8 @@ module.exports = {
   validDirectDebitGatewayAccountResponse,
   validCreateGatewayAccountRequest,
   validUpdateGatewayAccountCredentialsRequest,
-  validGatewayAccountCredentialsResponse
+  validGatewayAccountCredentialsResponse,
+  validPatchGatewayMerchantIdRequest,
+  validPatchGatewayCredentialsResponse,
+  validPatchAccountGatewayAccountCredentialsStateRequest
 }
