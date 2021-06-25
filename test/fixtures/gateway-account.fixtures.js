@@ -291,6 +291,13 @@ function validPatchGatewayCredentialsResponse (opts = {}) {
   return data
 }
 
+function validPostAccountSwitchPSPRequest (opts = {}) {
+  return {
+    user_external_id: opts.userExternalId || 'a-user-external-id',
+    gateway_account_credential_external_id: opts.gatewayAccountCredentialExternalId
+  }
+}
+
 module.exports = {
   validGatewayAccount,
   validGatewayAccountPatchRequest,
@@ -306,5 +313,6 @@ module.exports = {
   validGatewayAccountCredentialsResponse,
   validPatchGatewayMerchantIdRequest,
   validPatchGatewayCredentialsResponse,
-  validPatchAccountGatewayAccountCredentialsStateRequest
+  validPatchAccountGatewayAccountCredentialsStateRequest,
+  validPostAccountSwitchPSPRequest
 }
