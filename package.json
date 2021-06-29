@@ -111,7 +111,7 @@
   "devDependencies": {
     "@babel/core": "7.14.6",
     "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.14.4",
+    "@babel/preset-env": "7.14.7",
     "@pact-foundation/pact": "^9.16.0",
     "@pact-foundation/pact-node": "10.12.2",
     "chai": "4.3.4",
@@ -139,7 +139,7 @@
     "mocha": "6.1.4",
     "mountebank": "2.0.0",
     "nock": "13.1.0",
-    "node-sass": "6.0.0",
+    "node-sass": "6.0.1",
     "nodemon": "2.0.7",
     "notp": "2.0.3",
     "nunjucksify": "2.2.0",
