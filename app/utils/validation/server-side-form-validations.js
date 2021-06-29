@@ -40,7 +40,7 @@ const validateOptionalField = function validateOptionalField (value, maxLength) 
 
 const validateMandatoryField = function validateMandatoryField (value, maxLength) {
   const isEmptyErrorMessage = isEmpty(value)
-  if (isEmptyErrorMessage) {
+  if (isEmpty(value)) {
     return notValidReturnObject(isEmptyErrorMessage)
   }
 
@@ -58,8 +58,8 @@ const validatePhoneNumber = function validatePhoneNumber (phoneNumber) {
     return notValidReturnObject('Enter a telephone number')
   }
 
-  const phoneNumberInvalid = invalidTelephoneNumber(phoneNumber)
-  if (phoneNumberInvalid) {
+  const isPhoneNumberInvalid = invalidTelephoneNumber(phoneNumber)
+  if (isPhoneNumberInvalid) {
     return notValidReturnObject('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
   }
 
