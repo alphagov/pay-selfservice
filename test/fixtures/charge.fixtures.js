@@ -51,7 +51,15 @@ function validPostChargeRequestResponse (opts = {}) {
   }
 }
 
+function validGetChargeResponse (opts = {}) {
+  return {
+    state: opts.state || { status: 'started', finished: false },
+    charge_id: opts.chargeId || 'ht439nfg2l1e303k0dmifrn4fc'
+  }
+}
+
 module.exports = {
   validPostChargeRequestRequest,
-  validPostChargeRequestResponse
+  validPostChargeRequestResponse,
+  validGetChargeResponse
 }
