@@ -38,12 +38,15 @@ module.exports = async function getServiceList (req, res) {
     .map(serviceRole => {
       const gatewayAccounts = aggregatedGatewayAccounts.filter(gatewayAccount =>
         serviceRole.service.gatewayAccountIds.includes(gatewayAccount.id.toString()))
+      const isAdminUser = req.user.isAdminUserForService(serviceRole.service.externalId)
+
       const serviceData = {
         name: serviceRole.service.name === 'System Generated' ? 'Temporary Service Name' : serviceRole.service.name,
         id: serviceRole.service.id,
         external_id: serviceRole.service.externalId,
         gatewayAccounts: lodash.sortBy(gatewayAccounts, 'type', 'asc'),
-        permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
+        permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name)),
+        isAdminUser: isAdminUser
       }
       return serviceData
     })

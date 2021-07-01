@@ -14,5 +14,8 @@
         account ({{ account.payment_provider }})
       {% endif %}
     </button>
+    {% if account.provider_switch_enabled and service.isAdminUser %}
+      <strong class="service-info--tag govuk-tag govuk-tag--blue">switch PSP</strong>
+    {% endif %}
   </form>
 </li>

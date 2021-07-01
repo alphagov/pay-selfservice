@@ -1,6 +1,6 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% if currentGatewayAccount.provider_switch_enabled %}
+{% if (isAdminUser and currentGatewayAccount.provider_switch_enabled) %}
 
   <div class="govuk-grid-column-full">
   {% set html %}
@@ -8,7 +8,7 @@
     Switch your payment service provider (PSP) to {{ targetCredential.payment_provider | formatPSPname }}
     </p>
 
-    <p class="govuk-body">Your service is taking payments with {{ activeCredential.payment_provider | formatPSPname }} and needs to switch to {{ targetCredential.payment_provider | formatPSPname }}.
+    <p class="govuk-body">Your service is ready to switch PSP from {{ activeCredential.payment_provider | formatPSPname }} to {{ targetCredential.payment_provider | formatPSPname }}.
 
     <p class="govuk-body">
       Find out <a class="govuk-notification-banner__link" href="{{ formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id) }}">how to switch to {{ targetCredential.payment_provider | formatPSPname }}</a>.

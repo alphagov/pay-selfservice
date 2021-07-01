@@ -53,7 +53,7 @@ describe('Switch PSP settings page', () => {
 
       it('should show the switch PSP page for switching to Worldpay', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
-        cy.get('.service-info--tag').should('contain', 'switching psp')
+        cy.get('.service-info--tag').should('contain', 'switch psp')
         cy.get('#navigation-menu-switch-psp').should('have.length', 1)
         cy.get('h1').should('contain', 'Switch payment service provider')
         cy.get('li').contains('your Worldpay account credentials: Merchant code, username and password').should('exist')
