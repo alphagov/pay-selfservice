@@ -102,10 +102,12 @@ module.exports = function (req, data, template) {
   const convertedData = _.clone(data)
   const { user, account, service, session, url: relativeUrl } = req
   const permissions = getPermissions(user, service)
+  const isAdminUser = service && user && user.isAdminUserForService(service.externalId)
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
   convertedData.loggedIn = user && session && user.sessionVersion === session.version
   convertedData.paymentMethod = paymentMethod
   convertedData.permissions = permissions
+  convertedData.isAdminUser = isAdminUser
   convertedData.hideServiceHeader = hideServiceHeader(template)
   convertedData.hideServiceNav = hideServiceNav(template)
   convertedData.hideFeedbackBanner = template === 'feedback/index'

@@ -112,4 +112,59 @@ describe('Class: User', () => {
       expect(result).to.equal(2)
     })
   })
+
+  describe('is admin user for service', () => {
+    it('should return true, if user is admin of service', function () {
+      const opts = {
+        service_roles: [{
+          service: {
+            external_id: 'externalServiceId'
+          },
+          role: {
+            name: 'admin'
+          }
+        }]
+      }
+      user = new User(userFixtures.validUserResponse(opts))
+      result = user.isAdminUserForService('externalServiceId')
+      expect(result).to.equal(true)
+    })
+    it('should return false, if user is NOT an admin of service', function () {
+      const opts = {
+        service_roles: [{
+          service: {
+            external_id: 'externalServiceId'
+          },
+          role: {
+            name: 'view-only'
+          }
+        }]
+      }
+      user = new User(userFixtures.validUserResponse(opts))
+      result = user.isAdminUserForService('externalServiceId')
+      expect(result).to.equal(false)
+    })
+    it('should return false, if user is NOT an admin of service queries but admin on another service', function () {
+      const opts = {
+        service_roles: [{
+          service: {
+            external_id: 'externalServiceId'
+          },
+          role: {
+            name: 'view-only'
+          }
+        }, {
+          service: {
+            external_id: 'externalServiceId2'
+          },
+          role: {
+            name: 'admin'
+          }
+        }]
+      }
+      user = new User(userFixtures.validUserResponse(opts))
+      result = user.isAdminUserForService('externalServiceId')
+      expect(result).to.equal(false)
+    })
+  })
 })

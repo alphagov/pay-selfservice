@@ -30,6 +30,7 @@ class GatewayAccount {
     this.description = gatewayAccountData.description
     this.analyticsId = gatewayAccountData.analytics_id
     this.toggle3ds = gatewayAccountData.toggle_3ds
+    this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
   }
 
   /**
@@ -43,7 +44,8 @@ class GatewayAccount {
       external_id: this.external_id,
       payment_provider: this.paymentProvider,
       service_name: this.name,
-      type: this.type
+      type: this.type,
+      provider_switch_enabled: this.providerSwitchEnabled
     }
   }
 }

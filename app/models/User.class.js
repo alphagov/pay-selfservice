@@ -129,6 +129,13 @@ class User {
   getPermissionsForService (serviceExternalId) {
     return _.get(this.getRoleForService(serviceExternalId), 'permissions', []).map(permission => permission.name)
   }
+
+  isAdminUserForService (serviceExternalId) {
+    return this.serviceRoles
+      .filter(serviceRole => serviceRole.role && serviceRole.role.name === 'admin' &&
+        serviceRole.service && serviceRole.service.externalId === serviceExternalId)
+      .length > 0
+  }
 }
 
 module.exports = User

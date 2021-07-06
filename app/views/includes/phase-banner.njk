@@ -30,8 +30,8 @@
         Live
       {% endif %}
 
-      {% if currentGatewayAccount.provider_switch_enabled %}
-      - switching psp
+      {% if isAdminUser and currentGatewayAccount.provider_switch_enabled %}
+      - switch psp
       {% endif %}
     {% endset %}
     <strong class="service-info--tag govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
