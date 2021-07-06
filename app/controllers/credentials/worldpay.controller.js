@@ -50,25 +50,14 @@ async function updateWorldpayCredentials (req, res, next) {
       logger.info('Successfully validated credentials with Worldpay')
     }
 
-    // @TODO(PP-8273) only use future strategy when backend no longer relies on top level credentials
-    const useFutureCredentialsUpdateStategy = req.account.gateway_account_credentials.length > 1
-    if (useFutureCredentialsUpdateStategy) {
-      await connectorClient.patchAccountGatewayAccountCredentials({
-        correlationId,
-        gatewayAccountId,
-        gatewayAccountCredentialsId: credential.gateway_account_credential_id,
-        credentials: results.values,
-        userExternalId: req.user.externalId
-      })
-      logger.info('Successfully updated credentials for pending Worldpay credentials on account')
-    } else {
-      await connectorClient.legacyPatchAccountCredentials({
-        correlationId,
-        gatewayAccountId,
-        payload: { credentials: results.values }
-      })
-      logger.info('Successfully updated credentials for Worldpay account')
-    }
+    await connectorClient.patchAccountGatewayAccountCredentials({
+      correlationId,
+      gatewayAccountId,
+      gatewayAccountCredentialsId: credential.gateway_account_credential_id,
+      credentials: results.values,
+      userExternalId: req.user.externalId
+    })
+    logger.info('Successfully updated Worldpay credentials on account')
 
     if (switchingToCredentials) {
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
