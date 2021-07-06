@@ -6,7 +6,6 @@ const userFixtures = require('../../../test/fixtures/user.fixtures')
 const User = require('../../models/User.class')
 
 const checkCredentialsMock = sinon.spy(() => Promise.resolve({ result: 'valid' }))
-const legacyUpdateCredentialsMock = sinon.spy(() => Promise.resolve())
 const updateCredentialsMock = sinon.spy(() => Promise.resolve())
 
 describe('Worldpay credentials controller', () => {
@@ -50,27 +49,9 @@ describe('Worldpay credentials controller', () => {
 
     checkCredentialsMock.resetHistory()
     updateCredentialsMock.resetHistory()
-    legacyUpdateCredentialsMock.resetHistory()
   })
 
-  it('uses the legacy patch if only one credential is available', async () => {
-    const account = gatewayAccountFixtures.validGatewayAccount({
-      external_id: 'a-valid-external-id',
-      gateway_account_credentials: [
-        { state: 'ACTIVE', payment_provider: 'smartpay', id: 100, external_id: 'a-valid-credential-id-smartpay' }
-      ]
-    })
-    const controller = getControllerWithMocks()
-
-    await controller.updateWorldpayCredentials({ ...req, account }, res, next)
-
-    sinon.assert.called(checkCredentialsMock)
-    sinon.assert.called(legacyUpdateCredentialsMock)
-    sinon.assert.notCalled(updateCredentialsMock)
-    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-id-smartpay')
-  })
-
-  it('uses the new patch if any more than one credential is available and the service is opted in to some stage of a switch', async () => {
+  it('should call connector to patch credentials', async () => {
     const controller = getControllerWithMocks()
 
     req.route.path = '/switch-psp/:credentialId/credentials-with-gateway-check'
@@ -78,7 +59,6 @@ describe('Worldpay credentials controller', () => {
 
     sinon.assert.called(checkCredentialsMock)
     sinon.assert.called(updateCredentialsMock)
-    sinon.assert.notCalled(legacyUpdateCredentialsMock)
     sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
   })
 })
@@ -89,7 +69,6 @@ function getControllerWithMocks () {
       ConnectorClient: function () {
         this.postCheckWorldpayCredentials = checkCredentialsMock
         this.patchAccountGatewayAccountCredentials = updateCredentialsMock
-        this.legacyPatchAccountCredentials = legacyUpdateCredentialsMock
       }
     }
   })

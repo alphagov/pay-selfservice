@@ -14,7 +14,7 @@ const existingGatewayAccountCredentialsId = 555
 
 let connectorClient
 
-describe('connector client - patch gateway account credentials.merchant_id', () => {
+describe('connector client - patch gateway account credentials.gateway_merchant_id', () => {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',

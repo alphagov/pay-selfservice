@@ -23,13 +23,7 @@ module.exports = async (req, res, next) => {
   if (enable) {
     try {
       const credential = getCurrentCredential(req.account)
-      // @TODO(PP-8273) only use future strategy when backend no longer relies on top level credentials
-      const useFutureCredentialsUpdateStategy = req.account.gateway_account_credentials.length > 1
-      if (useFutureCredentialsUpdateStategy) {
-        await connector.patchGooglePayGatewayMerchantId(gatewayAccountId, credential.gateway_account_credential_id, gatewayMerchantId, req.user && req.user.externalId, correlationId)
-      } else {
-        await connector.setGatewayMerchantId(gatewayAccountId, gatewayMerchantId, correlationId)
-      }
+      await connector.patchGooglePayGatewayMerchantId(gatewayAccountId, credential.gateway_account_credential_id, gatewayMerchantId, req.user && req.user.externalId, correlationId)
       logger.info('Set google pay merchant ID')
     } catch (error) {
       logger.info('Error setting google pay merchant ID', { error })
