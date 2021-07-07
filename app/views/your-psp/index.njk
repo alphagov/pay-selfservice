@@ -30,7 +30,20 @@
 
   {% if credential.active_end_date %}
   <div id="switched-psp-status" class="govuk-inset-text">
-    This service is taking payments with {{ activeCredential.payment_provider | formatPSPname }}. It switched from using {{ credential.payment_provider | formatPSPname }} on {{ credential.active_end_date | datetime('date') }}
+    This service is taking payments with {{ activeCredential.payment_provider | formatPSPname }}. It switched from using {{ credential.payment_provider | formatPSPname }} on {{ credential.active_end_date | datetime('datelong') }}
+  </div>
+  {% elif switchedProvider and credential.active_start_date %}
+  <div id="switched-psp-status" class="govuk-inset-text">
+    This service started taking payments with {{ credential.payment_provider | formatPSPname }} on {{ credential.active_start_date | datetime('datelong') }}.
+  </div>
+  {% elif switchingCredential %}
+  <div id="switched-psp-status" class="govuk-inset-text">
+    <p class="govuk-body">
+      Your service is ready to switch PSP from {{ activeCredential.payment_provider | formatPSPname }} to {{ switchingCredential.payment_provider | formatPSPname }}.
+    </p>
+    <p class="govuk-body">
+      Find out <a class="govuk-notification-banner__link" href="{{ formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id) }}">how to switch to {{ switchingCredential.payment_provider | formatPSPname }}</a>.
+    </p>
   </div>
   {% endif %}
 

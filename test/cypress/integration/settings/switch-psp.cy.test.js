@@ -51,6 +51,12 @@ describe('Switch PSP settings page', () => {
         cy.get('.govuk-notification-banner__heading').should('contain', 'Switch your payment service provider (PSP) to Worldpay')
       })
 
+      it('should show the switch message for current psp page', () => {
+        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.get('a').contains('Your PSP - Smartpay').click()
+        cy.get('#switched-psp-status').should('contain', 'Your service is ready to switch PSP from Smartpay to Worldpay.')
+      })
+
       it('should show the switch PSP page for switching to Worldpay', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
         cy.get('.service-info--tag').should('contain', 'switch psp')
@@ -202,15 +208,21 @@ describe('Switch PSP settings page', () => {
     describe('Switched PSP', () => {
       beforeEach(() => {
         cy.task('setupStubs', getUserAndAccountStubs('smartpay', true, [
-          { payment_provider: 'smartpay', state: 'ACTIVE', external_id: 'a-valid-external-id-smartpay' },
+          { payment_provider: 'smartpay', state: 'ACTIVE', external_id: 'a-valid-external-id-smartpay', active_start_date: '2018-05-03T00:00:00.000Z' },
           { payment_provider: 'worldpay', state: 'RETIRED', active_end_date: '2018-05-03T00:00:00.000Z', external_id: 'a-valid-external-id-worldpay' }
         ]))
       })
 
-      it('sets transitioned text on the your psp page', () => {
+      it('sets transitioned text on the old psp page', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('a').contains('Old PSP - Worldpay').click()
-        cy.get('#switched-psp-status').should('contain', 'This service is taking payments with Smartpay. It switched from using Worldpay on 03/05/2018')
+        cy.get('#switched-psp-status').should('contain', 'This service is taking payments with Smartpay. It switched from using Worldpay on 3 May 2018')
+      })
+
+      it('sets transitioned text on the your psp page for new provider', () => {
+        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.get('a').contains('Your PSP - Smartpay').click()
+        cy.get('#switched-psp-status').should('contain', 'This service started taking payments with Smartpay on 3 May 2018.')
       })
     })
   })
