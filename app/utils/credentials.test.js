@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const paths = require('../paths')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
 const { InvalidConfigurationError } = require('../errors')
-const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, getPSPPageLinks, getCredentialByExternalId } = require('./credentials')
+const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists } = require('./credentials')
 
 describe('credentials utility', () => {
   describe('get services current credential', () => {
@@ -65,6 +65,29 @@ describe('credentials utility', () => {
 
       const checkSwitchingCreds = () => getSwitchingCredential(account)
       expect(checkSwitchingCreds).to.throw(InvalidConfigurationError)
+    })
+  })
+
+  describe('get the credential service is switching to if it exists', () => {
+    it('returns null if no pending credentials available', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [{ state: 'ACTIVE' }]
+      })
+      const credential = getSwitchingCredentialIfExists(account)
+      expect(credential).to.equal(null)
+    })
+
+    it('gets the pending credential being switched to', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'ACTIVE', id: 100 },
+          { state: 'ENTERED', id: 200 }
+        ]
+      })
+
+      const credential = getSwitchingCredentialIfExists(account)
+      expect(credential.gateway_account_credential_id).to.equal(200)
+      expect(credential.state).to.equal('ENTERED')
     })
   })
 
@@ -137,6 +160,31 @@ describe('credentials utility', () => {
         ]
       })
       expect(getCredentialByExternalId(account, 'second-external-id').gateway_account_credential_id).to.equal(200)
+    })
+
+    describe('get whether the gateway account has switched provider', () => {
+      it('returns true if there are retired credentials', () => {
+        const account = gatewayAccountFixtures.validGatewayAccount({
+          gateway_account_credentials: [
+            { state: 'ACTIVE', id: 100 },
+            { state: 'RETIRED', id: 200 }
+          ]
+        })
+        const hasSwitched = hasSwitchedProvider(account)
+        expect(hasSwitched).to.equal(true)
+      })
+  
+      it('returns false if there are no retired credentials', () => {
+        const account = gatewayAccountFixtures.validGatewayAccount({
+          gateway_account_credentials: [
+            { state: 'ACTIVE', id: 100 },
+            { state: 'ENTERED', id: 200 }
+          ]
+        })
+  
+        const hasSwitched = hasSwitchedProvider(account)
+        expect(hasSwitched).to.equal(false)
+      })
     })
   })
 })

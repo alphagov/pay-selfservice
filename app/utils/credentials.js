@@ -11,7 +11,7 @@ const CREDENTIAL_STATE = {
   RETIRED: 'RETIRED'
 }
 
-const pendingCredentialStates = [ CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED ]
+const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED]
 
 function getCurrentCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
@@ -38,12 +38,20 @@ function getSwitchingCredential (gatewayAccount = {}) {
   }
 }
 
+function getSwitchingCredentialIfExists (gatewayAccount) {
+  try {
+    return getSwitchingCredential(gatewayAccount)
+  } catch (err) {
+    return null
+  }
+}
+
 function isSwitchingCredentialsRoute (req) {
   return Object.values(paths.account.switchPSP).includes(req.route && req.route.path)
 }
 
 function getPSPPageLinks (gatewayAccount) {
-  const supportedYourPSPPageProviders = [ 'worldpay', 'smartpay', 'epdq' ]
+  const supportedYourPSPPageProviders = ['worldpay', 'smartpay', 'epdq']
   const numberOfAllCredentials = gatewayAccount.gateway_account_credentials && gatewayAccount.gateway_account_credentials.length
   const credentials = (gatewayAccount.gateway_account_credentials || [])
     .filter((credential) => supportedYourPSPPageProviders.includes(credential.payment_provider))
@@ -54,7 +62,7 @@ function getPSPPageLinks (gatewayAccount) {
   } else {
     // pending credentials should be managed through the switch process, only show terminal credential states
     return credentials
-      .filter((credential) => [ CREDENTIAL_STATE.RETIRED, CREDENTIAL_STATE.ACTIVE ].includes(credential.state))
+      .filter((credential) => [CREDENTIAL_STATE.RETIRED, CREDENTIAL_STATE.ACTIVE].includes(credential.state))
   }
 }
 
@@ -67,11 +75,18 @@ function getCredentialByExternalId (account, credentialExternalId) {
   return credential[0]
 }
 
+function hasSwitchedProvider (gatewayAccount = {}) {
+  const credentials = gatewayAccount.gateway_account_credentials || []
+  return credentials.some((credential) => credential.state === CREDENTIAL_STATE.RETIRED)
+}
+
 module.exports = {
   getCurrentCredential,
   getSwitchingCredential,
+  getSwitchingCredentialIfExists,
   isSwitchingCredentialsRoute,
   getPSPPageLinks,
   getCredentialByExternalId,
+  hasSwitchedProvider,
   CREDENTIAL_STATE
 }

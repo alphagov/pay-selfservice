@@ -65,7 +65,7 @@
     ]
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "3.0.13",
+    "@govuk-pay/pay-js-commons": "3.2.1",
     "@sentry/node": "6.8.0",
     "accessible-autocomplete": "2.0.3",
     "appmetrics": "5.1.1",
@@ -137,7 +137,7 @@
     "jsdom": "^16.6.0",
     "lint-staged": "11.0.0",
     "mocha": "6.1.4",
-    "mountebank": "2.0.0",
+    "mountebank": "^2.4.0",
     "nock": "13.1.1",
     "node-sass": "6.0.1",
     "nodemon": "2.0.9",
