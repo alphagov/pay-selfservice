@@ -33,9 +33,7 @@
 
   <h1 class="govuk-heading-l page-title">Test the connection between {{ targetCredential.payment_provider | formatPSPname }} and GOV.UK Pay</h1>
 
-  <p class="govuk-body">Check that your service can take payments with {{ targetCredential.payment_provider | formatPSPname }} by making a live payment.</p>
-
-  <p class="govuk-body">You need a debit or credit card and can refund the payment at anytime.</p>
+  <p class="govuk-body">Make a live payment of £2 with a debit or credit card to check that the connection with {{ targetCredential.payment_provider | formatPSPname }} is working. You can refund the payment anytime.</p>
 
   <form method="POST">
     {{ govukButton ({
