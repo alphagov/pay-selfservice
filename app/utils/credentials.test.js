@@ -173,7 +173,7 @@ describe('credentials utility', () => {
         const hasSwitched = hasSwitchedProvider(account)
         expect(hasSwitched).to.equal(true)
       })
-  
+
       it('returns false if there are no retired credentials', () => {
         const account = gatewayAccountFixtures.validGatewayAccount({
           gateway_account_credentials: [
@@ -181,7 +181,7 @@ describe('credentials utility', () => {
             { state: 'ENTERED', id: 200 }
           ]
         })
-  
+
         const hasSwitched = hasSwitchedProvider(account)
         expect(hasSwitched).to.equal(false)
       })

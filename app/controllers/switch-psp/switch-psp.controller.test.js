@@ -8,7 +8,7 @@ const User = require('../../models/User.class')
 let postAccountSwitchPSPMock = sinon.spy(() => Promise.resolve())
 let req, res, next
 
-describe('Verify PSP integration controller', () => {
+describe('Switch PSP controller', () => {
   describe('for ready to switch accounts', () => {
     beforeEach(() => setupEnvironment('VERIFIED_WITH_LIVE_PAYMENT'))
 

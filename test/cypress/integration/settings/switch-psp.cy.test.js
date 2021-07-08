@@ -147,7 +147,7 @@ describe('Switch PSP settings page', () => {
         })
       })
 
-      it('returning with a failed payment should present an error with request session charge id maintained', () => {
+      it('returning with a failed payment should present an error', () => {
         cy.task('setupStubs', [
           ...getUserAndAccountStubs('smartpay', true, [
             { payment_provider: 'smartpay', state: 'ACTIVE' },
@@ -162,10 +162,11 @@ describe('Switch PSP settings page', () => {
         ])
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration/callback`)
 
-        cy.get('.govuk-error-summary__body').first().contains('Your live payment was not successful')
+        cy.get('.govuk-error-summary__body').first().contains('Please check your Worldpay credentials and try making another payment.')
+        cy.get('.govuk-back-link').click()
       })
 
-      it('returning with a successful payment should present completion message with request session charge id maintained', () => {
+      it('returning with a successful payment should present completion message', () => {
         cy.task('setupStubs', [
           ...getUserAndAccountStubs('smartpay', true, [
             { payment_provider: 'smartpay', state: 'ACTIVE' },
