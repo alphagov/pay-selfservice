@@ -75,7 +75,7 @@ describe('Verify PSP integration controller', () => {
 
     sinon.assert.called(getChargeMock)
     sinon.assert.called(patchAccountGatewayAccountCredentialsStateMock)
-    expect(req.session.verify_psp_integration_status_key).to.equal('SUCCESS')
+    sinon.assert.calledWith(req.flash, 'verifyIntegrationPaymentSuccess', true)
     sinon.assert.calledWith(res.redirect, '/account/a-valid-external-id/switch-psp')
   })
 
@@ -88,8 +88,8 @@ describe('Verify PSP integration controller', () => {
 
     sinon.assert.called(getChargeMock)
     sinon.assert.notCalled(patchAccountGatewayAccountCredentialsStateMock)
-    expect(req.session.verify_psp_integration_status_key).to.equal('FAILURE')
-    sinon.assert.calledWith(res.redirect, '/account/a-valid-external-id/switch-psp')
+    sinon.assert.calledWith(req.flash, 'verifyIntegrationPaymentFailed', true)
+    sinon.assert.calledWith(res.redirect, '/account/a-valid-external-id/switch-psp/verify-psp-integration')
   })
 })
 

@@ -9,13 +9,27 @@
 {% endblock %}
 
 {% block mainContent %}
+
 <div class="govuk-grid-column-two-thirds">
+
   {# back link should always go before <main> content so it can be skipped, settings page layouts should be adjusted to suport this #}
   {{ govukBackLink({
     text: "Back to Switching payment service provider (PSP)",
     classes: "govuk-!-margin-top-0",
     href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
   }) }}
+
+  {% if flash.verifyIntegrationPaymentFailed %}
+  <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      There is a problem
+    </h2>
+    <div class="govuk-error-summary__body">
+      <p class="govuk-body">Please check your Worldpay credentials and try making another payment.</p> 
+      <p class="govuk-body">If this does not work, email us at <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a>.</p>
+    </div>
+  </div>
+  {% endif %}
 
   <h1 class="govuk-heading-l page-title">Test the connection between {{ targetCredential.payment_provider | formatPSPname }} and GOV.UK Pay</h1>
 

@@ -33,7 +33,7 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  {% if verifyPSPIntegrationResult === VERIFY_PSP_INTEGRATION_STATUS.SUCCESS %}
+  {% if flash.verifyIntegrationPaymentSuccess %}
     {% set bannerHtml %}
       <h3 class="govuk-notification-banner__heading">
         Your live payment has succeeded
@@ -45,20 +45,8 @@
       html: bannerHtml,
       type: 'success'
     }) }}
-  {% elif verifyPSPIntegrationResult === VERIFY_PSP_INTEGRATION_STATUS.FAILURE %}
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-      <h2 class="govuk-error-summary__title" id="error-summary-title">
-        There is a problem
-      </h2>
-      <div class="govuk-error-summary__body">
-        <ul class="govuk-list">
-          <li>
-            <span>Your live payment was not successful. <a class="govuk-link" href="https://www.payments.service.gov.uk/support/">Contact support</a> to continue switching PSP.</span>
-          </li>
-        </ul>
-      </div>
-    </div>
   {% endif %}
+  
   <h1 class="govuk-heading-l page-title">Switch payment service provider (PSP)</h1>
 
   <p class="govuk-body">This service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }}.</p>

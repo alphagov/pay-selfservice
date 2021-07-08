@@ -4,11 +4,6 @@ const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const formatPSPName = require('../../utils/format-PSP-name')
 const paths = require('../../paths')
 const switchTasks = require('./switch-tasks.service')
-const {
-  VERIFY_PSP_INTEGRATION_STATUS_KEY,
-  VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY,
-  VERIFY_PSP_INTEGRATION_STATUS
-} = require('../../utils/verify-psp-integration')
 const { getSwitchingCredential, getCurrentCredential } = require('../../utils/credentials')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -18,13 +13,7 @@ function switchPSPPage (req, res, next) {
     const targetCredential = getSwitchingCredential(req.account)
     const taskList = switchTasks.getTaskList(targetCredential, req.account)
     const taskListIsComplete = switchTasks.isComplete(taskList)
-    const context = { targetCredential, taskList, VERIFY_PSP_INTEGRATION_STATUS, taskListIsComplete }
-
-    if (req.session[VERIFY_PSP_INTEGRATION_STATUS_KEY]) {
-      context.verifyPSPIntegrationResult = req.session[VERIFY_PSP_INTEGRATION_STATUS_KEY]
-      delete req.session[VERIFY_PSP_INTEGRATION_STATUS_KEY]
-      delete req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
-    }
+    const context = { targetCredential, taskList, taskListIsComplete }
     response(req, res, 'switch-psp/switch-psp', context)
   } catch (error) {
     next(error)
