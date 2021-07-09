@@ -104,7 +104,6 @@ const {
   prototyping,
   settings,
   stripe,
-  stripeSetup,
   toggle3ds,
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode,
@@ -414,14 +413,14 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
   // Stripe setup
-  account.get(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.get)
-  account.post(stripeSetup.bankDetails, permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.post)
-  account.get(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, stripeSetupResponsiblePersonController.get)
-  account.post(stripeSetup.responsiblePerson, permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, stripeSetupResponsiblePersonController.post)
-  account.get(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupVatNumberController.get)
-  account.post(stripeSetup.vatNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupVatNumberController.post)
-  account.get(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupCompanyNumberController.get)
-  account.post(stripeSetup.companyNumber, permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupCompanyNumberController.post)
+  account.get([ yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails ], permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.get)
+  account.post([ yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails ], permission('stripe-bank-details:update'), restrictToLiveStripeAccount, stripeSetupBankDetailsController.post)
+  account.get([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson ], permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, stripeSetupResponsiblePersonController.get)
+  account.post([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson ], permission('stripe-responsible-person:update'), restrictToLiveStripeAccount, stripeSetupResponsiblePersonController.post)
+  account.get([ yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber ], permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupVatNumberController.get)
+  account.post([ yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber ], permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupVatNumberController.post)
+  account.get([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupCompanyNumberController.get)
+  account.post([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToLiveStripeAccount, stripeSetupCompanyNumberController.post)
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToLiveStripeAccount, stripeSetupAddPspAccountDetailsController.get)
 
   app.use(paths.account.root, account)

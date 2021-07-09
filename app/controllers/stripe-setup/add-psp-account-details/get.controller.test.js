@@ -2,7 +2,6 @@
 
 const sinon = require('sinon')
 
-const paths = require('../../../paths')
 const getController = require('./get.controller')
 
 describe('get controller', () => {
@@ -15,6 +14,7 @@ describe('get controller', () => {
         external_id: 'a-valid-external-id',
         connectorGatewayAccountStripeProgress: {}
       },
+      credentialId: 'a-valid-credential-id',
       correlationId: 'requestId'
     }
     res = {
@@ -29,13 +29,13 @@ describe('get controller', () => {
   it('should redirect to bank account setup page', async () => {
     req.account.connectorGatewayAccountStripeProgress.bankAccount = false
     await getController(req, res, next)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.bankDetails}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/bank-details`)
   })
 
   it('should redirect to responsible person page', async () => {
     req.account.connectorGatewayAccountStripeProgress.bankAccount = true
     await getController(req, res, next)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.responsiblePerson}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/responsible-person`)
   })
 
   it('should redirect to VAT number page', async () => {
@@ -44,7 +44,7 @@ describe('get controller', () => {
       responsiblePerson: true
     }
     await getController(req, res, next)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.vatNumber}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/vat-number`)
   })
 
   it('should redirect to company registration number page', async () => {
@@ -54,7 +54,7 @@ describe('get controller', () => {
       vatNumber: true
     }
     await getController(req, res, next)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripeSetup.companyNumber}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/company-number`)
   })
 
   it('should render go live complete page when all steps are completed', async () => {

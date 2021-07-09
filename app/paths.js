@@ -94,17 +94,17 @@ module.exports = {
     stripe: {
       addPspAccountDetails: '/stripe/add-psp-account-details'
     },
-    stripeSetup: {
-      bankDetails: '/bank-details',
-      responsiblePerson: '/responsible-person',
-      vatNumber: '/vat-number',
-      companyNumber: '/company-number'
-    },
     switchPSP: {
       index: '/switch-psp',
       credentialsWithGatewayCheck: '/switch-psp/:credentialId/credentials-with-gateway-check',
       verifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration',
-      receiveVerifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration/callback'
+      receiveVerifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration/callback',
+      stripeSetup: {
+        bankDetails: '/switch-psp/:credentialId/bank-details',
+        responsiblePerson: '/switch-psp/:credentialId/responsible-person',
+        vatNumber: '/switch-psp/:credentialId/vat-number',
+        companyNumber: '/switch-psp/:credentialId/company-number'
+      }
     },
     toggle3ds: {
       index: '/3ds'
@@ -126,7 +126,13 @@ module.exports = {
       index: '/your-psp/:credentialId',
       flex: '/your-psp/:credentialId/flex',
       worldpay3dsFlex: '/your-psp/:credentialId/worldpay-3ds-flex',
-      credentialsWithGatewayCheck: '/your-psp/:credentialId/credentials-with-gateway-check'
+      credentialsWithGatewayCheck: '/your-psp/:credentialId/credentials-with-gateway-check',
+      stripeSetup: {
+        bankDetails: '/your-psp/:credentialId/bank-details',
+        responsiblePerson: '/your-psp/:credentialId/responsible-person',
+        vatNumber: '/your-psp/:credentialId/vat-number',
+        companyNumber: '/your-psp/:credentialId/company-number'
+      }
     }
   },
   service: {
