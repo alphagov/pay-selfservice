@@ -44,6 +44,10 @@ function getTaskList (targetCredential, account) {
       'ENTER_VAT_NUMBER': {
         enabled: !stripeSetupStageComplete(account, 'vatNumber'),
         complete: stripeSetupStageComplete(account, 'vatNumber')
+      },
+      'ENTER_COMPANY_NUMBER': {
+        enabled: !stripeSetupStageComplete(account, 'companyNumber'),
+        complete: stripeSetupStageComplete(account, 'companyNumber')
       }
     }
   }

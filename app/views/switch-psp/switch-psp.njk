@@ -97,6 +97,11 @@
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.vatNumber, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.ENTER_VAT_NUMBER
         ) }}
+        {{ taskListItem(
+          "Provide your company registration number",
+          formatAccountPathsFor(routes.account.switchPSP.stripeSetup.companyNumber, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.ENTER_COMPANY_NUMBER
+        ) }}
       {% endset %}
   {% endswitch %}
 
