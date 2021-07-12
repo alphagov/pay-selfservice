@@ -258,6 +258,11 @@ function validPatchAccountGatewayAccountCredentialsStateRequest (opts = {}) {
       op: 'replace',
       path: 'state',
       value: opts.state || 'VERIFIED_WITH_LIVE_PAYMENT'
+    },
+    {
+      op: 'replace',
+      path: 'last_updated_by_user_external_id',
+      value: opts.userExternalId
     }
   ]
 }

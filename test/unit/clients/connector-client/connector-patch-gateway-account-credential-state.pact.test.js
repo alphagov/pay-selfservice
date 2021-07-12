@@ -32,16 +32,19 @@ describe('connector client - patch gateway account credentials.state', () => {
 
   describe('when a request to update google pay gateway merchant id for gateway account credentials is made', () => {
     const state = 'VERIFIED_WITH_LIVE_PAYMENT'
+    const userExternalId = 'a-user-external-id'
     const requestPayload = {
       gatewayAccountId: '444',
       gatewayAccountCredentialsId: '555',
-      state
+      state,
+      userExternalId
     }
     const request = gatewayAccountFixtures.validPatchAccountGatewayAccountCredentialsStateRequest(requestPayload)
     const response = gatewayAccountFixtures.validPatchGatewayCredentialsResponse({
       gatewayAccountId: existingGatewayAccountId,
       gatewayAccountCredentialId: existingGatewayAccountCredentialsId,
-      state
+      state,
+      lastUpdatedByUserExternalId: userExternalId
     })
 
     before(() => {
