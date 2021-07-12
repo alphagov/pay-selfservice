@@ -102,6 +102,11 @@
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.companyNumber, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.ENTER_COMPANY_NUMBER
         ) }}
+        {{ taskListItem(
+          "Make a live payment to test your Worldpay PSP",
+          formatAccountPathsFor(routes.account.switchPSP.verifyPSPIntegrationPayment, currentGatewayAccount.external_id),
+          taskList.VERIFY_PSP_INTEGRATION
+        ) }}
       {% endset %}
   {% endswitch %}
 

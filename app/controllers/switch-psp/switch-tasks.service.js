@@ -48,6 +48,13 @@ function getTaskList (targetCredential, account) {
       'ENTER_COMPANY_NUMBER': {
         enabled: !stripeSetupStageComplete(account, 'companyNumber'),
         complete: stripeSetupStageComplete(account, 'companyNumber')
+      },
+      'VERIFY_PSP_INTEGRATION': {
+        enabled: stripeSetupStageComplete(account, 'bankAccount') &&
+          stripeSetupStageComplete(account, 'responsiblePerson') &&
+          stripeSetupStageComplete(account, 'vatNumber') &&
+          stripeSetupStageComplete(account, 'companyNumber'),
+        complete: verifyPSPIntegrationComplete(targetCredential)
       }
     }
   }
