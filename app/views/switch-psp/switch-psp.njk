@@ -92,6 +92,11 @@
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.responsiblePerson, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.ENTER_RESPONSIBLE_PERSON
         ) }}
+        {{ taskListItem(
+          "Provide your organisation's VAT number",
+          formatAccountPathsFor(routes.account.switchPSP.stripeSetup.vatNumber, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.ENTER_VAT_NUMBER
+        ) }}
       {% endset %}
   {% endswitch %}
 

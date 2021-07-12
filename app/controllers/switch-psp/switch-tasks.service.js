@@ -40,6 +40,10 @@ function getTaskList (targetCredential, account) {
       'ENTER_RESPONSIBLE_PERSON': {
         enabled: !stripeSetupStageComplete(account, 'responsiblePerson'),
         complete: stripeSetupStageComplete(account, 'responsiblePerson')
+      },
+      'ENTER_VAT_NUMBER': {
+        enabled: !stripeSetupStageComplete(account, 'vatNumber'),
+        complete: stripeSetupStageComplete(account, 'vatNumber')
       }
     }
   }
