@@ -92,6 +92,14 @@
               After linking {{ targetCredential.payment_provider | formatPSPname }} and GOV.UK Pay, you can safely switch to taking payments with {{ targetCredential.payment_provider | formatPSPname }}.
             </p>
 
+            {% set warningText %}
+                Once you switch, {{ targetCredential.payment_provider | formatPSPname }} will immediately start taking payments. You can refund previous payments through {{ currentGatewayAccount.payment_provider | formatPSPname }}.
+            {% endset %}
+            {{ govukWarningText({
+              text: warningText,
+              iconFallbackText: "Warning"
+            }) }}
+
             <form method="POST">
               {{ govukButton({
                 text: "Switch to " + (targetCredential.payment_provider | formatPSPname),

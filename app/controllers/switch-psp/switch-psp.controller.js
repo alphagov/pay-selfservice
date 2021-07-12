@@ -38,7 +38,7 @@ async function submitSwitchPSP (req, res, next) {
     })
     req.flash(
       'switchPSPSuccess',
-      `All future payments will be taken with ${formatPSPName(targetCredential.payment_provider)}. Your ${formatPSPName(currentCredential.payment_provider)} account is still live for processing refunds of payments made before the switch.`
+      `Your service is now taking payments through ${formatPSPName(targetCredential.payment_provider)}. You can still process refunds of previous payments through ${formatPSPName(currentCredential.payment_provider)}.`
     )
     res.redirect(formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, targetCredential.external_id))
   } catch (error) {

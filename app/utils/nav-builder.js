@@ -77,13 +77,6 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       permissions: type === 'card'
     },
     {
-      id: 'navigation-menu-switch-psp',
-      name: 'Switch PSP',
-      url: formatAccountPathsFor(paths.account.switchPSP.index, account.external_id),
-      current: pathLookup(currentPath, paths.account.switchPSP.index),
-      permissions: permissions.gateway_credentials_update && account.provider_switch_enabled
-    },
-    {
       id: 'navigation-menu-api-keys',
       name: 'API keys',
       url: apiKeysPath,
@@ -94,6 +87,13 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       ...yourPSPNavigationItem,
       permissions: permissions.gateway_credentials_update
     })),
+    {
+      id: 'navigation-menu-switch-psp',
+      name: 'Switch PSP',
+      url: formatAccountPathsFor(paths.account.switchPSP.index, account.external_id),
+      current: pathLookup(currentPath, paths.account.switchPSP.index),
+      permissions: permissions.gateway_credentials_update && account.provider_switch_enabled
+    },
     {
       id: 'navigation-menu-payment-types',
       name: 'Card types',

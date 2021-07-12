@@ -64,6 +64,7 @@ describe('Switch PSP settings page', () => {
         cy.get('h1').should('contain', 'Switch payment service provider')
         cy.get('li').contains('your Worldpay account credentials: Merchant code, username and password').should('exist')
         cy.get('#switch-psp-action-step').should('contain', 'Switch PSP to Worldpay')
+        cy.get('.govuk-warning-text').should('contain','Once you switch, Worldpay will immediately start taking payments. You can refund previous payments through Smartpay.')
       })
 
       it('should have task list for Worldpay with correct tags', () => {
@@ -203,6 +204,7 @@ describe('Switch PSP settings page', () => {
       it('submits and navigates through to success page with appropriate message', () => {
         cy.get('button').contains('Switch to Worldpay').click()
         cy.get('.govuk-notification-banner__heading').contains('You\'ve switched payment service provider')
+        cy.get('.govuk-notification-banner__content').contains('Your service is now taking payments through Worldpay. You can still process refunds of previous payments through Smartpay.')
       })
     })
 
