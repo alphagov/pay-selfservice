@@ -507,30 +507,6 @@ ConnectorClient.prototype = {
 
   /**
    * @param gatewayAccountId
-   * @param gatewayMerchantId (string)
-   * @param correlationId
-   * @returns {Promise<Object>}
-   */
-  setGatewayMerchantId: function (gatewayAccountId, gatewayMerchantId, correlationId) {
-    return baseClient.patch(
-      {
-        baseUrl: this.connectorUrl,
-        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: {
-          op: 'add',
-          path: 'credentials/gateway_merchant_id',
-          value: gatewayMerchantId
-        },
-        correlationId,
-        description: 'set gateway merchant id',
-        service: SERVICE_NAME
-      }
-    )
-  },
-
-  /**
-   * @param gatewayAccountId
    * @param chargeId
    * @param payload
    * @param correlationId
