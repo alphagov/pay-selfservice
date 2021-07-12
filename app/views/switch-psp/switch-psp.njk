@@ -21,9 +21,9 @@
       {% endif %}
     </span>
 
-    {% if not item.enabled %}
+    {% if not item.enabled and not item.complete %}
     <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ label }}-status">cannot start yet</strong>
-    {% elif not item.complete %}
+    {% elif item.enabled and not item.complete %}
     <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ label }}-status">not started</strong>
     {% elif item.complete %}
     <strong class="govuk-tag app-task-list__tag" id="{{ label }}-status">completed</strong>
@@ -70,6 +70,22 @@
           "Make a live payment to test your Worldpay PSP",
           formatAccountPathsFor(routes.account.switchPSP.verifyPSPIntegrationPayment, currentGatewayAccount.external_id),
           taskList.VERIFY_PSP_INTEGRATION
+        ) }}
+      {% endset %}
+    {% case 'stripe' %}
+      <ul class="govuk-list govuk-list--bullet">
+        <li>the name, date of birth and home address of the person in your organisation legally reponsible for payments (called your ‘<a href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means/" class="govuk-link">responsible person</a>’)</li>
+        <li>your bank details</li>
+        <li>your VAT number</li>
+        <li>your company registration number if you’ve registered your company</li>
+        <li>a debit or credit card to make a nominal live payment (refundable)</li>
+      </ul>
+
+      {% set tasks %}
+        {{ taskListItem(
+          "Provide your bank details",
+          formatAccountPathsFor(routes.account.switchPSP.stripeSetup.bankDetails, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.ENTER_BANK_DETAILS
         ) }}
       {% endset %}
   {% endswitch %}

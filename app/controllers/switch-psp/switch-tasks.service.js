@@ -12,6 +12,13 @@ function verifyPSPIntegrationComplete (targetCredential) {
     .includes(targetCredential.state)
 }
 
+function stripeSetupStageComplete(account, stage) {
+  if (account.connectorGatewayAccountStripeProgress) {
+    return account.connectorGatewayAccountStripeProgress[stage]
+  }
+  return false
+}
+
 function getTaskList (targetCredential, account) {
   if (targetCredential.payment_provider === 'worldpay') {
     return {
@@ -22,6 +29,13 @@ function getTaskList (targetCredential, account) {
       'VERIFY_PSP_INTEGRATION': {
         enabled: linkCredentialsComplete(targetCredential),
         complete: verifyPSPIntegrationComplete(targetCredential)
+      }
+    }
+  } else if (targetCredential.payment_provider === 'stripe') {
+    return {
+      'ENTER_BANK_DETAILS': {
+        enabled: !stripeSetupStageComplete(account, 'bankAccount'),
+        complete: stripeSetupStageComplete(account, 'bankAccount')
       }
     }
   }
