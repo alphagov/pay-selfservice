@@ -59,7 +59,8 @@ async function completePaymentJourney (req, res, next) {
         correlationId: req.correlationId,
         gatewayAccountId: req.account.gateway_account_id,
         gatewayAccountCredentialsId: targetCredential.gateway_account_credential_id,
-        state: CREDENTIAL_STATE.VERIFIED
+        state: CREDENTIAL_STATE.VERIFIED,
+        userExternalId: req.user && req.user.externalId
       })
       req.flash('verifyIntegrationPaymentSuccess', true)
       res.redirect(formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))

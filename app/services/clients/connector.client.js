@@ -248,11 +248,17 @@ ConnectorClient.prototype = {
       .replace('{accountId}', params.gatewayAccountId)
       .replace('{credentialsId}', params.gatewayAccountCredentialsId)
 
-    const payload = [{
-      op: 'replace',
-      path: 'state',
-      value: params.state
-    }]
+    const payload = [
+      {
+        op: 'replace',
+        path: 'state',
+        value: params.state
+      },
+      {
+        op: 'replace',
+        path: 'last_updated_by_user_external_id',
+        value: params.userExternalId
+      }]
 
     return baseClient.patch(url, {
       body: payload,
