@@ -87,6 +87,11 @@
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.bankDetails, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.ENTER_BANK_DETAILS
         ) }}
+        {{ taskListItem(
+          "Provide details about your repsonsible person",
+          formatAccountPathsFor(routes.account.switchPSP.stripeSetup.responsiblePerson, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.ENTER_RESPONSIBLE_PERSON
+        ) }}
       {% endset %}
   {% endswitch %}
 

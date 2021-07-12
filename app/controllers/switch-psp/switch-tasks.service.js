@@ -36,6 +36,10 @@ function getTaskList (targetCredential, account) {
       'ENTER_BANK_DETAILS': {
         enabled: !stripeSetupStageComplete(account, 'bankAccount'),
         complete: stripeSetupStageComplete(account, 'bankAccount')
+      },
+      'ENTER_RESPONSIBLE_PERSON': {
+        enabled: !stripeSetupStageComplete(account, 'responsiblePerson'),
+        complete: stripeSetupStageComplete(account, 'responsiblePerson')
       }
     }
   }
