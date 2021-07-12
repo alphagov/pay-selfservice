@@ -11,7 +11,7 @@
     {% endif %}
   {% endset %}
 
-  {% if connectorGatewayAccountStripeProgress and (not isConnectorStripeJourneyComplete) %}
+  {% if connectorGatewayAccountStripeProgress and gatewayAccount.payment_provider === 'stripe' and (not isConnectorStripeJourneyComplete) %}
     <div class="account-status-panel {{panelModifierClass}} govuk-grid-row govuk-!-margin-bottom-5">
       <div class="govuk-grid-column-two-thirds">
         {% if isStripeAccountRestricted %}
