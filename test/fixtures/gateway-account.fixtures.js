@@ -17,6 +17,10 @@ function validCredentials (opts = {}) {
   if (opts.sha_out_passphrase) {
     credentials.sha_out_passphrase = opts.sha_out_passphrase
   }
+
+  if (opts.stripe_account_id) {
+    credentials.stripe_account_id = opts.stripe_account_id
+  }
   return credentials
 }
 

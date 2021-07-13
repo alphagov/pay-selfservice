@@ -59,6 +59,8 @@ describe('Stripe setup: VAT number page', () => {
             cy.get('input#vat-number[name="vat-number"]').should('exist')
             cy.get('button').should('exist')
             cy.get('button').should('contain', 'Save and continue')
+
+            cy.get('#navigation-menu-switch-psp').should('not.exist')
           })
       })
 
