@@ -2,18 +2,23 @@
 
 const sinon = require('sinon')
 
+const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
 const getController = require('./get.controller')
 
 describe('get controller', () => {
   let req, res, next
 
   beforeEach(() => {
+    const account = gatewayAccountFixture.validGatewayAccount({
+      gateway_account_id: 'gatewayId',
+      external_id: 'a-valid-external-id',
+      gateway_account_credentials: [{
+        external_id: 'a-valid-credential-id'
+      }]
+    })
+    account.connectorGatewayAccountStripeProgress = {}
     req = {
-      account: {
-        gateway_account_id: 'gatewayId',
-        external_id: 'a-valid-external-id',
-        connectorGatewayAccountStripeProgress: {}
-      },
+      account,
       credentialId: 'a-valid-credential-id',
       correlationId: 'requestId'
     }

@@ -47,7 +47,7 @@ function getSwitchingCredentialIfExists (gatewayAccount) {
 }
 
 function isSwitchingCredentialsRoute (req) {
-  return Object.values(paths.account.switchPSP).includes(req.route && req.route.path) || req.url.startsWith('/switch-psp/')
+  return Object.values(paths.account.switchPSP).includes(req.route && req.route.path) || Boolean(req.url && req.url.startsWith('/switch-psp/'))
 }
 
 function getPSPPageLinks (gatewayAccount) {

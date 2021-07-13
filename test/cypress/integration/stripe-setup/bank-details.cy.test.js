@@ -8,10 +8,11 @@ const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 
 const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-valid-external-id'
+const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
 const userExternalId = 'userExternalId'
 const accountNumber = '00012345'
 const sortCode = '108800'
-const bankDetailsUrl = `/account/${gatewayAccountExternalId}/bank-details`
+const bankDetailsUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/bank-details`
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
 function setupStubs (bankAccount, type = 'live', paymentProvider = 'stripe') {
@@ -26,9 +27,15 @@ function setupStubs (bankAccount, type = 'live', paymentProvider = 'stripe') {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount })
   }
 
+  const gatewayAccountCredentials = [{
+    gateway_account_id: gatewayAccountId,
+    payment_provider: paymentProvider,
+    external_id: gatewayAccountCredentialExternalId
+  }]
+
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type, paymentProvider }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type, paymentProvider, gatewayAccountCredentials }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     transactionSummaryStubs.getDashboardStatistics()

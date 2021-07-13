@@ -35,7 +35,11 @@ describe('Add stripe psp details route', function () {
           gateway_account_id: GATEWAY_ACCOUNT_ID,
           external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
           payment_provider: 'stripe',
-          type: 'live'
+          type: 'live',
+          gateway_account_credentials: [{
+            external_id: 'valid-credentials-id',
+            payment_provider: 'stripe'
+          }]
         }))
 
       connectorMock
