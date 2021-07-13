@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block side_navigation %}
-  {% if switchingToCredentials %}
+  {% if isSwitchingCredentials %}
     {% include "includes/side-navigation.njk" %}
   {% endif %}
 {% endblock %}
 
 {% block mainContent %}
 
-  {% if switchingToCredentials %}
+  {% if isSwitchingCredentials %}
     {{ govukBackLink({
       text: "Back to Switching payment service provider (PSP)",
       classes: "govuk-!-margin-top-0",

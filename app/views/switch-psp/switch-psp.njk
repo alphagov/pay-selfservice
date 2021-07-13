@@ -46,7 +46,7 @@
       type: 'success'
     }) }}
   {% endif %}
-  
+
   <h1 class="govuk-heading-l page-title">Switch payment service provider (PSP)</h1>
 
   <p class="govuk-body">This service is taking payments with {{ currentGatewayAccount.payment_provider | formatPSPname }}.</p>
@@ -103,7 +103,7 @@
           taskList.ENTER_COMPANY_NUMBER
         ) }}
         {{ taskListItem(
-          "Make a live payment to test your Worldpay PSP",
+          "Make a live payment to test your Stripe PSP",
           formatAccountPathsFor(routes.account.switchPSP.verifyPSPIntegrationPayment, currentGatewayAccount.external_id),
           taskList.VERIFY_PSP_INTEGRATION
         ) }}

@@ -19,8 +19,8 @@ function showWorldpayCredentialsPage (req, res, next) {
   try {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
     const form = credentialsForm.from(credential.credentials)
-    const switchingToCredentials = isSwitchingCredentialsRoute(req)
-    response(req, res, 'credentials/worldpay', { form, switchingToCredentials, credential })
+    const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+    response(req, res, 'credentials/worldpay', { form, isSwitchingCredentials, credential })
   } catch (error) {
     next(error)
   }
@@ -28,7 +28,7 @@ function showWorldpayCredentialsPage (req, res, next) {
 
 async function updateWorldpayCredentials (req, res, next) {
   const gatewayAccountId = req.account.gateway_account_id
-  const switchingToCredentials = isSwitchingCredentialsRoute(req)
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const correlationId = req.correlationId || ''
 
   try {
@@ -36,7 +36,7 @@ async function updateWorldpayCredentials (req, res, next) {
     const results = credentialsForm.validate(req.body)
 
     if (results.errorSummaryList.length) {
-      return response(req, res, 'credentials/worldpay', { form: results, switchingToCredentials, credential })
+      return response(req, res, 'credentials/worldpay', { form: results, isSwitchingCredentials, credential })
     }
 
     if (SKIP_PSP_CREDENTIAL_CHECKS !== 'true') {
@@ -44,7 +44,7 @@ async function updateWorldpayCredentials (req, res, next) {
       if (checkCredentialsWithWorldpay.result !== 'valid') {
         logger.warn('Provided credentials failed validation with Worldpay')
         results.errorSummaryList = formatErrorsForSummaryList({ 'merchantId': 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
-        return response(req, res, 'credentials/worldpay', { form: results, switchingToCredentials, credential })
+        return response(req, res, 'credentials/worldpay', { form: results, isSwitchingCredentials, credential })
       }
 
       logger.info('Successfully validated credentials with Worldpay')
@@ -59,7 +59,7 @@ async function updateWorldpayCredentials (req, res, next) {
     })
     logger.info('Successfully updated Worldpay credentials on account')
 
-    if (switchingToCredentials) {
+    if (isSwitchingCredentials) {
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
     } else {
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id))

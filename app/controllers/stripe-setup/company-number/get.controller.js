@@ -6,7 +6,7 @@ const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 
 module.exports = (req, res, next) => {
-  const switchingToCredentials = isSwitchingCredentialsRoute(req)
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   if (!stripeAccountSetup) {
     return next(new Error('Stripe setup progress is not available on request'))
@@ -16,5 +16,5 @@ module.exports = (req, res, next) => {
     return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
   }
 
-  return response(req, res, 'stripe-setup/company-number/index', { switchingToCredentials })
+  return response(req, res, 'stripe-setup/company-number/index', { isSwitchingCredentials })
 }

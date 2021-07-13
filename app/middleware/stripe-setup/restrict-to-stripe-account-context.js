@@ -1,7 +1,7 @@
 'use strict'
 
 const { getSwitchingCredentialIfExists } = require('../../utils/credentials')
-const { NotFoundError } = require('../../../app/errors')
+const { NotFoundError } = require('../../errors')
 
 module.exports = function restrictRequestsToLiveAccounts (req, res, next) {
   const requestHasValidLiveStripeAccount = req.account &&

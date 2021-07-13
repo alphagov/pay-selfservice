@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, getSwitchingCredentialIfExists } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const companyNumberValidations = require('./company-number-validations')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -16,7 +16,7 @@ const COMPANY_NUMBER_DECLARATION_FIELD = 'company-number-declaration'
 const COMPANY_NUMBER_FIELD = 'company-number'
 
 module.exports = async (req, res, next) => {
-  const switchingToCredentials = isSwitchingCredentialsRoute(req)
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   if (!stripeAccountSetup) {
     return next(new Error('Stripe setup progress is not available on request'))
@@ -35,7 +35,7 @@ module.exports = async (req, res, next) => {
     return response(req, res, 'stripe-setup/company-number/index', {
       companyNumberDeclaration: companyNumberDeclaration,
       companyNumber: rawCompanyNumber,
-      switchingToCredentials,
+      isSwitchingCredentials,
       errors
     })
   } else {
@@ -43,10 +43,10 @@ module.exports = async (req, res, next) => {
       const stripeCompanyBody = {
         tax_id: sanitisedCompanyNumber || 'NOTAPPLI'
       }
-      const switchingCredential = getSwitchingCredentialIfExists(req.account)
       let stripeAccountId
 
-      if (switchingToCredentials) {
+      if (isSwitchingCredentials) {
+        const switchingCredential = getSwitchingCredential(req.account)
         stripeAccountId = switchingCredential.credentials.stripe_account_id
       } else {
         const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
@@ -55,7 +55,7 @@ module.exports = async (req, res, next) => {
       await updateCompany(stripeAccountId, stripeCompanyBody)
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'company_number', req.correlationId)
 
-      if (switchingToCredentials) {
+      if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
