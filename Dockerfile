@@ -1,4 +1,4 @@
-FROM node:12.22.1-alpine3.12@sha256:29c7b0f61218ec57a2ac36778a3954e3f8b32f43294aaf960d2fbb3452229335
+FROM node:12.22.2-alpine3.12@sha256:d2b86793468052dbab261117791413a68a0bba807ec91abf2078ec252563f935
 
 ### Needed to run appmetrics and pact-mock-service
 COPY sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub

@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": "^12.21.0"
+    "node": "^12.22.2"
   },
   "standard": {
     "globals": [
