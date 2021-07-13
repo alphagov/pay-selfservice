@@ -4,7 +4,22 @@
   What is your organisation’s VAT number? - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
+{% block side_navigation %}
+  {% if isSwitchingCredentials %}
+    {% include "includes/side-navigation.njk" %}
+  {% endif %}
+{% endblock %}
+
 {% block mainContent %}
+
+  {% if isSwitchingCredentials %}
+    {{ govukBackLink({
+      text: "Back to Switching payment service provider (PSP)",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+    }) }}
+  {% endif %}
+
   <div class="govuk-grid-column-two-thirds">
     {% if errors | length %}
       {% set errorList = [] %}

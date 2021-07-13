@@ -12,6 +12,13 @@ function verifyPSPIntegrationComplete (targetCredential) {
     .includes(targetCredential.state)
 }
 
+function stripeSetupStageComplete(account, stage) {
+  if (account.connectorGatewayAccountStripeProgress) {
+    return account.connectorGatewayAccountStripeProgress[stage]
+  }
+  return false
+}
+
 function getTaskList (targetCredential, account) {
   if (targetCredential.payment_provider === 'worldpay') {
     return {
@@ -21,6 +28,32 @@ function getTaskList (targetCredential, account) {
       },
       'VERIFY_PSP_INTEGRATION': {
         enabled: linkCredentialsComplete(targetCredential),
+        complete: verifyPSPIntegrationComplete(targetCredential)
+      }
+    }
+  } else if (targetCredential.payment_provider === 'stripe') {
+    return {
+      'ENTER_BANK_DETAILS': {
+        enabled: !stripeSetupStageComplete(account, 'bankAccount'),
+        complete: stripeSetupStageComplete(account, 'bankAccount')
+      },
+      'ENTER_RESPONSIBLE_PERSON': {
+        enabled: !stripeSetupStageComplete(account, 'responsiblePerson'),
+        complete: stripeSetupStageComplete(account, 'responsiblePerson')
+      },
+      'ENTER_VAT_NUMBER': {
+        enabled: !stripeSetupStageComplete(account, 'vatNumber'),
+        complete: stripeSetupStageComplete(account, 'vatNumber')
+      },
+      'ENTER_COMPANY_NUMBER': {
+        enabled: !stripeSetupStageComplete(account, 'companyNumber'),
+        complete: stripeSetupStageComplete(account, 'companyNumber')
+      },
+      'VERIFY_PSP_INTEGRATION': {
+        enabled: stripeSetupStageComplete(account, 'bankAccount') &&
+          stripeSetupStageComplete(account, 'responsiblePerson') &&
+          stripeSetupStageComplete(account, 'vatNumber') &&
+          stripeSetupStageComplete(account, 'companyNumber'),
         complete: verifyPSPIntegrationComplete(targetCredential)
       }
     }

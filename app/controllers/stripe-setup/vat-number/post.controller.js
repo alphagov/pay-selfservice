@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 
 const { response } = require('../../../utils/response')
+const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const vatNumberValidations = require('./vat-number-validations')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -14,6 +15,7 @@ const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const VAT_NUMBER_FIELD = 'vat-number'
 
 module.exports = async (req, res, next) => {
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
   if (!stripeAccountSetup) {
@@ -31,6 +33,7 @@ module.exports = async (req, res, next) => {
   if (!lodash.isEmpty(errors)) {
     return response(req, res, 'stripe-setup/vat-number/index', {
       vatNumber: rawVatNumber,
+      isSwitchingCredentials,
       errors
     })
   } else {
@@ -38,11 +41,23 @@ module.exports = async (req, res, next) => {
       const stripeCompanyBody = {
         vat_id: sanitisedVatNumber
       }
-      const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
-      await updateCompany(stripeAccount.stripeAccountId, stripeCompanyBody)
+      let stripeAccountId
+
+      if (isSwitchingCredentials) {
+        const switchingCredential = getSwitchingCredential(req.account)
+        stripeAccountId = switchingCredential.credentials.stripe_account_id
+      } else {
+        const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
+        stripeAccountId = stripeAccount.stripeAccountId
+      }
+      await updateCompany(stripeAccountId, stripeCompanyBody)
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'vat_number', req.correlationId)
 
-      return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
+      if (isSwitchingCredentials) {
+        return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+      } else {
+        return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
+      }
     } catch (err) {
       next(err)
     }

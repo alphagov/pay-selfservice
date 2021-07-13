@@ -3,7 +3,7 @@
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const restrictToLiveStripeAccount = require('./restrict-to-live-stripe-account')
+const restrictToStripeAccountContext = require('./restrict-to-stripe-account-context')
 const { NotFoundError } = require('../../errors')
 
 describe('Restrict to live stripe account middleware', () => {
@@ -27,7 +27,7 @@ describe('Restrict to live stripe account middleware', () => {
       }
     }
 
-    restrictToLiveStripeAccount(req, res, next)
+    restrictToStripeAccountContext(req, res, next)
 
     expect(next.calledOnce).to.be.true // eslint-disable-line
     expect(res.status.notCalled).to.be.true // eslint-disable-line
@@ -37,7 +37,7 @@ describe('Restrict to live stripe account middleware', () => {
   it('should throw NotFoundError when the gateway account is not in the request', () => {
     const req = {}
 
-    restrictToLiveStripeAccount(req, res, next)
+    restrictToStripeAccountContext(req, res, next)
 
     const expectedError = sinon.match.instanceOf(NotFoundError)
     sinon.assert.calledWith(next, expectedError)
@@ -51,7 +51,7 @@ describe('Restrict to live stripe account middleware', () => {
       }
     }
 
-    restrictToLiveStripeAccount(req, res, next)
+    restrictToStripeAccountContext(req, res, next)
 
     const expectedError = sinon.match.instanceOf(NotFoundError)
     sinon.assert.calledWith(next, expectedError)
@@ -65,7 +65,7 @@ describe('Restrict to live stripe account middleware', () => {
       }
     }
 
-    restrictToLiveStripeAccount(req, res, next)
+    restrictToStripeAccountContext(req, res, next)
 
     const expectedError = sinon.match.instanceOf(NotFoundError)
     sinon.assert.calledWith(next, expectedError)

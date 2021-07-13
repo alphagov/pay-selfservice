@@ -8,6 +8,7 @@ const Connector = require('../services/clients/connector.client.js').ConnectorCl
 
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { addLoggingField } = require('../utils/log-context')
+const { getSwitchingCredentialIfExists } = require('../utils/credentials')
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
 async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlationId) {
@@ -23,7 +24,9 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlat
       disableToggle3ds: account.payment_provider === 'stripe'
     })
 
-    if (account.payment_provider === 'stripe') {
+    const switchingCredential = getSwitchingCredentialIfExists(account)
+    const isSwitchingToStripe = switchingCredential && switchingCredential.payment_provider === 'stripe'
+    if (account.payment_provider === 'stripe' || isSwitchingToStripe) {
       const stripeAccountSetup = await connectorClient.getStripeAccountSetup(account.gateway_account_id, correlationId)
       if (stripeAccountSetup) {
         account.connectorGatewayAccountStripeProgress = stripeAccountSetup

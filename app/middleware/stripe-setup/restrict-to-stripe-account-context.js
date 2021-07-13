@@ -1,6 +1,7 @@
 'use strict'
 
-const { NotFoundError } = require('../../../app/errors')
+const { getSwitchingCredentialIfExists } = require('../../utils/credentials')
+const { NotFoundError } = require('../../errors')
 
 module.exports = function restrictRequestsToLiveAccounts (req, res, next) {
   const requestHasValidLiveStripeAccount = req.account &&
@@ -8,8 +9,10 @@ module.exports = function restrictRequestsToLiveAccounts (req, res, next) {
     req.account.payment_provider &&
     req.account.type.toLowerCase() === 'live' &&
     req.account.payment_provider.toLowerCase() === 'stripe'
+  const switchingCredential = getSwitchingCredentialIfExists(req.account)
+  const requestIsSwitchingToStripeAccount = switchingCredential && switchingCredential.payment_provider === 'stripe'
 
-  if (requestHasValidLiveStripeAccount) {
+  if (requestHasValidLiveStripeAccount || requestIsSwitchingToStripeAccount) {
     next()
   } else {
     // we display 404 error, because from user point of view this page should not exist

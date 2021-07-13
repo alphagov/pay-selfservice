@@ -1,10 +1,12 @@
 'use strict'
 
 const { response } = require('../../../utils/response')
+const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 
 module.exports = (req, res, next) => {
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
   if (!stripeAccountSetup) {
@@ -15,5 +17,5 @@ module.exports = (req, res, next) => {
     return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
   }
 
-  return response(req, res, 'stripe-setup/bank-details/index')
+  return response(req, res, 'stripe-setup/bank-details/index', { isSwitchingCredentials })
 }

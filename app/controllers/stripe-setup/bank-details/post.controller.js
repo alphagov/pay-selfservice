@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 
 const { response } = require('../../../utils/response')
+const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
 const bankDetailsValidations = require('./bank-details-validations')
 const { updateBankAccount } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -16,6 +17,7 @@ const ACCOUNT_NUMBER_FIELD = 'account-number'
 const SORT_CODE_FIELD = 'sort-code'
 
 module.exports = async (req, res, next) => {
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   if (!stripeAccountSetup) {
     return next(new Error('Stripe setup progress is not available on request'))
@@ -35,20 +37,34 @@ module.exports = async (req, res, next) => {
     return response(req, res, 'stripe-setup/bank-details/index', {
       accountNumber: rawAccountNumber,
       sortCode: rawSortCode,
+      isSwitchingCredentials,
       errors
     })
   }
 
   try {
-    const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
+    let stripeAccountId
 
-    await updateBankAccount(stripeAccount.stripeAccountId, {
+    if (isSwitchingCredentials) {
+      const switchingCredential = getSwitchingCredential(req.account)
+      stripeAccountId = switchingCredential.credentials.stripe_account_id
+    } else {
+      const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
+      stripeAccountId = stripeAccount.stripeAccountId
+    }
+
+    await updateBankAccount(stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
     })
 
     await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account', req.correlationId)
-    return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
+
+    if (isSwitchingCredentials) {
+      return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+    } else {
+      return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
+    }
   } catch (error) {
     // check if it is Stripe related error
     if (error.code) {
@@ -57,6 +73,7 @@ module.exports = async (req, res, next) => {
         return response(req, res, 'stripe-setup/bank-details/index', {
           accountNumber: rawAccountNumber,
           sortCode: rawSortCode,
+          isSwitchingCredentials,
           errors: {
             [SORT_CODE_FIELD]: fieldValidationChecks.validationErrors.invalidSortCode
           }
@@ -67,6 +84,7 @@ module.exports = async (req, res, next) => {
         return response(req, res, 'stripe-setup/bank-details/index', {
           accountNumber: rawAccountNumber,
           sortCode: rawSortCode,
+          isSwitchingCredentials,
           errors: {
             [ACCOUNT_NUMBER_FIELD]: fieldValidationChecks.validationErrors.invalidBankAccountNumber
           }

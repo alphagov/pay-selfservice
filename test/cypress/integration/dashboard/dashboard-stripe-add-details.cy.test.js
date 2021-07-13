@@ -10,12 +10,16 @@ describe('The Stripe psp details banner', () => {
   const gatewayAccountId = '22'
   const gatewayAccountExternalId = 'a-valid-external-id'
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+
+  const gatewayAccountCredentials = [{
+    payment_provider: 'stripe'
+  }]
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId)
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId }),
-      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe' }),
-      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe' }),
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials }),
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials }),
       transactionsSummaryStubs.getDashboardStatistics(),
       stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
         gatewayAccountId,
