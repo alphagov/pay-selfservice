@@ -3,6 +3,7 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const connectorChargeStubs = require('../../stubs/connector-charge-stubs')
+const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
@@ -226,6 +227,82 @@ describe('Switch PSP settings page', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('a').contains('Your PSP - Smartpay').click()
         cy.get('#switched-psp-status').should('contain', 'This service started taking payments with Smartpay on 3 May 2018.')
+      })
+    })
+  })
+
+  describe('When switching to Stripe', () => {
+    describe('Switching page', () => {
+      beforeEach(() => {
+        cy.task('setupStubs', [
+          ...getUserAndAccountStubs('smartpay', true, [
+            { payment_provider: 'smartpay', state: 'ACTIVE' },
+            { payment_provider: 'stripe', state: 'CREATED' }
+          ]),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
+            gatewayAccountId,
+            bankAccount: [ true ]
+          })
+        ])
+      })
+
+      it('shows Stripe specific tasks', () => {
+        cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+        cy.get('.govuk-heading-l').should('contain', 'Switch payment service provider (PSP)')
+
+        cy.get('strong[id="Provide your bank details-status"]').should('contain', 'completed')
+        cy.get('span').contains('Provide your bank details').should('exist')
+      })
+    })
+
+    describe('Stripe pages show contextually appropriate information for the switch flow', () => {
+      beforeEach(() => {
+        cy.task('setupStubs', [
+          ...getUserAndAccountStubs(
+            'smartpay',
+            true,
+            [
+              { payment_provider: 'smartpay', state: 'ACTIVE' },
+              { payment_provider: 'stripe', state: 'CREATED', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' }}
+            ]
+          ),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
+            gatewayAccountId,
+            bankAccount: [ true ]
+          })
+        ])
+      })
+
+      it('loads stripe pages for the switch flow', () => {
+        cy.get('a').contains('Provide your organisation\'s VAT number').click()
+        cy.get('#navigation-menu-switch-psp').parent().should('have.class', 'govuk-!-font-weight-bold')
+        cy.get('a').contains('Back to Switching payment service provider (PSP)').should('exist')
+      })
+    })
+
+    describe('Switch page unlocks appropriately', () => {
+      beforeEach(() => {
+        cy.task('setupStubs', [
+          ...getUserAndAccountStubs(
+            'smartpay',
+            true,
+            [
+              { payment_provider: 'smartpay', state: 'ACTIVE' },
+              { payment_provider: 'stripe', state: 'VERIFIED_WITH_LIVE_PAYMENT', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' }}
+            ]
+          ),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
+            gatewayAccountId,
+            bankAccount: true,
+            vatNumber: true,
+            companyNumber: true,
+            responsiblePerson: true
+          })
+        ])
+      })
+      it('all steps are complete', () => {
+        cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+        cy.get('button').contains('Switch to Stripe').should('not.be.disabled')
       })
     })
   })
