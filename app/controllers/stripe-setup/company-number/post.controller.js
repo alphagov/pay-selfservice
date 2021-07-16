@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 
+const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
 const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
@@ -55,6 +56,10 @@ module.exports = async (req, res, next) => {
       await updateCompany(stripeAccountId, stripeCompanyBody)
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'company_number', req.correlationId)
 
+      logger.info('Company number submitted for Stripe account', {
+        stripe_account_id: stripeAccountId,
+        is_switching: isSwitchingCredentials
+      })
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else {

@@ -3,6 +3,7 @@
 const lodash = require('lodash')
 const ukPostcode = require('uk-postcode')
 
+const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
@@ -130,6 +131,10 @@ module.exports = async function (req, res, next) {
       await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
 
+      logger.info('Responsible person details submitted for Stripe account', {
+        stripe_account_id: stripeAccountId,
+        is_switching: isSwitchingCredentials
+      })
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else {
