@@ -39,6 +39,7 @@ describe('connector client', function () {
     describe('success', () => {
       const validPostCreateChargeRequest = chargeFixture.validPostChargeRequestRequest({
         amount: 100,
+        payment_provider: 'stripe',
         return_url: 'https://somewhere.gov.uk/rainbow/1'
       })
 
