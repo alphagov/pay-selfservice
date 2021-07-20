@@ -31,16 +31,12 @@ describe('connector client - get gateway account by external id', function () {
   })
   after(() => provider.finalize())
 
-  describe('get Smartpay account with credentials - success', () => {
+  describe('get Smartpay account - success', () => {
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse({
       external_id: gatewayAccountExternalId,
       payment_provider: 'smartpay',
       description: 'A description',
       analytics_id: 'an-analytics-id',
-      credentials: {
-        merchant_id: 'merchant-id',
-        username: 'username'
-      },
       notificationCredentials: {
         username: 'username'
       }
@@ -70,16 +66,12 @@ describe('connector client - get gateway account by external id', function () {
     })
   })
 
-  describe('get Worldpay account with credentials - success', () => {
+  describe('get Worldpay account - success', () => {
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse({
       external_id: gatewayAccountExternalId,
       payment_provider: 'worldpay',
       description: 'A description',
       analytics_id: 'an-analytics-id',
-      credentials: {
-        merchant_id: 'merchant-id',
-        username: 'username'
-      },
       worldpay_3ds_flex: {
         organisational_unit_id: 'an-org-id',
         issuer: 'an-issues'
@@ -110,18 +102,12 @@ describe('connector client - get gateway account by external id', function () {
     })
   })
 
-  describe('get ePDQ account with credentials - success', () => {
+  describe('get ePDQ account - success', () => {
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse({
       external_id: gatewayAccountExternalId,
       payment_provider: 'worldpay',
       description: 'A description',
-      analytics_id: 'an-analytics-id',
-      credentials: {
-        merchant_id: 'merchant-id',
-        username: 'username',
-        sha_in_passphrase: 'sha-in',
-        sha_out_passphrase: 'sha-out'
-      }
+      analytics_id: 'an-analytics-id'
     })
 
     before(() => {
