@@ -120,7 +120,7 @@
     "cheerio": "1.0.0-rc.10",
     "chokidar-cli": "latest",
     "csrf": "^3.1.0",
-    "cypress": "3.1.5",
+    "cypress": "8.0.0",
     "dotenv": "10.0.0",
     "envfile": "3.0.0",
     "gaap-analytics": "3.1.0",
