@@ -426,6 +426,11 @@ module.exports.bind = function (app) {
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
 
+  // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
+  const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
+  app.get('/.well-known/security.txt', (req, res) => res.redirect(securitytxt))
+  app.get('/security.txt', (req, res) => res.redirect(securitytxt))
+
   app.all('*', (req, res, next) => {
     if (accountUrls.isLegacyAccountsUrl(req.url)) {
       if (!req.user) {
