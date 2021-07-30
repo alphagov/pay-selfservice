@@ -8,6 +8,8 @@ const userIsAuthorised = require('../../app/middleware/user-is-authorised')
 
 const pathsNotRequiringAuthentication = [
   '/style-guide',
+  '/.well-known/security.txt',
+  '/security.txt',
   paths.user.logIn,
   paths.user.otpLogIn,
   paths.user.otpSendAgain,
