@@ -134,7 +134,7 @@
     "grunt-sass": "3.1.0",
     "html5shiv": "3.7.x",
     "husky": "7.0.1",
-    "jsdom": "^16.6.0",
+    "jsdom": "^16.7.0",
     "lint-staged": "11.1.1",
     "mocha": "6.1.4",
     "mountebank": "^2.4.0",
