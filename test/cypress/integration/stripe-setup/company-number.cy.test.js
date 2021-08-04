@@ -31,8 +31,6 @@ function setupStubs (companyNumber, type = 'live', paymentProvider = 'stripe') {
     external_id: gatewayAccountCredentialExternalId
   }]
 
-
-
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: gatewayAccountExternalId, type, paymentProvider, gatewayAccountCredentials }),
