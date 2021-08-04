@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block side_navigation %}
-  {% include "./_nav.njk" %}
+  {% if permissions.tokens_create %}
+    {% include "./_nav.njk" %}
+  {% endif%}
 {% endblock %}
 
 {% block mainContent %}
@@ -38,12 +40,14 @@
   }) }}
 {% endif %}
 
-{% if not permissions.tokens_create %}
+  <h1 class="govuk-heading-l">{% if permissions.tokens_create %}Manage{% else %}View{% endif %} payment links</h1>
+
+  {% if not permissions.tokens_create %}
   <aside class="pay-info-warning-box">
     <p class="govuk-body">You don’t have permission to create or edit payment links. Contact your service admin if you would like to manage payment links.</p>
   </aside>
-{% endif %}
-  <h1 class="govuk-heading-l govuk-!-margin-top-6">{% if permissions.tokens_create %}Manage{% else %}View{% endif %} payment links</h1>
+  {% endif %}
+
   <p class="govuk-body payment-links-list--header">
     {% if productsLength === 1 %}
       There is 1 payment link
@@ -56,6 +60,7 @@
     {% endif %}
   </p>
 
+  {% if permissions.tokens_create %}
   <h2 class="govuk-heading-m">Add metadata for reconciliation and reporting</h2>
 
   <p class="govuk-body">You can add metadata like cost centre codes or business area to your payment links. To add these:</p>
@@ -64,6 +69,7 @@
     <li>Find the Payment link you want and select <span class="govuk-!-font-weight-bold">Edit</span>.</li>
     <li>Select <span class="govuk-!-font-weight-bold">Add a reporting column<span>.</li>
   </ol>
+  {% endif %}
 
   {% if englishPaymentLinks.length %}
   <ul class="govuk-list pay-!-border-top govuk-!-padding-top-3 govuk-!-padding-bottom-3 payment-links-list">

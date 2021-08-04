@@ -12,7 +12,7 @@ function verifyPSPIntegrationComplete (targetCredential) {
     .includes(targetCredential.state)
 }
 
-function stripeSetupStageComplete(account, stage) {
+function stripeSetupStageComplete (account, stage) {
   if (account.connectorGatewayAccountStripeProgress) {
     return account.connectorGatewayAccountStripeProgress[stage]
   }

@@ -6,6 +6,7 @@ const formatAccountPathsFor = require('./format-account-paths-for')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
 const { getPSPPageLinks, CREDENTIAL_STATE } = require('./credentials')
+const flattenNestedValues = require('./flatten-nested-values')
 
 const mainSettingsPaths = [
   paths.account.settings,
@@ -16,8 +17,8 @@ const mainSettingsPaths = [
   paths.account.toggleMotoMaskCardNumberAndSecurityCode
 ]
 
-const yourPspPaths = [ 'your-psp', 'notification-credentials' ]
-const switchPspPaths = [ 'switch-psp' ]
+const yourPspPaths = ['your-psp', 'notification-credentials']
+const switchPspPaths = ['switch-psp']
 
 const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {
   const navigationItems = []
@@ -39,9 +40,10 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     navigationItems.push({
       id: 'navigation-menu-payment-links',
       name: 'Payment links',
-      url: formatAccountPathsFor(paths.account.paymentLinks.start, account.external_id),
-      current: pathLookup(currentPath, paths.account.paymentLinks.start),
-      permissions: permissions.tokens_create
+      url: (permissions.token_create && formatAccountPathsFor(paths.account.paymentLinks.start, account.external_id)) ||
+        formatAccountPathsFor(paths.account.paymentLinks.manage.index, account.external_id),
+      current: currentPath !== '/' && flattenNestedValues(paths.account.paymentLinks).filter(path => currentPath.includes(path)).length,
+      permissions: permissions.transactions_read
     })
   }
   navigationItems.push({

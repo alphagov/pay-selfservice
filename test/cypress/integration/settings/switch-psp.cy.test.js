@@ -65,7 +65,7 @@ describe('Switch PSP settings page', () => {
         cy.get('h1').should('contain', 'Switch payment service provider')
         cy.get('li').contains('your Worldpay account credentials: Merchant code, username and password').should('exist')
         cy.get('#switch-psp-action-step').should('contain', 'Switch PSP to Worldpay')
-        cy.get('.govuk-warning-text').should('contain','Once you switch, Worldpay will immediately start taking payments. You can refund previous payments through Smartpay.')
+        cy.get('.govuk-warning-text').should('contain', 'Once you switch, Worldpay will immediately start taking payments. You can refund previous payments through Smartpay.')
       })
 
       it('should have task list for Worldpay with correct tags', () => {
@@ -263,7 +263,7 @@ describe('Switch PSP settings page', () => {
             true,
             [
               { payment_provider: 'smartpay', state: 'ACTIVE' },
-              { payment_provider: 'stripe', state: 'CREATED', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' }}
+              { payment_provider: 'stripe', state: 'CREATED', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' } }
             ]
           ),
           stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
@@ -288,7 +288,7 @@ describe('Switch PSP settings page', () => {
             true,
             [
               { payment_provider: 'smartpay', state: 'ACTIVE' },
-              { payment_provider: 'stripe', state: 'VERIFIED_WITH_LIVE_PAYMENT', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' }}
+              { payment_provider: 'stripe', state: 'VERIFIED_WITH_LIVE_PAYMENT', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' } }
             ]
           ),
           stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
