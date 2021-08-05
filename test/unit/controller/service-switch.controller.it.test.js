@@ -94,7 +94,8 @@ describe('My services controller', () => {
         .reply(200, gatewayAccountFixtures.validGatewayAccountsResponse({ accounts }))
 
       res = {
-        render: sinon.spy()
+        render: sinon.spy(),
+        locals: {}
       }
       const req = {
         user
@@ -240,13 +241,15 @@ describe('My services controller', () => {
               }
             }]
         })),
-        session: {},
-        query: {
-          s: newServiceExternalId
-        }
+        session: {}
       }
 
       const res = {
+        locals: {
+          flash: {
+            inviteSuccessServiceId: [newServiceExternalId]
+          }
+        },
         render: function () {
           const path = arguments[0]
           const renderData = arguments[1]

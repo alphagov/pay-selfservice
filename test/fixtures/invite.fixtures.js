@@ -2,7 +2,7 @@
 
 const _ = require('lodash')
 
-function buildInviteWithDefaults (opts) {
+function buildInviteWithDefaults (opts = {}) {
   const data = _.defaults(opts, {
     type: 'user',
     email: 'foo@example.com',

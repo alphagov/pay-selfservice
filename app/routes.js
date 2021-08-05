@@ -150,7 +150,6 @@ module.exports.bind = function (app) {
 
   // REGISTER USER
   app.get(registerUser.registration, registerController.showRegistration)
-  app.get(registerUser.subscribeService, registerController.subscribeService)
   app.post(registerUser.registration, registerController.submitRegistration)
   app.get(registerUser.otpVerify, registerController.showOtpVerify)
   app.post(registerUser.otpVerify, registerController.submitOtpVerify)
@@ -197,6 +196,9 @@ module.exports.bind = function (app) {
   // -------------------------
   // OUTSIDE OF SERVICE ROUTES
   // -------------------------
+
+  // Complete invite for existing user
+  app.get(registerUser.subscribeService, userIsAuthorised, registerController.subscribeService)
 
   // Service switcher
   app.get(serviceSwitcher.index, userIsAuthorised, myServicesController.getIndex)
