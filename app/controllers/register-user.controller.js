@@ -49,7 +49,7 @@ const subscribeService = async function subscribeService (req, res, next) {
   const correlationId = req.correlationId
 
   if (sessionData.email !== req.user.email) {
-    logger.info('Attempt to accept invite for a diiferent user', {
+    logger.info('Attempt to accept invite for a different user', {
       invite_code: inviteCode
     })
     return res.redirect(303, paths.serviceSwitcher.index)
