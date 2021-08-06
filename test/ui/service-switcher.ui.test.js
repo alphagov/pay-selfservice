@@ -108,6 +108,6 @@ describe('The account switcher link', () => {
 
     body = render('services/index', templateData)
 
-    body.should.containSelector('#new-service-name').withText(`You have been added to ${myNewService}`)
+    body.should.containSelector('.govuk-notification-banner__heading').withText(`You have been added to ${myNewService}`)
   })
 })

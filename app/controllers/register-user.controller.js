@@ -1,6 +1,7 @@
 'use strict'
 
 const lodash = require('lodash')
+const logger = require('../utils/logger')(__filename)
 const { renderErrorView, response } = require('../utils/response')
 const registrationService = require('../services/user-registration.service')
 const paths = require('../paths')
@@ -40,16 +41,24 @@ const showRegistration = function showRegistration (req, res, next) {
  */
 const subscribeService = async function subscribeService (req, res, next) {
   const sessionData = req.register_invite
-  if (!sessionData || !sessionData.code) {
+  if (!sessionData || !sessionData.code || !sessionData.email) {
     return next(new RegistrationSessionMissingError())
   }
 
   const inviteCode = sessionData.code
   const correlationId = req.correlationId
 
+  if (sessionData.email !== req.user.email) {
+    logger.info('Attempt to accept invite for a different user', {
+      invite_code: inviteCode
+    })
+    return res.redirect(303, paths.serviceSwitcher.index)
+  }
+
   try {
     const completeResponse = await registrationService.completeInvite(inviteCode, correlationId)
-    return res.redirect(303, `${paths.serviceSwitcher.index}?s=${completeResponse.service_external_id}`)
+    req.flash('inviteSuccessServiceId', completeResponse.service_external_id)
+    return res.redirect(303, paths.serviceSwitcher.index)
   } catch (err) {
     if (err.errorCode === 410) {
       renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)

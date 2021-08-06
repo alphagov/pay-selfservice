@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block pageTitle %}
   Choose service - GOV.UK Pay
@@ -9,11 +10,16 @@
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     {% if new_service_name %}
-      <div class="govuk-grid-column-full govuk-!-margin-0">
-        <div class="flash-container flash-container--good">
-          <p id="new-service-name" class="govuk-body govuk-!-margin-bottom-0">You have been added to {{new_service_name}}</p>
-        </div>
-      </div>
+      {% set html %}
+        <p class="govuk-notification-banner__heading">
+          You have been added to {{new_service_name}}
+        </p>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        html: html,
+        type: 'success'
+      }) }}
     {% endif %}
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Overview</h1>

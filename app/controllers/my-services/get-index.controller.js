@@ -28,7 +28,8 @@ function sortServicesByLiveThenName (a, b) {
 
 module.exports = async function getServiceList (req, res) {
   const servicesRoles = lodash.get(req, 'user.serviceRoles', [])
-  const newServiceId = req.query && req.query.s
+  const newServiceId = res.locals.flash && res.locals.flash.inviteSuccessServiceId &&
+    res.locals.flash.inviteSuccessServiceId[0]
 
   const aggregatedGatewayAccountIds = servicesRoles
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
