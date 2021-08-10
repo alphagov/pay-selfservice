@@ -53,9 +53,16 @@ async function createService (serviceName, serviceNameCy, user, correlationId) {
   if (!serviceName) serviceName = 'System Generated'
   if (!serviceNameCy) serviceNameCy = ''
 
-  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
-  const service = await adminUsersClient.createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id], correlationId)
-  logger.info('New service added by existing user')
+  const service = await adminUsersClient.createService(serviceName, serviceNameCy, correlationId)
+  logger.info('New service created for existing user')
+
+  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId, correlationId)
+  logger.info('New test card gateway account registered with service')
+
+  // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
+  //               removed once connector integration indexed by services have been migrated
+  await adminUsersClient.addGatewayAccountsToService(service.externalId, [ gatewayAccount.gateway_account_id ])
+  logger.info('Service associated with internal gateway account ID with legacy mapping')
 
   return service
 }

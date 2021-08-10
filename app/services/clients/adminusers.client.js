@@ -415,15 +415,13 @@ module.exports = function (clientOptions = {}) {
    * @param gatewayAccountIds
    * @returns {*|promise|Constructor}
    */
-  const completeInvite = (correlationId, inviteCode, gatewayAccountIds) => {
+  const completeInvite = (correlationId, inviteCode) => {
     return baseClient.post(
       {
         baseUrl,
         url: `${inviteResource}/${inviteCode}/complete`,
         json: true,
-        body: {
-          gateway_account_ids: gatewayAccountIds
-        },
+        body: {},
         correlationId: correlationId,
         description: 'complete invite',
         service: SERVICE_NAME,
@@ -546,7 +544,7 @@ module.exports = function (clientOptions = {}) {
    * @param correlationId
    * @returns {*|promise|Constructor}
    */
-  const createService = (serviceName, serviceNameCy, gatewayAccountIds, correlationId) => {
+  const createService = (serviceName, serviceNameCy, correlationId) => {
     let postBody = {
       baseUrl,
       url: `${serviceResource}`,
@@ -564,9 +562,6 @@ module.exports = function (clientOptions = {}) {
     }
     if (serviceNameCy) {
       postBody.body.service_name = lodash.merge(postBody.body.service_name, { cy: serviceNameCy })
-    }
-    if (gatewayAccountIds) {
-      postBody.body.gateway_account_ids = gatewayAccountIds
     }
     return baseClient.post(
       postBody

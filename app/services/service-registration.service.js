@@ -16,10 +16,18 @@ function submitServiceInviteOtpCode (code, otpCode, correlationId) {
 }
 
 async function createPopulatedService (inviteCode, correlationId) {
-  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, correlationId)
-  const completeInviteResponse = await adminUsersClient.completeInvite(correlationId, inviteCode, [gatewayAccount.gateway_account_id])
+  const completeInviteResponse = await adminUsersClient.completeInvite(correlationId, inviteCode)
+  logger.info('Created new service during user registration')
+
+  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, completeInviteResponse.service_external_id, correlationId)
+  logger.info('New test card gateway account registered with service')
+
+  // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
+  //               removed once connector integration indexed by services have been migrated
+  await adminUsersClient.addGatewayAccountsToService(completeInviteResponse.service_external_id, [ gatewayAccount.gateway_account_id ])
+  logger.info('Service associated with internal gateway account ID with legacy mapping')
+
   const user = await adminUsersClient.getUserByExternalId(completeInviteResponse.user_external_id, correlationId)
-  logger.info('Created new service with test account during user registration')
 
   return user
 }
