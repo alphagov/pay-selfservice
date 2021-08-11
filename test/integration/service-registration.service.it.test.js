@@ -57,6 +57,8 @@ describe('create populated service', function () {
       .reply(200, mockAdminUsersInviteCompleteResponse)
     const getUserMock = adminusersMock.get(`/v1/api/users/${userExternalId}`)
       .reply(200, getUserResponse)
+    adminusersMock.patch(`/v1/api/services/${serviceExternalId}`)
+      .reply(200, {})
 
     serviceRegistrationService.createPopulatedService(inviteCode).should.be.fulfilled.then(user => {
       expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
@@ -68,7 +70,13 @@ describe('create populated service', function () {
 
   it('should error if creation of a gateway account failed', function (done) {
     const inviteCode = 'a-valid-invite-code'
+    const mockAdminUsersInviteCompleteResponse =
+      inviteFixtures.validInviteCompleteResponse({
+        service_external_id: 'a-service-id'
+      })
 
+    adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`)
+      .reply(200, mockAdminUsersInviteCompleteResponse)
     const mockConnectorCreateGatewayAccountResponse = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
       .reply(500)
 
@@ -91,7 +99,7 @@ describe('create populated service', function () {
         gateway_account_ids: [gatewayAccountId]
       })
 
-    const createGatewayAccountMock = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
+    connectorMock.post(CONNECTOR_ACCOUNTS_URL)
       .reply(201, mockConnectorCreateGatewayAccountResponse)
     const completeServiceInviteMock = adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`, mockAdminUsersInviteCompleteRequest)
       .reply(500)
@@ -99,7 +107,6 @@ describe('create populated service', function () {
     serviceRegistrationService.createPopulatedService(inviteCode).then(() => {
       done('should not be called')
     }).catch(error => {
-      expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(error.errorCode).to.equal(500)
       done()
@@ -119,13 +126,12 @@ describe('create populated service', function () {
         gateway_account_ids: [gatewayAccountId]
       })
 
-    const createGatewayAccountMock = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
+    connectorMock.post(CONNECTOR_ACCOUNTS_URL)
       .reply(201, mockConnectorCreateGatewayAccountResponse)
     const completeServiceInviteMock = adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`, mockAdminUsersInviteCompleteRequest)
       .reply(409)
 
     serviceRegistrationService.createPopulatedService(inviteCode).should.be.rejected.then(error => {
-      expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(error.errorCode).to.equal(409)
     }).should.notify(done)

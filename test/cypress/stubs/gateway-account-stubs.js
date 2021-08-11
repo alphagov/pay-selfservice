@@ -137,6 +137,7 @@ function getDirectDebitGatewayAccountSuccess (opts) {
 function postCreateGatewayAccountSuccess (opts) {
   const fixtureOpts = {
     service_name: opts.serviceName,
+    service_id: opts.serviceId,
     payment_provider: opts.paymentProvider,
     type: opts.type,
     gateway_account_id: opts.gatewayAccountId

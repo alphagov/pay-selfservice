@@ -78,9 +78,7 @@ describe('create service otp validation', function () {
           gateway_account_id: gatewayAccountId
         })
       const mockAdminUsersInviteCompleteRequest =
-        inviteFixtures.validInviteCompleteRequest({
-          gateway_account_ids: [gatewayAccountId]
-        })
+        inviteFixtures.validInviteCompleteRequest()
       const mockAdminUsersInviteCompleteResponse =
         inviteFixtures.validInviteCompleteResponse({
           invite: {
@@ -99,6 +97,8 @@ describe('create service otp validation', function () {
         .reply(200, mockAdminUsersInviteCompleteResponse)
       adminusersMock.get(`/v1/api/users/${userExternalId}`)
         .reply(200, getUserResponse)
+      adminusersMock.patch(`/v1/api/services/${serviceExternalId}`)
+        .reply(200, {})
 
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest({
         code: inviteCode

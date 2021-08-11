@@ -23,9 +23,6 @@ module.exports = {
     if (opts.service_name) {
       data.service_name = buildServiceNameWithDefaults(opts.service_name)
     }
-    if (opts.gateway_account_ids) {
-      data.gateway_account_ids = opts.gateway_account_ids
-    }
     return data
   },
 
