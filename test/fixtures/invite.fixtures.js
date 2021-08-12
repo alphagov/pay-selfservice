@@ -90,12 +90,7 @@ module.exports = {
   },
 
   validInviteCompleteRequest: (opts = {}) => {
-    opts = opts || {}
-
-    const gatewayAccountIds = opts.gateway_account_ids || []
-    return {
-      gateway_account_ids: gatewayAccountIds
-    }
+    return {}
   },
 
   validInviteCompleteResponse: (opts = {}) => {

@@ -97,6 +97,13 @@ function patchGoLiveStageFailure (opts) {
   })
 }
 
+function patchUpdateServiceGatewayAccounts (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    response: serviceFixtures.validServiceResponse()
+  })
+}
+
 module.exports = {
   postCreateServiceSuccess,
   patchUpdateServiceNameSuccess,
@@ -104,5 +111,6 @@ module.exports = {
   patchUpdateMerchantDetailsSuccess,
   patchUpdateServiceSuccessCatchAll,
   patchGoLiveStageFailure,
-  patchUpdateServicePspTestAccountStage
+  patchUpdateServicePspTestAccountStage,
+  patchUpdateServiceGatewayAccounts
 }

@@ -39,10 +39,7 @@ describe('adminusers client - complete an invite', function () {
     const userExternalId = 'f84b8210f93d455e97baeaf3fea72cf4'
     const serviceExternalId = '43a6818b522b4a628a14355614665ca3'
 
-    const gatewayAccountIds = ['1']
-    const validInviteCompleteRequest = inviteFixtures.validInviteCompleteRequest({
-      gateway_account_ids: gatewayAccountIds
-    })
+    const validInviteCompleteRequest = inviteFixtures.validInviteCompleteRequest()
     const validInviteCompleteResponse = inviteFixtures.validInviteCompleteResponse({
       invite: {
         code: inviteCode,
@@ -70,7 +67,7 @@ describe('adminusers client - complete an invite', function () {
     afterEach(() => provider.verify())
 
     it('should complete a service invite successfully', function (done) {
-      adminUsersClient.completeInvite('correlation-id', inviteCode, gatewayAccountIds).should.be.fulfilled.then(response => {
+      adminUsersClient.completeInvite('correlation-id', inviteCode).should.be.fulfilled.then(response => {
         expect(response.invite).to.deep.equal(validInviteCompleteResponse.invite)
         expect(response.user_external_id).to.equal(userExternalId)
         expect(response.service_external_id).to.equal(serviceExternalId)

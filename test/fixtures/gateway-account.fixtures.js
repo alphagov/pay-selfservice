@@ -192,6 +192,9 @@ function validCreateGatewayAccountRequest (opts = {}) {
   if (opts.analytics_id) {
     data.analytics_id = opts.analytics_id
   }
+  if (opts.service_id) {
+    data.service_id = opts.service_id
+  }
   return data
 }
 

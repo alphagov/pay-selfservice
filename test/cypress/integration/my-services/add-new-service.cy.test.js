@@ -11,7 +11,7 @@ const newServiceId = 'new-service-id'
 const newGatewayAccountId = 38
 
 const createGatewayAccountStub =
-  gatewayAccountStubs.postCreateGatewayAccountSuccess({ serviceName: newServiceName, paymentProvider: 'sandbox', type: 'test', gatewayAccountId: newGatewayAccountId, verifyCalledTimes: 1 })
+  gatewayAccountStubs.postCreateGatewayAccountSuccess({ serviceName: newServiceName, serviceId: newServiceId, paymentProvider: 'sandbox', type: 'test', gatewayAccountId: newGatewayAccountId, verifyCalledTimes: 1 })
 
 const assignUserRoleStub =
   userStubs.postAssignServiceRoleSuccess({ userExternalId: authenticatedUserId, serviceExternalId: newServiceId })
@@ -51,7 +51,8 @@ describe('Add a new service', () => {
       setupStubs([
         createGatewayAccountStub,
         assignUserRoleStub,
-        serviceStubs.postCreateServiceSuccess({ serviceExternalId: newServiceId, gatewayAccountId: newGatewayAccountId, serviceName: { en: newServiceName } })
+        serviceStubs.postCreateServiceSuccess({ serviceExternalId: newServiceId, gatewayAccountId: newGatewayAccountId, serviceName: { en: newServiceName } }),
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId })
       ])
       cy.get('input#service-name').type(newServiceName)
       cy.get('button').contains('Add service').click()
@@ -88,7 +89,8 @@ describe('Add a new service', () => {
       setupStubs([
         createGatewayAccountStub,
         assignUserRoleStub,
-        serviceStubs.postCreateServiceSuccess({ serviceExternalId: newServiceId, gatewayAccountId: newGatewayAccountId, serviceName: { en: newServiceName, cy: newServiceWelshName } })
+        serviceStubs.postCreateServiceSuccess({ serviceExternalId: newServiceId, gatewayAccountId: newGatewayAccountId, serviceName: { en: newServiceName, cy: newServiceWelshName } }),
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId })
       ])
       cy.get('input#service-name').type(newServiceName)
       cy.get('input#service-name-cy').type(newServiceWelshName)

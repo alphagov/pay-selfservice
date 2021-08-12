@@ -166,7 +166,7 @@ ConnectorClient.prototype = {
    *
    * @returns {Promise}
    */
-  createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, correlationId) {
+  createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, serviceId, correlationId) {
     const url = this.connectorUrl + ACCOUNTS_API_PATH
 
     let payload = {
@@ -177,6 +177,9 @@ ConnectorClient.prototype = {
     }
     if (serviceName) {
       payload.service_name = serviceName
+    }
+    if (serviceId) {
+      payload.service_id = serviceId
     }
     if (analyticsId) {
       payload.analytics_id = analyticsId
