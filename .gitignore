@@ -15,7 +15,6 @@ pacts/
 *.txt
 *.log
 *.pid
-.pre-commit-config.yaml
 
 # IntelliJ gubbins
 .idea
