@@ -54,7 +54,7 @@ async function createService (serviceName, serviceNameCy, user, correlationId) {
   if (!serviceNameCy) serviceNameCy = ''
 
   const service = await adminUsersClient.createService(serviceName, serviceNameCy, correlationId)
-  logger.info('New service created for existing user')
+  logger.info('New service added by existing user')
 
   const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId, correlationId)
   logger.info('New test card gateway account registered with service')

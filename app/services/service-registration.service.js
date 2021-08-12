@@ -1,6 +1,7 @@
 'use strict'
 
 const logger = require('../utils/logger')(__filename)
+const { keys } = require('@govuk-pay/pay-js-commons').logging
 const getAdminUsersClient = require('./clients/adminusers.client')
 const ConnectorClient = require('./clients/connector.client').ConnectorClient
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -29,6 +30,13 @@ async function createPopulatedService (inviteCode, correlationId) {
 
   const user = await adminUsersClient.getUserByExternalId(completeInviteResponse.user_external_id, correlationId)
 
+  // handler called outside of service context, manually include newly created flags for logging
+  logger.info('Created new service with test account during user registration', {
+    [ keys.USER_EXTERNAL_ID ]: user.externalId,
+    [ keys.SERVICE_EXTERNAL_ID ]: completeInviteResponse.service_external_id,
+    [ keys.GATEWAY_ACCOUNT_ID ]: gatewayAccount.gateway_account_id,
+    internal_user: user.internalUser
+  })
   return user
 }
 
