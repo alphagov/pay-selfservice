@@ -68,6 +68,7 @@ describe('Settings', () => {
         // Test the save button
         cy.contains('Save changes').click()
         cy.url().should('include', settingsUrl)
+        cy.get('.govuk-notification-banner--success').should('contain', 'Email address collection is set to on (mandatory)')
 
         // Access the collection mode page again
         cy.get('.email-notifications-toggle-collection').click()
@@ -89,6 +90,7 @@ describe('Settings', () => {
 
         cy.contains('Save changes').click()
         cy.url().should('include', settingsUrl)
+        cy.get('.govuk-notification-banner--success').should('contain', 'Payment confirmation emails are turned on')
 
         // Access the confirmation toggle page again
         cy.get('.email-notifications-toggle-confirmation').click()
@@ -110,6 +112,7 @@ describe('Settings', () => {
 
         cy.contains('Save changes').click()
         cy.url().should('include', settingsUrl)
+        cy.get('.govuk-notification-banner--success').should('contain', 'Refund emails are turned on')
 
         // Access the refund toggle page again
         cy.get('.email-notifications-toggle-refund').click()

@@ -30,6 +30,7 @@ describe('Toggle billing address collection controller', () => {
   const EXTERNAL_SERVICE_ID = 'dsfkbskjalksjdlk342'
   const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
   const toggleBillingAddressPath = formatAccountPathsFor(paths.account.toggleBillingAddress.index, EXTERNAL_GATEWAY_ACCOUNT_ID)
+  const settingsPath = formatAccountPathsFor(paths.account.settings.index, EXTERNAL_GATEWAY_ACCOUNT_ID)
 
   const buildUserWithCollectBillingAddress = (collectBillingAddress) => {
     return userFixtures.validUserResponse({
@@ -90,7 +91,7 @@ describe('Toggle billing address collection controller', () => {
       expect($('#billing-address-toggle-2:checked').length).to.equal(1)
     })
   })
-  describe('should redirect to index on enable billing address', () => {
+  describe('should redirect to settings index on enable billing address', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(true)
       connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
@@ -121,10 +122,10 @@ describe('Toggle billing address collection controller', () => {
       expect(response.statusCode).to.equal(302)
     })
     it('should redirect to the index page', () => {
-      expect(response.headers).to.have.property('location').to.equal(toggleBillingAddressPath)
+      expect(response.headers).to.have.property('location').to.equal(settingsPath)
     })
   })
-  describe('should redirect to index on disable billing address', () => {
+  describe('should redirect to settings index on disable billing address', () => {
     before(done => {
       user = buildUserWithCollectBillingAddress(false)
       connectorMock.get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)
@@ -155,7 +156,7 @@ describe('Toggle billing address collection controller', () => {
       expect(response.statusCode).to.equal(302)
     })
     it('should redirect to the index page', () => {
-      expect(response.headers).to.have.property('location').to.equal(toggleBillingAddressPath)
+      expect(response.headers).to.have.property('location').to.equal(settingsPath)
     })
   })
 })

@@ -23,7 +23,7 @@ module.exports = async function submit3dsSettings (req, res, next) {
 
     await connector.update3dsEnabled(params)
     req.flash('generic', '3D secure settings have been updated')
-    return res.redirect(formatAccountPathsFor(paths.account.toggle3ds.index, req.account && req.account.external_id))
+    return res.redirect(formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
   } catch (err) {
     next(err)
   }

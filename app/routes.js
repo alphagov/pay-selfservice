@@ -338,17 +338,16 @@ module.exports.bind = function (app) {
   account.post(digitalWallet.googlePay, permission('payment-types:update'), digitalWalletController.postGooglePay)
 
   // Email notifications
-  account.get(emailNotifications.index, permission('email-notification-template:read'), emailNotificationsController.index)
-  account.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), emailNotificationsController.indexRefundTabEnabled)
-  account.get(emailNotifications.edit, permission('email-notification-paragraph:update'), emailNotificationsController.edit)
-  account.post(emailNotifications.confirm, permission('email-notification-paragraph:update'), emailNotificationsController.confirm)
-  account.post(emailNotifications.update, permission('email-notification-paragraph:update'), emailNotificationsController.update)
+  account.get(emailNotifications.index, permission('email-notification-template:read'), emailNotificationsController.showConfirmationEmailTemplate)
+  account.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), emailNotificationsController.showRefundEmailTemplate)
+  account.get(emailNotifications.edit, permission('email-notification-paragraph:update'), emailNotificationsController.editCustomParagraph)
+  account.post(emailNotifications.confirm, permission('email-notification-paragraph:update'), emailNotificationsController.confirmCustomParagraph)
+  account.post(emailNotifications.update, permission('email-notification-paragraph:update'), emailNotificationsController.updateCustomParagraph)
   account.get(emailNotifications.collection, permission('email-notification-template:read'), emailNotificationsController.collectionEmailIndex)
   account.post(emailNotifications.collection, permission('email-notification-toggle:update'), emailNotificationsController.collectionEmailUpdate)
   account.get(emailNotifications.confirmation, permission('email-notification-template:read'), emailNotificationsController.confirmationEmailIndex)
   account.post(emailNotifications.confirmation, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailUpdate)
   account.post(emailNotifications.off, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailOff)
-  account.post(emailNotifications.on, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailOn)
   account.get(emailNotifications.refund, permission('email-notification-template:read'), emailNotificationsController.refundEmailIndex)
   account.post(emailNotifications.refund, permission('email-notification-toggle:update'), emailNotificationsController.refundEmailUpdate)
 

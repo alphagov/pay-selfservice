@@ -67,9 +67,12 @@ describe('Google Pay', () => {
       cy.get('input[value="on"]').should('be.checked')
       cy.get('#merchantId').type('111111111111111')
       cy.get('.govuk-button').contains('Save changes').click()
-      cy.get('.govuk-notification-banner--success').should('contain', 'Google Pay successfully enabled.')
-      cy.get('input[value="on"]').should('be.checked')
-      cy.get('#navigation-menu-settings').click()
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
+      })
+      cy.get('.govuk-notification-banner--success').should('contain', 'Google Pay successfully enabled')
+
       cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On')
     })
   })

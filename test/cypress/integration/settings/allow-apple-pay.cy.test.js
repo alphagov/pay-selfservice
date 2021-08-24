@@ -63,9 +63,12 @@ describe('Apple Pay', () => {
       cy.get('input[value="on"]').click()
       cy.get('input[value="on"]').should('be.checked')
       cy.get('.govuk-button').contains('Save changes').click()
-      cy.get('.govuk-notification-banner--success').should('contain', 'Apple Pay successfully enabled.')
-      cy.get('input[value="on"]').should('be.checked')
-      cy.get('#navigation-menu-settings').click()
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
+      })
+      cy.get('.govuk-notification-banner--success').should('contain', 'Apple Pay successfully enabled')
+
       cy.get('.govuk-summary-list__value').first().should('contain', 'On')
     })
   })

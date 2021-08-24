@@ -1,13 +1,7 @@
 'use strict'
 
 const { response } = require('../../utils/response')
-
-const humaniseEmailMode = mode => {
-  if (mode !== 'OFF') {
-    return `On (${mode.toLowerCase()})`
-  }
-  return mode
-}
+const humaniseEmailMode = require('../../utils/humanise-email-mode')
 
 module.exports = (req, res) => {
   const pageData = {
