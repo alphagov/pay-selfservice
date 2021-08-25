@@ -148,7 +148,7 @@ describe('3DS settings page', () => {
         setup3dsStubs({ gateway: 'worldpay' })
       })
 
-      it('should show success message and radios should update', () => {
+      it('should have 3DS set to off', () => {
         cy.setEncryptedCookies(userExternalId)
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
@@ -167,12 +167,12 @@ describe('3DS settings page', () => {
       setup3dsStubs({ requires3ds: true, gateway: 'worldpay' })
     })
 
-    it('should show success message and radios should update', () => {
+    it('should redirect to settings page and show success message', () => {
       cy.get('#save-3ds-changes').click()
-      cy.get('input[value="on"]').should('be.checked')
-      cy.get('input[value="off"]').should('not.be.checked')
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
+      })
       cy.get('.govuk-notification-banner--success').should('contain', '3D secure settings have been updated')
-      cy.get('#navigation-menu-settings').click()
       cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
       cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
     })

@@ -11,13 +11,12 @@ module.exports = async function toggleMaskCardNumber (req, res, next) {
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
   const enableMaskCardNumber = req.body['moto-mask-card-number-input-toggle'] === 'on'
-  const formattedPath = formatAccountPathsFor(paths.account.toggleMotoMaskCardNumberAndSecurityCode.cardNumber, req.account && req.account.external_id)
 
   try {
     await connector.toggleMotoMaskCardNumberInput(accountId, enableMaskCardNumber, correlationId)
 
     req.flash('generic', 'Your changes have saved')
-    return res.redirect(formattedPath)
+    return res.redirect(formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
   } catch (err) {
     next(err)
   }

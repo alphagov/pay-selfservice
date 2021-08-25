@@ -37,7 +37,6 @@ module.exports = {
       confirm: '/email-notifications/confirm',
       update: '/email-notifications/update',
       off: '/email-notifications/off',
-      on: '/email-notifications/on',
       collection: '/email-settings-collection',
       confirmation: '/email-settings-confirmation',
       refund: '/email-settings-refund'

@@ -29,7 +29,7 @@ async function postIndex (req, res, next) {
       req.flash('generic', 'Billing address is turned off for this service')
     }
     logger.info(`Updated collect billing address enabled(${req.body['billing-address-toggle']})`)
-    res.redirect(formatAccountPathsFor(paths.account.toggleBillingAddress.index, req.account && req.account.external_id))
+    res.redirect(formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
   } catch (err) {
     next(err)
   }

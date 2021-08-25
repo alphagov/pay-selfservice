@@ -13,11 +13,11 @@ module.exports = async (req, res, next) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const enable = req.body['google-pay'] === 'on'
   const gatewayMerchantId = req.body.merchantId
-  const formattedPath = formatAccountPathsFor(paths.account.digitalWallet.googlePay, req.account && req.account.external_id)
+  const googlePayPath = formatAccountPathsFor(paths.account.digitalWallet.googlePay, req.account && req.account.external_id)
 
   if (enable && !gatewayMerchantId) {
     req.flash('genericError', 'Enter a valid Merchant ID')
-    return res.redirect(formattedPath)
+    return res.redirect(googlePayPath)
   }
 
   if (enable) {
@@ -29,7 +29,7 @@ module.exports = async (req, res, next) => {
       logger.info('Error setting google pay merchant ID', { error })
       if (error.errorCode === 400) {
         req.flash('genericError', 'There was an error enabling google pay. Check that the Merchant ID you entered is correct and that your PSP account credentials have been set.')
-        return res.redirect(formattedPath)
+        return res.redirect(googlePayPath)
       } else {
         next(error)
       }
@@ -40,8 +40,8 @@ module.exports = async (req, res, next) => {
     await connector.toggleGooglePay(gatewayAccountId, enable, correlationId)
     logger.info(`${enable ? 'enabled' : 'disabled'} google pay boolean}`)
 
-    req.flash('generic', `Google Pay successfully ${enable ? 'enabled' : 'disabled'}.`)
-    return res.redirect(formattedPath)
+    req.flash('generic', `Google Pay successfully ${enable ? 'enabled' : 'disabled'}`)
+    return res.redirect(formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
   } catch (error) {
     next(error)
   }

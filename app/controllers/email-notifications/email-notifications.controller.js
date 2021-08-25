@@ -7,40 +7,24 @@ const response = require('../../utils/response.js').response
 const emailService = require('../../services/email.service.js')
 const paths = require('../../paths.js')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const humaniseEmailMode = require('../../utils/humanise-email-mode')
 const CORRELATION_HEADER = require('../../utils/correlation-header.js').CORRELATION_HEADER
 
-const showEmail = function (req, res, resource, locals) {
-  const template = 'email-notifications/' + resource
-  response(req, res, template, locals)
-}
-
-const showCollectionEmail = function (req, res, resource, locals) {
-  const template = 'email-notifications/' + resource
-  response(req, res, template, locals)
-}
-
-const showConfirmationEmail = function (req, res, resource, locals) {
-  const template = 'email-notifications/' + resource
-  response(req, res, template, locals)
-}
-
-const showRefundEmail = function (req, res, resource, locals) {
-  const template = 'email-notifications/' + resource
-  response(req, res, template, locals)
-}
-
-const toggleConfirmationEmail = function (req, res, enabled) {
+async function toggleConfirmationEmail (req, res, next, enabled) {
   const accountID = req.account.gateway_account_id
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
-  emailService.setConfirmationEnabled(accountID, enabled, correlationId)
-    .then(() => {
-      logger.info(`Updated confirmation email enabled(${enabled})`)
-      res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
-    })
+  try {
+    await emailService.setConfirmationEnabled(accountID, enabled, correlationId)
+    logger.info(`Updated confirmation email enabled(${enabled})`)
+    req.flash('generic', `Payment confirmation emails are turned ${enabled ? 'on' : 'off'}`)
+    res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
+  } catch (err) {
+    next(err)
+  }
 }
 
-module.exports.collectionEmailIndex = (req, res) => {
-  showCollectionEmail(req, res, 'collection-email-mode', {
+function collectionEmailIndex (req, res) {
+  response(req, res, 'email-notifications/collection-email-mode', {
     emailCollectionModes: {
       mandatory: 'MANDATORY',
       optional: 'OPTIONAL',
@@ -50,61 +34,63 @@ module.exports.collectionEmailIndex = (req, res) => {
   })
 }
 
-module.exports.collectionEmailUpdate = (req, res) => {
+async function collectionEmailUpdate (req, res, next) {
   const emailCollectionMode = req.body['email-collection-mode']
   const accountID = req.account.gateway_account_id
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
-  emailService.setEmailCollectionMode(accountID, emailCollectionMode, correlationId)
-    .then(() => {
-      logger.info(`Updated email collection mode (${emailCollectionMode})`)
-      res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
-    })
+  try {
+    await emailService.setEmailCollectionMode(accountID, emailCollectionMode, correlationId)
+    logger.info(`Updated email collection mode (${emailCollectionMode})`)
+    req.flash('generic', `Email address collection is set to ${humaniseEmailMode(emailCollectionMode).toLowerCase()}`)
+    res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
+  } catch (err) {
+    next(err)
+  }
 }
 
-module.exports.confirmationEmailIndex = (req, res) => {
-  showConfirmationEmail(req, res, 'confirmation-email-toggle', {
+function confirmationEmailIndex (req, res) {
+  response(req, res, 'email-notifications/confirmation-email-toggle', {
     confirmationEnabled: req.account.email_notifications.PAYMENT_CONFIRMED.enabled,
     emailCollectionMode: req.account.email_collection_mode
   })
 }
 
-module.exports.confirmationEmailUpdate = (req, res) => {
+function confirmationEmailUpdate (req, res, next) {
   const emailConfirmationEnabled = req.body['email-confirmation-enabled'] === 'true'
   if (!emailConfirmationEnabled) {
-    showEmail(req, res, 'off-confirm', {})
+    response(req, res, 'email-notifications/off-confirm', {})
   } else {
-    toggleConfirmationEmail(req, res, true)
+    toggleConfirmationEmail(req, res, next, true)
   }
 }
 
-module.exports.confirmationEmailOn = (req, res) => {
-  toggleConfirmationEmail(req, res, true)
+function confirmationEmailOff (req, res, next) {
+  toggleConfirmationEmail(req, res, next, false)
 }
 
-module.exports.confirmationEmailOff = (req, res) => {
-  toggleConfirmationEmail(req, res, false)
-}
-
-module.exports.refundEmailIndex = (req, res) => {
-  showRefundEmail(req, res, 'refund-email-toggle', {
+function refundEmailIndex (req, res) {
+  response(req, res, 'email-notifications/refund-email-toggle', {
     refundEmailEnabled: req.account.email_notifications.REFUND_ISSUED && req.account.email_notifications.REFUND_ISSUED.enabled,
     emailCollectionMode: req.account.email_collection_mode
   })
 }
 
-module.exports.refundEmailUpdate = (req, res) => {
+async function refundEmailUpdate (req, res, next) {
   const emailRefundEnabled = req.body['email-refund-enabled'] === 'true'
   const accountID = req.account.gateway_account_id
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
-  emailService.setRefundEmailEnabled(accountID, emailRefundEnabled, correlationId)
-    .then(() => {
-      logger.info(`Updated refund email enabled(${emailRefundEnabled})`)
-      res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
-    })
+  try {
+    await emailService.setRefundEmailEnabled(accountID, emailRefundEnabled, correlationId)
+    logger.info(`Updated refund email enabled(${emailRefundEnabled})`)
+    req.flash('generic', `Refund emails are turned ${emailRefundEnabled ? 'on' : 'off'}`)
+    res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
+  } catch (err) {
+    next(err)
+  }
 }
 
-module.exports.index = (req, res) => {
-  showEmail(req, res, 'index', {
+function showConfirmationEmailTemplate (req, res) {
+  response(req, res, 'email-notifications/index', {
     confirmationTabActive: true,
     customEmailText: req.account.email_notifications.PAYMENT_CONFIRMED.template_body,
     serviceName: req.account.service_name,
@@ -114,8 +100,8 @@ module.exports.index = (req, res) => {
   })
 }
 
-module.exports.indexRefundTabEnabled = (req, res) => {
-  showEmail(req, res, 'index', {
+function showRefundEmailTemplate (req, res) {
+  response(req, res, 'email-notifications/index', {
     confirmationTabActive: false,
     customEmailText: req.account.email_notifications.PAYMENT_CONFIRMED.template_body,
     serviceName: req.account.service_name,
@@ -125,27 +111,45 @@ module.exports.indexRefundTabEnabled = (req, res) => {
   })
 }
 
-module.exports.edit = (req, res) => {
-  showEmail(req, res, 'edit', {
+function editCustomParagraph (req, res) {
+  response(req, res, 'email-notifications/edit', {
     customEmailText: req.account.email_notifications.PAYMENT_CONFIRMED.template_body,
     serviceName: req.account.service_name
   })
 }
 
-module.exports.confirm = (req, res) => {
-  showEmail(req, res, 'confirm', {
+function confirmCustomParagraph (req, res) {
+  response(req, res, 'email-notifications/confirm', {
     customEmailText: req.body['custom-email-text'],
     serviceName: req.account.service_name
   })
 }
 
-module.exports.update = (req, res) => {
+async function updateCustomParagraph (req, res, next) {
   const newEmailText = req.body['custom-email-text']
   const accountID = req.account.gateway_account_id
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
-  emailService.updateConfirmationTemplate(accountID, newEmailText, correlationId)
-    .then(() => {
-      logger.info('Updated email notifications custom paragraph')
-      res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
-    })
+  try {
+    await emailService.updateConfirmationTemplate(accountID, newEmailText, correlationId)
+    logger.info('Updated email notifications custom paragraph')
+    req.flash('generic', 'Payment confirmation email template updated')
+    res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
+  } catch (err) {
+    next(err)
+  }
+}
+
+module.exports = {
+  collectionEmailIndex,
+  collectionEmailUpdate,
+  confirmationEmailIndex,
+  confirmationEmailUpdate,
+  confirmationEmailOff,
+  refundEmailIndex,
+  refundEmailUpdate,
+  showConfirmationEmailTemplate,
+  showRefundEmailTemplate,
+  editCustomParagraph,
+  confirmCustomParagraph,
+  updateCustomParagraph
 }

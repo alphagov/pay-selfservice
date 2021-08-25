@@ -106,11 +106,12 @@ describe('MOTO mask security section', () => {
         setupMotoStubs({ readonly: false, allowMoto: true, motoMaskCardNumber: true })
       })
 
-      it(`should show 'save changes' notification`, () => {
+      it('should redirect to settings page and show success message', () => {
         cy.get('input[value="on"]').click()
         cy.get('#save-moto-mask-changes').click()
-        cy.get('input[value="on"]').should('be.checked')
-        cy.get('input[value="off"]').should('not.be.checked')
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
+        })
         cy.get('.govuk-notification-banner--success').contains('Your changes have saved')
       })
     })
@@ -159,12 +160,12 @@ describe('MOTO mask security section', () => {
         setupMotoStubs({ readonly: false, allowMoto: true, motoMaskSecurityCode: true })
       })
 
-      it('should show radios as enabled and hidden as checked', () => {
+      it('should redirect to settings page and show success message', () => {
         cy.get('input[value="on"]').click()
         cy.get('#save-moto-mask-changes').click()
-        cy.title().should('eq', `MOTO - hide security codes for ${serviceName} - GOV.UK Pay`)
-        cy.get('input[value="on"]').should('be.checked')
-        cy.get('input[value="off"]').should('not.be.checked')
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
+        })
         cy.get('.govuk-notification-banner--success').contains('Your changes have saved')
       })
     })

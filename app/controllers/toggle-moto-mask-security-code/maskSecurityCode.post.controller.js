@@ -11,13 +11,12 @@ module.exports = async function toggleMaskCardSecurityCode (req, res, next) {
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
   const enableMaskSecurityCode = req.body['moto-mask-security-code-input-toggle'] === 'on'
-  const formattedPath = formatAccountPathsFor(paths.account.toggleMotoMaskCardNumberAndSecurityCode.securityCode, req.account && req.account.external_id)
 
   try {
     await connector.toggleMotoMaskSecurityCodeInput(accountId, enableMaskSecurityCode, correlationId)
 
     req.flash('generic', 'Your changes have saved')
-    return res.redirect(formattedPath)
+    return res.redirect(formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
   } catch (err) {
     next(err)
   }
