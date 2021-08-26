@@ -19,6 +19,8 @@ updates:
     versions:
     - ">= 17.a"
     - "< 18"
+  # stripe v8.170.0 made changes to the HTTP client that broke outgoing requests, ignoring until this is fixed by us or them
+  - dependency-name: stripe
 - package-ecosystem: docker
   directory: "/"
   schedule:
