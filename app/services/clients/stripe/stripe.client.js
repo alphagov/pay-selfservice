@@ -45,7 +45,7 @@ module.exports = {
   },
 
   retrieveAccountDetails: function (stripeAccountId) {
-    return stripe.accounts.retrieve(stripeAccountId, {
+    return stripe.accounts.retrieve(stripeAccountId, {}, {
       timeout: 10000
     })
   }
