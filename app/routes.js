@@ -78,6 +78,7 @@ const allTransactionsController = require('./controllers/all-service-transaction
 const payoutsController = require('./controllers/payouts/payout-list.controller')
 const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
 const requestPspTestAccountController = require('./controllers/request-psp-test-account')
+const defaultBillingAddressCountryController = require('./controllers/settings/default-billing-address-country.controller')
 
 // Assignments
 const {
@@ -96,6 +97,7 @@ const {
   apiKeys,
   credentials,
   dashboard,
+  defaultBillingAddressCountry,
   digitalWallet,
   emailNotifications,
   notificationCredentials,
@@ -363,6 +365,9 @@ module.exports.bind = function (app) {
 
   account.get(toggleBillingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
   account.post(toggleBillingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
+
+  account.get(defaultBillingAddressCountry.index, permission('toggle-billing-address:read'), defaultBillingAddressCountryController.showDefaultBillingAddressCountry)
+  account.post(defaultBillingAddressCountry.index, permission('toggle-billing-address:update'), defaultBillingAddressCountryController.updateDefaultBillingAddressCountry)
 
   // Prototype links
   account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)

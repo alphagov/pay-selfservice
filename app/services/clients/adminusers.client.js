@@ -640,13 +640,33 @@ module.exports = function (clientOptions = {}) {
         url: `${serviceResource}/${serviceExternalId}`,
         json: true,
         body:
-          {
-            op: 'replace',
-            path: 'collect_billing_address',
-            value: collectBillingAddress
-          },
+        {
+          op: 'replace',
+          path: 'collect_billing_address',
+          value: collectBillingAddress
+        },
         correlationId: correlationId,
         description: 'update collect billing address',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
+  const updateDefaultBillingAddressCountry = (serviceExternalId, countryCode, correlationId) => {
+    return baseClient.patch(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}`,
+        json: true,
+        body:
+        {
+          op: 'replace',
+          path: 'default_billing_address_country',
+          value: countryCode
+        },
+        correlationId: correlationId,
+        description: 'update default billing address country',
         service: SERVICE_NAME,
         baseClientErrorHandler: 'old'
       }
@@ -861,6 +881,7 @@ module.exports = function (clientOptions = {}) {
     updateService,
     updateServiceName,
     updateCollectBillingAddress,
+    updateDefaultBillingAddressCountry,
     addGatewayAccountsToService,
     updateCurrentGoLiveStage,
     addStripeAgreementIpAddress,

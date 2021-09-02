@@ -69,10 +69,10 @@ describe('MOTO mask security section', () => {
 
       it('should show radios as disabled and card number mask disabled', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('.govuk-summary-list__key').eq(4).should('contain', 'Hide card numbers')
-        cy.get('.govuk-summary-list__value').eq(4).should('contain', 'Off')
-        cy.get('.govuk-summary-list__actions a').eq(4).contains('View')
-        cy.get('.govuk-summary-list__actions a').eq(4).click()
+        cy.get('.govuk-summary-list__key').eq(5).should('contain', 'Hide card numbers')
+        cy.get('.govuk-summary-list__value').eq(5).should('contain', 'Off')
+        cy.get('.govuk-summary-list__actions a').eq(5).contains('View')
+        cy.get('.govuk-summary-list__actions a').eq(5).click()
         cy.title().should('eq', `MOTO - hide card numbers for ${serviceName} - GOV.UK Pay`)
         cy.get('.pay-info-warning-box').should('exist')
         cy.get('input[value="on"]').should('be.disabled')
@@ -89,10 +89,10 @@ describe('MOTO mask security section', () => {
 
       it('should show radios as enabled and card number mask disabled', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('.govuk-summary-list__key').eq(4).should('contain', 'Hide card numbers')
-        cy.get('.govuk-summary-list__value').eq(4).should('contain', 'Off')
-        cy.get('.govuk-summary-list__actions a').eq(4).contains('Change')
-        cy.get('.govuk-summary-list__actions a').eq(4).click()
+        cy.get('.govuk-summary-list__key').eq(5).should('contain', 'Hide card numbers')
+        cy.get('.govuk-summary-list__value').eq(5).should('contain', 'Off')
+        cy.get('.govuk-summary-list__actions a').eq(5).contains('Change')
+        cy.get('.govuk-summary-list__actions a').eq(5).click()
         cy.title().should('eq', `MOTO - hide card numbers for ${serviceName} - GOV.UK Pay`)
         cy.get('input[value="on"]').should('not.be.disabled')
         cy.get('input[value="off"]').should('not.be.disabled')
@@ -123,10 +123,10 @@ describe('MOTO mask security section', () => {
 
       it('should show radios as disabled and card number mask disabled', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('.govuk-summary-list__key').eq(5).should('contain', 'Hide card security codes')
-        cy.get('.govuk-summary-list__value').eq(5).should('contain', 'Off')
-        cy.get('.govuk-summary-list__actions a').eq(5).contains('View')
-        cy.get('.govuk-summary-list__actions a').eq(5).click()
+        cy.get('.govuk-summary-list__key').eq(6).should('contain', 'Hide card security codes')
+        cy.get('.govuk-summary-list__value').eq(6).should('contain', 'Off')
+        cy.get('.govuk-summary-list__actions a').eq(6).contains('View')
+        cy.get('.govuk-summary-list__actions a').eq(6).click()
         cy.title().should('eq', `MOTO - hide security codes for ${serviceName} - GOV.UK Pay`)
         cy.get('.pay-info-warning-box').should('exist')
         cy.get('input[value="on"]').should('be.disabled')
@@ -143,10 +143,10 @@ describe('MOTO mask security section', () => {
 
       it('should show radios as enabled and no masking', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('.govuk-summary-list__key').eq(5).should('contain', 'Hide card security codes')
-        cy.get('.govuk-summary-list__value').eq(5).should('contain', 'Off')
-        cy.get('.govuk-summary-list__actions a').eq(5).contains('Change')
-        cy.get('.govuk-summary-list__actions a').eq(5).click()
+        cy.get('.govuk-summary-list__key').eq(6).should('contain', 'Hide card security codes')
+        cy.get('.govuk-summary-list__value').eq(6).should('contain', 'Off')
+        cy.get('.govuk-summary-list__actions a').eq(6).contains('Change')
+        cy.get('.govuk-summary-list__actions a').eq(6).click()
         cy.title().should('eq', `MOTO - hide security codes for ${serviceName} - GOV.UK Pay`)
         cy.get('input[value="on"]').should('not.be.disabled')
         cy.get('input[value="off"]').should('not.be.disabled')

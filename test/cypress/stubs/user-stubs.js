@@ -180,7 +180,9 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
 }
 
 function buildServiceRoleOpts (opts) {
-  const service = {}
+  const service = {
+    default_billing_address_country: opts.defaultBillingAddressCountry
+  }
 
   if (opts.gatewayAccountId) {
     service.gateway_account_ids = [String(opts.gatewayAccountId)]

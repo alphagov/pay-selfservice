@@ -8,6 +8,7 @@ module.exports = (req, res) => {
     supports3ds: req.account.supports3ds,
     requires3ds: req.account.requires3ds,
     collectBillingAddress: req.service.collectBillingAddress,
+    defaultBillingAddressCountry: req.service.defaultBillingAddressCountry,
     emailCollectionMode: humaniseEmailMode(req.account.email_collection_mode),
     confirmationEmailEnabled: req.account.email_notifications.PAYMENT_CONFIRMED.enabled,
     refundEmailEnabled: req.account.email_notifications.REFUND_ISSUED && req.account.email_notifications.REFUND_ISSUED.enabled,
