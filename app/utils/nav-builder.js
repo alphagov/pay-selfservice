@@ -14,7 +14,8 @@ const mainSettingsPaths = [
   paths.account.toggle3ds,
   paths.account.toggleBillingAddress,
   paths.account.emailNotifications,
-  paths.account.toggleMotoMaskCardNumberAndSecurityCode
+  paths.account.toggleMotoMaskCardNumberAndSecurityCode,
+  paths.account.defaultBillingAddressCountry
 ]
 
 const yourPspPaths = ['your-psp', 'notification-credentials']

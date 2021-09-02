@@ -128,6 +128,27 @@
                 }
               ]
             }
+          },
+                    {
+            key: {
+              text: 'Default billing address country',
+              classes: 'govuk-!-width-one-half'
+            },
+            value: {
+              text: 'United Kingdom' if defaultBillingAddressCountry == 'GB' else 'None',
+              classes: 'govuk-!-width-one-quarter'
+            },
+            actions: {
+              classes: 'govuk-!-width-one-quarter',
+              items: [
+                {
+                  href: formatAccountPathsFor(routes.account.defaultBillingAddressCountry.index, currentGatewayAccount.external_id),
+                  classes: 'govuk-link--no-visited-state',
+                  text: 'Change' if permissions.toggle_billing_address_update else 'View',
+                  visuallyHiddenText: 'default billing address country settings'
+                }
+              ]
+            }
           }
         ]
       })

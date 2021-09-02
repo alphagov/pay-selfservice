@@ -26,6 +26,9 @@ module.exports = {
     dashboard: {
       index: '/dashboard'
     },
+    defaultBillingAddressCountry: {
+      index: '/default-billing-address-country'
+    },
     digitalWallet: {
       applePay: '/digital-wallet/apple-pay',
       googlePay: '/digital-wallet/google-pay'

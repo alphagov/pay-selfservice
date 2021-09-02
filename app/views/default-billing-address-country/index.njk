@@ -1,0 +1,63 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Default billing address country - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {% if not permissions.toggle_billing_address_update %}
+      {% include "../includes/settings-read-only.njk" %}
+    {% endif %}
+
+    <form class="permission-main" method="post">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      {{
+        govukRadios({
+          name: "uk-as-default-billing-address-country",
+          fieldset: {
+            legend: {
+              text: "Set United Kingdom as the default billing address country",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            text: "By default, the country field in the user’s billing address will be automatically populated with United Kingdom. If your service frequently takes payments from overseas users, you can turn this off."
+            },
+          items: [
+            {
+              value: "on",
+              text: "On",
+              checked: defaultToUK,
+              disabled: true if not permissions.toggle_billing_address_update
+            },
+            {
+              value: "off",
+              text: "Off",
+              checked: true if not defaultToUK,
+              disabled: true if not permissions.toggle_billing_address_update
+            }
+          ]
+        })
+      }}
+
+      {{
+        govukButton({
+          text: "Save changes",
+          classes: "govuk-!-margin-bottom-4",
+          disabled: true if not permissions.toggle_billing_address_update
+        })
+      }}
+      <p class="govuk-body">
+        <a href="{{ formatAccountPathsFor(routes.account.settings.index, currentGatewayAccount.external_id) }}" class="govuk-link govuk-link--no-visited-state">
+          Cancel
+        </a>
+      </p>
+    </form>
+  </div>
+{% endblock %}

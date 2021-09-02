@@ -62,6 +62,14 @@ module.exports = {
     }
   },
 
+  validUpdateDefaultBillingAddressRequest: (countryCode) => {
+    return {
+      op: 'replace',
+      path: 'default_billing_address_country',
+      value: countryCode
+    }
+  },
+
   validUpdateRequestToGoLiveRequest: (value = 'AGREED_TO_STRIPE') => {
     return {
       op: 'replace',
@@ -137,6 +145,11 @@ module.exports = {
         'email',
         'telephone_number'
       ])
+    }
+
+    if (opts.default_billing_address_country !== null) {
+      service.default_billing_address_country = opts.default_billing_address_country === undefined ?
+        'GB' : opts.default_billing_address_country
     }
 
     return service

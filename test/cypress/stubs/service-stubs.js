@@ -104,6 +104,19 @@ function patchUpdateServiceGatewayAccounts (opts) {
   })
 }
 
+function patchUpdateDefaultBillingAddressCountrySuccess (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: serviceFixtures.validUpdateDefaultBillingAddressRequest(opts.country),
+    response: serviceFixtures.validServiceResponse({
+      external_id: opts.serviceExternalId,
+      gateway_account_ids: [opts.gatewayAccountId],
+      default_billing_address_country: opts.country
+    }),
+    verifyCalledTimes: opts.verifyCalledTimes
+  })
+}
+
 module.exports = {
   postCreateServiceSuccess,
   patchUpdateServiceNameSuccess,
@@ -112,5 +125,6 @@ module.exports = {
   patchUpdateServiceSuccessCatchAll,
   patchGoLiveStageFailure,
   patchUpdateServicePspTestAccountStage,
-  patchUpdateServiceGatewayAccounts
+  patchUpdateServiceGatewayAccounts,
+  patchUpdateDefaultBillingAddressCountrySuccess
 }
