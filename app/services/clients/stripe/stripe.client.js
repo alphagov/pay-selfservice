@@ -1,6 +1,5 @@
 'use strict'
 
-const stripe = require('stripe')(process.env.STRIPE_ACCOUNT_API_KEY)
 const ProxyAgent = require('https-proxy-agent')
 
 const StripeBankAccount = require('./StripeBankAccount.class')
@@ -12,17 +11,23 @@ const STRIPE_HOST = process.env.STRIPE_HOST
 const STRIPE_PORT = process.env.STRIPE_PORT
 
 // Setup
-if (process.env.http_proxy) {
-  stripe.setHttpAgent(new ProxyAgent(process.env.http_proxy))
+let stripeConfig = {
+  apiVersion: '2019-02-19'
 }
-stripe.setApiVersion('2019-02-19')
+
+if (process.env.http_proxy) {
+  stripeConfig.httpAgent = new ProxyAgent(process.env.http_proxy)
+}
+
 // only expect host and port environment variables to be set when running tests
 if (STRIPE_HOST) {
-  stripe.setHost(STRIPE_HOST)
+  stripeConfig.host = STRIPE_HOST
 }
 if (STRIPE_PORT) {
-  stripe.setPort(STRIPE_PORT)
+  stripeConfig.port = STRIPE_PORT
 }
+
+const stripe = require('stripe')(process.env.STRIPE_ACCOUNT_API_KEY, stripeConfig)
 
 module.exports = {
   updateBankAccount: function (stripeAccountId, body) {
@@ -46,7 +51,7 @@ module.exports = {
 
   retrieveAccountDetails: function (stripeAccountId) {
     return stripe.accounts.retrieve(stripeAccountId, {
-      timeout: 10000
+      timeout: 1000
     })
   }
 }
