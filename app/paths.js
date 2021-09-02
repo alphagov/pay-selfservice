@@ -227,6 +227,7 @@ module.exports = {
   generateRoute: generateRoute,
   formattedPathFor: formattedPathFor,
   policyPages: {
+    html: '/policy/:key',
     download: '/policy/download/:key'
   },
   payouts: {

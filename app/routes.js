@@ -220,6 +220,7 @@ module.exports.bind = function (app) {
   app.get(payouts.listStatusFilter, userIsAuthorised, payoutsController.listAllServicesPayouts)
 
   // Policy document downloads
+  app.get(policyPages.html, userIsAuthorised, policyDocumentsController.html)
   app.get(policyPages.download, userIsAuthorised, policyDocumentsController.download)
 
   // Feedback
