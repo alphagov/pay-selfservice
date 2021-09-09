@@ -1,0 +1,28 @@
+.print-button-wrapper {
+  display: none;
+}
+
+.js-enabled {
+  .print-button-wrapper {
+    display: block;
+  }
+}
+
+.print-button-wrapper__button {
+  background: url("/public/images/icon-print.png") no-repeat 10px 50%;
+  border: 1px solid $govuk-border-colour;
+  color: $govuk-link-colour;
+  cursor: pointer;
+  margin: 0;
+  padding: .5em .5em .5em 38px;
+  text-decoration: none;
+
+  &:hover {
+    background-color: govuk-colour("light-grey");
+  }
+
+  &:focus {
+    background-color: $govuk-focus-colour;
+    border-color: transparent;
+  }
+}

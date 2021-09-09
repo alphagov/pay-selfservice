@@ -1,0 +1,59 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+   Policy Document - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">
+      {% block policyTitle %} {% endblock %}
+    </h1>
+  </div>
+
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-body">
+      {% block policyDescription %} {% endblock %}
+    </p>
+    
+    {{ govukInsetText({
+      text: "These terms are confidential and should not be shared outside of your organisation."
+    }) }}
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-m">
+      <a class="govuk-link" href="{{ link }}">
+        {% block policyDownloadTitle %}{% endblock %}
+      </a>
+    </h2>
+
+    <p class="govuk-body">
+      {% block downloadFileDetails %}{% endblock %}
+    </p>
+
+    <p class="govuk-body">
+      This file may not be suitable for users of accessible for users of assistive technologies.
+    </p>
+
+    <p class="govuk-body">
+      Read below for a HTML version.
+    </p>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-m">
+      Agreement
+    </h2>
+
+    <p class="govuk-body">
+      Last updated {% block lastUpdatedDate %}{% endblock %}
+    </p> 
+
+    <div class="print-button-wrapper">
+      <button class="print-button-wrapper__button govuk-link govuk-!-font-size-19" data="print-button">
+        Print this page
+      </button>
+    </div>
+  </div>
+{% endblock %}

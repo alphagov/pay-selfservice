@@ -12,6 +12,7 @@ const copyText = require('./browsered/copy-text')
 const accessibleAutocomplete = require('./browsered/autocomplete')
 const checkboxRowSelection = require('./browsered/checkbox-row-selection')
 const cookieBanner = require('./browsered/cookie-banner')
+const printButton = require('./browsered/print-button')
 
 // GOV.UK Frontend js bundle
 const GOVUKFrontend = require('govuk-frontend')
@@ -29,3 +30,4 @@ copyText()
 accessibleAutocomplete()
 checkboxRowSelection()
 cookieBanner.initCookieBanner()
+printButton()
