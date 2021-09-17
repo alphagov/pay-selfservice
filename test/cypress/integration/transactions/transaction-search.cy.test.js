@@ -61,6 +61,15 @@ const filteredByMultipleFieldsTransactions = [
     parent_transaction_id: 'payment-transaction-id2'
   }
 ]
+const transactionWithTotalAmountButNotNetAmount = [
+  {
+    transaction_id: 'transaction_id',
+    reference: 'ref-1',
+    amount: 100,
+    total_amount: 100,
+    type: 'payment'
+  }
+]
 
 const transactionsWithAssociatedFees = [
   {
@@ -294,6 +303,14 @@ describe('Transactions List', () => {
 
       cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="fee"]').eq(1).should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[1].fee))
       cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').eq(1).find('span').should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[1].amount - transactionsWithAssociatedFees[1].fee))
+    })
+    it('should display net amount correctly for stripe transaction with total amount but not net amount set', () => {
+      cy.task('setupStubs', [
+        ...sharedStubs('stripe'),
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: transactionWithTotalAmountButNotNetAmount })
+      ])
+      cy.visit(transactionsUrl)
+      cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').eq(0).find('span').should('have.text', convertPenceToPoundsFormatted(transactionWithTotalAmountButNotNetAmount[0].total_amount))
     })
   })
   describe('csv download link', () => {
