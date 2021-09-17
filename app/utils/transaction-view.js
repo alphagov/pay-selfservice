@@ -52,7 +52,7 @@ module.exports = {
         element.net_amount = asGBP(element.net_amount)
       }
       element.amount = asGBP(element.amount)
-      if (element.total_amount && element.corporate_card_surcharge) {
+      if (element.total_amount) {
         element.total_amount = asGBP(element.total_amount)
       }
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '…' : element.email

@@ -145,6 +145,7 @@ const buildTransactionDetails = (opts = {}) => {
   }
   if (opts.fee) data.fee = opts.fee
   if (opts.net_amount) data.net_amount = opts.net_amount
+  if (opts.total_amount) data.total_amount = opts.total_amount
   if (opts.wallet_type) data.wallet_type = opts.wallet_type
   if (opts.metadata) data.metadata = opts.metadata
   return data
