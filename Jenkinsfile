@@ -101,14 +101,13 @@ pipeline {
         }
       }
     }
-    stage('Deploy') {
+    stage('Check pact compatability') {
       failFast true
       when {
         branch 'master'
       }
       steps {
         checkPactCompatibility("selfservice", gitCommit(), "test")
-        deployEcs("selfservice")
       }
     }
     stage('Pact Tag') {
