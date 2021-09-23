@@ -30,7 +30,7 @@ describe('Verify PSP integration controller', () => {
       flash: sinon.spy(),
       session: {},
       headers: {
-        origin: 'https://selfservice.some-origin.com'
+        referer: 'https://selfservice.some-origin.com'
       }
     }
     res = {
