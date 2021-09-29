@@ -19,7 +19,7 @@ updates:
     versions:
     - ">= 17.a"
     - "< 18"
-  - dependency-name: @sentry/node
+  - dependency-name: "@sentry/node"
     versions:
     - "> 6.12.0"
 - package-ecosystem: docker
