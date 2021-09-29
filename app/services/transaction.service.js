@@ -8,7 +8,7 @@ const { keys } = require('@govuk-pay/pay-js-commons').logging
 const Ledger = require('./clients/ledger.client')
 const { ConnectorClient } = require('./clients/connector.client')
 const getQueryStringForParams = require('../utils/get-query-string-for-params')
-const userService = require('../services/user.service')
+const userService = require('./user.service')
 const transactionView = require('../utils/transaction-view')
 const errorIdentifier = require('../models/error-identifier')
 

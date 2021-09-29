@@ -12,6 +12,7 @@ node_modules
 node_modules_local
 */node_modules/*
 pacts/
+dist/
 *.txt
 *.log
 *.pid

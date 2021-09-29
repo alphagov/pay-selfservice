@@ -1,4 +1,10 @@
+//@ts-nocheck
 'use strict'
+
+import {User} from '../types/adminusers'
+import {Client} from "../Client/Client";
+
+const client = new Client()
 
 const getAdminUsersClient = require('./clients/adminusers.client')
 const adminUsersClient = getAdminUsersClient()
@@ -36,13 +42,8 @@ module.exports = {
     return adminUsersClient.authenticateSecondFactor(externalId, code, correlationId)
   },
 
-  /**
-   * @param externalId
-   * @param correlationId
-   * @returns {Promise<User>}
-   */
   findByExternalId: (externalId, correlationId) => {
-    return adminUsersClient.getUserByExternalId(externalId, correlationId)
+    return client.findByExternalId(externalId)
   },
 
   /**
