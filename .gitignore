@@ -15,7 +15,7 @@ pacts/
 *.txt
 *.log
 *.pid
-
+dist/
 # IntelliJ gubbins
 .idea
 *.iml

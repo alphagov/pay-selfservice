@@ -2,6 +2,7 @@
 
 const getAdminUsersClient = require('./clients/adminusers.client')
 const adminUsersClient = getAdminUsersClient()
+const User = require('../models/User.class')
 
 module.exports = {
 
@@ -37,9 +38,9 @@ module.exports = {
   },
 
   /**
-   * @param externalId
-   * @param correlationId
-   * @returns {Promise<User>}
+   * @param externalId {string}
+   * @param correlationId {string}
+   * @returns Promise<User>
    */
   findByExternalId: (externalId, correlationId) => {
     return adminUsersClient.getUserByExternalId(externalId, correlationId)

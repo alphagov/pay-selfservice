@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "allowJs": true,
+    "noEmit": false,
+    "checkJs": true,
+    "target": "es2019",
+    "strict": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "strictNullChecks": false,
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "./**/*",
+    "./**/*.*"
+  ],
+  "exclude": [
+    "node_modules",
+    "test",
+    "dist",
+    "pacts",
+    "public",
+    "govuk_modules",
+    "test"
+  ]
+}
