@@ -1,4 +1,9 @@
+// @ts-nocheck
 'use strict'
+
+import { User } from '../types/adminusers/User'
+
+import { AdminUsers } from '@govuk-pay/request'
 
 const getAdminUsersClient = require('./clients/adminusers.client')
 const adminUsersClient = getAdminUsersClient()
@@ -41,8 +46,8 @@ module.exports = {
    * @param correlationId
    * @returns {Promise<User>}
    */
-  findByExternalId: (externalId, correlationId) => {
-    return adminUsersClient.getUserByExternalId(externalId, correlationId)
+  findByExternalId: (externalId: string, correlationId:string) => {
+    return AdminUsers.users.retrieve(externalId)
   },
 
   /**

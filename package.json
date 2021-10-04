@@ -28,20 +28,25 @@
   "scripts": {
     "compile": "grunt generate-assets",
     "clean": "grunt clean",
-    "start": "node start.js",
-    "start:dev": "nodemon -e js,njk -r dotenv/config start-dev.js",
+    "start": "node -r dotenv/config dist/start.js",
+    "start:dev1": "copyfiles --up 1 app/views/**/*.njk dist/ && tsc-watch --noClear --onSuccess && nodemon -e js,njk,ts -r dotenv/config dist/start-dev.js",
+    "start:dev2": "tsc-watch --noClear --onSuccess && nodemon -e js,njk -r dotenv/config dist/start-dev.js ",
+    "start:dev": "tsc-watch --noClear --onSuccess \"node -r dotenv/config dist/start-dev.js\"",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "watch-live-reload": "./node_modules/.bin/grunt watch",
     "lint": "./node_modules/.bin/standard --fix",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
-    "test": "rm -rf ./pacts && NODE_ENV=test ./node_modules/mocha/bin/mocha --exclude **/*.cy.test.js '!(node_modules)/**/*.test'.js",
+    "test": "rm -rf ./pacts && NODE_ENV=test ./node_modules/mocha/bin/mocha -r ts-node/register --exclude **/*.cy.test.js '!(node_modules)/**/*.test'.js",
     "test:no-pact": "rm -rf ./pacts && NODE_ENV=test ./node_modules/mocha/bin/mocha --exclude '**/*+(.cy|.pact)'.test.js '!(node_modules)/**/*.test'.js",
     "test:pact": "rm -rf ./pacts && NODE_ENV=test ./node_modules/mocha/bin/mocha **/*.pact.test.js",
     "cypress:server": "mb --debug | DISABLE_APPMETRICS=true node --inspect -r dotenv/config start.js dotenv_config_path=test/cypress/test.env",
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "cypress:test-no-watch": "cypress open --config watchForFileChanges=false",
-    "publish-pacts": "./bin/publish-pacts.js"
+    "publish-pacts": "./bin/publish-pacts.js",
+    "build": "grunt generate-assets && rm -rf ./dist && mkdir ./dist && npm run build:typescript && npm run build:copy",
+    "build:typescript": "tsc",
+    "build:copy": "copyfiles --up 1 app/views/**/*.njk dist/"
   },
   "husky": {
     "hooks": {
@@ -66,11 +71,14 @@
   },
   "dependencies": {
     "@govuk-pay/pay-js-commons": "3.2.3",
+    "@govuk-pay/request": "file:../pay-request",
     "@sentry/node": "6.12.0",
+    "@types/humps": "^2.0.1",
     "accessible-autocomplete": "2.0.3",
     "appmetrics": "5.1.1",
     "appmetrics-statsd": "3.0.0",
     "aws-sdk": "2.995.0",
+    "axios": "^0.21.4",
     "body-parser": "1.19.0",
     "change-case": "3.1.0",
     "check-types": "11.1.x",
@@ -85,6 +93,7 @@
     "govuk-frontend": "3.13.1",
     "http-proxy": "1.18.x",
     "https-proxy-agent": "5.0.0",
+    "humps": "^2.0.1",
     "joi": "14.3.1",
     "lodash": "4.17.21",
     "minimist": "1.2.x",
@@ -114,11 +123,14 @@
     "@babel/preset-env": "7.15.6",
     "@pact-foundation/pact": "^9.16.1",
     "@pact-foundation/pact-node": "10.13.7",
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
     "chai": "4.3.4",
     "chai-arrays": "2.2.0",
     "chai-as-promised": "7.1.1",
     "cheerio": "1.0.0-rc.10",
     "chokidar-cli": "latest",
+    "copyfiles": "^2.4.1",
     "csrf": "^3.1.0",
     "cypress": "3.1.5",
     "dotenv": "10.0.0",
@@ -148,6 +160,9 @@
     "sass-lint": "1.13.1",
     "sinon": "11.1.2",
     "standard": "12.0.1",
-    "supertest": "^6.1.6"
+    "supertest": "^6.1.6",
+    "ts-node": "^10.2.1",
+    "tsc-watch": "^4.5.0",
+    "typescript": "^4.4.3"
   }
 }
