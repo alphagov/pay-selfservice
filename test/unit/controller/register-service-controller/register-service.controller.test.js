@@ -6,7 +6,7 @@ const lodash = require('lodash')
 const { expect } = require('chai')
 const paths = require('../../../../app/paths.js')
 
-describe('Register service', function () {
+describe('Initial registration submission', function () {
   let req, res, next
 
   beforeEach(() => {
@@ -97,6 +97,91 @@ describe('Register service', function () {
     }
 
     await getControllerWithStubbedAdminusersError(error).submitRegistration(req, res, next)
+    sinon.assert.calledWith(next, error)
+  })
+})
+
+describe('Set password and phone number submission', function () {
+  let req, res, next
+
+  beforeEach(() => {
+    req = {
+      correlationId: 'abcde12345',
+      register_invite: {
+        email: 'foo@example.com',
+        code: '12345'
+      },
+      body: {
+        'telephone-number': '07512345678',
+        password: 'password1234'
+      },
+      flash: sinon.spy()
+    }
+
+    res = {
+      setHeader: sinon.spy(),
+      redirect: sinon.spy(),
+      render: sinon.spy(),
+      status: sinon.spy()
+    }
+    next = sinon.spy()
+  })
+
+  const controllerWithStubbedAdminusersSuccess = proxyquire('../../../../app/controllers/register-service.controller.js', {
+    '../services/service-registration.service': {
+      submitPasswordAndPhoneNumberAndSendOtp: () => Promise.resolve()
+    }
+  })
+
+  const getControllerWithStubbedAdminusersError = function (error) {
+    return proxyquire('../../../../app/controllers/register-service.controller.js',
+      {
+        '../services/service-registration.service': {
+          submitPasswordAndPhoneNumberAndSendOtp: () => Promise.reject(error)
+        }
+      })
+  }
+
+  it('should redirect to the OTP verify page when successful', async () => {
+    await controllerWithStubbedAdminusersSuccess.submitYourPassword(req, res, next)
+    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.otpVerify)
+  })
+
+  it('should redirect with error whan an invalid phone number is entered', async () => {
+    req.body['telephone-number'] = 'not a number'
+
+    await controllerWithStubbedAdminusersSuccess.submitYourPassword(req, res, next)
+    const recovered = lodash.get(req, 'register_invite.recovered')
+    expect(recovered).to.deep.equal({
+      telephoneNumber: req.body['telephone-number'],
+      errors: {
+        telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+      }
+    })
+    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.setPassword)
+  })
+
+  it('should redirect with error whan an invalid password is entered', async () => {
+    req.body['telephone-number'] = '01134960000'
+    req.body.password = 'tooshort' // pragma: allowlist secret
+
+    await controllerWithStubbedAdminusersSuccess.submitYourPassword(req, res, next)
+    const recovered = lodash.get(req, 'register_invite.recovered')
+    expect(recovered).to.deep.equal({
+      telephoneNumber: req.body['telephone-number'],
+      errors: {
+        password: 'Password must be 10 characters or more' // pragma: allowlist secret
+      }
+    })
+    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.setPassword)
+  })
+
+  it('should call next with error for unexpected error from adminusers', async () => {
+    const error = {
+      errorCode: 404
+    }
+
+    await getControllerWithStubbedAdminusersError(error).submitYourPassword(req, res, next)
     sinon.assert.calledWith(next, error)
   })
 })

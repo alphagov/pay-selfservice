@@ -11,7 +11,8 @@ function buildInviteWithDefaults (opts = {}) {
     attempt_counter: 0,
     _links: [],
     user_exist: false,
-    expired: false
+    expired: false,
+    password_set: false
   })
 
   if (opts.telephone_number) {

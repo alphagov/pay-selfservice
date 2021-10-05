@@ -180,6 +180,8 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.register, selfCreateServiceController.showRegistration)
   app.post(selfCreateService.register, trimUsername, selfCreateServiceController.submitRegistration)
   app.get(selfCreateService.confirm, selfCreateServiceController.showConfirmation)
+  app.get(selfCreateService.setPassword, selfCreateServiceController.showSetPassword)
+  app.post(selfCreateService.setPassword, selfCreateServiceController.submitYourPassword)
   app.get(selfCreateService.otpVerify, selfCreateServiceController.showOtpVerify)
   app.post(selfCreateService.otpVerify, selfCreateServiceController.createPopulatedService)
   app.get(selfCreateService.otpResend, selfCreateServiceController.showOtpResend)

@@ -212,6 +212,7 @@ module.exports = {
   selfCreateService: {
     register: '/create-service/register',
     confirm: '/create-service/confirm',
+    setPassword: '/create-service/set-password',
     otpVerify: '/create-service/verify-otp',
     otpResend: '/create-service/resend-otp',
     logUserIn: '/create-service/proceed-to-login',

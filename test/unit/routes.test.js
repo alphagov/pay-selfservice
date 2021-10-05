@@ -26,6 +26,7 @@ const pathsNotRequiringAuthentication = [
   paths.registerUser.logUserIn,
   paths.selfCreateService.register,
   paths.selfCreateService.confirm,
+  paths.selfCreateService.setPassword,
   paths.selfCreateService.otpVerify,
   paths.selfCreateService.otpResend,
   paths.healthcheck.path,

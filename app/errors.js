@@ -56,6 +56,13 @@ class RegistrationSessionMissingError extends DomainError {
 }
 
 /**
+ * Thrown when a user is trying to do something in the registration flow but has not yet
+ * completed the prerequisite steps.
+ */
+ class InvalidRegistationStateError extends DomainError {
+}
+
+/**
  * Thrown when account isn't correctly configured to access the resource
  */
 class InvalidConfigurationError extends DomainError {
@@ -69,5 +76,6 @@ module.exports = {
   NoServicesWithPermissionError,
   NotFoundError,
   RegistrationSessionMissingError,
+  InvalidRegistationStateError,
   InvalidConfigurationError
 }

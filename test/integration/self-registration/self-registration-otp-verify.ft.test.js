@@ -31,7 +31,7 @@ const serviceExternalId = '43a6818b522b4a628a14355614665ca3'
 const gatewayAccountId = '1'
 let app
 
-describe('create service otp validation', function () {
+describe.only('create service otp validation', function () {
   afterEach((done) => {
     nock.cleanAll()
     app = null

@@ -12,6 +12,10 @@ function submitRegistration (email, phoneNumber, password, correlationId) {
   return adminUsersClient.submitServiceRegistration(email, phoneNumber, password, correlationId)
 }
 
+function submitPasswordAndPhoneNumberAndSendOtp (code, telephoneNumber, password, correlationId) {
+  return adminUsersClient.generateInviteOtpCode(code, telephoneNumber, password, correlationId)
+}
+
 function submitServiceInviteOtpCode (code, otpCode, correlationId) {
   return adminUsersClient.verifyOtpForServiceInvite(code, otpCode, correlationId)
 }
@@ -50,6 +54,7 @@ function resendOtpCode (code, phoneNumber, correlationId) {
 
 module.exports = {
   submitRegistration,
+  submitPasswordAndPhoneNumberAndSendOtp,
   submitServiceInviteOtpCode,
   createPopulatedService,
   generateServiceInviteOtpCode,

@@ -17,9 +17,12 @@ const {
   validateOtp
 } = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
-const { RegistrationSessionMissingError } = require('../errors')
+const { RegistrationSessionMissingError, InvalidRegistationStateError } = require('../errors')
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
+
+const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
+const INVITE_NOT_FOUND_ERROR_MESSAGE = 'There has been a problem proceeding with this registration. Please try again.'
 
 const registrationSessionPresent = function registrationSessionPresent (sessionData) {
   return sessionData && sessionData.email && sessionData.code
@@ -119,13 +122,7 @@ const showConfirmation = function showConfirmation (req, res) {
   })
 }
 
-/**
- * Display OTP verify page
- *
- * @param req
- * @param res
- */
-const showOtpVerify = function showOtpVerify (req, res, next) {
+const showSetPassword = function showSetPassword (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
@@ -133,9 +130,97 @@ const showOtpVerify = function showOtpVerify (req, res, next) {
   const recovered = sessionData.recovered || {}
   delete sessionData.recovered
 
-  res.render('self-create-service/verify-otp', {
+  const data = {
+    email: sessionData.email,
+    telephone_number: recovered.telephoneNumber,
     errors: recovered.errors
-  })
+  }
+
+  res.render('self-create-service/set-password', data)
+}
+
+const submitYourPassword = async function submitYourPassword (req, res, next) {
+  const telephoneNumber = req.body['telephone-number']
+  const password = req.body['password']
+  const correlationId = req.correlationId
+
+  const sessionData = req.register_invite
+  if (!registrationSessionPresent(sessionData)) {
+    return next(new RegistrationSessionMissingError())
+  }
+
+  const errors = {}
+  const validPhoneNumber = validatePhoneNumber(telephoneNumber)
+  if (!validPhoneNumber.valid) {
+    errors.telephoneNumber = validPhoneNumber.message
+  }
+  const validPassword = validatePassword(password)
+  if (!validPassword.valid) {
+    errors.password = validPassword.message
+  }
+
+  if (!lodash.isEmpty(errors)) {
+    sessionData.recovered = {
+      telephoneNumber,
+      errors
+    }
+    return res.redirect(303, paths.selfCreateService.setPassword)
+  }
+
+  try {
+    await registrationService.submitPasswordAndPhoneNumberAndSendOtp(sessionData.code, telephoneNumber, password, correlationId)
+    sessionData.telephone_number = telephoneNumber
+    return res.redirect(303, paths.selfCreateService.otpVerify)
+  } catch (err) {
+    if (err.errorCode === 410) {
+      renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+    } else {
+      next(err)
+    }
+  }
+}
+
+/**
+ * Display OTP verify page
+ *
+ * @param req
+ * @param res
+ */
+const showOtpVerify = async function showOtpVerify (req, res, next) {
+  const correlationId = req.correlationId
+
+  const sessionData = req.register_invite
+  if (!registrationSessionPresent(sessionData)) {
+    return next(new RegistrationSessionMissingError())
+  }
+
+  const code = sessionData.code
+
+  const recovered = sessionData.recovered || {}
+  delete sessionData.recovered
+
+  try {
+    const invite = await validateInviteService.getValidatedInvite(code, correlationId)
+
+    if (!invite.password_set) {
+      return next(new InvalidRegistationStateError())
+    }
+  
+    res.render('self-create-service/verify-otp', {
+      errors: recovered.errors
+    })
+  } catch (err) {
+    switch (err.errorCode) {
+      case 404:
+        renderErrorView(req, res, INVITE_NOT_FOUND_ERROR_MESSAGE, 404)
+        break
+      case 410:
+        renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+        break
+      default:
+        next(err)
+    }
+  }
 }
 
 /**
@@ -211,14 +296,38 @@ const loggedIn = function loggedIn (req, res) {
  * @param req
  * @param res
  */
-const showOtpResend = function showOtpResend (req, res, next) {
+const showOtpResend = async function showOtpResend (req, res, next) {
+  const correlationId = req.correlationId
+
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
-  res.render('self-create-service/resend-otp', {
-    telephoneNumber: sessionData.telephone_number
-  })
+
+  const code = sessionData.code
+
+  try {
+    const invite = await validateInviteService.getValidatedInvite(code, correlationId)
+
+    if (!invite.password_set) {
+      return next(new InvalidRegistationStateError())
+    }
+  
+    res.render('self-create-service/resend-otp', {
+      telephoneNumber: sessionData.telephone_number
+    })
+  } catch (err) {
+    switch (err.errorCode) {
+      case 404:
+        renderErrorView(req, res, INVITE_NOT_FOUND_ERROR_MESSAGE, 404)
+        break
+      case 410:
+        renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+        break
+      default:
+        next(err)
+    }
+  }
 }
 
 /**
@@ -310,6 +419,8 @@ module.exports = {
   showRegistration,
   submitRegistration,
   showConfirmation,
+  showSetPassword,
+  submitYourPassword,
   showOtpVerify,
   createPopulatedService,
   loggedIn,
