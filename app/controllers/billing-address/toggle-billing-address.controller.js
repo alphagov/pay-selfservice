@@ -8,6 +8,7 @@ const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const serviceService = require('../../services/service.service')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header')
+const successMessages = require('../../utils/success-messages')
 
 function getIndex (req, res) {
   const model = {
@@ -24,9 +25,9 @@ async function postIndex (req, res, next) {
   try {
     const result = await serviceService.toggleCollectBillingAddress(serviceExternalId, isEnabled, correlationId)
     if (result.collect_billing_address) {
-      req.flash('generic', 'Billing address is turned on for this service')
+      req.flash('generic', successMessages.billingAddress.on)
     } else {
-      req.flash('generic', 'Billing address is turned off for this service')
+      req.flash('generic', successMessages.billingAddress.off)
     }
     logger.info(`Updated collect billing address enabled(${req.body['billing-address-toggle']})`)
     res.redirect(formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))

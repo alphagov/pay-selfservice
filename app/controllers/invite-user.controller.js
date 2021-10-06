@@ -4,6 +4,7 @@ const userService = require('../services/user.service.js')
 const paths = require('../paths.js')
 const rolesModule = require('../utils/roles')
 const emailValidator = require('../utils/email-tools.js')
+const successMessages = require('../utils/success-messages')
 
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
@@ -68,7 +69,7 @@ async function invite (req, res, next) {
       if (lodash.has(req, 'session.pageData.invitee')) {
         delete req.session.pageData.invitee
       }
-      req.flash('generic', `Invite sent to ${invitee}`)
+      req.flash('generic', successMessages.teamMembers.inviteSent(invitee))
       res.redirect(303, formatServicePathsFor(paths.service.teamMembers.index, externalServiceId))
     } catch (err) {
       switch (err.errorCode) {

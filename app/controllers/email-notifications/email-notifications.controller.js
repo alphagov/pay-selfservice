@@ -9,6 +9,7 @@ const paths = require('../../paths.js')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const humaniseEmailMode = require('../../utils/humanise-email-mode')
 const CORRELATION_HEADER = require('../../utils/correlation-header.js').CORRELATION_HEADER
+const successMessages = require('../../utils/success-messages')
 
 async function toggleConfirmationEmail (req, res, next, enabled) {
   const accountID = req.account.gateway_account_id
@@ -41,7 +42,7 @@ async function collectionEmailUpdate (req, res, next) {
   try {
     await emailService.setEmailCollectionMode(accountID, emailCollectionMode, correlationId)
     logger.info(`Updated email collection mode (${emailCollectionMode})`)
-    req.flash('generic', `Email address collection is set to ${humaniseEmailMode(emailCollectionMode).toLowerCase()}`)
+    req.flash('generic', successMessages.emailNotifications.emailCollectionMode.updated(humaniseEmailMode(emailCollectionMode).toLowerCase()))
     res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
   } catch (err) {
     next(err)

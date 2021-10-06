@@ -7,6 +7,7 @@ const {
   validateEmail,
   validatePassword
 } = require('../utils/validation/server-side-form-validations')
+const successMessages = require('../utils/success-messages')
 
 const emailGet = function emailGet (req, res) {
   res.render('forgotten-password/index')
@@ -82,7 +83,7 @@ const newPasswordPost = async function newPasswordPost (req, res) {
       // treat as success even if updating session version fails
     }
     req.session.destroy()
-    req.flash('generic', 'Password has been updated')
+    req.flash('generic', successMessages.forgottenPassword.updated)
     res.redirect('/login')
   } catch (error) {
     req.flash('genericError', 'There has been a problem updating password. Please try again.')
