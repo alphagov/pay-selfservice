@@ -316,7 +316,6 @@ module.exports.bind = function (app) {
   account.get(switchPSP.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
   account.post(switchPSP.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
 
-  account.get(credentials.index, permission('gateway-credentials:read'), credentialsController.index)
   account.get(credentials.edit, permission('gateway-credentials:update'), credentialsController.editCredentials)
   account.post(credentials.index, permission('gateway-credentials:update'), credentialsController.update)
   account.get(notificationCredentials.edit, permission('gateway-credentials:update'), credentialsController.editNotificationCredentials)
