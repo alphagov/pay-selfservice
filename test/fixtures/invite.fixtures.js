@@ -11,11 +11,16 @@ function buildInviteWithDefaults (opts = {}) {
     attempt_counter: 0,
     _links: [],
     user_exist: false,
-    expired: false
+    expired: false,
+    password_set: false
   })
 
   if (opts.telephone_number) {
     data.telephone_number = opts.telephone_number
+  }
+
+  if (opts.password_set) {
+    data.password_set = true
   }
 
   return data

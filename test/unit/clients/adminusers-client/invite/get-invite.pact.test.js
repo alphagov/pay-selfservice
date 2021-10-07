@@ -59,6 +59,7 @@ describe('adminusers client - get a validated invite', function () {
         expect(invite.email).to.be.equal(getInviteResponse.email)
         expect(invite.telephone_number).to.be.equal(getInviteResponse.telephone_number)
         expect(invite.type).to.be.equal(getInviteResponse.type)
+        expect(invite.password_set).to.be.equal(getInviteResponse.password_set)
       }).should.notify(done)
     })
   })
