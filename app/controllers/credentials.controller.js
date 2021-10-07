@@ -73,10 +73,6 @@ function credentialsPatchRequestValueOf (req) {
 }
 
 module.exports = {
-  index: function (req, res, next) {
-    loadIndex(req, res, next)
-  },
-
   editCredentials: function (req, res, next) {
     loadIndex(req, res, next, EDIT_CREDENTIALS_MODE)
   },
