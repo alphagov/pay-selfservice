@@ -11,6 +11,7 @@ const {
   NoServicesWithPermissionError,
   NotFoundError,
   RegistrationSessionMissingError,
+  InvalidRegistationStateError,
   InvalidConfigurationError
 } = require('../errors')
 const paths = require('../paths')
@@ -56,7 +57,7 @@ module.exports = function errorHandler (err, req, res, next) {
     return response(req, res, '404')
   }
 
-  if (err instanceof RegistrationSessionMissingError) {
+  if (err instanceof RegistrationSessionMissingError || err instanceof InvalidRegistationStateError) {
     logger.info(`RegistrationSessionMissingError handled. Rendering error page`)
     return renderErrorView(req, res, 'There has been a problem proceeding with this registration. Please try again.', 400)
   }

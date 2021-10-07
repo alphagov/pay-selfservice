@@ -31,14 +31,35 @@ const serviceExternalId = '43a6818b522b4a628a14355614665ca3'
 const gatewayAccountId = '1'
 let app
 
-describe('create service otp validation', function () {
+describe('create service OTP validation', function () {
   afterEach((done) => {
     nock.cleanAll()
     app = null
     done()
   })
 
-  describe('get otp verify page', function () {
+  describe('get OTP verify page', function () {
+    it('should render normally when register_invite cookie present and invite has password set', function (done) {
+      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({password_set: true})
+
+      adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`)
+        .reply(200, mockAdminUsersInviteResponse)
+
+      app = session.getAppWithRegisterInvitesCookie(getApp(), {
+        code: inviteCode,
+        telephone_number: '07700900000',
+        email: 'test@test.test'
+      })
+      supertest(app)
+        .get(paths.selfCreateService.otpVerify)
+        .expect(200)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('input#verify-code').length).to.equal(1)
+        })
+        .end(done)
+    })
+
     it('should return an error when register_invite cookie not present', function (done) {
       app = session.getAppWithLoggedOutSession(getApp())
       supertest(app)
@@ -48,11 +69,16 @@ describe('create service otp validation', function () {
     })
 
     it('should render with errors when they are in recovered object in cookie', function (done) {
+      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({password_set: true})
+
+      adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`)
+        .reply(200, mockAdminUsersInviteResponse)
+
       const errorMessage = 'An error with the verification code'
       app = session.getAppWithRegisterInvitesCookie(getApp(), {
         code: inviteCode,
-        telephone_number: '07451234567',
-        email: 'bob@bob.com',
+        telephone_number: '07700900000',
+        email: 'test@test.test',
         recovered: {
           errors: {
             verificationCode: errorMessage
@@ -69,9 +95,54 @@ describe('create service otp validation', function () {
         })
         .end(done)
     })
+
+    it('should render an error when the invite is not found', function (done) {
+      adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`).reply(404)
+
+      app = session.getAppWithRegisterInvitesCookie(getApp(), {
+        code: inviteCode,
+        telephone_number: '07700900000',
+        email: 'test@test.test'
+      })
+      supertest(app)
+        .get(paths.selfCreateService.otpVerify)
+        .expect(404)
+        .end(done)
+    })
+
+    it('should render an error when the invite is expired or disabled', function (done) {
+      adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`).reply(410)
+
+      app = session.getAppWithRegisterInvitesCookie(getApp(), {
+        code: inviteCode,
+        telephone_number: '07700900000',
+        email: 'test@test.test'
+      })
+      supertest(app)
+        .get(paths.selfCreateService.otpVerify)
+        .expect(410)
+        .end(done)
+    })
+
+    it('should render an error when the password is not set in the invite', function (done) {
+      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({password_set: false})
+
+      adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`)
+        .reply(200, mockAdminUsersInviteResponse)
+
+      app = session.getAppWithRegisterInvitesCookie(getApp(), {
+        code: inviteCode,
+        telephone_number: '07700900000',
+        email: 'test@test.test'
+      })
+      supertest(app)
+        .get(paths.selfCreateService.otpVerify)
+        .expect(400)
+        .end(done)
+    })
   })
 
-  describe('post to otp verify page', function () {
+  describe('post to OTP verify page', function () {
     it('should redirect to proceed-to-login page when user submits valid otp code', function (done) {
       const mockConnectorCreateGatewayAccountResponse =
         gatewayAccountFixtures.validGatewayAccountResponse({
@@ -108,8 +179,8 @@ describe('create service otp validation', function () {
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), {
         code: inviteCode,
-        telephone_number: '07451234567',
-        email: 'bob@bob.com'
+        telephone_number: '07700900000',
+        email: 'test@test.test'
       })
       supertest(app)
         .post(paths.selfCreateService.otpVerify)
@@ -137,7 +208,7 @@ describe('create service otp validation', function () {
         .end(done)
     })
 
-    it('should redirect to verify otp page on verification code with incorrect format', function (done) {
+    it('should redirect to verify OTP page on verification code with incorrect format', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
         code: validServiceInviteOtpRequest.code,
@@ -163,7 +234,7 @@ describe('create service otp validation', function () {
         .end(done)
     })
 
-    it('should redirect to verify otp page on invalid otp code', function (done) {
+    it('should redirect to verify OTP page on invalid otp code', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
         code: validServiceInviteOtpRequest.code,
