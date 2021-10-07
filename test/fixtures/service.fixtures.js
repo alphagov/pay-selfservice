@@ -148,8 +148,8 @@ module.exports = {
     }
 
     if (opts.default_billing_address_country !== null) {
-      service.default_billing_address_country = opts.default_billing_address_country === undefined ?
-        'GB' : opts.default_billing_address_country
+      service.default_billing_address_country = opts.default_billing_address_country === undefined
+        ? 'GB' : opts.default_billing_address_country
     }
 
     return service
