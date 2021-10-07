@@ -59,7 +59,7 @@ class RegistrationSessionMissingError extends DomainError {
  * Thrown when a user is trying to do something in the registration flow but has not yet
  * completed the prerequisite steps.
  */
- class InvalidRegistationStateError extends DomainError {
+class InvalidRegistationStateError extends DomainError {
 }
 
 /**

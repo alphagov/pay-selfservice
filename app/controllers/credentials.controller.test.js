@@ -49,7 +49,7 @@ describe('gateway credentials controller', () => {
     const req = {
       body: {
         username: ' username       ',
-        password: ' password '
+        password: ' password123 '
       },
       account: gatewayAccountFixture.validGatewayAccount({
         gateway_account_credentials: [{
@@ -61,6 +61,6 @@ describe('gateway credentials controller', () => {
       flash: sinon.spy()
     }
     await credentialsController.updateNotificationCredentials(req, expressResponseStub, next)
-    sinon.assert.calledWithMatch(postNotificationCredentialsSpy, { payload: { username: 'username', password: 'password' } })
+    sinon.assert.calledWithMatch(postNotificationCredentialsSpy, { payload: { username: 'username', password: 'password123' } }) // pragma: allowlist secret
   })
 })
