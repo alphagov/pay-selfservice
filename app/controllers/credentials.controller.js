@@ -12,7 +12,7 @@ const { NotFoundError } = require('../errors')
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
 function credentialsPatchRequestValueOf (reqBody) {
-  let requestPayload = {
+  const requestPayload = {
     credentials: {
       username: reqBody.username && reqBody.username.trim(),
       password: reqBody.password && reqBody.password.trim()
@@ -41,8 +41,17 @@ function editCredentials (req, res, next) {
     const { credentialId } = req.params
     const credential = getCredentialByExternalId(req.account, credentialId)
 
+    const recovered = req.session.recovered || {}
+    delete req.session.recovered
+
     response(req, res, 'credentials/' + credential.payment_provider, {
-      credential
+      credential,
+      errors: recovered.errors,
+      merchantId: recovered.merchantId || credential.credentials.merchant_id || '',
+      username: recovered.username || credential.credentials.username || '',
+      password: recovered.password || '',
+      shaInPassphrase: recovered.shaInPassphrase || '',
+      shaOutPassphrase: recovered.shaOutPassphrase || ''
     })
   } catch (error) {
     next(error)
@@ -55,6 +64,40 @@ async function update (req, res, next) {
 
   try {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
+    const { username, password, merchantId, shaInPassphrase, shaOutPassphrase } = req.body
+
+    const errors = {}
+    if (!merchantId) {
+      errors.merchantId = credential.payment_provider === 'epdq' ? 'Enter your PSP ID' : 'Enter your merchant account code'
+    }
+    if (!username) {
+      errors.username = 'Enter your username'
+    }
+    if (!password) {
+      errors.password = 'Enter your password' // pragma: allowlist secret
+    }
+
+    if (credential.payment_provider === 'epdq') {
+      if (!shaInPassphrase) {
+        errors.shaInPassphrase = 'Enter your SHA-IN passphrase'
+      }
+      if (!shaOutPassphrase) {
+        errors.shaOutPassphrase = 'Enter your SHA-OUT passphrase'
+      }
+    }
+
+    if (!_.isEmpty(errors)) {
+      req.session.recovered = {
+        errors,
+        merchantId,
+        username,
+        password,
+        shaInPassphrase,
+        shaOutPassphrase
+      }
+      return res.redirect(303, formatAccountPathsFor(paths.account.credentials.edit, req.account.external_id, credential.external_id))
+    }
+
     await connectorClient.patchAccountGatewayAccountCredentials({
       correlationId,
       gatewayAccountId: accountId,
@@ -78,8 +121,10 @@ function editNotificationCredentials (req, res, next) {
     const { credentialId } = req.params
     const credential = getCredentialByExternalId(req.account, credentialId)
 
+    const recovered = req.session.recovered || {}
+    delete req.session.recovered
     const pageData = {
-      credential,
+      credential
     }
     const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
     if (invalidCreds) {
@@ -87,7 +132,12 @@ function editNotificationCredentials (req, res, next) {
       delete req.session.pageData.editNotificationCredentials
     }
 
-    response(req, res, 'credentials/smartpay-notification-credentials', pageData)
+    response(req, res, 'credentials/smartpay-notification-credentials', {
+      credential,
+      errors: recovered.errors,
+      username: recovered.username || (req.account.notificationCredentials && req.account.notificationCredentials.userName) || '',
+      password: recovered.password || ''
+    })
   } catch (error) {
     next(error)
   }
@@ -98,21 +148,28 @@ async function updateNotificationCredentials (req, res, next) {
   const username = req.body.username && req.body.username.trim()
   const password = req.body.password && req.body.password.trim()
 
-  if (!username) {
-    req.flash('genericError', 'Enter a username')
-  } else if (!password) {
-    req.flash('genericError', 'Enter a password')
-  } else {
-    const failedValidationMessage = isPasswordLessThanTenChars(password)
-    if (failedValidationMessage) {
-      req.flash('genericError', failedValidationMessage)
-    }
-  }
-
   try {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
-    if (_.get(req, 'session.flash.genericError.length')) {
-      _.set(req, 'session.pageData.editNotificationCredentials', { username, password })
+
+    const errors = {}
+    if (!username) {
+      errors.username = 'Enter your username'
+    }
+    if (!password) {
+      errors.password = 'Enter your password' // pragma: allowlist secret
+    } else {
+      const failedValidationMessage = isPasswordLessThanTenChars(password)
+      if (failedValidationMessage) {
+        errors.password = failedValidationMessage
+      }
+    }
+
+    if (!_.isEmpty(errors)) {
+      req.session.recovered = {
+        errors,
+        username,
+        password
+      }
       return res.redirect(formatAccountPathsFor(paths.account.notificationCredentials.edit, req.account.external_id, credential.external_id))
     }
 

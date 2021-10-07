@@ -40,7 +40,7 @@ describe('create service OTP validation', function () {
 
   describe('get OTP verify page', function () {
     it('should render normally when register_invite cookie present and invite has password set', function (done) {
-      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({password_set: true})
+      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({ password_set: true })
 
       adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`)
         .reply(200, mockAdminUsersInviteResponse)
@@ -69,7 +69,7 @@ describe('create service OTP validation', function () {
     })
 
     it('should render with errors when they are in recovered object in cookie', function (done) {
-      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({password_set: true})
+      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({ password_set: true })
 
       adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`)
         .reply(200, mockAdminUsersInviteResponse)
@@ -125,7 +125,7 @@ describe('create service OTP validation', function () {
     })
 
     it('should render an error when the password is not set in the invite', function (done) {
-      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({password_set: false})
+      const mockAdminUsersInviteResponse = inviteFixtures.validInviteResponse({ password_set: false })
 
       adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`)
         .reply(200, mockAdminUsersInviteResponse)
