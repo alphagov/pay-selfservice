@@ -16,7 +16,8 @@
     errors: errors,
     hrefs: {
       type: "#reference-type-custom",
-      label: "#reference-label"
+      label: "#reference-label",
+      hint: "#reference-hint-text"
     }
   }) }}
 
@@ -30,13 +31,6 @@
     {% if errors.type %}
     {% set noSelectionError = {
         text: "Please choose an option"
-    } %}
-    {% endif %}
-
-    {% set blankReferenceLabelError = false %}
-    {% if errors.label %}
-    {% set blankReferenceLabelError = {
-        text: errors.label
     } %}
     {% endif %}
 
@@ -56,7 +50,7 @@
           id: "reference-label",
           name: "reference-label",
           value: paymentReferenceLabel,
-          errorMessage: blankReferenceLabelError,
+          errorMessage: { text: errors.label } if errors.label else false,
           classes: "govuk-input--width-20",
           label: {
               text: "Name of payment reference",
@@ -66,7 +60,6 @@
             html: referenceNameHint
           },
           attributes: {
-            "data-validate": "isNaxsiSafe",
             "lang": lang
           }
         })
@@ -77,6 +70,7 @@
           id: "reference-hint-text",
           name: "reference-hint-text",
           value: paymentReferenceHint,
+          errorMessage: { text: errors.hint } if errors.hint else false,
           classes: "govuk-input--width-20",
           maxlength: 255,
           label: {
@@ -87,9 +81,7 @@
             text: referenceHintHint
           },
           attributes: {
-            "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
             "maxlength": "255",
-            "data-validate-max-length": "255",
             "lang": lang
           }
         })

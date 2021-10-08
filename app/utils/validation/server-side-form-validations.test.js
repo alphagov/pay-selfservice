@@ -25,6 +25,27 @@ describe('Server side form validations', () => {
         message: 'The text is too long'
       })
     })
+
+    it('should return error message with field name if provided', () => {
+      expect(validations.validateOptionalField(LOOOONG_TEXT, MAX_LENGTH, 'name')).to.deep.equal({
+        valid: false,
+        message: 'Name must be 25 characters or fewer'
+      })
+    })
+
+    it('should capitalise first letter of field name in message and leave other letters as provided', () => {
+      expect(validations.validateOptionalField(LOOOONG_TEXT, MAX_LENGTH, 'PSP ID')).to.deep.equal({
+        valid: false,
+        message: 'PSP ID must be 25 characters or fewer'
+      })
+    })
+
+    it('should return error if contains NAXSI not allowed characters', () => {
+      expect(validations.validateOptionalField('Brian|', MAX_LENGTH, 'name', true)).to.deep.equal({
+        valid: false,
+        message: 'Name must not include < > |'
+      })
+    })
   })
 
   describe('mandatory text field validations', () => {
@@ -43,6 +64,47 @@ describe('Server side form validations', () => {
       expect(validations.validateMandatoryField(LOOOONG_TEXT, MAX_LENGTH)).to.deep.equal({
         valid: false,
         message: 'The text is too long'
+      })
+    })
+
+    it('should return error message with field name if provided', () => {
+      expect(validations.validateMandatoryField(LOOOONG_TEXT, MAX_LENGTH, 'name')).to.deep.equal({
+        valid: false,
+        message: 'Name must be 25 characters or fewer'
+      })
+    })
+
+    it('should capitalise first letter of field name in message and leave other letters as provided', () => {
+      expect(validations.validateMandatoryField(LOOOONG_TEXT, MAX_LENGTH, 'PSP ID')).to.deep.equal({
+        valid: false,
+        message: 'PSP ID must be 25 characters or fewer'
+      })
+    })
+
+    it('should return error if contains NAXSI not allowed characters', () => {
+      expect(validations.validateMandatoryField('Brian|', MAX_LENGTH, 'name', true)).to.deep.equal({
+        valid: false,
+        message: 'Name must not include < > |'
+      })
+    })
+  })
+
+  describe('NAXSI safe validation', () => {
+    it('should be valid when does not contain not allowed characters', () => {
+      expect(validations.validateNaxsiSafe('Brian', 'name').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should return error if contains NAXSI not allowed characters', () => {
+      expect(validations.validateNaxsiSafe('Brian|', 'name')).to.deep.equal({
+        valid: false,
+        message: 'Name must not include < > |'
+      })
+    })
+
+    it('should capitalise first letter of field name in message and leave other letters as provided', () => {
+      expect(validations.validateNaxsiSafe('ABC<>', 'PSP ID')).to.deep.equal({
+        valid: false,
+        message: 'PSP ID must not include < > |'
       })
     })
   })

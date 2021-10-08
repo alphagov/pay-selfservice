@@ -14,7 +14,8 @@
   {{ errorSummary ({
     errors: errors,
     hrefs: {
-      title: "#payment-link-title"
+      title: "#payment-link-title",
+      description: "#payment-link-description"
     }
   }) }}
 
@@ -27,13 +28,6 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>
-    {% endif %}
-
-    {% set titleError = false %}
-    {% if errors.title %}
-    {% set titleError = {
-      text: errors.title | safe
-    } %}
     {% endif %}
 
   {% if isWelsh %}
@@ -49,8 +43,6 @@
     {% endif %}
 
     {% set titleAttributes = {
-      "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
-      "data-validate-max-length": "254",
       "lang": lang
     } %}
     {% set descriptionAttributes = {
@@ -59,8 +51,6 @@
     } %}
     {% if change !== 'payment-link-description' %}
       {% set titleAttributes = {
-        "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
-        "data-validate-max-length": "254",
         "lang": lang,
         "autofocus": true
       } %}
@@ -85,7 +75,7 @@
         },
         value: paymentLinkTitle,
         attributes: titleAttributes,
-        errorMessage: titleError
+        errorMessage: { text: errors.title } if errors.title else false
       })
     }}
 
@@ -101,7 +91,8 @@
           text: detailsHint
         },
         value: paymentLinkDescription,
-        attributes: descriptionAttributes
+        attributes: descriptionAttributes,
+        errorMessage: { text: errors.description } if errors.description else false
       })
     }}
 

@@ -15,7 +15,8 @@
   {{ errorSummary ({
     errors: errors,
     hrefs: {
-      title: "#payment-link-title"
+      title: "#payment-link-title",
+      description: "#payment-link-description"
     }
   }) }}
 
@@ -32,12 +33,6 @@
       <input name="change" type="hidden" value="true"/>
     {% endif %}
 
-    {% set titleError = false %}
-    {% if errors.title %}
-      {% set titleError = {
-        text: errors.title | safe
-      } %}
-    {% endif %}
     {% set confirmationLabel %}{{friendlyURL}}/{{serviceName | removeIndefiniteArticles | slugify}}/{% endset %}
 
     {% if isWelsh %}
@@ -65,10 +60,8 @@
         hint: {
           html: titleHint
         },
-        errorMessage: titleError,
+        errorMessage: { text: errors.title } if errors.title else false,
         attributes: {
-          "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
-          "data-validate-max-length": "254",
           "autofocus": change !== "payment-link-description",
           "data-confirmation": true,
           "data-confirmation-title": "The website address for this payment link will look like:",
@@ -93,8 +86,8 @@
         hint: {
           text: detailsHint
         },
+        errorMessage: { text: errors.description } if errors.description else false,
         attributes: {
-          "data-validate": "isNaxsiSafe",
           "autofocus": change !== "payment-link-description",
           "rows": "5",
           "lang": lang
