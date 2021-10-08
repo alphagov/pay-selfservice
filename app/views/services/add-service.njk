@@ -18,7 +18,7 @@
             <li><a href="#service-name">Service name</a></li>
             {% endif %}
             {% if errors.service_name_cy %}
-              <li><a href="#service-name">Welsh Service name</a></li>
+              <li><a href="#service-name-cy">Welsh Service name</a></li>
             {% endif %}
           </ul>
         </div>
@@ -30,7 +30,7 @@
       This is what your users will see when making a payment. You can change this&nbsp;later.
     </p>
 
-    <form id="add-service-form" method="post" action="{{submit_link}}" data-validate="true">
+    <form id="add-service-form" method="post" action="{{submit_link}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
       {% set enNameError = false %}
@@ -49,11 +49,7 @@
           name: "service-name",
           value: current_name,
           classes: "govuk-!-width-one-half",
-          type: "text",
-          attributes: {
-            "data-validate": "required isFieldGreaterThanMaxLengthChars",
-            "data-validate-max-length": "50"
-          }
+          type: "text"
         })
       }}
 
@@ -76,8 +72,6 @@
             text: "Welsh service name"
           },
           attributes: {
-            "data-validate": "isFieldGreaterThanMaxLengthChars",
-            "data-validate-max-length": "50",
             "lang": "cy"
           }
         }) }}

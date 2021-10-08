@@ -76,10 +76,14 @@ describe('Stripe setup: bank details page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('have.attr', 'href', '#account-number')
 
         cy.get('input#account-number').should('have.class', 'govuk-input--error')
-        cy.get('label[for=account-number] > span').should('contain', 'This field cannot be blank')
+        cy.get('.govuk-form-group--error > input#account-number').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+        })
 
         cy.get('input#sort-code').should('have.class', 'govuk-input--error')
-        cy.get('label[for=sort-code] > span').should('contain', 'This field cannot be blank')
+        cy.get('.govuk-form-group--error > input#sort-code').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+        })
       })
     })
 

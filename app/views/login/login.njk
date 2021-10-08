@@ -1,4 +1,5 @@
 {% extends "../layout-logged-out.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
 Sign in to GOV.UK Pay
@@ -6,75 +7,45 @@ Sign in to GOV.UK Pay
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  {% if flash.error %}
-  <div class="govuk-error-summary hidden" aria-labelledby="error-summary-heading-example-1" role="alert" tabindex="-1" data-module="govuk-error-summary">
-    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1">
-      There was a problem with the details you gave for:
-    </h2>
-    <div class="govuk-error-summary__body">
-      <ul class="govuk-list govuk-error-summary__list">
-      {% block messages %}
-        {% block username %}
-        <li><a href="#username">Email</a></li>
-        {% endblock %}
-        {% block password %}
-        <li><a href="#password">Password</a></li>
-        {% endblock %}
-      {% endblock %}
-      </ul>
-    </div>
-  </div>
-  {% endif %}
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      username: "#username",
+      password: "#password"
+    }
+  }) }}
 
   <h1 class="govuk-heading-l page-title">Sign in</h1>
 
   <p class="govuk-body">If you do not have an account, you can <a href="{{ routes.selfCreateService.register }}" class="register-link govuk-link">create one now</a>.</p>
 
-  <form action="/login" method="post" name="userLoginForm" data-validate>
+  <form action="/login" method="post" name="userLoginForm">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-
-    {% set emailError = false %}
-    {% if flash.error.messages.username %}
-      {% set emailError = {
-        text: flash.error.messages.username
-      } %}
-    {% endif %}
 
     {{ govukInput({
         label: {
           text: "Email address",
           classes: "govuk-!-width-two-thirds"
         },
-        errorMessage: emailError,
+        errorMessage: { text: errors.username } if errors.username else false,
         id: "username",
         name: "username",
         classes: "govuk-!-width-two-thirds",
-        type: "email",
-        attributes: {
-          "data-validate": "required"
-        }
+        type: "email"
       })
     }}
-
-    {% set passwordError = false %}
-    {% if flash.error.messages.password %}
-      {% set passwordError = {
-        text: flash.error.messages.password
-      } %}
-    {% endif %}
 
     {{ govukInput({
         label: {
           text: "Password",
           classes: "govuk-!-width-two-thirds"
         },
-        errorMessage: passwordError,
+        errorMessage: { text: errors.password } if errors.password else false,
         id: "password",
         name: "password",
         classes: "govuk-!-width-two-thirds",
         type: "password",
         attributes: {
-          "data-validate": "required",
           "autocomplete": "current-password"
         }
       })

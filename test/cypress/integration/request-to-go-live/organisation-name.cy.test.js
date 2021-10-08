@@ -82,8 +82,9 @@ describe('Request to go live: organisation name page', () => {
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'What is your organisation called?')
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#request-to-go-live-organisation-name-input')
 
-      cy.get('input#request-to-go-live-organisation-name-input').should('have.class', 'govuk-input--error')
-      cy.get('#request-to-go-live-organisation-name-form > div > h1 > label > span').should('contain', 'This field cannot be blank')
+      cy.get('.govuk-form-group--error > input#request-to-go-live-organisation-name-input').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+      })
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/organisation-name`)

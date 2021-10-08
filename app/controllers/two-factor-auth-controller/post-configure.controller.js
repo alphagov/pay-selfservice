@@ -9,6 +9,16 @@ const userService = require('../../services/user.service.js')
 module.exports = async function postUpdateSecondFactorMethod (req, res) {
   const code = req.body['code'] || ''
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP')
+
+  if (!code) {
+    lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
+      errors: {
+        verificationCode: 'Enter a verification code'
+      }
+    })
+    return res.redirect(paths.user.profile.twoFactorAuth.configure)
+  }
+
   try {
     await userService.configureNewOtpKey(req.user.externalId, code, method, req.correlationId)
     req.flash('otpMethodUpdated', method)

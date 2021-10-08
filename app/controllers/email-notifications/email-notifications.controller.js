@@ -9,6 +9,9 @@ const paths = require('../../paths.js')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const humaniseEmailMode = require('../../utils/humanise-email-mode')
 const CORRELATION_HEADER = require('../../utils/correlation-header.js').CORRELATION_HEADER
+const { validateOptionalField } = require('../../utils/validation/server-side-form-validations')
+
+const CUSTOM_PARAGRAPH_MAX_LENGTH = 500
 
 async function toggleConfirmationEmail (req, res, next, enabled) {
   const accountID = req.account.gateway_account_id
@@ -119,6 +122,18 @@ function editCustomParagraph (req, res) {
 }
 
 function confirmCustomParagraph (req, res) {
+  const customEmailText = req.body['custom-email-text']
+  const validationResult = validateOptionalField(customEmailText, CUSTOM_PARAGRAPH_MAX_LENGTH, 'custom paragraph')
+  if (!validationResult.valid) {
+    return response(req, res, 'email-notifications/edit', {
+      errors: {
+        customEmailText: validationResult.message
+      },
+      customEmailText: customEmailText,
+      serviceName: req.account.service_name
+    })
+  }
+
   response(req, res, 'email-notifications/confirm', {
     customEmailText: req.body['custom-email-text'],
     serviceName: req.account.service_name

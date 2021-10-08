@@ -20,7 +20,7 @@
       </div>
     </div>
   {% endif %}
-  <form action="{{routes.selfCreateService.serviceNaming}}" method="post" class="form submit-two-fa" id="name-your-service-form" data-virtual-pageview="/service/registration-complete" data-parameters="dimension1:service-name" data-validate="true">
+  <form action="{{routes.selfCreateService.serviceNaming}}" method="post" class="form submit-two-fa" id="name-your-service-form" data-virtual-pageview="/service/registration-complete" data-parameters="dimension1:service-name">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <h1 class="form-title govuk-heading-l">What service will you be taking payments for?</h1>
 
@@ -44,7 +44,6 @@
         },
         value: serviceName,
         attributes: {
-          "data-validate": "required isFieldGreaterThanMaxLengthChars", "data-validate-max-length": "50",
           "autofocus": true
         },
         errorMessage: serviceNameError

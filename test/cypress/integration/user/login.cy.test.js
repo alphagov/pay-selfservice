@@ -51,25 +51,25 @@ describe('Login Page', () => {
       it('should show inline errors if no password is supplied', () => {
         cy.get('#username').type('fake@example.com')
         cy.contains('Continue').click()
-        cy.contains('There was a problem with the details you gave for:')
+        cy.contains('There is a problem')
         cy.get('.govuk-error-summary__list').should('have.length', 1)
         cy.get('.govuk-error-summary__list').first()
-          .contains('Password')
+          .contains('Enter a password')
           .should('have.attr', 'href', '#password')
         cy.get(`.govuk-error-message`)
-          .contains('This field cannot be blank')
+          .contains('Enter a password')
       })
 
       it('should show inline errors if no email address is supplied', () => {
         cy.get('#password').type('sup3r-s3cur3-pa$$w0rd')
         cy.contains('Continue').click()
-        cy.contains('There was a problem with the details you gave for:')
+        cy.contains('There is a problem')
         cy.get('.govuk-error-summary__list').should('have.length', 1)
         cy.get('.govuk-error-summary__list').first()
-          .contains('Email address')
+          .contains('Enter an email address')
           .should('have.attr', 'href', '#username')
         cy.get(`.govuk-error-message`)
-          .contains('This field cannot be blank')
+          .contains('Enter an email address')
       })
 
       it('should deny access to selfservice if the password is incorrect', () => {
