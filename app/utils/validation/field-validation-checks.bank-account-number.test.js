@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 
-const { isNotAccountNumber } = require('../../../app/browsered/field-validation-checks')
+const { isNotAccountNumber } = require('./field-validation-checks')
 
 describe('isNotValidAccountNumber', () => {
   it('should validate successfully for 8 digits', () => {

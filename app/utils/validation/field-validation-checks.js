@@ -1,20 +1,19 @@
 'use strict'
 
-const emailValidator = require('../utils/email-tools.js')
+const emailValidator = require('../email-tools.js')
 
 // Constants
-const NUMBERS_ONLY = new RegExp('^[0-9]+$')
 const MAX_AMOUNT = 100000
 
 const validationErrors = {
   required: 'This field cannot be blank',
   mandatoryQuestion: 'You must answer this question',
   currency: 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”',
-  phoneNumber: 'Must be a 11 digit phone number',
+  phoneNumber: 'Must be an 11 digit phone number',
   validEmail: 'Please use a valid email address',
   isHttps: 'URL must begin with https://',
   isAboveMaxAmount: `Enter an amount under £${MAX_AMOUNT.toLocaleString()}`,
-  isPasswordLessThanTenChars: 'Password must be 10 characters or more',
+  isPasswordLessThanTenChars: 'Password must be 10 characters or more', // pragma: allowlist secret
   isGreaterThanMaxLengthChars: 'The text is too long',
   invalidCharacters: `You cannot use any of the following characters < > ; |`,
   invalidBankAccountNumber: 'Enter a valid account number like 00733445',
@@ -53,15 +52,6 @@ exports.isValidEmail = function (value) {
   }
 }
 
-exports.isPhoneNumber = function (value) {
-  const noWhitespaceTelephoneNumber = value.replace(/\s/g, '')
-  if (noWhitespaceTelephoneNumber.length < 11 || !NUMBERS_ONLY.test(noWhitespaceTelephoneNumber)) {
-    return validationErrors.phoneNumber
-  } else {
-    return false
-  }
-}
-
 exports.isHttps = function (value) {
   if (value.substr(0, 8) !== 'https://') {
     return validationErrors.isHttps
@@ -83,14 +73,6 @@ exports.isFieldGreaterThanMaxLengthChars = (value, maxLength) => {
 }
 
 exports.isPasswordLessThanTenChars = value => !value || value.length < 10 ? validationErrors.isPasswordLessThanTenChars : false
-
-exports.isNaxsiSafe = function (value) {
-  if (/[<>;|]+/g.test(value)) {
-    return validationErrors.invalidCharacters
-  } else {
-    return false
-  }
-}
 
 exports.isNotAccountNumber = value => {
   if (/^[0-9]{6,8}$/.test(value)) {

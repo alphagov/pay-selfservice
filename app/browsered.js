@@ -3,7 +3,6 @@
 require('@babel/polyfill')
 
 const multiSelects = require('./browsered/multi-select')
-const fieldValidation = require('./browsered/field-validation')
 const targetToShow = require('./browsered/target-to-show')
 const analytics = require('gaap-analytics')
 const inputConfirm = require('./browsered/input-confirm')
@@ -20,7 +19,6 @@ const GOVUKFrontend = require('govuk-frontend')
 GOVUKFrontend.initAll() // Needs to be first
 
 multiSelects.enableMultiSelects()
-fieldValidation.enableFieldValidation()
 targetToShow.init()
 analytics.eventTracking.init()
 analytics.virtualPageview.init()

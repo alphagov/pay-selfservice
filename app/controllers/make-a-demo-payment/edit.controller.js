@@ -6,7 +6,7 @@ const { response } = require('../../utils/response.js')
 const { index } = require('../../paths').account.prototyping.demoPayment
 const { validateMandatoryField } = require('../../utils/validation/server-side-form-validations')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { isCurrency, isAboveMaxAmount } = require('../../browsered/field-validation-checks')
+const { isCurrency, isAboveMaxAmount } = require('../../utils/validation/field-validation-checks')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 
 const DESCRIPTION_MAX_LENGTH = 255

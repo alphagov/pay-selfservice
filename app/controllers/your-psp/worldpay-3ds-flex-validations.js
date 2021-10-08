@@ -1,7 +1,7 @@
 'use strict'
 
 const { isNotWorldpay3dsFlexOrgUnitId, isNotWorldpay3dsFlexIssuer, isNotWorldpay3dsFlexJwtMacKey } =
-    require('../../../app/browsered/field-validation-checks')
+    require('../../utils/validation/field-validation-checks')
 
 exports.validateOrgUnitId = (orgUnitId) => {
   const isNotWorldpay3dsFlexOrgUnitIdErrorMessage = isNotWorldpay3dsFlexOrgUnitId(orgUnitId)

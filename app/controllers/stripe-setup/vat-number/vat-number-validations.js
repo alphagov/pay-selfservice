@@ -1,6 +1,6 @@
 'use strict'
 
-const { isEmpty, isNotVatNumber } = require('../../../browsered/field-validation-checks')
+const { isEmpty, isNotVatNumber } = require('../../../utils/validation/field-validation-checks')
 
 exports.validateVatNumber = function validateVatNumber (value) {
   const isEmptyErrorMessage = isEmpty(value)

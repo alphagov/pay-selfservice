@@ -11,7 +11,7 @@ const { ConnectorClient } = require('../../../services/clients/connector.client'
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const fieldValidationChecks = require('../../../browsered/field-validation-checks')
+const fieldValidationChecks = require('../../../utils/validation/field-validation-checks')
 
 // Constants
 const ACCOUNT_NUMBER_FIELD = 'account-number'

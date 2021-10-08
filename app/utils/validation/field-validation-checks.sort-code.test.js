@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 
-const { isNotSortCode } = require('../../../app/browsered/field-validation-checks')
+const { isNotSortCode } = require('./field-validation-checks')
 
 describe('isNotValidSortCode', () => {
   it('should validate successfully for 6 digits', () => {

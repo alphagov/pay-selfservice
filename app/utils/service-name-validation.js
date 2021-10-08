@@ -1,7 +1,7 @@
 'use strict'
 
 const trim = require('lodash/trim')
-const { isEmpty, isFieldGreaterThanMaxLengthChars } = require('../browsered/field-validation-checks')
+const { isEmpty, isFieldGreaterThanMaxLengthChars } = require('./validation/field-validation-checks')
 const SERVICE_NAME_MAX_LENGTH = 50
 
 exports.validateServiceName = (serviceNameValue, serviceName = 'service_name', required) => {

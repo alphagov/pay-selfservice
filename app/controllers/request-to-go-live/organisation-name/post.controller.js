@@ -5,18 +5,17 @@ const lodash = require('lodash')
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
 const paths = require('../../../paths')
-const { validateOrganisationName } = require('../../../utils/organisation-name-validation')
+const { validateMandatoryField } = require('../../../utils/validation/server-side-form-validations')
 const { updateCurrentGoLiveStage, updateService } = require('../../../services/service.service')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
-// Constants
-const ORGANISATION_NAME_FIELD = 'organisation-name'
+const ORGANISATION_NAME_MAX_LENGTH = 255
 
 module.exports = async function submitOrganisationName (req, res, next) {
-  const organisationName = req.body[ORGANISATION_NAME_FIELD] && req.body[ORGANISATION_NAME_FIELD].trim()
-  const errors = validateOrganisationName(organisationName, ORGANISATION_NAME_FIELD, true)
-  if (lodash.isEmpty(errors)) {
+  const organisationName = req.body['organisation-name'] && req.body['organisation-name'].trim()
+  const validationResult = validateMandatoryField(organisationName, ORGANISATION_NAME_MAX_LENGTH, 'organisation name')
+  if (validationResult.valid) {
     const updateServiceRequest = new ServiceUpdateRequest()
       .replace(validPaths.merchantDetails.name, organisationName)
       .formatPayload()
@@ -34,8 +33,10 @@ module.exports = async function submitOrganisationName (req, res, next) {
   } else {
     lodash.set(req, 'session.pageData.requestToGoLive.organisationName', {
       success: false,
-      errors: errors,
-      organisationName: req.body[ORGANISATION_NAME_FIELD]
+      errors: {
+        'organisation-name': validationResult.message
+      },
+      organisationName
     })
     return res.redirect(
       303,
