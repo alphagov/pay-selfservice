@@ -1,4 +1,5 @@
 {% extends "../../layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Edit payment description for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -16,8 +17,15 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        description: "#payment-description"
+      }
+    }) }}
+
     <h1 class="govuk-heading-l">Edit payment description</h1>
-    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.index,  currentGatewayAccount.external_id)}}" data-validate="true">
+    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.editDescription,  currentGatewayAccount.external_id)}}" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
       {{
         govukTextarea({
@@ -34,9 +42,9 @@
           attributes: {
             rows: 2,
             autofocus: true,
-            "data-validate": true,
             "data-trim": true
-          }
+          },
+          errorMessage: { text: errors.description } if errors.description else false
         })
       }}
 

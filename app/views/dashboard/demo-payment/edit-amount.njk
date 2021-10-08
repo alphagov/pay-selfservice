@@ -1,4 +1,5 @@
 {% extends "../../layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Edit payment amount for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -16,8 +17,15 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        amount: "#payment-amount"
+      }
+    }) }}
+
     <h1 class="govuk-heading-l">Edit payment amount</h1>
-    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.index,  currentGatewayAccount.external_id)}}" data-validate="true">
+    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.editAmount,  currentGatewayAccount.external_id)}}" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
       <div class="currency-input govuk-form-group">
@@ -37,7 +45,6 @@
             inputmode="numeric"
             id="payment-amount"
             value="{{ paymentAmount | penceToPounds }}"
-            data-validate="required currency belowMaxAmount"
             data-trim
           />
         </div>
