@@ -3,6 +3,7 @@
 const moment = require('moment-timezone')
 const ukPostcode = require('uk-postcode')
 const commonPassword = require('common-password')
+const lodash = require('lodash')
 
 const {
   isEmpty,
@@ -13,46 +14,73 @@ const {
 const { invalidTelephoneNumber } = require('./telephone-number-validation')
 
 const NUMBERS_ONLY = new RegExp('^[0-9]+$')
+const NAXSI_NOT_ALLOWED_CHARACTERS = [ '<', '>', '|' ]
 
 const validReturnObject = {
   valid: true,
   message: null
 }
 
-const notValidReturnObject = message => {
+function notValidReturnObject (message) {
   return {
     valid: false,
     message
   }
 }
 
-const validateOptionalField = function validateOptionalField (value, maxLength) {
+function validateOptionalField (value, maxLength, fieldDisplayName, checkIsNaxsiSafe) {
   if (!isEmpty(value)) {
     const textTooLongErrorMessage = isFieldGreaterThanMaxLengthChars(value, maxLength)
 
     if (textTooLongErrorMessage) {
-      return notValidReturnObject(textTooLongErrorMessage)
+      const errorMessage = fieldDisplayName
+        ? `${lodash.upperFirst(fieldDisplayName)} must be ${maxLength} characters or fewer`
+        : textTooLongErrorMessage
+      return notValidReturnObject(errorMessage)
     }
+  }
+
+  if (checkIsNaxsiSafe) {
+    return validateNaxsiSafe(value, fieldDisplayName)
   }
 
   return validReturnObject
 }
 
-const validateMandatoryField = function validateMandatoryField (value, maxLength) {
+function validateMandatoryField (value, maxLength, fieldDisplayName, checkIsNaxsiSafe) {
   const isEmptyErrorMessage = isEmpty(value)
   if (isEmpty(value)) {
-    return notValidReturnObject(isEmptyErrorMessage)
+    const errorMessage = fieldDisplayName
+      ? `Enter a ${fieldDisplayName}`
+      : isEmptyErrorMessage
+    return notValidReturnObject(errorMessage)
   }
 
   const textTooLongErrorMessage = isFieldGreaterThanMaxLengthChars(value, maxLength)
   if (textTooLongErrorMessage) {
-    return notValidReturnObject(textTooLongErrorMessage)
+    const errorMessage = fieldDisplayName
+      ? `${lodash.upperFirst(fieldDisplayName)} must be ${maxLength} characters or fewer`
+      : textTooLongErrorMessage
+    return notValidReturnObject(errorMessage)
+  }
+
+  if (checkIsNaxsiSafe) {
+    return validateNaxsiSafe(value, fieldDisplayName)
   }
 
   return validReturnObject
 }
 
-const validatePhoneNumber = function validatePhoneNumber (phoneNumber) {
+function validateNaxsiSafe (value, fieldDisplayName) {
+  if (NAXSI_NOT_ALLOWED_CHARACTERS.some((character) => value.includes(character))) {
+    const errorMessage = `${lodash.upperFirst(fieldDisplayName)} must not include ${NAXSI_NOT_ALLOWED_CHARACTERS.join(' ')}`
+    return notValidReturnObject(errorMessage)
+  }
+
+  return validReturnObject
+}
+
+function validatePhoneNumber (phoneNumber) {
   const isEmptyErrorMessage = isEmpty(phoneNumber)
   if (isEmptyErrorMessage) {
     return notValidReturnObject('Enter a telephone number')
@@ -66,7 +94,7 @@ const validatePhoneNumber = function validatePhoneNumber (phoneNumber) {
   return validReturnObject
 }
 
-const validatePostcode = function validatePostcode (postcode, countryCode) {
+function validatePostcode (postcode, countryCode) {
   const isEmptyErrorMessage = isEmpty(postcode)
   if (isEmptyErrorMessage) {
     return notValidReturnObject('Enter a postcode')
@@ -89,7 +117,7 @@ const validatePostcode = function validatePostcode (postcode, countryCode) {
   return validReturnObject
 }
 
-const validateDateOfBirth = function validateDateOfBirth (day, month, year) {
+function validateDateOfBirth (day, month, year) {
   const dayIsEmptyErrorMessage = isEmpty(day)
   const monthIsEmptyErrorMessage = isEmpty(month)
   const yearIsEmptyErrorMessage = isEmpty(year)
@@ -148,7 +176,7 @@ const validateDateOfBirth = function validateDateOfBirth (day, month, year) {
   return validReturnObject
 }
 
-const validateEmail = function validateEmail (email) {
+function validateEmail (email) {
   if (isEmpty(email)) {
     return notValidReturnObject('Enter an email address')
   }
@@ -161,7 +189,7 @@ const validateEmail = function validateEmail (email) {
   return validReturnObject
 }
 
-const validatePassword = function validatePassword (password) {
+function validatePassword (password) {
   if (isEmpty(password)) {
     return notValidReturnObject('Enter a password')
   }
@@ -178,7 +206,7 @@ const validatePassword = function validatePassword (password) {
   return validReturnObject
 }
 
-const validateOtp = function validateOtp (otp) {
+function validateOtp (otp) {
   if (!otp) {
     return notValidReturnObject('Enter your verification code')
   }
@@ -191,6 +219,7 @@ const validateOtp = function validateOtp (otp) {
 module.exports = {
   validateOptionalField,
   validateMandatoryField,
+  validateNaxsiSafe,
   validatePhoneNumber,
   validatePostcode,
   validateDateOfBirth,
