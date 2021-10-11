@@ -376,10 +376,12 @@ module.exports.bind = function (app) {
   account.post(prototyping.demoService.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.submit)
   account.get(prototyping.demoService.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable)
 
+  // Demo payment
   account.get(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.index)
-  account.post(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.index)
-  account.get(prototyping.demoPayment.editDescription, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit)
-  account.get(prototyping.demoPayment.editAmount, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit)
+  account.get(prototyping.demoPayment.editDescription, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit.getEditDescription)
+  account.post(prototyping.demoPayment.editDescription, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit.updateDescription)
+  account.get(prototyping.demoPayment.editAmount, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit.getEditAmount)
+  account.post(prototyping.demoPayment.editAmount, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit.updateAmount)
   account.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.mockCardDetails)
   account.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.goToPayment)
 
