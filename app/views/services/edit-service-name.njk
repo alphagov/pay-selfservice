@@ -7,15 +7,20 @@
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     {% if errors %}
-    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-            There was a problem with the details you gave for:
-        </h2>
-        <ul class="error-summary-list">
-            {% if errors.service_name %}
-            <li><a href="#service-name">Service name</a></li>
-            {% endif %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There was a problem with the details you gave for:
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          {% if errors.service_name %}
+          <li><a href="#service-name">Service name</a></li>
+          {% endif %}
+          {% if errors.service_name_cy %}
+          <li><a href="#service-name-cy">Welsh service name</a></li>
+          {% endif %}
         </ul>
+      </div>
     </div>
     {% endif %}
 
@@ -23,7 +28,7 @@
     <p class="govuk-body">
         Changing your service name affects both live and test environments, including user-facing payment pages and emails.
     </p>
-    <form id="edit-service-name-form" method="post" action="{{submit_link}}" data-validate="true">
+    <form id="edit-service-name-form" method="post" action="{{submit_link}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
       {% set enNameError = false %}
@@ -42,11 +47,7 @@
           name: "service-name",
           value: current_name.en,
           classes: "govuk-!-width-one-half",
-          type: "text",
-          attributes: {
-            "data-validate": "required isFieldGreaterThanMaxLengthChars",
-            "data-validate-max-length": "50"
-          }
+          type: "text"
         })
       }}
 
@@ -69,8 +70,6 @@
             text: "Welsh service name"
           },
           attributes: {
-            "data-validate": "isFieldGreaterThanMaxLengthChars",
-            "data-validate-max-length": "50",
             "lang": "cy"
           }
         }) }}

@@ -10,7 +10,7 @@
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 2 of 3</span>
 
     <form id="request-to-go-live-choose-how-to-process-payments-form" method="post"
-          action="{{formatServicePathsFor(routes.service.requestToGoLive.chooseHowToProcessPayments, currentService.externalId)}}" data-validate="true" >
+          action="{{formatServicePathsFor(routes.service.requestToGoLive.chooseHowToProcessPayments, currentService.externalId)}}" >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set otherPSP %}

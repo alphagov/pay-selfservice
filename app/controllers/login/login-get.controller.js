@@ -1,24 +1,22 @@
 'use strict'
 
 module.exports = (req, res) => {
-  const setError = function (errorMessages) {
-    res.locals.flash.error = { 'messages': errorMessages }
-  }
+  let errors = {}
   if (res.locals.flash.hasOwnProperty('error')) {
     switch (res.locals.flash.error[0]) {
       case 'invalid':
-        setError({ username: 'You must enter a valid email address', password: 'You must enter a valid password' })
+        errors = { username: 'Enter a valid email address', password: 'Enter a valid password' }
         break
       case 'empty_all':
-        setError({ username: 'You must enter an email address', password: 'You must enter a password' })
+        errors = { username: 'Enter an email address', password: 'Enter a password' } // pragma: allowlist secret
         break
       case 'empty_username':
-        setError({ username: 'You must enter an email address' })
+        errors = { username: 'Enter an email address' }
         break
       case 'empty_password':
-        setError({ password: 'You must enter a password' })
+        errors = { password: 'Enter a password' } // pragma: allowlist secret
         break
     }
   }
-  res.render('login/login')
+  res.render('login/login', { errors })
 }

@@ -60,7 +60,7 @@
       {% endif %}
       <input class="govuk-input govuk-!-width-two-thirds {% if errors['merchant-name'] %} govuk-input--error {% endif %}"
              id="merchant-name" name="merchant-name" type="text" aria-describedby="merchant-name-hint"
-             data-validate="required" value="{{merchant_details.name}}"/>
+             value="{{merchant_details.name}}"/>
     </div>
 
     {% set phoneError = false %}

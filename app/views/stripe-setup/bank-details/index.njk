@@ -43,7 +43,7 @@
     <p class="govuk-body govuk-!-margin-bottom-6">This is the bank account payments will go into.</p>
 
     <form id="bank-details-form" method="post"
-          data-validate="true">
+         >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set sortCodeError = false %}
@@ -67,7 +67,6 @@
         type: "text",
         errorMessage: sortCodeError,
         attributes: {
-          "data-validate": "required sortCode",
           "autocomplete": "off",
           "inputmode": "numeric"
         }
@@ -94,7 +93,6 @@
         type: "text",
         errorMessage: accountNumberError,
         attributes: {
-          "data-validate": "required accountNumber",
           "autocomplete": "off",
           "inputmode": "numeric"
         }

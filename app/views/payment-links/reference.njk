@@ -21,7 +21,7 @@
     }
   }) }}
 
-  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.reference, currentGatewayAccount.external_id) }}" class="form" method="post" data-validate>
+  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.reference, currentGatewayAccount.external_id) }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>

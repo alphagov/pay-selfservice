@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
 Change email notifications template - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -10,6 +11,13 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      customEmailText: "#custom-email-text"
+    }
+  }) }}
+
   <h1 class="govuk-heading-l">Add a custom paragraph</h1>
 
   <p class="govuk-body">
@@ -46,7 +54,7 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
       <li>use redirects or tracking links</li>
   </ul>
 
-  <form method="post" action="{{ formatAccountPathsFor(routes.account.emailNotifications.confirm, currentGatewayAccount.external_id) }}" data-validate>
+  <form method="post" action="{{ formatAccountPathsFor(routes.account.emailNotifications.confirm, currentGatewayAccount.external_id) }}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{
@@ -59,10 +67,7 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
         },
         classes: "qa-custom-p",
         value: customEmailText,
-        attributes: {
-          "data-validate": "isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "5000"
-        }
+        errorMessage: { text: errors.customEmailText } if errors.customEmailText else false
       })
     }}
     {{

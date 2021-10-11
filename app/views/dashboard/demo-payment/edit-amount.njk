@@ -25,7 +25,7 @@
     }) }}
 
     <h1 class="govuk-heading-l">Edit payment amount</h1>
-    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.editAmount,  currentGatewayAccount.external_id)}}" data-validate="true">
+    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.editAmount,  currentGatewayAccount.external_id)}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
       <div class="currency-input govuk-form-group">

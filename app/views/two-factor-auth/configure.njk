@@ -58,7 +58,7 @@
     })
   }}
 {% endif %}
-  <form method="post" action="{{routes.user.profile.twoFactorAuth.configure}}" novalidate data-validate>
+  <form method="post" action="{{routes.user.profile.twoFactorAuth.configure}}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set codeHint = "Enter the code shown in your app to complete the setup" %}
@@ -79,7 +79,6 @@
         classes: "govuk-input--width-10",
         type: "text",
         attributes: {
-          "data-validate": "required",
           "autocomplete": "off",
           "autofocus": true,
           "inputmode": "numeric",
