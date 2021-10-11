@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   What is your organisation called? - Request a live account - {{ currentService.name }} - GOV.UK Pay
@@ -6,19 +7,12 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    {% if errors %}
-      {% set errorList = [] %}
-      {% if errors['organisation-name'] %}
-        {% set errorList = (errorList.push({
-          text: 'What is your organisation called?',
-          href: '#request-to-go-live-organisation-name-input'
-        }), errorList) %}
-      {% endif %}
-      {{ govukErrorSummary({
-        titleText: 'There was a problem with the details you gave for:',
-        errorList: errorList
-      }) }}
-    {% endif %}
+      {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        "organisation-name": "#request-to-go-live-organisation-name-input"
+      }
+    }) }}
 
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>
 

@@ -78,12 +78,12 @@ describe('Request to go live: organisation name page', () => {
 
       cy.get('#request-to-go-live-organisation-name-form > button').click()
 
-      cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'What is your organisation called?')
+      cy.get('h2').should('contain', 'There is a problem')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter an organisation name')
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#request-to-go-live-organisation-name-input')
 
       cy.get('.govuk-form-group--error > input#request-to-go-live-organisation-name-input').parent().should('exist').within(() => {
-        cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+        cy.get('.govuk-error-message').should('contain', 'Enter an organisation name')
       })
 
       cy.location().should((location) => {

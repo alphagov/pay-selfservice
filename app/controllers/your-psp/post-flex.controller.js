@@ -7,7 +7,7 @@ const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { correlationHeader } = require('../../utils/correlation-header')
-const { validationErrors } = require('../../browsered/field-validation-checks')
+const { validationErrors } = require('../../utils/validation/field-validation-checks')
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
 const { getCredentialByExternalId } = require('../../utils/credentials')
 

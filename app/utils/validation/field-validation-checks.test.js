@@ -6,7 +6,7 @@ const {
   isAboveMaxAmount,
   isPasswordLessThanTenChars,
   isFieldGreaterThanMaxLengthChars
-} = require('../../../app/browsered/field-validation-checks')
+} = require('./field-validation-checks')
 
 describe('field validation checks', () => {
   describe('isAboveMaxAmount', () => {
@@ -42,7 +42,7 @@ describe('field validation checks', () => {
       expect(isFieldGreaterThanMaxLengthChars('12345', 5)).to.equal(false)
     })
     it('should return false, ignoring the validation if max length is not numeric', () => {
-      expect(isFieldGreaterThanMaxLengthChars('123456ABC', 'que')).to.equal(false)
+      expect(isFieldGreaterThanMaxLengthChars('123456ABC', 'que')).to.equal(false) // pragma: allowlist secret
     })
   })
 })

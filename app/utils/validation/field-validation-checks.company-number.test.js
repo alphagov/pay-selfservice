@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 
-const { isNotCompanyNumber } = require('../../../app/browsered/field-validation-checks')
+const { isNotCompanyNumber } = require('./field-validation-checks')
 
 describe('isNotCompanyNumber', () => {
   describe('UK company number validations', () => {

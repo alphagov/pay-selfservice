@@ -60,6 +60,20 @@ describe('Server side form validations', () => {
       })
     })
 
+    it('should return error message with field name for blank if provided', () => {
+      expect(validations.validateMandatoryField(BLANK_TEXT, MAX_LENGTH, 'name')).to.deep.equal({
+        valid: false,
+        message: 'Enter a name'
+      })
+    })
+
+    it('should return error message with field name for blank if provided with correct indefinite article for vowel', () => {
+      expect(validations.validateMandatoryField(BLANK_TEXT, MAX_LENGTH, 'organisation')).to.deep.equal({
+        valid: false,
+        message: 'Enter an organisation'
+      })
+    })
+
     it('should not be valid when mandatory text is too long', () => {
       expect(validations.validateMandatoryField(LOOOONG_TEXT, MAX_LENGTH)).to.deep.equal({
         valid: false,
@@ -67,7 +81,7 @@ describe('Server side form validations', () => {
       })
     })
 
-    it('should return error message with field name if provided', () => {
+    it('should return error message with field name for exceeds max length if provided', () => {
       expect(validations.validateMandatoryField(LOOOONG_TEXT, MAX_LENGTH, 'name')).to.deep.equal({
         valid: false,
         message: 'Name must be 25 characters or fewer'

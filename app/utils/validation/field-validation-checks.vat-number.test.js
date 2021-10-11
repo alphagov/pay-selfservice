@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 
-const { isNotVatNumber } = require('../../../app/browsered/field-validation-checks')
+const { isNotVatNumber } = require('./field-validation-checks')
 
 describe('UK VAT number validations', () => {
   it('should validate that standard VAT numbers are valid', () => {

@@ -8,7 +8,7 @@ const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
-const { isCurrency, isHttps, isAboveMaxAmount } = require('../../browsered/field-validation-checks')
+const { isCurrency, isHttps, isAboveMaxAmount } = require('../../utils/validation/field-validation-checks')
 const { penceToPounds, safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 

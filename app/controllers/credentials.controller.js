@@ -6,7 +6,7 @@ const { getCredentialByExternalId } = require('../utils/credentials')
 const { ConnectorClient } = require('../services/clients/connector.client')
 const { CONNECTOR_URL } = process.env
 const { CORRELATION_HEADER } = require('../utils/correlation-header')
-const { isPasswordLessThanTenChars } = require('../browsered/field-validation-checks')
+const { isPasswordLessThanTenChars } = require('../utils/validation/field-validation-checks')
 const { NotFoundError } = require('../errors')
 
 const connectorClient = new ConnectorClient(CONNECTOR_URL)

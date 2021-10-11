@@ -10,7 +10,7 @@ const {
   isFieldGreaterThanMaxLengthChars,
   isValidEmail,
   isPasswordLessThanTenChars
-} = require('../../browsered/field-validation-checks')
+} = require('./field-validation-checks')
 const { invalidTelephoneNumber } = require('./telephone-number-validation')
 
 const NUMBERS_ONLY = new RegExp('^[0-9]+$')
@@ -50,9 +50,14 @@ function validateOptionalField (value, maxLength, fieldDisplayName, checkIsNaxsi
 function validateMandatoryField (value, maxLength, fieldDisplayName, checkIsNaxsiSafe) {
   const isEmptyErrorMessage = isEmpty(value)
   if (isEmpty(value)) {
-    const errorMessage = fieldDisplayName
-      ? `Enter a ${fieldDisplayName}`
-      : isEmptyErrorMessage
+    let errorMessage = isEmptyErrorMessage
+    if (fieldDisplayName) {
+      if (['a', 'e', 'i', 'o', 'u'].indexOf(fieldDisplayName[0]) > -1) {
+        errorMessage = `Enter an ${fieldDisplayName}`
+      } else {
+        errorMessage = `Enter a ${fieldDisplayName}`
+      }
+    }
     return notValidReturnObject(errorMessage)
   }
 
