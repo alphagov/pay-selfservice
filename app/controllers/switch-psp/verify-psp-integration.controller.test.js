@@ -28,10 +28,7 @@ describe('Verify PSP integration controller', () => {
       account: account,
       user: new User(userFixtures.validUserResponse()),
       flash: sinon.spy(),
-      session: {},
-      headers: {
-        origin: 'https://selfservice.some-origin.com'
-      }
+      session: {}
     }
     res = {
       setHeader: sinon.stub(),

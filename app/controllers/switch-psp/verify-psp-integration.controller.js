@@ -13,6 +13,7 @@ const {
 const logger = require('../../utils/logger')(__filename)
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
+const selfserviceURL = process.env.SELFSERVICE_URL
 
 const VERIFY_PAYMENT_AMOUNT_IN_PENCE = 200
 
@@ -34,7 +35,7 @@ async function startPaymentJourney (req, res, next) {
       payment_provider: targetCredential.payment_provider,
       description: 'Live payment to verify new PSP',
       reference: 'VERIFY_PSP_INTEGRATION',
-      return_url: urljoin(req.headers && req.headers.origin, formatAccountPathsFor(paths.account.switchPSP.receiveVerifyPSPIntegrationPayment, req.account.external_id))
+      return_url: urljoin(selfserviceURL, formatAccountPathsFor(paths.account.switchPSP.receiveVerifyPSPIntegrationPayment, req.account.external_id))
     })
 
     req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY] = charge.charge_id
