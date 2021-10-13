@@ -38,7 +38,7 @@ describe('webhooks client', function () {
   describe('list webhooks', () => {
     before(() => {
       return provider.addInteraction(
-        new PactInteractionBuilder(`/v1/webhooks`)
+        new PactInteractionBuilder(`/v1/webhook`)
           .withQuery('service_id', serviceId)
           .withQuery('live', isLive.toString())
           .withUponReceiving('a valid list webhooks for service request')
