@@ -6,20 +6,21 @@ const urlJoin = require('url-join')
 const defaultRequestOptions = {
   baseUrl: process.env.LEDGER_URL,
   json: true,
-  service: 'webhooks',
+  service: 'webhooks'
 }
 
-function webhook(id) {
+function webhook (id, options = {}) {
   const url = urlJoin('/v1/webhooks', id)
   const request = {
     url,
     description: 'Get one webhook',
-    ...defaultRequestOptions
+    ...defaultRequestOptions,
+    ...options
   }
   return baseClient.get(request)
 }
 
-function webhooks(serviceId, isLive) {
+function webhooks (serviceId, isLive, options = {}) {
   const url = '/v1/webhooks'
   const request = {
     url,
@@ -28,13 +29,14 @@ function webhooks(serviceId, isLive) {
       live: isLive
     },
     description: 'List webhooks for service',
-    ...defaultRequestOptions
+    ...defaultRequestOptions,
+    ...options
   }
   return baseClient.get(request)
 }
 
-function createWebhook(serviceId, isLive, options = {}) {
-  const url = urlJoin('/v1/webhooks', id)
+function createWebhook (serviceId, isLive, options = {}) {
+  const url = urlJoin('/v1/webhooks')
   const request = {
     url,
     body: {
@@ -45,7 +47,8 @@ function createWebhook(serviceId, isLive, options = {}) {
       description: options.description
     },
     description: 'Create a webhook',
-    ...defaultRequestOptions
+    ...defaultRequestOptions,
+    ...options
   }
   return baseClient.post(request)
 }
