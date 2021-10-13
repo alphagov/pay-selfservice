@@ -12,31 +12,57 @@ const environmentVariablesSet =
   (process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI || (process.env.AWS_ACCESS_KEY && process.env.AWS_SECRET_ACCESS_KEY))
 
 const s3BucketConfig = {
-  Bucket: bucketName,
-
-  // signed URL expiration in seconds
-  Expires: 60 * 60
+  Bucket: bucketName
 }
 
 if (!environmentVariablesSet) {
   logger.warn('AWS policy documents S3 Bucket environment not configured')
 }
 
-const generatePrivateLink = async function generatePrivateLink (documentConfig) {
+const generatePrivateLink = async function generatePrivateLink(documentConfig) {
   // S3 Bucket documents are uploaded directly, the key will include file extension
   const Key = `${documentConfig.key}.pdf`
   const ResponseContentDisposition = `attachment; filename="${documentConfig.title}.pdf"`
-  const config = Object.assign({}, s3BucketConfig, { Key, ResponseContentDisposition })
-
-  return getSignedUrl('getObject', config)
+  const params = {
+    ...s3BucketConfig,
+    Key,
+    ResponseContentDisposition,
+    // signed URL expiration in seconds
+    Expires: 60 * 60
+  }
+  return getSignedUrl('getObject', params)
 }
 
 // wrap AWS SDK callback to work with library Promise async standards
 const getSignedUrl = (key, config) => new Promise((resolve, reject) => {
   s3.getSignedUrl(key, config, (error, url) => {
-    if (error) reject(new Error(`Policy documents storage error: ${error.message}`))
-    else resolve(url)
+    if (error) {
+      reject(new Error(`Policy documents storage error: ${error.message}`))
+    }
+    else {
+      resolve(url)
+    }
   })
 })
 
-module.exports = { generatePrivateLink }
+function getDocumentHtmlFromS3(documentConfig) {
+  const params = {
+    ...s3BucketConfig,
+    Key: `${documentConfig.key}.html`
+  }
+  return new Promise((resolve, reject) => {
+    s3.getObject(params, function (error, data) {
+      if (error) {
+        reject(new Error(`Error getting policy document HTML: ${error.message}`))
+      }
+      else {
+        resolve(data.Body.toString('utf-8'))
+      }
+    })
+  })
+}
+
+module.exports = {
+  generatePrivateLink,
+  getDocumentHtmlFromS3
+}
