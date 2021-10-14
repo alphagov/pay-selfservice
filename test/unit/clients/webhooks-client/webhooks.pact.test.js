@@ -14,7 +14,8 @@ const { expect } = chai
 chai.use(chaiAsPromised)
 
 const provider = new Pact({
-  consumer: 'selfservice',
+  // @TODO use validated `selfservice` consumer when provider pacts available
+  consumer: 'selfservice-to-be',
   provider: 'webhooks',
   log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
   dir: path.resolve(process.cwd(), 'pacts'),
