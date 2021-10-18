@@ -19,7 +19,7 @@ if (!environmentVariablesSet) {
   logger.warn('AWS policy documents S3 Bucket environment not configured')
 }
 
-const generatePrivateLink = async function generatePrivateLink(documentConfig) {
+const generatePrivateLink = async function generatePrivateLink (documentConfig) {
   // S3 Bucket documents are uploaded directly, the key will include file extension
   const Key = `${documentConfig.key}.pdf`
   const ResponseContentDisposition = `attachment; filename="${documentConfig.title}.pdf"`
@@ -38,14 +38,13 @@ const getSignedUrl = (key, config) => new Promise((resolve, reject) => {
   s3.getSignedUrl(key, config, (error, url) => {
     if (error) {
       reject(new Error(`Policy documents storage error: ${error.message}`))
-    }
-    else {
+    } else {
       resolve(url)
     }
   })
 })
 
-function getDocumentHtmlFromS3(documentConfig) {
+function getDocumentHtmlFromS3 (documentConfig) {
   const params = {
     ...s3BucketConfig,
     Key: `${documentConfig.key}.html`
@@ -54,8 +53,7 @@ function getDocumentHtmlFromS3(documentConfig) {
     s3.getObject(params, function (error, data) {
       if (error) {
         reject(new Error(`Error getting policy document HTML: ${error.message}`))
-      }
-      else {
+      } else {
         resolve(data.Body.toString('utf-8'))
       }
     })
