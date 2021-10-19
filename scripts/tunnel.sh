@@ -1,2 +1,2 @@
 #!/bin/sh
-pay tunnel $1 adminusers connector directdebit-connector publicauth ledger products
+pay tunnel $1 adminusers connector publicauth ledger products

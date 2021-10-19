@@ -1,7 +1,6 @@
 'use strict'
 const _ = require('lodash')
 const { ConnectorClient } = require('../services/clients/connector.client.js')
-const { isADirectDebitAccount } = require('../services/clients/direct-debit-connector.client')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const userServicesContainsGatewayAccount = function userServicesContainsGatewayAccount (accountId, user) {
@@ -28,7 +27,6 @@ const fetchGatewayAccountsFor = function fetchGatewayAccountsFor (user, permissi
     )
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
     .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-    .filter(gatewayAccountId => !isADirectDebitAccount(gatewayAccountId))
 
   return gatewayAccountIds.length
     ? client.getAccounts({ gatewayAccountIds }).then((result) => result.accounts)
