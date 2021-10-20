@@ -9,7 +9,6 @@ touch "$ENV_FILE"
 read -r -d '' URL_TARGET_LOCAL << EOM
 ADMINUSERS_URL=http://localhost:9700
 CONNECTOR_URL=http://localhost:9300
-DIRECT_DEBIT_CONNECTOR_URL=http://localhost:10100
 PRODUCTS_URL=http://localhost:18000
 LEDGER_URL=http://localhost:10700
 PUBLIC_AUTH_BASE=http://localhost:9600
@@ -19,7 +18,6 @@ EOM
 read -r -d '' URL_TARGET_TUNNEL << EOM
 ADMINUSERS_URL=https://localhost:9001
 CONNECTOR_URL=https://localhost:9003
-DIRECT_DEBIT_CONNECTOR_URL=https://localhost:9004
 PRODUCTS_URL=https://localhost:9005
 LEDGER_URL=https://localhost:9007
 PUBLIC_AUTH_BASE=http://localhost:9006
@@ -29,7 +27,6 @@ EOM
 read -r -d '' URL_TARGET_DOCKER_TUNNEL << EOM
 ADMINUSERS_URL=https://docker.for.mac.localhost:9001
 CONNECTOR_URL=https://docker.for.mac.localhost:9003
-DIRECT_DEBIT_CONNECTOR_URL=https://docker.for.mac.localhost:9004
 PRODUCTS_URL=https://docker.for.mac.localhost:9005
 LEDGER_URL=https://docker.for.mac.localhost:9007
 PUBLIC_AUTH_BASE=https://docker.for.mac.localhost:9006

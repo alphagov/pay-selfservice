@@ -59,7 +59,6 @@ pipeline {
           runPactProviderTests("pay-adminusers", "${env.PACT_TAG}", "selfservice")
           runPactProviderTests("pay-connector", "${env.PACT_TAG}", "selfservice")
           runPactProviderTests("pay-products", "${env.PACT_TAG}", "selfservice")
-          runPactProviderTests("pay-direct-debit-connector", "${env.PACT_TAG}", "selfservice")
           runPactProviderTests("pay-ledger", "${env.PACT_TAG}", "selfservice")
         }
       }

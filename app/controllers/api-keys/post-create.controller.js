@@ -2,7 +2,6 @@
 
 const { response } = require('../../utils/response.js')
 const publicAuthClient = require('../../services/clients/public-auth.client')
-const { isADirectDebitAccount } = require('../../services/clients/direct-debit-connector.client.js')
 
 module.exports = async function createApiKey (req, res, next) {
   const accountId = req.account.gateway_account_id
@@ -13,7 +12,7 @@ module.exports = async function createApiKey (req, res, next) {
     account_id: accountId,
     created_by: req.user.email,
     type: 'API',
-    token_type: isADirectDebitAccount(accountId) ? 'DIRECT_DEBIT' : 'CARD',
+    token_type: 'CARD',
     token_account_type: req.account.type
   }
 

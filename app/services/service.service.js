@@ -5,18 +5,14 @@ const lodash = require('lodash')
 const logger = require('../utils/logger')(__filename)
 const getAdminUsersClient = require('./clients/adminusers.client')
 const { ConnectorClient } = require('./clients/connector.client')
-const directDebitConnectorClient = require('./clients/direct-debit-connector.client')
-const { isADirectDebitAccount } = directDebitConnectorClient
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
 
 async function getGatewayAccounts (gatewayAccountIds, correlationId) {
-  const cardGatewayAccountIds = gatewayAccountIds.filter(id => !isADirectDebitAccount(id))
-
   const cardGatewayAccounts = await connectorClient.getAccounts({
-    gatewayAccountIds: cardGatewayAccountIds,
+    gatewayAccountIds: gatewayAccountIds,
     correlationId: correlationId
   })
 
@@ -35,7 +31,7 @@ async function updateServiceName (serviceExternalId, serviceName, serviceNameCy,
 
   await Promise.all(
     gatewayAccountIds.map(async gatewayAccountId => {
-      if (gatewayAccountId && !isADirectDebitAccount(gatewayAccountId)) {
+      if (gatewayAccountId) {
         const value = await connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)
         return value
       }
