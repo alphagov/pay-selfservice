@@ -206,8 +206,15 @@ const defaultPermissions = [
   {
     name: 'psp-test-account-stage:update',
     description: 'Update PSP Test Account stage'
+  },
+  {
+    name: 'webhooks:read',
+    description: 'View webhooks'
+  },
+  {
+    name: 'webhooks:update',
+    description: 'Update webhooks'
   }
-
 ]
 
 const buildServiceRole = (opts = {}) => {
