@@ -29,23 +29,25 @@ describe('policy download controller', () => {
   })
 
   describe('download document', () => {
-    const mockBucketService = sinon.spy(() => {
+    const mockBucketGetLinkToPdf = sinon.spy(() => {
       return new Promise(resolve => {
         resolve('download-url-link')
       })
     })
-    const mockBucketServiceService = {
-      generatePrivateLink: mockBucketService
+    const mockBucketService = {
+      generatePrivateLink: mockBucketGetLinkToPdf
     }
-    const controller = getController(mockBucketServiceService)
+    const controller = getController(mockBucketService)
     it('should call s3 policy bucket for private link', async function () {
       documentConfig = await supportedPolicyDocuments.lookup(key)
       await controller(req, res, next)
-      sinon.assert.calledWith(mockBucketServiceService.generatePrivateLink, documentConfig)
+      sinon.assert.calledWith(mockBucketService.generatePrivateLink, documentConfig)
       sinon.assert.calledWith(res.render, 'policy/document-downloads/pci-dss-attestation-of-compliance',
         sinon.match({
           link: 'download-url-link'
         }))
+      sinon.assert.notCalled(res.redirect)
+      sinon.assert.notCalled(next)
     })
   })
 
