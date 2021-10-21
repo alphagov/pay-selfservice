@@ -26,6 +26,7 @@ const { logContextMiddleware } = require('./app/utils/log-context')
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 const formatPSPname = require('./app/utils/format-PSP-name')
 const formatAccountPathsFor = require('./app/utils/format-account-paths-for')
+const formatFutureStrategyAccountPathsFor = require('./app/utils/format-future-strategy-account-paths-for')
 const formatServicePathsFor = require('./app//utils/format-service-paths-for')
 const healthcheckController = require('./app/controllers/healthcheck.controller')
 const { healthcheck } = require('./app/paths.js')
@@ -77,6 +78,7 @@ function initialiseGlobalMiddleware (app) {
     res.locals.asset_path = '/public/'
     res.locals.routes = router.paths
     res.locals.formatAccountPathsFor = formatAccountPathsFor
+    res.locals.formatFutureStrategyAccountPathsFor = formatFutureStrategyAccountPathsFor
     res.locals.formatServicePathsFor = formatServicePathsFor
     res.locals.analyticsTrackingId = ANALYTICS_TRACKING_ID
     noCache(res)

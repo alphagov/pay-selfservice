@@ -21,7 +21,7 @@ describe('webhooks service', () => {
   })
 })
 
-function getWebhooksService(listWebhooksResponseStub = []) {
+function getWebhooksService (listWebhooksResponseStub = []) {
   const webhooksService = proxyquire('./webhooks.service.js', {
     './../../services/clients/webhooks.client': {
       webhooks: async (serviceId, isLive) => listWebhooksResponseStub

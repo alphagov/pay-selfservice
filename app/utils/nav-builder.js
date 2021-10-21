@@ -1,5 +1,6 @@
 'use strict'
 
+const process = require('process')
 const _ = require('lodash')
 const paths = require('./../paths')
 const formatAccountPathsFor = require('./format-account-paths-for')
@@ -93,7 +94,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       name: 'Webhooks',
       url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.index, account.type, account.service_id, account.external_id),
       current: pathLookup(currentPath, paths.futureAccountStrategy.webhooks.index),
-      permissions: permissions.tokens_update
+      permissions: permissions.webhooks_update && process.env.FEATURE_ENABLE_WEBHOOKS === 'true'
     },
     ...yourPSPNavigationItems(account, currentPath).map((yourPSPNavigationItem) => ({
       ...yourPSPNavigationItem,

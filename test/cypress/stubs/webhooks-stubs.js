@@ -3,7 +3,7 @@
 const webhooksFixtures = require('../../fixtures/webhooks.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
-function getWebhooksListSuccess(opts) {
+function getWebhooksListSuccess (opts) {
   const path = '/v1/webhook'
   return stubBuilder('GET', path, 200, {
     query: {
