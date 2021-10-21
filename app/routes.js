@@ -79,6 +79,7 @@ const payoutsController = require('./controllers/payouts/payout-list.controller'
 const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
 const requestPspTestAccountController = require('./controllers/request-psp-test-account')
 const defaultBillingAddressCountryController = require('./controllers/settings/default-billing-address-country.controller')
+const webhooksController = require('./controllers/webhooks/webhooks.controller')
 
 // Assignments
 const {
@@ -114,6 +115,9 @@ const {
   switchPSP
 } = paths.account
 const {
+  webhooks
+} = paths.futureAccountStrategy
+const {
   editServiceName,
   merchantDetails,
   redirects,
@@ -129,6 +133,9 @@ module.exports.paths = paths
 module.exports.bind = function (app) {
   const account = new Router({ mergeParams: true })
   account.use(getServiceAndAccount, userIsAuthorised)
+
+  const futureAccountStrategy = new Router({ mergeParams: true })
+  futureAccountStrategy.use(getServiceAndAccount, userIsAuthorised)
 
   const service = new Router({ mergeParams: true })
   service.use(getServiceAndAccount, userIsAuthorised)
@@ -431,8 +438,11 @@ module.exports.bind = function (app) {
   account.post([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 
+  futureAccountStrategy.get(webhooks.index, permission('webhooks:read'), webhooksController.listWebhooksPage)
+
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
+  app.use(paths.futureAccountStrategy.root, futureAccountStrategy)
 
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'

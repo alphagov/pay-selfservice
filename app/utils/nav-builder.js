@@ -3,6 +3,7 @@
 const _ = require('lodash')
 const paths = require('./../paths')
 const formatAccountPathsFor = require('./format-account-paths-for')
+const formatFutureStrategyAccountPathsFor = require('./format-future-strategy-account-paths-for')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
 const { getPSPPageLinks, CREDENTIAL_STATE } = require('./credentials')
@@ -54,6 +55,7 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     current: currentPath !== '/' ? yourPspPaths.concat(switchPspPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
       ...mainSettingsPaths,
       paths.account.apiKeys,
+      paths.futureAccountStrategy.webhooks,
       paths.account.paymentTypes
     ]) : false,
     permissions: _.some([
@@ -84,6 +86,13 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       name: 'API keys',
       url: apiKeysPath,
       current: pathLookup(currentPath, paths.account.apiKeys.index),
+      permissions: permissions.tokens_update
+    },
+    {
+      id: 'navigation-menu-webhooks',
+      name: 'Webhooks',
+      url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.index, account.type, account.service_id, account.external_id),
+      current: pathLookup(currentPath, paths.futureAccountStrategy.webhooks.index),
       permissions: permissions.tokens_update
     },
     ...yourPSPNavigationItems(account, currentPath).map((yourPSPNavigationItem) => ({
