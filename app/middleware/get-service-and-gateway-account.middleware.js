@@ -3,7 +3,7 @@
 const _ = require('lodash')
 
 const logger = require('../utils/logger')(__filename)
-const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID } = require('../paths').keys
+const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID, ENVIRONMENT_ID } = require('../paths').keys
 const Connector = require('../services/clients/connector.client.js').ConnectorClient
 
 const { keys } = require('@govuk-pay/pay-js-commons').logging
@@ -76,6 +76,7 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
       const correlationId = req.correlationId
       const serviceExternalId = req.params[SERVICE_EXTERNAL_ID]
       const gatewayAccountExternalId = req.params[GATEWAY_ACCOUNT_EXTERNAL_ID]
+      const environment = req.params[ENVIRONMENT_ID]
 
       if (!serviceExternalId && !gatewayAccountExternalId) {
         throw new Error('Could not resolve gateway account external ID or service external ID from request params')
@@ -103,6 +104,10 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
       if (service) {
         req.service = service
         addLoggingField(keys.SERVICE_EXTERNAL_ID, service.externalId)
+      }
+
+      if (environment) {
+        req.isLive = environment === 'live'
       }
     }
 

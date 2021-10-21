@@ -28,9 +28,9 @@ const buildUser = (serviceExternalId, gatewayAccountIds) => {
   }))
 }
 
-const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAccountExternalId, paymentProvider, serviceExternalId) {
+const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAccountExternalId, paymentProvider, serviceExternalId, environmentId) {
   req = {
-    params: { gatewayAccountExternalId: gatewayAccountExternalId, serviceExternalId: serviceExternalId },
+    params: { gatewayAccountExternalId: gatewayAccountExternalId, serviceExternalId: serviceExternalId, environmentId: environmentId },
     correlationId: 'some-correlation-id'
   }
   req.user = buildUser(serviceExternalId, [`${gatewayAccountID}`])
@@ -71,7 +71,7 @@ const setupGetGatewayAccountClientError = function (gatewayAccountExternalId, er
 
 describe('middleware: getGatewayAccountAndService', () => {
   it('should set gateway account and service on request object ', async () => {
-    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
+    const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id', 'live')
 
     await getGatewayAccountAndService(req, res, next)
 
@@ -195,6 +195,22 @@ describe('middleware: getGatewayAccountAndService', () => {
       await getGatewayAccountAndService(req, res, next)
       expect(req.account.external_id).to.equal('some-gateway-external-id')
       expect(req.account).to.have.property('connectorGatewayAccountStripeProgress')
+    })
+    it('should set isLive property to true when live environment set', async () => {
+      const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id', 'live')
+      await getGatewayAccountAndService(req, res, next)
+
+      expect(req.account.external_id).to.equal('some-gateway-external-id')
+      expect(req.service.externalId).to.equal('some-service-external-id')
+      expect(req.isLive).to.equal(true)
+    })
+    it('should set isLive property to false when test environment set', async () => {
+      const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id', 'test')
+      await getGatewayAccountAndService(req, res, next)
+
+      expect(req.account.external_id).to.equal('some-gateway-external-id')
+      expect(req.service.externalId).to.equal('some-service-external-id')
+      expect(req.isLive).to.equal(false)
     })
   })
 })
