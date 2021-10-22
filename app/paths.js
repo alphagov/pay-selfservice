@@ -4,6 +4,7 @@ const generateRoute = require('./utils/generate-route')
 const formattedPathFor = require('./utils/replace-params-in-path')
 
 const keys = {
+  ENVIRONMENT_ID: 'environmentId',
   SERVICE_EXTERNAL_ID: 'serviceExternalId',
   GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId'
 }
@@ -135,6 +136,15 @@ module.exports = {
         vatNumber: '/your-psp/:credentialId/vat-number',
         companyNumber: '/your-psp/:credentialId/company-number'
       }
+    }
+  },
+  futureAccountStrategy: {
+    // remove account when hybrid gateway account root no longer required
+    // `/:${keys.ENVIRONMENT_ID}(test|live)/service/:${keys.SERVICE_EXTERNAL_ID}`,
+    root: `/:${keys.ENVIRONMENT_ID}(test|live)/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
+    webhooks: {
+      index: '/webhooks',
+      detail: '/webhook/:webhookId'
     }
   },
   service: {

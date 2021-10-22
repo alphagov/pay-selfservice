@@ -111,6 +111,10 @@ function validGatewayAccount (opts) {
     gatewayAccount.provider_switch_enabled = opts.provider_switch_enabled
   }
 
+  if (opts.service_id) {
+    gatewayAccount.service_id = opts.service_id
+  }
+
   return gatewayAccount
 }
 

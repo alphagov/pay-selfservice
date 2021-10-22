@@ -57,6 +57,10 @@ function parseGatewayAccountOptions (opts) {
     stubOptions.external_id = opts.gatewayAccountExternalId
   }
 
+  if (opts.serviceExternalId) {
+    stubOptions.service_id = opts.serviceExternalId
+  }
+
   if (opts.providerSwitchEnabled !== undefined) {
     stubOptions.provider_switch_enabled = opts.providerSwitchEnabled
   }
