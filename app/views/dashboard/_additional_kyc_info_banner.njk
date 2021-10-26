@@ -1,0 +1,24 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% if (isAdminUser and requiresAdditionalKycData and activeCredential.payment_provider === 'stripe') %}
+
+  <div class="govuk-grid-column-full">
+    {% set html %}
+      <p class="govuk-notification-banner__heading">
+        You must add more details by {{ stripeKycAdditionalDataDueDate }} to continue taking payments.
+      </p>
+
+      <p class="govuk-body">
+        Continue to
+        <a id="add-additional-kyc-details" class="govuk-notification-banner__link"
+           href="{{ formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id) }}">
+          add KYC details </a>.
+      </p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: html
+    }) }}
+  </div>
+
+{% endif %}

@@ -65,6 +65,10 @@ function parseGatewayAccountOptions (opts) {
     stubOptions.provider_switch_enabled = opts.providerSwitchEnabled
   }
 
+  if (opts.requiresAdditionalKycData !== undefined) {
+    stubOptions.requires_additional_kyc_data = opts.requiresAdditionalKycData
+  }
+
   if (opts.gatewayAccountCredentials) {
     stubOptions.gateway_account_credentials = opts.gatewayAccountCredentials
   }
