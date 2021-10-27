@@ -37,10 +37,8 @@ describe('Stripe - add additional KYC details banner', () => {
 
     cy.get('.govuk-notification-banner__heading').contains('You must add more details by 1 November 2021 to continue taking payments')
     cy.get('#add-additional-kyc-details').should('exist')
-  })
+    cy.get('#add-additional-kyc-details').should('exist')
 
-  it('should redirect to Your PSP stripe page when "Add KYC details" link is clicked', () => {
-    cy.get('#add-additional-kyc-details').click()
-    cy.get('h1').contains('Your payment service provider (PSP) - Stripe')
+    cy.get('#add-additional-kyc-details').should('have.attr', 'href', `/account/a-valid-external-id/your-psp/a-valid-external-id`)
   })
 })
