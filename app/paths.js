@@ -152,7 +152,8 @@ module.exports = {
     root: `/:${keys.ENVIRONMENT_ID}(test|live)/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
     webhooks: {
       index: '/webhooks',
-      detail: '/webhook/:webhookId'
+      detail: '/webhooks/:webhookId',
+      create: '/webhooks/create'
     }
   },
   service: {

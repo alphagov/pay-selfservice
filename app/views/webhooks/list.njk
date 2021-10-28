@@ -33,9 +33,14 @@
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
   {% endfor %}
 
+  {# @TODO(sfount) all of the detail (other than account id) should come from the service and live context rather than the account, this will make it easier move off when the account is removed #}
   {{ govukButton({
     text: "Create a new Webhook",
-    classes: "govuk-button--secondary"
+    classes: "govuk-button--secondary",
+    href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.create, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id),
+    attributes: {
+      "data-action": "create"
+    }
   }) }}
 </div>
 {% endblock %}

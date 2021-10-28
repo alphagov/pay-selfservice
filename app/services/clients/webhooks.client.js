@@ -46,10 +46,11 @@ function createWebhook (serviceId, isLive, options = {}) {
       subscriptions: options.subscriptions,
       description: options.description
     },
-    description: 'Create a webhook',
     ...defaultRequestOptions,
-    ...options
+    ...options,
+    description: 'Create a webhook',
   }
+  console.log(request)
   return baseClient.post(request)
 }
 

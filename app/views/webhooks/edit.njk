@@ -1,0 +1,62 @@
+{% extends "layout.njk" %}
+
+{% set heading = "Update your Webhook details" if isEditing else "Create a new Webhook" %}
+
+{% block pageTitle %}
+  {{ heading }} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  {{ govukBackLink({
+    text: "Back to Webhooks",
+    classes: "govuk-!-margin-top-0",
+    href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id)
+  }) }}
+  <h1 class="govuk-heading-l page-title">{{ heading }}</h1>
+
+  <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.create, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) }}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+    {% set items = [] %}
+    {% for key, name in eventTypes %}
+      {% set items = (items.push({ value: key | lower, text: name }), items) %}
+    {% endfor %}
+
+    {{ govukInput({
+      label: { text: "Callback URL" },
+      hint: { text: "The URL GOV.UK Pay will send payment events to" },
+      id: "callback_url",
+      name: "callback_url"
+    }) }}
+
+    {{ govukInput({
+      label: { text: "Description" },
+      hint: { text: "Short summary of what this Webhook will be used for" },
+      id: "description",
+      name: "description"
+    }) }}
+    {{ govukCheckboxes({
+      idPrefix: "subscriptions",
+      name: "subscriptions",
+      classes: "govuk-checkboxes--small",
+      fieldset: {
+        legend: {
+          text: "What payment events should we send?",
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      items: items
+    }) }}
+
+    {{ govukButton({
+      text: "Create Webhook",
+      type: "submit"
+    }) }}
+  </form>
+</div>
+{% endblock %}

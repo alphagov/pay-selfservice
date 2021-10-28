@@ -11,6 +11,12 @@ async function listWebhooks (serviceId, isLive) {
   return webhooks.sort(sortByActiveStatus)
 }
 
+function createWebhook (serviceId, isLive, options = {}) {
+  options.subscriptions = typeof options.subscriptions === 'string' ? [ options.subscriptions ] : options.subscriptions
+  return webhooksClient.createWebhook(serviceId, isLive, options)
+}
+
 module.exports = {
-  listWebhooks
+  listWebhooks,
+  createWebhook
 }
