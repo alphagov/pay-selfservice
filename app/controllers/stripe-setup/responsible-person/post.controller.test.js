@@ -46,12 +46,14 @@ describe('Responsible person POST controller', () => {
   let setStripeAccountSetupFlagMock
   let listPersonsMock
   let updatePersonMock
+  let createPersonMock
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
       '../../../services/clients/stripe/stripe.client': {
         listPersons: listPersonsMock,
-        updatePerson: updatePersonMock
+        updatePerson: updatePersonMock,
+        createPerson: createPersonMock
       },
       '../../../services/clients/connector.client': {
         ConnectorClient: function () {
@@ -92,8 +94,16 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: 'other-person' },
-        { id: personId }
+        { id: 'other-person',
+          relationship: {
+            representative: false
+          }
+        },
+        { id: personId,
+          relationship: {
+            representative: true
+          }
+        }
       ]
     }))
     updatePersonMock = sinon.spy(() => Promise.resolve())
@@ -123,7 +133,11 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: personId }
+        { id: personId,
+          relationship: {
+            representative: true
+          }
+        }
       ]
     }))
     updatePersonMock = sinon.spy(() => Promise.resolve())
@@ -174,7 +188,11 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: personId }
+        { id: personId,
+          relationship: {
+            representative: true
+          }
+        }
       ]
     }))
     updatePersonMock = sinon.spy(() => Promise.reject(new Error()))
@@ -196,7 +214,11 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: personId }
+        { id: personId,
+          relationship: {
+            representative: true
+          }
+        }
       ]
     }))
     updatePersonMock = sinon.spy(() => Promise.resolve())
@@ -212,5 +234,39 @@ describe('Responsible person POST controller', () => {
     sinon.assert.notCalled(res.redirect)
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)
+  })
+
+  it('should call Stripe to create new user, then connector, then redirect to add details redirect route', async function () {
+    const personId = 'person-1'
+    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+      data: [
+        { id: personId,
+          relationship: {
+            representative: false
+          }
+        }
+      ]
+    }))
+    createPersonMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.body = { ...postBodyWithAddress2 }
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(createPersonMock, res.locals.stripeAccount.stripeAccountId, {
+      first_name: firstNameNormalised,
+      last_name: lastNameNormalised,
+      address_line1: addressLine1Normalised,
+      address_line2: addressLine2Normalised,
+      address_city: addressCityNormalised,
+      address_postcode: addressPostcodeNormalised,
+      dob_day: dobDayNormalised,
+      dob_month: dobMonthNormalised,
+      dob_year: dobYearNormalised
+    })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 })

@@ -11,7 +11,7 @@ const { response } = require('../../../utils/response')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth
 } = require('../../../utils/validation/server-side-form-validations')
-const { listPersons, updatePerson } = require('../../../services/clients/stripe/stripe.client')
+const { listPersons, updatePerson, createPerson } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
@@ -127,8 +127,12 @@ module.exports = async function (req, res, next) {
         stripeAccountId = stripeAccount.stripeAccountId
       }
       const personsResponse = await listPersons(stripeAccountId)
-      const person = personsResponse.data.pop()
-      await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))
+      const person = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
+      if (person !== undefined) {
+        await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))
+      } else {
+        await createPerson(stripeAccountId, buildStripePerson(formFields))
+      }
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
 
       logger.info('Responsible person details submitted for Stripe account', {
