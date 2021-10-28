@@ -115,6 +115,10 @@ function validGatewayAccount (opts) {
     gatewayAccount.service_id = opts.service_id
   }
 
+  if (opts.requires_additional_kyc_data !== undefined) {
+    gatewayAccount.requires_additional_kyc_data = opts.requires_additional_kyc_data
+  }
+
   return gatewayAccount
 }
 

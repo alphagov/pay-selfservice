@@ -52,6 +52,11 @@ function isSwitchingCredentialsRoute (req) {
 
 function getPSPPageLinks (gatewayAccount) {
   const supportedYourPSPPageProviders = ['worldpay', 'smartpay', 'epdq']
+
+  if (gatewayAccount.requires_additional_kyc_data) {
+    supportedYourPSPPageProviders.push('stripe')
+  }
+
   const numberOfAllCredentials = gatewayAccount.gateway_account_credentials && gatewayAccount.gateway_account_credentials.length
   const credentials = (gatewayAccount.gateway_account_credentials || [])
     .filter((credential) => supportedYourPSPPageProviders.includes(credential.payment_provider))
