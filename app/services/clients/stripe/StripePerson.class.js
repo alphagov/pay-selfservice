@@ -45,6 +45,10 @@ function build (params) {
       day: params.dob_day,
       month: params.dob_month,
       year: params.dob_year
+    },
+    relationship: {
+      executive: true,
+      representative: true
     }
   }
 

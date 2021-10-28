@@ -49,6 +49,11 @@ module.exports = {
     return stripe.accounts.updatePerson(stripeAccountId, stripePersonId, stripePerson.basicObject())
   },
 
+  createPerson: function (stripeAccountId, body) {
+    const stripePerson = new StripePerson(body)
+    return stripe.accounts.createPerson(stripeAccountId, stripePerson.basicObject())
+  },
+
   retrieveAccountDetails: function (stripeAccountId) {
     return stripe.accounts.retrieve(stripeAccountId, {
       timeout: 1000

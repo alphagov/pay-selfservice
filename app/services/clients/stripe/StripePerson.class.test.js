@@ -42,6 +42,10 @@ describe('StripePerson', () => {
         day: dobDay,
         month: dobMonth,
         year: dobYear
+      },
+      relationship: {
+        executive: true,
+        representative: true
       }
     })
   })
@@ -71,6 +75,10 @@ describe('StripePerson', () => {
         day: dobDay,
         month: dobMonth,
         year: dobYear
+      },
+      relationship: {
+        executive: true,
+        representative: true
       }
     })
   })
