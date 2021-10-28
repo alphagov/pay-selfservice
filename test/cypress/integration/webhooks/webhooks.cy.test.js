@@ -32,4 +32,21 @@ describe('Webhooks', () => {
 
     cy.get('[data-webhook-entry]').should('have.length', 1)
   })
+
+  it('should create a webhook with a valid properties', () => {
+    const callbackUrl = 'https://some-valid-callback-url.com'
+    const description = 'A valid Webhook description'
+    const subscriptions = [ 'card_payment_captured' ]
+
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+
+    cy.get('[data-action=create').contains('Create a new Webhook').click()
+    cy.get('#callback_url').type(callbackUrl)
+    cy.get('#description').type(description)
+    cy.get('[value=card_payment_captured]').click()
+
+    cy.get('button').contains('Create Webhook').click()
+  })
 })

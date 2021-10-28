@@ -61,4 +61,37 @@ describe('webhooks client', function () {
         })
     })
   })
+
+  describe('create webhooks', () => {
+    const callbackUrl = 'https://a-callback-url.com'
+    const description = 'A valid Webhook description'
+    const subscriptions = [ 'card_payment_captured' ]
+    before(() => {
+      return provider.addInteraction(
+        new PactInteractionBuilder(`/v1/webhook`)
+          .withRequestBody({
+            service_id: serviceId,
+            callback_url: callbackUrl,
+            live: isLive,
+            description,
+            subscriptions
+          })
+          .withUponReceiving('a valid request for a new webhooks')
+          .withState('service and environment provided')
+          .withMethod('POST')
+          .withStatusCode(200)
+          .withResponseBody(pactify(webhookFixtures.webhookResponse({ external_id: webhookId })))
+          .build()
+      )
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should submit details to create a webhook', () => {
+      return webhooksClient.createWebhook(serviceId, isLive, { callback_url: callbackUrl, description, subscriptions, baseUrl: webhooksUrl })
+        .then((response) => {
+          expect(response.external_id).to.equal(webhookId)
+        })
+    })
+  })
 })
