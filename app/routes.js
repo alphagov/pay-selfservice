@@ -228,7 +228,6 @@ module.exports.bind = function (app) {
 
   // Policy document downloads
   app.get(policyPages.html, userIsAuthorised, policyDocumentsController.html)
-  app.get(policyPages.download, userIsAuthorised, policyDocumentsController.download)
 
   // Feedback
   app.get(paths.feedback, userIsAuthorised, feedbackController.getIndex)
