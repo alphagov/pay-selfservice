@@ -9,10 +9,13 @@ const defaultRequestOptions = {
   service: 'webhooks'
 }
 
-function webhook (id, options = {}) {
+function webhook(id, serviceId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
   const request = {
     url,
+    qs: {
+      service_id: serviceId
+    },
     description: 'Get one webhook',
     ...defaultRequestOptions,
     ...options
@@ -20,7 +23,7 @@ function webhook (id, options = {}) {
   return baseClient.get(request)
 }
 
-function webhooks (serviceId, isLive, options = {}) {
+function webhooks(serviceId, isLive, options = {}) {
   const url = '/v1/webhook'
   const request = {
     url,
@@ -35,7 +38,7 @@ function webhooks (serviceId, isLive, options = {}) {
   return baseClient.get(request)
 }
 
-function createWebhook (serviceId, isLive, options = {}) {
+function createWebhook(serviceId, isLive, options = {}) {
   const url = '/v1/webhook'
   const request = {
     url,
@@ -48,14 +51,34 @@ function createWebhook (serviceId, isLive, options = {}) {
     },
     ...defaultRequestOptions,
     ...options,
-    description: 'Create a webhook',
+    description: 'Create a Webhook',
   }
-  console.log(request)
   return baseClient.post(request)
+}
+
+function updateWebhook(id, serviceId, options = {}) {
+  const url = urlJoin('/v1/webhook', id)
+  const body = [
+    { op: 'replace', path: 'callback_url', value: options.callback_url },
+    { op: 'replace', path: 'subscriptions', value: options.subscriptions },
+    { op: 'replace', path: 'description', value: options.description }
+  ]
+  const request = {
+    url,
+    qs: {
+      service_id: serviceId
+    },
+    body,
+    ...defaultRequestOptions,
+    ...options,
+    description: 'Update a Webhook'
+  }
+  return baseClient.patch(request)
 }
 
 module.exports = {
   webhook,
   webhooks,
-  createWebhook
+  createWebhook,
+  updateWebhook
 }

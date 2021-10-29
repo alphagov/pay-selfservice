@@ -1,6 +1,7 @@
 {% extends "layout.njk" %}
 
 {% set heading = "Update your Webhook details" if isEditing else "Create a new Webhook" %}
+{% set submitURL = formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.update, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) if isEditing else formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.create, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) %}
 
 {% block pageTitle %}
   {{ heading }} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -19,26 +20,29 @@
   }) }}
   <h1 class="govuk-heading-l page-title">{{ heading }}</h1>
 
-  <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.create, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) }}">
+  <form method="POST" action="{{ submitURL }}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set items = [] %}
     {% for key, name in eventTypes %}
-      {% set items = (items.push({ value: key | lower, text: name }), items) %}
+      {% set checked = key | lower in webhook.subscriptions if isEditing else false %}
+      {% set items = (items.push({ value: key | lower, text: name, checked: checked }), items) %}
     {% endfor %}
 
     {{ govukInput({
       label: { text: "Callback URL" },
       hint: { text: "The URL GOV.UK Pay will send payment events to" },
       id: "callback_url",
-      name: "callback_url"
+      name: "callback_url",
+      value: webhook.callback_url
     }) }}
 
     {{ govukInput({
       label: { text: "Description" },
       hint: { text: "Short summary of what this Webhook will be used for" },
       id: "description",
-      name: "description"
+      name: "description",
+      value: webhook.description
     }) }}
     {{ govukCheckboxes({
       idPrefix: "subscriptions",
@@ -54,7 +58,7 @@
     }) }}
 
     {{ govukButton({
-      text: "Create Webhook",
+      text: "Update Webhook" if isEditing else "Create Webhook",
       type: "submit"
     }) }}
   </form>

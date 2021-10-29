@@ -153,6 +153,7 @@ module.exports = {
     webhooks: {
       index: '/webhooks',
       detail: '/webhooks/:webhookId',
+      update: '/webhooks/:webhookId/update',
       create: '/webhooks/create'
     }
   },

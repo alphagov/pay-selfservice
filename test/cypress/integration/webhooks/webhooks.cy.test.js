@@ -36,7 +36,6 @@ describe('Webhooks', () => {
   it('should create a webhook with a valid properties', () => {
     const callbackUrl = 'https://some-valid-callback-url.com'
     const description = 'A valid Webhook description'
-    const subscriptions = [ 'card_payment_captured' ]
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs
