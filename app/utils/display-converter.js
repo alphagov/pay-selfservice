@@ -11,14 +11,10 @@ const hideServiceHeaderTemplates = [
   'error',
   'error-with-link',
   '404',
-  'policy/document-downloads/contract-for-non-crown-bodies',
-  'policy/document-downloads/memorandum-of-understanding-for-crown-bodies',
-  'policy/document-downloads/pci-dss-attestation-of-compliance',
-  'policy/document-downloads/stripe-connected-account-agreement',
-  'policy/document-html/contract-for-non-crown-bodies',
-  'policy/document-html/memorandum-of-understanding-for-crown-bodies',
-  'policy/document-html/pci-dss-attestation-of-compliance',
-  'policy/document-html/stripe-connected-account-agreement'
+  'policy/document/contract-for-non-crown-bodies',
+  'policy/document/memorandum-of-understanding-for-crown-bodies',
+  'policy/document/pci-dss-attestation-of-compliance',
+  'policy/document/stripe-connected-account-agreement'
 ]
 
 const hideServiceNavTemplates = [

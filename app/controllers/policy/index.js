@@ -1,5 +1,5 @@
 'use strict'
 
 module.exports = {
-  html: require('./policy-html.controller')
+  get: require('./policy.controller')
 }

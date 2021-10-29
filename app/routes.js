@@ -86,7 +86,7 @@ const {
   allServiceTransactions,
   index,
   inviteValidation,
-  policyPages,
+  policyPage,
   payouts,
   registerUser,
   selfCreateService,
@@ -227,7 +227,7 @@ module.exports.bind = function (app) {
   app.get(payouts.listStatusFilter, userIsAuthorised, payoutsController.listAllServicesPayouts)
 
   // Policy document downloads
-  app.get(policyPages.html, userIsAuthorised, policyDocumentsController.html)
+  app.get(policyPage, userIsAuthorised, policyDocumentsController.get)
 
   // Feedback
   app.get(paths.feedback, userIsAuthorised, feedbackController.getIndex)

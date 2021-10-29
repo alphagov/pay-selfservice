@@ -17,7 +17,7 @@ async function getDocumentHtml (documentConfig, key) {
   return contentHtml
 }
 
-async function downloadDocumentsPolicyPage (req, res, next) {
+async function viewPage (req, res, next) {
   const key = req.params.key
   try {
     const documentConfig = await supportedPolicyDocuments.lookup(key)
@@ -33,4 +33,4 @@ async function downloadDocumentsPolicyPage (req, res, next) {
   }
 }
 
-module.exports = downloadDocumentsPolicyPage
+module.exports = viewPage
