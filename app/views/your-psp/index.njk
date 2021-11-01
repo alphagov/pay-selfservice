@@ -57,7 +57,7 @@
   {% if credential.payment_provider === "epdq" %}
     {% include "./_epdq.njk" %}
   {% endif %}
-  {% if credential.payment_provider === "stripe" and requiresAdditionalKycData %}
+  {% if credential.payment_provider === "stripe" %}
     {% include "./_stripe.njk" %}
   {% endif %}
 </div>

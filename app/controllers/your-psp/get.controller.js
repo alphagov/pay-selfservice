@@ -2,8 +2,9 @@
 
 const { response } = require('../../utils/response')
 const { getCredentialByExternalId, getCurrentCredential, getSwitchingCredentialIfExists, hasSwitchedProvider } = require('../../utils/credentials')
+const { getTaskList, isComplete } = require('./kyc-tasks.service')
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   const { credentialId } = req.params
 
   try {
@@ -19,6 +20,15 @@ module.exports = (req, res, next) => {
 
     const is3dsEnabled = req.account.requires3ds === true
 
+    let stripeData = {}
+    if (activeCredential && activeCredential.payment_provider === 'stripe') {
+      stripeData.requiresAdditionalKycData = req.account.requires_additional_kyc_data === true
+      if (stripeData.requiresAdditionalKycData) {
+        stripeData.kycTaskList = await getTaskList(activeCredential)
+        stripeData.kycTaskListComplete = isComplete(stripeData.kycTaskList)
+      }
+    }
+
     const isWorldpay3dsFlexEnabled = is3dsEnabled && req.account.integration_version_3ds === 2
 
     return response(req, res, 'your-psp/index', {
@@ -29,7 +39,8 @@ module.exports = (req, res, next) => {
       isAccountCredentialsConfigured,
       is3dsEnabled,
       isWorldpay3dsFlexEnabled,
-      isWorldpay3dsFlexCredentialsConfigured
+      isWorldpay3dsFlexCredentialsConfigured,
+      ...stripeData
     })
   } catch (error) {
     next(error)

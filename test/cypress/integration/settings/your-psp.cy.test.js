@@ -71,6 +71,7 @@ describe('Your PSP settings page', () => {
       credentials: opts.credentials,
       paymentProvider: opts.gateway,
       notificationCredentials: opts.notificationCredentials,
+      requiresAdditionalKycData: opts.requiresAdditionalKycData,
       ...opts.gatewayAccountCredentials && { gatewayAccountCredentials: opts.gatewayAccountCredentials }
     })
     const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
@@ -82,6 +83,7 @@ describe('Your PSP settings page', () => {
       credentials: opts.credentials,
       paymentProvider: opts.gateway,
       notificationCredentials: opts.notificationCredentials,
+      requiresAdditionalKycData: opts.requiresAdditionalKycData,
       ...opts.gatewayAccountCredentials && { gatewayAccountCredentials: opts.gatewayAccountCredentials }
     })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
@@ -503,6 +505,26 @@ describe('Your PSP settings page', () => {
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
+    })
+  })
+
+  describe('When using a Stripe account', () => {
+    beforeEach(() => {
+      setupYourPspStubs({
+        requiresAdditionalKycData: true,
+        gatewayAccountCredentials: [{
+          payment_provider: 'stripe',
+          credentials: { stripe_account_id: 'acct_123example123' },
+          external_id: credentialExternalId
+        }]
+      })
+    })
+
+    it('should show link to "Your PSP - Stripe" in the side navigation - when requires additional kyc data is enabled', () => {
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
+      cy.get('#navigation-menu-your-psp').click()
     })
   })
 })

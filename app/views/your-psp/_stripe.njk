@@ -1,0 +1,62 @@
+{% macro taskListItem(id, label, url, item) %}
+  <li class="app-task-list__item">
+    <span class="app-task-list__task-name">
+      {% if not item.complete %}
+        <a class="govuk-link" href="{{ url }}" aria-describedby="{{ id }}-status">
+        {{ label }}
+      </a>
+      {% else %}
+        <span>{{ label }}</span>
+      {% endif %}
+    </span>
+
+    {% if not item.complete %}
+      <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ id }}-status">not started</strong>
+      {% elif item.complete %}
+      <strong class="govuk-tag app-task-list__tag" id="{{ id }}-status">completed</strong>
+    {% endif %}
+  </li>
+{% endmacro %}
+
+{% if requiresAdditionalKycData and not kycTaskListComplete %}
+
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Know your customer (KYC) details</h2>
+  <p class="govuk-body">You must add additional details about your organisation for Stripe's anti-money laundering
+    checks. </p>
+
+  {% set warningText %}
+    You will not receive your money if you do not add these details.
+  {% endset %}
+  {{ govukWarningText({
+    text: warningText,
+    iconFallbackText: "Warning"
+  }) }}
+
+  {% set tasks %}
+    {{ taskListItem(
+      'task-organisation-url',
+      "Add organisation URL",
+      formatAccountPathsFor(routes.account.kyc.collectAdditionalData.organisationUrl, currentGatewayAccount.external_id, activeCredential.external_id),
+      kycTaskList.ENTER_ORGANISATION_URL
+    ) }}
+    {{ taskListItem(
+      'task-update-sro',
+      "Add information about responsible person",
+      formatAccountPathsFor(routes.account.kyc.collectAdditionalData.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
+      kycTaskList.UPDATE_RESPONSIBLE_PERSON
+    ) }}
+    {{ taskListItem(
+      'task-add-director',
+      "Add information about the director of your organisation",
+      formatAccountPathsFor(routes.account.kyc.collectAdditionalData.director, currentGatewayAccount.external_id, activeCredential.external_id),
+      kycTaskList.ENTER_DIRECTOR
+    ) }}
+  {% endset %}
+
+  <ol class="app-task-list govuk-!-margin-top-8">
+    <li>
+      <ul class="app-task-list__items">{{ tasks | safe }}</ul>
+    </li>
+  </ol>
+
+{% endif %}

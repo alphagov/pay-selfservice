@@ -109,6 +109,13 @@ module.exports = {
         companyNumber: '/switch-psp/:credentialId/company-number'
       }
     },
+    kyc: {
+      collectAdditionalData: {
+        organisationUrl: '/kyc/:credentialId/organisation-url',
+        responsiblePerson: '/kyc/:credentialId/responsible-person',
+        director: '/kyc/:credentialId/director'
+      }
+    },
     toggle3ds: {
       index: '/3ds'
     },
