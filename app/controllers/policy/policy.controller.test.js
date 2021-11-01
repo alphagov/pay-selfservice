@@ -5,7 +5,7 @@ const proxyquire = require('proxyquire')
 const supportedPolicyDocuments = require('./supported-policy-documents')
 
 const getController = function getController (mockBucket) {
-  return proxyquire('./policy-html.controller', {
+  return proxyquire('./policy.controller', {
     './aws-s3-policy-bucket': mockBucket
   })
 }
@@ -51,7 +51,7 @@ describe('policy HTML download controller', () => {
 
       sinon.assert.calledWith(mockBucketService.generatePrivateLink, documentConfig)
       sinon.assert.calledWith(mockBucketService.getDocumentHtmlFromS3, documentConfig)
-      sinon.assert.calledWith(res.render, 'policy/document-html/stripe-connected-account-agreement',
+      sinon.assert.calledWith(res.render, 'policy/document/stripe-connected-account-agreement',
         sinon.match({
           link: 'html-url-link',
           contentHtml: 'html content'
@@ -112,7 +112,7 @@ describe('policy HTML download controller', () => {
 
       sinon.assert.calledWith(mockBucketService.generatePrivateLink, documentConfig)
       sinon.assert.calledWith(mockBucketService.getDocumentHtmlFromS3, documentConfig)
-      sinon.assert.calledWith(res.render, 'policy/document-html/stripe-connected-account-agreement',
+      sinon.assert.calledWith(res.render, 'policy/document/stripe-connected-account-agreement',
         sinon.match({
           link: 'html-url-link',
           contentHtml: 'Error displaying content'

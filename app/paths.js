@@ -243,9 +243,7 @@ module.exports = {
   feedback: '/feedback',
   generateRoute: generateRoute,
   formattedPathFor: formattedPathFor,
-  policyPages: {
-    html: '/policy/:key'
-  },
+  policyPage: '/policy/:key',
   payouts: {
     list: '/payments-to-your-bank-account',
     listStatusFilter: '/payments-to-your-bank-account/:statusFilter(test|live)'
