@@ -9,6 +9,7 @@ const StripePerson = require('./StripePerson.class')
 // Constants
 const STRIPE_HOST = process.env.STRIPE_HOST
 const STRIPE_PORT = process.env.STRIPE_PORT
+const STRIPE_PROTOCOL = process.env.STRIPE_PROTOCOL
 
 // Setup
 let stripeConfig = {
@@ -19,12 +20,15 @@ if (process.env.http_proxy) {
   stripeConfig.httpAgent = new ProxyAgent(process.env.http_proxy)
 }
 
-// only expect host and port environment variables to be set when running tests
+// only expect host, port and protocol environment variables to be set when running tests
 if (STRIPE_HOST) {
   stripeConfig.host = STRIPE_HOST
 }
 if (STRIPE_PORT) {
   stripeConfig.port = STRIPE_PORT
+}
+if (STRIPE_PROTOCOL) {
+  stripeConfig.protocol = STRIPE_PROTOCOL
 }
 
 const stripe = require('stripe')(process.env.STRIPE_ACCOUNT_API_KEY, stripeConfig)

@@ -137,10 +137,10 @@ describe('KYC additional tasks', () => {
     it('isComplete should return true if all tasks are complete', async () => {
       const kycTasksService = getServiceWithMocks()
       const complete = await kycTasksService.isComplete({
-          ENTER_ORGANISATION_URL: { complete: true },
-          UPDATE_RESPONSIBLE_PERSON: { complete: true },
-          ENTER_DIRECTOR: { complete: true }
-        }
+        ENTER_ORGANISATION_URL: { complete: true },
+        UPDATE_RESPONSIBLE_PERSON: { complete: true },
+        ENTER_DIRECTOR: { complete: true }
+      }
       )
       expect(complete).to.equal(true)
     })
@@ -148,10 +148,10 @@ describe('KYC additional tasks', () => {
     it('isComplete should return false if any task is not marked complete', async () => {
       const kycTasksService = getServiceWithMocks()
       const complete = await kycTasksService.isComplete({
-          ENTER_ORGANISATION_URL: { complete: false },
-          UPDATE_RESPONSIBLE_PERSON: { complete: false },
-          ENTER_DIRECTOR: { complete: true }
-        }
+        ENTER_ORGANISATION_URL: { complete: false },
+        UPDATE_RESPONSIBLE_PERSON: { complete: false },
+        ENTER_DIRECTOR: { complete: true }
+      }
       )
       expect(complete).to.equal(false)
     })
