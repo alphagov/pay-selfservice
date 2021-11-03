@@ -53,10 +53,10 @@
     ) }}
   {% endset %}
 
-  <ol class="app-task-list govuk-!-margin-top-8">
-    <li>
-      <ul class="app-task-list__items">{{ tasks | safe }}</ul>
-    </li>
-  </ol>
+  <div class="app-task-list govuk-body">
+    <div>
+      <span class="app-task-list__items">{{ tasks | safe }}</span>
+    </div>
+  </div>
 
 {% endif %}
