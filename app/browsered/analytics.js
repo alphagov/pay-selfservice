@@ -1,3 +1,6 @@
+'use strict'
+
+const cookieFunctions = require('./cookie-functions')
 
 function loadGoogleAnalytics () { /* eslint-disable */
   (function(i, s, o, g, r, a, m){ i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
@@ -8,12 +11,12 @@ function loadGoogleAnalytics () { /* eslint-disable */
 
 function setupAnalytics () {
   // analyticsTrackingId is configurable and set globally in head.njk
-  ga('create', analyticsTrackingId, 'auto')
+  ga('create', analyticsTrackingId, cookieFunctions.getCookieDomain())
   ga('set', 'anonymizeIp', true)
   ga('set', 'displayFeaturesTask', null)
   ga('set', 'transport', 'beacon')
 
-  ga('create', linkedTrackingId, 'auto', 'govuk_shared', { 'allowLinker': true })
+  ga('create', linkedTrackingId, cookieFunctions.getCookieDomain(), 'govuk_shared', { 'allowLinker': true })
   ga('govuk_shared.require', 'linker')
   ga('govuk_shared.linker.set', 'anonymizeIp', true)
   ga('govuk_shared.linker:autoLink', ['www.gov.uk'])
