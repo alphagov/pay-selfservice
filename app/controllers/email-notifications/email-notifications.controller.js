@@ -11,7 +11,7 @@ const humaniseEmailMode = require('../../utils/humanise-email-mode')
 const CORRELATION_HEADER = require('../../utils/correlation-header.js').CORRELATION_HEADER
 const { validateOptionalField } = require('../../utils/validation/server-side-form-validations')
 
-const CUSTOM_PARAGRAPH_MAX_LENGTH = 500
+const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 
 async function toggleConfirmationEmail (req, res, next, enabled) {
   const accountID = req.account.gateway_account_id
