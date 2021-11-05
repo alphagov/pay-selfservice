@@ -9,11 +9,18 @@ const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
 const { response } = require('../../../utils/response')
 const {
-  validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth
+  validateMandatoryField,
+  validateOptionalField,
+  validatePostcode,
+  validateDateOfBirth,
+  validatePhoneNumber,
+  validateEmail
 } = require('../../../utils/validation/server-side-form-validations')
 const { listPersons, updatePerson, createPerson } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+
+const { COLLECT_ADDITIONAL_KYC_DATA } = process.env
 
 const FIRST_NAME_FIELD = 'first-name'
 const LAST_NAME_FIELD = 'last-name'
@@ -24,6 +31,8 @@ const HOME_ADDRESS_POSTCODE_FIELD = 'home-address-postcode'
 const DOB_DAY_FIELD = 'dob-day'
 const DOB_MONTH_FIELD = 'dob-month'
 const DOB_YEAR_FIELD = 'dob-year'
+const TELEPHONE_NUMBER_FIELD = 'telephone-number'
+const EMAIL_FIELD = 'email'
 
 const validationRules = [
   {
@@ -57,6 +66,19 @@ const validationRules = [
   }
 ]
 
+if (COLLECT_ADDITIONAL_KYC_DATA) {
+  validationRules.push(
+    {
+      field: TELEPHONE_NUMBER_FIELD,
+      validator: validatePhoneNumber
+    },
+    {
+      field: EMAIL_FIELD,
+      validator: validateEmail
+    }
+  )
+}
+
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
 module.exports = async function (req, res, next) {
@@ -82,6 +104,11 @@ module.exports = async function (req, res, next) {
     DOB_MONTH_FIELD,
     DOB_YEAR_FIELD
   ]
+
+  if (COLLECT_ADDITIONAL_KYC_DATA) {
+    fields.push(TELEPHONE_NUMBER_FIELD, EMAIL_FIELD)
+  }
+
   const formFields = fields.reduce((form, field) => {
     form[field] = trimField(field, req.body)
     return form
@@ -111,10 +138,18 @@ module.exports = async function (req, res, next) {
     dobMonth: formFields[DOB_MONTH_FIELD],
     dobYear: formFields[DOB_YEAR_FIELD]
   }
+  if (COLLECT_ADDITIONAL_KYC_DATA) {
+    pageData.telephone = formFields[TELEPHONE_NUMBER_FIELD]
+    pageData.email = formFields[EMAIL_FIELD]
+  }
 
   if (!lodash.isEmpty(errors)) {
     pageData['errors'] = errors
-    return response(req, res, 'stripe-setup/responsible-person/index', { ...pageData, isSwitchingCredentials })
+    return response(req, res, 'stripe-setup/responsible-person/index', {
+      ...pageData,
+      isSwitchingCredentials,
+      collectAdditionalKycData: COLLECT_ADDITIONAL_KYC_DATA
+    })
   } else {
     try {
       let stripeAccountId
@@ -163,6 +198,10 @@ const buildStripePerson = (formFields) => {
   }
   if (formFields[HOME_ADDRESS_LINE2_FIELD]) {
     stripePerson.address_line2 = formFields[HOME_ADDRESS_LINE2_FIELD]
+  }
+  if (COLLECT_ADDITIONAL_KYC_DATA) {
+    stripePerson.phone = formFields[TELEPHONE_NUMBER_FIELD]
+    stripePerson.email = formFields[EMAIL_FIELD]
   }
   return stripePerson
 }

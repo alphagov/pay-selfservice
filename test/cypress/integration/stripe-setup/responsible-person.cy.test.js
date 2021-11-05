@@ -15,16 +15,11 @@ const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
 const firstName = 'William'
 const typedFirstName = 'William '
-const typedLastName = ' Benn'
 const addressLine1 = '52 Festive Road'
 const typedAddressLine1 = ' 52 Festive Road'
 const typedAddressLine2 = 'Putney '
 const city = 'London'
 const typedCity = 'London '
-const typedPostcode = 'sw151lp '
-const typedDobDay = '25 '
-const typedDobMonth = ' 02'
-const typedDobYear = '1971 '
 
 function setupStubs (responsiblePerson, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
@@ -95,6 +90,12 @@ describe('Stripe setup: responsible person page', () => {
           cy.get('label[for="dob-year"]').should('exist')
           cy.get('input#dob-year[name="dob-year"][autocomplete="bday-year"]').should('exist')
 
+          cy.get('label[for="telephone-number"]').should('exist')
+          cy.get('input#telephone-number[name="telephone-number"][autocomplete="tel"]').should('exist')
+
+          cy.get('label[for="email"]').should('exist')
+          cy.get('input#email[name="email"][autocomplete="email"]').should('exist')
+
           cy.get('button').should('exist')
 
           cy.get('input[name="answers-need-changing"]').should('not.exist')
@@ -113,6 +114,8 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('#dob-day').type('29')
         cy.get('#dob-month').type('2')
         cy.get('#dob-year').type('2001')
+        cy.get('#telephone-number').type('123')
+        cy.get('#email').type('foo')
         cy.get('button').click()
       })
 
@@ -122,6 +125,8 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
         cy.get('a[href="#dob-month"]').should('not.exist')
         cy.get('a[href="#dob-year"]').should('not.exist')
+        cy.get('a[href="#telephone-number"]').should('contain', 'Telephone number')
+        cy.get('a[href="#email"]').should('contain', 'Email address')
       })
 
       cy.get('#responsible-person-form').should('exist').within(() => {
@@ -142,10 +147,20 @@ describe('Stripe setup: responsible person page', () => {
           cy.get('input#dob-year').should('have.attr', 'value', '2001')
         })
 
-        cy.get('input#first-name[name="first-name"][autocomplete="given-name"]').should('have.attr', 'value', firstName)
-        cy.get('input#last-name[name="last-name"][autocomplete="family-name"]').should('exist')
-        cy.get('input#home-address-line-1[name="home-address-line-1"][autocomplete="address-line1"]').should('have.attr', 'value', addressLine1)
-        cy.get('input#home-address-city[name="home-address-city"][autocomplete="address-level2"]').should('have.attr', 'value', city)
+        cy.get('.govuk-form-group--error > input#telephone-number').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+        })
+
+        cy.get('.govuk-form-group--error > input#email').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+        })
+
+        cy.get('input#first-name').should('have.attr', 'value', firstName)
+        cy.get('input#last-name').should('exist')
+        cy.get('input#home-address-line-1').should('have.attr', 'value', addressLine1)
+        cy.get('input#home-address-city').should('have.attr', 'value', city)
+        cy.get('input#telephone-number').should('have.attr', 'value', '123')
+        cy.get('input#email').should('have.attr', 'value', 'foo')
 
         cy.get('button').should('exist')
 
@@ -180,15 +195,6 @@ describe('Stripe setup: responsible person page', () => {
 
     it('should redirect to dashboard with error message instead of saving details', () => {
       cy.get('#responsible-person-form').within(() => {
-        cy.get('#first-name').type(typedFirstName)
-        cy.get('#last-name').type(typedLastName)
-        cy.get('#home-address-line-1').type(typedAddressLine1)
-        cy.get('#home-address-line-2').type(typedAddressLine2)
-        cy.get('#home-address-city').type(typedCity)
-        cy.get('#home-address-postcode').type(typedPostcode)
-        cy.get('#dob-day').type(typedDobDay)
-        cy.get('#dob-month').type(typedDobMonth)
-        cy.get('#dob-year').type(typedDobYear)
         cy.get('button').click()
       })
 
