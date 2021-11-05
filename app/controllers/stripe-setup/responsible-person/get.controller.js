@@ -5,6 +5,8 @@ const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 
+const { COLLECT_ADDITIONAL_KYC_DATA } = process.env
+
 module.exports = (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
@@ -17,5 +19,8 @@ module.exports = (req, res, next) => {
     return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
   }
 
-  return response(req, res, 'stripe-setup/responsible-person/index', { isSwitchingCredentials })
+  return response(req, res, 'stripe-setup/responsible-person/index', {
+    isSwitchingCredentials,
+    collectAdditionalKycData: COLLECT_ADDITIONAL_KYC_DATA
+  })
 }

@@ -70,6 +70,21 @@
           href: '#dob-day'
         }), errorList) %}
       {% endif %}
+
+      {% if errors['telephone-number'] %}
+        {% set errorList = (errorList.push({
+          text: 'Telephone number',
+          href: '#telephone-number'
+        }), errorList) %}
+      {% endif %}
+
+      {% if errors['email'] %}
+        {% set errorList = (errorList.push({
+          text: 'Email address',
+          href: '#email'
+        }), errorList) %}
+      {% endif %}
+
       {{ govukErrorSummary({
         titleText: 'There was a problem with the details you gave for:',
         errorList: errorList
@@ -265,6 +280,42 @@
           }
         ]
       }) }}
+
+      {% if collectAdditionalKycData %}
+        {{ govukInput({
+          label: {
+            text: "Telephone number",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "For international numbers include the country code"
+          },
+          id: "telephone-number",
+          name: "telephone-number",
+          value: telephone,
+          type: "text",
+          autocomplete: "tel",
+          errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
+          classes: "govuk-!-width-two-thirds"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Email address",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "For example, name@example.com"
+          },
+          id: "email",
+          name: "email",
+          value: email,
+          type: "text",
+          autocomplete: "email",
+          errorMessage: { text: errors.email } if errors.email else false,
+          classes: "govuk-!-width-two-thirds"
+        }) }}
+      {% endif %}
 
       {{ govukButton({ text: "Save and continue" }) }}
     </form>

@@ -63,7 +63,6 @@ describe('Your PSP - Stripe - KYC', () => {
     cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
 
     cy.get('#task-update-sro-status').should('have.html', 'completed')
-
   })
   it('should display director task as COMPLETED if details are updated on Stripe', () => {
     setupYourPspStubs({
@@ -74,7 +73,6 @@ describe('Your PSP - Stripe - KYC', () => {
     cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
 
     cy.get('#task-add-director-status').should('have.html', 'completed')
-
   })
   it('should display organisation URL task as COMPLETED if details are updated on Stripe', () => {
     setupYourPspStubs({
