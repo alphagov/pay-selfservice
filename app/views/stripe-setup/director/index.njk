@@ -1,0 +1,192 @@
+{% extends "../../layout.njk" %}
+
+{% block pageTitle %}
+  Who is your director? - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% if isSwitchingCredentials or collectingAdditionalKycData %}
+    {% include "includes/side-navigation.njk" %}
+  {% endif %}
+{% endblock %}
+
+{% block mainContent %}
+
+  {% if isSwitchingCredentials %}
+    {{ govukBackLink({
+      text: "Back to Switching payment service provider (PSP)",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+    }) }}
+  {% endif %}
+  {% if collectingAdditionalKycData %}
+    {{ govukBackLink({
+      text: "Back",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-column-two-thirds">
+    {% if errors %}
+      {% set errorList = [] %}
+
+      {% if errors['first-name'] %}
+        {% set errorList = (errorList.push({
+          text: 'First name',
+          href: '#first-name'
+        }), errorList) %}
+      {% endif %}
+
+      {% if errors['last-name'] %}
+        {% set errorList = (errorList.push({
+          text: 'Last name',
+          href: '#last-name'
+        }), errorList) %}
+      {% endif %}
+
+
+      {% if errors['email'] %}
+        {% set errorList = (errorList.push({
+          text: 'Email',
+          href: '#email'
+        }), errorList) %}
+      {% endif %}
+
+      {% if errors['dob'] %}
+        {% set errorList = (errorList.push({
+          text: 'Date of birth',
+          href: '#dob-day'
+        }), errorList) %}
+      {% endif %}
+      {{ govukErrorSummary({
+        titleText: 'There was a problem with the details you gave for:',
+        errorList: errorList
+      }) }}
+    {% endif %}
+
+    <h1 class="govuk-heading-l">Who is your director?</h1>
+
+    <p class="govuk-body">Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.</p>
+
+    <p class="govuk-body">Stripe will store the director details, not GOV.UK Pay.</p>
+
+    <form id="director-form" method="post" class="govuk-!-margin-top-4" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% call govukFieldset({
+        legend: {
+          text: "Name",
+          classes: "govuk-fieldset__legend--m",
+          isPageHeading: false
+        }
+      }) %}
+
+      {% set firstNameError = false %}
+      {% if errors['first-name'] %}
+        {% set firstNameError = {
+          text: errors['first-name']
+        } %}
+      {% endif %}
+      {{ govukInput({
+        label: {
+          text: "First name"
+        },
+        id: "first-name",
+        name: "first-name",
+        value: firstName,
+        type: "text",
+        autocomplete: "given-name",
+        errorMessage: firstNameError,
+        classes: "govuk-input--width-20"
+      }) }}
+
+      {% set lastNameNameError = false %}
+      {% if errors['last-name'] %}
+        {% set lastNameNameError = {
+          text: errors['last-name']
+        } %}
+      {% endif %}
+      {{ govukInput({
+        label: {
+          text: "Last name"
+        },
+        id: "last-name",
+        name: "last-name",
+        value: lastName,
+        type: "text",
+        autocomplete: "family-name",
+        errorMessage: lastNameNameError,
+        classes: "govuk-input--width-20"
+      }) }}
+
+      {% endcall %}
+
+
+      {% set emailError = false %}
+      {% if errors['email'] %}
+        {% set emailError = {
+          text: errors['email']
+        } %}
+      {% endif %}
+      {{ govukInput({
+        label: {
+          text: "Email"
+        },
+        hint: {
+          text: "For example, ‘name@example.com’"
+        },
+        id: "email",
+        name: "email",
+        value: email,
+        type: "text",
+        autocomplete: "email",
+        errorMessage: emailError,
+        classes: "govuk-input--width-20"
+      }) }}
+
+      {% set dobError = false %}
+      {% if errors['dob'] %}
+        {% set dobError = {
+          text: errors['dob']
+        } %}
+      {% endif %}
+      {{ govukDateInput({
+        id: "dob",
+        namePrefix: "dob",
+        fieldset: {
+          legend: {
+            classes: "govuk-fieldset__legend--m",
+            text: "Date of birth"
+          }
+        },
+        hint: {
+          text: "For example, 26 5 1980"
+        },
+        errorMessage: dobError,
+        items: [
+          {
+            value: dobDay,
+            name: "day",
+            classes: "govuk-input--width-2",
+            autocomplete: "bday-day"
+          },
+          {
+            value: dobMonth,
+            name: "month",
+            classes: "govuk-input--width-2",
+            autocomplete: "bday-month"
+          },
+          {
+            value: dobYear,
+            name: "year",
+            classes: "govuk-input--width-4",
+            autocomplete: "bday-year"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Save and continue" }) }}
+    </form>
+  </div>
+{% endblock %}
