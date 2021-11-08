@@ -50,6 +50,10 @@ function isSwitchingCredentialsRoute (req) {
   return Object.values(paths.account.switchPSP).includes(req.route && req.route.path) || Boolean(req.url && req.url.startsWith('/switch-psp/'))
 }
 
+function isAdditionalKycDataRoute (req) {
+  return Object.values(paths.account.kyc).includes(req.route && req.route.path) || Boolean(req.url && req.url.startsWith('/kyc/'))
+}
+
 function getPSPPageLinks (gatewayAccount) {
   const supportedYourPSPPageProviders = ['worldpay', 'smartpay', 'epdq']
 
@@ -90,6 +94,7 @@ module.exports = {
   getSwitchingCredential,
   getSwitchingCredentialIfExists,
   isSwitchingCredentialsRoute,
+  isAdditionalKycDataRoute,
   getPSPPageLinks,
   getCredentialByExternalId,
   hasSwitchedProvider,
