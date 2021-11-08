@@ -2,6 +2,7 @@
 
 {% set heading = "Update your Webhook details" if isEditing else "Create a new Webhook" %}
 {% set submitURL = formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.update, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) if isEditing else formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.create, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) %}
+{% set backURL = formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) if isEditing else formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) %}
 
 {% block pageTitle %}
   {{ heading }} - {{currentService.name}} {{ humanReadableEnvironment }} - GOV.UK Pay
@@ -14,9 +15,9 @@
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   {{ govukBackLink({
-    text: "Back to Webhooks",
+    text: "Back to Webhook" if isEditing else "Back to Webhooks",
     classes: "govuk-!-margin-top-0",
-    href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id)
+    href: backURL
   }) }}
   <h1 class="govuk-heading-l page-title">{{ heading }}</h1>
 
