@@ -452,6 +452,7 @@ module.exports.bind = function (app) {
   futureAccountStrategy.post(webhooks.create, permission('webhooks:update'), webhooksController.createWebhook)
   futureAccountStrategy.get(webhooks.update, permission('webhooks:update'), webhooksController.updateWebhookPage)
   futureAccountStrategy.post(webhooks.update, permission('webhooks:update'), webhooksController.updateWebhook)
+  futureAccountStrategy.get(webhooks.detail, permission('webhooks:read'), webhooksController.webhookDetailPage)
 
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)

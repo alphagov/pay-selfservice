@@ -8,6 +8,15 @@ const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-s
 
 const webhooksService = require('./webhooks.service')
 
+async function webhookDetailPage(req, res, next) {
+  try {
+    const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
+    response(req, res, 'webhooks/detail', { eventTypes: constants.webhooks.humanReadableSubscriptions, webhook })
+  } catch (error) {
+    next(error)
+  }
+}
+
 async function listWebhooksPage(req, res, next) {
   try {
     const webhooks = await webhooksService.listWebhooks(req.service.externalId, req.isLive)
@@ -53,5 +62,6 @@ module.exports = {
   createWebhookPage,
   createWebhook,
   updateWebhookPage,
-  updateWebhook
+  updateWebhook,
+  webhookDetailPage
 }
