@@ -13,6 +13,8 @@ const addressPostcode = 'SW1A 2AA'
 const dobDay = 8
 const dobMonth = 3
 const dobYear = 2019
+const phone = '01134960000'
+const email = 'foo@example.com'
 
 describe('StripePerson', () => {
   it('should successfully create a StripePerson object with a second address line', () => {
@@ -80,6 +82,45 @@ describe('StripePerson', () => {
         executive: true,
         representative: true
       }
+    })
+  })
+
+  it('should successfully create a StripePerson object with phone and email', () => {
+    const stripePerson = new StripePerson({
+      first_name: firstName,
+      last_name: lastName,
+      address_line1: addressLine1,
+      address_line2: addressLine2,
+      address_city: addressCity,
+      address_postcode: addressPostcode,
+      dob_day: dobDay,
+      dob_month: dobMonth,
+      dob_year: dobYear,
+      phone: phone,
+      email: email
+    })
+
+    expect(stripePerson.basicObject()).to.deep.equal({
+      first_name: firstName,
+      last_name: lastName,
+      address: {
+        line1: addressLine1,
+        line2: addressLine2,
+        city: addressCity,
+        postal_code: addressPostcode,
+        country: 'GB'
+      },
+      dob: {
+        day: dobDay,
+        month: dobMonth,
+        year: dobYear
+      },
+      relationship: {
+        executive: true,
+        representative: true
+      },
+      phone: phone,
+      email: email
     })
   })
 

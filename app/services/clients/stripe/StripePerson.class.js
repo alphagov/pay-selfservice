@@ -11,7 +11,9 @@ const schema = {
   address_postcode: Joi.string().required(),
   dob_day: Joi.number().integer().strict().min(1).max(31),
   dob_month: Joi.number().integer().strict().min(1).max(12),
-  dob_year: Joi.number().integer().strict().min(1000).max(9999)
+  dob_year: Joi.number().integer().strict().min(1000).max(9999),
+  phone: Joi.string().optional(),
+  email: Joi.string().optional()
 }
 
 class StripePerson {
@@ -49,11 +51,17 @@ function build (params) {
     relationship: {
       executive: true,
       representative: true
-    }
+    },
   }
 
   if (params.address_line2) {
     person.address.line2 = params.address_line2
+  }
+  if (params.phone) {
+    person.phone = params.phone
+  }
+  if (params.email) {
+    person.email = params.email
   }
 
   return person
