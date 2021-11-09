@@ -16,6 +16,7 @@ const {
   validatePhoneNumber,
   validateEmail
 } = require('../../../utils/validation/server-side-form-validations')
+const { formatPhoneNumberWithCountryCode } = require('../../../utils/telephone-number-utils')
 const { listPersons, updatePerson, createPerson } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -200,7 +201,7 @@ const buildStripePerson = (formFields) => {
     stripePerson.address_line2 = formFields[HOME_ADDRESS_LINE2_FIELD]
   }
   if (COLLECT_ADDITIONAL_KYC_DATA) {
-    stripePerson.phone = formFields[TELEPHONE_NUMBER_FIELD]
+    stripePerson.phone = formatPhoneNumberWithCountryCode(formFields[TELEPHONE_NUMBER_FIELD])
     stripePerson.email = formFields[EMAIL_FIELD]
   }
   return stripePerson

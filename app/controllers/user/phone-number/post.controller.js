@@ -3,7 +3,7 @@
 const { response } = require('../../../utils/response')
 const userService = require('../../../services/user.service')
 const paths = require('../../../paths')
-const { invalidTelephoneNumber } = require('../../../utils/validation/telephone-number-validation')
+const { invalidTelephoneNumber } = require('../../../utils/telephone-number-utils')
 
 module.exports = async function updatePhoneNumber (req, res, next) {
   const telephoneNumber = req.body.phone
