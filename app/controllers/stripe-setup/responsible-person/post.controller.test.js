@@ -24,7 +24,7 @@ describe('Responsible person POST controller', () => {
   const dobYear = '1971 '
   const dobYearNormalised = 1971
   const telephone = '01134960000 '
-  const telephoneNormalised = '01134960000'
+  const telephoneNormalised = '+44 113 496 0000'
   const email = ' foo@example.com'
   const emailNormalised = 'foo@example.com'
 

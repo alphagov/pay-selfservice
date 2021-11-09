@@ -11,7 +11,7 @@ const {
   isValidEmail,
   isPasswordLessThanTenChars
 } = require('./field-validation-checks')
-const { invalidTelephoneNumber } = require('./telephone-number-validation')
+const { invalidTelephoneNumber } = require('../telephone-number-utils')
 
 const NUMBERS_ONLY = new RegExp('^[0-9]+$')
 const NAXSI_NOT_ALLOWED_CHARACTERS = [ '<', '>', '|' ]
