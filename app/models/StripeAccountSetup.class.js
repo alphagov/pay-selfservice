@@ -6,6 +6,7 @@ class StripeAccountSetup {
     this.responsiblePerson = opts.responsible_person
     this.vatNumber = opts.vat_number
     this.companyNumber = opts.company_number
+    this.director = opts.director
   }
 }
 

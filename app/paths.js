@@ -106,15 +106,14 @@ module.exports = {
         bankDetails: '/switch-psp/:credentialId/bank-details',
         responsiblePerson: '/switch-psp/:credentialId/responsible-person',
         vatNumber: '/switch-psp/:credentialId/vat-number',
-        companyNumber: '/switch-psp/:credentialId/company-number'
+        companyNumber: '/switch-psp/:credentialId/company-number',
+        director: '/switch-psp/:credentialId/director'
       }
     },
     kyc: {
-      collectAdditionalData: {
-        organisationUrl: '/kyc/:credentialId/organisation-url',
-        responsiblePerson: '/kyc/:credentialId/responsible-person',
-        director: '/kyc/:credentialId/director'
-      }
+      organisationUrl: '/kyc/:credentialId/organisation-url',
+      responsiblePerson: '/kyc/:credentialId/responsible-person',
+      director: '/kyc/:credentialId/director'
     },
     toggle3ds: {
       index: '/3ds'
@@ -141,7 +140,8 @@ module.exports = {
         bankDetails: '/your-psp/:credentialId/bank-details',
         responsiblePerson: '/your-psp/:credentialId/responsible-person',
         vatNumber: '/your-psp/:credentialId/vat-number',
-        companyNumber: '/your-psp/:credentialId/company-number'
+        companyNumber: '/your-psp/:credentialId/company-number',
+        director: '/your-psp/:credentialId/director'
       }
     }
   },

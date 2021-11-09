@@ -20,6 +20,9 @@ function getGatewayAccountStripeSetupSuccess (opts) {
   if (opts.companyNumber !== undefined) {
     fixtureOpts.company_number = opts.companyNumber
   }
+  if (opts.director !== undefined) {
+    fixtureOpts.director = opts.director
+  }
 
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`
   return stubBuilder('GET', path, 200, {
@@ -55,6 +58,13 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
     data = opts.responsiblePerson.map(completed => (
       {
         responsible_person: completed
+      }
+    ))
+  }
+  if (opts.director) {
+    data = opts.director.map(completed => (
+      {
+        director: completed
       }
     ))
   }

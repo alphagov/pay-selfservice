@@ -36,19 +36,19 @@
     {{ taskListItem(
       'task-organisation-url',
       "Add organisation URL",
-      formatAccountPathsFor(routes.account.kyc.collectAdditionalData.organisationUrl, currentGatewayAccount.external_id, activeCredential.external_id),
+      formatAccountPathsFor(routes.account.kyc.organisationUrl, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.ENTER_ORGANISATION_URL
     ) }}
     {{ taskListItem(
       'task-update-sro',
       "Add information about responsible person",
-      formatAccountPathsFor(routes.account.kyc.collectAdditionalData.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
+      formatAccountPathsFor(routes.account.kyc.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.UPDATE_RESPONSIBLE_PERSON
     ) }}
     {{ taskListItem(
       'task-add-director',
       "Add information about the director of your organisation",
-      formatAccountPathsFor(routes.account.kyc.collectAdditionalData.director, currentGatewayAccount.external_id, activeCredential.external_id),
+      formatAccountPathsFor(routes.account.kyc.director, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.ENTER_DIRECTOR
     ) }}
   {% endset %}

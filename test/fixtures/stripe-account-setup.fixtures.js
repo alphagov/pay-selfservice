@@ -36,7 +36,8 @@ module.exports = {
       'bank_account': opts.bank_account || false,
       'responsible_person': opts.responsible_person || false,
       'company_number': opts.company_number || false,
-      'vat_number': opts.vat_number || false
+      'vat_number': opts.vat_number || false,
+      'director': opts.director || false
     }
   }
 }

@@ -176,6 +176,14 @@ const defaultPermissions = [
     description: 'View Stripe responsible person'
   },
   {
+    name: 'stripe-director:update',
+    description: 'Update Stripe director'
+  },
+  {
+    name: 'stripe-director:read',
+    description: 'View Stripe director'
+  },
+  {
     name: 'stripe-vat-number-company-number:update',
     description: 'Update Stripe VAT number company number'
   },
