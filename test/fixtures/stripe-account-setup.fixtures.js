@@ -27,6 +27,10 @@ module.exports = {
     return buildUpdateStripeAccountSetupFlagRequest('responsible_person', completed)
   },
 
+  buildUpdateDirectorRequest (completed) {
+    return buildUpdateStripeAccountSetupFlagRequest('director', completed)
+  },
+
   buildGetStripeAccountSetupResponse (opts = {}) {
     return {
       'bank_account': opts.bank_account || false,

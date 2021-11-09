@@ -142,4 +142,31 @@ describe('connector client - set stripe account setup flag', () => {
         .notify(done)
     })
   })
+
+  describe('set director flag', () => {
+    const request = stripeAccountSetupFixtures.buildUpdateDirectorRequest(true)
+
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
+          .withUponReceiving('a valid patch update stripe account director flag request')
+          .withState(defaultState)
+          .withMethod('PATCH')
+          .withRequestBody(request)
+          .withStatusCode(200)
+          .withResponseHeaders({})
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should update successfully', done => {
+      connectorClient.setStripeAccountSetupFlag(existingGatewayAccountId, 'director')
+        .should.be.fulfilled
+        .notify(done)
+    })
+  })
 })
