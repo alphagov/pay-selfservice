@@ -122,29 +122,6 @@
 
       {% endcall %}
 
-
-      {% set emailError = false %}
-      {% if errors['email'] %}
-        {% set emailError = {
-          text: errors['email']
-        } %}
-      {% endif %}
-      {{ govukInput({
-        label: {
-          text: "Email"
-        },
-        hint: {
-          text: "For example, ‘name@example.com’"
-        },
-        id: "email",
-        name: "email",
-        value: email,
-        type: "text",
-        autocomplete: "email",
-        errorMessage: emailError,
-        classes: "govuk-input--width-20"
-      }) }}
-
       {% set dobError = false %}
       {% if errors['dob'] %}
         {% set dobError = {
@@ -184,6 +161,28 @@
             autocomplete: "bday-year"
           }
         ]
+      }) }}
+
+      {% set emailError = false %}
+      {% if errors['email'] %}
+        {% set emailError = {
+          text: errors['email']
+        } %}
+      {% endif %}
+      {{ govukInput({
+        label: {
+          text: "Email"
+        },
+        hint: {
+          text: "For example, ‘name@example.com’"
+        },
+        id: "email",
+        name: "email",
+        value: email,
+        type: "text",
+        autocomplete: "email",
+        errorMessage: emailError,
+        classes: "govuk-!-width-two-thirds"
       }) }}
 
       {{ govukButton({ text: "Save and continue" }) }}

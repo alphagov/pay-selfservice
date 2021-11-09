@@ -434,6 +434,7 @@ module.exports.bind = function (app) {
   account.get([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson ], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.get)
   account.post([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson ], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.post)
   account.get([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director, kyc.director], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.get)
+  account.post([ yourPsp.stripeSetup.director, switchPSP.stripeSetup.director, kyc.director ], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.post)
   account.get([ yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.get)
   account.post([ yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.post)
   account.get([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
