@@ -14,6 +14,7 @@ const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 
 // Constants
 const VAT_NUMBER_FIELD = 'vat-number'
+const VAT_NUMBER_PROVIDED_FIELD = 'vat-number-declaration'
 
 module.exports = async (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
@@ -29,19 +30,24 @@ module.exports = async (req, res, next) => {
 
   const rawVatNumber = lodash.get(req.body, VAT_NUMBER_FIELD, '')
   const sanitisedVatNumber = rawVatNumber.replace(/\s/g, '').toUpperCase()
+  const vatNumberDeclaration = lodash.get(req.body, VAT_NUMBER_PROVIDED_FIELD)
+  const isVatNumberProvided = vatNumberDeclaration === 'true'
 
-  const errors = validateVatNumber(rawVatNumber)
+  let errors
+  if (isVatNumberProvided) {
+    errors = validateVatNumber(rawVatNumber)
+  } else {
+    errors = validateVatDeclaration(vatNumberDeclaration)
+  }
   if (!lodash.isEmpty(errors)) {
     return response(req, res, 'stripe-setup/vat-number/index', {
       vatNumber: rawVatNumber,
+      vatNumberDeclaration: vatNumberDeclaration,
       isSwitchingCredentials,
       errors
     })
   } else {
     try {
-      const stripeCompanyBody = {
-        vat_id: sanitisedVatNumber
-      }
       let stripeAccountId
 
       if (isSwitchingCredentials) {
@@ -51,12 +57,18 @@ module.exports = async (req, res, next) => {
         const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
         stripeAccountId = stripeAccount.stripeAccountId
       }
-      await updateCompany(stripeAccountId, stripeCompanyBody)
+      if (isVatNumberProvided) {
+        const stripeCompanyBody = {
+          vat_id: sanitisedVatNumber
+        }
+        await updateCompany(stripeAccountId, stripeCompanyBody)
+      }
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'vat_number', req.correlationId)
 
       logger.info('VAT number submitted for Stripe account', {
         stripe_account_id: stripeAccountId,
-        is_switching: isSwitchingCredentials
+        is_switching: isSwitchingCredentials,
+        vat_provided: isVatNumberProvided
       })
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
@@ -75,6 +87,16 @@ function validateVatNumber (vatNumber) {
   const vatNumberValidationResult = vatNumberValidations.validateVatNumber(vatNumber)
   if (!vatNumberValidationResult.valid) {
     errors[VAT_NUMBER_FIELD] = vatNumberValidationResult.message
+  }
+
+  return errors
+}
+
+function validateVatDeclaration (vatNumberDeclaration) {
+  const errors = {}
+  const vatNumberDeclarationResult = vatNumberValidations.validateVatNumberDeclaration(vatNumberDeclaration)
+  if (!vatNumberDeclarationResult.valid) {
+    errors[VAT_NUMBER_PROVIDED_FIELD] = vatNumberDeclarationResult.message
   }
 
   return errors

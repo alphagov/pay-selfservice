@@ -1,7 +1,7 @@
 {% extends "../../layout.njk" %}
 
 {% block pageTitle %}
-  What is your organisation’s VAT number? - {{ currentService.name }} - GOV.UK Pay
+  Does your organisation have a VAT number? - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -29,16 +29,28 @@
           href: '#vat-number'
         }), errorList) %}
       {% endif %}
+      {% if errors['vat-number-declaration'] %}
+        {% set errorList = (errorList.push({
+          text: errors['vat-number-declaration'],
+          href: '#vat-number-declaration'
+        }), errorList) %}
+      {% endif %}
       {{ govukErrorSummary({
         titleText: 'There is a problem',
         errorList: errorList
       }) }}
     {% endif %}
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="vat-number">What is your organisation’s VAT number?</label></h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="vat-number">Does your organisation have a VAT number?</label></h1>
 
-    <form id="vat-number-form" method="post"
-          novalidate>
+    <form id="vat-number-form" method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% set noSelectionError = false %}
+      {% if errors['vat-number-declaration'] %}
+        {% set noSelectionError = {
+          text: "Please choose an option"
+        } %}
+      {% endif %}
 
       {% set vatNumberError = false %}
       {% if errors['vat-number'] %}
@@ -47,21 +59,61 @@
         } %}
       {% endif %}
 
-      {{ govukInput({
-        name: "vat-number",
-        id: "vat-number",
-        hint: {
-          text: "VAT numbers start with ‘GB’, for example ‘GBGD123’"
-        },
-        classes: "govuk-input--width-30",
-        value: vatNumber,
-        type: "text",
-        errorMessage: vatNumberError,
-        attributes: {
-          autocomplete: "off",
-          spellcheck: "false"
-        }
-      }) }}
+      {% set vatNumberHTML %}
+        {{ govukInput({
+          name: "vat-number",
+          id: "vat-number",
+          label: {
+            text: "What is your organisation's VAT number?",
+            classes: "govuk-label--s"
+          },
+          hint: {
+            text: "VAT numbers start with ‘GB’, for example ‘GBGD123’"
+          },
+          classes: "govuk-input--width-30",
+          value: vatNumber,
+          type: "text",
+          errorMessage: vatNumberError,
+          attributes: {
+            autocomplete: "off",
+            spellcheck: "false"
+          }
+        }) }}
+      {% endset %}
+
+      {{
+        govukRadios({
+          idPrefix: "vat-number-declaration",
+          name: "vat-number-declaration",
+          fieldset: {
+            legend: {
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          errorMessage: noSelectionError,
+          items: [
+            {
+              value: "true",
+              text: "Yes",
+              id: "have-vat-number",
+              hint: "VAT numbers start with ‘GB’. For example, ‘GBGD123’.",
+              conditional: {
+                html: vatNumberHTML
+              },
+              checked: (vatNumberDeclaration === 'true')
+            },
+            {
+              value: "false",
+              text: "No",
+              id: "not-have-vat-number",
+              checked: (vatNumberDeclaration === 'false')
+            }
+          ]
+        })
+      }}
+
+
 
       {{ govukButton({ text: "Save and continue" }) }}
     </form>

@@ -6,7 +6,8 @@ const paths = require('../../../paths')
 
 describe('VAT number POST controller', () => {
   const postBody = {
-    'vat-number': 'GB999999973'
+    'vat-number': 'GB999999973',
+    'vat-number-declaration': 'true'
   }
 
   let req
@@ -67,6 +68,22 @@ describe('VAT number POST controller', () => {
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, {
       'vat_id': 'GB999999973'
     })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number', req.correlationId)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
+  })
+
+  it('should not call Stripe when no vat number provided, should call connector, then redirect to add psp account details route', async function () {
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.body = {
+      'vat-number-declaration': 'false'
+    }
+
+    await controller(req, res, next)
+
+    sinon.assert.notCalled(updateCompanyMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
