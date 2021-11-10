@@ -12,6 +12,7 @@ const gatewayAccountExternalId = 'a-valid-external-id'
 const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
 const vatNumberUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/vat-number`
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
+const bankDetailsUrl = `/account/${gatewayAccountExternalId}/your-psp/a-valid-credential-external-id/bank-details`
 
 function setupStubs (vatNumber, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
@@ -52,10 +53,12 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should display page correctly', () => {
-        cy.get('h1').should('contain', 'What is your organisation’s VAT number?')
+        cy.get('h1').should('contain', 'Does your organisation have a VAT number?')
 
         cy.get('#vat-number-form').should('exist')
           .within(() => {
+            cy.get('input#have-vat-number').should('exist')
+            cy.get('input#not-have-vat-number').should('exist')
             cy.get('input#vat-number[name="vat-number"]').should('exist')
             cy.get('button').should('exist')
             cy.get('button').should('contain', 'Save and continue')
@@ -65,9 +68,11 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should display an error when VAT number input is blank', () => {
+        cy.get('input#have-vat-number').click()
         cy.get('#vat-number-form > button').click()
 
         cy.get('h2').should('contain', 'There is a problem')
+        cy.get('input#have-vat-number').should('be.checked')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a valid VAT number, including ‘GB’ at the start')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
@@ -78,11 +83,13 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should display an error when VAT number is invalid', () => {
+        cy.get('input#have-vat-number').click()
         cy.get('input#vat-number[name="vat-number"]').type('(╯°□°)╯︵ ┻━┻')
 
         cy.get('#vat-number-form > button').click()
 
         cy.get('h2').should('contain', 'There is a problem')
+        cy.get('input#have-vat-number').should('be.checked')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a valid VAT number, including ‘GB’ at the start')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
@@ -90,6 +97,23 @@ describe('Stripe setup: VAT number page', () => {
           cy.get('.govuk-error-message').should('exist')
           cy.get('span.govuk-error-message').should('contain', 'Enter a valid VAT number, including ‘GB’ at the start')
         })
+      })
+
+      it('should redirect to when "No" VAT number is chosen', () => {
+        cy.get('input#not-have-vat-number').click()
+        cy.get('#vat-number-form > button').click()
+
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(bankDetailsUrl)
+        })
+      })
+
+      it('should display an error when no option was chosen', () => {
+        cy.get('#vat-number-form > button').click()
+
+        cy.get('h2').should('contain', 'There is a problem')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You must answer this question')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number-declaration')
       })
     })
 
@@ -116,6 +140,7 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.visit(vatNumberUrl)
 
+        cy.get('input#have-vat-number').click()
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
 
         cy.get('#vat-number-form > button').click()

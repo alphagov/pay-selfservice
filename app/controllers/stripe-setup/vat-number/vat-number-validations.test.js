@@ -14,24 +14,38 @@ describe('VAT number validations', () => {
     expect(vatNumberValidations.validateVatNumber(standardVatNumber).valid).to.be.true // eslint-disable-line
   })
 
-  it('should not be valid when mandatory text is blank', () => {
+  it('should validate successfully when no vat number provided', () => {
     expect(vatNumberValidations.validateVatNumber('')).to.deep.equal({
       valid: false,
       message: 'This field cannot be blank'
     })
   })
 
-  it('should not be valid when mandatory text is invalid VAT number', () => {
+  it('should not be valid when text is invalid VAT number', () => {
     expect(vatNumberValidations.validateVatNumber(invalidVatNumber)).to.deep.equal({
       valid: false,
       message: 'Enter a valid VAT number, including ‘GB’ at the start'
     })
   })
 
-  it('should not be valid when mandatory text is too long', () => {
+  it('should not be valid when text is too long', () => {
     expect(vatNumberValidations.validateVatNumber(invalidLongVatNumber)).to.deep.equal({
       valid: false,
       message: 'Enter a valid VAT number, including ‘GB’ at the start'
+    })
+  })
+
+  it('should validate successfully when no vat number was chosen', () => {
+    expect(vatNumberValidations.validateVatNumberDeclaration('false')).to.deep.equal({
+      valid: true,
+      message: null
+    })
+  })
+
+  it('should not be valid if no option was chosen', () => {
+    expect(vatNumberValidations.validateVatNumberDeclaration()).to.deep.equal({
+      valid: false,
+      message: 'You must answer this question'
     })
   })
 })
