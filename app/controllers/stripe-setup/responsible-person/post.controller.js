@@ -21,7 +21,7 @@ const { listPersons, updatePerson, createPerson } = require('../../../services/c
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
-const { COLLECT_ADDITIONAL_KYC_DATA } = process.env
+const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
 
 const FIRST_NAME_FIELD = 'first-name'
 const LAST_NAME_FIELD = 'last-name'
@@ -67,7 +67,7 @@ const validationRules = [
   }
 ]
 
-if (COLLECT_ADDITIONAL_KYC_DATA) {
+if (collectAdditionalKycData) {
   validationRules.push(
     {
       field: TELEPHONE_NUMBER_FIELD,
@@ -106,7 +106,7 @@ module.exports = async function (req, res, next) {
     DOB_YEAR_FIELD
   ]
 
-  if (COLLECT_ADDITIONAL_KYC_DATA) {
+  if (collectAdditionalKycData) {
     fields.push(TELEPHONE_NUMBER_FIELD, EMAIL_FIELD)
   }
 
@@ -139,7 +139,7 @@ module.exports = async function (req, res, next) {
     dobMonth: formFields[DOB_MONTH_FIELD],
     dobYear: formFields[DOB_YEAR_FIELD]
   }
-  if (COLLECT_ADDITIONAL_KYC_DATA) {
+  if (collectAdditionalKycData) {
     pageData.telephone = formFields[TELEPHONE_NUMBER_FIELD]
     pageData.email = formFields[EMAIL_FIELD]
   }
@@ -149,7 +149,7 @@ module.exports = async function (req, res, next) {
     return response(req, res, 'stripe-setup/responsible-person/index', {
       ...pageData,
       isSwitchingCredentials,
-      collectAdditionalKycData: COLLECT_ADDITIONAL_KYC_DATA
+      collectAdditionalKycData
     })
   } else {
     try {
@@ -200,7 +200,7 @@ const buildStripePerson = (formFields) => {
   if (formFields[HOME_ADDRESS_LINE2_FIELD]) {
     stripePerson.address_line2 = formFields[HOME_ADDRESS_LINE2_FIELD]
   }
-  if (COLLECT_ADDITIONAL_KYC_DATA) {
+  if (collectAdditionalKycData) {
     stripePerson.phone = formatPhoneNumberWithCountryCode(formFields[TELEPHONE_NUMBER_FIELD])
     stripePerson.email = formFields[EMAIL_FIELD]
   }

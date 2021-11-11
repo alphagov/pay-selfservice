@@ -5,7 +5,7 @@ const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 
-const { COLLECT_ADDITIONAL_KYC_DATA } = process.env
+const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
 
 module.exports = (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
@@ -21,6 +21,6 @@ module.exports = (req, res, next) => {
 
   return response(req, res, 'stripe-setup/responsible-person/index', {
     isSwitchingCredentials,
-    collectAdditionalKycData: COLLECT_ADDITIONAL_KYC_DATA
+    collectAdditionalKycData
   })
 }

@@ -6,11 +6,17 @@ const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
 const paths = require('../../../paths')
 const {
-  validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber
+  validateMandatoryField,
+  validateOptionalField,
+  validatePostcode,
+  validatePhoneNumber,
+  validateUrl
 } = require('../../../utils/validation/server-side-form-validations')
 const { updateService } = require('../../../services/service.service')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
+
+const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
 
 const clientFieldNames = {
   addressLine1: 'address-line1',
@@ -18,7 +24,8 @@ const clientFieldNames = {
   addressCity: 'address-city',
   addressPostcode: 'address-postcode',
   addressCountry: 'address-country',
-  telephoneNumber: 'telephone-number'
+  telephoneNumber: 'telephone-number',
+  url: 'url'
 }
 
 const validationRules = [
@@ -48,6 +55,15 @@ const validationRules = [
   }
 ]
 
+if (collectAdditionalKycData) {
+  validationRules.push(
+    {
+      field: clientFieldNames.url,
+      validator: validateUrl
+    }
+  )
+}
+
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
 const normaliseForm = (formBody) => {
@@ -59,6 +75,9 @@ const normaliseForm = (formBody) => {
     clientFieldNames.addressPostcode,
     clientFieldNames.telephoneNumber
   ]
+  if (collectAdditionalKycData) {
+    fields.push(clientFieldNames.url)
+  }
   return fields.reduce((form, field) => {
     form[field] = trimField(field, formBody)
     return form
@@ -93,9 +112,12 @@ const submitForm = async function (form, serviceExternalId, correlationId) {
     .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
     .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
     .replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
-    .formatPayload()
 
-  return updateService(serviceExternalId, updateRequest, correlationId)
+  if (collectAdditionalKycData) {
+    updateRequest.replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
+  }
+
+  return updateService(serviceExternalId, updateRequest.formatPayload(), correlationId)
 }
 
 const buildErrorsPageData = (form, errors) => {
@@ -107,7 +129,9 @@ const buildErrorsPageData = (form, errors) => {
     address_city: form[clientFieldNames.addressCity],
     address_postcode: form[clientFieldNames.addressPostcode],
     address_country: form[clientFieldNames.addressCountry],
-    telephone_number: form[clientFieldNames.telephoneNumber]
+    telephone_number: form[clientFieldNames.telephoneNumber],
+    url: form[clientFieldNames.url],
+    collectAdditionalKycData: process.env.COLLECT_ADDITIONAL_KYC_DATA
   }
 }
 

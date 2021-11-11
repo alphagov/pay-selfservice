@@ -143,7 +143,8 @@ module.exports = {
         'address_postcode',
         'address_country',
         'email',
-        'telephone_number'
+        'telephone_number',
+        'url'
       ])
     }
 

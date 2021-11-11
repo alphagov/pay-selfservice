@@ -49,6 +49,13 @@
       }), errorList) %}
     {% endif %}
 
+    {% if errors['url'] %}
+      {% set errorList = (errorList.push({
+        text: 'Organisation website address',
+        href: '#url'
+      }), errorList) %}
+    {% endif %}
+
     {{ govukErrorSummary({
     titleText: 'There was a problem with the details you gave for:',
     errorList: errorList
@@ -71,13 +78,6 @@
 
     <p class="govuk-body govuk-!-margin-bottom-6">Details of your organisation will appear on your payment pages. You can change them later if you need to.</p>
 
-    {% set addressLine1Error = false %}
-    {% if errors["address-line1"] %}
-      {% set addressLine1Error = {
-        text: errors["address-line1"]
-      } %}
-    {% endif %}
-
     {{ govukInput({
       label: {
         html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
@@ -85,16 +85,9 @@
       classes: "govuk-!-width-two-thirds",
       id: "address-line1",
       name: "address-line1",
-      errorMessage: addressLine1Error,
+      errorMessage: { text: errors['address-line1'] } if errors['address-line1'] else false,
       value: address_line1
     }) }}
-
-    {% set addressLine2Error = false %}
-    {% if errors["address-line2"] %}
-      {% set addressLine2Error = {
-        text: errors["address-line2"]
-      } %}
-    {% endif %}
 
     {{ govukInput({
       label: {
@@ -103,16 +96,9 @@
       classes: "govuk-!-width-two-thirds",
       id: "address-line2",
       name: "address-line2",
-      errorMessage: addressLine2Error,
+      errorMessage: { text: errors['address-line2'] } if errors['address-line2'] else false,
       value: address_line2
     }) }}
-
-    {% set cityError = false %}
-    {% if errors["address-city"] %}
-      {% set cityError = {
-        text: errors["address-city"]
-      } %}
-    {% endif %}
 
     {{ govukInput({
       label: {
@@ -121,34 +107,20 @@
       classes: "govuk-!-width-one-half",
       id: "address-city",
       name: "address-city",
-      errorMessage: cityError,
+      errorMessage: { text: errors['address-city'] } if errors['address-city'] else false,
       value: address_city
     }) }}
-
-    {% set countryError = false %}
-    {% if errors["address-country"] %}
-      {% set countryError = {
-        text: errors["address-country"]
-      } %}
-    {% endif %}
 
     {{ govukSelect({
       id: "address-country",
       classes: "govuk-!-width-one-half",
       name: "address-country",
-      errorMessage: countryError,
+      errorMessage: { text: errors['address-country'] } if errors['address-country'] else false,
       label: {
         text: "Country"
       },
       items: countries
     }) }}
-
-    {% set postcodeError = false %}
-    {% if errors["address-postcode"] %}
-      {% set postcodeError = {
-        text: errors["address-postcode"]
-      } %}
-    {% endif %}
 
     {{ govukInput({
       label: {
@@ -157,16 +129,9 @@
       classes: "govuk-input--width-10",
       id: "address-postcode",
       name: "address-postcode",
-      errorMessage: postcodeError,
+      errorMessage: { text: errors['address-postcode'] } if errors['address-postcode'] else false,
       value: address_postcode
     }) }}
-
-    {% set phoneError = false %}
-    {% if errors["telephone-number"] %}
-      {% set phoneError = {
-        text: errors["telephone-number"]
-      } %}
-    {% endif %}
 
     {{ govukInput({
       value: telephone_number,
@@ -176,12 +141,28 @@
       hint: {
         text: "For international numbers include the country code"
       },
-      errorMessage: phoneError,
+      errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
       id: "telephone-number",
       name: "telephone-number",
       classes: "govuk-!-width-two-thirds",
       type: "tel"
     }) }}
+
+    {% if collectAdditionalKycData %}
+      {{ govukInput({
+        value: url,
+        label: {
+          text: "Organisation website address"
+        },
+        hint: {
+          text: "Enter the address in full like https://www.example.com"
+        },
+        errorMessage: { text: errors.url } if errors.url else false,
+        id: "url",
+        name: "url",
+        classes: "govuk-!-width-two-thirds"
+      }) }}
+    {% endif %}
 
     {% endcall %}
 
