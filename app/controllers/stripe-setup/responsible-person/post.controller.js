@@ -6,13 +6,13 @@ const ukPostcode = require('uk-postcode')
 const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { validateField, validateDoB, getFormFields, getStripeAccountId } = require('../stripe-setup.util')
 const { response } = require('../../../utils/response')
 const {
   validateMandatoryField,
   validateOptionalField,
   validatePostcode,
-  validateDateOfBirth,
   validatePhoneNumber,
   validateEmail
 } = require('../../../utils/validation/server-side-form-validations')
@@ -80,8 +80,6 @@ if (COLLECT_ADDITIONAL_KYC_DATA) {
   )
 }
 
-const trimField = (key, store) => lodash.get(store, key, '').trim()
-
 module.exports = async function (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
@@ -110,20 +108,17 @@ module.exports = async function (req, res, next) {
     fields.push(TELEPHONE_NUMBER_FIELD, EMAIL_FIELD)
   }
 
-  const formFields = fields.reduce((form, field) => {
-    form[field] = trimField(field, req.body)
-    return form
-  }, {})
+  const formFields = getFormFields(req.body, fields)
 
   const errors = validationRules.reduce((errors, validationRule) => {
-    const errorMessage = validate(formFields, validationRule.field, validationRule.validator, validationRule.maxLength)
+    const errorMessage = validateField(formFields[validationRule.field], validationRule.validator, validationRule.maxLength)
     if (errorMessage) {
       errors[validationRule.field] = errorMessage
     }
     return errors
   }, {})
 
-  const dateOfBirthErrorMessage = validateDoB(formFields)
+  const dateOfBirthErrorMessage = validateDoB(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD], formFields[DOB_YEAR_FIELD])
   if (dateOfBirthErrorMessage) {
     errors['dob'] = dateOfBirthErrorMessage
   }
@@ -153,19 +148,11 @@ module.exports = async function (req, res, next) {
     })
   } else {
     try {
-      let stripeAccountId
-
-      if (isSwitchingCredentials) {
-        const switchingCredential = getSwitchingCredential(req.account)
-        stripeAccountId = switchingCredential.credentials.stripe_account_id
-      } else {
-        const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
-        stripeAccountId = stripeAccount.stripeAccountId
-      }
+      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
       const personsResponse = await listPersons(stripeAccountId)
-      const person = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
-      if (person !== undefined) {
-        await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))
+      const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
+      if (responsiblePerson !== undefined) {
+        await updatePerson(stripeAccountId, responsiblePerson.id, buildStripePerson(formFields))
       } else {
         await createPerson(stripeAccountId, buildStripePerson(formFields))
       }
@@ -205,24 +192,4 @@ const buildStripePerson = (formFields) => {
     stripePerson.email = formFields[EMAIL_FIELD]
   }
   return stripePerson
-}
-
-const validate = (formFields, fieldName, fieldValidator, maxLength) => {
-  const field = formFields[fieldName]
-  const isFieldValid = fieldValidator(field, maxLength)
-  if (!isFieldValid.valid) {
-    return isFieldValid.message
-  }
-  return null
-}
-
-const validateDoB = (formFields) => {
-  const day = formFields[DOB_DAY_FIELD]
-  const month = formFields[DOB_MONTH_FIELD]
-  const year = formFields[DOB_YEAR_FIELD]
-  const dateOfBirthValidationResult = validateDateOfBirth(day, month, year)
-  if (!dateOfBirthValidationResult.valid) {
-    return dateOfBirthValidationResult.message
-  }
-  return null
 }

@@ -62,9 +62,11 @@ describe('Responsible person POST controller', () => {
       '../../../services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
-          this.getStripeAccount = () => Promise.resolve({
-            stripeAccountId: 'acct_123example123'
-          })
+        }
+      },
+      '../stripe-setup.util': {
+        getStripeAccountId: () => {
+          return Promise.resolve('acct_123example123')
         }
       }
     })
@@ -98,12 +100,14 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: 'other-person',
+        {
+          id: 'other-person',
           relationship: {
             representative: false
           }
         },
-        { id: personId,
+        {
+          id: personId,
           relationship: {
             representative: true
           }
@@ -137,7 +141,8 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: personId,
+        {
+          id: personId,
           relationship: {
             representative: true
           }
@@ -192,7 +197,8 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: personId,
+        {
+          id: personId,
           relationship: {
             representative: true
           }
@@ -218,7 +224,8 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: personId,
+        {
+          id: personId,
           relationship: {
             representative: true
           }
@@ -244,7 +251,8 @@ describe('Responsible person POST controller', () => {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
-        { id: personId,
+        {
+          id: personId,
           relationship: {
             representative: false
           }
@@ -287,7 +295,8 @@ describe('Responsible person POST controller', () => {
       const personId = 'person-1'
       listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
         data: [
-          { id: personId,
+          {
+            id: personId,
             relationship: {
               representative: true
             }
