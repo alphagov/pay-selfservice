@@ -4,6 +4,7 @@ const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { getCurrentCredential } = require('../../../utils/credentials')
 const { response } = require('../../../utils/response')
+const { COLLECT_ADDITIONAL_KYC_DATA } = process.env
 
 module.exports = async function getPspAccountDetails (req, res, next) {
   if (!req.account || !req.account.connectorGatewayAccountStripeProgress) {
@@ -21,6 +22,8 @@ module.exports = async function getPspAccountDetails (req, res, next) {
     res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.bankDetails, accountExternalId, credentialId))
   } else if (!stripeAccountSetup.responsiblePerson) {
     res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.responsiblePerson, accountExternalId, credentialId))
+  } else if (!stripeAccountSetup.director && COLLECT_ADDITIONAL_KYC_DATA) {
+    res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.director, accountExternalId, credentialId))
   } else if (!stripeAccountSetup.vatNumber) {
     res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.vatNumber, accountExternalId, credentialId))
   } else if (!stripeAccountSetup.companyNumber) {

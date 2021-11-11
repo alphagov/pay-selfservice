@@ -122,12 +122,12 @@ describe('Responsible person POST controller', () => {
       first_name: firstNameNormalised,
       last_name: lastNameNormalised,
       address_line1: addressLine1Normalised,
-      address_line2: addressLine2Normalised,
       address_city: addressCityNormalised,
       address_postcode: addressPostcodeNormalised,
       dob_day: dobDayNormalised,
       dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
+      dob_year: dobYearNormalised,
+      address_line2: addressLine2Normalised
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
