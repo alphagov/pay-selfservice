@@ -367,4 +367,35 @@ describe('Server side form validations', () => {
       })
     })
   })
+
+  describe('URL validation', () => {
+    it('should be valid for a valid https URL', () => {
+      expect(validations.validateUrl('https://www.example.com').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should be valid for a valid http URL', () => {
+      expect(validations.validateUrl('http://www.example.com').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should not be valid for an empty URL', () => {
+      expect(validations.validateUrl('')).to.deep.equal({
+        valid: false,
+        message: 'Enter a website address'
+      })
+    })
+
+    it('should not be valid without a protocol', () => {
+      expect(validations.validateUrl('www.example.com')).to.deep.equal({
+        valid: false,
+        message: 'Enter a valid website address'
+      })
+    })
+
+    it('should not be valid for not allowed protocol', () => {
+      expect(validations.validateUrl('ftp://www.example.com')).to.deep.equal({
+        valid: false,
+        message: 'Enter a valid website address'
+      })
+    })
+  })
 })

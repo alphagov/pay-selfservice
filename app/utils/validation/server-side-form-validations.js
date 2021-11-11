@@ -4,6 +4,7 @@ const moment = require('moment-timezone')
 const ukPostcode = require('uk-postcode')
 const commonPassword = require('common-password')
 const lodash = require('lodash')
+const { URL } = require('url')
 
 const {
   isEmpty,
@@ -14,7 +15,7 @@ const {
 const { invalidTelephoneNumber } = require('../telephone-number-utils')
 
 const NUMBERS_ONLY = new RegExp('^[0-9]+$')
-const NAXSI_NOT_ALLOWED_CHARACTERS = [ '<', '>', '|' ]
+const NAXSI_NOT_ALLOWED_CHARACTERS = ['<', '>', '|']
 
 const validReturnObject = {
   valid: true,
@@ -221,6 +222,27 @@ function validateOtp (otp) {
   return validReturnObject
 }
 
+function validateUrl (url) {
+  if (isEmpty(url)) {
+    return notValidReturnObject('Enter a website address')
+  }
+  if (!isValidUrl(url)) {
+    return notValidReturnObject('Enter a valid website address')
+  }
+  return validReturnObject
+}
+
+function isValidUrl (url) {
+  try {
+    const parsedUrl = new URL(url)
+    return parsedUrl.protocol
+      ? ['http:', 'https:'].includes(parsedUrl.protocol)
+      : false
+  } catch (err) {
+    return false
+  }
+}
+
 module.exports = {
   validateOptionalField,
   validateMandatoryField,
@@ -230,5 +252,6 @@ module.exports = {
   validateDateOfBirth,
   validateEmail,
   validatePassword,
-  validateOtp
+  validateOtp,
+  validateUrl
 }

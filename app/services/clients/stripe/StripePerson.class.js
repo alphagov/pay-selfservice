@@ -51,7 +51,7 @@ function build (params) {
     relationship: {
       executive: true,
       representative: true
-    },
+    }
   }
 
   if (params.address_line2) {
