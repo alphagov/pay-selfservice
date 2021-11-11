@@ -66,7 +66,36 @@ function validListStripePersons (opts = {}) {
   return stripePersons
 }
 
+function validStripePerson (opts = {}) {
+  const stripePerson = {
+    'id': 'person_1234',
+    'object': 'person',
+    'created': 1635794225,
+    'dob': {
+      'day': 1,
+      'month': 8,
+      'year': 1990
+    },
+    'first_name': null,
+    'last_name': null,
+    'relationship': {
+      'owner': false,
+      'percent_ownership': null,
+      'title': null
+    }
+  }
+
+  stripePerson.relationship.director = opts.director
+  stripePerson.relationship.representative = opts.representative
+  stripePerson.relationship.executive = opts.representative
+  stripePerson.phone = opts.phone
+  stripePerson.email = opts.email
+
+  return stripePerson
+}
+
 module.exports = {
   validRetrieveStripeAccountDetails,
-  validListStripePersons
+  validListStripePersons,
+  validStripePerson
 }

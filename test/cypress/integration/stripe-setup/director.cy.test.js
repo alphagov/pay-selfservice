@@ -5,14 +5,25 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
+const stripePspStubs = require('../../stubs/stripe-psp-stubs')
 
 const gatewayAccountId = 42
 const userExternalId = 'userExternalId'
 const gatewayAccountExternalId = 'a-valid-external-id'
 const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
+const stripeAccountId = `acct_123example123`
 const directorUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/director`
+const directorUrlForKyc = `/account/${gatewayAccountExternalId}/kyc/${gatewayAccountCredentialExternalId}/director`
+const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
-function setupStubs (director, type = 'live', paymentProvider = 'stripe') {
+const typedFirstName = 'Jane'
+const typedLastName = ' Doe'
+const typedDobDay = '25 '
+const typedDobMonth = ' 02'
+const typedDobYear = '1971 '
+const typedEmail = 'test@example.com'
+
+function setupStubs (director, type = 'live', paymentProvider = 'stripe', requiresAdditionalKycData = false) {
   let stripeSetupStub
 
   if (Array.isArray(director)) {
@@ -30,19 +41,40 @@ function setupStubs (director, type = 'live', paymentProvider = 'stripe') {
   const gatewayAccountCredentials = [{
     gateway_account_id: gatewayAccountId,
     payment_provider: paymentProvider,
-    external_id: gatewayAccountCredentialExternalId
+    external_id: gatewayAccountCredentialExternalId,
+    credentials: { stripe_account_id: stripeAccountId }
   }]
+
+  const stripeCreateOrUpdatePersonStub = stripePspStubs.createOrUpdatePerson({
+    stripeAccountId,
+    director: true
+  })
+  const stripeUpdateCompanyStub = stripePspStubs.updateCompany({
+    stripeAccountId
+  })
+  const stripeListPersonsStub = stripePspStubs.listPersons({
+    stripeAccountId,
+    director: true
+  })
+  const stripeRetriveAccountStub = stripePspStubs.retrieveAccountDetails({
+    stripeAccountId
+  })
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId: gatewayAccountExternalId,
+      requiresAdditionalKycData: requiresAdditionalKycData,
       type,
       paymentProvider,
       gatewayAccountCredentials
     }),
     stripeSetupStub,
+    stripeRetriveAccountStub,
+    stripeCreateOrUpdatePersonStub,
+    stripeListPersonsStub,
+    stripeUpdateCompanyStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     transactionSummaryStubs.getDashboardStatistics()
   ])
@@ -89,6 +121,77 @@ describe('Stripe setup: director page', () => {
           cy.get('input[name="answers-checked"]').should('not.exist')
         })
     })
+
+    it('should show errors when validation fails', () => {
+      cy.get('#director-form').within(() => {
+        cy.get('#first-name').type(typedFirstName)
+        cy.get('#dob-day').type('29')
+        cy.get('#dob-month').type('2')
+        cy.get('#dob-year').type('2001')
+        cy.get('#email').type('not a valid email')
+        cy.get('button').click()
+      })
+
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('a[href="#last-name"]').should('contain', 'Last name')
+        cy.get('a[href="#email"]').should('contain', 'Email')
+        cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
+        cy.get('a[href="#dob-month"]').should('not.exist')
+        cy.get('a[href="#dob-year"]').should('not.exist')
+      })
+
+      cy.get('#director-form').should('exist').within(() => {
+        cy.get('.govuk-form-group--error > input#last-name').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+          cy.get('input#last-name[name=last-name][autocomplete=family-name]').should('exist')
+        })
+
+        cy.get('.govuk-form-group--error > input#email').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+          cy.get('input#email[name=email][autocomplete=email]').should('have.attr', 'value', 'not a valid email')
+        })
+
+        cy.get('.govuk-form-group--error > fieldset > #dob-error').parent().parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+          cy.get('input#dob-day').should('have.attr', 'value', '29')
+          cy.get('input#dob-month').should('have.attr', 'value', '2')
+          cy.get('input#dob-year').should('have.attr', 'value', '2001')
+        })
+
+        cy.get('input#first-name[name="first-name"][autocomplete="given-name"]').should('have.attr', 'value', typedFirstName)
+        cy.get('input#last-name[name="last-name"][autocomplete="family-name"]').should('exist')
+
+        cy.get('button').should('exist')
+
+        cy.get('input[name="answers-need-changing"]').should('not.exist')
+        cy.get('input[name="answers-checked"]').should('not.exist')
+      })
+    })
+  })
+
+  describe('trying to save details when director already nominated', function () {
+    beforeEach(() => {
+      setupStubs([false, true])
+
+      cy.visit(directorUrl)
+    })
+
+    it('should redirect to dashboard with error message instead of saving details', () => {
+      cy.get('#director-form').within(() => {
+        cy.get('#first-name').type(typedFirstName)
+        cy.get('#last-name').type(typedLastName)
+        cy.get('#dob-day').type(typedDobDay)
+        cy.get('#dob-month').type(typedDobMonth)
+        cy.get('#dob-year').type(typedDobYear)
+        cy.get('button').click()
+      })
+
+      cy.get('h1').should('contain', 'Dashboard')
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(dashboardUrl)
+      })
+      cy.get('.flash-container .generic-error').should('contain', 'You’ve already provided director details.')
+    })
   })
 
   describe('when it’s not a Stripe gateway account', () => {
@@ -122,6 +225,33 @@ describe('Stripe setup: director page', () => {
     it('should show a permission denied error', () => {
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'not have the administrator rights')
+    })
+  })
+
+  describe('KYC - Additional data collection', () => {
+    beforeEach(() => {
+      setupStubs(false, 'live', 'stripe', true)
+
+      cy.visit(directorUrlForKyc)
+    })
+
+    it('should submit director details and redirect to your-psp page', () => {
+      cy.get('#director-form').within(() => {
+        cy.get('#first-name').type(typedFirstName)
+        cy.get('#last-name').type(typedLastName)
+        cy.get('#dob-day').type(typedDobDay)
+        cy.get('#dob-month').type(typedDobMonth)
+        cy.get('#dob-year').type(typedDobYear)
+        cy.get('#email').type(typedEmail)
+        cy.get('button').click()
+      })
+
+      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+      })
+
+      cy.get('#task-add-director-status').should('have.html', 'completed')
     })
   })
 })

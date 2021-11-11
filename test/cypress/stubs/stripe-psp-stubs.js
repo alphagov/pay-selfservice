@@ -36,7 +36,25 @@ function retrieveAccountDetails (opts) {
   })
 }
 
+function createOrUpdatePerson (opts) {
+  const path = `/v1/accounts/${opts.stripeAccountId}/persons/person_1234`
+  const fixtureOpts = parseStripePersonOptions(opts)
+  return stubBuilder('POST', path, 200, {
+    response: stripePspFixtures.validStripePerson(fixtureOpts)
+  })
+}
+
+function updateCompany (opts) {
+  const path = `/v1/accounts/${opts.stripeAccountId}`
+  const fixtureOpts = parseStripeAccountOptions(opts)
+  return stubBuilder('POST', path, 200, {
+    response: stripePspFixtures.validRetrieveStripeAccountDetails(fixtureOpts)
+  })
+}
+
 module.exports = {
   listPersons,
-  retrieveAccountDetails
+  retrieveAccountDetails,
+  createOrUpdatePerson,
+  updateCompany
 }

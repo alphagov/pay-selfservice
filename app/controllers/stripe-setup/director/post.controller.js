@@ -92,14 +92,15 @@ module.exports = async function (req, res, next) {
         is_switching: isSwitchingCredentials,
         collectingAdditionalKycData: collectingAdditionalKycData
       })
+
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else if (collectingAdditionalKycData) {
         req.flash('generic', 'Details of director successfully completed')
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
-      } else {
-        return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
       }
+
+      return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
     } catch (err) {
       next(err)
     }
