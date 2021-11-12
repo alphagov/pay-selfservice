@@ -83,7 +83,8 @@ describe('adminusers client - patch request to update service', function () {
       address_postcode: 'E1 8QS',
       address_country: 'GB',
       telephone_number: '07700 900 982',
-      email: 'foo@example.com'
+      email: 'foo@example.com',
+      url: 'https://www.example.com'
     }
     const currentGoLiveStage = goLiveStage.ENTERED_ORGANISATION_NAME
     const currentPspTestAccountStage = pspTestAccountStage.REQUEST_SUBMITTED
@@ -99,6 +100,7 @@ describe('adminusers client - patch request to update service', function () {
       .replace(validPaths.merchantDetails.email, merchantDetails.email)
       .replace(validPaths.currentGoLiveStage, currentGoLiveStage)
       .replace(validPaths.currentPspTestAccountStage, currentPspTestAccountStage)
+      .replace(validPaths.merchantDetails.url, merchantDetails.url)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({
