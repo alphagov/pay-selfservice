@@ -88,20 +88,18 @@ describe('Stripe setup: bank details page', () => {
     })
 
     describe('Bank account flag already true', () => {
-      it('should redirect to Dashboard with an error message when on Bank details page', () => {
+      it('should display an error when on Bank details page', () => {
         setupStubs(true)
 
         cy.visit(bankDetailsUrl)
 
-        cy.get('h1').should('contain', 'Dashboard')
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(dashboardUrl)
-        })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
+        cy.get('h1').should('contain', 'An error occurred')
+        cy.get('#back-link').should('contain', 'Back to dashboard')
+        cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
+        cy.get('#error-message').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
       })
 
-      it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
+      it('should display an error when submitting Bank details page', () => {
         setupStubs([false, true], 'live', 'stripe')
 
         cy.visit(bankDetailsUrl)
@@ -110,12 +108,10 @@ describe('Stripe setup: bank details page', () => {
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
         cy.get('#bank-details-form > button').click()
 
-        cy.get('h1').should('contain', 'Dashboard')
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(dashboardUrl)
-        })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
+        cy.get('h1').should('contain', 'An error occurred')
+        cy.get('#back-link').should('contain', 'Back to dashboard')
+        cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
+        cy.get('#error-message').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
       })
     })
 

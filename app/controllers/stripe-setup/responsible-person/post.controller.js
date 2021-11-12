@@ -7,7 +7,13 @@ const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
-const { validateField, validateDoB, getFormFields, getStripeAccountId } = require('../stripe-setup.util')
+const {
+  validateField,
+  validateDoB,
+  getFormFields,
+  getStripeAccountId,
+  getAlreadySubmittedErrorPageData
+} = require('../stripe-setup.util')
 const { response } = require('../../../utils/response')
 const {
   validateMandatoryField,
@@ -88,8 +94,9 @@ module.exports = async function (req, res, next) {
     return next(new Error('Stripe setup progress is not available on request'))
   }
   if (stripeAccountSetup.responsiblePerson) {
-    req.flash('genericError', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
-    return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
+    const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
+      'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
+    return response(req, res, 'error-with-link', errorPageData)
   }
 
   const fields = [

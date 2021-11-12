@@ -146,14 +146,13 @@ describe('Director POST controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
-  it('should redirect to dashboard if director details are already provided ', async () => {
+  it('should render error if director details are already provided ', async () => {
     const controller = getControllerWithMocks()
     req.account.connectorGatewayAccountStripeProgress = { director: true }
 
     await controller(req, res, next)
 
-    sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided director details. Contact GOV.UK Pay support if you need to change them.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
+    sinon.assert.calledWith(res.render, 'error-with-link')
   })
 
   it('should render error when Stripe returns error, not call connector, and not redirect', async function () {

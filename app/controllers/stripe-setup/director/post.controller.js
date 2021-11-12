@@ -9,7 +9,7 @@ const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredent
 const { response } = require('../../../utils/response')
 const { validateMandatoryField, validateEmail } = require('../../../utils/validation/server-side-form-validations')
 const { listPersons, updateDirector, createDirector, updateCompany } = require('../../../services/clients/stripe/stripe.client')
-const { validateField, validateDoB, getFormFields, getStripeAccountId } = require('../stripe-setup.util')
+const { validateField, validateDoB, getFormFields, getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const FIRST_NAME_FIELD = 'first-name'
@@ -48,8 +48,9 @@ module.exports = async function (req, res, next) {
     return next(new Error('Stripe setup progress is not available on request'))
   }
   if (stripeAccountSetup.director) {
-    req.flash('genericError', 'You’ve already provided director details. Contact GOV.UK Pay support if you need to change them.')
-    return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
+    const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
+      'You’ve already provided director details. Contact GOV.UK Pay support if you need to change them.')
+    return response(req, res, 'error-with-link', errorPageData)
   }
 
   const formFields = getFormFields(req.body, listOfFields)

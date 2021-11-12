@@ -24,13 +24,12 @@ describe('Responsible person GET controller', () => {
     next = sinon.spy()
   })
 
-  it('should redirect to dashboard if responsible person details are already provided ', async () => {
+  it('should render error if responsible person details are already provided ', async () => {
     req.account.connectorGatewayAccountStripeProgress = { responsiblePerson: true }
 
     await getController(req, res)
 
-    sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
+    sinon.assert.calledWith(res.render, 'error-with-link')
   })
 
   it('should render error page when stripe setup is not available on request', async () => {

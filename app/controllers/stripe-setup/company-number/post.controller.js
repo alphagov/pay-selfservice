@@ -5,7 +5,7 @@ const lodash = require('lodash')
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
 const { isSwitchingCredentialsRoute} = require('../../../utils/credentials')
-const { getStripeAccountId } = require('../stripe-setup.util')
+const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const companyNumberValidations = require('./company-number-validations')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -24,8 +24,9 @@ module.exports = async (req, res, next) => {
     return next(new Error('Stripe setup progress is not available on request'))
   }
   if (stripeAccountSetup.companyNumber) {
-    req.flash('genericError', 'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
-    return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
+    const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
+      'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
+    return response(req, res, 'error-with-link', errorPageData)
   }
 
   const companyNumberDeclaration = lodash.get(req.body, COMPANY_NUMBER_DECLARATION_FIELD, '')
