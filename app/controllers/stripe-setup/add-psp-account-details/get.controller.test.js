@@ -92,4 +92,26 @@ describe('get controller', () => {
     sinon.assert.calledWith(next, expectedError)
     sinon.assert.notCalled(res.render)
   })
+
+  describe('environment variable COLLECT_ADDITIONAL_KYC_DATA is enabled', () => {
+    before(() => {
+      process.env.COLLECT_ADDITIONAL_KYC_DATA = 'true'
+    })
+
+    after(() => {
+      process.env.COLLECT_ADDITIONAL_KYC_DATA = 'false'
+    })
+
+    it('should redirect to director page', async function () {
+      req.account.connectorGatewayAccountStripeProgress = {
+        bankAccount: true,
+        responsiblePerson: true,
+        director: false,
+        vatNumber: false,
+        companyNumber: false
+      }
+      await getController(req, res, next)
+      sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/director`)
+    })
+  })
 })

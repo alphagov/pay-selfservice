@@ -21,6 +21,8 @@ module.exports = async function getPspAccountDetails (req, res, next) {
     res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.bankDetails, accountExternalId, credentialId))
   } else if (!stripeAccountSetup.responsiblePerson) {
     res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.responsiblePerson, accountExternalId, credentialId))
+  } else if (!stripeAccountSetup.director && process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true') {
+    res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.director, accountExternalId, credentialId))
   } else if (!stripeAccountSetup.vatNumber) {
     res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.vatNumber, accountExternalId, credentialId))
   } else if (!stripeAccountSetup.companyNumber) {
