@@ -24,9 +24,11 @@ describe('VAT number POST controller', () => {
       '../../../services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
-          this.getStripeAccount = () => Promise.resolve({
-            stripeAccountId: 'acct_123example123'
-          })
+        }
+      },
+      '../stripe-setup.util': {
+        getStripeAccountId: () => {
+          return Promise.resolve('acct_123example123')
         }
       }
     })

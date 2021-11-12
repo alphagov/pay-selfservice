@@ -4,7 +4,8 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute} = require('../../../utils/credentials')
+const { getStripeAccountId } = require('../stripe-setup.util')
 const bankDetailsValidations = require('./bank-details-validations')
 const { updateBankAccount } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -44,15 +45,7 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    let stripeAccountId
-
-    if (isSwitchingCredentials) {
-      const switchingCredential = getSwitchingCredential(req.account)
-      stripeAccountId = switchingCredential.credentials.stripe_account_id
-    } else {
-      const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
-      stripeAccountId = stripeAccount.stripeAccountId
-    }
+    const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
 
     await updateBankAccount(stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,

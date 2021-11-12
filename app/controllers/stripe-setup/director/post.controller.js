@@ -5,11 +5,11 @@ const lodash = require('lodash')
 const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential, getSwitchingCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
 const { response } = require('../../../utils/response')
 const { validateMandatoryField, validateEmail } = require('../../../utils/validation/server-side-form-validations')
 const { listPersons, updateDirector, createDirector, updateCompany } = require('../../../services/clients/stripe/stripe.client')
-const { validateDateOfBirth } = require('../../../utils/validation/server-side-form-validations')
+const { validateField, validateDoB, getFormFields, getStripeAccountId } = require('../stripe-setup.util')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const FIRST_NAME_FIELD = 'first-name'
@@ -36,7 +36,6 @@ const validationRules = [
     maxLength: 320
   }
 ]
-const trimField = (key, store) => lodash.get(store, key, '').trim()
 
 module.exports = async function (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
@@ -90,7 +89,7 @@ module.exports = async function (req, res, next) {
       logger.info('Director details submitted for Stripe account', {
         stripe_account_id: stripeAccountId,
         is_switching: isSwitchingCredentials,
-        collectingAdditionalKycData: collectingAdditionalKycData
+        collecting_additional_kyc_data: collectingAdditionalKycData
       })
 
       if (isSwitchingCredentials) {
@@ -105,23 +104,6 @@ module.exports = async function (req, res, next) {
       next(err)
     }
   }
-}
-
-async function getStripeAccountId (account, isSwitchingCredentials, correlationId) {
-  if (isSwitchingCredentials) {
-    const switchingCredential = getSwitchingCredential(account)
-    return switchingCredential.credentials.stripe_account_id
-  } else {
-    const stripeAccount = await connector.getStripeAccount(account.gateway_account_id, correlationId)
-    return stripeAccount.stripeAccountId
-  }
-}
-
-function getFormFields (requestBody, listOfFields) {
-  return listOfFields.reduce((form, field) => {
-    form[field] = trimField(field, requestBody)
-    return form
-  }, {})
 }
 
 function validateDirector (requestBody, formFields) {
@@ -139,22 +121,6 @@ function validateDirector (requestBody, formFields) {
   }
 
   return errors
-}
-
-function validateField (field, fieldValidator, maxLength) {
-  const isFieldValid = fieldValidator(field, maxLength)
-  if (!isFieldValid.valid) {
-    return isFieldValid.message
-  }
-  return null
-}
-
-function validateDoB (day, month, year) {
-  const dateOfBirthValidationResult = validateDateOfBirth(day, month, year)
-  if (!dateOfBirthValidationResult.valid) {
-    return dateOfBirthValidationResult.message
-  }
-  return null
 }
 
 function buildStripePerson (formFields) {

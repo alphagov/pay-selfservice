@@ -4,7 +4,8 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, getSwitchingCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { getStripeAccountId } = require('../stripe-setup.util')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const vatNumberValidations = require('./vat-number-validations')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -48,15 +49,8 @@ module.exports = async (req, res, next) => {
     })
   } else {
     try {
-      let stripeAccountId
+      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
 
-      if (isSwitchingCredentials) {
-        const switchingCredential = getSwitchingCredential(req.account)
-        stripeAccountId = switchingCredential.credentials.stripe_account_id
-      } else {
-        const stripeAccount = await connector.getStripeAccount(req.account.gateway_account_id, req.correlationId)
-        stripeAccountId = stripeAccount.stripeAccountId
-      }
       if (isVatNumberProvided) {
         const stripeCompanyBody = {
           vat_id: sanitisedVatNumber
