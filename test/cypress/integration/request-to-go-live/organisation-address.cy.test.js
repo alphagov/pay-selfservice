@@ -16,6 +16,8 @@ describe('The organisation address page', () => {
   const invalidPostcode = '123'
   const validTelephoneNumber = '01134960000'
   const invalidTelephoneNumber = 'abd'
+  const validUrl = 'https://www.example.com'
+  const invalidUrl = 'invalid.url'
 
   describe('The go-live stage is ENTERED_ORGANISATION_NAME and there are no existing merchant details', () => {
     beforeEach(() => {
@@ -54,6 +56,10 @@ describe('The organisation address page', () => {
             cy.get('label[for="telephone-number"]').should('exist')
             cy.get('#telephone-number-hint').should('exist')
             cy.get('input#telephone-number[name="telephone-number"]').should('exist')
+
+            cy.get('label[for="url"]').should('exist')
+            cy.get('#url-hint').should('exist')
+            cy.get('input#url[name="url"]').should('exist')
           })
       })
 
@@ -63,16 +69,18 @@ describe('The organisation address page', () => {
             // create errors by leaving fields blank or inputting invalid values
             cy.get('#address-postcode').type(invalidPostcode)
             cy.get('#telephone-number').type(invalidTelephoneNumber)
+            cy.get('#url').type(invalidUrl)
 
             cy.get('button').click()
           })
 
-        cy.get('.govuk-error-summary').find('a').should('have.length', 4)
+        cy.get('.govuk-error-summary').find('a').should('have.length', 5)
         cy.get('.govuk-error-summary').should('exist').within(() => {
           cy.get('a[href="#address-line1"]').should('contain', 'Building and street')
           cy.get('a[href="#address-city"]').should('contain', 'Town or city')
           cy.get('a[href="#address-postcode"]').should('contain', 'Postcode')
           cy.get('a[href="#telephone-number"]').should('contain', 'Telephone number')
+          cy.get('a[href="#url"]').should('contain', 'Organisation website address')
         })
 
         cy.get(`form[method=post][action="/service/${serviceExternalId}/request-to-go-live/organisation-address"]`)
@@ -89,6 +97,10 @@ describe('The organisation address page', () => {
             cy.get('.govuk-form-group--error > input#telephone-number').parent().should('exist').within(() => {
               cy.get('.govuk-error-message').should('contain', 'Invalid telephone number')
             })
+
+            cy.get('.govuk-form-group--error > input#url').parent().should('exist').within(() => {
+              cy.get('.govuk-error-message').should('contain', 'Enter a valid website address')
+            })
           })
       })
 
@@ -103,10 +115,11 @@ describe('The organisation address page', () => {
             cy.get('button').click()
           })
 
-        cy.get('.govuk-error-summary').find('a').should('have.length', 2)
+        cy.get('.govuk-error-summary').find('a').should('have.length', 3)
         cy.get('.govuk-error-summary').should('exist').within(() => {
           cy.get('a[href="#address-postcode"]').should('contain', 'Postcode')
           cy.get('a[href="#telephone-number"]').should('contain', 'Telephone number')
+          cy.get('a[href="#url"]').should('contain', 'Organisation website address')
         })
 
         cy.get(`form[method=post][action="/service/${serviceExternalId}/request-to-go-live/organisation-address"]`)
@@ -117,6 +130,7 @@ describe('The organisation address page', () => {
             cy.get('#address-country').should('have.value', countryGb)
             cy.get('#address-postcode').should('have.value', invalidPostcode)
             cy.get('#telephone-number').should('have.value', invalidTelephoneNumber)
+            cy.get('#url').should('have.value', invalidUrl)
           })
       })
     })
@@ -137,8 +151,10 @@ describe('The organisation address page', () => {
             // correct the validation errors
             cy.get('#address-postcode').clear()
             cy.get('#telephone-number').clear()
+            cy.get('#url').clear()
             cy.get('#address-postcode').type(validPostcodeGb)
             cy.get('#telephone-number').type(validTelephoneNumber)
+            cy.get('#url').type(validUrl)
             cy.get('button').click()
           })
 
@@ -157,7 +173,8 @@ describe('The organisation address page', () => {
       address_city: validCity,
       address_country: countryIe,
       address_postcode: validPostcodeIe,
-      telephone_number: validTelephoneNumber
+      telephone_number: validTelephoneNumber,
+      url: validUrl
     }
     serviceRole.service.merchant_details = merchantDetails
 
@@ -174,6 +191,7 @@ describe('The organisation address page', () => {
           cy.get('#address-country').should('have.value', merchantDetails.address_country)
           cy.get('#address-postcode').should('have.value', merchantDetails.address_postcode)
           cy.get('#telephone-number').should('have.value', merchantDetails.telephone_number)
+          cy.get('#url').should('have.value', merchantDetails.url)
         })
     })
   })

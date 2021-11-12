@@ -9,7 +9,8 @@ const validPaths = {
     addressPostcode: 'merchant_details/address_postcode',
     addressCountry: 'merchant_details/address_country',
     telephoneNumber: 'merchant_details/telephone_number',
-    email: 'merchant_details/email'
+    email: 'merchant_details/email',
+    url: 'merchant_details/url'
   },
   currentGoLiveStage: 'current_go_live_stage',
   currentPspTestAccountStage: 'current_psp_test_account_stage'
