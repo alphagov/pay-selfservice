@@ -93,7 +93,7 @@ describe('Stripe setup: director page', () => {
     })
 
     it('should display form with name, dob and email fields', () => {
-      cy.get('h1').should('contain', 'Who is your director?')
+      cy.get('h1').should('contain', 'Enter a director’s details')
 
       cy.get('#director-form').should('exist')
         .within(() => {
