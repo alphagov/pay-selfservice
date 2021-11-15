@@ -209,6 +209,9 @@ function buildServiceRoleOpts (opts) {
       name: opts.merchantName
     }
   }
+  if (opts.merchantDetails) {
+    service.merchant_details = opts.merchantDetails
+  }
 
   const serviceRole = {
     service

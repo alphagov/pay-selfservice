@@ -15,10 +15,13 @@ const {
 const { updateService } = require('../../../services/service.service')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
+const { response } = require('../../../utils/response')
+const { countries } = require('@govuk-pay/pay-js-commons').utils
 
 const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
 
 const clientFieldNames = {
+  name: 'merchant-name',
   addressLine1: 'address-line1',
   addressLine2: 'address-line2',
   addressCity: 'address-city',
@@ -54,7 +57,6 @@ const validationRules = [
     validator: validatePhoneNumber
   }
 ]
-
 if (collectAdditionalKycData) {
   validationRules.push(
     {
@@ -64,10 +66,20 @@ if (collectAdditionalKycData) {
   )
 }
 
+const validationRulesWithOrganisationName = [
+  {
+    field: clientFieldNames.name,
+    validator: validateMandatoryField,
+    maxLength: 255
+  },
+  ...validationRules
+]
+
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
 const normaliseForm = (formBody) => {
   const fields = [
+    clientFieldNames.name,
     clientFieldNames.addressLine1,
     clientFieldNames.addressLine2,
     clientFieldNames.addressCity,
@@ -84,8 +96,9 @@ const normaliseForm = (formBody) => {
   }, {})
 }
 
-const validateForm = function validate (form) {
-  const errors = validationRules.reduce((errors, validationRule) => {
+const validateForm = function validate(form, isRequestToGoLive) {
+  const rules = isRequestToGoLive ? validationRules : validationRulesWithOrganisationName
+  const errors = rules.reduce((errors, validationRule) => {
     const value = form[validationRule.field]
     const validationResponse = validationRule.validator(value, validationRule.maxLength)
     if (!validationResponse.valid) {
@@ -103,7 +116,7 @@ const validateForm = function validate (form) {
   return errors
 }
 
-const submitForm = async function (form, serviceExternalId, correlationId) {
+const submitForm = async function (form, serviceExternalId, correlationId, isRequestToGoLive) {
   const updateRequest = new ServiceUpdateRequest()
     .replace(validPaths.merchantDetails.addressLine1, form[clientFieldNames.addressLine1])
     .replace(validPaths.merchantDetails.addressLine2, form[clientFieldNames.addressLine2])
@@ -111,45 +124,53 @@ const submitForm = async function (form, serviceExternalId, correlationId) {
     .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
     .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
     .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
-    .replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
 
   if (collectAdditionalKycData) {
     updateRequest.replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
   }
-
+  if (isRequestToGoLive) {
+    updateRequest.replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
+  } else {
+    updateRequest.replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
+  }
   return updateService(serviceExternalId, updateRequest.formatPayload(), correlationId)
 }
 
-const buildErrorsPageData = (form, errors) => {
+const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
   return {
-    success: false,
     errors: errors,
+    name: form[clientFieldNames.name],
     address_line1: form[clientFieldNames.addressLine1],
     address_line2: form[clientFieldNames.addressLine2],
     address_city: form[clientFieldNames.addressCity],
     address_postcode: form[clientFieldNames.addressPostcode],
-    address_country: form[clientFieldNames.addressCountry],
     telephone_number: form[clientFieldNames.telephoneNumber],
     url: form[clientFieldNames.url],
-    collectAdditionalKycData: process.env.COLLECT_ADDITIONAL_KYC_DATA
+    countries: countries.govukFrontendFormatted(form[clientFieldNames.addressCountry]),
+    collectAdditionalKycData: process.env.COLLECT_ADDITIONAL_KYC_DATA,
+    isRequestToGoLive
   }
 }
 
-module.exports = async function submitOrganisationAddress (req, res, next) {
+module.exports = async function submitOrganisationAddress(req, res, next) {
   try {
+    const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
     const form = normaliseForm(req.body)
-    const errors = validateForm(form)
+    const errors = validateForm(form, isRequestToGoLive)
 
     if (lodash.isEmpty(errors)) {
-      const updatedService = await submitForm(form, req.service.externalId, req.correlationId)
-      res.redirect(
-        303,
-        formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
-      )
+      const updatedService = await submitForm(form, req.service.externalId, req.correlationId, isRequestToGoLive)
+      if (isRequestToGoLive) {
+        res.redirect(
+          303,
+          formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
+        )
+      } else {
+        res.redirect(303, formatServicePathsFor(paths.service.organisationDetails.index, req.service.externalId))
+      }
     } else {
-      const pageData = buildErrorsPageData(form, errors)
-      lodash.set(req, 'session.pageData.requestToGoLive.organisationAddress', pageData)
-      res.redirect(303, formatServicePathsFor(paths.service.requestToGoLive.organisationAddress, req.service.externalId))
+      const pageData = buildErrorsPageData(form, errors, isRequestToGoLive)
+      return response(req, res, 'request-to-go-live/organisation-address', pageData)
     }
   } catch (err) {
     next(err)

@@ -1,45 +1,54 @@
-'use strict'
+const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const serviceStubs = require('../../stubs/service-stubs')
 
-const utils = require('../../utils/request-to-go-live-utils')
-const { userExternalId, serviceExternalId } = utils.variables
+const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+const gatewayAccountId = 42
+const serviceExternalId = 'a-service-external-id'
+const validName = 'HMRC'
+const validLine1 = 'A building'
+const validLine2 = 'A street'
+const validCity = 'A city'
+const countryGb = 'GB'
+const validPostcodeGb = 'E1 8QS'
+const invalidPostcode = '123'
+const validTelephoneNumber = '01134960000'
+const invalidTelephoneNumber = 'abd'
+const validUrl = 'https://www.example.com'
+const invalidUrl = 'invalid.url'
 
-const pageUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-address`
+describe('Dashboard', () => {
 
-describe('The organisation address page', () => {
-  const validLine1 = 'A building'
-  const validLine2 = 'A street'
-  const validCity = 'A city'
-  const countryIe = 'IE'
-  const countryGb = 'GB'
-  const validPostcodeGb = 'E1 8QS'
-  const validPostcodeIe = 'D01 F5P2'
-  const invalidPostcode = '123'
-  const validTelephoneNumber = '01134960000'
-  const invalidTelephoneNumber = 'abd'
-  const validUrl = 'https://www.example.com'
-  const invalidUrl = 'invalid.url'
+  beforeEach(() => {
+    // keep the same session for entire describe block
+    Cypress.Cookies.preserveOnce('session')
+  })
 
-  describe('The go-live stage is ENTERED_ORGANISATION_NAME and there are no existing merchant details', () => {
-    beforeEach(() => {
-      // keep the same session for entire describe block
-      Cypress.Cookies.preserveOnce('session', 'gateway_account')
-    })
-
+  describe('The organisation details page', () => {
     describe('Form validation', () => {
       beforeEach(() => {
-        const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
-        utils.setupGetUserAndGatewayAccountStubs(serviceRole)
+        cy.task('setupStubs', [
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId }),
+          gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId, paymentProvider: 'sandbox', type: 'test' })
+        ])
+      })
+
+      it('should navigate to page from my services', () => {
+        cy.setEncryptedCookies(userExternalId)
+        cy.visit('/my-services')
+        cy.title().should('eq', 'Choose service - GOV.UK Pay')
+        cy.get('.edit-merchant-details').click()
       })
 
       it('should display form', () => {
-        cy.setEncryptedCookies(userExternalId)
-        cy.visit(pageUrl)
-
-        cy.get('h1').should('contain', `Enter your organisation’s contact details`)
+        cy.get('h1').should('contain', 'Organisation details')
 
         cy.get(`form[method=post]`)
           .should('exist')
           .within(() => {
+            cy.get('label[for="merchant-name"]').should('exist')
+            cy.get('input#merchant-name[name="merchant-name"]').should('exist')
+
             cy.get('label[for="address-line1"]').should('exist')
             cy.get('input#address-line1[name="address-line1"]').should('exist')
             cy.get('input#address-line2[name="address-line2"]').should('exist')
@@ -74,8 +83,9 @@ describe('The organisation address page', () => {
             cy.get('button').click()
           })
 
-        cy.get('.govuk-error-summary').find('a').should('have.length', 5)
+        cy.get('.govuk-error-summary').find('a').should('have.length', 6)
         cy.get('.govuk-error-summary').should('exist').within(() => {
+          cy.get('a[href="#merchant-name"]').should('contain', 'Name')
           cy.get('a[href="#address-line1"]').should('contain', 'Building and street')
           cy.get('a[href="#address-city"]').should('contain', 'Town or city')
           cy.get('a[href="#address-postcode"]').should('contain', 'Postcode')
@@ -85,6 +95,9 @@ describe('The organisation address page', () => {
 
         cy.get(`form[method=post]`)
           .within(() => {
+            cy.get('.govuk-form-group--error > input#merchant-name').parent().should('exist').within(() => {
+              cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+            })
             cy.get('.govuk-form-group--error > input#address-line1').parent().should('exist').within(() => {
               cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
             })
@@ -108,6 +121,7 @@ describe('The organisation address page', () => {
         cy.get(`form[method=post]`)
           .within(() => {
             // fill in the rest of the form fields
+            cy.get('#merchant-name').type(validName)
             cy.get('#address-line1').type(validLine1)
             cy.get('#address-line2').type(validLine2)
             cy.get('#address-city').type(validCity)
@@ -124,6 +138,7 @@ describe('The organisation address page', () => {
 
         cy.get(`form[method=post]`)
           .within(() => {
+            cy.get('#merchant-name').should('have.value', validName)
             cy.get('#address-line1').should('have.value', validLine1)
             cy.get('#address-line2').should('have.value', validLine2)
             cy.get('#address-city').should('have.value', validCity)
@@ -136,12 +151,22 @@ describe('The organisation address page', () => {
     })
 
     describe('Valid details submitted', () => {
-      beforeEach(() => {
-        const afterUpdateServiceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')
+      const merchantDetails = {
+        name: validName,
+        address_line1: validLine1,
+        address_line2: validLine2,
+        address_city: validCity,
+        address_country: countryGb,
+        address_postcode: validPostcodeGb,
+        telephone_number: validTelephoneNumber,
+        url: validUrl
+      }
 
+      beforeEach(() => {
         cy.task('setupStubs', [
-          utils.patchUpdateServiceSuccessCatchAllStub('ENTERED_ORGANISATION_ADDRESS'),
-          ...utils.getUserAndGatewayAccountStubs(afterUpdateServiceRole)
+          serviceStubs.patchUpdateMerchantDetailsSuccess({ serviceExternalId, gatewayAccountId, merchantDetails }),
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, merchantDetails }),
+          gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId, paymentProvider: 'sandbox', type: 'test' })
         ])
       })
 
@@ -159,72 +184,25 @@ describe('The organisation address page', () => {
           })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+          expect(location.pathname).to.eq(`/service/${serviceExternalId}/organisation-details`)
         })
       })
-    })
-  })
 
-  describe('There are existing organisation details', () => {
-    const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
-    const merchantDetails = {
-      address_line1: validLine1,
-      address_line2: validLine2,
-      address_city: validCity,
-      address_country: countryIe,
-      address_postcode: validPostcodeIe,
-      telephone_number: validTelephoneNumber,
-      url: validUrl
-    }
-    serviceRole.service.merchant_details = merchantDetails
+      it('should display stored organisation details', () => {
+        cy.get('td#merchant-name').should('contain', validName)
 
-    it('should display form with existing details pre-filled', () => {
-      cy.setEncryptedCookies(userExternalId)
-      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
-      cy.visit(`/service/${serviceExternalId}/request-to-go-live/organisation-address`)
+        cy.get('td#merchant-address').should('contain', validLine1)
+        cy.get('td#merchant-address').should('contain', validLine2)
+        cy.get('td#merchant-address').should('contain', validCity)
+        cy.get('td#merchant-address').should('contain', validPostcodeGb)
+        cy.get('td#merchant-address').should('contain', 'United Kingdom')
 
-      cy.get(`form[method=post]`)
-        .within(() => {
-          cy.get('#address-line1').should('have.value', merchantDetails.address_line1)
-          cy.get('#address-line2').should('have.value', merchantDetails.address_line2)
-          cy.get('#address-city').should('have.value', merchantDetails.address_city)
-          cy.get('#address-country').should('have.value', merchantDetails.address_country)
-          cy.get('#address-postcode').should('have.value', merchantDetails.address_postcode)
-          cy.get('#telephone-number').should('have.value', merchantDetails.telephone_number)
-          cy.get('#url').should('have.value', merchantDetails.url)
-        })
-    })
-  })
+        cy.get('td#telephone-number').should('contain', validTelephoneNumber)
+        cy.get('td#url').should('contain', validUrl)
+      })
 
-  describe('User does not have the correct permissions', () => {
-    const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
-    serviceRole.role = { permissions: [] }
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
-      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
-    })
-
-    it('should show an error when the user does not have enough permissions', () => {
-      cy.visit(pageUrl, { failOnStatusCode: false })
-      cy.get('h1').should('contain', 'An error occurred')
-      cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
-    })
-  })
-
-  describe('Service has invalid go live stage', () => {
-    const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
-      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
-    })
-
-    it('should redirect to "Request to go live: index" page when in wrong stage', () => {
-      cy.visit(pageUrl)
-
-      cy.get('h1').should('contain', 'Request a live account')
-
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
+      it('should have links to change details', () => {
+        cy.get('a').contains('Change').should('have.attr', 'href', `/service/${serviceExternalId}/organisation-details/edit`)
       })
     })
   })

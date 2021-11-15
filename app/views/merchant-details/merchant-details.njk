@@ -44,7 +44,7 @@
       {% if merchant_details.telephone_number %}
       <tr class="govuk-table__row">
         <th class="govuk-table__header" scope="row">
-          Phone number
+          Telephone number
         </th>
         <td class="govuk-table__cell" id="telephone-number">
           {{merchant_details.telephone_number}}
@@ -54,16 +54,16 @@
         </td>
       </tr>
       {% endif %}
-      {% if merchant_details.email %}
+      {% if merchant_details.url %}
       <tr class="govuk-table__row">
         <th class="govuk-table__header" scope="row">
-          Email
+          Website address
         </th>
-        <td class="govuk-table__cell" id="merchant-email">
-          {{merchant_details.email}}
+        <td class="govuk-table__cell" id="url">
+          {{merchant_details.url}}
         </td>
         <td class="govuk-table__cell pay-text-align-right">
-          <a class="govuk-link govuk-link--no-visited-state" href="{{editPath}}">Change<span class="govuk-visually-hidden"> organisation email</span></a>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{editPath}}">Change<span class="govuk-visually-hidden"> organisation website address</span></a>
         </td>
       </tr>
       {% endif %}

@@ -160,7 +160,7 @@ module.exports = {
       index: '/edit-name',
       update: '/edit-name'
     },
-    merchantDetails: {
+    organisationDetails: {
       index: '/organisation-details',
       edit: '/organisation-details/edit'
     },

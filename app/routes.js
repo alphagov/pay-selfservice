@@ -41,7 +41,7 @@ const forgotPasswordController = require('./controllers/forgotten-password.contr
 const myServicesController = require('./controllers/my-services')
 const editServiceNameController = require('./controllers/edit-service-name.controller')
 const serviceUsersController = require('./controllers/service-users.controller')
-const merchantDetailsController = require('./controllers/edit-merchant-details')
+const organisationDetailsController = require('./controllers/organisation-details.controller')
 const inviteUserController = require('./controllers/invite-user.controller')
 const registerController = require('./controllers/register-user.controller')
 const serviceRolesUpdateController = require('./controllers/service-roles-update.controller')
@@ -122,7 +122,7 @@ const {
 } = paths.futureAccountStrategy
 const {
   editServiceName,
-  merchantDetails,
+  organisationDetails,
   redirects,
   requestPspTestAccount,
   requestToGoLive,
@@ -268,9 +268,9 @@ module.exports.bind = function (app) {
   service.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
 
   // Merchant details
-  service.get(merchantDetails.index, permission('merchant-details:read'), merchantDetailsController.getIndex)
-  service.get(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.getEdit)
-  service.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsController.postEdit)
+  service.get(organisationDetails.index, permission('merchant-details:read'), organisationDetailsController.showOrganisationDetails)
+  service.get(organisationDetails.edit, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.get)
+  service.post(organisationDetails.edit, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.post)
 
   // Request to go live
   service.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
