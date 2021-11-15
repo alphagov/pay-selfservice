@@ -102,14 +102,13 @@ describe('VAT number POST controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
-  it('should redirect to dashboard if VAT number is already provided ', async () => {
+  it('should render error if VAT number is already provided ', async () => {
     const controller = getControllerWithMocks()
     req.account.connectorGatewayAccountStripeProgress = { vatNumber: true }
 
     await controller(req, res, next)
 
-    sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided your VAT number. Contact GOV.UK Pay support if you need to update it.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
+    sinon.assert.calledWith(res.render, 'error-with-link')
   })
 
   it('should render error when Stripe returns error, not call connector, and not redirect', async function () {

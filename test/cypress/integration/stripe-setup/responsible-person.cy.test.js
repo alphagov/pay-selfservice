@@ -177,12 +177,11 @@ describe('Stripe setup: responsible person page', () => {
       cy.visit(responsiblePersonUrl)
     })
 
-    it('should redirect to dashboard with error message instead of showing form', () => {
-      cy.get('h1').should('contain', 'Dashboard')
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(dashboardUrl)
-      })
-      cy.get('.flash-container .generic-error').should('contain', 'responsible person')
+    it('should display an error instead of showing form', () => {
+      cy.get('h1').should('contain', 'An error occurred')
+      cy.get('#back-link').should('contain', 'Back to dashboard')
+      cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
+      cy.get('#error-message').should('contain', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
     })
   })
 
@@ -193,16 +192,15 @@ describe('Stripe setup: responsible person page', () => {
       cy.visit(responsiblePersonUrl)
     })
 
-    it('should redirect to dashboard with error message instead of saving details', () => {
+    it('should display an error instead of saving details', () => {
       cy.get('#responsible-person-form').within(() => {
         cy.get('button').click()
       })
 
-      cy.get('h1').should('contain', 'Dashboard')
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(dashboardUrl)
-      })
-      cy.get('.flash-container .generic-error').should('contain', 'responsible person')
+      cy.get('h1').should('contain', 'An error occurred')
+      cy.get('#back-link').should('contain', 'Back to dashboard')
+      cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
+      cy.get('#error-message').should('contain', 'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
     })
   })
 

@@ -13,7 +13,7 @@ const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
 const companyNumberUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/company-number`
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
-function setupStubs (companyNumber, type = 'live', paymentProvider = 'stripe') {
+function setupStubs(companyNumber, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
   if (Array.isArray(companyNumber)) {
@@ -116,20 +116,18 @@ describe('Stripe setup: company number page', () => {
         cy.setEncryptedCookies(userExternalId)
       })
 
-      it('should redirect to Dashboard with an error message when displaying the page', () => {
+      it('should display an error when displaying the page', () => {
         setupStubs(true)
 
         cy.visit(companyNumberUrl)
 
-        cy.get('h1').should('contain', 'Dashboard')
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(dashboardUrl)
-        })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your company registration number.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
+        cy.get('h1').should('contain', 'An error occurred')
+        cy.get('#back-link').should('contain', 'Back to dashboard')
+        cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
+        cy.get('#error-message').should('contain', 'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
       })
 
-      it('should redirect to Dashboard with an error message when submitting the form', () => {
+      it('should display an error when submitting the form', () => {
         setupStubs([false, true])
 
         cy.visit(companyNumberUrl)
@@ -142,12 +140,10 @@ describe('Stripe setup: company number page', () => {
             cy.get('button').click()
           })
 
-        cy.get('h1').should('contain', 'Dashboard')
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(dashboardUrl)
-        })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your company registration number.')
-        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update it.')
+        cy.get('h1').should('contain', 'An error occurred')
+        cy.get('#back-link').should('contain', 'Back to dashboard')
+        cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
+        cy.get('#error-message').should('contain', 'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
       })
     })
 

@@ -6,6 +6,8 @@ const { getSwitchingCredential } = require('../../utils/credentials')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { validateDateOfBirth } = require('../../utils/validation/server-side-form-validations')
+const paths = require('../../paths')
+const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
@@ -42,9 +44,24 @@ function validateDoB (day, month, year) {
   return null
 }
 
+function getAlreadySubmittedErrorPageData(accountExternalId, errorMessage) {
+  return {
+    error: {
+      title: 'An error occurred',
+      message: errorMessage
+    },
+    link: {
+      link: formatAccountPathsFor(paths.account.dashboard.index, accountExternalId),
+      text: 'Back to dashboard'
+    },
+    enable_link: true
+  }
+}
+
 module.exports = {
-  getStripeAccountId: getStripeAccountId,
-  validateField: validateField,
-  validateDoB: validateDoB,
-  getFormFields: getFormFields
+  getStripeAccountId,
+  validateField,
+  validateDoB,
+  getFormFields,
+  getAlreadySubmittedErrorPageData
 }

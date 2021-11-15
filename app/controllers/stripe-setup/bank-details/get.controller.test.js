@@ -36,13 +36,12 @@ describe('Bank details get controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
-  it('should redirect to dashboard if bank details are already provided ', async () => {
+  it('should render error if bank details are already provided ', async () => {
     req.account.connectorGatewayAccountStripeProgress = { bankAccount: true }
 
     await getController(req, res)
 
-    sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
+    sinon.assert.calledWith(res.render, 'error-with-link')
   })
 
   it('should render bank account details form if details are not yet submitted', async () => {

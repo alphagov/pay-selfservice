@@ -4,8 +4,8 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute} = require('../../../utils/credentials')
-const { getStripeAccountId } = require('../stripe-setup.util')
+const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const bankDetailsValidations = require('./bank-details-validations')
 const { updateBankAccount } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -25,8 +25,9 @@ module.exports = async (req, res, next) => {
     return next(new Error('Stripe setup progress is not available on request'))
   }
   if (stripeAccountSetup.bankAccount) {
-    req.flash('genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
-    return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
+    const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
+      'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+    return response(req, res, 'error-with-link', errorPageData)
   }
 
   const rawAccountNumber = lodash.get(req.body, ACCOUNT_NUMBER_FIELD, '')
@@ -93,7 +94,7 @@ module.exports = async (req, res, next) => {
   }
 }
 
-function validateBankDetails (accountNumber, sortCode) {
+function validateBankDetails(accountNumber, sortCode) {
   const errors = {}
 
   const accountNumberValidationResult = bankDetailsValidations.validateAccountNumber(accountNumber)

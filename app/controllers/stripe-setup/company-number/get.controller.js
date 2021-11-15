@@ -2,8 +2,7 @@
 
 const { response } = require('../../../utils/response')
 const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
+const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 
 module.exports = (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
@@ -12,8 +11,9 @@ module.exports = (req, res, next) => {
     return next(new Error('Stripe setup progress is not available on request'))
   }
   if (stripeAccountSetup.companyNumber) {
-    req.flash('genericError', 'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
-    return res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, req.account.external_id))
+    const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
+      'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
+    return response(req, res, 'error-with-link', errorPageData)
   }
 
   return response(req, res, 'stripe-setup/company-number/index', { isSwitchingCredentials })

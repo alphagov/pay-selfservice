@@ -36,13 +36,12 @@ describe('VAT number GET controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
-  it('should redirect to dashboard if VAT number is already provided ', async () => {
+  it('should render error if VAT number is already provided ', async () => {
     req.account.connectorGatewayAccountStripeProgress = { vatNumber: true }
 
     await getController(req, res)
 
-    sinon.assert.calledWith(req.flash, 'genericError', 'You’ve already provided your VAT number. Contact GOV.UK Pay support if you need to update it.')
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/dashboard`)
+    sinon.assert.calledWith(res.render, 'error-with-link')
   })
 
   it('should render vat number form if details are not yet submitted', async () => {

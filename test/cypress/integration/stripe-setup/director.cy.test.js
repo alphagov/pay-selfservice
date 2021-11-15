@@ -23,7 +23,7 @@ const typedDobMonth = ' 02'
 const typedDobYear = '1971 '
 const typedEmail = 'test@example.com'
 
-function setupStubs (director, type = 'live', paymentProvider = 'stripe', requiresAdditionalKycData = false) {
+function setupStubs(director, type = 'live', paymentProvider = 'stripe', requiresAdditionalKycData = false) {
   let stripeSetupStub
 
   if (Array.isArray(director)) {
@@ -176,7 +176,7 @@ describe('Stripe setup: director page', () => {
       cy.visit(directorUrl)
     })
 
-    it('should redirect to dashboard with error message instead of saving details', () => {
+    it('should display an error instead of saving details', () => {
       cy.get('#director-form').within(() => {
         cy.get('#first-name').type(typedFirstName)
         cy.get('#last-name').type(typedLastName)
@@ -186,11 +186,10 @@ describe('Stripe setup: director page', () => {
         cy.get('button').click()
       })
 
-      cy.get('h1').should('contain', 'Dashboard')
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(dashboardUrl)
-      })
-      cy.get('.flash-container .generic-error').should('contain', 'You’ve already provided director details.')
+      cy.get('h1').should('contain', 'An error occurred')
+      cy.get('#back-link').should('contain', 'Back to dashboard')
+      cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
+      cy.get('#error-message').should('contain', 'You’ve already provided director details.')
     })
   })
 
