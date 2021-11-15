@@ -39,6 +39,9 @@
           {% if not connectorGatewayAccountStripeProgress.responsiblePerson %}
             <li>details about your responsible person</li>
           {% endif %}
+          {% if not connectorGatewayAccountStripeProgress.director and collectAdditionalKycData %}
+            <li>details about your director</li>
+          {% endif %}
           {% if not connectorGatewayAccountStripeProgress.vatNumber %}
             <li>your organisation’s VAT number</li>
            {% endif %}

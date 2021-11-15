@@ -99,7 +99,7 @@ describe('Stripe setup: VAT number page', () => {
         })
       })
 
-      it('should redirect to when "No" VAT number is chosen', () => {
+      it('should redirect to bank details page when "No" VAT number is chosen', () => {
         cy.get('input#not-have-vat-number').click()
         cy.get('#vat-number-form > button').click()
 

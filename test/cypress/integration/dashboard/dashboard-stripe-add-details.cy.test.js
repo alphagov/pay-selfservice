@@ -26,7 +26,8 @@ describe('The Stripe psp details banner', () => {
         responsiblePerson: false,
         bankAccount: false,
         vatNumber: false,
-        companyNumber: false
+        companyNumber: false,
+        director: false
       }),
       stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'stripe-account-id')
     ])
@@ -37,6 +38,7 @@ describe('The Stripe psp details banner', () => {
 
     cy.get('h2').contains('You must add more details')
     cy.get('#add-account-details').should('exist')
+    cy.get('.account-status-panel').find('ul.govuk-list > li:nth-child(3)').contains('details about your director').should('exist')
   })
 
   it('should redirect to bank account details page when "Add details" button clicked', () => {
