@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
-  What is your organisation’s address? - Request a live account - {{ currentService.name }} - GOV.UK Pay
+  Enter your organisation’s contact details - Request a live account - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -68,19 +68,24 @@
         action="{{formatServicePathsFor(routes.service.requestToGoLive.organisationAddress, currentService.externalId)}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
+    <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
+
+    <p class="govuk-body govuk-!-margin-bottom-6">Your payment pages will automatically display this information. You can change the details later if needed.</p>
+
     {% call govukFieldset({
     legend: {
-    text: "What is your organisation’s address?",
-    classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-4",
-    isPageHeading: true
+    text: "Organisation address",
+    classes: "govuk-fieldset__legend--m",
+    isPageHeading: false
     }
     }) %}
-
-    <p class="govuk-body govuk-!-margin-bottom-6">Details of your organisation will appear on your payment pages. You can change them later if you need to.</p>
 
     {{ govukInput({
       label: {
         html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+      },
+      hint: {
+        text: "Enter the main building or office address"
       },
       classes: "govuk-!-width-two-thirds",
       id: "address-line1",
@@ -133,10 +138,13 @@
       value: address_postcode
     }) }}
 
+    {% endcall %}
+
     {{ govukInput({
       value: telephone_number,
       label: {
-        text: "Telephone number"
+        text: "Telephone number",
+        classes: "govuk-label--m"
       },
       hint: {
         text: "For international numbers include the country code"
@@ -152,7 +160,8 @@
       {{ govukInput({
         value: url,
         label: {
-          text: "Organisation website address"
+          text: "Organisation website address",
+          classes: "govuk-label--m"
         },
         hint: {
           text: "Enter the address in full like https://www.example.com"
@@ -163,8 +172,6 @@
         classes: "govuk-!-width-two-thirds"
       }) }}
     {% endif %}
-
-    {% endcall %}
 
     {{ govukButton({ text: "Continue" }) }}
   </form>
