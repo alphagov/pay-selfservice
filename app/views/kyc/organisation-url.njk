@@ -15,8 +15,25 @@
   {{ govukBackLink({
     text: "Back",
     classes: "govuk-!-margin-top-0",
-    href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, credential.external_id)
+    href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
   }) }}
+
+  {% if errors %}
+      {% set errorList = [] %}
+
+      {% if errors['organisation-url'] %}
+        {% set errorList = (errorList.push({
+          text: 'Organisation URL',
+          href: '#organisation-url'
+        }), errorList) %}
+      {% endif %}
+
+      {{ govukErrorSummary({
+        titleText: 'There was a problem with the details you gave for:',
+        errorList: errorList
+      }) }}
+    {% endif %}
+
 
   <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
     <label for="organisation-url">Enter organisation website address</label>
@@ -25,11 +42,19 @@
   <form id="organisation-url-form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
+    {% set organisationUrlError = false %}
+      {% if errors['organisation-url'] %}
+        {% set organisationUrlError = {
+          text: errors['organisation-url']
+        } %}
+      {% endif %}
+
     {{ govukInput({
       name: "organisation-url",
       id: "organisation-url",
       classes: "govuk-input--width-30",
       value: organisationUrl,
+      errorMessage: organisationUrlError,
       hint: {
         text: "Enter the address in full like https://www.example.com"
       },

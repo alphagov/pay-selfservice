@@ -81,7 +81,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const requestPspTestAccountController = require('./controllers/request-psp-test-account')
 const defaultBillingAddressCountryController = require('./controllers/settings/default-billing-address-country.controller')
 const webhooksController = require('./controllers/webhooks/webhooks.controller')
-const kycController = require('./controllers/kyc')
+const kycOrganisationUrlController = require('./controllers/kyc/organisation-url')
 
 // Assignments
 const {
@@ -429,7 +429,8 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  account.get(kyc.organisationUrl, permission('merchant-details:update'), kycController.organisationUrl.getUrl)
+  account.get(kyc.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.get)
+  account.post(kyc.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.post)
 
   // Stripe setup
   account.get([ yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails ], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
