@@ -126,7 +126,8 @@ module.exports = async (req, res) => {
     goLiveNotStarted: req.service.currentGoLiveStage === NOT_STARTED,
     goLiveStarted: goLiveStartedStages.includes(req.service.currentGoLiveStage),
     goLiveRequested: goLiveRequestedStages.includes(req.service.currentGoLiveStage),
-    gatewayAccount: req.account
+    gatewayAccount: req.account,
+    collectAdditionalKycData: process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
   }
 
   if (req.account.payment_provider === 'stripe' && req.account.type === 'live') {
