@@ -1,13 +1,24 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
+{% if isRequestToGoLive %}
   Enter your organisation’s contact details - Request a live account - {{ currentService.name }} - GOV.UK Pay
+{% else %}
+  Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endif %}
 {% endblock %}
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   {% if errors %}
     {% set errorList = [] %}
+
+    {% if errors['merchant-name'] %}
+      {% set errorList = (errorList.push({
+        text: 'Name',
+        href: '#merchant-name'
+      }), errorList) %}
+    {% endif %}
 
     {% if errors['address-line1'] or errors['address-line2'] %}
       {% if errors['address-line1'] %}
@@ -62,15 +73,40 @@
     }) }}
   {% endif %}
 
+  {% if isRequestToGoLive %}
   <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>
+  <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
+  <p class="govuk-body govuk-!-margin-bottom-6">Your payment pages will automatically display this information. You can change the details later if needed.</p>
+  {% else %}
+  <h1 class="govuk-heading-l">Organisation details</h1>
+  <p class="govuk-body" id="merchant-details-info">
+      Payment card schemes require the details of the organisation taking payment to be shown on payment pages.
+  </p>
+  {% endif %}
 
-  <form id="request-to-go-live-organisation-address-form" method="post"
-        action="{{formatServicePathsFor(routes.service.requestToGoLive.organisationAddress, currentService.externalId)}}">
+  <form id="request-to-go-live-organisation-address-form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
-    <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
+    {% if not isRequestToGoLive %}
+    <div class="govuk-form-group {% if errors['merchant-name'] %} govuk-form-group--error {% endif %}">
+      <label class="govuk-label govuk-label--m" for="merchant-name">
+        Organisation name
+      </label>
 
-    <p class="govuk-body govuk-!-margin-bottom-6">Your payment pages will automatically display this information. You can change the details later if needed.</p>
+      <div id="merchant-name-hint" class="govuk-hint govuk-!-width-two-thirds">
+        <p class="govuk-hint">Enter the main name of your organisation, not your local office or individual department.</p>
+        <p class="govuk-hint">Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>
+      </div>
+      {% if errors['merchant-name'] %}
+      <span id="merchant-name-error" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span> {{errors["merchant-name"]}}
+      </span>
+      {% endif %}
+      <input class="govuk-input govuk-!-width-two-thirds {% if errors['merchant-name'] %} govuk-input--error {% endif %}"
+             id="merchant-name" name="merchant-name" type="text" aria-describedby="merchant-name-hint"
+             value="{{name}}"/>
+    </div>
+    {% endif %}
 
     {% call govukFieldset({
     legend: {
@@ -173,7 +209,16 @@
       }) }}
     {% endif %}
 
+    {% if isRequestToGoLive %}
     {{ govukButton({ text: "Continue" }) }}
+    {% else %}
+    {{ govukButton({
+      text: "Save organisation details",
+      attributes: {
+        id: "save-merchant-details"
+      }
+    }) }}
+    {% endif %}
   </form>
 </div>
 {% endblock %}

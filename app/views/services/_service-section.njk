@@ -37,7 +37,7 @@
       </li>
       <li>
       {% if service.permissions.merchant_details_read %}
-        <a class="govuk-link govuk-link--no-visited-state edit-merchant-details govuk-!-font-size-16" href="{{formatServicePathsFor(routes.service.merchantDetails.index, service.external_id)}}">
+        <a class="govuk-link govuk-link--no-visited-state edit-merchant-details govuk-!-font-size-16" href="{{formatServicePathsFor(routes.service.organisationDetails.index, service.external_id)}}">
           Organisation details <span class="govuk-visually-hidden">for {{ service.name }}</span>
         </a>
       {% endif %}
