@@ -25,7 +25,7 @@
     checks. </p>
 
   {% set warningText %}
-    You will not receive your money if you do not add these details.
+    Stripe cannot pay monies received to your bank account if you do not add these details.
   {% endset %}
   {{ govukWarningText({
     text: warningText,
@@ -35,7 +35,7 @@
   {% set tasks %}
     {{ taskListItem(
       'task-organisation-url',
-      "Add organisation URL",
+      "Add organisation website address",
       formatAccountPathsFor(routes.account.kyc.organisationUrl, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.ENTER_ORGANISATION_URL
     ) }}

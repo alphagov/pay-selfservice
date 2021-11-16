@@ -5,14 +5,19 @@
   <div class="govuk-grid-column-full">
     {% set html %}
       <p class="govuk-notification-banner__heading">
-        You must add more details by {{ stripeKycAdditionalDataDueDate }} to continue taking payments.
+          Add more information by {{ stripeKycAdditionalDataDueDate }}
       </p>
-
+      <p class="govuk-body">
+          Updated Know Your Customer (KYC) anti-money laundering regulations mean that you need to add more details about your organisation.
+      </p>
+      <p>
+          You have until {{ stripeKycAdditionalDataDueDate }} to add these details. If you do not add them, your service will stop taking payments and Stripe will stop paying out to your bank account.
+      </p>
       <p class="govuk-body">
         Continue to
         <a id="add-additional-kyc-details" class="govuk-notification-banner__link"
            href="{{ formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id) }}">
-          add KYC details </a>.
+          Add new KYC Information</a>.
       </p>
     {% endset %}
 

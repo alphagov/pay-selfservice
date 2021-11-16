@@ -26,27 +26,30 @@
             Your service can now take payments from users. You must add more details by {{dateString}} or Stripe will not pay the money into your bank account. Please add:
           </p>
         {% else %}
-          <h2 class="govuk-heading-m">You must add more details to receive money into your bank account</h2>
+          <h2 class="govuk-heading-m">Enter more information to enable payments to your bank account</h2>
           <p class="govuk-body-m">
-            Your service can now take payments from users. You must add more details or Stripe will not pay the money into your bank account. Please add:
+              Until you add this information, your service is restricted to taking a total of £2000 and you will not get payouts to your bank account. Please add:
           </p>
         {% endif %}
 
         <ul class="govuk-list govuk-list--bullet">
-          {% if not connectorGatewayAccountStripeProgress.bankAccount %}
-            <li>bank details</li>
-          {% endif %}
           {% if not connectorGatewayAccountStripeProgress.responsiblePerson %}
-            <li>details about your responsible person</li>
+            <li>The name, date of birth and home address of the person in your organisation legally responsible for payments (your '<a class="govuk-link" href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means/">responsible person</a>')</li>
+          {% endif %}
+          {% if not connectorGatewayAccountStripeProgress.bankAccount %}
+            <li>Organisation bank details</li>
           {% endif %}
           {% if not connectorGatewayAccountStripeProgress.director and collectAdditionalKycData %}
             <li>details about your director</li>
           {% endif %}
           {% if not connectorGatewayAccountStripeProgress.vatNumber %}
-            <li>your organisation’s VAT number</li>
+            <li>VAT number (if applicable)</li>
            {% endif %}
           {% if not connectorGatewayAccountStripeProgress.companyNumber %}
-            <li>your company registration number if you’ve registered your company</li>
+            <li>Company registration number (if applicable)</li>
+          {% endif %}
+          {% if not connectorGatewayAccountStripeProgress.director %}
+            <li>Details of the director of the service</li>
           {% endif %}
         </ul>
 

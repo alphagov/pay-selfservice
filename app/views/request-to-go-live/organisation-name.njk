@@ -2,7 +2,7 @@
 {% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
-  What is your organisation called? - Request a live account - {{ currentService.name }} - GOV.UK Pay
+  Enter the name of your organisation - Request a live account - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -23,14 +23,14 @@
       <div class="govuk-form-group {% if errors['organisation-name'] %} govuk-form-group--error {% endif %}">
         <h1 class="govuk-label-wrapper">
            <label class="govuk-label govuk-label--l" for="request-to-go-live-organisation-name-input">
-            What is your organisation called?
+             Enter the name of your organisation
           </label>
         </h1>
 
         <span id="request-to-go-live-organisation-name-input-hint" class="govuk-hint">
-          <p>Payment card schemes require the details of the organisation taking payment to be shown on payment pages. </p>
+          <p>Your organisation's details must be shown on your payment pages.</p>
           <p>Enter the main name of your organisation, not your local office or individual department.</p>
-          Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).
+            Enter the full name. Only use acronyms that are widely understood, like NHS.
         </span>
 
         {% if errors['organisation-name'] %}

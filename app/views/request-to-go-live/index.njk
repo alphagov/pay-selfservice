@@ -6,10 +6,10 @@
 
 {% block mainContent %}
   {% if showNextSteps %}
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Request submitted</h1>
 
-      <p class="govuk-body govuk-!-font-size-24">We’ll respond within one working day, and we can usually activate your live account on the same day.</p>
+      <p class="govuk-body govuk-!-font-size-24">We’ll respond within 1 working day, and we can usually activate your live account on the same day.</p>
 
       {% if pspIsStripe %}
         <h2 class="govuk-heading-m govuk-!-margin-top-4">What happens next</h2>
@@ -23,9 +23,10 @@
           <li>your bank details</li>
           <li>your VAT number</li>
           <li>your company registration number if you’ve registered your company</li>
+          <li>details about directors of the relying service</li>
         </ul>
 
-        <p class="govuk-body">GOV.UK Pay will email you a link to add these additional details after approving your request.</p>
+        <p class="govuk-body">We’ll email you a link to add these additional details after approving your request.</p>
 
         <div class="govuk-warning-text">
           <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -52,39 +53,32 @@
     }) }}
     </div>
   {% else %}
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
       {% if notStarted or startedButStillStepsToComplete %}
         <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Request a live account</h1>
         <p class="govuk-body-l intro">Complete these steps to request a live account.</p>
       {% endif %}
       <div class="request-to-go-live-list">
-        <div id="request-to-go-live-step-organisation-name">
-          <h2 class="govuk-heading-m">
-            Add your organisation’s name and address
+        <ol class="govuk-list govuk-list--number">
+          <li>Add your organisation’s name and address. These details will appear on your payment pages.
             {% if enteredOrganisationAddress %}
               <span class="status">Completed</span>
-            {% elif enteredOrganisationName %}
+              {% elif enteredOrganisationName %}
               <span class="status">In Progress</span>
             {% endif %}
-          </h2>
-          <p class="govuk-body">These details will appear on your payment pages.</p>
-        </div>
-        <div id="request-to-go-live-step-choose-psp">
-          <h2 class="govuk-heading-m">
-            Tell us which payment service provider you will use
+          </li>
+          <li>Tell us which payment service provider you will use
             {% if chosenHowToProcessPayments %}
               <span class="status">Completed</span>
             {% endif %}
-          </h2>
-        </div>
-        <div id="request-to-go-live-step-agree-terms">
-          <h2 class="govuk-heading-m">
-            Read and accept our legal terms
+          </li>
+          <li>Read and accept our legal terms
             {% if agreedToTerms %}
               <span class="status">Completed</span>
             {% endif %}
-          </h2>
-        </div>
+          </li>
+        </ol>
+
         <form id="request-to-go-live-index-form" method="post" action="{{formatServicePathsFor(routes.service.requestToGoLive.index, currentService.externalId)}}" class="govuk-!-margin-top-8">
           <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
           {% if notStarted %}

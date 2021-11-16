@@ -20,16 +20,16 @@
         </legend>
         <p class="govuk-body">To use GOV.UK Pay your organisation must accept our legal terms. {% if displayStripeAgreement %}These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.{% endif %}</p>
 
-        <p class="govuk-body">Download the relevant GOV.UK Pay legal terms. If you are a:</p>
+        <p class="govuk-body">Download the relevant GOV.UK Pay legal terms for your organisation:</p>
         <ul class="govuk-list govuk-list--bullet">
-          <li>Crown body the <a href="/policy/memorandum-of-understanding-for-crown-bodies" class="govuk-link">memorandum of understanding</a> applies</li>
-          <li>non-Crown body the <a href="/policy/contract-for-non-crown-bodies" class="govuk-link">contract</a> applies</li>
+          <li><a href="/policy/memorandum-of-understanding-for-crown-bodies" class="govuk-link">Crown body memorandum of understanding</a></li>
+          <li><a href="/policy/contract-for-non-crown-bodies" class="govuk-link">Non-Crown body contract</a></li>
         </ul>
 
         {% if displayStripeAgreement %}
-          <p class="govuk-body">You must also accept Stripe’s legal terms. Download the <a href="/policy/stripe-connected-account-agreement" class="govuk-link">Stripe Connected Account Agreement.</a></p>
+          <p class="govuk-body">You must also accept Stripe’s legal terms: <a href="/policy/stripe-connected-account-agreement" class="govuk-link">Stripe Connected Account Agreement.</a></p>
         {% endif %}
-        <p class="govuk-body govuk-!-margin-bottom-6">These terms are confidential and should not be shared outside your organisation.</p>
+        <p class="govuk-body govuk-!-margin-bottom-6">These terms are confidential and must not be shared outside your organisation.</p>
 
           {{ govukCheckboxes({
             idPrefix: "agreement",

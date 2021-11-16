@@ -42,14 +42,15 @@ const mockConnectorGetGatewayAccount = (paymentProvider, type) => {
     }))
 }
 
-const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, companyNumber) => {
+const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, companyNumber, director) => {
   nock(CONNECTOR_URL)
     .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/stripe-setup`)
     .reply(200, {
       bank_account: bankAccount,
       responsible_person: responsiblePerson,
       vat_number: vatNumber,
-      company_number: companyNumber
+      company_number: companyNumber,
+      director: director
     })
     .persist()
 }
@@ -450,7 +451,7 @@ describe('dashboard-activity-controller', () => {
       let res = await getDashboard()
       let $ = cheerio.load(res.text)
       expect($('.account-status-panel').length).to.equal(1)
-      expect($('.account-status-panel h2').text()).to.equal('GOV.UK Pay are reviewing your request to go live')
+      expect($('.account-status-panel h2').text()).to.equal('GOV.UK Pay is reviewing your go live request')
     })
 
     afterEach(() => {
@@ -510,20 +511,21 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should display account status panel when account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(false, false, true, true)
+        mockConnectorGetStripeSetup(false, false, true, true, false)
         mockStripeRetrieveAccount(true, null)
         let res = await getDashboard(createAppWithSession(getApp(), session))
         let $ = cheerio.load(res.text)
         let resultText = $('.account-status-panel').text()
         expect($('.account-status-panel').length).to.equal(1)
-        expect(resultText).to.contain('details about your responsible person')
-        expect(resultText).to.contain('bank details')
-        expect(resultText).to.not.contain('your organisation’s VAT number')
-        expect(resultText).to.not.contain('your company registration number if you’ve registered your company')
+        expect(resultText).to.contain('The name, date of birth and home address of the person in your organisation legally responsible for payments')
+        expect(resultText).to.contain('Organisation bank details')
+        expect(resultText).to.contain('Details of the director of the service')
+        expect(resultText).to.not.contain('VAT number (if applicable)')
+        expect(resultText).to.not.contain('Company registration number (if applicable)')
       })
 
       it('it should not display account status panel when account is fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, true, true)
+        mockConnectorGetStripeSetup(true, true, true, true, true)
         mockStripeRetrieveAccount(true, null)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
@@ -531,7 +533,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should display account status panel with DATE when account is not fully setup and there is a deadline', async () => {
-        mockConnectorGetStripeSetup(true, true, false, false)
+        mockConnectorGetStripeSetup(true, true, false, false, true)
         mockStripeRetrieveAccount(true, 1606820691)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
@@ -541,7 +543,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should display RESTRICTED account status panel when payouts=false, account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, false, false)
+        mockConnectorGetStripeSetup(true, true, false, false, false)
         mockStripeRetrieveAccount(false, null)
 
         let res = await getDashboard()
@@ -552,7 +554,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should display RESTRICTED account status panel when payouts=false, account is fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, true, true)
+        mockConnectorGetStripeSetup(true, true, true, true, true)
         mockStripeRetrieveAccount(false, null)
 
         let res = await getDashboard()
@@ -586,7 +588,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should not display account status panel when account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(false, false, false, false)
+        mockConnectorGetStripeSetup(false, false, false, false, false)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
         expect($('.account-status-panel').length).to.equal(0)

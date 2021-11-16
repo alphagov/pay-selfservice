@@ -170,6 +170,7 @@ module.exports = async function (req, res, next) {
         is_switching: isSwitchingCredentials
       })
       if (isSwitchingCredentials) {
+        req.flash('generic', 'Responsible person details added successfully')
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
