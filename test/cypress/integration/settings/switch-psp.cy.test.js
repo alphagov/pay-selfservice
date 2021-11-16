@@ -239,9 +239,8 @@ describe('Switch PSP settings page', () => {
             { payment_provider: 'smartpay', state: 'ACTIVE' },
             { payment_provider: 'stripe', state: 'CREATED' }
           ]),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
-            gatewayAccountId,
-            bankAccount: [ true ]
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
+            gatewayAccountId
           })
         ])
       })
@@ -250,8 +249,18 @@ describe('Switch PSP settings page', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
         cy.get('.govuk-heading-l').should('contain', 'Switch payment service provider (PSP)')
 
-        cy.get('strong[id="Provide your bank details-status"]').should('contain', 'completed')
+        cy.get('strong[id="Provide your bank details-status"]').should('contain', 'not started')
         cy.get('span').contains('Provide your bank details').should('exist')
+        cy.get('strong[id="Provide details about your responsible person-status"]').should('contain', 'not started')
+        cy.get('span').contains('Provide details about your responsible person').should('exist')
+        cy.get('strong[id="Provide details about the director of your organisation-status"]').should('contain', 'not started')
+        cy.get('span').contains('Provide details about the director of your organisation').should('exist')
+        cy.get('strong[id="Provide your organisation’s VAT number-status"]').should('contain', 'not started')
+        cy.get('span').contains('Provide your organisation’s VAT number').should('exist')
+        cy.get('strong[id="Provide your company registration number-status"]').should('contain', 'not started')
+        cy.get('span').contains('Provide your company registration number').should('exist')
+        cy.get('strong[id="Make a live payment to test your Stripe PSP-status"]').should('contain', 'cannot start yet')
+        cy.get('span').contains('Make a live payment to test your Stripe PSP').should('exist')
       })
     })
 
@@ -266,15 +275,14 @@ describe('Switch PSP settings page', () => {
               { payment_provider: 'stripe', state: 'CREATED', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' } }
             ]
           ),
-          stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
-            gatewayAccountId,
-            bankAccount: [ true ]
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
+            gatewayAccountId
           })
         ])
       })
 
       it('loads stripe pages for the switch flow', () => {
-        cy.get('a').contains('Provide your organisation\'s VAT number').click()
+        cy.get('a').contains('Provide your organisation’s VAT number').click()
         cy.get('#navigation-menu-switch-psp').parent().should('have.class', 'govuk-!-font-weight-bold')
         cy.get('a').contains('Back to Switching payment service provider (PSP)').should('exist')
       })
@@ -296,12 +304,21 @@ describe('Switch PSP settings page', () => {
             bankAccount: true,
             vatNumber: true,
             companyNumber: true,
-            responsiblePerson: true
+            responsiblePerson: true,
+            director: true
           })
         ])
       })
       it('all steps are complete', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+
+        cy.get('strong[id="Provide your bank details-status"]').should('contain', 'completed')
+        cy.get('strong[id="Provide details about your responsible person-status"]').should('contain', 'completed')
+        cy.get('strong[id="Provide details about the director of your organisation-status"]').should('contain', 'completed')
+        cy.get('strong[id="Provide your organisation’s VAT number-status"]').should('contain', 'completed')
+        cy.get('strong[id="Provide your company registration number-status"]').should('contain', 'completed')
+        cy.get('strong[id="Make a live payment to test your Stripe PSP-status"]').should('contain', 'completed')
+
         cy.get('button').contains('Switch to Stripe').should('not.be.disabled')
       })
     })

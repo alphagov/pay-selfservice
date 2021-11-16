@@ -41,6 +41,10 @@ function getTaskList (targetCredential, account) {
         enabled: !stripeSetupStageComplete(account, 'responsiblePerson'),
         complete: stripeSetupStageComplete(account, 'responsiblePerson')
       },
+      'ENTER_DIRECTOR': {
+        enabled: !stripeSetupStageComplete(account, 'director'),
+        complete: stripeSetupStageComplete(account, 'director')
+      },
       'ENTER_VAT_NUMBER': {
         enabled: !stripeSetupStageComplete(account, 'vatNumber'),
         complete: stripeSetupStageComplete(account, 'vatNumber')
@@ -52,6 +56,7 @@ function getTaskList (targetCredential, account) {
       'VERIFY_PSP_INTEGRATION': {
         enabled: stripeSetupStageComplete(account, 'bankAccount') &&
           stripeSetupStageComplete(account, 'responsiblePerson') &&
+          stripeSetupStageComplete(account, 'director') &&
           stripeSetupStageComplete(account, 'vatNumber') &&
           stripeSetupStageComplete(account, 'companyNumber'),
         complete: verifyPSPIntegrationComplete(targetCredential)
