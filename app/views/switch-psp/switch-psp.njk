@@ -88,12 +88,17 @@
           taskList.ENTER_BANK_DETAILS
         ) }}
         {{ taskListItem(
-          "Provide details about your repsonsible person",
+          "Provide details about your responsible person",
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.responsiblePerson, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.ENTER_RESPONSIBLE_PERSON
         ) }}
         {{ taskListItem(
-          "Provide your organisation's VAT number",
+          "Provide details about the director of your organisation",
+          formatAccountPathsFor(routes.account.switchPSP.stripeSetup.director, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.ENTER_DIRECTOR
+        ) }}
+        {{ taskListItem(
+          "Provide your organisation’s VAT number",
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.vatNumber, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.ENTER_VAT_NUMBER
         ) }}
