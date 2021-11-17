@@ -45,6 +45,12 @@
         }), errorList) %}
       {% endif %}
 
+      {% if errors['dob'] %}
+        {% set errorList = (errorList.push({
+          text: 'Date of birth',
+          href: '#dob-day'
+        }), errorList) %}
+      {% endif %}
 
       {% if errors['email'] %}
         {% set errorList = (errorList.push({
@@ -53,12 +59,6 @@
         }), errorList) %}
       {% endif %}
 
-      {% if errors['dob'] %}
-        {% set errorList = (errorList.push({
-          text: 'Date of birth',
-          href: '#dob-day'
-        }), errorList) %}
-      {% endif %}
       {{ govukErrorSummary({
         titleText: 'There was a problem with the details you gave for:',
         errorList: errorList
