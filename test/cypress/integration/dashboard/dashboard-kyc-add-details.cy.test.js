@@ -35,7 +35,7 @@ describe('Stripe - add additional KYC details banner', () => {
   it('should display banner', () => {
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
 
-    cy.get('.govuk-notification-banner__heading').contains('You must add more details by 1 November 2021 to continue taking payments')
+    cy.get('.govuk-notification-banner__heading').contains('Add more information by 1 November 2021')
     cy.get('#add-additional-kyc-details').should('exist')
     cy.get('#add-additional-kyc-details').should('exist')
 

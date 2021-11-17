@@ -36,13 +36,13 @@ describe('The Stripe psp details banner', () => {
   it('should display the banner', () => {
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
 
-    cy.get('h2').contains('You must add more details')
+    cy.get('h2').contains('Enter more information to enable payments to your bank account')
     cy.get('#add-account-details').should('exist')
     cy.get('.account-status-panel').find('ul.govuk-list > li:nth-child(3)').contains('details about your director').should('exist')
   })
 
   it('should redirect to bank account details page when "Add details" button clicked', () => {
     cy.get('#add-account-details').click()
-    cy.get('h1').contains('What are your bank details?')
+    cy.get('h1').contains('Enter your organisation’s banking details')
   })
 })

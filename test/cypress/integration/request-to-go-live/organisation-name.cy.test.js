@@ -62,7 +62,7 @@ describe('Request to go live: organisation name page', () => {
 
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
-      cy.get('h1').should('contain', 'What is your organisation called?')
+      cy.get('h1').should('contain', 'Enter the name of your organisation')
 
       cy.get('#request-to-go-live-current-step').should('exist')
 
@@ -116,7 +116,7 @@ describe('Request to go live: organisation name page', () => {
 
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
-      cy.get('h1').should('contain', 'What is your organisation called?')
+      cy.get('h1').should('contain', 'Enter the name of your organisation')
       cy.get('input#request-to-go-live-organisation-name-input').should('have.value', organisationName)
     })
   })

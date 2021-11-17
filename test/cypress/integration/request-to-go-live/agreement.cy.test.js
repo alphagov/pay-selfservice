@@ -70,9 +70,9 @@ describe('Request to go live: agreement', () => {
       cy.get('h1').should('contain', 'Read and accept our legal terms')
 
       cy.get('fieldset').should('contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
-      cy.get('fieldset').should('contain', 'You must also accept Stripe’s legal terms. Download the Stripe Connected Account Agreement.')
-      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body the memorandum of understanding applies')
-      cy.get('ul.govuk-list>li').eq(1).should('contain', 'non-Crown body the contract applies')
+      cy.get('fieldset').should('contain', 'You must also accept Stripe’s legal terms: Stripe Connected Account Agreement.')
+      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body memorandum of understanding')
+      cy.get('ul.govuk-list>li').eq(1).should('contain', 'Non-Crown body contract')
 
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-agreement-form').should('exist')
@@ -109,9 +109,9 @@ describe('Request to go live: agreement', () => {
       cy.get('h1').should('contain', 'Read and accept our legal terms')
 
       cy.get('fieldset').should('not.contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
-      cy.get('fieldset').should('not.contain', 'You must also accept Stripe’s legal terms. Download the Stripe Connected Account agreement.')
-      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body the memorandum of understanding applies')
-      cy.get('ul.govuk-list>li').eq(1).should('contain', 'non-Crown body the contract applies')
+      cy.get('fieldset').should('not.contain', 'You must also accept Stripe’s legal terms: Stripe Connected Account Agreement.')
+      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body memorandum of understanding')
+      cy.get('ul.govuk-list>li').eq(1).should('contain', 'Non-Crown body contract')
 
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-agreement-form').should('exist')
@@ -142,7 +142,7 @@ describe('Request to go live: agreement', () => {
 
       cy.visit(requestToGoLiveAgreementUrl)
       cy.get('fieldset').should('not.contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
-      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body the memorandum of understanding applies')
+      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body memorandum of understanding')
     })
 
     it('should continue to the index page when terms are agreed to', () => {

@@ -1,7 +1,7 @@
 {% extends "../../layout.njk" %}
 
 {% block pageTitle %}
-  Who is your responsible person? - {{ currentService.name }} - GOV.UK Pay
+  Enter details of your responsible person - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -45,7 +45,7 @@
           {% set href = '#home-address-line-2' %}
         {% endif %}
         {% set errorList = (errorList.push({
-          text: 'Building and street',
+          text: 'Building name, number and street',
           href: href
         }), errorList) %}
       {% endif %}
@@ -73,7 +73,7 @@
 
       {% if errors['telephone-number'] %}
         {% set errorList = (errorList.push({
-          text: 'Telephone number',
+          text: 'Work telephone number',
           href: '#telephone-number'
         }), errorList) %}
       {% endif %}
@@ -91,9 +91,9 @@
       }) }}
     {% endif %}
 
-    <h1 class="govuk-heading-l">Who is your responsible person?</h1>
+    <h1 class="govuk-heading-l">Enter details of your responsible person</h1>
 
-    <p class="govuk-body">We need details of a <a class="govuk-link" href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means">responsible person</a> so that Stripe can run anti-money laundering checks. Liability stays at an organisational, and not individual level.</p>
+    <p class="govuk-body">We need details of a <a class="govuk-link" href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means">responsible person</a> so that Stripe can run anti-money laundering checks. Liability stays at an organisational and not individual level.</p>
     <p class="govuk-body">The responsible person can be:</p>
     <ul class="govuk-list govuk-list--bullet">
       <li>someone in your organisation authorised to sign contracts</li>
@@ -162,7 +162,7 @@
         }
       }) %}
 
-      <p class="govuk-body">Do not use a work address – Stripe needs the responsible person’s home address to check their identity</p>
+      <p class="govuk-body">Do not use a work address. Stripe needs the responsible person’s home address to check their identity</p>
 
       {% set homeAddressLine1Error = false %}
       {% if errors['home-address-line-1'] %}
@@ -172,7 +172,7 @@
       {% endif %}
       {{ govukInput({
         label: {
-          html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+          html: 'Building name, number and street <span class="govuk-visually-hidden">line 1 of 2</span>'
         },
         id: "home-address-line-1",
         name: "home-address-line-1",
@@ -189,7 +189,7 @@
       {% endif %}
       {{ govukInput({
         label: {
-          html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+          html: '<span class="govuk-visually-hidden">Building name, number and street line 2 of 2</span>'
         },
         id: "home-address-line-2",
         name: "home-address-line-2",
@@ -284,11 +284,11 @@
       {% if collectAdditionalKycData %}
         {{ govukInput({
           label: {
-            text: "Telephone number",
+            text: "Work telephone number",
             classes: "govuk-label--m"
           },
           hint: {
-            text: "For international numbers include the country code"
+            text: "Include the country code for international numbers"
           },
           id: "telephone-number",
           name: "telephone-number",
@@ -301,11 +301,8 @@
 
         {{ govukInput({
           label: {
-            text: "Email address",
+            text: "Work email address",
             classes: "govuk-label--m"
-          },
-          hint: {
-            text: "For example, name@example.com"
           },
           id: "email",
           name: "email",

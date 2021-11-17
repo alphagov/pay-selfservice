@@ -61,7 +61,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should display form', () => {
-      cy.get('h1').should('contain', 'Who is your responsible person?')
+      cy.get('h1').should('contain', 'Enter details of your responsible person')
 
       cy.get('#responsible-person-form').should('exist')
         .within(() => {
@@ -125,7 +125,7 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
         cy.get('a[href="#dob-month"]').should('not.exist')
         cy.get('a[href="#dob-year"]').should('not.exist')
-        cy.get('a[href="#telephone-number"]').should('contain', 'Telephone number')
+        cy.get('a[href="#telephone-number"]').should('contain', 'Work telephone number')
         cy.get('a[href="#email"]').should('contain', 'Email address')
       })
 

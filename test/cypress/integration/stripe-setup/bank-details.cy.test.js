@@ -55,7 +55,7 @@ describe('Stripe setup: bank details page', () => {
       })
 
       it('should display page correctly', () => {
-        cy.get('h1').should('contain', 'What are your bank details?')
+        cy.get('h1').should('contain', 'Enter your organisation’s banking details')
 
         cy.get('#bank-details-form').should('exist')
           .within(() => {

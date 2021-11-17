@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
-  Which payment service provider will you use? - Request a live account - {{ currentService.name }} - GOV.UK Pay
+  Choose the payment service provider you’ll use - Request a live account - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -19,7 +19,7 @@
           name: 'choose-how-to-process-payments-mode-other',
           fieldset: {
             legend: {
-              text: 'Which payment service provider have you procured?',
+              text: 'Choose the payment service provider you’ll use',
               classes: 'pay-text-grey'
             }
           },
@@ -46,7 +46,7 @@
         name: 'choose-how-to-process-payments-mode',
         fieldset: {
           legend: {
-            text: 'Which payment service provider will you use?',
+            text: 'Choose the payment service provider you’ll use',
             isPageHeading: true,
             classes: 'govuk-fieldset__legend--l'
           }
@@ -69,7 +69,7 @@
               classes: "govuk-label--s"
             },
             hint: {
-              text: 'Government Banking has a contract with Worldpay to process payments that is open to central government and health organisations. You need an agreement with Government Banking to use their contract.'
+              text: 'Government Banking has a contract with Worldpay to process payments. It’s open to central government and health organisations. You need an agreement with Government Banking to use their contract.'
             }
           },
           {
