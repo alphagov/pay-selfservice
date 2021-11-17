@@ -67,9 +67,13 @@
 
     <h1 class="govuk-heading-l">Enter a director’s details</h1>
 
-    <p class="govuk-body">We need the details of the director of the service or someone at director level in your organisation. They could be the same as your responsible person. The details will be used by Stripe to run anti-money laundering checks.</p>
+    <p class="govuk-body">We need the details of the director of the service or someone at director level in your
+      organisation. They could be the same as your responsible person. The details will be used by Stripe to run
+      anti-money laundering checks.</p>
 
-    <p class="govuk-body">If your organisation does not have a director, we need the details of a person who has the authority to transfer funds. Someone like a chief executive officer (CEO), chief financial officer (CFO), or chief operating officer (COO).</p>
+    <p class="govuk-body">If your organisation does not have a director, we need the details of a person who has the
+      authority to transfer funds. Someone like a chief executive officer (CEO), chief financial officer (CFO), or chief
+      operating officer (COO).</p>
 
     <form id="director-form" method="post" class="govuk-!-margin-top-4" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
@@ -171,7 +175,8 @@
       {% endif %}
       {{ govukInput({
         label: {
-          text: "Work email address"
+          text: "Work email address",
+          classes: "govuk-label--m"
         },
         id: "email",
         name: "email",
