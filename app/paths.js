@@ -45,6 +45,11 @@ module.exports = {
       confirmation: '/email-settings-confirmation',
       refund: '/email-settings-refund'
     },
+    kyc: {
+      organisationUrl: '/kyc/:credentialId/organisation-url',
+      responsiblePerson: '/kyc/:credentialId/responsible-person',
+      director: '/kyc/:credentialId/director'
+    },
     notificationCredentials: {
       edit: '/your-psp/:credentialId/notification-credentials/edit',
       update: '/your-psp/:credentialId/notification-credentials'
@@ -109,11 +114,6 @@ module.exports = {
         companyNumber: '/switch-psp/:credentialId/company-number',
         director: '/switch-psp/:credentialId/director'
       }
-    },
-    kyc: {
-      organisationUrl: '/kyc/:credentialId/organisation-url',
-      responsiblePerson: '/kyc/:credentialId/responsible-person',
-      director: '/kyc/:credentialId/director'
     },
     toggle3ds: {
       index: '/3ds'

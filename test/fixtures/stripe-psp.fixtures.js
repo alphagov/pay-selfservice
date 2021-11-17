@@ -45,8 +45,8 @@ function validListStripePersons (opts = {}) {
           'month': 8,
           'year': 1990
         },
-        'first_name': null,
-        'last_name': null,
+        'first_name': opts.firstName || null,
+        'last_name': opts.lastName || null,
         'relationship': {
           'owner': false,
           'percent_ownership': null,

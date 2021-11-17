@@ -8,6 +8,8 @@ function parseStripePersonOptions (opts) {
     director: opts.director || false,
     representative: opts.representative || false,
     stripe_account_id: opts.stripeAccountId || 'stripe-connect-account-id',
+    firstName: opts.firstName || null,
+    lastName: opts.lastName || null,
     phone: opts.phone || null,
     email: opts.email || null
   }
