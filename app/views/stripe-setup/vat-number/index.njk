@@ -40,7 +40,7 @@
         errorList: errorList
       }) }}
     {% endif %}
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="vat-number">Does your organisation have a VAT number?</label></h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="vat-number">VAT number</label></h1>
 
     <form id="vat-number-form" method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
@@ -64,8 +64,7 @@
           name: "vat-number",
           id: "vat-number",
           label: {
-            text: "What is your organisation's VAT number?",
-            classes: "govuk-label--s"
+            text: "Enter your organisation's VAT number"
           },
           hint: {
             text: "VAT numbers start with ‘GB’, for example ‘GBGD123’"
@@ -87,8 +86,9 @@
           name: "vat-number-declaration",
           fieldset: {
             legend: {
+              text: 'Does your organisation have a VAT number?',
               isPageHeading: true,
-              classes: "govuk-fieldset__legend--l"
+              classes: 'govuk-fieldset__legend--m'
             }
           },
           errorMessage: noSelectionError,

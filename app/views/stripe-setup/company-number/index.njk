@@ -41,6 +41,7 @@
       }) }}
     {% endif %}
 
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="vat-number">Company number</label></h1>
     <form id="company-number-form" method="post"
           >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
@@ -85,7 +86,7 @@
           legend: {
             text: 'Does your organisation have a company registration number?',
             isPageHeading: true,
-            classes: 'govuk-fieldset__legend--l'
+            classes: 'govuk-fieldset__legend--m'
           }
         },
         errorMessage: companyNumberDeclarationError,

@@ -56,7 +56,7 @@
     <div class="govuk-grid-column-full">
       {% if notStarted or startedButStillStepsToComplete %}
         <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Request a live account</h1>
-        <p class="govuk-body-l intro">Complete these steps to request a live account.</p>
+        <p class="govuk-body-m">Complete these steps to request a live account.</p>
       {% endif %}
       <div class="request-to-go-live-list">
         <ol class="govuk-list govuk-list--number">
@@ -67,12 +67,12 @@
               <span class="status">In Progress</span>
             {% endif %}
           </li>
-          <li>Tell us which payment service provider you will use
+          <li>Tell us which payment service provider you will use.
             {% if chosenHowToProcessPayments %}
               <span class="status">Completed</span>
             {% endif %}
           </li>
-          <li>Read and accept our legal terms
+          <li>Read and accept our legal terms.
             {% if agreedToTerms %}
               <span class="status">Completed</span>
             {% endif %}
