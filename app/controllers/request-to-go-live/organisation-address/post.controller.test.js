@@ -7,7 +7,7 @@ const goLiveStage = require('../../../models/go-live-stage')
 const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 const mockResponse = {}
-const getController = function getController(mockServiceService) {
+const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
     '../../../services/service.service': mockServiceService,
     '../../../utils/response': mockResponse

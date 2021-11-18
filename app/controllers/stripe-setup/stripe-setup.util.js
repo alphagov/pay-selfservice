@@ -8,6 +8,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { validateDateOfBirth } = require('../../utils/validation/server-side-form-validations')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const { listPersons } = require('../../services/clients/stripe/stripe.client')
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
@@ -44,7 +45,7 @@ function validateDoB (day, month, year) {
   return null
 }
 
-function getAlreadySubmittedErrorPageData(accountExternalId, errorMessage) {
+function getAlreadySubmittedErrorPageData (accountExternalId, errorMessage) {
   return {
     error: {
       title: 'An error occurred',
@@ -58,10 +59,21 @@ function getAlreadySubmittedErrorPageData(accountExternalId, errorMessage) {
   }
 }
 
+async function getExistingResponsiblePersonName (account, isSwitchingCredentials, correlationId) {
+  const stripeAccountId = await getStripeAccountId(account, isSwitchingCredentials, correlationId)
+  const personsResponse = await listPersons(stripeAccountId)
+  const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
+  if (!responsiblePerson) {
+    throw new Error('No responsible person exists for Stripe account')
+  }
+  return `${responsiblePerson.first_name} ${responsiblePerson.last_name}`
+}
+
 module.exports = {
   getStripeAccountId,
   validateField,
   validateDoB,
   getFormFields,
-  getAlreadySubmittedErrorPageData
+  getAlreadySubmittedErrorPageData,
+  getExistingResponsiblePersonName
 }

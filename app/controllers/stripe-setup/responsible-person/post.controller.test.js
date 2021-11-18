@@ -3,6 +3,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const paths = require('../../../paths')
+const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
 
 describe('Responsible person POST controller', () => {
   const firstName = 'Chesney '
@@ -43,6 +44,15 @@ describe('Responsible person POST controller', () => {
     ...postBody,
     'home-address-line-2': addressLine2
   }
+  const credentialId = 'a-credential-id'
+  const accountExternalId = 'a-valid-external-id'
+  const account = gatewayAccountFixtures.validGatewayAccountResponse({
+    gateway_account_id: '1',
+    external_id: accountExternalId,
+    gateway_account_credentials: [{
+      external_id: credentialId
+    }]
+  })
 
   let req
   let next
@@ -51,13 +61,15 @@ describe('Responsible person POST controller', () => {
   let listPersonsMock
   let updatePersonMock
   let createPersonMock
+  let updatePersonAddAdditionalKYCDetailsMock
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
       '../../../services/clients/stripe/stripe.client': {
         listPersons: listPersonsMock,
         updatePerson: updatePersonMock,
-        createPerson: createPersonMock
+        createPerson: createPersonMock,
+        updatePersonAddAdditionalKYCDetails: updatePersonAddAdditionalKYCDetailsMock
       },
       '../../../services/clients/connector.client': {
         ConnectorClient: function () {
@@ -76,10 +88,10 @@ describe('Responsible person POST controller', () => {
     req = {
       correlationId: 'correlation-id',
       account: {
-        gateway_account_id: '1',
-        external_id: 'a-valid-external-id',
+        ...account,
         connectorGatewayAccountStripeProgress: {}
       },
+      body: {},
       flash: sinon.spy()
     }
     res = {
@@ -115,6 +127,7 @@ describe('Responsible person POST controller', () => {
       ]
     }))
     updatePersonMock = sinon.spy(() => Promise.resolve())
+    updatePersonAddAdditionalKYCDetailsMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
@@ -169,6 +182,49 @@ describe('Responsible person POST controller', () => {
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
+  })
+
+  it('should call Stripe to change responsible person for additional KYC details collection', async function () {
+    const personId = 'person-1'
+    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+      data: [
+        {
+          id: personId,
+          relationship: {
+            representative: true
+          }
+        }
+      ]
+    }))
+    updatePersonMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.route = {
+      path: `/kyc/:credentialId/responsible-person`
+    }
+    req.body = {
+      ...postBody,
+      email,
+      'telephone-number': telephone
+    }
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
+      first_name: firstNameNormalised,
+      last_name: lastNameNormalised,
+      address_line1: addressLine1Normalised,
+      address_city: addressCityNormalised,
+      address_postcode: addressPostcodeNormalised,
+      dob_day: dobDayNormalised,
+      dob_month: dobMonthNormalised,
+      dob_year: dobYearNormalised,
+      phone: telephoneNormalised,
+      email: emailNormalised
+    })
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
   })
 
   it('should render error page when stripe setup is not available on request', async () => {

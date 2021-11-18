@@ -10,7 +10,7 @@ const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
 
-module.exports = function getOrganisationAddress(req, res) {
+module.exports = function getOrganisationAddress (req, res) {
   const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
 
   if (isRequestToGoLive) {

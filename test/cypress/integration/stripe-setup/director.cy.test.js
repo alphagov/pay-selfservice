@@ -23,7 +23,7 @@ const typedDobMonth = ' 02'
 const typedDobYear = '1971 '
 const typedEmail = 'test@example.com'
 
-function setupStubs(director, type = 'live', paymentProvider = 'stripe', requiresAdditionalKycData = false) {
+function setupStubs (director, type = 'live', paymentProvider = 'stripe', requiresAdditionalKycData = false) {
   let stripeSetupStub
 
   if (Array.isArray(director)) {

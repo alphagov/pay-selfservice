@@ -156,9 +156,39 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.get('input[type="text"]').should('have.length', 2)
     })
 
+    it('should display validation errors when fields are blank', () => {
+      cy.get('button').contains('Submit').click()
+
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('a[href="#telephone-number"]').should('contain', 'Work telephone number')
+        cy.get('a[href="#email"]').should('contain', 'Work email address')
+      })
+    })
+
     it('should redirect to page with all fields when change is clicked', () => {
       cy.get('a').contains('Change').click()
       cy.get('input#first-name').should('exist')
+      cy.get('.govuk-back-link')
+        .should('have.text', 'Back')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('form').within(() => {
+        cy.get('button').should('contain', 'Submit')
+      })
+    })
+
+    it('should display validation errors when fields are blank', () => {
+      cy.get('button').contains('Submit').click()
+
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('a[href="#last-name"]').should('contain', 'Last name')
+        cy.get('a[href="#home-address-postcode"]').should('contain', 'Postcode')
+        cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
+        cy.get('a[href="#dob-month"]').should('not.exist')
+        cy.get('a[href="#dob-year"]').should('not.exist')
+        cy.get('a[href="#telephone-number"]').should('contain', 'Work telephone number')
+        cy.get('a[href="#email"]').should('contain', 'Work email address')
+      })
+
       cy.get('.govuk-back-link')
         .should('have.text', 'Back')
         .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)

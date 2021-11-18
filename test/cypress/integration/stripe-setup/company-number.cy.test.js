@@ -13,7 +13,7 @@ const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
 const companyNumberUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/company-number`
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
-function setupStubs(companyNumber, type = 'live', paymentProvider = 'stripe') {
+function setupStubs (companyNumber, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
   if (Array.isArray(companyNumber)) {
