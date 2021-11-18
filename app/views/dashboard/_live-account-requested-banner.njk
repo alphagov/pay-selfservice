@@ -1,8 +1,12 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% if permissions.go_live_stage_read and goLiveRequested %}
-  <div class="account-status-panel govuk-grid-row govuk-!-margin-bottom-5">
-    <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-column-full">
+    {% set html %}
       <h2 class="govuk-heading-m">GOV.UK Pay is reviewing your go live request</h2>
       <p class="govuk-body-m govuk-!-margin-bottom-0">We’ll review your request within 1 working day. Once approved, we will email you with the next steps.</p>
-    </div>
+    {% endset %}
+    {{ govukNotificationBanner({
+      html: html
+    }) }}
   </div>
 {% endif %}
