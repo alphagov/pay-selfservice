@@ -38,7 +38,7 @@ describe('The Stripe psp details banner', () => {
 
     cy.get('h2').contains('Enter more information to enable payments to your bank account')
     cy.get('#add-account-details').should('exist')
-    cy.get('.govuk-notification-banner__content').find('ul.govuk-list > li:nth-child(3)').contains('Details of the director of the service').should('exist')
+    cy.get('.govuk-notification-banner__content').find('ul.govuk-list > li:nth-child(3)').contains('the name, date of birth and work email address of the director of your service (or someone at director level)').should('exist')
   })
 
   it('should redirect to bank account details page when "Add details" button clicked', () => {
