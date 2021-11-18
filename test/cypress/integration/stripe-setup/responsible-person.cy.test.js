@@ -126,7 +126,7 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('a[href="#dob-month"]').should('not.exist')
         cy.get('a[href="#dob-year"]').should('not.exist')
         cy.get('a[href="#telephone-number"]').should('contain', 'Work telephone number')
-        cy.get('a[href="#email"]').should('contain', 'Email address')
+        cy.get('a[href="#email"]').should('contain', 'Work email address')
       })
 
       cy.get('#responsible-person-form').should('exist').within(() => {

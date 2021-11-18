@@ -434,7 +434,7 @@ module.exports.bind = function (app) {
   // Stripe setup
   account.get([ yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails ], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
   account.post([ yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails ], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.post)
-  account.get([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson ], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.get)
+  account.get([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson, kyc.responsiblePerson ], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.get)
   account.post([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson ], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.post)
   account.get([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director, kyc.director], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.get)
   account.post([ yourPsp.stripeSetup.director, switchPSP.stripeSetup.director, kyc.director ], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.post)

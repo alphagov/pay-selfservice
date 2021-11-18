@@ -1,0 +1,108 @@
+{% extends "../../layout.njk" %}
+
+{% block pageTitle %}
+  Enter details of your responsible person - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+
+  <div class="govuk-grid-column-two-thirds">
+    {{ govukBackLink({
+      text: "Back",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+    }) }}
+
+    {% if errors %}
+      {% set errorList = [] %}
+
+      {% if errors['telephone-number'] %}
+        {% set errorList = (errorList.push({
+          text: 'Work telephone number',
+          href: '#telephone-number'
+        }), errorList) %}
+      {% endif %}
+
+      {% if errors['email'] %}
+        {% set errorList = (errorList.push({
+          text: 'Work email address',
+          href: '#email'
+        }), errorList) %}
+      {% endif %}
+
+      {{ govukErrorSummary({
+        titleText: 'There was a problem with the details you gave for:',
+        errorList: errorList
+      }) }}
+    {% endif %}
+
+    <h1 class="govuk-heading-l">Enter details of your responsible person</h1>
+
+    <p class="govuk-body">We need details of a <a class="govuk-link" href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means">responsible person</a> so that Stripe can run anti-money laundering checks. Liability stays at an organisational and not individual level.</p>
+    <p class="govuk-body">The responsible person can be:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>someone in your organisation authorised to sign contracts</li>
+      <li>the head of finance</li>
+      <li>the head of the organisation</li>
+    </ul>
+
+    <p class="govuk-body">Stripe will store the responsible person’s details, not GOV.UK Pay.</p>
+
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" scope="row">
+            Name
+          </th>
+          <td class="govuk-table__cell" id="responsible-person-name">
+            {{responsiblePersonName}}
+          </td>
+          <td class="govuk-table__cell pay-text-align-right">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{formatAccountPathsFor(routes.account.kyc.responsiblePerson, currentGatewayAccount.external_id)}}?change=true">Change<span class="govuk-visually-hidden">responsible person</span></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <form method="post" class="govuk-!-margin-top-4" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {{ govukInput({
+        label: {
+          text: "Work telephone number",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          text: "Include the country code for international numbers"
+        },
+        id: "telephone-number",
+        name: "telephone-number",
+        value: telephone,
+        type: "text",
+        autocomplete: "tel",
+        errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
+        classes: "govuk-!-width-two-thirds"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Work email address",
+          classes: "govuk-label--m"
+        },
+        id: "email",
+        name: "email",
+        value: email,
+        type: "text",
+        autocomplete: "email",
+        errorMessage: { text: errors.email } if errors.email else false,
+        classes: "govuk-!-width-two-thirds"
+      }) }}
+
+      {{ govukButton({ text: "Submit" }) }}
+    </form>
+  </div>
+{% endblock %}
