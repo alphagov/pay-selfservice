@@ -1,3 +1,5 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
 {% if permissions.stripe_account_details_update %}
   {% set connectorGatewayAccountStripeProgress = gatewayAccount.connectorGatewayAccountStripeProgress %}
 
@@ -12,8 +14,8 @@
   {% endset %}
 
   {% if connectorGatewayAccountStripeProgress and gatewayAccount.payment_provider === 'stripe' and (not isConnectorStripeJourneyComplete) %}
-    <div class="account-status-panel {{panelModifierClass}} govuk-grid-row govuk-!-margin-bottom-5">
-      <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-grid-column-full">
+        {% set html %}
         {% if isStripeAccountRestricted %}
           <h2 class="govuk-heading-m">Stripe has restricted your account</h2>
 
@@ -60,9 +62,14 @@
           }
         })
       }}
+      {% endset %}
+      {{ govukNotificationBanner({
+          html: html
+      }) }}
       </div>
-    </div>
   {% elif  isStripeAccountRestricted %}
+    <div class="govuk-grid-column-full">
+    {% set html %}
     <div class="account-status-panel account-status-panel--restricted govuk-grid-row govuk-!-margin-bottom-5">
       <div class="govuk-grid-column-two-thirds">
           <h2 class="govuk-heading-m">Stripe has restricted your account</h2>
@@ -71,6 +78,11 @@
             <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a>
           </p>
       </div>
+    </div>
+    {% endset %}
+    {{ govukNotificationBanner({
+      html: html
+    }) }}
     </div>
   {% endif %}
 {% endif %}
