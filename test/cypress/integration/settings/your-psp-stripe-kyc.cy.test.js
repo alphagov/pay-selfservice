@@ -149,8 +149,22 @@ describe('Your PSP - Stripe - KYC', () => {
     it('should redirect to the responsible person page with existing persons name displayed', () => {
       cy.get('a').contains('Add information about responsible person').click()
       cy.get('h1').should('contain', 'Enter details of your responsible person')
+      cy.get('.govuk-back-link')
+        .should('have.text', 'Back')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('td#responsible-person-name').should('contain', 'Joe Pay')
       cy.get('input[type="text"]').should('have.length', 2)
+    })
+
+    it('should redirect to page with all fields when change is clicked', () => {
+      cy.get('a').contains('Change').click()
+      cy.get('input#first-name').should('exist')
+      cy.get('.govuk-back-link')
+        .should('have.text', 'Back')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('form').within(() => {
+        cy.get('button').should('contain', 'Submit')
+      })
     })
   })
 })

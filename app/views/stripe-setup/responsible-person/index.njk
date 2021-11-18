@@ -5,22 +5,30 @@
 {% endblock %}
 
 {% block side_navigation %}
-  {% if isSwitchingCredentials %}
+  {% if isSwitchingCredentials or isSubmittingAdditionalKycData %}
     {% include "includes/side-navigation.njk" %}
   {% endif %}
 {% endblock %}
 
 {% block mainContent %}
 
-  {% if isSwitchingCredentials %}
-    {{ govukBackLink({
-      text: "Back to Switching payment service provider (PSP)",
-      classes: "govuk-!-margin-top-0",
-      href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
-    }) }}
-  {% endif %}
-
   <div class="govuk-grid-column-two-thirds">
+
+    {% if isSwitchingCredentials %}
+      {{ govukBackLink({
+        text: "Back to Switching payment service provider (PSP)",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+      }) }}
+    {% endif %}
+    {% if isSubmittingAdditionalKycData %}
+    {{ govukBackLink({
+        text: "Back",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+      }) }}
+    {% endif %}
+
     {% if errors %}
       {% set errorList = [] %}
 
@@ -314,7 +322,11 @@
         }) }}
       {% endif %}
 
+      {% if isSubmittingAdditionalKycData %}
+      {{ govukButton({ text: "Submit" }) }}
+      {% else %}
       {{ govukButton({ text: "Save and continue" }) }}
+      {% endif %}
     </form>
   </div>
 {% endblock %}
