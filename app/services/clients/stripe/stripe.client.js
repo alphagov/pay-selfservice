@@ -6,6 +6,7 @@ const StripeBankAccount = require('./StripeBankAccount.class')
 const StripeCompany = require('./StripeCompany.class')
 const StripePerson = require('./StripePerson.class')
 const StripeDirector = require('./StripeDirector.class')
+const StripeAccount = require('./StripeAccount.class')
 
 // Constants
 const STRIPE_HOST = process.env.STRIPE_HOST
@@ -73,5 +74,10 @@ module.exports = {
     return stripe.accounts.retrieve(stripeAccountId, {
       timeout: 1000
     })
+  },
+
+  updateAccount: function (stripeAccountId, body) {
+    const stripeAccount = new StripeAccount(body)
+    return stripe.accounts.update(stripeAccountId, stripeAccount.basicObject())
   }
 }
