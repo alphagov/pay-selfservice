@@ -40,16 +40,13 @@
             <li>Organisation bank details</li>
           {% endif %}
           {% if not connectorGatewayAccountStripeProgress.director and collectAdditionalKycData %}
-            <li>details about your director</li>
+            <li>Details of the director of the service</li>
           {% endif %}
           {% if not connectorGatewayAccountStripeProgress.vatNumber %}
             <li>VAT number (if applicable)</li>
            {% endif %}
           {% if not connectorGatewayAccountStripeProgress.companyNumber %}
             <li>Company registration number (if applicable)</li>
-          {% endif %}
-          {% if not connectorGatewayAccountStripeProgress.director %}
-            <li>Details of the director of the service</li>
           {% endif %}
         </ul>
 
