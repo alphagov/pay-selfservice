@@ -53,7 +53,7 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should display page correctly', () => {
-        cy.get('h1').should('contain', 'Does your organisation have a VAT number?')
+        cy.get('h1').should('contain', 'VAT number')
 
         cy.get('#vat-number-form').should('exist')
           .within(() => {

@@ -61,7 +61,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should display form', () => {
-      cy.get('h1').should('contain', 'Enter details of your responsible person')
+      cy.get('h1').should('contain', 'Enter responsible person details')
 
       cy.get('#responsible-person-form').should('exist')
         .within(() => {

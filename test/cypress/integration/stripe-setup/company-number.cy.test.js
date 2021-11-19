@@ -51,7 +51,7 @@ describe('Stripe setup: company number page', () => {
       })
 
       it('should display page correctly', () => {
-        cy.get('h1').should('contain', 'Does your organisation have a company registration number?')
+        cy.get('h1').should('contain', 'Company registration number')
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
