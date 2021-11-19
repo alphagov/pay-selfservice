@@ -63,7 +63,7 @@ module.exports = {
 
   updatePersonAddAdditionalKYCDetails: function (stripeAccountId, stripePersonId, body) {
     const stripePerson = new StripePersonAdditionalKYCDetails(body)
-    return stripe.accounts.updatePerson(stripeAccountId, stripePersonId, stripePerson.basicObject)
+    return stripe.accounts.updatePerson(stripeAccountId, stripePersonId, stripePerson.basicObject())
   },
 
   updateDirector: function (stripeAccountId, stripeDirectorId, body) {
