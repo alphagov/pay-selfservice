@@ -32,7 +32,7 @@
           <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
           <strong class="govuk-warning-text__text">
             <span class="govuk-warning-text__assistive">Warning</span>
-              All users with admin permissions can submit this information.  You can <a href="/service/{{ currentService.externalId }}" class="govuk-link">manage your users</a> here.
+              All users with admin permissions can submit this information.  You can <a href="{{formatServicePathsFor(routes.service.teamMembers.index, currentService.externalId)}}" class="govuk-link">manage your users</a> here.
           </strong>
         </div>
       {% else %}
