@@ -69,8 +69,8 @@ describe('Stripe setup: company number page', () => {
       it('should display an error when no options are selected', () => {
         cy.get('#company-number-form > button').click()
 
-        cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Company registration number')
+        cy.get('h2').should('contain', 'There is a problem')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You must answer this question')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number-declaration')
 
         cy.get('#company-number-declaration-error').should('contain', 'You must answer this question')
@@ -85,29 +85,12 @@ describe('Stripe setup: company number page', () => {
             cy.get('button').click()
           })
 
-        cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Company registration number')
+        cy.get('h2').should('contain', 'There is a problem')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a company registration number')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number')
 
         cy.get('input#company-number[name="company-number"]').should('have.class', 'govuk-input--error')
-        cy.get('#company-number-error').should('contain', 'This field cannot be blank')
-      })
-
-      it('should display an error when company number is invalid and "Yes" option is selected', () => {
-        cy.get('#company-number-form').should('exist')
-          .within(() => {
-            cy.get('input#company-number-declaration[name="company-number-declaration"]').check()
-            cy.get('input#company-number[name="company-number"]').type('(╯°□°)╯︵ ┻━┻')
-
-            cy.get('button').click()
-          })
-
-        cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Company registration number')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number')
-
-        cy.get('input#company-number[name="company-number"]').should('have.class', 'govuk-input--error')
-        cy.get('#company-number-error').should('contain', 'Enter a valid company number')
+        cy.get('#company-number-error').should('contain', 'Enter a company registration number')
       })
     })
 

@@ -69,20 +69,20 @@ describe('Stripe setup: bank details page', () => {
       it('should display an error when all fields are blank', () => {
         cy.get('#bank-details-form > button').click()
 
-        cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Sort code')
+        cy.get('h2').should('contain', 'There is a problem')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a sort code')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#sort-code')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('contain', 'Account number')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('contain', 'Enter an account number')
         cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('have.attr', 'href', '#account-number')
 
         cy.get('input#account-number').should('have.class', 'govuk-input--error')
         cy.get('.govuk-form-group--error > input#account-number').parent().should('exist').within(() => {
-          cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+          cy.get('.govuk-error-message').should('contain', 'Enter an account number')
         })
 
         cy.get('input#sort-code').should('have.class', 'govuk-input--error')
         cy.get('.govuk-form-group--error > input#sort-code').parent().should('exist').within(() => {
-          cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+          cy.get('.govuk-error-message').should('contain', 'Enter a sort code')
         })
       })
     })

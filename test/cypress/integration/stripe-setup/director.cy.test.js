@@ -116,39 +116,37 @@ describe('Stripe setup: director page', () => {
           cy.get('input#dob-year[name="dob-year"][autocomplete="bday-year"]').should('exist')
 
           cy.get('button').should('exist')
-
-          cy.get('input[name="answers-need-changing"]').should('not.exist')
-          cy.get('input[name="answers-checked"]').should('not.exist')
         })
     })
 
     it('should show errors when validation fails', () => {
       cy.get('#director-form').within(() => {
-        cy.get('#first-name').type(typedFirstName)
         cy.get('#dob-day').type('29')
         cy.get('#dob-month').type('2')
         cy.get('#dob-year').type('2001')
-        cy.get('#email').type('not a valid email')
+        cy.get('#email').type('a')
         cy.get('button').click()
       })
 
       cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#last-name"]').should('contain', 'Last name')
-        cy.get('a[href="#email"]').should('contain', 'Email')
-        cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
-        cy.get('a[href="#dob-month"]').should('not.exist')
-        cy.get('a[href="#dob-year"]').should('not.exist')
+        cy.get('a[href="#first-name"]').should('contain', 'Enter a first name')
+        cy.get('a[href="#last-name"]').should('contain', 'Enter a last name')
+        cy.get('a[href="#dob-day"]').should('contain', 'Enter a real date of birth')
+        cy.get('a[href="#email"]').should('contain', 'Enter a valid email address')
       })
 
       cy.get('#director-form').should('exist').within(() => {
+        cy.get('.govuk-form-group--error > input#first-name').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+        })
+
         cy.get('.govuk-form-group--error > input#last-name').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
-          cy.get('input#last-name[name=last-name][autocomplete=family-name]').should('exist')
         })
 
         cy.get('.govuk-form-group--error > input#email').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
-          cy.get('input#email[name=email][autocomplete=email]').should('have.attr', 'value', 'not a valid email')
+          cy.get('input#email').should('have.attr', 'value', 'a')
         })
 
         cy.get('.govuk-form-group--error > fieldset > #dob-error').parent().parent().should('exist').within(() => {
@@ -158,13 +156,7 @@ describe('Stripe setup: director page', () => {
           cy.get('input#dob-year').should('have.attr', 'value', '2001')
         })
 
-        cy.get('input#first-name[name="first-name"][autocomplete="given-name"]').should('have.attr', 'value', typedFirstName)
-        cy.get('input#last-name[name="last-name"][autocomplete="family-name"]').should('exist')
-
         cy.get('button').should('exist')
-
-        cy.get('input[name="answers-need-changing"]').should('not.exist')
-        cy.get('input[name="answers-checked"]').should('not.exist')
       })
     })
   })

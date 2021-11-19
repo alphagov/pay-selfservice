@@ -35,22 +35,20 @@ const validationRules = [
   {
     field: clientFieldNames.addressLine1,
     validator: validateMandatoryField,
-    maxLength: 255
+    maxLength: 255,
+    fieldDisplayName: 'building and street'
   },
   {
     field: clientFieldNames.addressLine2,
     validator: validateOptionalField,
-    maxLength: 255
+    maxLength: 255,
+    fieldDisplayName: 'building and street'
   },
   {
     field: clientFieldNames.addressCity,
     validator: validateMandatoryField,
-    maxLength: 255
-  },
-  {
-    field: clientFieldNames.addressCountry,
-    validator: validateMandatoryField,
-    maxLength: 2
+    maxLength: 255,
+    fieldDisplayName: 'town or city'
   },
   {
     field: clientFieldNames.telephoneNumber,
@@ -70,7 +68,8 @@ const validationRulesWithOrganisationName = [
   {
     field: clientFieldNames.name,
     validator: validateMandatoryField,
-    maxLength: 255
+    maxLength: 255,
+    fieldDisplayName: 'name'
   },
   ...validationRules
 ]
@@ -96,24 +95,30 @@ const normaliseForm = (formBody) => {
   }, {})
 }
 
-const validateForm = function validate (form, isRequestToGoLive) {
+const validateForm = function validate(form, isRequestToGoLive) {
   const rules = isRequestToGoLive ? validationRules : validationRulesWithOrganisationName
   const errors = rules.reduce((errors, validationRule) => {
     const value = form[validationRule.field]
-    const validationResponse = validationRule.validator(value, validationRule.maxLength)
+    const validationResponse = validationRule.validator(value, validationRule.maxLength,
+      validationRule.fieldDisplayName, true)
     if (!validationResponse.valid) {
       errors[validationRule.field] = validationResponse.message
     }
     return errors
   }, {})
 
-  const postCode = form[clientFieldNames.addressPostcode]
   const country = form[clientFieldNames.addressCountry]
+  if (!country || country.length !== 2) {
+    errors[clientFieldNames.country] = 'Select a country'
+  }
+
+  const postCode = form[clientFieldNames.addressPostcode]
   const postCodeValidResponse = validatePostcode(postCode, country)
   if (!postCodeValidResponse.valid) {
     errors[clientFieldNames.addressPostcode] = postCodeValidResponse.message
   }
-  return errors
+  const orderedErrors = lodash.pick(errors, Object.values(clientFieldNames))
+  return orderedErrors
 }
 
 const submitForm = async function (form, serviceExternalId, correlationId, isRequestToGoLive) {
@@ -152,7 +157,7 @@ const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
   }
 }
 
-module.exports = async function submitOrganisationAddress (req, res, next) {
+module.exports = async function submitOrganisationAddress(req, res, next) {
   try {
     const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
     const form = normaliseForm(req.body)

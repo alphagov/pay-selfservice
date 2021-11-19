@@ -97,14 +97,14 @@ module.exports = async (req, res, next) => {
 function validateBankDetails (accountNumber, sortCode) {
   const errors = {}
 
-  const accountNumberValidationResult = bankDetailsValidations.validateAccountNumber(accountNumber)
-  if (!accountNumberValidationResult.valid) {
-    errors[ACCOUNT_NUMBER_FIELD] = accountNumberValidationResult.message
-  }
-
   const sortCodeValidationResult = bankDetailsValidations.validateSortCode(sortCode)
   if (!sortCodeValidationResult.valid) {
     errors[SORT_CODE_FIELD] = sortCodeValidationResult.message
+  }
+
+  const accountNumberValidationResult = bankDetailsValidations.validateAccountNumber(accountNumber)
+  if (!accountNumberValidationResult.valid) {
+    errors[ACCOUNT_NUMBER_FIELD] = accountNumberValidationResult.message
   }
 
   return errors

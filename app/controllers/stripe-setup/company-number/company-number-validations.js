@@ -20,11 +20,10 @@ exports.validateCompanyNumberDeclaration = function validateCompanyNumberDeclara
 }
 
 exports.validateCompanyNumber = function validateCompanyNumber (value) {
-  const isEmptyErrorMessage = isEmpty(value)
-  if (isEmptyErrorMessage) {
+  if (isEmpty(value)) {
     return {
       valid: false,
-      message: isEmptyErrorMessage
+      message: 'Enter a company registration number'
     }
   }
 

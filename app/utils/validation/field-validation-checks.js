@@ -10,7 +10,7 @@ const validationErrors = {
   mandatoryQuestion: 'You must answer this question',
   currency: 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”',
   phoneNumber: 'Must be an 11 digit phone number',
-  validEmail: 'Please use a valid email address',
+  validEmail: 'Enter a valid email address',
   isHttps: 'URL must begin with https://',
   isAboveMaxAmount: `Enter an amount under £${MAX_AMOUNT.toLocaleString()}`,
   isPasswordLessThanTenChars: 'Password must be 10 characters or more', // pragma: allowlist secret
@@ -19,7 +19,7 @@ const validationErrors = {
   invalidBankAccountNumber: 'Enter a valid account number like 00733445',
   invalidSortCode: 'Enter a valid sort code like 309430',
   invalidVatNumber: 'Enter a valid VAT number, including ‘GB’ at the start',
-  invalidCompanyNumber: 'Enter a valid company number',
+  invalidCompanyNumber: 'Enter a valid company registration number',
   sevenDigitCompanyNumber: 'Company numbers in England and Wales have 8 digits and always start with 0',
   invalidWorldpay3dsFlexOrgUnitId: 'Enter your organisational unit ID in the format you received it',
   invalidWorldpay3dsFlexIssuer: 'Enter your issuer in the format you received it',

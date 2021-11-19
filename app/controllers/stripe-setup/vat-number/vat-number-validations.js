@@ -3,11 +3,10 @@
 const { isEmpty, isNotVatNumber, validationErrors } = require('../../../utils/validation/field-validation-checks')
 
 exports.validateVatNumber = function validateVatNumber (value) {
-  const isEmptyErrorMessage = isEmpty(value)
-  if (isEmptyErrorMessage) {
+  if (isEmpty(value)) {
     return {
       valid: false,
-      message: isEmptyErrorMessage
+      message: 'Enter a VAT number'
     }
   }
 
