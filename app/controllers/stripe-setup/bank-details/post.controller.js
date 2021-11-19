@@ -94,7 +94,7 @@ module.exports = async (req, res, next) => {
   }
 }
 
-function validateBankDetails(accountNumber, sortCode) {
+function validateBankDetails (accountNumber, sortCode) {
   const errors = {}
 
   const accountNumberValidationResult = bankDetailsValidations.validateAccountNumber(accountNumber)

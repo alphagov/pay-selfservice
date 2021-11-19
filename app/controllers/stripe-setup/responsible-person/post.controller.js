@@ -6,7 +6,7 @@ const ukPostcode = require('uk-postcode')
 const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
 const {
   validateField,
   validateDoB,
@@ -26,8 +26,6 @@ const { formatPhoneNumberWithCountryCode } = require('../../../utils/telephone-n
 const { listPersons, updatePerson, createPerson } = require('../../../services/clients/stripe/stripe.client')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-
-const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
 
 const FIRST_NAME_FIELD = 'first-name'
 const LAST_NAME_FIELD = 'last-name'
@@ -72,31 +70,35 @@ const validationRules = [
     validator: validatePostcode
   }
 ]
-
-if (collectAdditionalKycData) {
-  validationRules.push(
-    {
-      field: TELEPHONE_NUMBER_FIELD,
-      validator: validatePhoneNumber
-    },
-    {
-      field: EMAIL_FIELD,
-      validator: validateEmail
-    }
-  )
-}
-
-module.exports = async function (req, res, next) {
-  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
-
-  if (!stripeAccountSetup) {
-    return next(new Error('Stripe setup progress is not available on request'))
+const validationRulesWithAdditionalKycData = [
+  ...validationRules,
+  {
+    field: TELEPHONE_NUMBER_FIELD,
+    validator: validatePhoneNumber
+  },
+  {
+    field: EMAIL_FIELD,
+    validator: validateEmail
   }
-  if (stripeAccountSetup.responsiblePerson) {
-    const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
-      'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
-    return response(req, res, 'error-with-link', errorPageData)
+]
+
+module.exports = async function submitResponsiblePerson(req, res, next) {
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+  const isSubmittingAdditionalKycData = isAdditionalKycDataRoute(req)
+  const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
+  const currentCredential = getCurrentCredential(req.account)
+
+  const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true' || isSubmittingAdditionalKycData
+
+  if (!isSubmittingAdditionalKycData) {
+    if (!stripeAccountSetup) {
+      return next(new Error('Stripe setup progress is not available on request'))
+    }
+    if (stripeAccountSetup.responsiblePerson) {
+      const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
+        'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
+      return response(req, res, 'error-with-link', errorPageData)
+    }
   }
 
   const fields = [
@@ -108,27 +110,14 @@ module.exports = async function (req, res, next) {
     HOME_ADDRESS_POSTCODE_FIELD,
     DOB_DAY_FIELD,
     DOB_MONTH_FIELD,
-    DOB_YEAR_FIELD
+    DOB_YEAR_FIELD,
+    TELEPHONE_NUMBER_FIELD,
+    EMAIL_FIELD
   ]
-
-  if (collectAdditionalKycData) {
-    fields.push(TELEPHONE_NUMBER_FIELD, EMAIL_FIELD)
-  }
 
   const formFields = getFormFields(req.body, fields)
 
-  const errors = validationRules.reduce((errors, validationRule) => {
-    const errorMessage = validateField(formFields[validationRule.field], validationRule.validator, validationRule.maxLength)
-    if (errorMessage) {
-      errors[validationRule.field] = errorMessage
-    }
-    return errors
-  }, {})
-
-  const dateOfBirthErrorMessage = validateDoB(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD], formFields[DOB_YEAR_FIELD])
-  if (dateOfBirthErrorMessage) {
-    errors['dob'] = dateOfBirthErrorMessage
-  }
+  const errors = validateForm(formFields, collectAdditionalKycData)
 
   const pageData = {
     firstName: formFields[FIRST_NAME_FIELD],
@@ -151,27 +140,38 @@ module.exports = async function (req, res, next) {
     return response(req, res, 'stripe-setup/responsible-person/index', {
       ...pageData,
       isSwitchingCredentials,
-      collectAdditionalKycData
+      isSubmittingAdditionalKycData,
+      collectAdditionalKycData,
+      currentCredential
     })
   } else {
     try {
       const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
       const personsResponse = await listPersons(stripeAccountId)
       const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
-      if (responsiblePerson !== undefined) {
-        await updatePerson(stripeAccountId, responsiblePerson.id, buildStripePerson(formFields))
-      } else {
-        await createPerson(stripeAccountId, buildStripePerson(formFields))
-      }
-      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
 
+      const stripePerson = buildStripePerson(formFields, collectAdditionalKycData)
+      if (responsiblePerson !== undefined) {
+        await updatePerson(stripeAccountId, responsiblePerson.id, stripePerson)
+      } else {
+        await createPerson(stripeAccountId, stripePerson)
+      }
       logger.info('Responsible person details submitted for Stripe account', {
         stripe_account_id: stripeAccountId,
-        is_switching: isSwitchingCredentials
+        is_switching: isSwitchingCredentials,
+        collecting_additional_kyc_data: isSubmittingAdditionalKycData
       })
+
+      if (!isSubmittingAdditionalKycData) {
+        await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
+      }
+
       if (isSwitchingCredentials) {
         req.flash('generic', 'Responsible person details added successfully')
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+      } else if (isSubmittingAdditionalKycData) {
+        req.flash('generic', 'Responsible person details added successfully')
+        return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
       } else {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
       }
@@ -181,7 +181,30 @@ module.exports = async function (req, res, next) {
   }
 }
 
-const buildStripePerson = (formFields) => {
+function validateForm(formFields, collectAdditionalKycData) {
+  let rules
+  if (collectAdditionalKycData) {
+    rules = validationRulesWithAdditionalKycData
+  } else {
+    rules = validationRules
+  }
+  const errors = rules.reduce((errors, validationRule) => {
+    const errorMessage = validateField(formFields[validationRule.field], validationRule.validator, validationRule.maxLength)
+    if (errorMessage) {
+      errors[validationRule.field] = errorMessage
+    }
+    return errors
+  }, {})
+
+  const dateOfBirthErrorMessage = validateDoB(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD], formFields[DOB_YEAR_FIELD])
+  if (dateOfBirthErrorMessage) {
+    errors['dob'] = dateOfBirthErrorMessage
+  }
+
+  return errors
+}
+
+function buildStripePerson(formFields, collectAdditionalKycData) {
   const stripePerson = {
     first_name: formFields[FIRST_NAME_FIELD],
     last_name: formFields[LAST_NAME_FIELD],

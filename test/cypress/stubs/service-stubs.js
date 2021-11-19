@@ -3,7 +3,7 @@
 const serviceFixtures = require('../../fixtures/service.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
-function postCreateServiceSuccess(opts) {
+function postCreateServiceSuccess (opts) {
   const serviceName = {
     en: opts.serviceName.en
   }
@@ -24,7 +24,7 @@ function postCreateServiceSuccess(opts) {
   })
 }
 
-function patchUpdateServiceNameSuccess(opts) {
+function patchUpdateServiceNameSuccess (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 200, {
     request: serviceFixtures.validUpdateServiceNameRequest({
@@ -37,7 +37,7 @@ function patchUpdateServiceNameSuccess(opts) {
     verifyCalledTimes: opts.verifyCalledTimes
   })
 }
-function patchUpdateServiceGoLiveStageSuccess(opts) {
+function patchUpdateServiceGoLiveStageSuccess (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 200, {
     request: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.currentGoLiveStage),
@@ -49,7 +49,7 @@ function patchUpdateServiceGoLiveStageSuccess(opts) {
   })
 }
 
-function patchUpdateServicePspTestAccountStage(opts) {
+function patchUpdateServicePspTestAccountStage (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 200, {
     request: serviceFixtures.validUpdatePspTestAccountStage(opts.pspTestAccountStage),
@@ -61,7 +61,7 @@ function patchUpdateServicePspTestAccountStage(opts) {
   })
 }
 
-function patchUpdateMerchantDetailsSuccess(opts) {
+function patchUpdateMerchantDetailsSuccess (opts) {
   let merchantDetails
   if (opts.merchantDetails) {
     merchantDetails = opts.merchantDetails
@@ -82,7 +82,7 @@ function patchUpdateMerchantDetailsSuccess(opts) {
   })
 }
 
-function patchUpdateServiceSuccessCatchAll(opts) {
+function patchUpdateServiceSuccessCatchAll (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 200, {
     response: serviceFixtures.validServiceResponse({
@@ -92,7 +92,7 @@ function patchUpdateServiceSuccessCatchAll(opts) {
   })
 }
 
-function patchGoLiveStageFailure(opts) {
+function patchGoLiveStageFailure (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 404, {
     request: serviceFixtures.validUpdateServiceRequest({
@@ -102,14 +102,14 @@ function patchGoLiveStageFailure(opts) {
   })
 }
 
-function patchUpdateServiceGatewayAccounts(opts) {
+function patchUpdateServiceGatewayAccounts (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 200, {
     response: serviceFixtures.validServiceResponse()
   })
 }
 
-function patchUpdateDefaultBillingAddressCountrySuccess(opts) {
+function patchUpdateDefaultBillingAddressCountrySuccess (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 200, {
     request: serviceFixtures.validUpdateDefaultBillingAddressRequest(opts.country),

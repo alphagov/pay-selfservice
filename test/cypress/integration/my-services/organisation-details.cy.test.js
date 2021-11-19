@@ -18,7 +18,6 @@ const validUrl = 'https://www.example.com'
 const invalidUrl = 'invalid.url'
 
 describe('Dashboard', () => {
-
   beforeEach(() => {
     // keep the same session for entire describe block
     Cypress.Cookies.preserveOnce('session')

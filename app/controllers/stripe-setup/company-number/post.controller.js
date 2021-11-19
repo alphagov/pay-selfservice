@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute} = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
 const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const companyNumberValidations = require('./company-number-validations')
