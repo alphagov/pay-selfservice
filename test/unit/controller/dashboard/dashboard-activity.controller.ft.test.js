@@ -560,8 +560,8 @@ describe('dashboard-activity-controller', () => {
 
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
-        expect($('.account-status-panel').length).to.equal(1)
-        const resultText = $('.account-status-panel').text()
+        expect($('.govuk-notification-banner__content').length).to.equal(1)
+        const resultText = $('.govuk-notification-banner__content').text()
         expect(resultText).to.contain('Stripe has restricted your account')
         expect(resultText).to.contain('To start taking payments again, please contact support.')
       })
