@@ -8,7 +8,8 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { validateDateOfBirth } = require('../../utils/validation/server-side-form-validations')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { listPersons } = require('../../services/clients/stripe/stripe.client')
+const { listPersons, addNewCapabilities } = require('../../services/clients/stripe/stripe.client')
+const logger = require('../../utils/logger')(__filename)
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
@@ -69,11 +70,23 @@ async function getExistingResponsiblePersonName (account, isSwitchingCredentials
   return `${responsiblePerson.first_name} ${responsiblePerson.last_name}`
 }
 
+async function completeKyc (gatewayAccountId, service, stripeAccountId, correlationId) {
+  await Promise.all([
+    addNewCapabilities(stripeAccountId, service.merchantDetails.name),
+    connector.setStripeAccountSetupFlag(gatewayAccountId, 'additional_kyc_data', correlationId),
+    connector.disableCollectAdditionalKyc(gatewayAccountId, correlationId)
+  ])
+  logger.info('KYC additional information completed for Stripe account', {
+    stripe_account_id: stripeAccountId
+  })
+}
+
 module.exports = {
   getStripeAccountId,
   validateField,
   validateDoB,
   getFormFields,
   getAlreadySubmittedErrorPageData,
-  getExistingResponsiblePersonName
+  getExistingResponsiblePersonName,
+  completeKyc
 }
