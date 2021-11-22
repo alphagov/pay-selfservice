@@ -147,7 +147,7 @@ describe('Your PSP - Stripe - KYC', () => {
     })
 
     it('should redirect to the responsible person page with existing persons name displayed', () => {
-      cy.get('a').contains('Add information about responsible person').click()
+      cy.get('a').contains('Add responsible person information').click()
       cy.get('h1').should('contain', 'Enter responsible person details')
       cy.get('.govuk-back-link')
         .should('have.text', 'Back')

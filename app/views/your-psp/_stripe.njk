@@ -41,13 +41,13 @@
     ) }}
     {{ taskListItem(
       'task-update-sro',
-      "Add information about responsible person",
+      "Add responsible person information",
       formatAccountPathsFor(routes.account.kyc.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.UPDATE_RESPONSIBLE_PERSON
     ) }}
     {{ taskListItem(
       'task-add-director',
-      "Add information about the director of your organisation",
+      "Add director of service information",
       formatAccountPathsFor(routes.account.kyc.director, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.ENTER_DIRECTOR
     ) }}
