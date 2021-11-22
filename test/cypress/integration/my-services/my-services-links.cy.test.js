@@ -8,7 +8,7 @@ const authenticatedUserId = 'authenticated-user-id'
 
 function getUserAndAccountStubs (type, paymentProvider) {
   return [userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
-    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type, paymentProvider })
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1', type, paymentProvider, requiresAdditionalKycData: true })
   ]
 }
 
@@ -71,5 +71,17 @@ describe('User has access to one or more live services', () => {
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
     cy.contains('a', 'Show transactions for all your services')
+  })
+})
+
+describe('Gateway account requires additional KYC data', () => {
+  it('should display link to service with INFORMATION NEEDED tag', () => {
+    cy.task('setupStubs', getUserAndAccountStubs('live', 'stripe'))
+
+    cy.setEncryptedCookies(authenticatedUserId)
+    cy.visit('/my-services')
+    cy.title().should('eq', 'Choose service - GOV.UK Pay')
+
+    cy.get('button').should('contain', 'INFORMATION NEEDED')
   })
 })

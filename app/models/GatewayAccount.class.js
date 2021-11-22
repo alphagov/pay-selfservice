@@ -20,6 +20,7 @@ class GatewayAccount {
    * @param {string} gatewayAccountData.description - The description of the gateway account
    * @param {string} gatewayAccountData.analytics_id - Google analytics_id of the gateway account
    * @param {boolean} gatewayAccountData.toggle_3ds - whether 3DS is enabled or not on this gateway account
+   * @param {boolean} gatewayAccountData.requires_additional_kyc_data - whether gateway account requires additional information
    **/
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
@@ -31,6 +32,7 @@ class GatewayAccount {
     this.analyticsId = gatewayAccountData.analytics_id
     this.toggle3ds = gatewayAccountData.toggle_3ds
     this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
+    this.requiresAdditionalKycData = gatewayAccountData.requires_additional_kyc_data
   }
 
   /**
@@ -45,7 +47,8 @@ class GatewayAccount {
       payment_provider: this.paymentProvider,
       service_name: this.name,
       type: this.type,
-      provider_switch_enabled: this.providerSwitchEnabled
+      provider_switch_enabled: this.providerSwitchEnabled,
+      requiresAdditionalKycData: this.requiresAdditionalKycData
     }
   }
 }

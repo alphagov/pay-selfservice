@@ -6,14 +6,14 @@
     {% set isLive = currentGatewayAccount.type === "live" %}
     {% set stripeAccountIsSetup = (currentGatewayAccount.connectorGatewayAccountStripeProgress.bankAccount and currentGatewayAccount.connectorGatewayAccountStripeProgress.responsiblePerson
       and currentGatewayAccount.connectorGatewayAccountStripeProgress.vatNumber and currentGatewayAccount.connectorGatewayAccountStripeProgress.companyNumber) %}
+    {% set isRequiresAdditionalKycData = currentGatewayAccount.requires_additional_kyc_data and isAdminUser %}
 
     {% set tagModifierClass %}
-      {% if not isLive %}
+      {% if isRequiresAdditionalKycData or (paymentProvider === 'stripe' and not stripeAccountIsSetup) or
+        currentGatewayAccount.provider_switch_enabled %}
+        govuk-tag--blue
+      {% elseif not isLive %}
         govuk-tag--grey
-      {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
-        govuk-tag--blue
-      {% elseif currentGatewayAccount.provider_switch_enabled %}
-        govuk-tag--blue
       {% endif %}
     {% endset %}
 
@@ -24,12 +24,12 @@
         {% else %}
           {{ paymentProvider }} Test
         {% endif %}
-      {% elseif paymentProvider === 'stripe' and not stripeAccountIsSetup %}
-        Live - information needed
       {% else %}
         Live
       {% endif %}
-
+      {% if isRequiresAdditionalKycData or (paymentProvider === 'stripe' and not stripeAccountIsSetup) %}
+        - information needed
+      {% endif %}
       {% if isAdminUser and currentGatewayAccount.provider_switch_enabled %}
       - switch psp
       {% endif %}
