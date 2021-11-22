@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Choose the payment service provider you’ll use - Request a live account - {{ currentService.name }} - GOV.UK Pay
@@ -6,6 +7,14 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'choose-how-to-process-payments-mode': '#choose-how-to-process-payments-mode',
+        'choose-how-to-process-payments-mode-other': '#choose-how-to-process-payments-mode-other'
+      }
+    }) }}
 
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 2 of 3</span>
 
@@ -23,6 +32,7 @@
               classes: 'pay-text-grey'
             }
           },
+          errorMessage: { text: errors['choose-how-to-process-payments-mode-other'] } if errors['choose-how-to-process-payments-mode-other'] else false,
           items: [
             {
               value: 'worldpay',
@@ -51,6 +61,7 @@
             classes: 'govuk-fieldset__legend--l'
           }
         },
+        errorMessage: { text: errors['choose-how-to-process-payments-mode'] } if errors['choose-how-to-process-payments-mode'] else false,
         items: [
           {
             value: 'stripe',
@@ -83,7 +94,8 @@
             },
             hint: {
               text: 'If you’re already using GOV.UK Pay with one of the following providers, you can continue to use them for new services until 31st July 2021.'
-            }
+            },
+            checked: otherPspSelected
           }
         ]
         }) }}

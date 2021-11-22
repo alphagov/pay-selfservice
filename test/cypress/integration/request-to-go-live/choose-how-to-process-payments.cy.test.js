@@ -120,7 +120,14 @@ describe('Request to go live: choose how to process payments', () => {
         cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
         cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
-        cy.get('.error-summary').should('contain', 'You need to select an option')
+
+        cy.get('h2').should('contain', 'There is a problem')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You need to select an option')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#choose-how-to-process-payments-mode')
+  
+        cy.get('.govuk-form-group--error').should('exist').within(() => {
+          cy.get('.govuk-error-message#choose-how-to-process-payments-mode-error').should('contain', 'You need to select an option')
+        })
 
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
@@ -134,7 +141,15 @@ describe('Request to go live: choose how to process payments', () => {
 
         cy.get('#choose-how-to-process-payments-mode-3').click()
         cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
-        cy.get('.error-summary').should('contain', 'You need to select one of Worldpay, Smartpay or ePDQ')
+
+        cy.get('#choose-how-to-process-payments-mode-3').should('have.attr', 'checked')
+
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You need to select one of Worldpay, Smartpay or ePDQ')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#choose-how-to-process-payments-mode-other')
+  
+        cy.get('.govuk-form-group--error').should('exist').within(() => {
+          cy.get('.govuk-error-message#choose-how-to-process-payments-mode-other-error').should('contain', 'You need to select one of Worldpay, Smartpay or ePDQ')
+        })
 
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
