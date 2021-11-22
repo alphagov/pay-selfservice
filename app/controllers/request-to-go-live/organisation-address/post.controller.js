@@ -95,7 +95,7 @@ const normaliseForm = (formBody) => {
   }, {})
 }
 
-const validateForm = function validate(form, isRequestToGoLive) {
+const validateForm = function validate (form, isRequestToGoLive) {
   const rules = isRequestToGoLive ? validationRules : validationRulesWithOrganisationName
   const errors = rules.reduce((errors, validationRule) => {
     const value = form[validationRule.field]
@@ -157,7 +157,7 @@ const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
   }
 }
 
-module.exports = async function submitOrganisationAddress(req, res, next) {
+module.exports = async function submitOrganisationAddress (req, res, next) {
   try {
     const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
     const form = normaliseForm(req.body)

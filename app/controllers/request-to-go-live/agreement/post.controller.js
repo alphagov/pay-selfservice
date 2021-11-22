@@ -3,7 +3,6 @@
 const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
-const paths = require('../../../paths')
 const goLiveStage = require('../../../models/go-live-stage')
 const { updateCurrentGoLiveStage } = require('../../../services/service.service')
 const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('../../../services/service.service')
@@ -11,8 +10,8 @@ const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { isIPv4, isIPv6 } = require('net')
 const zendeskClient = require('../../../services/clients/zendesk.client')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
+const { response } = require('../../../utils/response')
 
-const NOT_SELECTED_AGREEMENT_ERROR_MSG = 'You need to accept our legal terms to continue'
 const stages = {
   CHOSEN_PSP_STRIPE: goLiveStage.TERMS_AGREED_STRIPE,
   CHOSEN_PSP_WORLDPAY: goLiveStage.TERMS_AGREED_WORLDPAY,
@@ -57,11 +56,11 @@ const createZendeskMessage = opts => ` Service name: ${opts.serviceName}
 `
 
 module.exports = async (req, res, next) => {
-  let agreement = lodash.get(req, 'body.agreement')
-  if (agreement !== undefined) {
+  const agreementChecked = req.body.agreement
+  if (agreementChecked !== undefined) {
     try {
       const ipAddress = await postUserIpAddress(req)
-      agreement = await addGovUkAgreementEmailAddress(req.service.externalId, req.user.externalId, req.correlationId)
+      const agreement = await addGovUkAgreementEmailAddress(req.service.externalId, req.user.externalId, req.correlationId)
 
       const messageOpts = {
         serviceName: req.service.name,
@@ -92,12 +91,11 @@ module.exports = async (req, res, next) => {
       return next(err)
     }
   } else {
-    req.flash('genericError', NOT_SELECTED_AGREEMENT_ERROR_MSG)
-    lodash.set(req, 'session.pageData.requestToGoLive.agreement', {
-      displayStripeAgreement: (lodash.get(req, 'service.currentGoLiveStage', '') === goLiveStage.CHOSEN_PSP_STRIPE)
+    return response(req, res, 'request-to-go-live/agreement', {
+      displayStripeAgreement: (lodash.get(req, 'service.currentGoLiveStage', '') === goLiveStage.CHOSEN_PSP_STRIPE),
+      errors: {
+        agreement: 'You need to accept our legal terms to continue'
+      }
     })
-    return res.redirect(303,
-      formatServicePathsFor(paths.service.requestToGoLive.agreement, req.service.externalId)
-    )
   }
 }
