@@ -13,14 +13,6 @@ const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
 const responsiblePersonUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/responsible-person`
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
-const firstName = 'William'
-const typedFirstName = 'William '
-const addressLine1 = '52 Festive Road'
-const typedAddressLine1 = ' 52 Festive Road'
-const typedAddressLine2 = 'Putney '
-const city = 'London'
-const typedCity = 'London '
-
 function setupStubs (responsiblePerson, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
@@ -97,75 +89,69 @@ describe('Stripe setup: responsible person page', () => {
           cy.get('input#email[name="email"][autocomplete="email"]').should('exist')
 
           cy.get('button').should('exist')
-
-          cy.get('input[name="answers-need-changing"]').should('not.exist')
-          cy.get('input[name="answers-checked"]').should('not.exist')
         })
     })
 
     it('should show errors when validation fails', () => {
       cy.get('#responsible-person-form').within(() => {
-        cy.get('#first-name').type(typedFirstName)
-        // No last name, which is an error
-        cy.get('#home-address-line-1').type(typedAddressLine1)
-        cy.get('#home-address-line-2').type(typedAddressLine2)
-        cy.get('#home-address-city').type(typedCity)
-        cy.get('#home-address-postcode').type('not a valid UK postcode')
-        cy.get('#dob-day').type('29')
-        cy.get('#dob-month').type('2')
-        cy.get('#dob-year').type('2001')
+        cy.get('#home-address-postcode').type('1')
+        cy.get('#dob-day').type('a')
+        cy.get('#dob-month').type('b')
+        cy.get('#dob-year').type('20')
         cy.get('#telephone-number').type('123')
         cy.get('#email').type('foo')
         cy.get('button').click()
       })
 
       cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#last-name"]').should('contain', 'Last name')
-        cy.get('a[href="#home-address-postcode"]').should('contain', 'Postcode')
-        cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
-        cy.get('a[href="#dob-month"]').should('not.exist')
-        cy.get('a[href="#dob-year"]').should('not.exist')
-        cy.get('a[href="#telephone-number"]').should('contain', 'Work telephone number')
-        cy.get('a[href="#email"]').should('contain', 'Work email address')
+        cy.get('a[href="#first-name"]').should('contain', 'Enter a first name')
+        cy.get('a[href="#last-name"]').should('contain', 'Enter a last name')
+        cy.get('a[href="#home-address-line-1"]').should('contain', 'Enter a building name, number and street')
+        cy.get('a[href="#home-address-city"]').should('contain', 'Enter a town or city')
+        cy.get('a[href="#home-address-postcode"]').should('contain', 'Enter a real postcode')
+        cy.get('a[href="#dob-day"]').should('contain', 'Enter a real date of birth')
+        cy.get('a[href="#telephone-number"]').should('contain', 'Invalid telephone number')
+        cy.get('a[href="#email"]').should('contain', 'Enter a valid email address')
       })
 
       cy.get('#responsible-person-form').should('exist').within(() => {
+        cy.get('.govuk-form-group--error > input#first-name').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+          cy.get('input#first-name').should('exist')
+        })
         cy.get('.govuk-form-group--error > input#last-name').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
-          cy.get('input#last-name[name=last-name][autocomplete=family-name]').should('exist')
+          cy.get('input#last-name').should('exist')
         })
-
+        cy.get('.govuk-form-group--error > input#home-address-line-1').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+        })
+        cy.get('.govuk-form-group--error > input#home-address-city').parent().should('exist').within(() => {
+          cy.get('.govuk-error-message').should('exist')
+        })
         cy.get('.govuk-form-group--error > input#home-address-postcode').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
-          cy.get('input#home-address-postcode[name=home-address-postcode][autocomplete=postal-code]').should('have.attr', 'value', 'not a valid UK postcode')
+          cy.get('input#home-address-postcode').should('have.attr', 'value', '1')
         })
 
         cy.get('.govuk-form-group--error > fieldset > #dob-error').parent().parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
-          cy.get('input#dob-day').should('have.attr', 'value', '29')
-          cy.get('input#dob-month').should('have.attr', 'value', '2')
-          cy.get('input#dob-year').should('have.attr', 'value', '2001')
+          cy.get('input#dob-day').should('have.attr', 'value', 'a')
+          cy.get('input#dob-month').should('have.attr', 'value', 'b')
+          cy.get('input#dob-year').should('have.attr', 'value', '20')
         })
 
         cy.get('.govuk-form-group--error > input#telephone-number').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
+          cy.get('input#telephone-number').should('have.attr', 'value', '123')
         })
 
         cy.get('.govuk-form-group--error > input#email').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
+          cy.get('input#email').should('have.attr', 'value', 'foo')
         })
 
-        cy.get('input#first-name').should('have.attr', 'value', firstName)
-        cy.get('input#last-name').should('exist')
-        cy.get('input#home-address-line-1').should('have.attr', 'value', addressLine1)
-        cy.get('input#home-address-city').should('have.attr', 'value', city)
-        cy.get('input#telephone-number').should('have.attr', 'value', '123')
-        cy.get('input#email').should('have.attr', 'value', 'foo')
-
         cy.get('button').should('exist')
-
-        cy.get('input[name="answers-need-changing"]').should('not.exist')
-        cy.get('input[name="answers-checked"]').should('not.exist')
       })
     })
   })

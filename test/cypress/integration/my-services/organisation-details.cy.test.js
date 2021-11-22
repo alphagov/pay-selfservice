@@ -84,32 +84,31 @@ describe('Dashboard', () => {
 
         cy.get('.govuk-error-summary').find('a').should('have.length', 6)
         cy.get('.govuk-error-summary').should('exist').within(() => {
-          cy.get('a[href="#merchant-name"]').should('contain', 'Name')
-          cy.get('a[href="#address-line1"]').should('contain', 'Building and street')
-          cy.get('a[href="#address-city"]').should('contain', 'Town or city')
-          cy.get('a[href="#address-postcode"]').should('contain', 'Postcode')
-          cy.get('a[href="#telephone-number"]').should('contain', 'Telephone number')
-          cy.get('a[href="#url"]').should('contain', 'Organisation website address')
+          cy.get('a[href="#merchant-name"]').should('contain', 'Enter a name')
+          cy.get('a[href="#address-line1"]').should('contain', 'Enter a building and street')
+          cy.get('a[href="#address-city"]').should('contain', 'Enter a town or city')
+          cy.get('a[href="#address-postcode"]').should('contain', 'Enter a real postcode')
+          cy.get('a[href="#telephone-number"]').should('contain', 'Invalid telephone number')
+          cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
         })
 
         cy.get(`form[method=post]`)
           .within(() => {
             cy.get('.govuk-form-group--error > input#merchant-name').parent().should('exist').within(() => {
-              cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+              cy.get('.govuk-error-message').should('contain', 'Enter a name')
             })
             cy.get('.govuk-form-group--error > input#address-line1').parent().should('exist').within(() => {
-              cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+              cy.get('.govuk-error-message').should('contain', 'Enter a building and street')
             })
             cy.get('.govuk-form-group--error > input#address-city').parent().should('exist').within(() => {
-              cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+              cy.get('.govuk-error-message').should('contain', 'Enter a town or city')
             })
             cy.get('.govuk-form-group--error > input#address-postcode').parent().should('exist').within(() => {
-              cy.get('.govuk-error-message').should('contain', 'Please enter a real postcode')
+              cy.get('.govuk-error-message').should('contain', 'Enter a real postcode')
             })
             cy.get('.govuk-form-group--error > input#telephone-number').parent().should('exist').within(() => {
               cy.get('.govuk-error-message').should('contain', 'Invalid telephone number')
             })
-
             cy.get('.govuk-form-group--error > input#url').parent().should('exist').within(() => {
               cy.get('.govuk-error-message').should('contain', 'Enter a valid website address')
             })
@@ -130,9 +129,9 @@ describe('Dashboard', () => {
 
         cy.get('.govuk-error-summary').find('a').should('have.length', 3)
         cy.get('.govuk-error-summary').should('exist').within(() => {
-          cy.get('a[href="#address-postcode"]').should('contain', 'Postcode')
-          cy.get('a[href="#telephone-number"]').should('contain', 'Telephone number')
-          cy.get('a[href="#url"]').should('contain', 'Organisation website address')
+          cy.get('a[href="#address-postcode"]').should('contain', 'Enter a real postcode')
+          cy.get('a[href="#telephone-number"]').should('contain', 'Invalid telephone number')
+          cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
         })
 
         cy.get(`form[method=post]`)

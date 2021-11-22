@@ -1,4 +1,5 @@
 {% extends "../../layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Enter responsible person details - {{ currentService.name }} - GOV.UK Pay
@@ -29,75 +30,20 @@
       }) }}
     {% endif %}
 
-    {% if errors %}
-      {% set errorList = [] %}
-
-      {% if errors['first-name'] %}
-        {% set errorList = (errorList.push({
-          text: 'First name',
-          href: '#first-name'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['last-name'] %}
-        {% set errorList = (errorList.push({
-          text: 'Last name',
-          href: '#last-name'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['home-address-line-1'] or errors['home-address-line-2'] %}
-        {% if errors['home-address-line-1'] %}
-          {% set href = '#home-address-line-1' %}
-        {% else %}
-          {% set href = '#home-address-line-2' %}
-        {% endif %}
-        {% set errorList = (errorList.push({
-          text: 'Building name, number and street',
-          href: href
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['home-address-city'] %}
-        {% set errorList = (errorList.push({
-          text: 'Town or city',
-          href: '#home-address-city'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['home-address-postcode'] %}
-        {% set errorList = (errorList.push({
-          text: 'Postcode',
-          href: '#home-address-postcode'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['dob'] %}
-        {% set errorList = (errorList.push({
-          text: 'Date of birth',
-          href: '#dob-day'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['telephone-number'] %}
-        {% set errorList = (errorList.push({
-          text: 'Work telephone number',
-          href: '#telephone-number'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['email'] %}
-        {% set errorList = (errorList.push({
-          text: 'Work email address',
-          href: '#email'
-        }), errorList) %}
-      {% endif %}
-
-      {{ govukErrorSummary({
-        titleText: 'There was a problem with the details you gave for:',
-        errorList: errorList
-      }) }}
-    {% endif %}
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'first-name': '#first-name',
+        'last-name': '#last-name',
+        'home-address-line-1': '#home-address-line-1',
+        'home-address-line2': '#home-address-line2',
+        'home-address-city': '#home-address-city',
+        'home-address-postcode': '#home-address-postcode',
+        'dob-day': '#dob-day',
+        'telephone-number': '#telephone-number',
+        'email': '#email'
+      }
+    }) }}
 
     <h1 class="govuk-heading-l">Enter responsible person details</h1>
 
@@ -249,9 +195,9 @@
       {% endcall %}
 
       {% set dobError = false %}
-      {% if errors['dob'] %}
+      {% if errors['dob-day'] %}
         {% set dobError = {
-          text: errors['dob']
+          text: errors['dob-day']
         } %}
       {% endif %}
       {{ govukDateInput({

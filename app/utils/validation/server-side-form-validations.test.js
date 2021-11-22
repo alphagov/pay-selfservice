@@ -150,21 +150,21 @@ describe('Server side form validations', () => {
     it('should not be valid when postcode is UK postcode with extra punctuation', () => {
       expect(validations.validatePostcode('NW1! 5GH')).to.deep.equal({
         valid: false,
-        message: 'Please enter a real postcode'
+        message: 'Enter a real postcode'
       })
     })
 
     it('should not be valid when postcode is not UK postcode and country not provided', () => {
       expect(validations.validatePostcode('CA90210')).to.deep.equal({
         valid: false,
-        message: 'Please enter a real postcode'
+        message: 'Enter a real postcode'
       })
     })
 
     it('should not be valid when postcode is not UK postcode and country is GB', () => {
       expect(validations.validatePostcode('CA90210', 'GB')).to.deep.equal({
         valid: false,
-        message: 'Please enter a real postcode'
+        message: 'Enter a real postcode'
       })
     })
 
@@ -323,7 +323,7 @@ describe('Server side form validations', () => {
     it('should not be valid for an invalid email address', () => {
       expect(validations.validateEmail('abd')).to.deep.equal({
         valid: false,
-        message: 'Please use a valid email address'
+        message: 'Enter a valid email address'
       })
     })
   })

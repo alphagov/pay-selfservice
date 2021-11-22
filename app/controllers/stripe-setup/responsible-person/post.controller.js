@@ -39,31 +39,50 @@ const DOB_YEAR_FIELD = 'dob-year'
 const TELEPHONE_NUMBER_FIELD = 'telephone-number'
 const EMAIL_FIELD = 'email'
 
+const fields = [
+  FIRST_NAME_FIELD,
+  LAST_NAME_FIELD,
+  HOME_ADDRESS_LINE1_FIELD,
+  HOME_ADDRESS_LINE2_FIELD,
+  HOME_ADDRESS_CITY_FIELD,
+  HOME_ADDRESS_POSTCODE_FIELD,
+  DOB_DAY_FIELD,
+  DOB_MONTH_FIELD,
+  DOB_YEAR_FIELD,
+  TELEPHONE_NUMBER_FIELD,
+  EMAIL_FIELD
+]
+
 const validationRules = [
   {
     field: FIRST_NAME_FIELD,
     validator: validateMandatoryField,
-    maxLength: 100
+    maxLength: 100,
+    fieldDisplayName: "first name"
   },
   {
     field: LAST_NAME_FIELD,
     validator: validateMandatoryField,
-    maxLength: 100
+    maxLength: 100,
+    fieldDisplayName: "last name"
   },
   {
     field: HOME_ADDRESS_LINE1_FIELD,
     validator: validateMandatoryField,
-    maxLength: 200
+    maxLength: 200,
+    fieldDisplayName: "building name, number and street"
   },
   {
     field: HOME_ADDRESS_LINE2_FIELD,
     validator: validateOptionalField,
-    maxLength: 200
+    maxLength: 200,
+    fieldDisplayName: "Building name, number and street"
   },
   {
     field: HOME_ADDRESS_CITY_FIELD,
     validator: validateMandatoryField,
-    maxLength: 100
+    maxLength: 100,
+    fieldDisplayName: "town or city"
   },
   {
     field: HOME_ADDRESS_POSTCODE_FIELD,
@@ -100,20 +119,6 @@ module.exports = async function submitResponsiblePerson(req, res, next) {
       return response(req, res, 'error-with-link', errorPageData)
     }
   }
-
-  const fields = [
-    FIRST_NAME_FIELD,
-    LAST_NAME_FIELD,
-    HOME_ADDRESS_LINE1_FIELD,
-    HOME_ADDRESS_LINE2_FIELD,
-    HOME_ADDRESS_CITY_FIELD,
-    HOME_ADDRESS_POSTCODE_FIELD,
-    DOB_DAY_FIELD,
-    DOB_MONTH_FIELD,
-    DOB_YEAR_FIELD,
-    TELEPHONE_NUMBER_FIELD,
-    EMAIL_FIELD
-  ]
 
   const formFields = getFormFields(req.body, fields)
 
@@ -189,7 +194,8 @@ function validateForm(formFields, collectAdditionalKycData) {
     rules = validationRules
   }
   const errors = rules.reduce((errors, validationRule) => {
-    const errorMessage = validateField(formFields[validationRule.field], validationRule.validator, validationRule.maxLength)
+    const errorMessage = validateField(formFields[validationRule.field], validationRule.validator,
+      validationRule.maxLength, validationRule.fieldDisplayName)
     if (errorMessage) {
       errors[validationRule.field] = errorMessage
     }
@@ -198,10 +204,11 @@ function validateForm(formFields, collectAdditionalKycData) {
 
   const dateOfBirthErrorMessage = validateDoB(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD], formFields[DOB_YEAR_FIELD])
   if (dateOfBirthErrorMessage) {
-    errors['dob'] = dateOfBirthErrorMessage
+    errors[DOB_DAY_FIELD] = dateOfBirthErrorMessage
   }
 
-  return errors
+  const orderedErrors = lodash.pick(errors, fields)
+  return orderedErrors
 }
 
 function buildStripePerson(formFields, collectAdditionalKycData) {

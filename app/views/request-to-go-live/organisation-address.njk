@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
 {% if isRequestToGoLive %}
@@ -10,68 +11,19 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  {% if errors %}
-    {% set errorList = [] %}
-
-    {% if errors['merchant-name'] %}
-      {% set errorList = (errorList.push({
-        text: 'Name',
-        href: '#merchant-name'
-      }), errorList) %}
-    {% endif %}
-
-    {% if errors['address-line1'] or errors['address-line2'] %}
-      {% if errors['address-line1'] %}
-        {% set href = '#address-line1' %}
-      {% else %}
-        {% set href = '#address-line2' %}
-      {% endif %}
-      {% set errorList = (errorList.push({
-      text: 'Building and street',
-      href: href
-      }), errorList) %}
-    {% endif %}
-
-    {% if errors['address-city'] %}
-      {% set errorList = (errorList.push({
-        text: 'Town or city',
-        href: '#address-city'
-      }), errorList) %}
-    {% endif %}
-
-    {% if errors['address-country'] %}
-      {% set errorList = (errorList.push({
-        text: 'Country',
-        href: '#address-country'
-      }), errorList) %}
-    {% endif %}
-
-    {% if errors['address-postcode'] %}
-      {% set errorList = (errorList.push({
-        text: 'Postcode',
-        href: '#address-postcode'
-      }), errorList) %}
-    {% endif %}
-
-    {% if errors['telephone-number'] %}
-      {% set errorList = (errorList.push({
-        text: 'Telephone number',
-        href: '#telephone-number'
-      }), errorList) %}
-    {% endif %}
-
-    {% if errors['url'] %}
-      {% set errorList = (errorList.push({
-        text: 'Organisation website address',
-        href: '#url'
-      }), errorList) %}
-    {% endif %}
-
-    {{ govukErrorSummary({
-    titleText: 'There was a problem with the details you gave for:',
-    errorList: errorList
-    }) }}
-  {% endif %}
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      'merchant-name': '#merchant-name',
+      'address-line1': '#address-line1',
+      'address-line2': '#address-line2',
+      'address-city': '#address-city',
+      'address-country': '#address-country',
+      'address-postcode': '#address-postcode',
+      'telephone-number': '#telephone-number',
+      'url': '#url'
+    }
+  }) }}
 
   {% if isRequestToGoLive %}
   <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>

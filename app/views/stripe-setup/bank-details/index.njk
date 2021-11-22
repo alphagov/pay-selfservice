@@ -1,4 +1,5 @@
 {% extends "../../layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Enter your organisation’s banking details - {{ currentService.name }} - GOV.UK Pay
@@ -12,33 +13,24 @@
 
 {% block mainContent %}
 
-  {% if isSwitchingCredentials %}
-    {{ govukBackLink({
-      text: "Back to Switching payment service provider (PSP)",
-      classes: "govuk-!-margin-top-0",
-      href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
-    }) }}
-  {% endif %}
   <div class="govuk-grid-column-two-thirds">
-    {% if errors | length %}
-      {% set errorList = [] %}
-      {% if errors['sort-code'] %}
-        {% set errorList = (errorList.push({
-          text: 'Sort code',
-          href: '#sort-code'
-        }), errorList) %}
-      {% endif %}
-      {% if errors['account-number'] %}
-        {% set errorList = (errorList.push({
-          text: 'Account number',
-          href: '#account-number'
-        }), errorList) %}
-      {% endif %}
-      {{ govukErrorSummary({
-        titleText: 'There was a problem with the details you gave for:',
-        errorList: errorList
+
+    {% if isSwitchingCredentials %}
+      {{ govukBackLink({
+        text: "Back to Switching payment service provider (PSP)",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
       }) }}
     {% endif %}
+
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'sort-code': '#sort-code',
+        'account-number': '#account-number'
+      }
+    }) }}
+
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Enter your organisation’s banking details</h1>
     <p class="govuk-body govuk-!-margin-bottom-6">This is the bank account payments will go into.</p>
 

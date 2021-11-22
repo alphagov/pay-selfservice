@@ -17,7 +17,7 @@ describe('VAT number validations', () => {
   it('should validate successfully when no vat number provided', () => {
     expect(vatNumberValidations.validateVatNumber('')).to.deep.equal({
       valid: false,
-      message: 'This field cannot be blank'
+      message: 'Enter a VAT number'
     })
   })
 

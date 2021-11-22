@@ -18,22 +18,23 @@ const EMAIL_FIELD = 'email'
 const DOB_DAY_FIELD = 'dob-day'
 const DOB_MONTH_FIELD = 'dob-month'
 const DOB_YEAR_FIELD = 'dob-year'
-const listOfFields = [FIRST_NAME_FIELD, LAST_NAME_FIELD, EMAIL_FIELD, DOB_DAY_FIELD, DOB_MONTH_FIELD, DOB_YEAR_FIELD]
+const listOfFields = [FIRST_NAME_FIELD, LAST_NAME_FIELD, DOB_DAY_FIELD, DOB_MONTH_FIELD, DOB_YEAR_FIELD, EMAIL_FIELD]
 const validationRules = [
   {
     field: FIRST_NAME_FIELD,
     validator: validateMandatoryField,
-    maxLength: 100
+    maxLength: 100,
+    fieldDisplayName: "first name"
   },
   {
     field: LAST_NAME_FIELD,
     validator: validateMandatoryField,
-    maxLength: 100
+    maxLength: 100,
+    fieldDisplayName: "last name"
   },
   {
     field: EMAIL_FIELD,
-    validator: validateEmail,
-    maxLength: 320
+    validator: validateEmail
   }
 ]
 
@@ -54,7 +55,7 @@ module.exports = async function (req, res, next) {
   }
 
   const formFields = getFormFields(req.body, listOfFields)
-  const errors = validateDirector(req.body, formFields)
+  const errors = validateDirector(formFields)
 
   if (!lodash.isEmpty(errors)) {
     const pageData = {
@@ -107,9 +108,10 @@ module.exports = async function (req, res, next) {
   }
 }
 
-function validateDirector (requestBody, formFields) {
+function validateDirector (formFields) {
   const errors = validationRules.reduce((errors, validationRule) => {
-    const errorMessage = validateField(formFields[validationRule.field], validationRule.validator, validationRule.maxLength)
+    const errorMessage = validateField(formFields[validationRule.field], validationRule.validator,
+       validationRule.maxLength, validationRule.fieldDisplayName)
     if (errorMessage) {
       errors[validationRule.field] = errorMessage
     }
@@ -118,10 +120,11 @@ function validateDirector (requestBody, formFields) {
 
   const dateOfBirthErrorMessage = validateDoB(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD], formFields[DOB_YEAR_FIELD])
   if (dateOfBirthErrorMessage) {
-    errors['dob'] = dateOfBirthErrorMessage
+    errors['dob-day'] = dateOfBirthErrorMessage
   }
 
-  return errors
+  const orderedErrors = lodash.pick(errors, listOfFields)
+  return orderedErrors
 }
 
 function buildStripePerson (formFields) {

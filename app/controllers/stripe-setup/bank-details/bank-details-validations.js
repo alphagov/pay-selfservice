@@ -3,11 +3,10 @@
 const { isEmpty, isNotAccountNumber, isNotSortCode } = require('../../../utils/validation/field-validation-checks')
 
 exports.validateAccountNumber = (accountNumber) => {
-  const isEmptyErrorMessage = isEmpty(accountNumber)
-  if (isEmptyErrorMessage) {
+  if (isEmpty(accountNumber)) {
     return {
       valid: false,
-      message: isEmptyErrorMessage
+      message: 'Enter an account number'
     }
   }
 
@@ -26,11 +25,10 @@ exports.validateAccountNumber = (accountNumber) => {
 }
 
 exports.validateSortCode = (sortCode) => {
-  const isEmptyErrorMessage = isEmpty(sortCode)
-  if (isEmptyErrorMessage) {
+  if (isEmpty(sortCode)) {
     return {
       valid: false,
-      message: isEmptyErrorMessage
+      message: 'Enter a sort code'
     }
   }
 

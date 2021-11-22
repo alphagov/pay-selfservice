@@ -1,4 +1,5 @@
 {% extends "../../layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Enter a director’s details - {{ currentService.name }} - GOV.UK Pay
@@ -12,58 +13,32 @@
 
 {% block mainContent %}
 
-  {% if isSwitchingCredentials %}
-    {{ govukBackLink({
-      text: "Back to Switching payment service provider (PSP)",
-      classes: "govuk-!-margin-top-0",
-      href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
-    }) }}
-  {% endif %}
-  {% if collectingAdditionalKycData %}
-    {{ govukBackLink({
-      text: "Back",
-      classes: "govuk-!-margin-top-0",
-      href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
-    }) }}
-  {% endif %}
-
   <div class="govuk-grid-column-two-thirds">
-    {% if errors %}
-      {% set errorList = [] %}
 
-      {% if errors['first-name'] %}
-        {% set errorList = (errorList.push({
-          text: 'First name',
-          href: '#first-name'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['last-name'] %}
-        {% set errorList = (errorList.push({
-          text: 'Last name',
-          href: '#last-name'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['dob'] %}
-        {% set errorList = (errorList.push({
-          text: 'Date of birth',
-          href: '#dob-day'
-        }), errorList) %}
-      {% endif %}
-
-      {% if errors['email'] %}
-        {% set errorList = (errorList.push({
-          text: 'Email',
-          href: '#email'
-        }), errorList) %}
-      {% endif %}
-
-      {{ govukErrorSummary({
-        titleText: 'There was a problem with the details you gave for:',
-        errorList: errorList
+    {% if isSwitchingCredentials %}
+      {{ govukBackLink({
+        text: "Back to Switching payment service provider (PSP)",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
       }) }}
     {% endif %}
+    {% if collectingAdditionalKycData %}
+      {{ govukBackLink({
+        text: "Back",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+      }) }}
+    {% endif %}
+
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'first-name': '#first-name',
+        'last-name': '#last-name',
+        'dob-day': '#dob-day',
+        'email': '#email'
+      }
+    }) }}
 
     <h1 class="govuk-heading-l">Enter a director’s details</h1>
 
@@ -127,9 +102,9 @@
       {% endcall %}
 
       {% set dobError = false %}
-      {% if errors['dob'] %}
+      {% if errors['dob-day'] %}
         {% set dobError = {
-          text: errors['dob']
+          text: errors['dob-day']
         } %}
       {% endif %}
       {{ govukDateInput({

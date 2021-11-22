@@ -112,12 +112,12 @@ function validatePostcode (postcode, countryCode) {
   }
 
   if (!/^[A-z0-9 ]+$/.test(postcode)) {
-    return notValidReturnObject('Please enter a real postcode')
+    return notValidReturnObject('Enter a real postcode')
   }
 
   const postcodeIsInvalid = !ukPostcode.fromString(postcode).isComplete()
   if (postcodeIsInvalid) {
-    return notValidReturnObject('Please enter a real postcode')
+    return notValidReturnObject('Enter a real postcode')
   }
 
   return validReturnObject

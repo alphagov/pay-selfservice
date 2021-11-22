@@ -15,7 +15,7 @@ describe('Bank details validations', () => {
     it('should not be valid when is empty string', () => {
       expect(bankDetailsValidations.validateAccountNumber('')).to.deep.equal({
         valid: false,
-        message: 'This field cannot be blank'
+        message: 'Enter an account number'
       })
     })
 
@@ -41,7 +41,7 @@ describe('Bank details validations', () => {
 
       expect(bankDetailsValidations.validateSortCode(sortCode)).to.deep.equal({
         valid: false,
-        message: 'This field cannot be blank'
+        message: 'Enter a sort code'
       })
     })
 

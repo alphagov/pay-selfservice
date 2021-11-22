@@ -22,8 +22,8 @@ async function getStripeAccountId (account, isSwitchingCredentials, correlationI
   }
 }
 
-function validateField (fieldValue, fieldValidator, maxLength) {
-  const isFieldValidValue = fieldValidator(fieldValue, maxLength)
+function validateField (fieldValue, fieldValidator, maxLength, fieldDisplayName) {
+  const isFieldValidValue = fieldValidator(fieldValue, maxLength, fieldDisplayName, true)
   if (!isFieldValidValue.valid) {
     return isFieldValidValue.message
   }

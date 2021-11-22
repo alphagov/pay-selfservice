@@ -180,13 +180,14 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.get('button').contains('Submit').click()
 
       cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#last-name"]').should('contain', 'Last name')
-        cy.get('a[href="#home-address-postcode"]').should('contain', 'Postcode')
-        cy.get('a[href="#dob-day"]').should('contain', 'Date of birth')
-        cy.get('a[href="#dob-month"]').should('not.exist')
-        cy.get('a[href="#dob-year"]').should('not.exist')
-        cy.get('a[href="#telephone-number"]').should('contain', 'Work telephone number')
-        cy.get('a[href="#email"]').should('contain', 'Work email address')
+        cy.get('a[href="#first-name"]').should('contain', 'Enter a first name')
+        cy.get('a[href="#last-name"]').should('contain', 'Enter a last name')
+        cy.get('a[href="#home-address-line-1"]').should('contain', 'Enter a building name, number and street')
+        cy.get('a[href="#home-address-city"]').should('contain', 'Enter a town or city')
+        cy.get('a[href="#home-address-postcode"]').should('contain', 'Enter a postcode')
+        cy.get('a[href="#dob-day"]').should('contain', 'Enter the date of birth')
+        cy.get('a[href="#telephone-number"]').should('contain', 'Enter a telephone number')
+        cy.get('a[href="#email"]').should('contain', 'Enter an email address')
       })
 
       cy.get('.govuk-back-link')
