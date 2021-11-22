@@ -12,11 +12,14 @@ const gatewayAccountExternalId = 'a-valid-external-id'
 const credentialExternalId = 'a-credential-external-id'
 const serviceName = 'Purchase a positron projection permit'
 const stripeAccountId = `acct_123example123`
+const serviceExternalId = 'a-service-external-id'
 const firstName = 'Joe'
 const lastName = 'Pay'
+const validUrl = 'https://www.valid-url.com'
+const serviceStubs = require('../../stubs/service-stubs')
 
 function setupYourPspStubs (opts = {}) {
-  const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
+  const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, serviceExternalId })
 
   const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
     gatewayAccountId,
@@ -51,8 +54,19 @@ function setupYourPspStubs (opts = {}) {
     email: opts.email
   })
 
+  const stripeUpdateAccount = stripePspStubs.updateAccount({
+    stripeAccountId,
+    url: validUrl
+  })
+
+  const merchantDetails = {
+    url: validUrl
+  }
+
+  const servicePatch = serviceStubs.patchUpdateMerchantDetailsSuccess({ serviceExternalId, gatewayAccountId, merchantDetails })
+
   const stubs = [user, gatewayAccountByExternalId, stripeAccountSetup, stripeAccount,
-    stripeAccountDetails, stripePersons]
+    stripeAccountDetails, stripePersons, stripeUpdateAccount, servicePatch]
 
   cy.task('setupStubs', stubs)
 }
@@ -196,6 +210,40 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.get('form').within(() => {
         cy.get('button').should('contain', 'Submit')
       })
+    })
+  })
+
+  describe('Organisation URL Page', () => {
+    beforeEach(() => {
+      setupYourPspStubs()
+    })
+
+    it('should show Organisation URL page', () => {
+      cy.visit(`/account/${gatewayAccountExternalId}/kyc/${credentialExternalId}/organisation-url`)
+
+      cy.get('h1').should('contain', 'Enter organisation website address')
+    })
+
+    it('should show an error if an invalid URL is submitted', () => {
+      cy.get('#organisation-url-form').within(() => {
+        cy.get('#organisation-url').type('invalid-url.com')
+        cy.get('button').click()
+      })
+
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('a[href="#organisation-url"]').should('contain', 'Organisation URL')
+      })
+    })
+
+    it('when a valid URL is submitted, it should redirect to the Your PSP with a success banner', () => {
+      cy.get('#organisation-url-form').within(() => {
+        cy.get('#organisation-url').clear()
+        cy.get('#organisation-url').type(validUrl)
+        cy.get('button').click()
+      })
+
+      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('.govuk-notification-banner__heading').should('contain', 'Organisation website address added successfully')
     })
   })
 })
