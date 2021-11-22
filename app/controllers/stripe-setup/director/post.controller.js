@@ -24,13 +24,13 @@ const validationRules = [
     field: FIRST_NAME_FIELD,
     validator: validateMandatoryField,
     maxLength: 100,
-    fieldDisplayName: "first name"
+    fieldDisplayName: 'first name'
   },
   {
     field: LAST_NAME_FIELD,
     validator: validateMandatoryField,
     maxLength: 100,
-    fieldDisplayName: "last name"
+    fieldDisplayName: 'last name'
   },
   {
     field: EMAIL_FIELD,
@@ -111,7 +111,7 @@ module.exports = async function (req, res, next) {
 function validateDirector (formFields) {
   const errors = validationRules.reduce((errors, validationRule) => {
     const errorMessage = validateField(formFields[validationRule.field], validationRule.validator,
-       validationRule.maxLength, validationRule.fieldDisplayName)
+      validationRule.maxLength, validationRule.fieldDisplayName)
     if (errorMessage) {
       errors[validationRule.field] = errorMessage
     }

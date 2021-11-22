@@ -15,7 +15,7 @@ const stripeAccountId = `acct_123example123`
 const firstName = 'Joe'
 const lastName = 'Pay'
 
-function setupYourPspStubs(opts = {}) {
+function setupYourPspStubs (opts = {}) {
   const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
 
   const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({

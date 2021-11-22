@@ -58,31 +58,31 @@ const validationRules = [
     field: FIRST_NAME_FIELD,
     validator: validateMandatoryField,
     maxLength: 100,
-    fieldDisplayName: "first name"
+    fieldDisplayName: 'first name'
   },
   {
     field: LAST_NAME_FIELD,
     validator: validateMandatoryField,
     maxLength: 100,
-    fieldDisplayName: "last name"
+    fieldDisplayName: 'last name'
   },
   {
     field: HOME_ADDRESS_LINE1_FIELD,
     validator: validateMandatoryField,
     maxLength: 200,
-    fieldDisplayName: "building name, number and street"
+    fieldDisplayName: 'building name, number and street'
   },
   {
     field: HOME_ADDRESS_LINE2_FIELD,
     validator: validateOptionalField,
     maxLength: 200,
-    fieldDisplayName: "Building name, number and street"
+    fieldDisplayName: 'Building name, number and street'
   },
   {
     field: HOME_ADDRESS_CITY_FIELD,
     validator: validateMandatoryField,
     maxLength: 100,
-    fieldDisplayName: "town or city"
+    fieldDisplayName: 'town or city'
   },
   {
     field: HOME_ADDRESS_POSTCODE_FIELD,
@@ -101,7 +101,7 @@ const validationRulesWithAdditionalKycData = [
   }
 ]
 
-module.exports = async function submitResponsiblePerson(req, res, next) {
+module.exports = async function submitResponsiblePerson (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const isSubmittingAdditionalKycData = isAdditionalKycDataRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
@@ -186,7 +186,7 @@ module.exports = async function submitResponsiblePerson(req, res, next) {
   }
 }
 
-function validateForm(formFields, collectAdditionalKycData) {
+function validateForm (formFields, collectAdditionalKycData) {
   let rules
   if (collectAdditionalKycData) {
     rules = validationRulesWithAdditionalKycData
@@ -211,7 +211,7 @@ function validateForm(formFields, collectAdditionalKycData) {
   return orderedErrors
 }
 
-function buildStripePerson(formFields, collectAdditionalKycData) {
+function buildStripePerson (formFields, collectAdditionalKycData) {
   const stripePerson = {
     first_name: formFields[FIRST_NAME_FIELD],
     last_name: formFields[LAST_NAME_FIELD],

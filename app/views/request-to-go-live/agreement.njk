@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Read and accept our legal terms - Request a live account - {{ currentService.name }} - GOV.UK Pay
@@ -6,6 +7,12 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        "agreement": "#agreement"
+      }
+    }) }}
 
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 3 of 3</span>
 
@@ -40,6 +47,7 @@
                 classes: "govuk-fieldset__legend--s"
               }
             },
+            errorMessage: { text: errors['agreement'] } if errors['agreement'] else false,
             items: [
               {
                 value: "accepted_legal_terms",

@@ -84,6 +84,20 @@ describe('Request to go live: agreement', () => {
       cy.get('#request-to-go-live-agreement-form > button').should('contain', 'Continue')
     })
 
+    it('should display an error when checkbox is not checked', () => {
+      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE'))
+
+      cy.get('#request-to-go-live-agreement-form > button').click()
+
+      cy.get('h2').should('contain', 'There is a problem')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You need to accept our legal terms to continue')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#agreement')
+
+      cy.get('.govuk-form-group--error').should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'You need to accept our legal terms to continue')
+      })
+    })
+
     it('should continue to the index page when terms are agreed to', () => {
       cy.task('setupStubs', [
         ...getStubsForPageSubmission('CHOSEN_PSP_STRIPE', 'TERMS_AGREED_STRIPE'),

@@ -6,7 +6,7 @@ const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 
 const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
 
-module.exports = async function showResponsiblePersonForm(req, res, next) {
+module.exports = async function showResponsiblePersonForm (req, res, next) {
   try {
     const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
     const isSubmittingAdditionalKycData = isAdditionalKycDataRoute(req)
