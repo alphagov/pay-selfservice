@@ -34,7 +34,7 @@ describe('Webhooks', () => {
     cy.get('[data-webhook-entry]').should('have.length', 1)
   })
 
-  it('should create a webhook with a valid properties', () => {
+  it('should create a webhook with valid properties', () => {
     const callbackUrl = 'https://some-valid-callback-url.com'
     const description = 'A valid Webhook description'
 
@@ -50,14 +50,28 @@ describe('Webhooks', () => {
     cy.get('button').contains('Create Webhook').click()
   })
 
-  it('should update a webhook with valid properties', () => {
+  it('should display a valid webhooks details', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs
     ])
 
-    // TODO(sfount) should navigate to update through details page when implemented
-    // cy.get('[data-action=update').then((links) => links[0].click())
-    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks/webhook-id/update')
+    cy.get('[data-action=update]').then((links) => links[0].click())
+
+    cy.get('h1').contains('https://some-callback-url.com')
+    cy.get('.govuk-list.govuk-list--bullet > li').should('have.length', 1)
+  })
+
+  it('should update a webhook with valid properties', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+
+    // link to detail page
+    cy.get('[data-action=update]').then((links) => links[0].click())
+
+    // button through to update webhooks
+    cy.get('[data-action=update]').click()
 
     cy.get('#callback_url').should('have.value', 'https://some-callback-url.com')
     cy.get('#description').should('have.value', 'a valid webhook description')
