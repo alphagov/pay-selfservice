@@ -9,9 +9,12 @@
       role="link">
       {{ account.type | title }}
       {% if account.type === 'live' %}
-        card account
+          card account
       {% else %}
         account ({{ account.payment_provider }})
+      {% endif %}
+      {% if account.requiresAdditionalKycData and service.isAdminUser %}
+          <strong class="service-info--tag govuk-tag govuk-tag--blue">INFORMATION NEEDED</strong>
       {% endif %}
     </button>
     {% if account.provider_switch_enabled and service.isAdminUser %}

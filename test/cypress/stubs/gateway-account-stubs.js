@@ -103,7 +103,8 @@ function getGatewayAccountsSuccess (opts) {
         gateway_account_id: opts.gatewayAccountId,
         type: opts.type,
         payment_provider: opts.paymentProvider,
-        external_id: '42'
+        external_id: '42',
+        requires_additional_kyc_data: opts.requiresAdditionalKycData || false
       }]
     })
   })
