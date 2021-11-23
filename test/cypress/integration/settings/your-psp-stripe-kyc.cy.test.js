@@ -96,6 +96,7 @@ describe('Your PSP - Stripe - KYC', () => {
 
       cy.get('#task-update-sro-status').should('have.html', 'completed')
     })
+
     it('should display director task as COMPLETED if details are updated on Stripe', () => {
       setupYourPspStubs({
         director: true
@@ -231,7 +232,7 @@ describe('Your PSP - Stripe - KYC', () => {
       })
 
       cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#organisation-url"]').should('contain', 'Organisation URL')
+        cy.get('a[href="#organisation-url"]').should('contain', 'Enter a valid website address')
       })
     })
 

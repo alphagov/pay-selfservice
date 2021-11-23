@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Enter organisation website address - {{ currentService.name }} - GOV.UK Pay
@@ -18,22 +19,12 @@
     href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
   }) }}
 
-  {% if errors %}
-      {% set errorList = [] %}
-
-      {% if errors['organisation-url'] %}
-        {% set errorList = (errorList.push({
-          text: 'Organisation URL',
-          href: '#organisation-url'
-        }), errorList) %}
-      {% endif %}
-
-      {{ govukErrorSummary({
-        titleText: 'There was a problem with the details you gave for:',
-        errorList: errorList
-      }) }}
-    {% endif %}
-
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      'organisation-url': '#organisation-url'
+    }
+  }) }}
 
   <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
     <label for="organisation-url">Enter organisation website address</label>
