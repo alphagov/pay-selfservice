@@ -23,6 +23,34 @@ function webhook (id, serviceId, options = {}) {
   return baseClient.get(request)
 }
 
+function signingSecret (webhookId, serviceId, options = {}) {
+  const url = urlJoin('/v1/webhook/', webhookId, '/signing-key')
+  const request = {
+    url,
+    qs: {
+      service_id: serviceId
+    },
+    description: 'Get a Webhook signing secret',
+    ...defaultRequestOptions,
+    ...options
+  }
+  return baseClient.get(request)
+}
+
+function resetSigningSecret (webhookId, serviceId, options = {}) {
+  const url = urlJoin('/v1/webhook/', webhookId, '/signing-key')
+  const request = {
+    url,
+    qs: {
+      service_id: serviceId
+    },
+    description: 'Reset a Webhook signing secret',
+    ...defaultRequestOptions,
+    ...options
+  }
+  return baseClient.post(request)
+}
+
 function webhooks (serviceId, isLive, options = {}) {
   const url = '/v1/webhook'
   const request = {
@@ -80,5 +108,7 @@ module.exports = {
   webhook,
   webhooks,
   createWebhook,
-  updateWebhook
+  updateWebhook,
+  signingSecret,
+  resetSigningSecret
 }

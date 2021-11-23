@@ -25,9 +25,19 @@ function getWebhook (id, serviceId) {
   return webhooksClient.webhook(id, serviceId)
 }
 
+function getSigningSecret(webhookId, serviceId) {
+  return webhooksClient.signingSecret(webhookId, serviceId)
+}
+
+function resetSigningSecret(webhookId, serviceId) {
+  return webhooksClient.resetSigningSecret(webhookId, serviceId)
+}
+
 module.exports = {
   listWebhooks,
   createWebhook,
   updateWebhook,
-  getWebhook
+  getWebhook,
+  getSigningSecret,
+  resetSigningSecret
 }
