@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
-  Webhooks - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  Webhooks - {{currentService.name}} {{ humanReadableEnvironment }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -27,7 +27,7 @@
       </p>
       <p class="govuk-body">{{ webhook.description }}</p>
       <div>
-        <a class="govuk-link govuk-link--no-visited-state" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">Manage Webhook</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}" data-action="update">Manage Webhook</a>
       </div>
     </div>
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">

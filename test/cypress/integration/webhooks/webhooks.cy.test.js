@@ -11,7 +11,8 @@ const webhookExternalId = 'webhook-id'
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({ userExternalId, serviceExternalId, gatewayAccountId }),
   gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId }),
-  webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] })
+  webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
+  webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId })
 ]
 
 describe('Webhooks', () => {
@@ -47,5 +48,21 @@ describe('Webhooks', () => {
     cy.get('[value=card_payment_captured]').click()
 
     cy.get('button').contains('Create Webhook').click()
+  })
+
+  it('should update a webhook with valid properties', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+
+    // TODO(sfount) should navigate to update through details page when implemented
+    // cy.get('[data-action=update').then((links) => links[0].click())
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks/webhook-id/update')
+
+    cy.get('#callback_url').should('have.value', 'https://some-callback-url.com')
+    cy.get('#description').should('have.value', 'a valid webhook description')
+    cy.get('[value=card_payment_captured]').should('be.checked')
+
+    cy.get('button').contains('Update Webhook').click()
   })
 })

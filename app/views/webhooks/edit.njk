@@ -4,7 +4,7 @@
 {% set submitURL = formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.update, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) if isEditing else formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.create, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) %}
 
 {% block pageTitle %}
-  {{ heading }} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  {{ heading }} - {{currentService.name}} {{ humanReadableEnvironment }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
