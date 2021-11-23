@@ -12,9 +12,9 @@ const merchantId = 'abc'
 const username = 'me'
 const password = '1'
 
-function getUserAndAccountStubs (paymentProvider, providerSwitchEnabled, gatewayAccountCredentials) {
+function getUserAndAccountStubs (paymentProvider, providerSwitchEnabled, gatewayAccountCredentials, merchantDetails) {
   return [
-    userStubs.getUserSuccess({ gatewayAccountId, userExternalId }),
+    userStubs.getUserSuccess({ gatewayAccountId, userExternalId, merchantDetails }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, providerSwitchEnabled, paymentProvider, ...gatewayAccountCredentials && { gatewayAccountCredentials } })
   ]
 }
@@ -249,6 +249,8 @@ describe('Switch PSP settings page', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
         cy.get('.govuk-heading-l').should('contain', 'Switch payment service provider (PSP)')
 
+        cy.get('strong[id="Add organisation website address-status"]').should('contain', 'not started')
+        cy.get('span').contains('Add organisation website address').should('exist')
         cy.get('strong[id="Provide your bank details-status"]').should('contain', 'not started')
         cy.get('span').contains('Provide your bank details').should('exist')
         cy.get('strong[id="Provide details about your responsible person-status"]').should('contain', 'not started')
@@ -290,6 +292,9 @@ describe('Switch PSP settings page', () => {
 
     describe('Switch page unlocks appropriately', () => {
       beforeEach(() => {
+        const merchantDetails = {
+          url: 'https://www.valid-url.com'
+        }
         cy.task('setupStubs', [
           ...getUserAndAccountStubs(
             'smartpay',
@@ -297,7 +302,8 @@ describe('Switch PSP settings page', () => {
             [
               { payment_provider: 'smartpay', state: 'ACTIVE' },
               { payment_provider: 'stripe', state: 'VERIFIED_WITH_LIVE_PAYMENT', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' } }
-            ]
+            ],
+            merchantDetails
           ),
           stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
             gatewayAccountId,
@@ -312,6 +318,7 @@ describe('Switch PSP settings page', () => {
       it('all steps are complete', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
 
+        cy.get('strong[id="Add organisation website address-status"]').should('contain', 'completed')
         cy.get('strong[id="Provide your bank details-status"]').should('contain', 'completed')
         cy.get('strong[id="Provide details about your responsible person-status"]').should('contain', 'completed')
         cy.get('strong[id="Provide details about the director of your organisation-status"]').should('contain', 'completed')

@@ -108,6 +108,7 @@ module.exports = {
       credentialsWithGatewayCheck: '/switch-psp/:credentialId/credentials-with-gateway-check',
       verifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration',
       receiveVerifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration/callback',
+      organisationUrl: '/switch-psp/:credentialId/organisation-url',
       stripeSetup: {
         bankDetails: '/switch-psp/:credentialId/bank-details',
         responsiblePerson: '/switch-psp/:credentialId/responsible-person',

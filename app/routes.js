@@ -429,8 +429,8 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  account.get(kyc.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.get)
-  account.post(kyc.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.post)
+  account.get([kyc.organisationUrl, switchPSP.organisationUrl], permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.get)
+  account.post([kyc.organisationUrl, switchPSP.organisationUrl], permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.post)
 
   // Stripe setup
   account.get([ yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails ], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)

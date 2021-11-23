@@ -225,17 +225,6 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.get('h1').should('contain', 'Enter organisation website address')
     })
 
-    it('should show an error if an invalid URL is submitted', () => {
-      cy.get('#organisation-url-form').within(() => {
-        cy.get('#organisation-url').type('invalid-url.com')
-        cy.get('button').click()
-      })
-
-      cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#organisation-url"]').should('contain', 'Enter a valid website address')
-      })
-    })
-
     it('when a valid URL is submitted, it should redirect to the Your PSP with a success banner', () => {
       cy.get('#organisation-url-form').within(() => {
         cy.get('#organisation-url').clear()

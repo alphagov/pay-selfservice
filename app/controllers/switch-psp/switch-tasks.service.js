@@ -1,6 +1,7 @@
 'use strict'
 
 const { CREDENTIAL_STATE } = require('../../utils/credentials')
+const lodash = require('lodash')
 
 function linkCredentialsComplete (targetCredential) {
   return [CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED, CREDENTIAL_STATE.ACTIVE, CREDENTIAL_STATE.RETIRED]
@@ -19,7 +20,12 @@ function stripeSetupStageComplete (account, stage) {
   return false
 }
 
-function getTaskList (targetCredential, account) {
+function organisationUrlComplete (service) {
+  const organisationUrl = lodash.get(service, 'merchantDetails.url', '')
+  return organisationUrl && organisationUrl.length > 0
+}
+
+function getTaskList (targetCredential, account, service) {
   if (targetCredential.payment_provider === 'worldpay') {
     return {
       'LINK_CREDENTIALS': {
@@ -33,6 +39,10 @@ function getTaskList (targetCredential, account) {
     }
   } else if (targetCredential.payment_provider === 'stripe') {
     return {
+      'ENTER_ORGANISATION_URL': {
+        enabled: !organisationUrlComplete(service),
+        complete: organisationUrlComplete(service)
+      },
       'ENTER_BANK_DETAILS': {
         enabled: !stripeSetupStageComplete(account, 'bankAccount'),
         complete: stripeSetupStageComplete(account, 'bankAccount')
@@ -54,7 +64,8 @@ function getTaskList (targetCredential, account) {
         complete: stripeSetupStageComplete(account, 'companyNumber')
       },
       'VERIFY_PSP_INTEGRATION': {
-        enabled: stripeSetupStageComplete(account, 'bankAccount') &&
+        enabled: organisationUrlComplete(service) &&
+          stripeSetupStageComplete(account, 'bankAccount') &&
           stripeSetupStageComplete(account, 'responsiblePerson') &&
           stripeSetupStageComplete(account, 'director') &&
           stripeSetupStageComplete(account, 'vatNumber') &&

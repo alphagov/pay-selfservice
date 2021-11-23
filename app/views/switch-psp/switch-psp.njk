@@ -74,6 +74,7 @@
       {% endset %}
     {% case 'stripe' %}
       <ul class="govuk-list govuk-list--bullet">
+        <li>organisation website address</li>
         <li>organisation bank details</li>
         <li>the name, date of birth and home address of the person in your organisation legally reponsible for payments (called your ‘<a href="https://www.payments.service.gov.uk/what-being-a-responsible-person-means/" class="govuk-link">responsible person</a>’)</li>
         <li>the name, date of birth and work email address of the director of your service (or someone at director level)</li>
@@ -83,6 +84,11 @@
       </ul>
 
       {% set tasks %}
+        {{ taskListItem(
+          "Add organisation website address",
+          formatAccountPathsFor(routes.account.switchPSP.organisationUrl, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.ENTER_ORGANISATION_URL
+        ) }}
         {{ taskListItem(
           "Provide your bank details",
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.bankDetails, currentGatewayAccount.external_id, targetCredential.external_id),
