@@ -47,10 +47,17 @@ async function getTaskList (activeCredential) {
 }
 
 function isComplete (taskList) {
+  console.log('TASKLIST ' + JSON.stringify(taskList))
   return Object.values(taskList).every(task => task.complete)
 }
 
+async function isKycTaskListComplete (activeCredential) {
+  const taskList = await getTaskList(activeCredential)
+  return isComplete(taskList)
+}
+
 module.exports = {
-  getTaskList: getTaskList,
-  isComplete: isComplete
+  getTaskList,
+  isComplete,
+  isKycTaskListComplete
 }

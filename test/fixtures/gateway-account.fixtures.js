@@ -155,6 +155,14 @@ function validGatewayAccountEmailCollectionModeRequest (collectionMode = 'MANDAT
   }
 }
 
+function validGatewayAccountPatchRequiresAdditionalKycDataRequest (opts = {}) {
+  return {
+    op: 'replace',
+    path: 'requires_additional_kyc_data',
+    value: opts.value || false
+  }
+}
+
 function validGatewayAccountTokensResponse (opts = {}) {
   return {
     tokens:
@@ -325,6 +333,7 @@ module.exports = {
   validGatewayAccountEmailRefundToggleRequest,
   validGatewayAccountEmailConfirmationToggleRequest,
   validGatewayAccountEmailCollectionModeRequest,
+  validGatewayAccountPatchRequiresAdditionalKycDataRequest,
   validGatewayAccountTokensResponse,
   validGatewayAccountResponse,
   validGatewayAccountsResponse,

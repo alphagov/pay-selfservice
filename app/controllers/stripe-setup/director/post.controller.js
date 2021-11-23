@@ -9,7 +9,14 @@ const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredent
 const { response } = require('../../../utils/response')
 const { validateMandatoryField, validateEmail } = require('../../../utils/validation/server-side-form-validations')
 const { listPersons, updateDirector, createDirector, updateCompany } = require('../../../services/clients/stripe/stripe.client')
-const { validateField, validateDoB, getFormFields, getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
+const {
+  validateField,
+  validateDoB,
+  getFormFields,
+  getStripeAccountId,
+  getAlreadySubmittedErrorPageData,
+  completeKyc } = require('../stripe-setup.util')
+const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const FIRST_NAME_FIELD = 'first-name'
@@ -97,7 +104,13 @@ module.exports = async function (req, res, next) {
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else if (collectingAdditionalKycData) {
-        req.flash('generic', 'Details of director successfully completed')
+        const taskListComplete = await isKycTaskListComplete(currentCredential)
+        if (taskListComplete) {
+          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+          req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
+        } else {
+          req.flash('generic', 'Details of director successfully completed')
+        }
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
       }
 

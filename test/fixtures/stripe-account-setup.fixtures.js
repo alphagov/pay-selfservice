@@ -31,13 +31,18 @@ module.exports = {
     return buildUpdateStripeAccountSetupFlagRequest('director', completed)
   },
 
+  buildUpdateAdditionalKycDataRequest (completed) {
+    return buildUpdateStripeAccountSetupFlagRequest('additional_kyc_data', completed)
+  },
+
   buildGetStripeAccountSetupResponse (opts = {}) {
     return {
       'bank_account': opts.bank_account || false,
       'responsible_person': opts.responsible_person || false,
       'company_number': opts.company_number || false,
       'vat_number': opts.vat_number || false,
-      'director': opts.director || false
+      'director': opts.director || false,
+      'additional_kyc_data': opts.additional_kyc_data || false
     }
   }
 }

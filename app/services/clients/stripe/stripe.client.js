@@ -85,5 +85,23 @@ module.exports = {
   updateAccount: function (stripeAccountId, body) {
     const stripeAccount = new StripeAccount(body)
     return stripe.accounts.update(stripeAccountId, stripeAccount.basicObject())
+  },
+
+  addNewCapabilities: function (stripeAccountId, organisationName) {
+    const payload = {
+      business_profile: {
+        mcc: '9399',
+        product_description: `Payments for public sector services for organisation ${organisationName}`
+      },
+      capabilities: {
+        card_payments: {
+          requested: true
+        },
+        transfers: {
+          requested: true
+        }
+      }
+    }
+    return stripe.accounts.update(stripeAccountId, payload)
   }
 }

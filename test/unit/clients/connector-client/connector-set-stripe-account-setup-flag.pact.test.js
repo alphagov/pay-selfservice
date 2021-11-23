@@ -169,4 +169,31 @@ describe('connector client - set stripe account setup flag', () => {
         .notify(done)
     })
   })
+
+  describe('set additional_kyc_data flag', () => {
+    const request = stripeAccountSetupFixtures.buildUpdateAdditionalKycDataRequest(true)
+
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
+          .withUponReceiving('a valid patch update stripe account additional_kyc_data flag request')
+          .withState(defaultState)
+          .withMethod('PATCH')
+          .withRequestBody(request)
+          .withStatusCode(200)
+          .withResponseHeaders({})
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should update successfully', done => {
+      connectorClient.setStripeAccountSetupFlag(existingGatewayAccountId, 'additional_kyc_data')
+        .should.be.fulfilled
+        .notify(done)
+    })
+  })
 })

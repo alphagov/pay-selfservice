@@ -5,13 +5,14 @@ const lodash = require('lodash')
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { validateUrl } = require('../../../utils/validation/server-side-form-validations')
-const { getStripeAccountId } = require('../../stripe-setup/stripe-setup.util')
+const { getStripeAccountId, completeKyc } = require('../../stripe-setup/stripe-setup.util')
 const { response } = require('../../../utils/response')
 const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
 const { updateAccount } = require('../../../services/clients/stripe/stripe.client')
 const logger = require('../../../utils/logger')(__filename)
 const { updateService } = require('../../../services/service.service')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
+const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
 
 const ORGANISATION_URL = 'organisation-url'
 
@@ -68,7 +69,13 @@ module.exports = async function (req, res, next) {
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else if (collectingAdditionalKycData) {
-        req.flash('generic', 'Organisation website address added successfully')
+        const taskListComplete = await isKycTaskListComplete(currentCredential)
+        if (taskListComplete) {
+          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+          req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
+        } else {
+          req.flash('generic', 'Organisation website address added successfully')
+        }
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
       }
     } catch (err) {
