@@ -9,7 +9,7 @@ const defaultRequestOptions = {
   service: 'webhooks'
 }
 
-function webhook(id, serviceId, options = {}) {
+function webhook (id, serviceId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
   const request = {
     url,
@@ -23,7 +23,7 @@ function webhook(id, serviceId, options = {}) {
   return baseClient.get(request)
 }
 
-function webhooks(serviceId, isLive, options = {}) {
+function webhooks (serviceId, isLive, options = {}) {
   const url = '/v1/webhook'
   const request = {
     url,
@@ -38,7 +38,7 @@ function webhooks(serviceId, isLive, options = {}) {
   return baseClient.get(request)
 }
 
-function createWebhook(serviceId, isLive, options = {}) {
+function createWebhook (serviceId, isLive, options = {}) {
   const url = '/v1/webhook'
   const request = {
     url,
@@ -51,12 +51,12 @@ function createWebhook(serviceId, isLive, options = {}) {
     },
     ...defaultRequestOptions,
     ...options,
-    description: 'Create a Webhook',
+    description: 'Create a Webhook'
   }
   return baseClient.post(request)
 }
 
-function updateWebhook(id, serviceId, options = {}) {
+function updateWebhook (id, serviceId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
   const body = [
     { op: 'replace', path: 'callback_url', value: options.callback_url },

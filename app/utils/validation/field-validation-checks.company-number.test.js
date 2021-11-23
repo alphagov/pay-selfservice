@@ -55,15 +55,15 @@ describe('isNotCompanyNumber', () => {
     })
 
     it('should validate that company number of 8 digits without leading 0 is invalid', () => {
-      expect(isNotCompanyNumber('12345678')).to.be.equal('Enter a valid company registration number') // eslint-disable-line
+      expect(isNotCompanyNumber('12345678')).to.be.equal('Enter a valid Company registration number') // eslint-disable-line
     })
 
     it('should validate that NI pre-partition company number without leading R0 is invalid', () => {
-      expect(isNotCompanyNumber('R1234567')).to.be.equal('Enter a valid company registration number') // eslint-disable-line
+      expect(isNotCompanyNumber('R1234567')).to.be.equal('Enter a valid Company registration number') // eslint-disable-line
     })
 
     it('should validate that company number of 6 digits is invalid', () => {
-      expect(isNotCompanyNumber('123456')).to.be.equal('Enter a valid company registration number') // eslint-disable-line
+      expect(isNotCompanyNumber('123456')).to.be.equal('Enter a valid Company registration number') // eslint-disable-line
     })
 
     it('should validate that company number of 7 digits is invalid (with special message)', () => {
@@ -71,23 +71,23 @@ describe('isNotCompanyNumber', () => {
     })
 
     it('should validate that company number of 9 digits is invalid', () => {
-      expect(isNotCompanyNumber('012345678')).to.be.equal('Enter a valid company registration number') // eslint-disable-line
+      expect(isNotCompanyNumber('012345678')).to.be.equal('Enter a valid Company registration number') // eslint-disable-line
     })
 
     it('should validate that company number of 9 digits is invalid', () => {
-      expect(isNotCompanyNumber('012345678')).to.be.equal('Enter a valid company registration number') // eslint-disable-line
+      expect(isNotCompanyNumber('012345678')).to.be.equal('Enter a valid Company registration number') // eslint-disable-line
     })
 
     it('should validate that company number with prefix and 5 digits is invalid', () => {
-      expect(isNotCompanyNumber('NI12345')).to.be.equal('Enter a valid company registration number') // eslint-disable-line
+      expect(isNotCompanyNumber('NI12345')).to.be.equal('Enter a valid Company registration number') // eslint-disable-line
     })
 
     it('should validate that company number with prefix and 7 digits is invalid', () => {
-      expect(isNotCompanyNumber('NC1234567')).to.be.equal('Enter a valid company registration number') // eslint-disable-line
+      expect(isNotCompanyNumber('NC1234567')).to.be.equal('Enter a valid Company registration number') // eslint-disable-line
     })
 
     it('should validate that company number with unrecognised prefix is invalid', () => {
-      expect(isNotCompanyNumber('RC123456')).to.be.equal('Enter a valid company registration number') // eslint-disable-line
+      expect(isNotCompanyNumber('RC123456')).to.be.equal('Enter a valid Company registration number') // eslint-disable-line
     })
   })
 })

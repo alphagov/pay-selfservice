@@ -16,14 +16,14 @@ describe('company number validations', () => {
   it('should not be valid when blank', () => {
     expect(companyNumberValidations.validateCompanyNumber('')).to.deep.equal({
       valid: false,
-      message: 'Enter a company registration number'
+      message: 'Enter a Company registration number'
     })
   })
 
   it('should not be valid when company number is invalid', () => {
     expect(companyNumberValidations.validateCompanyNumber(invalidCompanyNumber)).to.deep.equal({
       valid: false,
-      message: 'Enter a valid company registration number'
+      message: 'Enter a valid Company registration number'
     })
   })
 })

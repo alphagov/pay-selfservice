@@ -25,22 +25,22 @@ describe('webhooks service', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ createWebhook: spy })
       service.createWebhook('some-service-id', true, { subscriptions: 'my-subscription' })
-      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-subscription' ]})
+      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-subscription' ] })
     })
     it('should not change a list of valid subscriptions', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ createWebhook: spy })
-      service.createWebhook('some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ]})
-      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ]})
+      service.createWebhook('some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
+      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
     })
   })
 })
 
-function getWebhooksServiceWithStub(stub) {
+function getWebhooksServiceWithStub (stub) {
   const webhooksService = proxyquire('./webhooks.service.js', { './../../services/clients/webhooks.client': stub })
   return webhooksService
 }
 
-function getWebhooksService(listWebhooksResponseStub = []) {
-  return getWebhooksServiceWithStub({ webhooks: async (serviceId, isLive) => listWebhooksResponseStub})
+function getWebhooksService (listWebhooksResponseStub = []) {
+  return getWebhooksServiceWithStub({ webhooks: async (serviceId, isLive) => listWebhooksResponseStub })
 }

@@ -1,4 +1,4 @@
-function validWebhook(options = {}) {
+function validWebhook (options = {}) {
   return {
     external_id: options.external_id || 'valid-webhooks-external-id',
     service_id: options.service_id || 'valid-service-id',
@@ -11,11 +11,11 @@ function validWebhook(options = {}) {
   }
 }
 
-function webhooksListResponse(options = []) {
+function webhooksListResponse (options = []) {
   return options.map((option) => validWebhook(option))
 }
 
-function webhookResponse(options = {}) {
+function webhookResponse (options = {}) {
   return validWebhook(options)
 }
 

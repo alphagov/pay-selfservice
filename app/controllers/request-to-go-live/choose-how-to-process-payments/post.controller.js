@@ -18,7 +18,7 @@ const stages = {
   gov_banking: goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY
 }
 
-module.exports = async function submitPspChoice(req, res, next) {
+module.exports = async function submitPspChoice (req, res, next) {
   const psp = req.body[PSP]
   const pspOther = req.body[PSP_OTHER]
   const otherPspSelected = psp === 'other_psp'

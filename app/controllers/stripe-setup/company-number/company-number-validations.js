@@ -23,7 +23,7 @@ exports.validateCompanyNumber = function validateCompanyNumber (value) {
   if (isEmpty(value)) {
     return {
       valid: false,
-      message: 'Enter a company registration number'
+      message: 'Enter a Company registration number'
     }
   }
 
