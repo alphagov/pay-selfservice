@@ -96,7 +96,7 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.get('h2').should('contain', 'There is a problem')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You must answer this question')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number-declaration')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#have-vat-number')
       })
     })
 
