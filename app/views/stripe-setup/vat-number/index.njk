@@ -26,7 +26,7 @@
     {{ errorSummary ({
       errors: errors,
       hrefs: {
-        'vat-number-declaration': '#vat-number-declaration',
+        'vat-number-declaration': '#have-vat-number',
         'vat-number': '#vat-number'
       }
     }) }}
@@ -35,20 +35,6 @@
 
     <form id="vat-number-form" method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-
-      {% set noSelectionError = false %}
-      {% if errors['vat-number-declaration'] %}
-        {% set noSelectionError = {
-          text: "Please choose an option"
-        } %}
-      {% endif %}
-
-      {% set vatNumberError = false %}
-      {% if errors['vat-number'] %}
-        {% set vatNumberError = {
-          text: errors['vat-number']
-        } %}
-      {% endif %}
 
       {% set vatNumberHTML %}
         {{ govukInput({
@@ -63,7 +49,7 @@
           classes: "govuk-input--width-30",
           value: vatNumber,
           type: "text",
-          errorMessage: vatNumberError,
+          errorMessage: { text: errors['vat-number'] } if errors['vat-number'] else false,
           attributes: {
             autocomplete: "off",
             spellcheck: "false"
@@ -82,7 +68,7 @@
               classes: 'govuk-fieldset__legend--m'
             }
           },
-          errorMessage: noSelectionError,
+          errorMessage: { text: errors['vat-number-declaration'] } if errors['vat-number-declaration'] else false,
           items: [
             {
               value: "true",
