@@ -1,0 +1,66 @@
+{% extends "layout.njk" %}
+
+{% set heading = "Update your Webhook details" if isEditing else "Create a new Webhook" %}
+{% set submitURL = formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.update, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) if isEditing else formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.create, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) %}
+
+{% block pageTitle %}
+  {{ heading }} - {{currentService.name}} {{ humanReadableEnvironment }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  {{ govukBackLink({
+    text: "Back to Webhooks",
+    classes: "govuk-!-margin-top-0",
+    href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id)
+  }) }}
+  <h1 class="govuk-heading-l page-title">{{ heading }}</h1>
+
+  <form method="POST" action="{{ submitURL }}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+    {% set items = [] %}
+    {% for key, name in eventTypes %}
+      {% set checked = key | lower in webhook.subscriptions if isEditing else false %}
+      {% set items = (items.push({ value: key | lower, text: name, checked: checked }), items) %}
+    {% endfor %}
+
+    {{ govukInput({
+      label: { text: "Callback URL" },
+      hint: { text: "The URL GOV.UK Pay will send payment events to" },
+      id: "callback_url",
+      name: "callback_url",
+      value: webhook.callback_url
+    }) }}
+
+    {{ govukInput({
+      label: { text: "Description" },
+      hint: { text: "Short summary of what this Webhook will be used for" },
+      id: "description",
+      name: "description",
+      value: webhook.description
+    }) }}
+    {{ govukCheckboxes({
+      idPrefix: "subscriptions",
+      name: "subscriptions",
+      classes: "govuk-checkboxes--small",
+      fieldset: {
+        legend: {
+          text: "What payment events should we send?",
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      items: items
+    }) }}
+
+    {{ govukButton({
+      text: "Update Webhook" if isEditing else "Create Webhook",
+      type: "submit"
+    }) }}
+  </form>
+</div>
+{% endblock %}

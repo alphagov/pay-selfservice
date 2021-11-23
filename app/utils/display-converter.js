@@ -118,6 +118,8 @@ module.exports = function (req, data, template) {
   convertedData.isDigitalWalletSupported = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'worldpay'
   const paymentProvider = _.get(convertedData, 'currentGatewayAccount.payment_provider')
   convertedData.currentService = service
+  convertedData.isLive = req.isLive
+  convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, account)
