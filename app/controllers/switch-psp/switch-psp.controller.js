@@ -11,7 +11,7 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 function switchPSPPage (req, res, next) {
   try {
     const targetCredential = getSwitchingCredential(req.account)
-    const taskList = switchTasks.getTaskList(targetCredential, req.account)
+    const taskList = switchTasks.getTaskList(targetCredential, req.account, req.service)
     const taskListIsComplete = switchTasks.isComplete(taskList)
     const context = { targetCredential, taskList, taskListIsComplete }
     response(req, res, 'switch-psp/switch-psp', context)
@@ -24,7 +24,7 @@ async function submitSwitchPSP (req, res, next) {
   try {
     const currentCredential = getCurrentCredential(req.account)
     const targetCredential = getSwitchingCredential(req.account)
-    const taskList = switchTasks.getTaskList(targetCredential, req.account)
+    const taskList = switchTasks.getTaskList(targetCredential, req.account, req.service)
     const taskListIsComplete = switchTasks.isComplete(taskList)
 
     if (!taskListIsComplete) {

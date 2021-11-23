@@ -13,11 +13,20 @@
 
 <div class="govuk-grid-column-two-thirds">
 
-  {{ govukBackLink({
-    text: "Back",
-    classes: "govuk-!-margin-top-0",
-    href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
-  }) }}
+  {% if isSwitchingCredentials %}
+    {{ govukBackLink({
+      text: "Back to Switching payment service provider (PSP)",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+    }) }}
+  {% endif %}
+  {% if collectingAdditionalKycData %}
+    {{ govukBackLink({
+      text: "Back",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+    }) }}
+  {% endif %}
 
   {{ errorSummary ({
     errors: errors,

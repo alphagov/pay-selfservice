@@ -61,5 +61,53 @@ describe('Switching PSP service', () => {
       const taskList = getTaskList(targetCredential, account)
       expect(isComplete(taskList)).to.equal(false)
     })
+
+    it('correctly calculates all conditions being met for Stripe', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'stripe', id: 100 },
+          { state: 'ACTIVE', payment_provider: 'worldpay', id: 100 }
+        ]
+      })
+      const service = {
+        merchantDetails: {
+          url: 'http://example.org'
+        }
+      }
+      account.connectorGatewayAccountStripeProgress = {
+        bankAccount: true,
+        director: true,
+        vatNumber: true,
+        companyNumber: true,
+        responsiblePerson: true
+      }
+      const targetCredential = getSwitchingCredential(account)
+      const taskList = getTaskList(targetCredential, account, service)
+      expect(isComplete(taskList)).to.equal(true)
+    })
+  })
+
+  it('correctly calculates progress required for Stripe', () => {
+    const account = gatewayAccountFixtures.validGatewayAccount({
+      gateway_account_credentials: [
+        { state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'stripe', id: 100 },
+        { state: 'ACTIVE', payment_provider: 'worldpay', id: 100 }
+      ]
+    })
+    const service = {
+      merchantDetails: {}
+    }
+    account.connectorGatewayAccountStripeProgress = {
+      bankAccount: true,
+      director: true,
+      vatNumber: true,
+      companyNumber: true,
+      responsiblePerson: true
+    }
+    const targetCredential = getSwitchingCredential(account)
+    const taskList = getTaskList(targetCredential, account, service)
+
+    expect(isComplete(taskList)).to.equal(false)
+    expect(taskList.ENTER_ORGANISATION_URL.complete).to.equal('')
   })
 })
