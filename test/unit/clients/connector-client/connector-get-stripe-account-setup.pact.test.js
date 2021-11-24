@@ -42,7 +42,8 @@ describe('connector client - get stripe account setup', () => {
       bank_account: true,
       responsible_person: true,
       vat_number: false,
-      company_number: false
+      company_number: false,
+      additional_kyc_data: false
     }
     const response = stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(stripeSetupOpts)
 
@@ -70,6 +71,7 @@ describe('connector client - get stripe account setup', () => {
           expect(stripeAccountSetup.vatNumber).to.equal(stripeSetupOpts.vat_number)
           expect(stripeAccountSetup.companyNumber).to.equal(stripeSetupOpts.company_number)
           expect(stripeAccountSetup.responsiblePerson).to.equal(stripeSetupOpts.responsible_person)
+          expect(stripeAccountSetup.additionalKycData).to.equal(stripeSetupOpts.additional_kyc_data)
         }).should.notify(done)
     })
   })

@@ -21,10 +21,11 @@ const serviceStubs = require('../../stubs/service-stubs')
 function setupYourPspStubs (opts = {}) {
   const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, serviceExternalId })
 
+  const requiresAdditionalKycData = opts.requiresAdditionalKycData === undefined ? true : opts.requiresAdditionalKycData
   const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
     gatewayAccountId,
     gatewayAccountExternalId,
-    requiresAdditionalKycData: true,
+    requiresAdditionalKycData,
     type: 'live',
     paymentProvider: 'stripe',
     gatewayAccountCredentials: [{
@@ -39,7 +40,8 @@ function setupYourPspStubs (opts = {}) {
     bankAccount: true,
     vatNumber: true,
     companyNumber: true,
-    director: false
+    director: false,
+    additionalKycData: opts.additionalKycDataCompleted || false
   })
   const stripeAccount = stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, stripeAccountId)
 
@@ -94,6 +96,9 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
 
+      cy.get('h2').contains('Know your customer (KYC) details').should('exist')
+      cy.get('p').contains('Please review the responsible person').should('not.exist')
+
       cy.get('#task-update-sro-status').should('have.html', 'completed')
     })
 
@@ -132,19 +137,28 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.get('#task-organisation-url-status').should('have.html', 'not started')
     })
 
-    it('should not display tasks if all tasks are COMPLETED', () => {
+    it('should display completed tasks and different content when all tasks are completed', () => {
       setupYourPspStubs({
         representative: true,
         phone: '0000000',
         email: 'test@example.org',
         director: true,
-        url: 'http://example.org'
+        url: 'http://example.org',
+        requiresAdditionalKycData: false,
+        additionalKycDataCompleted: true
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#task-update-sro-status').should('not.exist')
-      cy.get('#task-add-director-status').should('not.exist')
-      cy.get('#task-organisation-url-status').should('not.exist')
+      cy.get('#task-update-sro-status').should('have.text', 'completed')
+      cy.get('#task-add-director-status').should('have.text', 'completed')
+      cy.get('#task-organisation-url-status').should('have.text', 'completed')
+
+      cy.get('h2').contains('Know your customer (KYC) details').should('not.exist')
+      cy.get('p').contains('Please review the responsible person')
+
+      cy.get('.settings-navigation').within(() => {
+        cy.get('a').contains('Your PSP - Stripe').should('exist')
+      })
     })
   })
 

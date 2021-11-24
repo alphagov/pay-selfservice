@@ -57,7 +57,8 @@ function isAdditionalKycDataRoute (req) {
 function getPSPPageLinks (gatewayAccount) {
   const supportedYourPSPPageProviders = ['worldpay', 'smartpay', 'epdq']
 
-  if (gatewayAccount.requires_additional_kyc_data) {
+  if (gatewayAccount.requires_additional_kyc_data ||
+    (gatewayAccount.connectorGatewayAccountStripeProgress && gatewayAccount.connectorGatewayAccountStripeProgress.additionalKycData)) {
     supportedYourPSPPageProviders.push('stripe')
   }
 

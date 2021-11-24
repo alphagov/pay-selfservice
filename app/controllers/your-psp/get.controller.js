@@ -23,7 +23,8 @@ module.exports = async (req, res, next) => {
     let stripeData = {}
     if (activeCredential && activeCredential.payment_provider === 'stripe') {
       stripeData.requiresAdditionalKycData = req.account.requires_additional_kyc_data === true
-      if (stripeData.requiresAdditionalKycData) {
+      const kycCompleted = req.account.connectorGatewayAccountStripeProgress && req.account.connectorGatewayAccountStripeProgress.additionalKycData
+      if (stripeData.requiresAdditionalKycData || kycCompleted) {
         stripeData.kycTaskList = await getTaskList(activeCredential)
         stripeData.kycTaskListComplete = isComplete(stripeData.kycTaskList)
       }

@@ -23,6 +23,9 @@ function getGatewayAccountStripeSetupSuccess (opts) {
   if (opts.director !== undefined) {
     fixtureOpts.director = opts.director
   }
+  if (opts.additionalKycData !== undefined) {
+    fixtureOpts.additional_kyc_data = opts.additionalKycData
+  }
 
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`
   return stubBuilder('GET', path, 200, {

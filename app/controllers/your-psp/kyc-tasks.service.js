@@ -47,7 +47,6 @@ async function getTaskList (activeCredential) {
 }
 
 function isComplete (taskList) {
-  console.log('TASKLIST ' + JSON.stringify(taskList))
   return Object.values(taskList).every(task => task.complete)
 }
 
