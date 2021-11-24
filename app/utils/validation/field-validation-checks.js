@@ -19,7 +19,7 @@ const validationErrors = {
   invalidBankAccountNumber: 'Enter a valid account number like 00733445',
   invalidSortCode: 'Enter a valid sort code like 309430',
   invalidVatNumber: 'Enter a valid VAT number, including ‘GB’ at the start',
-  invalidCompanyNumber: 'Enter a valid company registration number',
+  invalidCompanyNumber: 'Enter a valid Company registration number',
   sevenDigitCompanyNumber: 'Company numbers in England and Wales have 8 digits and always start with 0',
   invalidWorldpay3dsFlexOrgUnitId: 'Enter your organisational unit ID in the format you received it',
   invalidWorldpay3dsFlexIssuer: 'Enter your issuer in the format you received it',

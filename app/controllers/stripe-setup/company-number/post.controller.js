@@ -25,7 +25,7 @@ module.exports = async (req, res, next) => {
   }
   if (stripeAccountSetup.companyNumber) {
     const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
-      'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
+      'You’ve already provided your Company registration number. Contact GOV.UK Pay support if you need to update it.')
     return response(req, res, 'error-with-link', errorPageData)
   }
 

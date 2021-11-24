@@ -86,11 +86,11 @@ describe('Stripe setup: company number page', () => {
           })
 
         cy.get('h2').should('contain', 'There is a problem')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a company registration number')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a Company registration number')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number')
 
         cy.get('input#company-number[name="company-number"]').should('have.class', 'govuk-input--error')
-        cy.get('#company-number-error').should('contain', 'Enter a company registration number')
+        cy.get('#company-number-error').should('contain', 'Enter a Company registration number')
       })
     })
 
@@ -107,7 +107,7 @@ describe('Stripe setup: company number page', () => {
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#back-link').should('contain', 'Back to dashboard')
         cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
-        cy.get('#error-message').should('contain', 'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
+        cy.get('#error-message').should('contain', 'You’ve already provided your Company registration number. Contact GOV.UK Pay support if you need to update it.')
       })
 
       it('should display an error when submitting the form', () => {
@@ -126,7 +126,7 @@ describe('Stripe setup: company number page', () => {
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#back-link').should('contain', 'Back to dashboard')
         cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
-        cy.get('#error-message').should('contain', 'You’ve already provided your company registration number. Contact GOV.UK Pay support if you need to update it.')
+        cy.get('#error-message').should('contain', 'You’ve already provided your Company registration number. Contact GOV.UK Pay support if you need to update it.')
       })
     })
 
