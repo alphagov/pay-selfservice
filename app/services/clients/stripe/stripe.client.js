@@ -16,7 +16,7 @@ const STRIPE_PROTOCOL = process.env.STRIPE_PROTOCOL
 
 // Setup
 let stripeConfig = {
-  apiVersion: '2019-02-19'
+  apiVersion: '2020-08-27'
 }
 
 if (process.env.http_proxy) {
