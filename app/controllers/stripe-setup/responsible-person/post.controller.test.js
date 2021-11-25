@@ -40,6 +40,8 @@ describe('Responsible person POST controller', () => {
     'dob-day': dobDay,
     'dob-month': dobMonth,
     'dob-year': dobYear,
+    'telephone-number': telephone,
+    'email': email,
     'answers-checked': 'true'
   }
   const postBodyWithAddress2 = {
@@ -169,7 +171,9 @@ describe('Responsible person POST controller', () => {
       address_postcode: addressPostcodeNormalised,
       dob_day: dobDayNormalised,
       dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
+      dob_year: dobYearNormalised,
+      phone: telephoneNormalised,
+      email: emailNormalised
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
@@ -191,7 +195,9 @@ describe('Responsible person POST controller', () => {
       address_postcode: addressPostcodeNormalised,
       dob_day: dobDayNormalised,
       dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
+      dob_year: dobYearNormalised,
+      phone: telephoneNormalised,
+      email: emailNormalised
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
@@ -364,64 +370,16 @@ describe('Responsible person POST controller', () => {
       first_name: firstNameNormalised,
       last_name: lastNameNormalised,
       address_line1: addressLine1Normalised,
-      address_line2: addressLine2Normalised,
       address_city: addressCityNormalised,
       address_postcode: addressPostcodeNormalised,
       dob_day: dobDayNormalised,
       dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
+      dob_year: dobYearNormalised,
+      phone: telephoneNormalised,
+      email: emailNormalised,
+      address_line2: addressLine2Normalised
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
-  })
-
-  describe('COLLECT_ADDITIONAL_KYC_DATA environment variable enabled', () => {
-    before(() => {
-      process.env.COLLECT_ADDITIONAL_KYC_DATA = true
-    })
-
-    after(() => {
-      process.env.COLLECT_ADDITIONAL_KYC_DATA = false
-    })
-
-    it('should send telephone number and email to Stripe', async function () {
-      const personId = 'person-1'
-      listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
-        data: [
-          {
-            id: personId,
-            relationship: {
-              representative: true
-            }
-          }
-        ]
-      }))
-      updatePersonMock = sinon.spy(() => Promise.resolve())
-      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-      const controller = getControllerWithMocks()
-
-      req.body = {
-        ...postBody,
-        email,
-        'telephone-number': telephone
-      }
-
-      await controller(req, res, next)
-
-      sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
-        first_name: firstNameNormalised,
-        last_name: lastNameNormalised,
-        address_line1: addressLine1Normalised,
-        address_city: addressCityNormalised,
-        address_postcode: addressPostcodeNormalised,
-        dob_day: dobDayNormalised,
-        dob_month: dobMonthNormalised,
-        dob_year: dobYearNormalised,
-        phone: telephoneNormalised,
-        email: emailNormalised
-      })
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
-      sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
-    })
   })
 })

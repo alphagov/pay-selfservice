@@ -89,10 +89,7 @@ const validationRules = [
   {
     field: HOME_ADDRESS_POSTCODE_FIELD,
     validator: validatePostcode
-  }
-]
-const validationRulesWithAdditionalKycData = [
-  ...validationRules,
+  },
   {
     field: TELEPHONE_NUMBER_FIELD,
     validator: validatePhoneNumber
@@ -109,8 +106,6 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   const currentCredential = getCurrentCredential(req.account)
 
-  const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true' || isSubmittingAdditionalKycData
-
   if (!isSubmittingAdditionalKycData) {
     if (!stripeAccountSetup) {
       return next(new Error('Stripe setup progress is not available on request'))
@@ -124,7 +119,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
 
   const formFields = getFormFields(req.body, fields)
 
-  const errors = validateForm(formFields, collectAdditionalKycData)
+  const errors = validateForm(formFields)
 
   const pageData = {
     firstName: formFields[FIRST_NAME_FIELD],
@@ -135,11 +130,9 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
     homeAddressPostcode: formFields[HOME_ADDRESS_POSTCODE_FIELD],
     dobDay: formFields[DOB_DAY_FIELD],
     dobMonth: formFields[DOB_MONTH_FIELD],
-    dobYear: formFields[DOB_YEAR_FIELD]
-  }
-  if (collectAdditionalKycData) {
-    pageData.telephone = formFields[TELEPHONE_NUMBER_FIELD]
-    pageData.email = formFields[EMAIL_FIELD]
+    dobYear: formFields[DOB_YEAR_FIELD],
+    telephone: formFields[TELEPHONE_NUMBER_FIELD],
+    email: formFields[EMAIL_FIELD]
   }
 
   if (!lodash.isEmpty(errors)) {
@@ -148,7 +141,6 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       ...pageData,
       isSwitchingCredentials,
       isSubmittingAdditionalKycData,
-      collectAdditionalKycData,
       currentCredential
     })
   } else {
@@ -157,7 +149,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       const personsResponse = await listPersons(stripeAccountId)
       const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
 
-      const stripePerson = buildStripePerson(formFields, collectAdditionalKycData)
+      const stripePerson = buildStripePerson(formFields)
       if (responsiblePerson !== undefined) {
         await updatePerson(stripeAccountId, responsiblePerson.id, stripePerson)
       } else {
@@ -194,14 +186,8 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
   }
 }
 
-function validateForm (formFields, collectAdditionalKycData) {
-  let rules
-  if (collectAdditionalKycData) {
-    rules = validationRulesWithAdditionalKycData
-  } else {
-    rules = validationRules
-  }
-  const errors = rules.reduce((errors, validationRule) => {
+function validateForm (formFields) {
+  const errors = validationRules.reduce((errors, validationRule) => {
     const errorMessage = validateField(formFields[validationRule.field], validationRule.validator,
       validationRule.maxLength, validationRule.fieldDisplayName)
     if (errorMessage) {
@@ -219,7 +205,7 @@ function validateForm (formFields, collectAdditionalKycData) {
   return orderedErrors
 }
 
-function buildStripePerson (formFields, collectAdditionalKycData) {
+function buildStripePerson (formFields) {
   const stripePerson = {
     first_name: formFields[FIRST_NAME_FIELD],
     last_name: formFields[LAST_NAME_FIELD],
@@ -228,14 +214,12 @@ function buildStripePerson (formFields, collectAdditionalKycData) {
     address_postcode: ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString(),
     dob_day: parseInt(formFields[DOB_DAY_FIELD], 10),
     dob_month: parseInt(formFields[DOB_MONTH_FIELD], 10),
-    dob_year: parseInt(formFields[DOB_YEAR_FIELD], 10)
+    dob_year: parseInt(formFields[DOB_YEAR_FIELD], 10),
+    phone: formatPhoneNumberWithCountryCode(formFields[TELEPHONE_NUMBER_FIELD]),
+    email: formFields[EMAIL_FIELD]
   }
   if (formFields[HOME_ADDRESS_LINE2_FIELD]) {
     stripePerson.address_line2 = formFields[HOME_ADDRESS_LINE2_FIELD]
-  }
-  if (collectAdditionalKycData) {
-    stripePerson.phone = formatPhoneNumberWithCountryCode(formFields[TELEPHONE_NUMBER_FIELD])
-    stripePerson.email = formFields[EMAIL_FIELD]
   }
   return stripePerson
 }

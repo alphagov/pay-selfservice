@@ -48,7 +48,8 @@ describe('Add stripe psp details route', function () {
           bank_account: true,
           responsible_person: true,
           vat_number: true,
-          company_number: true
+          company_number: true,
+          director: true
         }))
         .persist()
     })

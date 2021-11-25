@@ -18,8 +18,6 @@ const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 const { response } = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
 
-const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
-
 const clientFieldNames = {
   name: 'merchant-name',
   addressLine1: 'address-line1',
@@ -53,16 +51,12 @@ const validationRules = [
   {
     field: clientFieldNames.telephoneNumber,
     validator: validatePhoneNumber
+  },
+  {
+    field: clientFieldNames.url,
+    validator: validateUrl
   }
 ]
-if (collectAdditionalKycData) {
-  validationRules.push(
-    {
-      field: clientFieldNames.url,
-      validator: validateUrl
-    }
-  )
-}
 
 const validationRulesWithOrganisationName = [
   {
@@ -84,11 +78,9 @@ const normaliseForm = (formBody) => {
     clientFieldNames.addressCity,
     clientFieldNames.addressCountry,
     clientFieldNames.addressPostcode,
-    clientFieldNames.telephoneNumber
+    clientFieldNames.telephoneNumber,
+    clientFieldNames.url
   ]
-  if (collectAdditionalKycData) {
-    fields.push(clientFieldNames.url)
-  }
   return fields.reduce((form, field) => {
     form[field] = trimField(field, formBody)
     return form
@@ -129,10 +121,8 @@ const submitForm = async function (form, serviceExternalId, correlationId, isReq
     .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
     .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
     .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
+    .replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
 
-  if (collectAdditionalKycData) {
-    updateRequest.replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
-  }
   if (isRequestToGoLive) {
     updateRequest.replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
   } else {
@@ -152,7 +142,6 @@ const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
     telephone_number: form[clientFieldNames.telephoneNumber],
     url: form[clientFieldNames.url],
     countries: countries.govukFrontendFormatted(form[clientFieldNames.addressCountry]),
-    collectAdditionalKycData: process.env.COLLECT_ADDITIONAL_KYC_DATA,
     isRequestToGoLive
   }
 }
