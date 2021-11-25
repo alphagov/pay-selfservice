@@ -144,22 +144,20 @@
       type: "tel"
     }) }}
 
-    {% if collectAdditionalKycData %}
-      {{ govukInput({
-        value: url,
-        label: {
-          text: "Organisation website address",
-          classes: "govuk-label--m"
-        },
-        hint: {
-          text: "Enter the address in full like https://www.example.com"
-        },
-        errorMessage: { text: errors.url } if errors.url else false,
-        id: "url",
-        name: "url",
-        classes: "govuk-!-width-two-thirds"
-      }) }}
-    {% endif %}
+    {{ govukInput({
+      value: url,
+      label: {
+        text: "Organisation website address",
+        classes: "govuk-label--m"
+      },
+      hint: {
+        text: "Enter the address in full like https://www.example.com"
+      },
+      errorMessage: { text: errors.url } if errors.url else false,
+      id: "url",
+      name: "url",
+      classes: "govuk-!-width-two-thirds"
+    }) }}
 
     {% if isRequestToGoLive %}
     {{ govukButton({ text: "Continue" }) }}

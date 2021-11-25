@@ -235,38 +235,36 @@
         ]
       }) }}
 
-      {% if collectAdditionalKycData %}
-        {{ govukInput({
-          label: {
-            text: "Work telephone number",
-            classes: "govuk-label--m"
-          },
-          hint: {
-            text: "Include the country code for international numbers"
-          },
-          id: "telephone-number",
-          name: "telephone-number",
-          value: telephone,
-          type: "text",
-          autocomplete: "tel",
-          errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
-          classes: "govuk-!-width-two-thirds"
-        }) }}
+      {{ govukInput({
+        label: {
+          text: "Work telephone number",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          text: "Include the country code for international numbers"
+        },
+        id: "telephone-number",
+        name: "telephone-number",
+        value: telephone,
+        type: "text",
+        autocomplete: "tel",
+        errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
+        classes: "govuk-!-width-two-thirds"
+      }) }}
 
-        {{ govukInput({
-          label: {
-            text: "Work email address",
-            classes: "govuk-label--m"
-          },
-          id: "email",
-          name: "email",
-          value: email,
-          type: "text",
-          autocomplete: "email",
-          errorMessage: { text: errors.email } if errors.email else false,
-          classes: "govuk-!-width-two-thirds"
-        }) }}
-      {% endif %}
+      {{ govukInput({
+        label: {
+          text: "Work email address",
+          classes: "govuk-label--m"
+        },
+        id: "email",
+        name: "email",
+        value: email,
+        type: "text",
+        autocomplete: "email",
+        errorMessage: { text: errors.email } if errors.email else false,
+        classes: "govuk-!-width-two-thirds"
+      }) }}
 
       {% if isSubmittingAdditionalKycData %}
       {{ govukButton({ text: "Submit" }) }}

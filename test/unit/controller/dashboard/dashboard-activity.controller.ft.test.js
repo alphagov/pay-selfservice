@@ -511,7 +511,6 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should display account status panel when account is not fully setup', async () => {
-        process.env.COLLECT_ADDITIONAL_KYC_DATA = true
         mockConnectorGetStripeSetup(false, false, true, true, false)
         mockStripeRetrieveAccount(true, null)
         let res = await getDashboard(createAppWithSession(getApp(), session))

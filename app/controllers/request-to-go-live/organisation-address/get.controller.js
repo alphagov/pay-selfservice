@@ -8,8 +8,6 @@ const response = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
-const collectAdditionalKycData = process.env.COLLECT_ADDITIONAL_KYC_DATA === 'true'
-
 module.exports = function getOrganisationAddress (req, res) {
   const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
 
@@ -34,7 +32,6 @@ module.exports = function getOrganisationAddress (req, res) {
       'telephone_number',
       'url'
     ]),
-    collectAdditionalKycData,
     isRequestToGoLive
   }
   pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData, 'address_country'))
