@@ -2,6 +2,10 @@
 
 const { Router } = require('express')
 
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage })
+
 const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate-route')
@@ -68,6 +72,7 @@ const stripeSetupResponsiblePersonController = require('./controllers/stripe-set
 const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number')
 const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/company-number')
 const stripeSetupDirectorController = require('./controllers/stripe-setup/director')
+const stripeSetupGovernmentEntityDocument = require('./controllers/stripe-setup/government-entity-document')
 const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-setup/add-psp-account-details')
 const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
@@ -445,6 +450,8 @@ module.exports.bind = function (app) {
   account.post([ yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.post)
   account.get([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
   account.post([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
+  account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
+  account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, upload.single('file-upload'), stripeSetupGovernmentEntityDocument.post)
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 
   futureAccountStrategy.get(webhooks.index, permission('webhooks:read'), webhooksController.listWebhooksPage)

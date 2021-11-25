@@ -87,6 +87,29 @@ module.exports = {
     return stripe.accounts.update(stripeAccountId, stripeAccount.basicObject())
   },
 
+  uploadFile: function (fileName, fileType, fileBuffer) {
+    return stripe.files.create({
+      file: {
+        name: fileName,
+        data: fileBuffer,
+        type: fileType
+      },
+      purpose: 'identity_document'
+    })
+  },
+
+  updateAccountVerification: function (stripeAccountId, fileId) {
+    return stripe.accounts.update(stripeAccountId, {
+      company: {
+        verification: {
+          document: {
+            front: fileId
+          }
+        }
+      }
+    })
+  },
+
   addNewCapabilities: function (stripeAccountId, organisationName) {
     const payload = {
       business_profile: {

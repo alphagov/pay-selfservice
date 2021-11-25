@@ -1,0 +1,66 @@
+{% extends "../../layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+
+{% block pageTitle %}
+  Government entity document - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% if isSwitchingCredentials or collectingAdditionalKycData %}
+    {% include "includes/side-navigation.njk" %}
+  {% endif %}
+{% endblock %}
+
+{% block mainContent %}
+
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if isSwitchingCredentials %}
+      {{ govukBackLink({
+        text: "Back to Switching payment service provider (PSP)",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+      }) }}
+    {% endif %}
+    {% if collectingAdditionalKycData %}
+      {{ govukBackLink({
+        text: "Back",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+      }) }}
+    {% endif %}
+
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'file-upload': '#file-upload'
+      }
+    }) }}
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="file-upload">Government entity document</label></h1>
+
+    <form id="government-entity-document-form" method="post" enctype="multipart/form-data" novalidate
+          action="?csrfToken={{ csrf }}">
+
+      {% set fileUploadError = false %}
+      {% if errors['file-upload'] %}
+        {% set fileUploadError = {
+          text: errors['file-upload']
+        } %}
+      {% endif %}
+
+      {{ govukFileUpload({
+        id: "file-upload",
+        name: "file-upload",
+        hint: "Must be pdf,jpeg file type and less than 10MB in size",
+        label: {
+          text: "Upload a file"
+        },
+        errorMessage: fileUploadError
+      }) }}
+
+      {{ govukButton({ text: "Save and continue" }) }}
+    </form>
+  </div>
+{% endblock %}
