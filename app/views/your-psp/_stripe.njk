@@ -18,46 +18,49 @@
   </li>
 {% endmacro %}
 
-{% if requiresAdditionalKycData and not kycTaskListComplete %}
-  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Know your customer (KYC) details</h2>
-  <p class="govuk-body">You must add additional details about your organisation for Stripe's anti-money laundering
-    checks. </p>
+{% if requiresAdditionalKycData or kycTaskListComplete %}
+  {% if kycTaskListComplete %}
+    <p class="govuk-body">Please review the responsible person and director information annually, and if either leaves or changes their role.
+    Email any changes to <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a></p>
+  {% else %}
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Know your customer (KYC) details</h2>
+    <p class="govuk-body">You must add additional details about your organisation for Stripe's anti-money laundering
+      checks. </p>
 
-  {% set warningText %}
-    Stripe cannot pay monies received to your bank account if you do not add these details.
+    {% set warningText %}
+      Stripe cannot pay monies received to your bank account if you do not add these details.
+    {% endset %}
+    {{ govukWarningText({
+      text: warningText,
+      iconFallbackText: "Warning"
+    }) }}
+  {% endif %}
+
+  {% set tasks %}
+    {{ taskListItem(
+      'task-organisation-url',
+      "Add organisation website address",
+      formatAccountPathsFor(routes.account.kyc.organisationUrl, currentGatewayAccount.external_id, activeCredential.external_id),
+      kycTaskList.ENTER_ORGANISATION_URL
+    ) }}
+    {{ taskListItem(
+      'task-update-sro',
+      "Add responsible person information",
+      formatAccountPathsFor(routes.account.kyc.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
+      kycTaskList.UPDATE_RESPONSIBLE_PERSON
+    ) }}
+    {{ taskListItem(
+      'task-add-director',
+      "Add director of service information",
+      formatAccountPathsFor(routes.account.kyc.director, currentGatewayAccount.external_id, activeCredential.external_id),
+      kycTaskList.ENTER_DIRECTOR
+    ) }}
   {% endset %}
-  {{ govukWarningText({
-    text: warningText,
-    iconFallbackText: "Warning"
-  }) }}
-{% else %}
-  <p class="govuk-body">Please review the responsible person and director information annually, and if either leaves or changes their role.
-  Email any changes to <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a></p>
-{% endif %}
 
-{% set tasks %}
-  {{ taskListItem(
-    'task-organisation-url',
-    "Add organisation website address",
-    formatAccountPathsFor(routes.account.kyc.organisationUrl, currentGatewayAccount.external_id, activeCredential.external_id),
-    kycTaskList.ENTER_ORGANISATION_URL
-  ) }}
-  {{ taskListItem(
-    'task-update-sro',
-    "Add responsible person information",
-    formatAccountPathsFor(routes.account.kyc.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
-    kycTaskList.UPDATE_RESPONSIBLE_PERSON
-  ) }}
-  {{ taskListItem(
-    'task-add-director',
-    "Add director of service information",
-    formatAccountPathsFor(routes.account.kyc.director, currentGatewayAccount.external_id, activeCredential.external_id),
-    kycTaskList.ENTER_DIRECTOR
-  ) }}
-{% endset %}
-
-<div class="app-task-list govuk-body">
-  <div>
-    <span class="app-task-list__items">{{ tasks | safe }}</span>
+  <div class="app-task-list govuk-body">
+    <div>
+      <span class="app-task-list__items">{{ tasks | safe }}</span>
+    </div>
   </div>
-</div>
+
+{% endif %}
