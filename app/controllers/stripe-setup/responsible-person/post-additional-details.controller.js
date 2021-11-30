@@ -10,7 +10,8 @@ const {
   validateField,
   getFormFields,
   getStripeAccountId,
-  getExistingResponsiblePersonName
+  getExistingResponsiblePersonName,
+  completeKyc
 } = require('../stripe-setup.util')
 const { response } = require('../../../utils/response')
 const {
@@ -19,6 +20,7 @@ const {
 } = require('../../../utils/validation/server-side-form-validations')
 const { formatPhoneNumberWithCountryCode } = require('../../../utils/telephone-number-utils')
 const { listPersons, updatePersonAddAdditionalKYCDetails } = require('../../../services/clients/stripe/stripe.client')
+const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
 
 const TELEPHONE_NUMBER_FIELD = 'telephone-number'
 const EMAIL_FIELD = 'email'
@@ -84,7 +86,13 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
         stripe_account_id: stripeAccountId
       })
 
-      req.flash('generic', 'Responsible person details added successfully')
+      const taskListComplete = await isKycTaskListComplete(currentCredential)
+      if (taskListComplete) {
+        await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+        req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
+      } else {
+        req.flash('generic', 'Responsible person details added successfully')
+      }
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
     } catch (err) {
       next(err)
