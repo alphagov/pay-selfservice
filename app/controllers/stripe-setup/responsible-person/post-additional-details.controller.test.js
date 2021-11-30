@@ -3,12 +3,16 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
+const userFixtures = require('../../../../test/fixtures/user.fixtures')
+const User = require('../../../models/User.class')
 
 describe('Responsible person add additional details POST controller', () => {
   const telephone = '01134960000 '
   const telephoneNormalised = '+44 113 496 0000'
   const email = ' foo@example.com'
   const emailNormalised = 'foo@example.com'
+  const personId = 'person-1'
+  const stripeAccountId = 'acct_123example123'
 
   const credentialId = 'a-credential-id'
   const accountExternalId = 'a-valid-external-id'
@@ -19,14 +23,17 @@ describe('Responsible person add additional details POST controller', () => {
       external_id: credentialId
     }]
   })
+  const user = new User(userFixtures.validUserResponse())
+  const service = user.serviceRoles[0].service
 
   let req
   let next
   let res
   let listPersonsMock
   let updatePersonAddAdditionalKYCDetailsMock
+  let completeKycMock
 
-  function getControllerWithMocks () {
+  function getControllerWithMocks (isKycTaskListComplete = false) {
     return proxyquire('./post-additional-details.controller', {
       '../../../services/clients/stripe/stripe.client': {
         listPersons: listPersonsMock,
@@ -34,8 +41,12 @@ describe('Responsible person add additional details POST controller', () => {
       },
       '../stripe-setup.util': {
         getStripeAccountId: () => {
-          return Promise.resolve('acct_123example123')
-        }
+          return Promise.resolve(stripeAccountId)
+        },
+        completeKyc: completeKycMock
+      },
+      '../../../controllers/your-psp/kyc-tasks.service': {
+        isKycTaskListComplete: () => isKycTaskListComplete
       }
     })
   }
@@ -44,7 +55,16 @@ describe('Responsible person add additional details POST controller', () => {
     req = {
       correlationId: 'correlation-id',
       account,
-      body: {},
+      user,
+      service,
+      body: {
+        'adding-additional-details': 'true',
+        email,
+        'telephone-number': telephone
+      },
+      route: {
+        path: `/kyc/:credentialId/responsible-person`
+      },
       flash: sinon.spy()
     }
     res = {
@@ -59,10 +79,8 @@ describe('Responsible person add additional details POST controller', () => {
       }
     }
     next = sinon.spy()
-  })
-
-  it('should call Stripe to add additional KYC details to person', async function () {
-    const personId = 'person-1'
+    completeKycMock = sinon.spy(() => Promise.resolve())
+    updatePersonAddAdditionalKYCDetailsMock = sinon.spy(() => Promise.resolve())
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
       data: [
         {
@@ -73,17 +91,10 @@ describe('Responsible person add additional details POST controller', () => {
         }
       ]
     }))
-    updatePersonAddAdditionalKYCDetailsMock = sinon.spy(() => Promise.resolve())
-    const controller = getControllerWithMocks()
+  })
 
-    req.route = {
-      path: `/kyc/:credentialId/responsible-person`
-    }
-    req.body = {
-      'adding-additional-details': 'true',
-      email,
-      'telephone-number': telephone
-    }
+  it('should call Stripe to add additional KYC details to person', async function () {
+    const controller = getControllerWithMocks()
 
     await controller(req, res, next)
 
@@ -92,5 +103,21 @@ describe('Responsible person add additional details POST controller', () => {
       email: emailNormalised
     })
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
+    sinon.assert.calledWith(req.flash, 'generic', 'Responsible person details added successfully')
+    sinon.assert.notCalled(completeKycMock)
+  })
+
+  it('should call completeKyc if all KYC tasks are complete for additional KYC details collection', async function () {
+    const controller = getControllerWithMocks(true)
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updatePersonAddAdditionalKYCDetailsMock, res.locals.stripeAccount.stripeAccountId, personId, {
+      phone: telephoneNormalised,
+      email: emailNormalised
+    })
+    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
+    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId, req.correlationId)
+    sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
   })
 })
