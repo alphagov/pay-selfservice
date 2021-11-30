@@ -50,6 +50,9 @@
           {% if not connectorGatewayAccountStripeProgress.companyNumber %}
             <li>Company registration number (if applicable)</li>
           {% endif %}
+          {% if not connectorGatewayAccountStripeProgress.governmentEntityDocument %}
+            <li>proof of Government Entity document</li>
+          {% endif %}
         </ul>
 
         {{

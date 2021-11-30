@@ -27,6 +27,8 @@ module.exports = async function getPspAccountDetails (req, res, next) {
     res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.vatNumber, accountExternalId, credentialId))
   } else if (!stripeAccountSetup.companyNumber) {
     res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.companyNumber, accountExternalId, credentialId))
+  } else if (!stripeAccountSetup.governmentEntityDocument) {
+    res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.governmentEntityDocument, accountExternalId, credentialId))
   } else {
     response(req, res, 'stripe-setup/go-live-complete')
   }

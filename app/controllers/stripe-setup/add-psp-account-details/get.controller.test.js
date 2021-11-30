@@ -76,13 +76,27 @@ describe('get controller', () => {
     sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/director`)
   })
 
+  it('should redirect to government entity document page', async () => {
+    req.account.connectorGatewayAccountStripeProgress = {
+      bankAccount: true,
+      responsiblePerson: true,
+      vatNumber: true,
+      companyNumber: true,
+      director: true,
+      governmentEntityDocument: false
+    }
+    await getController(req, res, next)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/government-entity-document`)
+  })
+
   it('should render go live complete page when all steps are completed', async () => {
     req.account.connectorGatewayAccountStripeProgress = {
       bankAccount: true,
       responsiblePerson: true,
       vatNumber: true,
       companyNumber: true,
-      director: true
+      director: true,
+      governmentEntityDocument: true
     }
     await getController(req, res, next)
     sinon.assert.calledWith(res.render, 'stripe-setup/go-live-complete')
