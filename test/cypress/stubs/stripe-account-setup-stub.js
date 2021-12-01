@@ -26,6 +26,9 @@ function getGatewayAccountStripeSetupSuccess (opts) {
   if (opts.additionalKycData !== undefined) {
     fixtureOpts.additional_kyc_data = opts.additionalKycData
   }
+  if (opts.governmentEntityDocument !== undefined) {
+    fixtureOpts.government_entity_document = opts.governmentEntityDocument
+  }
 
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`
   return stubBuilder('GET', path, 200, {
@@ -68,6 +71,13 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
     data = opts.director.map(completed => (
       {
         director: completed
+      }
+    ))
+  }
+  if (opts.governmentEntityDocument) {
+    data = opts.governmentEntityDocument.map(completed => (
+      {
+        government_entity_document: completed
       }
     ))
   }

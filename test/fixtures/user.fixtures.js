@@ -192,6 +192,10 @@ const defaultPermissions = [
     description: 'View Stripe VAT number company number'
   },
   {
+    name: 'stripe-government-entity-document:update',
+    description: 'Upload Government entity document'
+  },
+  {
     name: 'connected-gocardless-account:read',
     description: 'View connected go cardless account'
   },

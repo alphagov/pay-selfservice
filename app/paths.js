@@ -49,7 +49,8 @@ module.exports = {
       organisationUrl: '/kyc/:credentialId/organisation-url',
       responsiblePerson: '/kyc/:credentialId/responsible-person',
       changeResponsiblePerson: '/kyc/:credentialId/responsible-person/change',
-      director: '/kyc/:credentialId/director'
+      director: '/kyc/:credentialId/director',
+      governmentEntityDocument: '/kyc/:credentialId/government-entity-document'
     },
     notificationCredentials: {
       edit: '/your-psp/:credentialId/notification-credentials/edit',
@@ -114,7 +115,8 @@ module.exports = {
         responsiblePerson: '/switch-psp/:credentialId/responsible-person',
         vatNumber: '/switch-psp/:credentialId/vat-number',
         companyNumber: '/switch-psp/:credentialId/company-number',
-        director: '/switch-psp/:credentialId/director'
+        director: '/switch-psp/:credentialId/director',
+        governmentEntityDocument: '/switch-psp/:credentialId/government-entity-document'
       }
     },
     toggle3ds: {
@@ -143,6 +145,7 @@ module.exports = {
         responsiblePerson: '/your-psp/:credentialId/responsible-person',
         vatNumber: '/your-psp/:credentialId/vat-number',
         companyNumber: '/your-psp/:credentialId/company-number',
+        governmentEntityDocument: '/your-psp/:credentialId/government-entity-document',
         director: '/your-psp/:credentialId/director'
       }
     }

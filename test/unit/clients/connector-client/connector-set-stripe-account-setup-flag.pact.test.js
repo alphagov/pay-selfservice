@@ -196,4 +196,31 @@ describe('connector client - set stripe account setup flag', () => {
         .notify(done)
     })
   })
+
+  describe('set government_entity_document flag', () => {
+    const request = stripeAccountSetupFixtures.buildGovernmentEntityDocumentRequest(true)
+
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
+          .withUponReceiving('a valid patch update stripe account government_entity_document flag request')
+          .withState(defaultState)
+          .withMethod('PATCH')
+          .withRequestBody(request)
+          .withStatusCode(200)
+          .withResponseHeaders({})
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should update successfully', done => {
+      connectorClient.setStripeAccountSetupFlag(existingGatewayAccountId, 'government_entity_document')
+        .should.be.fulfilled
+        .notify(done)
+    })
+  })
 })

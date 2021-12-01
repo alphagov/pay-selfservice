@@ -1,0 +1,81 @@
+{% extends "../../layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+
+{% block pageTitle %}
+  Proof of Government Entity document - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% if isSwitchingCredentials or collectingAdditionalKycData %}
+    {% include "includes/side-navigation.njk" %}
+  {% endif %}
+{% endblock %}
+
+{% block mainContent %}
+
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if isSwitchingCredentials %}
+      {{ govukBackLink({
+        text: "Back to Switching payment service provider (PSP)",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+      }) }}
+    {% endif %}
+    {% if collectingAdditionalKycData %}
+      {{ govukBackLink({
+        text: "Back",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+      }) }}
+    {% endif %}
+
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'government-entity-document': '#government-entity-document'
+      }
+    }) }}
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Proof of Government Entity document</h1>
+
+    <p class="govuk-body">You will need to upload a document to verify your organisation as a Government Entity, this
+      will need to be from the following list.</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>VAT Registration</li>
+      <li>Certificate of incorporation</li>
+      <li>Companies House Document</li>
+      <li>HM Revenue and Customs: VAT Certificate</li>
+      <li>HM Revenue and Customs: Account Statement</li>
+      <li>Charity Commission Document</li>
+      <li>OSCR Scottish Charity Regulator</li>
+    </ul>
+
+    <form id="government-entity-document-form" method="post" enctype="multipart/form-data" novalidate
+          action="?csrfToken={{ csrf }}">
+
+      {% set fileUploadError = false %}
+      {% if errors['government-entity-document'] %}
+        {% set fileUploadError = {
+          text: errors['government-entity-document']
+        } %}
+      {% endif %}
+
+      {{ govukFileUpload({
+        id: "government-entity-document",
+        name: "government-entity-document",
+        label: {
+          text: "Upload a file",
+          classes: "govuk-label--s"
+        },
+        hint: {
+          text: "File size must be 10 MB or less and can be JPG, PNG, or PDF format"
+        },
+        errorMessage: fileUploadError
+      }) }}
+
+      {{ govukButton({ text: "Submit and continue" }) }}
+    </form>
+  </div>
+{% endblock %}
