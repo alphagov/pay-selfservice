@@ -6,8 +6,8 @@ const paths = require('../../../paths')
 
 describe('Company number POST controller', () => {
   const postBody = {
-    'company-number-declaration': 'Yes',
-    'company-number': '1234567890'
+    'company-number-declaration': 'true',
+    'company-number': '01234567'
   }
 
   let req
@@ -68,8 +68,24 @@ describe('Company number POST controller', () => {
     await controller(req, res, next)
 
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, {
-      'tax_id': '1234567890'
+      'tax_id': '01234567'
     })
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'company_number', req.correlationId)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
+  })
+
+  it('should NOT call Stripe if company number is not provided, but update connector, then redirect to add psp account details route', async function () {
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.body = {
+      'company-number-declaration': 'false',
+    }
+
+    await controller(req, res, next)
+
+    sinon.assert.notCalled(updateCompanyMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'company_number', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })

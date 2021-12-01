@@ -43,17 +43,22 @@ module.exports = async (req, res, next) => {
     })
   } else {
     try {
-      const stripeCompanyBody = {
-        tax_id: sanitisedCompanyNumber || 'NOTAPPLI'
-      }
       const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+      const companyNumberProvided = companyNumberDeclaration === 'true'
 
-      await updateCompany(stripeAccountId, stripeCompanyBody)
+      if (companyNumberProvided) {
+        const stripeCompanyBody = {
+          tax_id: sanitisedCompanyNumber
+        }
+        await updateCompany(stripeAccountId, stripeCompanyBody)
+      }
+
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'company_number', req.correlationId)
 
       logger.info('Company number submitted for Stripe account', {
         stripe_account_id: stripeAccountId,
-        is_switching: isSwitchingCredentials
+        is_switching: isSwitchingCredentials,
+        company_number_provided: companyNumberProvided
       })
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
