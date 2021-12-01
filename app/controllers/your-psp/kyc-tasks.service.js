@@ -3,9 +3,13 @@
 const { listPersons, retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const lodash = require('lodash')
 
-async function isOrganisationUrlComplete (stripeAccountId) {
-  const account = await retrieveAccountDetails(stripeAccountId)
-  const url = lodash.get(account, 'business_profile.url')
+function entityVerificationDocumentUploaded (stripeAccount) {
+  const fileId = lodash.get(stripeAccount, 'company.verification.document.front')
+  return isNotEmpty(fileId)
+}
+
+function isOrganisationUrlComplete (stripeAccount) {
+  const url = lodash.get(stripeAccount, 'business_profile.url')
 
   return isNotEmpty(url)
 }
@@ -33,15 +37,20 @@ async function getTaskList (activeCredential) {
   const stripeAccountId = lodash.get(activeCredential, 'credentials.stripe_account_id')
   const stripePersons = await listPersons(stripeAccountId)
 
+  const stripeAccount = await retrieveAccountDetails(stripeAccountId)
+
   return {
     'ENTER_ORGANISATION_URL': {
-      complete: await isOrganisationUrlComplete(stripeAccountId)
+      complete: isOrganisationUrlComplete(stripeAccount)
     },
     'UPDATE_RESPONSIBLE_PERSON': {
       complete: isStripeResponsiblePersonComplete(stripePersons)
     },
     'ENTER_DIRECTOR': {
       complete: getPerson(stripePersons, 'director').length > 0
+    },
+    'UPLOAD_GOVERNMENT_ENTITY_DOCUMENT': {
+      complete: entityVerificationDocumentUploaded(stripeAccount)
     }
   }
 }

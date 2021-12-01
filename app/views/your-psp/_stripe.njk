@@ -55,6 +55,12 @@
       formatAccountPathsFor(routes.account.kyc.director, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.ENTER_DIRECTOR
     ) }}
+    {{ taskListItem(
+      'task-upload-government-entity-document',
+      "Upload proof of government entity document",
+      formatAccountPathsFor(routes.account.kyc.governmentEntityDocument, currentGatewayAccount.external_id, activeCredential.external_id),
+      kycTaskList.UPLOAD_GOVERNMENT_ENTITY_DOCUMENT
+    ) }}
   {% endset %}
 
   <div class="app-task-list govuk-body">

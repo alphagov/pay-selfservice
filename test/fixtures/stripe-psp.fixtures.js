@@ -27,6 +27,13 @@ function validRetrieveStripeAccountDetails (opts = {}) {
   if (opts.url) {
     stripeAccount.business_profile.url = opts.url
   }
+  if (opts.entity_verified) {
+    stripeAccount.company.verification = {
+      document: {
+        front: 'file_id_123'
+      }
+    }
+  }
 
   return stripeAccount
 }
