@@ -3,7 +3,8 @@
 const Joi = require('joi')
 
 const schema = {
-  url: Joi.string().required()
+  url: Joi.string().optional(),
+  entity_verification_document_id: Joi.string().optional()
 }
 
 class StripeAccount {
@@ -25,11 +26,25 @@ class StripeAccount {
 }
 
 function build (params) {
-  return {
-    business_profile: {
+  const stripeAccount = {}
+
+  if (params.url) {
+    stripeAccount.business_profile = {
       url: params.url
     }
   }
+
+  if (params.entity_verification_document_id) {
+    stripeAccount.company = {
+      verification: {
+        document: {
+          front: params.entity_verification_document_id
+        }
+      }
+    }
+  }
+
+  return stripeAccount
 }
 
 module.exports = StripeAccount
