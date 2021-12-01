@@ -71,6 +71,19 @@ describe('Stripe setup: Government entity document', () => {
           cy.get('#navigation-menu-switch-psp').should('not.exist')
         })
     })
+
+    it('should display an error when file is not selected', () => {
+      cy.get('#government-entity-document-form > button').click()
+
+      cy.get('h2').should('contain', 'There is a problem')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Select a file to upload')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#government-entity-document')
+
+      cy.get('.govuk-form-group--error > input#government-entity-document').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('exist')
+        cy.get('span.govuk-error-message').should('contain', 'Select a file to upload')
+      })
+    })
   })
 
   describe('when user is admin, account is Stripe and "Government entity document" is already submitted', () => {
