@@ -27,7 +27,11 @@ class StripePersonAdditionalKYCDetails {
 function build (params) {
   return {
     phone: params.phone,
-    email: params.email
+    email: params.email,
+    relationship: {
+      executive: true,
+      representative: true
+    }
   }
 }
 

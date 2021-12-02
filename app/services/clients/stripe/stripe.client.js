@@ -98,7 +98,7 @@ module.exports = {
     })
   },
 
-  addNewCapabilities: function (stripeAccountId, organisationName) {
+  addNewCapabilities: function (stripeAccountId, organisationName, phoneNumber) {
     const payload = {
       business_profile: {
         mcc: '9399',
@@ -113,6 +113,18 @@ module.exports = {
         }
       }
     }
+
+    if (phoneNumber) {
+      payload.company = {
+        phone: phoneNumber
+      }
+    }
     return stripe.accounts.update(stripeAccountId, payload)
+  },
+
+  removeLegacyPaymentsCapability: function (stripeAccountId) {
+    return stripe.accounts.updateCapability(stripeAccountId,
+      'legacy_payments', { requested: false }
+    )
   }
 }
