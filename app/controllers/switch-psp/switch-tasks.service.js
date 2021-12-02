@@ -63,11 +63,16 @@ function getTaskList (targetCredential, account, service) {
         enabled: !stripeSetupStageComplete(account, 'companyNumber'),
         complete: stripeSetupStageComplete(account, 'companyNumber')
       },
+      'UPLOAD_GOVERNMENT_ENTITY_DOCUMENT': {
+        enabled: !stripeSetupStageComplete(account, 'governmentEntityDocument'),
+        complete: stripeSetupStageComplete(account, 'governmentEntityDocument')
+      },
       'VERIFY_PSP_INTEGRATION': {
         enabled: organisationUrlComplete(service) &&
           stripeSetupStageComplete(account, 'bankAccount') &&
           stripeSetupStageComplete(account, 'responsiblePerson') &&
           stripeSetupStageComplete(account, 'director') &&
+          stripeSetupStageComplete(account, 'governmentEntityDocument') &&
           stripeSetupStageComplete(account, 'vatNumber') &&
           stripeSetupStageComplete(account, 'companyNumber'),
         complete: verifyPSPIntegrationComplete(targetCredential)

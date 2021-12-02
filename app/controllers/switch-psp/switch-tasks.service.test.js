@@ -79,7 +79,8 @@ describe('Switching PSP service', () => {
         director: true,
         vatNumber: true,
         companyNumber: true,
-        responsiblePerson: true
+        responsiblePerson: true,
+        governmentEntityDocument: true
       }
       const targetCredential = getSwitchingCredential(account)
       const taskList = getTaskList(targetCredential, account, service)
@@ -102,7 +103,8 @@ describe('Switching PSP service', () => {
       director: true,
       vatNumber: true,
       companyNumber: true,
-      responsiblePerson: true
+      responsiblePerson: true,
+      governmentEntityDocument: true
     }
     const targetCredential = getSwitchingCredential(account)
     const taskList = getTaskList(targetCredential, account, service)

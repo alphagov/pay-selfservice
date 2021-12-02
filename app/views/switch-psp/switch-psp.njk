@@ -80,6 +80,7 @@
         <li>the name, date of birth and work email address of the director of your service (or someone at director level)</li>
         <li>VAT number (if applicable)</li>
         <li>Company registration number (if applicable)</li>
+        <li>proof of government entity document</li>
         <li>a debit or credit card to make a nominal live payment (refundable)</li>
       </ul>
 
@@ -113,6 +114,11 @@
           "Provide your Company registration number",
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.companyNumber, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.ENTER_COMPANY_NUMBER
+        ) }}
+        {{ taskListItem(
+          "Upload proof of government entity document",
+          formatAccountPathsFor(routes.account.switchPSP.stripeSetup.governmentEntityDocument, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.UPLOAD_GOVERNMENT_ENTITY_DOCUMENT
         ) }}
         {{ taskListItem(
           "Make a live payment to test your Stripe PSP",
