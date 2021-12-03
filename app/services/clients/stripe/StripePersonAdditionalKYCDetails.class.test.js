@@ -16,7 +16,11 @@ describe('StripePerson', () => {
 
     expect(stripePerson.basicObject()).to.deep.equal({
       phone: phone,
-      email: email
+      email: email,
+      relationship: {
+        executive: true,
+        representative: true
+      }
     })
   })
 })

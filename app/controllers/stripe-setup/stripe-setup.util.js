@@ -8,8 +8,9 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { validateDateOfBirth } = require('../../utils/validation/server-side-form-validations')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { listPersons, addNewCapabilities } = require('../../services/clients/stripe/stripe.client')
+const { listPersons, addNewCapabilities, removeLegacyPaymentsCapability } = require('../../services/clients/stripe/stripe.client')
 const logger = require('../../utils/logger')(__filename)
+const { formatPhoneNumberWithCountryCode } = require('../../utils/telephone-number-utils')
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
@@ -71,11 +72,24 @@ async function getExistingResponsiblePersonName (account, isSwitchingCredentials
 }
 
 async function completeKyc (gatewayAccountId, service, stripeAccountId, correlationId) {
-  await Promise.all([
-    addNewCapabilities(stripeAccountId, service.merchantDetails.name),
+  let telephoneNumber = lodash.get(service, 'merchantDetails.telephoneNumber')
+  let formattedPhoneNumber
+
+  if (telephoneNumber) {
+    formattedPhoneNumber = formatPhoneNumberWithCountryCode(telephoneNumber)
+  }
+
+  const [stripeAccountResponse] = await Promise.all([
+    addNewCapabilities(stripeAccountId, service.merchantDetails.name, formattedPhoneNumber),
     connector.setStripeAccountSetupFlag(gatewayAccountId, 'additional_kyc_data', correlationId),
     connector.disableCollectAdditionalKyc(gatewayAccountId, correlationId)
   ])
+
+  const stripeLegacyPayments = lodash.get(stripeAccountResponse, 'capabilities.legacy_payments')
+  if (stripeLegacyPayments === 'active') {
+    await removeLegacyPaymentsCapability(stripeAccountId)
+  }
+
   logger.info('KYC additional information completed for Stripe account', {
     stripe_account_id: stripeAccountId
   })
