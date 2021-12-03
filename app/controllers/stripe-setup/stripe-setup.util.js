@@ -72,7 +72,7 @@ async function getExistingResponsiblePersonName (account, isSwitchingCredentials
 }
 
 async function completeKyc (gatewayAccountId, service, stripeAccountId, correlationId) {
-  let telephoneNumber = lodash.get(service, 'merchantDetails.telephoneNumber')
+  let telephoneNumber = lodash.get(service, 'merchantDetails.telephone_number')
   let formattedPhoneNumber
 
   if (telephoneNumber) {
