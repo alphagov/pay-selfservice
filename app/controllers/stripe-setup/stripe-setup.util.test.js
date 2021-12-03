@@ -123,7 +123,7 @@ describe('Stripe setup util', () => {
     })
 
     it('should update stripe account including phone number, set connector task as complete, and disable kyc flag on connector', async () => {
-      service.merchantDetails.telephoneNumber = '01134960000'
+      service.merchantDetails.telephone_number = '01134960000'
       await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId, correlationId)
 
       sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', '+44 113 496 0000')
