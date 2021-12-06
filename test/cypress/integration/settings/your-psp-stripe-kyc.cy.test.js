@@ -279,9 +279,9 @@ describe('Your PSP - Stripe - KYC', () => {
 
     it('should show Government entity document page when clicked on task', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('a').contains('Upload proof of government entity document').click()
+      cy.get('a').contains('Upload a government entity document').click()
 
-      cy.get('h1').should('contain', 'Proof of Government Entity document')
+      cy.get('h1').should('contain', 'Upload a government entity document')
 
       cy.get('.govuk-back-link')
         .should('have.text', 'Back')

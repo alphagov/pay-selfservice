@@ -3,7 +3,7 @@
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 
 {% block pageTitle %}
-  Proof of Government Entity document - {{ currentService.name }} - GOV.UK Pay
+  Add a government entity document - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -38,10 +38,10 @@
       }
     }) }}
 
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Proof of Government Entity document</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Upload a government entity document</h1>
 
-    <p class="govuk-body">You will need to upload a document to verify your organisation as a Government Entity, this
-      will need to be from the following list.</p>
+    <p class="govuk-body">For Stripe to verify that your organisation is a ‘government entity’, you need to upload one
+      of these documents:</p>
     <ul class="govuk-list govuk-list--bullet">
       <li>VAT Registration</li>
       <li>Certificate of incorporation</li>
@@ -50,6 +50,18 @@
       <li>HM Revenue and Customs: Account Statement</li>
       <li>Charity Commission Document</li>
       <li>OSCR Scottish Charity Regulator</li>
+    </ul>
+
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-6">
+      <label class="govuk-label govuk-label--m" for="government-entity-document">
+        Upload a file
+      </label>
+    </h2>
+
+    <p class="govuk-body">The file must meet these requirements:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>The file size must be 10MB or less</li>
+      <li>The format has to be JPG, PNG or PDF</li>
     </ul>
 
     <form id="government-entity-document-form" method="post" enctype="multipart/form-data" novalidate
@@ -65,13 +77,6 @@
       {{ govukFileUpload({
         id: "government-entity-document",
         name: "government-entity-document",
-        label: {
-          text: "Upload a file",
-          classes: "govuk-label--s"
-        },
-        hint: {
-          text: "File size must be 10 MB or less and can be JPG, PNG, or PDF format"
-        },
         errorMessage: fileUploadError
       }) }}
 
