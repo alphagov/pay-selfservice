@@ -60,7 +60,7 @@ describe('Stripe setup: Government entity document', () => {
     })
 
     it('should display page correctly', () => {
-      cy.get('h1').should('contain', 'Proof of Government Entity document')
+      cy.get('h1').should('contain', 'Upload a government entity document')
 
       cy.get('#government-entity-document-form').should('exist')
         .within(() => {
@@ -99,7 +99,7 @@ describe('Stripe setup: Government entity document', () => {
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#back-link').should('contain', 'Back to dashboard')
       cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
-      cy.get('#error-message').should('contain', 'You’ve already provided proof of government entity document. Contact GOV.UK Pay support if you need to update it.')
+      cy.get('#error-message').should('contain', 'You’ve already provided a government entity document. Contact GOV.UK Pay support if you need to update it.')
     })
   })
 

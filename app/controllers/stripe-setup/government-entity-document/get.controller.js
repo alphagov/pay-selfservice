@@ -16,7 +16,7 @@ module.exports = (req, res, next) => {
   }
   if (stripeAccountSetup.governmentEntityDocument) {
     const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
-      'You’ve already provided proof of government entity document. Contact GOV.UK Pay support if you need to update it.')
+      'You’ve already provided a government entity document. Contact GOV.UK Pay support if you need to update it.')
     return response(req, res, 'error-with-link', errorPageData)
   }
 
