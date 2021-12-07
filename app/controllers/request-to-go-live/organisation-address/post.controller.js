@@ -17,6 +17,7 @@ const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpd
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 const { response } = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
 
 const clientFieldNames = {
   name: 'merchant-name',
@@ -87,7 +88,7 @@ const normaliseForm = (formBody) => {
   }, {})
 }
 
-const validateForm = function validate (form, isRequestToGoLive) {
+const validateForm = function validate(form, isRequestToGoLive) {
   const rules = isRequestToGoLive ? validationRules : validationRulesWithOrganisationName
   const errors = rules.reduce((errors, validationRule) => {
     const value = form[validationRule.field]
@@ -146,9 +147,12 @@ const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
   }
 }
 
-module.exports = async function submitOrganisationAddress (req, res, next) {
+module.exports = async function submitOrganisationAddress(req, res, next) {
   try {
     const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
+    const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+    const collectingAdditionalKycData = isAdditionalKycDataRoute(req)
+    const currentCredential = getCurrentCredential(req.account)
     const form = normaliseForm(req.body)
     const errors = validateForm(form, isRequestToGoLive)
 
