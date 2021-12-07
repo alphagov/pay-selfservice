@@ -8,7 +8,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { validateDateOfBirth } = require('../../utils/validation/server-side-form-validations')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { listPersons, addNewCapabilities, removeLegacyPaymentsCapability } = require('../../services/clients/stripe/stripe.client')
+const { listPersons, addNewCapabilities, retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const logger = require('../../utils/logger')(__filename)
 const { formatPhoneNumberWithCountryCode } = require('../../utils/telephone-number-utils')
 
@@ -72,6 +72,8 @@ async function getExistingResponsiblePersonName (account, isSwitchingCredentials
 }
 
 async function completeKyc (gatewayAccountId, service, stripeAccountId, correlationId) {
+  const stripeAccount = await retrieveAccountDetails(stripeAccountId)
+
   let telephoneNumber = lodash.get(service, 'merchantDetails.telephone_number')
   let formattedPhoneNumber
 
@@ -79,18 +81,16 @@ async function completeKyc (gatewayAccountId, service, stripeAccountId, correlat
     formattedPhoneNumber = formatPhoneNumberWithCountryCode(telephoneNumber)
   }
 
-  const [stripeAccountResponse] = await Promise.all([
-    addNewCapabilities(stripeAccountId, service.merchantDetails.name, formattedPhoneNumber),
+  const mcc = lodash.get(stripeAccount, 'business_profile.mcc')
+  const hasMCC = !(mcc === undefined || mcc === null) && mcc.length > 0
+
+  await Promise.all([
+    addNewCapabilities(stripeAccountId, service.merchantDetails.name, formattedPhoneNumber, hasMCC),
     connector.setStripeAccountSetupFlag(gatewayAccountId, 'additional_kyc_data', correlationId),
     connector.disableCollectAdditionalKyc(gatewayAccountId, correlationId)
   ])
 
-  const stripeLegacyPayments = lodash.get(stripeAccountResponse, 'capabilities.legacy_payments')
-  if (stripeLegacyPayments === 'active') {
-    await removeLegacyPaymentsCapability(stripeAccountId)
-  }
-
-  logger.info('KYC additional information completed for Stripe account', {
+  logger.info('KYC additional information completed for Stripe account (but not moved to new capabilities)', {
     stripe_account_id: stripeAccountId
   })
 }
