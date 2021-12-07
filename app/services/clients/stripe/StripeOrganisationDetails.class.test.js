@@ -16,13 +16,13 @@ const validUrl = 'https://www.example.com'
 describe('StripeOrganisationDetails', () => {
   it('should successfully create a StripeOrganisationDetails object', () => {
     const stripeOrganisationDetails = new StripeOrganisationDetails({
-      name: validName,
-      address_line1: validLine1,
-      address_line2: validLine2,
-      address_city: validCity,
-      address_postcode: validPostcode,
-      address_country: validCountry,
-      telephone_number: validTelephoneNumber,
+      'merchant-name': validName,
+      'address-line1': validLine1,
+      'address-line2': validLine2,
+      'address-city': validCity,
+      'address-postcode': validPostcode,
+      'address-country': validCountry,
+      'telephone-number': validTelephoneNumber,
       url: validUrl
     })
 
@@ -46,15 +46,14 @@ describe('StripeOrganisationDetails', () => {
 
   it('should successfully create a StripeOrganisationDetails object without an address line 2', () => {
     const stripeOrganisationDetails = new StripeOrganisationDetails({
-      name: validName,
-      address_line1: validLine1,
-      address_city: validCity,
-      address_postcode: validPostcode,
-      address_country: validCountry,
-      telephone_number: validTelephoneNumber,
+      'merchant-name': validName,
+      'address-line1': validLine1,
+      'address-city': validCity,
+      'address-postcode': validPostcode,
+      'address-country': validCountry,
+      'telephone-number': validTelephoneNumber,
       url: validUrl
     })
-
     expect(stripeOrganisationDetails.basicObject()).to.deep.equal({
       company: {
         name: validName,

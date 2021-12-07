@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 
+const logger = require('../../../utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
 const paths = require('../../../paths')
@@ -15,8 +16,13 @@ const {
 const { updateService } = require('../../../services/service.service')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
+const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { response } = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
+const { getStripeAccountId, completeKyc } = require('../../stripe-setup/stripe-setup.util')
+const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
+const { updateOrganisationDetails } = require('../../../services/clients/stripe/stripe.client')
 
 const clientFieldNames = {
   name: 'merchant-name',
@@ -149,21 +155,54 @@ const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
 module.exports = async function submitOrganisationAddress (req, res, next) {
   try {
     const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
+    const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+    const collectingAdditionalKycData = isAdditionalKycDataRoute(req)
+    const currentCredential = getCurrentCredential(req.account)
     const form = normaliseForm(req.body)
     const errors = validateForm(form, isRequestToGoLive)
 
     if (lodash.isEmpty(errors)) {
       const updatedService = await submitForm(form, req.service.externalId, req.correlationId, isRequestToGoLive)
+
       if (isRequestToGoLive) {
         res.redirect(
           303,
           formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
         )
+      } else if (isSwitchingCredentials || collectingAdditionalKycData) {
+        const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+
+        logger.info('Organisation details submitted for Stripe account', {
+          stripe_account_id: stripeAccountId,
+          is_switching: isSwitchingCredentials,
+          collecting_additional_kyc_data: collectingAdditionalKycData
+        })
+
+        updateOrganisationDetails(stripeAccountId, form)
+
+        if (isSwitchingCredentials) {
+          return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+        } else {
+          const taskListComplete = await isKycTaskListComplete(currentCredential)
+          if (taskListComplete) {
+            await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+            req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
+          } else {
+            req.flash('generic', 'Organisation details updated successfully')
+          }
+          return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
+        }
       } else {
         res.redirect(303, formatServicePathsFor(paths.service.organisationDetails.index, req.service.externalId))
       }
     } else {
       const pageData = buildErrorsPageData(form, errors, isRequestToGoLive)
+
+      if (isSwitchingCredentials || collectingAdditionalKycData) {
+        pageData.currentCredential = currentCredential
+        pageData.isSwitchingCredentials = isSwitchingCredentials
+        pageData.collectingAdditionalKycData = collectingAdditionalKycData
+      }
       return response(req, res, 'request-to-go-live/organisation-address', pageData)
     }
   } catch (err) {

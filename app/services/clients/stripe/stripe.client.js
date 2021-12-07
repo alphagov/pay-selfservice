@@ -8,6 +8,7 @@ const StripePerson = require('./StripePerson.class')
 const StripeDirector = require('./StripeDirector.class')
 const StripeAccount = require('./StripeAccount.class')
 const StripePersonAdditionalKYCDetails = require('./StripePersonAdditionalKYCDetails.class')
+const StripeOrganisationDetails = require('./StripeOrganisationDetails.class')
 
 // Constants
 const STRIPE_HOST = process.env.STRIPE_HOST
@@ -121,5 +122,10 @@ module.exports = {
     return stripe.accounts.updateCapability(stripeAccountId,
       'legacy_payments', { requested: false }
     )
+  },
+
+  updateOrganisationDetails: function (stripeAccountId, body) {
+    const stripeOrganisationDetails = new StripeOrganisationDetails(body)
+    return stripe.accounts.update(stripeAccountId, stripeOrganisationDetails.basicObject())
   }
 }

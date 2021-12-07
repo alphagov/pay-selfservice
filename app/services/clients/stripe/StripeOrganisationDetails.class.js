@@ -3,13 +3,13 @@
 const Joi = require('joi')
 
 const schema = {
-  name: Joi.string().required(),
-  address_line1: Joi.string().required(),
-  address_line2: Joi.string().optional(),
-  address_city: Joi.string().required(),
-  address_postcode: Joi.string().required(),
-  address_country: Joi.string().required(),
-  telephone_number: Joi.string().required(),
+  'merchant-name': Joi.string().required(),
+  'address-line1': Joi.string().required(),
+  'address-line2': Joi.string().optional(),
+  'address-city': Joi.string().required(),
+  'address-postcode': Joi.string().required(),
+  'address-country': Joi.string().required(),
+  'telephone-number': Joi.string().required(),
   url: Joi.string().required()
 }
 
@@ -34,22 +34,22 @@ class StripeOrganisationDetails {
 function build(params) {
   const stripeOrganisationDetails = {
     company: {
-      name: params.name,
+      name: params['merchant-name'],
       address: {
-        line1: params.address_line1,
-        city: params.address_city,
-        postal_code: params.address_postcode,
-        country: params.address_country
+        line1: params['address-line1'],
+        city: params['address-city'],
+        postal_code: params['address-postcode'],
+        country: params['address-country']
       },
-      phone: params.telephone_number
+      phone: params['telephone-number']
     },
     business_profile: {
       url: params.url
     }
   }
 
-  if (params.address_line2) {
-    stripeOrganisationDetails.company.address.line2 = params.address_line2
+  if (params['address-line2']) {
+    stripeOrganisationDetails.company.address.line2 = params['address-line2']
   }
 
   return stripeOrganisationDetails

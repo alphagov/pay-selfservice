@@ -452,6 +452,7 @@ module.exports.bind = function (app) {
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 
   account.get([kyc.organisationDetails, switchPSP.organisationDetails], permission('merchant-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.get)
+  account.post([kyc.organisationDetails, switchPSP.organisationDetails], permission('merchant-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.post)
 
   futureAccountStrategy.get(webhooks.index, permission('webhooks:read'), webhooksController.listWebhooksPage)
   futureAccountStrategy.get(webhooks.create, permission('webhooks:update'), webhooksController.createWebhookPage)
