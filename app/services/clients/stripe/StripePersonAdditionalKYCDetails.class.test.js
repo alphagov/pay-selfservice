@@ -7,7 +7,7 @@ const StripePersonAdditionalKYCDetails = require('./StripePersonAdditionalKYCDet
 const phone = '01134960000'
 const email = 'foo@example.com'
 
-describe('StripePerson', () => {
+describe('StripePersonAdditionalKYCDetails', () => {
   it('should successfully create a StripePersonAdditionalKYCDetails object', () => {
     const stripePerson = new StripePersonAdditionalKYCDetails({
       phone: phone,
