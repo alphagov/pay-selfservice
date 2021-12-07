@@ -2,10 +2,6 @@
 
 const { Router } = require('express')
 
-const multer = require('multer')
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
-
 const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate-route')
@@ -25,6 +21,7 @@ const getRequestContext = require('./middleware/get-request-context').middleware
 const restrictToSandboxOrStripeTestAccount = require('./middleware/restrict-to-sandbox-or-stripe-test-account')
 const restrictToStripeAccountContext = require('./middleware/stripe-setup/restrict-to-stripe-account-context')
 const restrictToSwitchingAccount = require('./middleware/restrict-to-switching-account')
+const uploadGovernmentEntityDocument = require('./middleware/multer-middleware')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -451,7 +448,7 @@ module.exports.bind = function (app) {
   account.get([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
   account.post([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
   account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
-  account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, upload.single('government-entity-document'), stripeSetupGovernmentEntityDocument.post)
+  account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 
   futureAccountStrategy.get(webhooks.index, permission('webhooks:read'), webhooksController.listWebhooksPage)
