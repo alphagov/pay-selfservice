@@ -1,6 +1,12 @@
 {% extends "../layout.njk" %}
 {% from "../macro/error-summary.njk" import errorSummary %}
 
+{% block side_navigation %}
+  {% if isSwitchingCredentials or collectingAdditionalKycData %}
+    {% include "includes/side-navigation.njk" %}
+  {% endif %}
+{% endblock %}
+
 {% block pageTitle %}
 {% if isRequestToGoLive %}
   Enter your organisation’s contact details - Request a live account - {{ currentService.name }} - GOV.UK Pay
@@ -11,6 +17,22 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+
+  {% if isSwitchingCredentials %}
+    {{ govukBackLink({
+      text: "Back to Switching payment service provider (PSP)",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+    }) }}
+  {% endif %}
+  {% if collectingAdditionalKycData %}
+    {{ govukBackLink({
+      text: "Back",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+    }) }}
+  {% endif %}
+
   {{ errorSummary ({
     errors: errors,
     hrefs: {

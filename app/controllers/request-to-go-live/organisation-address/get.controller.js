@@ -7,9 +7,13 @@ const paths = require('../../../paths')
 const response = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
 
 module.exports = function getOrganisationAddress (req, res) {
   const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+  const collectingAdditionalKycData = isAdditionalKycDataRoute(req)
+  const currentCredential = getCurrentCredential(req.account)
 
   if (isRequestToGoLive) {
     if (req.service.currentGoLiveStage !== goLiveStage.ENTERED_ORGANISATION_NAME) {
@@ -34,6 +38,13 @@ module.exports = function getOrganisationAddress (req, res) {
     ]),
     isRequestToGoLive
   }
+
+  if (isSwitchingCredentials || collectingAdditionalKycData) {
+    pageData.currentCredential = currentCredential
+    pageData.isSwitchingCredentials = isSwitchingCredentials
+    pageData.collectingAdditionalKycData = collectingAdditionalKycData
+  }
+
   pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData, 'address_country'))
   return response.response(req, res, 'request-to-go-live/organisation-address', pageData)
 }
