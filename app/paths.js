@@ -47,6 +47,7 @@ module.exports = {
     },
     kyc: {
       organisationUrl: '/kyc/:credentialId/organisation-url',
+      organisationDetails: '/kyc/:credentialId/organisation-details',
       responsiblePerson: '/kyc/:credentialId/responsible-person',
       changeResponsiblePerson: '/kyc/:credentialId/responsible-person/change',
       director: '/kyc/:credentialId/director',
@@ -110,6 +111,7 @@ module.exports = {
       verifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration',
       receiveVerifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration/callback',
       organisationUrl: '/switch-psp/:credentialId/organisation-url',
+      organisationDetails: '/switch-psp/:credentialId/organisation-details',
       stripeSetup: {
         bankDetails: '/switch-psp/:credentialId/bank-details',
         responsiblePerson: '/switch-psp/:credentialId/responsible-person',
