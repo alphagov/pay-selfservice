@@ -98,10 +98,9 @@ module.exports = {
     })
   },
 
-  addNewCapabilities: function (stripeAccountId, organisationName, phoneNumber) {
+  addNewCapabilities: function (stripeAccountId, organisationName, phoneNumber, hasMCC) {
     const payload = {
       business_profile: {
-        mcc: '9399',
         product_description: `Payments for public sector services for organisation ${organisationName}`
       },
       capabilities: {
@@ -112,6 +111,10 @@ module.exports = {
           requested: true
         }
       }
+    }
+
+    if (!hasMCC) {
+      payload.business_profile.mcc = '9399'
     }
 
     if (phoneNumber) {
