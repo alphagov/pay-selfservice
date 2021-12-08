@@ -272,22 +272,6 @@ describe('Your PSP - Stripe - KYC', () => {
     })
   })
 
-  describe('Organisation details Page', () => {
-    beforeEach(() => {
-      setupYourPspStubs()
-    })
-
-    it('should show Organisation details page', () => {
-      cy.visit(`/account/${gatewayAccountExternalId}/kyc/${credentialExternalId}/organisation-details`)
-
-      cy.get('h1').should('contain', 'Organisation details')
-
-      cy.get('.govuk-back-link')
-        .should('have.text', 'Back')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    })
-  })
-
   describe('Government entity document', () => {
     beforeEach(() => {
       setupYourPspStubs()
