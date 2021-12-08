@@ -15,7 +15,7 @@ const welshServiceName = {
   cy: 'Cymru'
 }
 
-function setupStubs (serviceName, stubs = []) {
+function setupStubs(serviceName, stubs = []) {
   cy.task('setupStubs', [
     ...stubs,
     userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1', serviceExternalId, serviceName }),
@@ -47,22 +47,6 @@ describe('Update service name', () => {
       cy.get('#checkbox-service-name-cy').should('have.attr', 'aria-expanded', 'false')
     })
 
-    it('should show a validation error when service name is empty', () => {
-      setupStubs(serviceName)
-      cy.get('input#service-name').clear()
-      cy.get('button').contains('Save').click()
-
-      cy.title().should('eq', 'Edit service name - GOV.UK Pay')
-
-      cy.get('.govuk-error-summary').find('a').should('have.length', 1)
-      cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#service-name"]').should('contain', 'Service name')
-      })
-      cy.get('.govuk-form-group--error > input#service-name').parent().should('exist').within(() => {
-        cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
-      })
-    })
-
     it('should update service name to Updated Service', () => {
       setupStubs(serviceName,
         [serviceStubs.patchUpdateServiceNameSuccess({ serviceExternalId, serviceName: { en: newServiceName } })])
@@ -90,6 +74,27 @@ describe('Update service name', () => {
       cy.title().should('eq', 'Edit service name - GOV.UK Pay')
       cy.get('#service-name').should('have.attr', 'value', 'My Service')
       cy.get('#service-name-cy').should('have.attr', 'value', 'Cymru')
+    })
+
+    it('should show a validation errors for service name and Welsh service name fields', () => {
+      setupStubs(welshServiceName)
+      cy.get('input#service-name').clear()
+      cy.get('input#service-name-cy').type('Lorem ipsum dolor sit amet, consectetuer adipiscing', { delay: 0 })
+      cy.get('button').contains('Save').click()
+
+      cy.title().should('eq', 'Edit service name - GOV.UK Pay')
+
+      cy.get('.govuk-error-summary').find('a').should('have.length', 2)
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('a[href="#service-name"]').should('contain', 'Service name')
+        cy.get('a[href="#service-name-cy"]').should('contain', 'Welsh service name')
+      })
+      cy.get('.govuk-form-group--error > input#service-name').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+      })
+      cy.get('.govuk-form-group--error > input#service-name-cy').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'The text is too long')
+      })
     })
 
     it('should update Welsh service name to Cymraeg', () => {

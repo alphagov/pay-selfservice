@@ -30,10 +30,11 @@ async function postEditServiceName (req, res, next) {
   const serviceName = lodash.get(req, 'body.service-name')
   const hasServiceNameCy = lodash.get(req, 'body.welsh-service-name-bool', true)
   const serviceNameCy = hasServiceNameCy ? lodash.get(req, 'body.service-name-cy') : ''
-  const validationErrors = validateServiceName(serviceName, 'service_name', true)
-  const validationErrorsCy = validateServiceName(serviceNameCy, 'service_name_cy', false)
-
-  if (Object.keys(validationErrors).length || Object.keys(validationErrorsCy).length) {
+  const validationErrors = {
+    ...validateServiceName(serviceName, 'service_name', true),
+    ...validateServiceName(serviceNameCy, 'service_name_cy', false)
+  }
+  if (Object.keys(validationErrors).length) {
     lodash.set(req, 'session.pageData.editServiceName', {
       errors: validationErrors,
       current_name: lodash.merge({}, { en: serviceName, cy: serviceNameCy })
