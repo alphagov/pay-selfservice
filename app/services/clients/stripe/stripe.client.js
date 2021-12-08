@@ -102,6 +102,14 @@ module.exports = {
     const payload = {
       business_profile: {
         product_description: `Payments for public sector services for organisation ${organisationName}`
+      },
+      capabilities: {
+        card_payments: {
+          requested: true
+        },
+        transfers: {
+          requested: true
+        }
       }
     }
 
@@ -115,11 +123,5 @@ module.exports = {
       }
     }
     return stripe.accounts.update(stripeAccountId, payload)
-  },
-
-  removeLegacyPaymentsCapability: function (stripeAccountId) {
-    return stripe.accounts.updateCapability(stripeAccountId,
-      'legacy_payments', { requested: false }
-    )
   }
 }

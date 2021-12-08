@@ -90,7 +90,7 @@ async function completeKyc (gatewayAccountId, service, stripeAccountId, correlat
     connector.disableCollectAdditionalKyc(gatewayAccountId, correlationId)
   ])
 
-  logger.info('KYC additional information completed for Stripe account (but not moved to new capabilities)', {
+  logger.info('KYC additional information completed for Stripe account (added new capabilities)', {
     stripe_account_id: stripeAccountId
   })
 }
