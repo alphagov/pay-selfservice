@@ -330,21 +330,19 @@ const showNameYourService = function showNameYourService (req, res) {
 const submitYourServiceName = async function submitYourServiceName (req, res, next) {
   const correlationId = req.correlationId
   const serviceName = req.body['service-name']
-  const serviceNameCy = req.body['service-name-cy']
-  const validationErrors = validateServiceName(serviceName, 'service-name-en', true)
-  const validationErrorsCy = validateServiceName(serviceNameCy, 'service-name-cy', false)
+  const validationErrors = validateServiceName(serviceName, 'service_name', true)
 
-  if (Object.keys(validationErrors).length || Object.keys(validationErrorsCy).length) {
+  if (Object.keys(validationErrors).length) {
     lodash.set(req, 'session.pageData.submitYourServiceName', {
       errors: validationErrors,
-      current_name: lodash.merge({}, { en: serviceName, cy: serviceNameCy })
+      current_name: lodash.merge({}, { en: serviceName })
     })
     res.redirect(303, paths.selfCreateService.serviceNaming)
   } else {
     try {
       const { service } = req.user.serviceRoles[0]
       const account = await connectorClient.getAccount({ gatewayAccountId: service.gatewayAccountIds[0] })
-      await serviceService.updateServiceName(service.externalId, serviceName, serviceNameCy, correlationId)
+      await serviceService.updateServiceName(service.externalId, serviceName, null, correlationId)
       lodash.unset(req, 'session.pageData.submitYourServiceName')
       res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, account.external_id))
     } catch (err) {

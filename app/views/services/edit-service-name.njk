@@ -31,18 +31,11 @@
     <form id="edit-service-name-form" method="post" action="{{submit_link}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
-      {% set enNameError = false %}
-      {% if errors.service_name %}
-        {% set enNameError = {
-          text: errors.service_name
-        } %}
-      {% endif %}
-
       {{ govukInput({
           label: {
             text: "Service name"
           },
-          errorMessage: enNameError,
+          errorMessage: { text: errors.service_name } if errors.service_name else false,
           id: "service-name",
           name: "service-name",
           value: current_name.en,
@@ -51,20 +44,13 @@
         })
       }}
 
-      {% set cyNameError = false %}
-      {% if errors.service_name %}
-        {% set cyNameError = {
-          text: errors.service_name_cy
-        } %}
-      {% endif %}
-
       {% set welshServiceNameHTML %}
         {{ govukInput({
           id: "service-name-cy",
           name: "service-name-cy",
           type: "text",
           value: current_name.cy,
-          errorMessage: cyNameError,
+          errorMessage: { text: errors.service_name_cy } if errors.service_name_cy else false,
           classes: "govuk-!-width-two-thirds",
           label: {
             text: "Welsh service name"

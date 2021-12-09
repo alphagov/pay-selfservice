@@ -85,6 +85,26 @@ describe('Add a new service', () => {
       cy.get('input#service-name-cy').should('exist')
     })
 
+    it('should show a validation errors for service name and Welsh service name fields', () => {
+      setupStubs()
+      cy.get('input#service-name-cy').type('Lorem ipsum dolor sit amet, consectetuer adipiscing', { delay: 0 })
+      cy.get('button').contains('Add service').click()
+
+      cy.title().should('eq', 'Add a new service - GOV.UK Pay')
+
+      cy.get('.govuk-error-summary').find('a').should('have.length', 2)
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('a[href="#service-name"]').should('contain', 'Service name')
+        cy.get('a[href="#service-name-cy"]').should('contain', 'Welsh service name')
+      })
+      cy.get('.govuk-form-group--error > input#service-name').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+      })
+      cy.get('.govuk-form-group--error > input#service-name-cy').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'The text is too long')
+      })
+    })
+
     it('should add a service', () => {
       setupStubs([
         createGatewayAccountStub,
@@ -92,6 +112,8 @@ describe('Add a new service', () => {
         serviceStubs.postCreateServiceSuccess({ serviceExternalId: newServiceId, gatewayAccountId: newGatewayAccountId, serviceName: { en: newServiceName, cy: newServiceWelshName } }),
         serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId })
       ])
+      cy.get('input#service-name').clear()
+      cy.get('input#service-name-cy').clear()
       cy.get('input#service-name').type(newServiceName)
       cy.get('input#service-name-cy').type(newServiceWelshName)
       cy.get('button').contains('Add service').click()
