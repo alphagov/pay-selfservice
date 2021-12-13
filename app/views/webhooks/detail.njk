@@ -37,7 +37,11 @@
     }) }}
     {{ govukButton({
       text: "Manage signing secret",
-      classes: "govuk-button--secondary"
+      classes: "govuk-button--secondary",
+      href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.signingSecret, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id),
+      attributes: {
+        "id": "signing-secret"
+      }
     }) }}
   </div>
 
