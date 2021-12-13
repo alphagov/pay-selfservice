@@ -154,6 +154,7 @@ module.exports = {
       index: '/webhooks',
       detail: '/webhooks/:webhookId',
       update: '/webhooks/:webhookId/update',
+      signingSecret: '/webhooks/:webhookId/signing-secret',
       create: '/webhooks/create'
     }
   },

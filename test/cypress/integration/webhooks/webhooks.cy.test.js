@@ -12,7 +12,8 @@ const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({ userExternalId, serviceExternalId, gatewayAccountId }),
   gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId }),
   webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
-  webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId })
+  webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId }),
+  webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, external_id: webhookExternalId })
 ]
 
 describe('Webhooks', () => {
@@ -78,5 +79,16 @@ describe('Webhooks', () => {
     cy.get('[value=card_payment_captured]').should('be.checked')
 
     cy.get('button').contains('Update Webhook').click()
+  })
+
+  it('should show a webhook signing secret', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+    cy.get('#signing-secret').click()
+
+    cy.get('h1').contains('Manage signing secret')
+
+    cy.get('#secret').contains('valid-signing-secret')
   })
 })

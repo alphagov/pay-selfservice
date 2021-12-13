@@ -7,6 +7,7 @@ const paths = require('../../paths')
 const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-strategy-account-paths-for')
 
 const webhooksService = require('./webhooks.service')
+const logger = require('../../utils/logger.js')(__filename)
 
 async function webhookDetailPage(req, res, next) {
   try {
@@ -39,6 +40,22 @@ async function updateWebhookPage(req, res, next) {
   }
 }
 
+async function signingSecretPage(req, res, next) {
+  try {
+    let signingSecret
+    const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
+
+    try {
+      signingSecret = await webhooksService.getSigningSecret(req.params.webhookId, req.service.externalId)
+    } catch (error) {
+      logger.warn('Unable to fetch signing secret for Webhook')
+    }
+    response(req, res, 'webhooks/signing_secret', { webhook, signingSecret })
+  } catch (error) {
+    next(error)
+  }
+}
+
 async function createWebhook(req, res, next) {
   try {
     await webhooksService.createWebhook(req.service.externalId, req.isLive, req.body)
@@ -63,5 +80,6 @@ module.exports = {
   createWebhook,
   updateWebhookPage,
   updateWebhook,
-  webhookDetailPage
+  webhookDetailPage,
+  signingSecretPage
 }
