@@ -83,12 +83,26 @@ async function updateWebhook (req, res, next) {
   }
 }
 
+async function toggleActiveWebhook(req, res, next) {
+  try {
+    const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
+
+    await webhooksService.toggleStatus(req.params.webhookId, req.service.externalId, webhook.status)
+
+    req.flash('generic', 'Webhook status updated')
+    res.redirect(formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.detail, req.account.type, req.service.externalId, req.account.external_id, req.params.webhookId))
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   listWebhooksPage,
   createWebhookPage,
   createWebhook,
-  updateWebhookPage,
   updateWebhook,
+  toggleActiveWebhook,
+  updateWebhookPage,
   webhookDetailPage,
   signingSecretPage,
   toggleActivePage

@@ -95,7 +95,7 @@
 
   <div class="govuk-!-margin-top-6">
     {% set actionText = "Deactivate Webhook" if webhook.status == "ACTIVE" else "Activate Webhook" %}
-    <a class="govuk-link govuk-link--no-visited-state pay-link-text-red" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.toggleActive, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">{{ actionText }}</a>
+    <a id="toggle-status" class="govuk-link govuk-link--no-visited-state pay-link-text-red" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.toggleActive, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">{{ actionText }}</a>
   </div>
 </div>
 {% endblock %}
