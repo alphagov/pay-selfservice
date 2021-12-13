@@ -6,6 +6,7 @@ const proxyquire = require('proxyquire')
 const userFixtures = require('../../fixtures/user.fixtures')
 const inviteFixtures = require('../../fixtures/invite.fixtures')
 const paths = require('../../../app/paths')
+const routes = require('../routes')
 const User = require('../../../app/models/User.class')
 const { RegistrationSessionMissingError } = require('../../../app/errors')
 

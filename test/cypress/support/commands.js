@@ -6,3 +6,13 @@ Cypress.Commands.add('setEncryptedCookies', (userId, pageData = {}) => {
     cy.setCookie('session', cookies.encryptedSessionCookie)
   })
 })
+
+Cypress.Commands.add('setEncryptedRegisterInviteCookies', (registerInvite, pageData = {}) => {
+  cy.task('getRegisterInviteCookies', {
+    email: registerInvite.email,
+    code: registerInvite.code,
+    pageData
+  }).then(cookies => {
+    cy.setCookie('register_invite', cookies.encryptedRegisterInviteCookie)
+  })
+})

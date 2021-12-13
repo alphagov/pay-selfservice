@@ -6,6 +6,7 @@ const payoutService = require('./payouts.service')
 const { NoServicesWithPermissionError } = require('../../errors')
 
 const listAllServicesPayouts = async function listAllServicesPayouts (req, res, next) {
+
   const { page } = req.query
 
   // a filter param will be set on status specific routes, if they're not set the

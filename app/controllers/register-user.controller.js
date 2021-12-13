@@ -21,17 +21,19 @@ const registrationSessionPresent = function registrationSessionPresent (sessionD
 
 const showRegistration = function showRegistration (req, res, next) {
   const sessionData = req.register_invite
+
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
   const recovered = sessionData.recovered || {}
   delete sessionData.recovered
   const data = {
+    formSubmitAction: paths.registerUser.registration,
     email: sessionData.email,
     telephone_number: recovered.telephoneNumber || sessionData.telephone_number,
     errors: recovered.errors
   }
-  response(req, res, 'user-registration/register', data)
+  response(req, res, 'common-user-create/set-password', data)
 }
 
 /**

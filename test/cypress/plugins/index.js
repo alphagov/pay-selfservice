@@ -25,6 +25,14 @@ module.exports = (on, config) => {
       )
       return { encryptedSessionCookie }
     },
+    getRegisterInviteCookies (opts) {
+      const encryptedRegisterInviteCookie = generateEncryptedRegisterInviteCookie(
+        config.env.TEST_SESSION_ENCRYPTION_KEY,
+        opts.email,
+        opts.code,
+      )
+      return { encryptedRegisterInviteCookie }
+    },
     /**
      * Makes a post request to Mountebank to setup an Imposter with stubs built using the array of
      * stubs
@@ -88,8 +96,8 @@ module.exports = (on, config) => {
   return config
 }
 
-function generateEncryptedSessionCookie (sessionEncyptionKey, userExternalId, pageData = {}) {
-  const encryptedSessionCookie = cookieMonster.getCookie('session', sessionEncyptionKey,
+function generateEncryptedSessionCookie (sessionEncryptionKey, userExternalId, pageData = {}) {
+  const encryptedSessionCookie = cookieMonster.getCookie('session', sessionEncryptionKey,
     {
       passport: { user: userExternalId },
       secondFactor: 'totp',
@@ -98,4 +106,13 @@ function generateEncryptedSessionCookie (sessionEncyptionKey, userExternalId, pa
       pageData
     })
   return encryptedSessionCookie
+}
+
+function generateEncryptedRegisterInviteCookie (sessionEncryptionKey, email, code) {
+  const encryptedRegisterInviteCookie = cookieMonster.getCookie('register_invite', sessionEncryptionKey,
+    {
+      code: code,
+      email: email
+    })
+  return encryptedRegisterInviteCookie
 }
