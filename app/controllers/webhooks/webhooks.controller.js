@@ -56,6 +56,15 @@ async function signingSecretPage(req, res, next) {
   }
 }
 
+async function toggleActivePage(req, res, next) {
+  try {
+    const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
+    response(req, res, 'webhooks/toggle_active', { webhook })
+  } catch (error) {
+    next(error)
+  }
+}
+
 async function createWebhook(req, res, next) {
   try {
     await webhooksService.createWebhook(req.service.externalId, req.isLive, req.body)
@@ -81,5 +90,6 @@ module.exports = {
   updateWebhookPage,
   updateWebhook,
   webhookDetailPage,
-  signingSecretPage
+  signingSecretPage,
+  toggleActivePage
 }
