@@ -91,4 +91,18 @@ describe('Webhooks', () => {
 
     cy.get('#secret').contains('valid-signing-secret')
   })
+
+  it('should toggle a webhook status', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.get('[data-action=update]').then((links) => links[0].click())
+    cy.get('#toggle-status').click()
+
+    cy.get('h1').contains('Deactivate Webhook')
+
+    cy.get('#toggle-active-webhook').click()
+    cy.get('.govuk-notification-banner__heading').contains('Webhook status updated')
+  })
 })

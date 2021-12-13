@@ -39,16 +39,18 @@
       }]
     }) }}
 
-    <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.status, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">
-    {{
-      govukButton({
-        text: actionText,
-        classes: "govuk-button--warning govuk-!-margin-top-4",
-        attributes: {
-          id: "toggle-active-webhook"
-        }
-      })
-    }}
+    <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.toggleActive, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">
+
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+      {{
+        govukButton({
+          text: actionText,
+          classes: "govuk-button--warning govuk-!-margin-top-4",
+          attributes: {
+            id: "toggle-active-webhook"
+          }
+        })
+      }}
     </form>
   </div>
 </div>
