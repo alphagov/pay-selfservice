@@ -11,8 +11,21 @@ const logger = require('../../utils/logger.js')(__filename)
 
 async function webhookDetailPage (req, res, next) {
   try {
+    let search
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
-    response(req, res, 'webhooks/detail', { eventTypes: constants.webhooks.humanReadableSubscriptions, webhook })
+
+    try {
+      search = await webhooksService.getWebhookMessages(req.params.webhookId, req.service.externalId)
+    } catch (messageSearchError) {
+      logger.warn('Unable to fetch messages for Webhook')
+    }
+
+    response(req, res, 'webhooks/detail', {
+      eventTypes: constants.webhooks.humanReadableSubscriptions,
+      webhook,
+      search,
+      ...search && { messages: search.results }
+    })
   } catch (error) {
     next(error)
   }

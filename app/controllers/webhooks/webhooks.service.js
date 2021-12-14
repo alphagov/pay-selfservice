@@ -1,9 +1,24 @@
 'use strict'
 
 const webhooksClient = require('./../../services/clients/webhooks.client')
+const Paginator = require('../../utils/paginator')
+
+const PAGE_SIZE = 10
+const MAX_PAGES = 3
 
 function sortByActiveStatus (a, b) {
   return Number(b.status === 'ACTIVE') - Number(a.status === 'ACTIVE')
+}
+
+function formatPages(searchResponse) {
+  const { total, page } = searchResponse
+  const paginator = new Paginator(total, PAGE_SIZE, page)
+  const hasMultiplePages = paginator.getLast() > 1
+  const links = hasMultiplePages && paginator.getNamedCentredRange(MAX_PAGES, true, true)
+  return {
+    ...searchResponse,
+    links
+  }
 }
 
 async function listWebhooks (serviceId, isLive) {
@@ -23,6 +38,11 @@ function updateWebhook (id, serviceId, options = {}) {
 
 function getWebhook (id, serviceId) {
   return webhooksClient.webhook(id, serviceId)
+}
+
+async function getWebhookMessages(id, serviceId, options = {}) {
+  const searchResponse =  await webhooksClient.messages(id, serviceId, options)
+  return formatPages(searchResponse)
 }
 
 function getSigningSecret(webhookId, serviceId) {
@@ -45,5 +65,6 @@ module.exports = {
   getWebhook,
   getSigningSecret,
   resetSigningSecret,
-  toggleStatus
+  toggleStatus,
+  getWebhookMessages
 }

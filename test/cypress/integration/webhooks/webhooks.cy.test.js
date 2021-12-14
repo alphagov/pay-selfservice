@@ -13,6 +13,7 @@ const userAndGatewayAccountStubs = [
   gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId }),
   webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
   webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId }),
+  webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [ { status: 'SUCCEEDED' }, { status: 'FAILED' }, { status: 'PENDING' } ] }),
   webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, external_id: webhookExternalId })
 ]
 
