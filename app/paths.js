@@ -156,6 +156,7 @@ module.exports = {
       update: '/webhooks/:webhookId/update',
       signingSecret: '/webhooks/:webhookId/signing-secret',
       toggleActive: '/webhooks/:webhookId/status',
+      message: '/webhooks/:webhookId/message/:messageId',
       create: '/webhooks/create'
     }
   },

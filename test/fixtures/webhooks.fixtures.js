@@ -11,6 +11,27 @@ function validWebhook(options = {}) {
   }
 }
 
+function validWebhookMessageAttempt(options = {}) {
+  return {
+    status: options.status || 'SUCCEEDED', // 'FAILED', 'PENDING'
+    succeeded: options.succeeded || true,
+    send_at: options.event_date || '2021-08-20T14:00:00.000Z'
+  }
+}
+
+// mock webhook messages  -- should this have a pending retry date? does that have to be worked out? assuming yes
+// mock webhook message attempts -- do we need to derive status on the consumer? assuming no
+function validWebhookMessage(options = {}) {
+  return {
+    external_id: options.external_id || 'valid-webhook-message-external-id',
+    created_date: options.created_date || '2021-08-20T14:00:00.000Z',
+    event_date: options.event_date || '2021-08-20T14:00:00.000Z',
+    event_type: options.event_type || 'card_payment_captured',
+    status: options.status || 'SUCCEEDED', // 'FAILED', 'PENDING'
+    ...options.attempts && options.attempts.map(validWebhookMessageAttempt)
+  }
+}
+
 function validSigningSecret(options = {}) {
   return {
     signing_key: options.signing_key || 'valid-signing-secret'
@@ -29,8 +50,18 @@ function webhookSigningSecretResponse(options = {}) {
   return validSigningSecret(options)
 }
 
+function webhookMessageSearchResponse(options = []) {
+  return {
+    total: options.length,
+    count: options.length,
+    page: 1,
+    results: options.map(validWebhookMessage)
+  }
+}
+
 module.exports = {
   webhooksListResponse,
   webhookResponse,
-  webhookSigningSecretResponse
+  webhookSigningSecretResponse,
+  webhookMessageSearchResponse
 }

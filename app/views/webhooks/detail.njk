@@ -45,34 +45,51 @@
     }) }}
   </div>
 
+  {% macro statusTag(status) %}
+    {% set map = {
+      "SUCCEEDED": "govuk-tag--green",
+      "FAILED": "govuk-tag--red",
+      "PENDING": "govuk-tag--grey"
+    } %}
+    <strong class="govuk-tag {{ map[status] }}">{{ status }}</strong>
+  {% endmacro %}
+
   <div class="govuk-!-margin-top-6">
     <h2 class="govuk-heading-m">Events history</h2>
 
     <p class="govuk-body">Events sent to your Webhook are stored for 14 days.</p>
 
-    {% if events and events.length >= 0 %}
+    {% if messages and messages.length >= 0 %}
       {% set status = 'all' %}
+      <div class="govuk-body govuk-!-margin-top-4">
       <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'succeeded' %} govuk-!-font-weight-bold {% endif %}" href="?status=succeeded&page={{ page }}">Succeeded</a>
       <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'failed' %} govuk-!-font-weight-bold {% endif %}" href="?status=failed&page={{ page }}">Failed</a>
       <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'all' %} govuk-!-font-weight-bold {% endif %}" href="?status=all&page={{ page }}">All</a>
+      </div>
 
-      <table class="govuk-table govuk-!-margin-top-6">
+      <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
             <th class="govuk-table__header" scope="col">Name</th>
             <th class="govuk-table__header" scope="col">Delivery status</th>
             <th class="govuk-table__header" scope="col">Date</th>
-            <th class="govuk-table__header" scope="col">Pending retry</th>
+            {# <th class="govuk-table__header" scope="col">Pending retry</th> #}
           </tr>
         </thead>
 
         <tbody class="govuk-table__body">
-        {% for event in events %}
+        {% for message in messages %}
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{ event.name }}</td>
-            <td class="govuk-table__cell">{{ event.status }}</td>
-            <td class="govuk-table__cell">{{ event.created_date }}</td>
-            <td class="govuk-table__cell">{{ event.retry_date }}</td>
+            <td class="govuk-table__cell">
+              <a
+                class="govuk-link"
+                href="{{  formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.message, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id, message.external_id) }}">
+                {{ eventTypes[message.event_type | upper] }}
+              </a>
+            </td>
+            <td class="govuk-table__cell">{{ statusTag(message.status) }}</td>
+            <td class="govuk-table__cell">{{ message.event_date | datetime('datelong') }} {{ message.event_date | datetime('time') }}</td>
+            {# <td class="govuk-table__cell">{{ message.retry_date }}</td> #}
           </tr>
 
         {% else %}
@@ -85,6 +102,9 @@
         </tbody>
       </table>
 
+      <div class="govuk-!-margin-top-1">
+        {% include "webhooks/_paginator.njk" %}
+      </div>
     {% else %}
       {{ govukWarningText({
         text: "Unable to load events for Webhook",
@@ -93,7 +113,8 @@
     {% endif %}
   </div>
 
-  <div class="govuk-!-margin-top-6">
+  {# spacing hack because the standard paginator template interrupts the page flow #}
+  <div class="govuk-column-two-thirds" {% if search.links and search.links.length %}style="margin-top: 100px"{% endif %}>
     {% set actionText = "Deactivate Webhook" if webhook.status == "ACTIVE" else "Activate Webhook" %}
     <a id="toggle-status" class="govuk-link govuk-link--no-visited-state pay-link-text-red" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.toggleActive, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">{{ actionText }}</a>
   </div>
