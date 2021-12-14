@@ -25,7 +25,12 @@
       There is a problem
     </h2>
     <div class="govuk-error-summary__body">
-      <p class="govuk-body">Please check your Worldpay credentials and try making another payment.</p> 
+      {% switch targetCredential.payment_provider %}
+        {% case 'worldpay' %}
+      <p class="govuk-body">Please check your Worldpay credentials and try making another payment.</p>
+        {% default %}
+      <p class="govuk-body">Please try making another payment.</p>
+      {% endswitch %}
       <p class="govuk-body">If this does not work, email us at <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a>.</p>
     </div>
   </div>
