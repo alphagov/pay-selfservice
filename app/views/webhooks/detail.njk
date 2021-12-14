@@ -1,0 +1,93 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Webhook {{ webhook.callback_url }} - {{currentService.name}} {{ humanReadableEnvironment }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l page-title" title="{{ webhook.callback_url }}">
+    {{ webhook.callback_url | truncate(40) }}
+    <strong class="govuk-tag govuk-tag--blue">{{ webhook.status }}</strong>
+  </h1>
+
+  <p class="govuk-body">{{ webhook.description }}</p>
+
+  <p class="govuk-body">
+    <ul class="govuk-list govuk-list--bullet">
+    {% for subscription in webhook.subscriptions %}
+      {% set key = subscription | upper %}
+      <li>{{ eventTypes[key] }}</li>
+    {% endfor %}
+    </ul>
+  </p>
+
+  <div>
+    {{ govukButton({
+      text: "Update details",
+      classes: "govuk-button--secondary",
+      href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.update, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id),
+      attributes: {
+        "data-action": "update"
+      }
+    }) }}
+    {{ govukButton({
+      text: "Manage signing secret",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
+
+  <div class="govuk-!-margin-top-6">
+    <h2 class="govuk-heading-m">Events history</h2>
+
+    <p class="govuk-body">Events sent to your Webhook are stored for 14 days.</p>
+
+    {% if events and events.length >= 0 %}
+      {% set status = 'all' %}
+      <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'succeeded' %} govuk-!-font-weight-bold {% endif %}" href="?status=succeeded&page={{ page }}">Succeeded</a>
+      <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'failed' %} govuk-!-font-weight-bold {% endif %}" href="?status=failed&page={{ page }}">Failed</a>
+      <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'all' %} govuk-!-font-weight-bold {% endif %}" href="?status=all&page={{ page }}">All</a>
+
+      <table class="govuk-table govuk-!-margin-top-6">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Name</th>
+            <th class="govuk-table__header" scope="col">Delivery status</th>
+            <th class="govuk-table__header" scope="col">Date</th>
+            <th class="govuk-table__header" scope="col">Pending retry</th>
+          </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+        {% for event in events %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ event.name }}</td>
+            <td class="govuk-table__cell">{{ event.status }}</td>
+            <td class="govuk-table__cell">{{ event.created_date }}</td>
+            <td class="govuk-table__cell">{{ event.retry_date }}</td>
+          </tr>
+
+        {% else %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell" colspan="4">
+              <i>No events found for Webhook</i>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+    {% else %}
+      {{ govukWarningText({
+        text: "Unable to load events for Webhook",
+        iconFallbackText: "Warning"
+      }) }}
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

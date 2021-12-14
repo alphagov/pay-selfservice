@@ -22,6 +22,7 @@ const mainSettingsPaths = [
 
 const yourPspPaths = ['your-psp', 'notification-credentials']
 const additionalPspPaths = ['switch-psp', 'kyc']
+const webhookPaths =['webhooks']
 
 const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {
   const navigationItems = []
@@ -53,7 +54,7 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
-    current: currentPath !== '/' ? yourPspPaths.concat(additionalPspPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
+    current: currentPath !== '/' ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
       ...mainSettingsPaths,
       paths.account.apiKeys,
       paths.futureAccountStrategy.webhooks,
