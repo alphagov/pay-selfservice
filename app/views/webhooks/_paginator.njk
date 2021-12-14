@@ -4,6 +4,7 @@
   {% for paginationLink in links %}
     <form class="paginationForm page-{{paginationLink.pageName}}" method="GET">
       <input type="hidden" name="page" value="{{paginationLink.pageNumber}}"/>
+      <input type="hidden" name="status" value="{{status}}"/>
 
       <button class="pagination {{paginationLink.pageName}} {% if paginationLink.activePage %}active{% endif %}" type="submit">
         {% if paginationLink.hasSymbolicName %}

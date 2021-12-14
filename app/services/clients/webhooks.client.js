@@ -72,7 +72,8 @@ function messages(id, serviceId, options = {}) {
     url,
     qs: {
       service_id: serviceId,
-      status: options.status
+      status: options.status,
+      page: options.page
     },
     description: 'List messages for webhook',
     ...defaultRequestOptions,

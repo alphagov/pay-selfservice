@@ -60,10 +60,9 @@
     <p class="govuk-body">Events sent to your Webhook are stored for 14 days.</p>
 
     {% if messages and messages.length >= 0 %}
-      {% set status = 'all' %}
       <div class="govuk-body govuk-!-margin-top-4">
       <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'succeeded' %} govuk-!-font-weight-bold {% endif %}" href="?status=succeeded&page={{ page }}">Succeeded</a>
-      <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'failed' %} govuk-!-font-weight-bold {% endif %}" href="?status=failed&page={{ page }}">Failed</a>
+      <a id="filter-failed" class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'failed' %} govuk-!-font-weight-bold {% endif %}" href="?status=failed&page={{ page }}">Failed</a>
       <a class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-1 {% if status == 'all' %} govuk-!-font-weight-bold {% endif %}" href="?status=all&page={{ page }}">All</a>
       </div>
 
