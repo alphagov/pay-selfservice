@@ -12,7 +12,8 @@ const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({ userExternalId, serviceExternalId, gatewayAccountId }),
   gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId }),
   webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
-  webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId })
+  webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId }),
+  webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, external_id: webhookExternalId })
 ]
 
 describe('Webhooks', () => {
@@ -78,5 +79,30 @@ describe('Webhooks', () => {
     cy.get('[value=card_payment_captured]').should('be.checked')
 
     cy.get('button').contains('Update Webhook').click()
+  })
+
+  it('should show a webhook signing secret', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+    cy.get('#signing-secret').click()
+
+    cy.get('h1').contains('Manage signing secret')
+
+    cy.get('#secret').contains('valid-signing-secret')
+  })
+
+  it('should toggle a webhook status', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.get('[data-action=update]').then((links) => links[0].click())
+    cy.get('#toggle-status').click()
+
+    cy.get('h1').contains('Deactivate Webhook')
+
+    cy.get('#toggle-active-webhook').click()
+    cy.get('.govuk-notification-banner__heading').contains('Webhook status updated')
   })
 })

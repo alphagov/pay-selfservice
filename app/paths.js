@@ -158,6 +158,8 @@ module.exports = {
       index: '/webhooks',
       detail: '/webhooks/:webhookId',
       update: '/webhooks/:webhookId/update',
+      signingSecret: '/webhooks/:webhookId/signing-secret',
+      toggleActive: '/webhooks/:webhookId/status',
       create: '/webhooks/create'
     }
   },

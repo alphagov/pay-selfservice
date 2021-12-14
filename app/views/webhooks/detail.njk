@@ -37,7 +37,11 @@
     }) }}
     {{ govukButton({
       text: "Manage signing secret",
-      classes: "govuk-button--secondary"
+      classes: "govuk-button--secondary",
+      href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.signingSecret, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id),
+      attributes: {
+        "id": "signing-secret"
+      }
     }) }}
   </div>
 
@@ -89,5 +93,9 @@
     {% endif %}
   </div>
 
+  <div class="govuk-!-margin-top-6">
+    {% set actionText = "Deactivate Webhook" if webhook.status == "ACTIVE" else "Activate Webhook" %}
+    <a id="toggle-status" class="govuk-link govuk-link--no-visited-state pay-link-text-red" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.toggleActive, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">{{ actionText }}</a>
+  </div>
 </div>
 {% endblock %}

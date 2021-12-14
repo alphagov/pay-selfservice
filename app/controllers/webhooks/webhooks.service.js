@@ -25,9 +25,25 @@ function getWebhook (id, serviceId) {
   return webhooksClient.webhook(id, serviceId)
 }
 
+function getSigningSecret(webhookId, serviceId) {
+  return webhooksClient.signingSecret(webhookId, serviceId)
+}
+
+function resetSigningSecret(webhookId, serviceId) {
+  return webhooksClient.resetSigningSecret(webhookId, serviceId)
+}
+
+function toggleStatus(webhookId, serviceId, currentStatus) {
+  const status = currentStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+  return webhooksClient.updateWebhook(webhookId, serviceId, { status })
+}
+
 module.exports = {
   listWebhooks,
   createWebhook,
   updateWebhook,
-  getWebhook
+  getWebhook,
+  getSigningSecret,
+  resetSigningSecret,
+  toggleStatus
 }

@@ -5,3 +5,11 @@
 .pay-text-black {
   color: $govuk-text-colour;
 }
+
+.pay-link-text-red {
+  color: govuk-colour("red") !important;
+}
+
+.pay-link-text-red:hover {
+  color: govuk-colour("red") !important;
+}

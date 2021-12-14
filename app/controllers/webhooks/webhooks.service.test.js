@@ -34,6 +34,20 @@ describe('webhooks service', () => {
       sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
     })
   })
+  describe('Toggle webhook status', () => {
+    it('should deactivate given an active webhook', () => {
+      const spy = sinon.spy(async () => {})
+      const service = getWebhooksServiceWithStub({ updateWebhook: spy })
+      service.toggleStatus('webhook-id', 'service-id', 'ACTIVE')
+      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', { status: 'INACTIVE' })
+    })
+    it('should active given an inactive webhook', () => {
+      const spy = sinon.spy(async () => {})
+      const service = getWebhooksServiceWithStub({ updateWebhook: spy })
+      service.toggleStatus('webhook-id', 'service-id', 'INACTIVE')
+      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', { status: 'ACTIVE' })
+    })
+  })
 })
 
 function getWebhooksServiceWithStub (stub) {

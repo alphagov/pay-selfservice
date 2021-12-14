@@ -1,0 +1,57 @@
+{% extends "layout.njk" %}
+
+{% set actionText = "Deactivate Webhook" if webhook.status == "ACTIVE" else "Activate Webhook" %}
+
+{% block pageTitle %}
+  {{ actionText }} {{ webhook.callback_url }} - {{currentService.name}} {{ humanReadableEnvironment }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  {{ govukBackLink({
+    text: "Back to Webhook",
+    classes: "govuk-!-margin-top-0",
+    href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id)
+  }) }}
+
+  <h1 class="govuk-heading-l page-title">{{ actionText }}</h1>
+
+  <p class="govuk-body">
+    Inactive Webhooks will not send payment events to your callback URL.
+  </p>
+
+  <p class="govuk-body">
+    Webhooks can be activated again at any time.
+  </p>
+
+  <div class="govuk-!-margin-top-4">
+    {{ govukSummaryList({
+      rows: [{
+        key: { text: "Callback URL" },
+        value: { text: webhook.callback_url }
+      }, {
+        key: { text: "Description" },
+        value: { text: webhook.description }
+      }]
+    }) }}
+
+    <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.toggleActive, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">
+
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+      {{
+        govukButton({
+          text: actionText,
+          classes: "govuk-button--warning govuk-!-margin-top-4",
+          attributes: {
+            id: "toggle-active-webhook"
+          }
+        })
+      }}
+    </form>
+  </div>
+</div>
+{% endblock %}

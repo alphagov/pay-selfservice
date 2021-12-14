@@ -11,6 +11,12 @@ function validWebhook (options = {}) {
   }
 }
 
+function validSigningSecret(options = {}) {
+  return {
+    signing_key: options.signing_key || 'valid-signing-secret'
+  }
+}
+
 function webhooksListResponse (options = []) {
   return options.map((option) => validWebhook(option))
 }
@@ -19,7 +25,12 @@ function webhookResponse (options = {}) {
   return validWebhook(options)
 }
 
+function webhookSigningSecretResponse(options = {}) {
+  return validSigningSecret(options)
+}
+
 module.exports = {
   webhooksListResponse,
-  webhookResponse
+  webhookResponse,
+  webhookSigningSecretResponse
 }

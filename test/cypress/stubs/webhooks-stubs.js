@@ -25,7 +25,18 @@ function getWebhookSuccess (opts = {}) {
   })
 }
 
+function getWebhookSigningSecret(opts = {}) {
+  const path = `/v1/webhook/${opts.external_id}/signing-key`
+  return stubBuilder('GET', path, 200, {
+    query: {
+      service_id: opts.service_id
+    },
+    response: webhooksFixtures.webhookSigningSecretResponse(opts)
+  })
+}
+
 module.exports = {
   getWebhooksListSuccess,
-  getWebhookSuccess
+  getWebhookSuccess,
+  getWebhookSigningSecret
 }
