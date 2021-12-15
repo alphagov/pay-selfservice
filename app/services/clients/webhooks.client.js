@@ -66,6 +66,22 @@ function webhooks (serviceId, isLive, options = {}) {
   return baseClient.get(request)
 }
 
+function messages(id, serviceId, options = {}) {
+  const url = urlJoin('/v1/webhook', id, 'message')
+  const request = {
+    url,
+    qs: {
+      service_id: serviceId,
+      status: options.status,
+      page: options.page
+    },
+    description: 'List messages for webhook',
+    ...defaultRequestOptions,
+    ...options
+  }
+  return baseClient.get(request)
+}
+
 function createWebhook (serviceId, isLive, options = {}) {
   const url = '/v1/webhook'
   const request = {
@@ -110,5 +126,6 @@ module.exports = {
   createWebhook,
   updateWebhook,
   signingSecret,
-  resetSigningSecret
+  resetSigningSecret,
+  messages
 }

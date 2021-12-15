@@ -13,6 +13,10 @@ const userAndGatewayAccountStubs = [
   gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId }),
   webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
   webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId }),
+  webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [
+    { status: 'PENDING' }, { status: 'PENDING' }, { status: 'FAILED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' },
+    { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }
+  ] }),
   webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, external_id: webhookExternalId })
 ]
 
@@ -53,13 +57,21 @@ describe('Webhooks', () => {
 
   it('should display a valid webhooks details', () => {
     cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs
+      ...userAndGatewayAccountStubs,
+      webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [{ status: 'FAILED' }], status: 'failed' })
     ])
 
     cy.get('[data-action=update]').then((links) => links[0].click())
 
     cy.get('h1').contains('https://some-callback-url.com')
     cy.get('.govuk-list.govuk-list--bullet > li').should('have.length', 1)
+
+    // based on number of rows stubbed and client pagination logic
+    cy.get('.govuk-table__body > .govuk-table__row').should('have.length', 12)
+    cy.get('.paginationForm').should('have.length', 3)
+
+    cy.get('a#filter-failed').click()
+    cy.get('a#filter-failed').should('have.class', 'govuk-!-font-weight-bold')
   })
 
   it('should update a webhook with valid properties', () => {

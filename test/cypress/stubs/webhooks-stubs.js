@@ -14,6 +14,19 @@ function getWebhooksListSuccess (opts) {
   })
 }
 
+function getWebhookMessagesListSuccess(opts = {}) {
+  const webhook = webhooksFixtures.webhookResponse(opts)
+  const path = `/v1/webhook/${webhook.external_id}/message`
+  return stubBuilder('GET', path, 200, {
+    query: {
+      service_id: webhook.service_id,
+      page: opts.page || 1,
+      status: opts.status || 'all'
+    },
+    response: webhooksFixtures.webhookMessageSearchResponse(opts.messages || [])
+  })
+}
+
 function getWebhookSuccess (opts = {}) {
   const webhook = webhooksFixtures.webhookResponse(opts)
   const path = `/v1/webhook/${webhook.external_id}`
@@ -38,5 +51,6 @@ function getWebhookSigningSecret(opts = {}) {
 module.exports = {
   getWebhooksListSuccess,
   getWebhookSuccess,
-  getWebhookSigningSecret
+  getWebhookSigningSecret,
+  getWebhookMessagesListSuccess
 }

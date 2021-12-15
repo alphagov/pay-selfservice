@@ -48,6 +48,33 @@ describe('webhooks service', () => {
       sinon.assert.calledWith(spy, 'webhook-id', 'service-id', { status: 'ACTIVE' })
     })
   })
+  describe('List webhook messages', () => {
+    it('should get webhook messages with correctly formatted pagination', async () => {
+      const search = webhooksFixture.webhookMessageSearchResponse([
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' },
+        { status: 'SUCCEEDED' }
+      ])
+      const spy = sinon.spy(async () => search)
+      const service = getWebhooksServiceWithStub({ messages: spy })
+      const result = await service.getWebhookMessages('webhook-id', 'service-id', { status: 'failed' })
+
+      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', { status: 'failed' })
+      expect(result.total).to.equal(11)
+
+      // 2 pages and a next button for constant service page settings
+      expect(result.links.length).to.equal(3)
+      expect(result.links[2].pageName).to.equal('next')
+    })
+  })
 })
 
 function getWebhooksServiceWithStub (stub) {
