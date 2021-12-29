@@ -5,6 +5,7 @@ const lodash = require('lodash')
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { validateUrl } = require('../../../utils/validation/server-side-form-validations')
+const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 const { getStripeAccountId, completeKyc } = require('../../stripe-setup/stripe-setup.util')
 const { response } = require('../../../utils/response')
 const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
@@ -42,11 +43,10 @@ module.exports = async function (req, res, next) {
   const organisationUrl = lodash.get(req.body, ORGANISATION_URL, '')
   const errors = validateOrgUrl(organisationUrl)
 
+  const pageData = {
+    organisationUrl: organisationUrl
+  }
   if (!lodash.isEmpty(errors)) {
-    const pageData = {
-      organisationUrl: organisationUrl
-    }
-
     pageData['errors'] = errors
 
     return response(req, res, 'kyc/organisation-url', {
@@ -79,6 +79,17 @@ module.exports = async function (req, res, next) {
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
       }
     } catch (err) {
+      if (err.code && err.code === 'url_invalid') {
+        return response(req, res, 'kyc/organisation-url', {
+          ...pageData,
+          isSwitchingCredentials,
+          collectingAdditionalKycData,
+          currentCredential,
+          errors: {
+            [ORGANISATION_URL]: validationErrors.invalidUrl
+          }
+        })
+      }
       next(err)
     }
   }

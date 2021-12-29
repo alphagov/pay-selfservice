@@ -12,6 +12,7 @@ const validationErrors = {
   phoneNumber: 'Must be an 11 digit phone number',
   validEmail: 'Enter a valid email address',
   isHttps: 'URL must begin with https://',
+  invalidUrl: 'Enter a valid website address',
   isAboveMaxAmount: `Enter an amount under £${MAX_AMOUNT.toLocaleString()}`,
   isPasswordLessThanTenChars: 'Password must be 10 characters or more', // pragma: allowlist secret
   isGreaterThanMaxLengthChars: 'The text is too long',
@@ -23,7 +24,9 @@ const validationErrors = {
   sevenDigitCompanyNumber: 'Company numbers in England and Wales have 8 digits and always start with 0',
   invalidWorldpay3dsFlexOrgUnitId: 'Enter your organisational unit ID in the format you received it',
   invalidWorldpay3dsFlexIssuer: 'Enter your issuer in the format you received it',
-  invalidWorldpay3dsFlexJwtMacKey: 'Enter your JWT MAC key in the format you received it'
+  invalidWorldpay3dsFlexJwtMacKey: 'Enter your JWT MAC key in the format you received it',
+  invalidDateOfBirth: 'Enter a valid date of birth',
+  invalidTelephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
 }
 
 exports.validationErrors = validationErrors

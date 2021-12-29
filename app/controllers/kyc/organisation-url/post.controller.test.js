@@ -2,6 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const assert = require('assert')
 const paths = require('../../../paths')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
@@ -120,7 +121,23 @@ describe('Organisation URL POST controller', () => {
     sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
   })
 
-  it('should render error when Stripe returns error, not call admin users, and not redirect', async function () {
+  it('should display an error message when Stripe returns `url_invalid` error, not call admin users, and redirect url page', async function () {
+    const errorFromStripe = { code: 'url_invalid', 'message': 'Not a valid URL', 'param': 'business_profile[url]' }
+    updateAccountMock = sinon.spy(() => Promise.reject(errorFromStripe))
+    const controller = getControllerWithMocks()
+
+    req.body = { ...postBody }
+
+    await controller(req, res, next)
+
+    sinon.assert.called(updateAccountMock)
+    sinon.assert.notCalled(updateServiceMock)
+    sinon.assert.calledWith(res.render, `kyc/organisation-url`)
+
+    assert.strictEqual(res.render.getCalls()[0].args[1].errors['organisation-url'], 'Enter a valid website address')
+  })
+
+  it('should render error when Stripe returns unknown error, not call admin users, and not redirect', async function () {
     updateAccountMock = sinon.spy(() => Promise.reject(new Error()))
     const controller = getControllerWithMocks()
 

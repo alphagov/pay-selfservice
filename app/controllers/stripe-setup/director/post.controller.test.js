@@ -2,6 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const assert = require('assert')
 const paths = require('../../../paths')
 const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
@@ -231,7 +232,25 @@ describe('Director POST controller', () => {
     sinon.assert.calledWith(res.render, 'error-with-link')
   })
 
-  it('should render error when Stripe returns error, not call connector, and not redirect', async function () {
+  it('should display an error message, when Stripe returns error for date of birth, not call connector', async function () {
+    const errorFromStripe = {
+      type: 'StripeInvalidRequestError',
+      param: 'dob[year]'
+    }
+    createDirectorMock = sinon.spy(() => Promise.reject(errorFromStripe))
+    req.body = { ...postBody }
+
+    const controller = getControllerWithMocks()
+    await controller(req, res, next)
+
+    sinon.assert.called(createDirectorMock)
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+
+    sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
+    assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'], 'Enter a valid date of birth')
+  })
+
+  it('should render error page when Stripe returns error, not call connector, and not redirect', async function () {
     createDirectorMock = sinon.spy(() => Promise.reject(new Error()))
     const controller = getControllerWithMocks()
 

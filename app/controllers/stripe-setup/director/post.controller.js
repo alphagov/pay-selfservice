@@ -8,6 +8,7 @@ const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
 const { response } = require('../../../utils/response')
 const { validateMandatoryField, validateEmail } = require('../../../utils/validation/server-side-form-validations')
+const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 const { listPersons, updateDirector, createDirector, updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const {
   validateField,
@@ -15,7 +16,8 @@ const {
   getFormFields,
   getStripeAccountId,
   getAlreadySubmittedErrorPageData,
-  completeKyc } = require('../stripe-setup.util')
+  completeKyc
+} = require('../stripe-setup.util')
 const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -64,16 +66,15 @@ module.exports = async function (req, res, next) {
   const formFields = getFormFields(req.body, listOfFields)
   const errors = validateDirector(formFields)
 
+  const pageData = {
+    firstName: formFields[FIRST_NAME_FIELD],
+    lastName: formFields[LAST_NAME_FIELD],
+    email: formFields[EMAIL_FIELD],
+    dobDay: formFields[DOB_DAY_FIELD],
+    dobMonth: formFields[DOB_MONTH_FIELD],
+    dobYear: formFields[DOB_YEAR_FIELD]
+  }
   if (!lodash.isEmpty(errors)) {
-    const pageData = {
-      firstName: formFields[FIRST_NAME_FIELD],
-      lastName: formFields[LAST_NAME_FIELD],
-      email: formFields[EMAIL_FIELD],
-      dobDay: formFields[DOB_DAY_FIELD],
-      dobMonth: formFields[DOB_MONTH_FIELD],
-      dobYear: formFields[DOB_YEAR_FIELD]
-    }
-
     pageData['errors'] = errors
 
     return response(req, res, 'stripe-setup/director/index', {
@@ -116,6 +117,17 @@ module.exports = async function (req, res, next) {
 
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
     } catch (err) {
+      if (err && err.type === 'StripeInvalidRequestError' && err.param === 'dob[year]') {
+        return response(req, res, 'stripe-setup/director/index', {
+          ...pageData,
+          isSwitchingCredentials,
+          collectingAdditionalKycData,
+          currentCredential,
+          errors: {
+            [DOB_DAY_FIELD]: validationErrors.invalidDateOfBirth
+          }
+        })
+      }
       next(err)
     }
   }

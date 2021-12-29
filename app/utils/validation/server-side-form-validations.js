@@ -10,7 +10,8 @@ const {
   isEmpty,
   isFieldGreaterThanMaxLengthChars,
   isValidEmail,
-  isPasswordLessThanTenChars
+  isPasswordLessThanTenChars,
+  validationErrors
 } = require('./field-validation-checks')
 const { invalidTelephoneNumber } = require('../telephone-number-utils')
 
@@ -94,7 +95,7 @@ function validatePhoneNumber (phoneNumber) {
 
   const isPhoneNumberInvalid = invalidTelephoneNumber(phoneNumber)
   if (isPhoneNumberInvalid) {
-    return notValidReturnObject('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+    return notValidReturnObject(validationErrors.invalidTelephoneNumber)
   }
 
   return validReturnObject
@@ -227,7 +228,7 @@ function validateUrl (url) {
     return notValidReturnObject('Enter a website address')
   }
   if (!isValidUrl(url)) {
-    return notValidReturnObject('Enter a valid website address')
+    return notValidReturnObject(validationErrors.invalidUrl)
   }
   return validReturnObject
 }
