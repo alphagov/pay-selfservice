@@ -160,7 +160,31 @@ describe('Government entity document POST controller', () => {
     sinon.assert.calledWith(res.render, 'error-with-link')
   })
 
-  it('should render error when Stripe returns error, not call connector, and not redirect', async function () {
+  it('should display an error message, when Stripe returns error for file, not call connector', async function () {
+    const errorFromStripe = {
+      type: 'StripeInvalidRequestError',
+      param: 'file'
+    }
+    uploadFileMock = sinon.spy(() => Promise.reject(errorFromStripe))
+
+    updateAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.file = { ...postBody }
+
+    await controller.postGovernmentEntityDocument(req, res, next)
+
+    sinon.assert.called(uploadFileMock)
+    sinon.assert.notCalled(updateAccountMock)
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+
+    sinon.assert.calledWith(res.render, `stripe-setup/government-entity-document/index`)
+    assert.strictEqual(res.render.getCalls()[0].args[1].errors['government-entity-document'],
+      'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png')
+  })
+
+  it('should render error when Stripe returns unknown error, not call connector, and not redirect', async function () {
     uploadFileMock = sinon.spy(() => Promise.reject(new Error()))
     updateAccountMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())

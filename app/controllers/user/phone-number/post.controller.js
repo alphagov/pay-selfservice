@@ -4,6 +4,7 @@ const { response } = require('../../../utils/response')
 const userService = require('../../../services/user.service')
 const paths = require('../../../paths')
 const { invalidTelephoneNumber } = require('../../../utils/telephone-number-utils')
+const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 
 module.exports = async function updatePhoneNumber (req, res, next) {
   const telephoneNumber = req.body.phone
@@ -11,7 +12,7 @@ module.exports = async function updatePhoneNumber (req, res, next) {
     const pageData = {
       telephoneNumber,
       errors: {
-        phone: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+        phone: validationErrors.invalidTelephoneNumber
       }
     }
     return response(req, res, 'team-members/edit-phone-number', pageData)

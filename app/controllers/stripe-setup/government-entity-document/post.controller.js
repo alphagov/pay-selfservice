@@ -39,6 +39,8 @@ async function postGovernmentEntityDocument (req, res, next) {
   if (!lodash.isEmpty(errors)) {
     return response(req, res, 'stripe-setup/government-entity-document/index', {
       isSwitchingCredentials,
+      collectingAdditionalKycData,
+      currentCredential,
       errors
     })
   } else {
@@ -71,6 +73,16 @@ async function postGovernmentEntityDocument (req, res, next) {
 
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
     } catch (err) {
+      if (err.type === 'StripeInvalidRequestError' && err.param === 'file') {
+        return response(req, res, 'stripe-setup/government-entity-document/index', {
+          isSwitchingCredentials,
+          collectingAdditionalKycData,
+          currentCredential,
+          errors: {
+            [GOVERNMENT_ENTITY_DOCUMENT_FIELD]: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png'
+          }
+        })
+      }
       next(err)
     }
   }

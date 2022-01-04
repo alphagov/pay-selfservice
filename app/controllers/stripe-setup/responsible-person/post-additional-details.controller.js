@@ -6,6 +6,7 @@ const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { getCurrentCredential } = require('../../../utils/credentials')
+const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 const {
   validateField,
   getFormFields,
@@ -95,6 +96,17 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       }
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
     } catch (err) {
+      if (err && err.type === 'StripeInvalidRequestError' && err.param === 'phone') {
+        const responsiblePersonName = await getExistingResponsiblePersonName(req.account, false, req.correlationId)
+        return response(req, res, 'stripe-setup/responsible-person/kyc-additional-information', {
+          ...pageData,
+          responsiblePersonName,
+          currentCredential,
+          errors: {
+            [TELEPHONE_NUMBER_FIELD]: validationErrors.invalidTelephoneNumber
+          }
+        })
+      }
       next(err)
     }
   }

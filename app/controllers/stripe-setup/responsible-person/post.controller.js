@@ -24,6 +24,7 @@ const {
   validateEmail
 } = require('../../../utils/validation/server-side-form-validations')
 const { formatPhoneNumberWithCountryCode } = require('../../../utils/telephone-number-utils')
+const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 const { listPersons, updatePerson, createPerson } = require('../../../services/clients/stripe/stripe.client')
 const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
@@ -181,6 +182,29 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
       }
     } catch (err) {
+      if (err && err.type === 'StripeInvalidRequestError') {
+        let error
+        if (err.param === 'phone') {
+          error = {
+            [TELEPHONE_NUMBER_FIELD]: validationErrors.invalidTelephoneNumber
+          }
+        }
+        if (err.param === 'dob[year]') {
+          error = {
+            [DOB_DAY_FIELD]: validationErrors.invalidDateOfBirth
+          }
+        }
+        if (error) {
+          return response(req, res, 'stripe-setup/responsible-person/index', {
+            ...pageData,
+            isSwitchingCredentials,
+            currentCredential,
+            isSubmittingAdditionalKycData,
+            errors: error
+          })
+        }
+      }
+
       next(err)
     }
   }
