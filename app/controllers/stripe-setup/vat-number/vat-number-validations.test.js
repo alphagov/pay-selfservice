@@ -3,6 +3,7 @@
 const { expect } = require('chai')
 
 const vatNumberValidations = require('./vat-number-validations')
+const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 
 // Constants
 const standardVatNumber = 'GB999 9999 73'
@@ -17,21 +18,21 @@ describe('VAT number validations', () => {
   it('should validate successfully when no vat number provided', () => {
     expect(vatNumberValidations.validateVatNumber('')).to.deep.equal({
       valid: false,
-      message: 'Enter a VAT number'
+      message: validationErrors.missingVatNumber
     })
   })
 
   it('should not be valid when text is invalid VAT number', () => {
     expect(vatNumberValidations.validateVatNumber(invalidVatNumber)).to.deep.equal({
       valid: false,
-      message: 'Enter a valid VAT number, including ‘GB’ at the start'
+      message: validationErrors.invalidVatNumber
     })
   })
 
   it('should not be valid when text is too long', () => {
     expect(vatNumberValidations.validateVatNumber(invalidLongVatNumber)).to.deep.equal({
       valid: false,
-      message: 'Enter a valid VAT number, including ‘GB’ at the start'
+      message: validationErrors.invalidVatNumber
     })
   })
 
@@ -45,7 +46,7 @@ describe('VAT number validations', () => {
   it('should not be valid if no option was chosen', () => {
     expect(vatNumberValidations.validateVatNumberDeclaration()).to.deep.equal({
       valid: false,
-      message: 'You must answer this question'
+      message: validationErrors.mandatoryQuestion
     })
   })
 })

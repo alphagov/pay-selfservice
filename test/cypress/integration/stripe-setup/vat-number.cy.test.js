@@ -53,7 +53,7 @@ describe('Stripe setup: VAT number page', () => {
       })
 
       it('should display page correctly', () => {
-        cy.get('h1').should('contain', 'VAT number')
+        cy.get('h1').should('contain', 'VAT registration number')
 
         cy.get('#vat-number-form').should('exist')
           .within(() => {
@@ -73,12 +73,12 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.get('h2').should('contain', 'There is a problem')
         cy.get('input#have-vat-number').should('be.checked')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a VAT number')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter your VAT registration number')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
         cy.get('.govuk-form-group--error > input#vat-number').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
-          cy.get('span.govuk-error-message').should('contain', 'Enter a VAT number')
+          cy.get('span.govuk-error-message').should('contain', 'Enter your VAT registration number')
         })
       })
 
