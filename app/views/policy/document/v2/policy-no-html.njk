@@ -1,0 +1,43 @@
+{% extends "../../../layout.njk" %}
+
+{% block pageTitle %}
+   Policy Document - GOV.UK Pay
+{% endblock %}
+
+
+{% block mainContent %}
+  <div class="govuk-grid-column-full">
+    <span class="govuk-caption-l">From 24 January 2022</span>
+    <h1 class="govuk-heading-l">
+      {% block policyTitle %} {% endblock %}
+    </h1>
+  </div>
+
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-body">
+      {% block policyDescription %} {% endblock %}
+    </p>
+    
+    {{ govukInsetText({
+      text: "These terms are confidential and should not be shared outside of your organisation."
+    }) }}
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <div class="contract-download-container">
+      <h2 class="govuk-heading-m">
+        <a class="govuk-link" href="{{ link }}">
+          Download PDF Version 
+        </a>
+      </h2>
+
+      <p class="govuk-body">
+        {% block downloadFileDetails %}{% endblock %}
+      </p>
+
+      <p class="govuk-body">
+        This file may not be suitable for users of accessible for users of assistive technologies.
+      </p>
+    </div>
+  </div>
+{% endblock %}
