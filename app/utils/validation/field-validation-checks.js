@@ -19,7 +19,8 @@ const validationErrors = {
   invalidCharacters: `You cannot use any of the following characters < > ; |`,
   invalidBankAccountNumber: 'Enter a valid account number like 00733445',
   invalidSortCode: 'Enter a valid sort code like 309430',
-  invalidVatNumber: 'Enter a valid VAT number, including ‘GB’ at the start',
+  invalidVatNumber: 'Enter your VAT registration number in the correct format',
+  missingVatNumber: 'Enter your VAT registration number',
   invalidCompanyNumber: 'Enter a valid Company registration number',
   sevenDigitCompanyNumber: 'Company numbers in England and Wales have 8 digits and always start with 0',
   invalidWorldpay3dsFlexOrgUnitId: 'Enter your organisational unit ID in the format you received it',
@@ -95,18 +96,9 @@ exports.isNotSortCode = value => {
 
 exports.isNotVatNumber = value => {
   const sanitisedVatNumber = value.replace(/\s/g, '').toUpperCase()
-
-  if (/^GB[0-9]{9}$/.test(sanitisedVatNumber)) {
-    return false
-  } else if (/^GB[0-9]{12}$/.test(sanitisedVatNumber)) {
-    return false
-  } else if (/^GBGD[0-4][0-9]{2}$/.test(sanitisedVatNumber)) {
-    return false
-  } else if (/^GBHA[5-9][0-9]{2}$/.test(sanitisedVatNumber)) {
-    return false
-  } else {
-    return validationErrors.invalidVatNumber
-  }
+  const vatRE = /^((G{1}B{1})?((\d{9})|(\d{12})|((G{1}D{1})([0-4]{1})(\d{2}))|((H{1}A{1})([5-9]{1})(\d{2}))))$/
+  // negate the result
+  return !vatRE.test(sanitisedVatNumber)
 }
 
 exports.isNotCompanyNumber = value => {

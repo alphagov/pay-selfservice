@@ -31,7 +31,7 @@
       }
     }) }}
 
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="vat-number">VAT number</label></h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="vat-number">VAT registration number</label></h1>
 
     <form id="vat-number-form" method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
@@ -41,10 +41,10 @@
           name: "vat-number",
           id: "vat-number",
           label: {
-            text: "Enter your organisation's VAT number"
+            text: "VAT registration number"
           },
           hint: {
-            text: "VAT numbers start with ‘GB’, for example ‘GBGD123’"
+            text: "This is usually 9 numbers and may start with GB. For example, 123456789 or GB123456789. You can find it on your VAT registration certificate."
           },
           classes: "govuk-input--width-30",
           value: vatNumber,
@@ -63,7 +63,7 @@
           name: "vat-number-declaration",
           fieldset: {
             legend: {
-              text: 'Does your organisation have a VAT number?',
+              text: 'Does your organisation have a VAT registration number?',
               isPageHeading: false,
               classes: 'govuk-fieldset__legend--m'
             }

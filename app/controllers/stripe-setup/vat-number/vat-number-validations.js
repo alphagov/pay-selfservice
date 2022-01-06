@@ -6,22 +6,11 @@ exports.validateVatNumber = function validateVatNumber (value) {
   if (isEmpty(value)) {
     return {
       valid: false,
-      message: 'Enter a VAT number'
+      message: validationErrors.missingVatNumber
     }
   }
 
-  const isNotVatNumberErrorMessage = isNotVatNumber(value)
-  if (isNotVatNumberErrorMessage) {
-    return {
-      valid: false,
-      message: isNotVatNumberErrorMessage
-    }
-  }
-
-  return {
-    valid: true,
-    message: null
-  }
+  return isNotVatNumber(value) ? { valid: false, message: validationErrors.invalidVatNumber } : { valid: true, message: null }
 }
 
 exports.validateVatNumberDeclaration = function validateVatNumberDeclaration (value) {
