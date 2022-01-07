@@ -14,7 +14,10 @@ const hideServiceHeaderTemplates = [
   'policy/document/contract-for-non-crown-bodies',
   'policy/document/memorandum-of-understanding-for-crown-bodies',
   'policy/document/pci-dss-attestation-of-compliance',
-  'policy/document/stripe-connected-account-agreement'
+  'policy/document/stripe-connected-account-agreement',
+  'policy/document/v2/contract-for-non-crown-bodies',
+  'policy/document/v2/memorandum-of-understanding-for-crown-bodies',
+  'policy/document/v2/stripe-connected-account-agreement'
 ]
 
 const hideServiceNavTemplates = [

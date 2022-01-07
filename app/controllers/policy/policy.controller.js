@@ -27,7 +27,7 @@ async function viewPage (req, res, next) {
 
     const contentHtml = await getDocumentHtml(documentConfig, key)
 
-    return response(req, res, documentConfig.htmlTemplate, { link, contentHtml })
+    return response(req, res, documentConfig.template, { link, contentHtml })
   } catch (err) {
     next(err)
   }
