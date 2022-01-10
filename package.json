@@ -70,7 +70,7 @@
     "accessible-autocomplete": "2.0.3",
     "appmetrics": "5.1.1",
     "appmetrics-statsd": "3.0.0",
-    "aws-sdk": "2.1046.0",
+    "aws-sdk": "2.1053.0",
     "body-parser": "1.19.1",
     "change-case": "3.1.0",
     "check-types": "11.1.x",
@@ -108,7 +108,7 @@
     "throng": "5.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
-    "winston": "3.3.3"
+    "winston": "3.3.4"
   },
   "devDependencies": {
     "@babel/core": "7.16.0",
