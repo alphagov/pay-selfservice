@@ -19,9 +19,8 @@ function getWebhookMessagesListSuccess(opts = {}) {
   const path = `/v1/webhook/${webhook.external_id}/message`
   return stubBuilder('GET', path, 200, {
     query: {
-      service_id: webhook.service_id,
       page: opts.page || 1,
-      status: opts.status || 'all'
+      ...opts.status && { status: opts.status }
     },
     response: webhooksFixtures.webhookMessageSearchResponse(opts.messages || [])
   })

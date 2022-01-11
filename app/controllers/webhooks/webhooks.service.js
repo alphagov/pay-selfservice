@@ -40,8 +40,8 @@ function getWebhook (id, serviceId) {
   return webhooksClient.webhook(id, serviceId)
 }
 
-async function getWebhookMessages(id, serviceId, options = {}) {
-  const searchResponse =  await webhooksClient.messages(id, serviceId, options)
+async function getWebhookMessages(id, options = {}) {
+  const searchResponse =  await webhooksClient.messages(id, options)
   return formatPages(searchResponse)
 }
 

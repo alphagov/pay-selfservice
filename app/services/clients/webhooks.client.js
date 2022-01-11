@@ -66,14 +66,13 @@ function webhooks (serviceId, isLive, options = {}) {
   return baseClient.get(request)
 }
 
-function messages(id, serviceId, options = {}) {
+function messages(id, options = {}) {
   const url = urlJoin('/v1/webhook', id, 'message')
   const request = {
     url,
     qs: {
-      service_id: serviceId,
-      status: options.status,
-      page: options.page
+      page: options.page,
+      ...options.status && { status: options.status.toUpperCase() },
     },
     description: 'List messages for webhook',
     ...defaultRequestOptions,
