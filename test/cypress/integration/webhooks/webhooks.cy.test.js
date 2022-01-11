@@ -7,6 +7,7 @@ const gatewayAccountId = 10
 const gatewayAccountExternalId = 'gateway-account-id'
 const serviceExternalId = 'service-id'
 const webhookExternalId = 'webhook-id'
+const messageExternalId = 'message-id'
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({ userExternalId, serviceExternalId, gatewayAccountId }),
@@ -14,7 +15,7 @@ const userAndGatewayAccountStubs = [
   webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
   webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId }),
   webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [
-    { latest_attempt: { status: 'PENDING' } },
+    { latest_attempt: { status: 'PENDING' }, external_id: messageExternalId },
     { latest_attempt: { status: 'FAILED' } },
     { latest_attempt: { status: 'SUCCESSFUL' } },
     { latest_attempt: { status: 'SUCCESSFUL' } },
@@ -26,7 +27,9 @@ const userAndGatewayAccountStubs = [
     { latest_attempt: { status: 'SUCCESSFUL' } },
     { latest_attempt: { status: 'SUCCESSFUL' } }
   ] }),
-  webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, external_id: webhookExternalId })
+  webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, external_id: webhookExternalId }),
+  webhooksStubs.getWebhookMessage({ external_id: messageExternalId, webhook_id: webhookExternalId }),
+  webhooksStubs.getWebhookMessageAttempts({ message_id: messageExternalId, webhook_id: webhookExternalId, attempts: [ {} ] })
 ]
 
 describe('Webhooks', () => {
@@ -125,5 +128,13 @@ describe('Webhooks', () => {
 
     cy.get('#toggle-active-webhook').click()
     cy.get('.govuk-notification-banner__heading').contains('Webhook status updated')
+  })
+
+  it('should browse to event detail page', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+    cy.get('[data-action=detail]').then((links) => links[0].click())
+    cy.get('h1').contains('Payment captured')
   })
 })

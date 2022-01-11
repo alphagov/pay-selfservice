@@ -161,6 +161,7 @@ module.exports = {
       signingSecret: '/webhooks/:webhookId/signing-secret',
       toggleActive: '/webhooks/:webhookId/status',
       message: '/webhooks/:webhookId/message/:messageId',
+      resendMessage: '/webhooks/:webhookId/message/:messageId/resend',
       create: '/webhooks/create'
     }
   },

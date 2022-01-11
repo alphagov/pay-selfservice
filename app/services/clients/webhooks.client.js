@@ -66,6 +66,28 @@ function webhooks (serviceId, isLive, options = {}) {
   return baseClient.get(request)
 }
 
+function message(id, webhookId, options = {}) {
+  const url = urlJoin('/v1/webhook', webhookId, 'message', id)
+  const request = {
+    url,
+    description: 'Get webhook message',
+    ...defaultRequestOptions,
+    ...options
+  }
+  return baseClient.get(request)
+}
+
+function attempts(messageId, webhookId, options = {}) {
+  const url = urlJoin('/v1/webhook', webhookId, 'message', messageId, 'attempt')
+  const request = {
+    url,
+    description: 'Get webhook message delivery attempts',
+    ...defaultRequestOptions,
+    ...options
+  }
+  return baseClient.get(request)
+}
+
 function messages(id, options = {}) {
   const url = urlJoin('/v1/webhook', id, 'message')
   const request = {
@@ -126,5 +148,7 @@ module.exports = {
   updateWebhook,
   signingSecret,
   resetSigningSecret,
-  messages
+  messages,
+  message,
+  attempts
 }

@@ -85,6 +85,7 @@
             <td class="govuk-table__cell">
               <a
                 class="govuk-link"
+                data-action="detail"
                 href="{{  formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.message, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id, message.external_id) }}">
                 {{ eventTypes[message.event_type | upper] }}
               </a>

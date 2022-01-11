@@ -76,6 +76,17 @@ async function toggleActivePage (req, res, next) {
   }
 }
 
+async function webhookMessageDetailPage (req, res, next) {
+  try {
+    const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
+    const message = await webhooksService.getWebhookMessage(req.params.messageId, req.params.webhookId)
+    const attempts = await webhooksService.getWebhookMessageAttempts(req.params.messageId, req.params.webhookId)
+    response(req, res, 'webhooks/message', { webhook, message, attempts, eventTypes: constants.webhooks.humanReadableSubscriptions })
+  } catch (error) {
+    next(error)
+  }
+}
+
 async function createWebhook (req, res, next) {
   try {
     await webhooksService.createWebhook(req.service.externalId, req.isLive, req.body)
@@ -116,5 +127,6 @@ module.exports = {
   updateWebhookPage,
   webhookDetailPage,
   signingSecretPage,
-  toggleActivePage
+  toggleActivePage,
+  webhookMessageDetailPage
 }
