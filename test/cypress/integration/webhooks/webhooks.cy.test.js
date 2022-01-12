@@ -59,12 +59,12 @@ describe('Webhooks', () => {
       ...userAndGatewayAccountStubs
     ])
 
-    cy.get('[data-action=create').contains('Create a new Webhook').click()
+    cy.get('[data-action=create').contains('Create a new webhook').click()
     cy.get('#callback_url').type(callbackUrl)
     cy.get('#description').type(description)
     cy.get('[value=card_payment_captured]').click()
 
-    cy.get('button').contains('Create Webhook').click()
+    cy.get('button').contains('Create webhook').click()
   })
 
   it('should display a valid webhooks details', () => {
@@ -99,10 +99,9 @@ describe('Webhooks', () => {
     cy.get('[data-action=update]').click()
 
     cy.get('#callback_url').should('have.value', 'https://some-callback-url.com')
-    cy.get('#description').should('have.value', 'a valid webhook description')
     cy.get('[value=card_payment_captured]').should('be.checked')
 
-    cy.get('button').contains('Update Webhook').click()
+    cy.get('button').contains('Update webhook').click()
   })
 
   it('should show a webhook signing secret', () => {
@@ -124,7 +123,7 @@ describe('Webhooks', () => {
     cy.get('[data-action=update]').then((links) => links[0].click())
     cy.get('#toggle-status').click()
 
-    cy.get('h1').contains('Deactivate Webhook')
+    cy.get('h1').contains('Deactivate webhook')
 
     cy.get('#toggle-active-webhook').click()
     cy.get('.govuk-notification-banner__heading').contains('Webhook status updated')
