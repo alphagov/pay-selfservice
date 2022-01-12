@@ -21,7 +21,8 @@
 
   <h1 class="govuk-heading-l page-title">{{ messageType }}</h1>
 
-  <div>
+  {# re-introduce when backend POST route enabled #}
+  {# <div>
     <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.resendMessage, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id, message.external_id) }}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
       {{ govukButton({
@@ -33,7 +34,7 @@
         type: "submit"
       }) }}
     </form>
-  </div>
+  </div> #}
 
   {% set resourceLink %}
   <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.transactions.detail, currentGatewayAccount.external_id, resourceId) }}">{{ resourceId }}</a>

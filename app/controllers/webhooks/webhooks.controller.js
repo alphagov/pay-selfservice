@@ -15,7 +15,7 @@ async function webhookDetailPage (req, res, next) {
 
   try {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
-    const messages = await webhooksService.getWebhookMessages(req.params.webhookId, { page, ...status && status })
+    const messages = await webhooksService.getWebhookMessages(req.params.webhookId, { page, ...status && { status } })
 
     response(req, res, 'webhooks/detail', {
       eventTypes: constants.webhooks.humanReadableSubscriptions,

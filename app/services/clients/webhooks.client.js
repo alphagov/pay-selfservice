@@ -123,11 +123,13 @@ function createWebhook (serviceId, isLive, options = {}) {
 
 function updateWebhook (id, serviceId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
-  const body = [
-    { op: 'replace', path: 'callback_url', value: options.callback_url },
-    { op: 'replace', path: 'subscriptions', value: options.subscriptions },
-    { op: 'replace', path: 'description', value: options.description }
-  ]
+  const paths = [ 'callback_url', 'subscriptions', 'description', 'status' ]
+  const body = []
+  paths.forEach((path) => {
+    if (options[path]) {
+      body.push({ op: 'replace', path, value: options[path] })
+    }
+  })
   const request = {
     url,
     qs: {
