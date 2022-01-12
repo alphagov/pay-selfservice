@@ -141,6 +141,17 @@ function updateWebhook (id, serviceId, options = {}) {
   return baseClient.patch(request)
 }
 
+function resendWebhookMessage(webhookId, messageId, options = {}) {
+  const url = urlJoin('/v1/webhook', webhookId, 'message', messageId, 'resend')
+  const request = {
+    url,
+    ...defaultRequestOptions,
+    ...options,
+    description: 'Schedule resending a message'
+  }
+  return baseClient.post(request)
+}
+
 module.exports = {
   webhook,
   webhooks,
@@ -150,5 +161,6 @@ module.exports = {
   resetSigningSecret,
   messages,
   message,
-  attempts
+  attempts,
+  resendWebhookMessage
 }

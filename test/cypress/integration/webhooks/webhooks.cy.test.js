@@ -137,4 +137,12 @@ describe('Webhooks', () => {
     cy.get('[data-action=detail]').then((links) => links[0].click())
     cy.get('h1').contains('Payment captured')
   })
+
+  it('should schedule a webhook message for retry', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+    cy.get('[data-action=resend]').click()
+    cy.get('.govuk-notification-banner__heading').contains('Webhook message scheduled for retry')
+  })
 })

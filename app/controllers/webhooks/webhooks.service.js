@@ -66,6 +66,10 @@ function toggleStatus(webhookId, serviceId, currentStatus) {
   return webhooksClient.updateWebhook(webhookId, serviceId, { status })
 }
 
+function resendWebhookMessage(webhookId, messageId) {
+  return webhooksClient.resendWebhookMessage(webhookId, messageId)
+}
+
 module.exports = {
   listWebhooks,
   createWebhook,
@@ -76,5 +80,6 @@ module.exports = {
   toggleStatus,
   getWebhookMessages,
   getWebhookMessage,
-  getWebhookMessageAttempts
+  getWebhookMessageAttempts,
+  resendWebhookMessage
 }

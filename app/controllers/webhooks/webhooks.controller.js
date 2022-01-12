@@ -118,6 +118,16 @@ async function toggleActiveWebhook(req, res, next) {
   }
 }
 
+async function resendWebhookMessage(req, res, next) {
+  try {
+    await webhooksService.resendWebhookMessage(req.params.webhookId, req.params.messageId)
+    req.flash('generic', 'Webhook message scheduled for retry')
+    res.redirect(formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.message, req.account.type, req.service.externalId, req.account.external_id, req.params.webhookId, req.params.messageId))
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   listWebhooksPage,
   createWebhookPage,
@@ -128,5 +138,6 @@ module.exports = {
   webhookDetailPage,
   signingSecretPage,
   toggleActivePage,
-  webhookMessageDetailPage
+  webhookMessageDetailPage,
+  resendWebhookMessage
 }

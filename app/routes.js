@@ -458,6 +458,7 @@ module.exports.bind = function (app) {
   futureAccountStrategy.post(webhooks.update, permission('webhooks:update'), webhooksController.updateWebhook)
   futureAccountStrategy.get(webhooks.detail, permission('webhooks:read'), webhooksController.webhookDetailPage)
   futureAccountStrategy.get(webhooks.message, permission('webhooks:read'), webhooksController.webhookMessageDetailPage)
+  futureAccountStrategy.post(webhooks.resendMessage, permission('webhooks:update'), webhooksController.resendWebhookMessage)
   futureAccountStrategy.get(webhooks.signingSecret, permission('webhooks:update'), webhooksController.signingSecretPage)
   futureAccountStrategy.get(webhooks.toggleActive, permission('webhooks:update'), webhooksController.toggleActivePage)
   futureAccountStrategy.post(webhooks.toggleActive, permission('webhooks:update'), webhooksController.toggleActiveWebhook)
