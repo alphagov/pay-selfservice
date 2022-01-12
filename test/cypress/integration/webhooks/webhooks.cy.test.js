@@ -14,8 +14,17 @@ const userAndGatewayAccountStubs = [
   webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
   webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId }),
   webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [
-    { status: 'PENDING' }, { status: 'PENDING' }, { status: 'FAILED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' },
-    { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }, { status: 'SUCCEEDED' }
+    { latest_attempt: { status: 'PENDING' } },
+    { latest_attempt: { status: 'FAILED' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } },
+    { latest_attempt: { status: 'SUCCESSFUL' } }
   ] }),
   webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, external_id: webhookExternalId })
 ]
@@ -67,7 +76,7 @@ describe('Webhooks', () => {
     cy.get('.govuk-list.govuk-list--bullet > li').should('have.length', 1)
 
     // based on number of rows stubbed and client pagination logic
-    cy.get('.govuk-table__body > .govuk-table__row').should('have.length', 12)
+    cy.get('.govuk-table__body > .govuk-table__row').should('have.length', 11)
     cy.get('.paginationForm').should('have.length', 3)
 
     cy.get('a#filter-failed').click()

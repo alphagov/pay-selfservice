@@ -1,3 +1,5 @@
+const transactionFixtures = require('./ledger-transaction.fixtures')
+
 function validWebhook (options = {}) {
   return {
     external_id: options.external_id || 'valid-webhooks-external-id',
@@ -13,22 +15,22 @@ function validWebhook (options = {}) {
 
 function validWebhookMessageAttempt(options = {}) {
   return {
-    status: options.status || 'SUCCEEDED', // 'FAILED', 'PENDING'
-    succeeded: options.succeeded || true,
-    send_at: options.event_date || '2021-08-20T14:00:00.000Z'
+    status: options.status || 'SUCCESSFUL', // 'FAILED', 'PENDING', null
+    created_at: options.created_at || '2021-08-20T14:00:00.000Z',
+    send_at: options.send_at || '2021-08-20T14:00:00.000Z',
+    status_code: options.status_code || 200,
+    result: options.result || '200'
   }
 }
 
-// mock webhook messages  -- should this have a pending retry date? does that have to be worked out? assuming yes
-// mock webhook message attempts -- do we need to derive status on the consumer? assuming no
 function validWebhookMessage(options = {}) {
   return {
     external_id: options.external_id || 'valid-webhook-message-external-id',
     created_date: options.created_date || '2021-08-20T14:00:00.000Z',
     event_date: options.event_date || '2021-08-20T14:00:00.000Z',
     event_type: options.event_type || 'card_payment_captured',
-    status: options.status || 'SUCCEEDED', // 'FAILED', 'PENDING'
-    ...options.attempts && options.attempts.map(validWebhookMessageAttempt)
+    resource: transactionFixtures.validTransactionDetailsResponse(options.resource || { transaction_id: 'an-external-id' }),
+    latest_attempt: validWebhookMessageAttempt(options.latest_attempt || {})
   }
 }
 
@@ -40,6 +42,10 @@ function validSigningSecret(options = {}) {
 
 function webhooksListResponse (options = []) {
   return options.map((option) => validWebhook(option))
+}
+
+function webhooksMessageAttemptsListResponse (options = []) {
+  return options.map(validWebhookMessageAttempt)
 }
 
 function webhookResponse (options = {}) {
@@ -63,5 +69,6 @@ module.exports = {
   webhooksListResponse,
   webhookResponse,
   webhookSigningSecretResponse,
-  webhookMessageSearchResponse
+  webhookMessageSearchResponse,
+  webhooksMessageAttemptsListResponse
 }

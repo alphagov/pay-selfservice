@@ -51,23 +51,23 @@ describe('webhooks service', () => {
   describe('List webhook messages', () => {
     it('should get webhook messages with correctly formatted pagination', async () => {
       const search = webhooksFixture.webhookMessageSearchResponse([
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' },
-        { status: 'SUCCEEDED' }
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } }
       ])
       const spy = sinon.spy(async () => search)
       const service = getWebhooksServiceWithStub({ messages: spy })
-      const result = await service.getWebhookMessages('webhook-id', 'service-id', { status: 'failed' })
+      const result = await service.getWebhookMessages('webhook-id', { status: 'failed' })
 
-      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', { status: 'failed' })
+      sinon.assert.calledWith(spy, 'webhook-id', { status: 'failed' })
       expect(result.total).to.equal(11)
 
       // 2 pages and a next button for constant service page settings
