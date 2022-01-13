@@ -15,7 +15,7 @@
     <strong class="govuk-tag govuk-tag--blue">{{ webhook.status }}</strong>
   </h1>
 
-  <p class="govuk-body">{{ webhook.description }}</p>
+  <p class="govuk-body">This webhook sends updates after the following payment events:</p>
 
   <p class="govuk-body">
     <ul class="govuk-list govuk-list--bullet">
@@ -28,7 +28,7 @@
 
   <div>
     {{ govukButton({
-      text: "Update details",
+      text: "Update webhook",
       classes: "govuk-button--secondary",
       href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.update, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id),
       attributes: {
@@ -55,7 +55,7 @@
   {% endmacro %}
 
   <div class="govuk-!-margin-top-6">
-    <h2 class="govuk-heading-m">Events history</h2>
+    <h2 class="govuk-heading-m">Events</h2>
 
     <p class="govuk-body">Events sent to your Webhook are stored for 14 days.</p>
 
@@ -114,7 +114,7 @@
 
   {# spacing hack because the standard paginator template interrupts the page flow #}
   <div class="govuk-column-two-thirds" {% if messages.links and messages.links.length %}style="margin-top: 100px"{% endif %}>
-    {% set actionText = "Deactivate Webhook" if webhook.status == "ACTIVE" else "Activate Webhook" %}
+    {% set actionText = "Deactivate webhook" if webhook.status == "ACTIVE" else "Activate webhook" %}
     <a id="toggle-status" class="govuk-link govuk-link--no-visited-state pay-link-text-red" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.toggleActive, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) }}">{{ actionText }}</a>
   </div>
 </div>

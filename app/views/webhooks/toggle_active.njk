@@ -1,6 +1,6 @@
 {% extends "layout.njk" %}
 
-{% set actionText = "Deactivate Webhook" if webhook.status == "ACTIVE" else "Activate Webhook" %}
+{% set actionText = "Deactivate webhook" if webhook.status == "ACTIVE" else "Activate webhook" %}
 
 {% block pageTitle %}
   {{ actionText }} {{ webhook.callback_url }} - {{currentService.name}} {{ humanReadableEnvironment }} - GOV.UK Pay
@@ -13,7 +13,7 @@
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   {{ govukBackLink({
-    text: "Back to Webhook",
+    text: "Back to webhook",
     classes: "govuk-!-margin-top-0",
     href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id)
   }) }}
@@ -21,7 +21,7 @@
   <h1 class="govuk-heading-l page-title">{{ actionText }}</h1>
 
   <p class="govuk-body">
-    Inactive Webhooks will not send payment events to your callback URL.
+    Deactivated webhooks will not send payment events to your callback URL.
   </p>
 
   <p class="govuk-body">

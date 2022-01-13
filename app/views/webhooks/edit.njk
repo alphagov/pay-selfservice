@@ -1,6 +1,6 @@
 {% extends "layout.njk" %}
 
-{% set heading = "Update your Webhook details" if isEditing else "Create a new Webhook" %}
+{% set heading = "Update your webhook details" if isEditing else "Create a new webhook" %}
 {% set submitURL = formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.update, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) if isEditing else formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.create, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) %}
 {% set backURL = formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id) if isEditing else formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) %}
 
@@ -15,7 +15,7 @@
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   {{ govukBackLink({
-    text: "Back to Webhook" if isEditing else "Back to Webhooks",
+    text: "Back to webhook" if isEditing else "Back to webhooks",
     classes: "govuk-!-margin-top-0",
     href: backURL
   }) }}
@@ -32,7 +32,7 @@
 
     {{ govukInput({
       label: { text: "Callback URL" },
-      hint: { text: "The URL GOV.UK Pay will send payment events to" },
+      hint: { text: "The HTTPS URL GOV.UK Pay will send webhook messages to" },
       id: "callback_url",
       name: "callback_url",
       value: webhook.callback_url
@@ -40,7 +40,7 @@
 
     {{ govukInput({
       label: { text: "Description" },
-      hint: { text: "Short summary of what this Webhook will be used for" },
+      hint: { text: "Short summary of what this webhook will be used for" },
       id: "description",
       name: "description",
       value: webhook.description
@@ -59,7 +59,7 @@
     }) }}
 
     {{ govukButton({
-      text: "Update Webhook" if isEditing else "Create Webhook",
+      text: "Update webhook" if isEditing else "Create webhook",
       type: "submit"
     }) }}
   </form>
