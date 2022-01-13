@@ -66,6 +66,28 @@ function webhooks (serviceId, isLive, options = {}) {
   return baseClient.get(request)
 }
 
+function message(id, webhookId, options = {}) {
+  const url = urlJoin('/v1/webhook', webhookId, 'message', id)
+  const request = {
+    url,
+    description: 'Get webhook message',
+    ...defaultRequestOptions,
+    ...options
+  }
+  return baseClient.get(request)
+}
+
+function attempts(messageId, webhookId, options = {}) {
+  const url = urlJoin('/v1/webhook', webhookId, 'message', messageId, 'attempt')
+  const request = {
+    url,
+    description: 'Get webhook message delivery attempts',
+    ...defaultRequestOptions,
+    ...options
+  }
+  return baseClient.get(request)
+}
+
 function messages(id, options = {}) {
   const url = urlJoin('/v1/webhook', id, 'message')
   const request = {
@@ -101,11 +123,13 @@ function createWebhook (serviceId, isLive, options = {}) {
 
 function updateWebhook (id, serviceId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
-  const body = [
-    { op: 'replace', path: 'callback_url', value: options.callback_url },
-    { op: 'replace', path: 'subscriptions', value: options.subscriptions },
-    { op: 'replace', path: 'description', value: options.description }
-  ]
+  const paths = [ 'callback_url', 'subscriptions', 'description', 'status' ]
+  const body = []
+  paths.forEach((path) => {
+    if (options[path]) {
+      body.push({ op: 'replace', path, value: options[path] })
+    }
+  })
   const request = {
     url,
     qs: {
@@ -119,6 +143,17 @@ function updateWebhook (id, serviceId, options = {}) {
   return baseClient.patch(request)
 }
 
+function resendWebhookMessage(webhookId, messageId, options = {}) {
+  const url = urlJoin('/v1/webhook', webhookId, 'message', messageId, 'resend')
+  const request = {
+    url,
+    ...defaultRequestOptions,
+    ...options,
+    description: 'Schedule resending a message'
+  }
+  return baseClient.post(request)
+}
+
 module.exports = {
   webhook,
   webhooks,
@@ -126,5 +161,8 @@ module.exports = {
   updateWebhook,
   signingSecret,
   resetSigningSecret,
-  messages
+  messages,
+  message,
+  attempts,
+  resendWebhookMessage
 }

@@ -1,0 +1,101 @@
+{% extends "layout.njk" %}
+
+{% set messageType = eventTypes[message.event_type | upper] %}
+{% set resourceId = message.resource_id or message.resource.transaction_id %}
+
+{% block pageTitle %}
+  {{ messageType }} - {{ webhook.callback_url }} - {{currentService.name}} {{ humanReadableEnvironment }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  {{ govukBackLink({
+    text: "Back to Webhook",
+    classes: "govuk-!-margin-top-0",
+    href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id)
+  }) }}
+
+  <h1 class="govuk-heading-l page-title">{{ messageType }}</h1>
+
+  {# re-introduce when backend POST route enabled #}
+  {# <div>
+    <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.resendMessage, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id, message.external_id) }}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+      {{ govukButton({
+        text: "Resend event",
+        classes: "govuk-button--secondary",
+        attributes: {
+          "data-action": "resend"
+        },
+        type: "submit"
+      }) }}
+    </form>
+  </div> #}
+
+  {% set resourceLink %}
+  <a class="govuk-link" href="{{ formatAccountPathsFor(routes.account.transactions.detail, currentGatewayAccount.external_id, resourceId) }}">{{ resourceId }}</a>
+  {% endset %}
+  {{ govukSummaryList({
+    rows: [{
+      key: { text: "Resource" },
+      value: { html: resourceLink }
+    }, {
+      key: { text: "Event date" },
+      value: { text: message.created_date | datetime('datelong') }
+    }, {
+      key: { text: "Status code" },
+      value: { text: message.latest_attempt and message.latest_attempt.status_code or '-' }
+    }]
+  }) }}
+
+  <div class="govuk-body">
+    <details class="govuk-details" data-module="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">{{ messageType }} event body</span>
+      </summary>
+      <div class="govuk-details__text scrollflow">
+        <pre>
+        <code>{{ message.resource | dump('\t') }}</code>
+        </pre>
+      </div>
+    </details>
+  </div>
+
+  <div class="govuk-!-margin-top-8">
+    <h2 class="govuk-heading-m">Delivery attempts</h2>
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Attempt date</th>
+            <th class="govuk-table__header" scope="col">Status</th>
+            <th class="govuk-table__header" scope="col">Status code</th>
+            <th class="govuk-table__header" scope="col">Result</th>
+          </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+        {% for attempt in attempts %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ attempt.send_at | datetime('datelong') }} {{ attempt.send_at | datetime('time') | truncate(5, true, '') }}</td>
+            <td class="govuk-table__cell">{{ attempt.status }}</td>
+            <td class="govuk-table__cell">{{ attempt.status_code or '-' }}</td>
+            <td class="govuk-table__cell">{{ attempt.result }}</td>
+          </tr>
+
+        {% else %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell" colspan="4">
+              <i>No delivery attempts found for event</i>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+  </div>
+</div>
+{% endblock %}

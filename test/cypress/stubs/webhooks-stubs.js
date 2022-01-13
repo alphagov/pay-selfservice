@@ -47,9 +47,25 @@ function getWebhookSigningSecret(opts = {}) {
   })
 }
 
+function getWebhookMessage(opts = {}) {
+  const path = `/v1/webhook/${opts.webhook_id}/message/${opts.external_id}`
+  return stubBuilder('GET', path, 200, {
+    response: webhooksFixtures.webhookMessageResponse(opts)
+  })
+}
+
+function getWebhookMessageAttempts(opts = {}) {
+  const path = `/v1/webhook/${opts.webhook_id}/message/${opts.message_id}/attempt`
+  return stubBuilder('GET', path, 200, {
+    response: webhooksFixtures.webhooksMessageAttemptsListResponse(opts.attempts || [])
+  })
+}
+
 module.exports = {
   getWebhooksListSuccess,
   getWebhookSuccess,
   getWebhookSigningSecret,
-  getWebhookMessagesListSuccess
+  getWebhookMessagesListSuccess,
+  getWebhookMessage,
+  getWebhookMessageAttempts
 }

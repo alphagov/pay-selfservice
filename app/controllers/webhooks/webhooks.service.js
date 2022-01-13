@@ -40,6 +40,14 @@ function getWebhook (id, serviceId) {
   return webhooksClient.webhook(id, serviceId)
 }
 
+function getWebhookMessage (id, webhookId) {
+  return webhooksClient.message(id, webhookId)
+}
+
+function getWebhookMessageAttempts(messageId, webhookId) {
+  return webhooksClient.attempts(messageId, webhookId)
+}
+
 async function getWebhookMessages(id, options = {}) {
   const searchResponse =  await webhooksClient.messages(id, options)
   return formatPages(searchResponse)
@@ -58,6 +66,10 @@ function toggleStatus(webhookId, serviceId, currentStatus) {
   return webhooksClient.updateWebhook(webhookId, serviceId, { status })
 }
 
+function resendWebhookMessage(webhookId, messageId) {
+  return webhooksClient.resendWebhookMessage(webhookId, messageId)
+}
+
 module.exports = {
   listWebhooks,
   createWebhook,
@@ -66,5 +78,8 @@ module.exports = {
   getSigningSecret,
   resetSigningSecret,
   toggleStatus,
-  getWebhookMessages
+  getWebhookMessages,
+  getWebhookMessage,
+  getWebhookMessageAttempts,
+  resendWebhookMessage
 }

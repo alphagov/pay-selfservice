@@ -15,7 +15,7 @@ async function webhookDetailPage (req, res, next) {
 
   try {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
-    const messages = await webhooksService.getWebhookMessages(req.params.webhookId, { page, ...status && status })
+    const messages = await webhooksService.getWebhookMessages(req.params.webhookId, { page, ...status && { status } })
 
     response(req, res, 'webhooks/detail', {
       eventTypes: constants.webhooks.humanReadableSubscriptions,
@@ -76,6 +76,17 @@ async function toggleActivePage (req, res, next) {
   }
 }
 
+async function webhookMessageDetailPage (req, res, next) {
+  try {
+    const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
+    const message = await webhooksService.getWebhookMessage(req.params.messageId, req.params.webhookId)
+    const attempts = await webhooksService.getWebhookMessageAttempts(req.params.messageId, req.params.webhookId)
+    response(req, res, 'webhooks/message', { webhook, message, attempts, eventTypes: constants.webhooks.humanReadableSubscriptions })
+  } catch (error) {
+    next(error)
+  }
+}
+
 async function createWebhook (req, res, next) {
   try {
     await webhooksService.createWebhook(req.service.externalId, req.isLive, req.body)
@@ -107,6 +118,16 @@ async function toggleActiveWebhook(req, res, next) {
   }
 }
 
+async function resendWebhookMessage(req, res, next) {
+  try {
+    await webhooksService.resendWebhookMessage(req.params.webhookId, req.params.messageId)
+    req.flash('generic', 'Webhook message scheduled for retry')
+    res.redirect(formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.message, req.account.type, req.service.externalId, req.account.external_id, req.params.webhookId, req.params.messageId))
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   listWebhooksPage,
   createWebhookPage,
@@ -116,5 +137,7 @@ module.exports = {
   updateWebhookPage,
   webhookDetailPage,
   signingSecretPage,
-  toggleActivePage
+  toggleActivePage,
+  webhookMessageDetailPage,
+  resendWebhookMessage
 }

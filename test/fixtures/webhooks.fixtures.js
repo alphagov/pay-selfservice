@@ -44,6 +44,10 @@ function webhooksListResponse (options = []) {
   return options.map((option) => validWebhook(option))
 }
 
+function webhookMessageResponse (options = {}) {
+  return validWebhookMessage(options)
+}
+
 function webhooksMessageAttemptsListResponse (options = []) {
   return options.map(validWebhookMessageAttempt)
 }
@@ -70,5 +74,6 @@ module.exports = {
   webhookResponse,
   webhookSigningSecretResponse,
   webhookMessageSearchResponse,
-  webhooksMessageAttemptsListResponse
+  webhooksMessageAttemptsListResponse,
+  webhookMessageResponse
 }
