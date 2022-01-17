@@ -108,7 +108,7 @@
     "throng": "5.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
-    "winston": "3.3.4"
+    "winston": "3.4.0"
   },
   "devDependencies": {
     "@babel/core": "7.16.7",
