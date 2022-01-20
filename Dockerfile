@@ -1,9 +1,13 @@
-FROM node:12.22.7-alpine3.12 AS base
+FROM node:12.22.7-alpine3.12@sha256:99eaf1312b1926bc6db27d7230c8b3118d4ad2db64cc6a8a8304adeb8bad283b AS base
 
 RUN apk --no-cache upgrade && apk add --no-cache tini
 
+#############################
+# Dependency build stage
+#############################
 FROM base as builder
-### Needed to run appmetrics and pact-mock-service
+
+### Needed to build appmetrics and pact-mock-service
 COPY sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 RUN ["apk", "--no-cache", "add", "ca-certificates", "python2", "build-base"]
 RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk && apk add --no-cache glibc-2.28-r0.apk && rm -f glibc-2.28-r0.apk
@@ -13,6 +17,9 @@ ADD package.json /tmp/package.json
 ADD package-lock.json /tmp/package-lock.json
 RUN cd /tmp && npm ci --production
 
+#############################
+# Production container stage
+#############################
 FROM base AS production
 
 ENV PORT 9000
