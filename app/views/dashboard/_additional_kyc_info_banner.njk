@@ -1,29 +1,48 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% if (isAdminUser and requiresAdditionalKycData and activeCredential.payment_provider === 'stripe') %}
+{% if (requiresAdditionalKycData and activeCredential.payment_provider === 'stripe') %}
 
   <div class="govuk-grid-column-full">
+
     {% set html %}
-      <p class="govuk-notification-banner__heading">
-          Add more information by {{ stripeKycAdditionalDataDueDate }}
-      </p>
-      <p class="govuk-body">
-          Updated Know Your Customer (KYC) anti-money laundering regulations mean that you need to add more details about your organisation.
-      </p>
-      <p>
-          You have until {{ stripeKycAdditionalDataDueDate }} to add these details. If you do not add them, your service will stop taking payments and Stripe will stop paying out to your bank account.
-      </p>
-      <p class="govuk-body">
-        Continue to
-        <a id="add-additional-kyc-details" class="govuk-notification-banner__link"
-           href="{{ formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id) }}">
-          Add new KYC Information</a>.
-      </p>
+        
+        <p class="govuk-notification-banner__heading">
+          The deadline to add more information about your organisation has passed.
+        </p>
+        
+        <p class="govuk-body">
+            {{ "You" if (isAdminUser) else "An admin in your organisation" }} must update your organisation details to comply with updated Know Your Customer (KYC) anti-money laundering regulations.
+        </p>
+
+        <p class="govuk-body">
+            If {{ "you" if (isAdminUser) else "they" }} do not add these details, your service will soon stop taking payments and Stripe will stop paying out to your bank account.
+        </p>
+
+        {% if (isAdminUser) %}
+
+          <p class="govuk-body">
+            Continue to
+            <a id="add-additional-kyc-details" class="govuk-notification-banner__link"
+               href="{{ formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id) }}">
+              Add new KYC Information</a>.
+          </p>
+
+        {% else %}
+
+          <p class="govuk-body">
+              Ask an administrator to complete this now.
+          </p>
+
+        {% endif %}
     {% endset %}
 
     {{ govukNotificationBanner({
       html: html
     }) }}
+
   </div>
 
 {% endif %}
+
+
+

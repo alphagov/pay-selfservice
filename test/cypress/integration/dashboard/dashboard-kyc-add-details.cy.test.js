@@ -14,10 +14,21 @@ describe('Stripe - add additional KYC details banner', () => {
   const gatewayAccountCredentials = [{
     payment_provider: 'stripe'
   }]
-  beforeEach(() => {
+
+  const userStubWithOpts = (roleName) => (
+    {
+      userExternalId: userExternalId,
+      email: 'logged-in-user@example.com',
+      gatewayAccountId: gatewayAccountId,
+      gatewayAccountExternalId: gatewayAccountExternalId,
+      role: { name: roleName }
+    }
+  )
+
+  const setUpTasksWithUserRole = (roleName) => {
     cy.setEncryptedCookies(userExternalId)
     cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId }),
+      userStubs.getUserSuccess(userStubWithOpts(roleName)),
       gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials, requiresAdditionalKycData: true }),
       transactionsSummaryStubs.getDashboardStatistics(),
@@ -30,15 +41,35 @@ describe('Stripe - add additional KYC details banner', () => {
       }),
       stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'stripe-account-id')
     ])
+  }
+
+  describe('Admin user', () => {
+    beforeEach(() => {
+      setUpTasksWithUserRole('admin')
+    })
+    it('should display banner', () => {
+      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+
+      cy.get('.govuk-notification-banner__heading').contains('The deadline to add more information about your organisation has passed.')
+      cy.get('.govuk-notification-banner__content p:nth-of-type(2)').contains('You must update your organisation details to comply with updated Know Your Customer (KYC) anti-money laundering regulations.')
+      cy.get('.govuk-notification-banner__content p:nth-of-type(3)').contains('If you do not add these details, your service will soon stop taking payments and Stripe will stop paying out to your bank account.')
+      cy.get('#add-additional-kyc-details').should('exist')
+      cy.get('#add-additional-kyc-details').should('have.attr', 'href', `/account/a-valid-external-id/your-psp/a-valid-external-id`)
+    })
   })
 
-  it('should display banner', () => {
-    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+  describe('View only user', () => {
+    beforeEach(() => {
+      setUpTasksWithUserRole('view-only')
+    })
+    it('should display banner', () => {
+      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
 
-    cy.get('.govuk-notification-banner__heading').contains('Add more information by 1 November 2021')
-    cy.get('#add-additional-kyc-details').should('exist')
-    cy.get('#add-additional-kyc-details').should('exist')
-
-    cy.get('#add-additional-kyc-details').should('have.attr', 'href', `/account/a-valid-external-id/your-psp/a-valid-external-id`)
+      cy.get('.govuk-notification-banner__heading').contains('The deadline to add more information about your organisation has passed.')
+      cy.get('.govuk-notification-banner__content p:nth-of-type(2)').contains('An admin in your organisation must update your organisation details to comply with updated Know Your Customer (KYC) anti-money laundering regulations.')
+      cy.get('.govuk-notification-banner__content p:nth-of-type(3)').contains('If they do not add these details, your service will soon stop taking payments and Stripe will stop paying out to your bank account.')
+      cy.get('.govuk-notification-banner__content p:nth-of-type(4)').contains('Ask an administrator to complete this now.')
+      cy.get('#add-additional-kyc-details').should('not.exist')
+    })
   })
 })
