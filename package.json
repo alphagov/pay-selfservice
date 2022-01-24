@@ -74,7 +74,7 @@
     "body-parser": "1.19.1",
     "change-case": "3.1.0",
     "check-types": "11.1.x",
-    "chokidar": "^3.5.2",
+    "chokidar": "^3.5.3",
     "client-sessions": "0.8.0",
     "common-password": "0.1.2",
     "connect-flash": "0.1.1",
