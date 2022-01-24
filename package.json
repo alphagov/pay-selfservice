@@ -98,7 +98,7 @@
     "passport-custom": "1.1.1",
     "passport-local": "1.0.0",
     "qrcode": "1.5.0",
-    "qs": "6.10.2",
+    "qs": "6.10.3",
     "request": "2.88.2",
     "request-promise-native": "1.0.9",
     "rfc822-validate": "1.0.0",
