@@ -1,0 +1,39 @@
+FROM node:12.22.9-buster-slim@sha256:747221aac56152a04f000c74aeaaf2098f26274600b874e6c80df2c75aa197f9 AS base
+
+RUN apt-get update && apt-get upgrade -y \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    tini \
+  && rm -rf /var/lib/apt/lists/*
+
+############################################
+# Builder with toolchain to build appmetrics
+############################################
+FROM base AS builder
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    build-essential \
+    libc6 \
+    python3 \
+  && rm -rf /var/lib/apt/lists/* \
+  && ln -s /usr/bin/python3 /usr/bin/python 
+
+ADD package.json /tmp/package.json
+ADD package-lock.json /tmp/package-lock.json
+
+RUN cd /tmp && npm ci --production
+
+###################
+# Final prod build
+###################
+FROM base AS production
+
+ENV PORT 9000
+EXPOSE 9000
+
+WORKDIR /app
+ADD . /app
+COPY --from=builder /tmp/node_modules /app/node_modules
+
+ENTRYPOINT ["tini", "--"]
+
+CMD ["npm", "start"]
