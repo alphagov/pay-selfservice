@@ -1,4 +1,4 @@
-FROM node:12.22.7-alpine3.12 as base
+FROM node:12.22.7-alpine3.12@sha256:99eaf1312b1926bc6db27d7230c8b3118d4ad2db64cc6a8a8304adeb8bad283b as base
 
 RUN apk --no-cache upgrade && apk add --no-cache tini
 
