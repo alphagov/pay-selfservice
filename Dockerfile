@@ -10,8 +10,7 @@ FROM base as builder
 RUN apk add --no-cache --update \
   build-base \
   python2 \
-  libc6-compat \
-  libexecinfo-dev
+  libc6-compat
 
 ADD package.json /tmp/package.json
 ADD package-lock.json /tmp/package-lock.json
