@@ -123,7 +123,7 @@
     "chokidar-cli": "latest",
     "csrf": "^3.1.0",
     "cypress": "3.1.5",
-    "dotenv": "10.0.0",
+    "dotenv": "14.2.0",
     "envfile": "3.0.0",
     "gaap-analytics": "3.1.0",
     "grunt": "1.4.x",
