@@ -247,7 +247,7 @@ describe('Director POST controller', () => {
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
     sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
-    assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'], 'Enter a valid date of birth')
+    assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'], 'Enter a valid date')
   })
 
   it('should render error page when Stripe returns error, not call connector, and not redirect', async function () {

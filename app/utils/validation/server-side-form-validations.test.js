@@ -303,7 +303,7 @@ describe('Server side form validations', () => {
     it('should not be valid for invalid phone number', () => {
       expect(validations.validatePhoneNumber('abd')).to.deep.equal({
         valid: false,
-        message: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+        message: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
       })
     })
   })

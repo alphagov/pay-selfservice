@@ -27,7 +27,7 @@ module.exports = async function submitPspChoice (req, res, next) {
   if (psp === undefined && pspOther === undefined) {
     errors['choose-how-to-process-payments-mode'] = 'You need to select an option'
   } else if (otherPspSelected && pspOther === undefined) {
-    errors['choose-how-to-process-payments-mode-other'] = 'You need to select one of Worldpay, Smartpay or ePDQ'
+    errors['choose-how-to-process-payments-mode-other'] = 'You need to select Worldpay, Smartpay or ePDQ'
   }
 
   if (lodash.isEmpty(errors)) {

@@ -129,7 +129,7 @@ describe('Responsible person add additional details POST controller', () => {
 
     sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/kyc-additional-information`)
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['telephone-number'],
-      'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+      'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
   })
 
   it('should call completeKyc if all KYC tasks are complete for additional KYC details collection', async function () {
