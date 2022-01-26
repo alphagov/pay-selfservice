@@ -322,7 +322,7 @@ describe('Responsible person POST controller', () => {
 
     sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['telephone-number'],
-      'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+      'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
   })
 
   it('should display an error for date of birth when Stripe returns error, not call connector', async function () {
@@ -354,7 +354,7 @@ describe('Responsible person POST controller', () => {
 
     sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'],
-      'Enter a valid date of birth')
+      'Enter a valid date')
   })
 
   it('should render error when Stripe returns error, not call connector, and not redirect', async function () {

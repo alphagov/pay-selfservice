@@ -26,8 +26,8 @@ const validationErrors = {
   invalidWorldpay3dsFlexOrgUnitId: 'Enter your organisational unit ID in the format you received it',
   invalidWorldpay3dsFlexIssuer: 'Enter your issuer in the format you received it',
   invalidWorldpay3dsFlexJwtMacKey: 'Enter your JWT MAC key in the format you received it',
-  invalidDateOfBirth: 'Enter a valid date of birth',
-  invalidTelephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+  invalidDateOfBirth: 'Enter a valid date',
+  invalidTelephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
 }
 
 exports.validationErrors = validationErrors

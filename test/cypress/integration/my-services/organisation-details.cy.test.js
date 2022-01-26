@@ -88,7 +88,7 @@ describe('Dashboard', () => {
           cy.get('a[href="#address-line1"]').should('contain', 'Enter a building and street')
           cy.get('a[href="#address-city"]').should('contain', 'Enter a town or city')
           cy.get('a[href="#address-postcode"]').should('contain', 'Enter a real postcode')
-          cy.get('a[href="#telephone-number"]').should('contain', 'Invalid telephone number')
+          cy.get('a[href="#telephone-number"]').should('contain', 'Enter a telephone number')
           cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
         })
 
@@ -107,7 +107,7 @@ describe('Dashboard', () => {
               cy.get('.govuk-error-message').should('contain', 'Enter a real postcode')
             })
             cy.get('.govuk-form-group--error > input#telephone-number').parent().should('exist').within(() => {
-              cy.get('.govuk-error-message').should('contain', 'Invalid telephone number')
+              cy.get('.govuk-error-message').should('contain', 'Enter a telephone number')
             })
             cy.get('.govuk-form-group--error > input#url').parent().should('exist').within(() => {
               cy.get('.govuk-error-message').should('contain', 'Enter a valid website address')
@@ -130,7 +130,7 @@ describe('Dashboard', () => {
         cy.get('.govuk-error-summary').find('a').should('have.length', 3)
         cy.get('.govuk-error-summary').should('exist').within(() => {
           cy.get('a[href="#address-postcode"]').should('contain', 'Enter a real postcode')
-          cy.get('a[href="#telephone-number"]').should('contain', 'Invalid telephone number')
+          cy.get('a[href="#telephone-number"]').should('contain', 'Enter a telephone number')
           cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
         })
 

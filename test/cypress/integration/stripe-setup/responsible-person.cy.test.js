@@ -110,7 +110,7 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('a[href="#home-address-city"]').should('contain', 'Enter a town or city')
         cy.get('a[href="#home-address-postcode"]').should('contain', 'Enter a real postcode')
         cy.get('a[href="#dob-day"]').should('contain', 'Enter a real date of birth')
-        cy.get('a[href="#telephone-number"]').should('contain', 'Invalid telephone number')
+        cy.get('a[href="#telephone-number"]').should('contain', 'Enter a telephone number')
         cy.get('a[href="#email"]').should('contain', 'Enter a valid email address')
       })
 

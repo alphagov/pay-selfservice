@@ -126,7 +126,7 @@ describe('register user controller', () => {
             .to.deep.equal({
               telephoneNumber: invalidPhone,
               errors: {
-                telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+                telephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
               }
             })
         })
@@ -399,7 +399,7 @@ describe('register user controller', () => {
             .to.deep.equal({
               telephoneNumber: invalidPhone,
               errors: {
-                telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+                telephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
               }
             })
         })

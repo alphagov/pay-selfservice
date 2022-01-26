@@ -85,7 +85,7 @@ describe('Register service', function () {
       email: req.body.email,
       telephoneNumber: req.body['telephone-number'],
       errors: {
-        telephoneNumber: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+        telephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
       }
     })
     sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
