@@ -19,23 +19,23 @@ const {
 } = require('../utils/validation/server-side-form-validations')
 const { validateServiceName } = require('../utils/service-name-validation')
 const { RegistrationSessionMissingError, InvalidRegistationStateError } = require('../errors')
+const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 const INVITE_NOT_FOUND_ERROR_MESSAGE = 'There has been a problem proceeding with this registration. Please try again.'
 
-const registrationSessionPresent = function registrationSessionPresent (sessionData) {
+function registrationSessionPresent(sessionData) {
   return sessionData && sessionData.email && sessionData.code
 }
 
-/**
- * Display user registration data entry form
- *
- * @param req
- * @param res
- */
-const showRegistration = function showRegistration (req, res) {
+function getServiceCreatedDuringSignup(user) {
+  return user.serviceRoles.map(serviceRole => serviceRole.service)
+    .find(service => service.serviceName && service.serviceName.en === DEFAULT_SERVICE_NAME)
+}
+
+function showRegistration(req, res) {
   const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered', {})
   lodash.unset(req, 'session.pageData.submitRegistration.recovered')
   res.render('self-create-service/register', {
@@ -45,13 +45,7 @@ const showRegistration = function showRegistration (req, res) {
   })
 }
 
-/**
- * Process submission of service registration details
- *
- * @param req
- * @param res
- */
-const submitRegistration = async function submitRegistration (req, res, next) {
+async function submitRegistration(req, res, next) {
   const correlationId = req.correlationId
   const email = req.body['email']
   const telephoneNumber = req.body['telephone-number']
@@ -115,7 +109,7 @@ const submitRegistration = async function submitRegistration (req, res, next) {
  * @param req
  * @param res
  */
-const showConfirmation = function showConfirmation (req, res) {
+function showConfirmation(req, res) {
   const requesterEmail = lodash.get(req, 'session.pageData.submitRegistration.email', '')
   lodash.unset(req, 'session.pageData.submitRegistration')
   res.render('self-create-service/confirm', {
@@ -123,13 +117,7 @@ const showConfirmation = function showConfirmation (req, res) {
   })
 }
 
-/**
- * Display OTP verify page
- *
- * @param req
- * @param res
- */
-const showOtpVerify = async function showOtpVerify (req, res, next) {
+async function showOtpVerify(req, res, next) {
   const correlationId = req.correlationId
 
   const sessionData = req.register_invite
@@ -164,14 +152,7 @@ const showOtpVerify = async function showOtpVerify (req, res, next) {
   }
 }
 
-/**
- * Orchestration logic
- *
- * @param req
- * @param res
- * @returns {*|Promise|Promise.<T>}
- */
-const createPopulatedService = async function createPopulatedService (req, res, next) {
+async function createPopulatedService(req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
@@ -227,7 +208,7 @@ const createPopulatedService = async function createPopulatedService (req, res, 
  * @param req
  * @param res
  */
-const loggedIn = function loggedIn (req, res) {
+function loggedIn(req, res) {
   res.redirect(303, paths.selfCreateService.serviceNaming)
 }
 
@@ -237,7 +218,7 @@ const loggedIn = function loggedIn (req, res) {
  * @param req
  * @param res
  */
-const showOtpResend = async function showOtpResend (req, res, next) {
+async function showOtpResend(req, res, next) {
   const correlationId = req.correlationId
 
   const sessionData = req.register_invite
@@ -275,7 +256,7 @@ const showOtpResend = async function showOtpResend (req, res, next) {
  * @param req
  * @param res
  */
-const submitOtpResend = async function submitOtpResend (req, res, next) {
+async function submitOtpResend(req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
@@ -307,27 +288,19 @@ const submitOtpResend = async function submitOtpResend (req, res, next) {
   }
 }
 
-/**
- * Display name your service form
- *
- * @param req
- * @param res
- */
-const showNameYourService = function showNameYourService (req, res) {
+function showNameYourService(req, res) {
   const serviceName = lodash.get(req, 'session.pageData.submitYourServiceName.serviceName', '')
   lodash.unset(req, 'session.pageData.submitYourServiceName')
+  if (!getServiceCreatedDuringSignup(req.user)) {
+    logger.warn("User attempted to access the page to set the service name as part of registration but no service with the default name was found")
+    return res.redirect(303, paths.serviceSwitcher.index)
+  }
   res.render('self-create-service/set-name', {
     serviceName
   })
 }
 
-/**
- * Process submission of service name form
- *
- * @param req
- * @param res
- */
-const submitYourServiceName = async function submitYourServiceName (req, res, next) {
+async function submitYourServiceName(req, res, next) {
   const correlationId = req.correlationId
   const serviceName = req.body['service-name']
   const validationErrors = validateServiceName(serviceName, 'service_name', true)
@@ -340,7 +313,10 @@ const submitYourServiceName = async function submitYourServiceName (req, res, ne
     res.redirect(303, paths.selfCreateService.serviceNaming)
   } else {
     try {
-      const { service } = req.user.serviceRoles[0]
+      const service = getServiceCreatedDuringSignup(req.user)
+      if (!service) {
+        throw new Error(`Attempting to set name for service during registration but a service with name "${DEFAULT_SERVICE_NAME}" was not found`)
+      }
       const account = await connectorClient.getAccount({ gatewayAccountId: service.gatewayAccountIds[0] })
       await serviceService.updateServiceName(service.externalId, serviceName, null, correlationId)
       lodash.unset(req, 'session.pageData.submitYourServiceName')

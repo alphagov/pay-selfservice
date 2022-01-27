@@ -6,17 +6,19 @@ const lodash = require('lodash')
 const { expect } = require('chai')
 const paths = require('../../../../app/paths.js')
 
+const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
+const userFixtures = require('../../../fixtures/user.fixtures')
+const User = require('../../../../app/models/User.class')
+
+const gatewayAccountExternalId = 'an-external-id'
+const correlationId = 'abcde12345'
+
 describe('Register service', function () {
-  let req, res, next
+  let req, res, next, updateServiceNameSpy
 
   beforeEach(() => {
     req = {
-      correlationId: 'abcde12345',
-      body: {
-        email: 'foo@example.com',
-        'telephone-number': '07512345678',
-        password: 'password1234'
-      },
+      correlationId,
       flash: sinon.spy()
     }
 
@@ -27,15 +29,28 @@ describe('Register service', function () {
       status: sinon.spy()
     }
     next = sinon.spy()
+    updateServiceNameSpy = sinon.spy()
   })
 
-  const controllerWithStubbedAdminusersSuccess = proxyquire('../../../../app/controllers/register-service.controller.js', {
-    '../services/service-registration.service': {
-      submitRegistration: () => Promise.resolve()
-    }
-  })
+  function getControllerWithStubs() {
+    return proxyquire('../../../../app/controllers/register-service.controller.js', {
+      '../services/service-registration.service': {
+        submitRegistration: () => Promise.resolve()
+      },
+      '../services/service.service': {
+        updateServiceName: updateServiceNameSpy
+      },
+      '../services/clients/connector.client': {
+        ConnectorClient: function () {
+          this.getAccount = () => Promise.resolve(gatewayAccountFixtures.validGatewayAccountResponse({
+            external_id: gatewayAccountExternalId
+          }))
+        }
+      }
+    })
+  }
 
-  const getControllerWithStubbedAdminusersError = function (error) {
+  function getControllerWithStubbedAdminusersError(error) {
     return proxyquire('../../../../app/controllers/register-service.controller.js',
       {
         '../services/service-registration.service': {
@@ -44,59 +59,160 @@ describe('Register service', function () {
       })
   }
 
-  it('should redirect to the registration submitted page when successful', async () => {
-    await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res, next)
-    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
-  })
+  describe('Submit registration', () => {
 
-  it('should redirect with error stating email has to be a public sector email when adminusers responds with a 403', async () => {
-    const errorFromAdminusers = {
-      errorCode: 403
-    }
-
-    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res, next)
-
-    const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered')
-    expect(recovered).to.deep.equal({
-      email: req.body.email,
-      telephoneNumber: req.body['telephone-number'],
-      errors: {
-        email: 'Enter a public sector email address'
+    beforeEach(() => {
+      req.body = {
+        email: 'foo@example.com',
+        'telephone-number': '07512345678',
+        password: 'password1234'
       }
     })
-    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
+
+    it('should redirect to the registration submitted page when successful', async () => {
+      await getControllerWithStubs().submitRegistration(req, res, next)
+      sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
+    })
+
+    it('should redirect with error stating email has to be a public sector email when adminusers responds with a 403', async () => {
+      const errorFromAdminusers = {
+        errorCode: 403
+      }
+
+      await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res, next)
+
+      const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered')
+      expect(recovered).to.deep.equal({
+        email: req.body.email,
+        telephoneNumber: req.body['telephone-number'],
+        errors: {
+          email: 'Enter a public sector email address'
+        }
+      })
+      sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
+    })
+
+    it('should continue to confirmation page when adminusers returns a 409', async () => {
+      const errorFromAdminusers = {
+        errorCode: 409
+      }
+
+      await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res, next)
+      sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
+    })
+
+    it('should redirect with error whan an invalid phone number is entered', async () => {
+      req.body['telephone-number'] = 'acb1234567' // pragma: allowlist secret
+
+      await getControllerWithStubs().submitRegistration(req, res, next)
+      const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered')
+      expect(recovered).to.deep.equal({
+        email: req.body.email,
+        telephoneNumber: req.body['telephone-number'],
+        errors: {
+          telephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+        }
+      })
+      sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
+    })
+
+    it('should call next with error for unexpected error from adminusers', async () => {
+      const error = {
+        errorCode: 404
+      }
+
+      await getControllerWithStubbedAdminusersError(error).submitRegistration(req, res, next)
+      sinon.assert.calledWith(next, error)
+    })
   })
 
-  it('should continue to confirmation page when adminusers returns a 409', async () => {
-    const errorFromAdminusers = {
-      errorCode: 409
-    }
+  describe('Load service name page', () => {
+    it('should load page when the user has a service with the default name', () => {
+      req.user = new User(userFixtures.validUserResponse({
+        service_roles: [
+          {
+            service: {
+              service_name: {
+                en: "System Generated"
+              }
+            }
+          }
+        ]
+      }))
+      getControllerWithStubs().showNameYourService(req, res, next)
+      sinon.assert.calledWith(res.render, 'self-create-service/set-name', { serviceName: '' })
+    })
 
-    await getControllerWithStubbedAdminusersError(errorFromAdminusers).submitRegistration(req, res, next)
-    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.confirm)
+    it('should redirect to "My services" page when user does not have a service with the default name', () => {
+      req.user = new User(userFixtures.validUserResponse({
+        service_roles: [
+          {
+            service: {
+              service_name: {
+                en: "Not a default service"
+              }
+            }
+          }
+        ]
+      }))
+      getControllerWithStubs().showNameYourService(req, res, next)
+      sinon.assert.calledWith(res.redirect, 303, '/my-services')
+    })
   })
 
-  it('should redirect with error whan an invalid phone number is entered', async () => {
-    req.body['telephone-number'] = 'acb1234567' // pragma: allowlist secret
-
-    await controllerWithStubbedAdminusersSuccess.submitRegistration(req, res, next)
-    const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered')
-    expect(recovered).to.deep.equal({
-      email: req.body.email,
-      telephoneNumber: req.body['telephone-number'],
-      errors: {
-        telephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+  describe('Set service name', () => {
+    const newServiceName = 'New service name'
+    const serviceExternalId = 'service-to-rename-service-id'
+    beforeEach(() => {
+      req.body = {
+        'service-name': newServiceName
       }
     })
-    sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.register)
-  })
 
-  it('should call next with error for unexpected error from adminusers', async () => {
-    const error = {
-      errorCode: 404
-    }
+    it('should set the name for the service with the default name that was created during sign-up and redirect to the account dashboard', async () => {
+      req.user = new User(userFixtures.validUserResponse({
+        service_roles: [
+          {
+            service: {
+              service_name: {
+                en: "Not a default service"
+              }
+            }
+          },
+          {
+            service: {
+              external_id: serviceExternalId,
+              service_name: {
+                en: "System Generated"
+              }
+            }
+          }
+        ]
+      }))
 
-    await getControllerWithStubbedAdminusersError(error).submitRegistration(req, res, next)
-    sinon.assert.calledWith(next, error)
+      await getControllerWithStubs().submitYourServiceName(req, res, next)
+      sinon.assert.calledWith(updateServiceNameSpy, serviceExternalId, newServiceName, null, correlationId)
+      sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/dashboard`)
+    })
+
+    it('should call next with an error when there is no service with the default name to rename', async () => {
+      req.user = new User(userFixtures.validUserResponse({
+        service_roles: [
+          {
+            service: {
+              service_name: {
+                en: "Not a default service"
+              }
+            }
+          }
+        ]
+      }))
+
+      await getControllerWithStubs().submitYourServiceName(req, res, next)
+      const expectedError = sinon.match.instanceOf(Error)
+        .and(sinon.match.has('message', 'Attempting to set name for service during registration but a service with name "System Generated" was not found'))
+      sinon.assert.calledWith(next, expectedError)
+      sinon.assert.notCalled(res.redirect)
+    })
   })
 })
