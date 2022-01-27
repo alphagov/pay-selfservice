@@ -9,6 +9,7 @@ const CardGatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
+const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
 
 async function getGatewayAccounts (gatewayAccountIds, correlationId) {
   const cardGatewayAccounts = await connectorClient.getAccounts({
@@ -46,7 +47,7 @@ function updateService (serviceExternalId, serviceUpdateRequest, correlationId) 
 }
 
 async function createService (serviceName, serviceNameCy, user, correlationId) {
-  if (!serviceName) serviceName = 'System Generated'
+  if (!serviceName) serviceName = DEFAULT_SERVICE_NAME
   if (!serviceNameCy) serviceNameCy = ''
 
   const service = await adminUsersClient.createService(serviceName, serviceNameCy, correlationId)
