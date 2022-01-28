@@ -140,7 +140,7 @@ describe('Register service', function () {
         ]
       }))
       getControllerWithStubs().showNameYourService(req, res, next)
-      sinon.assert.calledWith(res.render, 'self-create-service/set-name', { serviceName: '' })
+      sinon.assert.calledWith(res.render, 'self-create-service/set-name', {})
     })
 
     it('should redirect to "My services" page when user does not have a service with the default name', () => {
@@ -163,13 +163,11 @@ describe('Register service', function () {
   describe('Set service name', () => {
     const newServiceName = 'New service name'
     const serviceExternalId = 'service-to-rename-service-id'
-    beforeEach(() => {
+
+    it('should set the name for the service with the default name that was created during sign-up and redirect to the account dashboard', async () => {
       req.body = {
         'service-name': newServiceName
       }
-    })
-
-    it('should set the name for the service with the default name that was created during sign-up and redirect to the account dashboard', async () => {
       req.user = new User(userFixtures.validUserResponse({
         service_roles: [
           {
@@ -196,6 +194,9 @@ describe('Register service', function () {
     })
 
     it('should call next with an error when there is no service with the default name to rename', async () => {
+      req.body = {
+        'service-name': newServiceName
+      }
       req.user = new User(userFixtures.validUserResponse({
         service_roles: [
           {
@@ -213,6 +214,35 @@ describe('Register service', function () {
         .and(sinon.match.has('message', 'Attempting to set name for service during registration but a service with name "System Generated" was not found'))
       sinon.assert.calledWith(next, expectedError)
       sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should redirect with an error message in the session when the service name is empty', async () => {
+      req.body = {
+        'service-name': ''
+      }
+      await getControllerWithStubs().submitYourServiceName(req, res, next)
+      sinon.assert.calledWith(res.redirect, 303, `/service/set-name`)
+      expect(req.session.pageData.submitYourServiceName).to.deep.equal({
+        errors: {
+          service_name: 'Enter a service name'
+        },
+        serviceName: ''
+      })
+    })
+
+    it('should redirect with an error message in the session when the service name is too long', async () => {
+      const serviceName = 'Lorem ipsum dolor sit amet, consectetuer adipiscing'
+      req.body = {
+        'service-name': serviceName
+      }
+      await getControllerWithStubs().submitYourServiceName(req, res, next)
+      sinon.assert.calledWith(res.redirect, 303, `/service/set-name`)
+      expect(req.session.pageData.submitYourServiceName).to.deep.equal({
+        errors: {
+          service_name: 'Service name must be 50 characters or fewer'
+        },
+        serviceName: serviceName
+      })
     })
   })
 })

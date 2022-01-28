@@ -87,10 +87,43 @@ describe('Controller: editServiceName, Method: get', () => {
       sinon.assert.calledWith(res.redirect, `/service/${req.service.externalId}/edit-name`)
     })
 
-    it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
+    it(`should set pre-existing pageData that includes the 'current_name' and errors`, () => {
       expect(req.session.pageData.editServiceName.current_name).to.have.property('en').to.equal(req.body['service-name'])
       expect(req.session.pageData.editServiceName.current_name).to.have.property('cy').to.equal(req.body['service-name-cy'])
-      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({ service_name: 'This field cannot be blank' })
+      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({ service_name: 'Enter a service name' })
+    })
+  })
+
+  describe('when the service name is too long', () => {
+    before(async function () {
+      mockServiceService.updateServiceName = sinon.stub().resolves()
+      mockResponses.response = sinon.spy()
+      req = {
+        correlationId: random.randomUuid(),
+        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
+        body: {
+          'service-name': 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
+          'service-name-cy': 'Lorem ipsum dolor sit amet, consectetuer adipiscing'
+        }
+      }
+      res = {
+        redirect: sinon.spy()
+      }
+
+      editServiceNameCtrl.post(req, res)
+    })
+
+    it(`should call 'res.redirect' with a properly formatted edit-service url`, () => {
+      sinon.assert.calledWith(res.redirect, `/service/${req.service.externalId}/edit-name`)
+    })
+
+    it(`should set pre-existing pageData that includes the 'current_name' and errors`, () => {
+      expect(req.session.pageData.editServiceName.current_name).to.have.property('en').to.equal(req.body['service-name'])
+      expect(req.session.pageData.editServiceName.current_name).to.have.property('cy').to.equal(req.body['service-name-cy'])
+      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({ 
+        service_name: 'Service name must be 50 characters or fewer',
+        service_name_cy: 'Welsh service name must be 50 characters or fewer' 
+      })
     })
   })
 })

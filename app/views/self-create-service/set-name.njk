@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Set the service name - GOV.UK Pay
@@ -6,20 +7,13 @@
 
 {% block mainContent %}
 <div id="display-name-your-service" class="govuk-grid-column-two-thirds">
-  {% if errors %}
-    <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
-      <h2 class="govuk-error-summary__title" id="error-summary-heading">
-        There was a problem with the details you gave for:
-      </h2>
-      <div class="govuk-error-summary__body">
-        <ul class="govuk-list govuk-error-summary__list">
-          {% if errors.service_name %}
-            <li><a href="#service-name">Service name</a></li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
-  {% endif %}
+  {{ errorSummary ({
+    errors: errors,
+    hrefs: {
+      service_name: "#service-name"
+    }
+  }) }}
+
   <form action="{{routes.selfCreateService.serviceNaming}}" method="post" class="form submit-two-fa" id="name-your-service-form" data-virtual-pageview="/service/registration-complete" data-parameters="dimension1:service-name">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <h1 class="form-title govuk-heading-l">What service will you be taking payments for?</h1>
