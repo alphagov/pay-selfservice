@@ -238,21 +238,21 @@ describe('Server side form validations', () => {
     it('should not be valid when day does not contain numbers', () => {
       expect(validations.validateDateOfBirth('cakeday', '6', '2000')).to.deep.equal({
         valid: false,
-        message: 'Enter a real date of birth'
+        message: 'Enter a valid date'
       })
     })
 
     it('should not be valid when month does not contain numbers', () => {
       expect(validations.validateDateOfBirth('10', 'Prairial', '2000')).to.deep.equal({
         valid: false,
-        message: 'Enter a real date of birth'
+        message: 'Enter a valid date'
       })
     })
 
     it('should not be valid when year does not contain numbers', () => {
       expect(validations.validateDateOfBirth('10', '6', 'dragon')).to.deep.equal({
         valid: false,
-        message: 'Enter a real date of birth'
+        message: 'Enter a valid date'
       })
     })
 
@@ -266,14 +266,14 @@ describe('Server side form validations', () => {
     it('should not be valid when day is a negative number', () => {
       expect(validations.validateDateOfBirth('-10', '6', '2000')).to.deep.equal({
         valid: false,
-        message: 'Enter a real date of birth'
+        message: 'Enter a valid date'
       })
     })
 
     it('should not be valid when date does not exist', () => {
       expect(validations.validateDateOfBirth('29', '02', '1999')).to.deep.equal({
         valid: false,
-        message: 'Enter a real date of birth'
+        message: 'Enter a valid date'
       })
     })
 

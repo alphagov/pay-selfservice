@@ -131,7 +131,7 @@ describe('Stripe setup: director page', () => {
       cy.get('.govuk-error-summary').should('exist').within(() => {
         cy.get('a[href="#first-name"]').should('contain', 'Enter a first name')
         cy.get('a[href="#last-name"]').should('contain', 'Enter a last name')
-        cy.get('a[href="#dob-day"]').should('contain', 'Enter a real date of birth')
+        cy.get('a[href="#dob-day"]').should('contain', 'Enter a valid date')
         cy.get('a[href="#email"]').should('contain', 'Enter a valid email address')
       })
 

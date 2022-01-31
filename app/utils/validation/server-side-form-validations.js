@@ -158,7 +158,7 @@ function validateDateOfBirth (day, month, year) {
   }
 
   if (!/^[0-9]{1,2}$/.test(day) || !/^[0-9]{1,2}$/.test(month) || !/^[0-9]+$/.test(year)) {
-    return notValidReturnObject('Enter a real date of birth')
+    return notValidReturnObject('Enter a valid date')
   }
 
   if (!/^[1-9][0-9]{3}$/.test(year)) {
@@ -172,7 +172,7 @@ function validateDateOfBirth (day, month, year) {
   })
 
   if (!dateOfBirth.isValid()) {
-    return notValidReturnObject('Enter a real date of birth')
+    return notValidReturnObject('Enter a valid date')
   }
 
   const now = moment()
