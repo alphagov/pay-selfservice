@@ -94,14 +94,14 @@ describe('Add a new service', () => {
 
       cy.get('.govuk-error-summary').find('a').should('have.length', 2)
       cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#service-name"]').should('contain', 'Service name')
-        cy.get('a[href="#service-name-cy"]').should('contain', 'Welsh service name')
+        cy.get('a[href="#service-name"]').should('contain', 'Enter a service name')
+        cy.get('a[href="#service-name-cy"]').should('contain', 'Welsh service name must be 50 characters or fewer')
       })
       cy.get('.govuk-form-group--error > input#service-name').parent().should('exist').within(() => {
-        cy.get('.govuk-error-message').should('contain', 'This field cannot be blank')
+        cy.get('.govuk-error-message').should('contain', 'Enter a service name')
       })
       cy.get('.govuk-form-group--error > input#service-name-cy').parent().should('exist').within(() => {
-        cy.get('.govuk-error-message').should('contain', 'The text is too long')
+        cy.get('.govuk-error-message').should('contain', 'Welsh service name must be 50 characters or fewer')
       })
     })
 

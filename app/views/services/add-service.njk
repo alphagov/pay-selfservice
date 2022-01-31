@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
   Add a new service - GOV.UK Pay
@@ -6,24 +7,13 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-
-    {% if errors %}
-      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1">
-          There was a problem with the details you gave for:
-        </h2>
-        <div class="govuk-error-summary__body">
-          <ul class="govuk-list govuk-error-summary__list">
-            {% if errors.service_name %}
-            <li><a href="#service-name">Service name</a></li>
-            {% endif %}
-            {% if errors.service_name_cy %}
-              <li><a href="#service-name-cy">Welsh service name</a></li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    {% endif %}
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        service_name: "#service-name",
+        service_name_cy: "#service-name-cy"
+      }
+    }) }}
 
     <h1 class="govuk-heading-l">What service will you be taking payments for?</h1>
     <p class="govuk-body">

@@ -15,9 +15,10 @@ const {
   validatePhoneNumber,
   validateEmail,
   validatePassword,
-  validateOtp
+  validateOtp,
+  validateMandatoryField,
+  SERVICE_NAME_MAX_LENGTH
 } = require('../utils/validation/server-side-form-validations')
-const { validateServiceName } = require('../utils/service-name-validation')
 const { RegistrationSessionMissingError, InvalidRegistationStateError } = require('../errors')
 const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
 
@@ -289,26 +290,26 @@ async function submitOtpResend(req, res, next) {
 }
 
 function showNameYourService(req, res) {
-  const serviceName = lodash.get(req, 'session.pageData.submitYourServiceName.serviceName', '')
+  const pageData = lodash.get(req, 'session.pageData.submitYourServiceName', {})
   lodash.unset(req, 'session.pageData.submitYourServiceName')
   if (!getServiceCreatedDuringSignup(req.user)) {
     logger.warn("User attempted to access the page to set the service name as part of registration but no service with the default name was found")
     return res.redirect(303, paths.serviceSwitcher.index)
   }
-  res.render('self-create-service/set-name', {
-    serviceName
-  })
+  res.render('self-create-service/set-name', pageData)
 }
 
 async function submitYourServiceName(req, res, next) {
   const correlationId = req.correlationId
   const serviceName = req.body['service-name']
-  const validationErrors = validateServiceName(serviceName, 'service_name', true)
 
-  if (Object.keys(validationErrors).length) {
+  const nameValidationResult = validateMandatoryField(serviceName, SERVICE_NAME_MAX_LENGTH, 'service name')
+  if (!nameValidationResult.valid) {
     lodash.set(req, 'session.pageData.submitYourServiceName', {
-      errors: validationErrors,
-      current_name: lodash.merge({}, { en: serviceName })
+      errors: {
+        service_name: nameValidationResult.message
+      },
+      serviceName
     })
     res.redirect(303, paths.selfCreateService.serviceNaming)
   } else {
@@ -319,7 +320,6 @@ async function submitYourServiceName(req, res, next) {
       }
       const account = await connectorClient.getAccount({ gatewayAccountId: service.gatewayAccountIds[0] })
       await serviceService.updateServiceName(service.externalId, serviceName, null, correlationId)
-      lodash.unset(req, 'session.pageData.submitYourServiceName')
       res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, account.external_id))
     } catch (err) {
       next(err)

@@ -77,9 +77,7 @@ describe('Controller: editServiceName, Method: get', () => {
             editServiceName: {
               current_name: 'Blah',
               errors: {
-                service_name: {
-                  'invalid': true
-                }
+                service_name: 'service name failed validation'
               }
             }
           }
@@ -98,9 +96,7 @@ describe('Controller: editServiceName, Method: get', () => {
 
     it(`should pass pageData to the responses.response method with 'errors' property equal to the 'errors' property of the pre-existing pageData`, () => {
       expect(mockResponses.response.args[0][3]).to.have.property('errors').to.deep.equal({
-        service_name: {
-          'invalid': true
-        }
+        service_name: 'service name failed validation'
       })
     })
 

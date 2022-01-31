@@ -32,14 +32,6 @@ describe('Controller: createService, Method: get', () => {
       expect(mockResponses.response.args[0]).to.include('services/add-service')
     })
 
-    it(`should pass pageData to the responses.response method with a 'current_name' property equal to ''`, () => {
-      expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal('')
-    })
-
-    it(`should pass pageData to the responses.response method with a 'current_name_cy' property equal to ''`, () => {
-      expect(mockResponses.response.args[0][3]).to.have.property('current_name_cy').to.equal('')
-    })
-
     it(`should pass pageData to the responses.response method that does not have an 'errors' property`, () => {
       expect(mockResponses.response.args[0][3]).to.not.have.property('errors')
     })

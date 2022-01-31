@@ -6,9 +6,13 @@ const responses = require('../utils/response')
 const paths = require('../paths')
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 const serviceService = require('../services/service.service')
-const { validateServiceName } = require('../utils/service-name-validation')
+const {
+  validateMandatoryField,
+  validateOptionalField,
+  SERVICE_NAME_MAX_LENGTH
+} = require('../utils/validation/server-side-form-validations')
 
-function getServiceName (req, res) {
+function getServiceName(req, res) {
   let pageData = lodash.get(req, 'session.pageData.editServiceName')
 
   if (pageData) {
@@ -24,20 +28,29 @@ function getServiceName (req, res) {
   return responses.response(req, res, 'services/edit-service-name', pageData)
 }
 
-async function postEditServiceName (req, res, next) {
-  const correlationId = lodash.get(req, 'correlationId')
-  const serviceExternalId = lodash.get(req, 'service.externalId')
-  const serviceName = lodash.get(req, 'body.service-name')
-  const hasServiceNameCy = lodash.get(req, 'body.welsh-service-name-bool', true)
-  const serviceNameCy = hasServiceNameCy ? lodash.get(req, 'body.service-name-cy') : ''
-  const validationErrors = {
-    ...validateServiceName(serviceName, 'service_name', true),
-    ...validateServiceName(serviceNameCy, 'service_name_cy', false)
+async function postEditServiceName(req, res, next) {
+  const { correlationId, body } = req
+  const serviceExternalId = req.service.externalId
+  const serviceName = body['service-name'] && body['service-name'].trim()
+  const serviceHasNameCy = body['welsh-service-name-bool'] !== undefined ? body['welsh-service-name-bool'] : true
+  const serviceNameCy = serviceHasNameCy ? body['service-name-cy'] && body['service-name-cy'].trim() : ''
+
+  const errors = {}
+  const nameValidationResult = validateMandatoryField(serviceName, SERVICE_NAME_MAX_LENGTH, 'service name')
+  if (!nameValidationResult.valid) {
+    errors['service_name'] = nameValidationResult.message
   }
-  if (Object.keys(validationErrors).length) {
+  const welshNameValidationResult = validateOptionalField(serviceNameCy, SERVICE_NAME_MAX_LENGTH, 'welsh service name')
+  if (!welshNameValidationResult.valid) {
+    errors['service_name_cy'] = welshNameValidationResult.message
+  }
+  if (!lodash.isEmpty(errors)) {
     lodash.set(req, 'session.pageData.editServiceName', {
-      errors: validationErrors,
-      current_name: lodash.merge({}, { en: serviceName, cy: serviceNameCy })
+      errors,
+      current_name: {
+        en: serviceName,
+        cy: serviceNameCy
+      }
     })
     res.redirect(formatServicePathsFor(paths.service.editServiceName.index, req.service.externalId))
   } else {
