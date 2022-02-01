@@ -1,3 +1,7 @@
+.transactions-list-table{
+  background-color: govuk-colour("white");
+}
+
 tr[data-follow-link]{
   cursor: pointer;
 
