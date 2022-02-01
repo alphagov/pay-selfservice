@@ -35,11 +35,14 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
+      - name: Parse Cypress version
+        id: parse-cypress-version
+        run: echo "::set-output name=CYPRESS_VERSION::$(jq -r '.devDependencies.cypress' package.json)"
       - name: Cache Cypress
         uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
         with:
           path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress
+          key: ${{ runner.os }}-cypress-${{ steps.parse-cypress-version.outputs.CYPRESS_VERSION }}
       - name: Install dependencies
         run: npm ci
       - name: Compile
@@ -90,11 +93,14 @@ jobs:
             govuk_modules
             public
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+      - name: Parse Cypress version
+        id: parse-cypress-version
+        run: echo "::set-output name=CYPRESS_VERSION::$(jq -r '.devDependencies.cypress' package.json)"
       - name: Cache Cypress
         uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
         with:
           path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress
+          key: ${{ runner.os }}-cypress-${{ steps.parse-cypress-version.outputs.CYPRESS_VERSION }}
       - name: Run cypress tests
         run: |
           npm run cypress:server > /dev/null 2>&1 &
