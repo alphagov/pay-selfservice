@@ -2,6 +2,7 @@
 
 describe('Cookie banner', () => {
   beforeEach(() => {
+    cy.clearCookies()
     cy.visit('/')
   })
 

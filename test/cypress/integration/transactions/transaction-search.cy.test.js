@@ -239,9 +239,9 @@ describe('Transactions List', () => {
       ])
 
       cy.get('#state').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Success']`).click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='In progress']`).click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Refund submitted']`).click()
+      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Success']`).trigger('mouseover').click()
+      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='In progress']`).trigger('mouseover').click()
+      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Refund submitted']`).trigger('mouseover').click()
 
       cy.get('#reference').type('ref123')
       cy.get('#fromDate').type('03/5/2018')

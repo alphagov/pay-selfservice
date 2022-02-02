@@ -6,6 +6,9 @@ const userExternalId = 'authenticated-user-id'
 
 describe('Error pages', () => {
   describe('User not logged in', () => {
+    beforeEach(() => {
+      cy.clearCookies()
+    })
     it('should display logged out header on 404 page', () => {
       cy.visit('/a-route-that-does-not-exist', { failOnStatusCode: false })
       cy.get('h1').should('have.text', 'Page not found')
