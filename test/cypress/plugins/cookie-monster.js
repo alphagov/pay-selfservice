@@ -8,7 +8,7 @@ function getCookie (cookieName, secretKey, val) {
     const encryptedCookie = session.util.encode({
       cookieName: cookieName,
       encryptionKey: encryptionKey,
-      encryptionAlgorithm: 'aes256',
+      encryptionAlgorithm: 'aes-256-cbc',
       signatureKey: signatureKey
     }, val)
     return encryptedCookie
