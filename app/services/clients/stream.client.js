@@ -1,6 +1,6 @@
 const http = require('http')
 const https = require('https')
-const url = require('url')
+const { URL } = require('url')
 
 const logger = require('../../utils/logger')(__filename)
 
@@ -9,11 +9,11 @@ class Stream {
     this.dataCallback = dataCallback
     this.successCallback = successCallback
     this.errorCallback = errorCallback
-    this.headers = headers || { 'Accept': 'text/csv', 'Content-Type': 'application/json' }
+    this.headers = headers || { Accept: 'text/csv', 'Content-Type': 'application/json' }
   }
 
   request (targetUrl, correlationId) {
-    const parsed = url.parse(targetUrl)
+    const parsed = new URL(targetUrl)
     const options = {
       path: `${parsed.pathname}${parsed.search}`,
       host: parsed.hostname,

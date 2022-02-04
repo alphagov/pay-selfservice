@@ -15,7 +15,7 @@ const {
 } = require('./field-validation-checks')
 const { invalidTelephoneNumber } = require('../telephone-number-utils')
 
-const NUMBERS_ONLY = new RegExp('^[0-9]+$')
+const NUMBERS_ONLY = /^[0-9]+$/
 const NAXSI_NOT_ALLOWED_CHARACTERS = ['<', '>', '|']
 
 const validReturnObject = {

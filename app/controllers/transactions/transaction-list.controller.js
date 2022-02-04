@@ -1,6 +1,6 @@
 'use strict'
 
-const url = require('url')
+const { getQueryStringForReq } = require('../../utils/url-helpers')
 const _ = require('lodash')
 
 const router = require('../../routes.js')
@@ -22,7 +22,7 @@ module.exports = async function showTransactionList (req, res, next) {
   const filters = getFilters(req)
 
   const correlationId = req.headers[CORRELATION_HEADER] || ''
-  req.session.filters = url.parse(req.url).query
+  req.session.filters = getQueryStringForReq(req)
 
   if (!filters.valid) {
     return next(new Error('Invalid search'))

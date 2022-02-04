@@ -56,8 +56,8 @@ describe('Transactions list pagination', () => {
       it('should display pagination links with previous page disabled for first page', () => {
         const opts = transactionSearchResultOpts(30, 5, 1, {},
           {
-            self: { href: '/v1/transactions?&page=&display_size=5&state=' },
-            next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
+            self: { href: 'http://localhost/v1/transactions?&page=&display_size=5&state=' },
+            next_page: { href: 'http://localhost/v1/transactions?&page=3&display_size=5&state=' }
           })
 
         cy.task('setupStubs', getStubs(opts))
@@ -79,9 +79,9 @@ describe('Transactions list pagination', () => {
       it('should have both next and previous pagination links enabled, when ledger return both links ', () => {
         const opts = transactionSearchResultOpts(30, 5, 3, {},
           {
-            self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
-            next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' },
-            prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' }
+            self: { href: 'http://localhost/v1/transactions?&page=2&display_size=5&state=' },
+            next_page: { href: 'http://localhost/v1/transactions?&page=3&display_size=5&state=' },
+            prev_page: { href: 'http://localhost/v1/transactions?&page=1&display_size=5&state=' }
           })
 
         cy.task('setupStubs', getStubs(opts))
@@ -102,8 +102,8 @@ describe('Transactions list pagination', () => {
       it('should display the next page as disabled, when ledger does not return next page', () => {
         const opts = transactionSearchResultOpts(30, 5, 3, {},
           {
-            self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
-            prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' }
+            self: { href: 'http://localhost/v1/transactions?&page=2&display_size=5&state=' },
+            prev_page: { href: 'http://localhost/v1/transactions?&page=1&display_size=5&state=' }
           })
 
         cy.task('setupStubs', getStubs(opts))
@@ -124,7 +124,7 @@ describe('Transactions list pagination', () => {
 
       it('should not display pagination links, when ledger does not provide both next and previous links', () => {
         const opts = transactionSearchResultOpts(30, 5, '', {},
-          { self: { href: '/v1/transactions?&page=2&display_size=5&state=' } })
+          { self: { href: 'http://localhost/v1/transactions?&page=2&display_size=5&state=' } })
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=')
@@ -145,15 +145,15 @@ describe('Transactions list pagination', () => {
           payment_states: 'success'
         },
         {
-          self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
-          next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
+          self: { href: 'http://localhost/v1/transactions?&page=2&display_size=5&state=' },
+          next_page: { href: 'http://localhost/v1/transactions?&page=3&display_size=5&state=' }
         })
 
         const stubs = getStubs(opts)
 
         // stubs for next page
         opts.page = 2
-        opts.links = { prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' } }
+        opts.links = { prev_page: { href: 'http://localhost/v1/transactions?&page=1&display_size=5&state=' } }
         stubs.push(transactionStubs.getLedgerTransactionsSuccess(opts))
 
         cy.task('setupStubs', stubs)
@@ -175,7 +175,7 @@ describe('Transactions list pagination', () => {
 
       it('should return correct display size options when total over 500', () => {
         const opts = transactionSearchResultOpts(600, 100, 1, {},
-          { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
+          { self: { href: 'http://localhost/v1/transactions?&page=1&display_size=100&state=' } })
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
@@ -189,7 +189,7 @@ describe('Transactions list pagination', () => {
 
       it('should return correct display size options when total between 100 and 500', () => {
         const opts = transactionSearchResultOpts(400, 100, 1, {},
-          { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
+          { self: { href: 'http://localhost/v1/transactions?&page=1&display_size=100&state=' } })
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
@@ -214,7 +214,7 @@ describe('Transactions list pagination', () => {
 
       it('should return correct display size options when total under 1000', () => {
         const opts = transactionSearchResultOpts(150, 500, 1, {},
-          { self: { href: '/v1/transactions?&page=1&display_size=500&state=' } })
+          { self: { href: 'http://localhost/v1/transactions?&page=1&display_size=500&state=' } })
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=500&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)

@@ -3,11 +3,11 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const assert = require('assert')
-const paths = require('../../../paths')
-const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
-const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
+const paths = require('../../../../../app/paths')
+const { validPaths, ServiceUpdateRequest } = require('../../../../../app/models/ServiceUpdateRequest.class')
+const gatewayAccountFixtures = require('../../../../fixtures/gateway-account.fixtures')
+const userFixtures = require('../../../../fixtures/user.fixtures')
+const User = require('../../../../../app/models/User.class')
 
 describe('Organisation URL POST controller', () => {
   const organisationUrl = 'https://www.example.com'
@@ -37,7 +37,7 @@ describe('Organisation URL POST controller', () => {
   let completeKycMock
 
   function getControllerWithMocks (isKycTaskListComplete = false) {
-    return proxyquire('./post.controller', {
+    return proxyquire('../../../../../app/controllers/kyc/organisation-url/post.controller', {
       '../../../services/clients/stripe/stripe.client': {
         updateAccount: updateAccountMock
       },

@@ -8,7 +8,7 @@ const Stream = require('../../services/clients/stream.client')
 const enableFeeBreakDownForTestAccounts = process.env.ENABLE_FEE_BREAKDOWN_IN_CSV_FOR_STRIPE_TEST_ACCOUNTS === 'true'
 const includeFeeBreakdownHeadersFromDate = process.env.INCLUDE_FEE_BREAKDOWN_HEADERS_IN_CSV_DATE || '1642982460'
 
-const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (req, res) {
+const fetchTransactionCsvWithHeader = (req, res) => {
   const accountId = req.account.gateway_account_id
   const filters = req.query
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`

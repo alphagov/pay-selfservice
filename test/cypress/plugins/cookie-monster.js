@@ -13,6 +13,7 @@ function getCookie (cookieName, secretKey, val) {
     }, val)
     return encryptedCookie
   } catch (e) {
+    console.error(e)
     throw e
   }
 }
