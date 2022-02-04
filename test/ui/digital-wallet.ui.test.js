@@ -8,8 +8,8 @@ describe('The digital wallet views', () => {
   it('should not display options if gateway does not support digital wallet', () => {
     const templateData = {
       permissions: {
-        'payment_types_read': true,
-        'payment_types_update': true
+        payment_types_read: true,
+        payment_types_update: true
       }
     }
     const digitalWalletPages = ['digital-wallet/google-pay', 'digital-wallet/google-pay']

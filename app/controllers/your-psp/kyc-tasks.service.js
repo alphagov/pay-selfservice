@@ -40,16 +40,16 @@ async function getTaskList (activeCredential) {
   const stripeAccount = await retrieveAccountDetails(stripeAccountId)
 
   return {
-    'ENTER_ORGANISATION_URL': {
+    ENTER_ORGANISATION_URL: {
       complete: isOrganisationUrlComplete(stripeAccount)
     },
-    'UPDATE_RESPONSIBLE_PERSON': {
+    UPDATE_RESPONSIBLE_PERSON: {
       complete: isStripeResponsiblePersonComplete(stripePersons)
     },
-    'ENTER_DIRECTOR': {
+    ENTER_DIRECTOR: {
       complete: getPerson(stripePersons, 'director').length > 0
     },
-    'UPLOAD_GOVERNMENT_ENTITY_DOCUMENT': {
+    UPLOAD_GOVERNMENT_ENTITY_DOCUMENT: {
       complete: entityVerificationDocumentUploaded(stripeAccount)
     }
   }

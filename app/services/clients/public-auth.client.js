@@ -127,7 +127,7 @@ function updateToken (params) {
  * @returns {Promise}
  */
 function deleteTokenForAccount (params) {
-  let url = getUrlForAccountId(params.accountId)
+  const url = getUrlForAccountId(params.accountId)
   const configuration = {
     url: url,
     correlationId: params.correlationId,

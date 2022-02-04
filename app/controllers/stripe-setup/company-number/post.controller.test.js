@@ -68,7 +68,7 @@ describe('Company number POST controller', () => {
     await controller(req, res, next)
 
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, {
-      'tax_id': '01234567'
+      tax_id: '01234567'
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'company_number', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
@@ -80,7 +80,7 @@ describe('Company number POST controller', () => {
     const controller = getControllerWithMocks()
 
     req.body = {
-      'company-number-declaration': 'false',
+      'company-number-declaration': 'false'
     }
 
     await controller(req, res, next)

@@ -28,46 +28,46 @@ function organisationUrlComplete (service) {
 function getTaskList (targetCredential, account, service) {
   if (targetCredential.payment_provider === 'worldpay') {
     return {
-      'LINK_CREDENTIALS': {
+      LINK_CREDENTIALS: {
         enabled: true,
         complete: linkCredentialsComplete(targetCredential)
       },
-      'VERIFY_PSP_INTEGRATION': {
+      VERIFY_PSP_INTEGRATION: {
         enabled: linkCredentialsComplete(targetCredential),
         complete: verifyPSPIntegrationComplete(targetCredential)
       }
     }
   } else if (targetCredential.payment_provider === 'stripe') {
     return {
-      'ENTER_ORGANISATION_URL': {
+      ENTER_ORGANISATION_URL: {
         enabled: !organisationUrlComplete(service),
         complete: organisationUrlComplete(service)
       },
-      'ENTER_BANK_DETAILS': {
+      ENTER_BANK_DETAILS: {
         enabled: !stripeSetupStageComplete(account, 'bankAccount'),
         complete: stripeSetupStageComplete(account, 'bankAccount')
       },
-      'ENTER_RESPONSIBLE_PERSON': {
+      ENTER_RESPONSIBLE_PERSON: {
         enabled: !stripeSetupStageComplete(account, 'responsiblePerson'),
         complete: stripeSetupStageComplete(account, 'responsiblePerson')
       },
-      'ENTER_DIRECTOR': {
+      ENTER_DIRECTOR: {
         enabled: !stripeSetupStageComplete(account, 'director'),
         complete: stripeSetupStageComplete(account, 'director')
       },
-      'ENTER_VAT_NUMBER': {
+      ENTER_VAT_NUMBER: {
         enabled: !stripeSetupStageComplete(account, 'vatNumber'),
         complete: stripeSetupStageComplete(account, 'vatNumber')
       },
-      'ENTER_COMPANY_NUMBER': {
+      ENTER_COMPANY_NUMBER: {
         enabled: !stripeSetupStageComplete(account, 'companyNumber'),
         complete: stripeSetupStageComplete(account, 'companyNumber')
       },
-      'UPLOAD_GOVERNMENT_ENTITY_DOCUMENT': {
+      UPLOAD_GOVERNMENT_ENTITY_DOCUMENT: {
         enabled: !stripeSetupStageComplete(account, 'governmentEntityDocument'),
         complete: stripeSetupStageComplete(account, 'governmentEntityDocument')
       },
-      'VERIFY_PSP_INTEGRATION': {
+      VERIFY_PSP_INTEGRATION: {
         enabled: organisationUrlComplete(service) &&
           stripeSetupStageComplete(account, 'bankAccount') &&
           stripeSetupStageComplete(account, 'responsiblePerson') &&

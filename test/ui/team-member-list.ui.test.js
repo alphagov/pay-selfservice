@@ -1,11 +1,11 @@
-let path = require('path')
-let renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+const path = require('path')
+const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
 
 describe('The team members view', function () {
   it('should render all team members with links grouped by role', function () {
-    let templateData = {
-      'team_members': {
-        'admin': [
+    const templateData = {
+      team_members: {
+        admin: [
           { username: 'username1', link: 'view-username1-link' },
           { username: 'username2', link: 'view-username2-my-profile-link', is_current: true }
         ],
@@ -25,11 +25,11 @@ describe('The team members view', function () {
         ]
       },
       permissions: {
-        'users_service_read': true
+        users_service_read: true
       }
     }
 
-    let body = renderTemplate('team-members/team-members', templateData)
+    const body = renderTemplate('team-members/team-members', templateData)
 
     body.should.containSelector('#admin-role-header').withExactText('Administrators (2)')
     body.should.containSelector('#view-only-role-header').withExactText('View only (3)')
@@ -65,9 +65,9 @@ describe('The team members view', function () {
   })
 
   it('should render all team members without links if user does not have read permissions', function () {
-    let templateData = {
-      'team_members': {
-        'admin': [
+    const templateData = {
+      team_members: {
+        admin: [
           { username: 'username2', link: 'view-username2-my-profile-link', is_current: true }
         ],
         'view-only': [
@@ -77,42 +77,42 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('team-members/team-members', templateData)
+    const body = renderTemplate('team-members/team-members', templateData)
 
     body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(1).withNoLink()
   })
 
   it('should render invite a team member option when user has create permissions', function () {
-    let templateData = {
+    const templateData = {
       permissions: {
-        'users_service_read': true,
-        'users_service_create': true
+        users_service_read: true,
+        users_service_create: true
       }
     }
 
-    let body = renderTemplate('team-members/team-members', templateData)
+    const body = renderTemplate('team-members/team-members', templateData)
 
     body.should.containSelector('#invite-team-member-link')
   })
 
   it('should not render invite a team member option when user has no create permissions', function () {
-    let templateData = {
+    const templateData = {
       permissions: {
-        'users_service_read': true,
-        'users_service_create': false
+        users_service_read: true,
+        users_service_create: false
       }
     }
 
-    let body = renderTemplate('team-members/team-members', templateData)
+    const body = renderTemplate('team-members/team-members', templateData)
 
     body.should.not.containSelector('#invite-team-member-link')
   })
 
   it('should render all invited team members grouped by role', function () {
-    let templateData = {
-      'number_invited_members': 7,
-      'invited_team_members': {
-        'admin': [
+    const templateData = {
+      number_invited_members: 7,
+      invited_team_members: {
+        admin: [
           { username: 'username1' },
           { username: 'username2' }
         ],
@@ -131,11 +131,11 @@ describe('The team members view', function () {
         ]
       },
       permissions: {
-        'users_service_read': true
+        users_service_read: true
       }
     }
 
-    let body = renderTemplate('team-members/team-members', templateData)
+    const body = renderTemplate('team-members/team-members', templateData)
 
     body.should.containSelector('#invited-team-members-heading').withExactText('Invited (7)')
     body.should.containSelector('#invited-team-members-admin-role-header').withExactText('Administrators (2)')
@@ -163,15 +163,15 @@ describe('The team members view', function () {
   })
 
   it('should not render invited team members list if there are no invitations', function () {
-    let templateData = {
-      'invited_team_members': {
-        'admin': [],
+    const templateData = {
+      invited_team_members: {
+        admin: [],
         'view-only': [],
         'view-and-refund': []
       }
     }
 
-    let body = renderTemplate('team-members/team-members', templateData)
+    const body = renderTemplate('team-members/team-members', templateData)
     body.should.not.containSelector('#invited-team-members-heading')
     body.should.not.containSelector('#invited-team-members-admin-role-header')
     body.should.not.containSelector('#invited-team-members-view-only-role-header')

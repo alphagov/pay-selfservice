@@ -7,7 +7,7 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const updateConfirmationTemplate = async function (accountID, emailText, correlationId) {
   try {
-    const patch = { 'op': 'replace', 'path': '/payment_confirmed/template_body', 'value': emailText }
+    const patch = { op: 'replace', path: '/payment_confirmed/template_body', value: emailText }
 
     await connectorClient.updateConfirmationEmail({
       payload: patch,
@@ -21,7 +21,7 @@ const updateConfirmationTemplate = async function (accountID, emailText, correla
 
 const setEmailCollectionMode = async function (accountID, collectionMode, correlationId) {
   try {
-    const patch = { 'op': 'replace', 'path': 'email_collection_mode', 'value': collectionMode }
+    const patch = { op: 'replace', path: 'email_collection_mode', value: collectionMode }
     await connectorClient.updateEmailCollectionMode({
       payload: patch,
       correlationId: correlationId,
@@ -33,7 +33,7 @@ const setEmailCollectionMode = async function (accountID, collectionMode, correl
 }
 
 const setConfirmationEnabled = async function (accountID, enabled, correlationId) {
-  const patch = { 'op': 'replace', 'path': '/payment_confirmed/enabled', 'value': enabled }
+  const patch = { op: 'replace', path: '/payment_confirmed/enabled', value: enabled }
 
   try {
     await connectorClient.updateConfirmationEmailEnabled({
@@ -48,7 +48,7 @@ const setConfirmationEnabled = async function (accountID, enabled, correlationId
 
 const setRefundEmailEnabled = async function (accountID, enabled, correlationId) {
   try {
-    const patch = { 'op': 'replace', 'path': '/refund_issued/enabled', 'value': enabled }
+    const patch = { op: 'replace', path: '/refund_issued/enabled', value: enabled }
     await connectorClient.updateRefundEmailEnabled({
       payload: patch,
       correlationId: correlationId,
@@ -61,8 +61,8 @@ const setRefundEmailEnabled = async function (accountID, enabled, correlationId)
 
 const clientFailure = function (err, methodType, isPatchEndpoint) {
   const errMsg = isPatchEndpoint
-    ? `Calling connector to update email notifications for an account threw exception`
-    : `Calling connector to get/patch account data threw exception`
+    ? 'Calling connector to update email notifications for an account threw exception'
+    : 'Calling connector to get/patch account data threw exception'
   logger.error(errMsg, {
     service: 'connector',
     method: methodType,

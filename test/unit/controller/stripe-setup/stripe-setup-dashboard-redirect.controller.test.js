@@ -8,7 +8,7 @@ const dashboardRedirectController = require('../../../../app/controllers/stripe-
 
 describe('Dashboard redirect controller', () => {
   const externalServiceId = 'service-external-id'
-  const serviceGatewayAccountIds = [ '2', '5' ]
+  const serviceGatewayAccountIds = ['2', '5']
   let accountSpy, res, req
 
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe('Dashboard redirect controller', () => {
 
     await dashboardRedirectController(req, res)
     sinon.assert.calledWith(accountSpy, { gatewayAccountIds: ['2', '5'] })
-    sinon.assert.calledWith(res.redirect, 302, `/account/account-5/dashboard`)
+    sinon.assert.calledWith(res.redirect, 302, '/account/account-5/dashboard')
   })
 
   it('should not request gateway accounts if the user has no access to the service', async () => {

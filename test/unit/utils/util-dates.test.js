@@ -1,6 +1,6 @@
 require('../../test-helpers/html-assertions.js')
-var assert = require('assert')
-var dates = require('../../../app/utils/dates.js')
+const assert = require('assert')
+const dates = require('../../../app/utils/dates.js')
 
 describe('date format', function () {
   // this will need to be improved to take multiple formats

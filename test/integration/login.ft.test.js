@@ -41,7 +41,7 @@ describe('User clicks on Logout', function () {
     const getMockSession = mockSession.getMockSession({ sessionVersion: 2, services: ['1'], gateway_account_ids: [gatewayAccountId] })
     delete getMockSession.version
 
-    let app = mockSession.createAppWithSession(getApp(), getMockSession)
+    const app = mockSession.createAppWithSession(getApp(), getMockSession)
 
     request(app)
       .get('/')
@@ -58,7 +58,7 @@ describe('User clicks on Logout', function () {
     const getMockSession = mockSession.getMockSession({ sessionVersion: 2, services: ['1'], gateway_account_ids: [gatewayAccountId] })
     delete getMockSession.version
 
-    let app = mockSession.createAppWithSession(getApp(), getMockSession)
+    const app = mockSession.createAppWithSession(getApp(), getMockSession)
 
     request(app)
       .get('/')

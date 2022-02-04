@@ -13,9 +13,9 @@ const buildPaymentLinkOpts = function buildPaymentLinkOpts (name, href, language
     type: 'ADHOC',
     links: [
       {
-        'rel': 'friendly',
-        'method': 'GET',
-        'href': href
+        rel: 'friendly',
+        method: 'GET',
+        href: href
       }
     ]
   }
@@ -29,9 +29,9 @@ const buildPaymentLinkWithMetadataOpts = function buildPaymentLinkWithMetadataOp
     metadata: metadata,
     links: [
       {
-        'rel': 'friendly',
-        'method': 'GET',
-        'href': href
+        rel: 'friendly',
+        method: 'GET',
+        href: href
       }
     ]
   }

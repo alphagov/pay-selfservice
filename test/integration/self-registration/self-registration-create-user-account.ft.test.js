@@ -75,7 +75,7 @@ describe('create service otp validation', function () {
   it('should redirect to register page if user input invalid', function (done) {
     const request = selfRegisterFixtures.invalidEmailRegisterRequest()
 
-    let session = {}
+    const session = {}
     app = mockSession.getAppWithLoggedOutSession(getApp(), session)
     supertest(app)
       .post(paths.selfCreateService.register)

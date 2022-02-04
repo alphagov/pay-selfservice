@@ -66,7 +66,8 @@ describe('auth service', function () {
     it('should find user by external id', function (done) {
       const authService = (userMock) => {
         return proxyquire(path.join(__dirname, '/../../../app/services/auth.service.js'),
-          { './user.service.js': userMock,
+          {
+            './user.service.js': userMock,
             'continuation-local-storage': {
               getNamespace: function () {
                 return {
@@ -246,7 +247,7 @@ describe('auth service', function () {
     })
 
     it('should call next if user is not logged in', function (done) {
-      let invalidSession = validRequest()
+      const invalidSession = validRequest()
       invalidSession.session.version = 1
       auth.redirectLoggedInUser(invalidSession, response, next)
       expect(next.calledOnce).to.be.true // eslint-disable-line

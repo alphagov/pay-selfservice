@@ -54,7 +54,7 @@ describe('Stripe - add additional KYC details banner', () => {
       cy.get('.govuk-notification-banner__content p:nth-of-type(2)').contains('You must update your organisation details to comply with updated Know Your Customer (KYC) anti-money laundering regulations.')
       cy.get('.govuk-notification-banner__content p:nth-of-type(3)').contains('If you do not add these details, your service will soon stop taking payments and Stripe will stop paying out to your bank account.')
       cy.get('#add-additional-kyc-details').should('exist')
-      cy.get('#add-additional-kyc-details').should('have.attr', 'href', `/account/a-valid-external-id/your-psp/a-valid-external-id`)
+      cy.get('#add-additional-kyc-details').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
     })
   })
 

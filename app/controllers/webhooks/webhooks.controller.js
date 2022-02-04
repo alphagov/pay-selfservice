@@ -105,7 +105,7 @@ async function updateWebhook (req, res, next) {
   }
 }
 
-async function toggleActiveWebhook(req, res, next) {
+async function toggleActiveWebhook (req, res, next) {
   try {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
 
@@ -118,7 +118,7 @@ async function toggleActiveWebhook(req, res, next) {
   }
 }
 
-async function resendWebhookMessage(req, res, next) {
+async function resendWebhookMessage (req, res, next) {
   try {
     await webhooksService.resendWebhookMessage(req.params.webhookId, req.params.messageId)
     req.flash('generic', 'Webhook message scheduled for retry')

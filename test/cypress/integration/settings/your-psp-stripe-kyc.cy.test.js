@@ -11,7 +11,7 @@ const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-valid-external-id'
 const credentialExternalId = 'a-credential-external-id'
 const serviceName = 'Purchase a positron projection permit'
-const stripeAccountId = `acct_123example123`
+const stripeAccountId = 'acct_123example123'
 const serviceExternalId = 'a-service-external-id'
 const firstName = 'Joe'
 const lastName = 'Pay'
@@ -122,7 +122,7 @@ describe('Your PSP - Stripe - KYC', () => {
     })
     it('should display organisation URL task as COMPLETED if details are updated on Stripe', () => {
       setupYourPspStubs({
-        'url': 'http://example.org'
+        url: 'http://example.org'
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)

@@ -33,7 +33,7 @@ describe('Controller: editServiceName, Method: get', () => {
       await editServiceNameCtrl.post(req, res)
     })
 
-    it(`should call 'res.redirect' with '/my-service'`, () => {
+    it('should call \'res.redirect\' with \'/my-service\'', () => {
       expect(res.redirect.called).to.equal(true)
       expect(res.redirect.args[0]).to.include('/my-services')
     })
@@ -58,7 +58,7 @@ describe('Controller: editServiceName, Method: get', () => {
       await editServiceNameCtrl.post(req, res, next)
     })
 
-    it(`should call 'next' with the error`, () => {
+    it('should call \'next\' with the error', () => {
       expect(next.called).to.equal(true)
       expect(next.args[0].toString()).to.equal('Error: something went wrong')
     })
@@ -83,11 +83,11 @@ describe('Controller: editServiceName, Method: get', () => {
       editServiceNameCtrl.post(req, res)
     })
 
-    it(`should call 'res.redirect' with a properly formatted edit-service url`, () => {
+    it('should call \'res.redirect\' with a properly formatted edit-service url', () => {
       sinon.assert.calledWith(res.redirect, `/service/${req.service.externalId}/edit-name`)
     })
 
-    it(`should set pre-existing pageData that includes the 'current_name' and errors`, () => {
+    it('should set pre-existing pageData that includes the \'current_name\' and errors', () => {
       expect(req.session.pageData.editServiceName.current_name).to.have.property('en').to.equal(req.body['service-name'])
       expect(req.session.pageData.editServiceName.current_name).to.have.property('cy').to.equal(req.body['service-name-cy'])
       expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({ service_name: 'Enter a service name' })
@@ -113,16 +113,16 @@ describe('Controller: editServiceName, Method: get', () => {
       editServiceNameCtrl.post(req, res)
     })
 
-    it(`should call 'res.redirect' with a properly formatted edit-service url`, () => {
+    it('should call \'res.redirect\' with a properly formatted edit-service url', () => {
       sinon.assert.calledWith(res.redirect, `/service/${req.service.externalId}/edit-name`)
     })
 
-    it(`should set pre-existing pageData that includes the 'current_name' and errors`, () => {
+    it('should set pre-existing pageData that includes the \'current_name\' and errors', () => {
       expect(req.session.pageData.editServiceName.current_name).to.have.property('en').to.equal(req.body['service-name'])
       expect(req.session.pageData.editServiceName.current_name).to.have.property('cy').to.equal(req.body['service-name-cy'])
-      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({ 
+      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({
         service_name: 'Service name must be 50 characters or fewer',
-        service_name_cy: 'Welsh service name must be 50 characters or fewer' 
+        service_name_cy: 'Welsh service name must be 50 characters or fewer'
       })
     })
   })

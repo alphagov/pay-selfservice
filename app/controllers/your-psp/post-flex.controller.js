@@ -50,7 +50,7 @@ module.exports = async function submit3dsFlexCredentials (req, res, next) {
       }
     }
 
-    let response = await connector.postCheckWorldpay3dsFlexCredentials(flexParams)
+    const response = await connector.postCheckWorldpay3dsFlexCredentials(flexParams)
     if (response.result === 'invalid') {
       errors[ORGANISATIONAL_UNIT_ID_FIELD] = validationErrors.invalidWorldpay3dsFlexOrgUnitId
       errors[ISSUER_FIELD] = validationErrors.invalidWorldpay3dsFlexIssuer

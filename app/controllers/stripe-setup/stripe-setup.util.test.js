@@ -132,8 +132,8 @@ describe('Stripe setup util', () => {
 
     it('should also disable legacy_payments capabilities if exists for a stripe account', async () => {
       addNewCapabilitiesMock = sinon.spy(() => Promise.resolve({
-        'capabilities': {
-          'legacy_payments': 'active'
+        capabilities: {
+          legacy_payments: 'active'
         }
       }))
       await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId, correlationId)
@@ -145,8 +145,8 @@ describe('Stripe setup util', () => {
 
     it('should call add new capabilities with hasMCC flag "true" if account has got MCC already set', async () => {
       retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve({
-        'business_profile': {
-          'mcc': '9399'
+        business_profile: {
+          mcc: '9399'
         }
       }))
       await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId, correlationId)
@@ -155,7 +155,6 @@ describe('Stripe setup util', () => {
       sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data', 'x-request-id')
       sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124', 'x-request-id')
     })
-
   })
 })
 

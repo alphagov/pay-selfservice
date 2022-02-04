@@ -114,10 +114,10 @@ describe('gateway account filter utiltiies', () => {
         }
       })
       const liveResult = await getGatewayAccountsFor(user, true, 'perm-1')
-      expect(liveResult.gatewayAccountIds).to.deep.equal([ '1', '3' ])
+      expect(liveResult.gatewayAccountIds).to.deep.equal(['1', '3'])
 
       const testResult = await getGatewayAccountsFor(user, false, 'perm-1')
-      expect(testResult.gatewayAccountIds).to.deep.equal([ '2' ])
+      expect(testResult.gatewayAccountIds).to.deep.equal(['2'])
       expect(testResult.hasLiveAccounts).to.equal(true)
       expect(testResult.hasTestStripeAccount).to.equal(false)
     })

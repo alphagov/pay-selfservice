@@ -13,8 +13,8 @@ module.exports = async function listRevokedApiKeys (req, res, next) {
     const revokedTokens = publicAuthData.tokens || []
 
     response(req, res, 'api-keys/revoked-keys', {
-      'tokens': revokedTokens,
-      'tokens_singular': revokedTokens.length === 1
+      tokens: revokedTokens,
+      tokens_singular: revokedTokens.length === 1
     })
   } catch (err) {
     next(err)

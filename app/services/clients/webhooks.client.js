@@ -66,7 +66,7 @@ function webhooks (serviceId, isLive, options = {}) {
   return baseClient.get(request)
 }
 
-function message(id, webhookId, options = {}) {
+function message (id, webhookId, options = {}) {
   const url = urlJoin('/v1/webhook', webhookId, 'message', id)
   const request = {
     url,
@@ -77,7 +77,7 @@ function message(id, webhookId, options = {}) {
   return baseClient.get(request)
 }
 
-function attempts(messageId, webhookId, options = {}) {
+function attempts (messageId, webhookId, options = {}) {
   const url = urlJoin('/v1/webhook', webhookId, 'message', messageId, 'attempt')
   const request = {
     url,
@@ -88,13 +88,13 @@ function attempts(messageId, webhookId, options = {}) {
   return baseClient.get(request)
 }
 
-function messages(id, options = {}) {
+function messages (id, options = {}) {
   const url = urlJoin('/v1/webhook', id, 'message')
   const request = {
     url,
     qs: {
       page: options.page,
-      ...options.status && { status: options.status.toUpperCase() },
+      ...options.status && { status: options.status.toUpperCase() }
     },
     description: 'List messages for webhook',
     ...defaultRequestOptions,
@@ -123,7 +123,7 @@ function createWebhook (serviceId, isLive, options = {}) {
 
 function updateWebhook (id, serviceId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
-  const paths = [ 'callback_url', 'subscriptions', 'description', 'status' ]
+  const paths = ['callback_url', 'subscriptions', 'description', 'status']
   const body = []
   paths.forEach((path) => {
     if (options[path]) {
@@ -143,7 +143,7 @@ function updateWebhook (id, serviceId, options = {}) {
   return baseClient.patch(request)
 }
 
-function resendWebhookMessage(webhookId, messageId, options = {}) {
+function resendWebhookMessage (webhookId, messageId, options = {}) {
   const url = urlJoin('/v1/webhook', webhookId, 'message', messageId, 'resend')
   const request = {
     url,

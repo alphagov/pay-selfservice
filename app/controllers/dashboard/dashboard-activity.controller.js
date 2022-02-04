@@ -145,7 +145,7 @@ module.exports = async (req, res) => {
 
     const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
 
-    logger.info(`Successfully logged in`)
+    logger.info('Successfully logged in')
 
     try {
       const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })

@@ -19,7 +19,8 @@ function validPostChargeRequestResponse (opts = {}) {
     reference: opts.reference || 'a reference',
     description: opts.description || 'a description',
     return_url: opts.returnUrl || 'https://somewhere.gov.uk/rainbow/1',
-    state: opts.state || { status: 'created',
+    state: opts.state || {
+      status: 'created',
       finished: false
     },
     links: opts.links || [

@@ -68,7 +68,7 @@ describe('VAT number POST controller', () => {
     await controller(req, res, next)
 
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, {
-      'vat_id': 'GB999999973'
+      vat_id: 'GB999999973'
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number', req.correlationId)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)

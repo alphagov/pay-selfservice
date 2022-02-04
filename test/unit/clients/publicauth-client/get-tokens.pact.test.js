@@ -27,7 +27,7 @@ function getPublicAuthClient (baseUrl) {
 }
 
 describe('publicauth client - get tokens', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'publicauth',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

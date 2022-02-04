@@ -25,16 +25,16 @@ async function createPopulatedService (inviteCode, correlationId) {
 
   // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
   //               removed once connector integration indexed by services have been migrated
-  await adminUsersClient.addGatewayAccountsToService(completeInviteResponse.service_external_id, [ gatewayAccount.gateway_account_id ])
+  await adminUsersClient.addGatewayAccountsToService(completeInviteResponse.service_external_id, [gatewayAccount.gateway_account_id])
   logger.info('Service associated with internal gateway account ID with legacy mapping')
 
   const user = await adminUsersClient.getUserByExternalId(completeInviteResponse.user_external_id, correlationId)
 
   // handler called outside of service context, manually include newly created flags for logging
   logger.info('Created new service with test account during user registration', {
-    [ keys.USER_EXTERNAL_ID ]: user.externalId,
-    [ keys.SERVICE_EXTERNAL_ID ]: completeInviteResponse.service_external_id,
-    [ keys.GATEWAY_ACCOUNT_ID ]: gatewayAccount.gateway_account_id,
+    [keys.USER_EXTERNAL_ID]: user.externalId,
+    [keys.SERVICE_EXTERNAL_ID]: completeInviteResponse.service_external_id,
+    [keys.GATEWAY_ACCOUNT_ID]: gatewayAccount.gateway_account_id,
     internal_user: user.internalUser
   })
   return user

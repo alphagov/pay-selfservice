@@ -15,7 +15,7 @@ function randomUuid () {
 }
 
 function key (length) {
-  let buf = []
+  const buf = []
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
   const charlen = chars.length
 

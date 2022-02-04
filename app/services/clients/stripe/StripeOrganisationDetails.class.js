@@ -14,7 +14,7 @@ const schema = {
 }
 
 class StripeOrganisationDetails {
-  constructor(body) {
+  constructor (body) {
     const params = Object.assign({}, body)
 
     const { error, value: model } = Joi.validate(params, schema, { allowUnknown: true, stripUnknown: true })
@@ -26,12 +26,12 @@ class StripeOrganisationDetails {
     Object.assign(this, build(model))
   }
 
-  basicObject() {
+  basicObject () {
     return Object.assign({}, this)
   }
 }
 
-function build(params) {
+function build (params) {
   const stripeOrganisationDetails = {
     company: {
       name: params.name,

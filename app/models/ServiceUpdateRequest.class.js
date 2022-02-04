@@ -33,7 +33,7 @@ class ServiceUpdateRequest {
    */
   add (path, value) {
     this.updates.push({
-      'op': ops.add,
+      op: ops.add,
       path,
       value
     })
@@ -47,7 +47,7 @@ class ServiceUpdateRequest {
    */
   replace (path, value) {
     this.updates.push({
-      'op': ops.replace,
+      op: ops.replace,
       path,
       value
     })

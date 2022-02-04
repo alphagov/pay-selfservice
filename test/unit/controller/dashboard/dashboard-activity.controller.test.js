@@ -10,7 +10,7 @@ const StripeClient = require('../../../../app/services/clients/stripe/stripe.cli
 
 describe('Controller: Dashboard activity', () => {
   const externalServiceId = 'service-external-id'
-  const serviceGatewayAccountIds = [ '2', '5' ]
+  const serviceGatewayAccountIds = ['2', '5']
   let req, res, accountSpy, stripeSpy
 
   describe('Stripe test account', () => {
@@ -49,7 +49,7 @@ describe('Controller: Dashboard activity', () => {
       stripeSpy.restore()
     })
 
-    it(`should not call call the Connector client or the Stripe client`, async () => {
+    it('should not call call the Connector client or the Stripe client', async () => {
       accountSpy = sinon.stub(ConnectorClient.prototype, 'getStripeAccount')
       stripeSpy = sinon.stub(StripeClient, 'retrieveAccountDetails')
 

@@ -20,7 +20,7 @@ module.exports = async (req, res, next) => {
 
     const is3dsEnabled = req.account.requires3ds === true
 
-    let stripeData = {}
+    const stripeData = {}
     if (activeCredential && activeCredential.payment_provider === 'stripe') {
       stripeData.requiresAdditionalKycData = req.account.requires_additional_kyc_data === true
       const kycCompleted = req.account.connectorGatewayAccountStripeProgress && req.account.connectorGatewayAccountStripeProgress.additionalKycData

@@ -41,7 +41,7 @@ describe('Self-create service view', () => {
 
     body.should.containSelector('h1').withExactText('Check your phone')
 
-    body.should.containSelector('#display_otp_verify > .govuk-body:first-of-type').withExactText(`We’ve sent you a text message with a verification code`)
+    body.should.containSelector('#display_otp_verify > .govuk-body:first-of-type').withExactText('We’ve sent you a text message with a verification code')
     body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.selfCreateService.otpVerify)
     body.should.containInputField('verify-code', 'text')
 

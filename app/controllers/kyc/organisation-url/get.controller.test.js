@@ -41,6 +41,6 @@ describe('Org URL GET controller', () => {
 
     await getController(req, res, next)
 
-    sinon.assert.calledWith(res.render, `kyc/organisation-url`)
+    sinon.assert.calledWith(res.render, 'kyc/organisation-url')
   })
 })

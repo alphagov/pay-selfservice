@@ -6,7 +6,7 @@ const { CORRELATION_HEADER } = require('../../config')
 module.exports = (function () {
   'use strict'
 
-  var withCorrelationHeader = function (args, correlationId) {
+  const withCorrelationHeader = function (args, correlationId) {
     correlationId = correlationId || ''
 
     if (correlationId === '') {

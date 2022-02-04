@@ -22,7 +22,7 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
   const patchRequestParams = { path: 'allow_google_pay', value: true }
   const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams)
 
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

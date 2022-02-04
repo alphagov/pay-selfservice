@@ -5,7 +5,7 @@ const renderTemplate = require('../test-helpers/html-assertions.js').render
 describe('The toggle Billing Address page', function () {
   it('should show collections are turned off', () => {
     const templateData = {
-      'collectBillingAddress': false,
+      collectBillingAddress: false,
       permissions: {
         toggle_billing_address_read: true,
         toggle_billing_address_update: true
@@ -19,7 +19,7 @@ describe('The toggle Billing Address page', function () {
 
   it('if readonly, checkboxes and submit buttons should be disabled', () => {
     const templateData = {
-      'collectBillingAddress': false,
+      collectBillingAddress: false,
       permissions: {
         toggle_billing_address_read: true,
         toggle_billing_address_update: false
@@ -36,7 +36,7 @@ describe('The toggle Billing Address page', function () {
 
   it('should show collections are turned on', () => {
     const templateData = {
-      'collectBillingAddress': true,
+      collectBillingAddress: true,
       permissions: {
         toggle_billing_address_read: true,
         toggle_billing_address_update: true

@@ -35,9 +35,9 @@ describe('The organisation address page', () => {
         cy.setEncryptedCookies(userExternalId)
         cy.visit(pageUrl)
 
-        cy.get('h1').should('contain', `Enter your organisation’s contact details`)
+        cy.get('h1').should('contain', 'Enter your organisation’s contact details')
 
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .should('exist')
           .within(() => {
             cy.get('label[for="address-line1"]').should('exist')
@@ -64,7 +64,7 @@ describe('The organisation address page', () => {
       })
 
       it('should display errors when validation fails', () => {
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             // create errors by leaving fields blank or inputting invalid values
             cy.get('#address-postcode').type(invalidPostcode)
@@ -83,7 +83,7 @@ describe('The organisation address page', () => {
           cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
         })
 
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             cy.get('.govuk-form-group--error > input#address-line1').parent().should('exist').within(() => {
               cy.get('.govuk-error-message').should('contain', 'Enter a building and street')
@@ -104,7 +104,7 @@ describe('The organisation address page', () => {
       })
 
       it('should keep entered responses when validation fails', () => {
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             // fill in the rest of the form fields
             cy.get('#address-line1').type(validLine1)
@@ -121,7 +121,7 @@ describe('The organisation address page', () => {
           cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
         })
 
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             cy.get('#address-line1').should('have.value', validLine1)
             cy.get('#address-line2').should('have.value', validLine2)
@@ -145,7 +145,7 @@ describe('The organisation address page', () => {
       })
 
       it('should submit organisation address when validation succeeds', () => {
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             // correct the validation errors
             cy.get('#address-postcode').clear()
@@ -182,7 +182,7 @@ describe('The organisation address page', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(`/service/${serviceExternalId}/request-to-go-live/organisation-address`)
 
-      cy.get(`form[method=post]`)
+      cy.get('form[method=post]')
         .within(() => {
           cy.get('#address-line1').should('have.value', merchantDetails.address_line1)
           cy.get('#address-line2').should('have.value', merchantDetails.address_line2)

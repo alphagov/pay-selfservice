@@ -139,8 +139,8 @@ module.exports = {
         event.submitted_by_friendly = lodash.get(users.find(user => user.externalId === event.submitted_by) || {}, 'email')
       }
     })
-    delete chargeData['links']
-    delete chargeData['return_url']
+    delete chargeData.links
+    delete chargeData.return_url
     return chargeData
   }
 }

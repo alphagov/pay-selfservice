@@ -47,7 +47,7 @@ module.exports = async function (req, res, next) {
     organisationUrl: organisationUrl
   }
   if (!lodash.isEmpty(errors)) {
-    pageData['errors'] = errors
+    pageData.errors = errors
 
     return response(req, res, 'kyc/organisation-url', {
       ...pageData, isSwitchingCredentials, collectingAdditionalKycData, currentCredential

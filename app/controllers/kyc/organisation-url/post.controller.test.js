@@ -122,7 +122,7 @@ describe('Organisation URL POST controller', () => {
   })
 
   it('should display an error message when Stripe returns `url_invalid` error, not call admin users, and redirect url page', async function () {
-    const errorFromStripe = { code: 'url_invalid', 'message': 'Not a valid URL', 'param': 'business_profile[url]' }
+    const errorFromStripe = { code: 'url_invalid', message: 'Not a valid URL', param: 'business_profile[url]' }
     updateAccountMock = sinon.spy(() => Promise.reject(errorFromStripe))
     const controller = getControllerWithMocks()
 
@@ -132,7 +132,7 @@ describe('Organisation URL POST controller', () => {
 
     sinon.assert.called(updateAccountMock)
     sinon.assert.notCalled(updateServiceMock)
-    sinon.assert.calledWith(res.render, `kyc/organisation-url`)
+    sinon.assert.calledWith(res.render, 'kyc/organisation-url')
 
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['organisation-url'], 'Enter a valid website address')
   })

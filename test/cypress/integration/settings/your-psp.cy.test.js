@@ -96,10 +96,8 @@ describe('Your PSP settings page', () => {
       gatewayAccountId: gatewayAccountId,
       shouldReturnValid: false
     })
-    const postCheckWorldpay3dsFlexCredentialsFails = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsFailure({
-      gatewayAccountId: gatewayAccountId, ...testFailureFlexCredentials })
-    const postCheckWorldpay3dsFlexCredentialsReturnsBadResult = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsWithBadResult({
-      gatewayAccountId: gatewayAccountId, ...testBadResultFlexCredentials })
+    const postCheckWorldpay3dsFlexCredentialsFails = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsFailure({ gatewayAccountId: gatewayAccountId, ...testFailureFlexCredentials })
+    const postCheckWorldpay3dsFlexCredentialsReturnsBadResult = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsWithBadResult({ gatewayAccountId: gatewayAccountId, ...testBadResultFlexCredentials })
     const stubs = [
       user,
       gatewayAccount,

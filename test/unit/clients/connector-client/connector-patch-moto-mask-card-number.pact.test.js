@@ -22,7 +22,7 @@ describe('connector client - patch MOTO mask card number toggle (enabled) reques
   const patchRequestParams = { path: 'moto_mask_card_number_input', value: true }
   const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams)
 
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

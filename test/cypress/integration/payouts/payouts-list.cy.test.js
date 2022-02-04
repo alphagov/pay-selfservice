@@ -134,7 +134,7 @@ describe('Payout list page', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({
         userExternalId,
-        gatewayAccountIds: [ testGatewayAccountId ],
+        gatewayAccountIds: [testGatewayAccountId],
         serviceName: 'some-service-name',
         email: 'some-user@email.com'
       }),

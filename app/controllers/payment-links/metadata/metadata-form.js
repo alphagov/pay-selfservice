@@ -3,9 +3,10 @@ const { constants } = require('@govuk-pay/pay-js-commons')
 const {
   MAX_KEY_LENGTH,
   MAX_VALUE_LENGTH,
-  MAX_KEY_VALUE_PAIRS } = constants.externalMetadata
+  MAX_KEY_VALUE_PAIRS
+} = constants.externalMetadata
 
-const SPECIAL_CHARACTERS = [ '\\' ]
+const SPECIAL_CHARACTERS = ['\\']
 const fields = {
   metadataKey: {
     id: 'metadata-column-header',

@@ -48,11 +48,11 @@ describe('Log out', function () {
 
 describe('Direct login after register', function () {
   it('should populate user request Id in register_invite cookie', function () {
-    let req = {
+    const req = {
       register_invite: {}
     }
 
-    let user = {
+    const user = {
       externalId: 'hd329chjqkdna89'
     }
 
@@ -61,11 +61,11 @@ describe('Direct login after register', function () {
   })
 
   it('should redirect to login', function () {
-    let res = {
+    const res = {
       redirect: () => {
       }
     }
-    let req = {
+    const req = {
       correlationId: 'correlationid'
     }
 

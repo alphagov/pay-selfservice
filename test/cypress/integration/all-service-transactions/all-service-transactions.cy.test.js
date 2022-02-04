@@ -6,7 +6,7 @@ const transactionStubs = require('../../stubs/transaction-stubs')
 
 describe('All service transactions', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const transactionsUrl = `/all-service-transactions`
+  const transactionsUrl = '/all-service-transactions'
 
   const gatewayAccount1 = {
     gatewayAccountId: 42,
@@ -87,7 +87,7 @@ describe('All service transactions', () => {
       ])
 
       cy.visit(transactionsUrl)
-      cy.title().should('eq', `Transactions for all services`)
+      cy.title().should('eq', 'Transactions for all services')
       cy.get('.transactions-list--row').should('have.length', 2)
       cy.get('#charge-id-transaction-id-1').should('exist')
       cy.get('#charge-id-transaction-id-2').should('exist')

@@ -49,6 +49,6 @@ describe('Government entity document - GET controller', () => {
 
     await getController(req, res)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/government-entity-document/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/government-entity-document/index')
   })
 })

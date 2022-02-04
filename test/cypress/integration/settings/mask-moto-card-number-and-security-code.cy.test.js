@@ -10,7 +10,7 @@ describe('MOTO mask security section', () => {
   const serviceName = 'Purchase a positron projection permit'
 
   function setupMotoStubs (opts = {}) {
-    let stubs = []
+    const stubs = []
     let user
 
     if (opts.readonly) {

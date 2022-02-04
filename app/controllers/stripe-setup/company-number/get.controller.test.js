@@ -49,6 +49,6 @@ describe('Company number GET controller', () => {
 
     await getController(req, res)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/company-number/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/company-number/index')
   })
 })

@@ -74,7 +74,7 @@ async function getExistingResponsiblePersonName (account, isSwitchingCredentials
 async function completeKyc (gatewayAccountId, service, stripeAccountId, correlationId) {
   const stripeAccount = await retrieveAccountDetails(stripeAccountId)
 
-  let telephoneNumber = lodash.get(service, 'merchantDetails.telephone_number')
+  const telephoneNumber = lodash.get(service, 'merchantDetails.telephone_number')
   let formattedPhoneNumber
 
   if (telephoneNumber) {

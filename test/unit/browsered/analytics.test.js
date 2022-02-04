@@ -12,7 +12,7 @@ describe('analytics setup', () => {
     ga = sinon.spy()
   })
   it('should invoke analytics with correct params ', () => {
-    window = new jsdom.JSDOM(``, {
+    window = new jsdom.JSDOM('', {
       url: 'https://selfservice.service.payments.gov.uk/search?from_date=2020-01-01'
     }).window
     document = window.document
@@ -24,7 +24,7 @@ describe('analytics setup', () => {
     expect(ga.getCall(3).calledWith('set', 'transport', 'beacon')).equals(true)
 
     expect(ga.getCall(4).calledWith('create',
-      'linked-tracking-id', '.service.payments.gov.uk', 'govuk_shared', { 'allowLinker': true })).equals(true)
+      'linked-tracking-id', '.service.payments.gov.uk', 'govuk_shared', { allowLinker: true })).equals(true)
     expect(ga.getCall(5).calledWith('govuk_shared.require', 'linker')).equals(true)
     expect(ga.getCall(6).calledWith('govuk_shared.linker.set', 'anonymizeIp')).equals(true)
     expect(ga.getCall(7).calledWith('govuk_shared.linker:autoLink', ['www.gov.uk'])).equals(true)
@@ -32,7 +32,7 @@ describe('analytics setup', () => {
   })
 
   it('should filter PII correctly ', () => {
-    window = new jsdom.JSDOM(``, {
+    window = new jsdom.JSDOM('', {
       url: 'https://selfservice.service.payments.gov.uk/search?from_date=2020-01-01&email=test@example.org&to_date=2020-01-01'
     }).window
     document = window.document

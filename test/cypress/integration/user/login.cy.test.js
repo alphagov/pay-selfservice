@@ -56,7 +56,7 @@ describe('Login Page', () => {
         cy.get('.govuk-error-summary__list').first()
           .contains('Enter a password')
           .should('have.attr', 'href', '#password')
-        cy.get(`.govuk-error-message`)
+        cy.get('.govuk-error-message')
           .contains('Enter a password')
       })
 
@@ -68,7 +68,7 @@ describe('Login Page', () => {
         cy.get('.govuk-error-summary__list').first()
           .contains('Enter an email address')
           .should('have.attr', 'href', '#username')
-        cy.get(`.govuk-error-message`)
+        cy.get('.govuk-error-message')
           .contains('Enter an email address')
       })
 

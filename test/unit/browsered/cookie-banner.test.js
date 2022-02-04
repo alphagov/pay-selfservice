@@ -7,11 +7,11 @@ const analytics = require('../../../app/browsered/analytics')
 const sinon = require('sinon')
 const jsdom = require('jsdom')
 const { expect } = require('chai')
-let renderTemplate = require('../../test-helpers/html-assertions.js').render
+const renderTemplate = require('../../test-helpers/html-assertions.js').render
 
-var event
-var cookieBannerObject
-var analyticsInit = sinon.stub(analytics, 'init')
+let event
+let cookieBannerObject
+const analyticsInit = sinon.stub(analytics, 'init')
 
 describe('Cookie banner', () => {
   beforeEach(() => {

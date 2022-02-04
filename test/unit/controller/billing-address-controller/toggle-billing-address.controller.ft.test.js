@@ -59,7 +59,7 @@ describe('Toggle billing address collection controller', () => {
           done(err)
         })
     })
-    it(`should get a nice 200 status code`, () => {
+    it('should get a nice 200 status code', () => {
       expect(response.statusCode).to.equal(200)
     })
     it('should have correct checkbox checked', () => {
@@ -83,7 +83,7 @@ describe('Toggle billing address collection controller', () => {
           done(err)
         })
     })
-    it(`should get a nice 200 status code`, () => {
+    it('should get a nice 200 status code', () => {
       expect(response.statusCode).to.equal(200)
     })
     it('should have correct checkbox checked', () => {

@@ -24,7 +24,7 @@ module.exports = async function makeDemoPayment (req, res) {
       payload: {
         account_id: gatewayAccountId,
         created_by: req.user.email,
-        description: `Token for Demo Payment`,
+        description: 'Token for Demo Payment',
         type: 'PRODUCTS'
       }
     })

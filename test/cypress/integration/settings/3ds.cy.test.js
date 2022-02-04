@@ -11,7 +11,7 @@ describe('3DS settings page', () => {
   const serviceName = 'Purchase a positron projection permit'
 
   function setup3dsStubs (opts = {}) {
-    let stubs = []
+    const stubs = []
     let user
     const role = {
       permissions: [

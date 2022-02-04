@@ -17,7 +17,7 @@ const INVITES_PATH = '/v1/api/invites'
 let adminUsersClient
 
 describe('adminusers client - get a validated invite', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

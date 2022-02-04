@@ -25,7 +25,7 @@ describe('Director POST controller', () => {
   const postBody = {
     'first-name': firstName,
     'last-name': lastName,
-    'email': email,
+    email: email,
     'dob-day': dobDay,
     'dob-month': dobMonth,
     'dob-year': dobYear
@@ -136,7 +136,7 @@ describe('Director POST controller', () => {
     req.account.connectorGatewayAccountStripeProgress = { director: false }
     req.body = postBody
     req.route = {
-      path: `/kyc/:credentialId/responsible-person`
+      path: '/kyc/:credentialId/responsible-person'
     }
     const controller = getControllerWithMocks(false)
 
@@ -162,7 +162,7 @@ describe('Director POST controller', () => {
     req.account.connectorGatewayAccountStripeProgress = { director: false }
     req.body = postBody
     req.route = {
-      path: `/kyc/:credentialId/responsible-person`
+      path: '/kyc/:credentialId/responsible-person'
     }
     const controller = getControllerWithMocks(true)
 
@@ -246,7 +246,7 @@ describe('Director POST controller', () => {
     sinon.assert.called(createDirectorMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/director/index')
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'], 'Enter a valid date')
   })
 

@@ -80,9 +80,9 @@ const hideServiceNav = template => {
 }
 
 const addGatewayAccountProviderDisplayNames = data => {
-  let gatewayAccounts = _.get(data, 'gatewayAccounts', null)
+  const gatewayAccounts = _.get(data, 'gatewayAccounts', null)
   if (gatewayAccounts) {
-    let convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
+    const convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
       if (gatewayAccount.payment_provider) {
         gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider)
       }

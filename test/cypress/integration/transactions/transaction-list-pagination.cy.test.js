@@ -149,7 +149,7 @@ describe('Transactions list pagination', () => {
           next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
         })
 
-        let stubs = getStubs(opts)
+        const stubs = getStubs(opts)
 
         // stubs for next page
         opts.page = 2
