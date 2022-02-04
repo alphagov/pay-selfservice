@@ -33,14 +33,17 @@
 
   <h1 class="govuk-heading-l page-title">Test the connection between {{ targetCredential.payment_provider | formatPSPname }} and GOV.UK Pay</h1>
 
-  <p class="govuk-body">Make a live payment of £2 with a debit or credit card to check that the connection with {{ targetCredential.payment_provider | formatPSPname }} is working. You can refund the payment anytime.</p>
+  {% if targetCredential.payment_provider === 'worldpay' or allowTestPayment === true %}
+    <p class="govuk-body">Make a live payment of £2 with a debit or credit card to check that the connection with {{ targetCredential.payment_provider | formatPSPname }} is working. You can refund the payment anytime.</p>
+    <form method="POST">
+      {{ govukButton ({
+        text: "Continue to live payment"
+      }) }}
 
-  <form method="POST">
-    {{ govukButton ({
-      text: "Continue to live payment"
-    }) }}
-
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-  </form>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+    </form>
+  {% else %}
+    <p class="govuk-body">Stripe is still verifying your details. You cannot make a test payment until this is complete. Please try again later.</p>
+  {% endif %}
 </div>
 {% endblock %}

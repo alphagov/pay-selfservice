@@ -17,11 +17,16 @@ const selfserviceURL = process.env.SELFSERVICE_URL
 
 const VERIFY_PAYMENT_AMOUNT_IN_PENCE = 200
 
+const stripeTestPaymentStates = [CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED, CREDENTIAL_STATE.ACTIVE]
+
 function verifyPSPIntegrationPaymentPage (req, res, next) {
   try {
     const targetCredential = getSwitchingCredential(req.account)
-
-    response(req, res, 'switch-psp/verify-psp-integration-payment', { targetCredential })
+    let allowTestPayment = true
+    if (targetCredential.payment_provider === 'stripe') {
+      allowTestPayment = stripeTestPaymentStates.includes(targetCredential.state)
+    }
+    response(req, res, 'switch-psp/verify-psp-integration-payment', { targetCredential, allowTestPayment })
   } catch (error) {
     next(error)
   }
