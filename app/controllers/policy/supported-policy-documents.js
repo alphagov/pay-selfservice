@@ -25,17 +25,17 @@ const supportedPolicyDocuments = [
   },
   {
     key: 'memorandum-of-understanding-for-crown-bodies-2022',
-    title: 'Pay memorandum of understanding from 24 January 2022',
+    title: 'Pay memorandum of understanding from 21 February 2022',
     template: 'policy/document/v2/memorandum-of-understanding-for-crown-bodies'
   },
   {
     key: 'contract-for-non-crown-bodies-2022',
-    title: 'Pay contract from 24 January 2022',
+    title: 'Pay contract from 21 February 2022',
     template: 'policy/document/v2/contract-for-non-crown-bodies'
   },
   {
     key: 'stripe-connected-account-agreement-2022',
-    title: 'Stripe Connected Account Agreement from 24 January 2022',
+    title: 'Stripe Connected Account Agreement from 21 February 2022',
     template: 'policy/document/v2/stripe-connected-account-agreement'
   }
 ]
