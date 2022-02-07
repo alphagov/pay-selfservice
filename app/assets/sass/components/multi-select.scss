@@ -8,28 +8,27 @@
 .multi-select-title {
   @include govuk-font($size: 16);
 
-  border: 2px solid $govuk-text-colour;
-  padding: 8px 5px;
-  border-radius: 0;
+  display: block;
+  max-width: 100%;
   min-height: 34px;
+  padding: 8px 5px;
+  border: 2px solid $govuk-text-colour;
+  border-radius: 0;
   background-color: govuk-colour("white");
-  text-align: left;
   background-image: url("/public/images/dd-arrow.svg");
   background-repeat: no-repeat;
   background-position: right 10px top 6px;
+  text-align: left;
+  cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  max-width: 100%;
-
-  display: block;
-  cursor: pointer;
 
   div {
+    width: 15em;
+    max-width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 80%;
-    width: 15em;
 
     @include govuk-media-query(tablet) {
       width: 20em;
@@ -37,9 +36,9 @@
   }
 
   &:focus {
-    box-shadow: inset 0 0 0 $govuk-border-width-form-element;
     outline: 3px solid $govuk-focus-colour;
     outline-offset: 0;
+    box-shadow: inset 0 0 0 $govuk-border-width-form-element;
 
     div {
       outline: none;
@@ -47,22 +46,22 @@
   }
 }
 
-.multi-select-dropdown{
+.multi-select-dropdown {
   @extend .govuk-clearfix;
 
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 10;
   top: 0;
   left: 0;
-  background-color: govuk-colour("white");
-  z-index: 10;
-  position: absolute;
-  border: 2px solid $govuk-text-colour;
-  box-sizing: border-box;
   width: 100%;
+  border: 2px solid $govuk-text-colour;
+  background-color: govuk-colour("white");
   font-size: 16px;
 
   .multi-select-dropdown-inner-container {
-    overflow-y: scroll;
     overflow-x: hidden;
+    overflow-y: scroll;
   }
 
   &:focus {
@@ -71,11 +70,11 @@
   }
 
   .multi-select-dropdown-close-area {
-    width: 15%;
-    top: 0;
-    right: 13px;
     position: absolute;
     z-index: 14;
+    top: 0;
+    right: 13px;
+    width: 15%;
     height: 100%;
     background-image: url("/public/images/dd-arrow.svg");
     background-repeat: no-repeat;
@@ -83,15 +82,15 @@
   }
 
   .govuk-checkboxes__item {
-    width: 100%;
     display: block;
+    width: 100%;
+    margin: 0;
     text-align: left;
     cursor: pointer;
-    margin: 0;
 
     label {
-      padding: 10px 4px 4px;
       width: 100%;
+      padding: 10px 4px 4px;
     }
 
     input {
@@ -99,20 +98,21 @@
       width: 100%;
     }
   }
-  .govuk-checkboxes__item [type='checkbox'] + label::before,
-  .govuk-checkboxes__item [type='checkbox'] + label::after {
-    margin: auto;
-    height: 24px;
-    width: 24px;
+
+  .govuk-checkboxes__item [type="checkbox"] + label::before,
+  .govuk-checkboxes__item [type="checkbox"] + label::after {
     top: 9px;
     left: 8px;
+    width: 24px;
+    height: 24px;
+    margin: auto;
   }
 
-  .govuk-checkboxes__item [type=checkbox] + label::after {
+  .govuk-checkboxes__item [type="checkbox"] + label::after {
     top: 15px;
     left: 12px;
-    height: 5px;
     width: 13px;
+    height: 5px;
     border-width: 0 0 3px 3px;
   }
 }

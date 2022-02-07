@@ -1,13 +1,13 @@
 .account-status-panel {
-  border: 5px solid govuk-colour("blue");
-  padding: 20px;
   margin: 0 15px;
+  padding: 20px;
+  border: 5px solid govuk-colour("blue");
 
-  .govuk-grid-column-two-thirds{
+  .govuk-grid-column-two-thirds {
     padding: 0;
   }
 
-  &--restricted{
-    border: 5px solid govuk-colour("red"); 
-  } 
+  &--restricted {
+    border: 5px solid govuk-colour("red");
+  }
 }

@@ -42,6 +42,7 @@
 
   &--list-item {
     @include govuk-font($size: 16);
+
     margin-top: govuk-spacing(2);
 
     @include govuk-media-query(tablet) {
@@ -62,15 +63,16 @@
       display: inline-block;
       color: $govuk-link-colour;
       text-decoration: none;
+
       @include govuk-media-query(tablet) {
         padding: govuk-spacing(2) 0;
       }
     }
 
     a:focus {
+      outline: 3px solid $govuk-focus-colour;
       color: $govuk-text-colour;
       background-color: $govuk-focus-colour;
-      outline: 3px solid $govuk-focus-colour;
     }
 
     &-active {

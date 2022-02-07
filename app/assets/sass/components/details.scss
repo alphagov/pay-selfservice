@@ -1,18 +1,17 @@
 .govuk-details {
-
   &.small-arrow {
     margin-bottom: 0;
 
     .govuk-details__summary {
       padding-left: govuk-spacing(3);
 
-      &:before {
+      &::before {
         border-width: 5px 0 5px 8px;
       }
     }
 
-    &[open] summary:before {
-      border-width: 8px 5px 0 5px;
+    &[open] summary::before {
+      border-width: 8px 5px 0;
     }
   }
 }

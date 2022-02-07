@@ -1,8 +1,9 @@
 .app-task-list {
-  list-style-type: none;
-  padding-left: 0;
   margin-top: 0;
   margin-bottom: 0;
+  padding-left: 0;
+  list-style-type: none;
+
   @include govuk-media-query($from: tablet) {
     min-width: 550px;
   }
@@ -10,6 +11,7 @@
 
 .app-task-list__section {
   display: table;
+
   @include govuk-font($size:24, $weight: bold);
 }
 
@@ -25,8 +27,10 @@
 .app-task-list__items {
   @include govuk-font($size: 19);
   @include govuk-responsive-margin(9, "bottom");
-  list-style: none;
+
   padding-left: 0;
+  list-style: none;
+
   @include govuk-media-query($from: tablet) {
     padding-left: govuk-spacing(6);
   }
@@ -35,21 +39,23 @@
 .app-task-list__flat_items {
   @include govuk-font($size: 19);
   @include govuk-responsive-margin(9, "bottom");
-  list-style: none;
+
   padding-left: 0;
+  list-style: none;
+}
+
+.app-task-list__item {
+  margin-bottom: 0 !important;
+  padding-top: govuk-spacing(2);
+  padding-bottom: govuk-spacing(2);
+  border-bottom: 1px solid $govuk-border-colour;
+
+  @include govuk-clearfix;
 }
 
 .app-task-list__flat_items .app-task-list__item {
   border-top: none !important;
   border-bottom: none !important;
-}
-
-.app-task-list__item {
-  border-bottom: 1px solid $govuk-border-colour;
-  margin-bottom: 0 !important;
-  padding-top: govuk-spacing(2);
-  padding-bottom: govuk-spacing(2);
-  @include govuk-clearfix;
 }
 
 .app-task-list__item:first-child {
@@ -58,6 +64,7 @@
 
 .app-task-list__task-name {
   display: block;
+
   @include govuk-media-query($from: 450px) {
     float: left;
   }
@@ -69,8 +76,8 @@
   margin-bottom: govuk-spacing(1);
 
   @include govuk-media-query($from: 450px) {
-    float: right;
     margin-top: 0;
     margin-bottom: 0;
+    float: right;
   }
 }

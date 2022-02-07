@@ -2,5 +2,5 @@
   @extend .govuk-inset-text;
 
   border-left-color: govuk-colour("yellow");
-  background-color: transparentize(govuk-colour("yellow"), .75);
+  background-color: transparentize(govuk-colour("yellow"), 0.75);
 }

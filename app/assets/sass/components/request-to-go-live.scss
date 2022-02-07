@@ -6,36 +6,41 @@
 
 .request-to-go-live-list {
   counter-reset: live-list;
+
   p {
     margin-left: govuk-spacing(6);
   }
+
   h2 {
     margin-bottom: govuk-spacing(2);
   }
+
   h2::before {
     counter-increment: live-list;
     content: counter(live-list) ". ";
     display: inline-block;
     width: 30px;
   }
+
   .status {
-    background-color: govuk-colour("blue");
+    margin-left: govuk-spacing(1);
+    padding: 0 5px;
     color: govuk-colour("white");
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    background-color: govuk-colour("blue");
     font-size: 14px;
     font-weight: bold;
-    padding: 0 5px;
-    margin-left: govuk-spacing(1);
+    letter-spacing: 1px;
+    text-transform: uppercase;
     vertical-align: middle;
   }
+
   .waiting {
     background-color: govuk-colour("dark-grey");
   }
 }
 
 .next-steps-panel {
-  padding: 30px 30px 20px 30px;
-  border: 5px solid $govuk-link-colour;
   margin-bottom: 30px;
+  padding: 30px 30px 20px;
+  border: 5px solid $govuk-link-colour;
 }

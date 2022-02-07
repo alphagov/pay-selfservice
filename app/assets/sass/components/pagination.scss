@@ -7,12 +7,12 @@
     button {
       @include govuk-font($size: 14);
 
-      background: inherit;
+      padding: govuk-spacing(1) govuk-spacing(2);
       border: 1px solid $govuk-border-colour;
       border-right: none;
-      padding: govuk-spacing(1) govuk-spacing(2);
-      vertical-align: middle;
       color: $govuk-link-colour;
+      background: inherit;
+      vertical-align: middle;
       cursor: pointer;
 
       &:hover {
@@ -21,9 +21,9 @@
       }
 
       &.active {
-        background-color: govuk-colour("blue");
         border-color: govuk-colour("blue");
         color: govuk-colour("white");
+        background-color: govuk-colour("blue");
 
         &:active {
           color: govuk-colour("white");
@@ -36,23 +36,23 @@
     }
 
     /* Buttons for the next or previous set or either end of the whole lot */
-    &.first button:before {
-      content:"\00AB";
+    &.first button::before {
+      content: "\00AB";
       margin-right: 0.25em;
     }
 
-    &.previous button:before {
-      content:"\2039";
+    &.previous button::before {
+      content: "\2039";
       margin-right: 0.25em;
     }
 
-    &.next button:after {
-      content:"\203A";
+    &.next button::after {
+      content: "\203A";
       margin-left: 0.25em;
     }
 
-    &.last button:after {
-      content:"\00BB";
+    &.last button::after {
+      content: "\00BB";
       margin-left: 0.25em;
     }
   }

@@ -1,8 +1,9 @@
 .environment-tag {
   @include govuk-font($size: 14, $weight: bold);
-  padding: govuk-spacing(1) govuk-spacing(1) 3px;
-  margin: 0 0 0 govuk-spacing(2);
+
   position: relative;
   top: -2px;
+  margin: 0 0 0 govuk-spacing(2);
+  padding: govuk-spacing(1) govuk-spacing(1) 3px;
   background-color: govuk-colour("light-grey");
 }

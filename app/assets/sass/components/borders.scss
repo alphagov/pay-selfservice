@@ -16,10 +16,10 @@
 
 .with-border .govuk-checkboxes__item::after {
   content: "";
+  display: block;
   position: relative;
   left: -1 * govuk-spacing(7);
   width: 100%;
-  display: block;
   margin: govuk-spacing(3) 0;
   padding-left: govuk-spacing(7);
   border-top: 1px solid $govuk-border-colour;

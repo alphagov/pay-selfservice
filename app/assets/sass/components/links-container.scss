@@ -3,14 +3,14 @@
     .flex-grid--column-half:nth-child(n+3) {
       margin-top: 45px;
 
-      &:before {
+      &::before {
         content: "";
         position: absolute;
         top: - govuk-spacing(6);
-        height: 1px;
-        background-color: govuk-colour("light-grey");
         right: govuk-spacing(3);
         left: govuk-spacing(3);
+        height: 1px;
+        background-color: govuk-colour("light-grey");
       }
     }
   }

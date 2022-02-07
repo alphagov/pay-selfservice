@@ -5,17 +5,17 @@
     display: inline;
     padding: 0;
     border: 0;
-    background-color: transparent;
-    text-decoration: underline;
     color: $govuk-link-colour;
+    background-color: transparent;
     text-align: left;
+    text-decoration: underline;
+    cursor: pointer;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    cursor: pointer;
 
     &:hover {
-    color: $govuk-link-hover-colour;
+      color: $govuk-link-hover-colour;
     }
   }
 }
