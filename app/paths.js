@@ -225,7 +225,8 @@ module.exports = {
   serviceSwitcher: {
     index: '/my-services',
     switch: '/my-services/switch',
-    create: '/my-services/create'
+    create: '/my-services/create',
+    removeNotification: '/my-services/remove-notification'
   },
   inviteValidation: {
     validateInvite: '/invites/:code'

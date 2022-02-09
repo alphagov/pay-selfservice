@@ -219,6 +219,7 @@ module.exports.bind = function (app) {
   app.post(serviceSwitcher.switch, userIsAuthorised, myServicesController.postIndex)
   app.get(serviceSwitcher.create, userIsAuthorised, createServiceController.get)
   app.post(serviceSwitcher.create, userIsAuthorised, createServiceController.post)
+  app.post(serviceSwitcher.removeNotification, userIsAuthorised, myServicesController.removeNotification)
 
   // All service transactions
   app.get(allServiceTransactions.index, userIsAuthorised, allTransactionsController.getController)
