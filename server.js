@@ -1,8 +1,3 @@
-// Please leave here even though it looks unused - this enables Node.js metrics to be pushed to Hosted Graphite
-if (process.env.DISABLE_APPMETRICS !== 'true') {
-  require('./app/utils/metrics').metrics()
-}
-
 const express = require('express')
 const nunjucks = require('nunjucks')
 const favicon = require('serve-favicon')
