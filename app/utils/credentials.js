@@ -13,10 +13,18 @@ const CREDENTIAL_STATE = {
 
 const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED]
 
-function getCurrentCredential (gatewayAccount = {}) {
+function getActiveCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
   return credentials
     .filter((credential) => credential.state === CREDENTIAL_STATE.ACTIVE)[0] || null
+}
+
+function getCurrentCredential (gatewayAccount = {}) {
+  const credentials = gatewayAccount.gateway_account_credentials || []
+  if (credentials.length === 1) {
+    return credentials[0]
+  }
+  return getActiveCredential(gatewayAccount)
 }
 
 // gets exactly one switching credential, only given the right account state (one active credential exists)
@@ -25,7 +33,7 @@ function getSwitchingCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
 
   // make sure there's an active credential we're switching from
-  if (getCurrentCredential(gatewayAccount)) {
+  if (getActiveCredential(gatewayAccount)) {
     const pendingCredentials = credentials
       .filter((credential) => pendingCredentialStates.includes(credential.state))
 
@@ -99,5 +107,6 @@ module.exports = {
   getPSPPageLinks,
   getCredentialByExternalId,
   hasSwitchedProvider,
+  getActiveCredential,
   CREDENTIAL_STATE
 }

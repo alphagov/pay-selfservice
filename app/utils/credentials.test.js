@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const paths = require('../paths')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
 const { InvalidConfigurationError } = require('../errors')
-const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists } = require('./credentials')
+const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists, getActiveCredential } = require('./credentials')
 
 describe('credentials utility', () => {
   describe('get services current credential', () => {
@@ -24,11 +24,12 @@ describe('credentials utility', () => {
       expect(credential.state).is.equal('ACTIVE')
     })
 
-    it('validly returns nothing when no active credentials exist', () => {
+    it('validly returns the only credential when no active credentials exist', () => {
       const account = gatewayAccountFixtures.validGatewayAccount({
         gateway_account_credentials: [{ state: 'CREATED' }]
       })
-      expect(getCurrentCredential(account)).to.equal(null)
+      const credential = getCurrentCredential(account)
+      expect(credential.state).is.equal('CREATED')
     })
   })
 
@@ -213,6 +214,31 @@ describe('credentials utility', () => {
         ]
       })
       expect(getPSPPageLinks(account)).to.have.length(0)
+    })
+  })
+
+  describe('getActiveCredential', () => {
+    it('returns active credentials', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'ACTIVE', id: 100 },
+          { state: 'RETIRED', id: 200 }
+        ]
+      })
+      const credential = getActiveCredential(account)
+      expect(credential.gateway_account_credential_id).to.equal(100)
+    })
+
+    it('returns null if there are no active credential', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'CREATED', id: 100 },
+          { state: 'ENTERED', id: 200 }
+        ]
+      })
+
+      const credential = getActiveCredential(account)
+      expect(credential).to.equal(null)
     })
   })
 })
