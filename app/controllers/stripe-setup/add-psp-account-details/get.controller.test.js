@@ -5,7 +5,7 @@ const sinon = require('sinon')
 const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
 const getController = require('./get.controller')
 
-describe('get controller', () => {
+describe('Stripe setup get controller', () => {
   let req, res, next
 
   beforeEach(() => {
