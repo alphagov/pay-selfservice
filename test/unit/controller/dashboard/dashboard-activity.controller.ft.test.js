@@ -42,7 +42,7 @@ const mockConnectorGetGatewayAccount = (paymentProvider, type) => {
     }))
 }
 
-const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, companyNumber, director) => {
+const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, companyNumber, director, governmentEntitydocument) => {
   nock(CONNECTOR_URL)
     .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/stripe-setup`)
     .reply(200, {
@@ -50,7 +50,8 @@ const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, 
       responsible_person: responsiblePerson,
       vat_number: vatNumber,
       company_number: companyNumber,
-      director: director
+      director: director,
+      government_entity_document: governmentEntitydocument
     })
     .persist()
 }
@@ -525,7 +526,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should not display account status panel when account is fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, true, true, true)
+        mockConnectorGetStripeSetup(true, true, true, true, true, true)
         mockStripeRetrieveAccount(true, null)
         let res = await getDashboard()
         let $ = cheerio.load(res.text)
@@ -554,7 +555,7 @@ describe('dashboard-activity-controller', () => {
       })
 
       it('it should display RESTRICTED account status panel when payouts=false, account is fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, true, true, true)
+        mockConnectorGetStripeSetup(true, true, true, true, true, true)
         mockStripeRetrieveAccount(false, null)
 
         let res = await getDashboard()

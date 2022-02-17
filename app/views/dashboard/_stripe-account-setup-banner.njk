@@ -5,7 +5,8 @@
 
   {% set isStripeAccountRestricted = stripeAccount.charges_enabled === false %}
   {% set stripeAccountHasDeadline = stripeAccount.requirements.current_deadline %}
-  {% set isConnectorStripeJourneyComplete = connectorGatewayAccountStripeProgress.bankAccount and connectorGatewayAccountStripeProgress.vatNumber and connectorGatewayAccountStripeProgress.companyNumber and connectorGatewayAccountStripeProgress.responsiblePerson %}
+  {% set governmentEntityDocCompleteOrNotRequired = stripeAccount.has_legacy_payments_capability or (not stripeAccount.has_legacy_payments_capability and connectorGatewayAccountStripeProgress.governmentEntityDocument) %}
+  {% set isConnectorStripeJourneyComplete = connectorGatewayAccountStripeProgress.bankAccount and connectorGatewayAccountStripeProgress.vatNumber and connectorGatewayAccountStripeProgress.companyNumber and connectorGatewayAccountStripeProgress.responsiblePerson and governmentEntityDocCompleteOrNotRequired %}
 
   {% set panelModifierClass %}
     {% if isStripeAccountRestricted %}
