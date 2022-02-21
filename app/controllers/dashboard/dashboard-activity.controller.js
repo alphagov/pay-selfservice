@@ -145,7 +145,7 @@ module.exports = async (req, res) => {
 
     const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
 
-    logger.info(`Successfully logged in`)
+    logger.info('Successfully logged in')
 
     try {
       const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
@@ -216,9 +216,11 @@ async function getStripeAccountDetails (gatewayAccountId, correlationId) {
 
     try {
       const fullStripeAccountDetails = await retrieveAccountDetails(stripeAccountId)
+      const hasLegacyPaymentsCapability = fullStripeAccountDetails.capabilities && fullStripeAccountDetails.capabilities.legacy_payments !== undefined
 
       const formattedStripeAccount = {
-        charges_enabled: fullStripeAccountDetails.charges_enabled
+        charges_enabled: fullStripeAccountDetails.charges_enabled,
+        has_legacy_payments_capability: hasLegacyPaymentsCapability
       }
 
       if (fullStripeAccountDetails.requirements.current_deadline) {
