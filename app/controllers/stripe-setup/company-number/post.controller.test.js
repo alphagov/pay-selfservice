@@ -80,7 +80,7 @@ describe('Company number POST controller', () => {
     const controller = getControllerWithMocks()
 
     req.body = {
-      'company-number-declaration': 'false',
+      'company-number-declaration': 'false'
     }
 
     await controller(req, res, next)
