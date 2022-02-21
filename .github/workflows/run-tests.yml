@@ -20,7 +20,7 @@ jobs:
       - name: Setup
         uses: actions/setup-node@aa759c6c94d3800c55b8601f21ba4b2371704cb7
         with:
-          node-version: 12.22.4
+          node-version: 12.22.10
       - name: Cache build directories
         uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
         with:
@@ -61,7 +61,7 @@ jobs:
       - name: Setup
         uses: actions/setup-node@aa759c6c94d3800c55b8601f21ba4b2371704cb7
         with:
-          node-version: 12.22.4
+          node-version: 12.22.10
       - name: Cache build directories
         uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
         with:
@@ -84,7 +84,7 @@ jobs:
       - name: Setup
         uses: actions/setup-node@aa759c6c94d3800c55b8601f21ba4b2371704cb7
         with:
-          node-version: 12.22.4
+          node-version: 12.22.10
       - name: Cache build directories
         uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
         with:
