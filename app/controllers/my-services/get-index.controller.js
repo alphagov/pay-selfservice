@@ -8,7 +8,7 @@ const serviceService = require('../../services/service.service')
 const { filterGatewayAccountIds } = require('../../utils/permissions')
 const getHeldPermissions = require('../../utils/get-held-permissions')
 const { DEFAULT_SERVICE_NAME } = require('../../utils/constants')
-const showNewContractTermsBannerUntilDate = process.env.SHOW_NEW_CONTRACTS_BANNER_UNTIL_DATE || '1645488000'
+const showNewContractTermsBannerUntilDate = process.env.SHOW_NEW_CONTRACTS_BANNER_UNTIL_DATE || '1647907200'
 
 function hasStripeAccount (gatewayAccounts) {
   return gatewayAccounts.some(gatewayAccount =>
