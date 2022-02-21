@@ -35,14 +35,9 @@ describe('policy HTML download controller', () => {
         resolve('html-url-link')
       })
     })
-    const mockBucketGetHTMLContent = sinon.spy(() => {
-      return new Promise(resolve => {
-        resolve('html content')
-      })
-    })
+
     const mockBucketService = {
-      generatePrivateLink: mockBucketGetLinkToPdf,
-      getDocumentHtmlFromS3: mockBucketGetHTMLContent
+      generatePrivateLink: mockBucketGetLinkToPdf
     }
     const controller = getController(mockBucketService)
     it('should call s3 policy bucket for private link and download document', async function () {
@@ -50,11 +45,9 @@ describe('policy HTML download controller', () => {
       await controller(req, res, next)
 
       sinon.assert.calledWith(mockBucketService.generatePrivateLink, documentConfig)
-      sinon.assert.calledWith(mockBucketService.getDocumentHtmlFromS3, documentConfig)
-      sinon.assert.calledWith(res.render, 'policy/document/stripe-connected-account-agreement',
+      sinon.assert.calledWith(res.render, 'policy/document/v2/stripe-connected-account-agreement',
         sinon.match({
-          link: 'html-url-link',
-          contentHtml: 'html content'
+          link: 'html-url-link'
         }))
       sinon.assert.notCalled(res.redirect)
       sinon.assert.notCalled(next)
@@ -71,8 +64,7 @@ describe('policy HTML download controller', () => {
       })
     })
     const mockBucketService = {
-      generatePrivateLink: mockBucketGetLinkToPdf,
-      getDocumentHtmlFromS3: sinon.spy()
+      generatePrivateLink: mockBucketGetLinkToPdf
     }
     const controller = getController(mockBucketService)
     it('should handle error with grace', async function () {
@@ -80,7 +72,6 @@ describe('policy HTML download controller', () => {
       await controller(req, res, next)
 
       sinon.assert.calledWith(mockBucketService.generatePrivateLink, documentConfig)
-      sinon.assert.notCalled(mockBucketService.getDocumentHtmlFromS3)
       sinon.assert.notCalled(res.render)
       sinon.assert.notCalled(res.redirect)
       sinon.assert.called(next)
@@ -93,17 +84,9 @@ describe('policy HTML download controller', () => {
         resolve('html-url-link')
       })
     })
-    const mockBucketGetHTMLContent = sinon.spy(() => {
-      return new Promise((resolve, reject) => {
-        const error = new Error()
-        error.code = '404'
-        error.message = 'invalid path'
-        reject(error)
-      })
-    })
+
     const mockBucketService = {
-      generatePrivateLink: mockBucketGetLinkToPdf,
-      getDocumentHtmlFromS3: mockBucketGetHTMLContent
+      generatePrivateLink: mockBucketGetLinkToPdf
     }
     const controller = getController(mockBucketService)
     it('should render page with link', async function () {
@@ -111,11 +94,9 @@ describe('policy HTML download controller', () => {
       await controller(req, res, next)
 
       sinon.assert.calledWith(mockBucketService.generatePrivateLink, documentConfig)
-      sinon.assert.calledWith(mockBucketService.getDocumentHtmlFromS3, documentConfig)
-      sinon.assert.calledWith(res.render, 'policy/document/stripe-connected-account-agreement',
+      sinon.assert.calledWith(res.render, 'policy/document/v2/stripe-connected-account-agreement',
         sinon.match({
-          link: 'html-url-link',
-          contentHtml: 'Error displaying content'
+          link: 'html-url-link'
         }))
       sinon.assert.notCalled(res.redirect)
       sinon.assert.notCalled(next)
