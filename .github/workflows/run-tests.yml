@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 12.22.10
       - name: Cache build directories
-        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
           path: |
             node_modules
@@ -30,7 +30,7 @@ jobs:
             public
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
       - name: Cache NPM packages
-        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -39,7 +39,7 @@ jobs:
         id: parse-cypress-version
         run: echo "::set-output name=CYPRESS_VERSION::$(jq -r '.devDependencies.cypress' package.json)"
       - name: Cache Cypress
-        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ steps.parse-cypress-version.outputs.CYPRESS_VERSION }}
@@ -63,7 +63,7 @@ jobs:
         with:
           node-version: 12.22.10
       - name: Cache build directories
-        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
           path: |
             node_modules
@@ -86,7 +86,7 @@ jobs:
         with:
           node-version: 12.22.10
       - name: Cache build directories
-        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
           path: |
             node_modules
@@ -97,7 +97,7 @@ jobs:
         id: parse-cypress-version
         run: echo "::set-output name=CYPRESS_VERSION::$(jq -r '.devDependencies.cypress' package.json)"
       - name: Cache Cypress
-        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ steps.parse-cypress-version.outputs.CYPRESS_VERSION }}
