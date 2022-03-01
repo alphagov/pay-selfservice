@@ -5,6 +5,7 @@ const productStubs = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-valid-account-id'
+const serviceExternalId = 'a-valid-service-id'
 const serviceName = {
   en: 'pay for something',
   cy: 'talu am rywbeth'
@@ -13,7 +14,7 @@ const serviceName = {
 describe('The create payment link flow', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId: userExternalId, gatewayAccountId, serviceName }),
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
       tokenStubs.postCreateTokenForAccountSuccess({ gatewayAccountId }),
       productStubs.postCreateProductSuccess(),
@@ -272,6 +273,7 @@ describe('The create payment link flow', () => {
         })
 
         cy.get('.govuk-notification-banner--success').should('contain', 'Your Payment link is ready to test')
+        cy.get('.govuk-notification-banner--success a').should('have.attr', 'href', `/service/${serviceExternalId}/request-to-go-live`)
       })
     })
   })
