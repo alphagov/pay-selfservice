@@ -20,7 +20,7 @@
           Your Payment link is ready to test
         </p>
         <p class="govuk-body">
-          To start collecting payments, you need to <a class="govuk-link" href="{{formatServicePathsFor(routes.service.requestToGoLive.index, service.external_id)}}">Request a live account</a>. Once live, you’ll need to recreate your Payment link before you can give it to users.
+          To start collecting payments, you need to <a class="govuk-link" href="{{formatServicePathsFor(routes.service.requestToGoLive.index, currentService.externalId)}}">Request a live account</a>. Once live, you’ll need to recreate your Payment link before you can give it to users.
         </p>
     {% endset %}
   {% else %}
