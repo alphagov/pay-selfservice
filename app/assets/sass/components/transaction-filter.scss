@@ -10,20 +10,23 @@
   }
 }
 
+.inputs-less-margin .govuk-form-group {
+  margin-bottom: govuk-spacing(3);
+}
+
 .datetime-filter {
-  float: left;
-  width: 100%;
   box-sizing: border-box;
+  width: 100%;
+  float: left;
 
   @include govuk-media-query(tablet) {
     width: 50%;
   }
 
   .govuk-form-group {
-    float: left;
-
-    width: 50%;
     box-sizing: border-box;
+    width: 50%;
+    float: left;
 
     &:first-of-type {
       padding-right: govuk-spacing(1);
@@ -45,20 +48,18 @@
 }
 
 .datetime-separator {
-  @include govuk-font($size: 16)
+  @include govuk-font($size: 16);
+
   margin-bottom: govuk-spacing(2);
 
   @include govuk-media-query(tablet) {
-    @include govuk-font($size: 14)
+    @include govuk-font($size: 14);
+
     position: absolute;
     top: 50%;
     left: -8px;
     transform: translateY(-50%);
   }
-}
-
-.inputs-less-margin .govuk-form-group {
-  margin-bottom: govuk-spacing(3);
 }
 
 .inputs-less-margin .govuk-button {
@@ -81,7 +82,7 @@
 
 .datepicker .datepicker-days table tr td.day.focused,
 .datepicker .datepicker-days table tr td.day:hover {
-    background: govuk-colour("yellow");
+  background: govuk-colour("yellow");
 }
 
 .datepicker .datepicker-days table tr td.active:active,

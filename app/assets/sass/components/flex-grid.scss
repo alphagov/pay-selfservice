@@ -1,11 +1,10 @@
 .flex-grid {
   &--row {
     @extend .govuk-grid-row;
+
     display: flex;
     flex: 0 1 auto;
     flex-flow: row wrap;
-    flex-direction: row;
-    flex-wrap: wrap;
 
     & + & {
       margin-top: 30px;
@@ -20,13 +19,15 @@
       border-top: solid 1px $govuk-border-colour;
     }
 
-    h2, h3 {
+    h2,
+    h3 {
       margin-top: 1.25em;
     }
   }
 
   &--column-half {
     @extend .govuk-grid-column-one-half;
+
     margin-bottom: govuk-spacing(6);
 
     @include govuk-media-query(tablet) {
@@ -36,6 +37,7 @@
 
   &--column-third {
     @extend .govuk-grid-column-one-third;
+
     margin-bottom: govuk-spacing(6);
 
     @include govuk-media-query(tablet) {
@@ -45,6 +47,7 @@
 
   &--column-two-thirds {
     @extend .govuk-grid-column-two-thirds;
+
     margin-bottom: govuk-spacing(6);
 
     @include govuk-media-query(tablet) {

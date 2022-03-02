@@ -1,7 +1,8 @@
 .flash-container {
   @extend .govuk-error-summary;
-    &--good {
-    border-color:  govuk-colour("green");
+
+  &--good {
+    border-color: govuk-colour("green");
   }
 
   .notification {

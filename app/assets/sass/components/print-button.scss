@@ -9,20 +9,20 @@
 }
 
 .print-button-wrapper__button {
-  background: url("/public/images/icon-print.png") no-repeat 10px 50%;
+  margin: 0;
+  padding: 0.5em 0.5em 0.5em 38px;
   border: 1px solid $govuk-border-colour;
   color: $govuk-link-colour;
-  cursor: pointer;
-  margin: 0;
-  padding: .5em .5em .5em 38px;
+  background: url("/public/images/icon-print.png") no-repeat 10px 50%;
   text-decoration: none;
+  cursor: pointer;
 
   &:hover {
     background-color: govuk-colour("light-grey");
   }
 
   &:focus {
-    background-color: $govuk-focus-colour;
     border-color: transparent;
+    background-color: $govuk-focus-colour;
   }
 }

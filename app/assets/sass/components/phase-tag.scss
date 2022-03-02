@@ -1,6 +1,7 @@
 .govuk-phase-banner__content__tag {
   @include govuk-font($size: 14, $weight: bold);
-  padding: 3px 5px 1px;
-  margin-right: govuk-spacing(1);
+
   position: relative;
+  margin-right: govuk-spacing(1);
+  padding: 3px 5px 1px;
 }

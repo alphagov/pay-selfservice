@@ -1,23 +1,24 @@
-.transactions-list-table{
+.transactions-list-table {
   background-color: govuk-colour("white");
 }
 
-tr[data-follow-link]{
+tr[data-follow-link] {
   cursor: pointer;
 
   &:hover {
-    background-color: govuk-colour("light-grey")
+    background-color: govuk-colour("light-grey");
   }
 }
 
 .display-size {
   @include govuk-font($size: 19);
-  float: right;
+
   margin-left: govuk-spacing(3);
+  float: right;
 }
 
-.displaySizeForm:before {
-  content: '|';
+.displaySizeForm::before {
+  content: "|";
   margin: 0 govuk-spacing(1);
 }
 

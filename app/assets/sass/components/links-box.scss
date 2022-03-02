@@ -2,8 +2,8 @@
   position: relative;
 
   a {
-    text-decoration: none;
     display: inline-block;
+    text-decoration: none;
   }
 
   a:link {
@@ -26,8 +26,8 @@
   }
 
   a:focus {
-    background-color: $govuk-focus-colour;
     outline: 3px solid $govuk-focus-colour;
+    background-color: $govuk-focus-colour;
 
     h2 {
       color: $govuk-text-colour;

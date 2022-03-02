@@ -1,8 +1,8 @@
-.dashboard-date-range-container{
+.dashboard-date-range-container {
   display: block;
 
   @include govuk-media-query($from: tablet) {
-    display: inline-block; 
+    display: inline-block;
   }
 
   &__select {
@@ -16,6 +16,7 @@
 
     &__title {
       @extend .govuk-heading-s;
+
       margin: govuk-spacing(6) 0 govuk-spacing(1);
     }
 
@@ -38,7 +39,7 @@
         top: -1px;
         bottom: -1px;
         left: 0;
-        width: .625rem;
+        width: 0.625rem;
         background-color: govuk-colour("black");
       }
 
@@ -53,19 +54,23 @@
 
     &__count {
       @include govuk-font($size: 24);
-      float: left;
+
       margin-left: 0;
+      float: left;
     }
 
     &__amount {
       @include govuk-font($size: 24);
+
+      float: right;
       text-align: right;
       flex: 1;
-      float: right;
     }
   }
+
   &-explainer {
     margin-top: govuk-spacing(2);
+
     @include govuk-font($size: 16);
   }
 }
