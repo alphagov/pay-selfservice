@@ -4,7 +4,7 @@ const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.
 const { stubBuilder } = require('./stub-builder')
 
 function getGatewayAccountStripeSetupSuccess (opts) {
-  let fixtureOpts = {
+  const fixtureOpts = {
     gateway_account_id: opts.gatewayAccountId
   }
 
@@ -101,7 +101,7 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
         method: 'GET',
         path: `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`,
         headers: {
-          'Accept': 'application/json'
+          Accept: 'application/json'
         }
       }
     }],

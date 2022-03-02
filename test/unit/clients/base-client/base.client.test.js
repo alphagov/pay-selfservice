@@ -17,7 +17,7 @@ describe('baseClient', () => {
   }
   const baseClient = proxyquire('../../../../app/services/clients/base-client/base.client',
     {
-      'requestretry': requestRetryStub
+      requestretry: requestRetryStub
     })
 
   describe('headers', () => {
@@ -36,13 +36,13 @@ describe('baseClient', () => {
       expect(request.headers).to.have.property(config.CORRELATION_HEADER).to.equal(correlationID)
     })
 
-    it(`should set outbound request's 'Content-Type' header to be 'application/json'`, () => {
+    it('should set outbound request\'s \'Content-Type\' header to be \'application/json\'', () => {
       expect(request.headers).to.have.property('Content-Type').to.equal('application/json')
     })
   })
   describe('keepAlive', () => {
     let server
-    let connections = []
+    const connections = []
     before(done => {
       server = http.createServer((req, res) => {
         res.writeHead(200)

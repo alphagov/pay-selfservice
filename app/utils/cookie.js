@@ -6,9 +6,11 @@ const _30_DAYS = 2592000000 // 30 days in ms
 const _1_HOUR = 60 * 60 * 1000
 const DISABLE_INTERNAL_HTTPS = process.env.DISABLE_INTERNAL_HTTPS === 'true'
 const COOKIE_MAX_AGE_GATEWAY_ACCOUNT = process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT
-  ? parseInt(process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT) : _30_DAYS
+  ? parseInt(process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT)
+  : _30_DAYS
 const COOKIE_MAX_AGE_REGISTRATION = process.env.COOKIE_MAX_AGE_REGISTRATION
-  ? parseInt(process.env.COOKIE_MAX_AGE_REGISTRATION) : _1_HOUR
+  ? parseInt(process.env.COOKIE_MAX_AGE_REGISTRATION)
+  : _1_HOUR
 
 function checkEnv () {
   if (process.env.SESSION_ENCRYPTION_KEY === undefined) {

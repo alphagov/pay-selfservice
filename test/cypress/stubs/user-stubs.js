@@ -148,7 +148,7 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
         method: 'GET',
         path: `/v1/api/users/${userExternalId}`,
         headers: {
-          'Accept': 'application/json'
+          Accept: 'application/json'
         }
       }
     }],

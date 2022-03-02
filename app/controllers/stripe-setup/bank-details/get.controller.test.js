@@ -49,6 +49,6 @@ describe('Bank details get controller', () => {
 
     await getController(req, res)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/bank-details/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/bank-details/index')
   })
 })

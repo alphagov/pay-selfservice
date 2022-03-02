@@ -12,7 +12,7 @@ module.exports = {
    * @returns {function}
    */
   createCallbackToPromiseConverter: (context, transformer) => {
-    let defer = context.defer
+    const defer = context.defer
 
     return (error, response, body) => {
       requestLogger.logRequestEnd(context)

@@ -32,7 +32,7 @@
     "start:dev": "nodemon -e js,njk -r dotenv/config start-dev.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "watch-live-reload": "./node_modules/.bin/grunt watch",
-    "lint": "./node_modules/.bin/standard --fix",
+    "lint": "standard --fix",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "rm -rf ./pacts && NODE_ENV=test ./node_modules/mocha/bin/mocha --exclude **/*.cy.test.js '!(node_modules)/**/*.test'.js",
     "test:no-pact": "rm -rf ./pacts && NODE_ENV=test ./node_modules/mocha/bin/mocha --exclude '**/*+(.cy|.pact)'.test.js '!(node_modules)/**/*.test'.js",
@@ -120,9 +120,10 @@
     "cheerio": "1.0.0-rc.10",
     "chokidar-cli": "latest",
     "csrf": "^3.1.0",
-    "cypress": "5.0.0",
+    "cypress": "5.6.0",
     "dotenv": "16.0.0",
     "envfile": "3.0.0",
+    "eslint": "^7.32.0",
     "gaap-analytics": "3.1.0",
     "grunt": "1.4.x",
     "grunt-babel": "8.0.0",
@@ -147,7 +148,7 @@
     "proxyquire": "~2.1.0",
     "sass-lint": "1.13.1",
     "sinon": "13.0.1",
-    "standard": "12.0.1",
+    "standard": "^16.0.4",
     "supertest": "^6.2.2"
   }
 }

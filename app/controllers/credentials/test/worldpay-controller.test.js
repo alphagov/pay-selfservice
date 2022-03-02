@@ -1,9 +1,9 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
-const User = require('../../models/User.class')
+const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
+const userFixtures = require('../../../../test/fixtures/user.fixtures')
+const User = require('../../../models/User.class')
 
 const checkCredentialsMock = sinon.spy(() => Promise.resolve({ result: 'valid' }))
 const updateCredentialsMock = sinon.spy(() => Promise.resolve())
@@ -26,9 +26,9 @@ describe('Worldpay credentials controller', () => {
       account: account,
       user: new User(userFixtures.validUserResponse()),
       body: {
-        'merchantId': 'a-merchant-id',
-        'username': 'a-username',
-        'password': 'a-password' // pragma: allowlist secret
+        merchantId: 'a-merchant-id',
+        username: 'a-username',
+        password: 'a-password' // pragma: allowlist secret
       },
       flash: sinon.spy(),
       route: {
@@ -64,7 +64,7 @@ describe('Worldpay credentials controller', () => {
 })
 
 function getControllerWithMocks () {
-  return proxyquire('./worldpay.controller', {
+  return proxyquire('../worldpay.controller', {
     '../../services/clients/connector.client': {
       ConnectorClient: function () {
         this.postCheckWorldpayCredentials = checkCredentialsMock

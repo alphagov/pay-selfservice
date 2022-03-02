@@ -70,7 +70,7 @@ describe('The logged in endpoint', function () {
     request(app)
       .get('/')
       .expect(302)
-      .expect('Location', `/my-services`)
+      .expect('Location', '/my-services')
       .end(done)
   })
 
@@ -226,26 +226,26 @@ describe('The afterOtpLogin endpoint', function () {
 
 describe('login get endpoint', function () {
   it('should set the right flash message if both fields are empty', function (done) {
-    const req = { 'body': { 'username': '', 'password': '' } }
+    const req = { body: { username: '', password: '' } }
     const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_all')
 
-    res.locals = { 'flash': {} }
+    res.locals = { flash: {} }
     testController(loginController.loginGet, req, res)
     expect(res.locals.flash === { username: 'You must enter a username', password: 'You must enter a password' })
     done()
   })
 
   it('should set the right flash message if individual fields are empty', function (done) {
-    const req = { 'body': { 'username': '', 'password': '123' } }
+    const req = { body: { username: '', password: '123' } }
     const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_username')
 
-    res.locals = { 'flash': {} }
+    res.locals = { flash: {} }
     testController(loginController.loginGet, req, res)
     expect(res.locals.flash === { username: 'You must enter a username' })
     done()
@@ -254,7 +254,7 @@ describe('login get endpoint', function () {
 
 describe('login post endpoint', function () {
   it('should set the right flash message if both fields are empty', function (done) {
-    const req = { 'body': { 'username': '', 'password': '' } }
+    const req = { body: { username: '', password: '' } }
     const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
@@ -263,7 +263,7 @@ describe('login post endpoint', function () {
   })
 
   it('should set the right flash message if individual fields are empty', function (done) {
-    const req = { 'body': { 'username': '', 'password': '123' } }
+    const req = { body: { username: '', password: '123' } }
     const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)

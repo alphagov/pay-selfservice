@@ -78,7 +78,7 @@ const closeMultiSelectOnEscapeKeypress = function () {
   document.body.addEventListener('keydown', checkForEscapeKeyHandler, false)
 
   function checkForEscapeKeyHandler (e) {
-    var keyCode = e.keyCode
+    const keyCode = e.keyCode
     if (keyCode === 27) {
       const mulitSelectElements = document.querySelectorAll(DROPDOWN_SELECTOR)
 

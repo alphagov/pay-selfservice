@@ -75,7 +75,7 @@ const subscribeService = async function subscribeService (req, res, next) {
  */
 const submitRegistration = async function submitRegistration (req, res, next) {
   const telephoneNumber = req.body['telephone-number']
-  const password = req.body['password']
+  const password = req.body.password
   const correlationId = req.correlationId
 
   const sessionData = req.register_invite

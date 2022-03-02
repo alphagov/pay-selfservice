@@ -1,8 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
-const url = require('url')
-
+const { parseUrlFromReq, getQueryStringForUrl } = require('../../utils/url-helpers')
 const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
 const transactionService = require('../../services/transaction.service')
@@ -25,8 +24,8 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
   // default behaviour should be live
   const { statusFilter } = req.params
   const filterLiveAccounts = statusFilter !== 'test'
-
-  req.session.filters = url.parse(req.url).query
+  const parsedUrl = parseUrlFromReq(req)
+  req.session.filters = getQueryStringForUrl(parsedUrl)
   req.session.allServicesTransactionsStatusFilter = statusFilter
 
   try {

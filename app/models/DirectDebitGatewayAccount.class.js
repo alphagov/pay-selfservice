@@ -33,6 +33,7 @@ class DirectDebitGatewayAccount {
     // compatibility with other parts of selfservice - recording as tech debt in jira
     this.payment_provider = gatewayAccountData.payment_provider
   }
+
   /**
    * @method toJson
    * @returns {Object} A minimal representation of the gateway account

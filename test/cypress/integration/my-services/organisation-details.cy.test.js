@@ -42,7 +42,7 @@ describe('Dashboard', () => {
       it('should display form', () => {
         cy.get('h1').should('contain', 'Organisation details')
 
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .should('exist')
           .within(() => {
             cy.get('label[for="merchant-name"]').should('exist')
@@ -72,7 +72,7 @@ describe('Dashboard', () => {
       })
 
       it('should display errors when validation fails', () => {
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             // create errors by leaving fields blank or inputting invalid values
             cy.get('#address-postcode').type(invalidPostcode)
@@ -92,7 +92,7 @@ describe('Dashboard', () => {
           cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
         })
 
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             cy.get('.govuk-form-group--error > input#merchant-name').parent().should('exist').within(() => {
               cy.get('.govuk-error-message').should('contain', 'Enter a name')
@@ -116,7 +116,7 @@ describe('Dashboard', () => {
       })
 
       it('should keep entered responses when validation fails', () => {
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             // fill in the rest of the form fields
             cy.get('#merchant-name').type(validName)
@@ -134,7 +134,7 @@ describe('Dashboard', () => {
           cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
         })
 
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             cy.get('#merchant-name').should('have.value', validName)
             cy.get('#address-line1').should('have.value', validLine1)
@@ -169,7 +169,7 @@ describe('Dashboard', () => {
       })
 
       it('should submit organisation address when validation succeeds', () => {
-        cy.get(`form[method=post]`)
+        cy.get('form[method=post]')
           .within(() => {
             // correct the validation errors
             cy.get('#address-postcode').clear()

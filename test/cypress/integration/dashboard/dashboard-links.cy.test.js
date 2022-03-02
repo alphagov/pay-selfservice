@@ -11,7 +11,7 @@ const gatewayAccountExternalId = 'a-gateway-account-external-id'
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
 function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveStage, pspTestAccountStage) {
-  let stubs = []
+  const stubs = []
 
   stubs.push(userStubs.getUserSuccess({ userExternalId, gatewayAccountId, goLiveStage, pspTestAccountStage }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({

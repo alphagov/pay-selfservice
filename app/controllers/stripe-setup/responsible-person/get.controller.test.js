@@ -48,6 +48,6 @@ describe('Responsible person GET controller', () => {
 
     await getController(req, res)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/responsible-person/index')
   })
 })

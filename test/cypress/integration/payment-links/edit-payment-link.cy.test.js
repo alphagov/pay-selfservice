@@ -42,7 +42,7 @@ describe('Editing a payment link', () => {
     const referenceLabel = 'Licence number'
     const referenceHint = 'You can find this on your licence card'
     const product = buildPaymentLinkOpts(productId, name, 'en', description, 1000, referenceEnabled, referenceLabel, referenceHint,
-      { 'Finance team': 'Licensing', 'cost_code': '12345', 'group': 'A' })
+      { 'Finance team': 'Licensing', cost_code: '12345', group: 'A' })
 
     beforeEach(() => {
       setupStubs(product)

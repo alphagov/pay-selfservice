@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
     let orgUnitId = lodash.get(req, 'account.worldpay_3ds_flex.organisational_unit_id' || '')
     let issuer = lodash.get(req, 'account.worldpay_3ds_flex.issuer' || '')
 
-    let worldpay3dsFlexPageData = lodash.get(req, 'session.pageData.worldpay3dsFlex')
+    const worldpay3dsFlexPageData = lodash.get(req, 'session.pageData.worldpay3dsFlex')
     if (worldpay3dsFlexPageData) {
       delete req.session.pageData.worldpay3dsFlex
 

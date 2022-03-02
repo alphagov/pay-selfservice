@@ -43,7 +43,7 @@ const buildChargeEventStateWithDefaults = (opts = {}) => {
 }
 
 const buildPaymentEvents = (opts = {}) => {
-  let events = []
+  const events = []
   if (opts.payment_states) {
     opts.payment_states.forEach(paymentState => {
       events.push({
@@ -231,7 +231,7 @@ module.exports = {
     }
   },
   validTransactionSearchResponse: (opts = {}) => {
-    let results = []
+    const results = []
     opts.transactions.forEach(transaction => {
       if (!transaction.type || transaction.type === 'payment') {
         transaction.includeRefundSummary = true

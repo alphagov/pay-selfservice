@@ -9,7 +9,7 @@ const { NoServicesWithPermissionError } = require('../../errors')
 const enableFeeBreakDownForTestAccounts = process.env.ENABLE_FEE_BREAKDOWN_IN_CSV_FOR_STRIPE_TEST_ACCOUNTS === 'true'
 const includeFeeBreakdownHeadersFromDate = process.env.INCLUDE_FEE_BREAKDOWN_HEADERS_IN_CSV_DATE || '1642982460'
 
-module.exports = async function dowmloadTransactions (req, res, next) {
+module.exports = async function downloadTransactions (req, res, next) {
   const filters = req.query
   const correlationId = req.headers[CORRELATION_HEADER]
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`

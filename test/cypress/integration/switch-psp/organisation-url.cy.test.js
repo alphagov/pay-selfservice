@@ -60,7 +60,7 @@ describe('Switch PSP', () => {
                 external_id: gatewayAccountCredentialExternalId,
                 payment_provider: 'stripe',
                 state: 'VERIFIED_WITH_LIVE_PAYMENT',
-                credentials: { 'stripe_account_id': 'acct_123example123' }
+                credentials: { stripe_account_id: 'acct_123example123' }
               }
             ]
           ),

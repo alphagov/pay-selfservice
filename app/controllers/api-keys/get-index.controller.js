@@ -13,8 +13,8 @@ module.exports = async function listActiveApiKeys (req, res, next) {
 
     const activeTokens = publicAuthData.tokens || []
     response(req, res, 'api-keys/index', {
-      'tokens': activeTokens,
-      'tokens_singular': activeTokens.length === 1
+      tokens: activeTokens,
+      tokens_singular: activeTokens.length === 1
     })
   } catch (err) {
     next(err)

@@ -115,7 +115,7 @@ describe('register user controller', () => {
         .set('x-request-id', 'bob')
         .send({
           'telephone-number': invalidPhone,
-          'password': 'password1234',
+          password: 'password1234',
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
@@ -147,7 +147,7 @@ describe('register user controller', () => {
         .set('x-request-id', 'bob')
         .send({
           'telephone-number': '+441134960000',
-          'password': 'password1234',
+          password: 'password1234',
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
@@ -169,7 +169,7 @@ describe('register user controller', () => {
         .set('x-request-id', 'bob')
         .send({
           'telephone-number': '+441134960000',
-          'password': 'password1234',
+          password: 'password1234',
           csrfToken: csrf().create('123')
         })
         .expect(500)

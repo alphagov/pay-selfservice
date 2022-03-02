@@ -7,7 +7,7 @@ const paths = require('../../paths')
 const userService = require('../../services/user.service.js')
 
 module.exports = async function postUpdateSecondFactorMethod (req, res) {
-  const code = req.body['code'] || ''
+  const code = req.body.code || ''
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP')
 
   if (!code) {
@@ -32,7 +32,7 @@ module.exports = async function postUpdateSecondFactorMethod (req, res) {
       })
     } else {
       req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-      logger.error(`Activating new OTP key failed, server error`)
+      logger.error('Activating new OTP key failed, server error')
     }
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
   }

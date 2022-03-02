@@ -19,8 +19,8 @@ const environment = nunjucks.configure([
 })
 
 // Load custom Nunjucks filters
-for (let name in nunjucksFilters) {
-  let filter = nunjucksFilters[name]
+for (const name in nunjucksFilters) {
+  const filter = nunjucksFilters[name]
   environment.addFilter(name, filter)
 }
 environment.addFilter('formatPSPname', formatPSPname)
@@ -133,8 +133,8 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withAttributes', function (attributes) {
-    for (let attr in attributes) {
-      if (attributes.hasOwnProperty(attr)) {
+    for (const attr in attributes) {
+      if (Object.prototype.hasOwnProperty.call(attributes, attr)) {
         this.withAttribute(attr, attributes[attr])
       }
     }

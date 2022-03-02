@@ -7,18 +7,18 @@ describe('the ServiceUpdateRequest model', () => {
   it('should successfully add a "replace" request', () => {
     const payload = new ServiceUpdateRequest().replace('foo', 'bar').formatPayload()
     expect(payload).to.deep.equal([{
-      'op': 'replace',
-      'path': 'foo',
-      'value': 'bar'
+      op: 'replace',
+      path: 'foo',
+      value: 'bar'
     }])
   })
 
   it('should successfully add an "add" request', () => {
     const payload = new ServiceUpdateRequest().add('foo', 'bar').formatPayload()
     expect(payload).to.deep.equal([{
-      'op': 'add',
-      'path': 'foo',
-      'value': 'bar'
+      op: 'add',
+      path: 'foo',
+      value: 'bar'
     }])
   })
 
@@ -31,19 +31,19 @@ describe('the ServiceUpdateRequest model', () => {
 
     expect(payload).to.deep.equal([
       {
-        'op': 'replace',
-        'path': 'replace-path-1',
-        'value': 'replace-value-1'
+        op: 'replace',
+        path: 'replace-path-1',
+        value: 'replace-value-1'
       },
       {
-        'op': 'replace',
-        'path': 'replace-path-2',
-        'value': 'replace-value-2'
+        op: 'replace',
+        path: 'replace-path-2',
+        value: 'replace-value-2'
       },
       {
-        'op': 'add',
-        'path': 'add-path',
-        'value': 'add-value'
+        op: 'add',
+        path: 'add-path',
+        value: 'add-value'
       }
     ])
   })

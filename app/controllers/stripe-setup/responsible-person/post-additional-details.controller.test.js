@@ -66,7 +66,7 @@ describe('Responsible person add additional details POST controller', () => {
         'telephone-number': telephone
       },
       route: {
-        path: `/kyc/:credentialId/responsible-person`
+        path: '/kyc/:credentialId/responsible-person'
       },
       flash: sinon.spy()
     }
@@ -127,7 +127,7 @@ describe('Responsible person add additional details POST controller', () => {
     })
     sinon.assert.notCalled(completeKycMock)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/kyc-additional-information`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/responsible-person/kyc-additional-information')
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['telephone-number'],
       'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
   })

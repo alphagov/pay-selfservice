@@ -8,8 +8,8 @@ const User = require('../../models/User.class')
 const { expect } = require('chai')
 
 const defaultCharge = connectorChargeFixtures.validChargeResponse()
-let postChargeRequestMock = sinon.spy(() => Promise.resolve(defaultCharge))
-let patchAccountGatewayAccountCredentialsStateMock = sinon.spy(() => Promise.resolve())
+const postChargeRequestMock = sinon.spy(() => Promise.resolve(defaultCharge))
+const patchAccountGatewayAccountCredentialsStateMock = sinon.spy(() => Promise.resolve())
 let getChargeMock = sinon.spy(() => Promise.resolve(defaultCharge))
 
 describe('Verify PSP integration controller', () => {

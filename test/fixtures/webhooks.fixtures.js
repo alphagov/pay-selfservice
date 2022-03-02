@@ -9,11 +9,11 @@ function validWebhook (options = {}) {
     description: options.description || 'a valid webhook description',
     status: options.status || 'ACTIVE',
     created_date: options.created_date || '2021-08-20T14:00:00.000Z',
-    subscriptions: options.subscriptions || [ 'card_payment_captured' ]
+    subscriptions: options.subscriptions || ['card_payment_captured']
   }
 }
 
-function validWebhookMessageAttempt(options = {}) {
+function validWebhookMessageAttempt (options = {}) {
   return {
     status: options.status || 'SUCCESSFUL', // 'FAILED', 'PENDING', null
     created_at: options.created_at || '2021-08-20T14:00:00.000Z',
@@ -23,7 +23,7 @@ function validWebhookMessageAttempt(options = {}) {
   }
 }
 
-function validWebhookMessage(options = {}) {
+function validWebhookMessage (options = {}) {
   return {
     external_id: options.external_id || 'valid-webhook-message-external-id',
     created_date: options.created_date || '2021-08-20T14:00:00.000Z',
@@ -34,7 +34,7 @@ function validWebhookMessage(options = {}) {
   }
 }
 
-function validSigningSecret(options = {}) {
+function validSigningSecret (options = {}) {
   return {
     signing_key: options.signing_key || 'valid-signing-secret'
   }
@@ -56,11 +56,11 @@ function webhookResponse (options = {}) {
   return validWebhook(options)
 }
 
-function webhookSigningSecretResponse(options = {}) {
+function webhookSigningSecretResponse (options = {}) {
   return validSigningSecret(options)
 }
 
-function webhookMessageSearchResponse(options = []) {
+function webhookMessageSearchResponse (options = []) {
   return {
     total: options.length,
     count: options.length,

@@ -67,7 +67,7 @@ module.exports = {
     }
   },
   validAcceptedCardTypesResponse: opts => {
-    let data = {
+    const data = {
       card_types: [{
         id: 'a1200c73-204d-45f5-8fca-e4ee5ed1b1a7',
         brand: 'visa',

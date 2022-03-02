@@ -28,7 +28,7 @@ module.exports = {
     const data = {
       external_id: opts.external_id || 'b9tijg',
       product_external_id: opts.product_external_id || 'mekna7',
-      next_url: opts.next_url || `http://service.url/next`,
+      next_url: opts.next_url || 'http://service.url/next',
       status: opts.status || 'CREATED',
       govuk_status: opts.govuk_status || 'success',
       _links: opts.links

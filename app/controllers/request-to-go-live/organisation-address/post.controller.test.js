@@ -45,7 +45,7 @@ describe('organisation address post controller', () => {
           'address-postcode': validPostcode,
           'address-country': validCountry,
           'telephone-number': validTeleponeNumber,
-          'url': validUrl
+          url: validUrl
         }
       }
 
@@ -79,44 +79,44 @@ describe('organisation address post controller', () => {
         it('should update merchant details and go live stage', async function () {
           const expectedUpdateServiceRequest = [
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_line1',
-              'value': validLine1
+              op: 'replace',
+              path: 'merchant_details/address_line1',
+              value: validLine1
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_line2',
-              'value': validLine2
+              op: 'replace',
+              path: 'merchant_details/address_line2',
+              value: validLine2
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_city',
-              'value': validCity
+              op: 'replace',
+              path: 'merchant_details/address_city',
+              value: validCity
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_postcode',
-              'value': validPostcode
+              op: 'replace',
+              path: 'merchant_details/address_postcode',
+              value: validPostcode
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_country',
-              'value': validCountry
+              op: 'replace',
+              path: 'merchant_details/address_country',
+              value: validCountry
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/telephone_number',
-              'value': validTeleponeNumber
+              op: 'replace',
+              path: 'merchant_details/telephone_number',
+              value: validTeleponeNumber
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/url',
-              'value': validUrl
+              op: 'replace',
+              path: 'merchant_details/url',
+              value: validUrl
             },
             {
-              'op': 'replace',
-              'path': 'current_go_live_stage',
-              'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+              op: 'replace',
+              path: 'current_go_live_stage',
+              value: goLiveStage.ENTERED_ORGANISATION_ADDRESS
             }
           ]
 
@@ -134,49 +134,49 @@ describe('organisation address post controller', () => {
             'address-postcode': validPostcode,
             'address-country': validCountry,
             'telephone-number': validTeleponeNumber,
-            'url': validUrl
+            url: validUrl
           }
 
           const expectedUpdateServiceRequest = [
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_line1',
-              'value': validLine1
+              op: 'replace',
+              path: 'merchant_details/address_line1',
+              value: validLine1
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_line2',
-              'value': ''
+              op: 'replace',
+              path: 'merchant_details/address_line2',
+              value: ''
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_city',
-              'value': validCity
+              op: 'replace',
+              path: 'merchant_details/address_city',
+              value: validCity
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_postcode',
-              'value': validPostcode
+              op: 'replace',
+              path: 'merchant_details/address_postcode',
+              value: validPostcode
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_country',
-              'value': validCountry
+              op: 'replace',
+              path: 'merchant_details/address_country',
+              value: validCountry
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/telephone_number',
-              'value': validTeleponeNumber
+              op: 'replace',
+              path: 'merchant_details/telephone_number',
+              value: validTeleponeNumber
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/url',
-              'value': validUrl
+              op: 'replace',
+              path: 'merchant_details/url',
+              value: validUrl
             },
             {
-              'op': 'replace',
-              'path': 'current_go_live_stage',
-              'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+              op: 'replace',
+              path: 'current_go_live_stage',
+              value: goLiveStage.ENTERED_ORGANISATION_ADDRESS
             }
           ]
 
@@ -232,7 +232,7 @@ describe('organisation address post controller', () => {
         'address-postcode': validPostcode,
         'address-country': validCountry,
         'telephone-number': validTeleponeNumber,
-        'url': validUrl
+        url: validUrl
       }
     }
 
@@ -265,44 +265,44 @@ describe('organisation address post controller', () => {
       it('should update merchant details', async function () {
         const expectedUpdateServiceRequest = [
           {
-            'op': 'replace',
-            'path': 'merchant_details/address_line1',
-            'value': validLine1
+            op: 'replace',
+            path: 'merchant_details/address_line1',
+            value: validLine1
           },
           {
-            'op': 'replace',
-            'path': 'merchant_details/address_line2',
-            'value': validLine2
+            op: 'replace',
+            path: 'merchant_details/address_line2',
+            value: validLine2
           },
           {
-            'op': 'replace',
-            'path': 'merchant_details/address_city',
-            'value': validCity
+            op: 'replace',
+            path: 'merchant_details/address_city',
+            value: validCity
           },
           {
-            'op': 'replace',
-            'path': 'merchant_details/address_postcode',
-            'value': validPostcode
+            op: 'replace',
+            path: 'merchant_details/address_postcode',
+            value: validPostcode
           },
           {
-            'op': 'replace',
-            'path': 'merchant_details/address_country',
-            'value': validCountry
+            op: 'replace',
+            path: 'merchant_details/address_country',
+            value: validCountry
           },
           {
-            'op': 'replace',
-            'path': 'merchant_details/telephone_number',
-            'value': validTeleponeNumber
+            op: 'replace',
+            path: 'merchant_details/telephone_number',
+            value: validTeleponeNumber
           },
           {
-            'op': 'replace',
-            'path': 'merchant_details/url',
-            'value': validUrl
+            op: 'replace',
+            path: 'merchant_details/url',
+            value: validUrl
           },
           {
-            'op': 'replace',
-            'path': 'merchant_details/name',
-            'value': validName
+            op: 'replace',
+            path: 'merchant_details/name',
+            value: validName
           }
         ]
 

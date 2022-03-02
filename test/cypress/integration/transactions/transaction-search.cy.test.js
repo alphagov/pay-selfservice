@@ -239,9 +239,9 @@ describe('Transactions List', () => {
       ])
 
       cy.get('#state').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Success']`).trigger('mouseover').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='In progress']`).trigger('mouseover').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Refund submitted']`).trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Success\']').trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'In progress\']').trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Refund submitted\']').trigger('mouseover').click()
 
       cy.get('#reference').type('ref123')
       cy.get('#fromDate').type('03/5/2018')
@@ -249,8 +249,8 @@ describe('Transactions List', () => {
       cy.get('#toDate').type('04/5/2018')
       cy.get('#toTime').type('01:00:00')
       cy.get('#card-brand').click()
-      cy.get(`#list-of-sectors-brand .govuk-checkboxes__input[value=visa]`).click()
-      cy.get(`#list-of-sectors-brand .govuk-checkboxes__input[value=master-card]`).click()
+      cy.get('#list-of-sectors-brand .govuk-checkboxes__input[value=visa]').click()
+      cy.get('#list-of-sectors-brand .govuk-checkboxes__input[value=master-card]').click()
       cy.get('#email').type('gds4')
       cy.get('#lastDigitsCardNumber').type('4242')
       cy.get('#cardholderName').type('doe')

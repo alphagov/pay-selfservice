@@ -416,10 +416,10 @@ module.exports = {
       user_external_id: request.userExternalId || 'userExternalId',
       code: request.code || code,
       date: '2010-12-31T22:59:59.132Z',
-      '_links': [{
-        'href': `http://localhost:8080/v1/api/forgotten-passwords/${code}`,
-        'rel': 'self',
-        'method': 'GET'
+      _links: [{
+        href: `http://localhost:8080/v1/api/forgotten-passwords/${code}`,
+        rel: 'self',
+        method: 'GET'
       }]
     }
   },

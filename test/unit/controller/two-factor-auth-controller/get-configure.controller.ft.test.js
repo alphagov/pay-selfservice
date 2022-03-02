@@ -45,15 +45,15 @@ describe('Two factor authenticator configure page GET', () => {
       expect(result.statusCode).to.equal(200)
     })
 
-    it(`should include a link to My Profile`, () => {
+    it('should include a link to My Profile', () => {
       expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile.index)
     })
 
-    it(`should have itself as the form action`, () => {
+    it('should have itself as the form action', () => {
       expect($('form').attr('action')).to.equal(paths.user.profile.twoFactorAuth.configure)
     })
 
-    it(`should have a base64 encoded image in the image src for the QR code`, () => {
+    it('should have a base64 encoded image in the image src for the QR code', () => {
       expect($('.qr-code').attr('src')).to.contain('data:image/png;base64')
     })
   })
@@ -89,15 +89,15 @@ describe('Two factor authenticator configure page GET', () => {
       expect(result.statusCode).to.equal(200)
     })
 
-    it(`should include a link to My Profile`, () => {
+    it('should include a link to My Profile', () => {
       expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile.index)
     })
 
-    it(`should have itself as the form action`, () => {
+    it('should have itself as the form action', () => {
       expect($('form').attr('action')).to.equal(paths.user.profile.twoFactorAuth.configure)
     })
 
-    it(`should not show a QR code`, () => {
+    it('should not show a QR code', () => {
       expect($('.qr-code').length).to.equal(0)
     })
   })

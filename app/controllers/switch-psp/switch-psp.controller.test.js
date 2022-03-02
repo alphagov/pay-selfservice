@@ -5,7 +5,7 @@ const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.f
 const userFixtures = require('../../../test/fixtures/user.fixtures')
 const User = require('../../models/User.class')
 
-let postAccountSwitchPSPMock = sinon.spy(() => Promise.resolve())
+const postAccountSwitchPSPMock = sinon.spy(() => Promise.resolve())
 let req, res, next
 
 describe('Switch PSP controller', () => {

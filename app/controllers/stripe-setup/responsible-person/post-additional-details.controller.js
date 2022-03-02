@@ -61,7 +61,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
   }
 
   if (!lodash.isEmpty(errors)) {
-    pageData['errors'] = errors
+    pageData.errors = errors
     const responsiblePersonName = await getExistingResponsiblePersonName(req.account, false, req.correlationId)
     return response(req, res, 'stripe-setup/responsible-person/kyc-additional-information', {
       ...pageData,

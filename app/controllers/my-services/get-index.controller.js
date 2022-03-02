@@ -89,12 +89,10 @@ module.exports = async function getServiceList (req, res) {
     show_new_contract_terms_banner: isAdminUserForALiveService && shouldShowNewContractTermsBanner(req.cookies)
   }
   if (newServiceId) {
-    servicesData.find(service => {
-      if (service.external_id === newServiceId) {
-        data.new_service_name = service.name
-        return true
-      }
-    })
+    const found = servicesData.find(service => service.external_id === newServiceId)
+    if (found) {
+      data.new_service_name = found.name
+    }
   }
 
   return response(req, res, 'services/index', data)

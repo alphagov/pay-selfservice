@@ -12,7 +12,7 @@ const {
   SERVICE_NAME_MAX_LENGTH
 } = require('../utils/validation/server-side-form-validations')
 
-function get(req, res) {
+function get (req, res) {
   const pageData = lodash.get(req, 'session.pageData.createServiceName', {})
   lodash.unset(req, 'session.pageData.createServiceName')
 
@@ -22,7 +22,7 @@ function get(req, res) {
   return response(req, res, 'services/add-service', pageData)
 }
 
-async function post(req, res, next) {
+async function post (req, res, next) {
   const { correlationId, body } = req
   const serviceName = body['service-name'] && body['service-name'].trim()
   const serviceHasNameCy = body['welsh-service-name-bool']
@@ -31,11 +31,11 @@ async function post(req, res, next) {
   const errors = {}
   const nameValidationResult = validateMandatoryField(serviceName, SERVICE_NAME_MAX_LENGTH, 'service name')
   if (!nameValidationResult.valid) {
-    errors['service_name'] = nameValidationResult.message
+    errors.service_name = nameValidationResult.message
   }
   const welshNameValidationResult = validateOptionalField(serviceNameCy, SERVICE_NAME_MAX_LENGTH, 'welsh service name')
   if (!welshNameValidationResult.valid) {
-    errors['service_name_cy'] = welshNameValidationResult.message
+    errors.service_name_cy = welshNameValidationResult.message
   }
   if (!lodash.isEmpty(errors)) {
     lodash.set(req, 'session.pageData.createServiceName', {

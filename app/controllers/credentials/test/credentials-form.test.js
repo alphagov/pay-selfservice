@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { CredentialsForm, isNotEmpty } = require('./credentials-form')
+const { CredentialsForm, isNotEmpty } = require('../credentials-form')
 
 describe('Credentials forms', () => {
   it('constructs a form with no fields', () => {
@@ -27,7 +27,7 @@ describe('Credentials forms', () => {
     const results = form.validate({
       'some-id': 'some-value'
     })
-    expect(results.values['someId']).to.equal('some-value')
+    expect(results.values.someId).to.equal('some-value')
     expect(results.errors).to.deep.equal({})
     expect(results.errorSummaryList).to.have.length(0)
   })
@@ -37,6 +37,6 @@ describe('Credentials forms', () => {
       id: 'someId', key: 'some_id'
     }])
     const results = form.from({ some_id: 'an-initial-id' })
-    expect(results.values['some_id']).to.equal('an-initial-id')
+    expect(results.values.some_id).to.equal('an-initial-id')
   })
 })

@@ -23,7 +23,7 @@ describe('payouts service list payouts helper', () => {
     ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
       .reply(200, fixtures.validPayoutSearchResponse(payouts))
 
-    const { groups, pages } = await payoutService.payouts([ gatewayAccountId ])
+    const { groups, pages } = await payoutService.payouts([gatewayAccountId])
 
     expect(Object.keys(groups).length).to.equal(1)
     expect(groups['2019-01-29'].entries.length).to.equal(2)
@@ -36,7 +36,7 @@ describe('payouts service list payouts helper', () => {
     ledgerMock.get(LEDGER_PAYOUT_BACKEND_ROUTE)
       .reply(200, fixtures.validPayoutSearchResponse(payouts))
 
-    const { groups, pages } = await payoutService.payouts([ gatewayAccountId ])
+    const { groups, pages } = await payoutService.payouts([gatewayAccountId])
 
     expect(groups).to.deep.equal({})
     expect(pages.total).to.equal(0)

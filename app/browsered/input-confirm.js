@@ -19,7 +19,7 @@ module.exports = () => {
   function confirmInput (e) {
     const input = e.target
     // using slugify and also stripping out the (in)definite article (the/a/an)
-    let value = input.dataset.confirmationFilter === 'slugify' ? slugify(removeIndefiniteArticles(input.value)) : input.value
+    const value = input.dataset.confirmationFilter === 'slugify' ? slugify(removeIndefiniteArticles(input.value)) : input.value
     const confirmationId = `${input.id}-confirmation`
     const confirmationPrepend = input.dataset.confirmationPrepend || ''
     let confirmation = document.getElementById(confirmationId)

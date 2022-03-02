@@ -32,15 +32,15 @@ describe('Controller: editServiceName, Method: get', () => {
       expect(mockResponses.response.args[0]).to.include('services/edit-service-name')
     })
 
-    it(`should pass pageData to the responses.response method with a 'current_name' property equal to the name of 'req.service'`, () => {
+    it('should pass pageData to the responses.response method with a \'current_name\' property equal to the name of \'req.service\'', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal(req.service.serviceName)
     })
 
-    it(`should pass pageData to the responses.response method that does not have an 'errors' property`, () => {
+    it('should pass pageData to the responses.response method that does not have an \'errors\' property', () => {
       expect(mockResponses.response.args[0][3]).to.not.have.property('errors')
     })
 
-    it(`should pass pageData to the responses.response method that has properly formatted 'submit_link' and 'my_services' properties`, () => {
+    it('should pass pageData to the responses.response method that has properly formatted \'submit_link\' and \'my_services\' properties', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('submit_link').to.equal(`/service/${req.service.externalId}/edit-name`)
       expect(mockResponses.response.args[0][3]).to.have.property('my_services').to.equal('/my-services')
     })
@@ -61,7 +61,7 @@ describe('Controller: editServiceName, Method: get', () => {
       expect(mockResponses.response.called).to.equal(true)
     })
 
-    it(`should pass pageData to the responses.response method with a 'current_name' property equal to the serviceName of 'req.service'`, () => {
+    it('should pass pageData to the responses.response method with a \'current_name\' property equal to the serviceName of \'req.service\'', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal(req.service.serviceName)
     })
   })
@@ -90,17 +90,17 @@ describe('Controller: editServiceName, Method: get', () => {
       expect(mockResponses.response.called).to.equal(true)
     })
 
-    it(`should pass pageData to the responses.response method with a 'current_name' property equal to the name in the pre-existing pageData`, () => {
+    it('should pass pageData to the responses.response method with a \'current_name\' property equal to the name in the pre-existing pageData', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal('Blah')
     })
 
-    it(`should pass pageData to the responses.response method with 'errors' property equal to the 'errors' property of the pre-existing pageData`, () => {
+    it('should pass pageData to the responses.response method with \'errors\' property equal to the \'errors\' property of the pre-existing pageData', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('errors').to.deep.equal({
         service_name: 'service name failed validation'
       })
     })
 
-    it(`should delete the pre-existing pageData from the session`, () => {
+    it('should delete the pre-existing pageData from the session', () => {
       expect(req.session.pageData).to.not.have.property('editServiceName')
     })
   })

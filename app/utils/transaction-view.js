@@ -9,7 +9,7 @@ const { penceToPoundsWithCurrency } = require('./currency-formatter')
 const Paginator = require('./paginator')
 const states = require('./states')
 const check = require('check-types')
-const url = require('url')
+const { URL } = require('url')
 const TransactionEvent = require('../models/TransactionEvent.class')
 const formatAccountPathsFor = require('../utils/format-account-paths-for')
 
@@ -139,8 +139,8 @@ module.exports = {
         event.submitted_by_friendly = lodash.get(users.find(user => user.externalId === event.submitted_by) || {}, 'email')
       }
     })
-    delete chargeData['links']
-    delete chargeData['return_url']
+    delete chargeData.links
+    delete chargeData.return_url
     return chargeData
   }
 }
@@ -176,12 +176,10 @@ function getCurrentPageNumber (connectorData) {
 
 function getCurrentPageSize (connectorData) {
   const selfLink = connectorData._links && connectorData._links.self
-  let queryString
-  let limit
-
   if (selfLink) {
-    queryString = url.parse(selfLink.href).query
-    limit = Number(qs.parse(queryString).display_size)
+    const url = new URL(selfLink.href)
+    const searchString = url.search ? url.search.substring(1) : ''
+    const limit = Number(qs.parse(searchString).display_size)
     if (check.number(limit) && limit > 0) {
       return limit
     }

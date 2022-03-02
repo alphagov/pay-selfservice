@@ -37,7 +37,7 @@ module.exports = function postAmount (req, res, next) {
   sessionData.paymentLinkAmount = amountInPence
   sessionData.paymentAmountType = type
 
-  if (req.body['change'] === 'true') {
+  if (req.body.change === 'true') {
     req.flash('generic', 'The details have been updated')
   }
 

@@ -58,7 +58,7 @@ describe('The account switcher link', () => {
       body.should.containSelector('a.manage-team-members').withExactText('Manage team members for Super Mega Service')
     })
 
-    it(`should render a service if a user is a member of a single services`, () => {
+    it('should render a service if a user is a member of a single services', () => {
       body.should.containSelector('.service-name').property('length').to.equal(1)
     })
   })
@@ -80,15 +80,15 @@ describe('The account switcher link', () => {
       body = render('services/index', templateData)
     })
 
-    it(`should render a blank h3 tag if service name is blank`, () => {
+    it('should render a blank h3 tag if service name is blank', () => {
       body.should.containSelector('h3.service-name').withText('')
     })
 
-    it(`should render the service name in a h3 tag if service name is defined`, () => {
+    it('should render the service name in a h3 tag if service name is defined', () => {
       body.should.containSelector('h3.service-name').withText('Super Mega Service')
     })
 
-    it(`should render multiple service if a user is a member of multiple services`, () => {
+    it('should render multiple service if a user is a member of multiple services', () => {
       body.should.containSelector('.service-name').property('length').to.equal(2)
     })
 

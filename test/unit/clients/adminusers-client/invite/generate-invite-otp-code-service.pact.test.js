@@ -17,7 +17,7 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('adminusers client - generate otp code for service invite', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

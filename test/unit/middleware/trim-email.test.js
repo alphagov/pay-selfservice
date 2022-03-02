@@ -1,7 +1,7 @@
-var path = require('path')
-var req = { body: { username: ' iggy@foo.com ' } }
-var trimEmail = require(path.join(__dirname, '/../../../app/middleware/trim-username.js'))
-var assert = require('assert')
+const path = require('path')
+const req = { body: { username: ' iggy@foo.com ' } }
+const trimEmail = require(path.join(__dirname, '/../../../app/middleware/trim-username.js'))
+const assert = require('assert')
 
 describe('Trim email', function () {
   it('should trim the email from the body', function (done) {

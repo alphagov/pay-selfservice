@@ -169,7 +169,7 @@ ConnectorClient.prototype = {
   createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, serviceId, correlationId) {
     const url = this.connectorUrl + ACCOUNTS_API_PATH
 
-    let payload = {
+    const payload = {
       payment_provider: paymentProvider
     }
     if (type) {

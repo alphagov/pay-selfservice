@@ -4,7 +4,7 @@ pipeline {
   agent any
 
   parameters {
-    string(name: 'CYPRESS_VERSION', defaultValue: '5.0.0', description: 'Cypress version number')
+    string(name: 'CYPRESS_VERSION', defaultValue: '5.6.0', description: 'Cypress version number')
   }
 
   options {

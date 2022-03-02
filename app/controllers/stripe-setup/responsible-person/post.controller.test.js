@@ -42,7 +42,7 @@ describe('Responsible person POST controller', () => {
     'dob-month': dobMonth,
     'dob-year': dobYear,
     'telephone-number': telephone,
-    'email': email,
+    email: email,
     'answers-checked': 'true'
   }
   const postBodyWithAddress2 = {
@@ -210,7 +210,7 @@ describe('Responsible person POST controller', () => {
     const controller = getControllerWithMocks()
 
     req.route = {
-      path: `/kyc/:credentialId/responsible-person`
+      path: '/kyc/:credentialId/responsible-person'
     }
     req.body = {
       ...postBody,
@@ -244,7 +244,7 @@ describe('Responsible person POST controller', () => {
     const controller = getControllerWithMocks(true)
 
     req.route = {
-      path: `/kyc/:credentialId/responsible-person`
+      path: '/kyc/:credentialId/responsible-person'
     }
     req.body = {
       ...postBody,
@@ -320,7 +320,7 @@ describe('Responsible person POST controller', () => {
     sinon.assert.called(updatePersonMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/responsible-person/index')
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['telephone-number'],
       'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
   })
@@ -352,7 +352,7 @@ describe('Responsible person POST controller', () => {
     sinon.assert.called(updatePersonMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/responsible-person/index')
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'],
       'Enter a valid date')
   })

@@ -21,7 +21,7 @@ const existingGatewayAccountId = 42
 const defaultState = `Gateway account ${existingGatewayAccountId} exists in the database`
 
 describe('connector client - patch email confirmation toggle', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

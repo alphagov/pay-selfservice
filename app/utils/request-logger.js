@@ -12,7 +12,7 @@ module.exports = {
   },
 
   logRequestEnd: (context, response) => {
-    let duration = new Date() - context.startTime
+    const duration = new Date() - context.startTime
     logger.info(`${context.method} to ${context.url} ended - elapsed time: ${duration} ms`, {
       service: context.service,
       method: context.method,

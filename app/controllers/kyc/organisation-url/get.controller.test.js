@@ -1,7 +1,7 @@
 'use strict'
 
 const sinon = require('sinon')
-const getController = require('./get.controller')
+const getController = require('./get.controller.js')
 
 describe('Org URL GET controller', () => {
   let req
@@ -16,6 +16,10 @@ describe('Org URL GET controller', () => {
         connectorGatewayAccountStripeProgress: {}
       },
       flash: sinon.spy(),
+      protocol: 'http',
+      headers: {
+        host: 'localhost'
+      },
       url: '/kyc/'
     }
     res = {
@@ -41,6 +45,6 @@ describe('Org URL GET controller', () => {
 
     await getController(req, res, next)
 
-    sinon.assert.calledWith(res.render, `kyc/organisation-url`)
+    sinon.assert.calledWith(res.render, 'kyc/organisation-url')
   })
 })

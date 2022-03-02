@@ -23,7 +23,7 @@ describe('The transaction view scenarios', () => {
       external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
       gateway_account_id: gatewayAccountId,
       payment_provider: 'sandbox',
-      credentials: { 'username': 'a-username' }
+      credentials: { username: 'a-username' }
     }
   )
   const req = {
@@ -45,7 +45,7 @@ describe('The transaction view scenarios', () => {
 
   describe('The transaction history endpoint', () => {
     it('should return transaction not found if a non existing transaction id requested', async () => {
-      const ledgerError = { 'message': 'HTTP 404 Not Found' }
+      const ledgerError = { message: 'HTTP 404 Not Found' }
       ledgerMock.get(ledgerTransactionPathFor(transactionId))
         .reply(404, ledgerError)
 
@@ -56,7 +56,7 @@ describe('The transaction view scenarios', () => {
     })
 
     it('should return a generic error if ledger responds with an error', async () => {
-      const ledgerError = { 'message': 'Internal server error' }
+      const ledgerError = { message: 'Internal server error' }
       ledgerMock.get(ledgerTransactionPathFor(transactionId))
         .reply(500, ledgerError)
 

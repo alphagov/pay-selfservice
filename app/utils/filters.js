@@ -7,10 +7,10 @@ const states = require('../utils/states')
 const _ = require('lodash')
 
 function validateFilters (filters) {
-  let pageSizeIsNull = !check.assigned(filters.pageSize)
-  let pageSizeInRange = check.inRange(Number(filters.pageSize), 1, Paginator.MAX_PAGE_SIZE)
-  let pageIsNull = !check.assigned(filters.page)
-  let pageIsPositive = check.positive(Number(filters.page))
+  const pageSizeIsNull = !check.assigned(filters.pageSize)
+  const pageSizeInRange = check.inRange(Number(filters.pageSize), 1, Paginator.MAX_PAGE_SIZE)
+  const pageIsNull = !check.assigned(filters.page)
+  const pageIsPositive = check.positive(Number(filters.page))
   return (pageSizeIsNull || pageSizeInRange) &&
     (pageIsNull || pageIsPositive)
 }
@@ -46,7 +46,7 @@ function getFilters (req) {
 }
 
 function describeFilters (filters) {
-  let description = ``
+  let description = ''
   if (filters.fromDate) description += ` from <strong>${filters.fromDate}</strong>`
   if (filters.toDate) description += ` to <strong>${filters.toDate}</strong>`
 

@@ -20,7 +20,7 @@ const GATEWAY_ACCOUNT_ID = '929'
 const API_TOKEN = randomUuid()
 const VALID_USER = getUser({ gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'transactions:read' }] })
 const VALID_PAYLOAD = {
-  'csrfToken': csrf().create('123'),
+  csrfToken: csrf().create('123'),
   'payment-amount': '20',
   'payment-description': 'Test service name',
   'confirmation-page': 'https://www.example.com'

@@ -21,11 +21,11 @@ const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
   const baseUrl = clientOptions.baseUrl || ADMINUSERS_URL
-  const userResource = `/v1/api/users`
-  const forgottenPasswordResource = `/v1/api/forgotten-passwords`
-  const resetPasswordResource = `/v1/api/reset-password`
-  const serviceResource = `/v1/api/services`
-  const inviteResource = `/v1/api/invites`
+  const userResource = '/v1/api/users'
+  const forgottenPasswordResource = '/v1/api/forgotten-passwords'
+  const resetPasswordResource = '/v1/api/reset-password'
+  const serviceResource = '/v1/api/services'
+  const inviteResource = '/v1/api/invites'
 
   /**
    * Get a User by external id
@@ -385,7 +385,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|Constructor}
    */
   const generateInviteOtpCode = (inviteCode, telephoneNumber, password, correlationId) => {
-    let postData = {
+    const postData = {
       baseUrl,
       url: `${inviteResource}/${inviteCode}/otp/generate`,
       json: true,
@@ -512,7 +512,7 @@ module.exports = function (clientOptions = {}) {
   }
 
   const deleteUser = (serviceExternalId, removerExternalId, userExternalId, correlationId) => {
-    let headers = {}
+    const headers = {}
     headers[HEADER_USER_CONTEXT] = removerExternalId
 
     return baseClient.delete(
@@ -545,7 +545,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|promise|Constructor}
    */
   const createService = (serviceName, serviceNameCy, correlationId) => {
-    let postBody = {
+    const postBody = {
       baseUrl,
       url: `${serviceResource}`,
       json: true,

@@ -59,7 +59,7 @@ describe('create service - service naming', function () {
   })
   it('should redirect to name your service page if user input invalid', function (done) {
     const request = { service_name: '' }
-    let session = mockSession.getUser()
+    const session = mockSession.getUser()
     app = mockSession.getAppWithLoggedInUser(getApp(), session)
     supertest(app)
       .post(paths.selfCreateService.serviceNaming)

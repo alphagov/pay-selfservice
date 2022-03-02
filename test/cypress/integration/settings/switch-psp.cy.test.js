@@ -145,7 +145,7 @@ describe('Switch PSP settings page', () => {
         ])
         cy.get('button').contains('Continue to live payment').click()
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/should_follow_to_payment_page`)
+          expect(location.pathname).to.eq('/should_follow_to_payment_page')
         })
       })
 
@@ -276,7 +276,7 @@ describe('Switch PSP settings page', () => {
             true,
             [
               { payment_provider: 'smartpay', state: 'ACTIVE' },
-              { payment_provider: 'stripe', state: 'CREATED', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' } }
+              { payment_provider: 'stripe', state: 'CREATED', credentials: { stripe_account_id: 'a-valid-stripe-account-id' } }
             ]
           ),
           stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
@@ -303,7 +303,7 @@ describe('Switch PSP settings page', () => {
             true,
             [
               { payment_provider: 'smartpay', state: 'ACTIVE' },
-              { payment_provider: 'stripe', state: 'VERIFIED_WITH_LIVE_PAYMENT', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' } }
+              { payment_provider: 'stripe', state: 'VERIFIED_WITH_LIVE_PAYMENT', credentials: { stripe_account_id: 'a-valid-stripe-account-id' } }
             ],
             merchantDetails
           ),

@@ -14,9 +14,9 @@ module.exports = () => {
 
     const jumpToService = selected => {
       if (selected) {
-        services.map(service => {
+        services.map(service => (
           service.style.display = service.dataset.name === selected ? 'block' : 'none'
-        })
+        ))
       }
     }
 
@@ -34,9 +34,9 @@ module.exports = () => {
 
     clearButton.addEventListener('click', () => {
       const services = Array.prototype.slice.call(document.getElementsByClassName('service_list_item'))
-      services.map(service => {
+      services.map(service => (
         service.style.display = 'block'
-      })
+      ))
     })
   }
 }

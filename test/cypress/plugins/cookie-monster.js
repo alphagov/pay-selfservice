@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 const session = require('client-sessions')
 const crypto = require('crypto')
 

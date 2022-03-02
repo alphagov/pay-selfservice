@@ -1,7 +1,7 @@
 const _ = require('lodash')
-const url = require('url')
 const getHeldPermissions = require('./get-held-permissions')
 const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder')
+const { parseUrlFromReq } = require('./url-helpers')
 const formatPSPname = require('./format-PSP-name')
 
 const hideServiceHeaderTemplates = [
@@ -80,9 +80,9 @@ const hideServiceNav = template => {
 }
 
 const addGatewayAccountProviderDisplayNames = data => {
-  let gatewayAccounts = _.get(data, 'gatewayAccounts', null)
+  const gatewayAccounts = _.get(data, 'gatewayAccounts', null)
   if (gatewayAccounts) {
-    let convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
+    const convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
       if (gatewayAccount.payment_provider) {
         gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider)
       }
@@ -103,7 +103,7 @@ const getAccount = account => {
 
 module.exports = function (req, data, template) {
   const convertedData = _.clone(data)
-  const { user, account, service, session, url: relativeUrl } = req
+  const { user, account, service, session, url } = req
   const permissions = getPermissions(user, service)
   const isAdminUser = service && user && user.isAdminUserForService(service.externalId)
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
@@ -123,7 +123,12 @@ module.exports = function (req, data, template) {
   convertedData.currentService = service
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
-  const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
+  let currentPath = ''
+  if (url) {
+    const parsedPath = parseUrlFromReq(req).pathname
+    // remove trailing slash
+    currentPath = parsedPath.endsWith('/') ? parsedPath.slice(0, -1) : parsedPath
+  }
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, account)
     convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account)

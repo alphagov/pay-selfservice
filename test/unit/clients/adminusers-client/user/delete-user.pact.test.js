@@ -11,7 +11,7 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('adminusers client - delete user', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -38,7 +38,7 @@ describe('adminusers client - delete user', function () {
           .withUponReceiving('a valid delete user from service request')
           .withMethod('DELETE')
           .withRequestHeaders({
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'GovUkPay-User-Context': removerId
           })
           .withResponseHeaders({})
@@ -65,7 +65,7 @@ describe('adminusers client - delete user', function () {
           .withUponReceiving('a valid delete user from service request but remover is equal to user to be removed')
           .withMethod('DELETE')
           .withRequestHeaders({
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'GovUkPay-User-Context': removerId
           })
           .withResponseHeaders({})
@@ -95,7 +95,7 @@ describe('adminusers client - delete user', function () {
           .withUponReceiving('an invalid delete user from service request as user does not exist')
           .withMethod('DELETE')
           .withRequestHeaders({
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'GovUkPay-User-Context': removerId
           })
           .withResponseHeaders({})
@@ -128,7 +128,7 @@ describe('adminusers client - delete user', function () {
           .withUponReceiving('a non existent user context')
           .withMethod('DELETE')
           .withRequestHeaders({
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'GovUkPay-User-Context': nonExistentRemoverId
           })
           .withResponseHeaders({})

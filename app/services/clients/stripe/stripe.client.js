@@ -15,7 +15,7 @@ const STRIPE_PORT = process.env.STRIPE_PORT
 const STRIPE_PROTOCOL = process.env.STRIPE_PROTOCOL
 
 // Setup
-let stripeConfig = {
+const stripeConfig = {
   apiVersion: '2020-08-27'
 }
 
