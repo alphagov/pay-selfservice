@@ -68,19 +68,6 @@ pipeline {
         }
       }
     }
-    stage('Tests') {
-      failFast true
-      stages {
-        stage('End-to-End Tests') {
-            when {
-              branch 'master'
-            }
-            steps {
-                runAppE2E("selfservice", "card,products")
-            }
-        }
-      }
-    }
     stage('Docker Tag') {
       steps {
         script {
