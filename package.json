@@ -41,7 +41,8 @@
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "cypress:test-no-watch": "cypress open --config watchForFileChanges=false",
-    "publish-pacts": "./bin/publish-pacts.js"
+    "publish-pacts": "./bin/publish-pacts.js",
+    "snyk-protect": "exit 0; #no-op for ci"
   },
   "husky": {
     "hooks": {

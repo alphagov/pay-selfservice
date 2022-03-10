@@ -1,19 +1,37 @@
-FROM node:12.22.10-alpine3.15@sha256:f150ebf9402f0dd6a9c4cb208ed64884cfa7c8a6ccae3f749a7b12156c25ad88
+FROM node:16.14.0-alpine3.15@sha256:2c6c59cf4d34d4f937ddfcf33bab9d8bbad8658d1b9de7b97622566a52167f2b AS builder
+
+### Needed to run pact-mock-service
+COPY sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
+RUN ["apk", "--no-cache", "add", "ca-certificates", "python2", "build-base", "bash", "ruby"]
+RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk && apk add --no-cache glibc-2.28-r0.apk && rm -f glibc-2.28-r0.apk
+###
+
+WORKDIR /app
+COPY package.json .
+COPY package-lock.json .
+RUN npm ci --quiet
+
+COPY . .
+RUN npm run compile
+
+FROM node:16.14.0-alpine3.15@sha256:2c6c59cf4d34d4f937ddfcf33bab9d8bbad8658d1b9de7b97622566a52167f2b AS final
 
 RUN ["apk", "--no-cache", "upgrade"]
 
 RUN ["apk", "add", "--no-cache", "tini"]
 
-ADD package.json /tmp/package.json
-ADD package-lock.json /tmp/package-lock.json
-RUN cd /tmp && npm ci --production
+WORKDIR /app
+COPY . .
+RUN rm -rf ./test
+
+# Copy in compile assets and deps from build container
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/govuk_modules ./govuk_modules
+COPY --from=builder /app/public ./public
+RUN npm prune --production
 
 ENV PORT 9000
 EXPOSE 9000
-
-WORKDIR /app
-ADD . /app
-RUN ["ln", "-s", "/tmp/node_modules", "/app/node_modules"]
 
 ENTRYPOINT ["tini", "--"]
 
