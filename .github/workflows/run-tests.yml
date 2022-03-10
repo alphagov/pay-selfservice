@@ -17,10 +17,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
+      - name: Parse Node version
+        run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+        id: parse-node-version
       - name: Setup
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a
         with:
-          node-version: 12.22.10
+          node-version: "${{ steps.parse-node-version.outputs.NVMRC }}"
       - name: Cache build directories
         uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
@@ -61,7 +64,7 @@ jobs:
       - name: Setup
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a
         with:
-          node-version: 12.22.10
+          node-version: "${{ steps.parse-node-version.outputs.NVMRC }}"
       - name: Cache build directories
         uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
@@ -84,7 +87,7 @@ jobs:
       - name: Setup
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a
         with:
-          node-version: 12.22.10
+          node-version: "${{ steps.parse-node-version.outputs.NVMRC }}"
       - name: Cache build directories
         uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
         with:
