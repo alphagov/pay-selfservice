@@ -25,7 +25,7 @@ pipeline {
     stage('Docker Build') {
       steps {
         script {
-          buildAppWithMetrics {
+          buildMultistageAppWithMetrics {
             app = "selfservice"
           }
         }
