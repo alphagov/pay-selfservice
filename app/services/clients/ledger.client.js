@@ -109,11 +109,32 @@ const payouts = function payouts (gatewayAccountIds = [], page = 1, displaySize,
   return baseClient.get(configuration)
 }
 
+// agreements use new tuple of service identifier and live flag in favour of
+// internal connector gateway accounts
+const agreements = function agreements (serviceId, live, page = 1, options = {}) {
+  const config = {
+    url: '/v1/agreement',
+    qs: {
+      service_id: serviceId,
+      live,
+      page
+    },
+    description: 'List agreements for a given service and environment',
+    baseUrl: process.env.LEDGER_URL,
+    json: true,
+    service: 'ledger',
+    ...options
+  }
+
+  return baseClient.get(config)
+}
+
 module.exports = {
   transaction,
   transactions,
   payouts,
   transactionWithAccountOverride,
   events,
-  transactionSummary
+  transactionSummary,
+  agreements
 }

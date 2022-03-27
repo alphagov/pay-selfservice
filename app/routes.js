@@ -83,6 +83,7 @@ const stripeSetupDashboardRedirectController = require('./controllers/stripe-set
 const requestPspTestAccountController = require('./controllers/request-psp-test-account')
 const defaultBillingAddressCountryController = require('./controllers/settings/default-billing-address-country.controller')
 const webhooksController = require('./controllers/webhooks/webhooks.controller')
+const agreementsController = require('./controllers/agreements/agreements-list.controller')
 const kycOrganisationUrlController = require('./controllers/kyc/organisation-url')
 
 // Assignments
@@ -120,7 +121,8 @@ const {
   kyc
 } = paths.account
 const {
-  webhooks
+  webhooks,
+  agreements
 } = paths.futureAccountStrategy
 const {
   editServiceName,
@@ -451,6 +453,8 @@ module.exports.bind = function (app) {
   account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
   account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
+
+  futureAccountStrategy.get(agreements.index, permission('transactions:read'), agreementsController.listAgreements)
 
   futureAccountStrategy.get(webhooks.index, permission('webhooks:read'), webhooksController.listWebhooksPage)
   futureAccountStrategy.get(webhooks.create, permission('webhooks:update'), webhooksController.createWebhookPage)
