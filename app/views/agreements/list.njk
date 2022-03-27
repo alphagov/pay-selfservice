@@ -9,5 +9,168 @@ Agreements - GOV.UK Pay
   <h1 class="govuk-heading-l">
     Agreements
   </h1>
+
+  <div class="transactions-filter govuk-grid-row">
+    {# strange markup - directly lifted from transactions to save time #}
+    <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate>
+      {% set statuses = [{
+        value: '',
+        text: 'All',
+        selected: false
+      },{
+        value: 'created',
+        text: 'Needs payment instrument',
+        selected: false
+      }, {
+        value: 'active',
+        text: 'Active',
+        selected: false
+      },{
+        value: 'expired',
+        text: 'Expired',
+        selected: false
+      }] %}
+      {# remarkable hack #}
+      <style>
+        .multi-select-title {
+          width: 60em !important;
+        }
+      </style>
+      <div class="govuk-grid-column-one-third inputs-less-margin">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-visually-hidden">
+          Status
+        </legend>
+        <fieldset class="govuk-fieldset">
+        {{
+          govukSelect({
+            id: "status",
+            name: "status",
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: "Status",
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: "Select an option",
+              classes: 'govuk-!-font-size-14'
+            },
+            attributes: {
+              'data-enhance-multiple': true
+            },
+            items: statuses
+          })
+        }}
+        </fieldset>
+      </fieldset>
+    </div>
+      <div class="govuk-grid-column-one-third">
+        {{
+          govukInput({
+            id: 'reference',
+            name: 'reference',
+            value: filters.reference,
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: 'Reference number',
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: 'Enter full or partial reference',
+              classes: 'govuk-!-font-size-14'
+            }
+          })
+        }}
+      </div>
+      {# remarkable hack 2.0  #}
+      <style>
+        @media (min-width: 40.0625em) {
+          .hack {min-height: 120px }
+        }
+      </style>
+      <div class="govuk-grid-column-one-third hack">
+      </div>
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {{
+          govukButton({
+            text: 'Filter',
+            classes: 'govuk-!-width-full',
+            attributes: {
+              id: "filter"
+            }
+          })
+        }}
+      </div>
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {% if hasFilters %}
+        <a href="{{clearRedirect}}" class="govuk-link govuk-link--no-visited-state clear-filter">Clear filter</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <p class="govuk-body govuk-!-margin-top-3">{{ agreements.total }} agreements</p>
+
+  <p class="govuk-body">
+    <a class="govuk-link govuk-link__no-visited-state" href="#">Download agreement details as CSV file</a>
+  </p>
+
+  {# <table id="agreements-list" class="govuk-table transactions-list-table"> #}
+  <table id="agreements-list" class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col" id="id-header">ID</th>
+        <th class="govuk-table__header" scope="col" id="reference-header">Reference</th>
+        <!-- should have text version of status for accessibility -->
+        <th class="govuk-table__header" scope="col" id="payment-instrumnet-header">Payment instrument</th>
+        <!-- should have text only versions of all of the data included in the payment instrument column for accessibility -->
+        <th class="govuk-table__header" scope="col" id="brand-header">Date created</th>
+      </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+    {% for agreement in agreements.results %}
+      <td class="govuk-table__cell pay-text-grey">
+        {{ agreement.id }}
+      </td>
+      <td class="govuk-table__cell  pay-text-grey">
+        <a class="govuk-link govuk-link__no-visited-state govuk-!-margin-right-1" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, agreement.id) }}">{{ agreement.reference }}</a>
+
+        <!-- padding around the tag should be adjusted for smaller font size -->
+        <!-- map statuses -->
+        <!-- CREATED: NEEDS PAYMENT INSTRUMENT -->
+        <!-- ACTIVE: ACTIVE || READY TO USE -->
+        <!-- EXPIRED: EXPIRED -->
+        <strong class="govuk-tag govuk-tag--green">{{ agreement.status }}</strong>
+      </td>
+      {# Copy card images from Toolbox for now (as they'll be consistent sizes, they can be taken from the frontend sprite eventually) #}
+      {% set cardMap = {
+        'visa': '/public/images/card_visa.png',
+        'mastercard': '/public/images/card_mastercard.png',
+        'amex': '/public/images/card_amex.png',
+        'unknown': '/public/images/card_unknown.png'
+      } %}
+      <td class="govuk-table__cell pay-text-grey">
+        {% if agreement.payment_instrument %}
+          {% set paymentInstrument = agreement.payment_instrument %}
+          {% if (paymentInstrument.method | lower) == 'card' %}
+            {% set cardDetails = paymentInstrument.card_details %}
+            {% set imageUrl = cardMap[cardDetails.card_brand | lower] or cardMap.unknown %}
+        <img src="{{ imageUrl }}" height="22" class="govuk-!-padding-bottom-1 govuk-!-margin-right-1" style="vertical-align: middle"></img>
+        <span class="govuk-!-margin-right-3"> ••••{{ cardDetails.last_digits_card_number }}</span>
+        <span> {{ cardDetails.expiry_date }}</span>
+          {% endif %}
+        {% else %}
+        (none set)
+        {% endif %}
+      </td>
+      <td class="govuk-table__cell pay-text-grey">
+        {{ agreement.created_date | datetime('datelong') }}
+      </td>
+      </tr>
+
+    {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}

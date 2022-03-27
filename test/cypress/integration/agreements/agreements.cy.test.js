@@ -22,7 +22,11 @@ describe('Agreement list page', () => {
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      agreementStubs.getLedgerAgreementsSuccess({ service_id: serviceExternalId, live: false, agreements: [] })
+      agreementStubs.getLedgerAgreementsSuccess({ service_id: serviceExternalId, live: false, agreements: [
+        { id: 'qgj1709v8t5mtlhd732otv19b1', payment_instrument: { card_details: { card_brand: 'visa' }}},
+        { id: '3sfh76mobld3tc87lc608q667b', payment_instrument: { card_details: { card_brand: 'mastercard' }}},
+        { id: 'm0spc7kmbo2ihlg602r9klgiqj', payment_instrument: { card_details: { card_brand: 'amex' }}}
+      ] })
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/agreements')

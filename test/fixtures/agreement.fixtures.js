@@ -1,6 +1,6 @@
 'use strict'
 
-function buildCardDetails(opts) {
+function buildCardDetails(opts = {}) {
   const billingAddressOpts = opts.billing_address || {}
 
   return {
@@ -21,16 +21,16 @@ function buildCardDetails(opts) {
 // @TODO(sfount) propose recording enough from psps to put the additional data
 // that could be included here
 // __user last provided consent when this payment instrument was created and set to active
-function buildPaymentInstrument(opts) {
+function buildPaymentInstrument(opts = {}) {
   return {
     method: opts.method || 'CARD',
-    created_date: opts.created_date || '2022-03-01T10:20:00:00Z',
-    gateway_expiration_date: opts.gateway_expiration_date || '2022-03-01T10:20:00:00Z',
+    created_date: opts.created_date || '2022-03-01T01:00:00.000Z',
+    gateway_expiration_date: opts.gateway_expiration_date || '2022-03-01T01:00:00.000Z',
     card_details: buildCardDetails(opts.card_details)
   }
 }
 
-function buildAgreement (opts) {
+function buildAgreement (opts = {}) {
   return {
     id: opts.id || 'agreement-external-identifier',
     reference: opts.reference || 'valid-reference',
@@ -41,7 +41,7 @@ function buildAgreement (opts) {
     // CREATED, ACTIVE, EXPIRED
     status: opts.status || 'ACTIVE',
     payment_instrument: buildPaymentInstrument(opts.payment_instrument),
-    created_date: opts.created_date || '2022-03-01T10:20:00:00Z'
+    created_date: opts.created_date || '2022-03-01T01:00:00.000Z'
   }
 }
 
