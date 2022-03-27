@@ -1,0 +1,127 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+  Agreement details {{ agreement.id }} - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+
+<div class="govuk-grid-column-two-thirds">
+  {{ govukBackLink({
+    text: "Back to agreements",
+    classes: "govuk-!-margin-top-0",
+    href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id)
+  }) }}
+
+  <h1 class="govuk-heading-l">Agreement detail</h1>
+
+  {% set statusStyleMap = {
+    "ACTIVE": "govuk-tag--green",
+    "EXPIRED": "govuk-tag--yellow",
+    "CREATED": "govuk-tag--grey"
+  } %}
+  {% set statusTextMap = {
+    "ACTIVE": "active",
+    "EXPIRED": "expired",
+    "CREATED": "needs user details"
+  } %}
+
+  {% set statusTag %}
+    <strong class="govuk-tag {{ statusStyleMap[agreement.status] }}">{{ statusTextMap[agreement.status] }}</strong>
+  {% endset %}
+
+  {{ govukSummaryList({
+    rows: [{
+      key: { text: "Reference" },
+      value: { text: agreement.reference }
+    },{
+      key: { text: "Status" },
+      value: { html: statusTag }
+    },{
+      key: { text: "Description" },
+      value: { html: agreement.description }
+    },{
+      key: { text: "Date created" },
+      value: { html: agreement.created_date | datetime('datelong') }
+    }]
+  }) }}
+
+  <h2 class="govuk-heading-m govuk-!-margin-top-9">Payment instrument</h2>
+  {% set paymentInstrument = agreement.payment_instrument %}
+
+  {% if paymentInstrument %}
+  {% set cardDetails = paymentInstrument.card_details %}
+
+  {% set cardMap = {
+    'visa': '/public/images/card_visa.png',
+    'mastercard': '/public/images/card_mastercard.png',
+    'amex': '/public/images/card_amex.png',
+    'unknown': '/public/images/card_unknown.png'
+  } %}
+  {% set imageUrl = cardMap[cardDetails.card_brand | lower] or cardMap.unknown %}
+  {% set image %}
+  <img src="{{ imageUrl }}" height="22" class="" style="vertical-align: middle"></img>
+  {% endset %}
+  {{ govukSummaryList({
+    rows: [{
+      key: { text: "Type" },
+      value: { text: paymentInstrument.method | capitalize }
+    },{
+      key: { text: "Brand" },
+      value: { html: image }
+    },{
+      key: { text: "Name on card" },
+      value: { text: cardDetails.cardholder_name }
+    },{
+      key: { text: "Card number" },
+      value: { text: "••••" + cardDetails.last_digits_card_number }
+    },{
+      key: { text: "Card expiry date" },
+      value: { text: cardDetails.expiry_date }
+    }]
+  }) }}
+
+  {{ govukDetails({
+    summaryText: "Previous payment instruments",
+    text: "Table of previous payment instruments with the dates they were configured"
+  }) }}
+
+  {% else %}
+  <p class="govuk-body">No payment instrument set for this agreement.</p>
+  {% endif %}
+
+  {# TODO(sfount): put this back in when transactions can be filtered by agreement id #}
+  {# <h2 class="govuk-heading-m govuk-!-margin-top-9">Transactions</h2>
+  {% if transctions and transactions.length %}
+  <table id="agreements-list" class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col" id="id-header">Reference</th>
+        <th class="govuk-table__header" scope="col" id="reference-header">Amount</th>
+        <!-- should have text version of status for accessibility -->
+        <th class="govuk-table__header" scope="col" id="payment-instrumnet-header">Card number</th>
+        <th class="govuk-table__header" scope="col" id="brand-header">Date created</th>
+      </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+    {% for transaction in transactions %}
+      <td class="govuk-table__cell pay-text-grey">{{ transaction.reference }}</td>
+      <td class="govuk-table__cell pay-text-grey">{{ transaction.total_amount | penceToPoundsWithCurrency }}</td>
+      <td class="govuk-table__cell pay-text-grey">•••• {{ transaction.card_details and transaction.card_details.last_digits_card_number }}</td>
+      <td class="govuk-table__cell pay-text-grey">{{ transaction.date_created | datetime('date') }} - {{ transaction.date_created | datetime('time') }}</td>
+    {% endfor %}
+    </tbody>
+  </table>
+  <a class="govuk-link govuk-link__no-visited-state">Show all transactions for this agreement</a>
+  {% else %}
+    <p class="govuk-body">No transactions taken for this agreement.</p>
+  {% endif %} #}
+  {% if agreement.status === 'ACTIVE' %}
+  <p class="govuk-body">
+    <a id="toggle-status" class="govuk-link govuk-link--no-visited-state pay-link-text-red" href="#">Cancel agreement</a>
+  </p>
+  {% endif %}
+</div>
+
+{% endblock %}

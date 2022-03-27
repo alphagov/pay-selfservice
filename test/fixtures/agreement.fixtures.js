@@ -40,8 +40,8 @@ function buildAgreement (opts = {}) {
     // currently Connector setting external status
     // CREATED, ACTIVE, EXPIRED
     status: opts.status || 'ACTIVE',
-    payment_instrument: buildPaymentInstrument(opts.payment_instrument),
-    created_date: opts.created_date || '2022-03-01T01:00:00.000Z'
+    created_date: opts.created_date || '2022-03-01T01:00:00.000Z',
+    ...opts.payment_instrument !== false && { payment_instrument: buildPaymentInstrument(opts.payment_instrument )}
   }
 }
 

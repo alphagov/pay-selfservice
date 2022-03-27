@@ -19,7 +19,7 @@ Agreements - GOV.UK Pay
         selected: false
       },{
         value: 'created',
-        text: 'Needs payment instrument',
+        text: 'Needs user details',
         selected: false
       }, {
         value: 'active',
@@ -134,14 +134,25 @@ Agreements - GOV.UK Pay
         {{ agreement.id }}
       </td>
       <td class="govuk-table__cell  pay-text-grey">
-        <a class="govuk-link govuk-link__no-visited-state govuk-!-margin-right-1" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, agreement.id) }}">{{ agreement.reference }}</a>
+        <a class="govuk-link govuk-link__no-visited-state govuk-!-margin-right-1" data-action="update" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, agreement.id) }}">{{ agreement.reference }}</a>
 
         <!-- padding around the tag should be adjusted for smaller font size -->
         <!-- map statuses -->
         <!-- CREATED: NEEDS PAYMENT INSTRUMENT -->
         <!-- ACTIVE: ACTIVE || READY TO USE -->
         <!-- EXPIRED: EXPIRED -->
-        <strong class="govuk-tag govuk-tag--green">{{ agreement.status }}</strong>
+        {% set statusStyleMap = {
+          "ACTIVE": "govuk-tag--green",
+          "EXPIRED": "govuk-tag--yellow",
+          "CREATED": "govuk-tag--grey"
+        } %}
+        {% set statusTextMap = {
+          "ACTIVE": "active",
+          "EXPIRED": "expired",
+          "CREATED": "needs user details"
+        } %}
+        <strong class="govuk-tag {{ statusStyleMap[agreement.status] }}">{{ statusTextMap[agreement.status] }}</strong>
+
       </td>
       {# Copy card images from Toolbox for now (as they'll be consistent sizes, they can be taken from the frontend sprite eventually) #}
       {% set cardMap = {

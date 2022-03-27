@@ -129,6 +129,21 @@ const agreements = function agreements (serviceId, live, page = 1, options = {})
   return baseClient.get(config)
 }
 
+const agreement = function agreement(id, serviceId, options = {}) {
+  const config = {
+    url: `/v1/agreement/${id}`,
+    qs: {
+      service_id: serviceId
+    },
+    description: 'Get agreement by ID',
+    baseUrl: process.env.LEDGER_URL,
+    json: true,
+    service: 'ledger',
+    ...options
+  }
+  return baseClient.get(config)
+}
+
 module.exports = {
   transaction,
   transactions,
@@ -136,5 +151,6 @@ module.exports = {
   transactionWithAccountOverride,
   events,
   transactionSummary,
-  agreements
+  agreements,
+  agreement
 }

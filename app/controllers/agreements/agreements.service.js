@@ -18,6 +18,11 @@ async function agreements(serviceId, live, page = 1) {
   return formatAgreementPages(agreementSearchResponse)
 }
 
+function agreement(id, serviceId) {
+  return Ledger.agreement(id, serviceId)
+}
+
 module.exports = {
+  agreement,
   agreements
 }

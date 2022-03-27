@@ -15,6 +15,18 @@ function getLedgerAgreementsSuccess (opts) {
   })
 }
 
+function getLedgerAgreementSuccess(opts) {
+  const agreement = opts.agreement || {}
+  const path = `/v1/agreement/${agreement.id}`
+  return stubBuilder('GET', path, 200, {
+    query: {
+      service_id: opts.service_id
+    },
+    response: agreementFixtures.validAgreementResponse(agreement)
+  })
+}
+
 module.exports = {
-  getLedgerAgreementsSuccess
+  getLedgerAgreementsSuccess,
+  getLedgerAgreementSuccess
 }

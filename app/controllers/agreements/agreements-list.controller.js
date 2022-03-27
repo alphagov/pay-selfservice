@@ -13,10 +13,21 @@ async function listAgreements(req, res, next) {
     })
 
   } catch (error) {
-    return next(error)
+    next(error)
+  }
+}
+
+async function agreementDetail(req, res, next) {
+  const { agreementId } = req.params
+  try {
+    const agreement = await agreementsService.agreement(agreementId, req.service.externalId)
+    response(req, res, 'agreements/detail', { agreement })
+  } catch (error) {
+    next(error)
   }
 }
 
 module.exports = {
-  listAgreements
+  listAgreements,
+  agreementDetail
 }
