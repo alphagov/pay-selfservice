@@ -131,10 +131,10 @@ Agreements - GOV.UK Pay
     <tbody class="govuk-table__body">
     {% for agreement in agreements.results %}
       <td class="govuk-table__cell pay-text-grey">
-        {{ agreement.id }}
+        {{ agreement.external_id }}
       </td>
       <td class="govuk-table__cell  pay-text-grey">
-        <a class="govuk-link govuk-link__no-visited-state govuk-!-margin-right-1" data-action="update" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, agreement.id) }}">{{ agreement.reference }}</a>
+        <a class="govuk-link govuk-link__no-visited-state govuk-!-margin-right-1" data-action="update" href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, agreement.external_id) }}">{{ agreement.reference }}</a>
 
         <!-- padding around the tag should be adjusted for smaller font size -->
         <!-- map statuses -->
@@ -157,20 +157,20 @@ Agreements - GOV.UK Pay
       {# Copy card images from Toolbox for now (as they'll be consistent sizes, they can be taken from the frontend sprite eventually) #}
       {% set cardMap = {
         'visa': '/public/images/card_visa.png',
-        'mastercard': '/public/images/card_mastercard.png',
-        'amex': '/public/images/card_amex.png',
+        'master-card': '/public/images/card_mastercard.png',
+        'american-express': '/public/images/card_amex.png',
         'unknown': '/public/images/card_unknown.png'
       } %}
       <td class="govuk-table__cell pay-text-grey">
         {% if agreement.payment_instrument %}
           {% set paymentInstrument = agreement.payment_instrument %}
-          {% if (paymentInstrument.method | lower) == 'card' %}
+          {# {% if (paymentInstrument.method | lower) == 'card' %} #}
             {% set cardDetails = paymentInstrument.card_details %}
             {% set imageUrl = cardMap[cardDetails.card_brand | lower] or cardMap.unknown %}
         <img src="{{ imageUrl }}" height="22" class="govuk-!-padding-bottom-1 govuk-!-margin-right-1" style="vertical-align: middle"></img>
         <span class="govuk-!-margin-right-3"> ••••{{ cardDetails.last_digits_card_number }}</span>
         <span> {{ cardDetails.expiry_date }}</span>
-          {% endif %}
+          {# {% endif %} #}
         {% else %}
         (none set)
         {% endif %}

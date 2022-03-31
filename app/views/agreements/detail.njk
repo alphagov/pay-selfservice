@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
-  Agreement details {{ agreement.id }} - {{ currentService.name }} - GOV.UK Pay
+  Agreement details {{ agreement.external_id }} - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -32,6 +32,9 @@
 
   {{ govukSummaryList({
     rows: [{
+      key: { text: "ID" },
+      value: { text: agreement.external_id }
+    },{
       key: { text: "Reference" },
       value: { text: agreement.reference }
     },{
@@ -54,8 +57,8 @@
 
   {% set cardMap = {
     'visa': '/public/images/card_visa.png',
-    'mastercard': '/public/images/card_mastercard.png',
-    'amex': '/public/images/card_amex.png',
+    'master-card': '/public/images/card_mastercard.png',
+    'american-express': '/public/images/card_amex.png',
     'unknown': '/public/images/card_unknown.png'
   } %}
   {% set imageUrl = cardMap[cardDetails.card_brand | lower] or cardMap.unknown %}

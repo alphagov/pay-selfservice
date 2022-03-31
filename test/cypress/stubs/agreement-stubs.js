@@ -17,7 +17,7 @@ function getLedgerAgreementsSuccess (opts) {
 
 function getLedgerAgreementSuccess(opts) {
   const agreement = opts.agreement || {}
-  const path = `/v1/agreement/${agreement.id}`
+  const path = `/v1/agreement/${agreement.external_id}`
   return stubBuilder('GET', path, 200, {
     query: {
       service_id: opts.service_id

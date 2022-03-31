@@ -32,7 +32,7 @@ function buildPaymentInstrument(opts = {}) {
 
 function buildAgreement (opts = {}) {
   return {
-    id: opts.id || 'agreement-external-identifier',
+    external_id: opts.external_id || 'agreement-external-identifier',
     reference: opts.reference || 'valid-reference',
     description: opts.description || 'Reason shown to paying user for taking agreement',
 
