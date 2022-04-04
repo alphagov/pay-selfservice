@@ -1,9 +1,0 @@
-memory: 500M
-disk_quota: 500M
-selfservice_session_encryption_key: asdjhbwefbo23r23rbfik2roiwhefwbqw
-selfservice_analytics_tracking_id: testing-123
-selfservice_analytics_tracking_id_xgov: testing-123
-selfservice_gocardless_test_oauth_base_url: http://example.com
-selfservice_gocardless_live_oauth_base_url: http://example.com
-selfservice_gocardless_test_client_id: testing-123
-selfservice_gocardless_live_client_id: testing-123
