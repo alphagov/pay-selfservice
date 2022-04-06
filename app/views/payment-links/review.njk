@@ -25,11 +25,11 @@
 
   {% set referenceHTML %}
     <span id="create-payment-link-reference">
-      {% if pageData.paymentReferenceType === 'custom' %}
-        {{ pageData.paymentReferenceLabel }}
-        {% if pageData.paymentReferenceHint %}
+      {% if pageData.resolvedReferenceEnabled %}
+        {{ pageData.resolvedReferenceLabel }}
+        {% if pageData.resolvedReferenceHint %}
           <span class="govuk-!-display-block pay-text-grey">
-            {{ pageData.paymentReferenceHint | striptags(true) | escape | nl2br }}
+            {{ pageData.resolvedReferenceHint | striptags(true) | escape | nl2br }}
           </span>
         {% endif %}
       {% else %}

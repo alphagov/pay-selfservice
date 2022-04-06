@@ -21,9 +21,19 @@ module.exports = async function createPaymentLink (req, res) {
     paymentReferenceType,
     paymentReferenceLabel,
     paymentReferenceHint,
+    referenceEnabled,
+    referenceLabel,
+    referenceHint,
     isWelsh,
     metadata
   } = lodash.get(req, 'session.pageData.createPaymentLink', {})
+
+  // TODO: remove - session variables have been renamed to `referenceEnabled`, `referenceLabel` and
+  // `referenceHint`. Temporarily looking at old and new session variables to not break journeys in
+  // progress.
+  const resolvedReferenceEnabled = paymentReferenceType ? paymentReferenceType === 'custom' : referenceEnabled
+  const resolvedReferenceLabel = paymentReferenceLabel || referenceLabel
+  const resolvedReferenceHint = paymentReferenceHint || referenceHint
 
   if (!paymentLinkTitle) {
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.start, req.account && req.account.external_id))
@@ -51,16 +61,16 @@ module.exports = async function createPaymentLink (req, res) {
       productNamePath,
       metadata,
       language: isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH,
-      referenceEnabled: paymentReferenceType === 'custom',
+      referenceEnabled: resolvedReferenceEnabled,
       ...paymentLinkDescription && { description: paymentLinkDescription },
       ...paymentLinkAmount && { price: paymentLinkAmount }
     }
 
-    if (paymentReferenceType === 'custom') {
-      productPayload.referenceLabel = paymentReferenceLabel
+    if (resolvedReferenceEnabled) {
+      productPayload.referenceLabel = resolvedReferenceLabel
 
-      if (paymentReferenceHint) {
-        productPayload.referenceHint = paymentReferenceHint
+      if (resolvedReferenceHint) {
+        productPayload.referenceHint = resolvedReferenceHint
       }
     }
 

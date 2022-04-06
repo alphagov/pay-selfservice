@@ -2,11 +2,15 @@
 {% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
+  {% if isEditing %}
+  Edit your payment link reference - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  {% else %}
   Do your users already have a payment reference? - Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  {% endif %}
 {% endblock %}
 
 {% block side_navigation %}
-  {% set createLink = true %}
+  {% set createLink = false if isEditing else true %}
   {% include "./_nav.njk" %}
 {% endblock %}
 
@@ -21,7 +25,7 @@
     }
   }) }}
 
-  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.reference, currentGatewayAccount.external_id) }}" class="form" method="post">
+  <form class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>
@@ -49,7 +53,7 @@
         govukInput({
           id: "reference-label",
           name: "reference-label",
-          value: paymentReferenceLabel,
+          value: referenceLabel,
           errorMessage: { text: errors.label } if errors.label else false,
           classes: "govuk-input--width-20",
           label: {
@@ -69,7 +73,7 @@
         govukCharacterCount({
           id: "reference-hint-text",
           name: "reference-hint-text",
-          value: paymentReferenceHint,
+          value: referenceHint,
           errorMessage: { text: errors.hint } if errors.hint else false,
           classes: "govuk-input--width-20",
           maxlength: 255,
@@ -109,7 +113,7 @@
           {
               value: "custom",
               text: "Yes",
-              checked: paymentReferenceType === 'custom',
+              checked: referenceEnabled,
               id: "reference-type-custom",
               conditional: {
                 html: customReferenceHTML
@@ -118,7 +122,7 @@
           {
               value: "standard",
               text: "No",
-              checked: paymentReferenceType === 'standard',
+              checked: not referenceEnabled,
               id: "reference-type-standard",
               conditional: {
                 html: standardReferenceHTML
@@ -134,7 +138,8 @@
         classes: "button"
       })
     }}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}" data-cy="cancel-link">Cancel</a></p>
+    {% set cancelLinkHref = formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id) if isEditing else formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) %}
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ cancelLinkHref }}" data-cy="cancel-link">Cancel</a></p>
   </form>
 
   {% if not isWelsh %}

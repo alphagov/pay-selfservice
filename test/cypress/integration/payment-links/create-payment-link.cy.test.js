@@ -121,15 +121,16 @@ describe('The create payment link flow', () => {
           expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/reference`)
         })
         assertCommonPageElements()
+        cy.title().should('eq', `Do your users already have a payment reference? - Create a payment link - ${serviceName.en} Worldpay test - GOV.UK Pay`)
       })
     })
 
     describe('Reference page', () => {
-      it('should have instructions for an English patment link when "yes" is selected', () => {
+      it('should have instructions for an English payment link when "yes" is selected', () => {
         cy.get('h1').should('contain', 'Do your users already have a payment reference?')
         cy.get('#reference-type-group-hint').should('contain', `You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.`)
 
-        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/reference"]`).should('exist')
+        cy.get(`form[method=post]`).should('exist')
           .within(() => {
             cy.get('input[type=radio]#reference-type-custom').should('exist')
             cy.get('input[type=radio]#reference-type-standard').should('exist')
@@ -155,7 +156,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should continue to the amount page', () => {
-        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/reference"]`).should('exist')
+        cy.get(`form[method=post]`).should('exist')
           .within(() => {
             cy.get('input#reference-label').type(referenceName)
             cy.get('textarea#reference-hint-text').type(referenceHint)
@@ -166,6 +167,7 @@ describe('The create payment link flow', () => {
           expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/amount`)
         })
         assertCommonPageElements()
+        cy.title().should('eq', `Is the payment for a fixed amount? - Create a payment link - ${serviceName.en} Worldpay test - GOV.UK Pay`)
       })
     })
 
@@ -372,7 +374,7 @@ describe('The create payment link flow', () => {
         cy.get('h1').should('contain', 'Do your users already have a payment reference?')
         cy.get('#reference-type-group-hint').should('contain', `You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.`)
 
-        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/reference"]`).should('exist')
+        cy.get(`form[method=post]`).should('exist')
           .within(() => {
             cy.get('input[type=radio]#reference-type-custom').should('exist')
             cy.get('input[type=radio]#reference-type-custom').click()
@@ -394,7 +396,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should continue to the amount page', () => {
-        cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/reference"]`).should('exist')
+        cy.get(`form[method=post]`).should('exist')
           .within(() => {
             cy.get('input#reference-label').type(referenceName)
             cy.get('textarea#reference-hint-text').type(referenceHint)
@@ -404,8 +406,6 @@ describe('The create payment link flow', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/amount`)
         })
-
-        cy.title().should('eq', `Is the payment for a fixed amount? - Create a payment link - ${serviceName.en} Worldpay test - GOV.UK Pay`)
       })
     })
 

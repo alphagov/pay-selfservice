@@ -187,10 +187,11 @@ describe('Editing a payment link', () => {
       })
 
       assertCommonPageElements()
+      cy.title().should('eq', `Edit your payment link reference - ${serviceName} Worldpay test - GOV.UK Pay`)
     })
 
     it('should have English instructions', () => {
-      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}"]`).should('exist')
+      cy.get(`form[method=post]`).should('exist')
         .within(() => {
           cy.get('input[type="radio"]').should('have.length', 2)
 
@@ -222,7 +223,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
-      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
+      cy.get(`form[method=post]`).within(() => {
         cy.get('button').click()
       })
 
@@ -348,7 +349,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should have Welsh instructions', () => {
-      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}"]`).should('exist')
+      cy.get(`form[method=post]`).should('exist')
         .within(() => {
           cy.get('input[type="radio"]').should('have.length', 2)
 
@@ -370,7 +371,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
-      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
+      cy.get(`form[method=post]`).within(() => {
         cy.get('button').click()
       })
 

@@ -16,20 +16,22 @@ module.exports = function postReference (req, res, next) {
   }
 
   const type = req.body['reference-type-group']
-  const label = req.body['reference-label'].trim()
-  const hint = req.body['reference-hint-text'].trim()
+  const referenceEnabled = type === 'custom'
+  const referenceLabel = req.body['reference-type-group'] === 'custom' ? req.body['reference-label'].trim() : ''
+  const referenceHint = req.body['reference-type-group'] === 'custom' ? req.body['reference-hint-text'].trim() : ''
+  
 
   const errors = {}
   if (!type) {
     errors.type = 'Would you like us to create a payment reference number for your users?'
-  } else if (type === 'custom' && label === '') {
+  } else if (type === 'custom' && referenceLabel === '') {
     errors.label = 'Enter a name for your payment reference'
   }
-  const validateLabelResult = validateOptionalField(label, LABEL_MAX_LENGTH, 'name of payment reference', true)
+  const validateLabelResult = validateOptionalField(referenceLabel, LABEL_MAX_LENGTH, 'name of payment reference', true)
   if (!validateLabelResult.valid) {
     errors.label = validateLabelResult.message
   }
-  const validateHintResult = validateOptionalField(hint, HINT_MAX_LENGTH, 'hint text', true)
+  const validateHintResult = validateOptionalField(referenceHint, HINT_MAX_LENGTH, 'hint text', true)
   if (!validateHintResult.valid) {
     errors.hint = validateHintResult.message
   }
@@ -38,15 +40,15 @@ module.exports = function postReference (req, res, next) {
     sessionData.referencePageRecovered = {
       errors,
       type,
-      label,
-      hint
+      referenceLabel,
+      referenceHint
     }
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.reference, req.account && req.account.external_id))
   }
 
-  sessionData.paymentReferenceType = type
-  sessionData.paymentReferenceLabel = type === 'custom' ? label : ''
-  sessionData.paymentReferenceHint = type === 'custom' ? hint : ''
+  sessionData.referenceEnabled = referenceEnabled
+  sessionData.referenceLabel = referenceLabel
+  sessionData.referenceHint = referenceHint
 
   if (req.body['change'] === 'true') {
     req.flash('generic', 'The details have been updated')

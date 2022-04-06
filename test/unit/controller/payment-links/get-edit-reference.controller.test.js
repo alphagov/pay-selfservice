@@ -53,12 +53,13 @@ describe('GET edit reference controller', () => {
 
     getEditReferenceController(req, res, next)
 
-    sinon.assert.calledWithMatch(res.render, 'payment-links/edit-reference', {
+    sinon.assert.calledWithMatch(res.render, 'payment-links/reference', {
       referenceEnabled: session.referenceEnabled,
       referenceLabel: session.referenceLabel,
       referenceHint: session.referenceHint,
       isWelsh: true,
-      errors: undefined
+      errors: undefined,
+      isEditing: true
     })
   })
 
@@ -83,12 +84,13 @@ describe('GET edit reference controller', () => {
 
     getEditReferenceController(req, res, next)
 
-    sinon.assert.calledWithMatch(res.render, 'payment-links/edit-reference', {
+    sinon.assert.calledWithMatch(res.render, 'payment-links/reference', {
       referenceEnabled: recovered.referenceEnabled,
       referenceLabel: recovered.referenceLabel,
       referenceHint: recovered.referenceHint,
       isWelsh: true,
-      errors: recovered.errors
+      errors: recovered.errors,
+      isEditing: true
     })
 
     expect(session).to.not.have.property('referencePageRecovered')
