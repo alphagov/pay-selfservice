@@ -102,7 +102,7 @@
       })
      }}
 
-    <p class="govuk-body"><a class="govuk-link cancel govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link cancel govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}" data-cy="cancel-link">Cancel</a></p>
   </form>
 
   {% if not isWelsh %}

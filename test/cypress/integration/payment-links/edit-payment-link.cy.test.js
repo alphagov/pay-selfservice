@@ -4,6 +4,7 @@ const { getProductsByGatewayAccountIdAndTypeStub, getProductByExternalIdStub } =
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-valid-account-id'
+const serviceName = 'A service'
 
 const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, language, description, price, referenceEnabled, referenceLabel, referenceHint, metadata = null) {
   return {
@@ -22,11 +23,25 @@ const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, la
 
 function setupStubs (product) {
   cy.task('setupStubs', [
-    userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
+    userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
     getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
     getProductByExternalIdStub(product, gatewayAccountId)
   ])
+}
+
+function assertManagePaymentLinksNavItemBold() {
+  cy.get('[data-cy=create-payment-link-nav-item]').should('not.have.class', 'govuk-!-font-weight-bold')
+  cy.get('[data-cy=manage-payment-links-nav-item]').should('have.class', 'govuk-!-font-weight-bold')
+}
+
+function assertCancelLinkHref() {
+  cy.get('[data-cy=cancel-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage`)
+}
+
+function assertCommonPageElements() {
+  assertManagePaymentLinksNavItemBold()
+  assertCancelLinkHref()
 }
 
 describe('Editing a payment link', () => {
@@ -52,11 +67,15 @@ describe('Editing a payment link', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 
+      assertManagePaymentLinksNavItemBold()
+
       cy.get('ul.payment-links-list > li > div > a').contains('Edit').click()
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
       })
+
+      assertCommonPageElements()
     })
 
     it('should show the details to edit', () => {
@@ -113,6 +132,8 @@ describe('Editing a payment link', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/information/${productId}`)
       })
+
+      assertCommonPageElements()
     })
 
     it('should have English instructions', () => {
@@ -164,6 +185,8 @@ describe('Editing a payment link', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/reference/${productId}`)
       })
+
+      assertCommonPageElements()
     })
 
     it('should have English instructions', () => {
@@ -214,10 +237,13 @@ describe('Editing a payment link', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}`)
       })
+
+      assertCommonPageElements()
+      cy.title().should('eq', `Edit your payment link amount - ${serviceName} Worldpay test - GOV.UK Pay`)
     })
 
     it('should display content', () => {
-      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}"]`).should('exist')
+      cy.get(`form[method=post]`).should('exist')
         .within(() => {
           cy.get('input[type=radio]#amount-type-fixed').should('exist')
           cy.get('input[type=radio]#amount-type-variable').should('exist')
@@ -232,14 +258,14 @@ describe('Editing a payment link', () => {
     })
 
     it('should have amount pre-filled', () => {
-      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}"]`).should('exist')
+      cy.get(`form[method=post]`).should('exist')
         .within(() => {
           cy.get('input#payment-amount').should('have.value', '10.00')
         })
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
-      cy.get(`form[method=post][action="/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/amount/${productId}"]`).within(() => {
+      cy.get(`form[method=post]`).within(() => {
         cy.get('button').click()
       })
 

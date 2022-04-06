@@ -50,11 +50,12 @@ describe('GET edit amount controller', () => {
 
     getEditAmountController(req, res, next)
 
-    sinon.assert.calledWithMatch(res.render, 'payment-links/edit-amount', {
+    sinon.assert.calledWithMatch(res.render, 'payment-links/amount', {
       amountType: 'fixed',
       amountInPence: '1050',
       isWelsh: true,
-      errors: undefined
+      errors: undefined,
+      isEditing: true
     })
   })
 
@@ -67,11 +68,12 @@ describe('GET edit amount controller', () => {
 
     getEditAmountController(req, res, next)
 
-    sinon.assert.calledWithMatch(res.render, 'payment-links/edit-amount', {
+    sinon.assert.calledWithMatch(res.render, 'payment-links/amount', {
       amountType: 'variable',
       amountInPence: '',
       isWelsh: false,
-      errors: undefined
+      errors: undefined,
+      isEditing: true
     })
   })
 
@@ -93,11 +95,12 @@ describe('GET edit amount controller', () => {
 
     getEditAmountController(req, res, next)
 
-    sinon.assert.calledWithMatch(res.render, 'payment-links/edit-amount', {
+    sinon.assert.calledWithMatch(res.render, 'payment-links/amount', {
       amountType: recovered.type,
       amountInPence: recovered.amount,
       isWelsh: false,
-      errors: recovered.errors
+      errors: recovered.errors,
+      isEditing: true
     })
 
     expect(session).to.not.have.property('amountPageRecovered')

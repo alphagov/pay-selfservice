@@ -1,8 +1,8 @@
 <aside class="govuk-grid-column-one-third navigation--pad-bottom">
   <nav role="navigation" class="navigation settings-navigation">
     <ul class="govuk-list govuk-!-margin-bottom-9">
-       <li class="{% if createLink %}govuk-!-font-weight-bold {% endif %}govuk-!-margin-bottom-2"><a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-!-display-block" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}">Create a payment link</a></li>
-      <li class="{% if not createLink %}govuk-!-font-weight-bold {% endif %}govuk-!-margin-bottom-2"><a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-!-display-block" href="{{ formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id) }}">Manage payment&nbsp;links</a></li>
+       <li class="{% if createLink %}govuk-!-font-weight-bold {% endif %}govuk-!-margin-bottom-2" data-cy="create-payment-link-nav-item"><a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-!-display-block" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}">Create a payment link</a></li>
+      <li class="{% if not createLink %}govuk-!-font-weight-bold {% endif %}govuk-!-margin-bottom-2" data-cy="manage-payment-links-nav-item"><a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-!-display-block" href="{{ formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id) }}">Manage payment&nbsp;links</a></li>
     </ul>
   </nav>
 </aside>

@@ -19,19 +19,16 @@ module.exports = function showEditAmountPage (req, res) {
   const recovered = sessionData.amountPageRecovered || {}
   delete sessionData.amountPageRecovered
 
-  const self = formatAccountPathsFor(paths.account.paymentLinks.manage.editAmount, req.account && req.account.external_id, productExternalId)
-  const change = lodash.get(req, 'query.field', {})
   const amountType = recovered.type || sessionData.price ? 'fixed' : 'variable'
   const amountInPence = recovered.amount || sessionData.price
   const isWelsh = sessionData.language === supportedLanguage.WELSH
 
   const pageData = {
-    self,
-    change,
     amountType,
     amountInPence,
     isWelsh,
-    errors: recovered.errors
+    errors: recovered.errors,
+    isEditing: true
   }
-  return response(req, res, 'payment-links/edit-amount', pageData)
+  return response(req, res, 'payment-links/amount', pageData)
 }

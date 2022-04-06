@@ -2,11 +2,15 @@
 {% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
-   Is the payment for a fixed amount? - Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  {% if isEditing %}
+  Edit your payment link amount - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  {% else %}
+  Is the payment for a fixed amount? - Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  {% endif %}
 {% endblock %}
 
 {% block side_navigation %}
-  {% set createLink = true %}
+  {% set createLink = false if isEditing else true %}
   {% include "./_nav.njk" %}
 {% endblock %}
 
@@ -20,7 +24,7 @@
     }
   }) }}
 
-  <form action="{{ nextPage }}" class="form" method="post">
+  <form class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set noSelectionError = false %}
@@ -52,7 +56,7 @@
             type="text"
             inputmode="numeric"
             id="payment-amount"
-            value="{{ paymentLinkAmount | penceToPounds if paymentLinkAmount else '' }}"
+            value="{{ amountInPence | penceToPounds if amountInPence else '' }}"
             data-trim
           />
         </div>
@@ -76,7 +80,7 @@
               value: "fixed",
               text: "Yes",
               id: "amount-type-fixed",
-              checked: paymentAmountType === "fixed",
+              checked: amountType === "fixed",
               conditional: {
                 html: variableHTML
               }
@@ -85,7 +89,7 @@
               value: "variable",
               id: "amount-type-variable",
               text: "No, the user can choose the amount",
-              checked: paymentAmountType === "variable"
+              checked: amountType === "variable"
           }
         ]
       })
@@ -97,7 +101,8 @@
         classes: "button"
       })
     }}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}">Cancel</a></p>
+    {% set cancelLinkHref = formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id) if isEditing else formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) %}
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ cancelLinkHref }}" data-cy="cancel-link">Cancel</a></p>
   </form>
 
   {% if not isWelsh %}

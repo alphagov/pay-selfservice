@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block side_navigation %}
-  {% set createLink = true %}
   {% include "./_nav.njk" %}
 {% endblock %}
 
@@ -134,7 +133,7 @@
         classes: "button"
       })
     }}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id) }}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id) }}" data-cy="cancel-link">Cancel</a></p>
   </form>
 
   {% if not isWelsh %}
