@@ -37,12 +37,12 @@
 
     {% if isWelsh %}
       {% set titleLabel = 'Welsh title' %}
-      {% set titleHint = 'Briefly describe what the user is paying for. For example, <span lang="cy">“Talu am drwydded barcio”</span>. This will also be your website address. Don’t include names or personal information.' %}
+      {% set titleHint = 'Briefly describe what the user is paying for. For example, <span lang="cy">“Talu am drwydded barcio”</span>. This will also be your website address. Do not include names or personal information.' %}
       {% set detailsHint = 'Give your users more information in Welsh. For example, you could tell them how long it takes for their application to be processed.' %}
       {% set lang = "cy" %}
     {% else %}
       {% set titleLabel = 'Title' %}
-      {% set titleHint = 'Briefly describe what the user is paying for. For example, “Pay for a parking permit”. This will also be your website address. Don’t include names or personal information.' %}
+      {% set titleHint = 'Briefly describe what the user is paying for. For example, “Pay for a parking permit”. This will also be your website address. Do not include names or personal information.' %}
       {% set detailsHint = 'Give your users more information. For example, you could tell them how long it takes for their application to be processed.' %}
       {% set lang = "en" %}
     {% endif %}

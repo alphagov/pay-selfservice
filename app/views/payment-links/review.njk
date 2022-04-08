@@ -18,7 +18,7 @@
       {% if pageData.paymentLinkDescription %}
         {{ pageData.paymentLinkDescription | striptags(true) | escape | nl2br }}
       {% else %}
-        <span class="pay-text-grey">None given</span>
+        <span>None given</span>
       {% endif %}
     </span>
   {% endset %}
@@ -33,7 +33,7 @@
           </span>
         {% endif %}
       {% else %}
-        <span class="pay-text-grey">Created by GOV.UK Pay</span>
+        <span>Created by GOV.UK Pay</span>
       {% endif %}
     </span>
   {% endset %}
@@ -43,7 +43,12 @@
     {% if pageData.paymentLinkAmount %}
       £{{ pageData.paymentLinkAmount | penceToPounds }}
     {% else %}
-      <span class="pay-text-grey">User can choose</span>
+      <span>User can choose</span>
+      {% if pageData.amountHint %}
+        <span class="govuk-!-display-block pay-text-grey">
+          {{ pageData.amountHint | striptags(true) | escape | nl2br }}
+        </span>
+      {% endif %}
     {% endif %}
     </span>
   {% endset %}

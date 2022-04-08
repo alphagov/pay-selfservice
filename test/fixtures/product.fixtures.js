@@ -19,6 +19,9 @@ module.exports = {
       data.reference_label = opts.reference_label
       data.reference_hint = opts.reference_hint
     }
+    if (opts.amount_hint) {
+      data.amount_hint = opts.amount_hint
+    }
     if (opts.metadata) data.metadata = opts.metadata
 
     return data
@@ -69,6 +72,7 @@ module.exports = {
     if (opts.price) data.price = opts.price
     if (opts.service_name_path) data.service_name_path = opts.service_name_path
     if (opts.product_name_path) data.product_name_path = opts.product_name_path
+    if (opts.amount_hint) data.amount_hint = opts.amount_hint
     if (opts.metadata) data.metadata = opts.metadata
     if (!data._links) {
       data._links = [{

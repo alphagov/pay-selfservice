@@ -17,6 +17,7 @@ module.exports = function postEditAmount (req, res) {
 
   const type = req.body['amount-type-group']
   const amount = req.body['payment-amount']
+  const hint = req.body['amount-hint-text'] && req.body['amount-hint-text'].trim()
 
   let amountInPence = ''
   const errors = {}
@@ -33,12 +34,14 @@ module.exports = function postEditAmount (req, res) {
     sessionData.amountPageRecovered = {
       errors,
       type,
-      amount: ''
+      amount: '',
+      hint
     }
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.editAmount, req.account && req.account.external_id, productExternalId))
   }
 
   sessionData.price = amountInPence
+  sessionData.amountHint = hint
   lodash.set(req, 'session.editPaymentLinkData', sessionData)
 
   return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.edit, req.account && req.account.external_id, productExternalId))

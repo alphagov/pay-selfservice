@@ -44,10 +44,20 @@ function postCreateProductSuccess () {
   })
 }
 
+function postCreateProductSuccessWithRequestBody (opts) {
+  const path = '/v1/api/products'
+  return stubBuilder('POST', path, 200, {
+    request: productFixtures.validCreateProductRequest(opts),
+    response: productFixtures.validProductResponse(),
+    verifyCalledTimes: 1
+  })
+}
+
 module.exports = {
   getProductsByGatewayAccountIdAndTypeStub,
   getProductByExternalIdStub,
   deleteProductStub,
   getProductsByGatewayAccountIdAndTypeFailure,
-  postCreateProductSuccess
+  postCreateProductSuccess,
+  postCreateProductSuccessWithRequestBody
 }

@@ -20,7 +20,8 @@
     errors: errors,
     hrefs: {
       type: "#amount-type-fixed",
-      amount: "#payment-amount"
+      amount: "#payment-amount",
+      hint: "#amount-hint-text"
     }
   }) }}
 
@@ -34,7 +35,7 @@
     } %}
     {% endif %}
 
-    {% set variableHTML %}
+    {% set fixedAmountHTML %}
       <div class="currency-input govuk-form-group{% if errors.amount %} govuk-form-group--error{% endif %}">
         <label class="govuk-label" for="payment-amount">
           Enter the amount
@@ -63,6 +64,38 @@
       </div>
     {% endset %}
 
+    {% if isWelsh %}
+      {% set amountHintHint = 'Explain in Welsh how users can work out how much they should pay, or where to find the payment amount.' %}
+      {% set lang = 'cy' %}
+    {% else %}
+      {% set amountHintHint = 'Tell users how to work out how much they should pay, or where to find the payment amount.' %}
+      {% set lang = 'en' %}
+    {% endif %}
+    
+    {% set userProvidedAmountHTML %}
+      {{
+        govukCharacterCount({
+          id: "amount-hint-text",
+          name: "amount-hint-text",
+          value: amountHint,
+          errorMessage: { text: errors.hint } if errors.hint else false,
+          classes: "govuk-input--width-20",
+          maxlength: 255,
+          label: {
+              text: "Hint text (optional)",
+              classes: "govuk-label--s"
+          },
+          hint: {
+            text: amountHintHint
+          },
+          attributes: {
+            "maxlength": "255",
+            "lang": lang
+          }
+        })
+      }}
+    {% endset %}
+
     {{
       govukRadios({
         idPrefix: "amount-type-group",
@@ -82,14 +115,17 @@
               id: "amount-type-fixed",
               checked: amountType === "fixed",
               conditional: {
-                html: variableHTML
+                html: fixedAmountHTML
               }
           },
           {
               value: "variable",
               id: "amount-type-variable",
               text: "No, the user can choose the amount",
-              checked: amountType === "variable"
+              checked: amountType === "variable",
+              conditional: {
+                html: userProvidedAmountHTML if displayFuturePaymentLinksContent else false
+              }
           }
         ]
       })

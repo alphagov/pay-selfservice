@@ -16,6 +16,7 @@ module.exports = async function createPaymentLink (req, res) {
     paymentLinkTitle,
     paymentLinkDescription,
     paymentLinkAmount,
+    amountHint,
     serviceNamePath,
     productNamePath,
     paymentReferenceType,
@@ -62,6 +63,9 @@ module.exports = async function createPaymentLink (req, res) {
       if (paymentReferenceHint) {
         productPayload.referenceHint = paymentReferenceHint
       }
+    }
+    if (!paymentLinkAmount && amountHint) {
+      productPayload.amountHint = amountHint
     }
 
     await productsClient.product.create(productPayload)
