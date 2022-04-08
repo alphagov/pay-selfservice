@@ -56,8 +56,10 @@ class Product {
       this.referenceLabel = opts.reference_label
       this.referenceHint = opts.reference_hint
     }
+    this.amountHint = opts.amount_hint
     this.language = opts.language
     this.metadata = opts.metadata
+    this.newPaymentLinkJourneyEnabled = opts.new_payment_link_journey_enabled
     opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, { method: link.method, href: link.href }))
   }
 }

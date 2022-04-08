@@ -21,14 +21,17 @@ module.exports = function showEditAmountPage (req, res) {
 
   const amountType = recovered.type || sessionData.price ? 'fixed' : 'variable'
   const amountInPence = recovered.amount || sessionData.price
+  const amountHint = recovered.hint || sessionData.amountHint
   const isWelsh = sessionData.language === supportedLanguage.WELSH
 
   const pageData = {
     amountType,
     amountInPence,
+    amountHint,
     isWelsh,
     errors: recovered.errors,
-    isEditing: true
+    isEditing: true,
+    displayFuturePaymentLinksContent: process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true' || sessionData.newPaymentLinkJourneyEnabled
   }
   return response(req, res, 'payment-links/amount', pageData)
 }

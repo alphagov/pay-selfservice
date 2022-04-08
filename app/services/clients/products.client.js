@@ -62,6 +62,7 @@ function createProduct (options) {
       reference_enabled: options.referenceEnabled,
       reference_label: options.referenceLabel,
       reference_hint: options.referenceHint,
+      amount_hint: options.amountHint,
       language: options.language || supportedLanguage.ENGLISH,
       ...options.metadata && { metadata: options.metadata }
     },

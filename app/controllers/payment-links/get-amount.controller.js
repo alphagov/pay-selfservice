@@ -15,12 +15,15 @@ module.exports = function showAmountPage (req, res, next) {
 
   const amountInPence = recovered.amount || sessionData.paymentLinkAmount || ''
   const amountType = recovered.type || sessionData.paymentAmountType || ''
+  const amountHint = recovered.hint || sessionData.amountHint || ''
 
   return response(req, res, 'payment-links/amount', {
     amountInPence,
     amountType,
+    amountHint,
     isWelsh: sessionData.isWelsh,
     errors: recovered.errors,
-    isEditing: false
+    isEditing: false,
+    displayFuturePaymentLinksContent: process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true'
   })
 }
