@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: "${{ steps.parse-node-version.outputs.NVMRC }}"
       - name: Cache build directories
-        uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           path: |
             node_modules
@@ -38,7 +38,7 @@ jobs:
             public
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
       - name: Cache pacts directory
-        uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
           path: pacts
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
