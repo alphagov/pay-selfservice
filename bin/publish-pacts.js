@@ -17,7 +17,7 @@ readdir(pactDirPath)
     files
       .filter((file) => file.includes('to-be'))
       .map((file) => unlink(path.join(pactDirPath, file)))
-    )
+  )
   )
   .then(() => pact.publishPacts(opts))
   .then(() => console.log('>> Pact files have been published'))

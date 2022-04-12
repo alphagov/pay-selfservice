@@ -27,16 +27,16 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 const INVITE_NOT_FOUND_ERROR_MESSAGE = 'There has been a problem proceeding with this registration. Please try again.'
 
-function registrationSessionPresent(sessionData) {
+function registrationSessionPresent (sessionData) {
   return sessionData && sessionData.email && sessionData.code
 }
 
-function getServiceCreatedDuringSignup(user) {
+function getServiceCreatedDuringSignup (user) {
   return user.serviceRoles.map(serviceRole => serviceRole.service)
     .find(service => service.serviceName && service.serviceName.en === DEFAULT_SERVICE_NAME)
 }
 
-function showRegistration(req, res) {
+function showRegistration (req, res) {
   const recovered = lodash.get(req, 'session.pageData.submitRegistration.recovered', {})
   lodash.unset(req, 'session.pageData.submitRegistration.recovered')
   res.render('self-create-service/register', {
@@ -46,7 +46,7 @@ function showRegistration(req, res) {
   })
 }
 
-async function submitRegistration(req, res, next) {
+async function submitRegistration (req, res, next) {
   const correlationId = req.correlationId
   const email = req.body['email']
   const telephoneNumber = req.body['telephone-number']
@@ -110,7 +110,7 @@ async function submitRegistration(req, res, next) {
  * @param req
  * @param res
  */
-function showConfirmation(req, res) {
+function showConfirmation (req, res) {
   const requesterEmail = lodash.get(req, 'session.pageData.submitRegistration.email', '')
   lodash.unset(req, 'session.pageData.submitRegistration')
   res.render('self-create-service/confirm', {
@@ -118,7 +118,7 @@ function showConfirmation(req, res) {
   })
 }
 
-async function showOtpVerify(req, res, next) {
+async function showOtpVerify (req, res, next) {
   const correlationId = req.correlationId
 
   const sessionData = req.register_invite
@@ -153,7 +153,7 @@ async function showOtpVerify(req, res, next) {
   }
 }
 
-async function createPopulatedService(req, res, next) {
+async function createPopulatedService (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
@@ -209,7 +209,7 @@ async function createPopulatedService(req, res, next) {
  * @param req
  * @param res
  */
-function loggedIn(req, res) {
+function loggedIn (req, res) {
   res.redirect(303, paths.selfCreateService.serviceNaming)
 }
 
@@ -219,7 +219,7 @@ function loggedIn(req, res) {
  * @param req
  * @param res
  */
-async function showOtpResend(req, res, next) {
+async function showOtpResend (req, res, next) {
   const correlationId = req.correlationId
 
   const sessionData = req.register_invite
@@ -257,7 +257,7 @@ async function showOtpResend(req, res, next) {
  * @param req
  * @param res
  */
-async function submitOtpResend(req, res, next) {
+async function submitOtpResend (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
@@ -289,17 +289,17 @@ async function submitOtpResend(req, res, next) {
   }
 }
 
-function showNameYourService(req, res) {
+function showNameYourService (req, res) {
   const pageData = lodash.get(req, 'session.pageData.submitYourServiceName', {})
   lodash.unset(req, 'session.pageData.submitYourServiceName')
   if (!getServiceCreatedDuringSignup(req.user)) {
-    logger.warn("User attempted to access the page to set the service name as part of registration but no service with the default name was found")
+    logger.warn('User attempted to access the page to set the service name as part of registration but no service with the default name was found')
     return res.redirect(303, paths.serviceSwitcher.index)
   }
   res.render('self-create-service/set-name', pageData)
 }
 
-async function submitYourServiceName(req, res, next) {
+async function submitYourServiceName (req, res, next) {
   const correlationId = req.correlationId
   const serviceName = req.body['service-name']
 

@@ -150,9 +150,9 @@ describe('Controller: createService, Method: post', () => {
 
     it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
       expect(req.session.pageData.createServiceName).to.have.property('current_name').to.equal(req.body['service-name'])
-      expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({ 
+      expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({
         service_name: 'Service name must be 50 characters or fewer',
-        service_name_cy: 'Welsh service name must be 50 characters or fewer' 
+        service_name_cy: 'Welsh service name must be 50 characters or fewer'
       })
     })
   })

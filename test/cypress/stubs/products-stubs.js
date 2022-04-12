@@ -10,14 +10,14 @@ function getProductsByGatewayAccountIdAndTypeStub (products, gatewayAccountId, p
       type: productType
     },
     response: products.map(product =>
-      productFixtures.validProductResponse(product))
+      productFixtures.validAdhocProductResponse(product))
   })
 }
 
 function getProductByExternalIdStub (product, gatewayAccountId) {
   const path = `/v1/api/gateway-account/${gatewayAccountId}/products/${product.external_id}`
   return stubBuilder('GET', path, 200, {
-    response: productFixtures.validProductResponse(product)
+    response: productFixtures.validAdhocProductResponse(product)
   })
 }
 
@@ -40,7 +40,7 @@ function getProductsByGatewayAccountIdAndTypeFailure (gatewayAccountId, productT
 function postCreateProductSuccess () {
   const path = '/v1/api/products'
   return stubBuilder('POST', path, 200, {
-    response: productFixtures.validProductResponse()
+    response: productFixtures.validAdhocProductResponse()
   })
 }
 
@@ -48,7 +48,16 @@ function postCreateProductSuccessWithRequestBody (opts) {
   const path = '/v1/api/products'
   return stubBuilder('POST', path, 200, {
     request: productFixtures.validCreateProductRequest(opts),
-    response: productFixtures.validProductResponse(),
+    response: productFixtures.validAdhocProductResponse(),
+    verifyCalledTimes: 1
+  })
+}
+
+function patchUpdateProductSuccess (opts) {
+  const path = `/v1/api/gateway-account/${opts.gatewayAccountId}/products/${opts.productExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: productFixtures.validUpdateProductRequest(opts),
+    response: productFixtures.validAdhocProductResponse(),
     verifyCalledTimes: 1
   })
 }
@@ -59,5 +68,6 @@ module.exports = {
   deleteProductStub,
   getProductsByGatewayAccountIdAndTypeFailure,
   postCreateProductSuccess,
-  postCreateProductSuccessWithRequestBody
+  postCreateProductSuccessWithRequestBody,
+  patchUpdateProductSuccess
 }

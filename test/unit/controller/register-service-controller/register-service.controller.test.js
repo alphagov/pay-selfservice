@@ -32,7 +32,7 @@ describe('Register service', function () {
     updateServiceNameSpy = sinon.spy()
   })
 
-  function getControllerWithStubs() {
+  function getControllerWithStubs () {
     return proxyquire('../../../../app/controllers/register-service.controller.js', {
       '../services/service-registration.service': {
         submitRegistration: () => Promise.resolve()
@@ -50,7 +50,7 @@ describe('Register service', function () {
     })
   }
 
-  function getControllerWithStubbedAdminusersError(error) {
+  function getControllerWithStubbedAdminusersError (error) {
     return proxyquire('../../../../app/controllers/register-service.controller.js',
       {
         '../services/service-registration.service': {
@@ -60,7 +60,6 @@ describe('Register service', function () {
   }
 
   describe('Submit registration', () => {
-
     beforeEach(() => {
       req.body = {
         email: 'foo@example.com',
@@ -133,7 +132,7 @@ describe('Register service', function () {
           {
             service: {
               service_name: {
-                en: "System Generated"
+                en: 'System Generated'
               }
             }
           }
@@ -149,7 +148,7 @@ describe('Register service', function () {
           {
             service: {
               service_name: {
-                en: "Not a default service"
+                en: 'Not a default service'
               }
             }
           }
@@ -173,7 +172,7 @@ describe('Register service', function () {
           {
             service: {
               service_name: {
-                en: "Not a default service"
+                en: 'Not a default service'
               }
             }
           },
@@ -181,7 +180,7 @@ describe('Register service', function () {
             service: {
               external_id: serviceExternalId,
               service_name: {
-                en: "System Generated"
+                en: 'System Generated'
               }
             }
           }
@@ -202,7 +201,7 @@ describe('Register service', function () {
           {
             service: {
               service_name: {
-                en: "Not a default service"
+                en: 'Not a default service'
               }
             }
           }

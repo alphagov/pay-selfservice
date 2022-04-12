@@ -11,16 +11,16 @@ const serviceName = {
   cy: 'talu am rywbeth'
 }
 
-function assertCreatePaymentLinkNavItemBold() {
+function assertCreatePaymentLinkNavItemBold () {
   cy.get('[data-cy=create-payment-link-nav-item]').should('have.class', 'govuk-!-font-weight-bold')
   cy.get('[data-cy=manage-payment-links-nav-item]').should('not.have.class', 'govuk-!-font-weight-bold')
 }
 
-function assertCancelLinkHref() {
+function assertCancelLinkHref () {
   cy.get('[data-cy=cancel-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link`)
 }
 
-function assertCommonPageElements() {
+function assertCommonPageElements () {
   assertCreatePaymentLinkNavItemBold()
   assertCancelLinkHref()
 }
@@ -53,7 +53,7 @@ describe('The create payment link flow', () => {
         cy.get('a#create-payment-link').should('exist')
         cy.get(`a[href="/account/${gatewayAccountExternalId}/create-payment-link/information?language=cy"]`).should('exist')
           .should('contain', 'Create a payment link in Welsh')
-        
+
         assertCreatePaymentLinkNavItemBold()
       })
 

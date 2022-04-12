@@ -30,16 +30,16 @@ function setupStubs (product) {
   ])
 }
 
-function assertManagePaymentLinksNavItemBold() {
+function assertManagePaymentLinksNavItemBold () {
   cy.get('[data-cy=create-payment-link-nav-item]').should('not.have.class', 'govuk-!-font-weight-bold')
   cy.get('[data-cy=manage-payment-links-nav-item]').should('have.class', 'govuk-!-font-weight-bold')
 }
 
-function assertCancelLinkHref() {
+function assertCancelLinkHref () {
   cy.get('[data-cy=cancel-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/create-payment-link/manage`)
 }
 
-function assertCommonPageElements() {
+function assertCommonPageElements () {
   assertManagePaymentLinksNavItemBold()
   assertCancelLinkHref()
 }

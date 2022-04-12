@@ -120,9 +120,9 @@ describe('Controller: editServiceName, Method: get', () => {
     it(`should set pre-existing pageData that includes the 'current_name' and errors`, () => {
       expect(req.session.pageData.editServiceName.current_name).to.have.property('en').to.equal(req.body['service-name'])
       expect(req.session.pageData.editServiceName.current_name).to.have.property('cy').to.equal(req.body['service-name-cy'])
-      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({ 
+      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({
         service_name: 'Service name must be 50 characters or fewer',
-        service_name_cy: 'Welsh service name must be 50 characters or fewer' 
+        service_name_cy: 'Welsh service name must be 50 characters or fewer'
       })
     })
   })

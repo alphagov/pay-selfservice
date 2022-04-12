@@ -18,7 +18,7 @@ describe('A payment link with an amount hint set', () => {
     it('should display the amount hint field and show on the review page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' })
       ])
 
       cy.setEncryptedCookies(userExternalId)
@@ -73,7 +73,7 @@ describe('A payment link with an amount hint set', () => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/review`)
       })
 
-      Cypress.Cookies.preserveOnce('session', 'gateway_account')
+      Cypress.Cookies.preserveOnce('session')
     })
 
     it('should send a request to products to create the product', () => {
@@ -106,13 +106,15 @@ describe('A payment link with an amount hint set', () => {
     const productId = 'a-product-id'
     const product = {
       external_id: productId,
+      name: productName,
       price: null,
       type: 'ADHOC',
       reference_enabled: false,
       amount_hint: amountHint
     }
+    const updatedHint = 'New hint'
 
-    it('should display the amount hint field and show on the review page', () => {
+    it('should display the amount hint field and show on the review page and allow editing', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
@@ -138,6 +140,36 @@ describe('A payment link with an amount hint set', () => {
       cy.get('textarea#amount-hint-text')
         .should('be.visible')
         .should('have.value', amountHint)
+        .clear()
+        .type(updatedHint)
+
+      cy.get('button').contains('Continue').click()
+      cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
+        cy.get('.govuk-summary-list__value').get('span').should('contain', updatedHint)
+      })
+
+      Cypress.Cookies.preserveOnce('session')
+    })
+
+    it('should send a request to products to update the product', () => {
+      cy.task('setupStubs', [
+        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
+        productStubs.patchUpdateProductSuccess({
+          gatewayAccountId,
+          productExternalId: productId,
+          name: productName,
+          reference_enabled: false,
+          price: '',
+          amount_hint: updatedHint
+        }),
+        productStubs.getProductsByGatewayAccountIdAndTypeStub([{ name: productName }], gatewayAccountId, 'ADHOC')
+      ])
+
+      cy.get('button').contains('Save changes').click()
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
+      })
     })
   })
 })
