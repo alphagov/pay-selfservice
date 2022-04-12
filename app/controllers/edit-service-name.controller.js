@@ -12,7 +12,7 @@ const {
   SERVICE_NAME_MAX_LENGTH
 } = require('../utils/validation/server-side-form-validations')
 
-function getServiceName(req, res) {
+function getServiceName (req, res) {
   let pageData = lodash.get(req, 'session.pageData.editServiceName')
 
   if (pageData) {
@@ -28,7 +28,7 @@ function getServiceName(req, res) {
   return responses.response(req, res, 'services/edit-service-name', pageData)
 }
 
-async function postEditServiceName(req, res, next) {
+async function postEditServiceName (req, res, next) {
   const { correlationId, body } = req
   const serviceExternalId = req.service.externalId
   const serviceName = body['service-name'] && body['service-name'].trim()

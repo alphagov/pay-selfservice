@@ -1,6 +1,6 @@
 'use strict'
 
-function validCreateProductRequest(opts = {}) {
+function validCreateProductRequest (opts = {}) {
   const data = {
     gateway_account_id: opts.gatewayAccountId || 'd5gzn',
     pay_api_token: opts.payApiToken || 'pay-api-token',
@@ -26,10 +26,10 @@ function validCreateProductRequest(opts = {}) {
   return data
 }
 
-function validUpdateProductRequest(opts = {}) {
+function validUpdateProductRequest (opts = {}) {
   const data = {
     name: opts.name || 'A payment link',
-    reference_enabled: opts.reference_enabled || false,
+    reference_enabled: opts.reference_enabled || false
   }
 
   if (opts.description) data.description = opts.description
@@ -69,7 +69,7 @@ function validCreatePaymentResponse (opts = {}) {
   return data
 }
 
-function validProductResponse(opts = {}) {
+function validProductResponse (opts = {}) {
   const data = {
     external_id: opts.external_id || 'cf3hp2',
     type: opts.type || 'ADHOC',
@@ -111,14 +111,14 @@ function validProductResponse(opts = {}) {
   return data
 }
 
-function validAdhocProductResponse(opts = {}) {
+function validAdhocProductResponse (opts = {}) {
   const adhocProductOpts = {
     type: 'ADHOC',
     reference_enabled: false,
     service_name_path: 'service_name',
     product_name_path: 'product_name',
     return_url: 'a-return-url',
-    ...opts,
+    ...opts
   }
   return validProductResponse(adhocProductOpts)
 }

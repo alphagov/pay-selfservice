@@ -9,7 +9,7 @@ const { validateOptionalField } = require('../../utils/validation/server-side-fo
 
 const HINT_MAX_LENGTH = 255
 
-module.exports = function postEditAmount(req, res) {
+module.exports = function postEditAmount (req, res) {
   const { productExternalId } = req.params
 
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')

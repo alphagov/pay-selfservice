@@ -9,7 +9,7 @@ const { validateOptionalField } = require('../../utils/validation/server-side-fo
 
 const HINT_MAX_LENGTH = 255
 
-module.exports = function postAmount(req, res, next) {
+module.exports = function postAmount (req, res, next) {
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
   if (!sessionData) {
     return next(new Error('Payment link data not found in session cookie'))

@@ -14,19 +14,21 @@ const userAndGatewayAccountStubs = [
   gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId }),
   webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
   webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, subscriptions: [ 'card_payment_captured', 'card_payment_succeeded', 'card_payment_refunded', 'card_payment_started' ] }),
-  webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [
-    { latest_attempt: { status: 'PENDING' }, external_id: messageExternalId },
-    { latest_attempt: { status: 'FAILED' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } },
-    { latest_attempt: { status: 'SUCCESSFUL' } }
-  ] }),
+  webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId,
+    external_id: webhookExternalId,
+    messages: [
+      { latest_attempt: { status: 'PENDING' }, external_id: messageExternalId },
+      { latest_attempt: { status: 'FAILED' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'SUCCESSFUL' } }
+    ] }),
   webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, external_id: webhookExternalId }),
   webhooksStubs.getWebhookMessage({ external_id: messageExternalId, webhook_id: webhookExternalId }),
   webhooksStubs.getWebhookMessageAttempts({ message_id: messageExternalId, webhook_id: webhookExternalId, attempts: [ {} ] })
@@ -138,11 +140,11 @@ describe('Webhooks', () => {
   })
 
   /* re-introduce when backend POST route enabled */
-  /*it('should schedule a webhook message for retry', () => {
+  /* it('should schedule a webhook message for retry', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs
     ])
     cy.get('[data-action=resend]').click()
     cy.get('.govuk-notification-banner__heading').contains('Webhook message scheduled for retry')
-  })*/
+  }) */
 })

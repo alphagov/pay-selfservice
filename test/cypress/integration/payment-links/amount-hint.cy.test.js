@@ -18,7 +18,7 @@ describe('A payment link with an amount hint set', () => {
     it('should display the amount hint field and show on the review page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' })
       ])
 
       cy.setEncryptedCookies(userExternalId)
@@ -142,7 +142,7 @@ describe('A payment link with an amount hint set', () => {
         .should('have.value', amountHint)
         .clear()
         .type(updatedHint)
-      
+
       cy.get('button').contains('Continue').click()
       cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
         cy.get('.govuk-summary-list__value').get('span').should('contain', updatedHint)
@@ -152,8 +152,6 @@ describe('A payment link with an amount hint set', () => {
     })
 
     it('should send a request to products to update the product', () => {
-      const token = 'a-token'
-
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),

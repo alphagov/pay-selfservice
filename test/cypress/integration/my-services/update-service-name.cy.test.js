@@ -15,7 +15,7 @@ const welshServiceName = {
   cy: 'Cymru'
 }
 
-function setupStubs(serviceName, stubs = []) {
+function setupStubs (serviceName, stubs = []) {
   cy.task('setupStubs', [
     ...stubs,
     userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1', serviceExternalId, serviceName }),
