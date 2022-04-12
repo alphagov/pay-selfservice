@@ -28,7 +28,7 @@ module.exports = function postAmount(req, res, next) {
     if (amount === '' || amountInPence === null) {
       errors.amount = 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
     }
-  } else if (process.env.PAYMENT_LINKS_FUTURE_ENABLED) {
+  } else if (process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true') {
     const validateHintResult = validateOptionalField(hint, HINT_MAX_LENGTH, 'hint text', true)
     if (!validateHintResult.valid) {
       errors.hint = validateHintResult.message

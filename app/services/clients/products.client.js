@@ -91,6 +91,7 @@ function updateProduct (gatewayAccountId, productExternalId, options) {
       reference_enabled: options.referenceEnabled,
       reference_label: options.referenceLabel,
       reference_hint: options.referenceHint,
+      amount_hint: options.amountHint,
       ...options.metadata && { metadata: options.metadata }
     },
     description: 'update an existing product',
