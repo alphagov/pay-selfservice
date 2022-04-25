@@ -133,7 +133,7 @@
     "grunt-browserify": "6.0.0",
     "grunt-contrib-clean": "2.0.x",
     "grunt-contrib-copy": "1.0.x",
-    "grunt-contrib-uglify": "5.1.0",
+    "grunt-contrib-uglify": "5.2.1",
     "grunt-contrib-watch": "1.1.x",
     "grunt-sass": "3.1.0",
     "html5shiv": "3.7.x",
