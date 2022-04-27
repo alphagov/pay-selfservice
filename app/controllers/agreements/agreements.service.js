@@ -12,8 +12,8 @@ function formatAgreementPages(agreementSearchResponse) {
   return { total, page, links, results }
 }
 
-async function agreements(serviceId, live, page = 1) {
-  const agreementSearchResponse = await Ledger.agreements(serviceId, live, page)
+async function agreements(serviceId, live, page = 1, filters = {}) {
+  const agreementSearchResponse = await Ledger.agreements(serviceId, live, page, { filters })
   return formatAgreementPages(agreementSearchResponse)
 }
 

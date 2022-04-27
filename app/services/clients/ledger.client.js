@@ -117,7 +117,8 @@ const agreements = function agreements (serviceId, live, page = 1, options = {})
     qs: {
       service_id: serviceId,
       live,
-      page
+      page,
+      ...options.filters
     },
     description: 'List agreements for a given service and environment',
     baseUrl: process.env.LEDGER_URL,

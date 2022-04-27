@@ -41,6 +41,15 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
       current: pathLookup(currentPath, paths.account.transactions.index),
       permissions: permissions.transactions_read
     })
+  }
+  navigationItems.push({
+    id: 'navigation-menu-agreements',
+    name: 'Agreements',
+    url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.agreements.index, account.type, account.service_id, account.external_id),
+    current: pathLookup(currentPath, paths.futureAccountStrategy.agreements.index),
+    permissions: permissions.agreements_read && account.recurring_enabled
+  })
+  if (type === 'card') {
     navigationItems.push({
       id: 'navigation-menu-payment-links',
       name: 'Payment links',

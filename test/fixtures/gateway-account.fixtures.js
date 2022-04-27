@@ -83,6 +83,12 @@ function validGatewayAccount (opts) {
     requires_additional_kyc_data: opts.requiresAdditionalKycData || false
   }
 
+  if (opts.recurring_enabled !== undefined) {
+    gatewayAccount.recurring_enabled = opts.recurring_enabled
+  } else {
+    gatewayAccount.recurring_enabled = true
+  }
+
   if (opts.description) {
     gatewayAccount.description = opts.description
   }
