@@ -85,8 +85,6 @@ function validGatewayAccount (opts) {
 
   if (opts.recurring_enabled !== undefined) {
     gatewayAccount.recurring_enabled = opts.recurring_enabled
-  } else {
-    gatewayAccount.recurring_enabled = true
   }
 
   if (opts.description) {

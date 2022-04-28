@@ -9,9 +9,10 @@ function getLedgerAgreementsSuccess (opts) {
     query: {
       service_id: opts.service_id,
       live: opts.live,
-      page: opts.page || 1
+      page: opts.page || 1,
+      ...opts.filters
     },
-    response: agreementFixtures.validAgreementSearchResponse(opts.agreements)
+    response: agreementFixtures.validAgreementSearchResponse(opts.agreements, opts)
   })
 }
 
