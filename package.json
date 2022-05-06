@@ -69,7 +69,7 @@
     "minimist": "1.2.5"
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "3.3.9",
+    "@govuk-pay/pay-js-commons": "3.3.10",
     "@sentry/node": "6.12.0",
     "accessible-autocomplete": "2.0.4",
     "aws-sdk": "2.1120.0",
