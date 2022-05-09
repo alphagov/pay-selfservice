@@ -94,7 +94,7 @@
     "moment-timezone": "0.5.34",
     "morgan": "1.10.0",
     "multer": "^1.4.4",
-    "node-zendesk": "2.1.1",
+    "node-zendesk": "2.2.0",
     "nunjucks": "3.2.3",
     "passport": "0.5.x",
     "passport-custom": "1.1.1",
