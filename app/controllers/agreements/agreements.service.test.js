@@ -25,6 +25,11 @@ describe('agreements service', () => {
         { reference },
         { reference },
         { reference },
+        { reference },
+        { reference },
+        { reference },
+        { reference },
+        { reference },
         { reference }
       ])
 
@@ -34,7 +39,7 @@ describe('agreements service', () => {
 
       sinon.assert.calledWith(spy, 'service-id', true, 1)
 
-      expect(result.total).to.equal(16)
+      expect(result.total).to.equal(21)
       expect(result.links.length).to.equal(3)
       expect(result.links[2].pageName).to.equal('next')
     })

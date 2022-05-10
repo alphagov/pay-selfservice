@@ -32,6 +32,12 @@ const mockAgreements = [
   { external_id: 'a-valid-agreement-id-13', payment_instrument: { card_details: { card_brand: 'visa' }}},
   { external_id: 'a-valid-agreement-id-14', payment_instrument: { card_details: { card_brand: 'visa' }}},
   { external_id: 'a-valid-agreement-id-15', payment_instrument: { card_details: { card_brand: 'visa' }}},
+  { external_id: 'a-valid-agreement-id-16', payment_instrument: { card_details: { card_brand: 'visa' }}},
+  { external_id: 'a-valid-agreement-id-17', payment_instrument: { card_details: { card_brand: 'visa' }}},
+  { external_id: 'a-valid-agreement-id-18', payment_instrument: { card_details: { card_brand: 'visa' }}},
+  { external_id: 'a-valid-agreement-id-19', payment_instrument: { card_details: { card_brand: 'visa' }}},
+  { external_id: 'a-valid-agreement-id-20', payment_instrument: { card_details: { card_brand: 'visa' }}},
+  { external_id: 'a-valid-agreement-id-21', payment_instrument: { card_details: { card_brand: 'visa' }}}
 ]
 
 describe('Agreement list page', () => {
@@ -53,7 +59,7 @@ describe('Agreement list page', () => {
   })
 
   const referenceFilter = 'a-valid-ref'
-  const statusFilter = 'created'
+  const statusFilter = 'CREATED'
 
   it('should set and persist filters', () => {
     cy.task('setupStubs', [
@@ -77,5 +83,17 @@ describe('Agreement list page', () => {
     cy.get('.pagination.2').first().click()
 
     cy.get('.pagination.2').first().should('have.class', 'active')
+  })
+
+  it('should show no agreements content if filters return nothing', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      agreementStubs.getLedgerAgreementsSuccess({ service_id: serviceExternalId, live: false, agreements: [] })
+    ])
+
+    cy.visit('/test/service/service-id/account/gateway-account-id/agreements')
+
+    cy.get('#results-empty').should('be.visible')
+    cy.get('#agreements-list').should('not.exist')
   })
 })

@@ -18,17 +18,17 @@ Agreements - GOV.UK Pay
         text: 'All',
         selected: not filters.status
       },{
-        value: 'created',
+        value: 'CREATED',
         text: 'Needs user details',
-        selected: filters.status === 'created'
+        selected: filters.status === 'CREATED'
       }, {
-        value: 'active',
+        value: 'ACTIVE',
         text: 'Active',
-        selected: filters.status === 'active'
+        selected: filters.status === 'ACTIVE'
       },{
-        value: 'expired',
+        value: 'EXPIRED',
         text: 'Expired',
-        selected: filters.status ==='expired'
+        selected: filters.status ==='EXPIRED'
       }] %}
       <div class="govuk-grid-column-one-third inputs-less-margin">
       <fieldset class="govuk-fieldset">
@@ -110,6 +110,8 @@ Agreements - GOV.UK Pay
     </a> #}
   </p>
 
+  {% if agreements.results and agreements.results.length %}
+
   {% include "agreements/paginator.njk" %}
 
   <table id="agreements-list" class="govuk-table">
@@ -154,6 +156,10 @@ Agreements - GOV.UK Pay
     </tbody>
   </table>
   {% include "agreements/paginator.njk" %}
+
+  {% else %}
+  <p id="results-empty" class="govuk-body">There are no results for the filters you used.</p>
+  {% endif %}
 </div>
 
 

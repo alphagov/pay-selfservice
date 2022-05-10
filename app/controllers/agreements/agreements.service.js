@@ -1,7 +1,7 @@
 const Ledger = require('../../services/clients/ledger.client')
 const Paginator = require('../../utils/paginator')
 
-const PAGE_SIZE = 15
+const PAGE_SIZE = 20
 const MAX_PAGES = 2
 
 function formatAgreementPages(agreementSearchResponse) {
