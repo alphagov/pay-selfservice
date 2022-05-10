@@ -1,0 +1,166 @@
+{% from "./macro/status.njk" import agreementStatusTag %}
+{% from "./macro/payment-instrument.njk" import paymentInstrument %}
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+Agreements - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">Agreements</h1>
+
+  <div class="transactions-filter govuk-grid-row">
+    {# markup should be refined and not rely on clearfix - directly lifted from transactions #}
+    <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate>
+      {% set statuses = [{
+        value: '',
+        text: 'All',
+        selected: not filters.status
+      },{
+        value: 'CREATED',
+        text: 'Needs user details',
+        selected: filters.status === 'CREATED'
+      }, {
+        value: 'ACTIVE',
+        text: 'Active',
+        selected: filters.status === 'ACTIVE'
+      },{
+        value: 'EXPIRED',
+        text: 'Expired',
+        selected: filters.status ==='EXPIRED'
+      }] %}
+      <div class="govuk-grid-column-one-third inputs-less-margin">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-visually-hidden">
+          Status
+        </legend>
+        <fieldset class="govuk-fieldset">
+        {{
+          govukSelect({
+            id: "status",
+            name: "status",
+            classes: 'govuk-!-font-size-16 govuk-!-width-full',
+            label: {
+              text: "Status",
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: "Select an option",
+              classes: 'govuk-!-font-size-14'
+            },
+            items: statuses
+          })
+        }}
+        </fieldset>
+      </fieldset>
+    </div>
+      <div class="govuk-grid-column-one-third">
+        {{
+          govukInput({
+            id: 'reference',
+            name: 'reference',
+            value: filters.reference,
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: 'Reference number',
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: 'Enter full or partial reference',
+              classes: 'govuk-!-font-size-14'
+            }
+          })
+        }}
+      </div>
+      <style>
+        {# non-standard clearfix columns require empty space to fit correctly #}
+        @media (min-width: 40.0625em) {
+          .overflow-column {min-height: 120px }
+        }
+      </style>
+      <div class="govuk-grid-column-one-third overflow-column">
+      </div>
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {{
+          govukButton({
+            text: 'Filter',
+            classes: 'govuk-!-width-full',
+            attributes: {
+              id: "filter"
+            }
+          })
+        }}
+      </div>
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {% if filters | length %}
+        {% set clearRedirect = formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) %}
+        <a href="{{ clearRedirect }}" class="govuk-link govuk-link--no-visited-state clear-filter">Clear filter</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <p class="govuk-body govuk-!-margin-top-3">{{ agreements.total }} agreements</p>
+
+  <p class="govuk-body">
+    {# structure for downloading, backend doesn't accept CSV content-type for this endpoint yet #}
+    {# <a class="govuk-link govuk-link__no-visited-state" href="#">
+      Download agreement details as CSV file
+    </a> #}
+  </p>
+
+  {% if agreements.results and agreements.results.length %}
+
+  {% include "agreements/paginator.njk" %}
+
+  <table id="agreements-list" class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col" id="id-header">ID</th>
+        <th class="govuk-table__header" scope="col" id="reference-header">Reference</th>
+        <th class="govuk-table__header" hidden scope="col" id="status-header">Status</th>
+        <th class="govuk-table__header" scope="col" id="payment-instrumnet-header">Payment instrument</th>
+        <th class="govuk-table__header" scope="col" id="brand-header">Date created</th>
+      </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+    {% for agreement in agreements.results %}
+      <td class="govuk-table__cell pay-text-grey">
+        {{ agreement.external_id }}
+      </td>
+      <td class="govuk-table__cell  pay-text-grey">
+        <a
+          class="govuk-link govuk-link__no-visited-state govuk-!-margin-right-1"
+          data-action="update"
+          href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, agreement.external_id) }}">
+          {{ agreement.reference }}
+        </a>
+        {{ agreementStatusTag(agreement.status) }}
+      </td>
+      {# included for screen readers #}
+      <td hidden>{{ agreement.status }}</td>
+      <td class="govuk-table__cell pay-text-grey">
+        {% if agreement.payment_instrument %}
+          {{ paymentInstrument(agreement.payment_instrument) }}
+        {% else %}
+          (none set)
+        {% endif %}
+      </td>
+      <td class="govuk-table__cell pay-text-grey">
+        {{ agreement.created_date | datetime('datelong') }}
+      </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include "agreements/paginator.njk" %}
+
+  {% else %}
+  <p id="results-empty" class="govuk-body">There are no results for the filters you used.</p>
+  {% endif %}
+</div>
+
+
+{% endblock %}

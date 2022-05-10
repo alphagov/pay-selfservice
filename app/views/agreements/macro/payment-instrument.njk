@@ -1,0 +1,16 @@
+{% set cardMap = {
+  'visa': '/public/images/card_visa.png',
+  'master-card': '/public/images/card_mastercard.png',
+  'american-express': '/public/images/card_amex.png',
+  'unknown': '/public/images/card_unknown.png'
+} %}
+
+{% macro paymentInstrument(instrument) %}
+  {% set cardDetails = instrument.card_details %}
+  <span>
+    {% set imageUrl = cardMap[cardDetails.card_brand | lower] or cardMap.unknown %}
+    <img src="{{ imageUrl }}" alt="Card brand {{ cardDetails.card_brand }}" height="22" class="govuk-!-padding-bottom-1 govuk-!-margin-right-1" style="vertical-align: middle"></img>
+    <span class="govuk-!-margin-right-3"> ••••{{ cardDetails.last_digits_card_number }}</span>
+    <span> {{ cardDetails.expiry_date }}</span>
+  </span>
+{% endmacro %}

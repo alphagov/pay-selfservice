@@ -32,6 +32,7 @@ class GatewayAccount {
     this.analyticsId = gatewayAccountData.analytics_id
     this.toggle3ds = gatewayAccountData.toggle_3ds
     this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
+    this.recurringEnabled = gatewayAccountData.recurring_enabled
     this.requiresAdditionalKycData = gatewayAccountData.requires_additional_kyc_data
   }
 
@@ -48,6 +49,7 @@ class GatewayAccount {
       service_name: this.name,
       type: this.type,
       provider_switch_enabled: this.providerSwitchEnabled,
+      recurring_enabled: this.recurringEnabled,
       requiresAdditionalKycData: this.requiresAdditionalKycData
     }
   }

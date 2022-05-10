@@ -226,6 +226,14 @@ const defaultPermissions = [
   {
     name: 'webhooks:update',
     description: 'Update webhooks'
+  },
+  {
+    name: 'agreements:read',
+    description: 'View agreements'
+  },
+  {
+    name: 'agreements:update',
+    description: 'Update agreements'
   }
 ]
 

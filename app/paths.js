@@ -163,6 +163,10 @@ module.exports = {
       message: '/webhooks/:webhookId/message/:messageId',
       resendMessage: '/webhooks/:webhookId/message/:messageId/resend',
       create: '/webhooks/create'
+    },
+    agreements: {
+      index: '/agreements',
+      detail: '/agreements/:agreementId'
     }
   },
   service: {

@@ -73,6 +73,10 @@ function parseGatewayAccountOptions (opts) {
     stubOptions.gateway_account_credentials = opts.gatewayAccountCredentials
   }
 
+  if (opts.recurringEnabled) {
+    stubOptions.recurring_enabled = opts.recurringEnabled
+  }
+
   return stubOptions
 }
 
