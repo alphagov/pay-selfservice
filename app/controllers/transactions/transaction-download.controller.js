@@ -5,8 +5,6 @@ const date = require('../../utils/dates')
 const { renderErrorView } = require('../../utils/response')
 const { CORRELATION_HEADER } = require('../../utils/correlation-header')
 const Stream = require('../../services/clients/stream.client')
-const enableFeeBreakDownForTestAccounts = process.env.ENABLE_FEE_BREAKDOWN_IN_CSV_FOR_STRIPE_TEST_ACCOUNTS === 'true'
-const includeFeeBreakdownHeadersFromDate = process.env.INCLUDE_FEE_BREAKDOWN_HEADERS_IN_CSV_DATE || '1642982460'
 
 const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (req, res) {
   const accountId = req.account.gateway_account_id
@@ -16,9 +14,6 @@ const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (re
 
   if (req.account && req.account.payment_provider === 'stripe') {
     filters.feeHeaders = true
-
-    const includeFeeBreakdownHeaders = Math.round(Date.now() / 1000) >= includeFeeBreakdownHeadersFromDate
-    filters.feeBreakdownHeaders = includeFeeBreakdownHeaders || (req.account.type === 'test' && enableFeeBreakDownForTestAccounts)
   }
 
   filters.motoHeader = req.account && req.account.allow_moto
