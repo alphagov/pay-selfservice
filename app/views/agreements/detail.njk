@@ -1,0 +1,82 @@
+
+{% from "./macro/status.njk" import agreementStatusTag %}
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+  Agreement details {{ agreement.external_id }} - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+
+{% set filter = ("?" + listFilter) if listFilter  %}
+<div class="govuk-grid-column-two-thirds">
+  {{ govukBackLink({
+    text: "Back to agreements",
+    classes: "govuk-!-margin-top-0",
+    href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) + filter
+  }) }}
+
+  <h1 class="govuk-heading-l">Agreement detail</h1>
+
+  {{ govukSummaryList({
+    rows: [{
+      key: { text: "ID" },
+      value: { text: agreement.external_id }
+    },{
+      key: { text: "Reference" },
+      value: { text: agreement.reference }
+    },{
+      key: { text: "Status" },
+      value: { html: agreementStatusTag(agreement.status) }
+    },{
+      key: { text: "Description" },
+      value: { html: agreement.description },
+      attributes: {
+        id: "data-description"
+      }
+    },{
+      key: { text: "Date created" },
+      value: { html: agreement.created_date | datetime('datelong') }
+    }]
+  }) }}
+
+  <h2 class="govuk-heading-m govuk-!-margin-top-9">Payment instrument</h2>
+  {% set paymentInstrument = agreement.payment_instrument %}
+
+  {% if paymentInstrument %}
+  {% set cardDetails = paymentInstrument.card_details %}
+
+  {% set cardMap = {
+    'visa': '/public/images/card_visa.png',
+    'master-card': '/public/images/card_mastercard.png',
+    'american-express': '/public/images/card_amex.png',
+    'unknown': '/public/images/card_unknown.png'
+  } %}
+  {% set imageUrl = cardMap[cardDetails.card_brand | lower] or cardMap.unknown %}
+  {% set image %}
+  <img src="{{ imageUrl }}" alt="Card brand {{ cardDetails.card_brand }}" height="22" class="" style="vertical-align: middle"></img>
+  {% endset %}
+  {{ govukSummaryList({
+    rows: [{
+      key: { text: "Brand" },
+      value: { html: image }
+    },{
+      key: { text: "Name on card" },
+      value: { text: cardDetails.cardholder_name }
+    },{
+      key: { text: "Card number" },
+      value: { text: "••••" + cardDetails.last_digits_card_number }
+    },{
+      key: { text: "Card expiry date" },
+      value: { text: cardDetails.expiry_date }
+    }],
+    attributes: {
+      id: "payment-instrument-list"
+    }
+  }) }}
+
+  {% else %}
+  <p id="empty-payment-instrument" class="govuk-body">No payment instrument set for this agreement.</p>
+  {% endif %}
+</div>
+{% endblock %}
