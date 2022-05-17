@@ -4,7 +4,7 @@ const agreementsService = require('./agreements.service')
 
 const { response } = require('../../utils/response')
 
-async function listAgreements(req, res, next) {
+async function listAgreements (req, res, next) {
   const page = req.query.page || 1
 
   const filters = {
@@ -25,7 +25,7 @@ async function listAgreements(req, res, next) {
   }
 }
 
-async function agreementDetail(req, res, next) {
+async function agreementDetail (req, res, next) {
   const listFilter = req.session.agreementsFilter
   try {
     const agreement = await agreementsService.agreement(req.params.agreementId, req.service.externalId)

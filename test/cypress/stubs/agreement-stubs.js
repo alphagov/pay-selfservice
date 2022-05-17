@@ -16,7 +16,7 @@ function getLedgerAgreementsSuccess (opts) {
   })
 }
 
-function getLedgerAgreementSuccess(opts = {}) {
+function getLedgerAgreementSuccess (opts = {}) {
   const agreement = agreementFixtures.validAgreementResponse(opts)
   const path = `/v1/agreement/${agreement.external_id}`
   return stubBuilder('GET', path, 200, {

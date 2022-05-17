@@ -130,7 +130,7 @@ const agreements = function agreements (serviceId, live, page = 1, options = {})
   return baseClient.get(config)
 }
 
-const agreement = function agreement(id, serviceId, options = {}) {
+const agreement = function agreement (id, serviceId, options = {}) {
   const config = {
     url: `/v1/agreement/${id}`,
     qs: {
