@@ -40,7 +40,7 @@ const mockAgreements = [
   { external_id: 'a-valid-agreement-id-21', payment_instrument: { card_details: { card_brand: 'visa' }}}
 ]
 
-describe('Agreement list page', () => {
+describe('Agreements', () => {
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
@@ -83,6 +83,27 @@ describe('Agreement list page', () => {
     cy.get('.pagination.2').first().click()
 
     cy.get('.pagination.2').first().should('have.class', 'active')
+  })
+
+  it('should load the details page and preserve filter params', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      agreementStubs.getLedgerAgreementSuccess({ service_id: serviceExternalId, live: false, external_id: 'a-valid-agreement-id' })
+    ])
+
+    cy.get('[data-action=update]').then((links) => links[0].click())
+    cy.get('.govuk-heading-l').should('have.text', 'Agreement detail')
+    cy.get('.govuk-back-link').should('have.attr', 'href')
+      .and('include', 'page=2')
+      .and('include', 'status=CREATED')
+      .and('include', 'reference=a-valid-ref')
+
+    cy.get('#payment-instrument-list').should('exist')
+    cy.get('#empty-payment-instrument').should('not.exist')
+
+    cy.get('.govuk-summary-list__value').contains('Test User')
+    cy.get('.govuk-summary-list__value').contains('Reason shown to paying user for taking agreement')
+
   })
 
   it('should show no agreements content if filters return nothing', () => {

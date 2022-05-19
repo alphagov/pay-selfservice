@@ -455,6 +455,7 @@ module.exports.bind = function (app) {
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 
   futureAccountStrategy.get(agreements.index, permission('agreements:read'), agreementsController.listAgreements)
+  futureAccountStrategy.get(agreements.detail, permission('agreements:read'), agreementsController.agreementDetail)
 
   futureAccountStrategy.get(webhooks.index, permission('webhooks:read'), webhooksController.listWebhooksPage)
   futureAccountStrategy.get(webhooks.create, permission('webhooks:update'), webhooksController.createWebhookPage)
