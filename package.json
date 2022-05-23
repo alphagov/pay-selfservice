@@ -69,7 +69,7 @@
     "minimist": "1.2.6"
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "3.3.10",
+    "@govuk-pay/pay-js-commons": "3.4.0",
     "@sentry/node": "6.12.0",
     "accessible-autocomplete": "2.0.4",
     "aws-sdk": "2.1120.0",
@@ -144,7 +144,7 @@
     "mountebank": "^2.6.0",
     "nock": "13.2.4",
     "node-sass": "7.0.1",
-    "nodemon": "2.0.15",
+    "nodemon": "2.0.16",
     "notp": "2.0.3",
     "nunjucksify": "2.2.0",
     "portfinder": "1.0.28",
