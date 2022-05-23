@@ -140,7 +140,7 @@
     "husky": "7.0.4",
     "jsdom": "^19.0.0",
     "lint-staged": "12.4.1",
-    "mocha": "6.1.4",
+    "mocha": "^6.2.3",
     "mountebank": "^2.6.0",
     "nock": "13.2.4",
     "node-sass": "7.0.1",
@@ -149,9 +149,11 @@
     "nunjucksify": "2.2.0",
     "portfinder": "1.0.28",
     "proxyquire": "~2.1.0",
-    "sass-lint": "1.13.1",
     "sinon": "14.0.0",
     "standard": "12.0.1",
+    "stylelint": "^14.8.2",
+    "stylelint-config-gds": "^0.2.0",
+    "stylelint-order": "^5.0.0",
     "supertest": "^6.2.3"
   }
 }

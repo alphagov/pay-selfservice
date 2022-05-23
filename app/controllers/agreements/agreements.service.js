@@ -4,7 +4,7 @@ const Paginator = require('../../utils/paginator')
 const PAGE_SIZE = 20
 const MAX_PAGES = 2
 
-function formatAgreementPages(agreementSearchResponse) {
+function formatAgreementPages (agreementSearchResponse) {
   const { total, page, results } = agreementSearchResponse
   const paginator = new Paginator(total, PAGE_SIZE, page)
   const hasMultiplePages = paginator.getLast() > 1
@@ -12,12 +12,12 @@ function formatAgreementPages(agreementSearchResponse) {
   return { total, page, links, results }
 }
 
-async function agreements(serviceId, live, page = 1, filters = {}) {
+async function agreements (serviceId, live, page = 1, filters = {}) {
   const agreementSearchResponse = await Ledger.agreements(serviceId, live, page, { filters })
   return formatAgreementPages(agreementSearchResponse)
 }
 
-function agreement(id, serviceId) {
+function agreement (id, serviceId) {
   return Ledger.agreement(id, serviceId)
 }
 

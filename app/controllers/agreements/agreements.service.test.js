@@ -54,6 +54,6 @@ describe('agreements service', () => {
   })
 })
 
-function getAgreementsService(stub = {}) {
+function getAgreementsService (stub = {}) {
   return proxyquire('./agreements.service.js', { './../../services/clients/ledger.client': stub })
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-function buildCardDetails(opts = {}) {
+function buildCardDetails (opts = {}) {
   const billingAddressOpts = opts.billing_address || {}
 
   return {
@@ -18,7 +18,7 @@ function buildCardDetails(opts = {}) {
   }
 }
 
-function buildPaymentInstrument(opts = {}) {
+function buildPaymentInstrument (opts = {}) {
   return {
     method: opts.method || 'CARD',
     created_date: opts.created_date || '2022-03-01T01:00:00.000Z',
@@ -34,7 +34,7 @@ function buildAgreement (opts = {}) {
     description: opts.description || 'Reason shown to paying user for taking agreement',
     status: opts.status || 'ACTIVE',
     created_date: opts.created_date || '2022-03-01T01:00:00.000Z',
-    ...opts.payment_instrument !== false && { payment_instrument: buildPaymentInstrument(opts.payment_instrument )}
+    ...opts.payment_instrument !== false && { payment_instrument: buildPaymentInstrument(opts.payment_instrument) }
   }
 }
 
