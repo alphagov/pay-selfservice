@@ -1,0 +1,61 @@
+{% extends "layout.njk" %}
+{% from "../../macro/error-summary.njk" import errorSummary %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block pageTitle %}
+  Check your organisation's details - {{currentService.name}} - GOV.UK Pay
+{% endblock %}
+
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l">Check your organisation’s details</h1>
+
+  <p class="govuk-body">
+    Stripe needs the name and address for your organisation that appears on your
+    government entity document.
+  </p>
+
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Organisation name"
+        },
+        value: {
+          text: "TODO - Add org name"
+        }
+      },
+      {
+        key: {
+          text: "Address"
+        },
+        value: {
+          html: "TODO - add address"
+        }
+      }
+    ]
+  }) }}
+
+
+  {{ govukRadios({
+    idPrefix: "confirm-org-details",
+    name: "confirm-org-details",
+    fieldset: {
+      legend: {
+        html: "<h2 class='govuk-heading-m'>Do these organisation details match the details on your government entity document?</h2>"
+      }
+    },
+    items: [
+      {
+        value: "yes",
+        text: "Yes, these organisation details match"
+      },
+      {
+        value: "no",
+        text: "No, these organisation details do not match"
+      }
+    ]
+  }) }}
+</div>
+{% endblock %}

@@ -146,7 +146,8 @@ module.exports = {
         vatNumber: '/your-psp/:credentialId/vat-number',
         companyNumber: '/your-psp/:credentialId/company-number',
         governmentEntityDocument: '/your-psp/:credentialId/government-entity-document',
-        director: '/your-psp/:credentialId/director'
+        director: '/your-psp/:credentialId/director',
+        checkOrgDetails: '/your-psp/:credentialId/check-organisation-details'
       }
     }
   },
