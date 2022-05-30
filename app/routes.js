@@ -65,6 +65,7 @@ const requestToGoLiveChooseHowToProcessPaymentsController = require('./controlle
 const requestToGoLiveAgreementController = require('./controllers/request-to-go-live/agreement')
 const policyDocumentsController = require('./controllers/policy')
 const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
+const stripeSetupCheckOrgDetailsController = require('./controllers/stripe-setup/check-org-details')
 const stripeSetupResponsiblePersonController = require('./controllers/stripe-setup/responsible-person')
 const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number')
 const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/company-number')
@@ -452,6 +453,8 @@ module.exports.bind = function (app) {
   account.post([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
   account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
   account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
+  account.get(yourPsp.stripeSetup.checkOrgDetails, permission('stripe-organisation-details:update'), stripeSetupCheckOrgDetailsController.get)
+
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 
   futureAccountStrategy.get(agreements.index, permission('agreements:read'), agreementsController.listAgreements)
