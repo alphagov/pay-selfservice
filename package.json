@@ -115,7 +115,7 @@
   "devDependencies": {
     "@babel/core": "7.17.10",
     "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.17.10",
+    "@babel/preset-env": "7.18.2",
     "@pact-foundation/pact": "^9.17.3",
     "@pact-foundation/pact-node": "10.17.2",
     "chai": "4.3.6",
@@ -139,7 +139,7 @@
     "html5shiv": "3.7.x",
     "husky": "7.0.4",
     "jsdom": "^19.0.0",
-    "lint-staged": "12.4.1",
+    "lint-staged": "12.4.3",
     "mocha": "^6.2.3",
     "mountebank": "^2.6.0",
     "nock": "13.2.4",
