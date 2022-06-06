@@ -106,7 +106,7 @@
     "rfc822-validate": "1.0.0",
     "serve-favicon": "2.5.0",
     "staticify": "5.0.0",
-    "stripe": "^8.219.0",
+    "stripe": "^9.6.0",
     "throng": "5.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
