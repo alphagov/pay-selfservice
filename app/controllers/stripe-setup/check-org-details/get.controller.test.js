@@ -3,34 +3,36 @@
 const sinon = require('sinon')
 const { expect } = require('chai')
 const getController = require('./get.controller')
+const Service = require('../../../models/Service.class')
+const User = require('../../../models/User.class')
+const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
+const userFixtures = require('../../../../test/fixtures/user.fixtures')
+const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
 
 describe('Check org details - get controller', () => {
   let req
   let res
   let next
 
+  const service = new Service(serviceFixtures.validServiceResponse({
+    merchant_details: {
+      name: 'Test organisation',
+      address_line1: 'Test address line 1',
+      address_line2: 'Test address line 2',
+      address_city: 'London',
+      address_postcode: 'N1 1NN'
+    }
+  }))
+
+  const user = new User(userFixtures.validUserResponse())
+
   beforeEach(() => {
     req = {
       correlationId: 'correlation-id',
-      account: {
-        gateway_account_id: '1',
-        external_id: 'a-valid-external-id',
-        connectorGatewayAccountStripeProgress: {}
-      },
+      account: gatewayAccountFixture.validGatewayAccount({}),
       flash: sinon.spy(),
-      service: {
-        merchantDetails: {
-          name: 'Test organisation',
-          address_line1: 'Test address line 1',
-          address_line2: 'Test address line 2',
-          address_city: 'London',
-          address_postcode: 'N1 1NN'
-        }
-      },
-      user: {
-        getPermissionsForService: sinon.stub().returns(null),
-        isAdminUserForService: sinon.stub().returns(null)
-      }
+      service: service,
+      user: user
     }
     res = {
       redirect: sinon.spy(),

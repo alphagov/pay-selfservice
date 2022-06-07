@@ -147,7 +147,8 @@ module.exports = {
         companyNumber: '/your-psp/:credentialId/company-number',
         governmentEntityDocument: '/your-psp/:credentialId/government-entity-document',
         director: '/your-psp/:credentialId/director',
-        checkOrgDetails: '/your-psp/:credentialId/check-organisation-details'
+        checkOrgDetails: '/your-psp/:credentialId/check-organisation-details',
+        updateOrgDetails: '/your-psp/:credentialId/update-organisation-details'
       }
     }
   },
