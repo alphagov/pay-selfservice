@@ -26,7 +26,18 @@ module.exports = (req, res, next) => {
   const errors = validateConfirmOrgDetails(confirmOrgDetails)
 
   if (!lodash.isEmpty(errors)) {
-    return response(req, res, 'stripe-setup/check-org-details/index', { errors })
+    const { merchantDetails } = req.service
+
+    const data = {
+      errors: errors,
+      orgName: merchantDetails.name,
+      orgAddressLine1: merchantDetails.address_line1,
+      orgAddressLine2: merchantDetails.address_line2,
+      orgCity: merchantDetails.address_city,
+      orgPostcode: merchantDetails.address_postcode
+    }
+
+    return response(req, res, 'stripe-setup/check-org-details/index', data)
   }
 }
 

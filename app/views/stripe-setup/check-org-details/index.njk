@@ -26,6 +26,14 @@
   <form method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
+    {% set orgFullAddressHtml =  orgAddressLine1 %}
+    
+    {% if orgAddressLine2 %}
+      {% set orgFullAddressHtml =  orgFullAddressHtml + '</br>' + orgAddressLine2 %}
+    {% endif %}
+
+    {% set orgFullAddressHtml =  orgFullAddressHtml  + '</br>' + orgCity + '</br>' + orgPostcode %}
+
     {{ govukSummaryList({
       rows: [
         {
@@ -33,7 +41,7 @@
             text: "Organisation name"
           },
           value: {
-            text: "TODO - Add org name"
+            text: orgName
           }
         },
         {
@@ -41,7 +49,7 @@
             text: "Address"
           },
           value: {
-            html: "TODO - add address"
+            html: orgFullAddressHtml
           }
         }
       ]
