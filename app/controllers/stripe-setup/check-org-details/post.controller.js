@@ -2,13 +2,20 @@
 
 const lodash = require('lodash')
 
+const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
 const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
+const paths = require('../../../paths')
+const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
+const { getCredentialByExternalId } = require('../../../utils/credentials')
+const { ConnectorClient } = require('../../../services/clients/connector.client')
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const { getStripeAccountId } = require('../stripe-setup.util')
 
 // Constants
 const CONFIRM_ORG_DETAILS = 'confirm-org-details'
 
-module.exports = (req, res, next) => {
+module.exports = async function postCheckOrgDetails (req, res, next) {
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
   if (!stripeAccountSetup) {
@@ -38,6 +45,26 @@ module.exports = (req, res, next) => {
     }
 
     return response(req, res, 'stripe-setup/check-org-details/index', data)
+  }
+
+  const credential = getCredentialByExternalId(req.account, req.params.credentialId)
+
+  if (confirmOrgDetails === 'yes') {
+    try {
+      const stripeAccountId = await getStripeAccountId(req.account, false, req.correlationId)
+
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details', req.correlationId)
+
+      logger.info('Organisation details confirmed for Stripe account', {
+        stripe_account_id: stripeAccountId
+      })
+    } catch (error) {
+      next(error)
+    }
+
+    return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
+  } else {
+    return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.updateOrgDetails, req.account.external_id, credential.external_id))
   }
 }
 

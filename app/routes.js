@@ -455,6 +455,7 @@ module.exports.bind = function (app) {
   account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
   account.get(yourPsp.stripeSetup.checkOrgDetails, permission('stripe-organisation-details:update'), stripeSetupCheckOrgDetailsController.get)
   account.post(yourPsp.stripeSetup.checkOrgDetails, permission('stripe-organisation-details:update'), stripeSetupCheckOrgDetailsController.post)
+  account.get(yourPsp.stripeSetup.updateOrgDetails, permission('stripe-organisation-details:update'), requestToGoLiveOrganisationAddressController.get)
 
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 
