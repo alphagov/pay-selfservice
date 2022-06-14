@@ -4,6 +4,8 @@
 {% block pageTitle %}
 {% if isRequestToGoLive %}
   Enter your organisation’s contact details - Request a live account - {{ currentService.name }} - GOV.UK Pay
+{% elif isStripeUpdateOrgDetails %}
+  What is the name and address of you organisation on your government identity document? - {{ currentService.name }} - GOV.UK Pay 
 {% else %}
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endif %}
@@ -26,14 +28,16 @@
   }) }}
 
   {% if isRequestToGoLive %}
-  <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>
-  <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
-  <p class="govuk-body govuk-!-margin-bottom-6">Your payment pages will automatically display this information. You can change the details later if needed.</p>
+    <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>
+    <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
+    <p class="govuk-body govuk-!-margin-bottom-6">Your payment pages will automatically display this information. You can change the details later if needed.</p>
+  {% elif isStripeUpdateOrgDetails %}
+    <h1 class="govuk-heading-l">What is the name and address of you organisation on your government identity document?</h1>
   {% else %}
-  <h1 class="govuk-heading-l">Organisation details</h1>
-  <p class="govuk-body" id="merchant-details-info">
-      Payment card schemes require the details of the organisation taking payment to be shown on payment pages.
-  </p>
+    <h1 class="govuk-heading-l">Organisation details</h1>
+    <p class="govuk-body" id="merchant-details-info">
+        Payment card schemes require the details of the organisation taking payment to be shown on payment pages.
+    </p>
   {% endif %}
 
   <form id="request-to-go-live-organisation-address-form" method="post">
@@ -45,10 +49,13 @@
         Organisation name
       </label>
 
-      <div id="merchant-name-hint" class="govuk-hint govuk-!-width-two-thirds">
-        <p class="govuk-hint">Enter the main name of your organisation, not your local office or individual department.</p>
-        <p class="govuk-hint">Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>
-      </div>
+      {% if not isStripeUpdateOrgDetails %} 
+        <div id="merchant-name-hint" class="govuk-hint govuk-!-width-two-thirds">
+          <p class="govuk-hint">Enter the main name of your organisation, not your local office or individual department.</p>
+          <p class="govuk-hint">Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>
+        </div>
+      {% endif %}
+      
       {% if errors['merchant-name'] %}
       <span id="merchant-name-error" class="govuk-error-message">
         <span class="govuk-visually-hidden">Error:</span> {{errors["merchant-name"]}}
@@ -128,38 +135,40 @@
 
     {% endcall %}
 
-    {{ govukInput({
-      value: telephone_number,
-      label: {
-        text: "Telephone number",
-        classes: "govuk-label--m"
-      },
-      hint: {
-        text: "Include the country code for international numbers"
-      },
-      errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
-      id: "telephone-number",
-      name: "telephone-number",
-      classes: "govuk-!-width-two-thirds",
-      type: "tel"
-    }) }}
+    {% if not isStripeUpdateOrgDetails %}
+      {{ govukInput({
+        value: telephone_number,
+        label: {
+          text: "Telephone number",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          text: "Include the country code for international numbers"
+        },
+        errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
+        id: "telephone-number",
+        name: "telephone-number",
+        classes: "govuk-!-width-two-thirds",
+        type: "tel"
+      }) }}
 
-    {{ govukInput({
-      value: url,
-      label: {
-        text: "Organisation website address",
-        classes: "govuk-label--m"
-      },
-      hint: {
-        text: "Enter the address in full like https://www.example.com"
-      },
-      errorMessage: { text: errors.url } if errors.url else false,
-      id: "url",
-      name: "url",
-      classes: "govuk-!-width-two-thirds"
-    }) }}
+      {{ govukInput({
+        value: url,
+        label: {
+          text: "Organisation website address",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          text: "Enter the address in full like https://www.example.com"
+        },
+        errorMessage: { text: errors.url } if errors.url else false,
+        id: "url",
+        name: "url",
+        classes: "govuk-!-width-two-thirds"
+      }) }}
+    {% endif %}
 
-    {% if isRequestToGoLive %}
+    {% if isRequestToGoLive or isStripeUpdateOrgDetails %}
     {{ govukButton({ text: "Continue" }) }}
     {% else %}
     {{ govukButton({

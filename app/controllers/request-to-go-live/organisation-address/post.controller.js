@@ -29,6 +29,13 @@ const clientFieldNames = {
   url: 'url'
 }
 
+const validationRuleOrgName = {
+  field: clientFieldNames.name,
+  validator: validateMandatoryField,
+  maxLength: 255,
+  fieldDisplayName: 'name'
+}
+
 const validationRules = [
   {
     field: clientFieldNames.addressLine1,
@@ -47,7 +54,15 @@ const validationRules = [
     validator: validateMandatoryField,
     maxLength: 255,
     fieldDisplayName: 'town or city'
-  },
+  }
+]
+
+const validationRulesWithName = [
+  validationRuleOrgName,
+  ...validationRules
+]
+
+const validationRulesWithTelAndUrl = [
   {
     field: clientFieldNames.telephoneNumber,
     validator: validatePhoneNumber
@@ -55,17 +70,13 @@ const validationRules = [
   {
     field: clientFieldNames.url,
     validator: validateUrl
-  }
-]
-
-const validationRulesWithOrganisationName = [
-  {
-    field: clientFieldNames.name,
-    validator: validateMandatoryField,
-    maxLength: 255,
-    fieldDisplayName: 'name'
   },
   ...validationRules
+]
+
+const validationRulesWithNameAndTelAndUrl = [
+  validationRuleOrgName,
+  ...validationRulesWithTelAndUrl
 ]
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
@@ -87,8 +98,9 @@ const normaliseForm = (formBody) => {
   }, {})
 }
 
-const validateForm = function validate (form, isRequestToGoLive) {
-  const rules = isRequestToGoLive ? validationRules : validationRulesWithOrganisationName
+const validateForm = function validate (form, isRequestToGoLive, isStripeUpdateOrgDetails) {
+  const rules = isStripeUpdateOrgDetails ? validationRulesWithName : isRequestToGoLive ? validationRulesWithTelAndUrl : validationRulesWithNameAndTelAndUrl
+
   const errors = rules.reduce((errors, validationRule) => {
     const value = form[validationRule.field]
     const validationResponse = validationRule.validator(value, validationRule.maxLength,
@@ -113,22 +125,30 @@ const validateForm = function validate (form, isRequestToGoLive) {
   return orderedErrors
 }
 
-const submitForm = async function (form, serviceExternalId, correlationId, isRequestToGoLive) {
-  const updateRequest = new ServiceUpdateRequest()
-    .replace(validPaths.merchantDetails.addressLine1, form[clientFieldNames.addressLine1])
-    .replace(validPaths.merchantDetails.addressLine2, form[clientFieldNames.addressLine2])
-    .replace(validPaths.merchantDetails.addressCity, form[clientFieldNames.addressCity])
-    .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
-    .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
-    .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
-    .replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
-
-  if (isRequestToGoLive) {
-    updateRequest.replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
+const submitForm = async function (form, serviceExternalId, correlationId, isRequestToGoLive, isStripeUpdateOrgDetails) {
+  if (isStripeUpdateOrgDetails) {
+    // TODO - Update Stripe Flag & Strip Org details
   } else {
-    updateRequest.replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
+    const updateRequest = new ServiceUpdateRequest()
+      .replace(validPaths.merchantDetails.addressLine1, form[clientFieldNames.addressLine1])
+      .replace(validPaths.merchantDetails.addressLine2, form[clientFieldNames.addressLine2])
+      .replace(validPaths.merchantDetails.addressCity, form[clientFieldNames.addressCity])
+      .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
+      .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
+
+    if (isRequestToGoLive) {
+      updateRequest
+        .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
+        .replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
+        .replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
+    } else {
+      updateRequest
+        .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
+        .replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
+        .replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
+    }
+    return updateService(serviceExternalId, updateRequest.formatPayload(), correlationId)
   }
-  return updateService(serviceExternalId, updateRequest.formatPayload(), correlationId)
 }
 
 const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
@@ -149,12 +169,15 @@ const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
 module.exports = async function submitOrganisationAddress (req, res, next) {
   try {
     const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
+    const isStripeUpdateOrgDetails = paths.account.yourPsp.stripeSetup.updateOrgDetails.includes(req.route && req.route.path)
     const form = normaliseForm(req.body)
-    const errors = validateForm(form, isRequestToGoLive)
+    const errors = validateForm(form, isRequestToGoLive, isStripeUpdateOrgDetails)
 
     if (lodash.isEmpty(errors)) {
-      const updatedService = await submitForm(form, req.service.externalId, req.correlationId, isRequestToGoLive)
-      if (isRequestToGoLive) {
+      const updatedService = await submitForm(form, req.service.externalId, req.correlationId, isRequestToGoLive, isStripeUpdateOrgDetails)
+      if (isStripeUpdateOrgDetails) {
+        // TO DO - After saving details to Stripe, redirect to the next Stripe setup index controller page
+      } else if (isRequestToGoLive) {
         res.redirect(
           303,
           formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
@@ -163,7 +186,7 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
         res.redirect(303, formatServicePathsFor(paths.service.organisationDetails.index, req.service.externalId))
       }
     } else {
-      const pageData = buildErrorsPageData(form, errors, isRequestToGoLive)
+      const pageData = buildErrorsPageData(form, errors, isRequestToGoLive, isStripeUpdateOrgDetails)
       return response(req, res, 'request-to-go-live/organisation-address', pageData)
     }
   } catch (err) {

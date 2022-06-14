@@ -11,6 +11,8 @@ const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 module.exports = function getOrganisationAddress (req, res) {
   const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
 
+  const isStripeUpdateOrgDetails = paths.account.yourPsp.stripeSetup.updateOrgDetails.includes(req.route && req.route.path)
+
   if (isRequestToGoLive) {
     if (req.service.currentGoLiveStage !== goLiveStage.ENTERED_ORGANISATION_NAME) {
       return res.redirect(
@@ -32,7 +34,8 @@ module.exports = function getOrganisationAddress (req, res) {
       'telephone_number',
       'url'
     ]),
-    isRequestToGoLive
+    isRequestToGoLive,
+    isStripeUpdateOrgDetails
   }
   pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData, 'address_country'))
   return response.response(req, res, 'request-to-go-live/organisation-address', pageData)

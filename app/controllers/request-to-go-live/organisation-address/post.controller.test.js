@@ -2,31 +2,176 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const { expect } = require('chai')
 
 const goLiveStage = require('../../../models/go-live-stage')
 const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
-const mockResponse = {}
+
+const mockResponse = sinon.spy()
+
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
     '../../../services/service.service': mockServiceService,
-    '../../../utils/response': mockResponse
+    '../../../utils/response': {
+      response: mockResponse
+    }
   })
 }
 
+const errorKeysAndMessage = {
+  errorName: {
+    key: 'merchant-name',
+    text: 'Enter a name'
+  },
+  errorAddressLine1: {
+    key: 'address-line1',
+    text: 'Enter a building and street'
+  },
+  errorAddressCity: {
+    key: 'address-city',
+    text: 'Enter a town or city'
+  },
+  errorAddressPostcode: {
+    key: 'address-postcode',
+    text: 'Enter a postcode'
+  },
+  errorTelephoneNumber: {
+    key: 'telephone-number',
+    text: 'Enter a telephone number'
+  },
+  errorWebsiteAddress: {
+    key: 'url',
+    text: 'Enter a website address'
+  }
+}
+
+const correlationId = 'correlation-id'
+const serviceExternalId = 'abc123'
+const validLine1 = 'A building'
+const validLine2 = 'A street'
+const validCity = 'A city'
+const validCountry = 'GB'
+const validPostcode = 'E1 8QS'
+const validTeleponeNumber = '01134960000'
+const validUrl = 'https://www.example.com'
+
 describe('organisation address post controller', () => {
+  describe('check validation', () => {
+    let res, next
+
+    const updatedService = new Service(serviceFixtures.validServiceResponse({
+      external_id: serviceExternalId,
+      current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
+    }))
+
+    const mockUpdateService = sinon.spy(() => {
+      return new Promise(resolve => {
+        resolve(updatedService)
+      })
+    })
+
+    beforeEach(() => {
+      res = {
+        setHeader: sinon.stub(),
+        status: sinon.spy(),
+        redirect: sinon.spy(),
+        render: sinon.spy()
+      }
+      next = sinon.spy()
+      mockResponse.resetHistory()
+    })
+
+    describe('request to go live', () => {
+      it('when the required fields have not been populated, it should show the page with errors', () => {
+        const req = {
+          route: {
+            path: '/request-to-go-live/organisation-address'
+          },
+          correlationId
+        }
+
+        next = sinon.spy()
+
+        const controller = getController(mockUpdateService)
+
+        controller(req, res, next)
+
+        const responseData = mockResponse.getCalls()[0]
+
+        expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
+
+        const errors = responseData.args[3].errors
+        expect(Object.keys(errors).length).to.equal(5)
+        expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
+        expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
+        expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+        expect(errors[errorKeysAndMessage.errorTelephoneNumber.key]).to.equal(errorKeysAndMessage.errorTelephoneNumber.text)
+        expect(errors[errorKeysAndMessage.errorWebsiteAddress.key]).to.equal(errorKeysAndMessage.errorWebsiteAddress.text)
+      })
+    })
+
+    describe('view page when not `request to go live` or `Stripe setup`', () => {
+      it('when the required fields have not been populated, it should show the page with errors', () => {
+        const req = {
+          route: {
+            path: '/organisation-details'
+          },
+          correlationId
+        }
+
+        next = sinon.spy()
+
+        const controller = getController(mockUpdateService)
+
+        controller(req, res, next)
+
+        const responseData = mockResponse.getCalls()[0]
+
+        expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
+
+        const errors = responseData.args[3].errors
+        expect(Object.keys(errors).length).to.equal(6)
+        expect(errors[errorKeysAndMessage.errorName.key]).to.equal(errorKeysAndMessage.errorName.text)
+        expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
+        expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
+        expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+        expect(errors[errorKeysAndMessage.errorTelephoneNumber.key]).to.equal(errorKeysAndMessage.errorTelephoneNumber.text)
+        expect(errors[errorKeysAndMessage.errorWebsiteAddress.key]).to.equal(errorKeysAndMessage.errorWebsiteAddress.text)
+      })
+    })
+
+    describe('view page when `Stripe setup`', () => {
+      it('when the required fields have not been populated, it should show the page with errors', () => {
+        const req = {
+          route: {
+            path: '/your-psp/:credentialId/update-organisation-details'
+          },
+          correlationId
+        }
+
+        next = sinon.spy()
+
+        const controller = getController(mockUpdateService)
+
+        controller(req, res, next)
+
+        const responseData = mockResponse.getCalls()[0]
+
+        expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
+
+        const errors = responseData.args[3].errors
+        expect(Object.keys(errors).length).to.equal(4)
+        expect(errors[errorKeysAndMessage.errorName.key]).to.equal(errorKeysAndMessage.errorName.text)
+        expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
+        expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
+        expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+      })
+    })
+  })
+
   describe('request to go live', () => {
     describe('successful submission', () => {
-      const correlationId = 'correlation-id'
-      const serviceExternalId = 'abc123'
-      const validLine1 = 'A building'
-      const validLine2 = 'A street'
-      const validCity = 'A city'
-      const validCountry = 'GB'
-      const validPostcode = 'E1 8QS'
-      const validTeleponeNumber = '01134960000'
-      const validUrl = 'https://www.example.com'
-
       const service = new Service(serviceFixtures.validServiceResponse({
         external_id: serviceExternalId,
         current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
