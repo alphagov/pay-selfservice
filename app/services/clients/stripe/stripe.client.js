@@ -8,6 +8,7 @@ const StripePerson = require('./StripePerson.class')
 const StripeDirector = require('./StripeDirector.class')
 const StripeAccount = require('./StripeAccount.class')
 const StripePersonAdditionalKYCDetails = require('./StripePersonAdditionalKYCDetails.class')
+const StripeOrganisationDetails = require('./StripeOrganisationDetails.class')
 
 // Constants
 const STRIPE_HOST = process.env.STRIPE_HOST
@@ -40,6 +41,11 @@ module.exports = {
   updateBankAccount: function (stripeAccountId, body) {
     const bankAccount = new StripeBankAccount(body)
     return stripe.accounts.update(stripeAccountId, bankAccount.basicObject())
+  },
+
+  updateOrganisationDetails: function (stripeAccountId, body) {
+    const organisationDetails = new StripeOrganisationDetails(body)
+    return stripe.accounts.update(stripeAccountId, organisationDetails.basicObject())
   },
 
   updateCompany: function (stripeAccountId, body) {
