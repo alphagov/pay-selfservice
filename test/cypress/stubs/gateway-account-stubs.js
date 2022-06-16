@@ -77,6 +77,10 @@ function parseGatewayAccountOptions (opts) {
     stubOptions.recurring_enabled = opts.recurringEnabled
   }
 
+  if (opts.disabled) {
+    stubOptions.disabled = opts.disabled
+  }
+
   return stubOptions
 }
 

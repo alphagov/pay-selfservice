@@ -5,10 +5,14 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
 {% endblock %}
 
 {% block mainContent %}
-  {% include "./_live-account-requested-banner.njk" %}
-  {% include "./_stripe-account-setup-banner.njk" %}
-  {% include "./_switching-psp-banner.njk" %}
-  {% include "./_additional_kyc_info_banner.njk" %}
+  {% if currentGatewayAccount.disabled %}
+    {% include "./_account-disabled-banner.njk" %}
+  {% else %}
+    {% include "./_live-account-requested-banner.njk" %}
+    {% include "./_stripe-account-setup-banner.njk" %}
+    {% include "./_switching-psp-banner.njk" %}
+    {% include "./_additional-kyc-info-banner.njk" %}
+  {% endif %}
 
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l first-steps__title">Dashboard</h1>
