@@ -62,7 +62,7 @@ describe('Refund scenario:', function () {
     sinon.assert.calledWith(req.flash, 'refundSuccess', 'true')
   })
 
-  it('should show refund sucess message for a partial refund', async () => {
+  it('should show refund success message for a partial refund', async () => {
     req.body = {
       'refund-type': 'partial',
       'refund-amount-available-in-pence': '5000',
@@ -203,7 +203,32 @@ describe('Refund scenario:', function () {
     sinon.assert.calledWith(req.flash, 'refundError', 'This refund request has already been submitted.')
   })
 
-  it('should show error message if unexpected error has occured', async () => {
+  it('should show error message if the gateway account is disabled', async () => {
+    req.body = {
+      'refund-type': 'full',
+      'refund-amount-available-in-pence': '5000',
+      'full-amount': '50.00'
+    }
+
+    const request = transactionFixtures.validTransactionRefundRequest({
+      user_external_id: req.user.externalId,
+      user_email: req.user.email,
+      amount: 5000,
+      refund_amount_available: 5000
+    })
+    const response = transactionFixtures.invalidTransactionRefundResponse({
+      error_identifier: 'ACCOUNT_DISABLED'
+    })
+
+    connectorMock.post(connectorRefundUrl, request)
+      .reply(400, response)
+
+    await refundController(req, res)
+    sinon.assert.calledWith(res.redirect, '/account/an-external-id/transactions/123456')
+    sinon.assert.calledWith(req.flash, 'refundError', 'GOV.UK Pay has disabled payment and refund creation on this account. Please contact support.')
+  })
+
+  it('should show error message if unexpected error has occurred', async () => {
     req.body = {
       'refund-type': 'full',
       'refund-amount-available-in-pence': '5000',
