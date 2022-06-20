@@ -9,8 +9,8 @@ const schema = {
   address_city: Joi.string().required(),
   address_postcode: Joi.string().required(),
   address_country: Joi.string().required(),
-  telephone_number: Joi.string().required(),
-  url: Joi.string().required()
+  telephone_number: Joi.string().optional(),
+  url: Joi.string().optional()
 }
 
 class StripeOrganisationDetails {
@@ -40,16 +40,22 @@ function build (params) {
         city: params.address_city,
         postal_code: params.address_postcode,
         country: params.address_country
-      },
-      phone: params.telephone_number
-    },
-    business_profile: {
-      url: params.url
+      }
     }
   }
 
   if (params.address_line2) {
     stripeOrganisationDetails.company.address.line2 = params.address_line2
+  }
+
+  if (params.telephone_number) {
+    stripeOrganisationDetails.company.phone = params.telephone_number
+  }
+
+  if (params.url) {
+    stripeOrganisationDetails.business_profile = {
+      url: params.url
+    }
   }
 
   return stripeOrganisationDetails

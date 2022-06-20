@@ -7,14 +7,38 @@ const { expect } = require('chai')
 const goLiveStage = require('../../../models/go-live-stage')
 const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
+const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
 
 const mockResponse = sinon.spy()
+
+const loggerInfoMock = sinon.spy()
+const stripeAcountId = 'acct_123example123'
+const setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+const updateStripeAccountMock = sinon.spy(() => Promise.resolve())
 
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
     '../../../services/service.service': mockServiceService,
+    '../../../services/clients/connector.client': {
+      ConnectorClient: function () {
+        this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
+      }
+    },
     '../../../utils/response': {
       response: mockResponse
+    },
+    '../../../controllers/stripe-setup/stripe-setup.util': {
+      getStripeAccountId: () => {
+        return Promise.resolve(stripeAcountId)
+      }
+    },
+    '../../../utils/logger': function (filename) {
+      return {
+        info: loggerInfoMock
+      }
+    },
+    '../../../services/clients/stripe/stripe.client': {
+      updateOrganisationDetails: updateStripeAccountMock
     }
   })
 }
@@ -456,6 +480,84 @@ describe('organisation address post controller', () => {
 
         sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
         sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/organisation-details`)
+      })
+    })
+  })
+
+  describe('Stripe account setup', () => {
+    const correlationId = 'correlation-id'
+    const serviceExternalId = 'abc123'
+    const validName = 'HMRC'
+    const validLine1 = 'A building'
+    const validLine2 = 'A street'
+    const validCity = 'A city'
+    const validCountry = 'GB'
+    const validPostcode = 'E1 8QS'
+
+    const service = new Service(serviceFixtures.validServiceResponse({
+      external_id: serviceExternalId,
+      current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
+    }))
+
+    const req = {
+      account: gatewayAccountFixture.validGatewayAccount({}),
+      route: {
+        path: '/your-psp/:credentialId/update-organisation-details'
+      },
+      correlationId,
+      service: service,
+      body: {
+        'merchant-name': validName,
+        'address-line1': validLine1,
+        'address-line2': validLine2,
+        'address-city': validCity,
+        'address-postcode': validPostcode,
+        'address-country': validCountry
+      }
+    }
+
+    let res, next
+    beforeEach(() => {
+      res = {
+        setHeader: sinon.stub(),
+        status: sinon.spy(),
+        redirect: sinon.spy(),
+        render: sinon.spy()
+      }
+      next = sinon.spy()
+      mockResponse.renderErrorView = sinon.spy()
+    })
+
+    describe('service update success', () => {
+      const updatedService = new Service(serviceFixtures.validServiceResponse({
+        external_id: serviceExternalId,
+        current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
+      }))
+
+      const mockUpdateService = sinon.spy(() => {
+        return new Promise(resolve => {
+          resolve(updatedService)
+        })
+      })
+
+      const mockServiceService = { updateService: mockUpdateService }
+
+      it('should update connector flag, update Stripe, log message then redirect to `Stripe > Add PSP account details` redirect', async function () {
+        const controller = getController(mockServiceService)
+        await controller(req, res, next)
+
+        sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+          name: validName,
+          address_line1: validLine1,
+          address_line2: validLine2,
+          address_city: validCity,
+          address_postcode: validPostcode,
+          address_country: validCountry
+        })
+
+        sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
+        sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
+        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
       })
     })
   })

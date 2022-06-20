@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 
+const logger = require('../../../utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
 const paths = require('../../../paths')
@@ -17,6 +18,11 @@ const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpd
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 const { response } = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
+const { getStripeAccountId } = require('../../../controllers/stripe-setup/stripe-setup.util')
+const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
+const { ConnectorClient } = require('../../../services/clients/connector.client')
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const { updateOrganisationDetails } = require('../../../services/clients/stripe/stripe.client')
 
 const clientFieldNames = {
   name: 'merchant-name',
@@ -125,9 +131,24 @@ const validateForm = function validate (form, isRequestToGoLive, isStripeUpdateO
   return orderedErrors
 }
 
-const submitForm = async function (form, serviceExternalId, correlationId, isRequestToGoLive, isStripeUpdateOrgDetails) {
+const submitForm = async function (form, req, isRequestToGoLive, isStripeUpdateOrgDetails) {
   if (isStripeUpdateOrgDetails) {
-    // TODO - Update Stripe Flag & Strip Org details
+    const stripeAccountId = await getStripeAccountId(req.account, false, req.correlationId)
+
+    await updateOrganisationDetails(stripeAccountId, {
+      name: form[clientFieldNames.name],
+      address_line1: form[clientFieldNames.addressLine1],
+      address_line2: form[clientFieldNames.addressLine2],
+      address_city: form[clientFieldNames.addressCity],
+      address_postcode: form[clientFieldNames.addressPostcode],
+      address_country: form[clientFieldNames.addressCountry]
+    })
+
+    await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details', req.correlationId)
+
+    logger.info('Organisation details updated for Stripe account', {
+      stripe_account_id: stripeAccountId
+    })
   } else {
     const updateRequest = new ServiceUpdateRequest()
       .replace(validPaths.merchantDetails.addressLine1, form[clientFieldNames.addressLine1])
@@ -135,19 +156,15 @@ const submitForm = async function (form, serviceExternalId, correlationId, isReq
       .replace(validPaths.merchantDetails.addressCity, form[clientFieldNames.addressCity])
       .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
       .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
+      .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
+      .replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
 
     if (isRequestToGoLive) {
-      updateRequest
-        .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
-        .replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
-        .replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
+      updateRequest.replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
     } else {
-      updateRequest
-        .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
-        .replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
-        .replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
+      updateRequest.replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
     }
-    return updateService(serviceExternalId, updateRequest.formatPayload(), correlationId)
+    return updateService(req.service.externalId, updateRequest.formatPayload(), req.correlationId)
   }
 }
 
@@ -174,14 +191,11 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
     const errors = validateForm(form, isRequestToGoLive, isStripeUpdateOrgDetails)
 
     if (lodash.isEmpty(errors)) {
-      const updatedService = await submitForm(form, req.service.externalId, req.correlationId, isRequestToGoLive, isStripeUpdateOrgDetails)
+      const updatedService = await submitForm(form, req, isRequestToGoLive, isStripeUpdateOrgDetails)
       if (isStripeUpdateOrgDetails) {
-        // TO DO - After saving details to Stripe, redirect to the next Stripe setup index controller page
+        res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
       } else if (isRequestToGoLive) {
-        res.redirect(
-          303,
-          formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
-        )
+        res.redirect(303, formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId))
       } else {
         res.redirect(303, formatServicePathsFor(paths.service.organisationDetails.index, req.service.externalId))
       }

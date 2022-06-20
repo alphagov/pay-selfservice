@@ -71,4 +71,58 @@ describe('StripeOrganisationDetails', () => {
       }
     })
   })
+
+  it('should successfully create a StripeOrganisationDetails object without a telephone number', () => {
+    const stripeOrganisationDetails = new StripeOrganisationDetails({
+      name: validName,
+      address_line1: validLine1,
+      address_line2: validLine2,
+      address_city: validCity,
+      address_postcode: validPostcode,
+      address_country: validCountry,
+      url: validUrl
+    })
+
+    expect(stripeOrganisationDetails.basicObject()).to.deep.equal({
+      company: {
+        name: validName,
+        address: {
+          line1: validLine1,
+          line2: validLine2,
+          city: validCity,
+          postal_code: validPostcode,
+          country: validCountry
+        }
+      },
+      business_profile: {
+        url: validUrl
+      }
+    })
+  })
+
+  it('should successfully create a StripeOrganisationDetails object without a org URL', () => {
+    const stripeOrganisationDetails = new StripeOrganisationDetails({
+      name: validName,
+      address_line1: validLine1,
+      address_line2: validLine2,
+      address_city: validCity,
+      address_postcode: validPostcode,
+      address_country: validCountry,
+      telephone_number: validTelephoneNumber
+    })
+
+    expect(stripeOrganisationDetails.basicObject()).to.deep.equal({
+      company: {
+        name: validName,
+        address: {
+          line1: validLine1,
+          line2: validLine2,
+          city: validCity,
+          postal_code: validPostcode,
+          country: validCountry
+        },
+        phone: validTelephoneNumber
+      }
+    })
+  })
 })
