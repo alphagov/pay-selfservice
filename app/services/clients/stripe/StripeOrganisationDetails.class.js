@@ -3,7 +3,7 @@
 const Joi = require('joi')
 
 const schema = {
-  name: Joi.string().optional(),
+  name: Joi.string().required(),
   address_line1: Joi.string().required(),
   address_line2: Joi.string().optional(),
   address_city: Joi.string().required(),
