@@ -30,6 +30,10 @@ function getGatewayAccountStripeSetupSuccess (opts) {
     fixtureOpts.government_entity_document = opts.governmentEntityDocument
   }
 
+  if (opts.organisationDetails !== undefined) {
+    fixtureOpts.organisation_details = opts.organisationDetails
+  }
+
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`
   return stubBuilder('GET', path, 200, {
     response: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(fixtureOpts)
@@ -78,6 +82,13 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
     data = opts.governmentEntityDocument.map(completed => (
       {
         government_entity_document: completed
+      }
+    ))
+  }
+  if (opts.organisationDetails) {
+    data = opts.organisationDetails.map(completed => (
+      {
+        organisation_details: completed
       }
     ))
   }

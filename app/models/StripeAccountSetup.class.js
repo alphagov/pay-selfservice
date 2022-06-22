@@ -9,6 +9,7 @@ class StripeAccountSetup {
     this.director = opts.director
     this.additionalKycData = opts.additional_kyc_data
     this.governmentEntityDocument = opts.government_entity_document
+    this.organisationDetails = opts.organisation_details
   }
 }
 

@@ -12,7 +12,10 @@
   {% if errorList | length %}
     {{ govukErrorSummary({
         titleText: "There is a problem",
-        errorList: errorList
+        errorList: errorList,
+        attributes: {
+          'data-cy': 'error-summary'
+        }
       }) }}
   {% endif %}
 {% endmacro %}

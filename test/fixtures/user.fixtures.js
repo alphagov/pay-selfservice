@@ -196,6 +196,10 @@ const defaultPermissions = [
     description: 'Upload Government entity document'
   },
   {
+    name: 'stripe-organisation-details:update',
+    description: 'Check organisation details with Government entity document'
+  },
+  {
     name: 'connected-gocardless-account:read',
     description: 'View connected go cardless account'
   },

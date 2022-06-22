@@ -23,7 +23,7 @@
     government entity document.
   </p>
 
-  <form method="post">
+  <form method="post" data-cy="form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set orgFullAddressHtml =  orgAddressLine1 %}
@@ -35,22 +35,15 @@
     {% set orgFullAddressHtml =  orgFullAddressHtml  + '</br>' + orgCity + '</br>' + orgPostcode %}
 
     {{ govukSummaryList({
+      attributes: { 'data-cy': 'org-details' },
       rows: [
         {
-          key: {
-            text: "Organisation name"
-          },
-          value: {
-            text: orgName
-          }
+          key: { text: "Organisation name" },
+          value: { text: orgName }
         },
         {
-          key: {
-            text: "Address"
-          },
-          value: {
-            html: orgFullAddressHtml
-          }
+          key: { text: "Address" },
+          value: { html: orgFullAddressHtml }
         }
       ]
     }) }}
@@ -68,11 +61,13 @@
       items: [
         {
           value: "yes",
-          text: "Yes, these organisation details match"
+          text: "Yes, these organisation details match",
+          attributes: {'data-cy': 'yes-radio'}
         },
         {
           value: "no",
-          text: "No, these organisation details do not match"
+          text: "No, these organisation details do not match",
+          attributes: {'data-cy': 'no-radio'}
         }
       ],
       errorMessage: radioErrorMessage
@@ -82,7 +77,8 @@
       govukButton({
         text: "Continue",
         attributes: {
-          id: "continue-button"
+          id: "continue-button",
+          'data-cy': "continue-button"
         }
       })
     }}
