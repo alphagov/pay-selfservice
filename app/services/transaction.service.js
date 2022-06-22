@@ -118,6 +118,10 @@ const refund = async function refundTransaction (gatewayAccountId, chargeId, amo
           throw new Error('The amount you tried to refund is too low. Please try again.')
         }
       }
+
+      if (err.errorIdentifier === errorIdentifier.ACCOUNT_DISABLED) {
+          throw new Error('GOV.UK Pay has disabled payment and refund creation on this account. Please contact support.')
+      }
     }
     throw new Error('We couldn’t process this refund. Please try again or contact support.')
   }

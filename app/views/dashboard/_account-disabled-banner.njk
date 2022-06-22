@@ -1,0 +1,16 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+<div class="govuk-grid-column-full">
+{% set html %}
+  <p class="govuk-notification-banner__heading">GOV.UK Pay has disabled payment and refund creation for this account</p>
+  <p class="govuk-body-m">To start taking payments again, please contact support.</p>
+  <p class="govuk-body">
+    <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a>
+  </p>
+
+{% endset %}
+
+{{ govukNotificationBanner({
+  html: html
+}) }}
+</div>

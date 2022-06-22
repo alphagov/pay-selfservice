@@ -80,7 +80,8 @@ function validGatewayAccount (opts) {
     moto_mask_card_security_code_input: opts.moto_mask_card_security_code_input || false,
     requires3ds: opts.requires3ds || false,
     integration_version_3ds: opts.integrationVersion3ds || 1,
-    requires_additional_kyc_data: opts.requiresAdditionalKycData || false
+    requires_additional_kyc_data: opts.requiresAdditionalKycData || false,
+    disabled: opts.disabled || false
   }
 
   if (opts.recurring_enabled !== undefined) {
