@@ -28,7 +28,7 @@ jobs:
         run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
         id: parse-node-version
       - name: Setup
-        uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854
+        uses: actions/setup-node@eeb10cff27034e7acf239c5d29f62154018672fd
         with:
           node-version: "${{ steps.parse-node-version.outputs.NVMRC }}"
       - name: Cache build directories
