@@ -107,7 +107,8 @@ describe('organisation address post controller', () => {
     })
 
     describe('request to go live', () => {
-      it('when the required fields have not been populated, it should show the page with errors', () => {
+      it('when the required fields have not been populated, it should show the page with errors and set the ' +
+        'flags `isRequestToGoLive` and `isStripeUpdateOrgDetails` correctly', () => {
         const req = {
           route: {
             path: '/request-to-go-live/organisation-address'
@@ -132,11 +133,15 @@ describe('organisation address post controller', () => {
         expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
         expect(errors[errorKeysAndMessage.errorTelephoneNumber.key]).to.equal(errorKeysAndMessage.errorTelephoneNumber.text)
         expect(errors[errorKeysAndMessage.errorWebsiteAddress.key]).to.equal(errorKeysAndMessage.errorWebsiteAddress.text)
+
+        expect(responseData.args[3].isRequestToGoLive).to.equal(true)
+        expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(false)
       })
     })
 
     describe('view page when not `request to go live` or `Stripe setup`', () => {
-      it('when the required fields have not been populated, it should show the page with errors', () => {
+      it('when the required fields have not been populated, it should show the page with errors and set the ' +
+      'flags `isRequestToGoLive` and `isStripeUpdateOrgDetails` correctly', () => {
         const req = {
           route: {
             path: '/organisation-details'
@@ -162,11 +167,15 @@ describe('organisation address post controller', () => {
         expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
         expect(errors[errorKeysAndMessage.errorTelephoneNumber.key]).to.equal(errorKeysAndMessage.errorTelephoneNumber.text)
         expect(errors[errorKeysAndMessage.errorWebsiteAddress.key]).to.equal(errorKeysAndMessage.errorWebsiteAddress.text)
+
+        expect(responseData.args[3].isRequestToGoLive).to.equal(false)
+        expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(false)
       })
     })
 
     describe('view page when `Stripe setup`', () => {
-      it('when the required fields have not been populated, it should show the page with errors', () => {
+      it('when the required fields have not been populated, it should show the page with errors ' +
+        'flags `isRequestToGoLive` and `isStripeUpdateOrgDetails` correctly', () => {
         const req = {
           route: {
             path: '/your-psp/:credentialId/update-organisation-details'
@@ -190,6 +199,9 @@ describe('organisation address post controller', () => {
         expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
         expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
         expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+
+        expect(responseData.args[3].isRequestToGoLive).to.equal(false)
+        expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(true)
       })
     })
   })
@@ -370,7 +382,7 @@ describe('organisation address post controller', () => {
     })
   })
 
-  describe('organisation details page not part of request to go live', () => {
+  describe('organisation details page not part of `request to go live` or `Stripe setup`', () => {
     const correlationId = 'correlation-id'
     const serviceExternalId = 'abc123'
     const validName = 'HMRC'

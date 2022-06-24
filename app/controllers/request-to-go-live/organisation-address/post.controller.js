@@ -87,7 +87,7 @@ const validationRulesWithNameAndTelAndUrl = [
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
-const normaliseForm = (formBody) => {
+function normaliseForm (formBody) {
   const fields = [
     clientFieldNames.name,
     clientFieldNames.addressLine1,
@@ -104,7 +104,7 @@ const normaliseForm = (formBody) => {
   }, {})
 }
 
-const validateForm = function validate (form, isRequestToGoLive, isStripeUpdateOrgDetails) {
+function validateForm (form, isRequestToGoLive, isStripeUpdateOrgDetails) {
   const rules = isStripeUpdateOrgDetails ? validationRulesWithName : isRequestToGoLive ? validationRulesWithTelAndUrl : validationRulesWithNameAndTelAndUrl
 
   const errors = rules.reduce((errors, validationRule) => {
@@ -131,7 +131,7 @@ const validateForm = function validate (form, isRequestToGoLive, isStripeUpdateO
   return orderedErrors
 }
 
-const submitForm = async function (form, req, isRequestToGoLive, isStripeUpdateOrgDetails) {
+async function submitForm (form, req, isRequestToGoLive, isStripeUpdateOrgDetails) {
   if (isStripeUpdateOrgDetails) {
     const stripeAccountId = await getStripeAccountId(req.account, false, req.correlationId)
 
@@ -168,7 +168,7 @@ const submitForm = async function (form, req, isRequestToGoLive, isStripeUpdateO
   }
 }
 
-const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
+function buildErrorsPageData (form, errors, isRequestToGoLive, isStripeUpdateOrgDetails) {
   return {
     errors: errors,
     name: form[clientFieldNames.name],
@@ -179,7 +179,8 @@ const buildErrorsPageData = (form, errors, isRequestToGoLive) => {
     telephone_number: form[clientFieldNames.telephoneNumber],
     url: form[clientFieldNames.url],
     countries: countries.govukFrontendFormatted(form[clientFieldNames.addressCountry]),
-    isRequestToGoLive
+    isRequestToGoLive,
+    isStripeUpdateOrgDetails
   }
 }
 

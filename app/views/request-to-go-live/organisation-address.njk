@@ -40,12 +40,12 @@
     </p>
   {% endif %}
 
-  <form id="request-to-go-live-organisation-address-form" method="post">
+  <form id="request-to-go-live-organisation-address-form" method="post" data-cy="form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
     {% if not isRequestToGoLive %}
     <div class="govuk-form-group {% if errors['merchant-name'] %} govuk-form-group--error {% endif %}">
-      <label class="govuk-label govuk-label--m" for="merchant-name">
+      <label class="govuk-label govuk-label--m" for="merchant-name" data-cy="label-org-name">
         Organisation name
       </label>
 
@@ -62,7 +62,7 @@
       </span>
       {% endif %}
       <input class="govuk-input govuk-!-width-two-thirds {% if errors['merchant-name'] %} govuk-input--error {% endif %}"
-             id="merchant-name" name="merchant-name" type="text" aria-describedby="merchant-name-hint"
+             id="merchant-name" name="merchant-name" type="text" aria-describedby="merchant-name-hint" data-cy="input-org-name"
              value="{{name}}"/>
     </div>
     {% endif %}
@@ -77,7 +77,8 @@
 
     {{ govukInput({
       label: {
-        html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+        html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>',
+        attributes: { 'data-cy': 'label-address-line-1' }
       },
       hint: {
         text: "Enter the main building or office address"
@@ -86,29 +87,34 @@
       id: "address-line1",
       name: "address-line1",
       errorMessage: { text: errors['address-line1'] } if errors['address-line1'] else false,
-      value: address_line1
+      value: address_line1,
+      attributes: { 'data-cy': 'input-address-line-1' }
     }) }}
 
     {{ govukInput({
       label: {
-        html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+        html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>',
+        attributes: { 'data-cy': 'label-address-line-2' }
       },
       classes: "govuk-!-width-two-thirds",
       id: "address-line2",
       name: "address-line2",
       errorMessage: { text: errors['address-line2'] } if errors['address-line2'] else false,
-      value: address_line2
+      value: address_line2,
+      attributes: { 'data-cy': 'input-address-line-2' }
     }) }}
 
     {{ govukInput({
       label: {
-        text: "Town or city"
+        text: "Town or city",
+        attributes: { 'data-cy': 'label-address-city' }
       },
       classes: "govuk-!-width-one-half",
       id: "address-city",
       name: "address-city",
       errorMessage: { text: errors['address-city'] } if errors['address-city'] else false,
-      value: address_city
+      value: address_city,
+      attributes: { 'data-cy': 'input-address-city' }
     }) }}
 
     {{ govukSelect({
@@ -117,20 +123,24 @@
       name: "address-country",
       errorMessage: { text: errors['address-country'] } if errors['address-country'] else false,
       label: {
-        text: "Country"
+        text: "Country",
+         attributes: { 'data-cy': 'label-address-country' }
       },
-      items: countries
+      items: countries,
+      attributes: { 'data-cy': 'input-address-country' }
     }) }}
 
     {{ govukInput({
       label: {
-        text: "Postcode"
+        text: "Postcode",
+         attributes: { 'data-cy': 'label-address-postcode' }
       },
       classes: "govuk-input--width-10",
       id: "address-postcode",
       name: "address-postcode",
       errorMessage: { text: errors['address-postcode'] } if errors['address-postcode'] else false,
-      value: address_postcode
+      value: address_postcode,
+      attributes: { 'data-cy': 'input-address-postcode' }
     }) }}
 
     {% endcall %}
@@ -140,43 +150,53 @@
         value: telephone_number,
         label: {
           text: "Telephone number",
-          classes: "govuk-label--m"
+          classes: "govuk-label--m",
+          attributes: { 'data-cy': 'label-telephone-number' }
         },
         hint: {
-          text: "Include the country code for international numbers"
+          text: "Include the country code for international numbers",
+          attributes: { 'data-cy': 'hint-telephone-number' }
         },
         errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
         id: "telephone-number",
         name: "telephone-number",
         classes: "govuk-!-width-two-thirds",
-        type: "tel"
+        type: "tel",
+        attributes: { 'data-cy': 'input-telephone-number' }
       }) }}
 
       {{ govukInput({
         value: url,
         label: {
           text: "Organisation website address",
-          classes: "govuk-label--m"
+          classes: "govuk-label--m",
+          attributes: { 'data-cy': 'label-url' }
         },
         hint: {
-          text: "Enter the address in full like https://www.example.com"
+          text: "Enter the address in full like https://www.example.com",
+          attributes: { 'data-cy': 'hint-url' }
         },
         errorMessage: { text: errors.url } if errors.url else false,
         id: "url",
         name: "url",
-        classes: "govuk-!-width-two-thirds"
+        classes: "govuk-!-width-two-thirds",
+        attributes: { 'data-cy': 'input-url' }
       }) }}
     {% endif %}
 
     {% if isRequestToGoLive or isStripeUpdateOrgDetails %}
-    {{ govukButton({ text: "Continue" }) }}
+      {{ govukButton({ 
+        text: "Continue",
+        attributes: { 'data-cy': 'continue-button' } 
+      }) }}
     {% else %}
-    {{ govukButton({
-      text: "Save organisation details",
-      attributes: {
-        id: "save-merchant-details"
-      }
-    }) }}
+      {{ govukButton({
+        text: "Save organisation details",
+        attributes: {
+          id: "save-merchant-details",
+          attributes: { 'data-cy': 'save-button' }
+        }
+      }) }}
     {% endif %}
   </form>
 </div>
