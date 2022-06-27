@@ -144,7 +144,7 @@
     "mountebank": "^2.6.0",
     "nock": "13.2.4",
     "node-sass": "7.0.1",
-    "nodemon": "2.0.16",
+    "nodemon": "2.0.18",
     "notp": "2.0.3",
     "nunjucksify": "2.2.0",
     "portfinder": "1.0.28",
