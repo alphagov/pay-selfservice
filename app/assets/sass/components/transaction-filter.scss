@@ -45,11 +45,11 @@
 }
 
 .datetime-separator {
-  @include govuk-font($size: 16)
+  @include govuk-font($size: 16);
   margin-bottom: govuk-spacing(2);
 
   @include govuk-media-query(tablet) {
-    @include govuk-font($size: 14)
+    @include govuk-font($size: 14);
     position: absolute;
     top: 50%;
     left: -8px;
