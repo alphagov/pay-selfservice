@@ -121,7 +121,7 @@
     "chai": "4.3.6",
     "chai-arrays": "2.2.0",
     "chai-as-promised": "7.1.1",
-    "cheerio": "1.0.0-rc.11",
+    "cheerio": "1.0.0-rc.12",
     "chokidar-cli": "latest",
     "csrf": "^3.1.0",
     "cypress": "5.0.0",
