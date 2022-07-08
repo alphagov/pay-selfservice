@@ -135,14 +135,21 @@ async function submitForm (form, req, isRequestToGoLive, isStripeUpdateOrgDetail
   if (isStripeUpdateOrgDetails) {
     const stripeAccountId = await getStripeAccountId(req.account, false, req.correlationId)
 
-    await updateOrganisationDetails(stripeAccountId, {
+    const newOrgDetails = {
       name: form[clientFieldNames.name],
       address_line1: form[clientFieldNames.addressLine1],
-      address_line2: form[clientFieldNames.addressLine2],
       address_city: form[clientFieldNames.addressCity],
       address_postcode: form[clientFieldNames.addressPostcode],
       address_country: form[clientFieldNames.addressCountry]
-    })
+    }
+
+    const addressLine2 = form[clientFieldNames.addressLine2]
+
+    if (addressLine2) {
+      newOrgDetails.address_line2 = addressLine2
+    }
+
+    await updateOrganisationDetails(stripeAccountId, newOrgDetails)
 
     await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details', req.correlationId)
 
