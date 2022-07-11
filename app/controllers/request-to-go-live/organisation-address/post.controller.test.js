@@ -511,25 +511,26 @@ describe('organisation address post controller', () => {
       current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
     }))
 
-    const req = {
-      account: gatewayAccountFixture.validGatewayAccount({}),
-      route: {
-        path: '/your-psp/:credentialId/update-organisation-details'
-      },
-      correlationId,
-      service: service,
-      body: {
-        'merchant-name': validName,
-        'address-line1': validLine1,
-        'address-line2': validLine2,
-        'address-city': validCity,
-        'address-postcode': validPostcode,
-        'address-country': validCountry
-      }
-    }
+    let req, res, next
 
-    let res, next
     beforeEach(() => {
+      req = {
+        account: gatewayAccountFixture.validGatewayAccount({}),
+        route: {
+          path: '/your-psp/:credentialId/update-organisation-details'
+        },
+        correlationId,
+        service: service,
+        body: {
+          'merchant-name': validName,
+          'address-line1': validLine1,
+          'address-line2': validLine2,
+          'address-city': validCity,
+          'address-postcode': validPostcode,
+          'address-country': validCountry
+        }
+      }
+
       res = {
         setHeader: sinon.stub(),
         status: sinon.spy(),
@@ -553,9 +554,9 @@ describe('organisation address post controller', () => {
       })
 
       const mockServiceService = { updateService: mockUpdateService }
+      const controller = getController(mockServiceService)
 
       it('should update connector flag, update Stripe, log message then redirect to `Stripe > Add PSP account details` redirect', async function () {
-        const controller = getController(mockServiceService)
         await controller(req, res, next)
 
         sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
@@ -570,6 +571,20 @@ describe('organisation address post controller', () => {
         sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
         sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
         sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
+      })
+
+      it('when `address-line2` is empty, it should not call the Stripe client with address line 2', async function () {
+        req.body['address-line2'] = ''
+
+        await controller(req, res, next)
+
+        sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+          name: validName,
+          address_line1: validLine1,
+          address_city: validCity,
+          address_postcode: validPostcode,
+          address_country: validCountry
+        })
       })
     })
   })
