@@ -21,11 +21,13 @@
         <div class="govuk-!-margin-top-3">
             <a class="govuk-!-font-size-16 govuk-!-margin-right-3 govuk-link govuk-link--no-visited-state" href="manage/edit/{{ product.externalId }}">Edit<span class="govuk-visually-hidden">
                     payment link called
-                    {{product.name}}</span></a>
+                    {{product.name}}</span>
+            </a>
             <a class="govuk-!-font-size-16 govuk-link govuk-link--no-visited-state payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete
                 <span class="govuk-visually-hidden">
                     payment link called
-                    {{product.name}}</span></a>
+                    {{product.name}}</span>
+            </a>
             <div class="target-to-show govuk-!-margin-top-6" id="delete-{{ product.externalId }}">
                 <div class="govuk-error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
                     <h2 tabindex="0" class="target-to-show__heading govuk-error-summary__title" id="error-summary">
@@ -40,10 +42,11 @@
                         })
                       }}
                     </div>
-                    <a class="govuk-link govuk-link--no-visited-state
-    govuk-link--no-visited-state target-to-show--cancel" href="#main">Cancel</a>
+                    <a class="govuk-link govuk-link--no-visited-state govuk-link--no-visited-state target-to-show--cancel" href="#main">
+                        Cancel
+                    </a>
                 </div>
             </div>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
 </li>
