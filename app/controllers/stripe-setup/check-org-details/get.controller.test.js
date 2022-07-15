@@ -75,4 +75,43 @@ describe('Check org details - get controller', () => {
     expect(pageData.orgCity).to.equal('London')
     expect(pageData.orgPostcode).to.equal('N1 1NN')
   })
+
+  it('should render `check your organisation` form if details are not yet submitted and the `merchantDetails` is empty', async () => {
+    const updatedService = { ...req.service, merchantDetails: undefined }
+    req.service = updatedService
+
+    req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+
+    await getController(req, res)
+
+    const renderArgs = res.render.getCalls()[0]
+    expect(renderArgs.args[0]).to.equal('stripe-setup/check-org-details/index')
+
+    const pageData = renderArgs.args[1]
+    expect(pageData.orgName).to.equal(null)
+    expect(pageData.orgAddressLine1).to.equal(null)
+    expect(pageData.orgAddressLine2).to.equal(null)
+    expect(pageData.orgCity).to.equal(null)
+    expect(pageData.orgPostcode).to.equal(null)
+  })
+
+  it('should render `check your organisation` form if details are not yet submitted and only the `merchantDetails.name` is empty', async () => {
+    const updatedService = { ...req.service }
+    updatedService.merchantDetails.name = undefined
+    req.service = updatedService
+
+    req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+
+    await getController(req, res)
+
+    const renderArgs = res.render.getCalls()[0]
+    expect(renderArgs.args[0]).to.equal('stripe-setup/check-org-details/index')
+
+    const pageData = renderArgs.args[1]
+    expect(pageData.orgName).to.equal(null)
+    expect(pageData.orgAddressLine1).to.equal('Test address line 1')
+    expect(pageData.orgAddressLine2).to.equal('Test address line 2')
+    expect(pageData.orgCity).to.equal('London')
+    expect(pageData.orgPostcode).to.equal('N1 1NN')
+  })
 })
