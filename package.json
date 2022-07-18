@@ -69,7 +69,7 @@
     "minimist": "1.2.6"
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "3.5.2",
+    "@govuk-pay/pay-js-commons": "3.6.0",
     "@sentry/node": "6.12.0",
     "accessible-autocomplete": "2.0.4",
     "aws-sdk": "2.1167.0",
@@ -99,7 +99,7 @@
     "passport": "0.5.x",
     "passport-custom": "1.1.1",
     "passport-local": "1.0.0",
-    "qrcode": "1.5.0",
+    "qrcode": "1.5.1",
     "qs": "6.11.0",
     "request": "2.88.2",
     "request-promise-native": "1.0.9",
