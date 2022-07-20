@@ -20,6 +20,22 @@ const getController = function getController () {
 
 const correlationId = 'correlation-id'
 
+const account = {
+  connectorGatewayAccountStripeProgress: {
+    organisationDetails: false
+  }
+}
+
+const merchantDetails = {
+  name: 'Test organisation',
+  address_line1: 'Test address line 1',
+  address_line2: 'Test address line 2',
+  address_city: 'London',
+  address_postcode: 'N1 1NN',
+  telephone_number: '02081119900',
+  url: 'http://www.example.com'
+}
+
 describe('organisation address get controller', () => {
   describe('check validation', () => {
     let res
@@ -33,9 +49,10 @@ describe('organisation address get controller', () => {
     })
 
     describe('request to go Live', () => {
-      it('should display the org address page and set `isRequestToGoLive=true`', () => {
+      it('should display the org address page and set `isRequestToGoLive=true` and set form data correctly', () => {
         const service = new Service(serviceFixtures.validServiceResponse({
-          current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
+          current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME,
+          merchant_details: merchantDetails
         }))
 
         const req = {
@@ -43,7 +60,8 @@ describe('organisation address get controller', () => {
             path: '/request-to-go-live/organisation-address'
           },
           correlationId,
-          service
+          service,
+          account
         }
 
         const controller = getController()
@@ -57,6 +75,13 @@ describe('organisation address get controller', () => {
         const pageData = responseData.args[3]
         expect(pageData.isRequestToGoLive).to.equal(true)
         expect(pageData.isStripeUpdateOrgDetails).to.equal(false)
+        expect(pageData.name).to.equal('Test organisation')
+        expect(pageData.address_line1).to.equal('Test address line 1')
+        expect(pageData.address_line2).to.equal('Test address line 2')
+        expect(pageData.address_city).to.equal('London')
+        expect(pageData.address_postcode).to.equal('N1 1NN')
+        expect(pageData.telephone_number).to.equal('02081119900')
+        expect(pageData.url).to.equal('http://www.example.com')
       })
 
       it('when the organisation name has not been entered, should redirect to the `request to go live index`', () => {
@@ -68,7 +93,8 @@ describe('organisation address get controller', () => {
           route: {
             path: '/request-to-go-live/organisation-address'
           },
-          service
+          service,
+          account
         }
 
         const controller = getController()
@@ -80,11 +106,13 @@ describe('organisation address get controller', () => {
     })
 
     describe('view page when `Stripe setup`', () => {
-      it('should display the org address page and set `isStripeUpdateOrgDetails=true`', () => {
+      it('should display the org address page and set `isStripeUpdateOrgDetails=true` ' +
+      'and all form fields should be reset to empty', () => {
         const req = {
           route: {
             path: '/your-psp/:credentialId/update-organisation-details'
-          }
+          },
+          account
         }
 
         const controller = getController()
@@ -98,15 +126,48 @@ describe('organisation address get controller', () => {
         const pageData = responseData.args[3]
         expect(pageData.isStripeUpdateOrgDetails).to.equal(true)
         expect(pageData.isRequestToGoLive).to.equal(false)
+     
+        expect(pageData.name).to.equal(undefined)
+        expect(pageData.address_line1).to.equal(undefined)
+        expect(pageData.address_line2).to.equal(undefined)
+        expect(pageData.address_city).to.equal(undefined)
+        expect(pageData.address_postcode).to.equal(undefined)
+        expect(pageData.telephone_number).to.equal(undefined)
+        expect(pageData.url).to.equal(undefined)
+      })
+
+      it('should render error if organisation details have already been submitted', async () => {
+        const req = {
+          route: {
+            path: '/your-psp/:credentialId/update-organisation-details'
+          },
+          account
+        }
+
+        req.account.connectorGatewayAccountStripeProgress.organisationDetails = true
+
+        const controller = getController()
+
+        controller(req, res)
+
+        const responseData = mockResponse.getCalls()[0]
+        expect(responseData.args[2]).to.equal('error-with-link')
       })
     })
 
     describe('view page when not `request to go live` or `Stripe setup`', () => {
       it('should display the org address page and set `isStripeUpdateOrgDetails=false` & `isRequestToGoLive=false`', () => {
+        const service = new Service(serviceFixtures.validServiceResponse({
+          current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME,
+          merchant_details: merchantDetails
+        }))
+
         const req = {
           route: {
             path: '/organisation-details'
-          }
+          },
+          account,
+          service
         }
 
         const controller = getController()
@@ -120,6 +181,14 @@ describe('organisation address get controller', () => {
         const pageData = responseData.args[3]
         expect(pageData.isStripeUpdateOrgDetails).to.equal(false)
         expect(pageData.isRequestToGoLive).to.equal(false)
+
+        expect(pageData.name).to.equal('Test organisation')
+        expect(pageData.address_line1).to.equal('Test address line 1')
+        expect(pageData.address_line2).to.equal('Test address line 2')
+        expect(pageData.address_city).to.equal('London')
+        expect(pageData.address_postcode).to.equal('N1 1NN')
+        expect(pageData.telephone_number).to.equal('02081119900')
+        expect(pageData.url).to.equal('http://www.example.com')
       })
     })
   })
