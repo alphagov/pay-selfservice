@@ -81,8 +81,11 @@
     {% endif %}
   </div>
 
-  <div class="govuk-grid-column-one-third">
-    {% if refundable %}
+  <div class="govuk-grid-column-one-third" data-cy="refund-container">
+    {% if refund_unavailable_due_to_dispute %}
+      <h2 class="govuk-heading-m govuk-!-margin-top-1">Refund</h2>
+      <p class="govuk-body">You cannot refund this payment because it is being disputed.</p>
+    {% elif refundable %}
       {% if permissions.refunds_create %}
         {% include "./_refund.njk" %}
         <div class="target-to-show--toggle-container {% if not flash.genericError %}active{% endif %}">

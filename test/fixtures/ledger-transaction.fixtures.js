@@ -75,6 +75,10 @@ const buildTransactionDetails = (opts = {}) => {
     live: opts.live || false
   }
 
+  if (data.transaction_type.toLowerCase() === 'payment') {
+    data.disputed = opts.disputed || false
+  }
+
   if (opts.gateway_transaction_id) {
     data.gateway_transaction_id = opts.gateway_transaction_id
   }
