@@ -51,6 +51,21 @@ const REFUND_STATE_DESCRIPTIONS = {
   }
 }
 
+const DISPUTE_STATE_DESCRIPTIONS = {
+  'needs_response': {
+    displayName: 'Dispute awaiting evidence'
+  },
+  'under_review': {
+    displayName: 'Dispute under review'
+  },
+  'won': {
+    displayName: 'Dispute won in your favour'
+  },
+  'lost': {
+    displayName: 'Dispute lost to customer'
+  }
+}
+
 const ERROR_CODE_TO_DISPLAY_STATE = {
   'P0010': 'Declined',
   'P0020': 'Timed out',
@@ -59,7 +74,15 @@ const ERROR_CODE_TO_DISPLAY_STATE = {
 
 exports.allDisplayStates = () => [...uniqueDisplayStates(PAYMENT_STATE_DESCRIPTIONS), ...uniqueDisplayStates(REFUND_STATE_DESCRIPTIONS)]
 exports.displayStatesToConnectorStates = (displayStatesArray) => toConnectorStates(displayStatesArray)
-exports.allDisplayStateSelectorObjects = () => exports.allDisplayStates().map(state => toSelectorObject(state))
+exports.allDisplayStateSelectorObjects = (includeDisputeStatuses) => {
+  let allDisplayStates = exports.allDisplayStates()
+
+  if (includeDisputeStatuses) {
+    allDisplayStates = allDisplayStates.concat(uniqueDisplayStates(DISPUTE_STATE_DESCRIPTIONS))
+  }
+
+  return allDisplayStates.map(state => toSelectorObject(state))
+}
 exports.getDisplayNameForConnectorState = (connectorState, type = 'payment') => {
   const sanitisedType = (type.toLowerCase() === 'charge') ? 'payment' : type.toLowerCase()
   return displayNameForConnectorState(connectorState, sanitisedType).displayName
@@ -101,10 +124,12 @@ function getDisplayNameFromConnectorState (connectorState, type = 'payment') {
     if (PAYMENT_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]) {
       return PAYMENT_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]
     }
-  } else {
+  } else if (type === 'refund') {
     if (REFUND_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]) {
       return REFUND_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]
     }
+  } else if (type === 'dispute' && DISPUTE_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]) {
+    return DISPUTE_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]
   }
   return { displayName: '', eventDisplayName: '' }
 }
@@ -112,7 +137,8 @@ function getDisplayNameFromConnectorState (connectorState, type = 'payment') {
 function toConnectorStates (displayStates) {
   const result = {
     payment_states: [],
-    refund_states: []
+    refund_states: [],
+    dispute_states: []
   }
   displayStates.forEach(displayState => {
     Object.keys(PAYMENT_STATE_DESCRIPTIONS).forEach(connectorPaymentState => {
@@ -133,9 +159,17 @@ function toConnectorStates (displayStates) {
         result.refund_states.push(refundPaymentState)
       }
     })
+
+    Object.keys(DISPUTE_STATE_DESCRIPTIONS).forEach(disputeState => {
+      if (DISPUTE_STATE_DESCRIPTIONS[disputeState].displayName === displayState) {
+        result.dispute_states.push(disputeState)
+      }
+    })
   })
+
   result.payment_states = lodash.uniq(result.payment_states)
   result.refund_states = lodash.uniq(result.refund_states)
+  result.dispute_states = lodash.uniq(result.dispute_states)
   return result
 }
 
