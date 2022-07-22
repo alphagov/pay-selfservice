@@ -296,6 +296,8 @@ describe('Transaction details page', () => {
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
+      cy.get('#refundForm').should('exist')
+
       // Click the refund button
       cy.get('.target-to-show--toggle').click()
 
@@ -393,6 +395,24 @@ describe('Transaction details page', () => {
 
       // Assert refund message
       cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(transactionDetails.refund_summary_available)}`)
+    })
+  })
+
+  describe('Disputed payment', () => {
+    it('should show refund unavailable message', () => {
+      const disputedPaymentDetails = defaultTransactionDetails()
+      disputedPaymentDetails.disputed = true
+      disputedPaymentDetails.refund_summary_status = "unavailable"
+
+      cy.task('setupStubs', getStubs(disputedPaymentDetails))
+      cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
+
+      cy.get('[data-cy=refund-container]').within(() => {
+        cy.get('h2').contains('Refund').should('exist')
+        cy.get('#refundForm').should('not.exist')
+    
+        cy.get('p').contains('You cannot refund this payment because it is being disputed.')
+      })
     })
   })
 })
