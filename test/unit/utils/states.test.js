@@ -16,6 +16,28 @@ describe('states', function () {
         'Refund submitted', 'Refund error', 'Refund success'])
     })
 
+    it('should get dispute states for states dropdown', function () {
+      const allDisplayStateSelectorObjects = states.allDisplayStateSelectorObjects(true)
+      expect(allDisplayStateSelectorObjects.length).to.be.equal(13)
+
+      const allDisplayStateNames = allDisplayStateSelectorObjects.map(state => state.name)
+      expect(allDisplayStateNames).to.be.containingAllOf([
+        'In progress', 'Success', 'Error', 'Declined', 'Timed out', 'Cancelled',
+        'Refund submitted', 'Refund error', 'Refund success',
+        'Dispute awaiting evidence', 'Dispute under review', 'Dispute won in your favour', 'Dispute lost to customer'
+      ])
+    })
+
+    it('should NOT get dispute states for states dropdown if includeDisputeStatuses parameter is false', function () {
+      const allDisplayStateSelectorObjects = states.allDisplayStateSelectorObjects(false)
+      expect(allDisplayStateSelectorObjects.length).to.be.equal(9)
+
+      const allDisplayStateNames = allDisplayStateSelectorObjects.map(state => state.name)
+      expect(allDisplayStateNames).to.not.contain([
+        'Dispute awaiting evidence', 'Dispute under review', 'Dispute won in your favour', 'Dispute lost to customer'
+      ])
+    })
+
     it('should get connector states from In progress display state', function () {
       const connectorStatesResult = states.displayStatesToConnectorStates(['In progress'])
       expect(connectorStatesResult.payment_states.length).to.be.equal(4)
@@ -35,6 +57,12 @@ describe('states', function () {
       expect(connectorStatesResult.refund_states.length).to.be.equal(3)
       expect(connectorStatesResult.refund_states).to.be.containingAllOf(['submitted', 'error', 'success'])
       expect(connectorStatesResult.payment_states.length).to.be.equal(0)
+    })
+
+    it('should get connector states from dispute display states', function () {
+      const connectorStatesResult = states.displayStatesToConnectorStates(['Dispute awaiting evidence', 'Dispute under review', 'Dispute won in your favour', 'Dispute lost to customer'])
+      expect(connectorStatesResult.dispute_states.length).to.be.equal(4)
+      expect(connectorStatesResult.dispute_states).to.be.containingAllOf(['needs_response', 'under_review', 'lost', 'won'])
     })
 
     it('should get connector states from all possible display states', function () {
@@ -63,6 +91,11 @@ describe('states', function () {
       expect(states.getDisplayNameForConnectorState({ status: 'error' }, 'refund')).to.equal('Refund error')
       expect(states.getDisplayNameForConnectorState({ status: 'timedout' })).to.equal('Timed out')
       expect(states.getDisplayNameForConnectorState({ status: 'declined' })).to.equal('Declined')
+
+      expect(states.getDisplayNameForConnectorState({ status: 'needs_response' }, 'dispute')).to.equal('Dispute awaiting evidence')
+      expect(states.getDisplayNameForConnectorState({ status: 'under_review' }, 'dispute')).to.equal('Dispute under review')
+      expect(states.getDisplayNameForConnectorState({ status: 'lost' }, 'dispute')).to.equal('Dispute lost to customer')
+      expect(states.getDisplayNameForConnectorState({ status: 'won' }, 'dispute')).to.equal('Dispute won in your favour')
 
       expect(states.getDisplayNameForConnectorState({
         status: 'failed',
