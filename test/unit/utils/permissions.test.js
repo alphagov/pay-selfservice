@@ -60,12 +60,13 @@ describe('gateway account filter utiltiies', () => {
           }
         }
       })
-      const result = await getGatewayAccountsFor(user, true, 'perm-1')
+      const result = await getGatewayAccountsFor(user, false, 'perm-1')
 
       expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-line
       expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-line
       expect(result.hasLiveAccounts).to.equal(false)
       expect(result.hasTestStripeAccount).to.equal(true)
+      expect(result.hasStripeAccount).to.equal(true)
     })
 
     it('correctly identifies non stripe and moto headers', async () => {
@@ -120,6 +121,7 @@ describe('gateway account filter utiltiies', () => {
       expect(testResult.gatewayAccountIds).to.deep.equal([ '2' ])
       expect(testResult.hasLiveAccounts).to.equal(true)
       expect(testResult.hasTestStripeAccount).to.equal(false)
+      expect(testResult.hasStripeAccount).to.equal(false)
     })
 
     it('correctly filters services by users permission role', async () => {

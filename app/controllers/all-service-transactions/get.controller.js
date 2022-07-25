@@ -2,6 +2,7 @@
 
 const _ = require('lodash')
 const url = require('url')
+const moment = require('moment')
 
 const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
@@ -17,6 +18,20 @@ const { NoServicesWithPermissionError } = require('../../errors')
 
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 
+const enableDisputesSearchForTestAccountsFromDate = process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE || 1659916800 // Aug 08 2022 00:00:00 GMT
+const enableDisputesSearchForLiveAccountsFromDate = process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE || 1659916800 // Aug 08 2022 00:00:00 GMT
+
+function includeDisputeStatuses (filterLiveAccounts, hasStripeAccount) {
+  if (!hasStripeAccount) {
+    return false
+  }
+  const enableDisputesFromDateForAccountType = (filterLiveAccounts
+    ? enableDisputesSearchForLiveAccountsFromDate
+    : enableDisputesSearchForTestAccountsFromDate)
+
+  return moment().isAfter(moment.unix(enableDisputesFromDateForAccountType))
+}
+
 module.exports = async function getTransactionsForAllServices (req, res, next) {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
@@ -28,7 +43,6 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
 
   req.session.filters = url.parse(req.url).query
   req.session.allServicesTransactionsStatusFilter = statusFilter
-
   try {
     const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, filterLiveAccounts, 'transactions:read')
 
@@ -48,7 +62,8 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
     delete req.session.backPath
     model.search_path = filterLiveAccounts ? paths.allServiceTransactions.index : paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test')
     model.filtersDescription = describeFilters(filters.result)
-    model.eventStates = states.allDisplayStateSelectorObjects()
+    const includeDisputeStatusesInTransactionStates = includeDisputeStatuses(filterLiveAccounts, userPermittedAccountsSummary.hasStripeAccount)
+    model.eventStates = states.allDisplayStateSelectorObjects(includeDisputeStatusesInTransactionStates)
       .map(state => {
         return {
           value: state.key,
