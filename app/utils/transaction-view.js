@@ -65,7 +65,9 @@ module.exports = {
       } else {
         element.link = formatAccountPathsFor(router.paths.account.transactions.detail, gatewayAccountExternalId, element.charge_id)
       }
-      if (element.transaction_type && element.transaction_type.toLowerCase() === 'refund') {
+
+      const transactionType = element.transaction_type && element.transaction_type.toLowerCase()
+      if (transactionType === 'refund' || transactionType === 'dispute') {
         element.amount = `–${element.amount}`
       }
       delete element.created_date
@@ -77,6 +79,7 @@ module.exports = {
         email: filtersResult.email,
         payment_states: filtersResult.payment_states,
         refund_states: filtersResult.refund_states,
+        dispute_states: filtersResult.dispute_states,
         brand: filtersResult.brand,
         fromDate: filtersResult.fromDate,
         toDate: filtersResult.toDate,

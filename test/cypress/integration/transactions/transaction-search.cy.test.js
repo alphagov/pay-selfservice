@@ -2,6 +2,7 @@ const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const transactionsStubs = require('../../stubs/transaction-stubs')
+const transactionStubs = require('../../stubs/transaction-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = 42
@@ -90,6 +91,33 @@ const transactionsWithAssociatedFees = [
   }
 ]
 
+const disputeTransactions = [
+  {
+    gateway_account_id: gatewayAccountId,
+    reference: 'ref1',
+    transaction_id: 'transaction-id-1',
+    parent_transaction_id: 'parent-transaction-id-1',
+    live: true,
+    type: 'dispute',
+    includePaymentDetails: true,
+    status: 'needs_response',
+    amount: 2500
+  },
+  {
+    gateway_account_id: gatewayAccountId,
+    reference: 'ref2',
+    transaction_id: 'transaction-id-2',
+    parent_transaction_id: 'parent-transaction-id-2',
+    live: true,
+    type: 'dispute',
+    includePaymentDetails: true,
+    status: 'lost',
+    amount: 3500,
+    net_amount: -5000,
+    fee: 1500
+  }
+]
+
 const sharedStubs = (paymentProvider = 'sandbox') => {
   return [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
@@ -97,14 +125,15 @@ const sharedStubs = (paymentProvider = 'sandbox') => {
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
-      paymentProvider
+      paymentProvider,
+      type: 'live'
     }),
     gatewayAccountStubs.getCardTypesSuccess(),
     stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId })
   ]
 }
 
-function assertTransactionRow (row, reference, transactionLink, email, amount, cardBrand, state) {
+function assertTransactionRow (row, reference, transactionLink, email, amount, cardBrand, state, fee, netAmount) {
   cy.get('#transactions-list tbody').find('tr').eq(row).find('th').should('contain', reference)
   cy.get('#transactions-list tbody').find('tr > th').eq(row).find('.reference')
     .should('have.attr', 'href', transactionLink)
@@ -112,6 +141,14 @@ function assertTransactionRow (row, reference, transactionLink, email, amount, c
   cy.get('#transactions-list tbody').find('tr').eq(row).find('.amount').should('contain', amount)
   cy.get('#transactions-list tbody').find('tr').eq(row).find('.brand').should('contain', cardBrand)
   cy.get('#transactions-list tbody').find('tr').eq(row).find('.state').should('contain', state)
+
+  if (netAmount) {
+    cy.get('#transactions-list tbody').find('tr').eq(row).get('[data-cell-type="net"]').eq(row).find('span').should('have.text', netAmount)
+  }
+
+  if (fee) {
+    cy.get('#transactions-list tbody').find('tr').eq(row).get('[data-cell-type="fee"]').eq(row).should('have.text', fee)
+  }
 }
 
 describe('Transactions List', () => {
@@ -273,7 +310,11 @@ describe('Transactions List', () => {
     it('should display card fee with corporate card surcharge transaction', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions, transactionLength: 1000 })
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: unfilteredTransactions,
+          transactionLength: 1000
+        })
       ])
       cy.visit(transactionsUrl)
 
@@ -292,7 +333,10 @@ describe('Transactions List', () => {
     it('should display the fee and total columns for a stripe gateway with fees', () => {
       cy.task('setupStubs', [
         ...sharedStubs('stripe'),
-        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: transactionsWithAssociatedFees })
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: transactionsWithAssociatedFees
+        })
       ])
       cy.visit(transactionsUrl)
 
@@ -307,17 +351,65 @@ describe('Transactions List', () => {
     it('should display net amount correctly for stripe transaction with total amount but not net amount set', () => {
       cy.task('setupStubs', [
         ...sharedStubs('stripe'),
-        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: transactionWithTotalAmountButNotNetAmount })
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: transactionWithTotalAmountButNotNetAmount
+        })
       ])
       cy.visit(transactionsUrl)
       cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').eq(0).find('span').should('have.text', convertPenceToPoundsFormatted(transactionWithTotalAmountButNotNetAmount[0].total_amount))
+    })
+
+    it('should display dispute statuses in the dropdown and dispute transactions correctly - when enabled', () => {
+      cy.setEncryptedCookies(userExternalId)
+      cy.task('setupStubs', [
+        ...sharedStubs('stripe'),
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: []
+        }),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: disputeTransactions,
+          filters: {
+            dispute_states: 'needs_response,under_review'
+          }
+        })
+      ])
+
+      cy.visit(transactionsUrl)
+
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute awaiting evidence')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute won in your favour')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
+
+      cy.get('#state').click()
+      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Dispute awaiting evidence']`).trigger('mouseover').click()
+      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Dispute under review']`).trigger('mouseover').click()
+
+      cy.get('#filter').click()
+      cy.get('.transactions-list--row').should('have.length', 2)
+      cy.get('#charge-id-parent-transaction-id-1').should('exist')
+      cy.get('#charge-id-parent-transaction-id-2').should('exist')
+
+      assertTransactionRow(0, disputeTransactions[0].reference, `/account/a-valid-external-id/transactions/parent-transaction-id-1`,
+        'test@example.org', '–£25.00', 'Visa', 'Dispute awaiting evidence', '', '')
+      assertTransactionRow(1, disputeTransactions[1].reference, `/account/a-valid-external-id/transactions/parent-transaction-id-2`,
+        'test@example.org', '–£35.00', 'Visa', 'Dispute lost to customer', '£15.00', '-£50.00')
+
+      cy.get('#download-transactions-link').should('have.attr', 'href', `/account/a-valid-external-id/transactions/download?dispute_states=needs_response&dispute_states=under_review`)
     })
   })
   describe('csv download link', () => {
     it('should not display csv download link when results >5k and no filter applied', function () {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions, transactionLength: 5001 })
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: unfilteredTransactions,
+          transactionLength: 5001
+        })
       ])
       cy.visit(transactionsUrl)
 
@@ -328,7 +420,12 @@ describe('Transactions List', () => {
     it('should display csv download link when results >5k and filters applied', function () {
       cy.task('setupStubs', [
         ...sharedStubs(),
-        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions, transactionLength: 10001, filters: { reference: 'unfiltered' } })
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: unfilteredTransactions,
+          transactionLength: 10001,
+          filters: { reference: 'unfiltered' }
+        })
       ])
       cy.visit(transactionsUrl + '?reference=unfiltered')
 

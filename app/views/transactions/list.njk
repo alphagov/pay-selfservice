@@ -34,7 +34,13 @@
       {% if isStripeAccount %}
         <td data-cell-type="fee" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.fee}}</td>
         <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
-          <span style="white-space: pre">{{result.net_amount or result.total_amount or result.amount}}</span>
+          <span style="white-space: pre">
+            {%- if result.transaction_type === 'DISPUTE' -%}
+              {{result.net_amount}}
+            {%- else -%}
+              {{ result.net_amount or result.total_amount or result.amount }}
+            {%- endif -%}
+          </span>
         </td>
       {% endif %}
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand">{{result.card_details.card_brand}}</td>

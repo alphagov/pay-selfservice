@@ -32,6 +32,7 @@ function getFilters (req) {
     const result = states.displayStatesToConnectorStates(filters.selectedStates)
     filters.payment_states = result.payment_states
     filters.refund_states = result.refund_states
+    filters.dispute_states = result.dispute_states
   }
 
   if (filters.brand) {

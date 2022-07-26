@@ -184,6 +184,38 @@ const buildRefundDetails = (opts = {}) => {
   return result
 }
 
+const buildDisputeDetails = (opts = {}) => {
+  const result = {
+    gateway_account_id: opts.gateway_account_id || '1',
+    amount: opts.amount || 10,
+    state: buildChargeEventStateWithDefaults(opts),
+    created_date: opts.created_date || '2019-08-20T14:39:49.536Z',
+    transaction_type: 'DISPUTE',
+    transaction_id: opts.transaction_id || '1b5kia0u28ll2ic4obv26r5e4h',
+    parent_transaction_id: opts.parent_transaction_id || 'puuhl0gu7egigin7oh9c75p4m1'
+  }
+
+  if (opts.fee) result.fee = opts.fee
+  if (opts.net_amount) result.net_amount = opts.net_amount
+
+  if (opts.includePaymentDetails) {
+    const paymentDetails = {
+      description: opts.description || 'ref1',
+      reference: opts.reference || 'ref188888',
+      email: opts.email || 'test@example.org',
+      card_details: {
+        last_digits_card_number: opts.last_digits_card_number || '0002',
+        cardholder_name: opts.cardholder_name || 'Test User',
+        expiry_date: opts.expiry_date || '08/23',
+        card_brand: opts.card_brand || 'Visa'
+      },
+      transaction_type: 'PAYMENT'
+    }
+    result.payment_details = paymentDetails
+  }
+  return result
+}
+
 module.exports = {
   validTransactionDetailsResponse: (opts = {}) => {
     opts.includeCardDetails = true
@@ -243,6 +275,8 @@ module.exports = {
         results.push(buildTransactionDetails(transaction))
       } else if (transaction.type === 'refund') {
         results.push(buildRefundDetails(transaction))
+      } else if (transaction.type === 'dispute') {
+        results.push(buildDisputeDetails(transaction))
       }
     })
     const data = {
