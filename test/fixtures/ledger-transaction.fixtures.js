@@ -167,18 +167,7 @@ const buildRefundDetails = (opts = {}) => {
   }
 
   if (opts.includePaymentDetails) {
-    const paymentDetails = {
-      description: opts.description || 'ref1',
-      reference: opts.reference || 'ref188888',
-      email: opts.email || 'test@example.org',
-      card_details: {
-        last_digits_card_number: opts.last_digits_card_number || '0002',
-        cardholder_name: opts.cardholder_name || 'Test User',
-        expiry_date: opts.expiry_date || '08/23',
-        card_brand: opts.card_brand || 'Visa'
-      },
-      transaction_type: 'PAYMENT'
-    }
+    const paymentDetails = getPaymentDetails(opts)
     result.payment_details = paymentDetails
   }
   return result
@@ -199,21 +188,26 @@ const buildDisputeDetails = (opts = {}) => {
   if (opts.net_amount) result.net_amount = opts.net_amount
 
   if (opts.includePaymentDetails) {
-    const paymentDetails = {
-      description: opts.description || 'ref1',
-      reference: opts.reference || 'ref188888',
-      email: opts.email || 'test@example.org',
-      card_details: {
-        last_digits_card_number: opts.last_digits_card_number || '0002',
-        cardholder_name: opts.cardholder_name || 'Test User',
-        expiry_date: opts.expiry_date || '08/23',
-        card_brand: opts.card_brand || 'Visa'
-      },
-      transaction_type: 'PAYMENT'
-    }
+    const paymentDetails = getPaymentDetails(opts)
     result.payment_details = paymentDetails
   }
   return result
+}
+
+function getPaymentDetails (opts) {
+  const paymentDetails = {
+    description: opts.description || 'ref1',
+    reference: opts.reference || 'ref188888',
+    email: opts.email || 'test@example.org',
+    card_details: {
+      last_digits_card_number: opts.last_digits_card_number || '0002',
+      cardholder_name: opts.cardholder_name || 'Test User',
+      expiry_date: opts.expiry_date || '08/23',
+      card_brand: opts.card_brand || 'Visa'
+    },
+    transaction_type: 'PAYMENT'
+  }
+  return paymentDetails
 }
 
 module.exports = {

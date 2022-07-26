@@ -422,4 +422,72 @@ describe('ledger client', function () {
         })
     })
   })
+
+  describe('search transactions by dispute_states', () => {
+    const params = {
+      account_id: existingGatewayAccountId,
+      filters: {
+        dispute_states: ['lost', 'under_review']
+      }
+    }
+
+    const validFilterTransactionResponse = transactionDetailsFixtures.validTransactionSearchResponse({
+      gateway_account_id: existingGatewayAccountId,
+      transactions: [
+        {
+          amount: 2000,
+          fee: 1500,
+          net_amount: -3500,
+          state: {
+            status: 'lost',
+            finished: true
+          },
+          created_date: '2022-07-25T11:24:32.000Z',
+          transaction_id: 'duslqp12kpdfskopek230',
+          parent_transaction_id: 'q5qo9mt6ajfcn2oqgaktkm2ksk',
+          type: 'dispute',
+          includePaymentDetails: true
+        },
+        {
+          amount: 1000,
+          state: {
+            status: 'under_review',
+            finished: false
+          },
+          created_date: '2022-07-26T11:24:32.000Z',
+          transaction_id: 'du2slqp12kpdfskopek230',
+          parent_transaction_id: 'dklpej3vlkn2oqgaktkm2ksk',
+          type: 'dispute',
+          includePaymentDetails: true
+        }
+      ]
+    })
+    before(() => {
+      return pactTestProvider.addInteraction(
+        new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
+          .withQuery('account_id', params.account_id)
+          .withQuery('page', '1')
+          .withQuery('display_size', '100')
+          .withQuery('dispute_states', params.filters.dispute_states.join(','))
+          .withQuery('limit_total', 'true')
+          .withQuery('limit_total_size', '5001')
+          .withUponReceiving('a valid search with dispute_states request')
+          .withState('dispute transactions exist with states `lost` and `under_review` for selfservice search')
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactify(validFilterTransactionResponse))
+          .build()
+      )
+    })
+
+    afterEach(() => pactTestProvider.verify())
+
+    it('should search for dispute transactions successfully', function () {
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
+        .then((ledgerResponse) => {
+          expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
+        })
+    })
+  })
 })
