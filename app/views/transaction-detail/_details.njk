@@ -23,7 +23,13 @@
 
   <tr class="govuk-table__row">
     <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16 vertical-align-top" scope="row">Payment status:</th>
-    <td class="govuk-table__cell govuk-!-font-size-16" id="state">{{state_friendly}}
+    <td class="govuk-table__cell govuk-!-font-size-16" id="state">
+      {% if dispute %}
+        {{dispute.state_friendly}}
+      {% else %}
+        {{state_friendly}}
+      {% endif %}
+
       {% if state_friendly === "Declined" %}
         {% set stateInfo %}
           <p class="govuk-!-font-size-16">The payment was declined. This may happen if:</p>

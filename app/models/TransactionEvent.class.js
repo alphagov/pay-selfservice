@@ -22,7 +22,8 @@ class TransactionEvent {
     this.state_friendly = states.getEventDisplayNameForConnectorState(this.state, this.type)
     this.updated_friendly = dates.utcToDisplay(this.updated)
     this.amount_friendly = penceToPoundsWithCurrency(this.amount)
-    if (this.amount && this.type.toLowerCase() === 'refund') {
+    const transactionType = this.type.toLowerCase()
+    if (this.amount && (transactionType === 'refund' || transactionType === 'dispute')) {
       this.amount_friendly = `–${this.amount_friendly}`
     }
   }

@@ -65,6 +65,11 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
   try {
     const charge = await Ledger.transaction(chargeId, accountId)
     const transactionEvents = await Ledger.events(chargeId, accountId)
+    let disputeTransaction
+
+    if (charge.disputed === true) {
+      disputeTransaction = await getDisputeTransaction(chargeId, accountId)
+    }
 
     const userIds = lodash
       .chain(transactionEvents.events)
@@ -75,12 +80,19 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
 
     if (userIds.length !== 0) {
       const users = await userService.findMultipleByExternalIds(userIds, correlationId)
-      return transactionView.buildPaymentView(charge, transactionEvents, users)
+      return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction, users)
     } else {
-      return transactionView.buildPaymentView(charge, transactionEvents)
+      return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction)
     }
   } catch (error) {
     throw getStatusCodeForError(error)
+  }
+}
+
+async function getDisputeTransaction (chargeId, accountId) {
+  const disputeTransactions = await Ledger.getDisputesForTransaction(chargeId, accountId)
+  if (disputeTransactions && disputeTransactions.transactions && disputeTransactions.transactions.length > 0) {
+    return disputeTransactions.transactions[0]
   }
 }
 

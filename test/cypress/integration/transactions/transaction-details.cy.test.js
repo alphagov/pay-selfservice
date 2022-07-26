@@ -4,12 +4,14 @@ const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const transactionStubs = require('../../stubs/transaction-stubs')
+const moment = require('moment-timezone')
 
 const capitalise = string => string[0].toUpperCase() + string.slice(1)
 const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
 const defaultAmount = 1000
 const gatewayAccountExternalId = 'a-valid-external-id'
 const transactionId = 'adb123def456'
+const disputeTransactionId = 'vldb123def456'
 const gatewayAccountId = 42
 const serviceName = 'Test Service'
 
@@ -27,6 +29,10 @@ function formatDate (date) {
   const year = date.getFullYear()
 
   return day + ' ' + monthNames[monthIndex] + ' ' + year + ' — '
+}
+
+function utcToDisplay (date) {
+  return moment(date).tz('Europe/London').format('DD MMM YYYY — HH:mm:ss')
 }
 
 const defaultTransactionEvents = [{
@@ -69,13 +75,37 @@ function defaultTransactionDetails (events, opts = {}) {
   }
 }
 
+function defaultDisputeDetails () {
+  return {
+    'parent_transaction_id': transactionId,
+    'gatteway_account_id': gatewayAccountId,
+    'transactions': [
+      {
+        'gateway_account_id': gatewayAccountId,
+        'amount': 20000,
+        'fee': 1500,
+        'net_amount': -21500,
+        'finished': true,
+        'status': 'lost',
+        'created_date': '2022-07-26T19:57:26.000Z',
+        'type': 'dispute',
+        'includePaymentDetails': true,
+        'evidence_due_date': '2022-08-04T13:59:59.000Z',
+        'reason': 'product_not_received',
+        'transaction_id': disputeTransactionId,
+        'parent_transaction_id': transactionId
+      }
+    ]
+  }
+}
+
 describe('Transaction details page', () => {
   const transactionsUrl = `/account/${gatewayAccountExternalId}/transactions`
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const userEmail = 'a-user@example.com'
 
-  const getStubs = (transactionDetails, additionalGatewayAccountOpts = {}) => {
-    return [
+  const getStubs = (transactionDetails, additionalGatewayAccountOpts = {}, disputeTransactionsDetails) => {
+    let stubs = [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, email: userEmail }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
         gatewayAccountId,
@@ -87,6 +117,10 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({ transactionId, events: transactionDetails.events }),
       stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: true, responsiblePerson: true, vatNumber: true, companyNumber: true })
     ]
+    if (disputeTransactionsDetails) {
+      stubs.push(transactionStubs.getLedgerDisputeTransactionsSuccess({ disputeTransactionsDetails }))
+    }
+    return stubs
   }
 
   beforeEach(() => {
@@ -402,7 +436,7 @@ describe('Transaction details page', () => {
     it('should show refund unavailable message', () => {
       const disputedPaymentDetails = defaultTransactionDetails()
       disputedPaymentDetails.disputed = true
-      disputedPaymentDetails.refund_summary_status = "unavailable"
+      disputedPaymentDetails.refund_summary_status = 'unavailable'
 
       cy.task('setupStubs', getStubs(disputedPaymentDetails))
       cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
@@ -410,8 +444,31 @@ describe('Transaction details page', () => {
       cy.get('[data-cy=refund-container]').within(() => {
         cy.get('h2').contains('Refund').should('exist')
         cy.get('#refundForm').should('not.exist')
-    
+
         cy.get('p').contains('You cannot refund this payment because it is being disputed.')
+      })
+    })
+
+    it('should display dispute details', () => {
+      const disputedPaymentDetails = defaultTransactionDetails()
+      disputedPaymentDetails.disputed = true
+      disputedPaymentDetails.refund_summary_status = 'unavailable'
+      const disputeTransactionDetails = defaultDisputeDetails()
+
+      cy.task('setupStubs', getStubs(disputedPaymentDetails, {}, disputeTransactionDetails))
+      cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
+
+      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain', 'Dispute lost to customer')
+
+      cy.get('[data-cy=dispute-details]').contains('Dispute details').should('exist')
+      cy.get('[data-cy=dispute-details-container]').within(() => {
+        cy.get('[data-cy=dispute-state]').contains('Dispute lost to customer').should('exist')
+        cy.get('[data-cy=dispute-amount]').contains('£200.00').should('exist')
+        cy.get('[data-cy=dispute-net-amount]').contains('-£215.00').should('exist')
+        cy.get('[data-cy=dispute-fee]').invoke('text').should('contain', '£15.00')
+        cy.get('[data-cy=dispute-reason]').contains('Product not received').should('exist')
+        cy.get('[data-cy=dispute-date]').contains(utcToDisplay('2022-07-26T19:57:26.000Z')).should('exist')
+        cy.get('[data-cy=dispute-evidence-due-date]').contains(utcToDisplay('2022-08-04T13:59:59.000Z')).should('exist')
       })
     })
   })

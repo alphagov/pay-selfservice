@@ -1,0 +1,50 @@
+<h2 class="govuk-heading-m govuk-!-margin-top-1" data-cy="dispute-details">Dispute details</h2>
+<table class="dispute-details govuk-table" data-cy="dispute-details-container">
+  <tbody class="govuk-table__body">
+
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Status:</th>
+    <td class="govuk-table__cell govuk-!-font-size-16" data-cy="dispute-state">{{ dispute.state_friendly }}</td>
+  </tr>
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Date disputed:</th>
+    <td class="govuk-table__cell govuk-!-font-size-16" data-cy="dispute-date">{{ dispute.created_date }}</td>
+  </tr>
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Disputed amount:</th>
+    <td class="govuk-table__cell govuk-!-font-size-16" data-cy="dispute-amount">{{ dispute.amount_friendly }} </td>
+  </tr>
+  {% if dispute.fee_friendly %}
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">PSP dispute fee:</th>
+      <td class="govuk-table__cell govuk-!-font-size-16" data-cy="dispute-fee">{{ dispute.fee_friendly }}
+        {% set disputeFeeInfo %}
+          <p class="govuk-!-font-size-16">If you lose a payment dispute, Stripe will deduct the disputed amount and an
+            additional {{ dispute.fee_friendly }} dispute fee from your account.</p>
+        {% endset %}
+        {{ govukDetails({
+          summaryText: "What is this fee?",
+          classes: "small-arrow govuk-!-font-size-16",
+          html: disputeFeeInfo
+        }) }}
+      </td>
+    </tr>
+  {% endif %}
+  {% if dispute.net_amount_friendly %}
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Dispute net amount:</th>
+      <td class="govuk-table__cell govuk-!-font-size-16" data-cy="dispute-net-amount">{{ dispute.net_amount_friendly }}</td>
+    </tr>
+  {% endif %}
+
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Reason:</th>
+    <td class="govuk-table__cell govuk-!-font-size-16" data-cy="dispute-reason">{{ dispute.reason_friendly }}</td>
+  </tr>
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Evidence due by:</th>
+    <td class="govuk-table__cell govuk-!-font-size-16"
+        data-cy="dispute-evidence-due-date">{{ dispute.evidence_due_date_friendly }}</td>
+  </tr>
+  </tbody>
+</table>

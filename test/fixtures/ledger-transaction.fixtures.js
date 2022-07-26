@@ -181,7 +181,9 @@ const buildDisputeDetails = (opts = {}) => {
     created_date: opts.created_date || '2019-08-20T14:39:49.536Z',
     transaction_type: 'DISPUTE',
     transaction_id: opts.transaction_id || '1b5kia0u28ll2ic4obv26r5e4h',
-    parent_transaction_id: opts.parent_transaction_id || 'puuhl0gu7egigin7oh9c75p4m1'
+    parent_transaction_id: opts.parent_transaction_id || 'puuhl0gu7egigin7oh9c75p4m1',
+    evidence_due_date: opts.evidence_due_date || '2019-08-21T14:39:49.536Z',
+    reason: opts.reason || 'other'
   }
 
   if (opts.fee) result.fee = opts.fee
@@ -217,6 +219,19 @@ module.exports = {
     opts.includeSettlementSummary = true
     opts.includeAddress = opts.includeAddress || true
     return buildTransactionDetails(opts)
+  },
+  validDisputeTransactionDetails: (opts = {}) => {
+    return buildDisputeDetails(opts)
+  },
+  validDisputeTransactionsResponse: (opts = {}) => {
+    let transactions = []
+    opts.transactions.forEach(transaction => {
+      transactions.push(buildDisputeDetails(transaction))
+    })
+    return {
+      parent_transaction_id: opts.parent_transaction_id || 'adb123def456',
+      transactions: transactions
+    }
   },
   validTransactionCreatedDetailsResponse: (opts = {}) => {
     opts.includeRefundSummary = true
