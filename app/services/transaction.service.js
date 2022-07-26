@@ -49,7 +49,8 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
     to_date: filters.toDate,
     gateway_payout_id: filters.gatewayPayoutId,
     payment_states: filters.payment_states,
-    refund_states: filters.refund_stats,
+    refund_states: filters.refund_states,
+    dispute_states: filters.dispute_states,
     method: 'future',
     gateway_account_ids: gatewayAccountIds,
     multiple_accounts: gatewayAccountIds.length > 1,
@@ -120,7 +121,7 @@ const refund = async function refundTransaction (gatewayAccountId, chargeId, amo
       }
 
       if (err.errorIdentifier === errorIdentifier.ACCOUNT_DISABLED) {
-          throw new Error('GOV.UK Pay has disabled payment and refund creation on this account. Please contact support.')
+        throw new Error('GOV.UK Pay has disabled payment and refund creation on this account. Please contact support.')
       }
     }
     throw new Error('We couldn’t process this refund. Please try again or contact support.')

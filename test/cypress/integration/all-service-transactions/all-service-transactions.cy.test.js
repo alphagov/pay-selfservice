@@ -8,7 +8,7 @@ describe('All service transactions', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const transactionsUrl = `/all-service-transactions`
 
-  const gatewayAccount1 = {
+  const gatewayAccountStripe = {
     gatewayAccountId: 42,
     gatewayAccountExternalId: 'a-valid-external-id-1',
     type: 'live',
@@ -26,7 +26,7 @@ describe('All service transactions', () => {
   }
   const userStub = userStubs.getUserSuccessWithMultipleServices(userExternalId, [
     {
-      gatewayAccountId: gatewayAccount1.gatewayAccountId,
+      gatewayAccountId: gatewayAccountStripe.gatewayAccountId,
       serviceName: 'Service 1'
     },
     {
@@ -37,7 +37,7 @@ describe('All service transactions', () => {
 
   const liveTransactions = [
     {
-      gateway_account_id: String(gatewayAccount1.gatewayAccountId),
+      gateway_account_id: String(gatewayAccountStripe.gatewayAccountId),
       reference: 'ref1',
       transaction_id: 'transaction-id-1',
       live: true
@@ -47,6 +47,33 @@ describe('All service transactions', () => {
       reference: 'ref2',
       transaction_id: 'transaction-id-2',
       live: true
+    }
+  ]
+
+  const disputeTransactions = [
+    {
+      gateway_account_id: String(gatewayAccountStripe.gatewayAccountId),
+      reference: 'ref1',
+      transaction_id: 'transaction-id-1',
+      parent_transaction_id: 'parent-transaction-id-1',
+      live: true,
+      type: 'dispute',
+      includePaymentDetails: true,
+      status: 'needs_response',
+      amount: 2500
+    },
+    {
+      gateway_account_id: String(gatewayAccount2.gatewayAccountId),
+      reference: 'ref2',
+      transaction_id: 'transaction-id-2',
+      parent_transaction_id: 'parent-transaction-id-2',
+      live: true,
+      type: 'dispute',
+      includePaymentDetails: true,
+      status: 'lost',
+      amount: 3500,
+      net_amount: -5000,
+      fee: 1500
     }
   ]
   const testTransactions = [
@@ -78,9 +105,9 @@ describe('All service transactions', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.task('setupStubs', [
         userStub,
-        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccount1, gatewayAccount2, gatewayAccount3]),
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccountStripe, gatewayAccount2, gatewayAccount3]),
         transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountIds: [gatewayAccount1.gatewayAccountId, gatewayAccount2.gatewayAccountId],
+          gatewayAccountIds: [gatewayAccountStripe.gatewayAccountId, gatewayAccount2.gatewayAccountId],
           transactions: liveTransactions
         }),
         gatewayAccountStubs.getCardTypesSuccess()
@@ -93,6 +120,50 @@ describe('All service transactions', () => {
       cy.get('#charge-id-transaction-id-2').should('exist')
     })
 
+    it('should display dispute statuses in the dropdown and dispute information correctly - when enabled', () => {
+      cy.setEncryptedCookies(userExternalId)
+      cy.task('setupStubs', [
+        userStub,
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccountStripe, gatewayAccount2, gatewayAccount3]),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountIds: [gatewayAccountStripe.gatewayAccountId, gatewayAccount2.gatewayAccountId],
+          transactions: []
+        }),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountIds: [gatewayAccountStripe.gatewayAccountId, gatewayAccount2.gatewayAccountId],
+          transactions: disputeTransactions,
+          filters: {
+            dispute_states: 'needs_response,under_review'
+          }
+        }),
+        gatewayAccountStubs.getCardTypesSuccess()
+      ])
+
+      cy.visit(transactionsUrl)
+      cy.title().should('eq', `Transactions for all services`)
+
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute awaiting evidence')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute won in your favour')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
+
+      cy.get('#state').click()
+      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Dispute awaiting evidence']`).trigger('mouseover').click()
+      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Dispute under review']`).trigger('mouseover').click()
+
+      cy.get('#filter').click()
+      cy.get('.transactions-list--row').should('have.length', 2)
+      cy.get('#charge-id-parent-transaction-id-1').should('exist')
+      cy.get('#charge-id-parent-transaction-id-2').should('exist')
+
+      assertTransactionRow(0, disputeTransactions[0].reference, `/redirect/transactions/parent-transaction-id-1`,
+        'test@example.org', '–£25.00', 'Visa', 'Dispute awaiting evidence', '', '')
+      assertTransactionRow(1, disputeTransactions[1].reference, `/redirect/transactions/parent-transaction-id-2`,
+        'test@example.org', '–£35.00', 'Visa', 'Dispute lost to customer', '-£50.00', '£15.00')
+
+      cy.get('#download-transactions-link').should('have.attr', 'href', `/all-service-transactions/download?dispute_states=needs_response&dispute_states=under_review`)
+    })
+
     it('should have correct breadcrumb navigation', () => {
       cy.get('.govuk-breadcrumbs').within(() => {
         cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
@@ -101,10 +172,10 @@ describe('All service transactions', () => {
       })
     })
 
-    it('should show test transactions when Swtich to test accounts link clicked', () => {
+    it('should show test transactions when Switch to test accounts link clicked', () => {
       cy.task('setupStubs', [
         userStub,
-        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccount1, gatewayAccount2, gatewayAccount3]),
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccountStripe, gatewayAccount2, gatewayAccount3]),
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountIds: [gatewayAccount3.gatewayAccountId],
           transactions: testTransactions
@@ -122,7 +193,7 @@ describe('All service transactions', () => {
     it('should filter payments', () => {
       cy.task('setupStubs', [
         userStub,
-        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccount1, gatewayAccount2, gatewayAccount3]),
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccountStripe, gatewayAccount2, gatewayAccount3]),
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountIds: [gatewayAccount3.gatewayAccountId],
           transactions: [testTransactions[0]],
@@ -203,4 +274,17 @@ describe('All service transactions', () => {
         .should('have.attr', 'href', '/all-service-transactions/test?reference=ref3&email=&cardholderName=&lastDigitsCardNumber=&fromDate=&fromTime=&toDate=&toTime=&metadataValue=')
     })
   })
+
+  function assertTransactionRow (row, reference, transactionLink, email, amount, cardBrand, state, netAmount, fee) {
+    cy.get('#transactions-list tbody').find('tr').eq(row).find('th').should('contain', reference)
+    cy.get('#transactions-list tbody').find('tr > th').eq(row).find('.reference')
+      .should('have.attr', 'href', transactionLink)
+    cy.get('#transactions-list tbody').find('tr').eq(row).find('.email').should('contain', email)
+    cy.get('#transactions-list tbody').find('tr').eq(row).find('.amount').should('contain', amount)
+    cy.get('#transactions-list tbody').find('tr').eq(row).find('.brand').should('contain', cardBrand)
+    cy.get('#transactions-list tbody').find('tr').eq(row).find('.state').should('contain', state)
+
+    cy.get('#transactions-list tbody').find('tr').eq(row).get('[data-cell-type="net"]').eq(row).find('span').should('have.text', netAmount)
+    cy.get('#transactions-list tbody').find('tr').eq(row).get('[data-cell-type="fee"]').eq(row).should('have.text', fee)
+  }
 })

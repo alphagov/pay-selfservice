@@ -30,6 +30,10 @@ function getQueryStringForParams (params = {}, removeEmptyParams = false, flatte
   if (params.refund_states) {
     queryStrings.refund_states = params.refund_states instanceof Array ? params.refund_states.join(',') : params.refund_states
   }
+  if (params.dispute_states) {
+    queryStrings.dispute_states = params.dispute_states instanceof Array ? params.dispute_states.join(',') : params.dispute_states
+  }
+
   if (flattenCardBrandsParam) {
     queryStrings.card_brands = params.brand instanceof Array ? params.brand.join(',') : params.brand
     delete queryStrings.card_brand
