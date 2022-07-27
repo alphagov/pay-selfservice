@@ -42,7 +42,7 @@ const transactionWithAccountOverride = function transactionWithAccountOverride (
   return baseClient.get(configuration)
 }
 
-function getDisputesForTransaction (id, gatewayAccountId) {
+function getDisputesForTransaction (id, gatewayAccountId, options = {}) {
   const configuration = Object.assign({
     url: `/v1/transaction/${id}/transaction`,
     qs: {
@@ -50,7 +50,7 @@ function getDisputesForTransaction (id, gatewayAccountId) {
       transaction_type: 'DISPUTE'
     },
     description: 'Get disputes for payment'
-  }, defaultOptions)
+  }, defaultOptions, options)
   return baseClient.get(configuration)
 }
 
