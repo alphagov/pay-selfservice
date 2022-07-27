@@ -42,6 +42,18 @@ const transactionWithAccountOverride = function transactionWithAccountOverride (
   return baseClient.get(configuration)
 }
 
+function getDisputesForTransaction (id, gatewayAccountId) {
+  const configuration = Object.assign({
+    url: `/v1/transaction/${id}/transaction`,
+    qs: {
+      gateway_account_id: gatewayAccountId,
+      transaction_type: 'DISPUTE'
+    },
+    description: 'Get disputes for payment'
+  }, defaultOptions)
+  return baseClient.get(configuration)
+}
+
 const events = function events (transactionId, gatewayAccountId, options = {}) {
   const configuration = Object.assign({
     url: `/v1/transaction/${transactionId}/event`,
@@ -148,6 +160,7 @@ const agreement = function agreement (id, serviceId, options = {}) {
 module.exports = {
   transaction,
   transactions,
+  getDisputesForTransaction,
   payouts,
   transactionWithAccountOverride,
   events,

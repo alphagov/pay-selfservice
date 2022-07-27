@@ -11,6 +11,7 @@ const states = require('./states')
 const check = require('check-types')
 const url = require('url')
 const TransactionEvent = require('../models/TransactionEvent.class')
+const DisputeTransaction = require('../models/DisputeTransaction.class')
 const formatAccountPathsFor = require('../utils/format-account-paths-for')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
@@ -93,7 +94,7 @@ module.exports = {
     return connectorData
   },
 
-  buildPaymentView: function (chargeData, eventsData, users = []) {
+  buildPaymentView: function (chargeData, eventsData, disputeTransactionData, users = []) {
     chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
     chargeData.refund_summary = chargeData.refund_summary || {}
 
@@ -143,6 +144,11 @@ module.exports = {
         event.submitted_by_friendly = lodash.get(users.find(user => user.externalId === event.submitted_by) || {}, 'email')
       }
     })
+
+    if (disputeTransactionData) {
+      chargeData.dispute = new DisputeTransaction(disputeTransactionData)
+    }
+
     delete chargeData['links']
     delete chargeData['return_url']
     return chargeData

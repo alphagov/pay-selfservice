@@ -12,6 +12,12 @@ function getLedgerTransactionSuccess (opts) {
     response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts.transactionDetails)
   })
 }
+function getLedgerDisputeTransactionsSuccess (opts) {
+  const path = `/v1/transaction/${opts.disputeTransactionsDetails.parent_transaction_id}/transaction`
+  return stubBuilder('GET', path, 200, {
+    response: ledgerTransactionFixtures.validDisputeTransactionsResponse(opts.disputeTransactionsDetails)
+  })
+}
 
 function getLedgerEventsSuccess (opts) {
   const path = `/v1/transaction/${opts.transactionId}/event`
@@ -78,6 +84,7 @@ module.exports = {
   getLedgerEventsSuccess,
   getLedgerTransactionSuccess,
   getLedgerTransactionsSuccess,
+  getLedgerDisputeTransactionsSuccess,
   postRefundSuccess,
   postRefundAmountNotAvailable
 }
