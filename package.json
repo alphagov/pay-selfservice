@@ -44,11 +44,6 @@
     "publish-pacts": "./bin/publish-pacts.js",
     "snyk-protect": "exit 0; #no-op for ci"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.js": [
       "npm run lint",
@@ -137,7 +132,6 @@
     "grunt-contrib-watch": "1.1.x",
     "grunt-sass": "3.1.0",
     "html5shiv": "3.7.x",
-    "husky": "8.0.1",
     "jsdom": "^19.0.0",
     "lint-staged": "13.0.3",
     "mocha": "^6.2.3",
