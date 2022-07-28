@@ -15,6 +15,10 @@ function getLedgerTransactionSuccess (opts) {
 function getLedgerDisputeTransactionsSuccess (opts) {
   const path = `/v1/transaction/${opts.disputeTransactionsDetails.parent_transaction_id}/transaction`
   return stubBuilder('GET', path, 200, {
+    query: {
+      gateway_account_id: opts.disputeTransactionsDetails.gateway_account_id,
+      transaction_type: 'DISPUTE'
+    },
     response: ledgerTransactionFixtures.validDisputeTransactionsResponse(opts.disputeTransactionsDetails)
   })
 }

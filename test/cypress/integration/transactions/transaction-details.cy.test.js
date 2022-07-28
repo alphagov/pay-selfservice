@@ -78,7 +78,7 @@ function defaultTransactionDetails (events, opts = {}) {
 function defaultDisputeDetails () {
   return {
     'parent_transaction_id': transactionId,
-    'gatteway_account_id': gatewayAccountId,
+    'gateway_account_id': gatewayAccountId,
     'transactions': [
       {
         'gateway_account_id': gatewayAccountId,
