@@ -5,9 +5,11 @@ function buildCardDetails (opts = {}) {
 
   return {
     last_digits_card_number: opts.last_digits_card_number || '0002',
+    first_digits_card_number: opts.first_digits_card_number || '424242',
     cardholder_name: opts.cardholder_name || 'Test User',
     expiry_date: opts.expiry_date || '08/23',
     card_brand: opts.card_brand || 'Visa',
+    card_type: opts.card_type || 'DEBIT',
     billing_address: {
       line1: billingAddressOpts.line1 || 'address line 1',
       line2: billingAddressOpts.line2 || 'address line 2',
@@ -20,7 +22,7 @@ function buildCardDetails (opts = {}) {
 
 function buildPaymentInstrument (opts = {}) {
   return {
-    method: opts.method || 'CARD',
+    type: opts.type || 'CARD',
     created_date: opts.created_date || '2022-03-01T01:00:00.000Z',
     gateway_expiration_date: opts.gateway_expiration_date || '2022-03-01T01:00:00.000Z',
     card_details: buildCardDetails(opts.card_details)

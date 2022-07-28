@@ -58,7 +58,10 @@
   {% endset %}
   {{ govukSummaryList({
     rows: [{
-      key: { text: "Brand" },
+      key: { text: "Type" },
+      value: { text: paymentInstrument.type | capitalize }
+    },{
+      key: { text: "Card brand" },
       value: { html: image }
     },{
       key: { text: "Name on card" },
@@ -69,6 +72,9 @@
     },{
       key: { text: "Card expiry date" },
       value: { text: cardDetails.expiry_date }
+    }, {
+      key: { text: "Card type" },
+      value: { text: cardDetails.card_type | capitalize }
     }],
     attributes: {
       id: "payment-instrument-list"
