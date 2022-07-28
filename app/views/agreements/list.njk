@@ -19,7 +19,7 @@ Agreements - GOV.UK Pay
         selected: not filters.status
       },{
         value: 'CREATED',
-        text: 'Needs user details',
+        text: 'Needs payment details',
         selected: filters.status === 'CREATED'
       }, {
         value: 'ACTIVE',
@@ -119,7 +119,7 @@ Agreements - GOV.UK Pay
       <tr class="govuk-table__row">
         <th class="govuk-table__header" scope="col" id="id-header">ID</th>
         <th class="govuk-table__header" scope="col" id="reference-header">Reference</th>
-        <th class="govuk-table__header" hidden scope="col" id="status-header">Status</th>
+        <th class="govuk-table__header" scope="col" id="status-header">Status</th>
         <th class="govuk-table__header" scope="col" id="payment-instrumnet-header">Payment instrument</th>
         <th class="govuk-table__header" scope="col" id="brand-header">Date created</th>
       </tr>
@@ -127,28 +127,27 @@ Agreements - GOV.UK Pay
 
     <tbody class="govuk-table__body">
     {% for agreement in agreements.results %}
-      <td class="govuk-table__cell pay-text-grey">
+      <td class="govuk-table__cell govuk-!-font-size-14">
         {{ agreement.external_id }}
       </td>
-      <td class="govuk-table__cell  pay-text-grey">
+      <td class="govuk-table__cell govuk-!-font-size-14">
         <a
           class="govuk-link govuk-link__no-visited-state govuk-!-margin-right-1"
           data-action="update"
           href="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.detail, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, agreement.external_id) }}">
           {{ agreement.reference }}
         </a>
-        {{ agreementStatusTag(agreement.status) }}
       </td>
       {# included for screen readers #}
-      <td hidden>{{ agreement.status }}</td>
-      <td class="govuk-table__cell pay-text-grey">
+      <td class="govuk-table__cell govuk-!-font-size-14">
+        {{ agreementStatusTag(agreement.status) }}
+      </td>
+      <td class="govuk-table__cell govuk-!-font-size-14">
         {% if agreement.payment_instrument %}
           {{ paymentInstrument(agreement.payment_instrument) }}
-        {% else %}
-          (none set)
         {% endif %}
       </td>
-      <td class="govuk-table__cell pay-text-grey">
+      <td class="govuk-table__cell govuk-!-font-size-14">
         {{ agreement.created_date | datetime('datelong') }}
       </td>
       </tr>
