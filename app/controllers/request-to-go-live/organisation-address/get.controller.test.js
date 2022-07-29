@@ -106,7 +106,7 @@ describe('organisation address get controller', () => {
     })
 
     describe('view page when `Stripe setup`', () => {
-      it('should display the org address page and set `isStripeUpdateOrgDetails=true` ' +
+      it('should display the `update org details` form and set `isStripeUpdateOrgDetails=true` ' +
       'and all form fields should be reset to empty', () => {
         const req = {
           route: {
@@ -121,7 +121,7 @@ describe('organisation address get controller', () => {
 
         const responseData = mockResponse.getCalls()[0]
 
-        expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
+        expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
 
         const pageData = responseData.args[3]
         expect(pageData.isStripeUpdateOrgDetails).to.equal(true)

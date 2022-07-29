@@ -52,5 +52,7 @@ module.exports = function getOrganisationAddress (req, res) {
     isStripeUpdateOrgDetails
   }
   pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData, 'address_country'))
-  return response(req, res, 'request-to-go-live/organisation-address', pageData)
+  
+  const templatePath = isStripeUpdateOrgDetails ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
+  return response(req, res, templatePath, pageData)
 }

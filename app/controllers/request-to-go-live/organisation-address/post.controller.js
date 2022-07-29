@@ -209,7 +209,9 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
       }
     } else {
       const pageData = buildErrorsPageData(form, errors, isRequestToGoLive, isStripeUpdateOrgDetails)
-      return response(req, res, 'request-to-go-live/organisation-address', pageData)
+
+      const templatePath = isStripeUpdateOrgDetails ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
+      return response(req, res, templatePath, pageData)
     }
   } catch (err) {
     next(err)

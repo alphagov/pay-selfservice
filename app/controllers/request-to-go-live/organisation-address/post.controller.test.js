@@ -191,7 +191,7 @@ describe('organisation address post controller', () => {
 
         const responseData = mockResponse.getCalls()[0]
 
-        expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
+        expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
 
         const errors = responseData.args[3].errors
         expect(Object.keys(errors).length).to.equal(4)
