@@ -52,7 +52,7 @@
 
 {% if not hideServiceNav and not hideServiceHeader %}
 <div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
-  <nav role="navigation" class="service-navigation">
+  <nav role="navigation" class="service-navigation" data-cy="account-sub-nav">
     <ul class="service-navigation--list">
       {% for item in serviceNavigationItems %}
         {% if item.permissions %}

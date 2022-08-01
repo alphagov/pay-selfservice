@@ -98,6 +98,11 @@ describe('The organisation address page', () => {
           })
       })
 
+      it('should display the account sub nav', () => {
+        cy.get('[data-cy=account-sub-nav]')
+          .should('exist')
+      })
+
       it('should not display the telephone or url fields', () => {
         cy.get('[data-cy=form]')
           .should('exist')

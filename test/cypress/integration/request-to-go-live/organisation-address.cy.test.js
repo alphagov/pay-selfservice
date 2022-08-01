@@ -63,6 +63,11 @@ describe('The organisation address page', () => {
           })
       })
 
+      it('should not display the account sub nav', () => {
+        cy.get('[data-cy=account-sub-nav]')
+          .should('not.exist')
+      })
+
       it('should display errors when validation fails', () => {
         cy.get(`form[method=post]`)
           .within(() => {

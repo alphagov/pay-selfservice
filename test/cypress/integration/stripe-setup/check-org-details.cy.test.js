@@ -93,6 +93,11 @@ describe('Stripe setup: Check your organisation’s details', () => {
         })
     })
 
+    it('should display the account sub nav', () => {
+      cy.get('[data-cy=account-sub-nav]')
+        .should('exist')
+    })
+
     it('should display an error when a radio button is not clicked', () => {
       cy.get('[data-cy=continue-button]').click()
 
