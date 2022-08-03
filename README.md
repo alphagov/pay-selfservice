@@ -3,7 +3,7 @@ GOV.UK Pay Self Service admin tool (Node.js)
 
 ## Prerequisites
 * This requires the [Pay CLI](https://github.com/alphagov/pay-infra/tree/master/cli), which is not publicly available at present.
-* You have [set up your local development environment](https://pay-team-manual.cloudapps.digital/manual/setup-local-dev-environment.html)
+* You have [set up your local development environment](https://pay-team-manual.cloudapps.digital/manual/development-processes/setup-local-dev-environment.html)
 * Clone this repo locally.
 
 ### Running
