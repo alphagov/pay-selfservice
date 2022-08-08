@@ -31,29 +31,58 @@
   </p>
 
   {% set example %}
-    <ol>
-      <li>
-        <h4 class="govuk-!-margin-bottom-1">A user copies the payment link and enters it in a web browser.</h4>
-        <p>The url will be created from your service name. For example https://payment.service.gov.uk/pay/fishing-permit</p>
-      </li>
-      <li>
-        <h4 class="govuk-!-margin-bottom-1">They arrive at the start page, which tells them what they’re paying for. You choose the wording that goes here.</h4>
-        <p>You can choose to use a unique payment reference number or we can create one for you.</p>
-        <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
-      </li>
-      <li>
-        <h4>They enter the amount they need to pay, or proceed with a set amount you’ve chosen.</h4>
-        <img src="/public/images/adhoc-2-amount.svg" alt="Screenshot of both possible payment link amount pages">
-      </li>
-      <li>
-        <h4>They enter their payment information and make the payment.</h4>
-        <img src="/public/images/adhoc-3-start.svg" alt="Screenshot of payment information page">
-      </li>
-      <li>
-        <h4>They receive a confirmation of successful payment. This is also emailed to them with a payment reference number.</h4>
-        <img src="/public/images/adhoc-4-confirm.svg" alt="Screenshot of confirmation page">
-      </li>
-    </ol>
+    {% if displayFuturePaymentLinksContent %}
+      <ol>
+        <li class="govuk-!-margin-bottom-5">
+          <p class="govuk-body govuk-!-font-weight-bold">A user copies the payment link and enters it in a web browser.</p>
+          <p class="govuk-body">The URL will be created from your service name. For example: https://payment.service.gov.uk/pay/fishing-permit</p>
+        </li>
+        <li class="govuk-!-margin-bottom-5">
+          <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-3">The user arrives at this page, which tells them what they’re paying for. You can customise the wording that goes here.</p>
+          <img src="/public/images/payment-links/start-page.svg" alt="Screenshot of payment link start page"> 
+        </li>
+        <li class="govuk-!-margin-bottom-5">
+          <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-3">You can choose to use a unique payment reference number for the user to enter or we can create one for you.</p>
+          <img src="/public/images/payment-links/reference-page.svg" alt="Screenshot of payment link reference page">
+        </li>
+        <li class="govuk-!-margin-bottom-5">
+          <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-3">The user enters the amount they need to pay, or proceeds with a set amount you’ve chosen.</p>
+          <img src="/public/images/payment-links/amount-and-confirm-page.svg" alt="Screenshot of both payment link amount and confirm pages">
+        </li>
+        <li class="govuk-!-margin-bottom-5">
+          <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-3">The user enters their payment information and makes the payment.</p>
+          <img src="/public/images/payment-links/payment-page.svg" alt="Screenshot of payment information page">
+        </li>
+        <li class="govuk-!-margin-bottom-5">
+          <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-3">The user receives confirmation that their payment was successful. This is also emailed to them with a payment reference number.</p>
+          <img src="/public/images/payment-links/success-page.svg" alt="Screenshot of confirmation page">
+        </li>
+      </ol>
+    {% else%}
+      <ol>
+        <li>
+          <h4 class="govuk-!-margin-bottom-1">A user copies the payment link and enters it in a web browser.</h4>
+          <p>The url will be created from your service name. For example https://payment.service.gov.uk/pay/fishing-permit</p>
+        </li>
+        <li>
+          <h4 class="govuk-!-margin-bottom-1">They arrive at the start page, which tells them what they’re paying for. You choose the wording that goes here.</h4>
+          <p>You can choose to use a unique payment reference number or we can create one for you.</p>
+          <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
+        </li>
+        <li>
+          <h4>They enter the amount they need to pay, or proceed with a set amount you’ve chosen.</h4>
+          <img src="/public/images/adhoc-2-amount.svg" alt="Screenshot of both possible payment link amount pages">
+        </li>
+        <li>
+          <h4>They enter their payment information and make the payment.</h4>
+          <img src="/public/images/adhoc-3-start.svg" alt="Screenshot of payment information page">
+        </li>
+        <li>
+          <h4>They receive a confirmation of successful payment. This is also emailed to them with a payment reference number.</h4>
+          <img src="/public/images/adhoc-4-confirm.svg" alt="Screenshot of confirmation page">
+        </li>
+      </ol>
+    {% endif %}
   {% endset %}
   {{
     govukDetails({

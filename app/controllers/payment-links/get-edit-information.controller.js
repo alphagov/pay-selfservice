@@ -32,7 +32,8 @@ module.exports = function showEditInformationPage (req, res, next) {
     paymentLinkTitle,
     paymentLinkDescription,
     isWelsh,
-    errors: recovered.errors
+    errors: recovered.errors,
+    displayFuturePaymentLinksContent: process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true' || sessionData.newPaymentLinkJourneyEnabled
   }
   return response(req, res, 'payment-links/edit-information', pageData)
 }
