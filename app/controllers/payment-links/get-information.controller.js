@@ -35,6 +35,7 @@ module.exports = function showInformationPage (req, res) {
     paymentLinkDescription,
     isWelsh: sessionData.isWelsh,
     serviceName,
-    errors: recovered.errors
+    errors: recovered.errors,
+    displayFuturePaymentLinksContent: process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true'
   })
 }

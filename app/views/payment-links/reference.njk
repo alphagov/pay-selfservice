@@ -140,7 +140,12 @@
   {% if not isWelsh %}
   <div class="govuk-!-margin-top-9" id="payment-link-example">
     <h3 class="govuk-heading-s">Example of what the user will see</h3>
-    <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of a payment link page showing a input for the user to enter a reference">
+
+    {% if displayFuturePaymentLinksContent %}
+      <img src="/public/images/payment-links/reference-page.svg" alt="Screenshot of a payment link page showing a input for the user to enter a reference">
+    {% else %}
+      <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of a payment link page showing a input for the user to enter a reference">
+    {% endif %}
   </div>
   {% endif %}
 </section>
