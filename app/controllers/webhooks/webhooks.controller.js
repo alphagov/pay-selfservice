@@ -8,6 +8,9 @@ const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-s
 
 const webhooksService = require('./webhooks.service')
 const logger = require('../../utils/logger.js')(__filename)
+const { WebhooksForm } = require('./webhooks-form')
+
+const webhooksFormSchema = new WebhooksForm()
 
 async function webhookDetailPage (req, res, next) {
   const status = req.query.status
@@ -45,7 +48,8 @@ async function createWebhookPage (req, res, next) {
 async function updateWebhookPage (req, res, next) {
   try {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
-    response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook })
+    const form = webhooksFormSchema.from(webhook)
+    response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook, form })
   } catch (error) {
     next(error)
   }
@@ -98,7 +102,25 @@ async function createWebhook (req, res, next) {
 
 async function updateWebhook (req, res, next) {
   try {
-    await webhooksService.updateWebhook(req.params.webhookId, req.service.externalId, req.body)
+    const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId)
+    let form = webhooksFormSchema.validate(req.body)
+    if (form.errorSummaryList.length) {
+      response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook, form })
+      return
+    }
+
+    try {
+      await webhooksService.updateWebhook(req.params.webhookId, req.service.externalId, req.body)
+    } catch (updateWebhookError) {
+      form = webhooksFormSchema.parseResponse(updateWebhookError, req.body)
+
+      if (form.errorSummaryList.length) {
+        response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook, form })
+      } else {
+        next(error)
+      }
+      return
+    }
     res.redirect(formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.detail, req.account.type, req.service.externalId, req.account.external_id, req.params.webhookId))
   } catch (error) {
     next(error)
