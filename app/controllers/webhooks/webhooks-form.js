@@ -2,8 +2,11 @@ const CALLBACK_URL_MAX_LENGTH = 2048
 
 const defaultFieldsSchema = [
   {
-    id: 'callback_url', 
-    valid: [{ method: isNotEmpty, message: 'Enter a callback URL' }],
+    id: 'callback_url',
+    valid: [
+      { method: isNotEmpty, message: 'Enter a callback URL' },
+      { method: isValidLength, message: `Callback URL must be ${CALLBACK_URL_MAX_LENGTH} or fewer` }
+    ],
 
     // https://github.com/alphagov/pay-webhooks/blob/main/src/main/java/uk/gov/pay/webhooks/webhook/exception/WebhooksErrorIdentifier.java
     errorIdentifiers: {
@@ -14,7 +17,7 @@ const defaultFieldsSchema = [
   },
   {
     id: 'subscriptions',
-    valid: [{ method: isNotEmpty, message: 'Select a payment event' }] 
+    valid: [{ method: isNotEmpty, message: 'Select a payment event' }]
   }
 ]
 
@@ -55,16 +58,17 @@ class WebhooksForm {
     }
   }
 
-  parseResponse(error = {}, formData = {}) {
+  parseResponse (error = {}, formData = {}) {
     const errors = {}
     const values = {}
     this.fields.forEach((field) => {
       const fieldSpecificErrorIdentifiers = field.errorIdentifiers || {}
+      const errorIdentifierValue = fieldSpecificErrorIdentifiers[error.errorIdentifier || error.error_identifier]
       values[field.key || field.id] = trim(formData[field.id])
-      
-      if (fieldSpecificErrorIdentifiers[error.errorIdentifier]) {
-        errors[field.id] = fieldSpecificErrorIdentifiers[error.errorIdentifier]
-      } 
+
+      if (errorIdentifierValue) {
+        errors[field.id] = errorIdentifierValue
+      }
     })
     return {
       values,
@@ -89,9 +93,8 @@ function formatErrorsForSummaryList (errors = {}) {
   }))
 }
 
-function trim(value) {
+function trim (value) {
   return typeof value === 'string' ? value.trim() : value
 }
 
-module.exports = { WebhooksForm, isNotEmpty, isValidLength }
-
+module.exports = { WebhooksForm }

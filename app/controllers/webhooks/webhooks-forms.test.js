@@ -13,10 +13,10 @@ describe('Webhooks forms', () => {
 
   it('correctly validates for empty values', () => {
     const validDefaultSchemaForm = new WebhooksForm()
-    
+
     // no selected radio elements will have no value
     const formData = {
-        'callback_url': ''
+      'callback_url': ''
     }
     const results = validDefaultSchemaForm.validate(formData)
     expect(results.errors['callback_url']).to.equal('Enter a callback URL')
@@ -31,14 +31,14 @@ describe('Webhooks forms', () => {
     const validRadioInputs = [ [ 'card_payment_started', 'card_payment_captured' ], 'card_payment_started' ]
 
     validRadioInputs.forEach((validRadioInput) => {
-        const formData = {
-            'callback_url': 'https://a-valid-url.com',
-            'subscriptions': validRadioInput
-        }
-        const results = validDefaultSchemaForm.validate(formData)
+      const formData = {
+        'callback_url': 'https://a-valid-url.com',
+        'subscriptions': validRadioInput
+      }
+      const results = validDefaultSchemaForm.validate(formData)
         expect(results.errorSummaryList).to.be.empty // eslint-disable-line
-        expect(results.values['callback_url']).to.equal('https://a-valid-url.com')
-        expect(results.values['subscriptions']).to.deep.equal(validRadioInput)
+      expect(results.values['callback_url']).to.equal('https://a-valid-url.com')
+      expect(results.values['subscriptions']).to.deep.equal(validRadioInput)
     })
   })
 
@@ -52,10 +52,10 @@ describe('Webhooks forms', () => {
 
   it('parses known error identifiers from the backend', () => {
     const validDefaultSchemaForm = new WebhooksForm()
-    
+
     const formData = {
-        'callback_url': 'https://a-valid-url.com',
-        'subscriptions': 'card_payment_succeeded'
+      'callback_url': 'https://a-valid-url.com',
+      'subscriptions': 'card_payment_succeeded'
     }
 
     const expectedError = new Error('URL must be on allow list')

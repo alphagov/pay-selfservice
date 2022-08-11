@@ -93,7 +93,23 @@ async function webhookMessageDetailPage (req, res, next) {
 
 async function createWebhook (req, res, next) {
   try {
-    await webhooksService.createWebhook(req.service.externalId, req.isLive, req.body)
+    let form = webhooksFormSchema.validate(req.body)
+    if (form.errorSummaryList.length) {
+      response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, form })
+      return
+    }
+    try {
+      await webhooksService.createWebhook(req.service.externalId, req.isLive, req.body)
+    } catch (createWebhookError) {
+      form = webhooksFormSchema.parseResponse(createWebhookError, req.body)
+
+      if (form.errorSummaryList.length) {
+        response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, form })
+      } else {
+        next(createWebhookError)
+      }
+      return
+    }
     res.redirect(formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.index, req.account.type, req.service.externalId, req.account.external_id))
   } catch (error) {
     next(error)
@@ -117,7 +133,7 @@ async function updateWebhook (req, res, next) {
       if (form.errorSummaryList.length) {
         response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook, form })
       } else {
-        next(error)
+        next(updateWebhookError)
       }
       return
     }

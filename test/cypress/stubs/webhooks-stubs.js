@@ -61,11 +61,22 @@ function getWebhookMessageAttempts (opts = {}) {
   })
 }
 
+function createWebhookViolatesBackend (opts = {}) {
+  const path = `/v1/webhook`
+  return stubBuilder('POST', path, 400, {
+    response: {
+      error_identifier: 'CALLBACK_URL_NOT_ON_ALLOW_LIST',
+      message: 'Callback url violated security constraints'
+    }
+  })
+}
+
 module.exports = {
   getWebhooksListSuccess,
   getWebhookSuccess,
   getWebhookSigningSecret,
   getWebhookMessagesListSuccess,
   getWebhookMessage,
-  getWebhookMessageAttempts
+  getWebhookMessageAttempts,
+  createWebhookViolatesBackend
 }
