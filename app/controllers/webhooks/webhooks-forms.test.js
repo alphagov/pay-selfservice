@@ -20,7 +20,7 @@ describe('Webhooks forms', () => {
     }
     const results = validDefaultSchemaForm.validate(formData)
     expect(results.errors['callback_url']).to.equal('Enter a callback URL')
-    expect(results.errors['subscriptions']).to.equal('Select a payment event')
+    expect(results.errors['subscriptions']).to.equal('Select at least one payment event')
     expect(results.errorSummaryList[0]).to.have.keys('href', 'text')
     expect(results.errorSummaryList[0].href).to.equal('#callback_url')
     expect(results.errorSummaryList[0].text).to.equal('Enter a callback URL')
@@ -32,12 +32,12 @@ describe('Webhooks forms', () => {
 
     validRadioInputs.forEach((validRadioInput) => {
       const formData = {
-        'callback_url': 'https://a-valid-url.com',
+        'callback_url': 'https://a-valid-url.test',
         'subscriptions': validRadioInput
       }
       const results = validDefaultSchemaForm.validate(formData)
         expect(results.errorSummaryList).to.be.empty // eslint-disable-line
-      expect(results.values['callback_url']).to.equal('https://a-valid-url.com')
+      expect(results.values['callback_url']).to.equal('https://a-valid-url.test')
       expect(results.values['subscriptions']).to.deep.equal(validRadioInput)
     })
   })
@@ -63,7 +63,7 @@ describe('Webhooks forms', () => {
 
     const result = validDefaultSchemaForm.parseResponse(expectedError, formData)
     expect(result.errorSummaryList[0].href).to.equal('#callback_url')
-    expect(result.errorSummaryList[0].text).to.equal('Callback URL must be on an approved list of domains for live accounts. PLease contact support')
+    expect(result.errorSummaryList[0].text).to.equal('Callback URL must be approved. Please contact support')
     expect(result.values['callback_url']).to.equal('https://a-valid-url.com')
     expect(result.values['subscriptions']).to.deep.equal('card_payment_succeeded')
   })

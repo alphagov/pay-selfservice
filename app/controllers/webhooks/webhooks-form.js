@@ -5,14 +5,14 @@ const defaultFieldsSchema = [
     id: 'callback_url',
     valid: [
       { method: isNotEmpty, message: 'Enter a callback URL' },
-      { method: isValidLength, message: `Callback URL must be ${CALLBACK_URL_MAX_LENGTH} or fewer` }
+      { method: isValidLength, message: `Callback URL must be ${CALLBACK_URL_MAX_LENGTH} characters or fewer` }
     ],
 
     // https://github.com/alphagov/pay-webhooks/blob/main/src/main/java/uk/gov/pay/webhooks/webhook/exception/WebhooksErrorIdentifier.java
     errorIdentifiers: {
-      CALLBACK_URL_MALFORMED: 'Callback URL must be a valid URL',
-      CALLBACK_URL_PROTOCOL_NOT_SUPPORTED: 'Callback URL must use the protocol HTTPS',
-      CALLBACK_URL_NOT_ON_ALLOW_LIST: 'Callback URL must be on an approved list of domains for live accounts. PLease contact support'
+      CALLBACK_URL_MALFORMED: 'Enter a valid callback URL',
+      CALLBACK_URL_PROTOCOL_NOT_SUPPORTED: 'Callback URL must begin with https://',
+      CALLBACK_URL_NOT_ON_ALLOW_LIST: 'Callback URL must be approved. Please contact support'
     }
   },
   {
@@ -20,7 +20,7 @@ const defaultFieldsSchema = [
   },
   {
     id: 'subscriptions',
-    valid: [{ method: isNotEmpty, message: 'Select a payment event' }]
+    valid: [{ method: isNotEmpty, message: 'Select at least one payment event' }]
   }
 ]
 
