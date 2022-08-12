@@ -139,6 +139,7 @@ describe('Webhooks', () => {
     cy.get('[data-action=update]').click()
 
     cy.get('#callback_url').should('have.value', 'https://some-callback-url.com')
+    cy.get('#description').should('have.value', 'a valid webhook description')
     cy.get('[value=card_payment_captured]').should('be.checked')
 
     cy.get('button').contains('Update webhook').click()

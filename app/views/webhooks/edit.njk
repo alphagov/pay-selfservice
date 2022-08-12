@@ -32,8 +32,14 @@
 
     {% set items = [] %}
     {% for key, name in eventTypes %}
-      {% set checked = key | lower in form.values.subscriptions if isEditing else false %}
-      {% set items = (items.push({ value: key | lower, text: name, checked: checked }), items) %}
+      {% set normalisedKey = key | lower %}
+      {% set subscriptions = form.values.subscriptions %}
+      {% if subscriptions | isList %}
+        {% set checked = normalisedKey in subscriptions %}
+      {% else %}
+        {% set checked = normalisedKey == subscriptions %}
+      {% endif %}
+      {% set items = (items.push({ value: normalisedKey, text: name, checked: checked }), items) %}
     {% endfor %}
 
     {{ govukInput({

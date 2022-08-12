@@ -16,6 +16,9 @@ const defaultFieldsSchema = [
     }
   },
   {
+    id: 'description'
+  },
+  {
     id: 'subscriptions',
     valid: [{ method: isNotEmpty, message: 'Select a payment event' }]
   }
