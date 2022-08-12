@@ -20,22 +20,22 @@
         {% if isStripeAccountRestricted %}
           <h2 class="govuk-heading-m">Stripe has restricted your account</h2>
 
-          <p class="govuk-body-m">To start taking payments again, please add:</p>
+          <p class="govuk-body">To start taking payments again, please add:</p>
         {% elif stripeAccountHasDeadline %}
           {% set dateString = stripeAccount.requirements.current_deadline %}
 
           <h2 class="govuk-heading-m">You must add more details by {{dateString}} to continue taking payments</h2>
-          <p class="govuk-body-m">
+          <p class="govuk-body">
             Your service can now take payments from users. You must add more details by {{dateString}} or Stripe will not pay the money into your bank account. Please add:
           </p>
         {% else %}
           <h2 class="govuk-heading-m">Enter more information to enable payments to your bank account</h2>
-          <p class="govuk-body-m">
+          <p class="govuk-body">
               Until you add this information, your service is restricted to taking a total of £2000 and you will not get payouts to your bank account. Please add:
           </p>
         {% endif %}
 
-        <ul class="govuk-list govuk-list--bullet">
+        <ul class="govuk-list govuk-list--bullet" data-cy="stripe-setup-list">
           {% if not connectorGatewayAccountStripeProgress.bankAccount %}
             <li>organisation bank details</li>
           {% endif %}
@@ -56,6 +56,12 @@
           {% endif %}
         </ul>
 
+        {% if not connectorGatewayAccountStripeProgress.organisationDetails %}
+          <p class="govuk-body" data-cy="stripe-setup-cofirm-org-details">
+            You must also confirm that the name and address of your organisation in GOV.UK Pay exactly match your government entity document.
+          </p>
+        {% endif %}
+
         {{
         govukButton({
           text: 'Add details',
@@ -75,7 +81,7 @@
     <div class="govuk-grid-column-full">
     {% set html %}
         <h2 class="govuk-heading-m">Stripe has restricted your account</h2>
-        <p class="govuk-body-m">To start taking payments again, please contact support.</p>
+        <p class="govuk-body">To start taking payments again, please contact support.</p>
         <p class="govuk-body">
           <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a>
         </p>
