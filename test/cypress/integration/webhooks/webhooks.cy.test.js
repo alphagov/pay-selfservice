@@ -53,6 +53,44 @@ describe('Webhooks', () => {
     cy.get('[data-webhook-entry]').should('have.length', 1)
   })
 
+  it('should correctly display simple data consistency properties when creating', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs
+    ])
+
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.get('[data-action=create').contains('Create a new webhook').click()
+
+    // no data has been provided
+    cy.get('button').contains('Create webhook').click()
+
+    cy.get('.govuk-error-summary').should('be.visible')
+    cy.get('.govuk-error-summary__list').children().should('have.length', 2)
+    cy.get('#callback_url-error').should('be.visible')
+    cy.get('#subscriptions-error').should('be.visible')
+  })
+
+  it('should correctly display backend validated error identifiers', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      webhooksStubs.createWebhookViolatesBackend()
+    ])
+
+    const callbackUrl = 'https://some-valid-callback-url.com'
+    const description = 'A valid Webhook description'
+
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.get('[data-action=create').contains('Create a new webhook').click()
+    cy.get('#callback_url').type(callbackUrl)
+    cy.get('#description').type(description)
+    cy.get('[value=card_payment_captured]').click()
+    cy.get('button').contains('Create webhook').click()
+
+    cy.get('.govuk-error-summary').should('be.visible')
+    cy.get('.govuk-error-summary__list').children().should('have.length', 1)
+    cy.get('#callback_url-error').should('be.visible')
+  })
+
   it('should create a webhook with valid properties', () => {
     const callbackUrl = 'https://some-valid-callback-url.com'
     const description = 'A valid Webhook description'
@@ -61,11 +99,11 @@ describe('Webhooks', () => {
       ...userAndGatewayAccountStubs
     ])
 
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
     cy.get('[data-action=create').contains('Create a new webhook').click()
     cy.get('#callback_url').type(callbackUrl)
     cy.get('#description').type(description)
     cy.get('[value=card_payment_captured]').click()
-
     cy.get('button').contains('Create webhook').click()
   })
 
@@ -101,6 +139,7 @@ describe('Webhooks', () => {
     cy.get('[data-action=update]').click()
 
     cy.get('#callback_url').should('have.value', 'https://some-callback-url.com')
+    cy.get('#description').should('have.value', 'a valid webhook description')
     cy.get('[value=card_payment_captured]').should('be.checked')
 
     cy.get('button').contains('Update webhook').click()

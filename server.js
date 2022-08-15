@@ -120,6 +120,7 @@ function initialiseTemplateEngine (app) {
     nunjucksEnvironment.addFilter(name, filter)
   }
   nunjucksEnvironment.addFilter('formatPSPname', formatPSPname)
+  nunjucksEnvironment.addFilter('isList', (n) => Array.isArray(n))
 }
 
 function initialisePublic (app) {
