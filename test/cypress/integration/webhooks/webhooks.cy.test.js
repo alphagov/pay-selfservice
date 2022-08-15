@@ -12,14 +12,14 @@ const messageExternalId = 'message-id'
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({ userExternalId, serviceExternalId, gatewayAccountId }),
   gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId }),
-  webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }] }),
+  webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, live: false, webhooks: [{ external_id: webhookExternalId }, { status: 'INACTIVE' }, { status: 'DISABLED' }] }),
   webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, subscriptions: [ 'card_payment_captured', 'card_payment_succeeded', 'card_payment_refunded', 'card_payment_started' ] }),
   webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId,
     external_id: webhookExternalId,
     messages: [
       { latest_attempt: { status: 'PENDING' }, external_id: messageExternalId },
       { latest_attempt: { status: 'FAILED' } },
-      { latest_attempt: { status: 'SUCCESSFUL' } },
+      { latest_attempt: { status: 'WILL_NOT_SEND' } },
       { latest_attempt: { status: 'SUCCESSFUL' } },
       { latest_attempt: { status: 'SUCCESSFUL' } },
       { latest_attempt: { status: 'SUCCESSFUL' } },
@@ -50,7 +50,7 @@ describe('Webhooks', () => {
     cy.get('#navigation-menu-settings').parent().should('have.class', 'service-navigation--list-item-active')
     cy.get('#navigation-menu-webhooks').parent().should('have.class', 'govuk-!-margin-bottom-2')
 
-    cy.get('[data-webhook-entry]').should('have.length', 1)
+    cy.get('[data-webhook-entry]').should('have.length', 3)
   })
 
   it('should correctly display simple data consistency properties when creating', () => {

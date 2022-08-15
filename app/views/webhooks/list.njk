@@ -1,3 +1,4 @@
+{% from "./_webhook_status.njk" import webhookStatusTag %}
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
@@ -23,7 +24,7 @@
     <div data-webhook-entry>
       <p class="govuk-body">
         <span class="pay-text-grey">{{ webhook.callback_url }}</span>
-        <strong class="govuk-tag govuk-tag--blue">{{ webhook.status }}</strong>
+        {{ webhookStatusTag(webhook.status) }}
       </p>
       <p class="govuk-body">{{ webhook.description }}</p>
       <div>
