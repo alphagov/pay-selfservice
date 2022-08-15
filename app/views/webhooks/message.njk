@@ -1,3 +1,4 @@
+{% from "./_message_status.njk" import messageStatusTag %}
 {% extends "layout.njk" %}
 
 {% set messageType = eventTypes[message.event_type | upper] %}
@@ -82,7 +83,7 @@
         {% for attempt in attempts %}
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{ attempt.send_at | datetime('datelong') }} {{ attempt.send_at | datetime('time') | truncate(5, true, '') }}</td>
-            <td class="govuk-table__cell">{{ attempt.status }}</td>
+            <td class="govuk-table__cell">{{ messageStatusTag(attempt.status) }}</td>
             <td class="govuk-table__cell">{{ attempt.status_code or '-' }}</td>
             <td class="govuk-table__cell">{{ attempt.result }}</td>
           </tr>

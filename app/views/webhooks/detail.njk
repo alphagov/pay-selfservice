@@ -1,3 +1,5 @@
+{% from "./_webhook_status.njk" import webhookStatusTag %}
+{% from "./_message_status.njk" import messageStatusTag %}
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
@@ -12,7 +14,7 @@
 <div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l page-title" title="{{ webhook.callback_url }}">
     {{ webhook.callback_url | truncate(40) }}
-    <strong class="govuk-tag govuk-tag--blue">{{ webhook.status }}</strong>
+    {{ webhookStatusTag(webhook.status) }}
   </h1>
 
   <p class="govuk-body">{{ webhook.description }}</p>
@@ -45,15 +47,6 @@
       }
     }) }}
   </div>
-
-  {% macro statusTag(status) %}
-    {% set map = {
-      "SUCCESSFUL": "govuk-tag--green",
-      "FAILED": "govuk-tag--red",
-      "PENDING": "govuk-tag--grey"
-    } %}
-    <strong class="govuk-tag {{ map[status] }}">{{ status }}</strong>
-  {% endmacro %}
 
   <div class="govuk-!-margin-top-6">
     <h2 class="govuk-heading-m">Events</h2>
@@ -91,7 +84,7 @@
                 {{ eventTypes[message.event_type | upper] }}
               </a>
             </td>
-            <td class="govuk-table__cell">{{ statusTag(message.latest_attempt and message.latest_attempt.status or 'PENDING') }}</td>
+            <td class="govuk-table__cell">{{ messageStatusTag(message.latest_attempt and message.latest_attempt.status or 'PENDING') }}</td>
             <td class="govuk-table__cell">
               {# @TODO(sfount) fragile set up to avoid seconds granularity, update commons with a new format #}
               {{ message.event_date | datetime('datelong') }} {{ message.event_date | datetime('time') | truncate(5, true, '') }}

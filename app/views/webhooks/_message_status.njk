@@ -1,0 +1,16 @@
+{% set statusStyleMap = {
+"PENDING": "govuk-tag--grey",
+"SUCCESSFUL": "govuk-tag--green",
+"FAILED": "govuk-tag--red",
+"WILL_NOT_SEND": "govuk-tag--yellow"
+} %}
+{% set statusTextMap = {
+"PENDING": "Pending",
+"SUCCESSFUL": "Successful",
+"FAILED": "Failed",
+"WILL_NOT_SEND": "Will not send"
+} %}
+
+{% macro messageStatusTag(status) %}
+<strong class="govuk-tag {{ statusStyleMap[status] }}">{{ statusTextMap[status] }}</strong>
+{% endmacro %}
