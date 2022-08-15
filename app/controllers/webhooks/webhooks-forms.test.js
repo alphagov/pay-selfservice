@@ -46,7 +46,7 @@ describe('Webhooks forms', () => {
     const validDefaultSchemaForm = new WebhooksForm()
     const webhook = webhooksFixtures.webhookResponse()
     const form = validDefaultSchemaForm.from(webhook)
-    expect(form.values.callback_url).to.equal('https://some-callback-url.com')
+    expect(form.values.callback_url).to.equal('https://some-callback-url.test')
     expect(form.values.subscriptions).to.deep.equal([ 'card_payment_captured' ])
   })
 

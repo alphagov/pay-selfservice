@@ -76,7 +76,7 @@ describe('Webhooks', () => {
       webhooksStubs.createWebhookViolatesBackend()
     ])
 
-    const callbackUrl = 'https://some-valid-callback-url.com'
+    const callbackUrl = 'https://some-valid-callback-url.test'
     const description = 'A valid Webhook description'
 
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
@@ -92,7 +92,7 @@ describe('Webhooks', () => {
   })
 
   it('should create a webhook with valid properties', () => {
-    const callbackUrl = 'https://some-valid-callback-url.com'
+    const callbackUrl = 'https://some-valid-callback-url.test'
     const description = 'A valid Webhook description'
 
     cy.task('setupStubs', [
@@ -115,7 +115,7 @@ describe('Webhooks', () => {
 
     cy.get('[data-action=update]').then((links) => links[0].click())
 
-    cy.get('h1').contains('https://some-callback-url.com')
+    cy.get('h1').contains('https://some-callback-url.test')
     cy.get('.govuk-list.govuk-list--bullet > li').should('have.length', 3)
 
     // based on number of rows stubbed and client pagination logic
@@ -138,7 +138,7 @@ describe('Webhooks', () => {
     // button through to update webhooks
     cy.get('[data-action=update]').click()
 
-    cy.get('#callback_url').should('have.value', 'https://some-callback-url.com')
+    cy.get('#callback_url').should('have.value', 'https://some-callback-url.test')
     cy.get('#description').should('have.value', 'a valid webhook description')
     cy.get('[value=card_payment_captured]').should('be.checked')
 
