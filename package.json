@@ -64,7 +64,7 @@
     "minimist": "1.2.6"
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "3.6.0",
+    "@govuk-pay/pay-js-commons": "3.6.2",
     "@sentry/node": "6.12.0",
     "accessible-autocomplete": "2.0.4",
     "aws-sdk": "2.1185.0",
@@ -145,7 +145,7 @@
     "sass": "^1.54.3",
     "sinon": "14.0.0",
     "standard": "12.0.1",
-    "stylelint": "^14.9.1",
+    "stylelint": "^14.10.0",
     "stylelint-config-gds": "^0.2.0",
     "stylelint-order": "^5.0.0",
     "supertest": "^6.2.4"
