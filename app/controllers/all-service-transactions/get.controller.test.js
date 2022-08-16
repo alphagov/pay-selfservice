@@ -43,87 +43,19 @@ describe('All service transactions - GET', () => {
   })
 
   describe('Stripe account', () => {
-    it('should get dispute states for test transactions page - if dispute transactions search is enabled for test', async () => {
-      process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
+    it('should get dispute states', async () => {
       userPermittedAccountsSummary.hasStripeAccount = true
-      req.params.statusFilter = 'test'
 
       await getController()(req, res, next)
 
       sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, true)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for test transactions page - if dispute transactions search is not enabled for test', async () => {
-      process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1753386755'
-      userPermittedAccountsSummary.hasStripeAccount = true
-      req.params.statusFilter = 'test'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for test transactions page - if dispute transactions search is only enabled for live', async () => {
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1753386755'
-      userPermittedAccountsSummary.hasStripeAccount = true
-      req.params.statusFilter = 'test'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
-      sinon.assert.called(res.render)
-    })
-
-    it('should get dispute states for live transactions page - if dispute transactions search is enabled for live', async () => {
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      userPermittedAccountsSummary.hasStripeAccount = true
-      req.params.statusFilter = 'live'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, true)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for live transactions page - if dispute transactions search is enabled for live', async () => {
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1753386755'
-      userPermittedAccountsSummary.hasStripeAccount = true
-      req.params.statusFilter = 'live'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for live transactions page - if dispute transactions search is only enabled for test', async () => {
-      process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1753386755'
-      userPermittedAccountsSummary.hasStripeAccount = true
-      req.params.statusFilter = 'live'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
       sinon.assert.called(res.render)
     })
   })
+
   describe('Non stripe account', () => {
-    it('should NOT get dispute states for TEST transactions page - if dispute transactions search is enabled for test', async () => {
+    it('should NOT get dispute states', async () => {
       process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      userPermittedAccountsSummary.hasStripeAccount = false
-      req.params.statusFilter = 'test'
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for LIVE transactions page - if dispute transactions search is enabled for live', async () => {
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
       userPermittedAccountsSummary.hasStripeAccount = false
       req.params.statusFilter = 'test'
       await getController()(req, res, next)

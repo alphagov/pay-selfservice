@@ -38,83 +38,16 @@ describe('List transactions - GET', () => {
     beforeEach(() => {
       req.account.payment_provider = 'stripe'
     })
-    it('should get dispute states for test account transactions page - if dispute transactions search is enabled for test', async () => {
-      process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      req.account.type = 'test'
+    it('should get dispute states for stripe account ', async () => {
       await getController()(req, res, next)
 
       sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, true)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for test account transactions page - if dispute transactions search is not enabled for test', async () => {
-      process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1753386755'
-      req.account.type = 'test'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for test account transactions page - if dispute transactions search is only enabled for live', async () => {
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1753386755'
-      req.account.type = 'test'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
-      sinon.assert.called(res.render)
-    })
-
-    it('should get dispute states for live account transactions page - if dispute transactions search is enabled for live', async () => {
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      req.account.type = 'live'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, true)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for live account transactions page - if dispute transactions search is enabled for live', async () => {
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1753386755'
-      req.account.type = 'live'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for live account transactions page - if dispute transactions search is only enabled for test', async () => {
-      process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1753386755'
-      req.account.type = 'live'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
       sinon.assert.called(res.render)
     })
   })
   describe('Non stripe account', () => {
-    it('should NOT get dispute states for TEST account transactions page - if dispute transactions search is enabled for test', async () => {
-      process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
+    it('should NOT get dispute states for non-stripe account', async () => {
       req.account.payment_provider = 'sandbox'
-      req.account.type = 'test'
-
-      await getController()(req, res, next)
-
-      sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
-      sinon.assert.called(res.render)
-    })
-
-    it('should NOT get dispute states for LIVE account transactions page - if dispute transactions search is enabled for live', async () => {
-      process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
-      req.account.payment_provider = 'sandbox'
-      req.account.type = 'live'
 
       await getController()(req, res, next)
 
