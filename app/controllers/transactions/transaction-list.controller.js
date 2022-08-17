@@ -2,7 +2,6 @@
 
 const url = require('url')
 const _ = require('lodash')
-const moment = require('moment')
 
 const router = require('../../routes.js')
 const transactionService = require('../../services/transaction.service')
@@ -15,17 +14,6 @@ const client = new ConnectorClient(process.env.CONNECTOR_URL)
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
-
-const enableDisputesSearchForTestAccountsFromDate = process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE || 1659916800 // Aug 08 2022 00:00:00 GMT
-const enableDisputesSearchForLiveAccountsFromDate = process.env.ENABLE_LIVE_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE || 1659916800 // Aug 08 2022 00:00:00 GMT
-
-function includeDisputeStatuses (account) {
-  const enableDisputesFromDateForAccountType = (account.type === 'live'
-    ? enableDisputesSearchForLiveAccountsFromDate : enableDisputesSearchForTestAccountsFromDate)
-
-  return (account.payment_provider === 'stripe') &&
-    moment().isAfter(moment.unix(enableDisputesFromDateForAccountType))
-}
 
 module.exports = async function showTransactionList (req, res, next) {
   const accountId = req.account.gateway_account_id
@@ -54,7 +42,9 @@ module.exports = async function showTransactionList (req, res, next) {
   const model = buildPaymentList(result[0], result[1], gatewayAccountExternalId, filters.result, transactionsDownloadLink)
   model.search_path = formatAccountPathsFor(router.paths.account.transactions.index, req.account.external_id)
   model.filtersDescription = describeFilters(filters.result)
-  model.eventStates = states.allDisplayStateSelectorObjects(includeDisputeStatuses(req.account))
+
+  const includeDisputeStatuses = (req.account.payment_provider === 'stripe')
+  model.eventStates = states.allDisplayStateSelectorObjects(includeDisputeStatuses)
     .map(state => {
       return {
         value: state.key,
