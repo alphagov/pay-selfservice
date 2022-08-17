@@ -77,8 +77,8 @@
       routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
 
     <p class="govuk-body">
-      <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-        Show transactions for all your services
+      <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+        View transactions for all your services
       </a>
     </p>
 
@@ -87,8 +87,8 @@
 
     {% if has_account_with_payouts %}
       <p class="govuk-body">
-        <a href="{{ payoutsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state">
-          Show payments to your bank account
+        <a href="{{ payoutsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+          View payments to your bank account
         </a>
       </p>
     {% endif %}
