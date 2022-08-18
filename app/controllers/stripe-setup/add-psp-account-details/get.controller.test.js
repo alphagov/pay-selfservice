@@ -76,6 +76,19 @@ describe('Stripe setup get controller', () => {
     sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/director`)
   })
 
+  it('should redirect to check org details page', async () => {
+    req.account.connectorGatewayAccountStripeProgress = {
+      bankAccount: true,
+      responsiblePerson: true,
+      vatNumber: true,
+      companyNumber: true,
+      director: true,
+      organisationDetails: false
+    }
+    await getController(req, res, next)
+    sinon.assert.calledWith(res.redirect, 303, `/account/${req.account.external_id}/your-psp/${req.credentialId}/check-organisation-details`)
+  })
+
   it('should redirect to government entity document page', async () => {
     req.account.connectorGatewayAccountStripeProgress = {
       bankAccount: true,
@@ -83,6 +96,7 @@ describe('Stripe setup get controller', () => {
       vatNumber: true,
       companyNumber: true,
       director: true,
+      organisationDetails: true,
       governmentEntityDocument: false
     }
     await getController(req, res, next)
@@ -96,6 +110,7 @@ describe('Stripe setup get controller', () => {
       vatNumber: true,
       companyNumber: true,
       director: true,
+      organisationDetails: true,
       governmentEntityDocument: true
     }
     await getController(req, res, next)
