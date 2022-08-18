@@ -28,7 +28,7 @@ describe('Webhooks forms', () => {
 
   it('correctly validates correct values', () => {
     const validDefaultSchemaForm = new WebhooksForm()
-    const validRadioInputs = [ [ 'card_payment_started', 'card_payment_captured' ], 'card_payment_started' ]
+    const validRadioInputs = [ [ 'card_payment_refunded', 'card_payment_captured' ], 'card_payment_refunded' ]
 
     validRadioInputs.forEach((validRadioInput) => {
       const formData = {
