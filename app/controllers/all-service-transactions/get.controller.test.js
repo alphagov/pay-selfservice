@@ -55,7 +55,6 @@ describe('All service transactions - GET', () => {
 
   describe('Non stripe account', () => {
     it('should NOT get dispute states', async () => {
-      process.env.ENABLE_TEST_TXS_SEARCH_BY_DISPUTE_STATUSES_FROM_DATE = '1627156355'
       userPermittedAccountsSummary.hasStripeAccount = false
       req.params.statusFilter = 'test'
       await getController()(req, res, next)
