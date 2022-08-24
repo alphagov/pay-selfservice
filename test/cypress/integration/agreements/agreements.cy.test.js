@@ -1,6 +1,7 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const agreementStubs = require('../../stubs/agreement-stubs')
+const transactionStubs = require('../../stubs/transaction-stubs')
 
 const userExternalId = 'some-user-id'
 const gatewayAccountId = 10
@@ -88,7 +89,18 @@ describe('Agreements', () => {
   it('should load the details page and preserve filter params', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      agreementStubs.getLedgerAgreementSuccess({ service_id: serviceExternalId, live: false, external_id: 'a-valid-agreement-id' })
+      agreementStubs.getLedgerAgreementSuccess({ service_id: serviceExternalId, live: false, external_id: 'a-valid-agreement-id' }),
+      transactionStubs.getLedgerTransactionsSuccess({
+        gatewayAccountId,
+        transactions: [
+          { reference: 'payment-reference', amount: 1000, type: 'payment' },
+          { reference: 'second-reference', amount: 20000, type: 'payment' }
+        ],
+        filters: {
+          agreement_id: 'a-valid-agreement-id',
+          display_size: 5
+        }
+      })
     ])
 
     cy.get('[data-action=update]').then((links) => links[0].click())
@@ -103,6 +115,8 @@ describe('Agreements', () => {
 
     cy.get('.govuk-summary-list__value').contains('Test User')
     cy.get('.govuk-summary-list__value').contains('Reason shown to paying user for taking agreement')
+
+    cy.get('.govuk-table__body').children().should('have.length', 2)
   })
 
   it('should show no agreements content if filters return nothing', () => {

@@ -74,22 +74,24 @@ module.exports = {
       delete element.created_date
     })
 
-    connectorData.downloadTransactionLink = router.generateRoute(
-      route, {
-        reference: filtersResult.reference,
-        email: filtersResult.email,
-        payment_states: filtersResult.payment_states,
-        refund_states: filtersResult.refund_states,
-        dispute_states: filtersResult.dispute_states,
-        brand: filtersResult.brand,
-        fromDate: filtersResult.fromDate,
-        toDate: filtersResult.toDate,
-        fromTime: filtersResult.fromTime,
-        toTime: filtersResult.toTime,
-        cardholderName: filtersResult.cardholderName,
-        lastDigitsCardNumber: filtersResult.lastDigitsCardNumber,
-        metadataValue: filtersResult.metadataValue
-      })
+    if (route) {
+      connectorData.downloadTransactionLink = router.generateRoute(
+        route, {
+          reference: filtersResult.reference,
+          email: filtersResult.email,
+          payment_states: filtersResult.payment_states,
+          refund_states: filtersResult.refund_states,
+          dispute_states: filtersResult.dispute_states,
+          brand: filtersResult.brand,
+          fromDate: filtersResult.fromDate,
+          toDate: filtersResult.toDate,
+          fromTime: filtersResult.fromTime,
+          toTime: filtersResult.toTime,
+          cardholderName: filtersResult.cardholderName,
+          lastDigitsCardNumber: filtersResult.lastDigitsCardNumber,
+          metadataValue: filtersResult.metadataValue
+        })
+    }
 
     return connectorData
   },

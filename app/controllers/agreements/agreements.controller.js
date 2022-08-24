@@ -1,8 +1,12 @@
 const url = require('url')
 
 const agreementsService = require('./agreements.service')
+const transactionService = require('../../services/transaction.service')
+const { buildPaymentList } = require('../../utils/transaction-view')
 
 const { response } = require('../../utils/response')
+
+const LIMIT_NUMBER_OF_TRANSACTIONS_TO_SHOW = 5
 
 async function listAgreements (req, res, next) {
   const page = req.query.page || 1
@@ -27,10 +31,16 @@ async function listAgreements (req, res, next) {
 
 async function agreementDetail (req, res, next) {
   const listFilter = req.session.agreementsFilter
+  const transactionsFilter = { agreementId: req.params.agreementId, pageSize: LIMIT_NUMBER_OF_TRANSACTIONS_TO_SHOW }
+
   try {
     const agreement = await agreementsService.agreement(req.params.agreementId, req.service.externalId)
+    const transactions = await transactionService.search([ req.account.gateway_account_id ], transactionsFilter)
+    const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
+
     response(req, res, 'agreements/detail', {
       agreement,
+      transactions: formattedTransactions,
       listFilter
     })
   } catch (error) {

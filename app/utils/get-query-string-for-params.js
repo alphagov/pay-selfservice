@@ -16,7 +16,8 @@ function getQueryStringForParams (params = {}, removeEmptyParams = false, flatte
     to_date: dates.toDateToApiFormat(params.toDate, params.toTime),
     ...params.feeHeaders && { fee_headers: params.feeHeaders },
     ...params.motoHeader && { moto_header: params.motoHeader },
-    metadata_value: params.metadataValue
+    metadata_value: params.metadataValue,
+    agreement_id: params.agreementId
   }
 
   if (!ignorePagination) {
