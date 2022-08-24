@@ -114,7 +114,7 @@
   </table>
 
   <p class="govuk-body">
-    <a class="govuk-link govuk-link__no-visited-state" href="#">Show all transactions for this agreement</a>
+    <a class="govuk-link govuk-link__no-visited-state" href="{{ formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id) }}?agreementId={{ agreement.external_id }}">Show all transactions for this agreement</a>
   </p>
 
 </div>

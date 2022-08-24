@@ -89,7 +89,8 @@ module.exports = {
           toTime: filtersResult.toTime,
           cardholderName: filtersResult.cardholderName,
           lastDigitsCardNumber: filtersResult.lastDigitsCardNumber,
-          metadataValue: filtersResult.metadataValue
+          metadataValue: filtersResult.metadataValue,
+          agreementId: filtersResult.agreementId
         })
     }
 

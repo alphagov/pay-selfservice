@@ -246,7 +246,7 @@ describe('All service transactions', () => {
     it('should have correct back link', () => {
       cy.get('.govuk-back-link')
         .should('have.text', 'Back to transactions for all services')
-        .should('have.attr', 'href', '/all-service-transactions/test?reference=ref3&email=&cardholderName=&lastDigitsCardNumber=&fromDate=&fromTime=&toDate=&toTime=&metadataValue=')
+        .should('have.attr', 'href', '/all-service-transactions/test?reference=ref3&email=&cardholderName=&lastDigitsCardNumber=&fromDate=&fromTime=&toDate=&toTime=&metadataValue=&agreementId=')
     })
 
     it('should refund a payment', () => {
@@ -271,7 +271,7 @@ describe('All service transactions', () => {
 
       cy.get('.govuk-back-link')
         .should('have.text', 'Back to transactions for all services')
-        .should('have.attr', 'href', '/all-service-transactions/test?reference=ref3&email=&cardholderName=&lastDigitsCardNumber=&fromDate=&fromTime=&toDate=&toTime=&metadataValue=')
+        .should('have.attr', 'href', '/all-service-transactions/test?reference=ref3&email=&cardholderName=&lastDigitsCardNumber=&fromDate=&fromTime=&toDate=&toTime=&metadataValue=&agreementId=')
     })
   })
 
