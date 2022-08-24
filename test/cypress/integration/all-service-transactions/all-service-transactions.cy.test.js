@@ -12,17 +12,20 @@ describe('All service transactions', () => {
     gatewayAccountId: 42,
     gatewayAccountExternalId: 'a-valid-external-id-1',
     type: 'live',
-    paymentProvider: 'stripe'
+    paymentProvider: 'stripe',
+    recurringEnabled: true
   }
   const gatewayAccount2 = {
     gatewayAccountId: 43,
     gatewayAccountExternalId: 'a-valid-external-id-2',
-    type: 'live'
+    type: 'live',
+    recurringEnabled: true
   }
   const gatewayAccount3 = {
     gatewayAccountId: 44,
     gatewayAccountExternalId: 'a-valid-external-id-3',
-    type: 'test'
+    type: 'test',
+    recurringEnabled: true
   }
   const userStub = userStubs.getUserSuccessWithMultipleServices(userExternalId, [
     {

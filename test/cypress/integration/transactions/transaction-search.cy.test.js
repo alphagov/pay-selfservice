@@ -121,12 +121,13 @@ const disputeTransactions = [
 const sharedStubs = (paymentProvider = 'sandbox') => {
   return [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider }),
+    gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, paymentProvider, recurringEnabled: true }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
       paymentProvider,
-      type: 'live'
+      type: 'live',
+      recurringEnabled: true
     }),
     gatewayAccountStubs.getCardTypesSuccess(),
     stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId })
