@@ -270,7 +270,8 @@ describe('Transactions List', () => {
             last_digits_card_number: '4242',
             cardholder_name: 'doe',
             refund_states: 'submitted',
-            metadata_value: 'test'
+            metadata_value: 'test',
+            agreement_id: 'an-agreement-id'
           }
         })
       ])
@@ -294,7 +295,7 @@ describe('Transactions List', () => {
 
       cy.contains('Advanced filters').click()
       cy.get('#metadataValue').type('test')
-
+      cy.get('#agreementId').type('an-agreement-id')
       cy.get('#filter').click()
 
       // Ensure the right number of transactions is displayed

@@ -84,5 +84,38 @@
   {% else %}
   <p id="empty-payment-instrument" class="govuk-body">No payment instrument set for this agreement.</p>
   {% endif %}
+
+  <h2 class="govuk-heading-m govuk-!-margin-top-9">Transactions</h2>
+  <table id="transactions-list" class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col" id="reference-header">Reference number</th>
+        <th class="govuk-table__header" scope="col" id="state-header">State</th>
+        <th class="govuk-table__header" scope="col" id="amount-header">Amount</th>
+        <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="time-header">Date created</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+    {% for transaction in transactions.results %}
+      <tr class="govuk-table__row vertical-align-top">
+        <th scope="row" class="charge-column reference govuk-table__header" data-gateway-transaction-id="{{transaction.gateway_transaction_id}}">
+          <span class="govuk-!-font-weight-regular govuk-!-font-size-14 reference govuk-!-display-block" id="charge-id-{{transaction.charge_id}}" data-charge-id="{{transaction.charge_id}}">{{transaction.reference}}</span>
+        </th>
+        <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{transaction.state_friendly}}</td>
+        <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount"><span style="white-space: pre">{{transaction.amount}}</span></td>
+        <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time">{{transaction.created}}</td>
+      </tr>
+    {% else %}
+      <tr class="govuk-table__row">
+        <td colspan="4" class="govuk-table__cell govuk-!-font-size-14">No transactions found for this agreement.</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <p class="govuk-body">
+    <a class="govuk-link govuk-link__no-visited-state" href="{{ formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id) }}?agreementId={{ agreement.external_id }}">Show all transactions for this agreement</a>
+  </p>
+
 </div>
 {% endblock %}
