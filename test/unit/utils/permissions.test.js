@@ -67,6 +67,7 @@ describe('gateway account filter utiltiies', () => {
       expect(result.hasLiveAccounts).to.equal(false)
       expect(result.hasTestStripeAccount).to.equal(true)
       expect(result.hasStripeAccount).to.equal(true)
+      expect(result.hasRecurringAccount).to.equal(false)
     })
 
     it('correctly identifies non stripe and moto headers', async () => {
@@ -98,7 +99,8 @@ describe('gateway account filter utiltiies', () => {
                 accounts: [
                   validGatewayAccountResponse({
                     gateway_account_id: '1',
-                    type: 'live'
+                    type: 'live',
+                    recurring_enabled: true
                   }),
                   validGatewayAccountResponse({
                     gateway_account_id: '2',
@@ -116,12 +118,14 @@ describe('gateway account filter utiltiies', () => {
       })
       const liveResult = await getGatewayAccountsFor(user, true, 'perm-1')
       expect(liveResult.gatewayAccountIds).to.deep.equal([ '1', '3' ])
+      expect(liveResult.hasRecurringAccount).to.equal(true)
 
       const testResult = await getGatewayAccountsFor(user, false, 'perm-1')
       expect(testResult.gatewayAccountIds).to.deep.equal([ '2' ])
       expect(testResult.hasLiveAccounts).to.equal(true)
       expect(testResult.hasTestStripeAccount).to.equal(false)
       expect(testResult.hasStripeAccount).to.equal(false)
+      expect(testResult.hasRecurringAccount).to.equal(false)
     })
 
     it('correctly filters services by users permission role', async () => {

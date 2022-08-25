@@ -67,6 +67,7 @@ module.exports = async function showTransactionList (req, res, next) {
   model.clearRedirect = formatAccountPathsFor(router.paths.account.transactions.index, req.account.external_id)
   model.isStripeAccount = req.account.payment_provider === 'stripe'
   model.isExperimentalFeaturesEnabled = req.service.experimentalFeaturesEnabled
+  model.recurringEnabled = req.account.recurring_enabled
 
   return response(req, res, 'transactions/index', model)
 }

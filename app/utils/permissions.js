@@ -16,6 +16,7 @@ const getGatewayAccountsFor = async function getGatewayAccountsFor (user, filter
     headers: getAllAccountDetailHeaders(userGatewayAccounts),
     hasLiveAccounts: filterGatewayAccountIds(userGatewayAccounts, true).length > 0,
     hasStripeAccount: hasStripeAccount(userGatewayAccounts, filterLiveAccounts),
+    hasRecurringAccount: hasRecurringAccount(userGatewayAccounts, filterLiveAccounts),
     hasTestStripeAccount: userGatewayAccounts.filter((account) => account.type === 'test' && account.payment_provider === 'stripe').length > 0
   }
 }
@@ -59,6 +60,12 @@ const hasStripeAccount = function hasStripeAccount (gatewayAccounts, filterLiveA
     .filter((account) => account.type === gatewayAccountTypeFilter)
     .filter((account) => account.payment_provider === 'stripe')
     .length > 0
+}
+
+const hasRecurringAccount = function hasRecurringAccount (gatewayAccounts, filterLiveAccounts = true) {
+  const gatewayAccountTypeFilter = filterLiveAccounts ? 'live' : 'test'
+  return gatewayAccounts.filter((account) => account.type === gatewayAccountTypeFilter)
+    .some((account) => account.recurring_enabled)
 }
 
 module.exports = {
