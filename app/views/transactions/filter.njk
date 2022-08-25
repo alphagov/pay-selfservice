@@ -238,6 +238,7 @@
                 }
               })
             }}
+            {% if recurringEnabled %}
             {{
               govukInput({
                 id: 'agreementId',
@@ -245,7 +246,7 @@
                 value: filters.agreementId,
                 classes: 'govuk-!-font-size-16',
                 label: {
-                  text: 'Search by agreement identifier',
+                  text: 'Search by agreement',
                   classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
                 },
                 hint: {
@@ -254,6 +255,7 @@
                 }
               })
             }}
+            {% endif %}
           </div>
         </details>
       </div>
