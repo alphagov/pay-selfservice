@@ -23,7 +23,6 @@ module.exports = function showAmountPage (req, res, next) {
     amountHint,
     isWelsh: sessionData.isWelsh,
     errors: recovered.errors,
-    isEditing: false,
-    displayFuturePaymentLinksContent: process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true'
+    isEditing: false
   })
 }

@@ -30,8 +30,7 @@ module.exports = function showEditAmountPage (req, res) {
     amountHint,
     isWelsh,
     errors: recovered.errors,
-    isEditing: true,
-    displayFuturePaymentLinksContent: process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true' || sessionData.newPaymentLinkJourneyEnabled
+    isEditing: true
   }
   return response(req, res, 'payment-links/amount', pageData)
 }
