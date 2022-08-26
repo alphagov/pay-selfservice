@@ -20,8 +20,7 @@ module.exports = async (req, res, next) => {
       englishPaymentLinks,
       welshPaymentLinks,
       paths,
-      externalServiceId,
-      displayFuturePaymentLinksContent: process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true'
+      externalServiceId
     }
     return response(req, res, 'payment-links/manage', pageData)
   } catch (err) {

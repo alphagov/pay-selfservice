@@ -18,8 +18,6 @@ module.exports = function postEditAmount (req, res) {
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
   }
 
-  const showAmountHintField = process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true' || sessionData.newPaymentLinkJourneyEnabled
-
   const type = req.body['amount-type-group']
   const amount = req.body['payment-amount']
   const hint = req.body['amount-hint-text'] && req.body['amount-hint-text'].trim()
@@ -33,7 +31,7 @@ module.exports = function postEditAmount (req, res) {
     if (amount === '' || amountInPence === null) {
       errors.amount = 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
     }
-  } else if (showAmountHintField) {
+  } else {
     const validateHintResult = validateOptionalField(hint, HINT_MAX_LENGTH, 'hint text', true)
     if (!validateHintResult.valid) {
       errors.hint = validateHintResult.message
@@ -51,9 +49,7 @@ module.exports = function postEditAmount (req, res) {
   }
 
   sessionData.price = amountInPence
-  if (showAmountHintField) {
-    sessionData.amountHint = hint
-  }
+  sessionData.amountHint = hint
   lodash.set(req, 'session.editPaymentLinkData', sessionData)
 
   return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.edit, req.account && req.account.external_id, productExternalId))

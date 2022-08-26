@@ -25,7 +25,6 @@ module.exports = function showReferencePage (req, res, next) {
     paymentReferenceLabel,
     paymentReferenceHint,
     isWelsh: sessionData.isWelsh,
-    errors: recovered.errors,
-    displayFuturePaymentLinksContent: process.env.PAYMENT_LINKS_FUTURE_ENABLED === 'true'
+    errors: recovered.errors
   })
 }
