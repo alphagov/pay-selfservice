@@ -81,7 +81,7 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
   return navigationItems
 }
 
-const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}) => {
+const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}, service = {}) => {
   const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, account.external_id)
 
   return [
@@ -104,7 +104,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       name: 'Webhooks',
       url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.index, account.type, account.service_id, account.external_id),
       current: pathLookup(currentPath, paths.futureAccountStrategy.webhooks.index),
-      permissions: permissions.webhooks_update && process.env.FEATURE_ENABLE_WEBHOOKS === 'true'
+      permissions: permissions.webhooks_update && (process.env.FEATURE_ENABLE_WEBHOOKS === 'true' || service.experimentalFeaturesEnabled)
     },
     ...yourPSPNavigationItems(account, currentPath).map((yourPSPNavigationItem) => ({
       ...yourPSPNavigationItem,
