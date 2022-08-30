@@ -126,7 +126,7 @@ module.exports = function (req, data, template) {
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, account)
-    convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account)
+    convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account, service)
   }
   convertedData._features = {}
   if (req.user && req.user.features) {
