@@ -12,6 +12,22 @@
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Create a payment link</h1>
+
+  {% if accountUsesWorldpayMotoMerchantCode %}
+    {% set worldpayMotoMerchantCodeWarningHtml %}
+      Your service is set up to only use MOTO payments. Do not create payment links and send them to paying users. Use a non-MOTO service or 
+      <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">
+        contact support 
+      <a>
+      for help.
+    {% endset %}
+
+    {{ govukWarningText({
+      html: worldpayMotoMerchantCodeWarningHtml,
+      iconFallbackText: "Warning"
+    }) }}
+  {% endif %}
+
   <p class="govuk-body">You can create a payment link so that users can make online payments to your service. Even if you don’t have a digital service, GOV.UK Pay can still take payments for you.</p>
   <p class="govuk-body">It’s quick and easy to create a payment link and you don’t need any technical knowledge.</p>
   <p class="govuk-body">The same payment link can be used by all users of your service.</p>
