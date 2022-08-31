@@ -25,6 +25,30 @@ function assertCommonPageElements () {
   assertCancelLinkHref()
 }
 
+describe('The create payment link start page for a Worldpay MOTO account', () => {
+  it('Should display warning', () => {
+    cy.task('setupStubs', [
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay',
+          gatewayAccountCredentials: [
+            {
+              gateway_account_id: gatewayAccountId,
+              payment_provider: 'worldpay',
+              state: 'ACTIVE',
+              credentials: {
+                merchant_id: 'worldpay-merchant-code-ending-with-MOTO'
+              }
+            }
+          ]
+        }),
+    ])
+    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
+    cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
+    cy.get('.govuk-warning-text').should('contain', 'Your service is set up to only use MOTO payments.')
+  })
+})
+
 describe('The create payment link flow', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
@@ -50,6 +74,7 @@ describe('The create payment link flow', () => {
         cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
 
         cy.get('h1').should('contain', 'Create a payment link')
+        cy.get('.govuk-warning-text').should('not.exist')
         cy.get('a#create-payment-link').should('exist')
         cy.get(`a[href="/account/${gatewayAccountExternalId}/create-payment-link/information?language=cy"]`).should('exist')
           .should('contain', 'Create a payment link in Welsh')

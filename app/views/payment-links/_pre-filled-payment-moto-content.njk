@@ -3,21 +3,18 @@
 <h2 class="govuk-heading-m">Create a prefilled payment link</h2>
 <p class="govuk-body">You can create prefilled links to send to users with the amount and reference already filled in. Learn <a href="https://docs.payments.service.gov.uk/prefill_payment_links/" class="govuk-link">how to create prefilled links</a>.</p>
 
-{% set warningTextHtml %}
-  <p class="govuk-body govuk-!-font-weight-bold">
-   If you want to take payment in a call centre or by post,
-  <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk"target="_top">
-    contact support
+{% set telephonePaymentLinksHtml %}
+  If you want to take payment in a call centre or by post,  
+  <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">
+    contact support 
   <a>
-    to request
+  to request
   <a href="https://docs.payments.service.gov.uk/moto_payments/#take-a-payment-over-the-phone-moto-payments" class="govuk-link">
     MOTO (mail order telephone order) payment links
   </a>
-    to be set up on your account.
-  </p>
+  to be set up on your account.
 {% endset %}
 
-{{ govukWarningText({
-   html: warningTextHtml,
-   iconFallbackText: "Warning"
+{{ govukInsetText({
+  html: telephonePaymentLinksHtml
 }) }}
