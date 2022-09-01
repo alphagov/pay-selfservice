@@ -20,11 +20,11 @@ module.exports = (req, res, next) => {
   const { merchantDetails } = req.service
 
   const data = {
-    orgName: lodash.get(merchantDetails, 'name', null),
-    orgAddressLine1: lodash.get(merchantDetails, 'address_line1', null),
-    orgAddressLine2: lodash.get(merchantDetails, 'address_line2', null),
-    orgCity: lodash.get(merchantDetails, 'address_city', null),
-    orgPostcode: lodash.get(merchantDetails, 'address_postcode', null)
+    orgName: lodash.get(merchantDetails, 'name', ''),
+    orgAddressLine1: lodash.get(merchantDetails, 'address_line1', ''),
+    orgAddressLine2: lodash.get(merchantDetails, 'address_line2', ''),
+    orgCity: lodash.get(merchantDetails, 'address_city', ''),
+    orgPostcode: lodash.get(merchantDetails, 'address_postcode', '')
   }
 
   return response(req, res, 'stripe-setup/check-org-details/index', data)
