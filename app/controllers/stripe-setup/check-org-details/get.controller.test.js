@@ -88,11 +88,11 @@ describe('Check org details - get controller', () => {
     expect(renderArgs.args[0]).to.equal('stripe-setup/check-org-details/index')
 
     const pageData = renderArgs.args[1]
-    expect(pageData.orgName).to.equal(null)
-    expect(pageData.orgAddressLine1).to.equal(null)
-    expect(pageData.orgAddressLine2).to.equal(null)
-    expect(pageData.orgCity).to.equal(null)
-    expect(pageData.orgPostcode).to.equal(null)
+    expect(pageData.orgName).to.equal('')
+    expect(pageData.orgAddressLine1).to.equal('')
+    expect(pageData.orgAddressLine2).to.equal('')
+    expect(pageData.orgCity).to.equal('')
+    expect(pageData.orgPostcode).to.equal('')
   })
 
   it('should render `check your organisation` form if details are not yet submitted and only the `merchantDetails.name` is empty', async () => {
@@ -108,7 +108,7 @@ describe('Check org details - get controller', () => {
     expect(renderArgs.args[0]).to.equal('stripe-setup/check-org-details/index')
 
     const pageData = renderArgs.args[1]
-    expect(pageData.orgName).to.equal(null)
+    expect(pageData.orgName).to.equal('')
     expect(pageData.orgAddressLine1).to.equal('Test address line 1')
     expect(pageData.orgAddressLine2).to.equal('Test address line 2')
     expect(pageData.orgCity).to.equal('London')
