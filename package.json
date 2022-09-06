@@ -121,7 +121,7 @@
     "csrf": "^3.1.0",
     "cypress": "5.0.0",
     "dotenv": "16.0.2",
-    "envfile": "3.0.0",
+    "envfile": "5.2.0",
     "gaap-analytics": "3.1.0",
     "grunt": "1.5.x",
     "grunt-babel": "8.0.0",
