@@ -95,7 +95,9 @@ module.exports = {
   },
 
   validInviteCompleteRequest: (opts = {}) => {
-    return {}
+    return {
+      otp: opts.otp || '123456'
+    }
   },
 
   validInviteCompleteResponse: (opts = {}) => {

@@ -190,7 +190,7 @@ async function createPopulatedService (req, res, next) {
   }
 
   try {
-    const user = await registrationService.createPopulatedService(req.register_invite.code, correlationId)
+    const user = await registrationService.createPopulatedService(req.register_invite.code, correlationId, otpCode)
     loginController.setupDirectLoginAfterRegister(req, res, user.externalId)
     return res.redirect(303, paths.selfCreateService.logUserIn)
   } catch (err) {
