@@ -16,8 +16,8 @@ function submitServiceInviteOtpCode (code, otpCode, correlationId) {
   return adminUsersClient.verifyOtpForServiceInvite(code, otpCode, correlationId)
 }
 
-async function createPopulatedService (inviteCode, correlationId, otpCode) {
-  const completeInviteResponse = await adminUsersClient.completeInvite(correlationId, inviteCode, otpCode)
+async function createPopulatedService (inviteCode, correlationId) {
+  const completeInviteResponse = await adminUsersClient.completeInvite(correlationId, inviteCode)
   logger.info('Created new service during user registration')
 
   const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, completeInviteResponse.service_external_id, correlationId)

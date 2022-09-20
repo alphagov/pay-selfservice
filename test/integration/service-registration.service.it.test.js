@@ -30,7 +30,6 @@ describe('create populated service', function () {
     const userExternalId = 'f84b8210f93d455e97baeaf3fea72cf4'
     const serviceExternalId = '43a6818b522b4a628a14355614665ca3'
     const gatewayAccountId = '1'
-    const otpCode = '654321'
 
     const mockConnectorCreateGatewayAccountResponse =
       gatewayAccountFixtures.validGatewayAccountResponse({
@@ -38,7 +37,7 @@ describe('create populated service', function () {
       })
     const mockAdminUsersInviteCompleteRequest =
       inviteFixtures.validInviteCompleteRequest({
-        otp: otpCode
+        gateway_account_ids: [gatewayAccountId]
       })
     const mockAdminUsersInviteCompleteResponse =
       inviteFixtures.validInviteCompleteResponse({
@@ -61,7 +60,7 @@ describe('create populated service', function () {
     adminusersMock.patch(`/v1/api/services/${serviceExternalId}`)
       .reply(200, {})
 
-    serviceRegistrationService.createPopulatedService(inviteCode, null, otpCode).should.be.fulfilled.then(user => {
+    serviceRegistrationService.createPopulatedService(inviteCode).should.be.fulfilled.then(user => {
       expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(getUserMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
@@ -71,7 +70,6 @@ describe('create populated service', function () {
 
   it('should error if creation of a gateway account failed', function (done) {
     const inviteCode = 'a-valid-invite-code'
-    const otpCode = '654321'
     const mockAdminUsersInviteCompleteResponse =
       inviteFixtures.validInviteCompleteResponse({
         service_external_id: 'a-service-id'
@@ -82,7 +80,7 @@ describe('create populated service', function () {
     const mockConnectorCreateGatewayAccountResponse = connectorMock.post(CONNECTOR_ACCOUNTS_URL)
       .reply(500)
 
-    serviceRegistrationService.createPopulatedService(inviteCode, null, otpCode).should.be.rejected.then(error => {
+    serviceRegistrationService.createPopulatedService(inviteCode).should.be.rejected.then(error => {
       expect(mockConnectorCreateGatewayAccountResponse.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(error.errorCode).to.equal(500)
     }).should.notify(done)
@@ -91,7 +89,6 @@ describe('create populated service', function () {
   it('should error if creation of a gateway account succeeded, but complete invite failed', function (done) {
     const inviteCode = 'a-valid-invite-code'
     const gatewayAccountId = '1'
-    const otpCode = '654321'
 
     const mockConnectorCreateGatewayAccountResponse =
       gatewayAccountFixtures.validGatewayAccountResponse({
@@ -99,7 +96,7 @@ describe('create populated service', function () {
       })
     const mockAdminUsersInviteCompleteRequest =
       inviteFixtures.validInviteCompleteRequest({
-        otp: otpCode
+        gateway_account_ids: [gatewayAccountId]
       })
 
     connectorMock.post(CONNECTOR_ACCOUNTS_URL)
@@ -107,7 +104,7 @@ describe('create populated service', function () {
     const completeServiceInviteMock = adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`, mockAdminUsersInviteCompleteRequest)
       .reply(500)
 
-    serviceRegistrationService.createPopulatedService(inviteCode, null, otpCode).then(() => {
+    serviceRegistrationService.createPopulatedService(inviteCode).then(() => {
       done('should not be called')
     }).catch(error => {
       expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
@@ -119,7 +116,6 @@ describe('create populated service', function () {
   it('should error if creation of a gateway account succeeded and complete invite succeeded, but user already exists', function (done) {
     const inviteCode = 'a-valid-invite-code'
     const gatewayAccountId = '1'
-    const otpCode = '654321'
 
     const mockConnectorCreateGatewayAccountResponse =
       gatewayAccountFixtures.validGatewayAccountResponse({
@@ -127,7 +123,7 @@ describe('create populated service', function () {
       })
     const mockAdminUsersInviteCompleteRequest =
       inviteFixtures.validInviteCompleteRequest({
-        otp: otpCode
+        gateway_account_ids: [gatewayAccountId]
       })
 
     connectorMock.post(CONNECTOR_ACCOUNTS_URL)
@@ -135,7 +131,7 @@ describe('create populated service', function () {
     const completeServiceInviteMock = adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`, mockAdminUsersInviteCompleteRequest)
       .reply(409)
 
-    serviceRegistrationService.createPopulatedService(inviteCode, null, otpCode).should.be.rejected.then(error => {
+    serviceRegistrationService.createPopulatedService(inviteCode).should.be.rejected.then(error => {
       expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(error.errorCode).to.equal(409)
     }).should.notify(done)
