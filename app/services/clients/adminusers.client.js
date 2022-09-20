@@ -412,18 +412,16 @@ module.exports = function (clientOptions = {}) {
    *
    * @param correlationId
    * @param inviteCode
-   * @param otpCode
+   * @param gatewayAccountIds
    * @returns {*|promise|Constructor}
    */
-  const completeInvite = (correlationId, inviteCode, otpCode = null) => {
+  const completeInvite = (correlationId, inviteCode) => {
     return baseClient.post(
       {
         baseUrl,
         url: `${inviteResource}/${inviteCode}/complete`,
         json: true,
-        body: {
-          otp: otpCode
-        },
+        body: {},
         correlationId: correlationId,
         description: 'complete invite',
         service: SERVICE_NAME,
