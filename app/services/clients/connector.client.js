@@ -28,7 +28,6 @@ const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notificatio
 const CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/check-3ds-flex-config'
 const CHECK_WORLDPAY_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/check-credentials'
 const FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/3ds-flex-credentials'
-const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 
 const responseBodyToStripeAccountSetupTransformer = body => new StripeAccountSetup(body)
 const responseBodyToStripeAccountTransformer = body => new StripeAccount(body)
@@ -81,11 +80,6 @@ function _getNotificationEmailUrlFor (accountID, url) {
 /** @private */
 function _get3dsFlexCredentialsUrlFor (accountID, url) {
   return url + FLEX_CREDENTIALS_PATH.replace('{accountId}', accountID)
-}
-
-/** @private */
-function _getToggle3dsUrlFor (accountID, url) {
-  return url + TOGGLE_3DS_PATH.replace('{accountId}', accountID)
 }
 
 /**
@@ -590,23 +584,6 @@ ConnectorClient.prototype = {
       body: params.payload,
       correlationId: params.correlationId,
       description: 'update refund email enabled',
-      service: SERVICE_NAME
-    })
-  },
-
-  /**
-   * Update whether 3DS is on/off
-   * @param {Object} params
-   * @returns {Promise<Object>}
-   */
-  update3dsEnabled: function (params) {
-    const url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
-
-    return baseClient.patch(url, {
-      url: url,
-      body: params.payload,
-      correlationId: params.correlationId,
-      description: 'Update whether 3DS is on or off',
       service: SERVICE_NAME
     })
   },

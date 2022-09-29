@@ -13,7 +13,6 @@ const flattenNestedValues = require('./flatten-nested-values')
 const mainSettingsPaths = [
   paths.account.settings,
   paths.account.digitalWallet,
-  paths.account.toggle3ds,
   paths.account.toggleBillingAddress,
   paths.account.emailNotifications,
   paths.account.toggleMotoMaskCardNumberAndSecurityCode,
