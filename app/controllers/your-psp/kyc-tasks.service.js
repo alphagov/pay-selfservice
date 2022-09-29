@@ -3,6 +3,12 @@
 const { listPersons, retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const lodash = require('lodash')
 
+function isConfirmOrgDetailsComplete (stripeAccount) {
+  const orgName = lodash.get(stripeAccount, 'business_profile.name')
+  const orgAddressLine1 = lodash.get(stripeAccount, 'business_profile.support_address.line1')
+  return isNotEmpty(orgName) && isNotEmpty(orgAddressLine1) 
+}
+
 function entityVerificationDocumentUploaded (stripeAccount) {
   const fileId = lodash.get(stripeAccount, 'company.verification.document.front')
   return isNotEmpty(fileId)
@@ -49,6 +55,9 @@ async function getTaskList (activeCredential) {
     'ENTER_DIRECTOR': {
       complete: getPerson(stripePersons, 'director').length > 0
     },
+    'CONFIRM_ORG_DETAILS': {
+      complete: isConfirmOrgDetailsComplete(stripeAccount)
+    }, 
     'UPLOAD_GOVERNMENT_ENTITY_DOCUMENT': {
       complete: entityVerificationDocumentUploaded(stripeAccount)
     }

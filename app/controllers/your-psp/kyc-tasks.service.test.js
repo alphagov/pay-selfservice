@@ -133,6 +133,35 @@ describe('KYC additional tasks', () => {
     })
   })
 
+  describe('Confirm org details', () => {
+    it('task should be marked complete if business name & business address line 1 is set on stripe account', async () => {
+      listPersonsMock = sinon.spy(() => Promise.resolve())
+      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve({ 
+        business_profile: {
+          name: 'Test org',
+          support_address: {
+            line1: 'Test address line 1'
+          }
+        } 
+      }))
+
+      const kycTasksService = getServiceWithMocks()
+      const taskList = await kycTasksService.getTaskList({ gatewayAccountCredential })
+
+      expect(taskList.CONFIRM_ORG_DETAILS.complete).to.equal(true)
+    })
+
+    it('task should not be marked complete if business name & business address line 1 is set on stripe account', async () => {
+      listPersonsMock = sinon.spy(() => Promise.resolve())
+      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve({ business_profile: { url: null } }))
+
+      const kycTasksService = getServiceWithMocks()
+      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
+
+      expect(taskList.CONFIRM_ORG_DETAILS.complete).to.equal(false)
+    })
+  })
+
   describe('Government entity document', () => {
     it('task should be marked complete if entity verification document has been provided for stripe account', async () => {
       listPersonsMock = sinon.spy(() => Promise.resolve())
