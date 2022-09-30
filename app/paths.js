@@ -119,9 +119,6 @@ module.exports = {
         governmentEntityDocument: '/switch-psp/:credentialId/government-entity-document'
       }
     },
-    toggle3ds: {
-      index: '/3ds'
-    },
     toggleBillingAddress: {
       index: '/billing-address'
     },

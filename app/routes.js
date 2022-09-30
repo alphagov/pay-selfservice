@@ -46,7 +46,6 @@ const organisationDetailsController = require('./controllers/organisation-detail
 const inviteUserController = require('./controllers/invite-user.controller')
 const registerController = require('./controllers/register-user.controller')
 const serviceRolesUpdateController = require('./controllers/service-roles-update.controller')
-const toggle3dsController = require('./controllers/toggle-3ds')
 const toggleMotoMaskCardNumber = require('./controllers/toggle-moto-mask-card-number')
 const toggleMotoMaskSecurityCode = require('./controllers/toggle-moto-mask-security-code')
 const selfCreateServiceController = require('./controllers/register-service.controller')
@@ -113,7 +112,6 @@ const {
   prototyping,
   settings,
   stripe,
-  toggle3ds,
   toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode,
   transactions,
@@ -367,10 +365,6 @@ module.exports.bind = function (app) {
   account.post(emailNotifications.off, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailOff)
   account.get(emailNotifications.refund, permission('email-notification-template:read'), emailNotificationsController.refundEmailIndex)
   account.post(emailNotifications.refund, permission('email-notification-toggle:update'), emailNotificationsController.refundEmailUpdate)
-
-  // 3D secure
-  account.get(toggle3ds.index, permission('toggle-3ds:read'), toggle3dsController.get)
-  account.post(toggle3ds.index, permission('toggle-3ds:update'), toggle3dsController.post)
 
   // MOTO mask card number & security code
   account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:read'), toggleMotoMaskCardNumber.get)

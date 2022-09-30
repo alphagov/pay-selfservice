@@ -83,17 +83,6 @@
             value: {
               text: 'On' if requires3ds else 'Off',
               classes: 'govuk-!-width-one-quarter'
-            },
-            actions: {
-              classes: 'govuk-!-width-one-quarter',
-              items: [
-                {
-                  href: formatAccountPathsFor(routes.account.toggle3ds.index, currentGatewayAccount.external_id),
-                  classes: 'govuk-link--no-visited-state',
-                  text: 'Change' if permissions.toggle_3ds_update else 'View',
-                  visuallyHiddenText: '3D Secure settings'
-                }
-              ]
             }
           }
         ]
