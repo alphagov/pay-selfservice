@@ -134,7 +134,7 @@
     "html5shiv": "3.7.x",
     "jsdom": "^20.0.1",
     "lint-staged": "13.0.3",
-    "mocha": "^6.2.3",
+    "mocha": "^10.0.0",
     "mountebank": "^2.7.0",
     "nock": "13.2.9",
     "nodemon": "2.0.20",
