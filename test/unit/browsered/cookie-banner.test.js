@@ -9,9 +9,9 @@ const jsdom = require('jsdom')
 const { expect } = require('chai')
 let renderTemplate = require('../../test-helpers/html-assertions.js').render
 
-var event
-var cookieBannerObject
-var analyticsInit = sinon.stub(analytics, 'init')
+let event
+let cookieBannerObject
+const analyticsInit = sinon.stub(analytics, 'init')
 
 describe('Cookie banner', () => {
   beforeEach(() => {
@@ -42,7 +42,7 @@ describe('Cookie banner', () => {
     analyticsTrackingId = 'test-id'
     cookieBannerObject.setCookieConsent(true)
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
+    expect(document.cookie).equals('govuk_pay_cookie_policy={"analytics":true}')
     expect(document.body.innerHTML).to.contain('You’ve accepted analytics cookies.')
 
     expect(analyticsInit.calledOnce).to.be.true
@@ -50,7 +50,7 @@ describe('Cookie banner', () => {
   it('should not initialise analytics if consented and analyticsTrackingId is not configured ', () => {
     cookieBannerObject.setCookieConsent(true)
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
+    expect(document.cookie).equals('govuk_pay_cookie_policy={"analytics":true}')
     expect(document.body.innerHTML).to.contain('You’ve accepted analytics cookies.')
     expect(analyticsInit.calledOnce).to.be.false
   })
@@ -58,7 +58,7 @@ describe('Cookie banner', () => {
   it('should not initialise analytics if not consented ', () => {
     cookieBannerObject.setCookieConsent(false)
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":false}')
+    expect(document.cookie).equals('govuk_pay_cookie_policy={"analytics":false}')
     expect(document.body.innerHTML).to.contain('You told us not to use analytics cookies.')
 
     expect(analyticsInit.calledOnce).to.be.false
@@ -71,7 +71,7 @@ describe('Cookie banner', () => {
 
     cookieBannerObject = cookieBanner.initCookieBanner()
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
+    expect(document.cookie).equals('govuk_pay_cookie_policy={"analytics":true}')
     expect(cookieBannerObject.$module.style.display).to.be.equal('none')
 
     expect(analyticsInit.calledOnce).to.be.true
@@ -83,7 +83,7 @@ describe('Cookie banner', () => {
 
     cookieBannerObject = cookieBanner.initCookieBanner()
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":false}')
+    expect(document.cookie).equals('govuk_pay_cookie_policy={"analytics":false}')
     expect(cookieBannerObject.$module.style.display).to.be.equal('none')
 
     expect(analyticsInit.notCalled).to.be.true
@@ -96,7 +96,7 @@ describe('Cookie banner', () => {
 
     cookieBannerObject = cookieBanner.initCookieBanner()
 
-    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
+    expect(document.cookie).equals('govuk_pay_cookie_policy={"analytics":true}')
     expect(cookieBannerObject.$module.style.display).to.be.equal('none')
 
     expect(analyticsInit.notCalled).to.be.true
