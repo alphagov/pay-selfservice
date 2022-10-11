@@ -1,10 +1,12 @@
 'use strict'
 
 const { response } = require('../../../utils/response')
+const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
 const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const lodash = require('lodash')
 
 module.exports = (req, res, next) => {
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
   if (!stripeAccountSetup) {
@@ -24,7 +26,8 @@ module.exports = (req, res, next) => {
     orgAddressLine1: lodash.get(merchantDetails, 'address_line1', ''),
     orgAddressLine2: lodash.get(merchantDetails, 'address_line2', ''),
     orgCity: lodash.get(merchantDetails, 'address_city', ''),
-    orgPostcode: lodash.get(merchantDetails, 'address_postcode', '')
+    orgPostcode: lodash.get(merchantDetails, 'address_postcode', ''),
+    isSwitchingCredentials
   }
 
   return response(req, res, 'stripe-setup/check-org-details/index', data)

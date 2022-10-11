@@ -117,30 +117,62 @@ describe('Check org details - post controller', () => {
   })
 
   describe('radio buttons', () => {
-    it('when `no` radio button is selected, then it should redirect to org address page', () => {
-      req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
-
-      req.body = {
-        'confirm-org-details': 'no'
-      }
-
-      controller(req, res, next)
-
-      sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-id/update-organisation-details')
+    describe('Stripe onboarding', () => {
+      it('when `no` radio button is selected, then it should redirect to `Stripe onboarding > org address` page', () => {
+        req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+  
+        req.body = {
+          'confirm-org-details': 'no'
+        }
+  
+        controller(req, res, next)
+  
+        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-id/update-organisation-details')
+      })
+  
+      it('when `yes` radio button is selected, then it should redirect to the `Stripe onboarding > add psp account details` redirect route', async () => {
+        req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+  
+        req.body = {
+          'confirm-org-details': 'yes'
+        }
+  
+        await controller(req, res, next)
+  
+        sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
+        sinon.assert.calledWith(loggerInfoMock, 'Organisation details confirmed for Stripe account', { stripe_account_id: stripeAcountId })
+        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
+      })
     })
 
-    it('when `yes` radio button is selected, then it should redirect to the `Stripe > add psp account details` redirect route', async () => {
-      req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
-
-      req.body = {
-        'confirm-org-details': 'yes'
-      }
-
-      await controller(req, res, next)
-
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
-      sinon.assert.calledWith(loggerInfoMock, 'Organisation details confirmed for Stripe account', { stripe_account_id: stripeAcountId })
-      sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
-    })
+    describe('Switch PSP to Stripe', () => {
+      it('when `no` radio button is selected, then it should redirect to `switch psp to Stripe > update org address` page', () => {
+        req.url = '/switch-psp/test-credential/check-organisation-details'
+        req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+  
+        req.body = {
+          'confirm-org-details': 'no'
+        }
+  
+        controller(req, res, next)
+  
+        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp/a-valid-credential-id/update-organisation-details')
+      })
+  
+      it('when `yes` radio button is selected, then it should redirect to the `switch psp to Stripe > switch PSP index` redirect route', async () => {
+        req.url = '/switch-psp/test-credential/check-organisation-details'
+        req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+  
+        req.body = {
+          'confirm-org-details': 'yes'
+        }
+  
+        await controller(req, res, next)
+  
+        sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
+        sinon.assert.calledWith(loggerInfoMock, 'Organisation details confirmed for Stripe account', { stripe_account_id: stripeAcountId })
+        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
+      })
+    }) 
   })
 })

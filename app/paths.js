@@ -116,6 +116,8 @@ module.exports = {
         vatNumber: '/switch-psp/:credentialId/vat-number',
         companyNumber: '/switch-psp/:credentialId/company-number',
         director: '/switch-psp/:credentialId/director',
+        checkOrgDetails: '/switch-psp/:credentialId/check-organisation-details',
+        updateOrgDetails: '/switch-psp/:credentialId/update-organisation-details', 
         governmentEntityDocument: '/switch-psp/:credentialId/government-entity-document'
       }
     },

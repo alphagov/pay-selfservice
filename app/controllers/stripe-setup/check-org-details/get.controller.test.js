@@ -95,6 +95,20 @@ describe('Check org details - get controller', () => {
     expect(pageData.orgPostcode).to.equal('')
   })
 
+  it('when it is `switch PSP` should render `check your organisation` form and set isSwitchingCredentials=true', async () => {
+    const updatedService = { ...req.service, merchantDetails: undefined }
+    req.service = updatedService
+    req.url = '/switch-psp/test-credential/bank-details'
+
+    req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+
+    await getController(req, res)
+
+    const renderArgs = res.render.getCalls()[0]
+    const pageData = renderArgs.args[1]
+    expect(pageData.isSwitchingCredentials).to.equal(true)
+  })
+
   it('should render `check your organisation` form if details are not yet submitted and only the `merchantDetails.name` is empty', async () => {
     const updatedService = { ...req.service }
     updatedService.merchantDetails.name = undefined
