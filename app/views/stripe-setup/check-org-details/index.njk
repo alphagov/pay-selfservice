@@ -6,9 +6,24 @@
   Check your organisation's details - {{currentService.name}} - GOV.UK Pay
 {% endblock %}
 
+{% block side_navigation %}
+  {% if isSwitchingCredentials %}
+    {% include "includes/side-navigation.njk" %}
+  {% endif %}
+{% endblock %}
+
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+
+  {% if isSwitchingCredentials %}
+    {{ govukBackLink({
+      text: "Back to Switching payment service provider (PSP)",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+    }) }}
+  {% endif %}
+
   {{ errorSummary ({
     errors: errors,
     hrefs: {
