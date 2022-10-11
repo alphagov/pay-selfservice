@@ -447,10 +447,10 @@ module.exports.bind = function (app) {
   account.post([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
   account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
   account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
-  account.get(yourPsp.stripeSetup.checkOrgDetails, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.get)
-  account.post(yourPsp.stripeSetup.checkOrgDetails, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.post)
-  account.get(yourPsp.stripeSetup.updateOrgDetails, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.get)
-  account.post(yourPsp.stripeSetup.updateOrgDetails, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.post)
+  account.get([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.get)
+  account.post([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.post)
+  account.get([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.get)
+  account.post([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.post)
 
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 

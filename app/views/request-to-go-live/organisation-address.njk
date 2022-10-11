@@ -4,7 +4,7 @@
 {% block pageTitle %}
 {% if isRequestToGoLive %}
   Enter your organisation’s contact details - Request a live account - {{ currentService.name }} - GOV.UK Pay
-{% elif isStripeUpdateOrgDetails %}
+{% elif isStripeSetupUserJourney %}
   What is the name and address of you organisation on your government identity document? - {{ currentService.name }} - GOV.UK Pay 
 {% else %}
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -31,7 +31,7 @@
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>
     <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
     <p class="govuk-body govuk-!-margin-bottom-6">Your payment pages will automatically display this information. You can change the details later if needed.</p>
-  {% elif isStripeUpdateOrgDetails %}
+  {% elif isStripeSetupUserJourney %}
     <h1 class="govuk-heading-l">What is the name and address of you organisation on your government identity document?</h1>
   {% else %}
     <h1 class="govuk-heading-l">Organisation details</h1>
@@ -49,7 +49,7 @@
         Organisation name
       </label>
 
-      {% if not isStripeUpdateOrgDetails %} 
+      {% if not isStripeSetupUserJourney %} 
         <div id="merchant-name-hint" class="govuk-hint govuk-!-width-two-thirds">
           <p class="govuk-hint">Enter the main name of your organisation, not your local office or individual department.</p>
           <p class="govuk-hint">Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>
@@ -145,7 +145,7 @@
 
     {% endcall %}
 
-    {% if not isStripeUpdateOrgDetails %}
+    {% if not isStripeSetupUserJourney %}
       {{ govukInput({
         value: telephone_number,
         label: {
@@ -184,7 +184,7 @@
       }) }}
     {% endif %}
 
-    {% if isRequestToGoLive or isStripeUpdateOrgDetails %}
+    {% if isRequestToGoLive or isStripeSetupUserJourney %}
       {{ govukButton({ 
         text: "Continue",
         attributes: { 'data-cy': 'continue-button' } 
