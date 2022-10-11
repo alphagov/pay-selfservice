@@ -261,6 +261,8 @@ describe('Switch PSP settings page', () => {
         cy.get('span').contains('Provide your organisation’s VAT number').should('exist')
         cy.get('strong[id="Provide your Company registration number-status"]').should('contain', 'not started')
         cy.get('span').contains('Provide your Company registration number').should('exist')
+        cy.get('strong[id="Confirm your organisation details-status"]').should('contain', 'not started')
+        cy.get('span').contains('Confirm your organisation details').should('exist')
         cy.get('strong[id="Upload a government entity document-status"]').should('contain', 'not started')
         cy.get('span').contains('Upload a government entity document').should('exist')
         cy.get('strong[id="Make a live payment to test your Stripe PSP-status"]').should('contain', 'cannot start yet')
@@ -314,6 +316,7 @@ describe('Switch PSP settings page', () => {
             companyNumber: true,
             responsiblePerson: true,
             director: true,
+            organisationDetails: true,
             governmentEntityDocument: true
           })
         ])
@@ -327,6 +330,7 @@ describe('Switch PSP settings page', () => {
         cy.get('strong[id="Provide details about the director of your organisation-status"]').should('contain', 'completed')
         cy.get('strong[id="Provide your organisation’s VAT number-status"]').should('contain', 'completed')
         cy.get('strong[id="Provide your Company registration number-status"]').should('contain', 'completed')
+        cy.get('strong[id="Confirm your organisation details-status"]').should('contain', 'completed')
         cy.get('strong[id="Upload a government entity document-status"]').should('contain', 'completed')
         cy.get('strong[id="Make a live payment to test your Stripe PSP-status"]').should('contain', 'completed')
 
