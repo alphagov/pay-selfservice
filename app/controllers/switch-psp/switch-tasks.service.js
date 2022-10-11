@@ -63,6 +63,10 @@ function getTaskList (targetCredential, account, service) {
         enabled: !stripeSetupStageComplete(account, 'companyNumber'),
         complete: stripeSetupStageComplete(account, 'companyNumber')
       },
+      'CONFIRM_ORGANISATION_DETAILS': {
+        enabled: !stripeSetupStageComplete(account, 'organisationDetails'),
+        complete: stripeSetupStageComplete(account, 'organisationDetails')
+      },
       'UPLOAD_GOVERNMENT_ENTITY_DOCUMENT': {
         enabled: !stripeSetupStageComplete(account, 'governmentEntityDocument'),
         complete: stripeSetupStageComplete(account, 'governmentEntityDocument')
@@ -72,6 +76,7 @@ function getTaskList (targetCredential, account, service) {
           stripeSetupStageComplete(account, 'bankAccount') &&
           stripeSetupStageComplete(account, 'responsiblePerson') &&
           stripeSetupStageComplete(account, 'director') &&
+          stripeSetupStageComplete(account, 'organisationDetails') && 
           stripeSetupStageComplete(account, 'governmentEntityDocument') &&
           stripeSetupStageComplete(account, 'vatNumber') &&
           stripeSetupStageComplete(account, 'companyNumber'),
