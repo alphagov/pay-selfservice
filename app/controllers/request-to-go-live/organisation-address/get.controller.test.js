@@ -20,12 +20,6 @@ const getController = function getController () {
 
 const correlationId = 'correlation-id'
 
-const account = {
-  connectorGatewayAccountStripeProgress: {
-    organisationDetails: false
-  }
-}
-
 const merchantDetails = {
   name: 'Test organisation',
   address_line1: 'Test address line 1',
@@ -39,8 +33,15 @@ const merchantDetails = {
 describe('organisation address get controller', () => {
   describe('check validation', () => {
     let res
+    let account
 
     beforeEach(() => {
+      account = {
+        connectorGatewayAccountStripeProgress: {
+          organisationDetails: false
+        }
+      }
+
       res = {
         redirect: sinon.spy(),
         render: sinon.spy()
@@ -73,6 +74,11 @@ describe('organisation address get controller', () => {
         expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
 
         const pageData = responseData.args[3]
+        expect(pageData.isRequestToGoLive).to.equal(true)
+        expect(pageData.isStripeUpdateOrgDetails).to.equal(false)
+        expect(pageData.isSwitchingCredentials).to.equal(false)
+        expect(pageData.isStripeSetupUserJourney).to.equal(false)
+
         expect(pageData.isRequestToGoLive).to.equal(true)
         expect(pageData.isStripeUpdateOrgDetails).to.equal(false)
         expect(pageData.name).to.equal('Test organisation')
@@ -109,9 +115,7 @@ describe('organisation address get controller', () => {
       it('should display the `update org details` form and set `isStripeUpdateOrgDetails=true` ' +
       'and all form fields should be reset to empty', () => {
         const req = {
-          route: {
-            path: '/your-psp/:credentialId/update-organisation-details'
-          },
+          url: '/your-psp/:credentialId/update-organisation-details',
           account
         }
 
@@ -124,8 +128,10 @@ describe('organisation address get controller', () => {
         expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
 
         const pageData = responseData.args[3]
-        expect(pageData.isStripeUpdateOrgDetails).to.equal(true)
         expect(pageData.isRequestToGoLive).to.equal(false)
+        expect(pageData.isStripeUpdateOrgDetails).to.equal(true)
+        expect(pageData.isSwitchingCredentials).to.equal(false)
+        expect(pageData.isStripeSetupUserJourney).to.equal(true)
      
         expect(pageData.name).to.equal(undefined)
         expect(pageData.address_line1).to.equal(undefined)
@@ -138,9 +144,55 @@ describe('organisation address get controller', () => {
 
       it('should render error if organisation details have already been submitted', async () => {
         const req = {
-          route: {
-            path: '/your-psp/:credentialId/update-organisation-details'
-          },
+          url: '/your-psp/:credentialId/update-organisation-details',
+          account
+        }
+
+        req.account.connectorGatewayAccountStripeProgress.organisationDetails = true
+
+        const controller = getController()
+
+        controller(req, res)
+
+        const responseData = mockResponse.getCalls()[0]
+        expect(responseData.args[2]).to.equal('error-with-link')
+      })
+    })
+
+    describe('view page when `Switch PSP to Stripe`', () => {
+      it('should display the `update org details` form and set `isSwitchingCredentials=true` ' +
+      'and all form fields should be reset to empty', () => {
+        const req = {
+          url: '/switch-psp/:credentialId/update-organisation-details',
+          account
+        }
+
+        const controller = getController()
+
+        controller(req, res)
+
+        const responseData = mockResponse.getCalls()[0]
+
+        expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
+
+        const pageData = responseData.args[3]
+        expect(pageData.isRequestToGoLive).to.equal(false)
+        expect(pageData.isStripeUpdateOrgDetails).to.equal(false)
+        expect(pageData.isSwitchingCredentials).to.equal(true)
+        expect(pageData.isStripeSetupUserJourney).to.equal(true)
+     
+        expect(pageData.name).to.equal(undefined)
+        expect(pageData.address_line1).to.equal(undefined)
+        expect(pageData.address_line2).to.equal(undefined)
+        expect(pageData.address_city).to.equal(undefined)
+        expect(pageData.address_postcode).to.equal(undefined)
+        expect(pageData.telephone_number).to.equal(undefined)
+        expect(pageData.url).to.equal(undefined)
+      })
+
+      it('should render error if organisation details have already been submitted', async () => {
+        const req = {
+          url: '/switch-psp/:credentialId/update-organisation-details',
           account
         }
 
@@ -179,8 +231,10 @@ describe('organisation address get controller', () => {
         expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
 
         const pageData = responseData.args[3]
-        expect(pageData.isStripeUpdateOrgDetails).to.equal(false)
         expect(pageData.isRequestToGoLive).to.equal(false)
+        expect(pageData.isStripeUpdateOrgDetails).to.equal(false)
+        expect(pageData.isSwitchingCredentials).to.equal(false)
+        expect(pageData.isStripeSetupUserJourney).to.equal(false)
 
         expect(pageData.name).to.equal('Test organisation')
         expect(pageData.address_line1).to.equal('Test address line 1')

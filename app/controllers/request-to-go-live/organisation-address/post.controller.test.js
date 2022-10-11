@@ -108,7 +108,7 @@ describe('organisation address post controller', () => {
 
     describe('request to go live', () => {
       it('when the required fields have not been populated, it should show the page with errors and set the ' +
-        'flags `isRequestToGoLive` and `isStripeUpdateOrgDetails` correctly', () => {
+      'flags `isRequestToGoLive`, `isStripeUpdateOrgDetails`, `isSwitchingCredentials` correctly', () => {
         const req = {
           route: {
             path: '/request-to-go-live/organisation-address'
@@ -136,12 +136,14 @@ describe('organisation address post controller', () => {
 
         expect(responseData.args[3].isRequestToGoLive).to.equal(true)
         expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(false)
+        expect(responseData.args[3].isSwitchingCredentials).to.equal(false)
+        expect(responseData.args[3].isStripeSetupUserJourney).to.equal(false)
       })
     })
 
     describe('view page when not `request to go live` or `Stripe setup`', () => {
       it('when the required fields have not been populated, it should show the page with errors and set the ' +
-      'flags `isRequestToGoLive` and `isStripeUpdateOrgDetails` correctly', () => {
+      'flags `isRequestToGoLive`, `isStripeUpdateOrgDetails`, `isSwitchingCredentials` correctly', () => {
         const req = {
           route: {
             path: '/organisation-details'
@@ -170,16 +172,16 @@ describe('organisation address post controller', () => {
 
         expect(responseData.args[3].isRequestToGoLive).to.equal(false)
         expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(false)
+        expect(responseData.args[3].isSwitchingCredentials).to.equal(false)
+        expect(responseData.args[3].isStripeSetupUserJourney).to.equal(false)
       })
     })
 
     describe('view page when `Stripe setup`', () => {
       it('when the required fields have not been populated, it should show the page with errors ' +
-        'flags `isRequestToGoLive` and `isStripeUpdateOrgDetails` correctly', () => {
+        'flags `isRequestToGoLive`, `isStripeUpdateOrgDetails`, `isSwitchingCredentials` correctly', () => {
         const req = {
-          route: {
-            path: '/your-psp/:credentialId/update-organisation-details'
-          },
+          url: '/your-psp/:credentialId/update-organisation-details',
           correlationId
         }
 
@@ -202,6 +204,40 @@ describe('organisation address post controller', () => {
 
         expect(responseData.args[3].isRequestToGoLive).to.equal(false)
         expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(true)
+        expect(responseData.args[3].isSwitchingCredentials).to.equal(false)
+        expect(responseData.args[3].isStripeSetupUserJourney).to.equal(true)
+      })
+    })
+
+    describe('view page when `Switch PSP > Stripe`', () => {
+      it('when the required fields have not been populated, it should show the page with errors ' +
+        'flags `isRequestToGoLive` and `isStripeUpdateOrgDetails` correctly', () => {
+        const req = {
+          url: '/switch-psp/:credentialId/update-organisation-details',
+          correlationId
+        }
+
+        next = sinon.spy()
+
+        const controller = getController(mockUpdateService)
+
+        controller(req, res, next)
+
+        const responseData = mockResponse.getCalls()[0]
+
+        expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
+
+        const errors = responseData.args[3].errors
+        expect(Object.keys(errors).length).to.equal(4)
+        expect(errors[errorKeysAndMessage.errorName.key]).to.equal(errorKeysAndMessage.errorName.text)
+        expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
+        expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
+        expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+
+        expect(responseData.args[3].isRequestToGoLive).to.equal(false)
+        expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(false)
+        expect(responseData.args[3].isSwitchingCredentials).to.equal(true)
+        expect(responseData.args[3].isStripeSetupUserJourney).to.equal(true)
       })
     })
   })
@@ -516,9 +552,7 @@ describe('organisation address post controller', () => {
     beforeEach(() => {
       req = {
         account: gatewayAccountFixture.validGatewayAccount({}),
-        route: {
-          path: '/your-psp/:credentialId/update-organisation-details'
-        },
+        url: '/your-psp/:credentialId/update-organisation-details',
         correlationId,
         service: service,
         body: {
@@ -571,6 +605,97 @@ describe('organisation address post controller', () => {
         sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
         sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
         sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
+      })
+
+      it('when `address-line2` is empty, it should not call the Stripe client with address line 2', async function () {
+        req.body['address-line2'] = ''
+
+        await controller(req, res, next)
+
+        sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+          name: validName,
+          address_line1: validLine1,
+          address_city: validCity,
+          address_postcode: validPostcode,
+          address_country: validCountry
+        })
+      })
+    })
+  })
+
+  describe('Switch PSP > Stripe', () => {
+    const correlationId = 'correlation-id'
+    const serviceExternalId = 'abc123'
+    const validName = 'HMRC'
+    const validLine1 = 'A building'
+    const validLine2 = 'A street'
+    const validCity = 'A city'
+    const validCountry = 'GB'
+    const validPostcode = 'E1 8QS'
+
+    const service = new Service(serviceFixtures.validServiceResponse({
+      external_id: serviceExternalId,
+      current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
+    }))
+
+    let req, res, next
+
+    beforeEach(() => {
+      req = {
+        account: gatewayAccountFixture.validGatewayAccount({}),
+        url: '/switch-psp/:credentialId/update-organisation-details',
+        correlationId,
+        service: service,
+        body: {
+          'merchant-name': validName,
+          'address-line1': validLine1,
+          'address-line2': validLine2,
+          'address-city': validCity,
+          'address-postcode': validPostcode,
+          'address-country': validCountry
+        }
+      }
+
+      res = {
+        setHeader: sinon.stub(),
+        status: sinon.spy(),
+        redirect: sinon.spy(),
+        render: sinon.spy()
+      }
+      next = sinon.spy()
+      mockResponse.renderErrorView = sinon.spy()
+    })
+
+    describe('service update success', () => {
+      const updatedService = new Service(serviceFixtures.validServiceResponse({
+        external_id: serviceExternalId,
+        current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
+      }))
+
+      const mockUpdateService = sinon.spy(() => {
+        return new Promise(resolve => {
+          resolve(updatedService)
+        })
+      })
+
+      const mockServiceService = { updateService: mockUpdateService }
+      const controller = getController(mockServiceService)
+
+      it('should update connector flag, update Stripe, log message then redirect to `Stripe > Add PSP account details` redirect', async function () {
+        await controller(req, res, next)
+
+        sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+          name: validName,
+          address_line1: validLine1,
+          address_line2: validLine2,
+          address_city: validCity,
+          address_postcode: validPostcode,
+          address_country: validCountry
+        })
+
+        sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
+        sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
+        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
       })
 
       it('when `address-line2` is empty, it should not call the Stripe client with address line 2', async function () {

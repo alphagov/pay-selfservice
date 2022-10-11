@@ -8,12 +8,15 @@ const { response } = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 const { getAlreadySubmittedErrorPageData } = require('../../stripe-setup/stripe-setup.util')
+const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
 
 module.exports = function getOrganisationAddress (req, res) {
   const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
+  const isStripeUpdateOrgDetails = req.url ? req.url.startsWith('/your-psp/') : false
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
 
-  const isStripeUpdateOrgDetails = paths.account.yourPsp.stripeSetup.updateOrgDetails.includes(req.route && req.route.path)
-
+  const isStripeSetupUserJourney = isStripeUpdateOrgDetails ? true : isSwitchingCredentials ? true : false
+  
   if (isRequestToGoLive) {
     if (req.service.currentGoLiveStage !== goLiveStage.ENTERED_ORGANISATION_NAME) {
       return res.redirect(
@@ -23,7 +26,7 @@ module.exports = function getOrganisationAddress (req, res) {
     }
   }
 
-  if (isStripeUpdateOrgDetails) {
+  if (isStripeSetupUserJourney) {
     const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
     if (stripeAccountSetup.organisationDetails) {
@@ -35,7 +38,7 @@ module.exports = function getOrganisationAddress (req, res) {
 
   const merchantDetails = lodash.get(req, 'service.merchantDetails')
 
-  const merchantFormDetails = !isStripeUpdateOrgDetails ? { ...lodash.pick(merchantDetails, [
+  const merchantFormDetails = !isStripeSetupUserJourney ? { ...lodash.pick(merchantDetails, [
     'name',
     'address_line1',
     'address_line2',
@@ -49,10 +52,12 @@ module.exports = function getOrganisationAddress (req, res) {
   const pageData = {
     ...merchantFormDetails,
     isRequestToGoLive,
-    isStripeUpdateOrgDetails
+    isStripeUpdateOrgDetails,
+    isSwitchingCredentials,
+    isStripeSetupUserJourney 
   }
   pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData, 'address_country'))
-  
-  const templatePath = isStripeUpdateOrgDetails ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
+
+  const templatePath = isStripeSetupUserJourney ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
   return response(req, res, templatePath, pageData)
 }
