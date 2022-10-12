@@ -18,7 +18,7 @@ jobs:
 
   publish-selfservice-consumer-contract-tests:
     needs: tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     name: Publish and tag selfservice consumer pact
     steps:

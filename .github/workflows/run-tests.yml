@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   version:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: Parse versions
     outputs:
       node-version: ${{ steps.parse-node-version.outputs.nvmrc }}
@@ -20,7 +20,7 @@ jobs:
         id: parse-node-version
         run: echo "::set-output name=nvmrc::$(cat .nvmrc)"
   install-and-compile:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: Install and compile
     needs: version
 
@@ -61,7 +61,7 @@ jobs:
         run: npm run lint
 
   unit-tests:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: Unit tests
     needs: [version, install-and-compile]
 
@@ -89,7 +89,7 @@ jobs:
         run: npm test -- --forbid-only --forbid-pending
 
   cypress-tests:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: Cypress tests
     needs: [version, install-and-compile]
 
