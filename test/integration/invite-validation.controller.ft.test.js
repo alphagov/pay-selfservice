@@ -56,10 +56,57 @@ describe('Invite validation tests', () => {
         })
         .end(done)
     })
+    it('should redirect to register view on a valid new_user_invited_to_existing_service invite', done => {
+      const code = '23rer87t8shjkaf'
+      const type = 'new_user_invited_to_existing_service'
+      const opts = {
+        type,
+        user_exist: false
+      }
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts)
+
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
+        .reply(200, validInviteResponse)
+
+      supertest(app)
+        .get(`/invites/${code}`)
+        .set('x-request-id', 'bob')
+        .expect(302)
+        .expect('Location', paths.registerUser.registration)
+        .expect(() => {
+          expect(mockRegisterAccountCookie.code).to.equal(code)
+          expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email)
+        })
+        .end(done)
+    })
 
     it('should redirect to subscribe service view on a valid user invite with existing user', done => {
       const code = '23rer87t8shjkaf'
       const type = 'user'
+      const opts = {
+        type,
+        user_exist: true
+      }
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts)
+
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
+        .reply(200, validInviteResponse)
+
+      supertest(app)
+        .get(`/invites/${code}`)
+        .set('x-request-id', 'bob')
+        .expect(302)
+        .expect('Location', paths.registerUser.subscribeService)
+        .expect(() => {
+          expect(mockRegisterAccountCookie.code).to.equal(code)
+          expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email)
+        })
+        .end(done)
+    })
+
+    it('should redirect to subscribe service view on a valid existing_user_invited_to_existing_service invite with existing user', done => {
+      const code = '23rer87t8shjkaf'
+      const type = 'existing_user_invited_to_existing_service'
       const opts = {
         type,
         user_exist: true
@@ -109,9 +156,57 @@ describe('Invite validation tests', () => {
         .end(done)
     })
 
+    it('should redirect to otp verify view on a valid new_user_and_new_service_self_signup invite with non existing user', done => {
+      const code = '23rer87t8shjkaf'
+      const type = 'new_user_and_new_service_self_signup'
+      const telephoneNumber = '+441134960000'
+      const opts = {
+        type,
+        telephone_number: telephoneNumber,
+        user_exist: false
+      }
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts)
+
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
+        .reply(200, validInviteResponse)
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/${code}/otp/generate`)
+        .reply(200)
+
+      supertest(app)
+        .get(`/invites/${code}`)
+        .set('x-request-id', 'bob')
+        .expect(302)
+        .expect('Location', paths.selfCreateService.otpVerify)
+        .expect(() => {
+          expect(mockRegisterAccountCookie.code).to.equal(code)
+          expect(mockRegisterAccountCookie.telephone_number).to.equal(telephoneNumber)
+        })
+        .end(done)
+    })
+
     it('should redirect to \'My services\' view on a valid service invite with existing user', done => {
       const code = '23rer87t8shjkaf'
       const type = 'service'
+      const opts = {
+        type,
+        user_exist: true
+      }
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts)
+
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
+        .reply(200, validInviteResponse)
+
+      supertest(app)
+        .get(`/invites/${code}`)
+        .set('x-request-id', 'bob')
+        .expect(302)
+        .expect('Location', paths.serviceSwitcher.index)
+        .end(done)
+    })
+
+    it('should redirect to \'My services\' view on a valid new_user_and_new_service_self_signup invite with existing user', done => {
+      const code = '23rer87t8shjkaf'
+      const type = 'new_user_and_new_service_self_signup'
       const opts = {
         type,
         user_exist: true
