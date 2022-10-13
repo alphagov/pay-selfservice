@@ -31,7 +31,7 @@ My profile - GOV.UK Pay
 </div>
 <div class="govuk-grid-column-two-thirds">
   <dl class="profile-settings govuk-table">
-    <div class="profile-settings__row">  
+    <div class="profile-settings__row">
       <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
         Email
       </dt>
@@ -39,18 +39,20 @@ My profile - GOV.UK Pay
         {{email}}
       </dd>
     </div>
-    <div class="profile-settings__row">
+    {% if telephone_number %}
+    <div class="profile-settings__row" data-cy="telephone-number-row">
       <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
         Mobile number
       </dt>
       <dd class="profile-settings__value govuk-table__cell" id="telephone-number">
-        {{telephone_number}} 
+        {{telephone_number}}
         <span class="profile-settings__change-link">
           <a class="govuk-link" href="{{routes.user.profile.phoneNumber }}" id="change-phone-link">Change <span class="govuk-visually-hidden">mobile number</span></a>
-        </span> 
+        </span>
       </dd>
     </div>
-    <div class="profile-settings__row">  
+    {% endif %}
+    <div class="profile-settings__row">
       <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
         Sign-in method
       </dt>
@@ -66,7 +68,7 @@ My profile - GOV.UK Pay
           </span>
       </dd>
     </div>
-  </dl> 
+  </dl>
 </div>
 <div class="govuk-grid-column-one-third">
   <div class="related-information">
