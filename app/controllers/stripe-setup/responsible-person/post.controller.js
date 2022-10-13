@@ -25,7 +25,7 @@ const {
 } = require('../../../utils/validation/server-side-form-validations')
 const { formatPhoneNumberWithCountryCode } = require('../../../utils/telephone-number-utils')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
-const { listPersons, updatePerson, createPerson } = require('../../../services/clients/stripe/stripe.client')
+const { listPersons, updatePerson, createPerson, updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -156,6 +156,9 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       } else {
         await createPerson(stripeAccountId, stripePerson)
       }
+
+      await updateCompany(stripeAccountId, { executives_provided: true })
+
       logger.info('Responsible person details submitted for Stripe account', {
         stripe_account_id: stripeAccountId,
         is_switching: isSwitchingCredentials,

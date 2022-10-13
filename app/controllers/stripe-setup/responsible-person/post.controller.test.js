@@ -82,6 +82,7 @@ describe('Responsible person POST controller', () => {
   let listPersonsMock
   let updatePersonMock
   let createPersonMock
+  let updateCompanyMock
   let updatePersonAddAdditionalKYCDetailsMock
   let completeKycMock
 
@@ -91,6 +92,7 @@ describe('Responsible person POST controller', () => {
         listPersons: listPersonsMock,
         updatePerson: updatePersonMock,
         createPerson: createPersonMock,
+        updateCompany: updateCompanyMock,
         updatePersonAddAdditionalKYCDetails: updatePersonAddAdditionalKYCDetailsMock
       },
       '../../../services/clients/connector.client': {
@@ -135,6 +137,7 @@ describe('Responsible person POST controller', () => {
     }
     next = sinon.spy()
     updatePersonMock = sinon.spy(() => Promise.resolve())
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
     updatePersonAddAdditionalKYCDetailsMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     completeKycMock = sinon.spy(() => Promise.resolve())
@@ -177,6 +180,7 @@ describe('Responsible person POST controller', () => {
       email: emailNormalised
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+    sinon.assert.calledWith(updateCompanyMock, stripeAccountId, { executives_provided: true })
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
@@ -445,6 +449,7 @@ describe('Responsible person POST controller', () => {
       address_line2: addressLine2Normalised
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+    sinon.assert.calledWith(updateCompanyMock, stripeAccountId, { executives_provided: true })
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 })
