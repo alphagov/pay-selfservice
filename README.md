@@ -6,38 +6,26 @@ GOV.UK Pay Self Service admin tool (Node.js)
 * You have [set up your local development environment](https://pay-team-manual.cloudapps.digital/manual/development-processes/setup-local-dev-environment.html)
 * Clone this repo locally.
 
-### Running
+### Running locally
 
-Self service reads from environment variables that allow it to connect to backend services from any environment.
+Start the backend services locally in docker, using the Pay CLI.
+  
+  ```
+  pay local launch admin
+  ```
+ 
+Generate the environment variables file. This only needs to be done the first time you run locally.
+  
+  ```
+  ./scripts/generate-dev-environment.sh local
+  ```
+ 
+Build the Selfservice app and start it
 
-#### Tunnel - easiest method
-Tunneling into different test and staging environments allows you to test with environment specific data.
-
-Steps to connect to tunnelled environment:
-
-```
-npm install && npm run compile
-
-./scripts/tunnel.sh test-12   # tunnels into environment `test-12`
-./scripts/generate-dev-environment.sh tunnel  # generate environment variables for tunnel
-
-npm run start:dev
-
-```
-Open application in browser: 
-- http://localhost:3000
-
-#### Local Docker
-If you have the backend services running locally in docker, you can connect directly to them.
-
-```
- npm install && npm run compile
-
- pay local launch admin
- ./scripts/generate-dev-environment.sh local
-
- npm run start:dev
-```
+ ```
+  npm install && npm run compile
+  npm run start:dev
+ ```
 
 Open application in browser: 
 - http://localhost:3000
