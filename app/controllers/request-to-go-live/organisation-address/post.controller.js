@@ -23,6 +23,7 @@ const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { updateOrganisationDetails } = require('../../../services/clients/stripe/stripe.client')
+const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
 
 const clientFieldNames = {
   name: 'merchant-name',
@@ -104,8 +105,8 @@ function normaliseForm (formBody) {
   }, {})
 }
 
-function validateForm (form, isRequestToGoLive, isStripeUpdateOrgDetails) {
-  const rules = isStripeUpdateOrgDetails ? validationRulesWithName : isRequestToGoLive ? validationRulesWithTelAndUrl : validationRulesWithNameAndTelAndUrl
+function validateForm (form, isRequestToGoLive, isStripeSetupUserJourney) {
+  const rules = isStripeSetupUserJourney ? validationRulesWithName : isRequestToGoLive ? validationRulesWithTelAndUrl : validationRulesWithNameAndTelAndUrl
 
   const errors = rules.reduce((errors, validationRule) => {
     const value = form[validationRule.field]
@@ -131,8 +132,8 @@ function validateForm (form, isRequestToGoLive, isStripeUpdateOrgDetails) {
   return orderedErrors
 }
 
-async function submitForm (form, req, isRequestToGoLive, isStripeUpdateOrgDetails) {
-  if (isStripeUpdateOrgDetails) {
+async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourney) {
+  if (isStripeSetupUserJourney) {
     const stripeAccountId = await getStripeAccountId(req.account, false, req.correlationId)
 
     const newOrgDetails = {
@@ -175,7 +176,7 @@ async function submitForm (form, req, isRequestToGoLive, isStripeUpdateOrgDetail
   }
 }
 
-function buildErrorsPageData (form, errors, isRequestToGoLive, isStripeUpdateOrgDetails) {
+function buildErrorsPageData (form, errors, isRequestToGoLive, isStripeUpdateOrgDetails, isSwitchingCredentials, isStripeSetupUserJourney) {
   return {
     errors: errors,
     name: form[clientFieldNames.name],
@@ -187,30 +188,38 @@ function buildErrorsPageData (form, errors, isRequestToGoLive, isStripeUpdateOrg
     url: form[clientFieldNames.url],
     countries: countries.govukFrontendFormatted(form[clientFieldNames.addressCountry]),
     isRequestToGoLive,
-    isStripeUpdateOrgDetails
+    isStripeUpdateOrgDetails,
+    isSwitchingCredentials,
+    isStripeSetupUserJourney
   }
 }
 
 module.exports = async function submitOrganisationAddress (req, res, next) {
   try {
     const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
-    const isStripeUpdateOrgDetails = paths.account.yourPsp.stripeSetup.updateOrgDetails.includes(req.route && req.route.path)
+    const isStripeUpdateOrgDetails = req.url ? req.url.startsWith('/your-psp/') : false
+    const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+
+    const isStripeSetupUserJourney = isStripeUpdateOrgDetails ? true : isSwitchingCredentials ? true : false
+
     const form = normaliseForm(req.body)
-    const errors = validateForm(form, isRequestToGoLive, isStripeUpdateOrgDetails)
+    const errors = validateForm(form, isRequestToGoLive, isStripeSetupUserJourney)
 
     if (lodash.isEmpty(errors)) {
-      const updatedService = await submitForm(form, req, isRequestToGoLive, isStripeUpdateOrgDetails)
+      const updatedService = await submitForm(form, req, isRequestToGoLive, isStripeSetupUserJourney)
       if (isStripeUpdateOrgDetails) {
         res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
+      } else if (isSwitchingCredentials) {
+          res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else if (isRequestToGoLive) {
         res.redirect(303, formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId))
       } else {
         res.redirect(303, formatServicePathsFor(paths.service.organisationDetails.index, req.service.externalId))
       }
     } else {
-      const pageData = buildErrorsPageData(form, errors, isRequestToGoLive, isStripeUpdateOrgDetails)
+      const pageData = buildErrorsPageData(form, errors, isRequestToGoLive, isStripeUpdateOrgDetails, isSwitchingCredentials, isStripeSetupUserJourney)
 
-      const templatePath = isStripeUpdateOrgDetails ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
+      const templatePath = isStripeSetupUserJourney ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
       return response(req, res, templatePath, pageData)
     }
   } catch (err) {
