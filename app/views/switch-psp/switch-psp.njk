@@ -116,6 +116,11 @@
           taskList.ENTER_COMPANY_NUMBER
         ) }}
         {{ taskListItem(
+          "Confirm your organisation details",
+          formatAccountPathsFor(routes.account.switchPSP.stripeSetup.checkOrgDetails, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.CONFIRM_ORGANISATION_DETAILS
+        ) }}
+        {{ taskListItem(
           "Upload a government entity document",
           formatAccountPathsFor(routes.account.switchPSP.stripeSetup.governmentEntityDocument, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.UPLOAD_GOVERNMENT_ENTITY_DOCUMENT
