@@ -6,9 +6,9 @@ const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
 
-const { getApp } = require('../../../../server')
-const { getMockSession, createAppWithSession, getUser } = require('../../../test-helpers/mock-session')
-const paths = require('../../../../app/paths')
+const { getApp } = require('../../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../../test-helpers/mock-session')
+const paths = require('../../../../../app/paths')
 const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
