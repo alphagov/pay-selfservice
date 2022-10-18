@@ -4,6 +4,7 @@ const lodash = require('lodash')
 const goLiveStage = require('../../app/models/go-live-stage')
 const stripeTestAccountStage = require('../../app/models/psp-test-account-stage')
 const serviceFixtures = require('./service.fixtures')
+const secondFactorMethod = require('../../app/models/second-factor-method')
 
 // Constants
 const defaultPermissions = [
@@ -263,7 +264,7 @@ function buildUserWithDefaults (opts) {
     email: 'some-user@example.com',
     otp_key: 'krb6fcianbdjkt01ecvi08jcln',
     telephone_number: '9127979',
-    second_factor: 'SMS',
+    second_factor: secondFactorMethod.SMS,
     provisional_otp_key: 'a-provisional-key',
     provisional_otp_key_created_at: null,
     disabled: false,
@@ -333,7 +334,7 @@ module.exports = {
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
       session_version: opts.session_version || 0,
-      second_factor: opts.second_factor || 'SMS',
+      second_factor: opts.second_factor || secondFactorMethod.SMS,
       provisional_otp_key: opts.provisional_otp_key || '60400'
     }
 

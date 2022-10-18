@@ -9,6 +9,8 @@ const lodash = require('lodash')
 const { getApp } = require('../../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../../test-helpers/mock-session')
 const paths = require('../../../../../app/paths')
+const secondFactorMethod = require('../../../../../app/models/second-factor-method')
+
 const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
@@ -19,7 +21,7 @@ describe('Two factor authenticator configure page GET', () => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }],
-        second_factor: 'APP'
+        second_factor: secondFactorMethod.APP
       })
       nock(CONNECTOR_URL)
         .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
@@ -28,7 +30,7 @@ describe('Two factor authenticator configure page GET', () => {
         })
 
       session = getMockSession(user)
-      lodash.set(session, 'pageData.twoFactorAuthMethod', 'APP')
+      lodash.set(session, 'pageData.twoFactorAuthMethod', secondFactorMethod.APP)
       supertest(createAppWithSession(getApp(), session))
         .get(paths.user.profile.twoFactorAuth.configure)
         .end((err, res) => {
@@ -63,7 +65,7 @@ describe('Two factor authenticator configure page GET', () => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }],
-        second_factor: 'APP'
+        second_factor: secondFactorMethod.APP
       })
       nock(CONNECTOR_URL)
         .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
@@ -72,7 +74,7 @@ describe('Two factor authenticator configure page GET', () => {
         })
 
       session = getMockSession(user)
-      lodash.set(session, 'pageData.twoFactorAuthMethod', 'SMS')
+      lodash.set(session, 'pageData.twoFactorAuthMethod', secondFactorMethod.SMS)
       supertest(createAppWithSession(getApp(), session))
         .get(paths.user.profile.twoFactorAuth.configure)
         .end((err, res) => {
@@ -108,7 +110,7 @@ describe('Two factor authenticator configure page GET', () => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }],
-        second_factor: 'APP'
+        second_factor: secondFactorMethod.APP
       })
       nock(CONNECTOR_URL)
         .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
@@ -117,7 +119,7 @@ describe('Two factor authenticator configure page GET', () => {
         })
 
       session = getMockSession(user)
-      lodash.set(session, 'pageData.twoFactorAuthMethod', 'SMS')
+      lodash.set(session, 'pageData.twoFactorAuthMethod', secondFactorMethod.SMS)
       lodash.set(session, 'pageData.configureTwoFactorAuthMethodRecovered', {
         errors: {
           verificationCode: verificationCodeError

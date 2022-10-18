@@ -23,14 +23,14 @@
 <div class="govuk-grid-column-two-thirds">
   <form method="post" action="{{routes.user.profile.twoFactorAuth.index}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    {% if authenticatorMethod === 'SMS' %}
+    {% if authenticatorMethod === secondFactorMethod.SMS %}
       <p class="govuk-body">You currently use text message codes to sign in to GOV.UK Pay.</p>
-        <input name="two-fa-method" type="hidden" value="APP"/>
+        <input name="two-fa-method" type="hidden" value="{{ secondFactorMethod.APP }}"/>
         {{
           govukButton({ text: "Use an authenticator app instead" })
         }}
     {% endif %}
-    {% if authenticatorMethod === 'APP' %}
+    {% if authenticatorMethod === secondFactorMethod.APP %}
       <p class="govuk-body">You currently use an authenticator app to sign in to GOV.UK Pay.</p>
 
       {{ govukRadios({
@@ -43,12 +43,12 @@
         },
         items: [
           {
-            value: "APP",
+            value: secondFactorMethod.APP,
             text: "A different authenticator app",
             checked: true
           },
           {
-            value: "SMS",
+            value: secondFactorMethod.SMS,
             text: "By text message"
           }
         ]

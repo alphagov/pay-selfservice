@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 {% from "../macro/error-summary.njk" import errorSummary %}
 
-{% if method === 'APP' %}
+{% if method === secondFactorMethod.APP %}
   {% set title = 'Set up an authenticator app' %}
 {% else %}
   {% set title = 'Check your phone' %}
@@ -36,7 +36,7 @@
   </h1>
 </div>
 <div class="govuk-grid-column-two-thirds">
-{% if method === 'APP' %}
+{% if method === secondFactorMethod.APP %}
   <p class="govuk-body">Scan the barcode with your authenticator app or enter the secret manually.</p>
   {{
     govukWarningText({
@@ -62,7 +62,7 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set codeHint = "Enter the code shown in your app to complete the setup" %}
-    {% if method === 'SMS' %}
+    {% if method === secondFactorMethod.SMS %}
       {% set codeHint = "We have sent you a text message with a verification code" %}
     {% endif %}
 
@@ -90,7 +90,7 @@
     {{ govukButton({ text: "Complete" }) }}
   </form>
 
-  {% if method === 'SMS' %}
+  {% if method === secondFactorMethod.SMS %}
   <form method="post" action="{{routes.user.profile.twoFactorAuth.resend}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="govuk-form-group">

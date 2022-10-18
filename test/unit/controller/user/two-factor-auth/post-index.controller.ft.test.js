@@ -8,6 +8,8 @@ const nock = require('nock')
 const { getApp } = require('../../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../../test-helpers/mock-session')
 const paths = require('../../../../../app/paths')
+const secondFactorMethod = require('../../../../../app/models/second-factor-method')
+
 const { ADMINUSERS_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({
@@ -25,7 +27,7 @@ const VALID_USER_RESPONSE = {
   disabled: false,
   sessionVersion: 0,
   features: '',
-  secondFactor: 'SMS',
+  secondFactor: secondFactorMethod.SMS,
   provisionalOtpKey: '60400'
 }
 
@@ -45,7 +47,7 @@ describe('Two factor authenticator configure index POST', () => {
         .post(paths.user.profile.twoFactorAuth.index)
         .send({
           csrfToken: csrf().create('123'),
-          'two-fa-method': 'APP'
+          'two-fa-method': secondFactorMethod.APP
         })
         .end((err, res) => {
           result = res
@@ -83,7 +85,7 @@ describe('Two factor authenticator configure index POST', () => {
         .post(paths.user.profile.twoFactorAuth.index)
         .send({
           csrfToken: csrf().create('123'),
-          'two-fa-method': 'SMS'
+          'two-fa-method': secondFactorMethod.SMS
         })
         .end((err, res) => {
           result = res

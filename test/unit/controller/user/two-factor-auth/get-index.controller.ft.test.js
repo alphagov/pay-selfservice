@@ -8,6 +8,8 @@ const nock = require('nock')
 const { getApp } = require('../../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../../test-helpers/mock-session')
 const paths = require('../../../../../app/paths')
+const secondFactorMethod = require('../../../../../app/models/second-factor-method')
+
 const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
@@ -61,7 +63,7 @@ describe('Two factor authenticator configure index GET', () => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{ name: 'transactions:read' }],
-        second_factor: 'APP'
+        second_factor: secondFactorMethod.APP
       })
       nock(CONNECTOR_URL)
         .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)

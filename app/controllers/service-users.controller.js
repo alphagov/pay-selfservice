@@ -4,6 +4,7 @@ const { renderErrorView, response } = require('../utils/response.js')
 const userService = require('../services/user.service.js')
 const paths = require('../paths.js')
 const roles = require('../utils/roles').roles
+const secondFactorMethod = require('../models/second-factor-method')
 
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
@@ -155,6 +156,7 @@ async function profile (req, res, next) {
   try {
     const user = await userService.findByExternalId(req.user.externalId, req.correlationId)
     response(req, res, 'team-members/team-member-profile', {
+      secondFactorMethod,
       username: user.username,
       email: user.email,
       telephone_number: user.telephoneNumber,

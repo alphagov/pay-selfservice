@@ -19,18 +19,18 @@
   </div>
   {% endif %}
 
-  {% if authenticatorMethod === 'SMS' %}
+  {% if authenticatorMethod === secondFactorMethod.SMS %}
   <h1 class="govuk-heading-l page-title">Check your phone</h1>
   {% endif %}
-  {% if authenticatorMethod === 'APP' %}
+  {% if authenticatorMethod === secondFactorMethod.APP %}
   <h1 class="govuk-heading-l page-title">Use your authenticator app</h1>
   {% endif %}
   <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-    {% if authenticatorMethod === 'SMS' %}
+    {% if authenticatorMethod === secondFactorMethod.SMS %}
     <p class="govuk-body">We have sent you a text message with a verification code</p>
     {% endif %}
-    {% if authenticatorMethod === 'APP' %}
+    {% if authenticatorMethod === secondFactorMethod.APP %}
     <p class="govuk-body">Enter the verification code shown in your authenticator app</p>
     {% endif %}
 
@@ -67,7 +67,7 @@
       })
     }}
   </form>
-  {% if authenticatorMethod === 'SMS' %}
+  {% if authenticatorMethod === secondFactorMethod.SMS %}
   <p class="govuk-body"><a class="govuk-link text-messsage-link" href="{{routes.user.otpSendAgain}}">Not received a text message?</a></p>
   {% endif %}
   <p class="govuk-body"><a class="govuk-link cancel-link" href="{{routes.user.logOut}}">Cancel</a></p>
