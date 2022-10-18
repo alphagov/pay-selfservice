@@ -26,12 +26,11 @@ function getGatewayAccountStripeSetupSuccess (opts) {
   if (opts.additionalKycData !== undefined) {
     fixtureOpts.additional_kyc_data = opts.additionalKycData
   }
-  if (opts.governmentEntityDocument !== undefined) {
-    fixtureOpts.government_entity_document = opts.governmentEntityDocument
-  }
-
   if (opts.organisationDetails !== undefined) {
     fixtureOpts.organisation_details = opts.organisationDetails
+  }
+  if (opts.governmentEntityDocument !== undefined) {
+    fixtureOpts.government_entity_document = opts.governmentEntityDocument
   }
 
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`
@@ -41,60 +40,78 @@ function getGatewayAccountStripeSetupSuccess (opts) {
 }
 
 function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
-  let data
+  let stripeSetupStepOptions = {}
 
   if (opts.companyNumber) {
-    data = opts.companyNumber.map(completed => (
+    stripeSetupStepOptions.company_number = opts.companyNumber.map(completed => (
       {
         company_number: completed
       }
     ))
   }
   if (opts.vatNumber) {
-    data = opts.vatNumber.map(completed => (
+    stripeSetupStepOptions.vat_number = opts.vatNumber.map(completed => (
       {
         vat_number: completed
       }
     ))
   }
   if (opts.bankAccount) {
-    data = opts.bankAccount.map(completed => (
+    stripeSetupStepOptions.bank_account = opts.bankAccount.map(completed => (
       {
         bank_account: completed
       }
     ))
   }
   if (opts.responsiblePerson) {
-    data = opts.responsiblePerson.map(completed => (
+    stripeSetupStepOptions.responsible_person = opts.responsiblePerson.map(completed => (
       {
         responsible_person: completed
       }
     ))
   }
   if (opts.director) {
-    data = opts.director.map(completed => (
+    stripeSetupStepOptions.director = opts.director.map(completed => (
       {
         director: completed
       }
     ))
   }
   if (opts.governmentEntityDocument) {
-    data = opts.governmentEntityDocument.map(completed => (
+    stripeSetupStepOptions.government_entity_document = opts.governmentEntityDocument.map(completed => (
       {
         government_entity_document: completed
       }
     ))
   }
   if (opts.organisationDetails) {
-    data = opts.organisationDetails.map(completed => (
+    stripeSetupStepOptions.organisation_details = opts.organisationDetails.map(completed => (
       {
         organisation_details: completed
       }
     ))
   }
 
+  const optionKeys = Object.keys(stripeSetupStepOptions)
+  const numberOfStripeSetupCalls = stripeSetupStepOptions[optionKeys[0]].length
+  
+  const allStripeCallResponsesArray = []
+
+  for (var i = 0; i < numberOfStripeSetupCalls; i++) {
+    const singleStripeCallResponse = {}
+    
+    optionKeys.forEach(function (key) {
+      const option =  stripeSetupStepOptions[key]
+      const optionInstance =  option[i]
+      singleStripeCallResponse[key] =  optionInstance[key]
+    })
+    
+    allStripeCallResponsesArray[i] = singleStripeCallResponse
+  }
+
   const responses = []
-  data.forEach(item => {
+  
+  allStripeCallResponsesArray.forEach(item => {
     responses.push({
       is: {
         statusCode: 200,

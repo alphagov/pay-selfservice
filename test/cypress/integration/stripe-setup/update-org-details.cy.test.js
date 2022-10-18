@@ -5,6 +5,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
+const stripePspStubs = require('../../stubs/stripe-psp-stubs')
 
 const gatewayAccountId = '42'
 const userExternalId = 'userExternalId'
@@ -12,19 +13,21 @@ const gatewayAccountExternalId = 'a-valid-external-id'
 const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
 const checkOrgDetailsUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/check-organisation-details`
 const pageUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/update-organisation-details`
+const stripeAccountId = 'acct_123example123'
 
-function setupStubs (organisationDetails, type = 'live', paymentProvider = 'stripe') {
+function setupStubs (stripeSetupOptions, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
-  if (Array.isArray(organisationDetails)) {
+  
+  if (!(typeof stripeSetupOptions === "boolean")) {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
       gatewayAccountId,
-      organisationDetails: organisationDetails
+      ...stripeSetupOptions
     })
   } else {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
       gatewayAccountId,
-      organisationDetails
+      organisationDetails: stripeSetupOptions
     })
   }
 
@@ -33,6 +36,10 @@ function setupStubs (organisationDetails, type = 'live', paymentProvider = 'stri
     payment_provider: paymentProvider,
     external_id: gatewayAccountCredentialExternalId
   }]
+
+  const stripeUpdateCompanyStub = stripePspStubs.updateCompany({
+    stripeAccountId
+  })
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
@@ -45,7 +52,8 @@ function setupStubs (organisationDetails, type = 'live', paymentProvider = 'stri
     }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
-    transactionSummaryStubs.getDashboardStatistics()
+    stripeUpdateCompanyStub,
+    transactionSummaryStubs.getDashboardStatistics(),
   ])
 }
 
@@ -56,8 +64,9 @@ describe('The organisation address page', () => {
   const validCity = 'A city'
   const countryGb = 'GB'
   const invalidPostcode = '123'
+  const validPostcode = 'N1 1NN'
 
-  describe('Stripe setup and there are no existing merchant details', () => {
+  describe('Stripe setup after `go live` request and there are no existing merchant details', () => {
     beforeEach(() => {
       // keep the same session for entire describe block
       Cypress.Cookies.preserveOnce('session', 'gateway_account')
@@ -68,7 +77,7 @@ describe('The organisation address page', () => {
         setupStubs(false)
       })
 
-      it('should display form', () => {
+      it('should display form', () => { 
         cy.setEncryptedCookies(userExternalId)
         cy.visit(pageUrl)
 
@@ -172,6 +181,47 @@ describe('The organisation address page', () => {
             cy.get('#address-country').should('have.value', countryGb)
             cy.get('#address-postcode').should('have.value', invalidPostcode)
           })
+      })
+    })
+
+    describe('Form submission', () => {
+      beforeEach(() => {
+        setupStubs({
+          organisationDetails: [false, true, true],
+          bankAccount: [true, true, true],
+          responsiblePerson: [true, true, true],
+          companyNumber: [true, true, true],
+          vatNumber: [true, true, true],
+          director: [true, true, true]
+        })
+      })
+
+      it('should submit the form', () => {
+        cy.setEncryptedCookies(userExternalId)
+        cy.visit(pageUrl)
+
+        cy.get('h1').should('contain', `What is the name and address of you organisation on your government identity document?`)
+
+        cy.get('[data-cy=form]')
+          .should('exist')
+          .within(() => {
+            cy.get('[data-cy=continue-button]').should('exist')
+          })
+
+        cy.get('[data-cy=form]')
+        .within(() => {
+          cy.get('[data-cy=input-org-name]').type(validOrgName)
+          cy.get('[data-cy=input-address-line-1]').type(validLine1)
+          cy.get('[data-cy=input-address-line-2]').type(validLine2)
+          cy.get('[data-cy=input-address-city]').type(validCity)
+          cy.get('[data-cy=input-address-country]').select(countryGb)
+          cy.get('#address-postcode').type(validPostcode)
+          cy.get('[data-cy=continue-button]').click()
+
+          cy.location().should((location) => {
+            expect(location.pathname).to.eq(`/account/a-valid-external-id/your-psp/a-valid-credential-external-id/government-entity-document`)
+          })
+        })
       })
     })
 
