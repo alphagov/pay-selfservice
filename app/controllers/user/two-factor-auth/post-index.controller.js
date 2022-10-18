@@ -2,9 +2,9 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
-const userService = require('../../services/user.service.js')
-const paths = require('../../paths')
+const logger = require('../../../utils/logger')(__filename)
+const userService = require('../../../services/user.service.js')
+const paths = require('../../../paths')
 
 module.exports = async (req, res) => {
   const method = req.body['two-fa-method']
