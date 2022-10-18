@@ -135,7 +135,7 @@
     "jsdom": "^20.0.1",
     "lint-staged": "13.0.3",
     "mocha": "^6.2.3",
-    "mountebank": "^2.7.0",
+    "mountebank": "^2.8.1",
     "nock": "13.2.9",
     "nodemon": "2.0.20",
     "notp": "2.0.3",
