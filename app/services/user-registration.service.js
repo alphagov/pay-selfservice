@@ -18,15 +18,8 @@ module.exports = {
     return adminUsersClient.generateInviteOtpCode(code, telephoneNumber, password, correlationId)
   },
 
-  /**
-   * Validates the verification code
-   *
-   * @param code
-   * @param verifyCode
-   * @param correlationId
-   */
-  verifyOtpAndCreateUser: function (code, verifyCode, correlationId) {
-    return adminUsersClient.verifyOtpAndCreateUser(code, verifyCode, correlationId)
+  verifyOtp: function (inviteCode, verifyCode, correlationId) {
+    return adminUsersClient.verifyOtpForInvite(inviteCode, verifyCode, correlationId)
   },
 
   resendOtpCode: function (code, phoneNumber, correlationId) {

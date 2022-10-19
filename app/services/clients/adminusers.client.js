@@ -412,23 +412,6 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const verifyOtpAndCreateUser = (code, verificationCode, correlationId) => {
-    return baseClient.post(
-      {
-        baseUrl,
-        url: `/v1/api/invites/otp/validate`,
-        json: true,
-        body: {
-          code: code,
-          otp: verificationCode
-        },
-        correlationId: correlationId,
-        description: 'submit otp code',
-        service: SERVICE_NAME
-      }
-    )
-  }
-
   const verifyOtpForInvite = (inviteCode, verificationCode, correlationId) => {
     return baseClient.post(
       {
@@ -819,7 +802,6 @@ module.exports = function (clientOptions = {}) {
     updatePasswordForUser,
     sendSecondFactor,
     authenticateSecondFactor,
-    verifyOtpAndCreateUser,
     resendOtpCode,
     deleteUser,
     provisionNewOtpKey,

@@ -158,9 +158,7 @@ const submitOtpVerify = async function submitOtpVerify (req, res, next) {
   }
 
   try {
-    const user = await registrationService.verifyOtpAndCreateUser(sessionData.code, verificationCode, correlationId)
-    loginController.setupDirectLoginAfterRegister(req, res, user.external_id)
-    return res.redirect(303, paths.registerUser.logUserIn)
+    await registrationService.verifyOtp(sessionData.code, verificationCode, correlationId)
   } catch (err) {
     if (err.errorCode === 401) {
       sessionData.recovered = {
@@ -168,8 +166,20 @@ const submitOtpVerify = async function submitOtpVerify (req, res, next) {
           verificationCode: 'The verification code you’ve used is incorrect or has expired'
         }
       }
-      res.redirect(303, paths.registerUser.otpVerify)
+      return res.redirect(303, paths.registerUser.otpVerify)
     } else if (err.errorCode === 410) {
+      return renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+    } else {
+      return next(err)
+    }
+  }
+
+  try {
+    const completeResponse = await registrationService.completeInvite(sessionData.code, correlationId)
+    loginController.setupDirectLoginAfterRegister(req, res, completeResponse.user_external_id)
+    return res.redirect(303, paths.registerUser.logUserIn)
+  } catch (err) {
+    if (err.errorCode === 410) {
       renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
     } else {
       next(err)
