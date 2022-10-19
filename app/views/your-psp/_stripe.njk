@@ -36,6 +36,10 @@
     }) }}
   {% endif %}
 
+   {% if  enableStripeOnboardingTaskList %}
+     <h1 class="govuk-heading-m govuk-!-margin-top-8">Your payment service provider (PSP) - Stripe</h1>
+  {% endif %}
+  
   {% set tasks %}
     {{ taskListItem(
       'task-organisation-url',

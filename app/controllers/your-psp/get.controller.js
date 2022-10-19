@@ -6,6 +6,7 @@ const { getTaskList, isComplete } = require('./kyc-tasks.service')
 
 module.exports = async (req, res, next) => {
   const { credentialId } = req.params
+  const enableStripeOnboardingTaskList = process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true'
 
   try {
     const credential = getCredentialByExternalId(req.account, credentialId)
@@ -41,7 +42,8 @@ module.exports = async (req, res, next) => {
       is3dsEnabled,
       isWorldpay3dsFlexEnabled,
       isWorldpay3dsFlexCredentialsConfigured,
-      ...stripeData
+      ...stripeData,
+      enableStripeOnboardingTaskList
     })
   } catch (error) {
     next(error)
