@@ -5,10 +5,11 @@ const lodash = require('lodash')
 const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const userService = require('../../../services/user.service.js')
+const secondFactorMethod = require('../../../models/second-factor-method')
 
 module.exports = async function postUpdateSecondFactorMethod (req, res) {
   const code = req.body['code'] || ''
-  const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP')
+  const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)
 
   if (!code) {
     lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {

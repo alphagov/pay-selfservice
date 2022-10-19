@@ -1,5 +1,6 @@
-let path = require('path')
-let renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+const path = require('path')
+const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+const secondFactorMethod = require('../../app/models/second-factor-method')
 
 describe('The team member details view', function () {
   it('should render team member details', function () {
@@ -11,7 +12,8 @@ describe('The team member details view', function () {
       removeTeamMemberLink: 'remove-link',
       permissions: {
         users_service_delete: true
-      }
+      },
+      secondFactorMethod
     }
 
     let body = renderTemplate('team-members/team-member-details', templateData)
@@ -31,7 +33,8 @@ describe('The team member details view', function () {
       role: 'View only',
       editPermissionsLink: 'some-link',
       removeTeamMemberLink: 'remove-link',
-      permissions: {}
+      permissions: {},
+      secondFactorMethod
     }
 
     let body = renderTemplate('team-members/team-member-details', templateData)
@@ -48,7 +51,8 @@ describe('The team member details view', function () {
       username: 'John Smith',
       email: 'john.smith@example.com',
       telephone_number: '+447769897329',
-      two_factor_auth: 'SMS'
+      two_factor_auth: secondFactorMethod.SMS,
+      secondFactorMethod
     }
 
     let body = renderTemplate('team-members/team-member-profile', templateData)

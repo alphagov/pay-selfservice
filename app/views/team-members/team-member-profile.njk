@@ -11,7 +11,7 @@ My profile - GOV.UK Pay
     {% set html %}
       <p class="govuk-notification-banner__heading">Your sign-in method has been updated</p>
 
-      {% if flash.otpMethodUpdated[0] === "APP" %}
+      {% if flash.otpMethodUpdated[0] === secondFactorMethod.APP %}
         <p class="govuk-body">Use your authenticator app when you next sign in.</p>
       {% else %}
         <p class="govuk-body">We’ll send you a text message when you next sign in.</p>
@@ -57,10 +57,10 @@ My profile - GOV.UK Pay
         Sign-in method
       </dt>
       <dd class="profile-settings__value govuk-table__cell" id="two-factor-auth">
-          {% if two_factor_auth === 'APP' %}
+          {% if two_factor_auth === secondFactorMethod.APP %}
             Authenticator app
           {% endif %}
-          {% if two_factor_auth === 'SMS' %}
+          {% if two_factor_auth === secondFactorMethod.SMS %}
             Text message
           {% endif %}
           <span class="profile-settings__change-link">

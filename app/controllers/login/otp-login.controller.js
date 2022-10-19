@@ -2,21 +2,22 @@
 
 const userService = require('../../services/user.service')
 const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
+const secondFactorMethod = require('../../models/second-factor-method')
 
 module.exports = async function showOtpLogin (req, res, next) {
-  const PAGE_PARAMS = {}
+  const pageData = { secondFactorMethod }
   const correlationId = req.headers[CORRELATION_HEADER] || ''
-  PAGE_PARAMS.authenticatorMethod = req.user.secondFactor
+  pageData.authenticatorMethod = req.user.secondFactor
 
-  if (!req.session.sentCode && req.user.secondFactor === 'SMS') {
+  if (!req.session.sentCode && req.user.secondFactor === secondFactorMethod.SMS) {
     try {
       await userService.sendOTP(req.user, correlationId)
       req.session.sentCode = true
-      res.render('login/otp-login', PAGE_PARAMS)
+      res.render('login/otp-login', pageData)
     } catch (err) {
       next(err)
     }
   } else {
-    res.render('login/otp-login', PAGE_PARAMS)
+    res.render('login/otp-login', pageData)
   }
 }
