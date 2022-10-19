@@ -25,7 +25,6 @@ module.exports = function (clientOptions = {}) {
   const forgottenPasswordResource = `/v1/api/forgotten-passwords`
   const resetPasswordResource = `/v1/api/reset-password`
   const serviceResource = `/v1/api/services`
-  const inviteResource = `/v1/api/invites`
 
   /**
    * Get a User by external id
@@ -317,7 +316,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `${inviteResource}/user`,
+        url: `/v1/api/invites/user`,
         json: true,
         body: {
           email: invitee,
@@ -342,7 +341,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.get(
       {
         baseUrl,
-        url: `${inviteResource}`,
+        url: `/v1/api/invites`,
         qs: {
           serviceId: serviceExternalId
         },
@@ -365,7 +364,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.get(
       {
         baseUrl,
-        url: `${inviteResource}/${inviteCode}`,
+        url: `/v1/api/invites/${inviteCode}`,
         json: true,
         correlationId: correlationId,
         description: 'find a validated invitation',
@@ -387,7 +386,7 @@ module.exports = function (clientOptions = {}) {
   const generateInviteOtpCode = (inviteCode, telephoneNumber, password, correlationId) => {
     let postData = {
       baseUrl,
-      url: `${inviteResource}/${inviteCode}/otp/generate`,
+      url: `/v1/api/invites/${inviteCode}/otp/generate`,
       json: true,
       correlationId: correlationId,
       description: 'generate otp code for invite',
@@ -419,7 +418,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `${inviteResource}/${inviteCode}/complete`,
+        url: `/v1/api/invites/${inviteCode}/complete`,
         json: true,
         body: {},
         correlationId: correlationId,
@@ -434,7 +433,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `${inviteResource}/otp/validate`,
+        url: `/v1/api/invites/otp/validate`,
         json: true,
         body: {
           code: code,
@@ -448,18 +447,18 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const verifyOtpForServiceInvite = (inviteCode, verificationCode, correlationId) => {
+  const verifyOtpForInvite = (inviteCode, verificationCode, correlationId) => {
     return baseClient.post(
       {
         baseUrl,
-        url: `${inviteResource}/otp/validate/service`,
+        url: `/v2/api/invites/otp/validate`,
         json: true,
         body: {
           code: inviteCode,
           otp: verificationCode
         },
         correlationId: correlationId,
-        description: 'submit service invite otp code',
+        description: 'submit invite otp code',
         service: SERVICE_NAME,
         baseClientErrorHandler: 'old'
       }
@@ -470,7 +469,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `${inviteResource}/otp/resend`,
+        url: `/v1/api/invites/otp/resend`,
         json: true,
         body: {
           code: code,
@@ -496,7 +495,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `${inviteResource}/service`,
+        url: `/v1/api/invites/service`,
         json: true,
         body: {
           email: email,
@@ -868,7 +867,7 @@ module.exports = function (clientOptions = {}) {
     getServiceUsers,
 
     // Invite-related Methods
-    verifyOtpForServiceInvite,
+    verifyOtpForInvite,
     inviteUser,
     getInvitedUsersList,
     getValidatedInvite,

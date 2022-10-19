@@ -15,7 +15,7 @@ const userFixtures = require('../../fixtures/user.fixtures')
 const paths = require('../../../app/paths')
 
 // Constants
-const SERVICE_INVITE_OTP_RESOURCE = '/v1/api/invites/otp/validate/service'
+const INVITE_OTP_RESOURCE = '/v2/api/invites/otp/validate'
 const CONNECTOR_ACCOUNTS_URL = '/v1/api/accounts'
 const ADMINUSERS_INVITES_URL = '/v1/api/invites'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
@@ -174,7 +174,7 @@ describe('create service OTP validation', function () {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest({
         code: inviteCode
       })
-      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
+      adminusersMock.post(`${INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
         .reply(200)
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), {
@@ -240,7 +240,7 @@ describe('create service OTP validation', function () {
         code: validServiceInviteOtpRequest.code,
         email: 'bob@bob.com'
       }
-      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
+      adminusersMock.post(`${INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
         .reply(401)
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
       supertest(app)
@@ -269,7 +269,7 @@ describe('create service OTP validation', function () {
         email: 'bob@bob.com'
       }
 
-      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
+      adminusersMock.post(`${INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
         .reply(400)
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
@@ -297,7 +297,7 @@ describe('create service OTP validation', function () {
         email: 'bob@bob.com'
       }
 
-      adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
+      adminusersMock.post(`${INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest)
         .reply(410)
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)

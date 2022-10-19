@@ -10,7 +10,7 @@ const { pactify } = require('../../../../test-helpers/pact/pactifier').defaultPa
 chai.use(chaiAsPromised)
 
 const expect = chai.expect
-const OTP_VALIDATE_RESOURCE = '/v1/api/invites/otp/validate/service'
+const OTP_VALIDATE_RESOURCE = '/v2/api/invites/otp/validate'
 let adminUsersClient
 
 describe('adminusers client - validate otp code for a service', function () {
@@ -47,8 +47,8 @@ describe('adminusers client - validate otp code for a service', function () {
 
     afterEach(() => provider.verify())
 
-    it('should verify service otp code successfully', function (done) {
-      adminUsersClient.verifyOtpForServiceInvite(validRequest.code, validRequest.otp).should.be.fulfilled
+    it('should verify invite otp code successfully', function (done) {
+      adminUsersClient.verifyOtpForInvite(validRequest.code, validRequest.otp).should.be.fulfilled
         .should.notify(done)
     })
   })
@@ -74,7 +74,7 @@ describe('adminusers client - validate otp code for a service', function () {
     afterEach(() => provider.verify())
 
     it('should return 400 on missing fields', function (done) {
-      adminUsersClient.verifyOtpForServiceInvite(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
+      adminUsersClient.verifyOtpForInvite(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors[0]).to.equal('Field [code] is required')
@@ -100,7 +100,7 @@ describe('adminusers client - validate otp code for a service', function () {
     afterEach(() => provider.verify())
 
     it('should return 404 if code cannot be found', function (done) {
-      adminUsersClient.verifyOtpForServiceInvite(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
+      adminUsersClient.verifyOtpForInvite(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
@@ -124,7 +124,7 @@ describe('adminusers client - validate otp code for a service', function () {
     afterEach(() => provider.verify())
 
     it('return 410 if code locked', function (done) {
-      adminUsersClient.verifyOtpForServiceInvite(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
+      adminUsersClient.verifyOtpForInvite(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(410)
       }).should.notify(done)
     })

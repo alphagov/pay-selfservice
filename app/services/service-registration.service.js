@@ -13,7 +13,7 @@ function submitRegistration (email, phoneNumber, password, correlationId) {
 }
 
 function submitServiceInviteOtpCode (code, otpCode, correlationId) {
-  return adminUsersClient.verifyOtpForServiceInvite(code, otpCode, correlationId)
+  return adminUsersClient.verifyOtpForInvite(code, otpCode, correlationId)
 }
 
 async function createPopulatedService (inviteCode, correlationId) {
