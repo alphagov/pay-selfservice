@@ -1,0 +1,60 @@
+{% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
+
+{% block pageTitle %}
+  Enter your mobile phone number - GOV.UK Pay
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{
+  govukBackLink({
+    text: "My profile",
+    href: routes.user.profile.index
+  })
+  }}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        phone: "#phone"
+      }
+    }) }}
+
+    <form method="post">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      {{
+      govukInput({
+        id: "phone",
+        name: "phone",
+        type: "tel",
+        value: phone,
+        classes: "govuk-!-width-one-half",
+        label: {
+          text: "Enter your mobile phone number",
+          classes: "govuk-label--l",
+          isPageHeading: true
+        },
+        hint: {
+          text: "We will send a 6 digit verification code to the number you give us."
+        },
+        errorMessage: { text: errors.phone } if errors.phone else false
+      })
+      }}
+      {{
+      govukButton({
+        text: "Continue"
+      })
+      }}
+    </form>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.user.profile.twoFactorAuth.index}}">
+        Cancel
+      </a>
+    </p>
+  </div>
+{% endblock %}

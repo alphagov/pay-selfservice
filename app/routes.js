@@ -248,6 +248,8 @@ module.exports.bind = function (app) {
   // Configure 2FA
   app.get(user.profile.twoFactorAuth.index, userIsAuthorised, twoFactorAuthController.getIndex)
   app.post(user.profile.twoFactorAuth.index, userIsAuthorised, twoFactorAuthController.postIndex)
+  app.get(user.profile.twoFactorAuth.phoneNumber, userIsAuthorised, twoFactorAuthController.getPhoneNumber)
+  app.post(user.profile.twoFactorAuth.phoneNumber, userIsAuthorised, twoFactorAuthController.postPhoneNumber)
   app.get(user.profile.twoFactorAuth.configure, userIsAuthorised, twoFactorAuthController.getConfigure)
   app.post(user.profile.twoFactorAuth.configure, userIsAuthorised, twoFactorAuthController.postConfigure)
   app.post(user.profile.twoFactorAuth.resend, userIsAuthorised, twoFactorAuthController.postResend)
