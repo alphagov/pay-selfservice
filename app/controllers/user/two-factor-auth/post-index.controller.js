@@ -11,15 +11,15 @@ module.exports = async (req, res) => {
   const method = req.body['two-fa-method']
   lodash.set(req, 'session.pageData.twoFactorAuthMethod', method)
 
-    try {
-      const user = await userService.provisionNewOtpKey(req.user.externalId, req.correlationId)
-      if (method === secondFactorMethod.SMS) {
-        await userService.sendProvisionalOTP(user, req.correlationId)
-      }
-      return res.redirect(paths.user.profile.twoFactorAuth.configure)
-    } catch (err) {
-      logger.error(`Provisioning new OTP key failed - ${err.message}`)
-      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-      return res.redirect(paths.user.profile.twoFactorAuth.index)
+  try {
+    await userService.provisionNewOtpKey(req.user.externalId, req.correlationId)
+    if (method === secondFactorMethod.SMS) {
+      await userService.sendProvisionalOTP(req.user.externalId, req.correlationId)
+    }
+    return res.redirect(paths.user.profile.twoFactorAuth.configure)
+  } catch (err) {
+    logger.error(`Provisioning new OTP key failed - ${err.message}`)
+    req.flash('genericError', 'Something went wrong. Please try again or contact support.')
+    return res.redirect(paths.user.profile.twoFactorAuth.index)
   }
 }
