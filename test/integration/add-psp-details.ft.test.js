@@ -50,7 +50,7 @@ describe('Add stripe psp details route', function () {
           vat_number: true,
           company_number: true,
           director: true,
-          organisation_details: true, 
+          organisation_details: true,
           government_entity_document: true
         }))
         .persist()

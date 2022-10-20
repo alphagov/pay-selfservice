@@ -130,7 +130,7 @@ describe('organisation address get controller', () => {
         expect(pageData.isStripeUpdateOrgDetails).to.equal(true)
         expect(pageData.isSwitchingCredentials).to.equal(false)
         expect(pageData.isStripeSetupUserJourney).to.equal(true)
-     
+
         expect(pageData.name).to.equal(undefined)
         expect(pageData.address_line1).to.equal(undefined)
         expect(pageData.address_line2).to.equal(undefined)
@@ -178,7 +178,7 @@ describe('organisation address get controller', () => {
         expect(pageData.isStripeUpdateOrgDetails).to.equal(false)
         expect(pageData.isSwitchingCredentials).to.equal(true)
         expect(pageData.isStripeSetupUserJourney).to.equal(true)
-     
+
         expect(pageData.name).to.equal(undefined)
         expect(pageData.address_line1).to.equal(undefined)
         expect(pageData.address_line2).to.equal(undefined)

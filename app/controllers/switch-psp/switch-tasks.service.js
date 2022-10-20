@@ -76,7 +76,7 @@ function getTaskList (targetCredential, account, service) {
           stripeSetupStageComplete(account, 'bankAccount') &&
           stripeSetupStageComplete(account, 'responsiblePerson') &&
           stripeSetupStageComplete(account, 'director') &&
-          stripeSetupStageComplete(account, 'organisationDetails') && 
+          stripeSetupStageComplete(account, 'organisationDetails') &&
           stripeSetupStageComplete(account, 'governmentEntityDocument') &&
           stripeSetupStageComplete(account, 'vatNumber') &&
           stripeSetupStageComplete(account, 'companyNumber'),

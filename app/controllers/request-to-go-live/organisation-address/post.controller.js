@@ -200,7 +200,7 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
     const isStripeUpdateOrgDetails = req.url ? req.url.startsWith('/your-psp/') : false
     const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
 
-    const isStripeSetupUserJourney = isStripeUpdateOrgDetails ? true : isSwitchingCredentials ? true : false
+    const isStripeSetupUserJourney = isStripeUpdateOrgDetails ? true : !!isSwitchingCredentials
 
     const form = normaliseForm(req.body)
     const errors = validateForm(form, isRequestToGoLive, isStripeSetupUserJourney)
@@ -210,7 +210,7 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
       if (isStripeUpdateOrgDetails) {
         res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
       } else if (isSwitchingCredentials) {
-          res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+        res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else if (isRequestToGoLive) {
         res.redirect(303, formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId))
       } else {
