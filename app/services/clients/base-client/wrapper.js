@@ -6,6 +6,7 @@ const correlator = require('correlation-id')
 
 const requestLogger = require('../../../utils/request-logger')
 const { CORRELATION_HEADER } = require('../../../utils/correlation-header')
+const { RESTClientError } = require('../../../errors')
 
 // Constants
 const SUCCESS_CODES = [200, 201, 202, 204, 206]
@@ -48,12 +49,14 @@ module.exports = function (client, verb) {
         body = transform ? transform(body) : body
         resolve(body)
       } else {
-        let errors = lodash.get(body, 'message') || lodash.get(body, 'errors')
-        if (errors && errors.constructor.name === 'Array') errors = errors.join(', ')
-        const err = new Error(errors || body || 'Unknown error')
-        err.errorCode = response.statusCode
-        err.errorIdentifier = lodash.get(body, 'error_identifier')
-        err.reason = lodash.get(body, 'reason')
+        let errors = body && (body.message || body.errors)
+        if (errors && Array.isArray(errors)) {
+          errors = errors.join(', ')
+        }
+        const message = errors || body || 'Unknown error'
+        const errorIdentifier = body && body.error_identifier
+        const reason = body && body.reason
+        const err = new RESTClientError(message, opts.service, response.statusCode, errorIdentifier, reason)
         reject(err)
       }
     })
