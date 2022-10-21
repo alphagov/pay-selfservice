@@ -33,53 +33,48 @@ const responseBodyToStripeAccountSetupTransformer = body => new StripeAccountSet
 const responseBodyToStripeAccountTransformer = body => new StripeAccount(body)
 
 /** @private */
-function _accountApiUrlFor (gatewayAccountId, url) {
-  return url + ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
+function _accountApiUrlFor (gatewayAccountId) {
+  return ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountUrlFor (gatewayAccountId, url) {
-  return url + ACCOUNT_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
+function _accountUrlFor (gatewayAccountId) {
+  return ACCOUNT_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountByExternalIdUrlFor (gatewayAccountExternalId, url) {
-  return url + ACCOUNT_BY_EXTERNAL_ID_PATH.replace('{externalId}', gatewayAccountExternalId)
+function _accountByExternalIdUrlFor (gatewayAccountExternalId) {
+  return ACCOUNT_BY_EXTERNAL_ID_PATH.replace('{externalId}', gatewayAccountExternalId)
 }
 
 /** @private */
-function _accountsUrlFor (gatewayAccountIds, url) {
-  return url + ACCOUNTS_FRONTEND_PATH + '?accountIds=' + gatewayAccountIds.join(',')
+function _accountsUrlFor (gatewayAccountIds) {
+  return ACCOUNTS_FRONTEND_PATH + '?accountIds=' + gatewayAccountIds.join(',')
 }
 
 /** @private */
-function _accountNotificationCredentialsUrlFor (gatewayAccountId, url) {
-  return url + ACCOUNT_NOTIFICATION_CREDENTIALS_PATH.replace('{accountId}', gatewayAccountId)
+function _accountNotificationCredentialsUrlFor (gatewayAccountId) {
+  return ACCOUNT_NOTIFICATION_CREDENTIALS_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountAcceptedCardTypesUrlFor (gatewayAccountId, url) {
-  return url + ACCEPTED_CARD_TYPES_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
+function _accountAcceptedCardTypesUrlFor (gatewayAccountId) {
+  return ACCEPTED_CARD_TYPES_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _cardTypesUrlFor (url) {
-  return url + CARD_TYPES_API_PATH
+function _serviceNameUrlFor (gatewayAccountId) {
+  return SERVICE_NAME_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _serviceNameUrlFor (gatewayAccountId, url) {
-  return url + SERVICE_NAME_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
+function _getNotificationEmailUrlFor (accountID) {
+  return EMAIL_NOTIFICATION__PATH.replace('{accountId}', accountID)
 }
 
 /** @private */
-function _getNotificationEmailUrlFor (accountID, url) {
-  return url + EMAIL_NOTIFICATION__PATH.replace('{accountId}', accountID)
-}
-
-/** @private */
-function _get3dsFlexCredentialsUrlFor (accountID, url) {
-  return url + FLEX_CREDENTIALS_PATH.replace('{accountId}', accountID)
+function _get3dsFlexCredentialsUrlFor (accountID) {
+  return FLEX_CREDENTIALS_PATH.replace('{accountId}', accountID)
 }
 
 /**
@@ -100,8 +95,10 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccount: function (params) {
-    const url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
-    return baseClient.get(url, {
+    const url = _accountUrlFor(params.gatewayAccountId)
+    return baseClient.get({
+      baseUrl: this.connectorUrl,
+      url,
       correlationId: params.correlationId,
       description: 'get an account',
       service: SERVICE_NAME
@@ -116,15 +113,14 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccountByExternalId: function (params) {
-    const url = _accountByExternalIdUrlFor(params.gatewayAccountExternalId, this.connectorUrl)
-    const context = {
-      url: url,
+    const url = _accountByExternalIdUrlFor(params.gatewayAccountExternalId)
+    return baseClient.get({
+      baseUrl: this.connectorUrl,
+      url,
       correlationId: params.correlationId,
       description: 'get an account',
       service: SERVICE_NAME
-    }
-
-    return baseClient.get(url, context)
+    })
   },
 
   /**
@@ -136,17 +132,14 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccounts: function (params) {
-    const url = _accountsUrlFor(params.gatewayAccountIds, this.connectorUrl)
-    const context = {
-      url: url,
+    const url = _accountsUrlFor(params.gatewayAccountIds)
+    return baseClient.get({
+      baseUrl: this.connectorUrl,
+      url,
       correlationId: params.correlationId,
       description: 'get an account',
       service: SERVICE_NAME
-    }
-
-    return baseClient.get(
-      url, context
-    )
+    })
   },
 
   /**
@@ -161,8 +154,6 @@ ConnectorClient.prototype = {
    * @returns {Promise}
    */
   createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, serviceId, correlationId) {
-    const url = this.connectorUrl + ACCOUNTS_API_PATH
-
     let payload = {
       payment_provider: paymentProvider
     }
@@ -179,7 +170,9 @@ ConnectorClient.prototype = {
       payload.analytics_id = analyticsId
     }
 
-    return baseClient.post(url, {
+    return baseClient.post({
+      baseUrl: this.connectorUrl,
+      url: ACCOUNTS_API_PATH,
       body: payload,
       correlationId: correlationId,
       description: 'create a gateway account',
@@ -188,7 +181,7 @@ ConnectorClient.prototype = {
   },
 
   patchAccountGatewayAccountCredentials: function (params) {
-    const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
+    const url = ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
       .replace('{accountId}', params.gatewayAccountId)
       .replace('{credentialsId}', params.gatewayAccountCredentialsId)
 
@@ -205,7 +198,9 @@ ConnectorClient.prototype = {
       }
     ]
 
-    return baseClient.patch(url, {
+    return baseClient.patch({
+      baseUrl: this.connectorUrl,
+      url,
       body: payload,
       correlationId: params.correlationId,
       description: 'patch gateway account credentials',
@@ -214,7 +209,7 @@ ConnectorClient.prototype = {
   },
 
   patchGooglePayGatewayMerchantId: function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId, correlationId = '') {
-    const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
+    const url = ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
       .replace('{accountId}', gatewayAccountId)
       .replace('{credentialsId}', gatewayAccountCredentialsId)
 
@@ -231,7 +226,9 @@ ConnectorClient.prototype = {
       }
     ]
 
-    return baseClient.patch(url, {
+    return baseClient.patch({
+      baseUrl: this.connectorUrl,
+      url,
       body: payload,
       correlationId: correlationId,
       description: 'patch gateway account credentials for google pay merchant id',
@@ -240,7 +237,7 @@ ConnectorClient.prototype = {
   },
 
   patchAccountGatewayAccountCredentialsState: function (params) {
-    const url = this.connectorUrl + ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
+    const url = ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
       .replace('{accountId}', params.gatewayAccountId)
       .replace('{credentialsId}', params.gatewayAccountCredentialsId)
 
@@ -256,7 +253,9 @@ ConnectorClient.prototype = {
         value: params.userExternalId
       }]
 
-    return baseClient.patch(url, {
+    return baseClient.patch({
+      baseUrl: this.connectorUrl,
+      url,
       body: payload,
       correlationId: params.correlationId,
       description: 'patch gateway account credentials state',
@@ -270,7 +269,7 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   postAccountNotificationCredentials: function (params) {
-    const url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
+    const url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId)
 
     logger.debug('Calling connector to update notification credentials', {
       service: 'connector',
@@ -278,7 +277,9 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    return baseClient.post(url, {
+    return baseClient.post({
+      baseUrl: this.connectorUrl,
+      url,
       body: params.payload,
       correlationId: params.correlationId,
       description: 'patch gateway account credentials',
@@ -326,9 +327,11 @@ ConnectorClient.prototype = {
    * @returns {Promise}
    */
   post3dsFlexAccountCredentials: function (params) {
-    const url = _get3dsFlexCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
+    const url = _get3dsFlexCredentialsUrlFor(params.gatewayAccountId)
 
-    return baseClient.post(url, {
+    return baseClient.post({
+      baseUrl: this.connectorUrl,
+      url,
       body: params.payload,
       correlationId: params.correlationId,
       description: 'Update 3DS Flex credentials',
@@ -343,9 +346,11 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   getAcceptedCardsForAccountPromise: function (gatewayAccountId, correlationId) {
-    const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
+    const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId)
 
-    return baseClient.get(url, {
+    return baseClient.get({
+      baseUrl: this.connectorUrl,
+      url,
       correlationId: correlationId,
       description: 'get accepted card types for account',
       service: SERVICE_NAME
@@ -360,9 +365,11 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   postAcceptedCardsForAccount: function (gatewayAccountId, payload, correlationId) {
-    const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
+    const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId)
 
-    return baseClient.post(url, {
+    return baseClient.post({
+      baseUrl: this.connectorUrl,
+      url,
       body: payload,
       correlationId: correlationId,
       description: 'post accepted card types for account',
@@ -376,15 +383,16 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   getAllCardTypes: function (correlationId) {
-    const url = _cardTypesUrlFor(this.connectorUrl)
+    const url = CARD_TYPES_API_PATH
     logger.debug('Calling connector to get all card types', {
       service: 'connector',
       method: 'GET',
       url: url
     })
 
-    return baseClient.get(url, {
-      url: url,
+    return baseClient.get({
+      baseUrl: this.connectorUrl,
+      url,
       correlationId: correlationId,
       description: 'Retrieves all card types',
       service: SERVICE_NAME
@@ -398,10 +406,11 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   patchServiceName: function (gatewayAccountId, serviceName, correlationId) {
-    const url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl)
+    const url = _serviceNameUrlFor(gatewayAccountId)
 
-    return baseClient.patch(url, {
-      url: url,
+    return baseClient.patch({
+      baseUrl: this.connectorUrl,
+      url,
       body: {
         service_name: serviceName
       },
@@ -532,9 +541,11 @@ ConnectorClient.prototype = {
    * @param {Object} params
    */
   updateConfirmationEmail: function (params) {
-    const url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
+    const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return baseClient.patch(url, {
+    return baseClient.patch({
+      baseUrl: this.connectorUrl,
+      url,
       body: params.payload,
       correlationId: params.correlationId,
       description: 'update confirmation email',
@@ -547,9 +558,11 @@ ConnectorClient.prototype = {
    * @param {Object} params
    */
   updateConfirmationEmailEnabled: function (params) {
-    const url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
+    const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return baseClient.patch(url, {
+    return baseClient.patch({
+      baseUrl: this.connectorUrl,
+      url,
       body: params.payload,
       correlationId: params.correlationId,
       description: 'update confirmation email enabled',
@@ -562,9 +575,11 @@ ConnectorClient.prototype = {
    * @param {Object} params
    */
   updateEmailCollectionMode: function (params) {
-    const url = _accountApiUrlFor(params.gatewayAccountId, this.connectorUrl)
+    const url = _accountApiUrlFor(params.gatewayAccountId)
 
-    return baseClient.patch(url, {
+    return baseClient.patch({
+      baseUrl: this.connectorUrl,
+      url,
       body: params.payload,
       correlationId: params.correlationId,
       description: 'update email collection mode',
@@ -577,9 +592,11 @@ ConnectorClient.prototype = {
    * @param {Object} params
    */
   updateRefundEmailEnabled: function (params) {
-    const url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
+    const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return baseClient.patch(url, {
+    return baseClient.patch({
+      baseUrl: this.connectorUrl,
+      url,
       body: params.payload,
       correlationId: params.correlationId,
       description: 'update refund email enabled',
@@ -673,16 +690,20 @@ ConnectorClient.prototype = {
   },
 
   getCharge: function (gatewayAccountId, chargeExternalId) {
-    const url = this.connectorUrl + CHARGE_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeExternalId)
-    return baseClient.get(url, {
+    const url = CHARGE_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeExternalId)
+    return baseClient.get({
+      baseUrl: this.connectorUrl,
+      url,
       description: 'get a charge',
       service: SERVICE_NAME
     })
   },
 
   postAccountSwitchPSP: function (gatewayAccountId, payload, correlationId) {
-    const url = this.connectorUrl + SWITCH_PSP_PATH.replace('{accountId}', gatewayAccountId)
-    return baseClient.post(url, {
+    const url = SWITCH_PSP_PATH.replace('{accountId}', gatewayAccountId)
+    return baseClient.post({
+      baseUrl: this.connectorUrl,
+      url,
       body: payload,
       correlationId: correlationId,
       description: 'switch account payment service provider',
