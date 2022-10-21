@@ -11,7 +11,7 @@ module.exports = async function showOtpLogin (req, res, next) {
 
   if (!req.session.sentCode && req.user.secondFactor === secondFactorMethod.SMS) {
     try {
-      await userService.sendOTP(req.user, correlationId)
+      await userService.sendOTP(req.user.externalId, correlationId)
       req.session.sentCode = true
       res.render('login/otp-login', pageData)
     } catch (err) {

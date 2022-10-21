@@ -18,8 +18,7 @@ const stripeAccountId = 'acct_123example123'
 function setupStubs (stripeSetupOptions, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
-  
-  if (!(typeof stripeSetupOptions === "boolean")) {
+  if (!(typeof stripeSetupOptions === 'boolean')) {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
       gatewayAccountId,
       ...stripeSetupOptions
@@ -53,7 +52,7 @@ function setupStubs (stripeSetupOptions, type = 'live', paymentProvider = 'strip
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     stripeUpdateCompanyStub,
-    transactionSummaryStubs.getDashboardStatistics(),
+    transactionSummaryStubs.getDashboardStatistics()
   ])
 }
 
@@ -77,7 +76,7 @@ describe('The organisation address page', () => {
         setupStubs(false)
       })
 
-      it('should display form', () => { 
+      it('should display form', () => {
         cy.setEncryptedCookies(userExternalId)
         cy.visit(pageUrl)
 
@@ -209,19 +208,19 @@ describe('The organisation address page', () => {
           })
 
         cy.get('[data-cy=form]')
-        .within(() => {
-          cy.get('[data-cy=input-org-name]').type(validOrgName)
-          cy.get('[data-cy=input-address-line-1]').type(validLine1)
-          cy.get('[data-cy=input-address-line-2]').type(validLine2)
-          cy.get('[data-cy=input-address-city]').type(validCity)
-          cy.get('[data-cy=input-address-country]').select(countryGb)
-          cy.get('#address-postcode').type(validPostcode)
-          cy.get('[data-cy=continue-button]').click()
+          .within(() => {
+            cy.get('[data-cy=input-org-name]').type(validOrgName)
+            cy.get('[data-cy=input-address-line-1]').type(validLine1)
+            cy.get('[data-cy=input-address-line-2]').type(validLine2)
+            cy.get('[data-cy=input-address-city]').type(validCity)
+            cy.get('[data-cy=input-address-country]').select(countryGb)
+            cy.get('#address-postcode').type(validPostcode)
+            cy.get('[data-cy=continue-button]').click()
 
-          cy.location().should((location) => {
-            expect(location.pathname).to.eq(`/account/a-valid-external-id/your-psp/a-valid-credential-external-id/government-entity-document`)
+            cy.location().should((location) => {
+              expect(location.pathname).to.eq(`/account/a-valid-external-id/your-psp/a-valid-credential-external-id/government-entity-document`)
+            })
           })
-        })
       })
     })
 

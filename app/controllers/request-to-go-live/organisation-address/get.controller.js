@@ -16,7 +16,7 @@ module.exports = function getOrganisationAddress (req, res) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
 
   const isStripeSetupUserJourney = isStripeUpdateOrgDetails || isSwitchingCredentials
-  
+
   if (isRequestToGoLive) {
     if (req.service.currentGoLiveStage !== goLiveStage.ENTERED_ORGANISATION_NAME) {
       return res.redirect(

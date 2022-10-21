@@ -77,7 +77,7 @@ const newPasswordPost = async function newPasswordPost (req, res) {
 
     await userService.updatePassword(id, password, req.correlationId)
     try {
-      await userService.logOut(user, req.correlationId)
+      await userService.logOut(user.externalId, req.correlationId)
     } catch (err) {
       // treat as success even if updating session version fails
     }

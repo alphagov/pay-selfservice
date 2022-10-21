@@ -29,18 +29,21 @@ describe('The create payment link start page for a Worldpay MOTO account', () =>
   it('Should display warning', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
-      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay',
-          gatewayAccountCredentials: [
-            {
-              gateway_account_id: gatewayAccountId,
-              payment_provider: 'worldpay',
-              state: 'ACTIVE',
-              credentials: {
-                merchant_id: 'worldpay-merchant-code-ending-with-MOTO'
-              }
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId,
+        gatewayAccountExternalId,
+        type: 'test',
+        paymentProvider: 'worldpay',
+        gatewayAccountCredentials: [
+          {
+            gateway_account_id: gatewayAccountId,
+            payment_provider: 'worldpay',
+            state: 'ACTIVE',
+            credentials: {
+              merchant_id: 'worldpay-merchant-code-ending-with-MOTO'
             }
-          ]
-        }),
+          }
+        ]
+      })
     ])
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
     cy.setEncryptedCookies(userExternalId)

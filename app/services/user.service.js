@@ -55,21 +55,21 @@ module.exports = {
   },
 
   /**
-   * @param {User} user
-   * @param correlationId
+   * @param {String} userExternalId
+   * @param {String} correlationId
    * @returns {Promise}
    */
-  sendOTP: function (user, correlationId) {
-    return adminUsersClient.sendSecondFactor(user.externalId, false, correlationId)
+  sendOTP: function (userExternalId, correlationId) {
+    return adminUsersClient.sendSecondFactor(userExternalId, false, correlationId)
   },
 
   /**
-   * @param {User} user
-   * @param correlationId
+   * @param {String} userExternalId
+   * @param {String} correlationId
    * @returns {Promise}
    */
-  sendProvisionalOTP: function (user, correlationId) {
-    return adminUsersClient.sendSecondFactor(user.externalId, true, correlationId)
+  sendProvisionalOTP: function (userExternalId, correlationId) {
+    return adminUsersClient.sendSecondFactor(userExternalId, true, correlationId)
   },
 
   /**
@@ -91,12 +91,12 @@ module.exports = {
   },
 
   /**
-   * @param user
-   * @param correlationId
+   * @param {String} userExternalId
+   * @param {String} correlationId
    * @returns {Promise}
    */
-  logOut: function (user, correlationId) {
-    return adminUsersClient.incrementSessionVersionForUser(user.externalId, correlationId)
+  logOut: function (userExternalId, correlationId) {
+    return adminUsersClient.incrementSessionVersionForUser(userExternalId, correlationId)
   },
 
   /**

@@ -64,13 +64,13 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
       next(error)
     }
 
-    if (isSwitchingCredentials){
+    if (isSwitchingCredentials) {
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
     } else {
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
-    }    
+    }
   } else {
-    if (isSwitchingCredentials){
+    if (isSwitchingCredentials) {
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.stripeSetup.updateOrgDetails, req.account.external_id, credential.external_id))
     } else {
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.stripeSetup.updateOrgDetails, req.account.external_id, credential.external_id))

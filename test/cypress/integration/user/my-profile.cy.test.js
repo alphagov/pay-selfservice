@@ -38,4 +38,3 @@ describe('My profile page', () => {
     })
   })
 })
-

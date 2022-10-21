@@ -30,7 +30,7 @@ describe('The Worldpay MOTO account warning', () => {
             state: 'ACTIVE',
             payment_provider: 'worldpay',
             credentials: {
-                merchant_id: 'merchant-code-ends-with-MOTO'
+              merchant_id: 'merchant-code-ends-with-MOTO'
             }
           }]
         }
@@ -49,7 +49,7 @@ describe('The Worldpay MOTO account warning', () => {
             state: 'ACTIVE',
             payment_provider: 'worldpay',
             credentials: {
-                merchant_id: 'merchant-code-ends-with-MOTO-ah-no-it-does-not'
+              merchant_id: 'merchant-code-ends-with-MOTO-ah-no-it-does-not'
             }
           }]
         }
@@ -68,7 +68,7 @@ describe('The Worldpay MOTO account warning', () => {
             state: 'ACTIVE',
             payment_provider: 'not-worldpay',
             credentials: {
-                merchant_id: 'merchant-code-ends-with-MOTO'
+              merchant_id: 'merchant-code-ends-with-MOTO'
             }
           }]
         }
@@ -124,5 +124,4 @@ describe('The Worldpay MOTO account warning', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('accountUsesWorldpayMotoMerchantCode').to.equal(false)
     })
   })
-
 })

@@ -10,7 +10,7 @@ module.exports = async function resendOtp (req, res, next) {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   if (req.user.secondFactor === secondFactorMethod.SMS) {
     try {
-      await userService.sendOTP(req.user, correlationId)
+      await userService.sendOTP(req.user.externalId, correlationId)
       res.redirect(paths.user.otpLogIn)
     } catch (err) {
       next(err)

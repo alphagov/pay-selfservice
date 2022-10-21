@@ -94,23 +94,23 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
 
   const optionKeys = Object.keys(stripeSetupStepOptions)
   const numberOfStripeSetupCalls = stripeSetupStepOptions[optionKeys[0]].length
-  
+
   const allStripeCallResponsesArray = []
 
   for (var i = 0; i < numberOfStripeSetupCalls; i++) {
     const singleStripeCallResponse = {}
-    
+
     optionKeys.forEach(function (key) {
-      const option =  stripeSetupStepOptions[key]
-      const optionInstance =  option[i]
-      singleStripeCallResponse[key] =  optionInstance[key]
+      const option = stripeSetupStepOptions[key]
+      const optionInstance = option[i]
+      singleStripeCallResponse[key] = optionInstance[key]
     })
-    
+
     allStripeCallResponsesArray[i] = singleStripeCallResponse
   }
 
   const responses = []
-  
+
   allStripeCallResponsesArray.forEach(item => {
     responses.push({
       is: {
