@@ -78,10 +78,9 @@ describe('adminusers client - self register service', function () {
     afterEach(() => provider.verify())
 
     it('should return bad request', function (done) {
-      adminUsersClient.submitServiceRegistration(invalidInvite.email, invalidInvite.telephone_number, invalidInvite.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(errorResponse.errors)
+      adminUsersClient.submitServiceRegistration(invalidInvite.email, invalidInvite.telephone_number, invalidInvite.password).should.be.rejected.then(function (err) {
+        expect(err.errorCode).to.equal(400)
+        expect(err.message).to.equal(errorResponse.errors[0])
       }).should.notify(done)
     })
   })

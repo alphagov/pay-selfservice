@@ -74,10 +74,9 @@ describe('adminusers client - validate otp code for a service', function () {
     afterEach(() => provider.verify())
 
     it('should return 400 on missing fields', function (done) {
-      adminUsersClient.verifyOtpForInvite(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors[0]).to.equal('Field [code] is required')
+      adminUsersClient.verifyOtpForInvite(verifyCodeRequest.code, verifyCodeRequest.otp).should.be.rejected.then(function (err) {
+        expect(err.errorCode).to.equal(400)
+        expect(err.message).to.equal('Field [code] is required')
       }).should.notify(done)
     })
   })

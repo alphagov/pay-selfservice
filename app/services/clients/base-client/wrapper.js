@@ -34,9 +34,7 @@ module.exports = function (method, verb) {
 
     // Set up post response and error handling method
     const transform = opts.transform || false
-    const handleError = opts.baseClientErrorHandler || 'new'
     opts.transform = undefined
-    opts.baseClientErrorHandler = undefined
 
     // start request
     requestLogger.logRequestStart(context)
@@ -49,21 +47,13 @@ module.exports = function (method, verb) {
         body = transform ? transform(body) : body
         resolve(body)
       } else {
-        if (handleError === 'new') {
-          let errors = lodash.get(body, 'message') || lodash.get(body, 'errors')
-          if (errors && errors.constructor.name === 'Array') errors = errors.join(', ')
-          const err = new Error(errors || body || 'Unknown error')
-          err.errorCode = response.statusCode
-          err.errorIdentifier = lodash.get(body, 'error_identifier')
-          err.reason = lodash.get(body, 'reason')
-          reject(err)
-        } else {
-          // eslint-disable-next-line
-          reject({
-            errorCode: response.statusCode,
-            message: response.body
-          })
-        }
+        let errors = lodash.get(body, 'message') || lodash.get(body, 'errors')
+        if (errors && errors.constructor.name === 'Array') errors = errors.join(', ')
+        const err = new Error(errors || body || 'Unknown error')
+        err.errorCode = response.statusCode
+        err.errorIdentifier = lodash.get(body, 'error_identifier')
+        err.reason = lodash.get(body, 'reason')
+        reject(err)
       }
     })
     // Add event listeners for logging

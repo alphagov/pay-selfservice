@@ -98,14 +98,9 @@ describe('admin users client - add gateway accounts to service', () => {
       result = adminUsersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
 
       return expect(result)
-        .to.be.rejected
-        .and.to.eventually.deep.equal({
-          errorCode: 409,
-          message: {
-            errors: [
-              'One or more of the following gateway account ids has already assigned to another service: [111]'
-            ]
-          }
+        .to.be.rejected.then(err => {
+          expect(err.errorCode).to.equal(409)
+          expect(err.message).to.equal('One or more of the following gateway account ids has already assigned to another service: [111]')
         })
     })
   })
