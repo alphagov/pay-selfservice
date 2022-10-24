@@ -132,9 +132,9 @@ function validateForm (form, isRequestToGoLive, isStripeSetupUserJourney) {
   return orderedErrors
 }
 
-async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourney) {
+async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourney, isSwitchingCredentials) {
   if (isStripeSetupUserJourney) {
-    const stripeAccountId = await getStripeAccountId(req.account, false, req.correlationId)
+    const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
 
     const newOrgDetails = {
       name: form[clientFieldNames.name],
@@ -206,7 +206,7 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
     const errors = validateForm(form, isRequestToGoLive, isStripeSetupUserJourney)
 
     if (lodash.isEmpty(errors)) {
-      const updatedService = await submitForm(form, req, isRequestToGoLive, isStripeSetupUserJourney)
+      const updatedService = await submitForm(form, req, isRequestToGoLive, isStripeSetupUserJourney, isSwitchingCredentials)
       if (isStripeUpdateOrgDetails) {
         res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
       } else if (isSwitchingCredentials) {
