@@ -38,13 +38,7 @@ async function validateInvite (req, res, next) {
       req.register_invite.email = invite.email
       const redirectTarget = invite.user_exist ? paths.registerUser.subscribeService : paths.registerUser.registration
       res.redirect(302, redirectTarget)
-    } else if (invite.type === 'existing_user_invited_to_existing_service') {
-      req.register_invite.email = invite.email
-      res.redirect(302, paths.registerUser.subscribeService)
-    } else if (invite.type === 'new_user_invited_to_existing_service') {
-      req.register_invite.email = invite.email
-      res.redirect(302, paths.registerUser.registration)
-    } else if (invite.type === 'service' || invite.type === 'new_user_and_new_service_self_signup') {
+    } else if (invite.type === 'service') {
       if (invite.user_exist) {
         res.redirect(302, paths.serviceSwitcher.index)
       } else {
