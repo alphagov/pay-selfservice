@@ -5,7 +5,8 @@ const Joi = require('joi')
 const schema = {
   vat_id: Joi.string().optional(),
   tax_id: Joi.string().optional(),
-  directors_provided: Joi.boolean().optional()
+  directors_provided: Joi.boolean().optional(),
+  executives_provided: Joi.boolean().optional()
 }
 
 class StripeCompany {
@@ -40,6 +41,10 @@ function build (params) {
 
   if (params.directors_provided) {
     stripeCompany.company.directors_provided = params.directors_provided
+  }
+
+  if (params.executives_provided) {
+    stripeCompany.company.executives_provided = params.executives_provided
   }
 
   return stripeCompany
