@@ -93,7 +93,7 @@ describe('connector client - create gateway account', function () {
         invalidCreateGatewayAccountRequest.analytics_id
       ).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
-        expect(response.message).to.deep.equal(errorResponse)
+        expect(response.message).to.equal(errorResponse.message)
       }).should.notify(done)
     })
   })

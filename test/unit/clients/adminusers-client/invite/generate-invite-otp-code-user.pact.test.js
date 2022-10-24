@@ -81,10 +81,9 @@ describe('adminusers client - generate otp code for user invite', function () {
     afterEach(() => provider.verify())
 
     it('should 400 BAD REQUEST telephone number is not valid', function (done) {
-      adminUsersClient.generateInviteOtpCode(inviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors[0]).to.equal('Field [telephone_number] is required')
+      adminUsersClient.generateInviteOtpCode(inviteCode, validRegistrationRequest.telephone_number, validRegistrationRequest.password).should.be.rejected.then(function (err) {
+        expect(err.errorCode).to.equal(400)
+        expect(err.message).to.equal('Field [telephone_number] is required')
       }).should.notify(done)
     })
   })

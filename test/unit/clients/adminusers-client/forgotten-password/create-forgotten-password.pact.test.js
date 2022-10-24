@@ -72,10 +72,9 @@ describe('adminusers client - create forgotten password', function () {
     afterEach(() => provider.verify())
 
     it('should error when forgotten password creation if mandatory fields are missing', function (done) {
-      adminUsersClient.createForgottenPassword(request.username).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(badForgottenPasswordResponse.errors)
+      adminUsersClient.createForgottenPassword(request.username).should.be.rejected.then(function (err) {
+        expect(err.errorCode).to.equal(400)
+        expect(err.message).to.equal(badForgottenPasswordResponse.errors[0])
       }).should.notify(done)
     })
   })

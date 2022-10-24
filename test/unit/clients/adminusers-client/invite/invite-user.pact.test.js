@@ -103,8 +103,7 @@ describe('adminusers client - invite user', function () {
     it('should return bad request', function (done) {
       adminUsersClient.inviteUser(invalidInvite.email, invalidInvite.sender, externalServiceId, invalidInvite.role_name).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(errorResponse.errors)
+        expect(response.message).to.equal(errorResponse.errors[0])
       }).should.notify(done)
     })
   })
@@ -129,10 +128,9 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return conflict', function (done) {
-      adminUsersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(409)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(errorResponse.errors)
+      adminUsersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.rejected.then(function (err) {
+        expect(err.errorCode).to.equal(409)
+        expect(err.message).to.equal(errorResponse.errors[0])
       }).should.notify(done)
     })
   })
@@ -157,10 +155,9 @@ describe('adminusers client - invite user', function () {
     afterEach(() => provider.verify())
 
     it('should return not permitted', function (done) {
-      adminUsersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(403)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(errorResponse.errors)
+      adminUsersClient.inviteUser(validInvite.email, validInvite.sender, externalServiceId, validInvite.role_name).should.be.rejected.then(function (err) {
+        expect(err.errorCode).to.equal(403)
+        expect(err.message).to.equal(errorResponse.errors[0])
       }).should.notify(done)
     })
   })

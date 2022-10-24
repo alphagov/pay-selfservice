@@ -98,7 +98,7 @@ describe('adminusers client - authenticate', () => {
         done('should not resolve here')
       }).catch(err => {
         expect(err.errorCode).to.equal(401)
-        expect(err.message.errors).to.deep.equal(invalidPasswordResponse.errors)
+        expect(err.message).to.deep.equal(invalidPasswordResponse.errors.join(', '))
         done()
       })
     })

@@ -194,12 +194,7 @@ async function createPopulatedService (req, res, next) {
     loginController.setupDirectLoginAfterRegister(req, res, user.externalId)
     return res.redirect(303, paths.selfCreateService.logUserIn)
   } catch (err) {
-    if (err.errorCode === 409) {
-      const errorMessage = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
-      renderErrorView(req, res, errorMessage, err.errorCode)
-    } else {
-      next(err)
-    }
+    next(err)
   }
 }
 

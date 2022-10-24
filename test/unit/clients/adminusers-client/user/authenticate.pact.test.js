@@ -84,10 +84,9 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should fail authentication if invalid username / password', function (done) {
-      adminUsersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(401)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(unauthorizedResponse.errors)
+      adminUsersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (err) {
+        expect(err.errorCode).to.equal(401)
+        expect(err.message).to.equal(unauthorizedResponse.errors[0])
       }).should.notify(done)
     })
   })
@@ -113,10 +112,9 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should error bad request if mandatory fields are missing', function (done) {
-      adminUsersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(2)
-        expect(response.message.errors).to.deep.equal(badAuthenticateResponse.errors)
+      adminUsersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (err) {
+        expect(err.errorCode).to.equal(400)
+        expect(err.message).to.equal(badAuthenticateResponse.errors.join(', '))
       }).should.notify(done)
     })
   })

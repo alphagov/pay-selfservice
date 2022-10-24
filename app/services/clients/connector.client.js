@@ -183,8 +183,7 @@ ConnectorClient.prototype = {
       body: payload,
       correlationId: correlationId,
       description: 'create a gateway account',
-      service: SERVICE_NAME,
-      baseClientErrorHandler: 'old'
+      service: SERVICE_NAME
     })
   },
 
@@ -621,8 +620,7 @@ ConnectorClient.prototype = {
         correlationId,
         description: 'get stripe account setup flags for gateway account',
         service: SERVICE_NAME,
-        transform: responseBodyToStripeAccountSetupTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToStripeAccountSetupTransformer
       }
     )
   },
@@ -642,8 +640,7 @@ ConnectorClient.prototype = {
         ],
         correlationId,
         description: 'set stripe account setup flag to true for gateway account',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   },
@@ -657,8 +654,7 @@ ConnectorClient.prototype = {
         correlationId,
         description: 'get stripe account for gateway account',
         service: SERVICE_NAME,
-        transform: responseBodyToStripeAccountTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToStripeAccountTransformer
       }
     )
   },

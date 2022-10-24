@@ -43,7 +43,6 @@ module.exports = function (clientOptions = {}) {
         description: 'find a user',
         service: SERVICE_NAME,
         transform: responseBodyToUserTransformer,
-        baseClientErrorHandler: 'old'
       }
     )
   }
@@ -67,8 +66,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'find a user',
         service: SERVICE_NAME,
-        transform: responseBodyToUserListTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToUserListTransformer
       }
     )
   }
@@ -92,8 +90,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'authenticate a user',
         service: SERVICE_NAME,
-        transform: responseBodyToUserTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToUserTransformer
       }
     )
   }
@@ -117,8 +114,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'increment session version for a user',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -140,8 +136,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'create a forgotten password for a user',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -160,8 +155,7 @@ module.exports = function (clientOptions = {}) {
         json: true,
         correlationId: correlationId,
         description: 'get a forgotten password',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -185,8 +179,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'update a password for a user',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -207,8 +200,7 @@ module.exports = function (clientOptions = {}) {
         body: { provisional },
         correlationId: correlationId,
         description: 'post a second factor auth token to the user',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -230,8 +222,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'authenticate a second factor auth token entered by user',
         service: SERVICE_NAME,
-        transform: responseBodyToUserTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToUserTransformer
       }
     )
   }
@@ -245,8 +236,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'get a services users',
         service: SERVICE_NAME,
-        transform: responseBodyToUserListTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToUserListTransformer
       }
     )
   }
@@ -271,8 +261,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'assigns user to a new service',
         service: SERVICE_NAME,
-        transform: responseBodyToUserTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToUserTransformer
       }
     )
   }
@@ -297,8 +286,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'update role of a service that currently belongs to a user',
         service: SERVICE_NAME,
-        transform: responseBodyToUserTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToUserTransformer
       }
     )
   }
@@ -326,8 +314,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'invite a user to signup',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -349,8 +336,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         method: 'GET',
         description: 'get invited users for a service',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -368,8 +354,7 @@ module.exports = function (clientOptions = {}) {
         json: true,
         correlationId: correlationId,
         description: 'find a validated invitation',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -390,8 +375,7 @@ module.exports = function (clientOptions = {}) {
       json: true,
       correlationId: correlationId,
       description: 'generate otp code for invite',
-      service: SERVICE_NAME,
-      baseClientErrorHandler: 'old'
+      service: SERVICE_NAME
     }
 
     if (telephoneNumber || password) {
@@ -423,8 +407,7 @@ module.exports = function (clientOptions = {}) {
         body: {},
         correlationId: correlationId,
         description: 'complete invite',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -441,8 +424,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'submit otp code',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -459,8 +441,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'submit invite otp code',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -477,8 +458,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'resend otp code',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -504,8 +484,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'submit service registration details',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -528,8 +507,7 @@ module.exports = function (clientOptions = {}) {
         userRemover: removerExternalId,
         correlationId: correlationId,
         description: 'delete a user from a service',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -552,8 +530,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       description: 'create service',
       transform: responseBodyToServiceTransformer,
-      service: SERVICE_NAME,
-      baseClientErrorHandler: 'old'
+      service: SERVICE_NAME
     }
 
     if (serviceName) {
@@ -584,8 +561,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       description: 'update service',
       transform: responseBodyToServiceTransformer,
-      service: SERVICE_NAME,
-      baseClientErrorHandler: 'old'
+      service: SERVICE_NAME
     })
   }
 
@@ -618,8 +594,7 @@ module.exports = function (clientOptions = {}) {
         ],
         correlationId: correlationId,
         description: 'update service name',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -646,8 +621,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'update collect billing address',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -666,8 +640,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'update default billing address country',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -694,8 +667,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'update service name',
         service: SERVICE_NAME,
-        transform: responseBodyToServiceTransformer,
-        baseClientErrorHandler: 'old'
+        transform: responseBodyToServiceTransformer
       }
     )
   }
@@ -715,8 +687,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'create a new 2FA provisional OTP key',
         transform: responseBodyToUserTransformer,
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -741,8 +712,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'configure a new OTP key and method',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -761,8 +731,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'update current go live stage',
         transform: responseBodyToServiceTransformer,
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -781,8 +750,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'update PSP test account stage',
         transform: responseBodyToServiceTransformer,
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -796,8 +764,7 @@ module.exports = function (clientOptions = {}) {
         body: { ip_address: ipAddress },
         correlationId: correlationId,
         description: 'post the ip address of the user who agreed to stripe terms',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -811,8 +778,7 @@ module.exports = function (clientOptions = {}) {
         body: { user_external_id: userExternalId },
         correlationId: correlationId,
         description: 'post the external id of the user who agreed to GovUk Pay terms',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
@@ -837,8 +803,7 @@ module.exports = function (clientOptions = {}) {
         },
         correlationId: correlationId,
         description: 'update a phone number for a user',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   }
