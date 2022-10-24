@@ -12,14 +12,16 @@ describe('StripeCompany', () => {
     const stripeCompany = new StripeCompany({
       vat_id: vatId,
       tax_id: taxId,
-      directors_provided: true
+      directors_provided: true,
+      executives_provided: true
     })
 
     expect(stripeCompany.basicObject()).to.deep.equal({
       company: {
         vat_id: vatId,
         tax_id: taxId,
-        directors_provided: true
+        directors_provided: true,
+        executives_provided: true
       }
     })
   })
@@ -149,6 +151,21 @@ describe('StripeCompany', () => {
           tax_id: taxId,
           directors_provided: directorsProvided
         })).to.throw(/StripeCompany "directors_provided" must be a boolean/)
+      })
+    })
+  })
+
+  describe('executives_provided validation', () => {
+    [12345, '', null, 'test'].forEach(async function (value) {
+      const vatId = '000000000'
+      const taxId = 'taxid'
+      const executivesProvided = null
+      it('Should throw error for invalid value \'' + value + '\'', async () => {
+        expect(() => new StripeCompany({
+          vat_id: vatId,
+          tax_id: taxId,
+          executives_provided: executivesProvided
+        })).to.throw(/StripeCompany "executives_provided" must be a boolean/)
       })
     })
   })
