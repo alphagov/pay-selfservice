@@ -1,18 +1,29 @@
 'use strict'
 
-const logger = require('../../../utils/logger')(__filename)
 const userService = require('../../../services/user.service.js')
 const paths = require('../../../paths')
+const { invalidTelephoneNumber } = require('../../../utils/telephone-number-utils')
+const { validationErrors } = require('../../../utils/validation/field-validation-checks')
+const { response } = require('../../../utils/response')
 
-module.exports = (req, res) => {
-  userService.sendProvisionalOTP(req.user.externalId, req.correlationId)
-    .then(() => {
-      req.flash('generic', 'Another verification code has been sent to your phone')
-      return res.redirect(paths.user.profile.twoFactorAuth.configure)
-    })
-    .catch(err => {
-      logger.error(`Reseding OTP key SMS failed - ${err.message}`)
-      req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-      return res.redirect(paths.user.profile.twoFactorAuth.configure)
-    })
+module.exports = async function resendSmsCode (req, res, next) {
+  const { phone } = req.body
+  if (invalidTelephoneNumber(phone)) {
+    const pageData = {
+      phone,
+      errors: {
+        phone: validationErrors.invalidTelephoneNumber
+      }
+    }
+    return response(req, res, 'two-factor-auth/resend-sms-code', pageData)
+  }
+
+  try {
+    await userService.updatePhoneNumber(req.user.externalId, phone, req.correlationId)
+    await userService.sendProvisionalOTP(req.user.externalId, req.correlationId)
+    req.flash('generic', 'Another verification code has been sent to your phone')
+    return res.redirect(paths.user.profile.twoFactorAuth.configure)
+  } catch (err) {
+    next(err)
+  }
 }

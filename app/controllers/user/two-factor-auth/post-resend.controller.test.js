@@ -9,18 +9,18 @@ const { validationErrors } = require('../../../utils/validation/field-validation
 const userExternalId = 'user-id'
 const correlationId = 'correlation-id'
 
-describe('The POST set phone number for updating 2FA method controller', () => {
+describe('The POST resend code for updating 2FA to SMS controller', () => {
   let req, res, next
   const updatePhoneNumberSpy = sinon.spy(() => Promise.resolve())
-  const provisionNewOtpKeySpy = sinon.spy(() => Promise.resolve())
   const sendProvisionalOTPSpy = sinon.spy(() => Promise.resolve())
-  const controllerWithAdminusersSuccess = getController(updatePhoneNumberSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy)
+  const controllerWithAdminusersSuccess = getController(updatePhoneNumberSpy, sendProvisionalOTPSpy)
 
   beforeEach(() => {
     req = {
       correlationId,
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
-      body: {}
+      body: {},
+      flash: sinon.spy()
     }
     res = {
       redirect: sinon.spy(),
@@ -28,7 +28,6 @@ describe('The POST set phone number for updating 2FA method controller', () => {
     }
     next = sinon.spy()
     updatePhoneNumberSpy.resetHistory()
-    provisionNewOtpKeySpy.resetHistory()
     sendProvisionalOTPSpy.resetHistory()
   })
 
@@ -38,12 +37,12 @@ describe('The POST set phone number for updating 2FA method controller', () => {
     })
 
     describe('Requests to adminusers succeed', () => {
-      it('should make requests to adminusers then redirect', async () => {
+      it('should make requests to adminusers then redirect with flash message', async () => {
         await controllerWithAdminusersSuccess(req, res, next)
 
         sinon.assert.calledWith(updatePhoneNumberSpy, userExternalId, req.body.phone, correlationId)
-        sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId, correlationId)
         sinon.assert.calledWith(sendProvisionalOTPSpy, userExternalId, correlationId)
+        sinon.assert.calledWith(req.flash, 'generic', 'Another verification code has been sent to your phone')
         sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
       })
     })
@@ -53,11 +52,10 @@ describe('The POST set phone number for updating 2FA method controller', () => {
         const error = new Error('An error')
         const updatePhoneNumberErrorSpy = sinon.spy(() => Promise.reject(error))
 
-        const controllerWithAdminusersError = getController(updatePhoneNumberErrorSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy)
+        const controllerWithAdminusersError = getController(updatePhoneNumberErrorSpy, sendProvisionalOTPSpy)
         await controllerWithAdminusersError(req, res, next)
 
         sinon.assert.calledWith(updatePhoneNumberErrorSpy, userExternalId, req.body.phone, correlationId)
-        sinon.assert.notCalled(provisionNewOtpKeySpy)
         sinon.assert.notCalled(sendProvisionalOTPSpy)
         sinon.assert.calledWith(next, error)
       })
@@ -65,12 +63,12 @@ describe('The POST set phone number for updating 2FA method controller', () => {
   })
 
   describe('An invalid phone number is entered', () => {
-    it('should render the phone number page with an error', async () => {
+    it('should render the resend code page with an error', async () => {
       req.body.phone = 'invalid-phone'
 
       await controllerWithAdminusersSuccess(req, res, next)
 
-      sinon.assert.calledWithMatch(res.render, 'two-factor-auth/phone-number', {
+      sinon.assert.calledWithMatch(res.render, 'two-factor-auth/resend-sms-code', {
         phone: req.body.phone,
         errors: {
           phone: validationErrors.invalidTelephoneNumber
@@ -78,17 +76,15 @@ describe('The POST set phone number for updating 2FA method controller', () => {
       })
 
       sinon.assert.notCalled(updatePhoneNumberSpy)
-      sinon.assert.notCalled(provisionNewOtpKeySpy)
       sinon.assert.notCalled(sendProvisionalOTPSpy)
     })
   })
 })
 
-function getController (updatePhoneNumberSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy) {
-  return proxyquire('./post-phone-number.controller', {
+function getController (updatePhoneNumberSpy, sendProvisionalOTPSpy) {
+  return proxyquire('./post-resend.controller', {
     '../../../services/user.service': {
       updatePhoneNumber: updatePhoneNumberSpy,
-      provisionNewOtpKey: provisionNewOtpKeySpy,
       sendProvisionalOTP: sendProvisionalOTPSpy
     }
   })

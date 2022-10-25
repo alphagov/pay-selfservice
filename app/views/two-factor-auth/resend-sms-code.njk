@@ -1,0 +1,63 @@
+{% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
+
+{% block pageTitle %}
+  Resend verification code - GOV.UK Pay
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{
+  govukBackLink({
+    text: "My profile",
+    href: routes.user.profile.index
+  })
+  }}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        phone: '#phone'
+      }
+    }) }}
+
+    <h1 class="form-title govuk-heading-l">Check your mobile number</h1>
+    <p class="govuk-body">Check your mobile phone number is correct, then resend the verification code.</p>
+    <form class="form" method="post">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+      {{
+      govukInput({
+        id: "phone",
+        name: "phone",
+        type: "tel",
+        autocomplete: "tel",
+        classes: "govuk-input--width-20",
+        label: {
+          text: "Mobile number",
+          classes: "govuk-label--s"
+        },
+        value: phone,
+        errorMessage: { text: errors.phone } if errors.phone else false
+      })
+      }}
+      {{
+      govukButton({
+        text: "Resend verification code",
+        classes: "button",
+        attributes: {
+          id: "resend-code"
+        }
+      })
+      }}
+    </form>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.user.profile.twoFactorAuth.index}}">
+        Cancel
+      </a>
+    </p>
+  </div>
+{% endblock %}
