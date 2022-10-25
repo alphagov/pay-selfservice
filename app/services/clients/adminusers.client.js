@@ -42,7 +42,7 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'find a user',
         service: SERVICE_NAME,
-        transform: responseBodyToUserTransformer,
+        transform: responseBodyToUserTransformer
       }
     )
   }
