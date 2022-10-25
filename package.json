@@ -108,7 +108,7 @@
     "winston": "3.8.2"
   },
   "devDependencies": {
-    "@babel/core": "7.19.3",
+    "@babel/core": "7.19.6",
     "@babel/polyfill": "7.12.1",
     "@babel/preset-env": "7.19.4",
     "@pact-foundation/pact": "^9.18.1",
