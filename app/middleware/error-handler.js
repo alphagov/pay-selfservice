@@ -12,7 +12,8 @@ const {
   NotFoundError,
   RegistrationSessionMissingError,
   InvalidRegistationStateError,
-  InvalidConfigurationError
+  InvalidConfigurationError,
+  RESTClientError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
@@ -72,9 +73,16 @@ module.exports = function errorHandler (err, req, res, next) {
     return renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team', 400)
   }
 
-  logger.info(`Unhandled error caught: ${err.message}`, {
-    stack: err.stack
-  })
+  if (err instanceof RESTClientError) {
+    logger.info(`Unhandled REST client error caught: ${err.message}`, {
+      service: err.service,
+      status: err.statusCode
+    })
+  } else {
+    logger.info(`Unhandled error caught: ${err.message}`, {
+      stack: err.stack
+    })
+  }
   Sentry.captureException(err)
   renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team.', 500)
 }
