@@ -87,6 +87,13 @@ function postSecondFactorSuccess (userExternalId) {
   return stubBuilder('POST', path, 200)
 }
 
+function postProvisionSecondFactorSuccess (userExternalId) {
+  const path = `/v1/api/users/${userExternalId}/second-factor/provision`
+  return stubBuilder('POST', path, 200, {
+    response: userFixtures.validUserResponse()
+  })
+}
+
 function getServiceUsersSuccess (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}/users`
   const fixtureOpts = opts.users.map(buildUserWithServiceRoleOpts)
@@ -231,7 +238,8 @@ function buildUserWithServiceRoleOpts (opts) {
     service_roles: [serviceRole],
     username: opts.email,
     email: opts.email,
-    telephone_number: opts.telephoneNumber
+    telephone_number: opts.telephoneNumber,
+    second_factor: opts.secondFactor
   }
 }
 
@@ -248,6 +256,7 @@ module.exports = {
   postUserAuthenticateSuccess,
   postUserAuthenticateInvalidPassword,
   postSecondFactorSuccess,
+  postProvisionSecondFactorSuccess,
   putUpdateServiceRoleSuccess,
   getUserSuccessWithMultipleServices
 }

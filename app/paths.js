@@ -222,6 +222,7 @@ module.exports = {
       phoneNumber: '/my-profile/phone-number',
       twoFactorAuth: {
         index: '/my-profile/two-factor-auth',
+        phoneNumber: '/my-profile/two-factor-auth/phone-number',
         configure: '/my-profile/two-factor-auth/configure',
         resend: '/my-profile/two-factor-auth/resend'
       }

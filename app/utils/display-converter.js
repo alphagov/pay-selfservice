@@ -37,6 +37,7 @@ const hideServiceNavTemplates = [
   'request-to-go-live/organisation-name',
   'request-psp-test-account/index',
   'two-factor-auth/index',
+  'two-factor-auth/phone-number',
   'two-factor-auth/configure'
 ]
 
