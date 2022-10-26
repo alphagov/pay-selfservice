@@ -3,7 +3,9 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
-const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError } = require('../../../app/errors')
+const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError,
+  ExpiredInviteError
+} = require('../../../app/errors')
 const paths = require('../../../app/paths')
 const User = require('../../../app/models/User.class')
 const Service = require('../../../app/models/Service.class')
@@ -83,6 +85,19 @@ describe('Error handler middleware', () => {
     sinon.assert.calledWith(res.render, 'error')
   })
 
+  it('should render error page with status code 410 if error is ExpiredInviteError', () => {
+    const err = new ExpiredInviteError('Invite has expired')
+    const expectedMessage = {
+      message: 'This invitation is no longer valid'
+    }
+    errorHandler(err, req, res, null)
+    sinon.assert.notCalled(next)
+    sinon.assert.calledOnce(res.status)
+    sinon.assert.calledWith(res.status, 410)
+    sinon.assert.calledOnce(res.render)
+    sinon.assert.calledWithMatch(res.render, 'error', expectedMessage)
+  })
+
   it('should render error page with status code 500 if error is general handled error', () => {
     const err = new Error('something went wrong')
     errorHandler(err, req, res, null)
@@ -149,6 +164,15 @@ describe('Error handler middleware', () => {
       errorHandler(err, reqWithSessionData, res, null)
 
       const expectedMessage = 'NotFoundError handled: Transaction not found. Rendering 404 page'
+      sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
+      sinon.assert.notCalled(sentrySpy)
+    })
+
+    it('should log at info level for ExpiredInviteError', () => {
+      const err = new ExpiredInviteError('Invite has expired')
+      errorHandler(err, reqWithSessionData, res, null)
+
+      const expectedMessage = 'ExpiredInviteError handled: Invite has expired. Rendering error page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
       sinon.assert.notCalled(sentrySpy)
     })

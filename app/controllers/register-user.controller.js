@@ -11,7 +11,7 @@ const {
   validatePassword,
   validateOtp
 } = require('../utils/validation/server-side-form-validations')
-const { RegistrationSessionMissingError } = require('../errors')
+const { RegistrationSessionMissingError, ExpiredInviteError } = require('../errors')
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 
@@ -168,7 +168,7 @@ const submitOtpVerify = async function submitOtpVerify (req, res, next) {
       }
       return res.redirect(303, paths.registerUser.otpVerify)
     } else if (err.errorCode === 410) {
-      return renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+      return next(new ExpiredInviteError(`Invite with code ${sessionData.code} has expired`))
     } else {
       return next(err)
     }
@@ -180,7 +180,7 @@ const submitOtpVerify = async function submitOtpVerify (req, res, next) {
     return res.redirect(303, paths.registerUser.logUserIn)
   } catch (err) {
     if (err.errorCode === 410) {
-      renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+      return next(new ExpiredInviteError(`Invite with code ${sessionData.code} has expired`))
     } else {
       next(err)
     }
