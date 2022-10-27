@@ -9,7 +9,7 @@ const chaiAsPromised = require('chai-as-promised')
 const paths = require('../../app/paths')
 const getApp = require('../../server').getApp
 const session = require('../test-helpers/mock-session')
-const userFixtures = require('../fixtures/user.fixtures')
+const inviteFixtures = require('../fixtures/invite.fixtures')
 
 chai.use(chaiAsPromised)
 
@@ -214,10 +214,15 @@ describe('register user controller', () => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
       const newUserExtId = 'new-user-ext-id'
-      const validUserResponse = userFixtures.validUserResponse({ external_id: newUserExtId })
+      const mockAdminUsersInviteCompleteResponse =
+        inviteFixtures.validInviteCompleteResponse({
+          user_external_id: newUserExtId
+        })
 
-      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
-        .reply(201, validUserResponse)
+      adminusersMock.post(`/v2/api/invites/otp/validate`)
+        .reply(200)
+      adminusersMock.post(`/v1/api/invites/nfjkh438rf3901jqf/complete`)
+        .reply(201, mockAdminUsersInviteCompleteResponse)
 
       supertest(app)
         .post(paths.registerUser.otpVerify)

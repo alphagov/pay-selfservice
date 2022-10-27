@@ -13,6 +13,7 @@ const {
   RegistrationSessionMissingError,
   InvalidRegistationStateError,
   InvalidConfigurationError,
+  ExpiredInviteError,
   RESTClientError
 } = require('../errors')
 const paths = require('../paths')
@@ -66,6 +67,11 @@ module.exports = function errorHandler (err, req, res, next) {
   if (err instanceof InvalidConfigurationError) {
     logger.info(`InvalidConigurationError handled: ${err.message}. Rendering error page`)
     return renderErrorView(req, res, 'This account is not configured to perform this action. Please contact support the support team.', 400)
+  }
+
+  if (err instanceof ExpiredInviteError) {
+    logger.info(`ExpiredInviteError handled: ${err.message}. Rendering error page`)
+    return renderErrorView(req, res, 'This invitation is no longer valid', 410)
   }
 
   if (err && err.code === 'EBADCSRFTOKEN') {

@@ -79,6 +79,12 @@ class InvalidRegistationStateError extends DomainError {
 class InvalidConfigurationError extends DomainError {
 }
 
+/**
+ * Thrown when trying to visit a registration page for an invite which has expired
+ */
+class ExpiredInviteError extends DomainError {
+}
+
 module.exports = {
   RESTClientError,
   NotAuthenticatedError,
@@ -89,5 +95,6 @@ module.exports = {
   NotFoundError,
   RegistrationSessionMissingError,
   InvalidRegistationStateError,
-  InvalidConfigurationError
+  InvalidConfigurationError,
+  ExpiredInviteError
 }
