@@ -239,7 +239,8 @@ function buildUserWithServiceRoleOpts (opts) {
     username: opts.email,
     email: opts.email,
     telephone_number: opts.telephoneNumber,
-    second_factor: opts.secondFactor
+    second_factor: opts.secondFactor,
+    provisional_otp_key: opts.provisionalOtpKey
   }
 }
 
