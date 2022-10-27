@@ -78,18 +78,20 @@ describe('Select new second factor method post controller', () => {
   })
 
   describe('There is an error contacting adminusers', () => {
-    it('should redirect to index with flash message', async () => {
+    it('should call next with an error', async () => {
       req.user = new User(userFixtures.validUserResponse({
         external_id: userExternalId
       }))
       req.body['two-fa-method'] = 'APP'
 
-      const adminusersRejectsStub = () => Promise.reject(new Error('Error from adminusers'))
+      const error = new Error('Error from adminusers')
+      const adminusersRejectsStub = () => Promise.reject(error)
       const controllerWithAdminusersError = getController(adminusersRejectsStub, sendProvisionalOtpSpy)
 
       await controllerWithAdminusersError(req, res, next)
-      sinon.assert.calledWith(req.flash, 'genericError', 'Something went wrong. Please try again or contact support.')
-      sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.index)
+
+      sinon.assert.calledWith(next, error)
+      sinon.assert.notCalled(res.redirect)
     })
   })
 
