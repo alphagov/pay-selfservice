@@ -85,6 +85,7 @@ Run in two separate terminals:
 2. Either:
 - `npm run cypress:test` to run headless 
 - `npm run cypress:test-headed` to run headed
+- `npm run cypress:test-no-watch` to run headless with auto-running of tests when the test file is edited turned off
 
 See [About Cypress tests in selfservice](./test/cypress/cypress-testing.md) for more information about running and writing Cypress tests.
 

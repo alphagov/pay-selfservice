@@ -48,7 +48,7 @@
     <img class="qr-code pay-!-negative-margin-h-3" src="{{qrCodeDataUrl}}" alt="If you cannot view or scan the barcode, please enter the secret manually">
     <figcaption>
       <h4 class="govuk-body">Secret</h4>
-      <code class="code">{{prettyPrintedSecret}}</code>
+      <code class="code" data-cy="otp-secret">{{prettyPrintedSecret}}</code>
     </figcaption>
   </figure>
 {% else %}

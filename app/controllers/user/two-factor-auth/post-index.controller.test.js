@@ -1,5 +1,6 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
+const { expect } = require('chai')
 
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
 const User = require('../../../models/User.class')
@@ -18,6 +19,7 @@ describe('Select new second factor method post controller', () => {
     req = {
       correlationId,
       body: {},
+      session: {},
       flash: sinon.spy()
     }
     res = {
@@ -39,6 +41,10 @@ describe('Select new second factor method post controller', () => {
 
         await controllerWithAdminusersSuccessSpies(req, res, next)
 
+        expect(req.session).to.have.property('pageData')
+        expect(req.session.pageData).to.deep.equal({
+          twoFactorAuthMethod: 'SMS'
+        })
         sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId, correlationId)
         sinon.assert.calledWith(sendProvisionalOtpSpy, userExternalId, correlationId)
         sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
@@ -55,6 +61,10 @@ describe('Select new second factor method post controller', () => {
 
         await controllerWithAdminusersSuccessSpies(req, res, next)
 
+        expect(req.session).to.have.property('pageData')
+        expect(req.session.pageData).to.deep.equal({
+          twoFactorAuthMethod: 'SMS'
+        })
         sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.phoneNumber)
         sinon.assert.notCalled(provisionNewOtpKeySpy)
         sinon.assert.notCalled(sendProvisionalOtpSpy)
@@ -71,6 +81,10 @@ describe('Select new second factor method post controller', () => {
 
       await controllerWithAdminusersSuccessSpies(req, res, next)
 
+      expect(req.session).to.have.property('pageData')
+      expect(req.session.pageData).to.deep.equal({
+        twoFactorAuthMethod: 'APP'
+      })
       sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId, correlationId)
       sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
       sinon.assert.notCalled(sendProvisionalOtpSpy)
