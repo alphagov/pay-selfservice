@@ -11,7 +11,7 @@
 {% if isRequestToGoLive %}
   Enter your organisation’s contact details - Request a live account - {{ currentService.name }} - GOV.UK Pay
 {% elif isStripeSetupUserJourney %}
-  What is the name and address of you organisation on your government identity document? - {{ currentService.name }} - GOV.UK Pay 
+  What is the name and address of your organisation on your government entity document? - {{ currentService.name }} - GOV.UK Pay 
 {% else %}
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endif %}
@@ -47,7 +47,7 @@
     <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
     <p class="govuk-body govuk-!-margin-bottom-6">Your payment pages will automatically display this information. You can change the details later if needed.</p>
   {% elif isStripeSetupUserJourney %}
-    <h1 class="govuk-heading-l">What is the name and address of you organisation on your government identity document?</h1>
+    <h1 class="govuk-heading-l">What is the name and address of your organisation on your government entity document?</h1>
   {% else %}
     <h1 class="govuk-heading-l">Organisation details</h1>
     <p class="govuk-body" id="merchant-details-info">
