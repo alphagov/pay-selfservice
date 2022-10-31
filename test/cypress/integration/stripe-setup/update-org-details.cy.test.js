@@ -80,7 +80,7 @@ describe('The organisation address page', () => {
         cy.setEncryptedCookies(userExternalId)
         cy.visit(pageUrl)
 
-        cy.get('h1').should('contain', `What is the name and address of you organisation on your government identity document?`)
+        cy.get('h1').should('contain', `What is the name and address of your organisation on your government entity document?`)
 
         cy.get('[data-cy=form]')
           .should('exist')
@@ -199,7 +199,7 @@ describe('The organisation address page', () => {
         cy.setEncryptedCookies(userExternalId)
         cy.visit(pageUrl)
 
-        cy.get('h1').should('contain', `What is the name and address of you organisation on your government identity document?`)
+        cy.get('h1').should('contain', `What is the name and address of your organisation on your government entity document?`)
 
         cy.get('[data-cy=form]')
           .should('exist')
