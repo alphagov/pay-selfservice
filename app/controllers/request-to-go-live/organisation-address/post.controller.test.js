@@ -16,6 +16,8 @@ const stripeAcountId = 'acct_123example123'
 const setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
 const updateStripeAccountMock = sinon.spy(() => Promise.resolve())
 
+const stubGetStripeAccountId = sinon.stub().resolves(stripeAcountId)
+
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
     '../../../services/service.service': mockServiceService,
@@ -28,8 +30,8 @@ const getController = function getController (mockServiceService) {
       response: mockResponse
     },
     '../../../controllers/stripe-setup/stripe-setup.util': {
-      getStripeAccountId: () => {
-        return Promise.resolve(stripeAcountId)
+      getStripeAccountId: (...params) => {
+        return stubGetStripeAccountId(...params)
       }
     },
     '../../../utils/logger': function (filename) {
@@ -80,9 +82,10 @@ const validPostcode = 'E1 8QS'
 const validTeleponeNumber = '01134960000'
 const validUrl = 'https://www.example.com'
 
-describe('organisation address post controller', () => {
-  describe('check validation', () => {
+describe('organisation address - post controller', () => {
+  describe('form validation', () => {
     let res, next
+    let responseData
 
     const updatedService = new Service(serviceFixtures.validServiceResponse({
       external_id: serviceExternalId,
@@ -95,7 +98,7 @@ describe('organisation address post controller', () => {
       })
     })
 
-    beforeEach(() => {
+    function testSuiteSetup (path){
       res = {
         setHeader: sinon.stub(),
         status: sinon.spy(),
@@ -104,26 +107,27 @@ describe('organisation address post controller', () => {
       }
       next = sinon.spy()
       mockResponse.resetHistory()
-    })
+
+      const req = {
+        ...path,
+        correlationId
+      }
+
+      next = sinon.spy()
+
+      const controller = getController(mockUpdateService)
+
+      controller(req, res, next)
+
+      responseData = mockResponse.getCalls()[0]
+    }
 
     describe('request to go live', () => {
-      it('when the required fields have not been populated, it should show the page with errors and set the ' +
-      'flags `isRequestToGoLive`, `isStripeUpdateOrgDetails`, `isSwitchingCredentials` correctly', () => {
-        const req = {
-          route: {
-            path: '/request-to-go-live/organisation-address'
-          },
-          correlationId
-        }
+      before(() => {
+        testSuiteSetup({ route: {path: '/request-to-go-live/organisation-address'}})
+      })
 
-        next = sinon.spy()
-
-        const controller = getController(mockUpdateService)
-
-        controller(req, res, next)
-
-        const responseData = mockResponse.getCalls()[0]
-
+      it('should return errors when the required fields are missing', () => {
         expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
 
         const errors = responseData.args[3].errors
@@ -133,7 +137,9 @@ describe('organisation address post controller', () => {
         expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
         expect(errors[errorKeysAndMessage.errorTelephoneNumber.key]).to.equal(errorKeysAndMessage.errorTelephoneNumber.text)
         expect(errors[errorKeysAndMessage.errorWebsiteAddress.key]).to.equal(errorKeysAndMessage.errorWebsiteAddress.text)
+      })
 
+      it('should set the flag `isRequestToGoLive=true`', () => {
         expect(responseData.args[3].isRequestToGoLive).to.equal(true)
         expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(false)
         expect(responseData.args[3].isSwitchingCredentials).to.equal(false)
@@ -141,24 +147,12 @@ describe('organisation address post controller', () => {
       })
     })
 
-    describe('view page when not `request to go live` or `Stripe setup`', () => {
-      it('when the required fields have not been populated, it should show the page with errors and set the ' +
-      'flags `isRequestToGoLive`, `isStripeUpdateOrgDetails`, `isSwitchingCredentials` correctly', () => {
-        const req = {
-          route: {
-            path: '/organisation-details'
-          },
-          correlationId
-        }
+    describe('manage organisation details', () => {
+      before(() => {
+        testSuiteSetup( { route: { path: '/organisation-details'}})
+      })
 
-        next = sinon.spy()
-
-        const controller = getController(mockUpdateService)
-
-        controller(req, res, next)
-
-        const responseData = mockResponse.getCalls()[0]
-
+      it('should return errors when the required fields are missing', () => {
         expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
 
         const errors = responseData.args[3].errors
@@ -169,7 +163,9 @@ describe('organisation address post controller', () => {
         expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
         expect(errors[errorKeysAndMessage.errorTelephoneNumber.key]).to.equal(errorKeysAndMessage.errorTelephoneNumber.text)
         expect(errors[errorKeysAndMessage.errorWebsiteAddress.key]).to.equal(errorKeysAndMessage.errorWebsiteAddress.text)
+      })
 
+      it('should set all the flags to false', () => {
         expect(responseData.args[3].isRequestToGoLive).to.equal(false)
         expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(false)
         expect(responseData.args[3].isSwitchingCredentials).to.equal(false)
@@ -177,22 +173,12 @@ describe('organisation address post controller', () => {
       })
     })
 
-    describe('view page when `Stripe setup`', () => {
-      it('when the required fields have not been populated, it should show the page with errors ' +
-        'flags `isRequestToGoLive`, `isStripeUpdateOrgDetails`, `isSwitchingCredentials` correctly', () => {
-        const req = {
-          url: '/your-psp/:credentialId/update-organisation-details',
-          correlationId
-        }
+    describe('new Stripe gateway account`', () => {
+      before(() => {
+        testSuiteSetup({url: '/your-psp/:credentialId/update-organisation-details'})
+      })
 
-        next = sinon.spy()
-
-        const controller = getController(mockUpdateService)
-
-        controller(req, res, next)
-
-        const responseData = mockResponse.getCalls()[0]
-
+      it('should return errors when the required fields are missing', () => {
         expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
 
         const errors = responseData.args[3].errors
@@ -201,7 +187,9 @@ describe('organisation address post controller', () => {
         expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
         expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
         expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+      })
 
+      it('should set the flags `isStripeUpdateOrgDetails=true` & `isStripeSetupUserJourney=true', () => {
         expect(responseData.args[3].isRequestToGoLive).to.equal(false)
         expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(true)
         expect(responseData.args[3].isSwitchingCredentials).to.equal(false)
@@ -209,22 +197,12 @@ describe('organisation address post controller', () => {
       })
     })
 
-    describe('view page when `Switch PSP > Stripe`', () => {
-      it('when the required fields have not been populated, it should show the page with errors ' +
-        'flags `isRequestToGoLive` and `isStripeUpdateOrgDetails` correctly', () => {
-        const req = {
-          url: '/switch-psp/:credentialId/update-organisation-details',
-          correlationId
-        }
+    describe('`Switch PSP > Stripe`', () => {
+      before(() => {
+        testSuiteSetup({url: '/switch-psp/:credentialId/update-organisation-details'})
+      })
 
-        next = sinon.spy()
-
-        const controller = getController(mockUpdateService)
-
-        controller(req, res, next)
-
-        const responseData = mockResponse.getCalls()[0]
-
+      it('should return errors when the required fields are missing', () => {
         expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
 
         const errors = responseData.args[3].errors
@@ -233,7 +211,9 @@ describe('organisation address post controller', () => {
         expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
         expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
         expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+      })
 
+      it('should set the flags `isSwitchingCredentials=true` & `isStripeSetupUserJourney=true', () => {
         expect(responseData.args[3].isRequestToGoLive).to.equal(false)
         expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(false)
         expect(responseData.args[3].isSwitchingCredentials).to.equal(true)
@@ -242,8 +222,195 @@ describe('organisation address post controller', () => {
     })
   })
 
-  describe('request to go live', () => {
-    describe('successful submission', () => {
+  describe('Form submissions', () => {
+    describe('request to go live', () => {
+      describe('successful submission', () => {
+        const service = new Service(serviceFixtures.validServiceResponse({
+          external_id: serviceExternalId,
+          current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
+        }))
+
+        const req = {
+          route: {
+            path: '/request-to-go-live/organisation-address'
+          },
+          correlationId,
+          service: service,
+          body: {
+            'address-line1': validLine1,
+            'address-line2': validLine2,
+            'address-city': validCity,
+            'address-postcode': validPostcode,
+            'address-country': validCountry,
+            'telephone-number': validTeleponeNumber,
+            'url': validUrl
+          }
+        }
+
+        let res, next
+        beforeEach(() => {
+          res = {
+            setHeader: sinon.stub(),
+            status: sinon.spy(),
+            redirect: sinon.spy(),
+            render: sinon.spy()
+          }
+          next = sinon.spy()
+          mockResponse.renderErrorView = sinon.spy()
+        })
+
+        describe('service update success', () => {
+          const updatedService = new Service(serviceFixtures.validServiceResponse({
+            external_id: serviceExternalId,
+            current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
+          }))
+
+          const mockUpdateService = sinon.spy(() => {
+            return new Promise(resolve => {
+              resolve(updatedService)
+            })
+          })
+
+          const mockServiceService = { updateService: mockUpdateService }
+          const controller = getController(mockServiceService)
+
+          it('should update merchant details and go live stage', async function () {
+            const expectedUpdateServiceRequest = [
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_line1',
+                'value': validLine1
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_line2',
+                'value': validLine2
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_city',
+                'value': validCity
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_postcode',
+                'value': validPostcode
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_country',
+                'value': validCountry
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/telephone_number',
+                'value': validTeleponeNumber
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/url',
+                'value': validUrl
+              },
+              {
+                'op': 'replace',
+                'path': 'current_go_live_stage',
+                'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+              }
+            ]
+
+            await controller(req, res, next)
+
+            sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
+            sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+          })
+
+          it('should submit empty strings for optional fields left blank', async function () {
+            req.body = {
+              'address-line1': validLine1,
+              'address-line2': '',
+              'address-city': validCity,
+              'address-postcode': validPostcode,
+              'address-country': validCountry,
+              'telephone-number': validTeleponeNumber,
+              'url': validUrl
+            }
+
+            const expectedUpdateServiceRequest = [
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_line1',
+                'value': validLine1
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_line2',
+                'value': ''
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_city',
+                'value': validCity
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_postcode',
+                'value': validPostcode
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/address_country',
+                'value': validCountry
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/telephone_number',
+                'value': validTeleponeNumber
+              },
+              {
+                'op': 'replace',
+                'path': 'merchant_details/url',
+                'value': validUrl
+              },
+              {
+                'op': 'replace',
+                'path': 'current_go_live_stage',
+                'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+              }
+            ]
+
+            await controller(req, res, next)
+
+            sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
+            sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+          })
+        })
+
+        describe('error updating service', () => {
+          it('should call next with error', async function () {
+            const err = new Error('an error')
+            const mockUpdateService = () => Promise.reject(err)
+            const mockServiceService = { updateService: mockUpdateService }
+            const controller = getController(mockServiceService)
+
+            await controller(req, res, next)
+            sinon.assert.calledWith(next, err)
+          })
+        })
+      })
+    })
+
+    describe('Manage organisation details page', () => {
+      const correlationId = 'correlation-id'
+      const serviceExternalId = 'abc123'
+      const validName = 'HMRC'
+      const validLine1 = 'A building'
+      const validLine2 = 'A street'
+      const validCity = 'A city'
+      const validCountry = 'GB'
+      const validPostcode = 'E1 8QS'
+      const validTeleponeNumber = '01134960000'
+      const validUrl = 'https://www.example.com'
+
       const service = new Service(serviceFixtures.validServiceResponse({
         external_id: serviceExternalId,
         current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
@@ -251,11 +418,12 @@ describe('organisation address post controller', () => {
 
       const req = {
         route: {
-          path: '/request-to-go-live/organisation-address'
+          path: '/organisation-details/edit'
         },
         correlationId,
         service: service,
         body: {
+          'merchant-name': validName,
           'address-line1': validLine1,
           'address-line2': validLine2,
           'address-city': validCity,
@@ -291,9 +459,8 @@ describe('organisation address post controller', () => {
         })
 
         const mockServiceService = { updateService: mockUpdateService }
-        const controller = getController(mockServiceService)
 
-        it('should update merchant details and go live stage', async function () {
+        it('should update merchant details', async function () {
           const expectedUpdateServiceRequest = [
             {
               'op': 'replace',
@@ -332,140 +499,65 @@ describe('organisation address post controller', () => {
             },
             {
               'op': 'replace',
-              'path': 'current_go_live_stage',
-              'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+              'path': 'merchant_details/name',
+              'value': validName
             }
           ]
 
+          const controller = getController(mockServiceService)
           await controller(req, res, next)
 
           sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
-          sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+          sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/organisation-details`)
         })
+      })
+    })
 
-        it('should submit empty strings for optional fields left blank', async function () {
-          req.body = {
+    describe('Setup new Stripe account', () => {
+      const correlationId = 'correlation-id'
+      const serviceExternalId = 'abc123'
+      const validName = 'HMRC'
+      const validLine1 = 'A building'
+      const validLine2 = 'A street'
+      const validCity = 'A city'
+      const validCountry = 'GB'
+      const validPostcode = 'E1 8QS'
+
+      const service = new Service(serviceFixtures.validServiceResponse({
+        external_id: serviceExternalId,
+        current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
+      }))
+
+    let req, res, next
+
+      beforeEach(() => {
+        req = {
+          account: gatewayAccountFixture.validGatewayAccount({}),
+          url: '/your-psp/:credentialId/update-organisation-details',
+          correlationId,
+          service: service,
+          body: {
+            'merchant-name': validName,
             'address-line1': validLine1,
-            'address-line2': '',
+            'address-line2': validLine2,
             'address-city': validCity,
             'address-postcode': validPostcode,
-            'address-country': validCountry,
-            'telephone-number': validTeleponeNumber,
-            'url': validUrl
+            'address-country': validCountry
           }
+        }
 
-          const expectedUpdateServiceRequest = [
-            {
-              'op': 'replace',
-              'path': 'merchant_details/address_line1',
-              'value': validLine1
-            },
-            {
-              'op': 'replace',
-              'path': 'merchant_details/address_line2',
-              'value': ''
-            },
-            {
-              'op': 'replace',
-              'path': 'merchant_details/address_city',
-              'value': validCity
-            },
-            {
-              'op': 'replace',
-              'path': 'merchant_details/address_postcode',
-              'value': validPostcode
-            },
-            {
-              'op': 'replace',
-              'path': 'merchant_details/address_country',
-              'value': validCountry
-            },
-            {
-              'op': 'replace',
-              'path': 'merchant_details/telephone_number',
-              'value': validTeleponeNumber
-            },
-            {
-              'op': 'replace',
-              'path': 'merchant_details/url',
-              'value': validUrl
-            },
-            {
-              'op': 'replace',
-              'path': 'current_go_live_stage',
-              'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
-            }
-          ]
-
-          await controller(req, res, next)
-
-          sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
-          sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
-        })
+        res = {
+          setHeader: sinon.stub(),
+          status: sinon.spy(),
+          redirect: sinon.spy(),
+          render: sinon.spy()
+        }
+        next = sinon.spy()
+        mockResponse.renderErrorView = sinon.spy()
+        stubGetStripeAccountId.resetHistory()
       })
 
-      describe('error updating service', () => {
-        it('should call next with error', async function () {
-          const err = new Error('an error')
-          const mockUpdateService = () => Promise.reject(err)
-          const mockServiceService = { updateService: mockUpdateService }
-          const controller = getController(mockServiceService)
-
-          await controller(req, res, next)
-          sinon.assert.calledWith(next, err)
-        })
-      })
-    })
-  })
-
-  describe('organisation details page not part of `request to go live` or `Stripe setup`', () => {
-    const correlationId = 'correlation-id'
-    const serviceExternalId = 'abc123'
-    const validName = 'HMRC'
-    const validLine1 = 'A building'
-    const validLine2 = 'A street'
-    const validCity = 'A city'
-    const validCountry = 'GB'
-    const validPostcode = 'E1 8QS'
-    const validTeleponeNumber = '01134960000'
-    const validUrl = 'https://www.example.com'
-
-    const service = new Service(serviceFixtures.validServiceResponse({
-      external_id: serviceExternalId,
-      current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
-    }))
-
-    const req = {
-      route: {
-        path: '/organisation-details/edit'
-      },
-      correlationId,
-      service: service,
-      body: {
-        'merchant-name': validName,
-        'address-line1': validLine1,
-        'address-line2': validLine2,
-        'address-city': validCity,
-        'address-postcode': validPostcode,
-        'address-country': validCountry,
-        'telephone-number': validTeleponeNumber,
-        'url': validUrl
-      }
-    }
-
-    let res, next
-    beforeEach(() => {
-      res = {
-        setHeader: sinon.stub(),
-        status: sinon.spy(),
-        redirect: sinon.spy(),
-        render: sinon.spy()
-      }
-      next = sinon.spy()
-      mockResponse.renderErrorView = sinon.spy()
-    })
-
-    describe('service update success', () => {
+      describe('service update success', () => {
       const updatedService = new Service(serviceFixtures.validServiceResponse({
         external_id: serviceExternalId,
         current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
@@ -478,237 +570,133 @@ describe('organisation address post controller', () => {
       })
 
       const mockServiceService = { updateService: mockUpdateService }
+      const controller = getController(mockServiceService)
 
-      it('should update merchant details', async function () {
-        const expectedUpdateServiceRequest = [
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_line1',
-            'value': validLine1
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_line2',
-            'value': validLine2
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_city',
-            'value': validCity
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_postcode',
-            'value': validPostcode
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/address_country',
-            'value': validCountry
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/telephone_number',
-            'value': validTeleponeNumber
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/url',
-            'value': validUrl
-          },
-          {
-            'op': 'replace',
-            'path': 'merchant_details/name',
-            'value': validName
+        it('should update Stripe and redirect to `Stripe > add psp details`', async function () {
+          await controller(req, res, next)
+
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+            name: validName,
+            address_line1: validLine1,
+            address_line2: validLine2,
+            address_city: validCity,
+            address_postcode: validPostcode,
+            address_country: validCountry
+          })
+
+        const isSwitchingCredentials = false
+          sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials, req.correlationId)
+          sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
+          sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
+          sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
+        })
+
+        it('when `address-line2` is empty, it should not call the Stripe client with address line 2', async function () {
+          req.body['address-line2'] = ''
+
+          await controller(req, res, next)
+
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+            name: validName,
+            address_line1: validLine1,
+            address_city: validCity,
+            address_postcode: validPostcode,
+            address_country: validCountry
+          })
+        })
+      })
+    })
+
+    describe('Switch PSP > Stripe', () => {
+      const correlationId = 'correlation-id'
+      const serviceExternalId = 'abc123'
+      const validName = 'HMRC'
+      const validLine1 = 'A building'
+      const validLine2 = 'A street'
+      const validCity = 'A city'
+      const validCountry = 'GB'
+      const validPostcode = 'E1 8QS'
+
+      const service = new Service(serviceFixtures.validServiceResponse({
+        external_id: serviceExternalId,
+        current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
+      }))
+
+      let req, res, next
+
+      beforeEach(() => {
+        req = {
+          account: gatewayAccountFixture.validGatewayAccount({}),
+          url: '/switch-psp/:credentialId/update-organisation-details',
+          correlationId,
+          service: service,
+          body: {
+            'merchant-name': validName,
+            'address-line1': validLine1,
+            'address-line2': validLine2,
+            'address-city': validCity,
+            'address-postcode': validPostcode,
+            'address-country': validCountry
           }
-        ]
+        }
 
+        res = {
+          setHeader: sinon.stub(),
+          status: sinon.spy(),
+          redirect: sinon.spy(),
+          render: sinon.spy()
+        }
+        next = sinon.spy()
+        mockResponse.renderErrorView = sinon.spy()
+        stubGetStripeAccountId.resetHistory()
+      })
+
+      describe('service update success', () => {
+        const updatedService = new Service(serviceFixtures.validServiceResponse({
+          external_id: serviceExternalId,
+          current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
+        }))
+
+        const mockUpdateService = sinon.spy(() => {
+          return new Promise(resolve => {
+            resolve(updatedService)
+          })
+        })
+
+        const mockServiceService = { updateService: mockUpdateService }
         const controller = getController(mockServiceService)
-        await controller(req, res, next)
 
-        sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
-        sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/organisation-details`)
-      })
-    })
-  })
+        it('should update Stripe and redirect to `Switch PSP > Stripe index page`', async function () {
+            await controller(req, res, next)
 
-  describe('Stripe account setup', () => {
-    const correlationId = 'correlation-id'
-    const serviceExternalId = 'abc123'
-    const validName = 'HMRC'
-    const validLine1 = 'A building'
-    const validLine2 = 'A street'
-    const validCity = 'A city'
-    const validCountry = 'GB'
-    const validPostcode = 'E1 8QS'
+            sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+              name: validName,
+              address_line1: validLine1,
+              address_line2: validLine2,
+              address_city: validCity,
+              address_postcode: validPostcode,
+              address_country: validCountry
+            })
 
-    const service = new Service(serviceFixtures.validServiceResponse({
-      external_id: serviceExternalId,
-      current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
-    }))
-
-    let req, res, next
-
-    beforeEach(() => {
-      req = {
-        account: gatewayAccountFixture.validGatewayAccount({}),
-        url: '/your-psp/:credentialId/update-organisation-details',
-        correlationId,
-        service: service,
-        body: {
-          'merchant-name': validName,
-          'address-line1': validLine1,
-          'address-line2': validLine2,
-          'address-city': validCity,
-          'address-postcode': validPostcode,
-          'address-country': validCountry
-        }
-      }
-
-      res = {
-        setHeader: sinon.stub(),
-        status: sinon.spy(),
-        redirect: sinon.spy(),
-        render: sinon.spy()
-      }
-      next = sinon.spy()
-      mockResponse.renderErrorView = sinon.spy()
-    })
-
-    describe('service update success', () => {
-      const updatedService = new Service(serviceFixtures.validServiceResponse({
-        external_id: serviceExternalId,
-        current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
-      }))
-
-      const mockUpdateService = sinon.spy(() => {
-        return new Promise(resolve => {
-          resolve(updatedService)
-        })
-      })
-
-      const mockServiceService = { updateService: mockUpdateService }
-      const controller = getController(mockServiceService)
-
-      it('should update connector flag, update Stripe, log message then redirect to `Stripe > Add PSP account details` redirect', async function () {
-        await controller(req, res, next)
-
-        sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
-          name: validName,
-          address_line1: validLine1,
-          address_line2: validLine2,
-          address_city: validCity,
-          address_postcode: validPostcode,
-          address_country: validCountry
+            const isSwitchingCredentials = true
+            sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials, req.correlationId)
+            sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
+            sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
+            sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
         })
 
-        sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
-        sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
-        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
-      })
+        it('when `address-line2` is empty, it should not call the Stripe client with address line 2', async function () {
+          req.body['address-line2'] = ''
 
-      it('when `address-line2` is empty, it should not call the Stripe client with address line 2', async function () {
-        req.body['address-line2'] = ''
+          await controller(req, res, next)
 
-        await controller(req, res, next)
-
-        sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
-          name: validName,
-          address_line1: validLine1,
-          address_city: validCity,
-          address_postcode: validPostcode,
-          address_country: validCountry
-        })
-      })
-    })
-  })
-
-  describe('Switch PSP > Stripe', () => {
-    const correlationId = 'correlation-id'
-    const serviceExternalId = 'abc123'
-    const validName = 'HMRC'
-    const validLine1 = 'A building'
-    const validLine2 = 'A street'
-    const validCity = 'A city'
-    const validCountry = 'GB'
-    const validPostcode = 'E1 8QS'
-
-    const service = new Service(serviceFixtures.validServiceResponse({
-      external_id: serviceExternalId,
-      current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
-    }))
-
-    let req, res, next
-
-    beforeEach(() => {
-      req = {
-        account: gatewayAccountFixture.validGatewayAccount({}),
-        url: '/switch-psp/:credentialId/update-organisation-details',
-        correlationId,
-        service: service,
-        body: {
-          'merchant-name': validName,
-          'address-line1': validLine1,
-          'address-line2': validLine2,
-          'address-city': validCity,
-          'address-postcode': validPostcode,
-          'address-country': validCountry
-        }
-      }
-
-      res = {
-        setHeader: sinon.stub(),
-        status: sinon.spy(),
-        redirect: sinon.spy(),
-        render: sinon.spy()
-      }
-      next = sinon.spy()
-      mockResponse.renderErrorView = sinon.spy()
-    })
-
-    describe('service update success', () => {
-      const updatedService = new Service(serviceFixtures.validServiceResponse({
-        external_id: serviceExternalId,
-        current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
-      }))
-
-      const mockUpdateService = sinon.spy(() => {
-        return new Promise(resolve => {
-          resolve(updatedService)
-        })
-      })
-
-      const mockServiceService = { updateService: mockUpdateService }
-      const controller = getController(mockServiceService)
-
-      it('should update connector flag, update Stripe, log message then redirect to `Stripe > Add PSP account details` redirect', async function () {
-        await controller(req, res, next)
-
-        sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
-          name: validName,
-          address_line1: validLine1,
-          address_line2: validLine2,
-          address_city: validCity,
-          address_postcode: validPostcode,
-          address_country: validCountry
-        })
-
-        sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
-        sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
-        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
-      })
-
-      it('when `address-line2` is empty, it should not call the Stripe client with address line 2', async function () {
-        req.body['address-line2'] = ''
-
-        await controller(req, res, next)
-
-        sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
-          name: validName,
-          address_line1: validLine1,
-          address_city: validCity,
-          address_postcode: validPostcode,
-          address_country: validCountry
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+            name: validName,
+            address_line1: validLine1,
+            address_city: validCity,
+            address_postcode: validPostcode,
+            address_country: validCountry
+          })
         })
       })
     })
