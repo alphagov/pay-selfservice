@@ -91,14 +91,7 @@
   </form>
 
   {% if method === secondFactorMethod.SMS %}
-  <form method="post" action="{{routes.user.profile.twoFactorAuth.resend}}">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="govuk-form-group">
-      <button class="pay-button--as-link govuk-!-font-size-19" type="submit">
-        Not received a text message?
-      </button>
-    </div>
-  </form>
+    <p class="govuk-body"><a class="govuk-link govuk-link govuk-link--no-visited-state" href="{{routes.user.profile.twoFactorAuth.resend}}" data-cy="resend-code-link">Try sending the code again</a></p>
   {% endif %}
 
   <p class="govuk-body">

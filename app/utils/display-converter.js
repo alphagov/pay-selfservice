@@ -38,7 +38,8 @@ const hideServiceNavTemplates = [
   'request-psp-test-account/index',
   'two-factor-auth/index',
   'two-factor-auth/phone-number',
-  'two-factor-auth/configure'
+  'two-factor-auth/configure',
+  'two-factor-auth/resend-sms-code'
 ]
 
 /**
