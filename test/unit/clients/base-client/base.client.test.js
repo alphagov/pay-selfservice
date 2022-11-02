@@ -21,19 +21,12 @@ const requestLogger = {
 }
 let requestOptions
 
-const wrapper = proxyquire('../../../../app/services/clients/base-client/wrapper', {
-  '../../../utils/request-logger': requestLogger,
-  'correlation-id': {
-    getId: () => { return correlationId }
-  }
-})
-
 function RequestSuccessStub (response, responseBody) {
   const self = this
   EventEmitter.call(self)
   return function (options, callback) {
     setTimeout(() => {
-      // Emit a response event which is handled in the wrapper to log the response
+      // Emit a response event which is handled in the client to log the response
       self.emit('response', response)
 
       // Record the request options so we can do assertions on them in tests
@@ -51,7 +44,7 @@ function RequestErrorStub () {
   events.EventEmitter.call(self)
   return function (options, callback) {
     setTimeout(() => {
-      // Emit an error event which is handled in the wrapper to log the request error
+      // Emit an error event which is handled in the client to log the request error
       self.emit('error', new Error('something simply dreadful happened'))
       callback(new Error('something simply dreadful happened'))
     }, 100)
@@ -63,7 +56,28 @@ function RequestErrorStub () {
 util.inherits(RequestSuccessStub, EventEmitter)
 util.inherits(RequestErrorStub, EventEmitter)
 
-describe('Client wrapper', () => {
+function getBaseClientWithSuccessStub(response, responseBody) {
+  return proxyquire('../../../../app/services/clients/base-client/base.client', {
+    '../../../utils/request-logger': requestLogger,
+    'correlation-id': {
+      getId: () => { return correlationId }
+    },
+    'request': new RequestSuccessStub(response, responseBody)
+  })
+}
+
+function getBaseClientWithErrorStub() {
+  return proxyquire('../../../../app/services/clients/base-client/base.client', {
+    '../../../utils/request-logger': requestLogger,
+    'correlation-id': {
+      getId: () => { return correlationId }
+    },
+    'request': new RequestErrorStub()
+  })
+}
+
+
+describe('Base client', () => {
   beforeEach(() => {
     requestLogger.logRequestStart.resetHistory()
     requestLogger.logRequestEnd.resetHistory()
@@ -75,10 +89,10 @@ describe('Client wrapper', () => {
   describe('Request returns a success response', () => {
     const response = { statusCode: 200 }
     const responseBody = { result: 'success' }
-    const requestStub = new RequestSuccessStub(response, responseBody)
+    const baseClient = getBaseClientWithSuccessStub(response, responseBody)
 
     it('should resolve with the response body', () => {
-      return expect(wrapper(requestStub, 'get')({ url: 'http://example.com/' })).to.be.fulfilled.then(resolved => {
+      return expect(baseClient.get({ url: 'http://example.com/' })).to.be.fulfilled.then(resolved => {
         expect(resolved).to.have.property('result', 'success')
 
         expect(requestOptions).to.have.property('headers')
@@ -86,6 +100,8 @@ describe('Client wrapper', () => {
           'x-request-id': correlationId,
           'Content-Type': 'application/json'
         })
+        expect(requestOptions).to.have.property('method')
+        expect(requestOptions.method).to.equal('GET')
 
         expect(requestLogger.logRequestStart.called).to.equal(true)
         expect(requestLogger.logRequestEnd.called).to.equal(true)
@@ -99,10 +115,10 @@ describe('Client wrapper', () => {
     describe('The request returns a non-success response with text content type', () => {
       const response = { statusCode: 404 }
       const responseBody = 'not found'
-      const requestStub = new RequestSuccessStub(response, responseBody)
+      const baseClient = getBaseClientWithSuccessStub(response, responseBody)
 
       it('should reject with an error', () => {
-        return expect(wrapper(requestStub, 'get')({ url: 'http://example.com/' }))
+        return expect(baseClient.get({ url: 'http://example.com/' }))
           .to.be.rejected.then(error => {
             expect(error.constructor).to.equal(RESTClientError)
             expect(error.message).to.equal('not found')
@@ -125,10 +141,10 @@ describe('Client wrapper', () => {
         error_identifier: 'GENERIC',
         reason: 'a reason'
       }
-      const requestStub = new RequestSuccessStub(response, responseBody)
+      const baseClient = getBaseClientWithSuccessStub(response, responseBody)
 
       it('should reject with an error', () => {
-        return expect(wrapper(requestStub, 'get')({ url: 'http://example.com/' }))
+        return expect(baseClient.get({ url: 'http://example.com/' }))
           .to.be.rejected.then(error => {
             expect(error.constructor).to.equal(RESTClientError)
             expect(error.message).to.equal('First error, Second error')
@@ -152,10 +168,10 @@ describe('Client wrapper', () => {
         error_identifier: 'GENERIC',
         reason: 'a reason'
       }
-      const requestStub = new RequestSuccessStub(response, responseBody)
+      const baseClient = getBaseClientWithSuccessStub(response, responseBody)
 
       it('should reject with an error', () => {
-        return expect(wrapper(requestStub, 'get')({ url: 'http://example.com/' }))
+        return expect(baseClient.get({ url: 'http://example.com/' }))
           .to.be.rejected.then(error => {
             expect(error.constructor).to.equal(RESTClientError)
             expect(error.message).to.equal('First error, Second error')
@@ -178,10 +194,10 @@ describe('Client wrapper', () => {
         error_identifier: 'GENERIC',
         reason: 'a reason'
       }
-      const requestStub = new RequestSuccessStub(response, responseBody)
+      const baseClient = getBaseClientWithSuccessStub(response, responseBody)
 
       it('should reject with an error', () => {
-        return expect(wrapper(requestStub, 'get')({ url: 'http://example.com/' }))
+        return expect(baseClient.get({ url: 'http://example.com/' }))
           .to.be.rejected.then(error => {
             expect(error.constructor).to.equal(RESTClientError)
             expect(error.message).to.equal('The only error')
@@ -199,10 +215,10 @@ describe('Client wrapper', () => {
 
     describe('The request returns a non-success response with no body', () => {
       const response = { statusCode: 404 }
-      const requestStub = new RequestSuccessStub(response, null)
+      const baseClient = getBaseClientWithSuccessStub(response, null)
 
       it('should reject with an error', () => {
-        return expect(wrapper(requestStub, 'get')({ url: 'http://example.com/' }))
+        return expect(baseClient.get({ url: 'http://example.com/' }))
           .to.be.rejected.then(error => {
             expect(error.constructor).to.equal(RESTClientError)
             expect(error.message).to.equal('Unknown error')
@@ -220,10 +236,10 @@ describe('Client wrapper', () => {
   })
 
   describe('There is an expected error making a request', () => {
-    const requestStub = new RequestErrorStub()
+    const baseClient = getBaseClientWithErrorStub()
 
     it('should reject with a generic error', () => {
-      return expect(wrapper(requestStub, 'get')({ url: 'http://example.com/' }))
+      return expect(baseClient.get({ url: 'http://example.com/' }))
         .to.be.rejected.then(error => {
           expect(error.constructor).to.equal(Error)
           expect(error.message).to.equal('something simply dreadful happened')
