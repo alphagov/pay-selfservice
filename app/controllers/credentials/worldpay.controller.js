@@ -34,6 +34,16 @@ async function updateWorldpayCredentials (req, res, next) {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
     const results = credentialsForm.validate(req.body)
 
+    if (!results.errorSummaryList.length) {
+      const merchantId = req.body.merchantId
+      if (req.account.allow_moto && !merchantId.endsWith('MOTO')) {
+        results.errors.merchantId = 'Enter a MOTO merchant code. MOTO payments are enabled for the account'
+      } else if (!req.account.allow_moto && merchantId.endsWith('MOTO')) {
+        results.errors.merchantId = 'MOTO merchant code not allowed. Please contact support if you would like MOTO payments enabled'
+      }
+      results.errorSummaryList = formatErrorsForSummaryList(results.errors)
+    }
+
     if (results.errorSummaryList.length) {
       return response(req, res, 'credentials/worldpay', { form: results, isSwitchingCredentials, credential })
     }

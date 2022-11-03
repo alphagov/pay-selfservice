@@ -20,6 +20,7 @@ module.exports = async (req, res, next) => {
       req.account.worldpay_3ds_flex.organisational_unit_id.length > 0
 
     const is3dsEnabled = req.account.requires3ds === true
+    const isMotoEnabled = req.account.allow_moto === true
 
     let stripeData = {}
     if (activeCredential && activeCredential.payment_provider === 'stripe') {
@@ -40,6 +41,7 @@ module.exports = async (req, res, next) => {
       switchedProvider,
       isAccountCredentialsConfigured,
       is3dsEnabled,
+      isMotoEnabled,
       isWorldpay3dsFlexEnabled,
       isWorldpay3dsFlexCredentialsConfigured,
       ...stripeData,
