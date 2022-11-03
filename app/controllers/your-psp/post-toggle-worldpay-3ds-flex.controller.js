@@ -17,7 +17,7 @@ module.exports = async function toggleWorldpay3dsFlex (req, res, next) {
     const integrationVersion3ds = enabling3dsFlex ? 2 : 1
     try {
       const credential = getCredentialByExternalId(req.account, req.params.credentialId)
-      await connector.updateIntegrationVersion3ds(accountId, integrationVersion3ds, req.correlationId)
+      await connector.updateIntegrationVersion3ds(accountId, integrationVersion3ds)
       req.flash('generic', message)
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id))
     } catch (err) {

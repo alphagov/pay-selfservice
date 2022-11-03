@@ -56,7 +56,7 @@ module.exports = async function getServiceList (req, res) {
   const aggregatedGatewayAccountIds = servicesRoles
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
 
-  const aggregatedGatewayAccounts = await serviceService.getGatewayAccounts(aggregatedGatewayAccountIds, req.correlationId)
+  const aggregatedGatewayAccounts = await serviceService.getGatewayAccounts(aggregatedGatewayAccountIds)
   const servicesData = servicesRoles
     .map(serviceRole => {
       const gatewayAccounts = aggregatedGatewayAccounts.filter(gatewayAccount =>

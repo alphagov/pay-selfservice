@@ -11,29 +11,28 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
 const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
 
-async function getGatewayAccounts (gatewayAccountIds, correlationId) {
+async function getGatewayAccounts (gatewayAccountIds) {
   const cardGatewayAccounts = await connectorClient.getAccounts({
-    gatewayAccountIds: gatewayAccountIds,
-    correlationId: correlationId
+    gatewayAccountIds: gatewayAccountIds
   })
 
   return cardGatewayAccounts.accounts
     .map(gatewayAccount => new CardGatewayAccount(gatewayAccount).toMinimalJson())
 }
 
-async function updateServiceName (serviceExternalId, serviceName, serviceNameCy, correlationId) {
+async function updateServiceName (serviceExternalId, serviceName, serviceNameCy) {
   if (!serviceExternalId) {
     return Promise.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
   }
 
-  const result = await adminUsersClient.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
+  const result = await adminUsersClient.updateServiceName(serviceExternalId, serviceName, serviceNameCy)
 
   const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
 
   await Promise.all(
     gatewayAccountIds.map(async gatewayAccountId => {
       if (gatewayAccountId) {
-        const value = await connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)
+        const value = await connectorClient.patchServiceName(gatewayAccountId, serviceName)
         return value
       }
     })
@@ -42,18 +41,18 @@ async function updateServiceName (serviceExternalId, serviceName, serviceNameCy,
   return new Service(result)
 }
 
-function updateService (serviceExternalId, serviceUpdateRequest, correlationId) {
-  return adminUsersClient.updateService(serviceExternalId, serviceUpdateRequest, correlationId)
+function updateService (serviceExternalId, serviceUpdateRequest) {
+  return adminUsersClient.updateService(serviceExternalId, serviceUpdateRequest)
 }
 
-async function createService (serviceName, serviceNameCy, user, correlationId) {
+async function createService (serviceName, serviceNameCy) {
   if (!serviceName) serviceName = DEFAULT_SERVICE_NAME
   if (!serviceNameCy) serviceNameCy = ''
 
-  const service = await adminUsersClient.createService(serviceName, serviceNameCy, correlationId)
+  const service = await adminUsersClient.createService(serviceName, serviceNameCy)
   logger.info('New service added by existing user')
 
-  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId, correlationId)
+  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId)
   logger.info('New test card gateway account registered with service')
 
   // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
@@ -64,20 +63,20 @@ async function createService (serviceName, serviceNameCy, user, correlationId) {
   return service
 }
 
-function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, correlationId) {
-  return adminUsersClient.updateCollectBillingAddress(serviceExternalId, collectBillingAddress, correlationId)
+function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress) {
+  return adminUsersClient.updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
 }
 
-function updateCurrentGoLiveStage (serviceExternalId, newStage, correlationId) {
-  return adminUsersClient.updateCurrentGoLiveStage(serviceExternalId, newStage, correlationId)
+function updateCurrentGoLiveStage (serviceExternalId, newStage) {
+  return adminUsersClient.updateCurrentGoLiveStage(serviceExternalId, newStage)
 }
 
-function addStripeAgreementIpAddress (serviceExternalId, ipAddress, correlationId) {
-  return adminUsersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress, correlationId)
+function addStripeAgreementIpAddress (serviceExternalId, ipAddress) {
+  return adminUsersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress)
 }
 
-function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId, correlationId) {
-  return adminUsersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId, correlationId)
+function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId) {
+  return adminUsersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
 }
 
 module.exports = {

@@ -11,11 +11,10 @@ const { addLoggingField } = require('../utils/log-context')
 const { getSwitchingCredentialIfExists } = require('../utils/credentials')
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
-async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlationId) {
+async function getGatewayAccountByExternalId (gatewayAccountExternalId) {
   try {
     const params = {
-      gatewayAccountExternalId: gatewayAccountExternalId,
-      correlationId: correlationId
+      gatewayAccountExternalId: gatewayAccountExternalId
     }
     let account = await connectorClient.getAccountByExternalId(params)
 
@@ -27,7 +26,7 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlat
     const switchingCredential = getSwitchingCredentialIfExists(account)
     const isSwitchingToStripe = switchingCredential && switchingCredential.payment_provider === 'stripe'
     if (account.payment_provider === 'stripe' || isSwitchingToStripe) {
-      const stripeAccountSetup = await connectorClient.getStripeAccountSetup(account.gateway_account_id, correlationId)
+      const stripeAccountSetup = await connectorClient.getStripeAccountSetup(account.gateway_account_id)
       if (stripeAccountSetup) {
         account.connectorGatewayAccountStripeProgress = stripeAccountSetup
       }
@@ -48,7 +47,7 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId, correlat
   }
 }
 
-function getService (user, serviceExternalId, gatewayAccount, correlationId) {
+function getService (user, serviceExternalId, gatewayAccount) {
   let service
   const serviceRoles = _.get(user, 'serviceRoles', [])
 
@@ -73,7 +72,6 @@ function getService (user, serviceExternalId, gatewayAccount, correlationId) {
 module.exports = async function getServiceAndGatewayAccount (req, res, next) {
   try {
     if (req.user) {
-      const correlationId = req.correlationId
       const serviceExternalId = req.params[SERVICE_EXTERNAL_ID]
       const gatewayAccountExternalId = req.params[GATEWAY_ACCOUNT_EXTERNAL_ID]
       const environment = req.params[ENVIRONMENT_ID]
@@ -84,7 +82,7 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
 
       let gatewayAccount
       if (gatewayAccountExternalId) {
-        gatewayAccount = await getGatewayAccountByExternalId(gatewayAccountExternalId, correlationId)
+        gatewayAccount = await getGatewayAccountByExternalId(gatewayAccountExternalId)
         if (gatewayAccount) {
           req.account = gatewayAccount
           addLoggingField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
@@ -100,7 +98,7 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
 
       // uses req.user object which is set by passport (auth.service.js) and has all user services information to find service by serviceExternalId or gatewayAccountId.
       // A separate API call to adminusers to find service makes it independent of user object but most of tests setup currently relies on req.user
-      const service = getService(req.user, serviceExternalId, gatewayAccount, correlationId)
+      const service = getService(req.user, serviceExternalId, gatewayAccount)
       if (service) {
         req.service = service
         addLoggingField(keys.SERVICE_EXTERNAL_ID, service.externalId)

@@ -150,11 +150,10 @@ describe('auth service', function () {
       const doneSpy = sinon.spy(() => {
       })
       const userServiceMock = {
-        authenticate: (username, password, correlationId) => {
+        authenticate: (username, password) => {
           return new Promise(function (resolve, reject) {
             expect(username).to.be.equal(user.username)
             expect(password).to.be.equal('correctPassword')
-            expect(correlationId).to.be.equal('corrId')
             resolve(user)
           })
         }
@@ -180,11 +179,10 @@ describe('auth service', function () {
       const doneSpy = sinon.spy(() => {
       })
       const userServiceMock = {
-        authenticate: (username, password, correlationId) => {
+        authenticate: (username, password) => {
           return new Promise(function (resolve, reject) {
             expect(username).to.be.equal('user@example.com')
             expect(password).to.be.equal('imagineThisIsInvalid')
-            expect(correlationId).to.be.equal('corrId')
             reject(new Error())
           })
         }

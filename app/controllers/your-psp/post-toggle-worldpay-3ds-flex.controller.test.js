@@ -45,7 +45,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
     req.body['toggle-worldpay-3ds-flex'] = 'on'
     await controller(req, res, next)
 
-    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2, req.correlationId)
+    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2)
     sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned on.')
     sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp/${credentialId}`)
   })
@@ -57,7 +57,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
     req.body['toggle-worldpay-3ds-flex'] = 'off'
     await controller(req, res, next)
 
-    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 1, req.correlationId)
+    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 1)
     sinon.assert.calledWith(req.flash, 'generic', '3DS Flex has been turned off. Your payments will now use 3DS only.')
     sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/your-psp/${credentialId}`)
   })
@@ -71,7 +71,7 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
     req.body['toggle-worldpay-3ds-flex'] = 'on'
     await controller(req, res, next)
 
-    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2, req.correlationId)
+    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2)
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)
 

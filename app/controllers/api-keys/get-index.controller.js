@@ -7,7 +7,6 @@ module.exports = async function listActiveApiKeys (req, res, next) {
   const accountId = req.account.gateway_account_id
   try {
     const publicAuthData = await publicAuthClient.getActiveTokensForAccount({
-      correlationId: req.correlationId,
       accountId: accountId
     })
 

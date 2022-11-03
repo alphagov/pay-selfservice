@@ -60,7 +60,7 @@ describe('connector client - get multiple gateway accounts', function () {
     afterEach(() => provider.verify())
 
     it('should get multiple gateway accounts successfully', function (done) {
-      connectorClient.getAccounts({ gatewayAccountIds: [111, 222], correlationId: null })
+      connectorClient.getAccounts({ gatewayAccountIds: [111, 222] })
         .should.be.fulfilled.then((response) => {
           expect(response).to.deep.equal(validGetGatewayAccountsResponse)
         }).should.notify(done)

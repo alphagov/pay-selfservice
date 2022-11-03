@@ -47,7 +47,6 @@ function showRegistration (req, res) {
 }
 
 async function submitRegistration (req, res, next) {
-  const correlationId = req.correlationId
   const email = req.body['email']
   const telephoneNumber = req.body['telephone-number']
   const password = req.body['password']
@@ -76,7 +75,7 @@ async function submitRegistration (req, res, next) {
   }
 
   try {
-    await registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
+    await registrationService.submitRegistration(email, telephoneNumber, password)
   } catch (err) {
     if (err.errorCode === 403) {
       // 403 from adminusers indicates that this is not a public sector email
@@ -119,8 +118,6 @@ function showConfirmation (req, res) {
 }
 
 async function showOtpVerify (req, res, next) {
-  const correlationId = req.correlationId
-
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
@@ -130,7 +127,7 @@ async function showOtpVerify (req, res, next) {
   delete sessionData.recovered
 
   try {
-    const invite = await validateInviteService.getValidatedInvite(sessionData.code, correlationId)
+    const invite = await validateInviteService.getValidatedInvite(sessionData.code)
 
     if (!invite.password_set) {
       return next(new InvalidRegistationStateError())
@@ -158,7 +155,6 @@ async function createPopulatedService (req, res, next) {
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
-  const correlationId = req.correlationId
   const code = req.register_invite.code
   const otpCode = req.body['verify-code']
 
@@ -173,7 +169,7 @@ async function createPopulatedService (req, res, next) {
   }
 
   try {
-    await registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
+    await registrationService.submitServiceInviteOtpCode(code, otpCode)
   } catch (err) {
     if (err.errorCode === 401) {
       sessionData.recovered = {
@@ -190,7 +186,7 @@ async function createPopulatedService (req, res, next) {
   }
 
   try {
-    const user = await registrationService.createPopulatedService(req.register_invite.code, correlationId)
+    const user = await registrationService.createPopulatedService(req.register_invite.code)
     loginController.setupDirectLoginAfterRegister(req, res, user.externalId)
     return res.redirect(303, paths.selfCreateService.logUserIn)
   } catch (err) {
@@ -215,15 +211,13 @@ function loggedIn (req, res) {
  * @param res
  */
 async function showOtpResend (req, res, next) {
-  const correlationId = req.correlationId
-
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
 
   try {
-    const invite = await validateInviteService.getValidatedInvite(sessionData.code, correlationId)
+    const invite = await validateInviteService.getValidatedInvite(sessionData.code)
 
     if (!invite.password_set) {
       return next(new InvalidRegistationStateError())
@@ -257,7 +251,6 @@ async function submitOtpResend (req, res, next) {
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
-  const correlationId = req.correlationId
   const telephoneNumber = req.body['telephone-number']
 
   const validPhoneNumber = validatePhoneNumber(telephoneNumber)
@@ -271,7 +264,7 @@ async function submitOtpResend (req, res, next) {
   }
 
   try {
-    await registrationService.resendOtpCode(sessionData.code, telephoneNumber, correlationId)
+    await registrationService.resendOtpCode(sessionData.code, telephoneNumber)
     sessionData.telephone_number = telephoneNumber
     res.redirect(303, paths.selfCreateService.otpVerify)
   } catch (err) {
@@ -295,7 +288,6 @@ function showNameYourService (req, res) {
 }
 
 async function submitYourServiceName (req, res, next) {
-  const correlationId = req.correlationId
   const serviceName = req.body['service-name']
 
   const nameValidationResult = validateMandatoryField(serviceName, SERVICE_NAME_MAX_LENGTH, 'service name')
@@ -314,7 +306,7 @@ async function submitYourServiceName (req, res, next) {
         throw new Error(`Attempting to set name for service during registration but a service with name "${DEFAULT_SERVICE_NAME}" was not found`)
       }
       const account = await connectorClient.getAccount({ gatewayAccountId: service.gatewayAccountIds[0] })
-      await serviceService.updateServiceName(service.externalId, serviceName, null, correlationId)
+      await serviceService.updateServiceName(service.externalId, serviceName, null)
       res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, account.external_id))
     } catch (err) {
       next(err)

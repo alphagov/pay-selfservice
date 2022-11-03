@@ -6,7 +6,7 @@ const router = require('../../routes')
 
 module.exports = (req, res) => {
   if (req.user) {
-    userService.logOut(req.user.externalId, req.correlationId)
+    userService.logOut(req.user.externalId)
   }
 
   if (req.session) {

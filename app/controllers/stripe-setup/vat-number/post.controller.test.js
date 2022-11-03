@@ -70,7 +70,7 @@ describe('VAT number POST controller', () => {
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, {
       'vat_id': 'GB999999973'
     })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
@@ -86,7 +86,7 @@ describe('VAT number POST controller', () => {
     await controller(req, res, next)
 
     sinon.assert.notCalled(updateCompanyMock)
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
@@ -137,7 +137,7 @@ describe('VAT number POST controller', () => {
     await controller(req, res, next)
 
     sinon.assert.called(updateCompanyMock)
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'vat_number')
     sinon.assert.notCalled(res.redirect)
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)

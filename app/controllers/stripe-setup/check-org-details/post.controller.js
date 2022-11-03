@@ -53,9 +53,9 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
 
   if (confirmOrgDetails === 'yes') {
     try {
-      const stripeAccountId = await getStripeAccountId(req.account, false, req.correlationId)
+      const stripeAccountId = await getStripeAccountId(req.account, false)
 
-      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details', req.correlationId)
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details')
 
       logger.info('Organisation details confirmed for Stripe account', {
         stripe_account_id: stripeAccountId

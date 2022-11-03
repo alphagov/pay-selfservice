@@ -142,7 +142,7 @@ describe('Responsible person add additional details POST controller', () => {
       email: emailNormalised
     })
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId, req.correlationId)
+    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId)
     sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
   })
 })

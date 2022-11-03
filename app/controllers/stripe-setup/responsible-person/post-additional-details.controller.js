@@ -62,7 +62,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
 
   if (!lodash.isEmpty(errors)) {
     pageData['errors'] = errors
-    const responsiblePersonName = await getExistingResponsiblePersonName(req.account, false, req.correlationId)
+    const responsiblePersonName = await getExistingResponsiblePersonName(req.account, false)
     return response(req, res, 'stripe-setup/responsible-person/kyc-additional-information', {
       ...pageData,
       responsiblePersonName,
@@ -70,7 +70,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
     })
   } else {
     try {
-      const stripeAccountId = await getStripeAccountId(req.account, false, req.correlationId)
+      const stripeAccountId = await getStripeAccountId(req.account, false)
       const personsResponse = await listPersons(stripeAccountId)
       const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
 
@@ -89,7 +89,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
 
       const taskListComplete = await isKycTaskListComplete(currentCredential)
       if (taskListComplete) {
-        await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+        await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId)
         req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
       } else {
         req.flash('generic', 'Responsible person details added successfully')
@@ -97,7 +97,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
     } catch (err) {
       if (err && err.type === 'StripeInvalidRequestError' && err.param === 'phone') {
-        const responsiblePersonName = await getExistingResponsiblePersonName(req.account, false, req.correlationId)
+        const responsiblePersonName = await getExistingResponsiblePersonName(req.account, false)
         return response(req, res, 'stripe-setup/responsible-person/kyc-additional-information', {
           ...pageData,
           responsiblePersonName,

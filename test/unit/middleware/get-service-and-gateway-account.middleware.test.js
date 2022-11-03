@@ -78,8 +78,7 @@ describe('middleware: getGatewayAccountAndService', () => {
     sinon.assert.calledOnce(next)
     expect(connectorGetAccountMock.called).to.equal(true)
     expect(connectorGetAccountMock.calledWith({
-      gatewayAccountExternalId: 'some-gateway-external-id',
-      correlationId: 'some-correlation-id'
+      gatewayAccountExternalId: 'some-gateway-external-id'
     })).to.equal(true)
 
     expect(req.account.external_id).to.equal('some-gateway-external-id')

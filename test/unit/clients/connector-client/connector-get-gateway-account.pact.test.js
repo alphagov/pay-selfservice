@@ -59,8 +59,7 @@ describe('connector client - get gateway account', function () {
 
     it('should get gateway account successfully', function (done) {
       const params = {
-        gatewayAccountId: existingGatewayAccountId,
-        correlationId: null
+        gatewayAccountId: existingGatewayAccountId
       }
       connectorClient.getAccount(params)
         .should.be.fulfilled.then((response) => {

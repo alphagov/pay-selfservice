@@ -15,10 +15,7 @@ const client = new ConnectorClient(process.env.CONNECTOR_URL)
 const logger = require('../../utils/logger')(__filename)
 const { NoServicesWithPermissionError } = require('../../errors')
 
-const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
-
 module.exports = async function getTransactionsForAllServices (req, res, next) {
-  const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
 
   // a filter param will be set on status specific routes, if they're not set the
@@ -41,7 +38,7 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
       return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view these transactions.'))
     }
     const searchResultOutput = await transactionService.search(userPermittedAccountsSummary.gatewayAccountIds, filters.result)
-    const cardTypes = await client.getAllCardTypes(correlationId)
+    const cardTypes = await client.getAllCardTypes()
     const downloadRoute = filterLiveAccounts ? paths.allServiceTransactions.download : paths.formattedPathFor(paths.allServiceTransactions.downloadStatusFilter, 'test')
     const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, downloadRoute, req.session.backPath)
     delete req.session.backPath

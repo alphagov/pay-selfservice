@@ -16,7 +16,6 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
     Service created at: ${req.service.createdDate || '(service was created before we captured this date)'}`
 
   const zendeskOpts = {
-    correlationId: req.correlationId,
     email: req.user.email,
     name: req.user.username,
     type: 'task',
@@ -26,7 +25,7 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
   }
 
   await zendeskClient.createTicket(zendeskOpts)
-  await adminUsersClient.updatePspTestAccountStage(req.service.externalId, REQUEST_SUBMITTED, req.correlationId)
+  await adminUsersClient.updatePspTestAccountStage(req.service.externalId, REQUEST_SUBMITTED)
   logger.info('Request submitted for Stripe test account')
 }
 

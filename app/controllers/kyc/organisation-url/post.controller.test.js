@@ -98,7 +98,7 @@ describe('Organisation URL POST controller', () => {
 
     const updateRequest = new ServiceUpdateRequest()
       .replace(validPaths.merchantDetails.url, organisationUrl)
-    sinon.assert.calledWith(updateServiceMock, req.service.externalId, updateRequest.formatPayload(), req.correlationId)
+    sinon.assert.calledWith(updateServiceMock, req.service.externalId, updateRequest.formatPayload())
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
     sinon.assert.calledWith(req.flash, 'generic', 'Organisation website address added successfully')
     sinon.assert.notCalled(completeKycMock)
@@ -115,9 +115,9 @@ describe('Organisation URL POST controller', () => {
 
     const updateRequest = new ServiceUpdateRequest()
       .replace(validPaths.merchantDetails.url, organisationUrl)
-    sinon.assert.calledWith(updateServiceMock, req.service.externalId, updateRequest.formatPayload(), req.correlationId)
+    sinon.assert.calledWith(updateServiceMock, req.service.externalId, updateRequest.formatPayload())
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId, req.correlationId)
+    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId)
     sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
   })
 

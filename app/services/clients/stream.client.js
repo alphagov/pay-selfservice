@@ -12,7 +12,7 @@ class Stream {
     this.headers = headers || { 'Accept': 'text/csv', 'Content-Type': 'application/json' }
   }
 
-  request (targetUrl, correlationId) {
+  request (targetUrl) {
     const parsed = url.parse(targetUrl)
     const options = {
       path: `${parsed.pathname}${parsed.search}`,
@@ -28,7 +28,6 @@ class Stream {
     request.on('error', this.errorCallback)
 
     logger.info(`Stream client request to ${targetUrl}`, {
-      x_request_id: correlationId,
       ...options
     })
     request.end()

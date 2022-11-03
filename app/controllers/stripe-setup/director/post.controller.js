@@ -82,7 +82,7 @@ module.exports = async function (req, res, next) {
     })
   } else {
     try {
-      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
       const personsResponse = await listPersons(stripeAccountId)
       const data = lodash.get(personsResponse, 'data')
       const director = data !== undefined ? data.filter(person => person.relationship && person.relationship.director === true).pop() : undefined
@@ -94,7 +94,7 @@ module.exports = async function (req, res, next) {
       }
 
       await updateCompany(stripeAccountId, { directors_provided: true })
-      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'director', req.correlationId)
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'director')
 
       logger.info('Director details submitted for Stripe account', {
         stripe_account_id: stripeAccountId,
@@ -107,7 +107,7 @@ module.exports = async function (req, res, next) {
       } else if (collectingAdditionalKycData) {
         const taskListComplete = await isKycTaskListComplete(currentCredential)
         if (taskListComplete) {
-          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId)
           req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
         } else {
           req.flash('generic', 'Details of director successfully completed')
