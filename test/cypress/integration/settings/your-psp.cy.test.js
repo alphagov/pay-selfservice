@@ -16,6 +16,11 @@ describe('Your PSP settings page', () => {
     username: 'jonheslop',
     password: 'anti-matter'
   }
+  const testCredentialsMOTO = {
+    merchant_id: 'merchant-code-ending-with-MOTO',
+    username: 'user-name',
+    password: 'anti-matter'
+  }
   const testNotificationCredentials = {
     version: 1,
     username: 'someone',
@@ -66,6 +71,7 @@ describe('Your PSP settings page', () => {
     const gatewayAccount = gatewayAccountStubs.getGatewayAccountSuccess({
       gatewayAccountId,
       requires3ds: opts.requires3ds,
+      allowMoto: opts.allowMoto,
       integrationVersion3ds: opts.integrationVersion3ds,
       worldpay3dsFlex: opts.worldpay3dsFlex,
       credentials: opts.credentials,
@@ -78,6 +84,7 @@ describe('Your PSP settings page', () => {
       gatewayAccountId,
       gatewayAccountExternalId,
       requires3ds: opts.requires3ds,
+      allowMoto: opts.allowMoto,
       integrationVersion3ds: opts.integrationVersion3ds,
       worldpay3dsFlex: opts.worldpay3dsFlex,
       credentials: opts.credentials,
@@ -91,15 +98,20 @@ describe('Your PSP settings page', () => {
       gatewayAccountId: gatewayAccountId,
       shouldReturnValid: true
     })
-    const postCheckWorldpayCredentials = gatewayAccountStubs.postCheckWorldpayCredentials({ ...opts.validateCredentials, gatewayAccountId })
+    const postCheckWorldpayCredentials = gatewayAccountStubs.postCheckWorldpayCredentials({
+      ...opts.validateCredentials,
+      gatewayAccountId
+    })
     const postCheckWorldpay3dsFlexCredentialsReturnsInvalid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
       gatewayAccountId: gatewayAccountId,
       shouldReturnValid: false
     })
     const postCheckWorldpay3dsFlexCredentialsFails = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsFailure({
-      gatewayAccountId: gatewayAccountId, ...testFailureFlexCredentials })
+      gatewayAccountId: gatewayAccountId, ...testFailureFlexCredentials
+    })
     const postCheckWorldpay3dsFlexCredentialsReturnsBadResult = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsWithBadResult({
-      gatewayAccountId: gatewayAccountId, ...testBadResultFlexCredentials })
+      gatewayAccountId: gatewayAccountId, ...testBadResultFlexCredentials
+    })
     const stubs = [
       user,
       gatewayAccount,
@@ -175,7 +187,18 @@ describe('Your PSP settings page', () => {
       })
     })
 
+    it('should not allow MOTO merchant account code', () => {
+      cy.get('#credentials-change-link').click()
+      cy.get('#merchantId').type('merchant-account-code-ending-with-MOTO')
+      cy.get('#username').type(testCredentials.username)
+      cy.get('#password').type(testCredentials.password)
+      cy.get('#submitCredentials').click()
+      cy.get('.govuk-error-summary').should('have.length', 1)
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'MOTO merchant code not allowed. Please contact support if you would like MOTO payments enabled')
+    })
+
     it('should allow 3DS Flex credentials to be configured (trimming leading and trailing space) and all values must be valid and set', () => {
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#flex-credentials-change-link').click()
       cy.get('#removeFlexCredentials').should('not.exist')
       cy.get('#organisational-unit-id').type('Invalid organisational unit ID')
@@ -273,6 +296,58 @@ describe('Your PSP settings page', () => {
       cy.get('.value-jwt-mac-key').should('contain', '●●●●●●●●')
 
       cy.get('#flex-credentials-change-link').click()
+    })
+  })
+
+  describe('When using a Worldpay account with MOTO enabled', () => {
+    beforeEach(() => {
+      setupYourPspStubs({
+        gateway: 'worldpay',
+        requires3ds: true,
+        allowMoto: true,
+        integrationVersion3ds: 1,
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          credentials: {},
+          external_id: credentialExternalId
+        }],
+        validateCredentials: testCredentialsMOTO
+      })
+    })
+    it('should not have 3DS flex section', () => {
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.get('h2').contains('3DS Flex').should('not.exist')
+      cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
+      cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
+      cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
+      cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
+      cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
+    })
+
+    it('should not allow non-MOTO merchant account code', () => {
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.get('#credentials-change-link').click()
+      cy.get('#merchantId').clear()
+      cy.get('#merchantId').type('non-moto-merchant-code')
+      cy.get('#username').type(testCredentialsMOTO.username)
+      cy.get('#password').type(testCredentialsMOTO.password)
+      cy.get('#submitCredentials').click()
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Enter a MOTO merchant code. MOTO payments are enabled for the account')
+    })
+
+    it('should allow MOTO merchant account code', () => {
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.get('#credentials-change-link').click()
+      cy.get('#merchantId').clear()
+      cy.get('#merchantId').type(testCredentialsMOTO.merchant_id)
+      cy.get('#username').type(testCredentialsMOTO.username)
+      cy.get('#password').type(testCredentialsMOTO.password)
+      cy.get('#submitCredentials').click()
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
+      })
+      cy.get('h1').contains('Your payment service provider (PSP) - Worldpay').should('exist')
     })
   })
 

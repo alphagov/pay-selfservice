@@ -49,7 +49,9 @@
 
   {% if credential.payment_provider === "worldpay" %}
     {% include "./_worldpay.njk" %}
-    {% include "./_worldpay-flex.njk" %}
+    {% if not isMotoEnabled %}
+      {% include "./_worldpay-flex.njk" %}
+    {% endif %}
   {% endif %}
   {% if credential.payment_provider === "smartpay" %}
     {% include "./_smartpay.njk" %}
