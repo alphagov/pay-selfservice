@@ -45,8 +45,8 @@ describe('Select new second factor method post controller', () => {
         expect(req.session.pageData).to.deep.equal({
           twoFactorAuthMethod: 'SMS'
         })
-        sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId, correlationId)
-        sinon.assert.calledWith(sendProvisionalOtpSpy, userExternalId, correlationId)
+        sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId)
+        sinon.assert.calledWith(sendProvisionalOtpSpy, userExternalId)
         sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
       })
     })
@@ -85,7 +85,7 @@ describe('Select new second factor method post controller', () => {
       expect(req.session.pageData).to.deep.equal({
         twoFactorAuthMethod: 'APP'
       })
-      sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId, correlationId)
+      sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId)
       sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
       sinon.assert.notCalled(sendProvisionalOtpSpy)
     })

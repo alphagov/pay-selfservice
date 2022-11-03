@@ -5,7 +5,6 @@ const { response } = require('../utils/response')
 const { getCredentialByExternalId } = require('../utils/credentials')
 const { ConnectorClient } = require('../services/clients/connector.client')
 const { CONNECTOR_URL } = process.env
-const { CORRELATION_HEADER } = require('../utils/correlation-header')
 const { isPasswordLessThanTenChars } = require('../utils/validation/field-validation-checks')
 const { NotFoundError } = require('../errors')
 
@@ -60,7 +59,6 @@ function editCredentials (req, res, next) {
 
 async function update (req, res, next) {
   const accountId = req.account.gateway_account_id
-  const correlationId = req.headers[CORRELATION_HEADER] || ''
 
   try {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
@@ -99,7 +97,6 @@ async function update (req, res, next) {
     }
 
     await connectorClient.patchAccountGatewayAccountCredentials({
-      correlationId,
       gatewayAccountId: accountId,
       gatewayAccountCredentialsId: credential.gateway_account_credential_id,
       userExternalId: req.user.externalId,
@@ -173,11 +170,8 @@ async function updateNotificationCredentials (req, res, next) {
       return res.redirect(formatAccountPathsFor(paths.account.notificationCredentials.edit, req.account.external_id, credential.external_id))
     }
 
-    const correlationId = req.headers[CORRELATION_HEADER] || ''
-
     await connectorClient.postAccountNotificationCredentials({
       payload: { username, password },
-      correlationId: correlationId,
       gatewayAccountId: accountId
     })
 

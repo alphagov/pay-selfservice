@@ -61,7 +61,7 @@ describe('Register user controller', () => {
         await controller.subscribeService(validReq, res, next)
         sinon.assert.called(completeInviteSuccessStub)
         sinon.assert.calledWith(flashSpy, 'inviteSuccessServiceId', serviceExternalId)
-        sinon.assert.calledWith(completeInviteSuccessStub, inviteCode, correlationId)
+        sinon.assert.calledWith(completeInviteSuccessStub, inviteCode)
       })
     })
 

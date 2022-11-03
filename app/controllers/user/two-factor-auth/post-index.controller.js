@@ -14,9 +14,9 @@ module.exports = async (req, res, next) => {
     res.redirect(paths.user.profile.twoFactorAuth.phoneNumber)
   } else {
     try {
-      await userService.provisionNewOtpKey(req.user.externalId, req.correlationId)
+      await userService.provisionNewOtpKey(req.user.externalId)
       if (method === secondFactorMethod.SMS) {
-        await userService.sendProvisionalOTP(req.user.externalId, req.correlationId)
+        await userService.sendProvisionalOTP(req.user.externalId)
       }
       return res.redirect(paths.user.profile.twoFactorAuth.configure)
     } catch (err) {

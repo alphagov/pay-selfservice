@@ -17,7 +17,7 @@ async function updateDefaultBillingAddressCountry (req, res, next) {
   try {
     const defaultToUK = req.body['uk-as-default-billing-address-country'] === 'on'
     const countryCode = defaultToUK ? GB_COUNTRY_CODE : null
-    await adminUsersClient.updateDefaultBillingAddressCountry(req.service.externalId, countryCode, req.correlationId)
+    await adminUsersClient.updateDefaultBillingAddressCountry(req.service.externalId, countryCode)
     req.flash('generic', `United Kingdom as the default billing address: ${defaultToUK ? 'On' : 'Off'}`)
     res.redirect(formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
   } catch (err) {

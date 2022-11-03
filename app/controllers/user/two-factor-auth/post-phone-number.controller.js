@@ -19,9 +19,9 @@ module.exports = async function submitPhoneNumber (req, res, next) {
   }
 
   try {
-    await userService.updatePhoneNumber(req.user.externalId, phone, req.correlationId)
-    await userService.provisionNewOtpKey(req.user.externalId, req.correlationId)
-    await userService.sendProvisionalOTP(req.user.externalId, req.correlationId)
+    await userService.updatePhoneNumber(req.user.externalId, phone)
+    await userService.provisionNewOtpKey(req.user.externalId)
+    await userService.sendProvisionalOTP(req.user.externalId)
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
   } catch (err) {
     next(err)

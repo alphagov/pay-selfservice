@@ -40,8 +40,8 @@ describe('The POST resend code for updating 2FA to SMS controller', () => {
       it('should make requests to adminusers then redirect with flash message', async () => {
         await controllerWithAdminusersSuccess(req, res, next)
 
-        sinon.assert.calledWith(updatePhoneNumberSpy, userExternalId, req.body.phone, correlationId)
-        sinon.assert.calledWith(sendProvisionalOTPSpy, userExternalId, correlationId)
+        sinon.assert.calledWith(updatePhoneNumberSpy, userExternalId, req.body.phone)
+        sinon.assert.calledWith(sendProvisionalOTPSpy, userExternalId)
         sinon.assert.calledWith(req.flash, 'generic', 'Another verification code has been sent to your phone')
         sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
       })
@@ -55,7 +55,7 @@ describe('The POST resend code for updating 2FA to SMS controller', () => {
         const controllerWithAdminusersError = getController(updatePhoneNumberErrorSpy, sendProvisionalOTPSpy)
         await controllerWithAdminusersError(req, res, next)
 
-        sinon.assert.calledWith(updatePhoneNumberErrorSpy, userExternalId, req.body.phone, correlationId)
+        sinon.assert.calledWith(updatePhoneNumberErrorSpy, userExternalId, req.body.phone)
         sinon.assert.notCalled(sendProvisionalOTPSpy)
         sinon.assert.calledWith(next, error)
       })

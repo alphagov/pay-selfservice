@@ -48,7 +48,6 @@ function index (req, res) {
 }
 
 async function invite (req, res, next) {
-  const correlationId = req.correlationId
   const senderId = req.user.externalId
   const externalServiceId = req.service.externalId
   const invitee = req.body['invitee-email'].trim()
@@ -64,7 +63,7 @@ async function invite (req, res, next) {
     next(new Error(`Cannot identify role from user input ${roleId}`))
   } else {
     try {
-      await userService.inviteUser(invitee, senderId, externalServiceId, role.name, correlationId)
+      await userService.inviteUser(invitee, senderId, externalServiceId, role.name)
       if (lodash.has(req, 'session.pageData.invitee')) {
         delete req.session.pageData.invitee
       }

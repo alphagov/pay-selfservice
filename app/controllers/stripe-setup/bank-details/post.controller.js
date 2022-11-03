@@ -46,14 +46,14 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+    const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
 
     await updateBankAccount(stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
     })
 
-    await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account', req.correlationId)
+    await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account')
 
     logger.info('Bank account details submitted for Stripe account', {
       stripe_account_id: stripeAccountId,

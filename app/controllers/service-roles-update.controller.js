@@ -22,7 +22,6 @@ let serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExterna
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
 async function index (req, res, next) {
-  let correlationId = req.correlationId
   let externalUserId = req.params.externalUserId
   let serviceExternalId = req.service.externalId
   let serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
@@ -67,7 +66,7 @@ async function index (req, res, next) {
   }
 
   try {
-    const user = await userService.findByExternalId(externalUserId, correlationId)
+    const user = await userService.findByExternalId(externalUserId)
     if (!hasSameService(req.user, user, serviceExternalId)) {
       return serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId)
     } else {
@@ -83,7 +82,6 @@ async function update (req, res, next) {
   let serviceExternalId = req.service.externalId
   let targetRoleExtId = parseInt(req.body['role-input'])
   let targetRole = getRole(targetRoleExtId)
-  let correlationId = req.correlationId
   let onSuccess = (user) => {
     req.flash('generic', 'Permissions have been updated')
     res.redirect(303, formatServicePathsFor(paths.service.teamMembers.show, serviceExternalId, user.externalId))
@@ -99,14 +97,14 @@ async function update (req, res, next) {
   }
 
   try {
-    const user = await userService.findByExternalId(externalUserId, correlationId)
+    const user = await userService.findByExternalId(externalUserId)
     if (!hasSameService(req.user, user, serviceExternalId)) {
-      serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId, correlationId)
+      serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId)
     } else {
       if (targetRole.name === user.getRoleForService(serviceExternalId)) {
         return onSuccess(user)
       } else {
-        await userService.updateServiceRole(user.externalId, targetRole.name, serviceExternalId, correlationId)
+        await userService.updateServiceRole(user.externalId, targetRole.name, serviceExternalId)
         return onSuccess(user)
       }
     }

@@ -13,7 +13,6 @@ const emailGet = function emailGet (req, res) {
 }
 
 const emailPost = async function emailPost (req, res) {
-  const correlationId = req.correlationId
   const username = req.body.username
 
   const validEmail = validateEmail(username)
@@ -27,7 +26,7 @@ const emailPost = async function emailPost (req, res) {
   }
 
   try {
-    await userService.sendPasswordResetToken(username, correlationId)
+    await userService.sendPasswordResetToken(username)
     res.redirect(paths.user.passwordRequested)
   } catch (err) {
     if (err.errorCode === 404) {
@@ -49,7 +48,7 @@ const passwordRequested = function passwordRequested (req, res) {
 const newPasswordGet = async function newPasswordGet (req, res) {
   const { id } = req.params
   try {
-    await userService.findByResetToken(id, req.correlationId)
+    await userService.findByResetToken(id)
     res.render('forgotten-password/new-password', { id: id })
   } catch (err) {
     req.flash('genericError', 'The password reset request has expired or is invalid. Please try again.')
@@ -62,8 +61,8 @@ const newPasswordPost = async function newPasswordPost (req, res) {
     const { id } = req.params
     const password = req.body.password
 
-    const forgottenPassword = await userService.findByResetToken(id, req.correlationId)
-    const user = await userService.findByExternalId(forgottenPassword.user_external_id, req.correlationId)
+    const forgottenPassword = await userService.findByResetToken(id)
+    const user = await userService.findByExternalId(forgottenPassword.user_external_id)
 
     const validPassword = validatePassword(password)
     if (!validPassword.valid) {
@@ -75,9 +74,9 @@ const newPasswordPost = async function newPasswordPost (req, res) {
       })
     }
 
-    await userService.updatePassword(id, password, req.correlationId)
+    await userService.updatePassword(id, password)
     try {
-      await userService.logOut(user.externalId, req.correlationId)
+      await userService.logOut(user.externalId)
     } catch (err) {
       // treat as success even if updating session version fails
     }

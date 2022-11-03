@@ -50,7 +50,7 @@ describe('Controller: createService, Method: post', () => {
     it(`should call 'res.redirect' with '/my-service'`, () => {
       expect(res.redirect.called).to.equal(true)
       expect(res.redirect.args[0]).to.include('/my-services')
-      sinon.assert.calledWith(mockServiceService.createService, serviceName, welshServiceName, req.user, req.correlationId)
+      sinon.assert.calledWith(mockServiceService.createService, serviceName, welshServiceName, req.user)
     })
   })
 

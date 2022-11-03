@@ -5,7 +5,6 @@ const publicAuthClient = require('../../services/clients/public-auth.client')
 
 module.exports = async function createApiKey (req, res, next) {
   const accountId = req.account.gateway_account_id
-  const correlationId = req.correlationId
   const description = req.body.description
   const payload = {
     description: description,
@@ -17,7 +16,7 @@ module.exports = async function createApiKey (req, res, next) {
   }
 
   try {
-    const createTokenResponse = await publicAuthClient.createTokenForAccount({ payload, accountId, correlationId })
+    const createTokenResponse = await publicAuthClient.createTokenForAccount({ payload, accountId })
     response(req, res, 'api-keys/create', {
       description,
       token: createTokenResponse.token

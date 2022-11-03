@@ -42,7 +42,7 @@ describe('Default billing address country settings controller', () => {
       flash: sinon.spy()
     }
     await controller.updateDefaultBillingAddressCountry(req, res, next)
-    sinon.assert.calledWith(updateDefaultBillingAddressCountrySpy, service.externalId, 'GB', req.correlationId)
+    sinon.assert.calledWith(updateDefaultBillingAddressCountrySpy, service.externalId, 'GB')
     sinon.assert.calledWith(req.flash, 'generic', 'United Kingdom as the default billing address: On')
     sinon.assert.calledWith(res.redirect, `/account/${account.external_id}/settings`)
   })
@@ -58,7 +58,7 @@ describe('Default billing address country settings controller', () => {
       flash: sinon.spy()
     }
     await controller.updateDefaultBillingAddressCountry(req, res, next)
-    sinon.assert.calledWith(updateDefaultBillingAddressCountrySpy, service.externalId, null, req.correlationId)
+    sinon.assert.calledWith(updateDefaultBillingAddressCountrySpy, service.externalId, null)
     sinon.assert.calledWith(req.flash, 'generic', 'United Kingdom as the default billing address: Off')
     sinon.assert.calledWith(res.redirect, `/account/${account.external_id}/settings`)
   })

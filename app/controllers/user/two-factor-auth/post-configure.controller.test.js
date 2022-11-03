@@ -62,7 +62,7 @@ describe('Configure new second factor method post controller', () => {
       it('should call adminusers to configure OTP key and redirect to profile', async () => {
         await controllerWithAdminusersSuccess(req, res, next)
 
-        sinon.assert.calledWith(configureNewOtpKeySpy, userExternalId, validCode, twoFactorAuthMethod, correlationId)
+        sinon.assert.calledWith(configureNewOtpKeySpy, userExternalId, validCode, twoFactorAuthMethod)
         sinon.assert.calledWith(req.flash, 'otpMethodUpdated', twoFactorAuthMethod)
         sinon.assert.calledWith(res.redirect, paths.user.profile.index)
       })

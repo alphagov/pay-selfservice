@@ -34,7 +34,7 @@ module.exports = async function submitPspChoice (req, res, next) {
     const chosenStage = (psp && !otherPspSelected) ? psp : pspOther
     const chosenPspStage = stages[chosenStage]
     try {
-      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, chosenPspStage, req.correlationId)
+      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, chosenPspStage)
       res.redirect(
         303,
         formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)

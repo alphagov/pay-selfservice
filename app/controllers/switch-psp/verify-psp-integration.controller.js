@@ -62,7 +62,6 @@ async function completePaymentJourney (req, res, next) {
     const charge = await connectorClient.getCharge(req.account.gateway_account_id, chargeExternalId)
     if (charge.state.status === 'success') {
       await connectorClient.patchAccountGatewayAccountCredentialsState({
-        correlationId: req.correlationId,
         gatewayAccountId: req.account.gateway_account_id,
         gatewayAccountCredentialsId: targetCredential.gateway_account_credential_id,
         state: CREDENTIAL_STATE.VERIFIED,

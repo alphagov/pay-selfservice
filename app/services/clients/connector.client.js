@@ -91,7 +91,6 @@ ConnectorClient.prototype = {
    * @param params
    *          An object with the following elements;
    *            gatewayAccountId (required)
-   *            correlationId (optional)
    *@return {Promise}
    */
   getAccount: function (params) {
@@ -99,7 +98,6 @@ ConnectorClient.prototype = {
     return baseClient.get({
       baseUrl: this.connectorUrl,
       url,
-      correlationId: params.correlationId,
       description: 'get an account',
       service: SERVICE_NAME
     })
@@ -109,7 +107,6 @@ ConnectorClient.prototype = {
    * @param params
    *          An object with the following elements;
    *            gatewayAccountExternalId (required)
-   *            correlationId (optional)
    *@return {Promise}
    */
   getAccountByExternalId: function (params) {
@@ -117,7 +114,6 @@ ConnectorClient.prototype = {
     return baseClient.get({
       baseUrl: this.connectorUrl,
       url,
-      correlationId: params.correlationId,
       description: 'get an account',
       service: SERVICE_NAME
     })
@@ -128,7 +124,6 @@ ConnectorClient.prototype = {
    * @param params
    *          An object with the following elements;
    *            gatewayAccountIds (required)
-   *            correlationId (optional)
    *@return {Promise}
    */
   getAccounts: function (params) {
@@ -136,7 +131,6 @@ ConnectorClient.prototype = {
     return baseClient.get({
       baseUrl: this.connectorUrl,
       url,
-      correlationId: params.correlationId,
       description: 'get an account',
       service: SERVICE_NAME
     })
@@ -149,11 +143,10 @@ ConnectorClient.prototype = {
    * @param type
    * @param serviceName
    * @param analyticsId
-   * @param correlationId
    *
    * @returns {Promise}
    */
-  createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, serviceId, correlationId) {
+  createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, serviceId) {
     let payload = {
       payment_provider: paymentProvider
     }
@@ -174,7 +167,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url: ACCOUNTS_API_PATH,
       body: payload,
-      correlationId: correlationId,
       description: 'create a gateway account',
       service: SERVICE_NAME
     })
@@ -202,13 +194,12 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: payload,
-      correlationId: params.correlationId,
       description: 'patch gateway account credentials',
       service: SERVICE_NAME
     })
   },
 
-  patchGooglePayGatewayMerchantId: function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId, correlationId = '') {
+  patchGooglePayGatewayMerchantId: function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId) {
     const url = ACCOUNT_GATEWAY_ACCOUNT_CREDENTIALS_PATH
       .replace('{accountId}', gatewayAccountId)
       .replace('{credentialsId}', gatewayAccountCredentialsId)
@@ -230,7 +221,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: payload,
-      correlationId: correlationId,
       description: 'patch gateway account credentials for google pay merchant id',
       service: SERVICE_NAME
     })
@@ -257,7 +247,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: payload,
-      correlationId: params.correlationId,
       description: 'patch gateway account credentials state',
       service: SERVICE_NAME
     })
@@ -281,7 +270,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: params.payload,
-      correlationId: params.correlationId,
       description: 'patch gateway account credentials',
       service: SERVICE_NAME
     })
@@ -300,7 +288,6 @@ ConnectorClient.prototype = {
         url: CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId),
         json: true,
         body: params.payload,
-        correlationId: params.correlationId,
         description: 'Check Worldpay 3DS Flex credentials',
         service: SERVICE_NAME
       }
@@ -314,7 +301,6 @@ ConnectorClient.prototype = {
         url: CHECK_WORLDPAY_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId),
         json: true,
         body: params.payload,
-        correlationId: params.correlationId,
         description: 'Check Worldpay credentials',
         service: SERVICE_NAME
       }
@@ -333,7 +319,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: params.payload,
-      correlationId: params.correlationId,
       description: 'Update 3DS Flex credentials',
       service: SERVICE_NAME
     })
@@ -342,16 +327,14 @@ ConnectorClient.prototype = {
   /**
    * Retrieves the accepted card Types for the given account
    * @param gatewayAccountId (required)
-   * @param correlationId (optional)
    * @returns {Promise<Object>}
    */
-  getAcceptedCardsForAccountPromise: function (gatewayAccountId, correlationId) {
+  getAcceptedCardsForAccountPromise: function (gatewayAccountId) {
     const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId)
 
     return baseClient.get({
       baseUrl: this.connectorUrl,
       url,
-      correlationId: correlationId,
       description: 'get accepted card types for account',
       service: SERVICE_NAME
     })
@@ -361,17 +344,15 @@ ConnectorClient.prototype = {
    * Updates the accepted card Types for to the given gateway account
    * @param gatewayAccountId (required)
    * @param payload (required)
-   * @param correlationId (optional)
    * @returns {Promise<Object>}
    */
-  postAcceptedCardsForAccount: function (gatewayAccountId, payload, correlationId) {
+  postAcceptedCardsForAccount: function (gatewayAccountId, payload) {
     const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId)
 
     return baseClient.post({
       baseUrl: this.connectorUrl,
       url,
       body: payload,
-      correlationId: correlationId,
       description: 'post accepted card types for account',
       service: SERVICE_NAME
     })
@@ -379,10 +360,9 @@ ConnectorClient.prototype = {
 
   /**
    * Retrieves all card types
-   * @param correlationId
    * @returns {Promise<Object>}
    */
-  getAllCardTypes: function (correlationId) {
+  getAllCardTypes: function () {
     const url = CARD_TYPES_API_PATH
     logger.debug('Calling connector to get all card types', {
       service: 'connector',
@@ -393,7 +373,6 @@ ConnectorClient.prototype = {
     return baseClient.get({
       baseUrl: this.connectorUrl,
       url,
-      correlationId: correlationId,
       description: 'Retrieves all card types',
       service: SERVICE_NAME
     })
@@ -402,10 +381,9 @@ ConnectorClient.prototype = {
   /**
    * @param gatewayAccountId
    * @param serviceName
-   * @param correlationId
    * @returns {Promise<Object>}
    */
-  patchServiceName: function (gatewayAccountId, serviceName, correlationId) {
+  patchServiceName: function (gatewayAccountId, serviceName) {
     const url = _serviceNameUrlFor(gatewayAccountId)
 
     return baseClient.patch({
@@ -414,7 +392,6 @@ ConnectorClient.prototype = {
       body: {
         service_name: serviceName
       },
-      correlationId: correlationId,
       description: 'update service name',
       service: SERVICE_NAME
     })
@@ -423,10 +400,9 @@ ConnectorClient.prototype = {
   /**
    * @param gatewayAccountId
    * @param allowApplePay (boolean)
-   * @param correlationId
    * @returns {Promise<Object>}
    */
-  toggleApplePay: function (gatewayAccountId, allowApplePay, correlationId) {
+  toggleApplePay: function (gatewayAccountId, allowApplePay) {
     return baseClient.patch(
       {
         baseUrl: this.connectorUrl,
@@ -437,7 +413,6 @@ ConnectorClient.prototype = {
           path: 'allow_apple_pay',
           value: allowApplePay
         },
-        correlationId,
         description: 'toggle allow apple pay',
         service: SERVICE_NAME
       }
@@ -447,10 +422,9 @@ ConnectorClient.prototype = {
   /**
    * @param gatewayAccountId
    * @param allowGooglePay (boolean)
-   * @param correlationId
    * @returns {Promise<Object>}
    */
-  toggleGooglePay: function (gatewayAccountId, allowGooglePay, correlationId) {
+  toggleGooglePay: function (gatewayAccountId, allowGooglePay) {
     return baseClient.patch(
       {
         baseUrl: this.connectorUrl,
@@ -461,7 +435,6 @@ ConnectorClient.prototype = {
           path: 'allow_google_pay',
           value: allowGooglePay
         },
-        correlationId,
         description: 'toggle allow google pay',
         service: SERVICE_NAME
       }
@@ -471,10 +444,9 @@ ConnectorClient.prototype = {
   /**
    * @param gatewayAccountId
    * @param isMaskCardNumber (boolean)
-   * @param correlationId
    * @returns {Promise<Object>}
    */
-  toggleMotoMaskCardNumberInput: function (gatewayAccountId, isMaskCardNumber, correlationId) {
+  toggleMotoMaskCardNumberInput: function (gatewayAccountId, isMaskCardNumber) {
     return baseClient.patch(
       {
         baseUrl: this.connectorUrl,
@@ -485,7 +457,6 @@ ConnectorClient.prototype = {
           path: 'moto_mask_card_number_input',
           value: isMaskCardNumber
         },
-        correlationId,
         description: 'Toggle gateway account card number masking setting',
         service: SERVICE_NAME
       }
@@ -495,10 +466,9 @@ ConnectorClient.prototype = {
   /**
    * @param gatewayAccountId
    * @param isMaskSecurityCode (boolean)
-   * @param correlationId
    * @returns {Promise<Object>}
    */
-  toggleMotoMaskSecurityCodeInput: function (gatewayAccountId, isMaskSecurityCode, correlationId) {
+  toggleMotoMaskSecurityCodeInput: function (gatewayAccountId, isMaskSecurityCode) {
     return baseClient.patch(
       {
         baseUrl: this.connectorUrl,
@@ -509,7 +479,6 @@ ConnectorClient.prototype = {
           path: 'moto_mask_card_security_code_input',
           value: isMaskSecurityCode
         },
-        correlationId,
         description: 'Toggle gateway account card security code masking setting',
         service: SERVICE_NAME
       }
@@ -520,17 +489,15 @@ ConnectorClient.prototype = {
    * @param gatewayAccountId
    * @param chargeId
    * @param payload
-   * @param correlationId
    * @returns {Promise<Object>}
    */
-  postChargeRefund: function (gatewayAccountId, chargeId, payload, correlationId) {
+  postChargeRefund: function (gatewayAccountId, chargeId, payload) {
     return baseClient.post(
       {
         baseUrl: this.connectorUrl,
         url: CHARGE_REFUNDS_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId),
         json: true,
         body: payload,
-        correlationId,
         description: 'submit refund',
         service: SERVICE_NAME
       }
@@ -547,7 +514,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: params.payload,
-      correlationId: params.correlationId,
       description: 'update confirmation email',
       service: SERVICE_NAME
     })
@@ -564,7 +530,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: params.payload,
-      correlationId: params.correlationId,
       description: 'update confirmation email enabled',
       service: SERVICE_NAME
     })
@@ -581,7 +546,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: params.payload,
-      correlationId: params.correlationId,
       description: 'update email collection mode',
       service: SERVICE_NAME
     })
@@ -598,7 +562,6 @@ ConnectorClient.prototype = {
       baseUrl: this.connectorUrl,
       url,
       body: params.payload,
-      correlationId: params.correlationId,
       description: 'update refund email enabled',
       service: SERVICE_NAME
     })
@@ -607,10 +570,9 @@ ConnectorClient.prototype = {
   /**
    * @param gatewayAccountId
    * @param integrationVersion3ds (number)
-   * @param correlationId
    * @returns {Promise<Object>}
    */
-  updateIntegrationVersion3ds: function (gatewayAccountId, integrationVersion3ds, correlationId) {
+  updateIntegrationVersion3ds: function (gatewayAccountId, integrationVersion3ds) {
     return baseClient.patch(
       {
         baseUrl: this.connectorUrl,
@@ -621,20 +583,18 @@ ConnectorClient.prototype = {
           path: 'integration_version_3ds',
           value: integrationVersion3ds
         },
-        correlationId,
         description: 'Set the 3DS integration version to use when authorising with the gateway',
         service: SERVICE_NAME
       }
     )
   },
 
-  getStripeAccountSetup: function (gatewayAccountId, correlationId) {
+  getStripeAccountSetup: function (gatewayAccountId) {
     return baseClient.get(
       {
         baseUrl: this.connectorUrl,
         url: STRIPE_ACCOUNT_SETUP_PATH.replace('{accountId}', gatewayAccountId),
         json: true,
-        correlationId,
         description: 'get stripe account setup flags for gateway account',
         service: SERVICE_NAME,
         transform: responseBodyToStripeAccountSetupTransformer
@@ -642,7 +602,7 @@ ConnectorClient.prototype = {
     )
   },
 
-  setStripeAccountSetupFlag: function (gatewayAccountId, stripeAccountSetupFlag, correlationId) {
+  setStripeAccountSetupFlag: function (gatewayAccountId, stripeAccountSetupFlag) {
     return baseClient.patch(
       {
         baseUrl: this.connectorUrl,
@@ -655,20 +615,18 @@ ConnectorClient.prototype = {
             value: true
           }
         ],
-        correlationId,
         description: 'set stripe account setup flag to true for gateway account',
         service: SERVICE_NAME
       }
     )
   },
 
-  getStripeAccount: function (gatewayAccountId, correlationId) {
+  getStripeAccount: function (gatewayAccountId) {
     return baseClient.get(
       {
         baseUrl: this.connectorUrl,
         url: STRIPE_ACCOUNT_PATH.replace('{accountId}', gatewayAccountId),
         json: true,
-        correlationId,
         description: 'get stripe account for gateway account',
         service: SERVICE_NAME,
         transform: responseBodyToStripeAccountTransformer
@@ -699,19 +657,18 @@ ConnectorClient.prototype = {
     })
   },
 
-  postAccountSwitchPSP: function (gatewayAccountId, payload, correlationId) {
+  postAccountSwitchPSP: function (gatewayAccountId, payload) {
     const url = SWITCH_PSP_PATH.replace('{accountId}', gatewayAccountId)
     return baseClient.post({
       baseUrl: this.connectorUrl,
       url,
       body: payload,
-      correlationId: correlationId,
       description: 'switch account payment service provider',
       service: SERVICE_NAME
     })
   },
 
-  disableCollectAdditionalKyc: function (gatewayAccountId, correlationId) {
+  disableCollectAdditionalKyc: function (gatewayAccountId) {
     return baseClient.patch(
       {
         baseUrl: this.connectorUrl,
@@ -722,7 +679,6 @@ ConnectorClient.prototype = {
           path: 'requires_additional_kyc_data',
           value: false
         },
-        correlationId,
         description: 'Disable the requires_additional_kyc_data flag for gateway account',
         service: SERVICE_NAME
       }

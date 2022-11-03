@@ -134,7 +134,7 @@ function validateForm (form, isRequestToGoLive, isStripeSetupUserJourney) {
 
 async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourney, isSwitchingCredentials) {
   if (isStripeSetupUserJourney) {
-    const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+    const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
 
     const newOrgDetails = {
       name: form[clientFieldNames.name],
@@ -152,7 +152,7 @@ async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourne
 
     await updateOrganisationDetails(stripeAccountId, newOrgDetails)
 
-    await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details', req.correlationId)
+    await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details')
 
     logger.info('Organisation details updated for Stripe account', {
       stripe_account_id: stripeAccountId
@@ -172,7 +172,7 @@ async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourne
     } else {
       updateRequest.replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
     }
-    return updateService(req.service.externalId, updateRequest.formatPayload(), req.correlationId)
+    return updateService(req.service.externalId, updateRequest.formatPayload())
   }
 }
 

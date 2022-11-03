@@ -8,125 +8,109 @@ module.exports = {
   /**
    * @param username
    * @param submittedPassword
-   * @param correlationId
    * @returns {Promise<User>}
    */
-  authenticate: function (username, submittedPassword, correlationId) {
+  authenticate: function (username, submittedPassword) {
     if (!username || !submittedPassword) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error('Failed to authenticate'))
-      })
+      return Promise.reject(new Error('Failed to authenticate'))
     }
-    return adminUsersClient.authenticateUser(username, submittedPassword, correlationId)
+    return adminUsersClient.authenticateUser(username, submittedPassword)
   },
 
   /**
    * @param externalId
    * @param code
-   * @param correlationId
    * @returns {Promise<User>}
    */
-  authenticateSecondFactor: function (externalId, code, correlationId) {
+  authenticateSecondFactor: function (externalId, code) {
     if (!externalId || !code) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error('Failed to authenticate second factor'))
-      })
+      return Promise.reject(new Error('Failed to authenticate second factor'))
     }
 
-    return adminUsersClient.authenticateSecondFactor(externalId, code, correlationId)
+    return adminUsersClient.authenticateSecondFactor(externalId, code)
   },
 
   /**
    * @param externalId
-   * @param correlationId
    * @returns {Promise<User>}
    */
-  findByExternalId: (externalId, correlationId) => {
-    return adminUsersClient.getUserByExternalId(externalId, correlationId)
+  findByExternalId: (externalId) => {
+    return adminUsersClient.getUserByExternalId(externalId)
   },
 
   /**
    * @param {Array} externalIds
-   * @param {String} correlationId
    * @returns {Promise<User>}
    */
-  findMultipleByExternalIds: function (externalIds, correlationId) {
-    return adminUsersClient.getUsersByExternalIds(externalIds, correlationId)
+  findMultipleByExternalIds: function (externalIds) {
+    return adminUsersClient.getUsersByExternalIds(externalIds)
   },
 
   /**
    * @param {String} userExternalId
-   * @param {String} correlationId
    * @returns {Promise}
    */
-  sendOTP: function (userExternalId, correlationId) {
-    return adminUsersClient.sendSecondFactor(userExternalId, false, correlationId)
+  sendOTP: function (userExternalId) {
+    return adminUsersClient.sendSecondFactor(userExternalId, false)
   },
 
   /**
    * @param {String} userExternalId
-   * @param {String} correlationId
    * @returns {Promise}
    */
-  sendProvisionalOTP: function (userExternalId, correlationId) {
-    return adminUsersClient.sendSecondFactor(userExternalId, true, correlationId)
+  sendProvisionalOTP: function (userExternalId) {
+    return adminUsersClient.sendSecondFactor(userExternalId, true)
   },
 
   /**
    * @param username
-   * @param correlationId
    * @returns {Promise}
    */
-  sendPasswordResetToken: function (username, correlationId) {
-    return adminUsersClient.createForgottenPassword(username, correlationId)
+  sendPasswordResetToken: function (username) {
+    return adminUsersClient.createForgottenPassword(username)
   },
 
   /**
    * @param token
-   * @param correlationId
    * @returns {Promise}
    */
-  findByResetToken: function (token, correlationId) {
-    return adminUsersClient.getForgottenPassword(token, correlationId)
+  findByResetToken: function (token) {
+    return adminUsersClient.getForgottenPassword(token)
   },
 
   /**
    * @param {String} userExternalId
-   * @param {String} correlationId
    * @returns {Promise}
    */
-  logOut: function (userExternalId, correlationId) {
-    return adminUsersClient.incrementSessionVersionForUser(userExternalId, correlationId)
+  logOut: function (userExternalId) {
+    return adminUsersClient.incrementSessionVersionForUser(userExternalId)
   },
 
   /**
    * @param externalServiceId
-   * @param correlationId
    * @returns {Promise}
    */
-  getServiceUsers: function (externalServiceId, correlationId) {
-    return adminUsersClient.getServiceUsers(externalServiceId, correlationId)
+  getServiceUsers: function (externalServiceId) {
+    return adminUsersClient.getServiceUsers(externalServiceId)
   },
 
   /**
    * @param token
    * @param newPassword
-   * @param correlationId
    * @returns {Promise}
    */
-  updatePassword: function updatePassword (token, newPassword, correlationId) {
-    return adminUsersClient.updatePasswordForUser(token, newPassword, correlationId)
+  updatePassword: function updatePassword (token, newPassword) {
+    return adminUsersClient.updatePasswordForUser(token, newPassword)
   },
 
   /**
    * @param externalId
    * @param roleName
    * @param externalServiceId
-   * @param correlationId
    * @returns {Promise.<User>}
    */
-  updateServiceRole: function (externalId, roleName, externalServiceId, correlationId) {
-    return adminUsersClient.updateServiceRole(externalId, externalServiceId, roleName, correlationId)
+  updateServiceRole: function (externalId, roleName, externalServiceId) {
+    return adminUsersClient.updateServiceRole(externalId, externalServiceId, roleName)
   },
 
   /**
@@ -134,11 +118,10 @@ module.exports = {
    * @param externalId
    * @param externalServiceId
    * @param roleName
-   * @param correlationId
    * @returns {Promise.<User>}
    */
-  assignServiceRole: function (externalId, externalServiceId, roleName, correlationId) {
-    return adminUsersClient.assignServiceRole(externalId, externalServiceId, roleName, correlationId)
+  assignServiceRole: function (externalId, externalServiceId, roleName) {
+    return adminUsersClient.assignServiceRole(externalId, externalServiceId, roleName)
   },
 
   /**
@@ -146,18 +129,16 @@ module.exports = {
    * @param senderId
    * @param externalServiceId
    * @param roleName
-   * @param correlationId
    */
-  inviteUser: function (invitee, senderId, externalServiceId, roleName, correlationId) {
-    return adminUsersClient.inviteUser(invitee, senderId, externalServiceId, roleName, correlationId)
+  inviteUser: function (invitee, senderId, externalServiceId, roleName) {
+    return adminUsersClient.inviteUser(invitee, senderId, externalServiceId, roleName)
   },
 
   /**
    * @param externalServiceId
-   * @param correlationId
    */
-  getInvitedUsersList: function (externalServiceId, correlationId) {
-    return adminUsersClient.getInvitedUsersList(externalServiceId, correlationId)
+  getInvitedUsersList: function (externalServiceId) {
+    return adminUsersClient.getInvitedUsersList(externalServiceId)
   },
 
   /**
@@ -165,47 +146,43 @@ module.exports = {
    * @param externalServiceId
    * @param removerExternalId
    * @param userExternalId
-   * @param correlationId
    */
-  delete: function (externalServiceId, removerExternalId, userExternalId, correlationId) {
-    return adminUsersClient.deleteUser(externalServiceId, removerExternalId, userExternalId, correlationId)
+  delete: function (externalServiceId, removerExternalId, userExternalId) {
+    return adminUsersClient.deleteUser(externalServiceId, removerExternalId, userExternalId)
   },
 
   /**
    * @param externalId
-   * @param correlationId
    * @returns {Promise<User>}
    */
-  provisionNewOtpKey: function (externalId, correlationId) {
+  provisionNewOtpKey: function (externalId) {
     if (!externalId) {
       return Promise.reject(new Error('No externalId specified'))
     }
 
-    return adminUsersClient.provisionNewOtpKey(externalId, correlationId)
+    return adminUsersClient.provisionNewOtpKey(externalId)
   },
 
   /**
    * @param externalId
    * @param code
    * @param secondFactor
-   * @param correlationId
    * @returns {Promise<User>}
    */
-  configureNewOtpKey: function (externalId, code, secondFactor, correlationId) {
+  configureNewOtpKey: function (externalId, code, secondFactor) {
     if (!externalId) {
-      Promise.reject(new Error('No externalId specified'))
+      return Promise.reject(new Error('No externalId specified'))
     }
 
-    return adminUsersClient.configureNewOtpKey(externalId, code, secondFactor, correlationId)
+    return adminUsersClient.configureNewOtpKey(externalId, code, secondFactor)
   },
 
   /**
    * @param externalId
    * @param newPhoneNumber
-   * @param correlationId
    * @returns {Promise}
    */
-  updatePhoneNumber: function (externalId, newPhoneNumber, correlationId) {
-    return adminUsersClient.updatePhoneNumberForUser(externalId, newPhoneNumber, correlationId)
+  updatePhoneNumber: function (externalId, newPhoneNumber) {
+    return adminUsersClient.updatePhoneNumberForUser(externalId, newPhoneNumber)
   }
 }

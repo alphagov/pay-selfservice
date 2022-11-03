@@ -18,8 +18,7 @@ module.exports = async function updateApiKey (req, res) {
 
   try {
     await publicAuthClient.updateToken({
-      payload: payload,
-      correlationId: req.correlationId
+      payload: payload
     })
 
     req.flash('generic', 'The API key description was successfully updated')

@@ -33,7 +33,6 @@ module.exports = async function createPaymentLink (req, res) {
   try {
     const createTokenResponse = await publicAuthClient.createTokenForAccount({
       accountId: gatewayAccountId,
-      correlationId: req.correlationId,
       payload: {
         account_id: gatewayAccountId,
         created_by: req.user.email,

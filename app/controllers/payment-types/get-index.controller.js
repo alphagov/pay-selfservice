@@ -2,7 +2,6 @@
 
 const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
-const { correlationHeader } = require('../../utils/correlation-header')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 function formatLabel (card) {
@@ -53,12 +52,11 @@ function formatCardsForTemplate (allCards, acceptedCards, threeDSEnabled) {
 }
 
 module.exports = async function showCardTypes (req, res, next) {
-  const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
 
   try {
-    const { card_types: allCards } = await connector.getAllCardTypes(correlationId)
-    const { card_types: acceptedCards } = await connector.getAcceptedCardsForAccountPromise(accountId, correlationId)
+    const { card_types: allCards } = await connector.getAllCardTypes()
+    const { card_types: acceptedCards } = await connector.getAcceptedCardsForAccountPromise(accountId)
 
     response(req, res, 'payment-types/card-types', formatCardsForTemplate(allCards, acceptedCards, req.account.requires3ds))
   } catch (err) {

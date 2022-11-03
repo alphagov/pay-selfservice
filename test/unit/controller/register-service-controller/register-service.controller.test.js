@@ -188,7 +188,7 @@ describe('Register service', function () {
       }))
 
       await getControllerWithStubs().submitYourServiceName(req, res, next)
-      sinon.assert.calledWith(updateServiceNameSpy, serviceExternalId, newServiceName, null, correlationId)
+      sinon.assert.calledWith(updateServiceNameSpy, serviceExternalId, newServiceName, null)
       sinon.assert.calledWith(res.redirect, 303, `/account/${gatewayAccountExternalId}/dashboard`)
     })
 

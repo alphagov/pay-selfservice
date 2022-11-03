@@ -13,15 +13,12 @@ const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
-const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
-
 module.exports = async function showTransactionList (req, res, next) {
   const accountId = req.account.gateway_account_id
   const gatewayAccountExternalId = req.account.external_id
 
   const filters = getFilters(req)
 
-  const correlationId = req.headers[CORRELATION_HEADER] || ''
   req.session.filters = url.parse(req.url).query
 
   if (!filters.valid) {
@@ -31,8 +28,8 @@ module.exports = async function showTransactionList (req, res, next) {
   let result
   try {
     result = await Promise.all([
-      transactionService.search([accountId], filters.result, correlationId),
-      client.getAllCardTypes(correlationId)
+      transactionService.search([accountId], filters.result),
+      client.getAllCardTypes()
     ])
   } catch (err) {
     return next(new Error('Unable to retrieve list of transactions or card types'))

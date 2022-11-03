@@ -16,10 +16,9 @@ const paths = require('../paths')
  */
 async function validateInvite (req, res, next) {
   const code = req.params.code
-  const correlationId = req.correlationId
 
   try {
-    const invite = await validateInviteService.getValidatedInvite(code, correlationId)
+    const invite = await validateInviteService.getValidatedInvite(code)
     if (!req.register_invite) {
       req.register_invite = {}
     }
@@ -42,7 +41,7 @@ async function validateInvite (req, res, next) {
       if (invite.user_exist) {
         res.redirect(302, paths.serviceSwitcher.index)
       } else {
-        await serviceRegistrationService.generateServiceInviteOtpCode(code, correlationId)
+        await serviceRegistrationService.generateServiceInviteOtpCode(code)
         res.redirect(302, paths.selfCreateService.otpVerify)
       }
     } else {

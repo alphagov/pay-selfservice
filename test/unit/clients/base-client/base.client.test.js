@@ -56,7 +56,7 @@ function RequestErrorStub () {
 util.inherits(RequestSuccessStub, EventEmitter)
 util.inherits(RequestErrorStub, EventEmitter)
 
-function getBaseClientWithSuccessStub(response, responseBody) {
+function getBaseClientWithSuccessStub (response, responseBody) {
   return proxyquire('../../../../app/services/clients/base-client/base.client', {
     '../../../utils/request-logger': requestLogger,
     'correlation-id': {
@@ -66,7 +66,7 @@ function getBaseClientWithSuccessStub(response, responseBody) {
   })
 }
 
-function getBaseClientWithErrorStub() {
+function getBaseClientWithErrorStub () {
   return proxyquire('../../../../app/services/clients/base-client/base.client', {
     '../../../utils/request-logger': requestLogger,
     'correlation-id': {
@@ -75,7 +75,6 @@ function getBaseClientWithErrorStub() {
     'request': new RequestErrorStub()
   })
 }
-
 
 describe('Base client', () => {
   beforeEach(() => {
@@ -158,7 +157,6 @@ describe('Base client', () => {
             expect(requestLogger.logRequestFailure.called).to.equal(true)
           })
       })
-
     })
 
     describe('The request returns a non-success response with JSON content type containing a "message" field of type array', () => {

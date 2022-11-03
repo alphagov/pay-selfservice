@@ -40,7 +40,7 @@ const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = []) 
   return `${process.env.LEDGER_URL}/v1/transaction?${formattedParams}&${formattedFilterParams}`
 }
 
-const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStreamStart, filters, gatewayAccountIds, user, correlationId,
+const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStreamStart, filters, gatewayAccountIds, user,
   allServiceTransactions, liveAccounts) {
   const timestampStreamEnd = Date.now()
   logger.info('Completed file stream', {
@@ -61,7 +61,7 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
   })
 }
 
-const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, chargeId, correlationId) {
+const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, chargeId) {
   try {
     const charge = await Ledger.transaction(chargeId, accountId)
     const transactionEvents = await Ledger.events(chargeId, accountId)
@@ -79,7 +79,7 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
       .value()
 
     if (userIds.length !== 0) {
-      const users = await userService.findMultipleByExternalIds(userIds, correlationId)
+      const users = await userService.findMultipleByExternalIds(userIds)
       return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction, users)
     } else {
       return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction)
@@ -96,7 +96,7 @@ async function getDisputeTransaction (chargeId, accountId) {
   }
 }
 
-const refund = async function refundTransaction (gatewayAccountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail, correlationId) {
+const refund = async function refundTransaction (gatewayAccountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail) {
   const logContext = {
     refund_amount_available: refundAmountAvailable,
     amount: amount
@@ -112,7 +112,7 @@ const refund = async function refundTransaction (gatewayAccountId, chargeId, amo
   }
 
   try {
-    await connector.postChargeRefund(gatewayAccountId, chargeId, payload, correlationId)
+    await connector.postChargeRefund(gatewayAccountId, chargeId, payload)
   } catch (err) {
     if (err.errorIdentifier) {
       if (err.errorIdentifier === errorIdentifier.REFUND_AMOUNT_AVAILABLE_MISMATCH) {

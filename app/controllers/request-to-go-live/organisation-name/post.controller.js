@@ -21,8 +21,8 @@ module.exports = async function submitOrganisationName (req, res, next) {
       .formatPayload()
 
     try {
-      await updateService(req.service.externalId, updateServiceRequest, req.correlationId)
-      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, goLiveStage.ENTERED_ORGANISATION_NAME, req.correlationId)
+      await updateService(req.service.externalId, updateServiceRequest)
+      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, goLiveStage.ENTERED_ORGANISATION_NAME)
       res.redirect(
         303,
         formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)

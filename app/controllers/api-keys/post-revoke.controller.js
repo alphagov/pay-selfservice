@@ -15,7 +15,7 @@ module.exports = async function revokeApiKey (req, res) {
 
   try {
     await publicAuthClient.deleteTokenForAccount({
-      accountId: accountId, correlationId: req.correlationId, payload: payload
+      accountId: accountId, payload: payload
     })
 
     req.flash('generic', 'The API key was successfully revoked')
