@@ -4,22 +4,22 @@ const express = require('express')
 const request = require('supertest')
 const { expect } = require('chai')
 
-const logContext = require('../../app/utils/log-context')
+const requestContext = require('../../app/utils/request-context')
 
 describe('Log context async storage', () => {
-  const path = '/test-log-context'
+  const path = '/test-request-context'
   let app
   let assignedLoggingFields
 
   before(() => {
     app = express()
-    app.use(logContext.logContextMiddleware)
+    app.use(requestContext.requestContextMiddleware)
     app.use((req, res, next) => {
-      logContext.addLoggingField('a_key', 'foo')
+      requestContext.addField('a_key', 'foo')
       next()
     })
     app.get(path, (req, res) => {
-      assignedLoggingFields = logContext.getLoggingFields()
+      assignedLoggingFields = requestContext.getLoggingFields()
       res.status(200)
       res.end()
     })

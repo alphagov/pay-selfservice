@@ -17,7 +17,7 @@ const errorHandler = require('./app/middleware/error-handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const logger = require('./app/utils/logger')(__filename)
 const loggingMiddleware = require('./app/middleware/logging-middleware')
-const { logContextMiddleware } = require('./app/utils/log-context')
+const { requestContextMiddleware } = require('./app/utils/request-context')
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 const formatPSPname = require('./app/utils/format-PSP-name')
 const formatAccountPathsFor = require('./app/utils/format-account-paths-for')
@@ -57,7 +57,7 @@ function initialiseGlobalMiddleware (app) {
   app.use(bodyParser.urlencoded({ extended: true }))
 
   app.use(cookieParser())
-  app.use(logContextMiddleware)
+  app.use(requestContextMiddleware)
   logger.stream = {
     write: function (message) {
       logger.info(message)
