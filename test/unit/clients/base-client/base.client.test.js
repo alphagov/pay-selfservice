@@ -59,8 +59,8 @@ util.inherits(RequestErrorStub, EventEmitter)
 function getBaseClientWithSuccessStub (response, responseBody) {
   return proxyquire('../../../../app/services/clients/base-client/base.client', {
     '../../../utils/request-logger': requestLogger,
-    'correlation-id': {
-      getId: () => { return correlationId }
+    '../../../utils/request-context': {
+      getRequestCorrelationIDField: () => { return correlationId }
     },
     'request': new RequestSuccessStub(response, responseBody)
   })
@@ -69,8 +69,8 @@ function getBaseClientWithSuccessStub (response, responseBody) {
 function getBaseClientWithErrorStub () {
   return proxyquire('../../../../app/services/clients/base-client/base.client', {
     '../../../utils/request-logger': requestLogger,
-    'correlation-id': {
-      getId: () => { return correlationId }
+    '../../../utils/request-context': {
+      getRequestCorrelationIDField: () => { return correlationId }
     },
     'request': new RequestErrorStub()
   })

@@ -1,7 +1,7 @@
 'use strict'
 
 const request = require('request')
-const correlator = require('correlation-id')
+const { getRequestCorrelationIDField } = require('../../../utils/request-context')
 const joinURL = require('url-join')
 const lodash = require('lodash')
 const { CORRELATION_HEADER } = require('../../../utils/correlation-header')
@@ -41,7 +41,7 @@ function makeRequest (method, opts) {
     opts.method = method.toUpperCase()
 
     const loggingContext = {
-      correlationId: correlator.getId(),
+      correlationId: getRequestCorrelationIDField(),
       startTime: new Date(),
       url: joinURL(lodash.get(opts, 'baseUrl', ''), opts.url),
       method: opts.method,
