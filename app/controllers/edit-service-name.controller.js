@@ -29,7 +29,7 @@ function getServiceName (req, res) {
 }
 
 async function postEditServiceName (req, res, next) {
-  const { correlationId, body } = req
+  const { body } = req
   const serviceExternalId = req.service.externalId
   const serviceName = body['service-name'] && body['service-name'].trim()
   const serviceHasNameCy = body['welsh-service-name-bool'] !== undefined ? body['welsh-service-name-bool'] : true
@@ -55,7 +55,7 @@ async function postEditServiceName (req, res, next) {
     res.redirect(formatServicePathsFor(paths.service.editServiceName.index, req.service.externalId))
   } else {
     try {
-      await serviceService.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
+      await serviceService.updateServiceName(serviceExternalId, serviceName, serviceNameCy)
       res.redirect(paths.serviceSwitcher.index)
     } catch (err) {
       next(err)

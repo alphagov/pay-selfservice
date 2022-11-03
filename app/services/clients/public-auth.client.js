@@ -14,14 +14,12 @@ const getUrlForAccountId = accountId => `${PUBLIC_AUTH_URL}/${accountId}`
  * Get active tokens for account
  *
  * Expects {
- *  accountId: accountId,
- *  correlationId: correlationId
+ *  accountId: accountId
  * }
  */
 function getActiveTokensForAccount (params) {
   const configuration = {
     url: getUrlForAccountId(params.accountId),
-    correlationId: params.correlationId,
     description: 'Get active tokens for account',
     service: SERVICE_NAME
   }
@@ -33,8 +31,7 @@ function getActiveTokensForAccount (params) {
  * Get revoked tokens for account
  *
  * Expects {
- *  accountId: accountId,
- *  correlationId: correlationId
+ *  accountId: accountId
  * }
  *
  * @param {Object} params
@@ -44,7 +41,6 @@ function getRevokedTokensForAccount (params) {
   const url = `${getUrlForAccountId(params.accountId)}?state=revoked`
   const configuration = {
     url: url,
-    correlationId: params.correlationId,
     description: 'Get revoked tokens for account',
     service: SERVICE_NAME
   }
@@ -57,7 +53,6 @@ function getRevokedTokensForAccount (params) {
  *
  * Expects {
  *  accountId: accountId,
- *  correlationId: correlationId,
  *  payload: {
  *    account_id: accountId,
  *    created_by: (email of creator)
@@ -71,7 +66,6 @@ function getRevokedTokensForAccount (params) {
 function createTokenForAccount (params) {
   const configuration = {
     url: process.env.PUBLIC_AUTH_URL,
-    correlationId: params.correlationId,
     body: {
       ...params.payload
     },
@@ -87,7 +81,6 @@ function createTokenForAccount (params) {
  *
  * Expects {
  *  accountId: accountId,
- *  correlationId: correlationId,
  *  payload: {
  *    token_link: token_link,
  *    description: description
@@ -100,7 +93,6 @@ function createTokenForAccount (params) {
 function updateToken (params) {
   const configuration = {
     url: process.env.PUBLIC_AUTH_URL,
-    correlationId: params.correlationId,
     body: {
       ...params.payload
     },
@@ -116,7 +108,6 @@ function updateToken (params) {
  *
  * Expects {
  *  accountId: accountId,
- *  correlationId: correlationId,
  *  payload: {
  *    <token_link>: token_link,
  *    <token_hash>: token_hash
@@ -130,7 +121,6 @@ function deleteTokenForAccount (params) {
   let url = getUrlForAccountId(params.accountId)
   const configuration = {
     url: url,
-    correlationId: params.correlationId,
     body: {
       ...params.payload
     },

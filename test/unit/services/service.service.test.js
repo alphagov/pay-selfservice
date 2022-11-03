@@ -11,9 +11,6 @@ const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures'
 
 const expect = chai.expect
 
-// Constants
-const correlationId = 'correlationId'
-
 const gatewayAccountId1 = '1'
 const gatewayAccountId2 = '2'
 const nonExistentId = '3'
@@ -50,7 +47,7 @@ describe('service service', function () {
           '../services/clients/connector.client': connectorClientStub
         })
 
-      const gatewayAccounts = await serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId], correlationId)
+      const gatewayAccounts = await serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId])
 
       expect(gatewayAccounts).to.have.lengthOf(2)
       expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
@@ -89,7 +86,7 @@ describe('service service', function () {
           './clients/adminusers.client': adminusersClientStub
         })
 
-      const service = await serviceService.updateServiceName(externalServiceId, newServiceName, correlationId)
+      const service = await serviceService.updateServiceName(externalServiceId, newServiceName)
       expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[1]}')
     })
   })
@@ -112,7 +109,7 @@ describe('service service', function () {
           './clients/adminusers.client': adminusersClientStub
         })
 
-      const updatedStage = await serviceService.updateCurrentGoLiveStage(serviceExternalId, newStage, correlationId)
+      const updatedStage = await serviceService.updateCurrentGoLiveStage(serviceExternalId, newStage)
 
       expect(JSON.stringify(updatedStage)).to.deep.equal('{"current_go_live_stage":"CHOSEN_PSP_STRIPE"}')
     })
@@ -147,7 +144,7 @@ describe('service service', function () {
           './clients/adminusers.client': adminusersClientStub
         })
 
-      const service = await serviceService.updateServiceName(externalServiceId, newServiceName, correlationId)
+      const service = await serviceService.updateServiceName(externalServiceId, newServiceName)
 
       expect(patchServiceName.callCount).to.equal(2)
       expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10,9]}')

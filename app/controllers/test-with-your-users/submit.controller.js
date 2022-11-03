@@ -36,7 +36,6 @@ module.exports = async (req, res) => {
   try {
     const publicAuthData = await publicAuthClient.createTokenForAccount({
       accountId: gatewayAccountId,
-      correlationId: req.correlationId,
       payload: {
         account_id: gatewayAccountId,
         created_by: req.user.email,

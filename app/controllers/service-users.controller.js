@@ -57,8 +57,8 @@ async function index (req, res, next) {
 
   try {
     const [members, invitedMembers] = await Promise.all([
-      userService.getServiceUsers(externalServiceId, req.correlationId),
-      userService.getInvitedUsersList(externalServiceId, req.correlationId)
+      userService.getServiceUsers(externalServiceId),
+      userService.getInvitedUsersList(externalServiceId)
     ])
     const teamMembers = mapByRoles(members, externalServiceId, req.user)
     const invitedTeamMembers = mapInvitesByRoles(invitedMembers)
@@ -86,7 +86,7 @@ async function show (req, res, next) {
   }
 
   try {
-    const user = await userService.findByExternalId(externalUserId, req.correlationId)
+    const user = await userService.findByExternalId(externalUserId)
     const hasSameService = user.hasService(externalServiceId) && req.user.hasService(externalServiceId)
     const roleInList = roles[_.get(user.getRoleForService(externalServiceId), 'name')]
     const editPermissionsLink = formatServicePathsFor(paths.service.teamMembers.permissions, externalServiceId, externalUserId)
@@ -117,7 +117,6 @@ async function remove (req, res, next) {
   const userToRemoveExternalId = req.params.externalUserId
   const externalServiceId = req.service.externalId
   const removerExternalId = req.user.externalId
-  const correlationId = req.correlationId
 
   if (userToRemoveExternalId === removerExternalId) {
     renderErrorView(req, res, 'It is not possible to remove yourself from a service', 403)
@@ -125,8 +124,8 @@ async function remove (req, res, next) {
   }
 
   try {
-    const user = await userService.findByExternalId(userToRemoveExternalId, correlationId)
-    await userService.delete(externalServiceId, removerExternalId, userToRemoveExternalId, correlationId)
+    const user = await userService.findByExternalId(userToRemoveExternalId)
+    await userService.delete(externalServiceId, removerExternalId, userToRemoveExternalId)
     req.flash('generic', user.username + ' was successfully removed')
     res.redirect(formatServicePathsFor(paths.service.teamMembers.index, externalServiceId))
   } catch (err) {
@@ -154,7 +153,7 @@ async function remove (req, res, next) {
  */
 async function profile (req, res, next) {
   try {
-    const user = await userService.findByExternalId(req.user.externalId, req.correlationId)
+    const user = await userService.findByExternalId(req.user.externalId)
     response(req, res, 'team-members/team-member-profile', {
       secondFactorMethod,
       username: user.username,

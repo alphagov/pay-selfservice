@@ -8,19 +8,19 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const adminUsersClient = getAdminUsersClient()
 
-function submitRegistration (email, phoneNumber, password, correlationId) {
-  return adminUsersClient.submitServiceRegistration(email, phoneNumber, password, correlationId)
+function submitRegistration (email, phoneNumber, password) {
+  return adminUsersClient.submitServiceRegistration(email, phoneNumber, password)
 }
 
-function submitServiceInviteOtpCode (code, otpCode, correlationId) {
-  return adminUsersClient.verifyOtpForInvite(code, otpCode, correlationId)
+function submitServiceInviteOtpCode (code, otpCode) {
+  return adminUsersClient.verifyOtpForInvite(code, otpCode)
 }
 
-async function createPopulatedService (inviteCode, correlationId) {
-  const completeInviteResponse = await adminUsersClient.completeInvite(correlationId, inviteCode)
+async function createPopulatedService (inviteCode) {
+  const completeInviteResponse = await adminUsersClient.completeInvite(inviteCode)
   logger.info('Created new service during user registration')
 
-  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, completeInviteResponse.service_external_id, correlationId)
+  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, completeInviteResponse.service_external_id)
   logger.info('New test card gateway account registered with service')
 
   // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
@@ -28,7 +28,7 @@ async function createPopulatedService (inviteCode, correlationId) {
   await adminUsersClient.addGatewayAccountsToService(completeInviteResponse.service_external_id, [ gatewayAccount.gateway_account_id ])
   logger.info('Service associated with internal gateway account ID with legacy mapping')
 
-  const user = await adminUsersClient.getUserByExternalId(completeInviteResponse.user_external_id, correlationId)
+  const user = await adminUsersClient.getUserByExternalId(completeInviteResponse.user_external_id)
 
   // handler called outside of service context, manually include newly created flags for logging
   logger.info('Created new service with test account during user registration', {
@@ -40,12 +40,12 @@ async function createPopulatedService (inviteCode, correlationId) {
   return user
 }
 
-function generateServiceInviteOtpCode (inviteCode, correlationId) {
-  return adminUsersClient.generateInviteOtpCode(inviteCode, null, null, correlationId)
+function generateServiceInviteOtpCode (inviteCode) {
+  return adminUsersClient.generateInviteOtpCode(inviteCode, null, null)
 }
 
-function resendOtpCode (code, phoneNumber, correlationId) {
-  return adminUsersClient.resendOtpCode(code, phoneNumber, correlationId)
+function resendOtpCode (code, phoneNumber) {
+  return adminUsersClient.resendOtpCode(code, phoneNumber)
 }
 
 module.exports = {

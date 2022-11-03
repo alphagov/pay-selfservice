@@ -21,7 +21,7 @@ module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
   }
 
   try {
-    await userService.configureNewOtpKey(req.user.externalId, code, method, req.correlationId)
+    await userService.configureNewOtpKey(req.user.externalId, code, method)
     req.flash('otpMethodUpdated', method)
     return res.redirect(paths.user.profile.index)
   } catch (err) {

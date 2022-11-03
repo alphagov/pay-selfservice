@@ -6,7 +6,6 @@ const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
-const { correlationHeader } = require('../../utils/correlation-header')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
 const { getCredentialByExternalId } = require('../../utils/credentials')
@@ -18,7 +17,6 @@ const ISSUER_FIELD = 'issuer'
 const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 
 module.exports = async function submit3dsFlexCredentials (req, res, next) {
-  const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
   const orgUnitId = lodash.get(req.body, ORGANISATIONAL_UNIT_ID_FIELD, '').trim()
   const issuer = lodash.get(req.body, ISSUER_FIELD, '').trim()
@@ -41,7 +39,6 @@ module.exports = async function submit3dsFlexCredentials (req, res, next) {
     }
 
     const flexParams = {
-      correlationId: correlationId,
       gatewayAccountId: accountId,
       payload: {
         organisational_unit_id: orgUnitId,

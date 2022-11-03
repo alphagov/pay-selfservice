@@ -179,7 +179,7 @@ describe('Responsible person POST controller', () => {
       phone: telephoneNormalised,
       email: emailNormalised
     })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person')
     sinon.assert.calledWith(updateCompanyMock, stripeAccountId, { executives_provided: true })
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
@@ -204,7 +204,7 @@ describe('Responsible person POST controller', () => {
       phone: telephoneNormalised,
       email: emailNormalised
     })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
@@ -272,7 +272,7 @@ describe('Responsible person POST controller', () => {
     })
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId, req.correlationId)
+    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId)
     sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
   })
 
@@ -409,7 +409,7 @@ describe('Responsible person POST controller', () => {
     await controller(req, res, next)
 
     sinon.assert.called(updatePersonMock)
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person')
     sinon.assert.notCalled(res.redirect)
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)
@@ -448,7 +448,7 @@ describe('Responsible person POST controller', () => {
       email: emailNormalised,
       address_line2: addressLine2Normalised
     })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'responsible_person')
     sinon.assert.calledWith(updateCompanyMock, stripeAccountId, { executives_provided: true })
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })

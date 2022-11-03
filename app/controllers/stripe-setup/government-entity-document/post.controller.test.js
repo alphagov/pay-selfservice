@@ -79,7 +79,7 @@ describe('Government entity document POST controller', () => {
 
     sinon.assert.calledWith(uploadFileMock, 'entity_document_for_account_1', 'image/jpeg', '0A 0B')
     sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
@@ -214,7 +214,7 @@ describe('Government entity document POST controller', () => {
 
     sinon.assert.called(uploadFileMock)
     sinon.assert.called(updateAccountMock)
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
     sinon.assert.notCalled(res.redirect)
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)
@@ -251,7 +251,7 @@ describe('Government entity document POST controller', () => {
 
       sinon.assert.calledWith(uploadFileMock, 'entity_document_for_account_1', 'image/jpeg', '0A 0B')
       sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document', req.correlationId)
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
       sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.switchPSP.index}`)
     })
   })
@@ -287,8 +287,8 @@ describe('Government entity document POST controller', () => {
 
       sinon.assert.calledWith(uploadFileMock, 'entity_document_for_account_1', 'image/jpeg', '0A 0B')
       sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
-      sinon.assert.calledWith(completeKycMock, req.account.gateway_account_id, req.service, res.locals.stripeAccount.stripeAccountId, 'correlation-id')
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document', req.correlationId)
+      sinon.assert.calledWith(completeKycMock, req.account.gateway_account_id, req.service, res.locals.stripeAccount.stripeAccountId)
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
       sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/credential-external-id`)
     })
 
@@ -301,7 +301,7 @@ describe('Government entity document POST controller', () => {
 
       sinon.assert.calledWith(uploadFileMock, 'entity_document_for_account_1', 'image/jpeg', '0A 0B')
       sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document', req.correlationId)
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
       sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/credential-external-id`)
     })
   })

@@ -6,7 +6,6 @@ const moment = require('moment-timezone')
 const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response').response
 const { getCurrentCredential, getSwitchingCredential } = require('../../utils/credentials')
-const CORRELATION_HEADER = require('../../utils/correlation-header').CORRELATION_HEADER
 const LedgerClient = require('../../services/clients/ledger.client')
 const ProductsClient = require('../../services/clients/products.client.js')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
@@ -111,9 +110,8 @@ const displayRequestTestStripeAccountLink = (service, account, user) => {
 module.exports = async (req, res) => {
   const gatewayAccountId = req.account.gateway_account_id
 
-  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const period = _.get(req, 'query.period', 'today')
-  const telephonePaymentLink = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId, correlationId)
+  const telephonePaymentLink = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId)
   const linksToDisplay = getLinksToDisplay(req.service, req.account, req.user, telephonePaymentLink)
   const model = {
     name: req.user.username,
@@ -130,7 +128,7 @@ module.exports = async (req, res) => {
   }
 
   if (req.account.payment_provider === 'stripe' && req.account.type === 'live') {
-    model.stripeAccount = await getStripeAccountDetails(req.account.gateway_account_id, req.correlationId)
+    model.stripeAccount = await getStripeAccountDetails(req.account.gateway_account_id)
   }
 
   try {
@@ -148,7 +146,7 @@ module.exports = async (req, res) => {
     logger.info('Successfully logged in')
 
     try {
-      const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime, { correlationId: correlationId })
+      const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime)
       response(req, res, 'dashboard/index', Object.assign(model, {
         activity: result,
         fromDateTime,
@@ -209,9 +207,9 @@ function getTransactionDateRange (period) {
   return { fromDateTime, toDateTime }
 }
 
-async function getStripeAccountDetails (gatewayAccountId, correlationId) {
+async function getStripeAccountDetails (gatewayAccountId) {
   try {
-    const stripeResponse = await connector.getStripeAccount(gatewayAccountId, correlationId)
+    const stripeResponse = await connector.getStripeAccount(gatewayAccountId)
     const { stripeAccountId } = stripeResponse
 
     try {
@@ -240,9 +238,9 @@ async function getStripeAccountDetails (gatewayAccountId, correlationId) {
   return null
 }
 
-async function getTelephonePaymentLink (user, service, gatewayAccountId, correlationId) {
+async function getTelephonePaymentLink (user, service, gatewayAccountId) {
   if (service.agentInitiatedMotoEnabled && user.hasPermission(service.externalId, 'agent-initiated-moto:create')) {
-    const telephonePaymentLinks = await getTelephonePaymentLinks(gatewayAccountId, correlationId)
+    const telephonePaymentLinks = await getTelephonePaymentLinks(gatewayAccountId)
     if (telephonePaymentLinks.length >= 1) {
       return telephonePaymentLinks[0].links.pay.href
     }
@@ -250,7 +248,7 @@ async function getTelephonePaymentLink (user, service, gatewayAccountId, correla
   return null
 }
 
-async function getTelephonePaymentLinks (gatewayAccountId, correlationId) {
+async function getTelephonePaymentLinks (gatewayAccountId) {
   try {
     return await ProductsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, 'AGENT_INITIATED_MOTO')
   } catch (e) {

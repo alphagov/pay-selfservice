@@ -29,7 +29,6 @@ function showWorldpayCredentialsPage (req, res, next) {
 async function updateWorldpayCredentials (req, res, next) {
   const gatewayAccountId = req.account.gateway_account_id
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const correlationId = req.correlationId || ''
 
   try {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
@@ -40,7 +39,7 @@ async function updateWorldpayCredentials (req, res, next) {
     }
 
     if (SKIP_PSP_CREDENTIAL_CHECKS !== 'true') {
-      const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ correlationId, gatewayAccountId, payload: results.values })
+      const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ gatewayAccountId, payload: results.values })
       if (checkCredentialsWithWorldpay.result !== 'valid') {
         logger.warn('Provided credentials failed validation with Worldpay')
         results.errorSummaryList = formatErrorsForSummaryList({ 'merchantId': 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
@@ -51,7 +50,6 @@ async function updateWorldpayCredentials (req, res, next) {
     }
 
     await connectorClient.patchAccountGatewayAccountCredentials({
-      correlationId,
       gatewayAccountId,
       gatewayAccountCredentialsId: credential.gateway_account_credential_id,
       credentials: results.values,

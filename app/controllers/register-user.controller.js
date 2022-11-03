@@ -46,7 +46,6 @@ const subscribeService = async function subscribeService (req, res, next) {
   }
 
   const inviteCode = sessionData.code
-  const correlationId = req.correlationId
 
   if (sessionData.email !== req.user.email) {
     logger.info('Attempt to accept invite for a different user', {
@@ -56,7 +55,7 @@ const subscribeService = async function subscribeService (req, res, next) {
   }
 
   try {
-    const completeResponse = await registrationService.completeInvite(inviteCode, correlationId)
+    const completeResponse = await registrationService.completeInvite(inviteCode)
     req.flash('inviteSuccessServiceId', completeResponse.service_external_id)
     return res.redirect(303, paths.serviceSwitcher.index)
   } catch (err) {
@@ -76,7 +75,6 @@ const subscribeService = async function subscribeService (req, res, next) {
 const submitRegistration = async function submitRegistration (req, res, next) {
   const telephoneNumber = req.body['telephone-number']
   const password = req.body['password']
-  const correlationId = req.correlationId
 
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
@@ -102,7 +100,7 @@ const submitRegistration = async function submitRegistration (req, res, next) {
   }
 
   try {
-    await registrationService.submitRegistration(sessionData.code, telephoneNumber, password, correlationId)
+    await registrationService.submitRegistration(sessionData.code, telephoneNumber, password)
     sessionData.telephone_number = telephoneNumber
     return res.redirect(303, paths.registerUser.otpVerify)
   } catch (err) {
@@ -139,7 +137,6 @@ const showOtpVerify = function showOtpVerify (req, res, next) {
  * @param res
  */
 const submitOtpVerify = async function submitOtpVerify (req, res, next) {
-  const correlationId = req.correlationId
   const verificationCode = req.body['verify-code']
 
   const sessionData = req.register_invite
@@ -158,7 +155,7 @@ const submitOtpVerify = async function submitOtpVerify (req, res, next) {
   }
 
   try {
-    await registrationService.verifyOtp(sessionData.code, verificationCode, correlationId)
+    await registrationService.verifyOtp(sessionData.code, verificationCode)
   } catch (err) {
     if (err.errorCode === 401) {
       sessionData.recovered = {
@@ -175,7 +172,7 @@ const submitOtpVerify = async function submitOtpVerify (req, res, next) {
   }
 
   try {
-    const completeResponse = await registrationService.completeInvite(sessionData.code, correlationId)
+    const completeResponse = await registrationService.completeInvite(sessionData.code)
     loginController.setupDirectLoginAfterRegister(req, res, completeResponse.user_external_id)
     return res.redirect(303, paths.registerUser.logUserIn)
   } catch (err) {
@@ -213,7 +210,6 @@ const showReVerifyPhone = function showReVerifyPhone (req, res, next) {
  * @param res
  */
 const submitReVerifyPhone = async function submitReVerifyPhone (req, res, next) {
-  const correlationId = req.correlationId
   const telephoneNumber = req.body['telephone-number']
 
   const sessionData = req.register_invite
@@ -233,7 +229,7 @@ const submitReVerifyPhone = async function submitReVerifyPhone (req, res, next) 
   }
 
   try {
-    await registrationService.resendOtpCode(sessionData.code, telephoneNumber, correlationId)
+    await registrationService.resendOtpCode(sessionData.code, telephoneNumber)
     sessionData.telephone_number = telephoneNumber
     return res.redirect(303, paths.registerUser.otpVerify)
   } catch (err) {

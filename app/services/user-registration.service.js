@@ -11,23 +11,22 @@ module.exports = {
    * @param code
    * @param telephoneNumber
    * @param password
-   * @param correlationId
    * @returns {*|Constructor}
    */
-  submitRegistration: function (code, telephoneNumber, password, correlationId) {
-    return adminUsersClient.generateInviteOtpCode(code, telephoneNumber, password, correlationId)
+  submitRegistration: function submitRegistration (code, telephoneNumber, password) {
+    return adminUsersClient.generateInviteOtpCode(code, telephoneNumber, password)
   },
 
-  verifyOtp: function (inviteCode, verifyCode, correlationId) {
-    return adminUsersClient.verifyOtpForInvite(inviteCode, verifyCode, correlationId)
+  verifyOtp: function verifyOtp (inviteCode, verifyCode) {
+    return adminUsersClient.verifyOtpForInvite(inviteCode, verifyCode)
   },
 
-  resendOtpCode: function (code, phoneNumber, correlationId) {
-    return adminUsersClient.resendOtpCode(code, phoneNumber, correlationId)
+  resendOtpCode: function resendOtpCode (code, phoneNumber) {
+    return adminUsersClient.resendOtpCode(code, phoneNumber)
   },
 
-  completeInvite: function (code, correlationId) {
-    return adminUsersClient.completeInvite(correlationId, code)
+  completeInvite: function completeInvite (code) {
+    return adminUsersClient.completeInvite(code)
   }
 
 }

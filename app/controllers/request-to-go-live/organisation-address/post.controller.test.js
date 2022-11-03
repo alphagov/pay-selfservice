@@ -98,7 +98,7 @@ describe('organisation address - post controller', () => {
       })
     })
 
-    function testSuiteSetup (path){
+    function testSuiteSetup (path) {
       res = {
         setHeader: sinon.stub(),
         status: sinon.spy(),
@@ -124,7 +124,7 @@ describe('organisation address - post controller', () => {
 
     describe('request to go live', () => {
       before(() => {
-        testSuiteSetup({ route: {path: '/request-to-go-live/organisation-address'}})
+        testSuiteSetup({ route: { path: '/request-to-go-live/organisation-address' } })
       })
 
       it('should return errors when the required fields are missing', () => {
@@ -149,7 +149,7 @@ describe('organisation address - post controller', () => {
 
     describe('manage organisation details', () => {
       before(() => {
-        testSuiteSetup( { route: { path: '/organisation-details'}})
+        testSuiteSetup({ route: { path: '/organisation-details' } })
       })
 
       it('should return errors when the required fields are missing', () => {
@@ -175,7 +175,7 @@ describe('organisation address - post controller', () => {
 
     describe('new Stripe gateway account`', () => {
       before(() => {
-        testSuiteSetup({url: '/your-psp/:credentialId/update-organisation-details'})
+        testSuiteSetup({ url: '/your-psp/:credentialId/update-organisation-details' })
       })
 
       it('should return errors when the required fields are missing', () => {
@@ -199,7 +199,7 @@ describe('organisation address - post controller', () => {
 
     describe('`Switch PSP > Stripe`', () => {
       before(() => {
-        testSuiteSetup({url: '/switch-psp/:credentialId/update-organisation-details'})
+        testSuiteSetup({ url: '/switch-psp/:credentialId/update-organisation-details' })
       })
 
       it('should return errors when the required fields are missing', () => {
@@ -320,7 +320,7 @@ describe('organisation address - post controller', () => {
 
             await controller(req, res, next)
 
-            sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
+            sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest)
             sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
           })
 
@@ -380,7 +380,7 @@ describe('organisation address - post controller', () => {
 
             await controller(req, res, next)
 
-            sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
+            sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest)
             sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
           })
         })
@@ -507,7 +507,7 @@ describe('organisation address - post controller', () => {
           const controller = getController(mockServiceService)
           await controller(req, res, next)
 
-          sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest, correlationId)
+          sinon.assert.calledWith(mockServiceService.updateService, serviceExternalId, expectedUpdateServiceRequest)
           sinon.assert.calledWith(res.redirect, 303, `/service/${serviceExternalId}/organisation-details`)
         })
       })
@@ -528,7 +528,7 @@ describe('organisation address - post controller', () => {
         current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
       }))
 
-    let req, res, next
+      let req, res, next
 
       beforeEach(() => {
         req = {
@@ -558,19 +558,19 @@ describe('organisation address - post controller', () => {
       })
 
       describe('service update success', () => {
-      const updatedService = new Service(serviceFixtures.validServiceResponse({
-        external_id: serviceExternalId,
-        current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
-      }))
+        const updatedService = new Service(serviceFixtures.validServiceResponse({
+          external_id: serviceExternalId,
+          current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
+        }))
 
-      const mockUpdateService = sinon.spy(() => {
-        return new Promise(resolve => {
-          resolve(updatedService)
+        const mockUpdateService = sinon.spy(() => {
+          return new Promise(resolve => {
+            resolve(updatedService)
+          })
         })
-      })
 
-      const mockServiceService = { updateService: mockUpdateService }
-      const controller = getController(mockServiceService)
+        const mockServiceService = { updateService: mockUpdateService }
+        const controller = getController(mockServiceService)
 
         it('should update Stripe and redirect to `Stripe > add psp details`', async function () {
           await controller(req, res, next)
@@ -584,9 +584,9 @@ describe('organisation address - post controller', () => {
             address_country: validCountry
           })
 
-        const isSwitchingCredentials = false
-          sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials, req.correlationId)
-          sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
+          const isSwitchingCredentials = false
+          sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials)
+          sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
           sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
           sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
         })
@@ -667,22 +667,22 @@ describe('organisation address - post controller', () => {
         const controller = getController(mockServiceService)
 
         it('should update Stripe and redirect to `Switch PSP > Stripe index page`', async function () {
-            await controller(req, res, next)
+          await controller(req, res, next)
 
-            sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
-              name: validName,
-              address_line1: validLine1,
-              address_line2: validLine2,
-              address_city: validCity,
-              address_postcode: validPostcode,
-              address_country: validCountry
-            })
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+            name: validName,
+            address_line1: validLine1,
+            address_line2: validLine2,
+            address_city: validCity,
+            address_postcode: validPostcode,
+            address_country: validCountry
+          })
 
-            const isSwitchingCredentials = true
-            sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials, req.correlationId)
-            sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details', req.correlationId)
-            sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
-            sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
+          const isSwitchingCredentials = true
+          sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials)
+          sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
+          sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
+          sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
         })
 
         it('when `address-line2` is empty, it should not call the Stripe client with address line 2', async function () {

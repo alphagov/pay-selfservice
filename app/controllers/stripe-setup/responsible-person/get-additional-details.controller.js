@@ -8,7 +8,7 @@ module.exports = async function showResponsiblePersonAdditionalDetailsForm (req,
   try {
     const currentCredential = getCurrentCredential(req.account)
 
-    const responsiblePersonName = await getExistingResponsiblePersonName(req.account, false, req.correlationId)
+    const responsiblePersonName = await getExistingResponsiblePersonName(req.account, false)
     return response(req, res, 'stripe-setup/responsible-person/kyc-additional-information', {
       responsiblePersonName,
       currentCredential

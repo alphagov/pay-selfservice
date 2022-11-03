@@ -43,7 +43,7 @@ module.exports = async (req, res, next) => {
     })
   } else {
     try {
-      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
       const companyNumberProvided = companyNumberDeclaration === 'true'
 
       if (companyNumberProvided) {
@@ -53,7 +53,7 @@ module.exports = async (req, res, next) => {
         await updateCompany(stripeAccountId, stripeCompanyBody)
       }
 
-      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'company_number', req.correlationId)
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'company_number')
 
       logger.info('Company number submitted for Stripe account', {
         stripe_account_id: stripeAccountId,

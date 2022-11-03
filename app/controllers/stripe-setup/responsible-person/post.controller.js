@@ -146,7 +146,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
     })
   } else {
     try {
-      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
       const personsResponse = await listPersons(stripeAccountId)
       const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
 
@@ -166,7 +166,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       })
 
       if (!isSubmittingAdditionalKycData) {
-        await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
+        await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person')
       }
 
       if (isSwitchingCredentials) {
@@ -175,7 +175,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       } else if (isSubmittingAdditionalKycData) {
         const taskListComplete = await isKycTaskListComplete(currentCredential)
         if (taskListComplete) {
-          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId)
           req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
         } else {
           req.flash('generic', 'Responsible person details added successfully')

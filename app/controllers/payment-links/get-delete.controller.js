@@ -14,7 +14,6 @@ module.exports = async (req, res) => {
 
     const deleteToken = publicAuthClient.deleteTokenForAccount({
       accountId: gatewayAccountId,
-      correlationId: req.correlationId,
       payload: {
         token: product.apiToken
       }

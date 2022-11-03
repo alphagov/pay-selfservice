@@ -41,9 +41,9 @@ describe('The POST set phone number for updating 2FA method controller', () => {
       it('should make requests to adminusers then redirect', async () => {
         await controllerWithAdminusersSuccess(req, res, next)
 
-        sinon.assert.calledWith(updatePhoneNumberSpy, userExternalId, req.body.phone, correlationId)
-        sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId, correlationId)
-        sinon.assert.calledWith(sendProvisionalOTPSpy, userExternalId, correlationId)
+        sinon.assert.calledWith(updatePhoneNumberSpy, userExternalId, req.body.phone)
+        sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId)
+        sinon.assert.calledWith(sendProvisionalOTPSpy, userExternalId)
         sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
       })
     })
@@ -56,7 +56,7 @@ describe('The POST set phone number for updating 2FA method controller', () => {
         const controllerWithAdminusersError = getController(updatePhoneNumberErrorSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy)
         await controllerWithAdminusersError(req, res, next)
 
-        sinon.assert.calledWith(updatePhoneNumberErrorSpy, userExternalId, req.body.phone, correlationId)
+        sinon.assert.calledWith(updatePhoneNumberErrorSpy, userExternalId, req.body.phone)
         sinon.assert.notCalled(provisionNewOtpKeySpy)
         sinon.assert.notCalled(sendProvisionalOTPSpy)
         sinon.assert.calledWith(next, error)

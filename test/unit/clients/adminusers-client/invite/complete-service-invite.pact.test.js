@@ -67,7 +67,7 @@ describe('adminusers client - complete an invite', function () {
     afterEach(() => provider.verify())
 
     it('should complete a service invite successfully', function (done) {
-      adminUsersClient.completeInvite('correlation-id', inviteCode).should.be.fulfilled.then(response => {
+      adminUsersClient.completeInvite(inviteCode).should.be.fulfilled.then(response => {
         expect(response.invite).to.deep.equal(validInviteCompleteResponse.invite)
         expect(response.user_external_id).to.equal(userExternalId)
         expect(response.service_external_id).to.equal(serviceExternalId)
@@ -98,7 +98,7 @@ describe('adminusers client - complete an invite', function () {
     afterEach(() => provider.verify())
 
     it('should 404 NOT FOUND if invite code not found', function (done) {
-      adminUsersClient.completeInvite('correlation-id', nonExistingInviteCode, gatewayAccountIds).should.be.rejected.then(function (response) {
+      adminUsersClient.completeInvite(nonExistingInviteCode, gatewayAccountIds).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
@@ -127,7 +127,7 @@ describe('adminusers client - complete an invite', function () {
     afterEach(() => provider.verify())
 
     it('should 409 CONFLICT if user with same email exists', function (done) {
-      adminUsersClient.completeInvite('correlation-id', inviteCode, gatewayAccountIds).should.be.rejected.then(function (response) {
+      adminUsersClient.completeInvite(inviteCode, gatewayAccountIds).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(409)
       }).should.notify(done)
     })
@@ -158,7 +158,7 @@ describe('adminusers client - complete an invite', function () {
     afterEach(() => provider.verify())
 
     it('should 400 BAD REQUEST if gateway accounts are non numeric', function (done) {
-      adminUsersClient.completeInvite('correlation-id', inviteCode, invalidGatewayAccountIds).should.be.rejected.then(function (response) {
+      adminUsersClient.completeInvite(inviteCode, invalidGatewayAccountIds).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
       }).should.notify(done)
     })

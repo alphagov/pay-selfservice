@@ -23,7 +23,7 @@ function get (req, res) {
 }
 
 async function post (req, res, next) {
-  const { correlationId, body } = req
+  const { body } = req
   const serviceName = body['service-name'] && body['service-name'].trim()
   const serviceHasNameCy = body['welsh-service-name-bool']
   const serviceNameCy = serviceHasNameCy ? body['service-name-cy'] && body['service-name-cy'].trim() : ''
@@ -47,8 +47,8 @@ async function post (req, res, next) {
   }
 
   try {
-    const service = await serviceService.createService(serviceName, serviceNameCy, req.user, correlationId)
-    await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin', correlationId)
+    const service = await serviceService.createService(serviceName, serviceNameCy, req.user)
+    await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
     res.redirect(paths.serviceSwitcher.index)
   } catch (err) {
     next(err)

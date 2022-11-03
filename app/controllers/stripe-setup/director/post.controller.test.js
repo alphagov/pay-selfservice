@@ -126,7 +126,7 @@ describe('Director POST controller', () => {
     })
 
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, { directors_provided: true })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director')
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}${paths.account.stripe.addPspAccountDetails}`)
     sinon.assert.notCalled(req.flash)
     sinon.assert.notCalled(completeKycMock)
@@ -152,7 +152,7 @@ describe('Director POST controller', () => {
     })
 
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, { directors_provided: true })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director')
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
     sinon.assert.calledWith(req.flash, 'generic', 'Details of director successfully completed')
     sinon.assert.notCalled(completeKycMock)
@@ -178,9 +178,9 @@ describe('Director POST controller', () => {
     })
 
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, { directors_provided: true })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director')
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId, req.correlationId)
+    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId)
     sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
   })
 
@@ -274,7 +274,7 @@ describe('Director POST controller', () => {
     await controller(req, res, next)
 
     sinon.assert.called(createDirectorMock)
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director')
     sinon.assert.notCalled(res.redirect)
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)

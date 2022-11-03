@@ -1,23 +1,19 @@
 'use strict'
 
-const _ = require('lodash')
-
 const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response.js').response
 const emailService = require('../../services/email.service.js')
 const paths = require('../../paths.js')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const humaniseEmailMode = require('../../utils/humanise-email-mode')
-const CORRELATION_HEADER = require('../../utils/correlation-header.js').CORRELATION_HEADER
 const { validateOptionalField } = require('../../utils/validation/server-side-form-validations')
 
 const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 
 async function toggleConfirmationEmail (req, res, next, enabled) {
   const accountID = req.account.gateway_account_id
-  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   try {
-    await emailService.setConfirmationEnabled(accountID, enabled, correlationId)
+    await emailService.setConfirmationEnabled(accountID, enabled)
     logger.info(`Updated confirmation email enabled(${enabled})`)
     req.flash('generic', `Payment confirmation emails are turned ${enabled ? 'on' : 'off'}`)
     res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
@@ -40,9 +36,8 @@ function collectionEmailIndex (req, res) {
 async function collectionEmailUpdate (req, res, next) {
   const emailCollectionMode = req.body['email-collection-mode']
   const accountID = req.account.gateway_account_id
-  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   try {
-    await emailService.setEmailCollectionMode(accountID, emailCollectionMode, correlationId)
+    await emailService.setEmailCollectionMode(accountID, emailCollectionMode)
     logger.info(`Updated email collection mode (${emailCollectionMode})`)
     req.flash('generic', `Email address collection is set to ${humaniseEmailMode(emailCollectionMode).toLowerCase()}`)
     res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
@@ -81,9 +76,8 @@ function refundEmailIndex (req, res) {
 async function refundEmailUpdate (req, res, next) {
   const emailRefundEnabled = req.body['email-refund-enabled'] === 'true'
   const accountID = req.account.gateway_account_id
-  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   try {
-    await emailService.setRefundEmailEnabled(accountID, emailRefundEnabled, correlationId)
+    await emailService.setRefundEmailEnabled(accountID, emailRefundEnabled)
     logger.info(`Updated refund email enabled(${emailRefundEnabled})`)
     req.flash('generic', `Refund emails are turned ${emailRefundEnabled ? 'on' : 'off'}`)
     res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))
@@ -143,9 +137,8 @@ function confirmCustomParagraph (req, res) {
 async function updateCustomParagraph (req, res, next) {
   const newEmailText = req.body['custom-email-text']
   const accountID = req.account.gateway_account_id
-  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   try {
-    await emailService.updateConfirmationTemplate(accountID, newEmailText, correlationId)
+    await emailService.updateConfirmationTemplate(accountID, newEmailText)
     logger.info('Updated email notifications custom paragraph')
     req.flash('generic', 'Payment confirmation email template updated')
     res.redirect(303, formatAccountPathsFor(paths.account.settings.index, req.account && req.account.external_id))

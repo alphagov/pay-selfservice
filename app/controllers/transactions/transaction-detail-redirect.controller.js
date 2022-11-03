@@ -17,8 +17,7 @@ module.exports = async function redirectToTransactionDetail (req, res, next) {
       req.session.contextIsAllServiceTransactions = true
 
       const account = await connector.getAccount({
-        gatewayAccountId: charge.gateway_account_id,
-        correlationId: req.correlationId
+        gatewayAccountId: charge.gateway_account_id
       })
 
       res.redirect(302, formatAccountPathsFor(router.paths.account.transactions.detail, account.external_id, chargeId))

@@ -102,7 +102,6 @@ describe('Stripe setup util', () => {
   describe('Complete KYC', () => {
     const gatewayAccountId = 'gateway-accnt-id-124'
     const stripeAccountId = 'stripe-connect-account-id'
-    const correlationId = 'x-request-id'
     let service
 
     beforeEach(() => {
@@ -114,20 +113,20 @@ describe('Stripe setup util', () => {
     })
 
     it('should update stripe account without telephone number, set connector task as complete, and disable kyc flag on connector', async () => {
-      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId, correlationId)
+      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId)
 
       sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', undefined, false)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data', 'x-request-id')
-      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124', 'x-request-id')
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data')
+      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124')
     })
 
     it('should update stripe account including phone number, set connector task as complete, and disable kyc flag on connector', async () => {
       service.merchantDetails.telephone_number = '01134960000'
-      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId, correlationId)
+      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId)
 
       sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', '+44 113 496 0000', false)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data', 'x-request-id')
-      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124', 'x-request-id')
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data')
+      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124')
     })
 
     it('should also disable legacy_payments capabilities if exists for a stripe account', async () => {
@@ -136,11 +135,11 @@ describe('Stripe setup util', () => {
           'legacy_payments': 'active'
         }
       }))
-      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId, correlationId)
+      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId)
 
       sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', undefined, false)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data', 'x-request-id')
-      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124', 'x-request-id')
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data')
+      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124')
     })
 
     it('should call add new capabilities with hasMCC flag "true" if account has got MCC already set', async () => {
@@ -149,11 +148,11 @@ describe('Stripe setup util', () => {
           'mcc': '9399'
         }
       }))
-      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId, correlationId)
+      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId)
 
       sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', undefined, true)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data', 'x-request-id')
-      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124', 'x-request-id')
+      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data')
+      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124')
     })
   })
 })

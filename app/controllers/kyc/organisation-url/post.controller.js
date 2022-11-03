@@ -28,11 +28,11 @@ function validateOrgUrl (organisationUrl) {
   return errors
 }
 
-const updateServiceWithUrl = async function (organisationUrl, serviceExternalId, correlationId) {
+const updateServiceWithUrl = async function (organisationUrl, serviceExternalId) {
   const updateRequest = new ServiceUpdateRequest()
     .replace(validPaths.merchantDetails.url, organisationUrl)
 
-  return updateService(serviceExternalId, updateRequest.formatPayload(), correlationId)
+  return updateService(serviceExternalId, updateRequest.formatPayload())
 }
 
 module.exports = async function (req, res, next) {
@@ -54,11 +54,11 @@ module.exports = async function (req, res, next) {
     })
   } else {
     try {
-      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
 
       await updateAccount(stripeAccountId, { url: organisationUrl })
 
-      await updateServiceWithUrl(organisationUrl, req.service.externalId, req.correlationId)
+      await updateServiceWithUrl(organisationUrl, req.service.externalId)
 
       logger.info('Organisation URL submitted for Stripe account', {
         stripe_account_id: stripeAccountId,
@@ -71,7 +71,7 @@ module.exports = async function (req, res, next) {
       } else if (collectingAdditionalKycData) {
         const taskListComplete = await isKycTaskListComplete(currentCredential)
         if (taskListComplete) {
-          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId)
           req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
         } else {
           req.flash('generic', 'Organisation website address added successfully')

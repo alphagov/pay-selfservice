@@ -14,12 +14,12 @@ const { formatPhoneNumberWithCountryCode } = require('../../utils/telephone-numb
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
-async function getStripeAccountId (account, isSwitchingCredentials, correlationId) {
+async function getStripeAccountId (account, isSwitchingCredentials) {
   if (isSwitchingCredentials) {
     const switchingCredential = getSwitchingCredential(account)
     return switchingCredential.credentials.stripe_account_id
   } else {
-    const stripeAccount = await connector.getStripeAccount(account.gateway_account_id, correlationId)
+    const stripeAccount = await connector.getStripeAccount(account.gateway_account_id)
     return stripeAccount.stripeAccountId
   }
 }
@@ -61,8 +61,8 @@ function getAlreadySubmittedErrorPageData (accountExternalId, errorMessage) {
   }
 }
 
-async function getExistingResponsiblePersonName (account, isSwitchingCredentials, correlationId) {
-  const stripeAccountId = await getStripeAccountId(account, isSwitchingCredentials, correlationId)
+async function getExistingResponsiblePersonName (account, isSwitchingCredentials) {
+  const stripeAccountId = await getStripeAccountId(account, isSwitchingCredentials)
   const personsResponse = await listPersons(stripeAccountId)
   const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
   if (!responsiblePerson) {
@@ -71,7 +71,7 @@ async function getExistingResponsiblePersonName (account, isSwitchingCredentials
   return `${responsiblePerson.first_name} ${responsiblePerson.last_name}`
 }
 
-async function completeKyc (gatewayAccountId, service, stripeAccountId, correlationId) {
+async function completeKyc (gatewayAccountId, service, stripeAccountId) {
   const stripeAccount = await retrieveAccountDetails(stripeAccountId)
 
   let telephoneNumber = lodash.get(service, 'merchantDetails.telephone_number')
@@ -86,8 +86,8 @@ async function completeKyc (gatewayAccountId, service, stripeAccountId, correlat
 
   await Promise.all([
     addNewCapabilities(stripeAccountId, service.merchantDetails.name, formattedPhoneNumber, hasMCC),
-    connector.setStripeAccountSetupFlag(gatewayAccountId, 'additional_kyc_data', correlationId),
-    connector.disableCollectAdditionalKyc(gatewayAccountId, correlationId)
+    connector.setStripeAccountSetupFlag(gatewayAccountId, 'additional_kyc_data'),
+    connector.disableCollectAdditionalKyc(gatewayAccountId)
   ])
 
   logger.info('KYC additional information completed for Stripe account (added new capabilities)', {

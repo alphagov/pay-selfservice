@@ -2,13 +2,11 @@
 
 const { refund } = require('../../services/transaction.service')
 const router = require('../../routes.js')
-const { CORRELATION_HEADER } = require('../../utils/correlation-header.js')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
 const refundTransaction = async function refundTransaction (req, res, next) {
   try {
-    const correlationId = req.headers[CORRELATION_HEADER]
     const userExternalId = req.user.externalId
     const userEmail = req.user.email
     const accountId = req.account.gateway_account_id
@@ -27,7 +25,7 @@ const refundTransaction = async function refundTransaction (req, res, next) {
     }
 
     try {
-      await refund(accountId, chargeId, refundAmountInPence, refundAmountAvailableInPence, userExternalId, userEmail, correlationId)
+      await refund(accountId, chargeId, refundAmountInPence, refundAmountAvailableInPence, userExternalId, userEmail)
       req.flash('refundSuccess', 'true')
     } catch (err) {
       req.flash('refundError', err.message)

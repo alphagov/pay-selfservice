@@ -45,12 +45,12 @@ async function postGovernmentEntityDocument (req, res, next) {
     })
   } else {
     try {
-      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials, req.correlationId)
+      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
 
       const stripeFile = await uploadFile(`entity_document_for_account_${req.account.gateway_account_id}`, file.mimetype, file.buffer)
       await updateAccount(stripeAccountId, { entity_verification_document_id: stripeFile.id })
 
-      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'government_entity_document', req.correlationId)
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'government_entity_document')
 
       logger.info('Government entity document uploaded for Stripe account', {
         stripe_account_id: stripeAccountId,
@@ -63,7 +63,7 @@ async function postGovernmentEntityDocument (req, res, next) {
       } else if (collectingAdditionalKycData) {
         const taskListComplete = await isKycTaskListComplete(currentCredential)
         if (taskListComplete) {
-          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId, req.correlationId)
+          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId)
           req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
         } else {
           req.flash('generic', 'Document has been submitted successfully')

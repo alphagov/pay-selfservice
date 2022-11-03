@@ -40,7 +40,7 @@ async function postUserIpAddress (req) {
       logger.error(`Request has an invalid ip address: ${ipAddress}`)
       throw new Error('Please try again or contact support team.')
     }
-    await addStripeAgreementIpAddress(req.service.externalId, ipAddress, req.correlationId)
+    await addStripeAgreementIpAddress(req.service.externalId, ipAddress)
     return ipAddress
   }
 }
@@ -60,7 +60,7 @@ module.exports = async (req, res, next) => {
   if (agreementChecked !== undefined) {
     try {
       const ipAddress = await postUserIpAddress(req)
-      const agreement = await addGovUkAgreementEmailAddress(req.service.externalId, req.user.externalId, req.correlationId)
+      const agreement = await addGovUkAgreementEmailAddress(req.service.externalId, req.user.externalId)
 
       const messageOpts = {
         serviceName: req.service.name,
@@ -73,7 +73,6 @@ module.exports = async (req, res, next) => {
         serviceCreated: req.service.createdDate || '(service was created before we captured this date)'
       }
       const zendeskOpts = {
-        correlationId: req.correlationId,
         email: agreement.email,
         name: req.user.username,
         type: 'task',
@@ -82,7 +81,7 @@ module.exports = async (req, res, next) => {
         message: createZendeskMessage(messageOpts)
       }
       await zendeskClient.createTicket(zendeskOpts)
-      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, stages[req.service.currentGoLiveStage], req.correlationId)
+      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, stages[req.service.currentGoLiveStage])
 
       return res.redirect(303,
         formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)

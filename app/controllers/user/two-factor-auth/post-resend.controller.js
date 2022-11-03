@@ -19,8 +19,8 @@ module.exports = async function resendSmsCode (req, res, next) {
   }
 
   try {
-    await userService.updatePhoneNumber(req.user.externalId, phone, req.correlationId)
-    await userService.sendProvisionalOTP(req.user.externalId, req.correlationId)
+    await userService.updatePhoneNumber(req.user.externalId, phone)
+    await userService.sendProvisionalOTP(req.user.externalId)
     req.flash('generic', 'Another verification code has been sent to your phone')
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
   } catch (err) {

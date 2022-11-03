@@ -56,7 +56,7 @@ describe('Bank details post controller', () => {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
     })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
@@ -153,7 +153,7 @@ describe('Bank details post controller', () => {
       bank_account_sort_code: sanitisedSortCode,
       bank_account_number: sanitisedAccountNumber
     })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account', req.correlationId)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'bank_account')
     sinon.assert.notCalled(res.redirect)
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)
