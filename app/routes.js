@@ -16,7 +16,6 @@ const { NotFoundError } = require('./errors')
 const { lockOutDisabledUsers, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
 const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
-const correlationIdMiddleware = require('./middleware/correlation-id')
 const restrictToSandboxOrStripeTestAccount = require('./middleware/restrict-to-sandbox-or-stripe-test-account')
 const restrictToStripeAccountContext = require('./middleware/stripe-setup/restrict-to-stripe-account-context')
 const restrictToSwitchingAccount = require('./middleware/restrict-to-switching-account')
@@ -146,9 +145,6 @@ module.exports.bind = function (app) {
   service.use(getServiceAndAccount, userIsAuthorised)
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
-
-  // APPLY CORRELATION MIDDLEWARE
-  app.use('*', correlationIdMiddleware)
 
   app.all(lockOutDisabledUsers) // On all requests, if there is a user, and its disabled, lock out.
 

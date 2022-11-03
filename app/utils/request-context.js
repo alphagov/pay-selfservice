@@ -7,16 +7,22 @@ const { CORRELATION_HEADER } = require('../../config')
 
 const asyncLocalStorage = new AsyncLocalStorage()
 
-function logContextMiddleware (req, res, next) {
+function requestContextMiddleware (req, res, next) {
   asyncLocalStorage.run({}, () => {
     asyncLocalStorage.getStore()[CORRELATION_ID] = req.headers[CORRELATION_HEADER]
     next()
   })
 }
 
-function addLoggingField (key, value) {
+function addField (key, value) {
   if (asyncLocalStorage.getStore()) {
     asyncLocalStorage.getStore()[key] = value
+  }
+}
+
+function getRequestCorrelationIDField () {
+  if (asyncLocalStorage.getStore()) {
+    return asyncLocalStorage.getStore()[CORRELATION_ID]
   }
 }
 
@@ -25,7 +31,8 @@ function getLoggingFields () {
 }
 
 module.exports = {
-  logContextMiddleware,
-  addLoggingField,
+  requestContextMiddleware,
+  addField,
+  getRequestCorrelationIDField,
   getLoggingFields
 }

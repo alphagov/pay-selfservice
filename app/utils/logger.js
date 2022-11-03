@@ -2,7 +2,7 @@ const { createLogger, format, transports } = require('winston')
 const { json, splat, prettyPrint } = format
 const { govUkPayLoggingFormat } = require('@govuk-pay/pay-js-commons').logging
 const { addSentryToErrorLevel } = require('./sentry.js')
-const { getLoggingFields } = require('./log-context')
+const { getLoggingFields } = require('./request-context')
 
 const supplementSharedLoggingFields = format((info) => {
   if (getLoggingFields()) {

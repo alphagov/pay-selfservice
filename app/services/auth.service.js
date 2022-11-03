@@ -4,16 +4,8 @@ const lodash = require('lodash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const CustomStrategy = require('passport-custom').Strategy
-const { addLoggingField } = require('../utils/log-context')
+const { addField } = require('../utils/request-context')
 const { USER_EXTERNAL_ID } = require('@govuk-pay/pay-js-commons').logging.keys
-
-// TODO: Remove when issue solved
-/*
- This is in because otherwise the correlationID stored in using the correlation-id library gets lost while passing through one of the
- functions in this file. When we have either stopped this happening, or have removed usage of the correlation-id library,
- we can remove this
- */
-require('correlation-id')
 
 const logger = require('../utils/logger')(__filename)
 const sessionValidator = require('./session-validator.js')
@@ -115,8 +107,8 @@ function hasValidSession (req) {
 
 function addUserFieldsToLogContext (req, res, next) {
   if (req.user) {
-    addLoggingField(USER_EXTERNAL_ID, req.user.externalId)
-    addLoggingField('internal_user', req.user.internalUser)
+    addField(USER_EXTERNAL_ID, req.user.externalId)
+    addField('internal_user', req.user.internalUser)
   }
   next()
 }

@@ -7,7 +7,7 @@ const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID, ENVIRONMENT_ID } = req
 const Connector = require('../services/clients/connector.client.js').ConnectorClient
 
 const { keys } = require('@govuk-pay/pay-js-commons').logging
-const { addLoggingField } = require('../utils/log-context')
+const { addField } = require('../utils/request-context')
 const { getSwitchingCredentialIfExists } = require('../utils/credentials')
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
@@ -85,8 +85,8 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
         gatewayAccount = await getGatewayAccountByExternalId(gatewayAccountExternalId)
         if (gatewayAccount) {
           req.account = gatewayAccount
-          addLoggingField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
-          addLoggingField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
+          addField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
+          addField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
 
           // Used to "upgrade" old account URLs that don't contain the account external ID to visit
           // the URL for the last visited account. Can be removed when we no longer support that.
@@ -101,7 +101,7 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
       const service = getService(req.user, serviceExternalId, gatewayAccount)
       if (service) {
         req.service = service
-        addLoggingField(keys.SERVICE_EXTERNAL_ID, service.externalId)
+        addField(keys.SERVICE_EXTERNAL_ID, service.externalId)
       }
 
       if (environment) {
