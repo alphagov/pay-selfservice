@@ -9,6 +9,9 @@ const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
 const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
 
+const stripeAcountId = 'acct_123example123'
+const stubGetStripeAccountId = sinon.stub().resolves(stripeAcountId)
+
 describe('Check org details - post controller', () => {
   let req
   let res
@@ -26,8 +29,8 @@ describe('Check org details - post controller', () => {
         }
       },
       '../stripe-setup.util': {
-        getStripeAccountId: () => {
-          return Promise.resolve(stripeAcountId)
+        getStripeAccountId: (...params) => {
+          return stubGetStripeAccountId(...params)
         }
       },
       '../../../utils/logger': function (filename) {
@@ -78,6 +81,7 @@ describe('Check org details - post controller', () => {
 
     setStripeAccountSetupFlagMock.resetHistory()
     loggerInfoMock.resetHistory()
+    stubGetStripeAccountId.resetHistory()
   })
 
   it('should render error page when stripe setup is not available on request', () => {
@@ -139,6 +143,9 @@ describe('Check org details - post controller', () => {
 
         await controller(req, res, next)
 
+        const isSwitchingCredentials = false
+        sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials)
+
         sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
         sinon.assert.calledWith(loggerInfoMock, 'Organisation details confirmed for Stripe account', { stripe_account_id: stripeAcountId })
         sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
@@ -168,6 +175,9 @@ describe('Check org details - post controller', () => {
         }
 
         await controller(req, res, next)
+
+        const isSwitchingCredentials = true 
+        sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials)
 
         sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
         sinon.assert.calledWith(loggerInfoMock, 'Organisation details confirmed for Stripe account', { stripe_account_id: stripeAcountId })
