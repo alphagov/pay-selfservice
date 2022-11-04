@@ -21,7 +21,7 @@ function setupAnalytics () {
   ga('govuk_shared.linker.set', 'anonymizeIp', true)
   ga('govuk_shared.linker:autoLink', ['www.gov.uk'])
 
-  ga('set', 'page', getPathWithoutPII())
+  ga('set', 'location', getPathWithoutPII())
   ga('send', 'pageview')
   ga('govuk_shared.send', 'pageview')
 }
@@ -33,8 +33,7 @@ function getPathWithoutPII() {
     'gi'
   )
 
-  return document.location.pathname +
-    document.location.search.replace(queryStringKeyValuePairRegex, '$1=USER_PROVIDED_VALUE_WAS_REMOVED')
+  return document.location.href.replace(queryStringKeyValuePairRegex, '$1=USER_PROVIDED_VALUE_WAS_REMOVED')
 }
 
 module.exports.init = () => {
