@@ -24,7 +24,6 @@ describe('response converter', function () {
         }
       },
       startTime: new Date(),
-      correlationId: 'bob',
       method: 'POST',
       description: 'sample request',
       service: 'sample service'

@@ -80,7 +80,6 @@ describe('Director POST controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: {
         ...account,
         connectorGatewayAccountStripeProgress: {}

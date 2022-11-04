@@ -114,7 +114,6 @@ describe('Responsible person POST controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: {
         ...account,
         connectorGatewayAccountStripeProgress: {}

@@ -16,7 +16,6 @@ describe('Toggle Worldpay 3DS Flex controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: gatewayAccountFixtures.validGatewayAccount({
         gateway_account_id: '1',
         external_id: gatewayAccountExternalId,

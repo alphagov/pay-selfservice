@@ -36,7 +36,6 @@ describe('Company number POST controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: {
         gateway_account_id: '1',
         external_id: 'a-valid-external-id',

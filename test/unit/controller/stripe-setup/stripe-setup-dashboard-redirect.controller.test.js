@@ -23,7 +23,6 @@ describe('Dashboard redirect controller', () => {
     }))
 
     req = {
-      correlationId: 'correlationId',
       params: { externalServiceId },
       user: user
     }

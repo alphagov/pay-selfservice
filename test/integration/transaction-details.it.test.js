@@ -28,7 +28,6 @@ describe('The transaction view scenarios', () => {
   )
   const req = {
     account,
-    correlationId: 'some-request-id',
     session: {},
     params: { chargeId: transactionId }
   }

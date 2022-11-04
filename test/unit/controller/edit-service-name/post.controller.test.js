@@ -19,7 +19,6 @@ describe('Controller: editServiceName, Method: get', () => {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
-        correlationId: random.randomUuid(),
         service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
         body: {
           'service-name': 'A brand spanking new English service name',
@@ -44,7 +43,6 @@ describe('Controller: editServiceName, Method: get', () => {
       mockServiceService.updateServiceName = sinon.stub().rejects(new Error('something went wrong'))
       mockResponses.renderErrorView = sinon.spy()
       req = {
-        correlationId: random.randomUuid(),
         service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
         body: {
           'service-name': 'A brand spanking new English service name',
@@ -69,7 +67,6 @@ describe('Controller: editServiceName, Method: get', () => {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
-        correlationId: random.randomUuid(),
         service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
         body: {
           'service-name': '',
@@ -99,7 +96,6 @@ describe('Controller: editServiceName, Method: get', () => {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
-        correlationId: random.randomUuid(),
         service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
         body: {
           'service-name': 'Lorem ipsum dolor sit amet, consectetuer adipiscing',

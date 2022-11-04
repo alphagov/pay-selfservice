@@ -58,7 +58,6 @@ describe('Organisation URL POST controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: {
         ...account,
         connectorGatewayAccountStripeProgress: {}

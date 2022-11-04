@@ -7,7 +7,6 @@ const User = require('../../../models/User.class')
 const paths = require('../../../paths')
 
 const userExternalId = 'user-id'
-const correlationId = 'correlation-id'
 
 describe('Select new second factor method post controller', () => {
   let req, res, next
@@ -17,7 +16,6 @@ describe('Select new second factor method post controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId,
       body: {},
       session: {},
       flash: sinon.spy()

@@ -13,7 +13,6 @@ const { expect } = require('chai')
 describe('Register user controller', () => {
   const email = 'invited-user@example.com'
   const inviteCode = 'a-code'
-  const correlationId = 'a-request-id'
   const serviceExternalId = 'a-service-id'
 
   const verifyOtpSuccessStub = sinon.spy(() => Promise.resolve())
@@ -28,7 +27,6 @@ describe('Register user controller', () => {
     validReq = {
       register_invite: { code: inviteCode, email },
       user: new User(userFixtures.validUserResponse({ email })),
-      correlationId,
       body: {
         'verify-code': 123456
       },

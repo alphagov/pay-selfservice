@@ -24,7 +24,6 @@ describe('Verify PSP integration controller', () => {
       ]
     })
     req = {
-      correlationId: 'correlation-id',
       account: account,
       user: new User(userFixtures.validUserResponse()),
       flash: sinon.spy(),

@@ -10,7 +10,6 @@ describe('Org URL GET controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: {
         external_id: 'a-valid-external-id',
         connectorGatewayAccountStripeProgress: {}

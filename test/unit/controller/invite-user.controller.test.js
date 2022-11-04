@@ -5,7 +5,6 @@ describe('invite user controller', () => {
   it('should error for an invalid email address', async () => {
     const externalServiceId = 'some-external-service-id'
     const req = {
-      correlationId: 'blah',
       user: { externalId: 'some-ext-id', serviceIds: ['1'] },
       body: {
         'invitee-email': 'invalid@examplecom',

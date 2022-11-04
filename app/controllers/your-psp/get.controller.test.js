@@ -23,7 +23,6 @@ describe('Your PSP GET controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: account,
       params: { credentialId },
       flash: sinon.spy(),

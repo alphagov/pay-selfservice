@@ -7,7 +7,6 @@ const paths = require('../../../paths')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 
 const userExternalId = 'user-id'
-const correlationId = 'correlation-id'
 
 describe('The POST resend code for updating 2FA to SMS controller', () => {
   let req, res, next
@@ -17,7 +16,6 @@ describe('The POST resend code for updating 2FA to SMS controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId,
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
       body: {},
       flash: sinon.spy()
