@@ -19,8 +19,7 @@ describe('Stripe setup get controller', () => {
     account.connectorGatewayAccountStripeProgress = {}
     req = {
       account,
-      credentialId: 'a-valid-credential-id',
-      correlationId: 'requestId'
+      credentialId: 'a-valid-credential-id'
     }
     res = {
       setHeader: sinon.stub(),

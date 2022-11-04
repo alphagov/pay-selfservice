@@ -72,7 +72,6 @@ const errorKeysAndMessage = {
   }
 }
 
-const correlationId = 'correlation-id'
 const serviceExternalId = 'abc123'
 const validLine1 = 'A building'
 const validLine2 = 'A street'
@@ -109,8 +108,7 @@ describe('organisation address - post controller', () => {
       mockResponse.resetHistory()
 
       const req = {
-        ...path,
-        correlationId
+        ...path
       }
 
       next = sinon.spy()
@@ -234,7 +232,6 @@ describe('organisation address - post controller', () => {
           route: {
             path: '/request-to-go-live/organisation-address'
           },
-          correlationId,
           service: service,
           body: {
             'address-line1': validLine1,
@@ -400,7 +397,6 @@ describe('organisation address - post controller', () => {
     })
 
     describe('Manage organisation details page', () => {
-      const correlationId = 'correlation-id'
       const serviceExternalId = 'abc123'
       const validName = 'HMRC'
       const validLine1 = 'A building'
@@ -420,7 +416,6 @@ describe('organisation address - post controller', () => {
         route: {
           path: '/organisation-details/edit'
         },
-        correlationId,
         service: service,
         body: {
           'merchant-name': validName,
@@ -514,7 +509,6 @@ describe('organisation address - post controller', () => {
     })
 
     describe('Setup new Stripe account', () => {
-      const correlationId = 'correlation-id'
       const serviceExternalId = 'abc123'
       const validName = 'HMRC'
       const validLine1 = 'A building'
@@ -534,7 +528,6 @@ describe('organisation address - post controller', () => {
         req = {
           account: gatewayAccountFixture.validGatewayAccount({}),
           url: '/your-psp/:credentialId/update-organisation-details',
-          correlationId,
           service: service,
           body: {
             'merchant-name': validName,
@@ -608,7 +601,6 @@ describe('organisation address - post controller', () => {
     })
 
     describe('Switch PSP > Stripe', () => {
-      const correlationId = 'correlation-id'
       const serviceExternalId = 'abc123'
       const validName = 'HMRC'
       const validLine1 = 'A building'
@@ -628,7 +620,6 @@ describe('organisation address - post controller', () => {
         req = {
           account: gatewayAccountFixture.validGatewayAccount({}),
           url: '/switch-psp/:credentialId/update-organisation-details',
-          correlationId,
           service: service,
           body: {
             'merchant-name': validName,

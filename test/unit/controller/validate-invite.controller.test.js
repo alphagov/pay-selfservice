@@ -5,12 +5,10 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 describe('Error handler', function () {
-  let correlationId, req, res, next
+  let req, res, next
 
   beforeEach(() => {
-    correlationId = 'abcde12345'
     req = {
-      correlationId: correlationId,
       params: {
         code: 'ndjkadh3182wdoq'
       }

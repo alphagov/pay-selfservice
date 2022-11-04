@@ -19,7 +19,6 @@ const controller = proxyquire('../../../../app/controllers/settings/default-bill
 
 const service = new Service(serviceFixtures.validServiceResponse())
 const account = gatewayAccountFixtures.validGatewayAccountResponse()
-const correlationId = 'a-request-id'
 
 describe('Default billing address country settings controller', () => {
   let res, next
@@ -35,7 +34,6 @@ describe('Default billing address country settings controller', () => {
     const req = {
       service,
       account,
-      correlationId,
       body: {
         'uk-as-default-billing-address-country': 'on'
       },
@@ -51,7 +49,6 @@ describe('Default billing address country settings controller', () => {
     const req = {
       service,
       account,
-      correlationId,
       body: {
         'uk-as-default-billing-address-country': 'off'
       },

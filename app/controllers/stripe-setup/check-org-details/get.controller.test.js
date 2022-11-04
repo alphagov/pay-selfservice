@@ -28,7 +28,6 @@ describe('Check org details - get controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: gatewayAccountFixture.validGatewayAccount({}),
       flash: sinon.spy(),
       service: service,

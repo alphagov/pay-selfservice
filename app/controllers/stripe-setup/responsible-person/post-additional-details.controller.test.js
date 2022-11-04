@@ -56,7 +56,6 @@ describe('Responsible person add additional details POST controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account,
       user,
       service,

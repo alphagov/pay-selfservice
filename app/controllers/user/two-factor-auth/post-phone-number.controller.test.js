@@ -7,7 +7,6 @@ const paths = require('../../../paths')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 
 const userExternalId = 'user-id'
-const correlationId = 'correlation-id'
 
 describe('The POST set phone number for updating 2FA method controller', () => {
   let req, res, next
@@ -18,7 +17,6 @@ describe('The POST set phone number for updating 2FA method controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId,
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
       body: {}
     }

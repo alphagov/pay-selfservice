@@ -30,8 +30,7 @@ const buildUser = (serviceExternalId, gatewayAccountIds) => {
 
 const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAccountExternalId, paymentProvider, serviceExternalId, environmentId) {
   req = {
-    params: { gatewayAccountExternalId: gatewayAccountExternalId, serviceExternalId: serviceExternalId, environmentId: environmentId },
-    correlationId: 'some-correlation-id'
+    params: { gatewayAccountExternalId: gatewayAccountExternalId, serviceExternalId: serviceExternalId, environmentId: environmentId }
   }
   req.user = buildUser(serviceExternalId, [`${gatewayAccountID}`])
   next = sinon.spy()
@@ -55,8 +54,7 @@ const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAcco
 }
 const setupGetGatewayAccountClientError = function (gatewayAccountExternalId, errorCode) {
   req = {
-    params: { gatewayAccountExternalId: gatewayAccountExternalId },
-    correlationId: 'some-correlation-id'
+    params: { gatewayAccountExternalId: gatewayAccountExternalId }
   }
   next = sinon.spy()
   connectorGetAccountMock = sinon.spy((params) => {

@@ -8,7 +8,6 @@ const paths = require('../../../paths')
 const { RESTClientError } = require('../../../errors')
 
 const userExternalId = 'user-id'
-const correlationId = 'correlation-id'
 const twoFactorAuthMethod = 'SMS'
 
 describe('Configure new second factor method post controller', () => {
@@ -18,7 +17,6 @@ describe('Configure new second factor method post controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId,
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
       body: {},
       flash: sinon.spy(),

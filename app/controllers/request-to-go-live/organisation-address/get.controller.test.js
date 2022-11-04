@@ -18,8 +18,6 @@ const getController = function getController () {
   })
 }
 
-const correlationId = 'correlation-id'
-
 const merchantDetails = {
   name: 'Test organisation',
   address_line1: 'Test address line 1',
@@ -60,7 +58,6 @@ describe('organisation address get controller', () => {
           route: {
             path: '/request-to-go-live/organisation-address'
           },
-          correlationId,
           service,
           account
         }
