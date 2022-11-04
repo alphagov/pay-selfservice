@@ -26,11 +26,15 @@ function setupAnalytics () {
   ga('govuk_shared.send', 'pageview')
 }
 
-function getPathWithoutPII(){
-  var email_regex = /&email=([^\s=/?&]+(?:@|%40)[^\s=/?&]+)/gi;
+function getPathWithoutPII() {
+  var openTextFieldsInQueryString = [ 'reference', 'email', 'cardholdername', 'metadatavalue' ]
+  var queryStringKeyValuePairRegex = new RegExp(
+    '(' + openTextFieldsInQueryString.join('|') + ')=([^&]+)',
+    'gi'
+  )
 
   return document.location.pathname +
-    document.location.search.replace(email_regex, '&email=')
+    document.location.search.replace(queryStringKeyValuePairRegex, '$1=USER_PROVIDED_VALUE_WAS_REMOVED')
 }
 
 module.exports.init = () => {
