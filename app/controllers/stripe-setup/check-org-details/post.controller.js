@@ -53,7 +53,7 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
 
   if (confirmOrgDetails === 'yes') {
     try {
-      const stripeAccountId = await getStripeAccountId(req.account, false)
+      const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
 
       await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details')
 
