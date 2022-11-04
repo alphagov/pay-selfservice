@@ -25,20 +25,20 @@ describe('analytics setup', () => {
     expect(ga.getCall(5).calledWith('govuk_shared.require', 'linker')).equals(true)
     expect(ga.getCall(6).calledWith('govuk_shared.linker.set', 'anonymizeIp')).equals(true)
     expect(ga.getCall(7).calledWith('govuk_shared.linker:autoLink', ['www.gov.uk'])).equals(true)
-    expect(ga.getCall(8).calledWith('set', 'page', '/search?from_date=2020-01-01')).equals(true)
+    expect(ga.getCall(8).calledWith('set', 'location', 'https://selfservice.service.payments.gov.uk/search?from_date=2020-01-01')).equals(true)
   })
 
   describe('filter PII', () => {
     it('should redact fields where the user can freely enter text', () => {
       setupWindow('https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01&email=test@example.test&toDate=2020-01-01&reference=a-unique-reference&lastDigitsCardNumber=1234&cardholderName=A+Test+User')
       analytics.setupAnalytics()
-      sinon.assert.calledWith(ga, 'set', 'page', '/search?fromDate=2020-01-01&email=USER_PROVIDED_VALUE_WAS_REMOVED&toDate=2020-01-01&reference=USER_PROVIDED_VALUE_WAS_REMOVED&lastDigitsCardNumber=1234&cardholderName=USER_PROVIDED_VALUE_WAS_REMOVED')
+      sinon.assert.calledWith(ga, 'set', 'location', 'https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01&email=USER_PROVIDED_VALUE_WAS_REMOVED&toDate=2020-01-01&reference=USER_PROVIDED_VALUE_WAS_REMOVED&lastDigitsCardNumber=1234&cardholderName=USER_PROVIDED_VALUE_WAS_REMOVED')
     })
 
     it('should do nothing if freely editable fields are not used', () => {
       setupWindow('https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01&email=&toDate=2020-01-01&reference=&cardholderName=')
       analytics.setupAnalytics()
-      sinon.assert.calledWith(ga, 'set', 'page', '/search?fromDate=2020-01-01&email=&toDate=2020-01-01&reference=&cardholderName=')
+      sinon.assert.calledWith(ga, 'set', 'location', 'https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01&email=&toDate=2020-01-01&reference=&cardholderName=')
     })
   })
 })
