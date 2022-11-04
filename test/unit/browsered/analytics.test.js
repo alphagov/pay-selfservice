@@ -12,10 +12,7 @@ describe('analytics setup', () => {
     ga = sinon.spy()
   })
   it('should invoke analytics with correct params ', () => {
-    window = new jsdom.JSDOM(``, {
-      url: 'https://selfservice.service.payments.gov.uk/search?from_date=2020-01-01'
-    }).window
-    document = window.document
+    setupWindow('https://selfservice.service.payments.gov.uk/search?from_date=2020-01-01')
     analytics.setupAnalytics()
     expect(ga.callCount).equals(11)
     expect(ga.getCall(0).calledWith('create', 'test-analytics-id', '.service.payments.gov.uk')).equals(true)
@@ -31,14 +28,22 @@ describe('analytics setup', () => {
     expect(ga.getCall(8).calledWith('set', 'page', '/search?from_date=2020-01-01')).equals(true)
   })
 
-  it('should filter PII correctly ', () => {
-    window = new jsdom.JSDOM(``, {
-      url: 'https://selfservice.service.payments.gov.uk/search?from_date=2020-01-01&email=test@example.org&to_date=2020-01-01'
-    }).window
-    document = window.document
-    analytics.setupAnalytics()
+  describe('filter PII', () => {
+    it('should redact fields where the user can freely enter text', () => {
+      setupWindow('https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01&email=test@example.test&toDate=2020-01-01&reference=a-unique-reference&lastDigitsCardNumber=1234&cardholderName=A+Test+User')
+      analytics.setupAnalytics()
+      sinon.assert.calledWith(ga, 'set', 'page', '/search?fromDate=2020-01-01&email=USER_PROVIDED_VALUE_WAS_REMOVED&toDate=2020-01-01&reference=USER_PROVIDED_VALUE_WAS_REMOVED&lastDigitsCardNumber=1234&cardholderName=USER_PROVIDED_VALUE_WAS_REMOVED')
+    })
 
-    expect(ga.getCall(8).calledWith('set', 'page',
-      '/search?from_date=2020-01-01&email=&to_date=2020-01-01')).equals(true)
+    it('should do nothing if freely editable fields are not used', () => {
+      setupWindow('https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01&email=&toDate=2020-01-01&reference=&cardholderName=')
+      analytics.setupAnalytics()
+      sinon.assert.calledWith(ga, 'set', 'page', '/search?fromDate=2020-01-01&email=&toDate=2020-01-01&reference=&cardholderName=')
+    })
   })
 })
+
+function setupWindow(url) {
+  window = new jsdom.JSDOM('', { url }).window
+  document = window.document
+}
