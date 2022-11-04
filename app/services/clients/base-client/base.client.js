@@ -4,7 +4,7 @@ const request = require('request')
 const { getRequestCorrelationIDField } = require('../../../utils/request-context')
 const joinURL = require('url-join')
 const lodash = require('lodash')
-const { CORRELATION_HEADER } = require('../../../utils/correlation-header')
+const { CORRELATION_HEADER } = require('../../../../config')
 const requestLogger = require('../../../utils/request-logger')
 const { RESTClientError } = require('../../../errors')
 

@@ -65,9 +65,7 @@ describe('Direct login after register', function () {
       redirect: () => {
       }
     }
-    let req = {
-      correlationId: 'correlationid'
-    }
+    let req = {}
 
     redirect = sinon.spy(res, 'redirect')
 

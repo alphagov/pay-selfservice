@@ -10,7 +10,6 @@ describe('Director GET controller', () => {
 
   beforeEach(() => {
     req = {
-      correlationId: 'correlation-id',
       account: {
         external_id: 'a-valid-external-id',
         connectorGatewayAccountStripeProgress: {}

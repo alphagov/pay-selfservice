@@ -22,7 +22,6 @@ describe('Worldpay credentials controller', () => {
       ]
     })
     req = {
-      correlationId: 'correlation-id',
       account: account,
       user: new User(userFixtures.validUserResponse()),
       body: {

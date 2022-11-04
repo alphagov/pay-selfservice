@@ -3,7 +3,6 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const random = require('../../../../app/utils/random')
 const mockResponses = {}
 const mockServiceService = {}
 const mockUserService = {}
@@ -36,7 +35,6 @@ describe('Controller: createService, Method: post', () => {
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
-        correlationId: random.randomUuid(),
         body: {
           'service-name': serviceName,
           'service-name-cy': welshServiceName,
@@ -59,7 +57,6 @@ describe('Controller: createService, Method: post', () => {
       mockServiceService.createService = sinon.stub().rejects(new Error('something went wrong'))
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
-        correlationId: random.randomUuid(),
         body: {
           'service-name': 'A brand spanking new service name',
           'service-name-cy': 'Some Cymraeg new service name'
@@ -82,7 +79,6 @@ describe('Controller: createService, Method: post', () => {
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
-        correlationId: random.randomUuid(),
         body: {
           'service-name': 'A brand spanking new service name',
           'service-name-cy': 'Some Cymraeg new service name'
@@ -104,7 +100,6 @@ describe('Controller: createService, Method: post', () => {
       mockUserService.assignServiceRole = sinon.stub().resolves()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
-        correlationId: random.randomUuid(),
         user: { externalId: '38475y38q4758ow4' },
         body: {
           'service-name': ''
@@ -131,7 +126,6 @@ describe('Controller: createService, Method: post', () => {
       mockUserService.assignServiceRole = sinon.stub().resolves()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
-        correlationId: random.randomUuid(),
         user: { externalId: '38475y38q4758ow4' },
         body: {
           'service-name': 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
@@ -164,7 +158,6 @@ describe('Controller: createService, Method: post', () => {
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
-        correlationId: random.randomUuid(),
         body: {
           'service-name': 'A brand spanking new service name',
           'service-name-cy': ''

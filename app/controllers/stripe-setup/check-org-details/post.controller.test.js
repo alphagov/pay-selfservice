@@ -57,7 +57,6 @@ describe('Check org details - post controller', () => {
   beforeEach(() => {
     req = {
       params: { credentialId },
-      correlationId: 'correlation-id',
       account: gatewayAccountFixture.validGatewayAccount({
         gateway_account_credentials: [{
           external_id: credentialId

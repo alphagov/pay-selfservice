@@ -214,7 +214,6 @@ describe('My services controller', () => {
       const newServiceExternalId = 'service-external-id-2'
 
       const req = {
-        correlationId: 'correlationId',
         user: new User(userFixtures.validUserResponse({
           username: 'bob',
           service_roles: [

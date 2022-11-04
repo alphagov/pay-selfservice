@@ -11,7 +11,6 @@ const logger = require('../utils/logger')(__filename)
 const sessionValidator = require('./session-validator.js')
 const paths = require('../paths.js')
 const userService = require('./user.service.js')
-const CORRELATION_HEADER = require('../utils/correlation-header.js').CORRELATION_HEADER
 
 // Exports
 module.exports = {
@@ -63,7 +62,7 @@ function redirectLoggedInUser (req, res, next) {
 
 // Other Methods
 function localStrategyAuth (req, username, password, done) {
-  return userService.authenticate(username, password, req.headers[CORRELATION_HEADER] || '')
+  return userService.authenticate(username, password)
     .then((user) => done(null, user))
     .catch(() => done(null, false, { message: 'Invalid email or password' }))
 }
@@ -75,7 +74,7 @@ function localStrategy2Fa (req, done) {
 }
 
 function localDirectStrategy (req, done) {
-  return userService.findByExternalId(req.register_invite.userExternalId, req.headers[CORRELATION_HEADER] || '')
+  return userService.findByExternalId(req.register_invite.userExternalId)
     .then((user) => {
       lodash.set(req, 'gateway_account.currentGatewayAccountId', lodash.get(user, 'serviceRoles[0].service.gatewayAccountIds[0]'))
       req.session.secondFactor = 'totp'
@@ -125,7 +124,7 @@ function initialise (app) {
 }
 
 function deserializeUser (req, externalId, done) {
-  return userService.findByExternalId(externalId, req.headers[CORRELATION_HEADER] || '')
+  return userService.findByExternalId(externalId)
     .then((user) => {
       done(null, user)
     })

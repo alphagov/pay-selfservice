@@ -11,14 +11,12 @@ const userFixtures = require('../../../fixtures/user.fixtures')
 const User = require('../../../../app/models/User.class')
 
 const gatewayAccountExternalId = 'an-external-id'
-const correlationId = 'abcde12345'
 
 describe('Register service', function () {
   let req, res, next, updateServiceNameSpy
 
   beforeEach(() => {
     req = {
-      correlationId,
       flash: sinon.spy()
     }
 
