@@ -95,7 +95,9 @@ module.exports = {
   },
 
   validInviteCompleteRequest: (opts = {}) => {
-    return {}
+    return {
+      second_factor: 'SMS'
+    }
   },
 
   validInviteCompleteResponse: (opts = {}) => {
