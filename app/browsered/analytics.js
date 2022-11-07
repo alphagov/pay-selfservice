@@ -18,10 +18,12 @@ function setupAnalytics () {
 
   ga('create', linkedTrackingId, cookieFunctions.getCookieDomain(), 'govuk_shared', { 'allowLinker': true })
   ga('govuk_shared.require', 'linker')
-  ga('govuk_shared.linker.set', 'anonymizeIp', true)
+  ga('govuk_shared.set', 'anonymizeIp', true)
   ga('govuk_shared.linker:autoLink', ['www.gov.uk'])
 
   ga('set', 'location', getPathWithoutPII())
+  ga('govuk_shared.set', 'location', getPathWithoutPII())
+
   ga('send', 'pageview')
   ga('govuk_shared.send', 'pageview')
 }

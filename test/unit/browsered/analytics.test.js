@@ -12,9 +12,9 @@ describe('analytics setup', () => {
     ga = sinon.spy()
   })
   it('should invoke analytics with correct params ', () => {
-    setupWindow('https://selfservice.service.payments.gov.uk/search?from_date=2020-01-01')
+    setupWindow('https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01')
     analytics.setupAnalytics()
-    expect(ga.callCount).equals(11)
+    expect(ga.callCount).equals(12)
     expect(ga.getCall(0).calledWith('create', 'test-analytics-id', '.service.payments.gov.uk')).equals(true)
     expect(ga.getCall(1).calledWith('set', 'anonymizeIp', true)).equals(true)
     expect(ga.getCall(2).calledWith('set', 'displayFeaturesTask', null)).equals(true)
@@ -23,9 +23,10 @@ describe('analytics setup', () => {
     expect(ga.getCall(4).calledWith('create',
       'linked-tracking-id', '.service.payments.gov.uk', 'govuk_shared', { 'allowLinker': true })).equals(true)
     expect(ga.getCall(5).calledWith('govuk_shared.require', 'linker')).equals(true)
-    expect(ga.getCall(6).calledWith('govuk_shared.linker.set', 'anonymizeIp')).equals(true)
+    expect(ga.getCall(6).calledWith('govuk_shared.set', 'anonymizeIp')).equals(true)
     expect(ga.getCall(7).calledWith('govuk_shared.linker:autoLink', ['www.gov.uk'])).equals(true)
-    expect(ga.getCall(8).calledWith('set', 'location', 'https://selfservice.service.payments.gov.uk/search?from_date=2020-01-01')).equals(true)
+    expect(ga.getCall(8).calledWith('set', 'location', 'https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01')).equals(true)
+    expect(ga.getCall(9).calledWith('govuk_shared.set', 'location', 'https://selfservice.service.payments.gov.uk/search?fromDate=2020-01-01')).equals(true)
   })
 
   describe('filter PII', () => {
