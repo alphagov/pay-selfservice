@@ -83,6 +83,7 @@ const defaultBillingAddressCountryController = require('./controllers/settings/d
 const webhooksController = require('./controllers/webhooks/webhooks.controller')
 const agreementsController = require('./controllers/agreements/agreements.controller')
 const kycOrganisationUrlController = require('./controllers/kyc/organisation-url')
+const registrationController = require('./controllers/registration/registration.controller')
 
 // Assignments
 const {
@@ -92,6 +93,7 @@ const {
   policyPage,
   payouts,
   registerUser,
+  register,
   selfCreateService,
   serviceSwitcher,
   staticPaths,
@@ -183,7 +185,6 @@ module.exports.bind = function (app) {
   app.get(user.passwordRequested, forgotPasswordController.passwordRequested)
   app.get(user.forgottenPasswordReset, forgotPasswordController.newPasswordGet)
   app.post(user.forgottenPasswordReset, forgotPasswordController.newPasswordPost)
-
   // SELF CREATE SERVICE
   app.get(selfCreateService.register, selfCreateServiceController.showRegistration)
   app.post(selfCreateService.register, trimUsername, selfCreateServiceController.submitRegistration)
@@ -195,6 +196,14 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.logUserIn, loginController.loginAfterRegister, userIsAuthorised, selfCreateServiceController.loggedIn)
   app.get(selfCreateService.serviceNaming, userIsAuthorised, selfCreateServiceController.showNameYourService)
   app.post(selfCreateService.serviceNaming, userIsAuthorised, selfCreateServiceController.submitYourServiceName)
+
+  app.get(register.password, registrationController.showPasswordPage)
+  app.get(register.securityCodes, registrationController.showChooseSignInMethodPage)
+  app.get(register.authenticatorApp, registrationController.showAuthenticatorAppPage)
+  app.get(register.phoneNumber, registrationController.showPhoneNumberPage)
+  app.get(register.smsCode, registrationController.showSmsSecurityCodePage)
+  app.get(register.resendCode, registrationController.showResendSecurityCodePage)
+  app.get(register.success, registrationController.showSuccessPage)
 
   // ----------------------
   // AUTHENTICATED ROUTES
@@ -431,18 +440,18 @@ module.exports.bind = function (app) {
   account.post([kyc.organisationUrl, switchPSP.organisationUrl], permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.post)
 
   // Stripe setup
-  account.get([ yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails ], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
-  account.post([ yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails ], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.post)
-  account.get([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson, kyc.changeResponsiblePerson ], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.get)
-  account.post([ yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson, kyc.changeResponsiblePerson ], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.post)
+  account.get([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
+  account.post([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.post)
+  account.get([yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson, kyc.changeResponsiblePerson], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.get)
+  account.post([yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson, kyc.changeResponsiblePerson], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.post)
   account.get(kyc.responsiblePerson, permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.getAdditionalDetails)
   account.post(kyc.responsiblePerson, permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.postAdditionalDetails)
   account.get([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director, kyc.director], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.get)
-  account.post([ yourPsp.stripeSetup.director, switchPSP.stripeSetup.director, kyc.director ], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.post)
-  account.get([ yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.get)
-  account.post([ yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.post)
-  account.get([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
-  account.post([ yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber ], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
+  account.post([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director, kyc.director], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.post)
+  account.get([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.get)
+  account.post([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.post)
+  account.get([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
+  account.post([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
   account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
   account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
   account.get([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.get)
