@@ -371,7 +371,9 @@ module.exports = function (clientOptions = {}) {
         baseUrl,
         url: `/v1/api/invites/${inviteCode}/complete`,
         json: true,
-        body: {},
+        body: {
+          second_factor: 'SMS'
+        },
         description: 'complete invite',
         service: SERVICE_NAME
       }
