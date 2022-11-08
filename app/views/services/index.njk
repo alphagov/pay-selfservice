@@ -70,34 +70,38 @@
     {% endif %}
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Overview</h1>
-
-    <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Reports</h2>
-
-    {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else
-      routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
-
-    <p class="govuk-body">
-      <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
-        View transactions for all your services
-      </a>
-    </p>
-
-    {% set payoutsPath = routes.payouts.list if has_live_account else
-      routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
-
-    {% if has_account_with_payouts %}
-      <p class="govuk-body">
-        <a href="{{ payoutsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
-          View payments to your bank account
-        </a>
-      </p>
-    {% endif %}
-
   </div>
 
-  <div class="govuk-grid-column-full">
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible overview-divider">
-  </div>
+  {% if services.length %}
+    <div class="govuk-grid-column-two-thirds" data-cy="reports-section">
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Reports</h2>
+
+        {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else
+          routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
+
+        <p class="govuk-body">
+          <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+            View transactions for all your services
+          </a>
+        </p>
+
+        {% set payoutsPath = routes.payouts.list if has_live_account else
+          routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
+
+        {% if has_account_with_payouts %}
+          <p class="govuk-body">
+            <a href="{{ payoutsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+              View payments to your bank account
+            </a>
+          </p>
+        {% endif %}
+
+    </div>
+
+    <div class="govuk-grid-column-full" data-cy="divider">
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible overview-divider">
+    </div>
+  {% endif %}
 
   <div class="govuk-grid-column-two-thirds">
 
@@ -111,22 +115,31 @@
         }) }}
     </p>
 
-    {% if services.length > 7 %}
-      <div class="js-show flex-grid--row">
-        <div class="flex-grid--column-two-thirds tight">
-          <label class="govuk-label" for="service-filter">Filter services</label>
-          <div id="service-filter-container" class="autocomplete-container"></div>
+    {% if services.length %}
+      {% if services.length > 7 %}
+        <div class="js-show flex-grid--row" data-cy="service-filter">
+          <div class="flex-grid--column-two-thirds tight">
+            <label class="govuk-label" for="service-filter">Filter services</label>
+            <div id="service-filter-container" class="autocomplete-container"></div>
+          </div>
+          <div class="flex-grid--column-third tight">
+            <button class="govuk-link pay-button--as-link govuk-!-margin-top-7" id="clear-filters">Clear filter</button>
+          </div>
         </div>
-        <div class="flex-grid--column-third tight">
-          <button class="govuk-link pay-button--as-link govuk-!-margin-top-7" id="clear-filters">Clear filter</button>
-        </div>
-      </div>
-    {% endif %}
+      {% endif %}
 
-    <div class="flex-grid">
-      {% for service in services %}
-        {% include "./_service-section.njk" %}
-      {% endfor %}
-    </div>
+      <div class="flex-grid" data-cy="service-list">
+        {% for service in services %}
+          {% include "./_service-section.njk" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="govuk-body">
+        You do not have any services set up at the moment. Either
+        <a href="{{ routes.serviceSwitcher.create }}" class="govuk-link govuk-link--no-visited-state">create a new one</a>
+        or contact an administrator of an existing service to be added to it.
+      </p>
+  {% endif %}
+
   </div>
 {% endblock %}
