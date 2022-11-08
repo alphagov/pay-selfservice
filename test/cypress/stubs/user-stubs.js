@@ -26,6 +26,10 @@ function getUserSuccess (opts) {
   return buildGetUserSuccessStub(opts.userExternalId, fixtureOpts)
 }
 
+function getUserSuccessWithNoServices (externalId) {
+  return buildGetUserSuccessStub(externalId, { service_roles: [] })
+}
+
 function getUserSuccessWithMultipleServices (externalId, serviceRoles) {
   const serviceRoleFixtureOpts = serviceRoles.map(buildServiceRoleOpts)
   const fixtureOpts = {
@@ -248,6 +252,7 @@ module.exports = {
   buildGetUserSuccessStub,
   getUserSuccess,
   getUsersSuccess,
+  getUserSuccessWithNoServices,
   getUserWithNoPermissions,
   getUserSuccessWithServiceRole,
   getUserWithServiceRoleStubOpts,
