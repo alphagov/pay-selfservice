@@ -11,9 +11,10 @@ const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-valid-external-id'
 const credentialExternalId = 'a-credential-external-id'
 const stripeAccountId = `acct_123example123`
+const serviceName = 'Purchase a positron projection permit'
 
 function setupYourPspStubs (opts = {}) {
-  const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId })
+  const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
 
   const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
     gatewayAccountId,
@@ -62,11 +63,10 @@ describe('Your PSP Stripe page', () => {
     beforeEach(() => {  
   Cypress.Cookies.preserveOnce('session', 'gateway_account')
     })
-  it('should display link to "Your PSP - Stripe" and display ENABLE_STRIPE_ONBOARDING_TASK_LIST flag enabled', () => {
+  it('should display display ENABLE_STRIPE_ONBOARDING_TASK_LIST flag when enabled', () => {
     setupYourPspStubs({})
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
     cy.get('.govuk-heading-m').should('contain', 'ENABLE_STRIPE_ONBOARDING_TASK_LIST flag is enabled')
   })
 })
-  

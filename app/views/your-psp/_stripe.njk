@@ -1,5 +1,5 @@
 {% if  enableStripeOnboardingTaskList %}
-  <h1 class="govuk-heading-m govuk-!-margin-top-8"> ENABLE_STRIPE_ONBOARDING_TASK_LIST flag is enabled</h1>
+  <h1 class="govuk-heading-m govuk-!-margin-top-8">ENABLE_STRIPE_ONBOARDING_TASK_LIST flag is enabled</h1>
 {% endif %}
 
 {% macro taskListItem(id, label, url, item) %}
@@ -39,7 +39,7 @@
       iconFallbackText: "Warning"
     }) }}
   {% endif %}
- 
+  
   {% set tasks %}
     {{ taskListItem(
       'task-organisation-url',
