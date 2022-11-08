@@ -21,10 +21,10 @@ describe('Register user controller', () => {
   })))
   const flashSpy = sinon.spy()
 
-  let validReq, res, next
+  let req, res, next
 
   beforeEach(() => {
-    validReq = {
+    req = {
       register_invite: { code: inviteCode, email },
       user: new User(userFixtures.validUserResponse({ email })),
       body: {
@@ -56,7 +56,19 @@ describe('Register user controller', () => {
     describe('Valid invite for user', () => {
       it('should accept invite and redirect to "My services', async () => {
         const controller = getController(completeInviteSuccessStub)
-        await controller.subscribeService(validReq, res, next)
+        await controller.subscribeService(req, res, next)
+        sinon.assert.called(completeInviteSuccessStub)
+        sinon.assert.calledWith(flashSpy, 'inviteSuccessServiceId', serviceExternalId)
+        sinon.assert.calledWith(completeInviteSuccessStub, inviteCode)
+      })
+    })
+
+    describe('The email on the user and invite are the same but with different case', () => {
+      it('should accept invite and redirect to "My services', async () => {
+        req.register_invite.email = 'Invited-User@example.com'
+
+        const controller = getController(completeInviteSuccessStub)
+        await controller.subscribeService(req, res, next)
         sinon.assert.called(completeInviteSuccessStub)
         sinon.assert.calledWith(flashSpy, 'inviteSuccessServiceId', serviceExternalId)
         sinon.assert.calledWith(completeInviteSuccessStub, inviteCode)
@@ -64,17 +76,9 @@ describe('Register user controller', () => {
     })
 
     describe('Logged in user is not the invited user', () => {
-      const req = {
-        register_invite: {
-          code: 'a-code',
-          email: 'invited-user@example.com'
-        },
-        user: new User(userFixtures.validUserResponse({
-          email: 'a-different-user@example.com'
-        }))
-      }
-
       it('should redirect to "My services" without accepting invite', async () => {
+        req.register_invite.email = 'a-different-user@example.com'
+
         const controller = getController(completeInviteSuccessStub)
         await controller.subscribeService(req, res, next)
         sinon.assert.notCalled(completeInviteSuccessStub)
@@ -83,13 +87,9 @@ describe('Register user controller', () => {
     })
 
     describe('Cookie details are missing', () => {
-      const req = {
-        user: new User(userFixtures.validUserResponse({
-          email: 'a-different-user@example.com'
-        }))
-      }
-
       it('should call next with error', async () => {
+        delete req.register_invite
+
         const controller = getController(completeInviteSuccessStub)
         await controller.subscribeService(req, res, next)
         sinon.assert.notCalled(completeInviteSuccessStub)
@@ -101,7 +101,7 @@ describe('Register user controller', () => {
       it('should render error page', async () => {
         const completeInviteStub = sinon.stub().throws({ errorCode: 410 })
         const controller = getController(completeInviteStub)
-        await controller.subscribeService(validReq, res, next)
+        await controller.subscribeService(req, res, next)
         sinon.assert.calledWith(res.status, 410)
         sinon.assert.calledWithMatch(res.render, 'error', { message: 'This invitation is no longer valid' })
       })
@@ -121,7 +121,7 @@ describe('Register user controller', () => {
     describe('Submitted OTP code is correct', () => {
       it('should redirect to logUserIn with a 303', async () => {
         const controllerWithVerifyOtpError = getController(verifyOtpSuccessStub, completeInviteSuccessStub)
-        await controllerWithVerifyOtpError.submitOtpVerify(validReq, res, next)
+        await controllerWithVerifyOtpError.submitOtpVerify(req, res, next)
 
         sinon.assert.calledWith(res.redirect, 303, paths.registerUser.logUserIn)
       })
@@ -133,10 +133,10 @@ describe('Register user controller', () => {
         const verifyOtpFailureStub = () => Promise.reject(error)
 
         const controllerWithVerifyOtpError = getController(verifyOtpFailureStub, completeInviteSuccessStub)
-        await controllerWithVerifyOtpError.submitOtpVerify(validReq, res, next)
+        await controllerWithVerifyOtpError.submitOtpVerify(req, res, next)
 
-        expect(validReq.register_invite).to.have.property('recovered')
-        expect(validReq.register_invite.recovered).to.deep.equal({
+        expect(req.register_invite).to.have.property('recovered')
+        expect(req.register_invite.recovered).to.deep.equal({
           errors: {
             verificationCode: 'The verification code you’ve used is incorrect or has expired'
           }
@@ -151,7 +151,7 @@ describe('Register user controller', () => {
         const verifyOtpFailureStub = () => Promise.reject(error)
 
         const controllerWithVerifyOtpError = getController(verifyOtpFailureStub, completeInviteSuccessStub)
-        await controllerWithVerifyOtpError.submitOtpVerify(validReq, res, next)
+        await controllerWithVerifyOtpError.submitOtpVerify(req, res, next)
 
         const expectedError = sinon.match.instanceOf(ExpiredInviteError)
           .and(sinon.match.has('message', `Invite with code ${inviteCode} has expired`))
@@ -165,7 +165,7 @@ describe('Register user controller', () => {
         const verifyOtpFailureStub = () => Promise.reject(error)
 
         const controllerWithVerifyOtpError = getController(verifyOtpFailureStub, completeInviteSuccessStub)
-        await controllerWithVerifyOtpError.submitOtpVerify(validReq, res, next)
+        await controllerWithVerifyOtpError.submitOtpVerify(req, res, next)
 
         sinon.assert.calledWith(next, error)
       })
@@ -177,7 +177,7 @@ describe('Register user controller', () => {
         const completeInviteFailureStub = () => Promise.reject(error)
 
         const controllerWithCompleteOtpError = getController(verifyOtpSuccessStub, completeInviteFailureStub)
-        await controllerWithCompleteOtpError.submitOtpVerify(validReq, res, next)
+        await controllerWithCompleteOtpError.submitOtpVerify(req, res, next)
 
         const expectedError = sinon.match.instanceOf(ExpiredInviteError)
           .and(sinon.match.has('message', `Invite with code ${inviteCode} has expired`))
@@ -191,7 +191,7 @@ describe('Register user controller', () => {
         const completeInviteFailureStub = () => Promise.reject(error)
 
         const controllerWithCompleteOtpError = getController(verifyOtpSuccessStub, completeInviteFailureStub)
-        await controllerWithCompleteOtpError.submitOtpVerify(validReq, res, next)
+        await controllerWithCompleteOtpError.submitOtpVerify(req, res, next)
 
         sinon.assert.calledWith(next, error)
       })

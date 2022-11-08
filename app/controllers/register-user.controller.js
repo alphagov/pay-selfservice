@@ -47,7 +47,7 @@ const subscribeService = async function subscribeService (req, res, next) {
 
   const inviteCode = sessionData.code
 
-  if (sessionData.email !== req.user.email) {
+  if (sessionData.email.toLowerCase() !== req.user.email.toLowerCase()) {
     logger.info('Attempt to accept invite for a different user', {
       invite_code: inviteCode
     })
