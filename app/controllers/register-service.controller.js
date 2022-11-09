@@ -150,7 +150,7 @@ async function showOtpVerify (req, res, next) {
   }
 }
 
-async function createPopulatedService (req, res, next) {
+async function submitOtpCode (req, res, next) {
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
@@ -186,9 +186,13 @@ async function createPopulatedService (req, res, next) {
   }
 
   try {
-    const user = await registrationService.createPopulatedService(req.register_invite.code)
-    loginController.setupDirectLoginAfterRegister(req, res, user.externalId)
-    return res.redirect(303, paths.selfCreateService.logUserIn)
+    const completeInviteResponse = await registrationService.completeInvite(req.register_invite.code)
+    loginController.setupDirectLoginAfterRegister(req, res, completeInviteResponse.user_external_id)
+    if (completeInviteResponse.service_external_id) {
+      return res.redirect(303, paths.selfCreateService.logUserIn)
+    } else {
+      return res.redirect(303, paths.registerUser.logUserIn)
+    }
   } catch (err) {
     next(err)
   }
@@ -319,7 +323,7 @@ module.exports = {
   submitRegistration,
   showConfirmation,
   showOtpVerify,
-  createPopulatedService,
+  submitOtpCode,
   loggedIn,
   showOtpResend,
   submitOtpResend,

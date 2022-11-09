@@ -8,6 +8,7 @@ const paths = require('../../../../app/paths.js')
 
 const gatewayAccountFixtures = require('../../../fixtures/gateway-account.fixtures')
 const userFixtures = require('../../../fixtures/user.fixtures')
+const inviteFixtures = require('../../../fixtures/invite.fixtures')
 const User = require('../../../../app/models/User.class')
 
 const gatewayAccountExternalId = 'an-external-id'
@@ -120,6 +121,53 @@ describe('Register service', function () {
 
       await getControllerWithStubbedAdminusersError(error).submitRegistration(req, res, next)
       sinon.assert.calledWith(next, error)
+    })
+  })
+
+  describe('Submit OTP code', () => {
+    const userExternalId = 'a-user-id'
+    describe('adminusers complete response has a service_external_id', () => {
+      const controller = proxyquire('../../../../app/controllers/register-service.controller.js',
+        {
+          '../services/service-registration.service': {
+            completeInvite: () => Promise.resolve(inviteFixtures.validInviteCompleteResponse({ user_external_id: userExternalId })),
+            submitServiceInviteOtpCode: () => Promise.resolve()
+          }
+        })
+
+      it('should redirect to route to log user in then name the service', async () => {
+        req.body = {
+          'verify-code': '123456'
+        }
+        req.register_invite = {
+          code: 'a-code',
+          email: 'an-email'
+        }
+        await controller.submitOtpCode(req, res, next)
+        sinon.assert.calledWith(res.redirect, 303, paths.selfCreateService.logUserIn)
+      })
+    })
+
+    describe('adminusers complete response does not have a service_external_id', () => {
+      const controller = proxyquire('../../../../app/controllers/register-service.controller.js',
+        {
+          '../services/service-registration.service': {
+            completeInvite: () => Promise.resolve(inviteFixtures.inviteCompleteResponseWithNoServiceExternalId({ user_external_id: userExternalId })),
+            submitServiceInviteOtpCode: () => Promise.resolve()
+          }
+        })
+
+      it('should redirect to route to log user in then show the my service page', async () => {
+        req.body = {
+          'verify-code': '123456'
+        }
+        req.register_invite = {
+          code: 'a-code',
+          email: 'an-email'
+        }
+        await controller.submitOtpCode(req, res, next)
+        sinon.assert.calledWith(res.redirect, 303, paths.registerUser.logUserIn)
+      })
     })
   })
 

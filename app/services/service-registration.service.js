@@ -16,28 +16,32 @@ function submitServiceInviteOtpCode (code, otpCode) {
   return adminUsersClient.verifyOtpForInvite(code, otpCode)
 }
 
-async function createPopulatedService (inviteCode) {
+async function completeInvite (inviteCode) {
   const completeInviteResponse = await adminUsersClient.completeInvite(inviteCode)
-  logger.info('Created new service during user registration')
 
-  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, completeInviteResponse.service_external_id)
-  logger.info('New test card gateway account registered with service')
+  if (completeInviteResponse.service_external_id) {
+    logger.info('Created new service during user registration')
 
-  // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
-  //               removed once connector integration indexed by services have been migrated
-  await adminUsersClient.addGatewayAccountsToService(completeInviteResponse.service_external_id, [ gatewayAccount.gateway_account_id ])
-  logger.info('Service associated with internal gateway account ID with legacy mapping')
+    const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', null, null, completeInviteResponse.service_external_id)
+    logger.info('New test card gateway account registered with service')
 
-  const user = await adminUsersClient.getUserByExternalId(completeInviteResponse.user_external_id)
+    // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
+    //               removed once connector integration indexed by services have been migrated
+    await adminUsersClient.addGatewayAccountsToService(completeInviteResponse.service_external_id, [gatewayAccount.gateway_account_id])
+    logger.info('Service associated with internal gateway account ID with legacy mapping')
 
-  // handler called outside of service context, manually include newly created flags for logging
-  logger.info('Created new service with test account during user registration', {
-    [ keys.USER_EXTERNAL_ID ]: user.externalId,
-    [ keys.SERVICE_EXTERNAL_ID ]: completeInviteResponse.service_external_id,
-    [ keys.GATEWAY_ACCOUNT_ID ]: gatewayAccount.gateway_account_id,
-    internal_user: user.internalUser
-  })
-  return user
+    const user = await adminUsersClient.getUserByExternalId(completeInviteResponse.user_external_id)
+
+    // handler called outside of service context, manually include newly created flags for logging
+    logger.info('Created new service with test account during user registration', {
+      [keys.USER_EXTERNAL_ID]: completeInviteResponse.user_external_id,
+      [keys.SERVICE_EXTERNAL_ID]: completeInviteResponse.service_external_id,
+      [keys.GATEWAY_ACCOUNT_ID]: gatewayAccount.gateway_account_id,
+      internal_user: user.internalUser
+    })
+  }
+
+  return completeInviteResponse
 }
 
 function generateServiceInviteOtpCode (inviteCode) {
@@ -51,7 +55,7 @@ function resendOtpCode (code, phoneNumber) {
 module.exports = {
   submitRegistration,
   submitServiceInviteOtpCode,
-  createPopulatedService,
+  completeInvite,
   generateServiceInviteOtpCode,
   resendOtpCode
 }
