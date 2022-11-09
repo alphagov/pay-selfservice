@@ -1,24 +1,25 @@
- 'use strict'
+'use strict'
 
 const userStubs = require('../../stubs/user-stubs')
 const stripePspStubs = require('../../stubs/stripe-psp-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
+
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-valid-external-id'
 const credentialExternalId = 'a-credential-external-id'
 const stripeAccountId = `acct_123example123`
-
+const serviceName = 'Purchase a positron projection permit'
 
 function setupYourPspStubs (opts = {}) {
-  const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId })
+  const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
 
   const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
     gatewayAccountId,
     gatewayAccountExternalId,
-    requiresAdditionalKycData: true,
+    requiresAdditionalKycData: false,
     type: 'live',
     paymentProvider: 'stripe',
     gatewayAccountCredentials: [{
@@ -59,12 +60,13 @@ function setupYourPspStubs (opts = {}) {
 }
 
 describe('Your PSP Stripe page', () => {
-  it('should display link to "Your PSP - Stripe" in the side navigation and header when enabled tasklist is on', () => {
+    beforeEach(() => {  
+  Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    })
+  it('should display display ENABLE_STRIPE_ONBOARDING_TASK_LIST flag when enabled', () => {
     setupYourPspStubs({})
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
-    cy.get('.govuk-heading-l').should('contain', 'Your payment service provider (PSP) - Stripe')
+    cy.get('.govuk-heading-m').should('contain', 'ENABLE_STRIPE_ONBOARDING_TASK_LIST flag is enabled')
   })
 })
-  
