@@ -110,6 +110,15 @@ module.exports = {
     }
   },
 
+  inviteCompleteResponseWithNoServiceExternalId: (opts = {}) => {
+    const invite = buildInviteWithDefaults(opts.invite)
+
+    return {
+      invite,
+      user_external_id: opts.user_external_id || '0e167175cd194333844fc415131aa5da'
+    }
+  },
+
   badRequestResponseWhenNonNumericGatewayAccountIds: (nonNumericGatewayAccountIds) => {
     const responseData = _.map(nonNumericGatewayAccountIds, (field) => {
       return `Field [${field}] must contain numeric values`
