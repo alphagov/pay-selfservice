@@ -1,3 +1,7 @@
+{% if  enableStripeOnboardingTaskList %}
+  <h1 class="govuk-heading-m govuk-!-margin-top-8">Your payment service provider (PSP) - Stripe</h1>
+{% endif %}
+  
 {% macro taskListItem(id, label, url, item) %}
   <li class="app-task-list__item">
     <span class="app-task-list__task-name">
@@ -36,10 +40,6 @@
     }) }}
   {% endif %}
 
-   {% if  enableStripeOnboardingTaskList %}
-     <h1 class="govuk-heading-m govuk-!-margin-top-8">Your payment service provider (PSP) - Stripe</h1>
-  {% endif %}
-  
   {% set tasks %}
     {{ taskListItem(
       'task-organisation-url',
