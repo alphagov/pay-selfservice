@@ -50,22 +50,6 @@ describe('Self-create service view', () => {
     done()
   })
 
-  it('should render name your service form', done => {
-    const serviceName = 'My Service name'
-    const templateData = {
-      serviceName
-    }
-
-    const body = renderTemplate('self-create-service/set-name', templateData)
-
-    body.should.containSelector('h1').withExactText('What service will you be taking payments for?')
-
-    body.should.containInputField('service-name', 'text').withAttribute('value', serviceName)
-    body.should.containSelector('form#name-your-service-form').withAttribute('action', paths.selfCreateService.serviceNaming)
-
-    done()
-  })
-
   it('should render otp resend form with local telephone number', done => {
     const telephoneNumber = '01134960000'
     const templateData = {
