@@ -63,7 +63,7 @@ describe('webhooks client', function () {
   })
 
   describe('create webhooks', () => {
-    const callbackUrl = 'https://a-callback-url.com'
+    const callbackUrl = 'https://a-callback-url.test'
     const description = 'A valid Webhook description'
     const subscriptions = [ 'card_payment_captured' ]
     before(() => {
