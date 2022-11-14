@@ -12,11 +12,11 @@ const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account
 const mockResponse = sinon.spy()
 
 const loggerInfoMock = sinon.spy()
-const stripeAcountId = 'acct_123example123'
+const stripeAccountId = 'acct_123example123'
 const setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
 const updateStripeAccountMock = sinon.spy(() => Promise.resolve())
 
-const stubGetStripeAccountId = sinon.stub().resolves(stripeAcountId)
+const stubGetStripeAccountId = sinon.stub().resolves(stripeAccountId)
 
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
@@ -78,51 +78,63 @@ const validLine2 = 'A street'
 const validCity = 'A city'
 const validCountry = 'GB'
 const validPostcode = 'E1 8QS'
-const validTeleponeNumber = '01134960000'
+const validTelephoneNumber = '01134960000'
 const validUrl = 'https://www.example.com'
 
 describe('organisation address - post controller', () => {
-  describe('form validation', () => {
-    let res, next
-    let responseData
+  let req, res, next, controller
+  let responseData
 
-    const updatedService = new Service(serviceFixtures.validServiceResponse({
-      external_id: serviceExternalId,
-      current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
-    }))
-
-    const mockUpdateService = sinon.spy(() => {
-      return new Promise(resolve => {
-        resolve(updatedService)
-      })
+  const mockUpdateService = sinon.spy(() => {
+    return new Promise(resolve => {
+      resolve(updatedService)
     })
+  })
 
-    function testSuiteSetup (path) {
-      res = {
-        setHeader: sinon.stub(),
-        status: sinon.spy(),
-        redirect: sinon.spy(),
-        render: sinon.spy()
-      }
-      next = sinon.spy()
-      mockResponse.resetHistory()
+  const updatedService = new Service(serviceFixtures.validServiceResponse({
+    external_id: serviceExternalId,
+    current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_ADDRESS
+  }))
 
-      const req = {
-        ...path
-      }
-
-      next = sinon.spy()
-
-      const controller = getController(mockUpdateService)
-
-      controller(req, res, next)
-
-      responseData = mockResponse.getCalls()[0]
+  beforeEach(() => {
+    res = {
+      setHeader: sinon.stub(),
+      status: sinon.spy(),
+      redirect: sinon.spy(),
+      render: sinon.spy()
     }
 
+    req = { route: { path: '/request-to-go-live/organisation-address' } }
+
+    next = sinon.spy()
+    mockResponse.resetHistory()
+    controller = getController(mockUpdateService)
+  })
+
+  describe('Form validation', () => {
+    it('should return error where organisation name is more than 100 characters', () => {
+      const invalidName = 'a'.repeat(101)
+      const req = {
+        route: {
+          path: '/organisation-details/edit'
+        },
+        body: {
+          'merchant-name': invalidName
+        }
+      }
+
+      controller(req, res, next)
+      responseData = mockResponse.getCalls()[0]
+
+      const errors = responseData.args[3].errors
+      expect(errors[errorKeysAndMessage.errorName.key]).to.equal('Name must be 100 characters or fewer')
+    })
+
     describe('request to go live', () => {
-      before(() => {
-        testSuiteSetup({ route: { path: '/request-to-go-live/organisation-address' } })
+      beforeEach(() => {
+        req.route.path = '/request-to-go-live/organisation-address'
+        controller(req, res, next)
+        responseData = mockResponse.getCalls()[0]
       })
 
       it('should return errors when the required fields are missing', () => {
@@ -146,8 +158,10 @@ describe('organisation address - post controller', () => {
     })
 
     describe('manage organisation details', () => {
-      before(() => {
-        testSuiteSetup({ route: { path: '/organisation-details' } })
+      beforeEach(() => {
+        req.route.path = '/organisation-details'
+        controller(req, res, next)
+        responseData = mockResponse.getCalls()[0]
       })
 
       it('should return errors when the required fields are missing', () => {
@@ -172,8 +186,11 @@ describe('organisation address - post controller', () => {
     })
 
     describe('new Stripe gateway account`', () => {
-      before(() => {
-        testSuiteSetup({ url: '/your-psp/:credentialId/update-organisation-details' })
+      beforeEach(() => {
+        req.url = '/your-psp/:credentialId/update-organisation-details'
+        req.route.path = '/update-organisation-details'
+        controller(req, res, next)
+        responseData = mockResponse.getCalls()[0]
       })
 
       it('should return errors when the required fields are missing', () => {
@@ -196,8 +213,11 @@ describe('organisation address - post controller', () => {
     })
 
     describe('`Switch PSP > Stripe`', () => {
-      before(() => {
-        testSuiteSetup({ url: '/switch-psp/:credentialId/update-organisation-details' })
+      beforeEach(() => {
+        req.url = '/switch-psp/:credentialId/update-organisation-details'
+        req.route.path = '/update-organisation-details'
+        controller(req, res, next)
+        responseData = mockResponse.getCalls()[0]
       })
 
       it('should return errors when the required fields are missing', () => {
@@ -228,7 +248,7 @@ describe('organisation address - post controller', () => {
           current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
         }))
 
-        const req = {
+        let req = {
           route: {
             path: '/request-to-go-live/organisation-address'
           },
@@ -239,12 +259,11 @@ describe('organisation address - post controller', () => {
             'address-city': validCity,
             'address-postcode': validPostcode,
             'address-country': validCountry,
-            'telephone-number': validTeleponeNumber,
+            'telephone-number': validTelephoneNumber,
             'url': validUrl
           }
         }
 
-        let res, next
         beforeEach(() => {
           res = {
             setHeader: sinon.stub(),
@@ -301,7 +320,7 @@ describe('organisation address - post controller', () => {
               {
                 'op': 'replace',
                 'path': 'merchant_details/telephone_number',
-                'value': validTeleponeNumber
+                'value': validTelephoneNumber
               },
               {
                 'op': 'replace',
@@ -328,7 +347,7 @@ describe('organisation address - post controller', () => {
               'address-city': validCity,
               'address-postcode': validPostcode,
               'address-country': validCountry,
-              'telephone-number': validTeleponeNumber,
+              'telephone-number': validTelephoneNumber,
               'url': validUrl
             }
 
@@ -361,7 +380,7 @@ describe('organisation address - post controller', () => {
               {
                 'op': 'replace',
                 'path': 'merchant_details/telephone_number',
-                'value': validTeleponeNumber
+                'value': validTelephoneNumber
               },
               {
                 'op': 'replace',
@@ -568,7 +587,7 @@ describe('organisation address - post controller', () => {
         it('should update Stripe and redirect to `Stripe > add psp details`', async function () {
           await controller(req, res, next)
 
-          sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAccountId, {
             name: validName,
             address_line1: validLine1,
             address_line2: validLine2,
@@ -580,7 +599,7 @@ describe('organisation address - post controller', () => {
           const isSwitchingCredentials = false
           sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials)
           sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
-          sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
+          sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAccountId })
           sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
         })
 
@@ -589,7 +608,7 @@ describe('organisation address - post controller', () => {
 
           await controller(req, res, next)
 
-          sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAccountId, {
             name: validName,
             address_line1: validLine1,
             address_city: validCity,
@@ -660,7 +679,7 @@ describe('organisation address - post controller', () => {
         it('should update Stripe and redirect to `Switch PSP > Stripe index page`', async function () {
           await controller(req, res, next)
 
-          sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAccountId, {
             name: validName,
             address_line1: validLine1,
             address_line2: validLine2,
@@ -672,7 +691,7 @@ describe('organisation address - post controller', () => {
           const isSwitchingCredentials = true
           sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials)
           sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
-          sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAcountId })
+          sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAccountId })
           sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/switch-psp')
         })
 
@@ -681,7 +700,7 @@ describe('organisation address - post controller', () => {
 
           await controller(req, res, next)
 
-          sinon.assert.calledWith(updateStripeAccountMock, stripeAcountId, {
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAccountId, {
             name: validName,
             address_line1: validLine1,
             address_city: validCity,

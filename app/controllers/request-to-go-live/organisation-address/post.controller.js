@@ -39,7 +39,7 @@ const clientFieldNames = {
 const validationRuleOrgName = {
   field: clientFieldNames.name,
   validator: validateMandatoryField,
-  maxLength: 255,
+  maxLength: 100,
   fieldDisplayName: 'name'
 }
 
@@ -128,8 +128,7 @@ function validateForm (form, isRequestToGoLive, isStripeSetupUserJourney) {
   if (!postCodeValidResponse.valid) {
     errors[clientFieldNames.addressPostcode] = postCodeValidResponse.message
   }
-  const orderedErrors = lodash.pick(errors, Object.values(clientFieldNames))
-  return orderedErrors
+  return lodash.pick(errors, Object.values(clientFieldNames))
 }
 
 async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourney, isSwitchingCredentials) {
