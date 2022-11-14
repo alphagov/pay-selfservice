@@ -10,7 +10,7 @@ const { updateCurrentGoLiveStage, updateService } = require('../../../services/s
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
-const ORGANISATION_NAME_MAX_LENGTH = 255
+const ORGANISATION_NAME_MAX_LENGTH = 100
 
 module.exports = async function submitOrganisationName (req, res, next) {
   const organisationName = req.body['organisation-name'] && req.body['organisation-name'].trim()
