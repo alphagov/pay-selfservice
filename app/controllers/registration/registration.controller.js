@@ -1,10 +1,16 @@
 'use strict'
 
 const qrcode = require('qrcode')
+const lodash = require('lodash')
 
 const { RegistrationSessionMissingError } = require('../../errors')
 const adminusersClient = require('../../services/clients/adminusers.client')()
 const paths = require('../../paths')
+const { validatePassword } = require('../../utils/validation/server-side-form-validations')
+const { isEmpty } = require('../../utils/validation/field-validation-checks')
+
+const PASSWORD_INPUT_FIELD_NAME = 'password'
+const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
 
 const registrationSessionPresent = function registrationSessionPresent (sessionData) {
   return sessionData && sessionData.email && sessionData.code
@@ -23,6 +29,39 @@ async function showPasswordPage (req, res, next) {
     }
 
     res.render('registration/password')
+  } catch (err) {
+    next(err)
+  }
+}
+
+async function submitPasswordPage (req, res, next) {
+  const sessionData = req.register_invite
+  if (!registrationSessionPresent(sessionData)) {
+    return next(new RegistrationSessionMissingError())
+  }
+
+  const password = req.body[PASSWORD_INPUT_FIELD_NAME]
+  const repeatPassword = req.body[REPEAT_PASSWORD_INPUT_FIELD_NAME]
+
+  const errors = {}
+
+  const passwordValidationResult = validatePassword(password)
+  if (!passwordValidationResult.valid) {
+    errors[PASSWORD_INPUT_FIELD_NAME] = passwordValidationResult.message
+  }
+  if (isEmpty(repeatPassword)) {
+    errors[REPEAT_PASSWORD_INPUT_FIELD_NAME] = 'Re-type your password'
+  } else if (!errors[PASSWORD_INPUT_FIELD_NAME] && password !== repeatPassword) {
+    errors[PASSWORD_INPUT_FIELD_NAME] = errors[REPEAT_PASSWORD_INPUT_FIELD_NAME] = 'Enter same password in both fields'
+  }
+
+  if (!lodash.isEmpty(errors)) {
+    return res.render('registration/password', { errors })
+  }
+
+  try {
+    await adminusersClient.updateInvitePassword(sessionData.code, password)
+    res.redirect(paths.register.securityCodes)
   } catch (err) {
     next(err)
   }
@@ -62,6 +101,7 @@ function showSuccessPage (req, res) {
 
 module.exports = {
   showPasswordPage,
+  submitPasswordPage,
   showChooseSignInMethodPage,
   showAuthenticatorAppPage,
   showPhoneNumberPage,
