@@ -4,7 +4,7 @@ const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 
-const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e' //pragma: allowlist secret
+const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e' // pragma: allowlist secret
 const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-valid-external-id'
 const credentialExternalId = 'a-credential-external-id'
@@ -37,9 +37,9 @@ function setupYourPspStubs () {
 }
 
 describe('Your PSP Stripe page', () => {
-    beforeEach(() => {  
-      Cypress.Cookies.preserveOnce('session', 'gateway_account')
-    })
+  beforeEach(() => {
+    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+  })
   it('should contain Your PSP - Stripe heading', () => {
     setupYourPspStubs({})
     cy.setEncryptedCookies(userExternalId)

@@ -44,7 +44,7 @@ describe('analytics setup', () => {
   })
 })
 
-function setupWindow(url) {
+function setupWindow (url) {
   window = new jsdom.JSDOM('', { url }).window
   document = window.document
 }
