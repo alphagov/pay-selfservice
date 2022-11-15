@@ -101,20 +101,14 @@ module.exports = {
   },
 
   validInviteCompleteResponse: (opts = {}) => {
-    const invite = buildInviteWithDefaults(opts.invite)
-
     return {
-      invite,
       user_external_id: opts.user_external_id || '0e167175cd194333844fc415131aa5da',
       service_external_id: opts.service_external_id || '6a149c10cf86493e977fdf6765382f65'
     }
   },
 
   inviteCompleteResponseWithNoServiceExternalId: (opts = {}) => {
-    const invite = buildInviteWithDefaults(opts.invite)
-
     return {
-      invite,
       user_external_id: opts.user_external_id || '0e167175cd194333844fc415131aa5da'
     }
   },
