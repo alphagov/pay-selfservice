@@ -421,16 +421,14 @@ describe('service users resource', () => {
       disabled: false,
       role: 'admin',
       expired: false,
-      user_exist: false,
-      attempt_counter: 0
+      user_exist: false
     }, {
       email: SECOND_EMAIL,
       telephone_number: '',
       disabled: false,
       role: 'view-only',
       expired: false,
-      user_exist: false,
-      attempt_counter: 0
+      user_exist: false
     }]
     const serviceUsersRes = userFixtures.validUsersResponse([{ service_roles: serviceRoles }])
     const getInvitesRes = inviteFixtures.validListInvitesResponse(invites)

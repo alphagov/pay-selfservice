@@ -3,17 +3,14 @@
 const _ = require('lodash')
 
 function buildInviteWithDefaults (opts = {}) {
-  const data = _.defaults(opts, {
-    type: 'user',
-    email: 'foo@example.com',
-    role: 'admin',
-    disabled: false,
-    attempt_counter: 0,
-    _links: [],
-    user_exist: false,
-    expired: false,
-    password_set: false
-  })
+  const data = {
+    type: opts.type || 'user',
+    email: opts.email || 'foo@example.com',
+    role: opts.role || 'admin',
+    disabled: opts.disabled || false,
+    user_exist: opts.user_exist || false,
+    expired: opts.expired || false
+  }
 
   if (opts.telephone_number) {
     data.telephone_number = opts.telephone_number
