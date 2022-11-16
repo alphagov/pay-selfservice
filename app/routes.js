@@ -192,9 +192,6 @@ module.exports.bind = function (app) {
   app.post(selfCreateService.otpVerify, selfCreateServiceController.submitOtpCode)
   app.get(selfCreateService.otpResend, selfCreateServiceController.showOtpResend)
   app.post(selfCreateService.otpResend, selfCreateServiceController.submitOtpResend)
-  app.get(selfCreateService.logUserIn, loginController.loginAfterRegister, userIsAuthorised, selfCreateServiceController.loggedIn)
-  app.get(selfCreateService.serviceNaming, userIsAuthorised, selfCreateServiceController.showNameYourService)
-  app.post(selfCreateService.serviceNaming, userIsAuthorised, selfCreateServiceController.submitYourServiceName)
 
   // ----------------------
   // AUTHENTICATED ROUTES

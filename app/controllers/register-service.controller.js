@@ -5,9 +5,6 @@ const lodash = require('lodash')
 const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
 const { renderErrorView } = require('../utils/response')
-const serviceService = require('../services/service.service')
-const { ConnectorClient } = require('../services/clients/connector.client')
-const formatAccountPathsFor = require('../utils/format-account-paths-for')
 const registrationService = require('../services/service-registration.service')
 const validateInviteService = require('../services/validate-invite.service')
 const loginController = require('../controllers/login')
@@ -15,25 +12,15 @@ const {
   validatePhoneNumber,
   validateEmail,
   validatePassword,
-  validateOtp,
-  validateMandatoryField,
-  SERVICE_NAME_MAX_LENGTH
+  validateOtp
 } = require('../utils/validation/server-side-form-validations')
 const { RegistrationSessionMissingError, InvalidRegistationStateError } = require('../errors')
-const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
-
-const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 const INVITE_NOT_FOUND_ERROR_MESSAGE = 'There has been a problem proceeding with this registration. Please try again.'
 
 function registrationSessionPresent (sessionData) {
   return sessionData && sessionData.email && sessionData.code
-}
-
-function getServiceCreatedDuringSignup (user) {
-  return user.serviceRoles.map(serviceRole => serviceRole.service)
-    .find(service => service.serviceName && service.serviceName.en === DEFAULT_SERVICE_NAME)
 }
 
 function showRegistration (req, res) {
@@ -186,26 +173,12 @@ async function submitOtpCode (req, res, next) {
   }
 
   try {
-    const completeInviteResponse = await registrationService.completeInvite(req.register_invite.code)
-    loginController.setupDirectLoginAfterRegister(req, res, completeInviteResponse.user_external_id)
-    if (completeInviteResponse.service_external_id) {
-      return res.redirect(303, paths.selfCreateService.logUserIn)
-    } else {
-      return res.redirect(303, paths.registerUser.logUserIn)
-    }
+    const userExternalId = await registrationService.completeInvite(req.register_invite.code)
+    loginController.setupDirectLoginAfterRegister(req, res, userExternalId)
+    return res.redirect(303, paths.registerUser.logUserIn)
   } catch (err) {
     next(err)
   }
-}
-
-/**
- * Auto-login handler
- *
- * @param req
- * @param res
- */
-function loggedIn (req, res) {
-  res.redirect(303, paths.selfCreateService.serviceNaming)
 }
 
 /**
@@ -281,52 +254,12 @@ async function submitOtpResend (req, res, next) {
   }
 }
 
-function showNameYourService (req, res) {
-  const pageData = lodash.get(req, 'session.pageData.submitYourServiceName', {})
-  lodash.unset(req, 'session.pageData.submitYourServiceName')
-  if (!getServiceCreatedDuringSignup(req.user)) {
-    logger.warn('User attempted to access the page to set the service name as part of registration but no service with the default name was found')
-    return res.redirect(303, paths.serviceSwitcher.index)
-  }
-  res.render('self-create-service/set-name', pageData)
-}
-
-async function submitYourServiceName (req, res, next) {
-  const serviceName = req.body['service-name']
-
-  const nameValidationResult = validateMandatoryField(serviceName, SERVICE_NAME_MAX_LENGTH, 'service name')
-  if (!nameValidationResult.valid) {
-    lodash.set(req, 'session.pageData.submitYourServiceName', {
-      errors: {
-        service_name: nameValidationResult.message
-      },
-      serviceName
-    })
-    res.redirect(303, paths.selfCreateService.serviceNaming)
-  } else {
-    try {
-      const service = getServiceCreatedDuringSignup(req.user)
-      if (!service) {
-        throw new Error(`Attempting to set name for service during registration but a service with name "${DEFAULT_SERVICE_NAME}" was not found`)
-      }
-      const account = await connectorClient.getAccount({ gatewayAccountId: service.gatewayAccountIds[0] })
-      await serviceService.updateServiceName(service.externalId, serviceName, null)
-      res.redirect(303, formatAccountPathsFor(paths.account.dashboard.index, account.external_id))
-    } catch (err) {
-      next(err)
-    }
-  }
-}
-
 module.exports = {
   showRegistration,
   submitRegistration,
   showConfirmation,
   showOtpVerify,
   submitOtpCode,
-  loggedIn,
   showOtpResend,
-  submitOtpResend,
-  showNameYourService,
-  submitYourServiceName
+  submitOtpResend
 }

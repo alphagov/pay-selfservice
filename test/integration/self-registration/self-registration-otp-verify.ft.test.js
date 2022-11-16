@@ -189,7 +189,7 @@ describe('create service OTP validation', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303)
-        .expect('Location', paths.selfCreateService.logUserIn)
+        .expect('Location', paths.registerUser.logUserIn)
         .end(done)
     })
 

@@ -175,7 +175,7 @@ describe('Check org details - post controller', () => {
 
         await controller(req, res, next)
 
-        const isSwitchingCredentials = true 
+        const isSwitchingCredentials = true
         sinon.assert.calledWith(stubGetStripeAccountId, req.account, isSwitchingCredentials)
 
         sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')

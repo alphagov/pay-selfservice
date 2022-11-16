@@ -248,9 +248,7 @@ module.exports = {
     register: '/create-service/register',
     confirm: '/create-service/confirm',
     otpVerify: '/create-service/verify-otp',
-    otpResend: '/create-service/resend-otp',
-    logUserIn: '/create-service/proceed-to-login',
-    serviceNaming: '/service/set-name'
+    otpResend: '/create-service/resend-otp'
   },
   healthcheck: {
     path: '/healthcheck'
