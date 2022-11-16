@@ -32,7 +32,7 @@ module.exports = function (clientOptions = {}) {
    * @param {string} externalId
    * @return {Promise<User>} A promise of a User
    */
-  const getUserByExternalId = (externalId) => {
+  function getUserByExternalId (externalId) {
     return baseClient.get(
       {
         baseUrl,
@@ -51,7 +51,7 @@ module.exports = function (clientOptions = {}) {
    * @return {Promise<User>} A promise of a User
    * @param externalIds
    */
-  const getUsersByExternalIds = (externalIds = []) => {
+  function getUsersByExternalIds (externalIds = []) {
     return baseClient.get(
       {
         baseUrl,
@@ -72,7 +72,7 @@ module.exports = function (clientOptions = {}) {
    * @param password
    * @returns {Promise<User>}
    */
-  const authenticateUser = (username, password) => {
+  function authenticateUser (username, password) {
     return baseClient.post(
       {
         baseUrl,
@@ -94,7 +94,7 @@ module.exports = function (clientOptions = {}) {
    * @param externalId
    * @returns {Promise}
    */
-  const incrementSessionVersionForUser = (externalId) => {
+  function incrementSessionVersionForUser (externalId) {
     return baseClient.patch(
       {
         baseUrl,
@@ -116,7 +116,7 @@ module.exports = function (clientOptions = {}) {
    * @param username
    * @returns {Promise<ForgottenPassword>}
    */
-  const createForgottenPassword = (username) => {
+  function createForgottenPassword (username) {
     return baseClient.post(
       {
         baseUrl,
@@ -136,7 +136,7 @@ module.exports = function (clientOptions = {}) {
    * @param code
    * @returns {Promise<ForgottenPassword>}
    */
-  const getForgottenPassword = (code) => {
+  function getForgottenPassword (code) {
     return baseClient.get(
       {
         baseUrl,
@@ -154,7 +154,7 @@ module.exports = function (clientOptions = {}) {
    * @param newPassword
    * @returns {Promise}
    */
-  const updatePasswordForUser = (token, newPassword) => {
+  function updatePasswordForUser (token, newPassword) {
     return baseClient.post(
       {
         baseUrl,
@@ -176,7 +176,7 @@ module.exports = function (clientOptions = {}) {
    * @param provisional
    * @returns {Promise}
    */
-  const sendSecondFactor = (externalId, provisional) => {
+  function sendSecondFactor (externalId, provisional) {
     return baseClient.post(
       {
         baseUrl,
@@ -195,7 +195,7 @@ module.exports = function (clientOptions = {}) {
    * @param code
    * @returns {Promise}
    */
-  const authenticateSecondFactor = (externalId, code) => {
+  function authenticateSecondFactor (externalId, code) {
     return baseClient.post(
       {
         baseUrl,
@@ -209,7 +209,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const getServiceUsers = (serviceExternalId) => {
+  function getServiceUsers (serviceExternalId) {
     return baseClient.get(
       {
         baseUrl,
@@ -228,7 +228,7 @@ module.exports = function (clientOptions = {}) {
    * @param serviceExternalId
    * @param roleName
    */
-  const assignServiceRole = (userExternalId, serviceExternalId, roleName) => {
+  function assignServiceRole (userExternalId, serviceExternalId, roleName) {
     return baseClient.post(
       {
         baseUrl,
@@ -252,7 +252,7 @@ module.exports = function (clientOptions = {}) {
    * @param roleName
    * @returns {Promise<User>}
    */
-  const updateServiceRole = (externalId, serviceExternalId, roleName) => {
+  function updateServiceRole (externalId, serviceExternalId, roleName) {
     return baseClient.put(
       {
         baseUrl,
@@ -276,7 +276,7 @@ module.exports = function (clientOptions = {}) {
    * @param roleName
    * @returns {Promise}
    */
-  const inviteUser = (invitee, senderId, serviceExternalId, roleName) => {
+  function inviteUser (invitee, senderId, serviceExternalId, roleName) {
     return baseClient.post(
       {
         baseUrl,
@@ -298,7 +298,7 @@ module.exports = function (clientOptions = {}) {
    * Get a invited users for a given service
    * @param serviceExternalId
    */
-  const getInvitedUsersList = (serviceExternalId) => {
+  function getInvitedUsersList (serviceExternalId) {
     return baseClient.get(
       {
         baseUrl,
@@ -318,13 +318,30 @@ module.exports = function (clientOptions = {}) {
    * Get a valid invite or error if it's expired
    * @param inviteCode
    */
-  const getValidatedInvite = (inviteCode) => {
+  function getValidatedInvite (inviteCode) {
     return baseClient.get(
       {
         baseUrl,
         url: `/v1/api/invites/${inviteCode}`,
         json: true,
         description: 'find a validated invitation',
+        service: SERVICE_NAME
+      }
+    )
+  }
+
+  function updateInvitePassword (inviteCode, password) {
+    return baseClient.patch(
+      {
+        baseUrl,
+        url: `/v1/api/invites/${inviteCode}`,
+        json: true,
+        body: [{
+          op: 'replace',
+          path: 'password',
+          value: password
+        }],
+        description: 'update the password for an invite',
         service: SERVICE_NAME
       }
     )
@@ -338,7 +355,7 @@ module.exports = function (clientOptions = {}) {
    * @param password
    * @returns {*|Constructor}
    */
-  const generateInviteOtpCode = (inviteCode, telephoneNumber, password) => {
+  function generateInviteOtpCode (inviteCode, telephoneNumber, password) {
     let postData = {
       baseUrl,
       url: `/v1/api/invites/${inviteCode}/otp/generate`,
@@ -365,7 +382,7 @@ module.exports = function (clientOptions = {}) {
    * @param inviteCode
    * @returns {*|promise|Constructor}
    */
-  const completeInvite = (inviteCode) => {
+  function completeInvite (inviteCode) {
     return baseClient.post(
       {
         baseUrl,
@@ -380,7 +397,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const verifyOtpForInvite = (inviteCode, verificationCode) => {
+  function verifyOtpForInvite (inviteCode, verificationCode) {
     return baseClient.post(
       {
         baseUrl,
@@ -396,7 +413,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const resendOtpCode = (code, phoneNumber) => {
+  function resendOtpCode (code, phoneNumber) {
     return baseClient.post(
       {
         baseUrl,
@@ -419,7 +436,7 @@ module.exports = function (clientOptions = {}) {
    * @param phoneNumber
    * @param password
    */
-  const submitServiceRegistration = (email, phoneNumber, password) => {
+  function submitServiceRegistration (email, phoneNumber, password) {
     return baseClient.post(
       {
         baseUrl,
@@ -436,7 +453,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const deleteUser = (serviceExternalId, removerExternalId, userExternalId) => {
+  function deleteUser (serviceExternalId, removerExternalId, userExternalId) {
     let headers = {}
     headers[HEADER_USER_CONTEXT] = removerExternalId
 
@@ -465,7 +482,7 @@ module.exports = function (clientOptions = {}) {
    * @param gatewayAccountIds
    * @returns {*|promise|Constructor}
    */
-  const createService = (serviceName, serviceNameCy) => {
+  function createService (serviceName, serviceNameCy) {
     let postBody = {
       baseUrl,
       url: `${serviceResource}`,
@@ -494,7 +511,7 @@ module.exports = function (clientOptions = {}) {
    * @param body
    * @returns {*|Constructor|promise}
    */
-  const updateService = (serviceExternalId, body) => {
+  function updateService (serviceExternalId, body) {
     return baseClient.patch({
       baseUrl,
       url: `${serviceResource}/${serviceExternalId}`,
@@ -514,7 +531,7 @@ module.exports = function (clientOptions = {}) {
    * @param serviceNameCy
    * @returns {*|Constructor|promise}
    */
-  const updateServiceName = (serviceExternalId, serviceName, serviceNameCy) => {
+  function updateServiceName (serviceExternalId, serviceName, serviceNameCy) {
     return baseClient.patch(
       {
         baseUrl,
@@ -545,36 +562,36 @@ module.exports = function (clientOptions = {}) {
    * @param collectBillingAddress
    * @returns {*|Constructor|promise}
    */
-  const updateCollectBillingAddress = (serviceExternalId, collectBillingAddress) => {
+  function updateCollectBillingAddress (serviceExternalId, collectBillingAddress) {
     return baseClient.patch(
       {
         baseUrl,
         url: `${serviceResource}/${serviceExternalId}`,
         json: true,
         body:
-        {
-          op: 'replace',
-          path: 'collect_billing_address',
-          value: collectBillingAddress
-        },
+          {
+            op: 'replace',
+            path: 'collect_billing_address',
+            value: collectBillingAddress
+          },
         description: 'update collect billing address',
         service: SERVICE_NAME
       }
     )
   }
 
-  const updateDefaultBillingAddressCountry = (serviceExternalId, countryCode) => {
+  function updateDefaultBillingAddressCountry (serviceExternalId, countryCode) {
     return baseClient.patch(
       {
         baseUrl,
         url: `${serviceResource}/${serviceExternalId}`,
         json: true,
         body:
-        {
-          op: 'replace',
-          path: 'default_billing_address_country',
-          value: countryCode
-        },
+          {
+            op: 'replace',
+            path: 'default_billing_address_country',
+            value: countryCode
+          },
         description: 'update default billing address country',
         service: SERVICE_NAME
       }
@@ -588,7 +605,7 @@ module.exports = function (clientOptions = {}) {
    * @param gatewayAccountIds {String[]} a list of (unassigned) gateway account ids to add to the service
    * @returns {Promise<Service|Error>}
    */
-  const addGatewayAccountsToService = (serviceExternalId, gatewayAccountIds) => {
+  function addGatewayAccountsToService (serviceExternalId, gatewayAccountIds) {
     return baseClient.patch(
       {
         baseUrl,
@@ -611,7 +628,7 @@ module.exports = function (clientOptions = {}) {
    * @param externalId
    * @returns {Promise}
    */
-  const provisionNewOtpKey = (externalId) => {
+  function provisionNewOtpKey (externalId) {
     return baseClient.post(
       {
         baseUrl,
@@ -631,7 +648,7 @@ module.exports = function (clientOptions = {}) {
    * @param secondFactor {String} 'SMS' or 'APP'
    * @returns {Promise}
    */
-  const configureNewOtpKey = (externalId, code, secondFactor) => {
+  function configureNewOtpKey (externalId, code, secondFactor) {
     return baseClient.post(
       {
         baseUrl,
@@ -647,7 +664,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const updateCurrentGoLiveStage = (serviceExternalId, newStage) => {
+  function updateCurrentGoLiveStage (serviceExternalId, newStage) {
     return baseClient.patch(
       {
         baseUrl,
@@ -665,7 +682,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const updatePspTestAccountStage = (serviceExternalId, newStage) => {
+  function updatePspTestAccountStage (serviceExternalId, newStage) {
     return baseClient.patch(
       {
         baseUrl,
@@ -683,7 +700,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const addStripeAgreementIpAddress = (serviceExternalId, ipAddress) => {
+  function addStripeAgreementIpAddress (serviceExternalId, ipAddress) {
     return baseClient.post(
       {
         baseUrl,
@@ -696,7 +713,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  const addGovUkAgreementEmailAddress = (serviceExternalId, userExternalId) => {
+  function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId) {
     return baseClient.post(
       {
         baseUrl,
@@ -715,7 +732,7 @@ module.exports = function (clientOptions = {}) {
    * @param newPhoneNumber
    * @returns {Promise}
    */
-  const updatePhoneNumberForUser = (externalId, newPhoneNumber) => {
+  function updatePhoneNumberForUser (externalId, newPhoneNumber) {
     return baseClient.patch(
       {
         baseUrl,
@@ -759,6 +776,7 @@ module.exports = function (clientOptions = {}) {
     inviteUser,
     getInvitedUsersList,
     getValidatedInvite,
+    updateInvitePassword,
     generateInviteOtpCode,
     completeInvite,
     submitServiceRegistration,
