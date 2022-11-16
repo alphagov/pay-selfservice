@@ -29,7 +29,14 @@ const pathsNotRequiringAuthentication = [
   paths.selfCreateService.otpVerify,
   paths.selfCreateService.otpResend,
   paths.healthcheck.path,
-  paths.staticPaths.naxsiError
+  paths.staticPaths.naxsiError,
+  paths.register.password,
+  paths.register.securityCodes,
+  paths.register.authenticatorApp,
+  paths.register.phoneNumber,
+  paths.register.smsCode,
+  paths.register.resendCode,
+  paths.register.success
 ]
 
 describe('The Express router', () => {

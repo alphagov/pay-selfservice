@@ -1,0 +1,40 @@
+{% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
+
+{% block pageTitle %}
+  Check your mobile phone number - GOV.UK Pay
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{
+  govukBackLink({
+    text: "Back",
+    href: routes.register.smsCode
+  })
+  }}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-one-half">
+
+    <h1 class="govuk-heading-l">Check your mobile phone number</h1>
+
+    <p class="govuk-body">Check your mobile phone number is correct, then resend the security code.</p>
+
+    <form method="post">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {{ govukInput({
+        label: {
+          text: "Mobile phone number",
+          classes: "govuk-label--s"
+        },
+        id: "phone",
+        name: "phone"
+      }) }}
+
+      {{ govukButton({ text: "Resend security code" }) }}
+    </form>
+  </div>
+{% endblock %}

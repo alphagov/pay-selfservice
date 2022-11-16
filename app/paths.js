@@ -250,6 +250,15 @@ module.exports = {
     otpVerify: '/create-service/verify-otp',
     otpResend: '/create-service/resend-otp'
   },
+  register: {
+    password: '/register/password',
+    securityCodes: '/register/get-security-codes',
+    authenticatorApp: '/register/authenticator-app',
+    phoneNumber: '/register/phone-number',
+    smsCode: '/register/sms-code',
+    resendCode: '/register/resend-code',
+    success: '/register/success'
+  },
   healthcheck: {
     path: '/healthcheck'
   },
