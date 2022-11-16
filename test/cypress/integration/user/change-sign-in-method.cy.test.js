@@ -38,8 +38,8 @@ describe('Change sign in method', () => {
           // check that an error message is displayed
           cy.get('.govuk-error-summary').should('exist').within(() => {
             cy.get('h2').should('contain', 'There is a problem')
-            cy.get('.govuk-error-summary__list').should('have.length', 1)
-            cy.get('.govuk-error-summary__list').first()
+            cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+            cy.get('[data-cy=error-summary-list-item]').first()
               .contains('Enter a telephone number')
               .should('have.attr', 'href', '#phone')
           })
@@ -91,8 +91,8 @@ describe('Change sign in method', () => {
           // check that an error message is displayed
           cy.get('.govuk-error-summary').should('exist').within(() => {
             cy.get('h2').should('contain', 'There is a problem')
-            cy.get('.govuk-error-summary__list').should('have.length', 1)
-            cy.get('.govuk-error-summary__list').first()
+            cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+            cy.get('[data-cy=error-summary-list-item]').first()
               .contains('Enter a telephone number')
               .should('have.attr', 'href', '#phone')
           })
@@ -120,8 +120,8 @@ describe('Change sign in method', () => {
           // check that an error is displayed
           cy.get('.govuk-error-summary').should('exist').within(() => {
             cy.get('h2').should('contain', 'There is a problem')
-            cy.get('.govuk-error-summary__list').should('have.length', 1)
-            cy.get('.govuk-error-summary__list').first()
+            cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+            cy.get('[data-cy=error-summary-list-item]').first()
               .contains('Enter a security code')
               .should('have.attr', 'href', '#code')
           })
