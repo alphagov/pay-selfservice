@@ -117,6 +117,14 @@ module.exports = {
     return {
       errors: responseData
     }
+  },
+
+  validUpdateInvitePasswordRequest: (password = 'a-password') => {
+    return [{
+      op: 'replace',
+      path: 'password',
+      value: password
+    }]
   }
 
 }
