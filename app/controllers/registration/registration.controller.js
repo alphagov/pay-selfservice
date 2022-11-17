@@ -2,8 +2,30 @@
 
 const qrcode = require('qrcode')
 
-function showPasswordPage (req, res) {
-  res.render('registration/password')
+const { RegistrationSessionMissingError } = require('../../errors')
+const adminusersClient = require('../../services/clients/adminusers.client')()
+const paths = require('../../paths')
+
+const registrationSessionPresent = function registrationSessionPresent (sessionData) {
+  return sessionData && sessionData.email && sessionData.code
+}
+
+async function showPasswordPage (req, res, next) {
+  const sessionData = req.register_invite
+  if (!registrationSessionPresent(sessionData)) {
+    return next(new RegistrationSessionMissingError())
+  }
+
+  try {
+    const invite = await adminusersClient.getValidatedInvite(sessionData.code)
+    if (invite.password_set) {
+      return res.redirect(paths.register.securityCodes)
+    }
+
+    res.render('registration/password')
+  } catch (err) {
+    next(err)
+  }
 }
 
 function showChooseSignInMethodPage (req, res) {
