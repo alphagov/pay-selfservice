@@ -2,7 +2,7 @@
 {% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
-  Enter verification code - GOV.UK Pay
+  Enter security code - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -10,12 +10,12 @@
   {{ errorSummary ({
     errors: errors,
     hrefs: {
-      verificationCode: '#verify-code'
+      securityCode: '#verify-code'
     }
   }) }}
 
   <h1 class="form-title govuk-heading-l">Check your phone</h1>
-  <p class="govuk-body">We’ve sent you a text message with a verification code</p>
+  <p class="govuk-body">We’ve sent you a text message with a security code</p>
   <form action="{{routes.selfCreateService.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     {{
@@ -24,14 +24,14 @@
         name: "verify-code",
         classes: "govuk-input--width-10",
         label: {
-            text: "Verification code",
+            text: "Security code",
             classes: "govuk-label--s"
         },
         attributes: {
           autocomplete: "off",
           autofocus: true
         },
-        errorMessage: { text: errors.verificationCode } if errors.verificationCode else false
+        errorMessage: { text: errors.securityCode } if errors.securityCode else false
       })
     }}
     {{

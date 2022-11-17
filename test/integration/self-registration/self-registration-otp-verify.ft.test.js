@@ -74,14 +74,14 @@ describe('create service OTP validation', function () {
       adminusersMock.get(`${ADMINUSERS_INVITES_URL}/${inviteCode}`)
         .reply(200, mockAdminUsersInviteResponse)
 
-      const errorMessage = 'An error with the verification code'
+      const errorMessage = 'An error with the security code'
       app = session.getAppWithRegisterInvitesCookie(getApp(), {
         code: inviteCode,
         telephone_number: '07700900000',
         email: 'test@test.test',
         recovered: {
           errors: {
-            verificationCode: errorMessage
+            securityCode: errorMessage
           }
         }
       })
@@ -208,7 +208,7 @@ describe('create service OTP validation', function () {
         .end(done)
     })
 
-    it('should redirect to verify OTP page on verification code with incorrect format', function (done) {
+    it('should redirect to verify OTP page on security code with incorrect format', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
         code: validServiceInviteOtpRequest.code,
@@ -227,7 +227,7 @@ describe('create service OTP validation', function () {
         .expect(() => {
           expect(registerInviteData).to.have.property('recovered').to.deep.equal({
             errors: {
-              verificationCode: 'Enter numbers only'
+              securityCode: 'Enter numbers only'
             }
           })
         })
@@ -255,7 +255,7 @@ describe('create service OTP validation', function () {
         .expect(() => {
           expect(registerInviteData).to.have.property('recovered').to.deep.equal({
             errors: {
-              verificationCode: 'The verification code you’ve used is incorrect or has expired'
+              securityCode: 'The security code you’ve used is incorrect or has expired'
             }
           })
         })

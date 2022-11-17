@@ -149,7 +149,7 @@ async function submitOtpCode (req, res, next) {
   if (!validOtp.valid) {
     sessionData.recovered = {
       errors: {
-        verificationCode: validOtp.message
+        securityCode: validOtp.message
       }
     }
     return res.redirect(303, paths.selfCreateService.otpVerify)
@@ -161,7 +161,7 @@ async function submitOtpCode (req, res, next) {
     if (err.errorCode === 401) {
       sessionData.recovered = {
         errors: {
-          verificationCode: 'The verification code you’ve used is incorrect or has expired'
+          securityCode: 'The security code you’ve used is incorrect or has expired'
         }
       }
       return res.redirect(303, paths.selfCreateService.otpVerify)

@@ -356,7 +356,7 @@ describe('Server side form validations', () => {
     it('should not be valid for empty OTP code', () => {
       expect(validations.validateOtp('')).to.deep.equal({
         valid: false,
-        message: 'Enter your verification code'
+        message: 'Enter your security code'
       })
     })
 

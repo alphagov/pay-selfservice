@@ -42,7 +42,7 @@ describe('Login Page', () => {
         cy.get('#username').type(validUsername)
         cy.get('#password').type(validPassword)
         cy.contains('Continue').click()
-        cy.title().should('eq', 'Enter verification code - GOV.UK Pay')
+        cy.title().should('eq', 'Enter security code - GOV.UK Pay')
         cy.url().should('include', '/otp-login')
       })
     })

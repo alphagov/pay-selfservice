@@ -397,7 +397,7 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  function verifyOtpForInvite (inviteCode, verificationCode) {
+  function verifyOtpForInvite (inviteCode, securityCode) {
     return baseClient.post(
       {
         baseUrl,
@@ -405,7 +405,7 @@ module.exports = function (clientOptions = {}) {
         json: true,
         body: {
           code: inviteCode,
-          otp: verificationCode
+          otp: securityCode
         },
         description: 'submit invite otp code',
         service: SERVICE_NAME

@@ -40,7 +40,7 @@ describe('The POST resend code for updating 2FA to SMS controller', () => {
 
         sinon.assert.calledWith(updatePhoneNumberSpy, userExternalId, req.body.phone)
         sinon.assert.calledWith(sendProvisionalOTPSpy, userExternalId)
-        sinon.assert.calledWith(req.flash, 'generic', 'Another verification code has been sent to your phone')
+        sinon.assert.calledWith(req.flash, 'generic', 'Another security code has been sent to your phone')
         sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
       })
     })

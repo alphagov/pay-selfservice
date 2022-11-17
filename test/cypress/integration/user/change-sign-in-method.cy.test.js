@@ -70,15 +70,15 @@ describe('Change sign in method', () => {
 
           cy.get('button').contains('Continue').click()
 
-          // check we're on the page to enter a verification code
+          // check we're on the page to enter a security code
           cy.title().should('equal', 'Check your phone - GOV.UK Pay')
           cy.get('h1').should('contain', 'Check your phone')
 
           // click the link to try sending the code again
           cy.get('[data-cy=resend-code-link]').should('exist').click()
 
-          // check we're on the page to resend the verification code
-          cy.title().should('equal', 'Resend verification code - GOV.UK Pay')
+          // check we're on the page to resend the security code
+          cy.title().should('equal', 'Resend security code - GOV.UK Pay')
           cy.get('h1').should('contain', 'Check your mobile number')
 
           // check the existing phone number for the user is pre-filled
@@ -86,7 +86,7 @@ describe('Change sign in method', () => {
 
           // check an error message is displayed when an invalid phone number is entered
           cy.get('input#phone').type('000')
-          cy.get('button').contains('Resend verification code').click()
+          cy.get('button').contains('Resend security code').click()
 
           // check that an error message is displayed
           cy.get('.govuk-error-summary').should('exist').within(() => {
@@ -96,7 +96,7 @@ describe('Change sign in method', () => {
               .contains('Enter a telephone number')
               .should('have.attr', 'href', '#phone')
           })
-          cy.title().should('equal', 'Resend verification code - GOV.UK Pay')
+          cy.title().should('equal', 'Resend security code - GOV.UK Pay')
 
           cy.get('.govuk-form-group--error > input#phone').parent().should('exist').within(() => {
             cy.get('.govuk-error-message').should('contain', 'Enter a telephone number')
@@ -108,11 +108,11 @@ describe('Change sign in method', () => {
           // enter a valid telephone number and click resend
           cy.get('input#phone').clear()
           cy.get('input#phone').type(validPhoneNumber, { delay: 0 })
-          cy.get('button').contains('Resend verification code').click()
+          cy.get('button').contains('Resend security code').click()
 
-          // check we are sent back to the page to enter the verification code with a notification message
+          // check we are sent back to the page to enter the security code with a notification message
           cy.title().should('equal', 'Check your phone - GOV.UK Pay')
-          cy.get('.govuk-notification-banner--success').should('exist').should('contain', 'Another verification code has been sent to your phone')
+          cy.get('.govuk-notification-banner--success').should('exist').should('contain', 'Another security code has been sent to your phone')
 
           // submit the page wihout entering a code
           cy.get('button').contains('Complete').click()
@@ -122,13 +122,13 @@ describe('Change sign in method', () => {
             cy.get('h2').should('contain', 'There is a problem')
             cy.get('.govuk-error-summary__list').should('have.length', 1)
             cy.get('.govuk-error-summary__list').first()
-              .contains('Enter a verification code')
+              .contains('Enter a security code')
               .should('have.attr', 'href', '#code')
           })
           cy.title().should('equal', 'Check your phone - GOV.UK Pay')
 
           cy.get('.govuk-form-group--error > input#code').parent().should('exist').within(() => {
-            cy.get('.govuk-error-message').should('contain', 'Enter a verification code')
+            cy.get('.govuk-error-message').should('contain', 'Enter a security code')
           })
 
           // enter a valid code and submit

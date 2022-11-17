@@ -26,7 +26,7 @@
   {{ errorSummary ({
     errors: errors,
     hrefs: {
-      verificationCode: "#code"
+      securityCode: "#code"
     }
   }) }}
 </div>
@@ -63,17 +63,17 @@
 
     {% set codeHint = "Enter the code shown in your app to complete the setup" %}
     {% if method === secondFactorMethod.SMS %}
-      {% set codeHint = "We have sent you a text message with a verification code" %}
+      {% set codeHint = "We have sent you a text message with a security code" %}
     {% endif %}
 
     {{ govukInput({
         label: {
-          text: "Verification code"
+          text: "Security code"
         },
         hint: {
           text: codeHint
         },
-        errorMessage: { text: errors.verificationCode } if  errors.verificationCode else false,
+        errorMessage: { text: errors.securityCode } if  errors.securityCode else false,
         id: "code",
         name: "code",
         classes: "govuk-input--width-10",
