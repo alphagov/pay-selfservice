@@ -43,7 +43,7 @@ describe('Configure new second factor method post controller', () => {
       expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
       expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
         errors: {
-          verificationCode: 'Enter a verification code'
+          securityCode: 'Enter a security code'
         }
       })
     })
@@ -78,7 +78,7 @@ describe('Configure new second factor method post controller', () => {
         expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
         expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
           errors: {
-            verificationCode: 'The verification code you’ve used is incorrect or has expired'
+            securityCode: 'The security code you’ve used is incorrect or has expired'
           }
         })
       })
@@ -96,7 +96,7 @@ describe('Configure new second factor method post controller', () => {
         expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
         expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
           errors: {
-            verificationCode: 'The verification code you’ve used is incorrect or has expired'
+            securityCode: 'The security code you’ve used is incorrect or has expired'
           }
         })
       })

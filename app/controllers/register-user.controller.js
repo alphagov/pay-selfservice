@@ -137,30 +137,30 @@ const showOtpVerify = function showOtpVerify (req, res, next) {
  * @param res
  */
 const submitOtpVerify = async function submitOtpVerify (req, res, next) {
-  const verificationCode = req.body['verify-code']
+  const securityCode = req.body['verify-code']
 
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
 
-  const validOtp = validateOtp(verificationCode)
+  const validOtp = validateOtp(securityCode)
   if (!validOtp.valid) {
     sessionData.recovered = {
       errors: {
-        verificationCode: validOtp.message
+        securityCode: validOtp.message
       }
     }
     return res.redirect(303, paths.registerUser.otpVerify)
   }
 
   try {
-    await registrationService.verifyOtp(sessionData.code, verificationCode)
+    await registrationService.verifyOtp(sessionData.code, securityCode)
   } catch (err) {
     if (err.errorCode === 401) {
       sessionData.recovered = {
         errors: {
-          verificationCode: 'The verification code you’ve used is incorrect or has expired'
+          securityCode: 'The security code you’ve used is incorrect or has expired'
         }
       }
       return res.redirect(303, paths.registerUser.otpVerify)

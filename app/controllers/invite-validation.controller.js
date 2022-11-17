@@ -8,7 +8,7 @@ const paths = require('../paths')
 /**
  * Intermediate endpoint which captures the invite code and validate.
  * Upon success this forwards the request to proceed with registration.
- * In case of service invite it also sends the otp verification code.
+ * In case of service invite it also sends the otp security code.
  *
  * @param req
  * @param res

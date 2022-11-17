@@ -138,7 +138,7 @@ describe('Register user controller', () => {
         expect(req.register_invite).to.have.property('recovered')
         expect(req.register_invite.recovered).to.deep.equal({
           errors: {
-            verificationCode: 'The verification code you’ve used is incorrect or has expired'
+            securityCode: 'The security code you’ve used is incorrect or has expired'
           }
         })
         sinon.assert.calledWith(res.redirect, 303, paths.registerUser.otpVerify)

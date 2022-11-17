@@ -1,7 +1,7 @@
 {% extends "../layout-logged-out.njk" %}
 
 {% block pageTitle %}
-  Enter verification code - GOV.UK Pay
+  Enter security code - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -28,10 +28,10 @@
   <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     {% if authenticatorMethod === secondFactorMethod.SMS %}
-    <p class="govuk-body">We have sent you a text message with a verification code</p>
+    <p class="govuk-body">We have sent you a text message with a security code</p>
     {% endif %}
     {% if authenticatorMethod === secondFactorMethod.APP %}
-    <p class="govuk-body">Enter the verification code shown in your authenticator app</p>
+    <p class="govuk-body">Enter the security code shown in your authenticator app</p>
     {% endif %}
 
     {% set error = false %}
@@ -43,7 +43,7 @@
 
     {{ govukInput({
         label: {
-          text: "Verification code"
+          text: "Security code"
         },
         errorMessage: error,
         id: "sms_code",

@@ -215,7 +215,7 @@ function validatePassword (password) {
 
 function validateOtp (otp) {
   if (!otp) {
-    return notValidReturnObject('Enter your verification code')
+    return notValidReturnObject('Enter your security code')
   }
   if (!NUMBERS_ONLY.test(otp)) {
     return notValidReturnObject('Enter numbers only')

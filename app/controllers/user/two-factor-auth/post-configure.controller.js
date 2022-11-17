@@ -14,7 +14,7 @@ module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
   if (!code) {
     lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
       errors: {
-        verificationCode: 'Enter a verification code'
+        securityCode: 'Enter a security code'
       }
     })
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
@@ -28,7 +28,7 @@ module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
     if (err instanceof RESTClientError && (err.errorCode === 401 || err.errorCode === 400)) {
       lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
         errors: {
-          verificationCode: 'The verification code you’ve used is incorrect or has expired'
+          securityCode: 'The security code you’ve used is incorrect or has expired'
         }
       })
       return res.redirect(paths.user.profile.twoFactorAuth.configure)
