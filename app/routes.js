@@ -194,7 +194,9 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.otpResend, selfCreateServiceController.showOtpResend)
   app.post(selfCreateService.otpResend, selfCreateServiceController.submitOtpResend)
 
+  // NEW REGISTRATION JOURNEY
   app.get(register.password, registrationController.showPasswordPage)
+  app.post(register.password, registrationController.submitPasswordPage)
   app.get(register.securityCodes, registrationController.showChooseSignInMethodPage)
   app.get(register.authenticatorApp, registrationController.showAuthenticatorAppPage)
   app.get(register.phoneNumber, registrationController.showPhoneNumberPage)
