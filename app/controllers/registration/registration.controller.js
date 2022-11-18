@@ -71,6 +71,23 @@ function showChooseSignInMethodPage (req, res) {
   res.render('registration/get-security-codes')
 }
 
+function submitChooseSignInMethodPage (req, res) {
+  const signInMethod = req.body['sign-in-method']
+  if (!signInMethod) {
+    return res.render('registration/get-security-codes', {
+      errors: {
+        'sign-in-method': 'You need to select an option'
+      }
+    })
+  }
+
+  if (signInMethod === 'SMS') {
+    res.redirect(paths.register.phoneNumber)
+  } else {
+    res.redirect(paths.register.authenticatorApp)
+  }
+}
+
 async function showAuthenticatorAppPage (req, res) {
   const exampleSecretKey = 'ANEXAMPLESECRETSECONDFACTORCODE1' // pragma: allowlist secret
   const prettyPrintedSecret = exampleSecretKey.match(/.{4}/g).join(' ')
@@ -103,6 +120,7 @@ module.exports = {
   showPasswordPage,
   submitPasswordPage,
   showChooseSignInMethodPage,
+  submitChooseSignInMethodPage,
   showAuthenticatorAppPage,
   showPhoneNumberPage,
   showSmsSecurityCodePage,

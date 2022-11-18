@@ -178,6 +178,39 @@ describe('Registration', () => {
       sinon.assert.notCalled(res.render)
     })
   })
+
+  describe('submit the choose how to get security codes page', () => {
+    it('should render page with an error when an option is not selected', () => {
+      req.body = {
+        'sign-in-method': ''
+      }
+      registrationController.submitChooseSignInMethodPage(req, res)
+      sinon.assert.calledWith(res.render, 'registration/get-security-codes', {
+        errors: {
+          'sign-in-method': 'You need to select an option'
+        }
+      })
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should redirect to the phone number page when SMS is chosen', () => {
+      req.body = {
+        'sign-in-method': 'SMS'
+      }
+      registrationController.submitChooseSignInMethodPage(req, res)
+      sinon.assert.calledWith(res.redirect, paths.register.phoneNumber)
+      sinon.assert.notCalled(res.render)
+    })
+
+    it('should redirect to the authenticator app page when APP is chosen', () => {
+      req.body = {
+        'sign-in-method': 'APP'
+      }
+      registrationController.submitChooseSignInMethodPage(req, res)
+      sinon.assert.calledWith(res.redirect, paths.register.authenticatorApp)
+      sinon.assert.notCalled(res.render)
+    })
+  })
 })
 
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {

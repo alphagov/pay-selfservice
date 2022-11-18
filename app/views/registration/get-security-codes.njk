@@ -8,11 +8,18 @@
 {% block mainContent %}
   <div class="govuk-grid-column-one-half">
 
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'sign-in-method': '#sign-in-method'
+      }
+    }) }}
+
     <form method="post">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {{ govukRadios({
-        name: "where-do-you-live",
+        name: "sign-in-method",
         fieldset: {
           legend: {
             text: "Choose how to get security codes",
@@ -23,14 +30,24 @@
         hint: {
           text: "To finish creating your account, you need to choose a way to prove it's you when you sign in."
         },
+        errorMessage: { text: errors['sign-in-method'] } if errors['sign-in-method'] else false,
+        attributes: {
+          'data-cy': 'radios-security-code'
+        },
         items: [
           {
             value: "SMS",
-            text: "Text message"
+            text: "Text message",
+            attributes: {
+              'data-cy': 'radio-option-sms'
+            }
           },
           {
             value: "APP",
-            text: "Authenticator app for your smartphone, tablet or computer"
+            text: "Authenticator app for your smartphone, tablet or computer",
+            attributes: {
+            'data-cy': 'radio-option-app'
+          }
           }
         ]
       }) }}
