@@ -5,7 +5,10 @@
   {% for key, message in params.errors %}
     {% set errorList = (errorList.push({
         text: message | safe,
-        href: params.hrefs[key]
+        href: params.hrefs[key],
+        attributes: {
+          'data-cy': 'error-summary-list-item'
+        }
       }), errorList) %}
   {% endfor %}
 

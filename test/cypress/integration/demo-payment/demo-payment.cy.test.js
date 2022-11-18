@@ -37,8 +37,8 @@ describe('Make a demo payment', () => {
     cy.get('button').contains('Save changes').click()
     cy.get('.govuk-error-summary').should('exist').within(() => {
       cy.get('h2').should('contain', 'There is a problem')
-      cy.get('.govuk-error-summary__list').should('have.length', 1)
-      cy.get('.govuk-error-summary__list').first()
+      cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+      cy.get('[data-cy=error-summary-list-item]').first()
         .contains('Enter a payment description')
         .should('have.attr', 'href', '#payment-description')
     })
@@ -64,8 +64,8 @@ describe('Make a demo payment', () => {
     cy.get('button').contains('Save changes').click()
     cy.get('.govuk-error-summary').should('exist').within(() => {
       cy.get('h2').should('contain', 'There is a problem')
-      cy.get('.govuk-error-summary__list').should('have.length', 1)
-      cy.get('.govuk-error-summary__list').first()
+      cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+      cy.get('[data-cy=error-summary-list-item]').first()
         .contains('Enter an amount in pounds and pence')
         .should('have.attr', 'href', '#payment-amount')
     })
