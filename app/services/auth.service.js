@@ -14,6 +14,7 @@ const userService = require('./user.service.js')
 const { validationErrors } = require('./../utils/validation/field-validation-checks')
 const secondFactorMethod = require('../models/second-factor-method')
 const { validateOtp } = require('../utils/validation/server-side-form-validations')
+const { sanitiseSecurityCode } = require('../utils/security-code-utils')
 
 // Exports
 module.exports = {
@@ -72,7 +73,7 @@ function localStrategyAuth (req, username, password, done) {
 }
 
 async function localStrategy2Fa (req, done) {
-  const code = req.body.code
+  const code = sanitiseSecurityCode(req.body.code)
   const validationResult = validateOtp(code)
   if (!validationResult.valid) {
     return done(null, false, { message: validationResult.message })

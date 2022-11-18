@@ -14,6 +14,8 @@ describe('Register user controller', () => {
   const email = 'invited-user@example.com'
   const inviteCode = 'a-code'
   const serviceExternalId = 'a-service-id'
+  const otpCode = '123 456'
+  const expectedSanitisedCode = '123456'
 
   const verifyOtpSuccessStub = sinon.spy(() => Promise.resolve())
   const completeInviteSuccessStub = sinon.spy(() => Promise.resolve(inviteFixtures.validInviteCompleteResponse({
@@ -28,7 +30,7 @@ describe('Register user controller', () => {
       register_invite: { code: inviteCode, email },
       user: new User(userFixtures.validUserResponse({ email })),
       body: {
-        'verify-code': '123456'
+        'verify-code': otpCode
       },
       flash: flashSpy
     }
@@ -120,9 +122,11 @@ describe('Register user controller', () => {
 
     describe('Submitted OTP code is correct', () => {
       it('should redirect to logUserIn with a 303', async () => {
-        const controllerWithVerifyOtpError = getController(verifyOtpSuccessStub, completeInviteSuccessStub)
-        await controllerWithVerifyOtpError.submitOtpVerify(req, res, next)
+        const controllerWithVerifyOtpSuccess = getController(verifyOtpSuccessStub, completeInviteSuccessStub)
+        await controllerWithVerifyOtpSuccess.submitOtpVerify(req, res, next)
 
+        sinon.assert.calledWith(verifyOtpSuccessStub, inviteCode, expectedSanitisedCode)
+        sinon.assert.calledWith(completeInviteSuccessStub, inviteCode)
         sinon.assert.calledWith(res.redirect, 303, paths.registerUser.logUserIn)
       })
     })

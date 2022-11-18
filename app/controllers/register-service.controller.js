@@ -16,6 +16,7 @@ const {
 } = require('../utils/validation/server-side-form-validations')
 const { RegistrationSessionMissingError, InvalidRegistationStateError } = require('../errors')
 const { validationErrors } = require('../utils/validation/field-validation-checks')
+const { sanitiseSecurityCode } = require('../utils/security-code-utils')
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 const INVITE_NOT_FOUND_ERROR_MESSAGE = 'There has been a problem proceeding with this registration. Please try again.'
@@ -144,7 +145,7 @@ async function submitOtpCode (req, res, next) {
     return next(new RegistrationSessionMissingError())
   }
   const code = req.register_invite.code
-  const otpCode = req.body['verify-code']
+  const otpCode = sanitiseSecurityCode(req.body['verify-code'])
 
   const validOtp = validateOtp(otpCode)
   if (!validOtp.valid) {

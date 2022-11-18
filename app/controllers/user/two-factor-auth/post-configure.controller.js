@@ -8,9 +8,10 @@ const secondFactorMethod = require('../../../models/second-factor-method')
 const { RESTClientError } = require('../../../errors')
 const { validateOtp } = require('../../../utils/validation/server-side-form-validations')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
+const { sanitiseSecurityCode } = require('../../../utils/security-code-utils')
 
 module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
-  const code = req.body['code']
+  const code = sanitiseSecurityCode(req.body['code'])
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)
 
   const validationResult = validateOtp(code)

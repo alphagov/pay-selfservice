@@ -123,26 +123,33 @@ describe('Register service', function () {
 
   describe('Submit OTP code', () => {
     const userExternalId = 'a-user-id'
+    const submitServiceInviteOtpCodeSpy = sinon.spy(() => Promise.resolve())
+    const completeInviteSpy = sinon.spy(() => Promise.resolve(userExternalId))
     const controller = proxyquire('../../../../app/controllers/register-service.controller.js',
       {
         '../services/service-registration.service': {
-          completeInvite: () => Promise.resolve(userExternalId),
-          submitServiceInviteOtpCode: () => Promise.resolve()
+          completeInvite: completeInviteSpy,
+          submitServiceInviteOtpCode: submitServiceInviteOtpCodeSpy
         }
       })
 
     it('should redirect to route to log user in then show the my service page', async () => {
+      const inviteCode = 'a-code'
+      const otpCode = '123 456'
+      const expectedSanitisedOtpCode = '123456'
       req.body = {
-        'verify-code': '123456'
+        'verify-code': otpCode
       }
       req.register_invite = {
-        code: 'a-code',
+        code: inviteCode,
         email: 'an-email'
       }
       await controller.submitOtpCode(req, res, next)
 
       expect(req.register_invite).to.have.property('userExternalId')
       expect(req.register_invite.userExternalId).to.equal(userExternalId)
+      sinon.assert.calledWith(submitServiceInviteOtpCodeSpy, inviteCode, expectedSanitisedOtpCode)
+      sinon.assert.calledWith(completeInviteSpy, inviteCode)
       sinon.assert.calledWith(res.redirect, 303, paths.registerUser.logUserIn)
     })
   })
