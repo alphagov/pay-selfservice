@@ -13,7 +13,8 @@ const validPaths = {
     url: 'merchant_details/url'
   },
   currentGoLiveStage: 'current_go_live_stage',
-  currentPspTestAccountStage: 'current_psp_test_account_stage'
+  currentPspTestAccountStage: 'current_psp_test_account_stage',
+  takesPaymentsOverPhone: 'takes_payments_over_phone'
 }
 
 const ops = {
