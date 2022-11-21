@@ -29,7 +29,7 @@ const validationErrors = {
   invalidDateOfBirth: 'Enter a valid date',
   invalidTelephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192',
   invalidOrExpiredSecurityCodeSMS: 'The security code you’ve used is incorrect or has expired',
-  invalidOrExpiredSecurityCodeApp: 'The security code you entered is not correct, try entering it again or wait for for your authenticator app to give you a new code'
+  invalidOrExpiredSecurityCodeApp: 'The security code you entered is not correct, try entering it again or wait for your authenticator app to give you a new code'
 }
 
 exports.validationErrors = validationErrors

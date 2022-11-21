@@ -15,6 +15,7 @@ const {
   validateOtp
 } = require('../utils/validation/server-side-form-validations')
 const { RegistrationSessionMissingError, InvalidRegistationStateError } = require('../errors')
+const { validationErrors } = require('../utils/validation/field-validation-checks')
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 const INVITE_NOT_FOUND_ERROR_MESSAGE = 'There has been a problem proceeding with this registration. Please try again.'
@@ -161,7 +162,7 @@ async function submitOtpCode (req, res, next) {
     if (err.errorCode === 401) {
       sessionData.recovered = {
         errors: {
-          securityCode: 'The security code you’ve used is incorrect or has expired'
+          securityCode: validationErrors.invalidOrExpiredSecurityCodeSMS
         }
       }
       return res.redirect(303, paths.selfCreateService.otpVerify)
