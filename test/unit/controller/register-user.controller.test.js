@@ -28,7 +28,7 @@ describe('Register user controller', () => {
       register_invite: { code: inviteCode, email },
       user: new User(userFixtures.validUserResponse({ email })),
       body: {
-        'verify-code': 123456
+        'verify-code': '123456'
       },
       flash: flashSpy
     }

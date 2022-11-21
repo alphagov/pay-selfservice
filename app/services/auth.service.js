@@ -11,6 +11,9 @@ const logger = require('../utils/logger')(__filename)
 const sessionValidator = require('./session-validator.js')
 const paths = require('../paths.js')
 const userService = require('./user.service.js')
+const { validationErrors } = require('./../utils/validation/field-validation-checks')
+const secondFactorMethod = require('../models/second-factor-method')
+const { validateOtp } = require('../utils/validation/server-side-form-validations')
 
 // Exports
 module.exports = {
@@ -20,6 +23,7 @@ module.exports = {
   deserializeUser,
   serializeUser,
   localStrategyAuth,
+  localStrategy2Fa,
   localDirectStrategy,
   noAccess,
   setSessionVersion,
@@ -67,10 +71,21 @@ function localStrategyAuth (req, username, password, done) {
     .catch(() => done(null, false, { message: 'Invalid email or password' }))
 }
 
-function localStrategy2Fa (req, done) {
-  return userService.authenticateSecondFactor(req.user.externalId, req.body.code)
-    .then((user) => done(null, user))
-    .catch(() => done(null, false, { message: 'The security code you’ve used is incorrect or has expired.' }))
+async function localStrategy2Fa (req, done) {
+  const code = req.body.code
+  const validationResult = validateOtp(code)
+  if (!validationResult.valid) {
+    return done(null, false, { message: validationResult.message })
+  }
+  try {
+    const user = await userService.authenticateSecondFactor(req.user.externalId, code)
+    done(null, user)
+  } catch (err) {
+    const message = req.user.secondFactor === secondFactorMethod.SMS
+      ? validationErrors.invalidOrExpiredSecurityCodeSMS
+      : validationErrors.invalidOrExpiredSecurityCodeApp
+    done(null, false, { message })
+  }
 }
 
 function localDirectStrategy (req, done) {

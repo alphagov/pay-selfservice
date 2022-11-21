@@ -16,7 +16,7 @@ describe('Register', () => {
       cy.visit(`/invites/${inviteCode}`)
 
       // TODO: when the journey is hooked up, the previous route should redirect to the set password page but for now
-    // we need to manually visit to start the new journey
+      // we need to manually visit to start the new journey
       cy.visit('/register/password')
 
       cy.get('title').should('contain', 'Create your password - GOV.UK Pay')

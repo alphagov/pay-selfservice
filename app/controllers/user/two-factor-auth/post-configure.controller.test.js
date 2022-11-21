@@ -6,9 +6,10 @@ const userFixtures = require('../../../../test/fixtures/user.fixtures')
 const User = require('../../../models/User.class')
 const paths = require('../../../paths')
 const { RESTClientError } = require('../../../errors')
+const secondFactorMethod = require('../../../models/second-factor-method')
 
 const userExternalId = 'user-id'
-const twoFactorAuthMethod = 'SMS'
+const twoFactorAuthMethod = secondFactorMethod.SMS
 
 describe('Configure new second factor method post controller', () => {
   let req, res, next
@@ -43,7 +44,7 @@ describe('Configure new second factor method post controller', () => {
       expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
       expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
         errors: {
-          securityCode: 'Enter a security code'
+          securityCode: 'Enter your security code'
         }
       })
     })
@@ -85,7 +86,7 @@ describe('Configure new second factor method post controller', () => {
     })
 
     describe('Adminusers returns a 401 response', () => {
-      it('should call redirect with errors in session', async () => {
+      it('should call redirect with errors in session for SMS method', async () => {
         const error = new RESTClientError('An error', 'adminusers', 401)
         const adminusersRejectsStub = () => Promise.reject(error)
 
@@ -97,6 +98,24 @@ describe('Configure new second factor method post controller', () => {
         expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
           errors: {
             securityCode: 'The security code you’ve used is incorrect or has expired'
+          }
+        })
+      })
+
+      it('should call redirect with errors in session for APP method', async () => {
+        req.session.pageData.twoFactorAuthMethod = secondFactorMethod.APP
+
+        const error = new RESTClientError('An error', 'adminusers', 401)
+        const adminusersRejectsStub = () => Promise.reject(error)
+
+        const controllerWithAdminusersError = getController(adminusersRejectsStub)
+        await controllerWithAdminusersError(req, res, next)
+
+        sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
+        expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
+        expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
+          errors: {
+            securityCode: 'The security code you entered is not correct, try entering it again or wait for for your authenticator app to give you a new code'
           }
         })
       })

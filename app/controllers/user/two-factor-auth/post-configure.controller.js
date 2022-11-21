@@ -6,15 +6,18 @@ const paths = require('../../../paths')
 const userService = require('../../../services/user.service.js')
 const secondFactorMethod = require('../../../models/second-factor-method')
 const { RESTClientError } = require('../../../errors')
+const { validateOtp } = require('../../../utils/validation/server-side-form-validations')
+const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 
 module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
-  const code = req.body['code'] || ''
+  const code = req.body['code']
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)
 
-  if (!code) {
+  const validationResult = validateOtp(code)
+  if (!validationResult.valid) {
     lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
       errors: {
-        securityCode: 'Enter a security code'
+        securityCode: validationResult.message
       }
     })
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
@@ -26,9 +29,12 @@ module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
     return res.redirect(paths.user.profile.index)
   } catch (err) {
     if (err instanceof RESTClientError && (err.errorCode === 401 || err.errorCode === 400)) {
+      const error = method === secondFactorMethod.SMS
+        ? validationErrors.invalidOrExpiredSecurityCodeSMS
+        : validationErrors.invalidOrExpiredSecurityCodeApp
       lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
         errors: {
-          securityCode: 'The security code you’ve used is incorrect or has expired'
+          securityCode: error
         }
       })
       return res.redirect(paths.user.profile.twoFactorAuth.configure)
