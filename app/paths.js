@@ -189,6 +189,7 @@ module.exports = {
       organisationName: '/request-to-go-live/organisation-name',
       organisationAddress: '/request-to-go-live/organisation-address',
       chooseHowToProcessPayments: '/request-to-go-live/choose-how-to-process-payments',
+      chooseTakesPaymentsOverPhone: '/request-to-go-live/choose-takes-payments-over-phone',
       agreement: '/request-to-go-live/agreement'
     },
     teamMembers: {

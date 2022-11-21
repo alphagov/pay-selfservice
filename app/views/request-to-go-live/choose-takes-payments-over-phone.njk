@@ -1,0 +1,61 @@
+{% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
+
+{% block pageTitle %}
+  Choose takes payments over the phone - Request a live account - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'choose-takes-payments-over-phone': '#choose-takes-payments-over-phone'
+      }
+    }) }}
+
+    <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 2 of 3</span>
+
+    <form id="request-to-go-live-choose-takes-payments-over-the-phone" method="post"
+          action="{{ formatServicePathsFor(routes.service.requestToGoLive.chooseTakesPaymentsOverPhone, currentService.externalId) }}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% set html %}
+        If you use Worldpay you need separate accounts for online and telephone payments.
+
+        We will ask for your Worldpay MOTO ('Mail Order / Telephone Order') merchant code. You can get it from Government Banking.
+      {% endset %}
+
+      {{ govukRadios({
+        idPrefix: 'choose-takes-payments-over-phone',
+        name: 'choose-takes-payments-over-phone',
+        fieldset: {
+          legend: {
+            text: 'Will you be taking payments over the phone?',
+            isPageHeading: true,
+            classes: 'govuk-fieldset__legend--l'
+          }
+        },
+        hint: {
+          text: html
+        },
+        errorMessage: { text: errors['choose-takes-payments-over-phone'] } if errors['choose-takes-payments-over-phone'] else false,
+        items: [
+          {
+            value: 'true',
+            text: 'Yes',
+            label: { classes: "govuk-label--s" }
+          },
+          {
+            value: 'false',
+            text: "No",
+            label: { classes: "govuk-label--s" }
+          }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+{% endblock %}

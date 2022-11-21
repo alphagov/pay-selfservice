@@ -268,6 +268,37 @@ describe('Request to go live: index', () => {
     })
   })
 
+  describe('Request to go live stage GOV_BANKING_MOTO_OPTION_COMPLETED', () => {
+    beforeEach(() => {
+      setupStubs(buildServiceRoleForGoLiveStage('GOV_BANKING_MOTO_OPTION_COMPLETED'))
+    })
+
+    it('should show "Request to go live" page with correct progress indication', () => {
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
+      cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request a live account')
+      cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
+
+      cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
+      cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'Completed')
+
+      cy.get('ol.govuk-list > li:nth-child(2)').should('exist')
+      cy.get('ol.govuk-list > li:nth-child(2) > span').should('contain', 'Completed')
+
+      cy.get('ol.govuk-list > li:nth-child(3)').should('exist')
+      cy.get('ol.govuk-list > li:nth-child(3) > span').should('not.exist')
+
+      cy.get('#request-to-go-live-index-form > button').should('exist')
+      cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
+      cy.get('#request-to-go-live-index-form > button').click()
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
+      })
+    })
+  })
+
   describe('Request to go live stage TERMS_AGREED_STRIPE', () => {
     beforeEach(() => {
       setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_STRIPE'))

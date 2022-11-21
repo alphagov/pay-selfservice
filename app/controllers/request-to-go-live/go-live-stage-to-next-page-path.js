@@ -12,6 +12,7 @@ goLiveStageToNextPagePathMap[goLiveStage.CHOSEN_PSP_WORLDPAY] = requestToGoLive.
 goLiveStageToNextPagePathMap[goLiveStage.CHOSEN_PSP_SMARTPAY] = requestToGoLive.agreement
 goLiveStageToNextPagePathMap[goLiveStage.CHOSEN_PSP_EPDQ] = requestToGoLive.agreement
 goLiveStageToNextPagePathMap[goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY] = requestToGoLive.agreement
+goLiveStageToNextPagePathMap[goLiveStage.GOV_BANKING_MOTO_OPTION_COMPLETED] = requestToGoLive.agreement
 goLiveStageToNextPagePathMap[goLiveStage.TERMS_AGREED_STRIPE] = requestToGoLive.index
 goLiveStageToNextPagePathMap[goLiveStage.TERMS_AGREED_WORLDPAY] = requestToGoLive.index
 goLiveStageToNextPagePathMap[goLiveStage.TERMS_AGREED_SMARTPAY] = requestToGoLive.index
