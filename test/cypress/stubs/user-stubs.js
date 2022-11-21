@@ -91,6 +91,21 @@ function postSecondFactorSuccess (userExternalId) {
   return stubBuilder('POST', path, 200)
 }
 
+function postAuthenticateSecondFactorSuccess (userExternalId, code) {
+  const path = `/v1/api/users/${userExternalId}/second-factor/authenticate`
+  return stubBuilder('POST', path, 200, {
+    request: userFixtures.validAuthenticateSecondFactorRequest(code),
+    response: userFixtures.validUserResponse({ external_id: userExternalId })
+  })
+}
+
+function postAuthenticateSecondFactorInvalidCode (userExternalId, code) {
+  const path = `/v1/api/users/${userExternalId}/second-factor/authenticate`
+  return stubBuilder('POST', path, 401, {
+    request: userFixtures.validAuthenticateSecondFactorRequest(code)
+  })
+}
+
 function postProvisionSecondFactorSuccess (userExternalId) {
   const path = `/v1/api/users/${userExternalId}/second-factor/provision`
   return stubBuilder('POST', path, 200, {
@@ -262,6 +277,8 @@ module.exports = {
   postUserAuthenticateSuccess,
   postUserAuthenticateInvalidPassword,
   postSecondFactorSuccess,
+  postAuthenticateSecondFactorSuccess,
+  postAuthenticateSecondFactorInvalidCode,
   postProvisionSecondFactorSuccess,
   putUpdateServiceRoleSuccess,
   getUserSuccessWithMultipleServices

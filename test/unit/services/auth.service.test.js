@@ -10,6 +10,9 @@ const { expect } = require('chai')
 const auth = require('../../../app/services/auth.service.js')
 const paths = require('../../../app/paths.js')
 const mockSession = require('../../test-helpers/mock-session.js')
+const userFixtures = require('../../fixtures/user.fixtures')
+const User = require('../../../app/models/User.class')
+const secondFactorMethod = require('../../../app/models/second-factor-method')
 
 // Assignments and Variables
 const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3'
@@ -66,7 +69,8 @@ describe('auth service', function () {
     it('should find user by external id', function (done) {
       const authService = (userMock) => {
         return proxyquire(path.join(__dirname, '/../../../app/services/auth.service.js'),
-          { './user.service.js': userMock,
+          {
+            './user.service.js': userMock,
             'continuation-local-storage': {
               getNamespace: function () {
                 return {
@@ -193,6 +197,104 @@ describe('auth service', function () {
           assert(doneSpy.calledWithExactly(null, false, { message: 'Invalid email or password' }))
           done()
         })
+    })
+  })
+
+  describe('localStrategy2Fa', () => {
+    it('should call done with error when code does not pass validation', async () => {
+      const user = new User(userFixtures.validUserResponse())
+      const doneSpy = sinon.spy(() => {})
+      const req = {
+        user,
+        body: {
+          code: '1'
+        }
+      }
+
+      await auth.localStrategy2Fa(req, doneSpy)
+      sinon.assert.calledWith(doneSpy, null, false, {
+        message: 'You’ve not entered enough numbers, the code must be 6 numbers'
+      })
+    })
+
+    it('should call done with user when authenticates successfully', async () => {
+      const user = new User(userFixtures.validUserResponse())
+      const authenticateSecondFactorSpy = sinon.spy(() => Promise.resolve(user))
+      const doneSpy = sinon.spy(() => {})
+
+      const authService = proxyquire('../../../app/services/auth.service.js', {
+        './user.service.js': {
+          authenticateSecondFactor: authenticateSecondFactorSpy
+        }
+      })
+
+      const otpCode = '123456'
+      const req = {
+        user,
+        body: {
+          code: otpCode
+        }
+      }
+
+      await authService.localStrategy2Fa(req, doneSpy)
+      sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, otpCode)
+      sinon.assert.calledWith(doneSpy, null, user)
+    })
+
+    it('should call done with error when authentication fails for user with SMS second factor method', async () => {
+      const user = new User(userFixtures.validUserResponse({
+        second_factor: secondFactorMethod.SMS
+      }))
+      const authenticateSecondFactorSpy = sinon.spy(() => Promise.reject(new Error()))
+      const doneSpy = sinon.spy(() => {})
+
+      const authService = proxyquire('../../../app/services/auth.service.js', {
+        './user.service.js': {
+          authenticateSecondFactor: authenticateSecondFactorSpy
+        }
+      })
+
+      const otpCode = '123456'
+      const req = {
+        user,
+        body: {
+          code: otpCode
+        }
+      }
+
+      await authService.localStrategy2Fa(req, doneSpy)
+      sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, otpCode)
+      sinon.assert.calledWith(doneSpy, null, false, {
+        message: 'The security code you’ve used is incorrect or has expired'
+      })
+    })
+
+    it('should call done with error when authentication fails for user with APP second factor method', async () => {
+      const user = new User(userFixtures.validUserResponse({
+        second_factor: secondFactorMethod.APP
+      }))
+      const authenticateSecondFactorSpy = sinon.spy(() => Promise.reject(new Error()))
+      const doneSpy = sinon.spy(() => {})
+
+      const authService = proxyquire('../../../app/services/auth.service.js', {
+        './user.service.js': {
+          authenticateSecondFactor: authenticateSecondFactorSpy
+        }
+      })
+
+      const otpCode = '123456'
+      const req = {
+        user,
+        body: {
+          code: otpCode
+        }
+      }
+
+      await authService.localStrategy2Fa(req, doneSpy)
+      sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, otpCode)
+      sinon.assert.calledWith(doneSpy, null, false, {
+        message: 'The security code you entered is not correct, try entering it again or wait for your authenticator app to give you a new code'
+      })
     })
   })
 
