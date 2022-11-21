@@ -27,7 +27,9 @@ const validationErrors = {
   invalidWorldpay3dsFlexIssuer: 'Enter your issuer in the format you received it',
   invalidWorldpay3dsFlexJwtMacKey: 'Enter your JWT MAC key in the format you received it',
   invalidDateOfBirth: 'Enter a valid date',
-  invalidTelephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+  invalidTelephoneNumber: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192',
+  invalidOrExpiredSecurityCodeSMS: 'The security code you’ve used is incorrect or has expired',
+  invalidOrExpiredSecurityCodeApp: 'The security code you entered is not correct, try entering it again or wait for for your authenticator app to give you a new code'
 }
 
 exports.validationErrors = validationErrors

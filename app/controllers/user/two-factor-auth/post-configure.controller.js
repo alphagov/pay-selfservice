@@ -6,15 +6,17 @@ const paths = require('../../../paths')
 const userService = require('../../../services/user.service.js')
 const secondFactorMethod = require('../../../models/second-factor-method')
 const { RESTClientError } = require('../../../errors')
+const { validateOtp } = require('../../../utils/validation/server-side-form-validations')
 
 module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
-  const code = req.body['code'] || ''
+  const code = req.body['code']
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)
 
-  if (!code) {
+  const validationResult = validateOtp(code)
+  if (!validationResult.valid) {
     lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
       errors: {
-        securityCode: 'Enter a security code'
+        securityCode: validationResult.message
       }
     })
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
