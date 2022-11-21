@@ -155,6 +155,7 @@ module.exports = async (req, res) => {
         targetCredential,
         activeCredential,
         stripeKycAdditionalDataDueDate,
+        worldpayAccountAndSetupIncomplete: (req.account.payment_provider === 'worldpay' && activeCredential && activeCredential.state === 'CREATED'),
         requiresAdditionalKycData: req.account.requires_additional_kyc_data
       }))
     } catch (error) {

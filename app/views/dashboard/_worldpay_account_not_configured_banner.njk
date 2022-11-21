@@ -1,0 +1,19 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% if (isAdminUser and worldpayAccountAndSetupIncomplete) %}
+  <div class="govuk-grid-column-full">
+    {% set html %}
+
+      <p class="govuk-body">
+        You have not finished setting up your account. You will not be able to take payments unless you
+        <a id="connect-worldpay-account" class="govuk-notification-banner__link"
+           href="{{ formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id) }}">
+          connect your Worldpay account to GOV.UK Pay</a>.
+      </p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: html
+    }) }}
+  </div>
+{% endif %}
