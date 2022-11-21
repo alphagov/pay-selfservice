@@ -6,9 +6,10 @@ const userFixtures = require('../../../../test/fixtures/user.fixtures')
 const User = require('../../../models/User.class')
 const paths = require('../../../paths')
 const { RESTClientError } = require('../../../errors')
+const secondFactorMethod = require('../../../models/second-factor-method')
 
 const userExternalId = 'user-id'
-const twoFactorAuthMethod = 'SMS'
+const twoFactorAuthMethod = secondFactorMethod.SMS
 
 describe('Configure new second factor method post controller', () => {
   let req, res, next
@@ -43,7 +44,7 @@ describe('Configure new second factor method post controller', () => {
       expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
       expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
         errors: {
-          securityCode: 'Enter a security code'
+          securityCode: 'Enter your security code'
         }
       })
     })

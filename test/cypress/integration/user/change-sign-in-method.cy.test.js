@@ -122,13 +122,13 @@ describe('Change sign in method', () => {
             cy.get('h2').should('contain', 'There is a problem')
             cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
             cy.get('[data-cy=error-summary-list-item]').first()
-              .contains('Enter a security code')
+              .contains('Enter your security code')
               .should('have.attr', 'href', '#code')
           })
           cy.title().should('equal', 'Check your phone - GOV.UK Pay')
 
           cy.get('.govuk-form-group--error > input#code').parent().should('exist').within(() => {
-            cy.get('.govuk-error-message').should('contain', 'Enter a security code')
+            cy.get('.govuk-error-message').should('contain', 'Enter your security code')
           })
 
           // enter a valid code and submit

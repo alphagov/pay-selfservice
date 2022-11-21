@@ -218,7 +218,13 @@ function validateOtp (otp) {
     return notValidReturnObject('Enter your security code')
   }
   if (!NUMBERS_ONLY.test(otp)) {
-    return notValidReturnObject('Enter numbers only')
+    return notValidReturnObject('The code must be 6 numbers')
+  }
+  if (otp.length > 6) {
+    return notValidReturnObject('You’ve entered too many numbers, the code must be 6 numbers')
+  }
+  if (otp.length < 6) {
+    return notValidReturnObject('You’ve not entered enough numbers, the code must be 6 numbers')
   }
   return validReturnObject
 }

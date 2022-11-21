@@ -227,7 +227,7 @@ describe('create service OTP validation', function () {
         .expect(() => {
           expect(registerInviteData).to.have.property('recovered').to.deep.equal({
             errors: {
-              securityCode: 'Enter numbers only'
+              securityCode: 'The code must be 6 numbers'
             }
           })
         })

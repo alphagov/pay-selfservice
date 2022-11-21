@@ -350,7 +350,7 @@ describe('Server side form validations', () => {
 
   describe('otp code validation', () => {
     it('should be valid for a valid OTP code', () => {
-      expect(validations.validateOtp('123').valid).to.be.true // eslint-disable-line
+      expect(validations.validateOtp('123456').valid).to.be.true // eslint-disable-line
     })
 
     it('should not be valid for empty OTP code', () => {
@@ -360,10 +360,24 @@ describe('Server side form validations', () => {
       })
     })
 
-    it('should not be valid for an invalid OTP code', () => {
-      expect(validations.validateOtp('abc')).to.deep.equal({
+    it('should not be valid for an OTP code that contains letters', () => {
+      expect(validations.validateOtp('abc123')).to.deep.equal({
         valid: false,
-        message: 'Enter numbers only'
+        message: 'The code must be 6 numbers'
+      })
+    })
+
+    it('should not be valid for a code that is too short', () => {
+      expect(validations.validateOtp('12345')).to.deep.equal({
+        valid: false,
+        message: 'You’ve not entered enough numbers, the code must be 6 numbers'
+      })
+    })
+
+    it('should not be valid for a code that is too long', () => {
+      expect(validations.validateOtp('1234567')).to.deep.equal({
+        valid: false,
+        message: 'You’ve entered too many numbers, the code must be 6 numbers'
       })
     })
   })
