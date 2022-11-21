@@ -51,7 +51,8 @@ describe('Configure new second factor method post controller', () => {
   })
 
   describe('A valid code is entered', () => {
-    const validCode = '123456'
+    const validCode = '123 456'
+    const expectedSanitisedCode = '123456'
 
     beforeEach(() => {
       req.body.code = validCode
@@ -61,7 +62,7 @@ describe('Configure new second factor method post controller', () => {
       it('should call adminusers to configure OTP key and redirect to profile', async () => {
         await controllerWithAdminusersSuccess(req, res, next)
 
-        sinon.assert.calledWith(configureNewOtpKeySpy, userExternalId, validCode, twoFactorAuthMethod)
+        sinon.assert.calledWith(configureNewOtpKeySpy, userExternalId, expectedSanitisedCode, twoFactorAuthMethod)
         sinon.assert.calledWith(req.flash, 'otpMethodUpdated', twoFactorAuthMethod)
         sinon.assert.calledWith(res.redirect, paths.user.profile.index)
       })

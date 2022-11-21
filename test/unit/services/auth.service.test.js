@@ -228,16 +228,17 @@ describe('auth service', function () {
         }
       })
 
-      const otpCode = '123456'
+      const inputOtpCode = '123 456'
+      const expectedSanitisedCode = '123456'
       const req = {
         user,
         body: {
-          code: otpCode
+          code: inputOtpCode
         }
       }
 
       await authService.localStrategy2Fa(req, doneSpy)
-      sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, otpCode)
+      sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, expectedSanitisedCode)
       sinon.assert.calledWith(doneSpy, null, user)
     })
 

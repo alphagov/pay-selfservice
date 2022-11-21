@@ -13,6 +13,7 @@ const {
 } = require('../utils/validation/server-side-form-validations')
 const { RegistrationSessionMissingError, ExpiredInviteError } = require('../errors')
 const { validationErrors } = require('../utils/validation/field-validation-checks')
+const { sanitiseSecurityCode } = require('../utils/security-code-utils')
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 
@@ -138,7 +139,7 @@ const showOtpVerify = function showOtpVerify (req, res, next) {
  * @param res
  */
 const submitOtpVerify = async function submitOtpVerify (req, res, next) {
-  const securityCode = req.body['verify-code']
+  const securityCode = sanitiseSecurityCode(req.body['verify-code'])
 
   const sessionData = req.register_invite
   if (!registrationSessionPresent(sessionData)) {
