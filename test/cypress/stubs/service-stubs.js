@@ -87,7 +87,8 @@ function patchUpdateServiceSuccessCatchAll (opts) {
   return stubBuilder('PATCH', path, 200, {
     response: serviceFixtures.validServiceResponse({
       external_id: opts.serviceExternalId,
-      current_go_live_stage: opts.currentGoLiveStage
+      current_go_live_stage: opts.currentGoLiveStage,
+      takes_payments_over_phone: opts.takesPaymentsOverPhone
     })
   })
 }

@@ -66,6 +66,7 @@ describe('go-live-stage-to-next-page-path tests', () => {
     it('should resolve CHOSEN_PSP_STRIPE stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_STRIPE]).to.equal(path)
     })
+
     it('should resolve CHOSEN_PSP_WORLDPAY stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_WORLDPAY]).to.equal(path)
     })
@@ -73,9 +74,15 @@ describe('go-live-stage-to-next-page-path tests', () => {
     it('should resolve CHOSEN_PSP_GOV_BANKING_WORLDPAY stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY]).to.equal(path)
     })
+
+    it('should resolve GOV_BANKING_MOTO_OPTION_COMPLETED stages correctly', () => {
+      expect(goLiveStageToNextPagePath[goLiveStage.GOV_BANKING_MOTO_OPTION_COMPLETED]).to.equal(path)
+    })
+
     it('should resolve CHOSEN_PSP_SMARTPAY stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_SMARTPAY]).to.equal(path)
     })
+
     it('should resolve CHOSEN_PSP_EPDQ stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_EPDQ]).to.equal(path)
     })

@@ -59,6 +59,7 @@ const requestToGoLiveIndexController = require('./controllers/request-to-go-live
 const requestToGoLiveOrganisationNameController = require('./controllers/request-to-go-live/organisation-name')
 const requestToGoLiveOrganisationAddressController = require('./controllers/request-to-go-live/organisation-address')
 const requestToGoLiveChooseHowToProcessPaymentsController = require('./controllers/request-to-go-live/choose-how-to-process-payments')
+const requestToGoLiveChooseTakesPaymentsOverPhoneController = require('./controllers/request-to-go-live/choose-takes-payments-over-phone')
 const requestToGoLiveAgreementController = require('./controllers/request-to-go-live/agreement')
 const policyDocumentsController = require('./controllers/policy')
 const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
@@ -292,6 +293,8 @@ module.exports.bind = function (app) {
   service.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.post)
   service.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.get)
   service.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.post)
+  service.get(requestToGoLive.chooseTakesPaymentsOverPhone, permission('go-live-stage:update'), requestToGoLiveChooseTakesPaymentsOverPhoneController.get)
+  service.post(requestToGoLive.chooseTakesPaymentsOverPhone, permission('go-live-stage:update'), requestToGoLiveChooseTakesPaymentsOverPhoneController.post)
   service.get(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.get)
   service.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
 
