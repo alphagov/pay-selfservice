@@ -88,6 +88,7 @@ describe('adminusers client - patch request to update service', function () {
     }
     const currentGoLiveStage = goLiveStage.ENTERED_ORGANISATION_NAME
     const currentPspTestAccountStage = pspTestAccountStage.REQUEST_SUBMITTED
+    const takesPaymentsOverPhone = true
 
     const validUpdateServiceRequest = new ServiceUpdateRequest()
       .replace(validPaths.merchantDetails.name, merchantDetails.name)
@@ -101,13 +102,15 @@ describe('adminusers client - patch request to update service', function () {
       .replace(validPaths.currentGoLiveStage, currentGoLiveStage)
       .replace(validPaths.currentPspTestAccountStage, currentPspTestAccountStage)
       .replace(validPaths.merchantDetails.url, merchantDetails.url)
+      .replace(validPaths.takesPaymentsOverPhone, takesPaymentsOverPhone)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({
       external_id: existingServiceExternalId,
       merchant_details: merchantDetails,
       current_go_live_stage: currentGoLiveStage,
-      current_psp_test_account_stage: currentPspTestAccountStage
+      current_psp_test_account_stage: currentPspTestAccountStage,
+      takes_payments_over_phone: takesPaymentsOverPhone
     })
 
     before(() => {
@@ -130,6 +133,7 @@ describe('adminusers client - patch request to update service', function () {
       expect(service.merchantDetails).to.deep.equal(merchantDetails)
       expect(service.currentGoLiveStage).to.equal(currentGoLiveStage)
       expect(service.currentPspTestAccountStage).to.equal(currentPspTestAccountStage)
+      expect(service.takesPaymentsOverPhone).to.equal(takesPaymentsOverPhone)
     })
   })
 

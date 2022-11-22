@@ -15,6 +15,7 @@ class Service {
     this.currentPspTestAccountStage = serviceData.current_psp_test_account_stage
     this.agentInitiatedMotoEnabled = serviceData.agent_initiated_moto_enabled
     this.defaultBillingAddressCountry = serviceData.default_billing_address_country
+    this.takesPaymentsOverPhone = serviceData.takes_payments_over_phone
   }
 
   /**
@@ -35,7 +36,8 @@ class Service {
       created_date: this.createdDate,
       current_psp_test_account_stage: this.currentPspTestAccountStage,
       agent_initiated_moto_enabled: this.agentInitiatedMotoEnabled,
-      default_billing_address_country: this.defaultBillingAddressCountry
+      default_billing_address_country: this.defaultBillingAddressCountry,
+      takes_payments_over_phone: this.takesPaymentsOverPhone
     }
   }
 }
