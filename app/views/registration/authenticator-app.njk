@@ -42,7 +42,7 @@
     <p class="govuk-body">2. Use your authenticator app to scan the QR code or type the secret key into your authenticator app. Some authenticator apps call the secret key a ‘code’</p>
 
     <figure class="govuk-!-margin-top-0 govuk-!-margin-left-0 govuk-!-margin-bottom-6">
-      <img class="qr-code pay-!-negative-margin-h-3" src="{{qrCodeDataUrl}}" alt="If you cannot view or scan the barcode, please enter the secret manually">
+      <img class="qr-code pay-!-negative-margin-h-3" src="{{qrCodeDataUrl}}" data-cy="qr" alt="If you cannot view or scan the barcode, please enter the secret manually">
       <figcaption>
         <h4 class="govuk-body">Secret key:</h4>
         <code class="code" data-cy="otp-secret">{{prettyPrintedSecret}}</code>
