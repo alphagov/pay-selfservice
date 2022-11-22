@@ -88,16 +88,27 @@ function submitChooseSignInMethodPage (req, res) {
   }
 }
 
-async function showAuthenticatorAppPage (req, res) {
-  const exampleSecretKey = 'ANEXAMPLESECRETSECONDFACTORCODE1' // pragma: allowlist secret
-  const prettyPrintedSecret = exampleSecretKey.match(/.{4}/g).join(' ')
-  const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent('username')}?secret=${encodeURIComponent(exampleSecretKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
-  const qrCodeDataUrl = await qrcode.toDataURL(otpUrl)
+async function showAuthenticatorAppPage (req, res, next) {
+  const sessionData = req.register_invite
+  if (!registrationSessionPresent(sessionData)) {
+    return next(new RegistrationSessionMissingError())
+  }
 
-  res.render('registration/authenticator-app', {
-    prettyPrintedSecret,
-    qrCodeDataUrl
-  })
+  try {
+    const invite = await adminusersClient.getValidatedInvite(sessionData.code)
+    const secretKey = invite.otp_key
+
+    const prettyPrintedSecret = secretKey.match(/.{4}/g).join(' ')
+    const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent('username')}?secret=${encodeURIComponent(secretKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
+    const qrCodeDataUrl = await qrcode.toDataURL(otpUrl)
+
+    res.render('registration/authenticator-app', {
+      prettyPrintedSecret,
+      qrCodeDataUrl
+    })
+  } catch (err) {
+    next(err)
+  }
 }
 
 function showPhoneNumberPage (req, res) {

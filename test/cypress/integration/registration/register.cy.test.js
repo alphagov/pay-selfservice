@@ -1,6 +1,7 @@
 const inviteStubs = require('../../stubs/invite-stubs')
 
 const inviteCode = 'an-invite-code'
+const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
 
 describe('Register', () => {
   describe('SMS is selected as method for getting security codes', () => {
@@ -8,7 +9,8 @@ describe('Register', () => {
       cy.task('setupStubs', [
         inviteStubs.getInviteSuccess({
           code: inviteCode,
-          password_set: false
+          password_set: false,
+          otp_key: otpKey
         })
       ])
 
@@ -112,6 +114,11 @@ describe('Register', () => {
 
       // should redirect to authenticator app page
       cy.get('title').should('contain', 'Set up an authenticator app - GOV.UK Pay')
+
+      cy.get('[data-cy=qr]').should('have.attr', 'src').then(src => {
+        expect(src).to.contain('data:image')
+      })
+      cy.get('[data-cy=otp-secret]').should('have.text', 'ANEX AMPL ESEC RETS ECON DFAC TORC ODE1')
     })
   })
 })

@@ -9,6 +9,8 @@ const registrationController = require('./registration.controller')
 const inviteCode = 'a-code'
 let req, res, next
 
+const qrCodeDataUrl = 'data:image/png;base64,somedata'
+
 describe('Registration', () => {
   beforeEach(() => {
     req = {
@@ -211,10 +213,50 @@ describe('Registration', () => {
       sinon.assert.notCalled(res.render)
     })
   })
+
+  describe('show the authenticator app page', () => {
+    it('should call next with an error when the registration cookie is not set', async () => {
+      delete req.register_invite
+      await registrationController.showAuthenticatorAppPage(req, res, next)
+
+      sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
+      sinon.assert.notCalled(res.render)
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should call next with an error if adminusers returns an error', async () => {
+      const error = new Error('error from adminusers')
+      const controller = getControllerWithMockedAdminusersClient({
+        getValidatedInvite: () => Promise.reject(error)
+      })
+
+      await controller.showAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(next, error)
+      sinon.assert.notCalled(res.render)
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should render the page when invite successfully retrieved from adminusers', async () => {
+      const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
+      const invite = inviteFixtures.validInviteResponse({ otp_key: otpKey })
+      const controller = getControllerWithMockedAdminusersClient({
+        getValidatedInvite: () => Promise.resolve(invite)
+      })
+
+      await controller.showAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(res.render, 'registration/authenticator-app', {
+        prettyPrintedSecret: 'ANEX AMPL ESEC RETS ECON DFAC TORC ODE1',
+        qrCodeDataUrl
+      })
+      sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.redirect)
+    })
+  })
 })
 
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {
   return proxyquire('./registration.controller.js', {
-    '../../services/clients/adminusers.client': () => mockedAdminusersClient
+    '../../services/clients/adminusers.client': () => mockedAdminusersClient,
+    'qrcode': { toDataURL: () => Promise.resolve(qrCodeDataUrl) }
   })
 }

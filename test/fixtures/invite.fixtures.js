@@ -9,7 +9,8 @@ function buildInviteWithDefaults (opts = {}) {
     role: opts.role || 'admin',
     disabled: opts.disabled || false,
     user_exist: opts.user_exist || false,
-    expired: opts.expired || false
+    expired: opts.expired || false,
+    otp_key: opts.otp_key || 'ANEXAMPLESECRETSECONDFACTORCODE1'
   }
 
   if (opts.telephone_number) {
