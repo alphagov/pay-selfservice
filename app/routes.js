@@ -200,6 +200,7 @@ module.exports.bind = function (app) {
   app.get(register.securityCodes, registrationController.showChooseSignInMethodPage)
   app.post(register.securityCodes, registrationController.submitChooseSignInMethodPage)
   app.get(register.authenticatorApp, registrationController.showAuthenticatorAppPage)
+  app.post(register.authenticatorApp, registrationController.submitAuthenticatorAppPage)
   app.get(register.phoneNumber, registrationController.showPhoneNumberPage)
   app.get(register.smsCode, registrationController.showSmsSecurityCodePage)
   app.get(register.resendCode, registrationController.showResendSecurityCodePage)

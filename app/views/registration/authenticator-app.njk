@@ -18,6 +18,13 @@
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
 
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'code': '#code'
+      }
+    }) }}
+
     <h1 class="govuk-heading-l">Set up an authenticator app</h1>
 
     <p class="govuk-body">1. Open your authenticator app on your smartphone, tablet or computer.</p>
@@ -66,7 +73,8 @@
         },
         id: "code",
         name: "code",
-        classes: "govuk-input--width-10"
+        classes: "govuk-input--width-10",
+        errorMessage: { text: errors['code'] } if errors['code'] else false
       }) }}
 
       {{ govukButton({ text: "Continue" }) }}
