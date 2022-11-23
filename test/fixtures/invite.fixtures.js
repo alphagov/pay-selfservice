@@ -126,6 +126,14 @@ module.exports = {
       path: 'password',
       value: password
     }]
+  },
+
+  validUpdateInvitePhoneNumberRequest: (phoneNumber = '+44 0808 157 0192') => {
+    return [{
+      op: 'replace',
+      path: 'telephone_number',
+      value: phoneNumber
+    }]
   }
 
 }

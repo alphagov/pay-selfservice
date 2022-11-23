@@ -347,6 +347,23 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  function updateInvitePhoneNumber (inviteCode, phoneNumber) {
+    return baseClient.patch(
+      {
+        baseUrl,
+        url: `/v1/api/invites/${inviteCode}`,
+        json: true,
+        body: [{
+          op: 'replace',
+          path: 'telephone_number',
+          value: phoneNumber
+        }],
+        description: 'update the phone number for an invite',
+        service: SERVICE_NAME
+      }
+    )
+  }
+
   /**
    * Generate OTP code for an invite
    *
@@ -373,6 +390,18 @@ module.exports = function (clientOptions = {}) {
 
     return baseClient.post(
       postData
+    )
+  }
+
+  function sendOtp (inviteCode) {
+    return baseClient.post(
+      {
+        baseUrl,
+        url: `/v1/api/invites/${inviteCode}/send-otp`,
+        json: true,
+        description: 'send OTP code',
+        service: SERVICE_NAME
+      }
     )
   }
 
@@ -777,7 +806,9 @@ module.exports = function (clientOptions = {}) {
     getInvitedUsersList,
     getValidatedInvite,
     updateInvitePassword,
+    updateInvitePhoneNumber,
     generateInviteOtpCode,
+    sendOtp,
     completeInvite,
     submitServiceRegistration,
 
