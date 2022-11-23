@@ -3,14 +3,17 @@
 const qrcode = require('qrcode')
 const lodash = require('lodash')
 
-const { RegistrationSessionMissingError } = require('../../errors')
+const { RegistrationSessionMissingError, RESTClientError, ExpiredInviteError } = require('../../errors')
 const adminusersClient = require('../../services/clients/adminusers.client')()
 const paths = require('../../paths')
-const { validatePassword } = require('../../utils/validation/server-side-form-validations')
+const { validatePassword, validateOtp } = require('../../utils/validation/server-side-form-validations')
 const { isEmpty } = require('../../utils/validation/field-validation-checks')
+const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
+const { validationErrors } = require('../../utils/validation/field-validation-checks')
 
 const PASSWORD_INPUT_FIELD_NAME = 'password'
 const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
+const OTP_CODE_FIELD_NAME = 'code'
 
 const registrationSessionPresent = function registrationSessionPresent (sessionData) {
   return sessionData && sessionData.email && sessionData.code
@@ -102,11 +105,51 @@ async function showAuthenticatorAppPage (req, res, next) {
     const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent('username')}?secret=${encodeURIComponent(secretKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
     const qrCodeDataUrl = await qrcode.toDataURL(otpUrl)
 
+    const recovered = sessionData.recovered || {}
+    delete sessionData.recovered
+
     res.render('registration/authenticator-app', {
       prettyPrintedSecret,
-      qrCodeDataUrl
+      qrCodeDataUrl,
+      errors: recovered.errors
     })
   } catch (err) {
+    next(err)
+  }
+}
+
+async function submitAuthenticatorAppPage (req, res, next) {
+  const sessionData = req.register_invite
+  if (!registrationSessionPresent(sessionData)) {
+    return next(new RegistrationSessionMissingError())
+  }
+
+  const otpCode = sanitiseSecurityCode(req.body[OTP_CODE_FIELD_NAME])
+  const validationResult = validateOtp(otpCode)
+
+  const errors = {}
+  if (!validationResult.valid) {
+    errors[OTP_CODE_FIELD_NAME] = validationResult.message
+    sessionData.recovered = { errors }
+    return res.redirect(paths.register.authenticatorApp)
+  }
+
+  try {
+    await adminusersClient.verifyOtpForInvite(sessionData.code, otpCode)
+    const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code)
+    // set user external ID on the session so the user is logged in upon redirect
+    sessionData.userExternalId = completeInviteResponse.user_external_id
+    return res.redirect(paths.registerUser.logUserIn)
+  } catch (err) {
+    if (err instanceof RESTClientError) {
+      if (err.errorCode === 401) {
+        errors[OTP_CODE_FIELD_NAME] = validationErrors.invalidOrExpiredSecurityCodeApp
+        sessionData.recovered = { errors }
+        return res.redirect(paths.register.authenticatorApp)
+      } else if (err.errorCode === 410) {
+        return next(new ExpiredInviteError(`Invite with code ${sessionData.code} has expired`))
+      }
+    }
     next(err)
   }
 }
@@ -133,6 +176,7 @@ module.exports = {
   showChooseSignInMethodPage,
   submitChooseSignInMethodPage,
   showAuthenticatorAppPage,
+  submitAuthenticatorAppPage,
   showPhoneNumberPage,
   showSmsSecurityCodePage,
   showResendSecurityCodePage,

@@ -1,8 +1,9 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const { expect } = require('chai')
 
 const inviteFixtures = require('../../../test/fixtures/invite.fixtures')
-const { RegistrationSessionMissingError } = require('../../errors')
+const { RegistrationSessionMissingError, RESTClientError, ExpiredInviteError } = require('../../errors')
 const { paths } = require('../../routes')
 const registrationController = require('./registration.controller')
 
@@ -246,9 +247,166 @@ describe('Registration', () => {
       await controller.showAuthenticatorAppPage(req, res, next)
       sinon.assert.calledWith(res.render, 'registration/authenticator-app', {
         prettyPrintedSecret: 'ANEX AMPL ESEC RETS ECON DFAC TORC ODE1',
-        qrCodeDataUrl
+        qrCodeDataUrl,
+        errors: undefined
       })
       sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.redirect)
+
+      expect(req.register_invite).to.not.have.property('recovered')
+    })
+
+    it('should render the page with errors if there is a recovered object in the session', async () => {
+      const sessionErrors = { 'key': 'An error' }
+      req.register_invite.recovered = { errors: sessionErrors }
+
+      const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
+      const invite = inviteFixtures.validInviteResponse({ otp_key: otpKey })
+      const controller = getControllerWithMockedAdminusersClient({
+        getValidatedInvite: () => Promise.resolve(invite)
+      })
+
+      await controller.showAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(res.render, 'registration/authenticator-app', {
+        prettyPrintedSecret: 'ANEX AMPL ESEC RETS ECON DFAC TORC ODE1',
+        qrCodeDataUrl,
+        errors: sessionErrors
+      })
+      sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.redirect)
+
+      expect(req.register_invite).to.not.have.property('recovered')
+    })
+  })
+
+  describe('submit the authenticator app page', () => {
+    it('should call redirect with an error in the session when the OTP code fails validation', async () => {
+      req.body = {
+        code: 'aaa'
+      }
+
+      await registrationController.submitAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(res.redirect, paths.register.authenticatorApp)
+      sinon.assert.notCalled(next)
+
+      expect(req.register_invite).to.have.property('recovered').to.deep.equal({
+        errors: {
+          code: 'The code must be 6 numbers'
+        }
+      })
+    })
+
+    it('should redirect to login when OTP code is valid', async () => {
+      const otpCode = '123 456'
+      const expectedSanitisedOtpCode = '123456'
+      req.body = {
+        code: otpCode
+      }
+
+      const userExternalId = 'a-user-id'
+      const completeInviteResponse = inviteFixtures.validInviteCompleteResponse({
+        user_external_id: userExternalId
+      })
+      const verifyOtpForInviteSpy = sinon.spy(() => Promise.resolve())
+      const completeInviteSpy = sinon.spy(() => Promise.resolve(completeInviteResponse))
+      const controller = getControllerWithMockedAdminusersClient({
+        verifyOtpForInvite: verifyOtpForInviteSpy,
+        completeInvite: completeInviteSpy
+      })
+
+      await controller.submitAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(verifyOtpForInviteSpy, inviteCode, expectedSanitisedOtpCode)
+      sinon.assert.calledWith(completeInviteSpy, inviteCode)
+      sinon.assert.calledWith(res.redirect, paths.registerUser.logUserIn)
+      sinon.assert.notCalled(next)
+
+      expect(req.register_invite).to.have.property('userExternalId').to.equal(userExternalId)
+    })
+
+    it('should call redirect with an error in the session when adminusers returns a 401', async () => {
+      const otpCode = '123456'
+      req.body = {
+        code: otpCode
+      }
+
+      const verifyOtpForInviteSpy = sinon.spy(() => Promise.reject(new RESTClientError('Error', 'adminusers', 401)))
+      const completeInviteSpy = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMockedAdminusersClient({
+        verifyOtpForInvite: verifyOtpForInviteSpy,
+        completeInvite: completeInviteSpy
+      })
+
+      await controller.submitAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(verifyOtpForInviteSpy, inviteCode, otpCode)
+      sinon.assert.notCalled(completeInviteSpy)
+      sinon.assert.calledWith(res.redirect, paths.register.authenticatorApp)
+      sinon.assert.notCalled(next)
+
+      expect(req.register_invite).to.have.property('recovered').to.deep.equal({
+        errors: {
+          code: 'The security code you entered is not correct, try entering it again or wait for your authenticator app to give you a new code'
+        }
+      })
+    })
+
+    it('should call next with an error when adminusers returns a 410 when verifying the OTP code', async () => {
+      const otpCode = '123456'
+      req.body = {
+        code: otpCode
+      }
+
+      const verifyOtpForInviteSpy = sinon.spy(() => Promise.reject(new RESTClientError('Error', 'adminusers', 410)))
+      const completeInviteSpy = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMockedAdminusersClient({
+        verifyOtpForInvite: verifyOtpForInviteSpy,
+        completeInvite: completeInviteSpy
+      })
+
+      await controller.submitAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(verifyOtpForInviteSpy, inviteCode, otpCode)
+      sinon.assert.notCalled(completeInviteSpy)
+      sinon.assert.calledWith(next, sinon.match.instanceOf(ExpiredInviteError))
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should call next with an error when adminusers returns a 410 when completing the invite', async () => {
+      const otpCode = '123456'
+      req.body = {
+        code: otpCode
+      }
+
+      const verifyOtpForInviteSpy = sinon.spy(() => Promise.resolve())
+      const completeInviteSpy = sinon.spy(() => Promise.reject(new RESTClientError('Error', 'adminusers', 410)))
+      const controller = getControllerWithMockedAdminusersClient({
+        verifyOtpForInvite: verifyOtpForInviteSpy,
+        completeInvite: completeInviteSpy
+      })
+
+      await controller.submitAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(verifyOtpForInviteSpy, inviteCode, otpCode)
+      sinon.assert.calledWith(completeInviteSpy, inviteCode)
+      sinon.assert.calledWith(next, sinon.match.instanceOf(ExpiredInviteError))
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should call next with an error when adminusers returns an unexpected error', async () => {
+      const otpCode = '123456'
+      req.body = {
+        code: otpCode
+      }
+
+      const error = new RESTClientError('Error', 'adminusers', 500)
+      const verifyOtpForInviteSpy = sinon.spy(() => Promise.resolve())
+      const completeInviteSpy = sinon.spy(() => Promise.reject(error))
+      const controller = getControllerWithMockedAdminusersClient({
+        verifyOtpForInvite: verifyOtpForInviteSpy,
+        completeInvite: completeInviteSpy
+      })
+
+      await controller.submitAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(verifyOtpForInviteSpy, inviteCode, otpCode)
+      sinon.assert.calledWith(completeInviteSpy, inviteCode)
+      sinon.assert.calledWith(next, error)
       sinon.assert.notCalled(res.redirect)
     })
   })
