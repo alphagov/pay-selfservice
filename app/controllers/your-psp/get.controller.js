@@ -1,7 +1,12 @@
 'use strict'
 
 const { response } = require('../../utils/response')
-const { getCredentialByExternalId, getCurrentCredential, getSwitchingCredentialIfExists, hasSwitchedProvider } = require('../../utils/credentials')
+const {
+  getCredentialByExternalId,
+  getCurrentCredential,
+  getSwitchingCredentialIfExists,
+  hasSwitchedProvider
+} = require('../../utils/credentials')
 const { getTaskList, isComplete } = require('./kyc-tasks.service')
 
 module.exports = async (req, res, next) => {
