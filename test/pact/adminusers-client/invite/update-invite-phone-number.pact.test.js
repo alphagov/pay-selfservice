@@ -14,7 +14,7 @@ chai.use(chaiAsPromised)
 
 let adminUsersClient
 
-describe('adminusers client - update invite password', function () {
+describe('adminusers client - update invite phone number', function () {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -32,17 +32,17 @@ describe('adminusers client - update invite password', function () {
 
   describe('success', () => {
     const inviteCode = 'an-invite-code'
-    const password = 'a-valid-password'
+    const phoneNumber = '+44 0808 157 0192'
 
-    const validUpdateInvitePasswordRequest = inviteFixtures.validUpdateInvitePasswordRequest(password)
+    const validUpdateInvitePhoneNumberRequest = inviteFixtures.validUpdateInvitePhoneNumberRequest(phoneNumber)
 
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`/v1/api/invites/${inviteCode}`)
           .withState('a valid self-signup invite exists with invite code an-invite-code')
-          .withUponReceiving('a valid request to update the password for an invite')
+          .withUponReceiving('a valid request to update the phone number for an invite')
           .withMethod('PATCH')
-          .withRequestBody(validUpdateInvitePasswordRequest)
+          .withRequestBody(validUpdateInvitePhoneNumberRequest)
           .withStatusCode(200)
           .build()
       ).then(() => done())
@@ -51,8 +51,8 @@ describe('adminusers client - update invite password', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update the password for an invite successfully', function (done) {
-      adminUsersClient.updateInvitePassword(inviteCode, password).should.be.fulfilled.and.notify(done)
+    it('should update the phone number for an invite successfully', function (done) {
+      adminUsersClient.updateInvitePhoneNumber(inviteCode, phoneNumber).should.be.fulfilled.and.notify(done)
     })
   })
 })

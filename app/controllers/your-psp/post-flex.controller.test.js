@@ -12,7 +12,7 @@ describe('Post 3DS Flex controller', () => {
   let res
   let next
   let postCheckWorldpay3dsFlexCredentials
-  let post3dsFlexAccountCredentials 
+  let post3dsFlexAccountCredentials
   let updateIntegrationVersion3dsMock
   let renderErrorViewMock
 
@@ -35,7 +35,7 @@ describe('Post 3DS Flex controller', () => {
 
     next = sinon.spy()
 
-    postCheckWorldpay3dsFlexCredentials = sinon.spy(() => Promise.resolve({result: 'valid'}))
+    postCheckWorldpay3dsFlexCredentials = sinon.spy(() => Promise.resolve({ result: 'valid' }))
     post3dsFlexAccountCredentials = sinon.spy(() => Promise.resolve())
     updateIntegrationVersion3dsMock = sinon.spy(() => Promise.resolve())
   })
@@ -54,7 +54,7 @@ describe('Post 3DS Flex controller', () => {
 
   it('should NOT set 3DS integration version to 2 for TEST account', async () => {
     req.account = getGatewayAcountWithType('test')
-    
+
     const controller = getControllerWithMocks()
 
     await controller(req, res, next)
@@ -90,7 +90,7 @@ describe('Post 3DS Flex controller', () => {
     })
   }
 
-  function getGatewayAcountWithType(accountType) {
+  function getGatewayAcountWithType (accountType) {
     return gatewayAccountFixtures.validGatewayAccount({
       gateway_account_id: '1',
       type: accountType,

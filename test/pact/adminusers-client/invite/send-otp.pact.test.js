@@ -7,14 +7,15 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
-const inviteFixtures = require('../../../fixtures/invite.fixtures')
+
+// Constants
+const INVITE_RESOURCE = '/v1/api/invites'
+let adminUsersClient
 
 // Global setup
 chai.use(chaiAsPromised)
 
-let adminUsersClient
-
-describe('adminusers client - update invite password', function () {
+describe('adminusers client - send OTP code', function () {
   let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -32,18 +33,15 @@ describe('adminusers client - update invite password', function () {
 
   describe('success', () => {
     const inviteCode = 'an-invite-code'
-    const password = 'a-valid-password'
-
-    const validUpdateInvitePasswordRequest = inviteFixtures.validUpdateInvitePasswordRequest(password)
 
     before((done) => {
       provider.addInteraction(
-        new PactInteractionBuilder(`/v1/api/invites/${inviteCode}`)
-          .withState('a valid self-signup invite exists with invite code an-invite-code')
-          .withUponReceiving('a valid request to update the password for an invite')
-          .withMethod('PATCH')
-          .withRequestBody(validUpdateInvitePasswordRequest)
-          .withStatusCode(200)
+        new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/send-otp`)
+          .withState('a valid invite to add a user to a service exists with invite code an-invite-code')
+          .withUponReceiving('a valid request to send an OTP code')
+          .withMethod('POST')
+          .withResponseHeaders({})
+          .withStatusCode(204)
           .build()
       ).then(() => done())
         .catch(done)
@@ -51,8 +49,8 @@ describe('adminusers client - update invite password', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update the password for an invite successfully', function (done) {
-      adminUsersClient.updateInvitePassword(inviteCode, password).should.be.fulfilled.and.notify(done)
+    it('should send an OTP code successfully', function (done) {
+      adminUsersClient.sendOtp(inviteCode).should.be.fulfilled.should.notify(done)
     })
   })
 })
