@@ -410,6 +410,22 @@ describe('Registration', () => {
       sinon.assert.notCalled(res.redirect)
     })
   })
+
+  describe('show the phone number page', () => {
+    it('should call next with an error when the registration cookie is not set', async () => {
+      delete req.register_invite
+      await registrationController.showPhoneNumberPage(req, res, next)
+
+      sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
+      sinon.assert.notCalled(res.render)
+    })
+
+    it('should render the page', () => {
+      registrationController.showPhoneNumberPage(req, res, next)
+      sinon.assert.calledWith(res.render, 'registration/phone-number')
+      sinon.assert.notCalled(next)
+    })
+  })
 })
 
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {
