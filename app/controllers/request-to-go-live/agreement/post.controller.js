@@ -67,7 +67,7 @@ module.exports = async (req, res, next) => {
         serviceName: req.service.name,
         merchantDetails: req.service.merchantDetails.name,
         serviceExternalId: req.service.externalId,
-        psp: req.service.currentGoLiveStage,
+        psp: stages[req.service.currentGoLiveStage],
         ipAddress: ipAddress || '',
         email: agreement.email,
         timestamp: agreement.agreement_time,
