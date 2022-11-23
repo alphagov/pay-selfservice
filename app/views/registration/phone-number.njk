@@ -18,6 +18,13 @@
 {% block mainContent %}
   <div class="govuk-grid-column-one-half">
 
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'phone': '#phone'
+      }
+    }) }}
+
     <form method="post">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
@@ -31,7 +38,9 @@
           text: "We will send a 6 digit security code to the number you give us."
         },
         id: "phone",
-        name: "phone"
+        name: "phone",
+        errorMessage: { text: errors['phone'] } if errors['phone'] else false,
+        value: phoneNumber
       }) }}
 
       {{ govukButton({ text: "Continue" }) }}

@@ -6,13 +6,18 @@ const lodash = require('lodash')
 const { RegistrationSessionMissingError, RESTClientError, ExpiredInviteError } = require('../../errors')
 const adminusersClient = require('../../services/clients/adminusers.client')()
 const paths = require('../../paths')
-const { validatePassword, validateOtp } = require('../../utils/validation/server-side-form-validations')
+const {
+  validatePassword,
+  validateOtp,
+  validatePhoneNumber
+} = require('../../utils/validation/server-side-form-validations')
 const { isEmpty } = require('../../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
 
 const PASSWORD_INPUT_FIELD_NAME = 'password'
 const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
+const PHONE_NUMBER_INPUT_FIELD_NAME = 'phone'
 const OTP_CODE_FIELD_NAME = 'code'
 
 const registrationSessionPresent = function registrationSessionPresent (sessionData) {
@@ -163,6 +168,35 @@ function showPhoneNumberPage (req, res, next) {
   res.render('registration/phone-number')
 }
 
+async function submitPhoneNumberPage (req, res, next) {
+  const sessionData = req.register_invite
+  if (!registrationSessionPresent(sessionData)) {
+    return next(new RegistrationSessionMissingError())
+  }
+
+  const phoneNumber = req.body[PHONE_NUMBER_INPUT_FIELD_NAME]
+
+  const errors = {}
+
+  const validPhoneNumber = validatePhoneNumber(phoneNumber)
+  if (!validPhoneNumber.valid) {
+    errors[PHONE_NUMBER_INPUT_FIELD_NAME] = validPhoneNumber.message
+  }
+
+  if (!lodash.isEmpty(errors)) {
+    return res.render('registration/phone-number', { errors, phoneNumber })
+  }
+
+  try {
+    await adminusersClient.updateInvitePhoneNumber(sessionData.code, phoneNumber)
+    await adminusersClient.sendOtp(sessionData.code)
+
+    res.redirect(paths.register.smsCode)
+  } catch (err) {
+    next(err)
+  }
+}
+
 function showSmsSecurityCodePage (req, res) {
   res.render('registration/sms-code', { redactedPhoneNumber: '*******1111' })
 }
@@ -183,6 +217,7 @@ module.exports = {
   showAuthenticatorAppPage,
   submitAuthenticatorAppPage,
   showPhoneNumberPage,
+  submitPhoneNumberPage,
   showSmsSecurityCodePage,
   showResendSecurityCodePage,
   showSuccessPage
