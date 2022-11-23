@@ -37,7 +37,35 @@
           </strong>
         </div>
       {% else %}
-          <p class="govuk-body">When we activate your live account, we’ll email you with next steps.</p>
+          {% if takesPaymentsOverPhone %}
+            <h2 class="govuk-heading-m govuk-!-margin-top-4">What to do next</h2>
+
+            {% set html %}
+              <p class="govuk-body">To set up telephone payments you need to email <a class="govuk-link"
+                  href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk">govuk-pay-support@digital.cabinet-office.gov.uk</a>.
+              </p>
+            {% endset %}
+            {{ govukInsetText({
+              html: html
+            }) }}
+
+            <p class="govuk-body">We will ask you for your Worldpay MOTO merchant code - you can get this from Government
+              Banking.</p>
+
+            <p class="govuk-body">You must confirm that you comply with the
+              <a class="govuk-link" href="https://www.pcisecuritystandards.org/document_library?category=pcidss&document=pci_dss">
+                Payment Card Industry Data Security Standards (PCI DSS)</a>.
+            </p>
+
+            <p class="govuk-body">We’ll email you to let you know we’ve enabled MOTO payments.</p>
+
+            <p class="govuk-body">There is
+              <a class="govuk-link" href="https://docs.payments.service.gov.uk/moto_payments/#take-payments-over-the-phone-or-by-post-moto">
+                more information about MOTO payments</a> in our documentation.
+            </p>
+          {% else %}
+            <p class="govuk-body">When we activate your live account, we’ll email you with next steps.</p>
+          {% endif %}
       {% endif %}
 
       <p class="govuk-body"><a href="{{routes.serviceSwitcher.index}}" class="govuk-link">Go to My services</a></p>

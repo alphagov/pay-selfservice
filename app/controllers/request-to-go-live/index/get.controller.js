@@ -98,7 +98,9 @@ module.exports = (req, res) => {
     startedButStillStepsToComplete: startedButStillStepsToComplete.includes(currentGoLiveStage),
     showNextSteps: showNextSteps.includes(currentGoLiveStage),
     denied: currentGoLiveStage === DENIED,
-    pspIsStripe: pspIsStripe.includes(currentGoLiveStage)
+    pspIsStripe: pspIsStripe.includes(currentGoLiveStage),
+    takesPaymentsOverPhone: (currentGoLiveStage === TERMS_AGREED_GOV_BANKING_WORLDPAY &&
+      req.service.takesPaymentsOverPhone)
   }
 
   return response.response(req, res, 'request-to-go-live/index', pageData)
