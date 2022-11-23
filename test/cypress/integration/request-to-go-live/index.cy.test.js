@@ -1,4 +1,3 @@
-
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
@@ -7,11 +6,12 @@ describe('Request to go live: index', () => {
   const gatewayAccountId = 42
   const serviceExternalId = 'afe452323dd04d1898672bfaba25e3a6'
 
-  const buildServiceRoleForGoLiveStage = (goLiveStage) => {
+  const buildServiceRoleForGoLiveStage = (goLiveStage, takesPaymentsOverPhone = false) => {
     return {
       service: {
         external_id: serviceExternalId,
         current_go_live_stage: goLiveStage,
+        takes_payments_over_phone: takesPaymentsOverPhone,
         gateway_account_ids: [gatewayAccountId]
       }
     }
@@ -204,7 +204,7 @@ describe('Request to go live: index', () => {
       cy.visit(requestToGoLivePageUrl)
       cy.get('#request-to-go-live-index-form > button').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-takes-payments-over-phone`)
       })
     })
   })
@@ -342,11 +342,8 @@ describe('Request to go live: index', () => {
   })
 
   describe('Request to go live stage TERMS_AGREED_GOV_BANKING_WORLDPAY', () => {
-    beforeEach(() => {
-      setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_GOV_BANKING_WORLDPAY'))
-    })
-
     it('should show "Request to go live" page with correct progress indication', () => {
+      setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_GOV_BANKING_WORLDPAY'))
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
       cy.get('h1').should('contain', 'Request submitted')
@@ -354,6 +351,20 @@ describe('Request to go live: index', () => {
       cy.get('ul > li').should('not.contain', 'bank details')
       cy.get('ul > li').should('not.contain', 'VAT number')
       cy.get('ol.govuk-list').should('not.exist')
+
+      cy.get('.govuk-inset-text').should('not.exist')
+    })
+
+    it('should show additional MOTO info on the "Request to go live" page when services choose `Yes` to taking payments over phone', () => {
+      setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_GOV_BANKING_WORLDPAY', true))
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
+      cy.visit(requestToGoLivePageUrl)
+      cy.get('h1').should('contain', 'Request submitted')
+      cy.get('.govuk-inset-text').should('contain', 'To set up telephone payments you need to email govuk-pay-support@digital.cabinet-office.gov.uk.')
+
+      cy.get('ul > li').should('not.contain', 'responsible person')
+      cy.get('ul > li').should('not.contain', 'bank details')
+      cy.get('ul > li').should('not.contain', 'VAT number')
     })
   })
 

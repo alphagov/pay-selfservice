@@ -60,6 +60,14 @@ describe('go-live-stage-to-next-page-path tests', () => {
     })
   })
 
+  describe('should return "choose-takes-payments-over-phone" path', () => {
+    const path = '/request-to-go-live/choose-takes-payments-over-phone'
+
+    it('should resolve CHOSEN_PSP_GOV_BANKING_WORLDPAY stage correctly', () => {
+      expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY]).to.equal(path)
+    })
+  })
+
   describe('should return "agreement" path', () => {
     const path = '/request-to-go-live/agreement'
 
@@ -69,10 +77,6 @@ describe('go-live-stage-to-next-page-path tests', () => {
 
     it('should resolve CHOSEN_PSP_WORLDPAY stages correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_WORLDPAY]).to.equal(path)
-    })
-
-    it('should resolve CHOSEN_PSP_GOV_BANKING_WORLDPAY stages correctly', () => {
-      expect(goLiveStageToNextPagePath[goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY]).to.equal(path)
     })
 
     it('should resolve GOV_BANKING_MOTO_OPTION_COMPLETED stages correctly', () => {

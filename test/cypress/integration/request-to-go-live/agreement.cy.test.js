@@ -149,28 +149,7 @@ describe('Request to go live: agreement', () => {
     })
   })
 
-  describe('Government banking PSP has been chosen as the PSP', () => {
-    it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_GOV_BANKING_WORLDPAY', () => {
-      cy.setEncryptedCookies(userExternalId)
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_GOV_BANKING_WORLDPAY'))
-
-      cy.visit(requestToGoLiveAgreementUrl)
-      cy.get('fieldset').should('not.contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
-      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body memorandum of understanding')
-    })
-
-    it('should continue to the index page when terms are agreed to', () => {
-      cy.task('setupStubs', getStubsForPageSubmission('CHOSEN_PSP_GOV_BANKING_WORLDPAY', 'TERMS_AGREED_GOV_BANKING_WORLDPAY'))
-
-      cy.get('#agreement').check()
-      cy.get('#request-to-go-live-agreement-form > button').click()
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
-      })
-    })
-  })
-
-  describe('Takes payments over the phone stage has been completed', () => {
+  describe('Government banking PSP - Takes payments over the phone stage has been completed', () => {
     it('should display "Read and accept our legal terms" page when service stage is GOV_BANKING_MOTO_OPTION_COMPLETED', () => {
       cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('GOV_BANKING_MOTO_OPTION_COMPLETED'))

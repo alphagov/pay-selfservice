@@ -98,13 +98,13 @@ describe('Request to go live: choose how to process payments', () => {
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
     })
 
-    it('should patch choice and then redirect to agreement when chosen government banking', () => {
+    it('should patch choice and then redirect to choose-takes-payments-over-phone page when chosen government banking', () => {
       setupStubsForSubmittingChoice('CHOSEN_PSP_GOV_BANKING_WORLDPAY')
 
       cy.get('#choose-how-to-process-payments-mode-2').click()
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-takes-payments-over-phone`)
       })
     })
   })
