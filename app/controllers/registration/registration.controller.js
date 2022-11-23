@@ -154,7 +154,12 @@ async function submitAuthenticatorAppPage (req, res, next) {
   }
 }
 
-function showPhoneNumberPage (req, res) {
+function showPhoneNumberPage (req, res, next) {
+  const sessionData = req.register_invite
+  if (!registrationSessionPresent(sessionData)) {
+    return next(new RegistrationSessionMissingError())
+  }
+
   res.render('registration/phone-number')
 }
 
