@@ -14,6 +14,7 @@ const {
 const { RegistrationSessionMissingError, ExpiredInviteError } = require('../errors')
 const { validationErrors } = require('../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../utils/security-code-utils')
+const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 
@@ -22,7 +23,7 @@ const registrationSessionPresent = function registrationSessionPresent (sessionD
 }
 
 const showRegistration = function showRegistration (req, res, next) {
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
@@ -42,7 +43,7 @@ const showRegistration = function showRegistration (req, res, next) {
  * @param res
  */
 const subscribeService = async function subscribeService (req, res, next) {
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!sessionData || !sessionData.code || !sessionData.email) {
     return next(new RegistrationSessionMissingError())
   }
@@ -78,7 +79,7 @@ const submitRegistration = async function submitRegistration (req, res, next) {
   const telephoneNumber = req.body['telephone-number']
   const password = req.body['password']
 
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
@@ -120,7 +121,7 @@ const submitRegistration = async function submitRegistration (req, res, next) {
  * @param res
  */
 const showOtpVerify = function showOtpVerify (req, res, next) {
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
@@ -141,7 +142,7 @@ const showOtpVerify = function showOtpVerify (req, res, next) {
 const submitOtpVerify = async function submitOtpVerify (req, res, next) {
   const securityCode = sanitiseSecurityCode(req.body['verify-code'])
 
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
@@ -192,7 +193,7 @@ const submitOtpVerify = async function submitOtpVerify (req, res, next) {
  * @param res
  */
 const showReVerifyPhone = function showReVerifyPhone (req, res, next) {
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
@@ -214,7 +215,7 @@ const showReVerifyPhone = function showReVerifyPhone (req, res, next) {
 const submitReVerifyPhone = async function submitReVerifyPhone (req, res, next) {
   const telephoneNumber = req.body['telephone-number']
 
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }

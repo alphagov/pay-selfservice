@@ -20,6 +20,7 @@ const restrictToSandboxOrStripeTestAccount = require('./middleware/restrict-to-s
 const restrictToStripeAccountContext = require('./middleware/stripe-setup/restrict-to-stripe-account-context')
 const restrictToSwitchingAccount = require('./middleware/restrict-to-switching-account')
 const uploadGovernmentEntityDocument = require('./middleware/multer-middleware')
+const inviteCookeIsPresent = require('./middleware/invite-cookie-is-present')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -196,17 +197,17 @@ module.exports.bind = function (app) {
   app.post(selfCreateService.otpResend, selfCreateServiceController.submitOtpResend)
 
   // NEW REGISTRATION JOURNEY
-  app.get(register.password, registrationController.showPasswordPage)
-  app.post(register.password, registrationController.submitPasswordPage)
-  app.get(register.securityCodes, registrationController.showChooseSignInMethodPage)
-  app.post(register.securityCodes, registrationController.submitChooseSignInMethodPage)
-  app.get(register.authenticatorApp, registrationController.showAuthenticatorAppPage)
-  app.post(register.authenticatorApp, registrationController.submitAuthenticatorAppPage)
-  app.get(register.phoneNumber, registrationController.showPhoneNumberPage)
-  app.post(register.phoneNumber, registrationController.submitPhoneNumberPage)
-  app.get(register.smsCode, registrationController.showSmsSecurityCodePage)
-  app.get(register.resendCode, registrationController.showResendSecurityCodePage)
-  app.get(register.success, registrationController.showSuccessPage)
+  app.get(register.password, inviteCookeIsPresent, registrationController.showPasswordPage)
+  app.post(register.password, inviteCookeIsPresent, registrationController.submitPasswordPage)
+  app.get(register.securityCodes, inviteCookeIsPresent, registrationController.showChooseSignInMethodPage)
+  app.post(register.securityCodes, inviteCookeIsPresent, registrationController.submitChooseSignInMethodPage)
+  app.get(register.authenticatorApp, inviteCookeIsPresent, registrationController.showAuthenticatorAppPage)
+  app.post(register.authenticatorApp, inviteCookeIsPresent, registrationController.submitAuthenticatorAppPage)
+  app.get(register.phoneNumber, inviteCookeIsPresent, registrationController.showPhoneNumberPage)
+  app.post(register.phoneNumber, inviteCookeIsPresent, registrationController.submitPhoneNumberPage)
+  app.get(register.smsCode, inviteCookeIsPresent, registrationController.showSmsSecurityCodePage)
+  app.get(register.resendCode, inviteCookeIsPresent, registrationController.showResendSecurityCodePage)
+  app.get(register.success, inviteCookeIsPresent, registrationController.showSuccessPage)
 
   // ----------------------
   // AUTHENTICATED ROUTES
