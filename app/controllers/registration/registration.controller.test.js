@@ -426,6 +426,95 @@ describe('Registration', () => {
       sinon.assert.notCalled(next)
     })
   })
+
+  describe('submit the phone number page', () => {
+    it('should call next with an error when the registration cookie is not set', async () => {
+      delete req.register_invite
+      await registrationController.submitPhoneNumberPage(req, res, next)
+
+      sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
+      sinon.assert.notCalled(res.render)
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should render the phone number page with an error when the phone number is invalid', async () => {
+      req.body = {
+        phone: 'not-a-phone-number'
+      }
+      await registrationController.submitPhoneNumberPage(req, res, next)
+
+      sinon.assert.calledWith(res.render, 'registration/phone-number', {
+        errors: {
+          phone: 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+        },
+        phoneNumber: 'not-a-phone-number'
+      })
+      sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should call next with an error if adminusers returns an error when patching telephone number', async () => {
+      const validPhoneNumber = '+44 0808 157 0192'
+      req.body = {
+        phone: validPhoneNumber
+      }
+
+      const error = new Error('error from adminusers')
+      const updateInvitePhoneNumberSpy = sinon.spy(() => Promise.reject(error))
+      const controller = getControllerWithMockedAdminusersClient({
+        updateInvitePhoneNumber: updateInvitePhoneNumberSpy
+      })
+
+      await controller.submitPhoneNumberPage(req, res, next)
+      sinon.assert.calledWith(updateInvitePhoneNumberSpy, inviteCode, validPhoneNumber)
+      sinon.assert.calledWith(next, error)
+      sinon.assert.notCalled(res.render)
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should call next with an error if adminusers returns an error when sending OTP', async () => {
+      const validPhoneNumber = '+44 0808 157 0192'
+      req.body = {
+        phone: validPhoneNumber
+      }
+
+      const error = new Error('error from adminusers')
+      const updateInvitePhoneNumberSpy = sinon.spy(() => Promise.resolve())
+      const sendOtpSpy = sinon.spy(() => Promise.reject(error))
+      const controller = getControllerWithMockedAdminusersClient({
+        updateInvitePhoneNumber: updateInvitePhoneNumberSpy,
+        sendOtp: sendOtpSpy
+      })
+
+      await controller.submitPhoneNumberPage(req, res, next)
+      sinon.assert.calledWith(updateInvitePhoneNumberSpy, inviteCode, validPhoneNumber)
+      sinon.assert.calledWith(sendOtpSpy, inviteCode)
+      sinon.assert.calledWith(next, error)
+      sinon.assert.notCalled(res.render)
+      sinon.assert.notCalled(res.redirect)
+    })
+
+    it('should redirect to next page if updated phone number successfully', async () => {
+      const validPhoneNumber = '+44 0808 157 0192'
+      req.body = {
+        phone: validPhoneNumber
+      }
+
+      const updateInvitePhoneNumberSpy = sinon.spy(() => Promise.resolve())
+      const sendOtpSpy = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMockedAdminusersClient({
+        updateInvitePhoneNumber: updateInvitePhoneNumberSpy,
+        sendOtp: sendOtpSpy
+      })
+
+      await controller.submitPhoneNumberPage(req, res, next)
+      sinon.assert.calledWith(updateInvitePhoneNumberSpy, inviteCode, validPhoneNumber)
+      sinon.assert.calledWith(sendOtpSpy, inviteCode)
+      sinon.assert.calledWith(res.redirect, paths.register.smsCode)
+      sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.render)
+    })
+  })
 })
 
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {

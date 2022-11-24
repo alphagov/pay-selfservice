@@ -35,7 +35,7 @@ describe('Register', () => {
       // submit the page without entering anything
       cy.get('button').contains('Continue').click()
 
-      // check that an error messages are displayed
+      // check that error messages are displayed
       cy.get('.govuk-error-summary').should('exist').within(() => {
         cy.get('h2').should('contain', 'There is a problem')
         cy.get('[data-cy=error-summary-list-item]').should('have.length', 2)
@@ -86,6 +86,30 @@ describe('Register', () => {
 
       // should redirect to phone number page
       cy.title().should('eq', 'Enter your mobile phone number - GOV.UK Pay')
+
+      // enter an invalid phone number
+      cy.get('#phone').type('x', { delay: 0 })
+      cy.get('button').contains('Continue').click()
+
+      // check that an error message is displayed
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('h2').should('contain', 'There is a problem')
+        cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+        cy.get('[data-cy=error-summary-list-item]').eq(0)
+          .contains('Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+          .should('have.attr', 'href', '#phone')
+      })
+      cy.get('.govuk-form-group--error > input#phone').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+      })
+      cy.get('#phone').should('have.value', 'x')
+      cy.title().should('eq', 'Enter your mobile phone number - GOV.UK Pay')
+
+      // enter a valid phone number
+      cy.get('#phone').type('+44 0808 157 0192', { delay: 0 })
+      cy.get('button').contains('Continue').click()
+
+      cy.title().should('eq', 'Check your phone - GOV.UK Pay')
     })
   })
 
