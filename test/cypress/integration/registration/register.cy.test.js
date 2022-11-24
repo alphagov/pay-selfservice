@@ -13,7 +13,8 @@ describe('Register', () => {
         inviteStubs.getInviteSuccess({
           code: inviteCode,
           password_set: false,
-          otp_key: otpKey
+          otp_key: otpKey,
+          telephone_number: '+4408081570192'
         }),
         inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId),
         userStubs.getUserSuccess({ userExternalId: createdUserExternalId, gatewayAccountId: '1' }),
@@ -109,7 +110,9 @@ describe('Register', () => {
       cy.get('#phone').type('+44 0808 157 0192', { delay: 0 })
       cy.get('button').contains('Continue').click()
 
+      // should show page to enter code
       cy.title().should('eq', 'Check your phone - GOV.UK Pay')
+      cy.get('.govuk-inset-text').should('contain', 'We have sent a code to ••••••••••0192.')
     })
   })
 
