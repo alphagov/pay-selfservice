@@ -37,20 +37,13 @@
 </div>
 <div class="govuk-grid-column-two-thirds">
 {% if method === secondFactorMethod.APP %}
-  <p class="govuk-body">Scan the barcode with your authenticator app or enter the secret manually.</p>
   {{
     govukWarningText({
-      text: "Once setup is complete, you will only be able to use this authenticator app to sign in.",
-      classes: "govuk-!-margin-bottom-0"
+      text: "Once setup is complete, you will only be able to use this authenticator app to sign in."
     })
   }}
-  <figure class="govuk-!-margin-top-0 govuk-!-margin-left-0 govuk-!-margin-bottom-6">
-    <img class="qr-code pay-!-negative-margin-h-3" src="{{qrCodeDataUrl}}" alt="If you cannot view or scan the barcode, please enter the secret manually">
-    <figcaption>
-      <h4 class="govuk-body">Secret</h4>
-      <code class="code" data-cy="otp-secret">{{prettyPrintedSecret}}</code>
-    </figcaption>
-  </figure>
+
+  {% include "./_authenticator-app-instructions.njk" %}
 {% else %}
   {{
     govukWarningText({
@@ -61,7 +54,7 @@
   <form method="post" action="{{routes.user.profile.twoFactorAuth.configure}}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
-    {% set codeHint = "Enter the code shown in your app to complete the setup" %}
+    {% set codeHint = "This is the 6-digit number shown in your authenticator app" %}
     {% if method === secondFactorMethod.SMS %}
       {% set codeHint = "We have sent you a text message with a security code" %}
     {% endif %}

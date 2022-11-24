@@ -58,23 +58,6 @@
       }}
     {% endif %}
   </form>
-  {% set detailsHTML %}
-    <h2 class="govuk-heading-s">Authenticator apps</h2>
-    <p class="govuk-body">Instead of text message codes, you can use an authenticator app to sign in to GOV.UK Pay. This is an app (usually installed on your phone) that generates a security code whenever you need to sign in. If you choose to use an authenticator app, you will only be able to sign in to GOV.UK Pay using that app and you will no longer receive text message codes.</p>
-    <p class="govuk-body">GOV.UK Pay works with most authenticator apps. If you do not have one installed already, there are several available. These include:</p>
-    <ul class="govuk-list govuk-list--bullet">
-      <li><a class="govuk-link" href="https://authy.com/">Authy</a></li>
-      <li><a class="govuk-link" href="https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app">Duo Mobile</a></li>
-      <li><a class="govuk-link" href="https://freeotp.github.io/">FreeOTP</a></li>
-      <li><a class="govuk-link" href="https://support.google.com/accounts/answer/1066447">Google Authenticator</a></li>
-      <li><a class="govuk-link" href="https://www.microsoft.com/en-gb/security/mobile-authenticator-app">Microsoft Authenticator</a></li>
-    </ul>
-  {% endset %}
-  {{
-    govukDetails({
-      summaryText: "What is an authenticator app?",
-      html: detailsHTML
-    })
-  }}
+  {% include "./_authenticator-app-details.njk" %}
 </div>
 {% endblock %}
