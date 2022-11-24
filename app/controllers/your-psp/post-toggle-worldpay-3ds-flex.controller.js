@@ -11,6 +11,10 @@ module.exports = async function toggleWorldpay3dsFlex (req, res, next) {
   const accountId = req.account.gateway_account_id
   const toggleWorldpay3dsFlex = req.body['toggle-worldpay-3ds-flex']
 
+  if (req.account.type === 'live') {
+    return next(new Error(`Cannot toggle Worldpay 3DS flex for live gateway account: ${req.account.external_id}`))
+  }
+
   if (req.body['toggle-worldpay-3ds-flex'] === 'on' || req.body['toggle-worldpay-3ds-flex'] === 'off') {
     const enabling3dsFlex = toggleWorldpay3dsFlex === 'on'
     const message = enabling3dsFlex ? '3DS Flex has been turned on.' : '3DS Flex has been turned off. Your payments will now use 3DS only.'
