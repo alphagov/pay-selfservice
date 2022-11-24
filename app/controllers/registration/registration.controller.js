@@ -3,7 +3,7 @@
 const qrcode = require('qrcode')
 const lodash = require('lodash')
 
-const { RegistrationSessionMissingError, RESTClientError, ExpiredInviteError } = require('../../errors')
+const { RESTClientError, ExpiredInviteError } = require('../../errors')
 const adminusersClient = require('../../services/clients/adminusers.client')()
 const paths = require('../../paths')
 const {
@@ -14,21 +14,15 @@ const {
 const { isEmpty } = require('../../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
+const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
 
 const PASSWORD_INPUT_FIELD_NAME = 'password'
 const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
 const PHONE_NUMBER_INPUT_FIELD_NAME = 'phone'
 const OTP_CODE_FIELD_NAME = 'code'
 
-const registrationSessionPresent = function registrationSessionPresent (sessionData) {
-  return sessionData && sessionData.email && sessionData.code
-}
-
 async function showPasswordPage (req, res, next) {
-  const sessionData = req.register_invite
-  if (!registrationSessionPresent(sessionData)) {
-    return next(new RegistrationSessionMissingError())
-  }
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
     const invite = await adminusersClient.getValidatedInvite(sessionData.code)
@@ -43,11 +37,7 @@ async function showPasswordPage (req, res, next) {
 }
 
 async function submitPasswordPage (req, res, next) {
-  const sessionData = req.register_invite
-  if (!registrationSessionPresent(sessionData)) {
-    return next(new RegistrationSessionMissingError())
-  }
-
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   const password = req.body[PASSWORD_INPUT_FIELD_NAME]
   const repeatPassword = req.body[REPEAT_PASSWORD_INPUT_FIELD_NAME]
 
@@ -97,10 +87,7 @@ function submitChooseSignInMethodPage (req, res) {
 }
 
 async function showAuthenticatorAppPage (req, res, next) {
-  const sessionData = req.register_invite
-  if (!registrationSessionPresent(sessionData)) {
-    return next(new RegistrationSessionMissingError())
-  }
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
     const invite = await adminusersClient.getValidatedInvite(sessionData.code)
@@ -124,11 +111,7 @@ async function showAuthenticatorAppPage (req, res, next) {
 }
 
 async function submitAuthenticatorAppPage (req, res, next) {
-  const sessionData = req.register_invite
-  if (!registrationSessionPresent(sessionData)) {
-    return next(new RegistrationSessionMissingError())
-  }
-
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   const otpCode = sanitiseSecurityCode(req.body[OTP_CODE_FIELD_NAME])
   const validationResult = validateOtp(otpCode)
 
@@ -160,20 +143,11 @@ async function submitAuthenticatorAppPage (req, res, next) {
 }
 
 function showPhoneNumberPage (req, res, next) {
-  const sessionData = req.register_invite
-  if (!registrationSessionPresent(sessionData)) {
-    return next(new RegistrationSessionMissingError())
-  }
-
   res.render('registration/phone-number')
 }
 
 async function submitPhoneNumberPage (req, res, next) {
-  const sessionData = req.register_invite
-  if (!registrationSessionPresent(sessionData)) {
-    return next(new RegistrationSessionMissingError())
-  }
-
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   const phoneNumber = req.body[PHONE_NUMBER_INPUT_FIELD_NAME]
 
   const errors = {}

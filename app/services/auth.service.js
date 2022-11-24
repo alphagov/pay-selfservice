@@ -15,6 +15,7 @@ const { validationErrors } = require('./../utils/validation/field-validation-che
 const secondFactorMethod = require('../models/second-factor-method')
 const { validateOtp } = require('../utils/validation/server-side-form-validations')
 const { sanitiseSecurityCode } = require('../utils/security-code-utils')
+const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
 
 // Exports
 module.exports = {
@@ -90,16 +91,16 @@ async function localStrategy2Fa (req, done) {
 }
 
 function localDirectStrategy (req, done) {
-  return userService.findByExternalId(req.register_invite.userExternalId)
+  return userService.findByExternalId(req[INVITE_SESSION_COOKIE_NAME].userExternalId)
     .then((user) => {
       lodash.set(req, 'gateway_account.currentGatewayAccountId', lodash.get(user, 'serviceRoles[0].service.gatewayAccountIds[0]'))
       req.session.secondFactor = 'totp'
       setSessionVersion(req)
-      req.register_invite.destroy()
+      req[INVITE_SESSION_COOKIE_NAME].destroy()
       done(null, user)
     })
     .catch(() => {
-      req.register_invite.destroy()
+      req[INVITE_SESSION_COOKIE_NAME].destroy()
       done(null, false)
     })
 }

@@ -1,5 +1,6 @@
 'use strict'
 
+const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
 const logger = require('../../utils/logger')(__filename)
 
 module.exports = (req, res, userExternalId) => {
@@ -9,5 +10,5 @@ module.exports = (req, res, userExternalId) => {
     return
   }
 
-  req.register_invite.userExternalId = userExternalId
+  req[INVITE_SESSION_COOKIE_NAME].userExternalId = userExternalId
 }

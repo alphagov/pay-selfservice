@@ -4,6 +4,7 @@ const { renderErrorView } = require('../utils/response')
 const validateInviteService = require('../services/validate-invite.service')
 const serviceRegistrationService = require('../services/service-registration.service')
 const paths = require('../paths')
+const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
 
 /**
  * Intermediate endpoint which captures the invite code and validate.
@@ -19,22 +20,22 @@ async function validateInvite (req, res, next) {
 
   try {
     const invite = await validateInviteService.getValidatedInvite(code)
-    if (!req.register_invite) {
-      req.register_invite = {}
+    if (!req[INVITE_SESSION_COOKIE_NAME]) {
+      req[INVITE_SESSION_COOKIE_NAME] = {}
     }
 
-    req.register_invite.code = code
+    req[INVITE_SESSION_COOKIE_NAME].code = code
 
     if (invite.telephone_number) {
-      req.register_invite.telephone_number = invite.telephone_number
+      req[INVITE_SESSION_COOKIE_NAME].telephone_number = invite.telephone_number
     }
 
     if (invite.email) {
-      req.register_invite.email = invite.email
+      req[INVITE_SESSION_COOKIE_NAME].email = invite.email
     }
 
     if (invite.type === 'user') {
-      req.register_invite.email = invite.email
+      req[INVITE_SESSION_COOKIE_NAME].email = invite.email
       const redirectTarget = invite.user_exist ? paths.registerUser.subscribeService : paths.registerUser.registration
       res.redirect(302, redirectTarget)
     } else if (invite.type === 'service') {

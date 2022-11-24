@@ -3,7 +3,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 
 const inviteFixtures = require('../../../test/fixtures/invite.fixtures')
-const { RegistrationSessionMissingError, RESTClientError, ExpiredInviteError } = require('../../errors')
+const { RESTClientError, ExpiredInviteError } = require('../../errors')
 const { paths } = require('../../routes')
 const registrationController = require('./registration.controller')
 
@@ -28,15 +28,6 @@ describe('Registration', () => {
   })
 
   describe('show the password page', () => {
-    it('should call next with an error when the registration cookie is not set', async () => {
-      delete req.register_invite
-      await registrationController.showPasswordPage(req, res, next)
-
-      sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
-      sinon.assert.notCalled(res.render)
-      sinon.assert.notCalled(res.redirect)
-    })
-
     it('should redirect to security codes page when password is already set for invite', async () => {
       const inviteWithPasswordSet = inviteFixtures.validInviteResponse({ password_set: true })
       const controller = getControllerWithMockedAdminusersClient({
@@ -75,15 +66,6 @@ describe('Registration', () => {
   })
 
   describe('submit the password page', () => {
-    it('should call next with an error when the registration cookie is not set', async () => {
-      delete req.register_invite
-      await registrationController.submitPasswordPage(req, res, next)
-
-      sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
-      sinon.assert.notCalled(res.render)
-      sinon.assert.notCalled(res.redirect)
-    })
-
     it('should render the password page with an error when both password fields are empty', async () => {
       req.body = {
         password: '',
@@ -216,15 +198,6 @@ describe('Registration', () => {
   })
 
   describe('show the authenticator app page', () => {
-    it('should call next with an error when the registration cookie is not set', async () => {
-      delete req.register_invite
-      await registrationController.showAuthenticatorAppPage(req, res, next)
-
-      sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
-      sinon.assert.notCalled(res.render)
-      sinon.assert.notCalled(res.redirect)
-    })
-
     it('should call next with an error if adminusers returns an error', async () => {
       const error = new Error('error from adminusers')
       const controller = getControllerWithMockedAdminusersClient({
@@ -412,14 +385,6 @@ describe('Registration', () => {
   })
 
   describe('show the phone number page', () => {
-    it('should call next with an error when the registration cookie is not set', async () => {
-      delete req.register_invite
-      await registrationController.showPhoneNumberPage(req, res, next)
-
-      sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
-      sinon.assert.notCalled(res.render)
-    })
-
     it('should render the page', () => {
       registrationController.showPhoneNumberPage(req, res, next)
       sinon.assert.calledWith(res.render, 'registration/phone-number')
@@ -428,15 +393,6 @@ describe('Registration', () => {
   })
 
   describe('submit the phone number page', () => {
-    it('should call next with an error when the registration cookie is not set', async () => {
-      delete req.register_invite
-      await registrationController.submitPhoneNumberPage(req, res, next)
-
-      sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
-      sinon.assert.notCalled(res.render)
-      sinon.assert.notCalled(res.redirect)
-    })
-
     it('should render the phone number page with an error when the phone number is invalid', async () => {
       req.body = {
         phone: 'not-a-phone-number'

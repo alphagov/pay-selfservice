@@ -17,6 +17,7 @@ const {
 const { RegistrationSessionMissingError, InvalidRegistationStateError } = require('../errors')
 const { validationErrors } = require('../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../utils/security-code-utils')
+const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 const INVITE_NOT_FOUND_ERROR_MESSAGE = 'There has been a problem proceeding with this registration. Please try again.'
@@ -107,7 +108,7 @@ function showConfirmation (req, res) {
 }
 
 async function showOtpVerify (req, res, next) {
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
@@ -140,11 +141,11 @@ async function showOtpVerify (req, res, next) {
 }
 
 async function submitOtpCode (req, res, next) {
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
-  const code = req.register_invite.code
+  const code = req[INVITE_SESSION_COOKIE_NAME].code
   const otpCode = sanitiseSecurityCode(req.body['verify-code'])
 
   const validOtp = validateOtp(otpCode)
@@ -175,7 +176,7 @@ async function submitOtpCode (req, res, next) {
   }
 
   try {
-    const userExternalId = await registrationService.completeInvite(req.register_invite.code)
+    const userExternalId = await registrationService.completeInvite(req[INVITE_SESSION_COOKIE_NAME].code)
     loginController.setupDirectLoginAfterRegister(req, res, userExternalId)
     return res.redirect(303, paths.registerUser.logUserIn)
   } catch (err) {
@@ -190,7 +191,7 @@ async function submitOtpCode (req, res, next) {
  * @param res
  */
 async function showOtpResend (req, res, next) {
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
@@ -226,7 +227,7 @@ async function showOtpResend (req, res, next) {
  * @param res
  */
 async function submitOtpResend (req, res, next) {
-  const sessionData = req.register_invite
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   if (!registrationSessionPresent(sessionData)) {
     return next(new RegistrationSessionMissingError())
   }
