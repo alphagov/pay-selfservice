@@ -190,7 +190,7 @@ describe('Change sign in method', () => {
         // check we're sent to a page for setting up the authenticator app
         cy.title().should('equal', 'Set up an authenticator app - GOV.UK Pay')
         cy.get('h1').should('contain', 'Set up an authenticator app')
-        cy.get('p.govuk-body').contains('Scan the barcode with your authenticator app').should('exist')
+        cy.get('p.govuk-body').contains('Open your authenticator app on your smartphone').should('exist')
 
         // should contain code with spaces every 4 characters
         cy.get('[data-cy=otp-secret]').should('have.text', 'GJMD 42XJ ZRUX EDFW WBDJ GQ4P ACPX Z6EF')
