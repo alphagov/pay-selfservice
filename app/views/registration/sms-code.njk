@@ -18,6 +18,13 @@
 {% block mainContent %}
   <div class="govuk-grid-column-one-half">
 
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'code': '#code'
+      }
+    }) }}
+
     <h1 class="govuk-heading-l">Check your phone</h1>
 
     {{ govukInsetText({
@@ -34,7 +41,8 @@
         },
         id: "code",
         name: "code",
-        classes: "govuk-input--width-10"
+        classes: "govuk-input--width-10",
+        errorMessage: { text: errors['code'] } if errors['code'] else false
       }) }}
 
       {% set detailsHTML %}
