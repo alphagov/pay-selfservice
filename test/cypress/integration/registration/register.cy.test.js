@@ -113,6 +113,30 @@ describe('Register', () => {
       // should show page to enter code
       cy.title().should('eq', 'Check your phone - GOV.UK Pay')
       cy.get('.govuk-inset-text').should('contain', 'We have sent a code to ••••••••••0192.')
+
+      // click continue without entering a code
+      cy.get('button').contains('Continue').click()
+
+      // check that error message is displayed
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('h2').should('contain', 'There is a problem')
+        cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+        cy.get('[data-cy=error-summary-list-item]').eq(0)
+          .contains('Enter your security code')
+          .should('have.attr', 'href', '#code')
+      })
+      cy.title().should('eq', 'Check your phone - GOV.UK Pay')
+
+      cy.get('#code').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'Enter your security code')
+      })
+
+      // enter a valid code and click continue
+      cy.get('#code').type('123456')
+      cy.get('button').contains('Continue').click()
+
+      // should log user in and redirect to my services page
+      cy.title().should('eq', 'Choose service - GOV.UK Pay')
     })
   })
 

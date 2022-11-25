@@ -15,7 +15,7 @@ const { isEmpty } = require('../../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
 const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
-const { APP } = require('../../models/second-factor-method')
+const { APP, SMS } = require('../../models/second-factor-method')
 
 const PASSWORD_INPUT_FIELD_NAME = 'password'
 const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
@@ -178,8 +178,47 @@ async function showSmsSecurityCodePage (req, res, next) {
   try {
     const invite = await adminusersClient.getValidatedInvite(sessionData.code)
     const redactedPhoneNumber = invite.telephone_number.replace(/.(?=.{4})/g, '•')
-    res.render('registration/sms-code', { redactedPhoneNumber })
+
+    const recovered = sessionData.recovered || {}
+    delete sessionData.recovered
+
+    res.render('registration/sms-code', {
+      redactedPhoneNumber,
+      errors: recovered.errors
+    })
   } catch (err) {
+    next(err)
+  }
+}
+
+async function submitSmsSecurityCodePage (req, res, next) {
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
+  const otpCode = sanitiseSecurityCode(req.body[OTP_CODE_FIELD_NAME])
+  const validationResult = validateOtp(otpCode)
+
+  const errors = {}
+  if (!validationResult.valid) {
+    errors[OTP_CODE_FIELD_NAME] = validationResult.message
+    sessionData.recovered = { errors }
+    return res.redirect(paths.register.smsCode)
+  }
+
+  try {
+    await adminusersClient.verifyOtpForInvite(sessionData.code, otpCode)
+    const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code, SMS)
+    // set user external ID on the session so the user is logged in upon redirect
+    sessionData.userExternalId = completeInviteResponse.user_external_id
+    return res.redirect(paths.registerUser.logUserIn)
+  } catch (err) {
+    if (err instanceof RESTClientError) {
+      if (err.errorCode === 401) {
+        errors[OTP_CODE_FIELD_NAME] = validationErrors.invalidOrExpiredSecurityCodeSMS
+        sessionData.recovered = { errors }
+        return res.redirect(paths.register.smsCode)
+      } else if (err.errorCode === 410) {
+        return next(new ExpiredInviteError(`Invite with code ${sessionData.code} has expired`))
+      }
+    }
     next(err)
   }
 }
@@ -202,6 +241,7 @@ module.exports = {
   showPhoneNumberPage,
   submitPhoneNumberPage,
   showSmsSecurityCodePage,
+  submitSmsSecurityCodePage,
   showResendSecurityCodePage,
   showSuccessPage
 }

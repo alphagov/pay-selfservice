@@ -409,6 +409,7 @@ module.exports = function (clientOptions = {}) {
    * Complete a service invite
    *
    * @param inviteCode
+   * @param secondFactorMethod
    * @returns {*|promise|Constructor}
    */
   function completeInvite (inviteCode, secondFactorMethod) {
