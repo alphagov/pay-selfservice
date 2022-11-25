@@ -15,6 +15,7 @@ const { isEmpty } = require('../../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
 const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
+const { APP } = require('../../models/second-factor-method')
 
 const PASSWORD_INPUT_FIELD_NAME = 'password'
 const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
@@ -124,7 +125,7 @@ async function submitAuthenticatorAppPage (req, res, next) {
 
   try {
     await adminusersClient.verifyOtpForInvite(sessionData.code, otpCode)
-    const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code)
+    const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code, APP)
     // set user external ID on the session so the user is logged in upon redirect
     sessionData.userExternalId = completeInviteResponse.user_external_id
     return res.redirect(paths.registerUser.logUserIn)
