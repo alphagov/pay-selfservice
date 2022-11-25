@@ -171,8 +171,16 @@ async function submitPhoneNumberPage (req, res, next) {
   }
 }
 
-function showSmsSecurityCodePage (req, res) {
-  res.render('registration/sms-code', { redactedPhoneNumber: '*******1111' })
+async function showSmsSecurityCodePage (req, res, next) {
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
+
+  try {
+    const invite = await adminusersClient.getValidatedInvite(sessionData.code)
+    const redactedPhoneNumber = invite.telephone_number.replace(/.(?=.{4})/g, '•')
+    res.render('registration/sms-code', { redactedPhoneNumber })
+  } catch (err) {
+    next(err)
+  }
 }
 
 function showResendSecurityCodePage (req, res) {
