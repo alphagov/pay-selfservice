@@ -411,19 +411,21 @@ module.exports = function (clientOptions = {}) {
    * @param inviteCode
    * @returns {*|promise|Constructor}
    */
-  function completeInvite (inviteCode) {
-    return baseClient.post(
-      {
-        baseUrl,
-        url: `/v1/api/invites/${inviteCode}/complete`,
-        json: true,
-        body: {
-          second_factor: 'SMS'
-        },
-        description: 'complete invite',
-        service: SERVICE_NAME
+  function completeInvite (inviteCode, secondFactorMethod) {
+    const opts = {
+      baseUrl,
+      url: `/v1/api/invites/${inviteCode}/complete`,
+      json: true,
+      description: 'complete invite',
+      service: SERVICE_NAME
+    }
+    if (secondFactorMethod) {
+      opts.body = {
+        second_factor: secondFactorMethod
       }
-    )
+    }
+
+    return baseClient.post(opts)
   }
 
   function verifyOtpForInvite (inviteCode, securityCode) {

@@ -15,6 +15,7 @@ const { RegistrationSessionMissingError, ExpiredInviteError } = require('../erro
 const { validationErrors } = require('../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../utils/security-code-utils')
 const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
+const { SMS } = require('../models/second-factor-method')
 
 const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
 
@@ -175,7 +176,7 @@ const submitOtpVerify = async function submitOtpVerify (req, res, next) {
   }
 
   try {
-    const completeResponse = await registrationService.completeInvite(sessionData.code)
+    const completeResponse = await registrationService.completeInvite(sessionData.code, SMS)
     loginController.setupDirectLoginAfterRegister(req, res, completeResponse.user_external_id)
     return res.redirect(303, paths.registerUser.logUserIn)
   } catch (err) {

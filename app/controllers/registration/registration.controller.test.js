@@ -6,6 +6,7 @@ const inviteFixtures = require('../../../test/fixtures/invite.fixtures')
 const { RESTClientError, ExpiredInviteError } = require('../../errors')
 const { paths } = require('../../routes')
 const registrationController = require('./registration.controller')
+const { APP } = require('../../models/second-factor-method')
 
 const inviteCode = 'a-code'
 let req, res, next
@@ -289,7 +290,7 @@ describe('Registration', () => {
 
       await controller.submitAuthenticatorAppPage(req, res, next)
       sinon.assert.calledWith(verifyOtpForInviteSpy, inviteCode, expectedSanitisedOtpCode)
-      sinon.assert.calledWith(completeInviteSpy, inviteCode)
+      sinon.assert.calledWith(completeInviteSpy, inviteCode, APP)
       sinon.assert.calledWith(res.redirect, paths.registerUser.logUserIn)
       sinon.assert.notCalled(next)
 

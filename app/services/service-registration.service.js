@@ -1,6 +1,7 @@
 'use strict'
 
 const getAdminUsersClient = require('./clients/adminusers.client')
+const { SMS } = require('../models/second-factor-method')
 
 const adminUsersClient = getAdminUsersClient()
 
@@ -13,7 +14,7 @@ function submitServiceInviteOtpCode (code, otpCode) {
 }
 
 async function completeInvite (inviteCode) {
-  const completeInviteResponse = await adminUsersClient.completeInvite(inviteCode)
+  const completeInviteResponse = await adminUsersClient.completeInvite(inviteCode, SMS)
   return completeInviteResponse.user_external_id
 }
 
