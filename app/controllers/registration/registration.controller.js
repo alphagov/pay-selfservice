@@ -236,6 +236,27 @@ async function showResendSecurityCodePage (req, res, next) {
   }
 }
 
+async function submitResendSecurityCodePage (req, res, next) {
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
+  const phoneNumber = req.body[PHONE_NUMBER_INPUT_FIELD_NAME]
+
+  const validPhoneNumber = validatePhoneNumber(phoneNumber)
+  const errors = {}
+  if (!validPhoneNumber.valid) {
+    errors[PHONE_NUMBER_INPUT_FIELD_NAME] = validPhoneNumber.message
+    return res.render('registration/resend-code', { errors, phoneNumber })
+  }
+
+  try {
+    await adminusersClient.updateInvitePhoneNumber(sessionData.code, phoneNumber)
+    await adminusersClient.sendOtp(sessionData.code)
+
+    res.redirect(paths.register.smsCode)
+  } catch (err) {
+    next(err)
+  }
+}
+
 function showSuccessPage (req, res) {
   res.render('registration/success')
 }
@@ -252,5 +273,6 @@ module.exports = {
   showSmsSecurityCodePage,
   submitSmsSecurityCodePage,
   showResendSecurityCodePage,
+  submitResendSecurityCodePage,
   showSuccessPage
 }

@@ -18,6 +18,13 @@
 {% block mainContent %}
   <div class="govuk-grid-column-one-half">
 
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'phone': '#phone'
+      }
+    }) }}
+
     <h1 class="govuk-heading-l">Check your mobile phone number</h1>
 
     <p class="govuk-body">Check your mobile phone number is correct, then resend the security code.</p>
@@ -32,6 +39,7 @@
         },
         id: "phone",
         name: "phone",
+        errorMessage: { text: errors['phone'] } if errors['phone'] else false,
         value: phoneNumber
       }) }}
 

@@ -5,6 +5,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const inviteCode = 'an-invite-code'
 const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
 const createdUserExternalId = 'a-user-id'
+const validPhoneNumber = '+4408081570192'
 
 describe('Register', () => {
   describe('SMS is selected as method for getting security codes', () => {
@@ -14,7 +15,7 @@ describe('Register', () => {
           code: inviteCode,
           password_set: false,
           otp_key: otpKey,
-          telephone_number: '+4408081570192'
+          telephone_number: validPhoneNumber
         }),
         inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId),
         userStubs.getUserSuccess({ userExternalId: createdUserExternalId, gatewayAccountId: '1' }),
@@ -107,12 +108,45 @@ describe('Register', () => {
       cy.title().should('eq', 'Enter your mobile phone number - GOV.UK Pay')
 
       // enter a valid phone number
-      cy.get('#phone').type('+44 0808 157 0192', { delay: 0 })
+      cy.get('#phone').type(validPhoneNumber, { delay: 0 })
       cy.get('button').contains('Continue').click()
 
       // should show page to enter code
       cy.title().should('eq', 'Check your phone - GOV.UK Pay')
       cy.get('.govuk-inset-text').should('contain', 'We have sent a code to ••••••••••0192.')
+
+      // click link to go to the page to resend code
+      cy.get('details').contains('Problems with the code?').click()
+      cy.get('a').contains('send the code again').click()
+
+      // should display page with phone number pre-filled
+      cy.title().should('eq', 'Check your mobile phone number - GOV.UK Pay')
+      cy.get('#phone').should('have.value', validPhoneNumber)
+
+      // enter an invalid phone number and click resent
+      cy.get('#phone').clear().type('a')
+      cy.get('button').contains('Resend').click()
+
+      // check that error message is displayed
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('h2').should('contain', 'There is a problem')
+        cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+        cy.get('[data-cy=error-summary-list-item]').eq(0)
+          .contains('Enter a telephone number')
+          .should('have.attr', 'href', '#phone')
+      })
+      cy.get('#phone').parent().should('exist').within(() => {
+        cy.get('.govuk-error-message').should('contain', 'Enter a telephone number')
+      })
+      cy.title().should('eq', 'Check your mobile phone number - GOV.UK Pay')
+      cy.get('#phone').should('have.value', 'a')
+
+      // enter a valid phone number and click continue
+      cy.get('#phone').clear().type(validPhoneNumber)
+      cy.get('button').contains('Resend').click()
+
+      // check we're back on the page to enter the security code
+      cy.title().should('eq', 'Check your phone - GOV.UK Pay')
 
       // click continue without entering a code
       cy.get('button').contains('Continue').click()
