@@ -650,6 +650,33 @@ describe('Registration', () => {
       sinon.assert.notCalled(res.redirect)
     })
   })
+
+  describe('show the resend code page', () => {
+    it('should render the page when invite retrieved successfully', async () => {
+      let phoneNumber = '+4408081570192'
+      const invite = inviteFixtures.validInviteResponse({ telephone_number: phoneNumber })
+      const controller = getControllerWithMockedAdminusersClient({
+        getValidatedInvite: () => Promise.resolve(invite)
+      })
+
+      await controller.showResendSecurityCodePage(req, res, next)
+      sinon.assert.calledWith(res.render, 'registration/resend-code', {
+        phoneNumber
+      })
+      sinon.assert.notCalled(next)
+    })
+
+    it('should call next with an error if adminusers returns an error', async () => {
+      const error = new Error('error from adminusers')
+      const controller = getControllerWithMockedAdminusersClient({
+        getValidatedInvite: () => Promise.reject(error)
+      })
+
+      await controller.showResendSecurityCodePage(req, res, next)
+      sinon.assert.calledWith(next, error)
+      sinon.assert.notCalled(res.render)
+    })
+  })
 })
 
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {

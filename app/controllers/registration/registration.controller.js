@@ -223,8 +223,17 @@ async function submitSmsSecurityCodePage (req, res, next) {
   }
 }
 
-function showResendSecurityCodePage (req, res) {
-  res.render('registration/resend-code')
+async function showResendSecurityCodePage (req, res, next) {
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
+
+  try {
+    const invite = await adminusersClient.getValidatedInvite(sessionData.code)
+    res.render('registration/resend-code', {
+      phoneNumber: invite.telephone_number
+    })
+  } catch (err) {
+    next(err)
+  }
 }
 
 function showSuccessPage (req, res) {
