@@ -59,7 +59,7 @@ const subscribeService = async function subscribeService (req, res, next) {
   }
 
   try {
-    const completeResponse = await registrationService.completeInvite(inviteCode)
+    const completeResponse = await registrationService.completeInvite(inviteCode, SMS)
     req.flash('inviteSuccessServiceId', completeResponse.service_external_id)
     return res.redirect(303, paths.serviceSwitcher.index)
   } catch (err) {
