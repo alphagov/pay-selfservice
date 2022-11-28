@@ -208,6 +208,7 @@ module.exports.bind = function (app) {
   app.get(register.smsCode, inviteCookeIsPresent, registrationController.showSmsSecurityCodePage)
   app.post(register.smsCode, inviteCookeIsPresent, registrationController.submitSmsSecurityCodePage)
   app.get(register.resendCode, inviteCookeIsPresent, registrationController.showResendSecurityCodePage)
+  app.post(register.resendCode, inviteCookeIsPresent, registrationController.submitResendSecurityCodePage)
   app.get(register.success, inviteCookeIsPresent, registrationController.showSuccessPage)
 
   // ----------------------
