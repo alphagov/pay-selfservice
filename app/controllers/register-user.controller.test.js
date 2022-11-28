@@ -59,7 +59,7 @@ describe('Register user controller', () => {
       it('should accept invite and redirect to "My services', async () => {
         const controller = getController(completeInviteSuccessStub)
         await controller.subscribeService(req, res, next)
-        sinon.assert.called(completeInviteSuccessStub)
+        sinon.assert.calledWith(completeInviteSuccessStub, inviteCode, 'SMS')
         sinon.assert.calledWith(flashSpy, 'inviteSuccessServiceId', serviceExternalId)
         sinon.assert.calledWith(completeInviteSuccessStub, inviteCode)
       })

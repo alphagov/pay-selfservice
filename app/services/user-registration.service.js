@@ -3,6 +3,8 @@
 const getAdminUsersClient = require('./clients/adminusers.client')
 const adminUsersClient = getAdminUsersClient()
 
+const { SMS } = require('../models/second-factor-method')
+
 module.exports = {
 
   /**
@@ -25,8 +27,8 @@ module.exports = {
     return adminUsersClient.resendOtpCode(code, phoneNumber)
   },
 
-  completeInvite: function completeInvite (code) {
-    return adminUsersClient.completeInvite(code)
+  completeInvite: function completeInvite (code, secondFactorMethod = SMS) {
+    return adminUsersClient.completeInvite(code, secondFactorMethod)
   }
 
 }
