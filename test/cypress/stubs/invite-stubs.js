@@ -27,8 +27,16 @@ function completeInviteSuccess (inviteCode, userExternalId) {
   })
 }
 
+function reprovisionOtpSuccess (opts) {
+  const path = `/v1/api/invites/${opts.code}/reprovision-otp`
+  return stubBuilder('POST', path, 200, {
+    response: inviteFixtures.validInviteResponse(opts)
+  })
+}
+
 module.exports = {
   getInvitedUsersSuccess,
   getInviteSuccess,
-  completeInviteSuccess
+  completeInviteSuccess,
+  reprovisionOtpSuccess
 }

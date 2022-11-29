@@ -182,6 +182,10 @@ describe('Register', () => {
           password_set: false,
           otp_key: otpKey
         }),
+        inviteStubs.reprovisionOtpSuccess({
+          code: inviteCode,
+          otp_key: otpKey
+        }),
         inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId),
         userStubs.getUserSuccess({ userExternalId: createdUserExternalId, gatewayAccountId: '1' }),
         gatewayAccountStubs.getGatewayAccountsSuccess({
