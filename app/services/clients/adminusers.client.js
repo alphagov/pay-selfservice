@@ -405,6 +405,18 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  function reprovisionOtp (inviteCode) {
+    return baseClient.post(
+      {
+        baseUrl,
+        url: `/v1/api/invites/${inviteCode}/reprovision-otp`,
+        json: true,
+        description: 're-provision OTP key',
+        service: SERVICE_NAME
+      }
+    )
+  }
+
   /**
    * Complete a service invite
    *
@@ -812,6 +824,7 @@ module.exports = function (clientOptions = {}) {
     updateInvitePhoneNumber,
     generateInviteOtpCode,
     sendOtp,
+    reprovisionOtp,
     completeInvite,
     submitServiceRegistration,
 
