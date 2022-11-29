@@ -209,7 +209,7 @@ module.exports.bind = function (app) {
   app.post(register.smsCode, inviteCookeIsPresent, registrationController.submitSmsSecurityCodePage)
   app.get(register.resendCode, inviteCookeIsPresent, registrationController.showResendSecurityCodePage)
   app.post(register.resendCode, inviteCookeIsPresent, registrationController.submitResendSecurityCodePage)
-  app.get(register.success, inviteCookeIsPresent, registrationController.showSuccessPage)
+  app.get(register.success, inviteCookeIsPresent, loginController.loginAfterRegister, userIsAuthorised, registrationController.showSuccessPage)
 
   // ----------------------
   // AUTHENTICATED ROUTES

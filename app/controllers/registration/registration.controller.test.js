@@ -270,7 +270,7 @@ describe('Registration', () => {
       })
     })
 
-    it('should redirect to login when OTP code is valid', async () => {
+    it('should redirect to the success page when OTP code is valid', async () => {
       const otpCode = '123 456'
       const expectedSanitisedOtpCode = '123456'
       req.body = {
@@ -291,7 +291,7 @@ describe('Registration', () => {
       await controller.submitAuthenticatorAppPage(req, res, next)
       sinon.assert.calledWith(verifyOtpForInviteSpy, inviteCode, expectedSanitisedOtpCode)
       sinon.assert.calledWith(completeInviteSpy, inviteCode, APP)
-      sinon.assert.calledWith(res.redirect, paths.registerUser.logUserIn)
+      sinon.assert.calledWith(res.redirect, paths.register.success)
       sinon.assert.notCalled(next)
 
       expect(req.register_invite).to.have.property('userExternalId').to.equal(userExternalId)
@@ -564,7 +564,7 @@ describe('Registration', () => {
       })
     })
 
-    it('should redirect to login when OTP code is valid', async () => {
+    it('should redirect to the success page when OTP code is valid', async () => {
       const otpCode = '123 456'
       const expectedSanitisedOtpCode = '123456'
       req.body = {
@@ -585,7 +585,7 @@ describe('Registration', () => {
       await controller.submitSmsSecurityCodePage(req, res, next)
       sinon.assert.calledWith(verifyOtpForInviteSpy, inviteCode, expectedSanitisedOtpCode)
       sinon.assert.calledWith(completeInviteSpy, inviteCode, SMS)
-      sinon.assert.calledWith(res.redirect, paths.registerUser.logUserIn)
+      sinon.assert.calledWith(res.redirect, paths.register.success)
       sinon.assert.notCalled(next)
 
       expect(req.register_invite).to.have.property('userExternalId').to.equal(userExternalId)

@@ -169,7 +169,11 @@ describe('Register', () => {
       cy.get('#code').type('123456')
       cy.get('button').contains('Continue').click()
 
-      // should log user in and redirect to my services page
+      // should show the success page
+      cy.title().should('eq', 'You’ve created your account - GOV.UK Pay')
+      cy.get('a[role=button]').contains('Continue').click()
+
+      // should redirect to my services page
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
     })
   })
@@ -244,7 +248,11 @@ describe('Register', () => {
       cy.get('#code').type('123456')
       cy.get('button').contains('Continue').click()
 
-      // should log user in and redirect to my services page
+      // should show the success page
+      cy.title().should('eq', 'You’ve created your account - GOV.UK Pay')
+      cy.get('a[role=button]').contains('Continue').click()
+
+      // should redirect to my services page
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
     })
   })

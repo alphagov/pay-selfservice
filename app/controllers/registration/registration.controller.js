@@ -128,7 +128,7 @@ async function submitAuthenticatorAppPage (req, res, next) {
     const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code, APP)
     // set user external ID on the session so the user is logged in upon redirect
     sessionData.userExternalId = completeInviteResponse.user_external_id
-    return res.redirect(paths.registerUser.logUserIn)
+    return res.redirect(paths.register.success)
   } catch (err) {
     if (err instanceof RESTClientError) {
       if (err.errorCode === 401) {
@@ -209,7 +209,7 @@ async function submitSmsSecurityCodePage (req, res, next) {
     const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code, SMS)
     // set user external ID on the session so the user is logged in upon redirect
     sessionData.userExternalId = completeInviteResponse.user_external_id
-    return res.redirect(paths.registerUser.logUserIn)
+    return res.redirect(paths.register.success)
   } catch (err) {
     if (err instanceof RESTClientError) {
       if (err.errorCode === 401) {
