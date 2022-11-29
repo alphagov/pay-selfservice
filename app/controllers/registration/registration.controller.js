@@ -91,7 +91,7 @@ async function showAuthenticatorAppPage (req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
-    const invite = await adminusersClient.getValidatedInvite(sessionData.code)
+    const invite = await adminusersClient.reprovisionOtp(sessionData.code)
     const secretKey = invite.otp_key
 
     const prettyPrintedSecret = secretKey.match(/.{4}/g).join(' ')
@@ -164,6 +164,7 @@ async function submitPhoneNumberPage (req, res, next) {
 
   try {
     await adminusersClient.updateInvitePhoneNumber(sessionData.code, phoneNumber)
+    await adminusersClient.reprovisionOtp(sessionData.code)
     await adminusersClient.sendOtp(sessionData.code)
 
     res.redirect(paths.register.smsCode)
