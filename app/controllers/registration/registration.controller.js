@@ -22,6 +22,10 @@ const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
 const PHONE_NUMBER_INPUT_FIELD_NAME = 'phone'
 const OTP_CODE_FIELD_NAME = 'code'
 
+async function showEmailPage (req, res, next) {
+  res.render('registration/email')
+}
+
 async function showPasswordPage (req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
@@ -263,6 +267,7 @@ function showSuccessPage (req, res) {
 }
 
 module.exports = {
+  showEmailPage,
   showPasswordPage,
   submitPasswordPage,
   showChooseSignInMethodPage,

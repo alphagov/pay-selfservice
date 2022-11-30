@@ -30,6 +30,7 @@ const pathsNotRequiringAuthentication = [
   paths.selfCreateService.otpResend,
   paths.healthcheck.path,
   paths.staticPaths.naxsiError,
+  paths.register.email,
   paths.register.password,
   paths.register.securityCodes,
   paths.register.authenticatorApp,

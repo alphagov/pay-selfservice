@@ -20,7 +20,7 @@ const restrictToSandboxOrStripeTestAccount = require('./middleware/restrict-to-s
 const restrictToStripeAccountContext = require('./middleware/stripe-setup/restrict-to-stripe-account-context')
 const restrictToSwitchingAccount = require('./middleware/restrict-to-switching-account')
 const uploadGovernmentEntityDocument = require('./middleware/multer-middleware')
-const inviteCookeIsPresent = require('./middleware/invite-cookie-is-present')
+const inviteCookieIsPresent = require('./middleware/invite-cookie-is-present')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -197,19 +197,20 @@ module.exports.bind = function (app) {
   app.post(selfCreateService.otpResend, selfCreateServiceController.submitOtpResend)
 
   // NEW REGISTRATION JOURNEY
-  app.get(register.password, inviteCookeIsPresent, registrationController.showPasswordPage)
-  app.post(register.password, inviteCookeIsPresent, registrationController.submitPasswordPage)
-  app.get(register.securityCodes, inviteCookeIsPresent, registrationController.showChooseSignInMethodPage)
-  app.post(register.securityCodes, inviteCookeIsPresent, registrationController.submitChooseSignInMethodPage)
-  app.get(register.authenticatorApp, inviteCookeIsPresent, registrationController.showAuthenticatorAppPage)
-  app.post(register.authenticatorApp, inviteCookeIsPresent, registrationController.submitAuthenticatorAppPage)
-  app.get(register.phoneNumber, inviteCookeIsPresent, registrationController.showPhoneNumberPage)
-  app.post(register.phoneNumber, inviteCookeIsPresent, registrationController.submitPhoneNumberPage)
-  app.get(register.smsCode, inviteCookeIsPresent, registrationController.showSmsSecurityCodePage)
-  app.post(register.smsCode, inviteCookeIsPresent, registrationController.submitSmsSecurityCodePage)
-  app.get(register.resendCode, inviteCookeIsPresent, registrationController.showResendSecurityCodePage)
-  app.post(register.resendCode, inviteCookeIsPresent, registrationController.submitResendSecurityCodePage)
-  app.get(register.success, inviteCookeIsPresent, loginController.loginAfterRegister, userIsAuthorised, registrationController.showSuccessPage)
+  app.get(register.email, registrationController.showEmailPage)
+  app.get(register.password, inviteCookieIsPresent, registrationController.showPasswordPage)
+  app.post(register.password, inviteCookieIsPresent, registrationController.submitPasswordPage)
+  app.get(register.securityCodes, inviteCookieIsPresent, registrationController.showChooseSignInMethodPage)
+  app.post(register.securityCodes, inviteCookieIsPresent, registrationController.submitChooseSignInMethodPage)
+  app.get(register.authenticatorApp, inviteCookieIsPresent, registrationController.showAuthenticatorAppPage)
+  app.post(register.authenticatorApp, inviteCookieIsPresent, registrationController.submitAuthenticatorAppPage)
+  app.get(register.phoneNumber, inviteCookieIsPresent, registrationController.showPhoneNumberPage)
+  app.post(register.phoneNumber, inviteCookieIsPresent, registrationController.submitPhoneNumberPage)
+  app.get(register.smsCode, inviteCookieIsPresent, registrationController.showSmsSecurityCodePage)
+  app.post(register.smsCode, inviteCookieIsPresent, registrationController.submitSmsSecurityCodePage)
+  app.get(register.resendCode, inviteCookieIsPresent, registrationController.showResendSecurityCodePage)
+  app.post(register.resendCode, inviteCookieIsPresent, registrationController.submitResendSecurityCodePage)
+  app.get(register.success, inviteCookieIsPresent, loginController.loginAfterRegister, userIsAuthorised, registrationController.showSuccessPage)
 
   // ----------------------
   // AUTHENTICATED ROUTES
