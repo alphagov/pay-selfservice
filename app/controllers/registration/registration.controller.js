@@ -7,6 +7,7 @@ const { RESTClientError, ExpiredInviteError } = require('../../errors')
 const adminusersClient = require('../../services/clients/adminusers.client')()
 const paths = require('../../paths')
 const {
+  validateEmail,
   validatePassword,
   validateOtp,
   validatePhoneNumber
@@ -17,6 +18,7 @@ const { validationErrors } = require('../../utils/validation/field-validation-ch
 const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
 const { APP, SMS } = require('../../models/second-factor-method')
 
+const EMAIL_INPUT_FIELD_NAME = 'email'
 const PASSWORD_INPUT_FIELD_NAME = 'password'
 const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
 const PHONE_NUMBER_INPUT_FIELD_NAME = 'phone'
@@ -24,6 +26,45 @@ const OTP_CODE_FIELD_NAME = 'code'
 
 async function showEmailPage (req, res, next) {
   res.render('registration/email')
+}
+
+async function submitEmailPage (req, res, next) {
+  const email = req.body[EMAIL_INPUT_FIELD_NAME]
+
+  const errors = {}
+
+  const validEmail = validateEmail(email)
+  if (!validEmail.valid) {
+    errors.email = validEmail.message
+  }
+
+  if (!lodash.isEmpty(errors)) {
+    return res.render('registration/email', { errors, email })
+  }
+
+  try {
+    await adminusersClient.createSelfSignupInvite(email)
+
+    lodash.set(req, 'session.pageData.submitRegistration', {
+      email
+    })
+
+    res.redirect(paths.register.checkEmail)
+  } catch (err) {
+    if (err instanceof RESTClientError) {
+      if (err.errorCode === 403) {
+        errors[EMAIL_INPUT_FIELD_NAME] = validationErrors.notPublicSectorEmail
+        return res.render('registration/email', { errors, email })
+      } else if (err.errorCode === 409) {
+        lodash.set(req, 'session.pageData.submitRegistration', {
+          email
+        })
+
+        return res.redirect(paths.register.checkEmail)
+      }
+    }
+    next(err)
+  }
 }
 
 async function showPasswordPage (req, res, next) {
@@ -268,6 +309,7 @@ function showSuccessPage (req, res) {
 
 module.exports = {
   showEmailPage,
+  submitEmailPage,
   showPasswordPage,
   submitPasswordPage,
   showChooseSignInMethodPage,

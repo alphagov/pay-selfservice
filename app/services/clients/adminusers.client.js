@@ -497,6 +497,26 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  /**
+   * Create self-signup invite
+   *
+   * @param email
+   */
+  function createSelfSignupInvite (email) {
+    return baseClient.post(
+      {
+        baseUrl,
+        url: `/v1/api/invites/service`,
+        json: true,
+        body: {
+          email: email
+        },
+        description: 'submit service registration details',
+        service: SERVICE_NAME
+      }
+    )
+  }
+
   function deleteUser (serviceExternalId, removerExternalId, userExternalId) {
     let headers = {}
     headers[HEADER_USER_CONTEXT] = removerExternalId
@@ -816,6 +836,7 @@ module.exports = function (clientOptions = {}) {
     getServiceUsers,
 
     // Invite-related Methods
+    createSelfSignupInvite,
     verifyOtpForInvite,
     inviteUser,
     getInvitedUsersList,

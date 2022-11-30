@@ -253,6 +253,7 @@ module.exports = {
   },
   register: {
     email: '/register/email-address',
+    checkEmail: '/register/check-email',
     password: '/register/password',
     securityCodes: '/register/get-security-codes',
     authenticatorApp: '/register/authenticator-app',
