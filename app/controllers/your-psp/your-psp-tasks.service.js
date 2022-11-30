@@ -53,4 +53,4 @@ function stripeTaskListIsComplete (taskList) {
   return Object.values(taskList).every(task => task.completed)
 }
 
-module.exports = {getStripeTaskList, stripeTaskListIsComplete}
+module.exports = { getStripeTaskList, stripeTaskListIsComplete }

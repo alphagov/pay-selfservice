@@ -13,6 +13,7 @@ const mockSession = require('../../test/test-helpers/mock-session.js')
 const userFixtures = require('../../test/fixtures/user.fixtures')
 const User = require('../models/User.class')
 const secondFactorMethod = require('../models/second-factor-method')
+const { RESTClientError } = require('../errors')
 
 // Assignments and Variables
 const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3'
@@ -67,23 +68,6 @@ describe('auth service', function () {
 
   describe('deserialize user', function () {
     it('should find user by external id', function (done) {
-      const authService = (userMock) => {
-        return proxyquire(path.join(__dirname, '/./auth.service.js'),
-          {
-            './user.service.js': userMock,
-            'continuation-local-storage': {
-              getNamespace: function () {
-                return {
-                  run: function (callback) {
-                    callback()
-                  },
-                  set: () => {}
-                }
-              }
-            }
-          })
-      }
-
       const user = mockUser()
       const userServiceMock = {
         findByExternalId: (externalId) => {
@@ -94,7 +78,7 @@ describe('auth service', function () {
         }
       }
 
-      authService(userServiceMock).deserializeUser({ headers: { 'x-request-id': 'foo' } }, EXTERNAL_ID_IN_SESSION, function (err, returnedUser) {
+      getServiceWithMockedUserService(userServiceMock).deserializeUser({ headers: { 'x-request-id': 'foo' } }, EXTERNAL_ID_IN_SESSION, function (err, returnedUser) {
         expect(err).to.be.null //eslint-disable-line
         expect(returnedUser).to.deep.equal(user)
         done()
@@ -142,10 +126,6 @@ describe('auth service', function () {
 
   describe('localStrategyAuth', function () {
     it('should return user when authenticates successfully', function (done) {
-      const authService = (userMock) => {
-        return proxyquire(path.join(__dirname, '/./auth.service.js'),
-          { './user.service.js': userMock })
-      }
       const req = {
         headers: { 'x-request-id': 'corrId' }
       }
@@ -163,7 +143,7 @@ describe('auth service', function () {
         }
       }
 
-      authService(userServiceMock).localStrategyAuth(req, user.username, password, doneSpy)
+      getServiceWithMockedUserService(userServiceMock).localStrategyAuth(req, user.username, password, doneSpy)
         .then(() => {
           assert(doneSpy.calledWithExactly(null, user))
           done()
@@ -171,10 +151,6 @@ describe('auth service', function () {
     })
 
     it('should return error message when authentication fails', function (done) {
-      const authService = (userMock) => {
-        return proxyquire(path.join(__dirname, '/./auth.service.js'),
-          { './user.service.js': userMock })
-      }
       const req = {
         headers: { 'x-request-id': 'corrId' }
       }
@@ -192,7 +168,7 @@ describe('auth service', function () {
         }
       }
 
-      authService(userServiceMock).localStrategyAuth(req, username, password, doneSpy)
+      getServiceWithMockedUserService(userServiceMock).localStrategyAuth(req, username, password, doneSpy)
         .then(() => {
           assert(doneSpy.calledWithExactly(null, false, { message: 'Invalid email or password' }))
           done()
@@ -299,16 +275,13 @@ describe('auth service', function () {
     })
   })
 
-  describe('localDirectStrategy', function () {
-    it('should successfully mark a user as second factor authenticated', function (done) {
-      const authService = (userMock) => {
-        return proxyquire(path.join(__dirname, '/./auth.service.js'),
-          { './user.service.js': userMock })
-      }
+  describe('localStrategyLoginDirectAfterRegistration', () => {
+    it('should successfully mark a user as second factor authenticated', async () => {
+      const userExternalId = 'a-user-external-id'
       const user = { username: 'user@example.com', sessionVersion: 1 }
       const doneSpy = sinon.spy()
       const registerInviteCookie = {
-        userExternalId: '874riuwhf',
+        userExternalId,
         destroy: sinon.spy()
       }
       const req = {
@@ -317,23 +290,67 @@ describe('auth service', function () {
         user: user,
         session: {}
       }
+
+      const findByExternalIdSpy = sinon.spy(() => Promise.resolve(user))
       const userServiceMock = {
-        findByExternalId: () => {
-          return new Promise(function (resolve, reject) {
-            resolve(user)
-          })
-        }
+        findByExternalId: findByExternalIdSpy
       }
 
-      authService(userServiceMock).localDirectStrategy(req, doneSpy)
-        .then(() => {
-          expect(registerInviteCookie.destroy.called).to.equal(true)
-          expect(req.session.secondFactor).to.equal('totp')
-          expect(doneSpy.calledWithExactly(null, user)).to.equal(true)
-          expect(req.session.version).to.equal(1)
-          done()
-        })
-        .catch(done)
+      await getServiceWithMockedUserService(userServiceMock).localStrategyLoginDirectAfterRegistration(req, doneSpy)
+
+      sinon.assert.calledWith(findByExternalIdSpy, userExternalId)
+      sinon.assert.called(registerInviteCookie.destroy)
+      sinon.assert.calledWithExactly(doneSpy, null, user)
+      expect(req.session.secondFactor).to.equal('totp')
+      expect(req.session.version).to.equal(1)
+    })
+
+    it('should call the callback with no user when the registration cookie is not present', async () => {
+      const req = {
+        session: {}
+      }
+      const doneSpy = sinon.spy()
+
+      await auth.localStrategyLoginDirectAfterRegistration(req, doneSpy)
+      sinon.assert.calledWith(doneSpy, null, false)
+      expect(req.session).to.not.have.property('secondFactor')
+    })
+
+    it('should call the callback with no user when the registration cookie does not have userExternalId set', async () => {
+      const req = {
+        session: {},
+        register_invite: {}
+      }
+      const doneSpy = sinon.spy()
+
+      await auth.localStrategyLoginDirectAfterRegistration(req, doneSpy)
+      sinon.assert.calledWith(doneSpy, null, false)
+      expect(req.session).to.not.have.property('secondFactor')
+    })
+
+    it('should call the callback with adminusers returns an error', async () => {
+      const userExternalId = 'a-user-external-id'
+      const registerInviteCookie = {
+        userExternalId,
+        destroy: sinon.spy()
+      }
+      const req = {
+        session: {},
+        register_invite: registerInviteCookie
+      }
+      const doneSpy = sinon.spy()
+
+      const error = new RESTClientError('Error', 'adminusers', 500)
+      const findByExternalIdSpy = sinon.spy(() => Promise.reject(error))
+      const userServiceMock = {
+        findByExternalId: findByExternalIdSpy
+      }
+
+      await getServiceWithMockedUserService(userServiceMock).localStrategyLoginDirectAfterRegistration(req, doneSpy)
+      sinon.assert.calledWith(findByExternalIdSpy, userExternalId)
+      sinon.assert.called(registerInviteCookie.destroy)
+      sinon.assert.calledWith(doneSpy, null, false)
+      expect(req.session).to.not.have.property('secondFactor')
     })
   })
 
@@ -355,3 +372,8 @@ describe('auth service', function () {
     })
   })
 })
+
+function getServiceWithMockedUserService (userServiceMock) {
+  return proxyquire(path.join(__dirname, '/./auth.service.js'),
+    { './user.service.js': userServiceMock })
+}
