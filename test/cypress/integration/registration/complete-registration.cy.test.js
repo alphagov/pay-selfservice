@@ -7,7 +7,7 @@ const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
 const createdUserExternalId = 'a-user-id'
 const validPhoneNumber = '+4408081570192'
 
-describe('Register', () => {
+describe('Complete registration after following link in invite email', () => {
   describe('SMS is selected as method for getting security codes', () => {
     it('should complete registration journey', () => {
       cy.task('setupStubs', [
@@ -48,7 +48,6 @@ describe('Register', () => {
           .contains('Re-type your password')
           .should('have.attr', 'href', '#repeat-password')
       })
-      cy.title().should('eq', 'Create your password - GOV.UK Pay')
 
       cy.get('.govuk-form-group--error > input#password').parent().should('exist').within(() => {
         cy.get('.govuk-error-message').should('contain', 'Enter a password')
@@ -56,6 +55,8 @@ describe('Register', () => {
       cy.get('.govuk-form-group--error > input#repeat-password').parent().should('exist').within(() => {
         cy.get('.govuk-error-message').should('contain', 'Re-type your password')
       })
+
+      cy.title().should('eq', 'Create your password - GOV.UK Pay')
 
       // enter valid values into both password fields and click continue
       cy.get('#password').type('long-enough-password', { delay: 0 })
@@ -76,11 +77,12 @@ describe('Register', () => {
           .contains('You need to select an option')
           .should('have.attr', 'href', '#sign-in-method')
       })
-      cy.title().should('eq', 'Choose how to get security codes - GOV.UK Pay')
 
       cy.get('[data-cy=radios-security-code]').parent().should('exist').within(() => {
         cy.get('.govuk-error-message').should('contain', 'You need to select an option')
       })
+
+      cy.title().should('eq', 'Choose how to get security codes - GOV.UK Pay')
 
       // select SMS and click continue
       cy.get('[data-cy=radio-option-sms]').click()
@@ -159,11 +161,12 @@ describe('Register', () => {
           .contains('Enter your security code')
           .should('have.attr', 'href', '#code')
       })
-      cy.title().should('eq', 'Check your phone - GOV.UK Pay')
 
       cy.get('#code').parent().should('exist').within(() => {
         cy.get('.govuk-error-message').should('contain', 'Enter your security code')
       })
+
+      cy.title().should('eq', 'Check your phone - GOV.UK Pay')
 
       // enter a valid code and click continue
       cy.get('#code').type('123456')
@@ -238,11 +241,12 @@ describe('Register', () => {
           .contains('Enter your security code')
           .should('have.attr', 'href', '#code')
       })
-      cy.title().should('eq', 'Set up an authenticator app - GOV.UK Pay')
 
       cy.get('#code').parent().should('exist').within(() => {
         cy.get('.govuk-error-message').should('contain', 'Enter your security code')
       })
+
+      cy.title().should('eq', 'Set up an authenticator app - GOV.UK Pay')
 
       // enter a valid code and click continue
       cy.get('#code').type('123456')

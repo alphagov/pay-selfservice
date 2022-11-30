@@ -3,6 +3,15 @@
 const inviteFixtures = require('../../fixtures/invite.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
+function createSelfSignupInviteNotPublicSectorEmail (email) {
+  const path = '/v1/api/invites/service'
+  return stubBuilder('POST', path, 403, {
+    request: {
+      email
+    }
+  })
+}
+
 function getInvitedUsersSuccess (opts) {
   const path = '/v1/api/invites'
   return stubBuilder('GET', path, 200, {
@@ -35,6 +44,7 @@ function reprovisionOtpSuccess (opts) {
 }
 
 module.exports = {
+  createSelfSignupInviteNotPublicSectorEmail,
   getInvitedUsersSuccess,
   getInviteSuccess,
   completeInviteSuccess,

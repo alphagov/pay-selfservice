@@ -28,6 +28,80 @@ describe('Registration', () => {
     next = sinon.spy()
   })
 
+  describe('submit the email page', () => {
+    it('should rerender the page with an error when the email address fails validation', async () => {
+      const email = 'not-an-email-address'
+      req.body = {
+        email
+      }
+
+      await registrationController.submitEmailPage(req, res, next)
+      sinon.assert.calledWith(res.render, 'registration/email', {
+        errors: { email: 'Enter a valid email address' },
+        email
+      })
+      sinon.assert.notCalled(next)
+    })
+
+    it('should set email address on the session cookie and redirect to the check email page when email address is valid', async () => {
+      const email = 'valid-address@example.com'
+      req.body = {
+        email
+      }
+
+      const createSelfSignupInviteSpy = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMockedAdminusersClient({
+        createSelfSignupInvite: createSelfSignupInviteSpy
+      })
+
+      await controller.submitEmailPage(req, res, next)
+      sinon.assert.calledWith(createSelfSignupInviteSpy, email)
+      sinon.assert.calledWith(res.redirect, paths.register.checkEmail)
+      sinon.assert.notCalled(next)
+
+      expect(req.session).to.deep.equal({ pageData: { submitRegistration: { email } } })
+    })
+
+    it('should rerender the page with an error message when adminusers returns a 403', async () => {
+      const email = 'valid-address@example.com'
+      req.body = {
+        email
+      }
+
+      const createSelfSignupInviteSpy = sinon.spy(() => Promise.reject(new RESTClientError('Error', 'adminusers', 403)))
+      const controller = getControllerWithMockedAdminusersClient({
+        createSelfSignupInvite: createSelfSignupInviteSpy
+      })
+
+      await controller.submitEmailPage(req, res, next)
+      sinon.assert.calledWith(createSelfSignupInviteSpy, email)
+      sinon.assert.calledWith(res.render, 'registration/email', {
+        errors: { email: 'Enter a public sector email address' },
+        email
+      })
+      sinon.assert.notCalled(next)
+    })
+
+    it('should set email address on the session cookie and redirect to the check email page when adminusers returns a 409', async () => {
+      const email = 'valid-address@example.com'
+      req.body = {
+        email
+      }
+
+      const createSelfSignupInviteSpy = sinon.spy(() => Promise.reject(new RESTClientError('Error', 'adminusers', 409)))
+      const controller = getControllerWithMockedAdminusersClient({
+        createSelfSignupInvite: createSelfSignupInviteSpy
+      })
+
+      await controller.submitEmailPage(req, res, next)
+      sinon.assert.calledWith(createSelfSignupInviteSpy, email)
+      sinon.assert.calledWith(res.redirect, paths.register.checkEmail)
+      sinon.assert.notCalled(next)
+
+      expect(req.session).to.deep.equal({ pageData: { submitRegistration: { email } } })
+    })
+  })
+
   describe('show the password page', () => {
     it('should redirect to security codes page when password is already set for invite', async () => {
       const inviteWithPasswordSet = inviteFixtures.validInviteResponse({ password_set: true })

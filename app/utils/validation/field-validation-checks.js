@@ -11,6 +11,7 @@ const validationErrors = {
   currency: 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”',
   phoneNumber: 'Must be an 11 digit phone number',
   validEmail: 'Enter a valid email address',
+  notPublicSectorEmail: 'Enter a public sector email address',
   isHttps: 'URL must begin with https://',
   invalidUrl: 'Enter a valid website address',
   isAboveMaxAmount: `Enter an amount under £${MAX_AMOUNT.toLocaleString()}`,
