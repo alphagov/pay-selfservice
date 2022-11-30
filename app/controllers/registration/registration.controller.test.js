@@ -7,6 +7,7 @@ const { RESTClientError, ExpiredInviteError } = require('../../errors')
 const { paths } = require('../../routes')
 const registrationController = require('./registration.controller')
 const { APP, SMS } = require('../../models/second-factor-method')
+const lodash = require('lodash')
 
 const inviteCode = 'a-code'
 let req, res, next
@@ -99,6 +100,25 @@ describe('Registration', () => {
       sinon.assert.notCalled(next)
 
       expect(req.session).to.deep.equal({ pageData: { submitRegistration: { email } } })
+    })
+  })
+
+  describe('show the check email page', () => {
+    it('should render the check email page with the email from the template data, and clear the cookie', () => {
+      const email = 'abc@example.com'
+
+      lodash.set(req, 'session.pageData.submitRegistration', {
+        email
+      })
+
+      registrationController.showCheckEmailPage(req, res)
+
+      sinon.assert.calledWith(res.render, 'registration/check-email', {
+        requesterEmail: email
+      })
+      sinon.assert.notCalled(next)
+
+      expect(req.session).to.deep.equal({ pageData: {} })
     })
   })
 

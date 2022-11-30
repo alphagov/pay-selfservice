@@ -31,6 +31,7 @@ const pathsNotRequiringAuthentication = [
   paths.healthcheck.path,
   paths.staticPaths.naxsiError,
   paths.register.email,
+  paths.register.checkEmail,
   paths.register.password,
   paths.register.securityCodes,
   paths.register.authenticatorApp,

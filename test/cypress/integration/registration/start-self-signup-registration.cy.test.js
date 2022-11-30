@@ -35,12 +35,24 @@ describe('Start self-signup registration', () => {
   })
 
   it('proceed to check email page if valid email address', () => {
+    const email = 'a@example.com'
+
+    cy.task('setupStubs', [
+      inviteStubs.createSelfSignupInviteSuccess(email)
+    ])
+
     cy.visit('/register/email-address')
 
     cy.title().should('eq', 'Enter your email address - GOV.UK Pay')
     cy.get('h1').should('contain', 'Enter your email address')
 
-    cy.get('#email').clear().type('b@example.com', { delay: 0 })
+    cy.get('#email').clear().type(email, { delay: 0 })
     cy.get('button').contains('Continue').click()
+
+    // Should redirect to 'check email' page
+    cy.title().should('eq', 'Check your email - GOV.UK Pay')
+    cy.get('h1').should('contain', 'Check your email')
+
+    cy.get('p').contains('An email has been sent to a@example.com').should('exist')
   })
 })

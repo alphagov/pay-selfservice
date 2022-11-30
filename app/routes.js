@@ -199,6 +199,7 @@ module.exports.bind = function (app) {
   // NEW REGISTRATION JOURNEY
   app.get(register.email, registrationController.showEmailPage)
   app.post(register.email, registrationController.submitEmailPage)
+  app.get(register.checkEmail, registrationController.showCheckEmailPage)
   app.get(register.password, inviteCookieIsPresent, registrationController.showPasswordPage)
   app.post(register.password, inviteCookieIsPresent, registrationController.submitPasswordPage)
   app.get(register.securityCodes, inviteCookieIsPresent, registrationController.showChooseSignInMethodPage)
