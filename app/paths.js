@@ -252,6 +252,7 @@ module.exports = {
     otpResend: '/create-service/resend-otp'
   },
   register: {
+    email: '/register/email-address',
     password: '/register/password',
     securityCodes: '/register/get-security-codes',
     authenticatorApp: '/register/authenticator-app',

@@ -2,17 +2,7 @@
 {% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
-  Enter your mobile phone number - GOV.UK Pay
-{% endblock %}
-
-{% block beforeContent %}
-  {{ super() }}
-  {{
-  govukBackLink({
-    text: "Back",
-    href: routes.register.securityCodes
-  })
-  }}
+  Enter your email address - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -21,7 +11,7 @@
     {{ errorSummary ({
       errors: errors,
       hrefs: {
-        'phone': '#phone'
+        'email': '#email'
       }
     }) }}
 
@@ -30,17 +20,20 @@
 
       {{ govukInput({
         label: {
-          text: "Enter your mobile phone number",
+          text: "Enter your email address",
           classes: "govuk-label--l",
           isPageHeading: true
         },
         hint: {
-          text: "We will send a 6 digit security code to the number you give us"
+          text: "Must be from a government organisation"
         },
-        id: "phone",
-        name: "phone",
-        errorMessage: { text: errors['phone'] } if errors['phone'] else false,
-        value: phoneNumber
+        id: "email",
+        name: "email",
+        type: "email",
+        autocomplete: "email",
+        spellcheck: false,
+        errorMessage: { text: errors['email'] } if errors['email'] else false,
+        value: email
       }) }}
 
       {{ govukButton({ text: "Continue" }) }}
