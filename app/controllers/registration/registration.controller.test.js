@@ -13,6 +13,7 @@ const inviteCode = 'a-code'
 let req, res, next
 
 const qrCodeDataUrl = 'data:image/png;base64,somedata'
+const qrToDataURLSpy = sinon.spy(() => Promise.resolve(qrCodeDataUrl))
 
 describe('Registration', () => {
   beforeEach(() => {
@@ -27,6 +28,7 @@ describe('Registration', () => {
       render: sinon.spy()
     }
     next = sinon.spy()
+    qrToDataURLSpy.resetHistory()
   })
 
   describe('submit the email page', () => {
@@ -307,12 +309,17 @@ describe('Registration', () => {
 
     it('should render the page when invite successfully retrieved from adminusers', async () => {
       const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
-      const invite = inviteFixtures.validInviteResponse({ otp_key: otpKey })
+      const invite = inviteFixtures.validInviteResponse({
+        otp_key: otpKey,
+        email: 'user@example.com'
+      })
+      const expectedQrUrl = `otpauth://totp/GOV.UK%20Pay:user%40example.com?secret=${otpKey}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
       const controller = getControllerWithMockedAdminusersClient({
         reprovisionOtp: () => Promise.resolve(invite)
       })
 
       await controller.showAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(qrToDataURLSpy, expectedQrUrl)
       sinon.assert.calledWith(res.render, 'registration/authenticator-app', {
         prettyPrintedSecret: 'ANEX AMPL ESEC RETS ECON DFAC TORC ODE1',
         qrCodeDataUrl,
@@ -884,6 +891,6 @@ describe('Registration', () => {
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {
   return proxyquire('./registration.controller.js', {
     '../../services/clients/adminusers.client': () => mockedAdminusersClient,
-    'qrcode': { toDataURL: () => Promise.resolve(qrCodeDataUrl) }
+    'qrcode': { toDataURL: qrToDataURLSpy }
   })
 }
