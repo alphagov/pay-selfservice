@@ -67,6 +67,14 @@ async function submitEmailPage (req, res, next) {
   }
 }
 
+function showCheckEmailPage (req, res) {
+  const requesterEmail = lodash.get(req, 'session.pageData.submitRegistration.email', '')
+  lodash.unset(req, 'session.pageData.submitRegistration')
+  res.render('registration/check-email', {
+    requesterEmail
+  })
+}
+
 async function showPasswordPage (req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
@@ -310,6 +318,7 @@ function showSuccessPage (req, res) {
 module.exports = {
   showEmailPage,
   submitEmailPage,
+  showCheckEmailPage,
   showPasswordPage,
   submitPasswordPage,
   showChooseSignInMethodPage,
