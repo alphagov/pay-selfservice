@@ -148,7 +148,7 @@ async function showAuthenticatorAppPage (req, res, next) {
     const secretKey = invite.otp_key
 
     const prettyPrintedSecret = secretKey.match(/.{4}/g).join(' ')
-    const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent('username')}?secret=${encodeURIComponent(secretKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
+    const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent(invite.email)}?secret=${encodeURIComponent(secretKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
     const qrCodeDataUrl = await qrcode.toDataURL(otpUrl)
 
     const recovered = sessionData.recovered || {}
