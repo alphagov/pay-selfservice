@@ -312,7 +312,7 @@ async function submitResendSecurityCodePage (req, res, next) {
 }
 
 function showSuccessPage (req, res) {
-  res.render('registration/success')
+  res.render('registration/success', { loggedIn: true })
 }
 
 module.exports = {

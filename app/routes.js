@@ -173,7 +173,8 @@ module.exports.bind = function (app) {
   app.get(
     registerUser.logUserIn,
     passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: user.logIn }),
-    userIsAuthorised, rootController.get)
+    userIsAuthorised,
+    rootController.get)
 
   // LOGIN
   app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
@@ -219,7 +220,9 @@ module.exports.bind = function (app) {
   app.get(
     register.success,
     passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: user.logIn }),
-    registrationController.showSuccessPage)
+    userIsAuthorised,
+    registrationController.showSuccessPage
+  )
 
   // ----------------------
   // AUTHENTICATED ROUTES

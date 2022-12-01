@@ -51,7 +51,7 @@
 {{ breadcrumbs(breadcrumbItems) }}
 
 {% if not hideServiceNav and not hideServiceHeader %}
-<div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
+<div class="govuk-phase-banner govuk-clearfix pay-top-navigation" data-cy="service-nav">
   <nav role="navigation" class="service-navigation" data-cy="account-sub-nav">
     <ul class="service-navigation--list">
       {% for item in serviceNavigationItems %}
