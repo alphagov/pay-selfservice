@@ -145,7 +145,6 @@ describe('Stripe task list', () => {
     })
   })
   describe('Calculate Stripe tasks completeness', () => {
-
     it('should return true if all tasks are completed', () => {
       const account = gatewayAccountFixtures.validGatewayAccount({
         gateway_account_credentials: [

@@ -1,6 +1,7 @@
 'use strict'
 
 const { Router } = require('express')
+const passport = require('passport')
 
 const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
@@ -169,7 +170,10 @@ module.exports.bind = function (app) {
   app.post(registerUser.otpVerify, registerController.submitOtpVerify)
   app.get(registerUser.reVerifyPhone, registerController.showReVerifyPhone)
   app.post(registerUser.reVerifyPhone, registerController.submitReVerifyPhone)
-  app.get(registerUser.logUserIn, loginController.loginAfterRegister, userIsAuthorised, rootController.get)
+  app.get(
+    registerUser.logUserIn,
+    passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: user.logIn }),
+    userIsAuthorised, rootController.get)
 
   // LOGIN
   app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
@@ -212,7 +216,10 @@ module.exports.bind = function (app) {
   app.post(register.smsCode, inviteCookieIsPresent, registrationController.submitSmsSecurityCodePage)
   app.get(register.resendCode, inviteCookieIsPresent, registrationController.showResendSecurityCodePage)
   app.post(register.resendCode, inviteCookieIsPresent, registrationController.submitResendSecurityCodePage)
-  app.get(register.success, inviteCookieIsPresent, loginController.loginAfterRegister, userIsAuthorised, registrationController.showSuccessPage)
+  app.get(
+    register.success,
+    passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: user.logIn }),
+    registrationController.showSuccessPage)
 
   // ----------------------
   // AUTHENTICATED ROUTES

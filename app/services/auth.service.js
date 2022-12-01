@@ -26,7 +26,7 @@ module.exports = {
   serializeUser,
   localStrategyAuth,
   localStrategy2Fa,
-  localDirectStrategy,
+  localStrategyLoginDirectAfterRegistration,
   noAccess,
   setSessionVersion,
   redirectLoggedInUser
@@ -90,19 +90,23 @@ async function localStrategy2Fa (req, done) {
   }
 }
 
-function localDirectStrategy (req, done) {
-  return userService.findByExternalId(req[INVITE_SESSION_COOKIE_NAME].userExternalId)
-    .then((user) => {
-      lodash.set(req, 'gateway_account.currentGatewayAccountId', lodash.get(user, 'serviceRoles[0].service.gatewayAccountIds[0]'))
-      req.session.secondFactor = 'totp'
-      setSessionVersion(req)
-      req[INVITE_SESSION_COOKIE_NAME].destroy()
-      done(null, user)
-    })
-    .catch(() => {
-      req[INVITE_SESSION_COOKIE_NAME].destroy()
-      done(null, false)
-    })
+async function localStrategyLoginDirectAfterRegistration (req, done) {
+  const registrationSession = req[INVITE_SESSION_COOKIE_NAME]
+  try {
+    if (!(registrationSession && registrationSession.userExternalId)) {
+      return done(null, false)
+    }
+
+    const user = await userService.findByExternalId(registrationSession.userExternalId)
+    lodash.set(req, 'gateway_account.currentGatewayAccountId', lodash.get(user, 'serviceRoles[0].service.gatewayAccountIds[0]'))
+    req.session.secondFactor = 'totp'
+    setSessionVersion(req)
+    registrationSession.destroy()
+    done(null, user)
+  } catch (err) {
+    registrationSession.destroy()
+    done(null, false)
+  }
 }
 
 function setSessionVersion (req) {
@@ -134,7 +138,7 @@ function initialise (app) {
   app.use(passport.session())
   passport.use('local', new LocalStrategy({ usernameField: 'username', passReqToCallback: true }, localStrategyAuth))
   passport.use('local2Fa', new CustomStrategy(localStrategy2Fa))
-  passport.use('localDirect', new CustomStrategy(localDirectStrategy))
+  passport.use('localStrategyLoginDirectAfterRegistration', new CustomStrategy(localStrategyLoginDirectAfterRegistration))
   passport.serializeUser(serializeUser)
   passport.deserializeUser(deserializeUser)
   app.use(addUserFieldsToLogContext)

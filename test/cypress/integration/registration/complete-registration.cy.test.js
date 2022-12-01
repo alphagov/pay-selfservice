@@ -260,4 +260,29 @@ describe('Complete registration after following link in invite email', () => {
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
     })
   })
+
+  describe('The success page is visited when the registration cookie is not present', () => {
+    describe('There is a logged in user', () => {
+      it('should redirect to the my services page', () => {
+        const userExternalId = 'a-user-id'
+        cy.task('setupStubs', [
+          userStubs.getUserSuccess({ userExternalId, gatewayAccountId: '1' }),
+          gatewayAccountStubs.getGatewayAccountsSuccess({
+            gatewayAccountId: '1'
+          })
+        ])
+        cy.setEncryptedCookies(userExternalId)
+
+        cy.visit('/register/success')
+        cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      })
+    })
+
+    describe('There is no logged in user', () => {
+      it('should redirect to the login page', () => {
+        cy.visit('/register/success')
+        cy.title().should('eq', 'Sign in to GOV.UK Pay')
+      })
+    })
+  })
 })
