@@ -172,7 +172,7 @@ module.exports.bind = function (app) {
   app.post(registerUser.reVerifyPhone, registerController.submitReVerifyPhone)
   app.get(
     registerUser.logUserIn,
-    passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: '/login' }),
+    passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: user.logIn }),
     userIsAuthorised, rootController.get)
 
   // LOGIN
@@ -218,7 +218,7 @@ module.exports.bind = function (app) {
   app.post(register.resendCode, inviteCookieIsPresent, registrationController.submitResendSecurityCodePage)
   app.get(
     register.success,
-    passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: '/login' }),
+    passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: user.logIn }),
     registrationController.showSuccessPage)
 
   // ----------------------
