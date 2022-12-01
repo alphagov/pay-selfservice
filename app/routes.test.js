@@ -37,8 +37,7 @@ const pathsNotRequiringAuthentication = [
   paths.register.authenticatorApp,
   paths.register.phoneNumber,
   paths.register.smsCode,
-  paths.register.resendCode,
-  paths.register.success
+  paths.register.resendCode
 ]
 
 describe('The Express router', () => {

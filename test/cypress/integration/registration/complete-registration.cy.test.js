@@ -174,6 +174,10 @@ describe('Complete registration after following link in invite email', () => {
 
       // should show the success page
       cy.title().should('eq', 'You’ve created your account - GOV.UK Pay')
+      cy.get('nav').contains('Sign out').should('exist')
+      cy.get('[data-cy=breadcrumbs]').should('not.exist')
+      cy.get('[data-cy=service-nav').should('not.exist')
+
       cy.get('a[role=button]').contains('Continue').click()
 
       // should redirect to my services page
