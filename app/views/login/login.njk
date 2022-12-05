@@ -17,7 +17,7 @@ Sign in to GOV.UK Pay
 
   <h1 class="govuk-heading-l page-title">Sign in</h1>
 
-  <p class="govuk-body">If you do not have an account, you can <a href="{{ routes.selfCreateService.register }}" class="register-link govuk-link">create one now</a>.</p>
+  <p class="govuk-body">If you do not have an account, you can <a href="{{ routes.register.email }}" class="register-link govuk-link">create one now</a>.</p>
 
   <form action="/login" method="post" name="userLoginForm">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
