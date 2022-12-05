@@ -27,10 +27,6 @@ describe('Complete registration after following link in invite email', () => {
       // visit the invite link to get the register_invite cookie set
       cy.visit(`/invites/${inviteCode}`)
 
-      // TODO: when the journey is hooked up, the previous route should redirect to the set password page but for now
-      // we need to manually visit to start the new journey
-      cy.visit('/register/password')
-
       cy.title().should('eq', 'Create your password - GOV.UK Pay')
       cy.get('h1').should('contain', 'Create your password')
 
@@ -206,10 +202,6 @@ describe('Complete registration after following link in invite email', () => {
 
       // visit the invite link to get the register_invite cookie set
       cy.visit(`/invites/${inviteCode}`)
-
-      // TODO: when the journey is hooked up, the previous route should redirect to the set password page but for now
-      // we need to manually visit to start the new journey
-      cy.visit('/register/password')
 
       cy.title().should('eq', 'Create your password - GOV.UK Pay')
       cy.get('h1').should('contain', 'Create your password')

@@ -1,63 +1,127 @@
 'use strict'
 
-const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const { NotFoundError, ExpiredInviteError, RESTClientError } = require('../errors')
+const paths = require('../paths')
+const inviteFixtures = require('../../test/fixtures/invite.fixtures')
 
-describe('Error handler', function () {
+describe('Invite validation controller', function () {
   let req, res, next
+
+  const code = 'ndjkadh3182wdoq'
 
   beforeEach(() => {
     req = {
       params: {
-        code: 'ndjkadh3182wdoq'
+        code
       }
     }
 
     res = {
-      setHeader: sinon.spy(),
-      status: sinon.spy(),
-      render: sinon.spy()
+      redirect: sinon.spy()
     }
     next = sinon.spy()
   })
 
-  const controller = function (errorCode) {
-    return proxyquire(path.join(__dirname, './invite-validation.controller.js'),
-      {
-        '../services/validate-invite.service': {
-          getValidatedInvite: () => {
-            /* eslint-disable prefer-promise-reject-errors */
-            return new Promise(function (resolve, reject) {
-              reject({ errorCode: errorCode })
-            })
-            /* eslint-enable prefer-promise-reject-errors */
-          }
-        }
-      })
-  }
+  it('should redirect to /register/password if user does not exist', async () => {
+    const invite = inviteFixtures.validInviteResponse({ user_exist: false })
+
+    const getValidatedInviteSpy = sinon.spy(() => Promise.resolve(invite))
+    const controller = getControllerWithMockedAdminusersClient({
+      getValidatedInvite: getValidatedInviteSpy
+    })
+
+    await controller.validateInvite(req, res, next)
+
+    sinon.assert.calledWith(getValidatedInviteSpy, code)
+    sinon.assert.calledWith(res.redirect, paths.register.password)
+    sinon.assert.notCalled(next)
+  })
+
+  it('should redirect to /subscribe if user exists and invite has type "user"', async () => {
+    const invite = inviteFixtures.validInviteResponse({
+      user_exist: true,
+      type: 'user'
+    })
+
+    const getValidatedInviteSpy = sinon.spy(() => Promise.resolve(invite))
+    const controller = getControllerWithMockedAdminusersClient({
+      getValidatedInvite: getValidatedInviteSpy
+    })
+
+    await controller.validateInvite(req, res, next)
+
+    sinon.assert.calledWith(getValidatedInviteSpy, code)
+    sinon.assert.calledWith(res.redirect, paths.registerUser.subscribeService)
+    sinon.assert.notCalled(next)
+  })
+
+  it('should redirect to /my-services if user exists and invite has type "service"', async () => {
+    const invite = inviteFixtures.validInviteResponse({
+      user_exist: true,
+      type: 'service'
+    })
+
+    const getValidatedInviteSpy = sinon.spy(() => Promise.resolve(invite))
+    const controller = getControllerWithMockedAdminusersClient({
+      getValidatedInvite: getValidatedInviteSpy
+    })
+
+    await controller.validateInvite(req, res, next)
+
+    sinon.assert.calledWith(getValidatedInviteSpy, code)
+    sinon.assert.calledWith(res.redirect, paths.serviceSwitcher.index)
+    sinon.assert.notCalled(next)
+  })
 
   it('should handle 404 as unable to process registration at this time', async () => {
-    const errorCode = 404
+    const error = new RESTClientError('Error', 'adminusers', 404)
+    const getValidatedInviteSpy = sinon.spy(() => Promise.reject(error))
+    const controller = getControllerWithMockedAdminusersClient({
+      getValidatedInvite: getValidatedInviteSpy
+    })
 
-    await controller(errorCode).validateInvite(req, res, next)
-    sinon.assert.calledWith(res.status, errorCode)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'There has been a problem proceeding with this registration. Please try again.' }))
+    await controller.validateInvite(req, res, next)
+
+    sinon.assert.calledWith(getValidatedInviteSpy, code)
+    sinon.assert.calledWith(next, sinon.match.instanceOf(NotFoundError)
+      .and(sinon.match.has('message', `Attempted to follow an invite link for invite code ${code}, which was not found`)))
+    sinon.assert.notCalled(res.redirect)
   })
 
   it('should handle 410 as this invitation link has expired', async () => {
-    const errorCode = 410
+    const error = new RESTClientError('Error', 'adminusers', 410)
+    const getValidatedInviteSpy = sinon.spy(() => Promise.reject(error))
+    const controller = getControllerWithMockedAdminusersClient({
+      getValidatedInvite: getValidatedInviteSpy
+    })
 
-    await controller(errorCode).validateInvite(req, res, next)
-    sinon.assert.calledWith(res.status, errorCode)
-    sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'This invitation is no longer valid' }))
+    await controller.validateInvite(req, res, next)
+
+    sinon.assert.calledWith(getValidatedInviteSpy, code)
+    sinon.assert.calledWith(next, sinon.match.instanceOf(ExpiredInviteError)
+      .and(sinon.match.has('message', `Invite with code ${code} has expired`)))
+    sinon.assert.notCalled(res.redirect)
   })
 
   it('should handle unexpected error by calling next', async () => {
-    const errorCode = undefined
+    const error = new RESTClientError('Error', 'adminusers', undefined)
+    const getValidatedInviteSpy = sinon.spy(() => Promise.reject(error))
+    const controller = getControllerWithMockedAdminusersClient({
+      getValidatedInvite: getValidatedInviteSpy
+    })
 
-    await controller(errorCode).validateInvite(req, res, next)
-    sinon.assert.notCalled(res.render)
-    sinon.assert.called(next)
+    await controller.validateInvite(req, res, next)
+
+    sinon.assert.calledWith(getValidatedInviteSpy, code)
+    sinon.assert.notCalled(res.redirect)
+    sinon.assert.calledWith(next, error)
   })
 })
+
+function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {
+  return proxyquire('./invite-validation.controller.js', {
+    '../services/clients/adminusers.client': () => mockedAdminusersClient
+  })
+}
