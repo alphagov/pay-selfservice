@@ -3,7 +3,7 @@ const { response } = require('../utils/response.js')
 const userService = require('../services/user.service.js')
 const paths = require('../paths.js')
 const rolesModule = require('../utils/roles')
-const emailValidator = require('../utils/email-tools.js')
+const { isValidEmail } = require('../utils/email-tools.js')
 
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
@@ -55,7 +55,7 @@ async function invite (req, res, next) {
 
   const role = rolesModule.getRoleByExtId(roleId)
 
-  if (!emailValidator(invitee)) {
+  if (!isValidEmail(invitee)) {
     req.flash('genericError', 'Enter a valid email address')
     lodash.set(req, 'session.pageData', { invitee })
     res.redirect(303, formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId))
