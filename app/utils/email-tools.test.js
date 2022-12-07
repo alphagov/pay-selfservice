@@ -1,8 +1,25 @@
 const { expect } = require('chai')
 
-const { isInternalGDSEmail } = require('./email-tools')
+const { isValidEmail, isInternalGDSEmail } = require('./email-tools')
 
 describe('Email tools', () => {
+  describe('isValidEmail', () => {
+    it('should return false for an invalid email', () => {
+      const result = isValidEmail('abc')
+      expect(result).to.equal(false)
+    })
+
+    it('should return false for email with invalid domain', () => {
+      const result = isValidEmail('abc@example')
+      expect(result).to.equal(false)
+    })
+
+    it('should return true for a valid email', () => {
+      const result = isValidEmail('abc@example.com')
+      expect(result).to.equal(true)
+    })
+  })
+
   describe('isInternalGDSEmail', () => {
     beforeEach(() => {
       process.env.GDS_INTERNAL_USER_EMAIL_DOMAIN = '@example.org'
