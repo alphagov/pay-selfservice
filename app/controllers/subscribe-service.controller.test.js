@@ -47,9 +47,9 @@ describe('Subscribe service controller', () => {
   describe('Subscribe service', () => {
     function getController (mockCompleteInvite) {
       return proxyquire('./subscribe-service.controller', {
-        '../services/user-registration.service': {
+        '../services/clients/adminusers.client': () => ({
           completeInvite: mockCompleteInvite
-        }
+        })
       })
     }
 
