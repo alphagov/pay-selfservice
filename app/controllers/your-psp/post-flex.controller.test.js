@@ -75,6 +75,19 @@ describe('Post 3DS Flex controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
+  it('should redirect to the `switch psp` index page when on the `switch psp` route', async () => {
+    req.account = getGatewayAcountWithType('live')
+    req.url = `/switch-psp/${credentialId}/flex`
+
+    const controller = getControllerWithMocks()
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2)
+    sinon.assert.calledWith(req.flash, 'generic', 'Your Worldpay 3DS Flex settings have been updated')
+    sinon.assert.calledWith(res.redirect, `/account/${gatewayAccountExternalId}/switch-psp`)
+  })
+
   function getControllerWithMocks () {
     return proxyquire('./post-flex.controller', {
       '../../services/clients/connector.client': {
