@@ -1,20 +1,14 @@
 'use strict'
 
 const logger = require('../utils/logger')(__filename)
-const { renderErrorView } = require('../utils/response')
 const adminusersClient = require('../services/clients/adminusers.client')()
 const paths = require('../paths')
-const { RegistrationSessionMissingError } = require('../errors')
 const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
 const { SMS } = require('../models/second-factor-method')
-
-const EXPIRED_ERROR_MESSAGE = 'This invitation is no longer valid'
+const { ExpiredInviteError } = require('../errors')
 
 const subscribeService = async function subscribeService (req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
-  if (!sessionData || !sessionData.code || !sessionData.email) {
-    return next(new RegistrationSessionMissingError())
-  }
 
   const inviteCode = sessionData.code
 
@@ -31,7 +25,7 @@ const subscribeService = async function subscribeService (req, res, next) {
     return res.redirect(303, paths.serviceSwitcher.index)
   } catch (err) {
     if (err.errorCode === 410) {
-      renderErrorView(req, res, EXPIRED_ERROR_MESSAGE, 410)
+      return next(new ExpiredInviteError(`Invite with code ${sessionData.code} has expired`))
     } else {
       next(err)
     }
