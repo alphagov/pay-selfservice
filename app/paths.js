@@ -235,10 +235,8 @@ module.exports = {
     create: '/my-services/create',
     removeNotification: '/my-services/remove-notification'
   },
-  inviteValidation: {
-    validateInvite: '/invites/:code'
-  },
-  registerUser: {
+  invite: {
+    validateInvite: '/invites/:code',
     subscribeService: '/subscribe'
   },
   register: {
