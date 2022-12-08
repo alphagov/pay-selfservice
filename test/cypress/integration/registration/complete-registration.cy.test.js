@@ -24,7 +24,6 @@ describe('Complete registration after following link in invite email', () => {
         })
       ])
 
-      // visit the invite link to get the register_invite cookie set
       cy.visit(`/invites/${inviteCode}`)
 
       cy.title().should('eq', 'Create your password - GOV.UK Pay')
@@ -200,7 +199,6 @@ describe('Complete registration after following link in invite email', () => {
         })
       ])
 
-      // visit the invite link to get the register_invite cookie set
       cy.visit(`/invites/${inviteCode}`)
 
       cy.title().should('eq', 'Create your password - GOV.UK Pay')
