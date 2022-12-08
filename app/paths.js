@@ -239,17 +239,7 @@ module.exports = {
     validateInvite: '/invites/:code'
   },
   registerUser: {
-    registration: '/register',
-    subscribeService: '/subscribe',
-    otpVerify: '/verify-otp',
-    reVerifyPhone: '/re-verify-phone',
-    logUserIn: '/proceed-to-login'
-  },
-  selfCreateService: {
-    register: '/create-service/register',
-    confirm: '/create-service/confirm',
-    otpVerify: '/create-service/verify-otp',
-    otpResend: '/create-service/resend-otp'
+    subscribeService: '/subscribe'
   },
   register: {
     email: '/register/email-address',

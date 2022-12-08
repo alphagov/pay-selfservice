@@ -12,7 +12,6 @@ const chaiAsPromised = require('chai-as-promised')
 
 require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
-const userFixtures = require('../fixtures/user.fixtures')
 const { buildGetStripeAccountSetupResponse } = require('../fixtures/stripe-account-setup.fixtures')
 const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
@@ -29,7 +28,6 @@ const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const ACCOUNT_ID = '182364'
 const ACCOUNT_EXTERNAL_ID = 'an-external-id'
 const USER_RESOURCE = '/v1/api/users'
-const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts'
 
 const user = mockSession.getUser()
 user.serviceRoles[0].service.gatewayAccountIds = [ACCOUNT_ID]
@@ -322,66 +320,6 @@ describe('otp send again post endpoint', function () {
       .expect(res => {
         expect(res.status).to.equal(400)
         expect(res.body.message).to.equal('There is a problem with the payments platform. Please contact the support team')
-      })
-      .end(done)
-  })
-})
-
-describe('direct login after user registration', function () {
-  it('should redirect user to homepage on a successful registration', function (done) {
-    const userExternalId = 'an-externalid'
-    const email = 'bob@example.com'
-    const gatewayAccountId = '2'
-
-    const userResponse = userFixtures.validUserResponse({
-      external_id: userExternalId,
-      username: email,
-      email: email,
-      service_roles: [{
-        service: {
-          gateway_account_ids: [gatewayAccountId]
-        }
-      }]
-    })
-
-    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
-      .reply(200, userResponse)
-
-    const connectorMock = nock(process.env.CONNECTOR_URL)
-    const ledgerMock = nock(process.env.LEDGER_URL)
-
-    connectorMock.get(`${CONNECTOR_ACCOUNT_PATH}/${gatewayAccountId}`)
-      .reply(200, { foo: 'bar', gateway_account_id: gatewayAccountId })
-
-    ledgerMock
-      .get('/v1/report/transactions-summary')
-      .query(() => true)
-      .reply(200, {
-        payments: {
-          count: 0,
-          gross_amount: 0
-        },
-        refunds: {
-          count: 0,
-          gross_amount: 0
-        },
-        net_income: 0
-      })
-
-    const destroyStub = sinon.stub()
-    const gatewayAccountData = {
-      userExternalId: userExternalId,
-      destroy: destroyStub
-    }
-
-    const app2 = mockSession.getAppWithRegisterInvitesCookie(getApp(), gatewayAccountData)
-
-    request(app2)
-      .get(paths.registerUser.logUserIn)
-      .set('Accept', 'application/json')
-      .expect(302)
-      .expect((res) => {
-        expect(destroyStub.called).to.equal(true)
       })
       .end(done)
   })

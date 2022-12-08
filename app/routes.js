@@ -44,11 +44,10 @@ const editServiceNameController = require('./controllers/edit-service-name/edit-
 const serviceUsersController = require('./controllers/service-users.controller')
 const organisationDetailsController = require('./controllers/organisation-details.controller')
 const inviteUserController = require('./controllers/invite-user.controller')
-const registerController = require('./controllers/register-user.controller')
+const registerController = require('./controllers/subscribe-service.controller')
 const serviceRolesUpdateController = require('./controllers/service-roles-update.controller')
 const toggleMotoMaskCardNumber = require('./controllers/toggle-moto-mask-card-number')
 const toggleMotoMaskSecurityCode = require('./controllers/toggle-moto-mask-security-code')
-const selfCreateServiceController = require('./controllers/register-service.controller')
 const createServiceController = require('./controllers/create-service/create-service.controller')
 const inviteValidationController = require('./controllers/invite-validation.controller')
 const testWithYourUsersController = require('./controllers/test-with-your-users')
@@ -97,7 +96,6 @@ const {
   payouts,
   registerUser,
   register,
-  selfCreateService,
   serviceSwitcher,
   staticPaths,
   user
@@ -163,19 +161,6 @@ module.exports.bind = function (app) {
   // VALIDATE INVITE
   app.get(inviteValidation.validateInvite, inviteValidationController.validateInvite)
 
-  // REGISTER USER
-  app.get(registerUser.registration, registerController.showRegistration)
-  app.post(registerUser.registration, registerController.submitRegistration)
-  app.get(registerUser.otpVerify, registerController.showOtpVerify)
-  app.post(registerUser.otpVerify, registerController.submitOtpVerify)
-  app.get(registerUser.reVerifyPhone, registerController.showReVerifyPhone)
-  app.post(registerUser.reVerifyPhone, registerController.submitReVerifyPhone)
-  app.get(
-    registerUser.logUserIn,
-    passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: user.logIn }),
-    userIsAuthorised,
-    rootController.get)
-
   // LOGIN
   app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
   app.post(user.logIn, trimUsername, loginController.loginUser, loginController.postLogin)
@@ -192,16 +177,8 @@ module.exports.bind = function (app) {
   app.get(user.passwordRequested, forgotPasswordController.passwordRequested)
   app.get(user.forgottenPasswordReset, forgotPasswordController.newPasswordGet)
   app.post(user.forgottenPasswordReset, forgotPasswordController.newPasswordPost)
-  // SELF CREATE SERVICE
-  app.get(selfCreateService.register, selfCreateServiceController.showRegistration)
-  app.post(selfCreateService.register, trimUsername, selfCreateServiceController.submitRegistration)
-  app.get(selfCreateService.confirm, selfCreateServiceController.showConfirmation)
-  app.get(selfCreateService.otpVerify, selfCreateServiceController.showOtpVerify)
-  app.post(selfCreateService.otpVerify, selfCreateServiceController.submitOtpCode)
-  app.get(selfCreateService.otpResend, selfCreateServiceController.showOtpResend)
-  app.post(selfCreateService.otpResend, selfCreateServiceController.submitOtpResend)
 
-  // NEW REGISTRATION JOURNEY
+  // REGISTRATION
   app.get(register.email, registrationController.showEmailPage)
   app.post(register.email, registrationController.submitEmailPage)
   app.get(register.checkEmail, registrationController.showCheckEmailPage)
