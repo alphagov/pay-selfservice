@@ -106,6 +106,7 @@ module.exports = {
     },
     switchPSP: {
       index: '/switch-psp',
+      flex: '/switch-psp/:credentialId/flex',
       credentialsWithGatewayCheck: '/switch-psp/:credentialId/credentials-with-gateway-check',
       verifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration',
       receiveVerifyPSPIntegrationPayment: '/switch-psp/verify-psp-integration/callback',

@@ -12,7 +12,7 @@ describe('Post 3DS Flex controller', () => {
   let res
   let next
   let postCheckWorldpay3dsFlexCredentials
-  let post3dsFlexAccountCredentials 
+  let post3dsFlexAccountCredentials
   let updateIntegrationVersion3dsMock
   let renderErrorViewMock
 
@@ -54,7 +54,7 @@ describe('Post 3DS Flex controller', () => {
 
   it('should NOT set 3DS integration version to 2 for TEST account', async () => {
     req.account = getGatewayAcountWithType('test')
-    
+
     const controller = getControllerWithMocks()
 
     await controller(req, res, next)
@@ -75,6 +75,19 @@ describe('Post 3DS Flex controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
+  it('should redirect to the `switch psp` index page when on the `switch psp` route', async () => {
+    req.account = getGatewayAcountWithType('live')
+    req.url = `/switch-psp/${credentialId}/flex`
+
+    const controller = getControllerWithMocks()
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2)
+    sinon.assert.calledWith(req.flash, 'generic', 'Your Worldpay 3DS Flex settings have been updated')
+    sinon.assert.calledWith(res.redirect, `/account/${gatewayAccountExternalId}/switch-psp`)
+  })
+
   function getControllerWithMocks () {
     return proxyquire('./post-flex.controller', {
       '../../services/clients/connector.client': {
@@ -90,7 +103,7 @@ describe('Post 3DS Flex controller', () => {
     })
   }
 
-  function getGatewayAcountWithType(accountType) {
+  function getGatewayAcountWithType (accountType) {
     return gatewayAccountFixtures.validGatewayAccount({
       gateway_account_id: '1',
       type: accountType,

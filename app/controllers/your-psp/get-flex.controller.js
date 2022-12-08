@@ -2,6 +2,7 @@
 
 const lodash = require('lodash')
 const { getCredentialByExternalId } = require('../../utils/credentials')
+const { isSwitchingCredentialsRoute } = require('../../utils/credentials')
 
 const { response } = require('../../utils/response')
 
@@ -9,6 +10,7 @@ module.exports = (req, res, next) => {
   const { change } = req.query || {}
 
   try {
+    const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
     const isFlexConfigured = req.account.worldpay_3ds_flex &&
       req.account.worldpay_3ds_flex.organisational_unit_id !== undefined &&
@@ -35,7 +37,7 @@ module.exports = (req, res, next) => {
       }
     }
 
-    return response(req, res, 'your-psp/flex', { errors, change, isFlexConfigured, orgUnitId, issuer, credential })
+    return response(req, res, 'your-psp/flex', { errors, change, isFlexConfigured, orgUnitId, issuer, credential, isSwitchingCredentials })
   } catch (error) {
     next(error)
   }

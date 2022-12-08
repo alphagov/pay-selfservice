@@ -9,6 +9,7 @@ const { ConnectorClient } = require('../../services/clients/connector.client')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
 const { getCredentialByExternalId } = require('../../utils/credentials')
+const { isSwitchingCredentialsRoute } = require('../../utils/credentials')
 
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 // Constants
@@ -18,6 +19,7 @@ const JWT_MAC_KEY_FIELD = 'jwt-mac-key'
 const INTEGRATION_VERSION_3DS = 2
 
 module.exports = async function submit3dsFlexCredentials (req, res, next) {
+  const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const accountId = req.account.gateway_account_id
   const orgUnitId = lodash.get(req.body, ORGANISATIONAL_UNIT_ID_FIELD, '').trim()
   const issuer = lodash.get(req.body, ISSUER_FIELD, '').trim()
@@ -26,7 +28,8 @@ module.exports = async function submit3dsFlexCredentials (req, res, next) {
   try {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
     const flexUrl = formatAccountPathsFor(paths.account.yourPsp.flex, req.account.external_id, credential.external_id)
-    const indexUrl = formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id)
+    const indexPath = isSwitchingCredentials ? paths.account.switchPSP.index : paths.account.yourPsp.index
+    const indexUrl = formatAccountPathsFor(indexPath, req.account.external_id, credential.external_id)
 
     const errors = validate3dsFlexCredentials(orgUnitId, issuer, jwtMacKey)
 
@@ -69,9 +72,9 @@ module.exports = async function submit3dsFlexCredentials (req, res, next) {
     }
 
     await connector.post3dsFlexAccountCredentials(flexParams)
-    
-    if (req.account.type === 'live'){
-      await connector.updateIntegrationVersion3ds(accountId, INTEGRATION_VERSION_3DS)      
+
+    if (req.account.type === 'live') {
+      await connector.updateIntegrationVersion3ds(accountId, INTEGRATION_VERSION_3DS)
     }
 
     req.flash('generic', 'Your Worldpay 3DS Flex settings have been updated')

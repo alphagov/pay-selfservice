@@ -12,8 +12,16 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+    {% if isSwitchingCredentials %}
+      {{ govukBackLink({
+        text: "Back to Switching payment service provider (PSP)",
+        classes: "govuk-!-margin-top-0",
+        href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+      }) }}
+    {% endif %}
+
     <h1 class="govuk-heading-l">Your Worldpay 3DS Flex credentials</h1>
-    <form method="post" action="{{ formatAccountPathsFor(routes.account.yourPsp.flex, currentGatewayAccount.external_id, credential.external_id) }}">
+    <form method="post">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
         {% if errors %}
           {% set errorList = [] %}
