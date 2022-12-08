@@ -36,7 +36,12 @@
         value: email
       }) }}
 
-      {{ govukButton({ text: "Continue" }) }}
+      {{ govukButton({
+        text: "Continue",
+        attributes: {
+          id: "continue"
+        }
+      }) }}
     </form>
   </div>
 {% endblock %}
