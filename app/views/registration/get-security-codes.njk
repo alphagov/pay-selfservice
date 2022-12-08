@@ -54,7 +54,12 @@
 
       {% include "../two-factor-auth/_authenticator-app-details.njk" %}
 
-      {{ govukButton({ text: "Continue" }) }}
+      {{ govukButton({
+        text: "Continue",
+        attributes: {
+          id: "continue"
+        }
+      }) }}
     </form>
   </div>
 {% endblock %}
