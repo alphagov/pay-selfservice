@@ -364,35 +364,6 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
-  /**
-   * Generate OTP code for an invite
-   *
-   * @param inviteCode
-   * @param telephoneNumber
-   * @param password
-   * @returns {*|Constructor}
-   */
-  function generateInviteOtpCode (inviteCode, telephoneNumber, password) {
-    let postData = {
-      baseUrl,
-      url: `/v1/api/invites/${inviteCode}/otp/generate`,
-      json: true,
-      description: 'generate otp code for invite',
-      service: SERVICE_NAME
-    }
-
-    if (telephoneNumber || password) {
-      postData.body = {
-        telephone_number: telephoneNumber,
-        password: password
-      }
-    }
-
-    return baseClient.post(
-      postData
-    )
-  }
-
   function sendOtp (inviteCode) {
     return baseClient.post(
       {
@@ -452,46 +423,6 @@ module.exports = function (clientOptions = {}) {
           otp: securityCode
         },
         description: 'submit invite otp code',
-        service: SERVICE_NAME
-      }
-    )
-  }
-
-  function resendOtpCode (code, phoneNumber) {
-    return baseClient.post(
-      {
-        baseUrl,
-        url: `/v1/api/invites/otp/resend`,
-        json: true,
-        body: {
-          code: code,
-          telephone_number: phoneNumber
-        },
-        description: 'resend otp code',
-        service: SERVICE_NAME
-      }
-    )
-  }
-
-  /**
-   * Submit service registration details
-   *
-   * @param email
-   * @param phoneNumber
-   * @param password
-   */
-  function submitServiceRegistration (email, phoneNumber, password) {
-    return baseClient.post(
-      {
-        baseUrl,
-        url: `/v1/api/invites/service`,
-        json: true,
-        body: {
-          email: email,
-          telephone_number: phoneNumber,
-          password: password
-        },
-        description: 'submit service registration details',
         service: SERVICE_NAME
       }
     )
@@ -824,7 +755,6 @@ module.exports = function (clientOptions = {}) {
     updatePasswordForUser,
     sendSecondFactor,
     authenticateSecondFactor,
-    resendOtpCode,
     deleteUser,
     provisionNewOtpKey,
     configureNewOtpKey,
@@ -843,11 +773,9 @@ module.exports = function (clientOptions = {}) {
     getValidatedInvite,
     updateInvitePassword,
     updateInvitePhoneNumber,
-    generateInviteOtpCode,
     sendOtp,
     reprovisionOtp,
     completeInvite,
-    submitServiceRegistration,
 
     // Service-related Methods
     createService,
