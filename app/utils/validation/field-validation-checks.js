@@ -1,6 +1,6 @@
 'use strict'
 
-const emailValidator = require('../email-tools.js')
+const { isValidEmail } = require('../email-tools.js')
 
 // Constants
 const MAX_AMOUNT = 100000
@@ -52,7 +52,7 @@ exports.isCurrency = function (value) {
 }
 
 exports.isValidEmail = function (value) {
-  if (!emailValidator(value)) {
+  if (!isValidEmail(value)) {
     return validationErrors.validEmail
   } else {
     return false

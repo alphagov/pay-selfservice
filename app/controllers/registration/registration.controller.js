@@ -3,6 +3,7 @@
 const qrcode = require('qrcode')
 const lodash = require('lodash')
 
+const logger = require('../../utils/logger')(__filename)
 const { RESTClientError, ExpiredInviteError } = require('../../errors')
 const adminusersClient = require('../../services/clients/adminusers.client')()
 const paths = require('../../paths')
@@ -181,6 +182,7 @@ async function submitAuthenticatorAppPage (req, res, next) {
     const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code, APP)
     // set user external ID on the session so the user is logged in upon redirect
     sessionData.userExternalId = completeInviteResponse.user_external_id
+    logRegistrationCompleted(APP)
     return res.redirect(paths.register.success)
   } catch (err) {
     if (err instanceof RESTClientError) {
@@ -262,6 +264,7 @@ async function submitSmsSecurityCodePage (req, res, next) {
     const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code, SMS)
     // set user external ID on the session so the user is logged in upon redirect
     sessionData.userExternalId = completeInviteResponse.user_external_id
+    logRegistrationCompleted(SMS)
     return res.redirect(paths.register.success)
   } catch (err) {
     if (err instanceof RESTClientError) {
@@ -313,6 +316,12 @@ async function submitResendSecurityCodePage (req, res, next) {
 
 function showSuccessPage (req, res) {
   res.render('registration/success', { loggedIn: true })
+}
+
+function logRegistrationCompleted (secondFactorMethod) {
+  logger.info('User completed registration', {
+    'second_factor_method': secondFactorMethod
+  })
 }
 
 module.exports = {
