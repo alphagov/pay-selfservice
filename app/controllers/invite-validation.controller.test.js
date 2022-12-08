@@ -53,7 +53,7 @@ describe('Invite validation controller', function () {
     await controller.validateInvite(req, res, next)
 
     sinon.assert.calledWith(getValidatedInviteSpy, code)
-    sinon.assert.calledWith(res.redirect, paths.registerUser.subscribeService)
+    sinon.assert.calledWith(res.redirect, paths.invite.subscribeService)
     sinon.assert.notCalled(next)
   })
 

@@ -2,7 +2,7 @@
 
 const logger = require('../utils/logger')(__filename)
 const { renderErrorView } = require('../utils/response')
-const registrationService = require('../services/user-registration.service')
+const adminusersClient = require('../services/clients/adminusers.client')()
 const paths = require('../paths')
 const { RegistrationSessionMissingError } = require('../errors')
 const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
@@ -26,7 +26,7 @@ const subscribeService = async function subscribeService (req, res, next) {
   }
 
   try {
-    const completeResponse = await registrationService.completeInvite(inviteCode, SMS)
+    const completeResponse = await adminusersClient.completeInvite(inviteCode, SMS)
     req.flash('inviteSuccessServiceId', completeResponse.service_external_id)
     return res.redirect(303, paths.serviceSwitcher.index)
   } catch (err) {

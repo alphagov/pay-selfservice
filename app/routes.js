@@ -91,10 +91,9 @@ const registrationController = require('./controllers/registration/registration.
 const {
   allServiceTransactions,
   index,
-  inviteValidation,
+  invite,
   policyPage,
   payouts,
-  registerUser,
   register,
   serviceSwitcher,
   staticPaths,
@@ -159,7 +158,7 @@ module.exports.bind = function (app) {
   app.all(staticPaths.naxsiError, staticController.naxsiError)
 
   // VALIDATE INVITE
-  app.get(inviteValidation.validateInvite, inviteValidationController.validateInvite)
+  app.get(invite.validateInvite, inviteValidationController.validateInvite)
 
   // LOGIN
   app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
@@ -213,7 +212,7 @@ module.exports.bind = function (app) {
   // -------------------------
 
   // Complete invite for existing user
-  app.get(registerUser.subscribeService, userIsAuthorised, registerController.subscribeService)
+  app.get(invite.subscribeService, userIsAuthorised, registerController.subscribeService)
 
   // Service switcher
   app.get(serviceSwitcher.index, userIsAuthorised, myServicesController.getIndex)

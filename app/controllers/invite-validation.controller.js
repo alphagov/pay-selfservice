@@ -31,7 +31,7 @@ async function validateInvite (req, res, next) {
 
     if (invite.user_exist) {
       if (invite.type === 'user') {
-        res.redirect(paths.registerUser.subscribeService)
+        res.redirect(paths.invite.subscribeService)
       } else if (invite.type === 'service') {
         res.redirect(paths.serviceSwitcher.index)
       } else {
