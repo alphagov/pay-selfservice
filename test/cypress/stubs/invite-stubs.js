@@ -45,6 +45,16 @@ function completeInviteSuccess (inviteCode, userExternalId) {
   })
 }
 
+function completeInviteToServiceSuccess (inviteCode, userExternalId, serviceExternalId) {
+  const path = `/v1/api/invites/${inviteCode}/complete`
+  return stubBuilder('POST', path, 200, {
+    response: inviteFixtures.validInviteCompleteResponse({
+      user_external_id: userExternalId,
+      service_external_id: serviceExternalId
+    })
+  })
+}
+
 function reprovisionOtpSuccess (opts) {
   const path = `/v1/api/invites/${opts.code}/reprovision-otp`
   return stubBuilder('POST', path, 200, {
@@ -58,5 +68,6 @@ module.exports = {
   getInvitedUsersSuccess,
   getInviteSuccess,
   completeInviteSuccess,
+  completeInviteToServiceSuccess,
   reprovisionOtpSuccess
 }
