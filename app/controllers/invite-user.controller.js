@@ -63,7 +63,7 @@ async function invite (req, res, next) {
     next(new Error(`Cannot identify role from user input ${roleId}`))
   } else {
     try {
-      await userService.inviteUser(invitee, senderId, externalServiceId, role.name)
+      await userService.createInviteToJoinService(invitee, senderId, externalServiceId, role.name)
       if (lodash.has(req, 'session.pageData.invitee')) {
         delete req.session.pageData.invitee
       }
