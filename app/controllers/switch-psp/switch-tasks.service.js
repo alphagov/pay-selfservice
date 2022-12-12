@@ -8,6 +8,10 @@ function linkCredentialsComplete (targetCredential) {
     .includes(targetCredential.state)
 }
 
+function linkFlexCredentialsComplete (account) {
+  return ((account.requires3ds === true) && (account.integration_version_3ds === 2))
+}
+
 function verifyPSPIntegrationComplete (targetCredential) {
   return [CREDENTIAL_STATE.VERIFIED, CREDENTIAL_STATE.ACTIVE, CREDENTIAL_STATE.RETIRED]
     .includes(targetCredential.state)
@@ -32,8 +36,13 @@ function getTaskList (targetCredential, account, service) {
         enabled: true,
         complete: linkCredentialsComplete(targetCredential)
       },
+      'LINK_FLEX_CREDENTIALS': {
+        enabled: true,
+        complete: linkFlexCredentialsComplete(account)
+      },
       'VERIFY_PSP_INTEGRATION': {
-        enabled: linkCredentialsComplete(targetCredential),
+        enabled: linkCredentialsComplete(targetCredential) &&
+          linkFlexCredentialsComplete(account),
         complete: verifyPSPIntegrationComplete(targetCredential)
       }
     }

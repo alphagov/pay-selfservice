@@ -210,17 +210,10 @@ function patchAccountEmailCollectionModeSuccess (opts) {
 
 function postCheckWorldpay3dsFlexCredentials (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
-  if (opts.shouldReturnValid) {
-    return stubBuilder('POST', path, 200, {
-      request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest().payload,
-      response: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse()
-    })
-  } else {
-    return stubBuilder('POST', path, 200, {
-      request: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsRequest().payload,
-      response: worldpay3dsFlexCredentialsFixtures.checkInvalidWorldpay3dsFlexCredentialsResponse()
-    })
-  }
+  return stubBuilder('POST', path, 200, {
+    request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest(opts).payload,
+    response: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsResponse(opts)
+  })
 }
 
 function postCheckWorldpayCredentials (opts) {

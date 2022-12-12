@@ -15,22 +15,30 @@ describe('Switching PSP service', () => {
         })
         const targetCredential = getSwitchingCredential(account)
         const taskList = getTaskList(targetCredential, account)
-        expect(Object.keys(taskList)).to.have.length(2)
+        expect(Object.keys(taskList)).to.have.length(3)
         expect(taskList.LINK_CREDENTIALS.enabled).to.equal(true)
         expect(taskList.LINK_CREDENTIALS.complete).to.equal(false)
+        expect(taskList.LINK_FLEX_CREDENTIALS.enabled).to.equal(true)
+        expect(taskList.LINK_FLEX_CREDENTIALS.complete).to.equal(false)
+        expect(taskList.VERIFY_PSP_INTEGRATION.enabled).to.equal(false)
+        expect(taskList.VERIFY_PSP_INTEGRATION.complete).to.equal(false)
       })
       it('gets an complete task list for an account with progress', () => {
         const account = gatewayAccountFixtures.validGatewayAccount({
           gateway_account_credentials: [
             { state: 'ENTERED', payment_provider: 'worldpay', id: 100 },
             { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
-          ]
+          ],
+          requires3ds: true,
+          integrationVersion3ds: 2
         })
         const targetCredential = getSwitchingCredential(account)
         const taskList = getTaskList(targetCredential, account)
-        expect(Object.keys(taskList)).to.have.length(2)
+        expect(Object.keys(taskList)).to.have.length(3)
         expect(taskList.LINK_CREDENTIALS.enabled).to.equal(true)
         expect(taskList.LINK_CREDENTIALS.complete).to.equal(true)
+        expect(taskList.LINK_FLEX_CREDENTIALS.enabled).to.equal(true)
+        expect(taskList.LINK_FLEX_CREDENTIALS.complete).to.equal(true)
         expect(taskList.VERIFY_PSP_INTEGRATION.enabled).to.equal(true)
         expect(taskList.VERIFY_PSP_INTEGRATION.complete).to.equal(false)
       })
@@ -43,7 +51,9 @@ describe('Switching PSP service', () => {
         gateway_account_credentials: [
           { state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'worldpay', id: 100 },
           { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
-        ]
+        ],
+        requires3ds: true,
+        integrationVersion3ds: 2
       })
       const targetCredential = getSwitchingCredential(account)
       const taskList = getTaskList(targetCredential, account)
@@ -56,6 +66,34 @@ describe('Switching PSP service', () => {
           { state: 'CREATED', payment_provider: 'worldpay', id: 100 },
           { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
         ]
+      })
+      const targetCredential = getSwitchingCredential(account)
+      const taskList = getTaskList(targetCredential, account)
+      expect(isComplete(taskList)).to.equal(false)
+    })
+
+    it('should correctly calculate progress required for Worldpay when 3ds is not enabled', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'ENTERED', payment_provider: 'worldpay', id: 100 },
+          { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
+        ],
+        requires3ds: false,
+        integrationVersion3ds: 2
+      })
+      const targetCredential = getSwitchingCredential(account)
+      const taskList = getTaskList(targetCredential, account)
+      expect(isComplete(taskList)).to.equal(false)
+    })
+
+    it('should correctly calculate progress required for Worldpay when account 3ds version is 1', () => {
+      const account = gatewayAccountFixtures.validGatewayAccount({
+        gateway_account_credentials: [
+          { state: 'ENTERED', payment_provider: 'worldpay', id: 100 },
+          { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
+        ],
+        requires3ds: true,
+        integrationVersion3ds: 1
       })
       const targetCredential = getSwitchingCredential(account)
       const taskList = getTaskList(targetCredential, account)

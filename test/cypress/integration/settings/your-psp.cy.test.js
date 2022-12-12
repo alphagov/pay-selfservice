@@ -33,17 +33,17 @@ describe('Your PSP settings page', () => {
   }
   const testInvalidFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c81',
-    issuer: '5bd9e0e4444dce153428c941', // pragma: allowlist secret
+    issuer: '5bd9e0e4444dce153428c941',
     jwt_mac_key: 'ffffffff-aaaa-1111-1111-52805d5cd9e1'
   }
   const testFailureFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c82',
-    issuer: '5bd9e0e4444dce153428c942', // pragma: allowlist secret
+    issuer: '5bd9e0e4444dce153428c942',
     jwt_mac_key: 'ffffffff-ffff-ffff-ffff-ffffffffffff'
   }
   const testBadResultFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c83',
-    issuer: '5bd9e0e4444dce153428c943', // pragma: allowlist secret
+    issuer: '5bd9e0e4444dce153428c943',
     jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e3'
   }
 
@@ -98,7 +98,7 @@ describe('Your PSP settings page', () => {
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
     const postCheckWorldpay3dsFlexCredentialsReturnsValid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
       gatewayAccountId: gatewayAccountId,
-      shouldReturnValid: true
+      result: 'valid'
     })
     const postCheckWorldpayCredentials = gatewayAccountStubs.postCheckWorldpayCredentials({
       ...opts.validateCredentials,
@@ -106,7 +106,10 @@ describe('Your PSP settings page', () => {
     })
     const postCheckWorldpay3dsFlexCredentialsReturnsInvalid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
       gatewayAccountId: gatewayAccountId,
-      shouldReturnValid: false
+      result: 'invalid',
+      organisational_unit_id: '5bd9b55e4444761ac0af1c81',
+      issuer: '5bd9e0e4444dce153428c941',
+      jwt_mac_key: 'ffffffff-aaaa-1111-1111-52805d5cd9e1'
     })
     const postCheckWorldpay3dsFlexCredentialsFails = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsFailure({
       gatewayAccountId: gatewayAccountId, ...testFailureFlexCredentials

@@ -42,7 +42,9 @@ function setupEnvironment (switchingCredentialState) {
     gateway_account_credentials: [
       { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 },
       { state: switchingCredentialState, payment_provider: 'worldpay', id: 200 }
-    ]
+    ],
+    requires3ds: true,
+    integrationVersion3ds: 2
   })
   req = {
     account: account,
