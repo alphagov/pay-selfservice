@@ -7,7 +7,7 @@ const userFixtures = require('../../test/fixtures/user.fixtures')
 const inviteFixtures = require('../../test/fixtures/invite.fixtures')
 const paths = require('../paths')
 const User = require('../models/User.class')
-const { RegistrationSessionMissingError } = require('../errors')
+const { ExpiredInviteError, RESTClientError } = require('../errors')
 
 describe('Subscribe service controller', () => {
   const email = 'invited-user@example.com'
@@ -86,24 +86,13 @@ describe('Subscribe service controller', () => {
       })
     })
 
-    describe('Cookie details are missing', () => {
-      it('should call next with error', async () => {
-        delete req.register_invite
-
-        const controller = getController(completeInviteSuccessStub)
-        await controller.subscribeService(req, res, next)
-        sinon.assert.notCalled(completeInviteSuccessStub)
-        sinon.assert.calledWith(next, sinon.match.instanceOf(RegistrationSessionMissingError))
-      })
-    })
-
     describe('Invitation is expired', () => {
-      it('should render error page', async () => {
-        const completeInviteStub = sinon.stub().throws({ errorCode: 410 })
-        const controller = getController(completeInviteStub)
+      it('should call next with an error', async () => {
+        const completeInviteSpy = sinon.spy(() => Promise.reject(new RESTClientError('Error', 'adminusers', 410)))
+        const controller = getController(completeInviteSpy)
         await controller.subscribeService(req, res, next)
-        sinon.assert.calledWith(res.status, 410)
-        sinon.assert.calledWithMatch(res.render, 'error', { message: 'This invitation is no longer valid' })
+        sinon.assert.calledWith(next, sinon.match.instanceOf(ExpiredInviteError))
+        sinon.assert.notCalled(res.redirect)
       })
     })
   })

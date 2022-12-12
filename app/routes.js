@@ -177,6 +177,9 @@ module.exports.bind = function (app) {
   app.get(user.forgottenPasswordReset, forgotPasswordController.newPasswordGet)
   app.post(user.forgottenPasswordReset, forgotPasswordController.newPasswordPost)
 
+  // Complete invite for existing user
+  app.get(invite.subscribeService, userIsAuthorised, inviteCookieIsPresent, registerController.subscribeService)
+
   // REGISTRATION
   app.get(register.email, registrationController.showEmailPage)
   app.post(register.email, registrationController.submitEmailPage)
@@ -210,9 +213,6 @@ module.exports.bind = function (app) {
   // -------------------------
   // OUTSIDE OF SERVICE ROUTES
   // -------------------------
-
-  // Complete invite for existing user
-  app.get(invite.subscribeService, userIsAuthorised, registerController.subscribeService)
 
   // Service switcher
   app.get(serviceSwitcher.index, userIsAuthorised, myServicesController.getIndex)
