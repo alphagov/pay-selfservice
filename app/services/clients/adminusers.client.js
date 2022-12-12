@@ -276,11 +276,11 @@ module.exports = function (clientOptions = {}) {
    * @param roleName
    * @returns {Promise}
    */
-  function inviteUser (invitee, senderId, serviceExternalId, roleName) {
+  function createInviteToJoinService (invitee, senderId, serviceExternalId, roleName) {
     return baseClient.post(
       {
         baseUrl,
-        url: `/v1/api/invites/user`,
+        url: `/v1/api/invites/create-invite-to-join-service`,
         json: true,
         body: {
           email: invitee,
@@ -288,7 +288,7 @@ module.exports = function (clientOptions = {}) {
           service_external_id: serviceExternalId,
           role_name: roleName
         },
-        description: 'invite a user to signup',
+        description: 'invite a user to join a service',
         service: SERVICE_NAME
       }
     )
@@ -437,12 +437,12 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `/v1/api/invites/service`,
+        url: `/v1/api/invites/create-self-registration-invite`,
         json: true,
         body: {
           email: email
         },
-        description: 'submit service registration details',
+        description: 'create self-registration invite',
         service: SERVICE_NAME
       }
     )
@@ -768,7 +768,7 @@ module.exports = function (clientOptions = {}) {
     // Invite-related Methods
     createSelfSignupInvite,
     verifyOtpForInvite,
-    inviteUser,
+    createInviteToJoinService,
     getInvitedUsersList,
     getValidatedInvite,
     updateInvitePassword,

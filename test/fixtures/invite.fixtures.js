@@ -26,12 +26,18 @@ function buildInviteWithDefaults (opts = {}) {
 
 module.exports = {
 
-  validInviteRequest: (opts = {}) => {
+  validCreateInviteToJoinServiceRequest: (opts = {}) => {
     return {
       service_external_id: opts.externalServiceId || '2f1920ea261946bface3c89ddb0a9033',
       email: opts.email || 'random@example.com',
       sender: opts.sender || '94b3d61ebb624a6aa6598b96b307ec8c', // pragma: allowlist secret
       role_name: opts.role_name || 'admin'
+    }
+  },
+
+  validCreateSelfRegistrationInviteRequest: (opts = {}) => {
+    return {
+      email: opts.email || 'example@digital.cabinet-office.gov.uk'
     }
   },
 

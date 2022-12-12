@@ -130,8 +130,8 @@ module.exports = {
    * @param externalServiceId
    * @param roleName
    */
-  inviteUser: function (invitee, senderId, externalServiceId, roleName) {
-    return adminUsersClient.inviteUser(invitee, senderId, externalServiceId, roleName)
+  createInviteToJoinService: function (invitee, senderId, externalServiceId, roleName) {
+    return adminUsersClient.createInviteToJoinService(invitee, senderId, externalServiceId, roleName)
   },
 
   /**

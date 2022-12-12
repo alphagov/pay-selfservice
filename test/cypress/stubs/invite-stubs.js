@@ -4,7 +4,7 @@ const inviteFixtures = require('../../fixtures/invite.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function createSelfSignupInviteSuccess (email) {
-  const path = '/v1/api/invites/service'
+  const path = '/v1/api/invites/create-self-registration-invite'
   return stubBuilder('POST', path, 200, {
     request: {
       email
@@ -13,7 +13,7 @@ function createSelfSignupInviteSuccess (email) {
 }
 
 function createSelfSignupInviteNotPublicSectorEmail (email) {
-  const path = '/v1/api/invites/service'
+  const path = '/v1/api/invites/create-self-registration-invite'
   return stubBuilder('POST', path, 403, {
     request: {
       email

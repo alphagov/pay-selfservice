@@ -18,7 +18,7 @@ describe('invite user controller', function () {
   const userInSession = session.getUser({})
   const EXTERNAL_SERVICE_ID = userInSession.serviceRoles[0].service.externalId
   userInSession.serviceRoles[0].role.permissions.push({ name: 'users-service:create' })
-  const INVITE_RESOURCE = `/v1/api/invites/user`
+  const INVITE_RESOURCE = `/v1/api/invites/create-invite-to-join-service`
 
   describe('invite user index view', function () {
     it('should display invite page', function (done) {
@@ -43,7 +43,7 @@ describe('invite user controller', function () {
 
   describe('invite user', function () {
     it('should invite a new team member successfully', function (done) {
-      const validInvite = inviteFixtures.validInviteRequest()
+      const validInvite = inviteFixtures.validCreateInviteToJoinServiceRequest()
       adminusersMock.post(INVITE_RESOURCE)
         .reply(201, inviteFixtures.validInviteResponse(validInvite))
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
