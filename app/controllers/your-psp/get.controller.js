@@ -8,6 +8,8 @@ const {
   hasSwitchedProvider
 } = require('../../utils/credentials')
 const { getTaskList, isComplete } = require('./kyc-tasks.service')
+const yourPspTasks = require('./your-psp-tasks.service')
+
 
 module.exports = async (req, res, next) => {
   const { credentialId } = req.params
@@ -34,6 +36,9 @@ module.exports = async (req, res, next) => {
       if (stripeData.requiresAdditionalKycData || kycCompleted) {
         stripeData.kycTaskList = await getTaskList(activeCredential)
         stripeData.kycTaskListComplete = isComplete(stripeData.kycTaskList)
+      } else {
+        stripeData.taskList = yourPspTasks.getStripeTaskList(activeCredential, req.account)
+        stripeData.taskListIsComplete = yourPspTasks.stripeTaskListIsComplete(stripeData.taskList)
       }
     }
 
