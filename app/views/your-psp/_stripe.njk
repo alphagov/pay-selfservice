@@ -1,7 +1,3 @@
-{% if  enableStripeOnboardingTaskList %}
-  <h1 class="govuk-heading-m govuk-!-margin-top-8">Your payment service provider (PSP) - Stripe</h1>
-{% endif %}
-  
 {% macro taskListItem(id, label, url, item) %}
   <li class="app-task-list__item">
     <span class="app-task-list__task-name">
@@ -18,6 +14,28 @@
       <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ id }}-status">not started</strong>
     {% elif item.complete %}
       <strong class="govuk-tag app-task-list__tag" id="{{ id }}-status">completed</strong>
+    {% endif %}
+  </li>
+{% endmacro %}
+
+{% macro stripeTaskListItem(id, label, url, item) %}
+  <li class="app-task-list__item">
+    <span class="app-task-list__task-name">
+      {% if item.enabled %}
+        <a class="govuk-link" href="{{ url }}" aria-describedby="{{ id }}-status">
+        {{ label }}
+      </a>
+      {% else %}
+        <span>{{ label }}</span>
+      {% endif %}
+    </span>
+
+    {% if not item.enabled and not item.completed %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ id }}-status">cannot start yet</strong>
+    {% elif item.enabled and not item.completed %}
+    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ id }}-status">not started</strong>
+    {% elif item.completed %}
+    <strong class="govuk-tag app-task-list__tag" id="{{ id }}-status">completed</strong>
     {% endif %}
   </li>
 {% endmacro %}
@@ -73,4 +91,57 @@
     </div>
   </div>
 
+ {% else %}
+ {% if  enableStripeOnboardingTaskList %}
+    <h1 class="govuk-heading-m govuk-!-margin-top-8">Information for Stripe</h1>
+    {% set tasks %}
+      {{ stripeTaskListItem(
+        'task-bank-details',
+        "Bank Details",
+        formatAccountPathsFor(routes.account.yourPsp.stripeSetup.bankDetails, currentGatewayAccount.external_id, activeCredential.external_id),
+        taskList.ENTER_BANK_DETAILS
+      ) }}
+      {{ stripeTaskListItem(
+        'task-sro',
+        "Responsible person",
+        formatAccountPathsFor(routes.account.yourPsp.stripeSetup.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
+        taskList.ENTER_RESPONSIBLE_PERSON
+      ) }}
+      {{ stripeTaskListItem(
+        'task-director',
+        "Service director",
+        formatAccountPathsFor(routes.account.yourPsp.stripeSetup.director, currentGatewayAccount.external_id, activeCredential.external_id),
+        taskList.ENTER_DIRECTOR
+      ) }}
+      {{ stripeTaskListItem(
+        'task-vatNumber',
+        "VAT registration number",
+        formatAccountPathsFor(routes.account.yourPsp.stripeSetup.vatNumber, currentGatewayAccount.external_id, activeCredential.external_id),
+        taskList.ENTER_VAT_NUMBER
+      ) }}
+      {{ stripeTaskListItem(
+        'task-Company-number',
+        "Company registration number",
+        formatAccountPathsFor(routes.account.yourPsp.stripeSetup.companyNumber, currentGatewayAccount.external_id, activeCredential.external_id),
+        taskList.ENTER_COMPANY_NUMBER
+      ) }}
+      {{ stripeTaskListItem(
+        'task-checkorganisation-details',
+        "Confirm your organisation’s name and address match your government entity document",
+        formatAccountPathsFor(routes.account.yourPsp.stripeSetup.checkOrgDetails, currentGatewayAccount.external_id, activeCredential.external_id),
+        taskList.CONFIRM_ORGANISATION_DETAILS
+      ) }}
+      {{ stripeTaskListItem(
+        'task-government-entity-document',
+        "Government entity document",
+        formatAccountPathsFor(routes.account.yourPsp.stripeSetup.governmentEntityDocument,currentGatewayAccount.external_id, activeCredential.external_id ),
+        taskList.UPLOAD_GOVERNMENT_ENTITY_DOCUMENT
+      ) }}
+  {% endset %}
+  <div class="app-task-list govuk-body">
+    <div>
+      <span class="app-task-list__items">{{ tasks | safe }}</span>
+    </div>
+  </div>
+{% endif %}
 {% endif %}
