@@ -67,6 +67,11 @@
           taskList.LINK_CREDENTIALS
         ) }}
         {{ taskListItem(
+          "Link your Worldpay 3DS Flex account with GOV.UK Pay",
+          formatAccountPathsFor(routes.account.switchPSP.flex, currentGatewayAccount.external_id, targetCredential.external_id),
+          taskList.LINK_FLEX_CREDENTIALS
+        ) }}
+        {{ taskListItem(
           "Make a live payment to test your Worldpay PSP",
           formatAccountPathsFor(routes.account.switchPSP.verifyPSPIntegrationPayment, currentGatewayAccount.external_id),
           taskList.VERIFY_PSP_INTEGRATION
