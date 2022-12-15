@@ -50,7 +50,7 @@ describe('Your PSP Stripe page', () => {
     setupYourPspStubs({})
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-  
+
     cy.get('span').contains('Bank Details').should('exist')
     cy.get('span').contains('Responsible person').should('exist')
     cy.get('span').contains('Service director').should('exist')
@@ -59,12 +59,12 @@ describe('Your PSP Stripe page', () => {
     cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('exist')
     cy.get('span').contains('Government entity document').should('exist')
   })
-  
+
   it('should autamatically show government document as cannot start yet and the rest of the tasks as not started', () => {
     setupYourPspStubs({})
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    
+
     cy.get('strong[id="task-bank-details-status"]').should('contain', 'not started')
     cy.get('strong[id="task-sro-status"]').should('contain', 'not started')
     cy.get('strong[id="task-director-status"]').should('contain', 'not started')
