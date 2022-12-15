@@ -10,7 +10,6 @@ const {
 const { getTaskList, isComplete } = require('./kyc-tasks.service')
 const yourPspTasks = require('./your-psp-tasks.service')
 
-
 module.exports = async (req, res, next) => {
   const { credentialId } = req.params
   const enableStripeOnboardingTaskList = process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true'

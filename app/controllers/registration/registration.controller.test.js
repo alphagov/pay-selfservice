@@ -262,35 +262,69 @@ describe('Registration', () => {
   })
 
   describe('submit the choose how to get security codes page', () => {
-    it('should render page with an error when an option is not selected', () => {
+    it('should render page with an error when an option is not selected', async () => {
       req.body = {
         'sign-in-method': ''
       }
-      registrationController.submitChooseSignInMethodPage(req, res)
+      await registrationController.submitChooseSignInMethodPage(req, res, next)
       sinon.assert.calledWith(res.render, 'registration/get-security-codes', {
         errors: {
           'sign-in-method': 'You need to select an option'
         }
       })
       sinon.assert.notCalled(res.redirect)
+      sinon.assert.notCalled(next)
     })
 
-    it('should redirect to the phone number page when SMS is chosen', () => {
+    it('should call next with an error when adminusers returns an error reprovisioning the OTP key', async () => {
       req.body = {
         'sign-in-method': 'SMS'
       }
-      registrationController.submitChooseSignInMethodPage(req, res)
-      sinon.assert.calledWith(res.redirect, paths.register.phoneNumber)
+
+      const error = new Error('error from adminusers')
+      const reprovisionOtpSpy = sinon.spy(() => Promise.reject(error))
+      const controller = getControllerWithMockedAdminusersClient({
+        reprovisionOtp: reprovisionOtpSpy
+      })
+      await controller.submitChooseSignInMethodPage(req, res, next)
+      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
+      sinon.assert.calledWith(next, error)
       sinon.assert.notCalled(res.render)
+      sinon.assert.notCalled(res.redirect)
     })
 
-    it('should redirect to the authenticator app page when APP is chosen', () => {
+    it('should redirect to the phone number page when SMS is chosen', async () => {
+      req.body = {
+        'sign-in-method': 'SMS'
+      }
+
+      const reprovisionOtpSpy = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMockedAdminusersClient({
+        reprovisionOtp: reprovisionOtpSpy
+      })
+
+      await controller.submitChooseSignInMethodPage(req, res, next)
+      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
+      sinon.assert.calledWith(res.redirect, paths.register.phoneNumber)
+      sinon.assert.notCalled(res.render)
+      sinon.assert.notCalled(next)
+    })
+
+    it('should redirect to the authenticator app page when APP is chosen', async () => {
       req.body = {
         'sign-in-method': 'APP'
       }
-      registrationController.submitChooseSignInMethodPage(req, res)
+
+      const reprovisionOtpSpy = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMockedAdminusersClient({
+        reprovisionOtp: reprovisionOtpSpy
+      })
+
+      await controller.submitChooseSignInMethodPage(req, res, next)
+      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
       sinon.assert.calledWith(res.redirect, paths.register.authenticatorApp)
       sinon.assert.notCalled(res.render)
+      sinon.assert.notCalled(next)
     })
   })
 
@@ -298,7 +332,7 @@ describe('Registration', () => {
     it('should call next with an error if adminusers returns an error', async () => {
       const error = new Error('error from adminusers')
       const controller = getControllerWithMockedAdminusersClient({
-        reprovisionOtp: () => Promise.reject(error)
+        getValidatedInvite: () => Promise.reject(error)
       })
 
       await controller.showAuthenticatorAppPage(req, res, next)
@@ -315,7 +349,7 @@ describe('Registration', () => {
       })
       const expectedQrUrl = `otpauth://totp/GOV.UK%20Pay:user%40example.com?secret=${otpKey}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
       const controller = getControllerWithMockedAdminusersClient({
-        reprovisionOtp: () => Promise.resolve(invite)
+        getValidatedInvite: () => Promise.resolve(invite)
       })
 
       await controller.showAuthenticatorAppPage(req, res, next)
@@ -338,7 +372,7 @@ describe('Registration', () => {
       const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
       const invite = inviteFixtures.validInviteResponse({ otp_key: otpKey })
       const controller = getControllerWithMockedAdminusersClient({
-        reprovisionOtp: () => Promise.resolve(invite)
+        getValidatedInvite: () => Promise.resolve(invite)
       })
 
       await controller.showAuthenticatorAppPage(req, res, next)
@@ -530,28 +564,6 @@ describe('Registration', () => {
       sinon.assert.notCalled(res.redirect)
     })
 
-    it('should call next with an error if adminusers returns an error when reprovisioning OTP key', async () => {
-      const validPhoneNumber = '+44 0808 157 0192'
-      req.body = {
-        phone: validPhoneNumber
-      }
-
-      const error = new Error('error from adminusers')
-      const updateInvitePhoneNumberSpy = sinon.spy(() => Promise.resolve())
-      const reprovisionOtpSpy = sinon.spy(() => Promise.reject(error))
-      const controller = getControllerWithMockedAdminusersClient({
-        updateInvitePhoneNumber: updateInvitePhoneNumberSpy,
-        reprovisionOtp: reprovisionOtpSpy
-      })
-
-      await controller.submitPhoneNumberPage(req, res, next)
-      sinon.assert.calledWith(updateInvitePhoneNumberSpy, inviteCode, validPhoneNumber)
-      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
-      sinon.assert.calledWith(next, error)
-      sinon.assert.notCalled(res.render)
-      sinon.assert.notCalled(res.redirect)
-    })
-
     it('should call next with an error if adminusers returns an error when sending OTP', async () => {
       const validPhoneNumber = '+44 0808 157 0192'
       req.body = {
@@ -560,17 +572,14 @@ describe('Registration', () => {
 
       const error = new Error('error from adminusers')
       const updateInvitePhoneNumberSpy = sinon.spy(() => Promise.resolve())
-      const reprovisionOtpSpy = sinon.spy(() => Promise.resolve())
       const sendOtpSpy = sinon.spy(() => Promise.reject(error))
       const controller = getControllerWithMockedAdminusersClient({
         updateInvitePhoneNumber: updateInvitePhoneNumberSpy,
-        reprovisionOtp: reprovisionOtpSpy,
         sendOtp: sendOtpSpy
       })
 
       await controller.submitPhoneNumberPage(req, res, next)
       sinon.assert.calledWith(updateInvitePhoneNumberSpy, inviteCode, validPhoneNumber)
-      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
       sinon.assert.calledWith(sendOtpSpy, inviteCode)
       sinon.assert.calledWith(next, error)
       sinon.assert.notCalled(res.render)
@@ -584,17 +593,14 @@ describe('Registration', () => {
       }
 
       const updateInvitePhoneNumberSpy = sinon.spy(() => Promise.resolve())
-      const reprovisionOtpSpy = sinon.spy(() => Promise.resolve())
       const sendOtpSpy = sinon.spy(() => Promise.resolve())
       const controller = getControllerWithMockedAdminusersClient({
         updateInvitePhoneNumber: updateInvitePhoneNumberSpy,
-        reprovisionOtp: reprovisionOtpSpy,
         sendOtp: sendOtpSpy
       })
 
       await controller.submitPhoneNumberPage(req, res, next)
       sinon.assert.calledWith(updateInvitePhoneNumberSpy, inviteCode, validPhoneNumber)
-      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
       sinon.assert.calledWith(sendOtpSpy, inviteCode)
       sinon.assert.calledWith(res.redirect, paths.register.smsCode)
       sinon.assert.notCalled(next)

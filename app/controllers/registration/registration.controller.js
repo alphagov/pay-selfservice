@@ -125,7 +125,9 @@ function showChooseSignInMethodPage (req, res) {
   res.render('registration/get-security-codes')
 }
 
-function submitChooseSignInMethodPage (req, res) {
+async function submitChooseSignInMethodPage (req, res, next) {
+  const sessionData = req[INVITE_SESSION_COOKIE_NAME]
+
   const signInMethod = req.body['sign-in-method']
   if (!signInMethod) {
     return res.render('registration/get-security-codes', {
@@ -135,10 +137,15 @@ function submitChooseSignInMethodPage (req, res) {
     })
   }
 
-  if (signInMethod === 'SMS') {
-    res.redirect(paths.register.phoneNumber)
-  } else {
-    res.redirect(paths.register.authenticatorApp)
+  try {
+    await adminusersClient.reprovisionOtp(sessionData.code)
+    if (signInMethod === 'SMS') {
+      res.redirect(paths.register.phoneNumber)
+    } else {
+      res.redirect(paths.register.authenticatorApp)
+    }
+  } catch (err) {
+    next(err)
   }
 }
 
@@ -146,7 +153,7 @@ async function showAuthenticatorAppPage (req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
-    const invite = await adminusersClient.reprovisionOtp(sessionData.code)
+    const invite = await adminusersClient.getValidatedInvite(sessionData.code)
     const secretKey = invite.otp_key
 
     const prettyPrintedSecret = secretKey.match(/.{4}/g).join(' ')
@@ -220,7 +227,6 @@ async function submitPhoneNumberPage (req, res, next) {
 
   try {
     await adminusersClient.updateInvitePhoneNumber(sessionData.code, phoneNumber)
-    await adminusersClient.reprovisionOtp(sessionData.code)
     await adminusersClient.sendOtp(sessionData.code)
 
     res.redirect(paths.register.smsCode)
