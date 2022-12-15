@@ -104,6 +104,7 @@
     "throng": "5.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
+    "validator": "^13.7.0",
     "winston": "3.8.2"
   },
   "devDependencies": {

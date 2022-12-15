@@ -4,6 +4,7 @@ const moment = require('moment-timezone')
 const ukPostcode = require('uk-postcode')
 const commonPassword = require('common-password')
 const lodash = require('lodash')
+const validator = require('validator')
 const { URL } = require('url')
 
 const {
@@ -241,10 +242,13 @@ function validateUrl (url) {
 
 function isValidUrl (url) {
   try {
-    const parsedUrl = new URL(url)
-    return parsedUrl.protocol
-      ? ['http:', 'https:'].includes(parsedUrl.protocol)
-      : false
+    // eslint-disable-next-line no-new
+    new URL(url)
+
+    return validator.isURL(url, {
+      protocols: [ 'http', 'https' ],
+      require_protocol: true
+    })
   } catch (err) {
     return false
   }

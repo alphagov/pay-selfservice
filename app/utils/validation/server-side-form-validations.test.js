@@ -411,5 +411,19 @@ describe('Server side form validations', () => {
         message: 'Enter a valid website address'
       })
     })
+
+    it('should not be valid for incomplete URLs', () => {
+      expect(validations.validateUrl('https://example')).to.deep.equal({
+        valid: false,
+        message: 'Enter a valid website address'
+      })
+    })
+
+    it('should not be valid for multiple URLs', () => {
+      expect(validations.validateUrl('https://example-one.test https://example-two.test')).to.deep.equal({
+        valid: false,
+        message: 'Enter a valid website address'
+      })
+    })
   })
 })
