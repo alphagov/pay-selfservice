@@ -76,7 +76,7 @@ const validationRulesWithTelAndUrl = [
   },
   {
     field: clientFieldNames.url,
-    validator: validateUrl
+    validator: validateURLWithTracking
   },
   ...validationRules
 ]
@@ -103,6 +103,14 @@ function normaliseForm (formBody) {
     form[field] = trimField(field, formBody)
     return form
   }, {})
+}
+
+function validateURLWithTracking (url) {
+  const result = validateUrl(url)
+  if (!result.valid) {
+    logger.info('Blocked provided URL', { url })
+  }
+  return result
 }
 
 function validateForm (form, isRequestToGoLive, isStripeSetupUserJourney) {
