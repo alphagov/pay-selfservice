@@ -30,12 +30,10 @@ async function validateInvite (req, res, next) {
     }
 
     if (invite.user_exist) {
-      if (invite.type === 'user') {
+      if (invite.is_invite_to_join_service) {
         res.redirect(paths.invite.subscribeService)
-      } else if (invite.type === 'service') {
-        res.redirect(paths.serviceSwitcher.index)
       } else {
-        next(new Error('Unrecognised invite type'))
+        res.redirect(paths.serviceSwitcher.index)
       }
     } else {
       res.redirect(paths.register.password)
