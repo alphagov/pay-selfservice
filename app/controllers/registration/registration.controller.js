@@ -18,6 +18,7 @@ const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
 const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
 const { APP, SMS } = require('../../models/second-factor-method')
+const { USER_EXTERNAL_ID } = require('@govuk-pay/pay-js-commons/lib/logging/keys')
 
 const EMAIL_INPUT_FIELD_NAME = 'email'
 const PASSWORD_INPUT_FIELD_NAME = 'password'
@@ -182,7 +183,7 @@ async function submitAuthenticatorAppPage (req, res, next) {
     const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code, APP)
     // set user external ID on the session so the user is logged in upon redirect
     sessionData.userExternalId = completeInviteResponse.user_external_id
-    logRegistrationCompleted(APP)
+    logRegistrationCompleted(APP, completeInviteResponse.user_external_id)
     return res.redirect(paths.register.success)
   } catch (err) {
     if (err instanceof RESTClientError) {
@@ -264,7 +265,7 @@ async function submitSmsSecurityCodePage (req, res, next) {
     const completeInviteResponse = await adminusersClient.completeInvite(sessionData.code, SMS)
     // set user external ID on the session so the user is logged in upon redirect
     sessionData.userExternalId = completeInviteResponse.user_external_id
-    logRegistrationCompleted(SMS)
+    logRegistrationCompleted(SMS, completeInviteResponse.user_external_id)
     return res.redirect(paths.register.success)
   } catch (err) {
     if (err instanceof RESTClientError) {
@@ -318,9 +319,10 @@ function showSuccessPage (req, res) {
   res.render('registration/success', { loggedIn: true })
 }
 
-function logRegistrationCompleted (secondFactorMethod) {
+function logRegistrationCompleted (secondFactorMethod, userExternalId) {
   logger.info('User completed registration', {
-    'second_factor_method': secondFactorMethod
+    'second_factor_method': secondFactorMethod,
+    [ USER_EXTERNAL_ID ]: userExternalId
   })
 }
 
