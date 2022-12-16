@@ -146,7 +146,10 @@ async function showAuthenticatorAppPage (req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
-    const invite = await adminusersClient.reprovisionOtp(sessionData.code)
+    let invite = await reprovisionOtpKeyIfRequired(sessionData, APP)
+    if (!invite) {
+      invite = await adminusersClient.getValidatedInvite(sessionData.code)
+    }
     const secretKey = invite.otp_key
 
     const prettyPrintedSecret = secretKey.match(/.{4}/g).join(' ')
@@ -220,7 +223,7 @@ async function submitPhoneNumberPage (req, res, next) {
 
   try {
     await adminusersClient.updateInvitePhoneNumber(sessionData.code, phoneNumber)
-    await adminusersClient.reprovisionOtp(sessionData.code)
+    await reprovisionOtpKeyIfRequired(sessionData, SMS)
     await adminusersClient.sendOtp(sessionData.code)
 
     res.redirect(paths.register.smsCode)
@@ -322,8 +325,17 @@ function showSuccessPage (req, res) {
 function logRegistrationCompleted (secondFactorMethod, userExternalId) {
   logger.info('User completed registration', {
     'second_factor_method': secondFactorMethod,
-    [ USER_EXTERNAL_ID ]: userExternalId
+    [USER_EXTERNAL_ID]: userExternalId
   })
+}
+
+async function reprovisionOtpKeyIfRequired (inviteSessionData, newSecondFactorMethod) {
+  let invite
+  if (!inviteSessionData.secondFactorMethod || inviteSessionData.secondFactorMethod !== newSecondFactorMethod) {
+    invite = await adminusersClient.reprovisionOtp(inviteSessionData.code)
+    inviteSessionData.secondFactorMethod = newSecondFactorMethod
+  }
+  return invite
 }
 
 module.exports = {

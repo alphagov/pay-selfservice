@@ -295,7 +295,7 @@ describe('Registration', () => {
   })
 
   describe('show the authenticator app page', () => {
-    it('should call next with an error if adminusers returns an error', async () => {
+    it('should call next with an error if adminusers returns an error reprovisioning the OTP code', async () => {
       const error = new Error('error from adminusers')
       const controller = getControllerWithMockedAdminusersClient({
         reprovisionOtp: () => Promise.reject(error)
@@ -307,18 +307,20 @@ describe('Registration', () => {
       sinon.assert.notCalled(res.redirect)
     })
 
-    it('should render the page when invite successfully retrieved from adminusers', async () => {
+    it('should re-provision the OTP key and render the page when the secondFactorMethod is not set in the session', async () => {
       const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
       const invite = inviteFixtures.validInviteResponse({
         otp_key: otpKey,
         email: 'user@example.com'
       })
       const expectedQrUrl = `otpauth://totp/GOV.UK%20Pay:user%40example.com?secret=${otpKey}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
+      const reprovisionOtpSpy = sinon.spy(() => Promise.resolve(invite))
       const controller = getControllerWithMockedAdminusersClient({
-        reprovisionOtp: () => Promise.resolve(invite)
+        reprovisionOtp: reprovisionOtpSpy
       })
 
       await controller.showAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
       sinon.assert.calledWith(qrToDataURLSpy, expectedQrUrl)
       sinon.assert.calledWith(res.render, 'registration/authenticator-app', {
         prettyPrintedSecret: 'ANEX AMPL ESEC RETS ECON DFAC TORC ODE1',
@@ -329,6 +331,66 @@ describe('Registration', () => {
       sinon.assert.notCalled(res.redirect)
 
       expect(req.register_invite).to.not.have.property('recovered')
+      expect(req.register_invite).to.have.property('secondFactorMethod').to.eq(APP)
+    })
+
+    it('should re-provision the OTP key and render the page when the secondFactorMethod in the session is set to SMS', async () => {
+      req.register_invite.secondFactorMethod = SMS
+      const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
+      const invite = inviteFixtures.validInviteResponse({
+        otp_key: otpKey,
+        email: 'user@example.com'
+      })
+      const expectedQrUrl = `otpauth://totp/GOV.UK%20Pay:user%40example.com?secret=${otpKey}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
+      const reprovisionOtpSpy = sinon.spy(() => Promise.resolve(invite))
+      const controller = getControllerWithMockedAdminusersClient({
+        reprovisionOtp: reprovisionOtpSpy
+      })
+
+      await controller.showAuthenticatorAppPage(req, res, next)
+      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
+      sinon.assert.calledWith(qrToDataURLSpy, expectedQrUrl)
+      sinon.assert.calledWith(res.render, 'registration/authenticator-app', {
+        prettyPrintedSecret: 'ANEX AMPL ESEC RETS ECON DFAC TORC ODE1',
+        qrCodeDataUrl,
+        errors: undefined
+      })
+      sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.redirect)
+
+      expect(req.register_invite).to.not.have.property('recovered')
+      expect(req.register_invite).to.have.property('secondFactorMethod').to.eq(APP)
+    })
+
+    it('should NOT re-provision the OTP key and render the page when the secondFactorMethod in the session is set to APP', async () => {
+      req.register_invite.secondFactorMethod = APP
+      const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
+      const invite = inviteFixtures.validInviteResponse({
+        otp_key: otpKey,
+        email: 'user@example.com'
+      })
+      const expectedQrUrl = `otpauth://totp/GOV.UK%20Pay:user%40example.com?secret=${otpKey}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
+      const reprovisionOtpSpy = sinon.spy()
+      const getValidatedInviteSpy = sinon.spy(() => Promise.resolve(invite))
+      const controller = getControllerWithMockedAdminusersClient({
+        reprovisionOtp: reprovisionOtpSpy,
+        getValidatedInvite: getValidatedInviteSpy
+      })
+
+      await controller.showAuthenticatorAppPage(req, res, next)
+      sinon.assert.notCalled(reprovisionOtpSpy)
+      sinon.assert.calledWith(getValidatedInviteSpy, inviteCode)
+      sinon.assert.calledWith(qrToDataURLSpy, expectedQrUrl)
+      sinon.assert.calledWith(res.render, 'registration/authenticator-app', {
+        prettyPrintedSecret: 'ANEX AMPL ESEC RETS ECON DFAC TORC ODE1',
+        qrCodeDataUrl,
+        errors: undefined
+      })
+      sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.redirect)
+
+      expect(req.register_invite).to.not.have.property('recovered')
+      expect(req.register_invite).to.have.property('secondFactorMethod').to.eq(APP)
     })
 
     it('should render the page with errors if there is a recovered object in the session', async () => {
@@ -577,7 +639,7 @@ describe('Registration', () => {
       sinon.assert.notCalled(res.redirect)
     })
 
-    it('should redirect to next page if updated phone number successfully', async () => {
+    it('should re-provision OTP key if secondFactorMethod is not set in session and then redirect to the next page', async () => {
       const validPhoneNumber = '+44 0808 157 0192'
       req.body = {
         phone: validPhoneNumber
@@ -599,6 +661,62 @@ describe('Registration', () => {
       sinon.assert.calledWith(res.redirect, paths.register.smsCode)
       sinon.assert.notCalled(next)
       sinon.assert.notCalled(res.render)
+
+      expect(req.register_invite).to.have.property('secondFactorMethod').to.eq(SMS)
+    })
+
+    it('should re-provision OTP key if secondFactorMethod in session is APP and then redirect to the next page', async () => {
+      req.register_invite.secondFactorMethod = APP
+      const validPhoneNumber = '+44 0808 157 0192'
+      req.body = {
+        phone: validPhoneNumber
+      }
+
+      const updateInvitePhoneNumberSpy = sinon.spy(() => Promise.resolve())
+      const reprovisionOtpSpy = sinon.spy(() => Promise.resolve())
+      const sendOtpSpy = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMockedAdminusersClient({
+        updateInvitePhoneNumber: updateInvitePhoneNumberSpy,
+        reprovisionOtp: reprovisionOtpSpy,
+        sendOtp: sendOtpSpy
+      })
+
+      await controller.submitPhoneNumberPage(req, res, next)
+      sinon.assert.calledWith(updateInvitePhoneNumberSpy, inviteCode, validPhoneNumber)
+      sinon.assert.calledWith(reprovisionOtpSpy, inviteCode)
+      sinon.assert.calledWith(sendOtpSpy, inviteCode)
+      sinon.assert.calledWith(res.redirect, paths.register.smsCode)
+      sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.render)
+
+      expect(req.register_invite).to.have.property('secondFactorMethod').to.eq(SMS)
+    })
+
+    it('should NOT re-provision OTP key if secondFactorMethod in session is SMS and redirect to the next page', async () => {
+      req.register_invite.secondFactorMethod = SMS
+      const validPhoneNumber = '+44 0808 157 0192'
+      req.body = {
+        phone: validPhoneNumber
+      }
+
+      const updateInvitePhoneNumberSpy = sinon.spy(() => Promise.resolve())
+      const reprovisionOtpSpy = sinon.spy(() => Promise.resolve())
+      const sendOtpSpy = sinon.spy(() => Promise.resolve())
+      const controller = getControllerWithMockedAdminusersClient({
+        updateInvitePhoneNumber: updateInvitePhoneNumberSpy,
+        reprovisionOtp: reprovisionOtpSpy,
+        sendOtp: sendOtpSpy
+      })
+
+      await controller.submitPhoneNumberPage(req, res, next)
+      sinon.assert.calledWith(updateInvitePhoneNumberSpy, inviteCode, validPhoneNumber)
+      sinon.assert.notCalled(reprovisionOtpSpy)
+      sinon.assert.calledWith(sendOtpSpy, inviteCode)
+      sinon.assert.calledWith(res.redirect, paths.register.smsCode)
+      sinon.assert.notCalled(next)
+      sinon.assert.notCalled(res.render)
+
+      expect(req.register_invite).to.have.property('secondFactorMethod').to.eq(SMS)
     })
   })
 
