@@ -86,6 +86,7 @@ const webhooksController = require('./controllers/webhooks/webhooks.controller')
 const agreementsController = require('./controllers/agreements/agreements.controller')
 const kycOrganisationUrlController = require('./controllers/kyc/organisation-url')
 const registrationController = require('./controllers/registration/registration.controller')
+const privacyController = require('./controllers/privacy/privacy.controller')
 
 // Assignments
 const {
@@ -202,6 +203,9 @@ module.exports.bind = function (app) {
     userIsAuthorised,
     registrationController.showSuccessPage
   )
+
+  // Privacy page
+  app.get(paths.privacy, privacyController.getPage)
 
   // ----------------------
   // AUTHENTICATED ROUTES
