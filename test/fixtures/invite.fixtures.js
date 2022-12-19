@@ -4,13 +4,13 @@ const _ = require('lodash')
 
 function buildInviteWithDefaults (opts = {}) {
   const data = {
-    type: opts.type || 'user',
     email: opts.email || 'foo@example.com',
     role: opts.role || 'admin',
     disabled: opts.disabled || false,
     user_exist: opts.user_exist || false,
     expired: opts.expired || false,
-    otp_key: opts.otp_key || 'ANEXAMPLESECRETSECONDFACTORCODE1'
+    otp_key: opts.otp_key || 'ANEXAMPLESECRETSECONDFACTORCODE1',
+    is_invite_to_join_service: opts.is_invite_to_join_service || false
   }
 
   if (opts.telephone_number) {

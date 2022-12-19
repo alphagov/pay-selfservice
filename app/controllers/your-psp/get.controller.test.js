@@ -5,7 +5,7 @@ const getController = require('./get.controller')
 const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
 const { expect } = require('chai')
 const credentialId = 'a-valid-credential-id'
-const proxyquire = require("proxyquire");
+const proxyquire = require('proxyquire')
 
 describe('Your PSP GET controller', () => {
   let req
@@ -69,7 +69,6 @@ describe('Your PSP GET controller', () => {
   })
 
   it('should get stripe taskList when requiresAdditionalKycData is false', async () => {
-
     await getController(req, res, next)
 
     const pageData = res.render.args[0][1]
@@ -89,7 +88,6 @@ describe('Your PSP GET controller', () => {
   })
 
   it('should get KYC tasks when requiresAdditionalKycData is true', async () => {
-
     req.account.requires_additional_kyc_data = true
 
     const kycTasks = {

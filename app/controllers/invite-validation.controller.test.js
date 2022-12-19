@@ -39,10 +39,10 @@ describe('Invite validation controller', function () {
     sinon.assert.notCalled(next)
   })
 
-  it('should redirect to /subscribe if user exists and invite has type "user"', async () => {
+  it('should redirect to /subscribe if user exists and is being invited to join a service', async () => {
     const invite = inviteFixtures.validInviteResponse({
       user_exist: true,
-      type: 'user'
+      is_invite_to_join_service: true
     })
 
     const getValidatedInviteSpy = sinon.spy(() => Promise.resolve(invite))
@@ -57,10 +57,10 @@ describe('Invite validation controller', function () {
     sinon.assert.notCalled(next)
   })
 
-  it('should redirect to /my-services if user exists and invite has type "service"', async () => {
+  it('should redirect to /my-services if user exists and the invite is for self-registration', async () => {
     const invite = inviteFixtures.validInviteResponse({
       user_exist: true,
-      type: 'service'
+      is_invite_to_join_service: false
     })
 
     const getValidatedInviteSpy = sinon.spy(() => Promise.resolve(invite))
