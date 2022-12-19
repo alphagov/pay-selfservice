@@ -264,5 +264,6 @@ module.exports = {
   payouts: {
     list: '/payments-to-your-bank-account',
     listStatusFilter: '/payments-to-your-bank-account/:statusFilter(test|live)'
-  }
+  },
+  privacy: '/privacy'
 }
