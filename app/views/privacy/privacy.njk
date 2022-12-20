@@ -5,12 +5,70 @@
 {% endblock %}
 
 {% block mainContent %}
+  <div class="govuk-grid-column-one-third sub-navigation-container">
+    <nav class="sub-navigation" data-click-events data-click-category="Content" data-click-action="Link clicked"
+         data-cy="sub-navigation">
+      <ol itemscope itemtype="http://schema.org/ItemList">
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#who-we-are">
+            <span itemprop="name">Who we are</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#why-we-need-your-data">
+            <span itemprop="name">Why we need your data</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#what-data-we-need-from-public-sector-employees">
+            <span itemprop="name">What data we need from public sector employees</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#what-we-do-with-your-data">
+            <span itemprop="name">What we do with your data</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#how-long-we-keep-your-data">
+            <span itemprop="name">How long we keep your data</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#childrens-privacy-protection">
+            <span itemprop="name">Children’s privacy protection</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#who-your-data-might-be-shared-with">
+            <span itemprop="name">Who your data might be shared with</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#how-we-protect-your-data-and-keep-it-secure">
+            <span itemprop="name">How we protect your data and keep it secure</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#changes-to-this-notice">
+            <span itemprop="name">Changes to this notice</span>
+          </a>
+        </li>
+        <li class="sub-navigation__item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a class="govuk-link" itemprop="item" href="#questions-and-complaints">
+            <span itemprop="name">Questions and complaints</span>
+          </a>
+        </li>
+      </ol>
+    </nav>
+  </div>
+
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Privacy notice</h1>
 
     <p class="govuk-body-l">Last updated: 30 August 2022</p>
 
-    <h2 class="govuk-heading-m">Who we are</h2>
+    <h2 class="govuk-heading-m" id="who-we-are">Who we are</h2>
 
     <p class="govuk-body">
       GOV.UK Pay is a payments service that’s built and maintained by the
@@ -36,7 +94,7 @@
     <ul class="govuk-list govuk-list--bullet">
       <li>the kinds of data we collect and process in order to provide the payments service</li>
       <li>how that data is used</li>
-      <li>how that data is protected </li>
+      <li>how that data is protected</li>
       <li>how you can find out what rights you have in relation to your data</li>
     </ul>
 
@@ -48,7 +106,7 @@
       for more information.
     </p>
 
-    <h2 class="govuk-heading-m">Why we need your data</h2>
+    <h2 class="govuk-heading-m" id="why-we-need-your-data">Why we need your data</h2>
 
     <p class="govuk-body">
       When a public sector organisation wants to use GOV.UK Pay, you, as the employee will need to
@@ -57,11 +115,12 @@
       managing of payments from your users.
     </p>
 
-    <h2 class="govuk-heading-m">What data we need from public sector employees</h2>
+    <h2 class="govuk-heading-m" id="what-data-we-need-from-public-sector-employees">What data we need from public sector
+      employees</h2>
 
     <p class="govuk-body">
       When
-      <a class="govuk-link" href="https://selfservice.payments.service.gov.uk/create-service/register">
+      <a class="govuk-link" href="https://selfservice.payments.service.gov.uk/register/email-address">
         creating an account on GOV.UK Pay
       </a>
       we will collect data that includes:
@@ -110,7 +169,7 @@
       you to access GOV.UK Pay to take and manage payments from users of your public service.
     </p>
 
-    <h2 class="govuk-heading-m">What we do with your data</h2>
+    <h2 class="govuk-heading-m" id="what-we-do-with-your-data">What we do with your data</h2>
 
     <p class="govuk-body">
       To carry out our responsibilities to the public sector organisation that uses GOV.UK Pay, we will need
@@ -158,7 +217,7 @@
       feature.
     </p>
 
-    <h2 class="govuk-heading-m">How long we keep your data</h2>
+    <h2 class="govuk-heading-m" id="how-long-we-keep-your-data">How long we keep your data</h2>
 
     <p class="govuk-body">
       We will only retain your personal data for as long as:
@@ -173,14 +232,14 @@
       In general, this means that we will only hold your personal data for a minimum of 1 year and a maximum of 7 years.
     </p>
 
-    <h2 class="govuk-heading-m">Children’s privacy protection</h2>
+    <h2 class="govuk-heading-m" id="childrens-privacy-protection">Children’s privacy protection</h2>
 
     <p class="govuk-body">
       Our services are not designed for, or intentionally targeted at, children 13 years of age or younger. It is not
       our policy to intentionally collect or maintain data about anyone under the age of 13.
     </p>
 
-    <h2 class="govuk-heading-m">Who your data might be shared with</h2>
+    <h2 class="govuk-heading-m" id="who-your-data-might-be-shared-with">Who your data might be shared with</h2>
 
     <p class="govuk-body">
       There are times when we need to share your data.
@@ -241,7 +300,9 @@
       <li>share your data with third parties for marketing purposes</li>
     </ul>
 
-    <h2 class="govuk-heading-m">How we protect your data and keep it secure</h2>
+    <h2 class="govuk-heading-m" id="how-we-protect-your-data-and-keep-it-secure">
+      How we protect your data and keep it secure
+    </h2>
 
     <p class="govuk-body">
       We are committed to doing all that we can to keep your data secure. We set up systems and processes to prevent
@@ -277,7 +338,7 @@
       the bottom of the page.
     </p>
 
-    <h2 class="govuk-heading-m">Changes to this notice</h2>
+    <h2 class="govuk-heading-m" id="changes-to-this-notice">Changes to this notice</h2>
 
     <p class="govuk-body">
       We may change this privacy notice. In that case the ‘last updated’ date at the top of this page will also change.
@@ -285,7 +346,7 @@
       personal data is processed, GDS will take reasonable steps to make sure you know.
     </p>
 
-    <h2 class="govuk-heading-m">Questions and complaints</h2>
+    <h2 class="govuk-heading-m" id="questions-and-complaints">Questions and complaints</h2>
 
     <p class="govuk-body">
       Contact
