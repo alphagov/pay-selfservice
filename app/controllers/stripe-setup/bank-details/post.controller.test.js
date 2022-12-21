@@ -158,6 +158,34 @@ describe('Bank details post controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
+  it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async () => {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    updateBankAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateBankAccountMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.yourPsp.index}`)
+  })
+
+  it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async () => {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+
+    updateBankAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateBankAccountMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
+  })
+
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
       '../../../services/clients/stripe/stripe.client': {
