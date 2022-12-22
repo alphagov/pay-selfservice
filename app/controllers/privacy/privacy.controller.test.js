@@ -1,10 +1,10 @@
 'use strict'
 
 const sinon = require('sinon')
+const proxyquire = require('proxyquire')
 
-const privacyController = require('./privacy.controller')
+let req, res, sessionValidatorMock
 
-let req, res
 describe('Privacy controller', () => {
   beforeEach(function () {
     req = {}
@@ -12,8 +12,49 @@ describe('Privacy controller', () => {
       render: sinon.spy()
     }
   })
-  it('should redirect to Privacy page', () => {
-    privacyController.getPage(req, res)
-    sinon.assert.calledWith(res.render, 'privacy/privacy')
+
+  describe('Logged out user', () => {
+    it('should redirect to Privacy page and set flags correctly', () => {
+      req = {
+        user: { externalId: 'some-id' },
+        session: {}
+      }
+
+      sessionValidatorMock = {
+        validate: () => false
+      }
+
+      const controller = getControllerWithMock(sessionValidatorMock)
+
+      controller.getPage(req, res)
+
+      sinon.assert.calledWith(res.render, 'privacy/privacy', sinon.match({
+        loggedIn: false,
+        hideServiceNav: true
+      }))
+    })
+  })
+
+  describe('Logged in user', () => {
+    it('should redirect to Privacy page and set flags correctly', () => {
+      sessionValidatorMock = {
+        validate: () => true
+      }
+
+      const controller = getControllerWithMock(sessionValidatorMock)
+
+      controller.getPage(req, res)
+
+      sinon.assert.calledWith(res.render, 'privacy/privacy', sinon.match({
+        loggedIn: true,
+        hideServiceNav: true
+      }))
+    })
   })
 })
+
+const getControllerWithMock = function getController (sessionValidatorMock) {
+  return proxyquire('./privacy.controller', {
+    './../../services/session-validator': sessionValidatorMock
+  })
+}
