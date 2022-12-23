@@ -13,7 +13,7 @@ async function listAgreements (req, res, next) {
 
   const filters = {
     ...req.query.status && { status: req.query.status },
-    ...req.query.reference && { reference: req.query.reference }
+    ...req.query.reference && { reference: req.query.reference.trim() }
   }
   req.session.agreementsFilter = url.parse(req.url).query
 
