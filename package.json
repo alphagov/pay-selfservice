@@ -112,7 +112,7 @@
     "@babel/polyfill": "7.12.1",
     "@babel/preset-env": "7.20.2",
     "@pact-foundation/pact": "^9.18.1",
-    "@pact-foundation/pact-node": "10.17.6",
+    "@pact-foundation/pact-node": "10.17.7",
     "chai": "4.3.7",
     "chai-arrays": "2.2.0",
     "chai-as-promised": "7.1.1",
