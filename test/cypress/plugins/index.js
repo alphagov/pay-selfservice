@@ -40,6 +40,11 @@ module.exports = (on, config) => {
         body: {
           port: config.env.MOUNTEBANK_IMPOSTERS_PORT,
           protocol: 'http',
+          defaultResponse: {
+            statusCode: 404,
+            body: 'No stub predicate matches the request',
+            headers: {}
+          },
           stubs
         }
       })
