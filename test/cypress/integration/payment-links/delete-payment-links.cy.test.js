@@ -1,13 +1,20 @@
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const userStubs = require('../../stubs/user-stubs')
-const { getProductsByGatewayAccountIdAndTypeStub, getProductByExternalIdStub, deleteProductStub } = require('../../stubs/products-stubs')
+const {
+  getProductsByGatewayAccountIdAndTypeStub,
+  getProductByExternalIdStub,
+  deleteProductStub
+} = require('../../stubs/products-stubs')
+const {deleteTokenByApiTokenSuccess} = require('../../stubs/token-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountExternalId = 'a-valid-account-id'
 const gatewayAccountId = 42
 const productExternalId = 'a-product-id'
+const apiToken = 'an-api-token'
 
 const product = {
-  external_id: productExternalId
+  external_id: productExternalId,
+  payApiToke: apiToken
 }
 
 describe('Should delete payment link', () => {
@@ -15,10 +22,16 @@ describe('Should delete payment link', () => {
     cy.setEncryptedCookies(userExternalId)
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+        gatewayAccountId,
+        gatewayAccountExternalId,
+        type: 'test',
+        paymentProvider: 'worldpay'
+      }),
       getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
       getProductByExternalIdStub(product, gatewayAccountId),
-      deleteProductStub(product, gatewayAccountId, 1)
+      deleteProductStub(product, gatewayAccountId, 1),
+      deleteTokenByApiTokenSuccess(gatewayAccountId, apiToken)
     ])
   })
 

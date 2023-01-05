@@ -15,7 +15,14 @@ function validCreateTokenForGatewayAccountResponse (opts = {}) {
   }
 }
 
+function validDeleteTokenByApiTokenRequest (apiToken) {
+  return {
+    token: apiToken
+  }
+}
+
 module.exports = {
   validCreateTokenForGatewayAccountRequest,
-  validCreateTokenForGatewayAccountResponse
+  validCreateTokenForGatewayAccountResponse,
+  validDeleteTokenByApiTokenRequest
 }
