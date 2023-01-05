@@ -5,7 +5,7 @@ const {
   getProductByExternalIdStub,
   deleteProductStub
 } = require('../../stubs/products-stubs')
-const {deleteTokenByApiTokenSuccess} = require('../../stubs/token-stubs')
+const { deleteTokenByApiTokenSuccess } = require('../../stubs/token-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountExternalId = 'a-valid-account-id'
 const gatewayAccountId = 42

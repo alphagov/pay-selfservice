@@ -91,6 +91,11 @@ function postSecondFactorSuccess (userExternalId) {
   return stubBuilder('POST', path, 200)
 }
 
+function postActivateSecondFactorSuccess (userExternalId) {
+  const path = `/v1/api/users/${userExternalId}/second-factor/activate`
+  return stubBuilder('POST', path, 200)
+}
+
 function postAuthenticateSecondFactorSuccess (userExternalId, code) {
   const path = `/v1/api/users/${userExternalId}/second-factor/authenticate`
   return stubBuilder('POST', path, 200, {
@@ -284,6 +289,7 @@ module.exports = {
   postUserAuthenticateSuccess,
   postUserAuthenticateInvalidPassword,
   postSecondFactorSuccess,
+  postActivateSecondFactorSuccess,
   postAuthenticateSecondFactorSuccess,
   postAuthenticateSecondFactorInvalidCode,
   postProvisionSecondFactorSuccess,

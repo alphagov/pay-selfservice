@@ -65,7 +65,10 @@ describe('Change sign in method', () => {
               secondFactor: 'APP',
               provisionalOtpKey
             }),
-            userStubs.postProvisionSecondFactorSuccess(userExternalId)
+            userStubs.postProvisionSecondFactorSuccess(userExternalId),
+            userStubs.patchUpdateUserPhoneNumberSuccess(userExternalId, validPhoneNumber),
+            userStubs.postSecondFactorSuccess(userExternalId),
+            userStubs.postActivateSecondFactorSuccess(userExternalId)
           ])
 
           cy.get('button').contains('Continue').click()
@@ -173,7 +176,8 @@ describe('Change sign in method', () => {
 
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, telephoneNumber: null, secondFactor: 'SMS', provisionalOtpKey }),
-          userStubs.postProvisionSecondFactorSuccess(userExternalId)
+          userStubs.postProvisionSecondFactorSuccess(userExternalId),
+          userStubs.postActivateSecondFactorSuccess(userExternalId)
         ])
 
         cy.visit('/my-profile/two-factor-auth')
