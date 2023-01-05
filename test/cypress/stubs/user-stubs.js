@@ -147,6 +147,13 @@ function postAssignServiceRoleSuccess (opts) {
   })
 }
 
+function patchUpdateUserPhoneNumberSuccess (userExternalId, telephoneNumber) {
+  const path = `/v1/api/users/${userExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: userFixtures.validUpdateTelephoneNumberRequest(telephoneNumber)
+  })
+}
+
 /**
  * This is used when calling a route expects a user to be in a certain state to proceed, and then
  * performs a redirect to another route which expects the user to have changed.
@@ -281,5 +288,6 @@ module.exports = {
   postAuthenticateSecondFactorInvalidCode,
   postProvisionSecondFactorSuccess,
   putUpdateServiceRoleSuccess,
-  getUserSuccessWithMultipleServices
+  getUserSuccessWithMultipleServices,
+  patchUpdateUserPhoneNumberSuccess
 }

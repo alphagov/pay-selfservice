@@ -40,7 +40,8 @@ describe('Edit phone number flow', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId)
       cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, telephoneNumber: testPhoneNumberNew })
+        userStubs.getUserSuccess({ userExternalId, telephoneNumber: testPhoneNumberNew }),
+        userStubs.patchUpdateUserPhoneNumberSuccess(userExternalId, testPhoneNumberNew)
       ])
     })
 
