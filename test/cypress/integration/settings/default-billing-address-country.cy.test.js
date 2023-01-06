@@ -3,7 +3,7 @@ const serviceStubs = require('../../stubs/service-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-const serviceExternalId = 'a-service--external-id'
+const serviceExternalId = 'a-service-external-id'
 const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-gateway-account-external-id'
 
@@ -11,6 +11,7 @@ function getUserAndGatewayAccountStubs (defaultBillingAddressCountry) {
   return [
     userStubs.getUserSuccess({
       userExternalId,
+      serviceExternalId,
       gatewayAccountId,
       defaultBillingAddressCountry
     }),
@@ -50,8 +51,7 @@ describe('Default billing address country', () => {
         serviceStubs.patchUpdateDefaultBillingAddressCountrySuccess({
           serviceExternalId,
           gatewayAccountId,
-          country: 'GB',
-          verifyTimesCalled: 1
+          country: 'GB'
         })
       ])
 

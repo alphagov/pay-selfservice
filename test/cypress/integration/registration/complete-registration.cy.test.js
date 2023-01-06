@@ -5,7 +5,9 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const inviteCode = 'an-invite-code'
 const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
 const createdUserExternalId = 'a-user-id'
+const validPassword = 'long-enough-password'
 const validPhoneNumber = '+4408081570192'
+const validOtpCode = '123456'
 
 describe('Complete registration after following link in invite email', () => {
   describe('SMS is selected as method for getting security codes', () => {
@@ -17,6 +19,14 @@ describe('Complete registration after following link in invite email', () => {
           otp_key: otpKey,
           telephone_number: validPhoneNumber
         }),
+        inviteStubs.patchUpdateInvitePasswordSuccess(inviteCode, validPassword),
+        inviteStubs.patchUpdateInvitePhoneNumberSuccess(inviteCode, validPhoneNumber),
+        inviteStubs.postReprovisionOtpSuccess({
+          code: inviteCode,
+          otp_key: otpKey
+        }),
+        inviteStubs.postSendOtpSuccess(inviteCode),
+        inviteStubs.postValidateOtpSuccess(inviteCode, validOtpCode),
         inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId),
         userStubs.getUserSuccess({ userExternalId: createdUserExternalId, gatewayAccountId: '1' }),
         gatewayAccountStubs.getGatewayAccountsSuccess({
@@ -54,8 +64,8 @@ describe('Complete registration after following link in invite email', () => {
       cy.title().should('eq', 'Create your password - GOV.UK Pay')
 
       // enter valid values into both password fields and click continue
-      cy.get('#password').type('long-enough-password', { delay: 0 })
-      cy.get('#repeat-password').type('long-enough-password', { delay: 0 })
+      cy.get('#password').type(validPassword, { delay: 0 })
+      cy.get('#repeat-password').type(validPassword, { delay: 0 })
       cy.get('button').contains('Continue').click()
 
       // should redirect to next page
@@ -105,7 +115,7 @@ describe('Complete registration after following link in invite email', () => {
       cy.title().should('eq', 'Enter your mobile phone number - GOV.UK Pay')
 
       // enter a valid phone number
-      cy.get('#phone').type(validPhoneNumber, { delay: 0 })
+      cy.get('#phone').clear().type(validPhoneNumber, { delay: 0 })
       cy.get('button').contains('Continue').click()
 
       // should show page to enter code
@@ -164,7 +174,7 @@ describe('Complete registration after following link in invite email', () => {
       cy.title().should('eq', 'Check your phone - GOV.UK Pay')
 
       // enter a valid code and click continue
-      cy.get('#code').type('123456')
+      cy.get('#code').type(validOtpCode)
       cy.get('button').contains('Continue').click()
 
       // should show the success page
@@ -188,10 +198,12 @@ describe('Complete registration after following link in invite email', () => {
           password_set: false,
           otp_key: otpKey
         }),
-        inviteStubs.reprovisionOtpSuccess({
+        inviteStubs.patchUpdateInvitePasswordSuccess(inviteCode, validPassword),
+        inviteStubs.postReprovisionOtpSuccess({
           code: inviteCode,
           otp_key: otpKey
         }),
+        inviteStubs.postValidateOtpSuccess(inviteCode, validOtpCode),
         inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId),
         userStubs.getUserSuccess({ userExternalId: createdUserExternalId, gatewayAccountId: '1' }),
         gatewayAccountStubs.getGatewayAccountsSuccess({

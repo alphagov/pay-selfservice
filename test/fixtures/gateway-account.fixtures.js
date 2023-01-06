@@ -139,7 +139,7 @@ function validGatewayAccountPatchRequest (opts = {}) {
 function validGatewayAccountEmailRefundToggleRequest (enabled = true) {
   return {
     op: 'replace',
-    path: '/refund/enabled',
+    path: '/refund_issued/enabled',
     value: enabled
   }
 }
@@ -147,7 +147,7 @@ function validGatewayAccountEmailRefundToggleRequest (enabled = true) {
 function validGatewayAccountEmailConfirmationToggleRequest (enabled = true) {
   return {
     op: 'replace',
-    path: '/confirmation/enabled',
+    path: '/payment_confirmed/enabled',
     value: enabled
   }
 }

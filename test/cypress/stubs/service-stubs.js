@@ -119,8 +119,7 @@ function patchUpdateDefaultBillingAddressCountrySuccess (opts) {
       external_id: opts.serviceExternalId,
       gateway_account_ids: [opts.gatewayAccountId],
       default_billing_address_country: opts.country
-    }),
-    verifyCalledTimes: opts.verifyCalledTimes
+    })
   })
 }
 

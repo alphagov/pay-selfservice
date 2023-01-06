@@ -1,5 +1,6 @@
 const userStubs = require('../../stubs/user-stubs')
 const serviceStubs = require('../../stubs/service-stubs')
+const zendeskStubs = require('../../stubs/zendesk-stubs')
 
 describe('Request PSP test account: submit request', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
@@ -21,6 +22,7 @@ describe('Request PSP test account: submit request', () => {
           pspTestAccountStage: pspTestAccountStageSecondResponse
         }
       ),
+      zendeskStubs.createTicketSuccess(),
       serviceStubs.patchUpdateServicePspTestAccountStage({ serviceExternalId, gatewayAccountId, pspTestAccountStage: 'REQUEST_SUBMITTED' })
     ])
   }
