@@ -187,6 +187,11 @@ function getCardTypesSuccess () {
   })
 }
 
+function postUpdateCardTypesSuccess (gatewayAccountId) {
+  const path = `/v1/frontend/accounts/${gatewayAccountId}/card-types`
+  return stubBuilder('POST', path, 200)
+}
+
 function patchConfirmationEmailToggleSuccess (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/email-notification`
   return stubBuilder('PATCH', path, 200, {
@@ -272,6 +277,7 @@ module.exports = {
   getDirectDebitGatewayAccountSuccess,
   postCreateGatewayAccountSuccess,
   getCardTypesSuccess,
+  postUpdateCardTypesSuccess,
   patchConfirmationEmailToggleSuccess,
   patchRefundEmailToggleSuccess,
   patchAccountEmailCollectionModeSuccess,
