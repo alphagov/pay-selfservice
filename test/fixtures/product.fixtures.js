@@ -76,7 +76,8 @@ function validProductResponse (opts = {}) {
     gateway_account_id: opts.gateway_account_id || 99,
     name: opts.name || 'A Product Name',
     language: opts.language || 'en',
-    _links: opts.links
+    _links: opts.links,
+    pay_api_token: opts.pay_api_token || 'an-api-token'
   }
 
   if (opts.reference_enabled !== undefined) data.reference_enabled = opts.reference_enabled

@@ -10,11 +10,11 @@ const userExternalId = 'a-user-id'
 const gatewayAccountExternalId = 'a-valid-account-id'
 const gatewayAccountId = 42
 const productExternalId = 'a-product-id'
-const apiToken = 'an-api-token'
+const apiToken = 'product-api-token'
 
 const product = {
   external_id: productExternalId,
-  payApiToke: apiToken
+  pay_api_token: apiToken
 }
 
 describe('Should delete payment link', () => {
