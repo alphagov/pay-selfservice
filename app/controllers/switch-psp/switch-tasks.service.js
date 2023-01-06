@@ -31,7 +31,18 @@ function organisationUrlComplete (service) {
 
 function getTaskList (targetCredential, account, service) {
   if (targetCredential.payment_provider === 'worldpay') {
-    return {
+    if (account.allow_moto) {
+      return {
+        'LINK_CREDENTIALS': {
+          enabled: true,
+          complete: linkCredentialsComplete(targetCredential)
+        },
+        'VERIFY_PSP_INTEGRATION': {
+          enabled: linkCredentialsComplete(targetCredential),
+          complete: verifyPSPIntegrationComplete(targetCredential)
+        }
+      }
+    } return {
       'LINK_CREDENTIALS': {
         enabled: true,
         complete: linkCredentialsComplete(targetCredential)
