@@ -4,6 +4,7 @@ const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const connectorChargeStubs = require('../../stubs/connector-charge-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
+const transactionStubs = require('../../stubs/transaction-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
@@ -14,11 +15,23 @@ const password = '1'
 const organisationalUnitId = '5bd9b55e4444761ac0af1c82'
 const issuer = '5bd9e0e4444dce153428c942'
 const jwtMacKey = 'ffffffff-ffff-ffff-ffff-ffffffffffff'
+const currentCredentialExternalId = 'smartpay-cred'
+const currentCredentialId = 1
+const switchingToCredentialExternalId = 'worlpday-cred'
+const switchingToCredentialId = 2
 
 function getUserAndAccountStubs (paymentProvider, providerSwitchEnabled, gatewayAccountCredentials, merchantDetails, requires3ds, integrationVersion3ds) {
   return [
     userStubs.getUserSuccess({ gatewayAccountId, userExternalId, merchantDetails }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, providerSwitchEnabled, paymentProvider, ...gatewayAccountCredentials && { gatewayAccountCredentials }, requires3ds, integrationVersion3ds })
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+      gatewayAccountId,
+      gatewayAccountExternalId,
+      providerSwitchEnabled,
+      paymentProvider,
+      ...gatewayAccountCredentials && { gatewayAccountCredentials },
+      requires3ds,
+      integrationVersion3ds
+    })
   ]
 }
 
@@ -43,10 +56,24 @@ describe('Switch PSP settings page', () => {
   describe('When using an account with switching flag enabled', () => {
     describe('Switching is not started', () => {
       beforeEach(() => {
-        cy.task('setupStubs', getUserAndAccountStubs('smartpay', true, [
-          { payment_provider: 'smartpay', state: 'ACTIVE' },
-          { payment_provider: 'worldpay', state: 'CREATED' }
-        ]))
+        const userAndAccountStubs = getUserAndAccountStubs('smartpay', true, [
+          {
+            payment_provider: 'smartpay',
+            state: 'ACTIVE',
+            id: currentCredentialId,
+            external_id: currentCredentialExternalId
+          },
+          {
+            payment_provider: 'worldpay',
+            state: 'CREATED',
+            id: switchingToCredentialId,
+            external_id: switchingToCredentialExternalId
+          }
+        ])
+        cy.task('setupStubs', [
+          ...userAndAccountStubs,
+          transactionStubs.getTransactionsSummarySuccess()
+        ])
       })
 
       it('should show dashboard message for switching psp', () => {
@@ -95,15 +122,27 @@ describe('Switch PSP settings page', () => {
       beforeEach(() => {
         cy.task('setupStubs', [
           ...getUserAndAccountStubs('smartpay', true, [
-            { payment_provider: 'smartpay', state: 'ACTIVE' },
-            { payment_provider: 'worldpay', state: 'ENTERED' }
+            {
+              payment_provider: 'smartpay',
+              state: 'ACTIVE',
+              id: currentCredentialId,
+              external_id: currentCredentialExternalId
+            },
+            {
+              payment_provider: 'worldpay',
+              state: 'ENTERED',
+              id: switchingToCredentialId,
+              external_id: switchingToCredentialExternalId
+            }
           ]),
           gatewayAccountStubs.postCheckWorldpayCredentials({
             gatewayAccountId,
             merchant_id: merchantId,
             username,
             password
-          })
+          }),
+          gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId),
+          gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, 1)
         ])
       })
 
@@ -132,15 +171,31 @@ describe('Switch PSP settings page', () => {
       beforeEach(() => {
         cy.task('setupStubs', [
           ...getUserAndAccountStubs('smartpay', true, [
-            { payment_provider: 'smartpay', state: 'ACTIVE' },
-            { payment_provider: 'worldpay', state: 'ENTERED' }
-          ],
-          null,
-          true,
-          2),
+              {
+                payment_provider: 'smartpay',
+                state: 'ACTIVE',
+                id: currentCredentialId,
+                external_id: currentCredentialExternalId
+              },
+              {
+                payment_provider: 'worldpay',
+                state: 'ENTERED',
+                id: switchingToCredentialId,
+                external_id: switchingToCredentialExternalId
+              }
+            ],
+            null,
+            true,
+            2),
           gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
             gatewayAccountId: gatewayAccountId,
             result: 'valid',
+            organisational_unit_id: organisationalUnitId,
+            issuer: issuer,
+            jwt_mac_key: jwtMacKey
+          }),
+          gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({
+            gatewayAccountId: gatewayAccountId,
             organisational_unit_id: organisationalUnitId,
             issuer: issuer,
             jwt_mac_key: jwtMacKey
@@ -169,12 +224,22 @@ describe('Switch PSP settings page', () => {
       it('should now be clickable and navigate to the verify PSP integration page', () => {
         cy.task('setupStubs', [
           ...getUserAndAccountStubs('smartpay', true, [
-            { payment_provider: 'smartpay', state: 'ACTIVE' },
-            { payment_provider: 'worldpay', state: 'ENTERED' }
-          ],
-          null,
-          true,
-          2)
+              {
+                payment_provider: 'smartpay',
+                state: 'ACTIVE',
+                id: currentCredentialId,
+                external_id: currentCredentialExternalId
+              },
+              {
+                payment_provider: 'worldpay',
+                state: 'ENTERED',
+                id: switchingToCredentialId,
+                external_id: switchingToCredentialExternalId
+              }
+            ],
+            null,
+            true,
+            2)
         ])
 
         cy.get('.app-task-list__item').contains('Make a live payment to test your Worldpay PSP').click()
@@ -185,12 +250,22 @@ describe('Switch PSP settings page', () => {
       it('should create a charge and continue to charges next url on success', () => {
         cy.task('setupStubs', [
           ...getUserAndAccountStubs('smartpay', true, [
-            { payment_provider: 'smartpay', state: 'ACTIVE' },
-            { payment_provider: 'worldpay', state: 'ENTERED' }
-          ],
-          null,
-          true,
-          2),
+              {
+                payment_provider: 'smartpay',
+                state: 'ACTIVE',
+                id: currentCredentialId,
+                external_id: currentCredentialExternalId
+              },
+              {
+                payment_provider: 'worldpay',
+                state: 'ENTERED',
+                id: switchingToCredentialId,
+                external_id: switchingToCredentialExternalId
+              }
+            ],
+            null,
+            true,
+            2),
           connectorChargeStubs.postCreateChargeSuccess({
             gateway_account_id: gatewayAccountId,
             charge_id: 'a-valid-charge-external-id',
@@ -206,12 +281,22 @@ describe('Switch PSP settings page', () => {
       it('returning with a failed payment should present an error', () => {
         cy.task('setupStubs', [
           ...getUserAndAccountStubs('smartpay', true, [
-            { payment_provider: 'smartpay', state: 'ACTIVE' },
-            { payment_provider: 'worldpay', state: 'ENTERED' }
-          ],
-          null,
-          true,
-          2),
+              {
+                payment_provider: 'smartpay',
+                state: 'ACTIVE',
+                id: currentCredentialId,
+                external_id: currentCredentialExternalId
+              },
+              {
+                payment_provider: 'worldpay',
+                state: 'ENTERED',
+                id: switchingToCredentialId,
+                external_id: switchingToCredentialExternalId
+              }
+            ],
+            null,
+            true,
+            2),
           connectorChargeStubs.getChargeSuccess({
             gateway_account_id: gatewayAccountId,
             charge_id: 'a-valid-charge-external-id',
@@ -228,12 +313,22 @@ describe('Switch PSP settings page', () => {
       it('returning with a successful payment should present completion message', () => {
         cy.task('setupStubs', [
           ...getUserAndAccountStubs('smartpay', true, [
-            { payment_provider: 'smartpay', state: 'ACTIVE' },
-            { payment_provider: 'worldpay', state: 'VERIFIED_WITH_LIVE_PAYMENT' }
-          ],
-          null,
-          true,
-          2),
+              {
+                payment_provider: 'smartpay',
+                state: 'ACTIVE',
+                id: currentCredentialId,
+                external_id: currentCredentialExternalId
+              },
+              {
+                payment_provider: 'worldpay',
+                state: 'VERIFIED_WITH_LIVE_PAYMENT',
+                id: switchingToCredentialId,
+                external_id: switchingToCredentialExternalId
+              }
+            ],
+            null,
+            true,
+            2),
           connectorChargeStubs.postCreateChargeSuccess({
             gateway_account_id: gatewayAccountId,
             charge_id: 'a-valid-charge-external-id',
@@ -244,7 +339,8 @@ describe('Switch PSP settings page', () => {
             charge_id: 'a-valid-charge-external-id',
             status: 'success',
             next_url: '/should_follow_to_payment_page'
-          })
+          }),
+          gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId)
         ])
 
         cy.get('.app-task-list__item').contains('Make a live payment to test your Worldpay PSP').click()
@@ -256,13 +352,27 @@ describe('Switch PSP settings page', () => {
 
     describe('Switch PSP', () => {
       beforeEach(() => {
-        cy.task('setupStubs', getUserAndAccountStubs('smartpay', true, [
-          { payment_provider: 'smartpay', state: 'ACTIVE' },
-          { payment_provider: 'worldpay', state: 'VERIFIED_WITH_LIVE_PAYMENT' }
-        ],
-        null,
-        true,
-        2))
+        let userAndAccountStubs = getUserAndAccountStubs('smartpay', true, [
+            {
+              payment_provider: 'smartpay',
+              state: 'ACTIVE',
+              id: currentCredentialId,
+              external_id: currentCredentialExternalId
+            },
+            {
+              payment_provider: 'worldpay',
+              state: 'VERIFIED_WITH_LIVE_PAYMENT',
+              id: switchingToCredentialId,
+              external_id: switchingToCredentialExternalId
+            }
+          ],
+          null,
+          true,
+          2)
+        cy.task('setupStubs', [
+          ...userAndAccountStubs,
+          gatewayAccountStubs.postSwitchPspSuccess(gatewayAccountId)
+        ])
       })
 
       it('submits and navigates through to success page with appropriate message', () => {
@@ -275,12 +385,22 @@ describe('Switch PSP settings page', () => {
     describe('Switched PSP', () => {
       beforeEach(() => {
         cy.task('setupStubs', getUserAndAccountStubs('smartpay', true, [
-          { payment_provider: 'smartpay', state: 'ACTIVE', external_id: 'a-valid-external-id-smartpay', active_start_date: '2018-05-03T00:00:00.000Z' },
-          { payment_provider: 'worldpay', state: 'RETIRED', active_end_date: '2018-05-03T00:00:00.000Z', external_id: 'a-valid-external-id-worldpay' }
-        ],
-        null,
-        true,
-        2))
+            {
+              payment_provider: 'smartpay',
+              state: 'ACTIVE',
+              external_id: 'a-valid-external-id-smartpay',
+              active_start_date: '2018-05-03T00:00:00.000Z'
+            },
+            {
+              payment_provider: 'worldpay',
+              state: 'RETIRED',
+              active_end_date: '2018-05-03T00:00:00.000Z',
+              external_id: 'a-valid-external-id-worldpay'
+            }
+          ],
+          null,
+          true,
+          2))
       })
 
       it('sets transitioned text on the old psp page', () => {
@@ -344,7 +464,11 @@ describe('Switch PSP settings page', () => {
             true,
             [
               { payment_provider: 'smartpay', state: 'ACTIVE' },
-              { payment_provider: 'stripe', state: 'CREATED', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' } }
+              {
+                payment_provider: 'stripe',
+                state: 'CREATED',
+                credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' }
+              }
             ]
           ),
           stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
@@ -379,7 +503,11 @@ describe('Switch PSP settings page', () => {
             true,
             [
               { payment_provider: 'smartpay', state: 'ACTIVE' },
-              { payment_provider: 'stripe', state: 'VERIFIED_WITH_LIVE_PAYMENT', credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' } }
+              {
+                payment_provider: 'stripe',
+                state: 'VERIFIED_WITH_LIVE_PAYMENT',
+                credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' }
+              }
             ],
             merchantDetails
           ),

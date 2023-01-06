@@ -267,6 +267,23 @@ function postCheckWorldpay3dsFlexCredentialsWithBadResult (opts) {
   })
 }
 
+function postUpdateWorldpay3dsFlexCredentials (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/3ds-flex-credentials`
+  return stubBuilder('POST', path, 200, {
+    request: worldpay3dsFlexCredentialsFixtures.validUpdateWorldpay3dsCredentialsRequest(opts)
+  })
+}
+
+function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId) {
+  const path = `/v1/api/accounts/${gatewayAccountId}/credentials/${credentialId}`
+  return stubBuilder('PATCH', path, 200)
+}
+
+function postSwitchPspSuccess(gatewayAccountId) {
+  const path = `/v1/api/accounts/${gatewayAccountId}/switch-psp`
+  return stubBuilder('POST', path, 200)
+}
+
 module.exports = {
   getAccountAuthSuccess,
   getGatewayAccountSuccess,
@@ -287,5 +304,8 @@ module.exports = {
   postCheckWorldpay3dsFlexCredentials,
   postCheckWorldpay3dsFlexCredentialsFailure,
   postCheckWorldpay3dsFlexCredentialsWithBadResult,
-  postCheckWorldpayCredentials
+  postCheckWorldpayCredentials,
+  postUpdateWorldpay3dsFlexCredentials,
+  patchUpdateCredentialsSuccess,
+  postSwitchPspSuccess
 }
