@@ -18,11 +18,11 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 const existingGatewayAccountId = 42
-const defaultState = `Gateway account ${existingGatewayAccountId} exists in the database`
+const defaultState = `a stripe gateway account with external id ${existingGatewayAccountId} exists in the database`
 
 describe('connector client - patch email collection mode', function () {
   let provider = new Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
@@ -48,6 +48,7 @@ describe('connector client - patch email collection mode', function () {
           .withMethod('PATCH')
           .withRequestBody(validGatewayAccountEmailCollectionModeRequest)
           .withStatusCode(200)
+          .withResponseHeaders({})
           .build()
       )
         .then(() => done())
@@ -77,6 +78,7 @@ describe('connector client - patch email collection mode', function () {
           .withMethod('PATCH')
           .withRequestBody(validGatewayAccountEmailCollectionModeRequest)
           .withStatusCode(200)
+          .withResponseHeaders({})
           .build()
       )
         .then(() => done())
@@ -102,10 +104,11 @@ describe('connector client - patch email collection mode', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
           .withUponReceiving('a valid patch email collection mode (off) request')
-          .withState(`Gateway account ${existingGatewayAccountId} exists in the database`)
+          .withState(defaultState)
           .withMethod('PATCH')
           .withRequestBody(validGatewayAccountEmailCollectionModeRequest)
           .withStatusCode(200)
+          .withResponseHeaders({})
           .build()
       )
         .then(() => done())
