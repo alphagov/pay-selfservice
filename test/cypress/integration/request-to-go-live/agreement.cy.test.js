@@ -6,6 +6,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const userStubs = require('../../stubs/user-stubs')
 const goLiveRequestStubs = require('../../stubs/go-live-request-stubs')
 const serviceStubs = require('../../stubs/service-stubs')
+const zendeskStubs = require('../../stubs/zendesk-stubs')
 
 const requestToGoLiveAgreementUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`
 
@@ -16,8 +17,14 @@ function getStubsForPageSubmission (chosenPspGoLiveStage, termsAgreedGoLiveStage
       { gatewayAccountId, serviceExternalId, goLiveStage: termsAgreedGoLiveStage, merchantName: 'GDS' }
     ),
     gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-    serviceStubs.patchUpdateServiceGoLiveStageSuccess({ serviceExternalId, gatewayAccountId, currentGoLiveStage: termsAgreedGoLiveStage }),
-    goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId })
+    serviceStubs.patchUpdateServiceGoLiveStageSuccess({
+      serviceExternalId,
+      gatewayAccountId,
+      currentGoLiveStage: termsAgreedGoLiveStage
+    }),
+    goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }),
+    goLiveRequestStubs.postStripeAgreementIpAddress(serviceExternalId),
+    zendeskStubs.createTicketSuccess()
   ]
 }
 
@@ -101,7 +108,7 @@ describe('Request to go live: agreement', () => {
     it('should continue to the index page when terms are agreed to', () => {
       cy.task('setupStubs', [
         ...getStubsForPageSubmission('CHOSEN_PSP_STRIPE', 'TERMS_AGREED_STRIPE'),
-        goLiveRequestStubs.postStripeAgreementIpAddress({ serviceExternalId })
+        goLiveRequestStubs.postStripeAgreementIpAddress(serviceExternalId)
       ])
 
       cy.get('#agreement').check()
@@ -173,7 +180,13 @@ describe('Request to go live: agreement', () => {
   describe('Adminusers returns an error', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, goLiveStage: 'CHOSEN_PSP_STRIPE', merchantName: 'GDS' }),
+        userStubs.getUserSuccess({
+          userExternalId,
+          gatewayAccountId,
+          serviceExternalId,
+          goLiveStage: 'CHOSEN_PSP_STRIPE',
+          merchantName: 'GDS'
+        }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
         goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }),
         utils.patchUpdateGoLiveStageErrorStub('TERMS_AGREED_STRIPE')

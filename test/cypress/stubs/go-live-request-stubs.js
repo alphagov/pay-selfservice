@@ -16,14 +16,9 @@ function postGovUkPayAgreement (opts) {
   })
 }
 
-function postStripeAgreementIpAddress (opts) {
-  const path = `/v1/api/services/${opts.serviceExternalId}/stripe-agreement`
-  return stubBuilder('POST', path, 201, {
-    request: goLiveRequestFixtures.validPostStripeAgreementRequest({
-      ip_address: '93.184.216.34'
-    }),
-    responseHeaders: {}
-  })
+function postStripeAgreementIpAddress (serviceExternalId) {
+  const path = `/v1/api/services/${serviceExternalId}/stripe-agreement`
+  return stubBuilder('POST', path, 201)
 }
 
 module.exports = {
