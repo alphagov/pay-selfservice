@@ -55,10 +55,34 @@ function completeInviteToServiceSuccess (inviteCode, userExternalId, serviceExte
   })
 }
 
-function reprovisionOtpSuccess (opts) {
+function postReprovisionOtpSuccess (opts) {
   const path = `/v1/api/invites/${opts.code}/reprovision-otp`
   return stubBuilder('POST', path, 200, {
     response: inviteFixtures.validInviteResponse(opts)
+  })
+}
+
+function postSendOtpSuccess (inviteCode) {
+  const path = `/v1/api/invites/${inviteCode}/send-otp`
+  return stubBuilder('POST', path, 200)
+}
+
+function postValidateOtpSuccess (inviteCode, otpCode) {
+  const path = `/v2/api/invites/otp/validate`
+  return stubBuilder('POST', path, 200)
+}
+
+function patchUpdateInvitePasswordSuccess (inviteCode, password) {
+  const path = `/v1/api/invites/${inviteCode}`
+  return stubBuilder('PATCH', path, 200, {
+    request: inviteFixtures.validUpdateInvitePasswordRequest(password)
+  })
+}
+
+function patchUpdateInvitePhoneNumberSuccess (inviteCode, phoneNumber) {
+  const path = `/v1/api/invites/${inviteCode}`
+  return stubBuilder('PATCH', path, 200, {
+    request: inviteFixtures.validUpdateInvitePhoneNumberRequest(phoneNumber)
   })
 }
 
@@ -69,5 +93,9 @@ module.exports = {
   getInviteSuccess,
   completeInviteSuccess,
   completeInviteToServiceSuccess,
-  reprovisionOtpSuccess
+  postReprovisionOtpSuccess,
+  postSendOtpSuccess,
+  postValidateOtpSuccess,
+  patchUpdateInvitePasswordSuccess,
+  patchUpdateInvitePhoneNumberSuccess
 }
