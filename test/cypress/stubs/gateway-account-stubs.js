@@ -208,6 +208,13 @@ function patchAccountEmailCollectionModeSuccess (opts) {
   })
 }
 
+function patchUpdateServiceNameSuccess (gatewayAccountId, serviceName) {
+  const path = `/v1/frontend/accounts/${gatewayAccountId}/servicename`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchServiceNameRequest(serviceName)
+  })
+}
+
 function postCheckWorldpay3dsFlexCredentials (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
   return stubBuilder('POST', path, 200, {
@@ -254,6 +261,7 @@ module.exports = {
   patchConfirmationEmailToggleSuccess,
   patchRefundEmailToggleSuccess,
   patchAccountEmailCollectionModeSuccess,
+  patchUpdateServiceNameSuccess,
   postCheckWorldpay3dsFlexCredentials,
   postCheckWorldpay3dsFlexCredentialsFailure,
   postCheckWorldpay3dsFlexCredentialsWithBadResult,

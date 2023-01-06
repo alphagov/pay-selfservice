@@ -91,6 +91,11 @@ function postSecondFactorSuccess (userExternalId) {
   return stubBuilder('POST', path, 200)
 }
 
+function postActivateSecondFactorSuccess (userExternalId) {
+  const path = `/v1/api/users/${userExternalId}/second-factor/activate`
+  return stubBuilder('POST', path, 200)
+}
+
 function postAuthenticateSecondFactorSuccess (userExternalId, code) {
   const path = `/v1/api/users/${userExternalId}/second-factor/authenticate`
   return stubBuilder('POST', path, 200, {
@@ -144,6 +149,13 @@ function postAssignServiceRoleSuccess (opts) {
     request: userFixtures.validAssignServiceRoleRequest(fixtureOpts),
     response: userFixtures.validUserResponse(fixtureOpts),
     verifyCalledTimes: opts.verifyCalledTimes
+  })
+}
+
+function patchUpdateUserPhoneNumberSuccess (userExternalId, telephoneNumber) {
+  const path = `/v1/api/users/${userExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: userFixtures.validUpdateTelephoneNumberRequest(telephoneNumber)
   })
 }
 
@@ -277,9 +289,11 @@ module.exports = {
   postUserAuthenticateSuccess,
   postUserAuthenticateInvalidPassword,
   postSecondFactorSuccess,
+  postActivateSecondFactorSuccess,
   postAuthenticateSecondFactorSuccess,
   postAuthenticateSecondFactorInvalidCode,
   postProvisionSecondFactorSuccess,
   putUpdateServiceRoleSuccess,
-  getUserSuccessWithMultipleServices
+  getUserSuccessWithMultipleServices,
+  patchUpdateUserPhoneNumberSuccess
 }

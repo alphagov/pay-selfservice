@@ -32,7 +32,8 @@ function patchUpdateServiceNameSuccess (opts) {
       cy: opts.serviceName.cy || ''
     }),
     response: serviceFixtures.validServiceResponse({
-      external_id: opts.serviceExternalId
+      external_id: opts.serviceExternalId,
+      gateway_account_ids: [opts.gatewayAccountId]
     }),
     verifyCalledTimes: opts.verifyCalledTimes
   })

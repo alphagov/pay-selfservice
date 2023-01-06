@@ -441,5 +441,13 @@ module.exports = {
     return {
       errors: ['Field [username] is required']
     }
+  },
+
+  validUpdateTelephoneNumberRequest: (telephoneNumber) => {
+    return {
+      op: 'replace',
+      path: 'telephone_number',
+      value: telephoneNumber
+    }
   }
 }

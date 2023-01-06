@@ -10,6 +10,14 @@ function postCreateTokenForAccountSuccess (opts) {
   })
 }
 
+function deleteTokenByApiTokenSuccess (gatewayAccountId, apiToken) {
+  const path = `/v1/frontend/auth/${gatewayAccountId}`
+  return stubBuilder('DELETE', path, 200, {
+    request: tokenFixtures.validDeleteTokenByApiTokenRequest(apiToken)
+  })
+}
+
 module.exports = {
-  postCreateTokenForAccountSuccess
+  postCreateTokenForAccountSuccess,
+  deleteTokenByApiTokenSuccess
 }

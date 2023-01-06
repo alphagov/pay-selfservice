@@ -12,6 +12,7 @@ function getLedgerTransactionSuccess (opts) {
     response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts.transactionDetails)
   })
 }
+
 function getLedgerDisputeTransactionsSuccess (opts) {
   const path = `/v1/transaction/${opts.disputeTransactionsDetails.parent_transaction_id}/transaction`
   return stubBuilder('GET', path, 200, {
@@ -84,11 +85,19 @@ function postRefundAmountNotAvailable (opts) {
   })
 }
 
+function getTransactionsSummarySuccess (opts) {
+  const path = `/v1/report/transactions-summary`
+  return stubBuilder('GET', path, 200, {
+    response: ledgerTransactionFixtures.validTransactionSummaryDetails(opts)
+  })
+}
+
 module.exports = {
   getLedgerEventsSuccess,
   getLedgerTransactionSuccess,
   getLedgerTransactionsSuccess,
   getLedgerDisputeTransactionsSuccess,
   postRefundSuccess,
-  postRefundAmountNotAvailable
+  postRefundAmountNotAvailable,
+  getTransactionsSummarySuccess
 }

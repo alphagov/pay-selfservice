@@ -296,6 +296,12 @@ function validPatchAccountGatewayAccountCredentialsStateRequest (opts = {}) {
   ]
 }
 
+function validPatchServiceNameRequest (serviceName) {
+  return {
+    service_name: serviceName
+  }
+}
+
 function validPatchGatewayCredentialsResponse (opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
@@ -349,5 +355,6 @@ module.exports = {
   validPatchGatewayMerchantIdRequest,
   validPatchGatewayCredentialsResponse,
   validPatchAccountGatewayAccountCredentialsStateRequest,
+  validPatchServiceNameRequest,
   validPostAccountSwitchPSPRequest
 }

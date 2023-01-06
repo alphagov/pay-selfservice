@@ -35,7 +35,7 @@ function setupYourPspStubs (opts = {}) {
     companyNumber: opts.companyNumber,
     responsiblePerson: opts.responsiblePerson,
     organisationDetails: opts.organisationDetails,
-    governmentEntityDocument: opts.governmentEntityDocument,
+    governmentEntityDocument: opts.governmentEntityDocument
   })
 
   const stubs = [user, gatewayAccountByExternalId, stripeAccountSetup]

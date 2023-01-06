@@ -1,6 +1,7 @@
 'use strict'
 
 const userStubs = require('../../stubs/user-stubs')
+const zendeskStubs = require('../../stubs/zendesk-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 
@@ -13,7 +14,11 @@ describe('Feedback page', () => {
   beforeEach(() => {
     // keep the same session for entire describe block
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
-    cy.task('setupStubs', getUserAndAccountStubs('live', 'stripe'))
+    cy.task('setupStubs',
+      [
+        ...getUserAndAccountStubs('live', 'stripe'),
+        zendeskStubs.createTicketSuccess()
+      ])
   })
 
   it('should display Feedback page', () => {

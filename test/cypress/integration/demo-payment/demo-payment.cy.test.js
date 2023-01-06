@@ -1,5 +1,6 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const transactionStubs = require('../../stubs/transaction-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
@@ -10,7 +11,8 @@ describe('Make a demo payment', () => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ gatewayAccountId, userExternalId }),
-      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId })
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
+      transactionStubs.getTransactionsSummarySuccess()
     ])
   })
 

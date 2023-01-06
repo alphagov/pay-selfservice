@@ -102,6 +102,7 @@ module.exports = {
   buildServiceRoleForGoLiveStage,
   buildServiceRoleWithMerchantDetails,
   getUserAndGatewayAccountStubs,
+  getUserAndGatewayAccountByExternalIdStubs,
   patchUpdateGoLiveStageSuccessStub,
   patchUpdateGoLiveStageErrorStub,
   patchUpdateServiceSuccessCatchAllStub,

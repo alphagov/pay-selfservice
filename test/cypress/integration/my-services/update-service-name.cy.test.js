@@ -6,6 +6,7 @@ const serviceStubs = require('../../stubs/service-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 const serviceExternalId = 'service-external-id'
+const gatewayAccountId = '1'
 const newServiceName = 'Updated Service'
 const serviceName = {
   en: 'My Service'
@@ -18,8 +19,8 @@ const welshServiceName = {
 function setupStubs (serviceName, stubs = []) {
   cy.task('setupStubs', [
     ...stubs,
-    userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1', serviceExternalId, serviceName }),
-    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' })
+    userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId, serviceExternalId, serviceName }),
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId })
   ])
 }
 
@@ -49,7 +50,10 @@ describe('Update service name', () => {
 
     it('should update service name to Updated Service', () => {
       setupStubs(serviceName,
-        [serviceStubs.patchUpdateServiceNameSuccess({ serviceExternalId, serviceName: { en: newServiceName } })])
+        [
+          serviceStubs.patchUpdateServiceNameSuccess({ serviceExternalId, serviceName: { en: newServiceName }, gatewayAccountId }),
+          gatewayAccountStubs.patchUpdateServiceNameSuccess(gatewayAccountId, newServiceName)
+        ])
       cy.get('input#service-name').clear()
       cy.get('input#service-name').type(newServiceName)
       cy.get('button').contains('Save').click()
