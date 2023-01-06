@@ -302,6 +302,22 @@ function validPatchServiceNameRequest (serviceName) {
   }
 }
 
+function validPatchMaskCardNumberRequest (mask) {
+  return {
+    op: 'replace',
+    path: 'moto_mask_card_number_input',
+    value: mask
+  }
+}
+
+function validPatchMaskSecurityCodeRequest (mask) {
+  return {
+    op: 'replace',
+    path: 'moto_mask_card_security_code_input',
+    value: mask
+  }
+}
+
 function validPatchGatewayCredentialsResponse (opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
@@ -356,5 +372,7 @@ module.exports = {
   validPatchGatewayCredentialsResponse,
   validPatchAccountGatewayAccountCredentialsStateRequest,
   validPatchServiceNameRequest,
+  validPatchMaskCardNumberRequest,
+  validPatchMaskSecurityCodeRequest,
   validPostAccountSwitchPSPRequest
 }

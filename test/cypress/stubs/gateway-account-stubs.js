@@ -215,6 +215,20 @@ function patchUpdateServiceNameSuccess (gatewayAccountId, serviceName) {
   })
 }
 
+function patchUpdateMaskCardNumberSuccess (gatewayAccountId, mask) {
+  const path = `/v1/api/accounts/${gatewayAccountId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchMaskCardNumberRequest(mask)
+  })
+}
+
+function patchUpdateMaskSecurityCodeSuccess (gatewayAccountId, mask) {
+  const path = `/v1/api/accounts/${gatewayAccountId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchMaskSecurityCodeRequest(mask)
+  })
+}
+
 function postCheckWorldpay3dsFlexCredentials (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
   return stubBuilder('POST', path, 200, {
@@ -262,6 +276,8 @@ module.exports = {
   patchRefundEmailToggleSuccess,
   patchAccountEmailCollectionModeSuccess,
   patchUpdateServiceNameSuccess,
+  patchUpdateMaskCardNumberSuccess,
+  patchUpdateMaskSecurityCodeSuccess,
   postCheckWorldpay3dsFlexCredentials,
   postCheckWorldpay3dsFlexCredentialsFailure,
   postCheckWorldpay3dsFlexCredentialsWithBadResult,
