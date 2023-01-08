@@ -64,8 +64,7 @@ function postRefundSuccess (opts) {
       refund_amount_available: opts.refundAmountAvailable,
       user_external_id: opts.userExternalId,
       user_email: opts.userEmail
-    }),
-    verifyCalledTimes: opts.verifyCalledTimes
+    })
   })
 }
 
