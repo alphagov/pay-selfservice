@@ -234,6 +234,13 @@ function patchUpdateMaskSecurityCodeSuccess (gatewayAccountId, mask) {
   })
 }
 
+function patchUpdate3dsVersionSuccess (gatewayAccountId, version) {
+  const path = `/v1/api/accounts/${gatewayAccountId}`
+  return stubBuilder('PATCH', path, 200, {
+    requests: gatewayAccountFixtures.validPatchIntegrationVersion3dsRequest(version)
+  })
+}
+
 function postCheckWorldpay3dsFlexCredentials (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
   return stubBuilder('POST', path, 200, {
@@ -279,7 +286,12 @@ function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId) {
   return stubBuilder('PATCH', path, 200)
 }
 
-function postSwitchPspSuccess(gatewayAccountId) {
+function postUpdateNotificationCredentialsSuccess (gatewayAccountId) {
+  const path = `/v1/api/accounts/${gatewayAccountId}/notification-credentials`
+  return stubBuilder('POST', path, 200)
+}
+
+function postSwitchPspSuccess (gatewayAccountId) {
   const path = `/v1/api/accounts/${gatewayAccountId}/switch-psp`
   return stubBuilder('POST', path, 200)
 }
@@ -301,11 +313,13 @@ module.exports = {
   patchUpdateServiceNameSuccess,
   patchUpdateMaskCardNumberSuccess,
   patchUpdateMaskSecurityCodeSuccess,
+  patchUpdate3dsVersionSuccess,
   postCheckWorldpay3dsFlexCredentials,
   postCheckWorldpay3dsFlexCredentialsFailure,
   postCheckWorldpay3dsFlexCredentialsWithBadResult,
   postCheckWorldpayCredentials,
   postUpdateWorldpay3dsFlexCredentials,
   patchUpdateCredentialsSuccess,
+  postUpdateNotificationCredentialsSuccess,
   postSwitchPspSuccess
 }

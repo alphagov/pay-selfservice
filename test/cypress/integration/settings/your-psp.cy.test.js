@@ -8,6 +8,7 @@ describe('Your PSP settings page', () => {
   const gatewayAccountId = 42
   const gatewayAccountExternalId = 'a-valid-external-id'
   const credentialExternalId = 'a-credential-external-id'
+  const credentialsId = 101
   const serviceName = 'Purchase a positron projection permit'
   const yourPspPath = `/account/${gatewayAccountExternalId}/your-psp`
 
@@ -117,6 +118,13 @@ describe('Your PSP settings page', () => {
     const postCheckWorldpay3dsFlexCredentialsReturnsBadResult = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsWithBadResult({
       gatewayAccountId: gatewayAccountId, ...testBadResultFlexCredentials
     })
+    const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, credentialsId)
+    const postUpdateWorldpay3dsFlexCredentials = gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({
+      gatewayAccountId,
+      ...testFlexCredentials
+    })
+    const patchUpdate3dsVersionSuccess = gatewayAccountStubs.patchUpdate3dsVersionSuccess(gatewayAccountId, 1)
+    const postUpdateNotificationCredentialsSuccess = gatewayAccountStubs.postUpdateNotificationCredentialsSuccess(gatewayAccountId)
     const stubs = [
       user,
       gatewayAccount,
@@ -126,7 +134,11 @@ describe('Your PSP settings page', () => {
       postCheckWorldpay3dsFlexCredentialsReturnsInvalid,
       postCheckWorldpay3dsFlexCredentialsFails,
       postCheckWorldpay3dsFlexCredentialsReturnsBadResult,
-      postCheckWorldpayCredentials
+      postCheckWorldpayCredentials,
+      patchUpdateCredentials,
+      postUpdateWorldpay3dsFlexCredentials,
+      patchUpdate3dsVersionSuccess,
+      postUpdateNotificationCredentialsSuccess
     ]
 
     cy.task('setupStubs', stubs)
@@ -156,6 +168,7 @@ describe('Your PSP settings page', () => {
         gatewayAccountCredentials: [{
           payment_provider: 'worldpay',
           external_id: credentialExternalId,
+          id: credentialsId,
           state: 'CREATED',
           credentials: {}
         }],
@@ -286,7 +299,8 @@ describe('Your PSP settings page', () => {
         gatewayAccountCredentials: [{
           payment_provider: 'worldpay',
           credentials: testCredentials,
-          external_id: credentialExternalId
+          external_id: credentialExternalId,
+          id: credentialsId
         }],
         worldpay3dsFlex: testFlexCredentials
       })
@@ -314,7 +328,8 @@ describe('Your PSP settings page', () => {
         gatewayAccountCredentials: [{
           payment_provider: 'worldpay',
           credentials: {},
-          external_id: credentialExternalId
+          external_id: credentialExternalId,
+          id: credentialsId
         }],
         validateCredentials: testCredentialsMOTO
       })
@@ -366,7 +381,8 @@ describe('Your PSP settings page', () => {
           gatewayAccountCredentials: [{
             payment_provider: 'worldpay',
             credentials: testCredentials,
-            external_id: credentialExternalId
+            external_id: credentialExternalId,
+            id: credentialsId
           }],
           worldpay3dsFlex: testFlexCredentials
         })
@@ -389,7 +405,8 @@ describe('Your PSP settings page', () => {
           gatewayAccountCredentials: [{
             payment_provider: 'worldpay',
             credentials: testCredentials,
-            external_id: credentialExternalId
+            external_id: credentialExternalId,
+            id: credentialsId
           }],
           worldpay3dsFlex: testFlexCredentials
         })
@@ -412,7 +429,8 @@ describe('Your PSP settings page', () => {
           gatewayAccountCredentials: [{
             payment_provider: 'worldpay',
             credentials: testCredentials,
-            external_id: credentialExternalId
+            external_id: credentialExternalId,
+            id: credentialsId
           }],
           worldpay3dsFlex: testFlexCredentials
         })
@@ -437,7 +455,8 @@ describe('Your PSP settings page', () => {
           gatewayAccountCredentials: [{
             payment_provider: 'worldpay',
             credentials: testCredentials,
-            external_id: credentialExternalId
+            external_id: credentialExternalId,
+            id: credentialsId
           }]
         })
 
@@ -457,7 +476,8 @@ describe('Your PSP settings page', () => {
           gatewayAccountCredentials: [{
             payment_provider: 'worldpay',
             credentials: testCredentials,
-            external_id: credentialExternalId
+            external_id: credentialExternalId,
+            id: credentialsId
           }],
           worldpay3dsFlex: testFlexCredentials
         })
@@ -480,7 +500,8 @@ describe('Your PSP settings page', () => {
           gatewayAccountCredentials: [{
             payment_provider: 'worldpay',
             credentials: testCredentials,
-            external_id: credentialExternalId
+            external_id: credentialExternalId,
+            id: credentialsId
           }],
           worldpay3dsFlex: testFlexCredentials,
           type: 'live'
@@ -508,7 +529,8 @@ describe('Your PSP settings page', () => {
         gatewayAccountCredentials: [{
           payment_provider: 'smartpay',
           credentials: {},
-          external_id: credentialExternalId
+          external_id: credentialExternalId,
+          id: credentialsId
         }]
       })
     })
@@ -559,7 +581,8 @@ describe('Your PSP settings page', () => {
         gatewayAccountCredentials: [{
           payment_provider: 'smartpay',
           credentials: testCredentials,
-          external_id: credentialExternalId
+          external_id: credentialExternalId,
+          id: credentialsId
         }],
         notificationCredentials: testNotificationCredentials
       })
@@ -583,7 +606,8 @@ describe('Your PSP settings page', () => {
         gatewayAccountCredentials: [{
           payment_provider: 'epdq',
           credentials: {},
-          external_id: credentialExternalId
+          external_id: credentialExternalId,
+          id: credentialsId
         }]
       })
     })
@@ -626,7 +650,8 @@ describe('Your PSP settings page', () => {
         gatewayAccountCredentials: [{
           payment_provider: 'epdq',
           credentials: testCredentials,
-          external_id: credentialExternalId
+          external_id: credentialExternalId,
+          id: credentialsId
         }]
       })
     })

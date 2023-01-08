@@ -318,6 +318,14 @@ function validPatchMaskSecurityCodeRequest (mask) {
   }
 }
 
+function validPatchIntegrationVersion3dsRequest (version) {
+  return {
+    op: 'replace',
+    path: 'integration_version_3ds',
+    value: version
+  }
+}
+
 function validPatchGatewayCredentialsResponse (opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
@@ -374,5 +382,6 @@ module.exports = {
   validPatchServiceNameRequest,
   validPatchMaskCardNumberRequest,
   validPatchMaskSecurityCodeRequest,
+  validPatchIntegrationVersion3dsRequest,
   validPostAccountSwitchPSPRequest
 }
