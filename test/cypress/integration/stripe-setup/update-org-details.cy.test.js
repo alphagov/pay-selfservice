@@ -51,6 +51,7 @@ function setupStubs (stripeSetupOptions, type = 'live', paymentProvider = 'strip
     }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+    stripeAccountSetupStubs.patchUpdateStripeSetupSuccess(gatewayAccountId),
     stripeUpdateCompanyStub,
     transactionSummaryStubs.getDashboardStatistics()
   ])
