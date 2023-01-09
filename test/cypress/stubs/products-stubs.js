@@ -21,11 +21,9 @@ function getProductByExternalIdStub (product, gatewayAccountId) {
   })
 }
 
-function deleteProductStub (product, gatewayAccountId, verifyCalledTimes) {
+function deleteProductStub (product, gatewayAccountId) {
   const path = `/v1/api/gateway-account/${gatewayAccountId}/products/${product.external_id}`
-  return stubBuilder('DELETE', path, 200, {
-    verifyCalledTimes: verifyCalledTimes
-  })
+  return stubBuilder('DELETE', path, 200)
 }
 
 function getProductsByGatewayAccountIdAndTypeFailure (gatewayAccountId, productType) {
@@ -48,8 +46,7 @@ function postCreateProductSuccessWithRequestBody (opts) {
   const path = '/v1/api/products'
   return stubBuilder('POST', path, 200, {
     request: productFixtures.validCreateProductRequest(opts),
-    response: productFixtures.validAdhocProductResponse(),
-    verifyCalledTimes: 1
+    response: productFixtures.validAdhocProductResponse()
   })
 }
 
@@ -57,8 +54,7 @@ function patchUpdateProductSuccess (opts) {
   const path = `/v1/api/gateway-account/${opts.gatewayAccountId}/products/${opts.productExternalId}`
   return stubBuilder('PATCH', path, 200, {
     request: productFixtures.validUpdateProductRequest(opts),
-    response: productFixtures.validAdhocProductResponse(),
-    verifyCalledTimes: 1
+    response: productFixtures.validAdhocProductResponse()
   })
 }
 

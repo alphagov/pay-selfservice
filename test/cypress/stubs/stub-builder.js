@@ -35,12 +35,6 @@ function stubBuilder (method, path, responseCode, additionalParams = {}) {
     }]
   }
 
-  // NOTE: if the "verifyCalledTimes" is specified, we will attempt to verify for all `it` blocks
-  // the stub is setup for, and the counter is reset for every `it`.
-  if (additionalParams.verifyCalledTimes) {
-    stub.verifyCalledTimes = additionalParams.verifyCalledTimes
-  }
-
   return stub
 }
 

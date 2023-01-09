@@ -30,7 +30,7 @@ describe('Should delete payment link', () => {
       }),
       getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
       getProductByExternalIdStub(product, gatewayAccountId),
-      deleteProductStub(product, gatewayAccountId, 1),
+      deleteProductStub(product, gatewayAccountId),
       deleteTokenByApiTokenSuccess(gatewayAccountId, apiToken)
     ])
   })

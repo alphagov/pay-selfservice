@@ -19,8 +19,7 @@ function postCreateServiceSuccess (opts) {
   const path = '/v1/api/services'
   return stubBuilder('POST', path, 200, {
     request: serviceFixtures.validCreateServiceRequest(fixtureOpts),
-    response: serviceFixtures.validServiceResponse(fixtureOpts),
-    verifyCalledTimes: opts.verifyCalledTimes
+    response: serviceFixtures.validServiceResponse(fixtureOpts)
   })
 }
 
@@ -34,8 +33,7 @@ function patchUpdateServiceNameSuccess (opts) {
     response: serviceFixtures.validServiceResponse({
       external_id: opts.serviceExternalId,
       gateway_account_ids: [opts.gatewayAccountId]
-    }),
-    verifyCalledTimes: opts.verifyCalledTimes
+    })
   })
 }
 function patchUpdateServiceGoLiveStageSuccess (opts) {

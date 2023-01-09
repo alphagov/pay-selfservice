@@ -163,8 +163,7 @@ function postCreateGatewayAccountSuccess (opts) {
   const path = '/v1/api/accounts'
   return stubBuilder('POST', path, 200, {
     request: gatewayAccountFixtures.validCreateGatewayAccountRequest(fixtureOpts),
-    response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts),
-    verifyCalledTimes: opts.verifyCalledTimes
+    response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)
   })
 }
 
