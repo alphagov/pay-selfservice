@@ -9,6 +9,7 @@ const serviceName = 'My Awesome Service'
 function setupStubs (allowApplePay) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
+    gatewayAccountStubs.patchAccountUpdateApplePaySuccess(gatewayAccountId, true),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
@@ -17,7 +18,6 @@ function setupStubs (allowApplePay) {
     })
   ])
 }
-
 describe('Apple Pay', () => {
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')

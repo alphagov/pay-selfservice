@@ -144,6 +144,22 @@ function validGatewayAccountEmailRefundToggleRequest (enabled = true) {
   }
 }
 
+function validUpdateToggleApplePayRequest (allowApplePay) {
+  return {
+    op: 'replace',
+    path: 'allow_apple_pay',
+    value: allowApplePay
+  }
+}
+
+function validUpdateToggleGooglePayRequest (allowGooglePay) {
+  return {
+    op: 'replace',
+    path: 'allow_google_pay',
+    value: allowGooglePay
+  }
+}
+
 function validGatewayAccountEmailConfirmationToggleRequest (enabled = true) {
   return {
     op: 'replace',
@@ -383,5 +399,7 @@ module.exports = {
   validPatchMaskCardNumberRequest,
   validPatchMaskSecurityCodeRequest,
   validPatchIntegrationVersion3dsRequest,
-  validPostAccountSwitchPSPRequest
+  validPostAccountSwitchPSPRequest,
+  validUpdateToggleApplePayRequest,
+  validUpdateToggleGooglePayRequest
 }
