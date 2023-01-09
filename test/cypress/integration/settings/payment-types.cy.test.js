@@ -6,7 +6,8 @@ function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId,
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
     gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated }),
-    gatewayAccountStubs.getCardTypesSuccess()
+    gatewayAccountStubs.getCardTypesSuccess(),
+    gatewayAccountStubs.postUpdateCardTypesSuccess(gatewayAccountId)
   ])
 }
 

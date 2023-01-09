@@ -115,7 +115,13 @@ describe('Transaction details page', () => {
       }),
       transactionStubs.getLedgerTransactionSuccess({ transactionDetails }),
       transactionStubs.getLedgerEventsSuccess({ transactionId, events: transactionDetails.events }),
-      stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount: true, responsiblePerson: true, vatNumber: true, companyNumber: true })
+      stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
+        gatewayAccountId,
+        bankAccount: true,
+        responsiblePerson: true,
+        vatNumber: true,
+        companyNumber: true
+      })
     ]
     if (disputeTransactionsDetails) {
       stubs.push(transactionStubs.getLedgerDisputeTransactionsSuccess({ disputeTransactionsDetails }))
@@ -318,12 +324,17 @@ describe('Transaction details page', () => {
   describe('refunds', () => {
     it('should show success message when full refund is successful', () => {
       const transactionDetails = defaultTransactionDetails()
-      const refundAmount = transactionDetails.amount + 1
+      const refundAmount = transactionDetails.amount
       const stubs = [
         ...getStubs(transactionDetails),
         transactionStubs.postRefundSuccess(
           {
-            gatewayAccountId, userExternalId, userEmail, transactionId: transactionDetails.transaction_id, refundAmount, refundAmountAvailable: transactionDetails.amount
+            gatewayAccountId,
+            userExternalId,
+            userEmail,
+            transactionId: transactionDetails.transaction_id,
+            refundAmount,
+            refundAmountAvailable: transactionDetails.amount
           })
       ]
       cy.task('setupStubs', stubs)
@@ -353,7 +364,12 @@ describe('Transaction details page', () => {
         ...getStubs(transactionDetails),
         transactionStubs.postRefundAmountNotAvailable(
           {
-            gatewayAccountId, userExternalId, userEmail, transactionId: transactionDetails.transaction_id, refundAmount, refundAmountAvailable: transactionDetails.amount
+            gatewayAccountId,
+            userExternalId,
+            userEmail,
+            transactionId: transactionDetails.transaction_id,
+            refundAmount,
+            refundAmountAvailable: transactionDetails.amount
           })
       ]
       cy.task('setupStubs', stubs)
@@ -437,8 +453,9 @@ describe('Transaction details page', () => {
       const disputedPaymentDetails = defaultTransactionDetails()
       disputedPaymentDetails.disputed = true
       disputedPaymentDetails.refund_summary_status = 'unavailable'
+      const disputeTransactionDetails = defaultDisputeDetails()
 
-      cy.task('setupStubs', getStubs(disputedPaymentDetails))
+      cy.task('setupStubs', getStubs(disputedPaymentDetails, {}, disputeTransactionDetails))
       cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
 
       cy.get('[data-cy=refund-container]').within(() => {

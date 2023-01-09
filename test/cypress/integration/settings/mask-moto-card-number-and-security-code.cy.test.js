@@ -10,8 +10,7 @@ describe('MOTO mask security section', () => {
   const serviceName = 'Purchase a positron projection permit'
 
   function setupMotoStubs (opts = {}) {
-    let stubs = []
-    let user
+    let getUserStub
 
     if (opts.readonly) {
       const role = {
@@ -26,11 +25,11 @@ describe('MOTO mask security section', () => {
           }
         ]
       }
-      user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role })
+      getUserStub = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, role })
     } else {
-      user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
+      getUserStub = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
     }
-    const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+    const getGatewayAccountByExternalIdStub = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
       paymentProvider: opts.gateway,
@@ -38,11 +37,21 @@ describe('MOTO mask security section', () => {
       motoMaskCardNumber: opts.motoMaskCardNumber,
       motoMaskSecurityCode: opts.motoMaskSecurityCode
     })
-    const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false, maestro: opts.maestro })
+    const getCardTypesStub = gatewayAccountStubs.getAcceptedCardTypesSuccess({
+      gatewayAccountId,
+      updated: false,
+      maestro: opts.maestro
+    })
+    const patchUpdateMaskCardNumberStub = gatewayAccountStubs.patchUpdateMaskCardNumberSuccess(gatewayAccountId, true)
+    const patchUpdateMaskSecurityCodeStub = gatewayAccountStubs.patchUpdateMaskSecurityCodeSuccess(gatewayAccountId, true)
 
-    stubs.push(user, gatewayAccountByExternalId, card)
-
-    cy.task('setupStubs', stubs)
+    cy.task('setupStubs', [
+      getUserStub,
+      getGatewayAccountByExternalIdStub,
+      getCardTypesStub,
+      patchUpdateMaskCardNumberStub,
+      patchUpdateMaskSecurityCodeStub
+    ])
   }
 
   beforeEach(() => {

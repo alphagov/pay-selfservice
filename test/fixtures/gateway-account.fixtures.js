@@ -302,6 +302,30 @@ function validPatchServiceNameRequest (serviceName) {
   }
 }
 
+function validPatchMaskCardNumberRequest (mask) {
+  return {
+    op: 'replace',
+    path: 'moto_mask_card_number_input',
+    value: mask
+  }
+}
+
+function validPatchMaskSecurityCodeRequest (mask) {
+  return {
+    op: 'replace',
+    path: 'moto_mask_card_security_code_input',
+    value: mask
+  }
+}
+
+function validPatchIntegrationVersion3dsRequest (version) {
+  return {
+    op: 'replace',
+    path: 'integration_version_3ds',
+    value: version
+  }
+}
+
 function validPatchGatewayCredentialsResponse (opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
@@ -356,5 +380,8 @@ module.exports = {
   validPatchGatewayCredentialsResponse,
   validPatchAccountGatewayAccountCredentialsStateRequest,
   validPatchServiceNameRequest,
+  validPatchMaskCardNumberRequest,
+  validPatchMaskSecurityCodeRequest,
+  validPatchIntegrationVersion3dsRequest,
   validPostAccountSwitchPSPRequest
 }

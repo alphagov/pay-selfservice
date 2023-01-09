@@ -96,7 +96,8 @@ describe('Webhooks', () => {
     const description = 'A valid Webhook description'
 
     cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs
+      ...userAndGatewayAccountStubs,
+      webhooksStubs.postCreateWebhookSuccess()
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
@@ -128,7 +129,8 @@ describe('Webhooks', () => {
 
   it('should update a webhook with valid properties', () => {
     cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs
+      ...userAndGatewayAccountStubs,
+      webhooksStubs.patchUpdateWebhookSuccess(webhookExternalId)
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
 
@@ -158,7 +160,8 @@ describe('Webhooks', () => {
 
   it('should toggle a webhook status', () => {
     cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs
+      ...userAndGatewayAccountStubs,
+      webhooksStubs.patchUpdateWebhookSuccess(webhookExternalId)
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
     cy.get('[data-action=update]').then((links) => links[0].click())

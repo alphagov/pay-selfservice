@@ -137,7 +137,13 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
   }
 }
 
+function patchUpdateStripeSetupSuccess (gatewayAccountId) {
+  const path = `/v1/api/accounts/${gatewayAccountId}/stripe-setup`
+  return stubBuilder('PATCH', path, 200)
+}
+
 module.exports = {
   getGatewayAccountStripeSetupSuccess,
-  getGatewayAccountStripeSetupFlagForMultipleCalls
+  getGatewayAccountStripeSetupFlagForMultipleCalls,
+  patchUpdateStripeSetupSuccess
 }

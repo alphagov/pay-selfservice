@@ -37,6 +37,7 @@ function setupStubs (vatNumber, type = 'live', paymentProvider = 'stripe') {
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: gatewayAccountExternalId, type, paymentProvider, gatewayAccountCredentials }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
+    stripeAccountSetupStubs.patchUpdateStripeSetupSuccess(gatewayAccountId),
     transactionSummaryStubs.getDashboardStatistics()
   ])
 }

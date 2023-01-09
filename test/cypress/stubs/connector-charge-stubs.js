@@ -15,4 +15,13 @@ function getChargeSuccess (opts) {
   })
 }
 
-module.exports = { postCreateChargeSuccess, getChargeSuccess }
+function postCreateRefundSuccess (gatewayAccountId, chargeId) {
+  const path = `/v1/api/accounts/${gatewayAccountId}/charges/${chargeId}/refunds`
+  return stubBuilder('POST', path, 200)
+}
+
+module.exports = {
+  postCreateChargeSuccess,
+  getChargeSuccess,
+  postCreateRefundSuccess
+}
