@@ -57,6 +57,9 @@
     {% case 'worldpay' %}
       <ul class="govuk-list govuk-list--bullet">
         <li>your Worldpay account credentials: Merchant code, username and password</li>
+        {% if not currentGatewayAccount.allow_moto %}
+          <li>your Worldpay 3DS Flex account credentials: Organisational unit ID, issuer and JWT MAC key</li>
+        {% endif %}
         <li>a debit or credit card to make a nominal live payment (refundable)</li>
       </ul>
 
@@ -66,11 +69,15 @@
           formatAccountPathsFor(routes.account.switchPSP.credentialsWithGatewayCheck, currentGatewayAccount.external_id, targetCredential.external_id),
           taskList.LINK_CREDENTIALS
         ) }}
-        {{ taskListItem(
-          "Link your Worldpay 3DS Flex account with GOV.UK Pay",
-          formatAccountPathsFor(routes.account.switchPSP.flex, currentGatewayAccount.external_id, targetCredential.external_id),
-          taskList.LINK_FLEX_CREDENTIALS
-        ) }}
+
+        {% if not currentGatewayAccount.allow_moto %}
+          {{ taskListItem(
+            "Provide your Worldpay 3DS Flex credentials",
+            formatAccountPathsFor(routes.account.switchPSP.flex, currentGatewayAccount.external_id, targetCredential.external_id),
+            taskList.LINK_FLEX_CREDENTIALS
+          ) }}
+        {% endif %}
+
         {{ taskListItem(
           "Make a live payment to test your Worldpay PSP",
           formatAccountPathsFor(routes.account.switchPSP.verifyPSPIntegrationPayment, currentGatewayAccount.external_id),

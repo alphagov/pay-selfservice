@@ -1,6 +1,6 @@
-const {expect} = require('chai')
-const {getTaskList, isComplete} = require('./switch-tasks.service')
-const {getSwitchingCredential} = require('../../utils/credentials')
+const { expect } = require('chai')
+const { getTaskList, isComplete } = require('./switch-tasks.service')
+const { getSwitchingCredential } = require('../../utils/credentials')
 const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
 
 describe('Switching PSP service', () => {
@@ -10,8 +10,8 @@ describe('Switching PSP service', () => {
         it('gets an empty task list for an account with no progress', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'CREATED', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'CREATED', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             allow_moto: false
           })
@@ -29,8 +29,8 @@ describe('Switching PSP service', () => {
         it('gets an complete task list for an account with progress', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'ENTERED', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'ENTERED', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             requires3ds: true,
             integrationVersion3ds: 2,
@@ -52,8 +52,8 @@ describe('Switching PSP service', () => {
         it('should get an empty task list for an account with no progress', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'CREATED', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'CREATED', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             allow_moto: true
           })
@@ -69,8 +69,8 @@ describe('Switching PSP service', () => {
         it('should get complete task list for an account with progress', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'ENTERED', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'ENTERED', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             allow_moto: true
           })
@@ -92,8 +92,8 @@ describe('Switching PSP service', () => {
         it('correctly calculates all conditions being met for Worldpay', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             requires3ds: true,
             integrationVersion3ds: 2,
@@ -107,8 +107,8 @@ describe('Switching PSP service', () => {
         it('correctly calculates progress required for Worldpay', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'CREATED', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'CREATED', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             allow_moto: false
           })
@@ -120,8 +120,8 @@ describe('Switching PSP service', () => {
         it('should correctly calculate progress required for Worldpay when 3ds is not enabled', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'ENTERED', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'ENTERED', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             requires3ds: false,
             integrationVersion3ds: 2,
@@ -135,8 +135,8 @@ describe('Switching PSP service', () => {
         it('should correctly calculate progress required for Worldpay when account 3ds version is 1', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'ENTERED', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'ENTERED', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             requires3ds: true,
             integrationVersion3ds: 1,
@@ -152,8 +152,8 @@ describe('Switching PSP service', () => {
         it('should correctly calculate all conditions being met for Worldpay', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             allow_moto: true
           })
@@ -165,8 +165,8 @@ describe('Switching PSP service', () => {
         it('should correctly calculate progress required for Worldpay', () => {
           const account = gatewayAccountFixtures.validGatewayAccount({
             gateway_account_credentials: [
-              {state: 'CREATED', payment_provider: 'worldpay', id: 100},
-              {state: 'ACTIVE', payment_provider: 'smartpay', id: 100}
+              { state: 'CREATED', payment_provider: 'worldpay', id: 100 },
+              { state: 'ACTIVE', payment_provider: 'smartpay', id: 100 }
             ],
             allow_moto: true
           })
@@ -181,8 +181,8 @@ describe('Switching PSP service', () => {
       it('correctly calculates all conditions being met for Stripe', () => {
         const account = gatewayAccountFixtures.validGatewayAccount({
           gateway_account_credentials: [
-            {state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'stripe', id: 100},
-            {state: 'ACTIVE', payment_provider: 'worldpay', id: 100}
+            { state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'stripe', id: 100 },
+            { state: 'ACTIVE', payment_provider: 'worldpay', id: 100 }
           ]
         })
         const service = {
@@ -207,8 +207,8 @@ describe('Switching PSP service', () => {
       it('correctly calculates progress required for Stripe', () => {
         const account = gatewayAccountFixtures.validGatewayAccount({
           gateway_account_credentials: [
-            {state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'stripe', id: 100},
-            {state: 'ACTIVE', payment_provider: 'worldpay', id: 100}
+            { state: 'VERIFIED_WITH_LIVE_PAYMENT', payment_provider: 'stripe', id: 100 },
+            { state: 'ACTIVE', payment_provider: 'worldpay', id: 100 }
           ]
         })
         const service = {
