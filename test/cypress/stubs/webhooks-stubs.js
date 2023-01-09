@@ -61,6 +61,11 @@ function getWebhookMessageAttempts (opts = {}) {
   })
 }
 
+function postCreateWebhookSuccess () {
+  const path = `/v1/webhook`
+  return stubBuilder('POST', path, 200)
+}
+
 function createWebhookViolatesBackend (opts = {}) {
   const path = `/v1/webhook`
   return stubBuilder('POST', path, 400, {
@@ -71,6 +76,11 @@ function createWebhookViolatesBackend (opts = {}) {
   })
 }
 
+function patchUpdateWebhookSuccess (webhookExternalId) {
+  const path = `/v1/webhook/${webhookExternalId}`
+  return stubBuilder('PATCH', path, 200)
+}
+
 module.exports = {
   getWebhooksListSuccess,
   getWebhookSuccess,
@@ -78,5 +88,7 @@ module.exports = {
   getWebhookMessagesListSuccess,
   getWebhookMessage,
   getWebhookMessageAttempts,
-  createWebhookViolatesBackend
+  postCreateWebhookSuccess,
+  createWebhookViolatesBackend,
+  patchUpdateWebhookSuccess
 }
