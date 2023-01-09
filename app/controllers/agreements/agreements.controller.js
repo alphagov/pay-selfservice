@@ -5,6 +5,7 @@ const transactionService = require('../../services/transaction.service')
 const { buildPaymentList } = require('../../utils/transaction-view')
 
 const { response } = require('../../utils/response')
+const { RESTClientError, NotFoundError } = require('../../errors')
 
 const LIMIT_NUMBER_OF_TRANSACTIONS_TO_SHOW = 5
 
@@ -25,7 +26,11 @@ async function listAgreements (req, res, next) {
       filters
     })
   } catch (error) {
-    next(error)
+    if (error instanceof RESTClientError && error.errorCode === 404) {
+      next(new NotFoundError('The requested page of results was not found.'))
+    } else {
+      next(error)
+    }
   }
 }
 
@@ -35,7 +40,7 @@ async function agreementDetail (req, res, next) {
 
   try {
     const agreement = await agreementsService.agreement(req.params.agreementId, req.service.externalId)
-    const transactions = await transactionService.search([ req.account.gateway_account_id ], transactionsFilter)
+    const transactions = await transactionService.search([req.account.gateway_account_id], transactionsFilter)
     const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
 
     response(req, res, 'agreements/detail', {
