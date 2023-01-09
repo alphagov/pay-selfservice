@@ -212,7 +212,19 @@ function patchAccountEmailCollectionModeSuccess (opts) {
     request: gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest('MANDATORY')
   })
 }
+function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
+  const path = `/v1/api/accounts/${gatewayAccountId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validUpdateToggleApplePayRequest(allowApplePay)
+  })
+}
 
+function patchAccountUpdateGooglePayPaySuccess (gatewayAccountId, allowGooglePay) {
+  const path = `/v1/api/accounts/${gatewayAccountId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validUpdateToggleGooglePayRequest(allowGooglePay)
+  })
+}
 function patchUpdateServiceNameSuccess (gatewayAccountId, serviceName) {
   const path = `/v1/frontend/accounts/${gatewayAccountId}/servicename`
   return stubBuilder('PATCH', path, 200, {
@@ -321,5 +333,7 @@ module.exports = {
   postUpdateWorldpay3dsFlexCredentials,
   patchUpdateCredentialsSuccess,
   postUpdateNotificationCredentialsSuccess,
-  postSwitchPspSuccess
+  postSwitchPspSuccess,
+  patchAccountUpdateApplePaySuccess,
+  patchAccountUpdateGooglePayPaySuccess
 }

@@ -36,7 +36,7 @@ function checkInvalidWorldpay3dsFlexCredentialsResponse (opts = {}) {
   }
 }
 
-function validUpdateWorldpay3dsCredentialsRequest(opts = {}) {
+function validUpdateWorldpay3dsCredentialsRequest (opts = {}) {
   return {
     organisational_unit_id: opts.organisational_unit_id || '5bd9b55e4444761ac0af1c80',
     issuer: opts.issuer || '5bd9e0e4444dce153428c940', // pragma: allowlist secret

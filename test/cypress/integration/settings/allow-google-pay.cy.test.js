@@ -5,10 +5,13 @@ const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-valid-external-id'
 const serviceName = 'My Awesome Service'
+const credentialId = 1
 
 function setupStubs (allowGooglePay) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
+    gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, credentialId),
+    gatewayAccountStubs.patchAccountUpdateGooglePayPaySuccess(gatewayAccountId, true),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
