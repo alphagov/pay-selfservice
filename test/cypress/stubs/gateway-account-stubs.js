@@ -218,7 +218,7 @@ function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
   })
 }
 
-function patchAccountUpdateGooglePayPaySuccess (gatewayAccountId, allowGooglePay) {
+function patchAccountUpdateGooglePaySuccess (gatewayAccountId, allowGooglePay) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
   return stubBuilder('PATCH', path, 200, {
     request: gatewayAccountFixtures.validUpdateToggleGooglePayRequest(allowGooglePay)
@@ -334,5 +334,5 @@ module.exports = {
   postUpdateNotificationCredentialsSuccess,
   postSwitchPspSuccess,
   patchAccountUpdateApplePaySuccess,
-  patchAccountUpdateGooglePayPaySuccess
+  patchAccountUpdateGooglePaySuccess
 }
