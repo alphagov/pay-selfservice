@@ -7,9 +7,9 @@ const { expect } = require('chai')
 const serviceFixtures = require('../../../test/fixtures/service.fixtures')
 const agreementFixtures = require('../../../test/fixtures/agreement.fixtures')
 const Service = require('../../models/Service.class')
+const { RESTClientError, NotFoundError } = require('../../errors')
 
 const agreements = agreementFixtures.validAgreementSearchResponse([{ reference: 'a-ref' }])
-const getAgreementsSpy = sinon.spy(() => Promise.resolve(agreements))
 const responseSpy = sinon.spy()
 
 const service = new Service(serviceFixtures.validServiceResponse())
@@ -18,6 +18,8 @@ let req, res, next
 describe('The agreements controller', () => {
   beforeEach(() => {
     req = {
+      query: {},
+      url: 'http://selfservice/agreements',
       isLive: true,
       service,
       session: {}
@@ -34,7 +36,8 @@ describe('The agreements controller', () => {
       }
       req.url = 'http://selfservice/agreements?status=a-status&reference=+a+ref++'
 
-      await getControllerWithMocks().listAgreements(req, res, next)
+      const getAgreementsSpy = sinon.spy(() => Promise.resolve(agreements))
+      await getControllerWithMocks(getAgreementsSpy).listAgreements(req, res, next)
 
       const expectedFilters = {
         status: 'a-status',
@@ -48,10 +51,18 @@ describe('The agreements controller', () => {
       expect(req.session).to.have.property('agreementsFilter')
         .to.eq('status=a-status&reference=+a+ref++')
     })
+
+    it('should call next with NotFoundError when ledger returns 404', async () => {
+      const error = new RESTClientError('Error from ledger', 'ledger', 404)
+      const getAgreementsSpy = sinon.spy(() => Promise.reject(error))
+      await getControllerWithMocks(getAgreementsSpy).listAgreements(req, res, next)
+
+      sinon.assert.calledWith(next, sinon.match.instanceOf(NotFoundError))
+    })
   })
 })
 
-function getControllerWithMocks () {
+function getControllerWithMocks (getAgreementsSpy) {
   return proxyquire('./agreements.controller', {
     './agreements.service': {
       agreements: getAgreementsSpy
