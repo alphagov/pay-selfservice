@@ -11,7 +11,7 @@ const newServiceId = 'new-service-id'
 const newGatewayAccountId = 38
 
 const createGatewayAccountStub =
-  gatewayAccountStubs.postCreateGatewayAccountSuccess({ serviceName: newServiceName, serviceId: newServiceId, paymentProvider: 'sandbox', type: 'test', gatewayAccountId: newGatewayAccountId, verifyCalledTimes: 1 })
+  gatewayAccountStubs.postCreateGatewayAccountSuccess({ serviceName: newServiceName, serviceId: newServiceId, paymentProvider: 'sandbox', type: 'test', gatewayAccountId: newGatewayAccountId })
 
 const assignUserRoleStub =
   userStubs.postAssignServiceRoleSuccess({ userExternalId: authenticatedUserId, serviceExternalId: newServiceId })

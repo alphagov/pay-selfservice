@@ -11,7 +11,7 @@ function setupStubs (allowGooglePay) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, credentialId),
-    gatewayAccountStubs.patchAccountUpdateGooglePayPaySuccess(gatewayAccountId, true),
+    gatewayAccountStubs.patchAccountUpdateGooglePaySuccess(gatewayAccountId, true),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,

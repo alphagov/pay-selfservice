@@ -147,8 +147,7 @@ function postAssignServiceRoleSuccess (opts) {
   const path = `/v1/api/users/${opts.userExternalId}/services`
   return stubBuilder('POST', path, 200, {
     request: userFixtures.validAssignServiceRoleRequest(fixtureOpts),
-    response: userFixtures.validUserResponse(fixtureOpts),
-    verifyCalledTimes: opts.verifyCalledTimes
+    response: userFixtures.validUserResponse(fixtureOpts)
   })
 }
 

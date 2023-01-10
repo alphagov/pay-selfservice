@@ -163,8 +163,7 @@ function postCreateGatewayAccountSuccess (opts) {
   const path = '/v1/api/accounts'
   return stubBuilder('POST', path, 200, {
     request: gatewayAccountFixtures.validCreateGatewayAccountRequest(fixtureOpts),
-    response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts),
-    verifyCalledTimes: opts.verifyCalledTimes
+    response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)
   })
 }
 
@@ -219,7 +218,7 @@ function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
   })
 }
 
-function patchAccountUpdateGooglePayPaySuccess (gatewayAccountId, allowGooglePay) {
+function patchAccountUpdateGooglePaySuccess (gatewayAccountId, allowGooglePay) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
   return stubBuilder('PATCH', path, 200, {
     request: gatewayAccountFixtures.validUpdateToggleGooglePayRequest(allowGooglePay)
@@ -335,5 +334,5 @@ module.exports = {
   postUpdateNotificationCredentialsSuccess,
   postSwitchPspSuccess,
   patchAccountUpdateApplePaySuccess,
-  patchAccountUpdateGooglePayPaySuccess
+  patchAccountUpdateGooglePaySuccess
 }
