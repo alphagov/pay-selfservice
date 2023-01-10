@@ -14,7 +14,7 @@ const CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
 const CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
 const CARD_TYPES_API_PATH = '/v1/api/card-types'
 const STRIPE_ACCOUNT_SETUP_PATH = ACCOUNT_API_PATH + '/stripe-setup'
-const STRIPE_ACCOUNT_PATH = ACCOUNT_API_PATH + '/stripe-account'
+const STRIPE_ACCOUNT_PATH = '/v1/api/accounts/{accountId}/stripe-account'
 const SWITCH_PSP_PATH = ACCOUNT_API_PATH + '/switch-psp'
 
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
