@@ -21,7 +21,10 @@ describe('Bank details post controller', () => {
       account: {
         gateway_account_id: '1',
         external_id: 'a-valid-external-id',
-        connectorGatewayAccountStripeProgress: {}
+        connectorGatewayAccountStripeProgress: {},
+        gateway_account_credentials: [
+          { external_id: 'a-valid-credential-external-id' }
+        ]
       },
       body: {
         'account-number': rawAccountNumber,
@@ -169,7 +172,7 @@ describe('Bank details post controller', () => {
 
     sinon.assert.calledWith(updateBankAccountMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.yourPsp.index}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
   })
 
   it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async () => {
@@ -183,7 +186,7 @@ describe('Bank details post controller', () => {
 
     sinon.assert.calledWith(updateBankAccountMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
   })
 
   function getControllerWithMocks () {

@@ -41,10 +41,10 @@ function setupYourPspStubs (opts = {}) {
     governmentEntityDocument: opts.governmentEntityDocument
   })
 
-  
+  const updateStripeAccountSetupStub = stripeAccountSetupStubs.patchUpdateStripeSetupSuccess(gatewayAccountId)
   const getStripeAccountStub = getStripeAccountSuccess(gatewayAccountId, stripeAccountId)
-  const updateStripeAccountStub = updateAccount ( {stripeAccountId} )
-  const stubs = [user, gatewayAccountByExternalId, stripeAccountSetup,  getStripeAccountStub, updateStripeAccountStub]
+  const updateStripeAccountStub = updateAccount({ stripeAccountId })
+  const stubs = [user, gatewayAccountByExternalId, stripeAccountSetup, getStripeAccountStub, updateStripeAccountStub, updateStripeAccountSetupStub]
 
   cy.task('setupStubs', stubs)
 }
@@ -53,14 +53,16 @@ describe('Your PSP Stripe page', () => {
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
+
   it('should contain Your PSP - Stripe heading', () => {
-    setupYourPspStubs({})
+    setupYourPspStubs()
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    cy.get('.govuk-heading-m').should('contain', 'Information for Stripe')
+    cy.get('h1').should('contain', 'Information for Stripe')
   })
+
   it('should display all the required stripe tasks ', () => {
-    setupYourPspStubs({})
+    setupYourPspStubs()
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
@@ -74,7 +76,7 @@ describe('Your PSP Stripe page', () => {
   })
 
   it('should autamatically show government document as cannot start yet and the rest of the tasks as not started', () => {
-    setupYourPspStubs({})
+    setupYourPspStubs()
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
@@ -88,7 +90,7 @@ describe('Your PSP Stripe page', () => {
   })
 
   it('should have all tasks hyperlinked except government entity document', () => {
-    setupYourPspStubs({})
+    setupYourPspStubs()
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
@@ -117,62 +119,34 @@ describe('Your PSP Stripe page', () => {
     cy.get('span').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
   })
 
-  describe.only ('Bank details task', () => {
-    it('should have Bank details hyperlink removed when complete and status updated to "COMPLETE" ', () => {
-     console.log(111111, credentials)
-      setupYourPspStubs({
-        bankAccount: true,
-        director: false,
-        vatNumber: false,
-        companyNumber: false,
-        responsiblePerson: false,
-        organisationDetails: false,
-        governmentEntityDocument: false
-      })
-    
+  describe('Bank details task', () => {
+    it('should click bank details task and display bank details page correctly', () => {
+      setupYourPspStubs()
+
       cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('span').contains('Bank Details').click()
+      cy.get('h1').should('contain', 'Enter your organisation’s banking details')
+    })
+
+    it('should redirect back to the task List when valid bank details submitted', () => {
+      setupYourPspStubs()
+
+      cy.get('input#account-number[name="account-number"]').type(accountNumber)
+      cy.get('input#sort-code[name="sort-code"]').type(sortCode)
+      cy.get('#bank-details-form > button').click()
+
+      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+    })
+
+    it('should have Bank details hyperlink removed when complete and status updated to "COMPLETE" ', () => {
+      setupYourPspStubs({
+        bankAccount: true
+      })
+
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
       cy.get('span').contains('Bank Details').should('not.have.attr', 'href')
     })
-
-  it('should click bank details task and display bank details page correctly ', () => {
-    setupYourPspStubs({
-      bankAccount: false,
-      director: false,
-      vatNumber: false,
-      companyNumber: false,
-      responsiblePerson: false,
-      organisationDetails: false,
-      governmentEntityDocument: false
-    })
-    cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    cy.get('span').contains('Bank Details').click()
-    cy.get('#bank-details-form').should('exist')
-        .within(() => {
-          cy.get('input#account-number').should('exist')
-          cy.get('input#sort-code').should('exist')
-          cy.get('button').should('exist')
-          cy.get('button').should('contain', 'Save and continue')
-        })
   })
-
-  it('should save details ', () => {
-    setupYourPspStubs({
-      bankAccount: false,
-      director: false,
-      vatNumber: false,
-      companyNumber: false,
-      responsiblePerson: false,
-      organisationDetails: false,
-      governmentEntityDocument: false
-    })
-  cy.get('input#account-number[name="account-number"]').type(accountNumber)
-  cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-  cy.get('#bank-details-form > button').click()
-
 })
-})
-})
-
