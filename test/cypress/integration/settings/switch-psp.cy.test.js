@@ -20,7 +20,15 @@ const currentCredentialId = 1
 const switchingToCredentialExternalId = 'worlpday-cred'
 const switchingToCredentialId = 2
 
-function getUserAndAccountStubs (paymentProvider, providerSwitchEnabled, gatewayAccountCredentials, merchantDetails, requires3ds, integrationVersion3ds) {
+function getUserAndAccountStubs (
+  paymentProvider,
+  providerSwitchEnabled,
+  gatewayAccountCredentials,
+  merchantDetails,
+  requires3ds,
+  integrationVersion3ds,
+  allowMoto
+) {
   return [
     userStubs.getUserSuccess({ gatewayAccountId, userExternalId, merchantDetails }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
@@ -30,7 +38,8 @@ function getUserAndAccountStubs (paymentProvider, providerSwitchEnabled, gateway
       paymentProvider,
       ...gatewayAccountCredentials && { gatewayAccountCredentials },
       requires3ds,
-      integrationVersion3ds
+      integrationVersion3ds,
+      allowMoto
     })
   ]
 }
@@ -54,74 +63,10 @@ describe('Switch PSP settings page', () => {
   })
 
   describe('When using an account with switching flag enabled', () => {
-    describe('Switching is not started', () => {
-      beforeEach(() => {
-        const userAndAccountStubs = getUserAndAccountStubs('smartpay', true, [
-          {
-            payment_provider: 'smartpay',
-            state: 'ACTIVE',
-            id: currentCredentialId,
-            external_id: currentCredentialExternalId
-          },
-          {
-            payment_provider: 'worldpay',
-            state: 'CREATED',
-            id: switchingToCredentialId,
-            external_id: switchingToCredentialExternalId
-          }
-        ])
-        cy.task('setupStubs', [
-          ...userAndAccountStubs,
-          transactionStubs.getTransactionsSummarySuccess()
-        ])
-      })
-
-      it('should show dashboard message for switching psp', () => {
-        cy.setEncryptedCookies(userExternalId)
-        cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
-        cy.get('.govuk-notification-banner__heading').should('contain', 'Switch your payment service provider (PSP) to Worldpay')
-      })
-
-      it('should show the switch message for current psp page', () => {
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('a').contains('Your PSP - Smartpay').click()
-        cy.get('#switched-psp-status').should('contain', 'Your service is ready to switch PSP from Smartpay to Worldpay.')
-      })
-
-      it('should show the switch PSP page for switching to Worldpay', () => {
-        cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
-        cy.get('.service-info--tag').should('contain', 'switch psp')
-        cy.get('#navigation-menu-switch-psp').should('have.length', 1)
-        cy.get('h1').should('contain', 'Switch payment service provider')
-        cy.get('li').contains('your Worldpay account credentials: Merchant code, username and password').should('exist')
-        cy.get('#switch-psp-action-step').should('contain', 'Switch PSP to Worldpay')
-        cy.get('.govuk-warning-text').should('contain', 'Once you switch, Worldpay will immediately start taking payments. You can refund previous payments through Smartpay.')
-      })
-
-      it('should have task list for Worldpay with correct tags', () => {
-        cy.get('.app-task-list>li').eq(0).should('contain', 'Get ready to switch PSP')
-          .within(() => {
-            cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
-              .find('.app-task-list__tag').should('have.text', 'not started')
-            cy.get('.app-task-list__item').eq(1).should('contain', 'Link your Worldpay 3DS Flex account with GOV.UK Pay')
-              .find('.app-task-list__tag').should('have.text', 'not started')
-            cy.get('.app-task-list__item').eq(2).should('contain', 'Make a live payment to test your Worldpay PSP')
-              .find('.app-task-list__tag').should('have.text', 'cannot start yet')
-          })
-        cy.get('button').contains('Switch to Worldpay').should('have.disabled')
-      })
-
-      it('should navigate to link Worldpay account step', () => {
-        cy.get('.app-task-list__item').contains('Link your Worldpay account with GOV.UK Pay').click()
-        cy.get('h1').should('contain', 'Your Worldpay credentials')
-        cy.get('.govuk-back-link').should('contain', 'Back to Switching payment service provider (PSP)')
-      })
-    })
-
-    describe('Worldpay account linked', () => {
-      beforeEach(() => {
-        cy.task('setupStubs', [
-          ...getUserAndAccountStubs('smartpay', true, [
+    describe('When Worldpay non-MOTO account', () => {
+      describe('When switching is not started', () => {
+        beforeEach(() => {
+          const userAndAccountStubs = getUserAndAccountStubs('smartpay', true, [
             {
               payment_provider: 'smartpay',
               state: 'ACTIVE',
@@ -130,93 +75,218 @@ describe('Switch PSP settings page', () => {
             },
             {
               payment_provider: 'worldpay',
-              state: 'ENTERED',
+              state: 'CREATED',
               id: switchingToCredentialId,
               external_id: switchingToCredentialExternalId
             }
-          ]),
-          gatewayAccountStubs.postCheckWorldpayCredentials({
-            gatewayAccountId,
-            merchant_id: merchantId,
-            username,
-            password
-          }),
-          gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId),
-          gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, 1)
-        ])
+          ])
+          cy.task('setupStubs', [
+            ...userAndAccountStubs,
+            transactionStubs.getTransactionsSummarySuccess()
+          ])
+        })
+
+        it('should show dashboard message for switching psp', () => {
+          cy.setEncryptedCookies(userExternalId)
+          cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+          cy.get('.govuk-notification-banner__heading').should('contain', 'Switch your payment service provider (PSP) to Worldpay')
+        })
+
+        it('should show the switch message for current psp page', () => {
+          cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.get('a').contains('Your PSP - Smartpay').click()
+          cy.get('#switched-psp-status').should('contain', 'Your service is ready to switch PSP from Smartpay to Worldpay.')
+        })
+
+        it('should show the switch PSP page for switching to Worldpay', () => {
+          cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.get('.service-info--tag').should('contain', 'switch psp')
+          cy.get('#navigation-menu-switch-psp').should('have.length', 1)
+          cy.get('h1').should('contain', 'Switch payment service provider')
+          cy.get('li').contains('your Worldpay account credentials: Merchant code, username and password').should('exist')
+          cy.get('#switch-psp-action-step').should('contain', 'Switch PSP to Worldpay')
+          cy.get('.govuk-warning-text').should('contain', 'Once you switch, Worldpay will immediately start taking payments. You can refund previous payments through Smartpay.')
+        })
+
+        it('should have task list for Worldpay with correct tags', () => {
+          cy.get('.app-task-list>li').eq(0).should('contain', 'Get ready to switch PSP')
+            .within(() => {
+              cy.get('.app-task-list__item').should('have.length', 3)
+              cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
+                .find('.app-task-list__tag').should('have.text', 'not started')
+              cy.get('.app-task-list__item').eq(1).should('contain', 'Provide your Worldpay 3DS Flex credentials')
+                .find('.app-task-list__tag').should('have.text', 'not started')
+              cy.get('.app-task-list__item').eq(2).should('contain', 'Make a live payment to test your Worldpay PSP')
+                .find('.app-task-list__tag').should('have.text', 'cannot start yet')
+            })
+          cy.get('button').contains('Switch to Worldpay').should('have.disabled')
+        })
+
+        it('should navigate to link Worldpay account step', () => {
+          cy.get('.app-task-list__item').contains('Link your Worldpay account with GOV.UK Pay').click()
+          cy.get('h1').should('contain', 'Your Worldpay credentials')
+          cy.get('.govuk-back-link').should('contain', 'Back to Switching payment service provider (PSP)')
+        })
       })
 
-      it('should submit Worldpay credentials', () => {
-        cy.get('#merchantId').type('abc')
-        cy.get('#username').type('me')
-        cy.get('#password').type('1')
-        cy.get('button').contains('Save credentials').click()
+      describe('When account linked', () => {
+        beforeEach(() => {
+          cy.task('setupStubs', [
+            ...getUserAndAccountStubs('smartpay', true, [
+              {
+                payment_provider: 'smartpay',
+                state: 'ACTIVE',
+                id: currentCredentialId,
+                external_id: currentCredentialExternalId
+              },
+              {
+                payment_provider: 'worldpay',
+                state: 'ENTERED',
+                id: switchingToCredentialId,
+                external_id: switchingToCredentialExternalId
+              }
+            ]),
+            gatewayAccountStubs.postCheckWorldpayCredentials({
+              gatewayAccountId,
+              merchant_id: merchantId,
+              username,
+              password
+            }),
+            gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId),
+            gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, 1)
+          ])
+        })
+
+        it('should submit Worldpay credentials', () => {
+          cy.get('#merchantId').type('abc')
+          cy.get('#username').type('me')
+          cy.get('#password').type('1')
+          cy.get('button').contains('Save credentials').click()
+        })
+
+        it('should go back to task list with the link Worldpay account step complete', () => {
+          cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
+            .find('.app-task-list__tag').should('have.text', 'completed')
+          cy.get('.app-task-list__item').eq(1).should('contain', 'Provide your Worldpay 3DS Flex credentials')
+            .find('.app-task-list__tag').should('have.text', 'not started')
+        })
+
+        it('should navigate to link Worldpay 3DS flex credentials step', () => {
+          cy.get('.app-task-list__item').contains('Provide your Worldpay 3DS Flex credentials').click()
+          cy.get('h1').should('contain', 'Your Worldpay 3DS Flex credentials')
+          cy.get('.govuk-back-link').should('contain', 'Back to Switching payment service provider (PSP)')
+        })
       })
 
-      it('should go back to task list with the link Worldpay account step complete', () => {
-        cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
-          .find('.app-task-list__tag').should('have.text', 'completed')
-        cy.get('.app-task-list__item').eq(1).should('contain', 'Link your Worldpay 3DS Flex account with GOV.UK Pay')
-          .find('.app-task-list__tag').should('have.text', 'not started')
-      })
+      describe('When Worldpay 3DS flex credentials provided', () => {
+        beforeEach(() => {
+          cy.task('setupStubs', [
+            ...getUserAndAccountStubs('smartpay', true, [
+              {
+                payment_provider: 'smartpay',
+                state: 'ACTIVE',
+                id: currentCredentialId,
+                external_id: currentCredentialExternalId
+              },
+              {
+                payment_provider: 'worldpay',
+                state: 'ENTERED',
+                id: switchingToCredentialId,
+                external_id: switchingToCredentialExternalId
+              }
+            ],
+            null,
+            true,
+            2),
+            gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
+              gatewayAccountId: gatewayAccountId,
+              result: 'valid',
+              organisational_unit_id: organisationalUnitId,
+              issuer: issuer,
+              jwt_mac_key: jwtMacKey
+            }),
+            gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({
+              gatewayAccountId: gatewayAccountId,
+              organisational_unit_id: organisationalUnitId,
+              issuer: issuer,
+              jwt_mac_key: jwtMacKey
+            })
+          ])
+        })
 
-      it('should navigate to link Worldpay 3DS flex credentials step', () => {
-        cy.get('.app-task-list__item').contains('Link your Worldpay 3DS Flex account with GOV.UK Pay').click()
-        cy.get('h1').should('contain', 'Your Worldpay 3DS Flex credentials')
-        cy.get('.govuk-back-link').should('contain', 'Back to Switching payment service provider (PSP)')
+        it('should submit Worldpay 3DS flex credentials', () => {
+          cy.get('#organisational-unit-id').type(organisationalUnitId)
+          cy.get('#issuer').type(issuer)
+          cy.get('#jwt-mac-key').type(jwtMacKey)
+          cy.get('button').contains('Save credentials').click()
+        })
+
+        it('should go back to task list with the link Worldpay account step complete', () => {
+          cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
+            .find('.app-task-list__tag').should('have.text', 'completed')
+          cy.get('.app-task-list__item').eq(1).should('contain', 'Provide your Worldpay 3DS Flex credentials')
+            .find('.app-task-list__tag').should('have.text', 'completed')
+          cy.get('.app-task-list__item').eq(2).should('contain', 'Make a live payment to test your Worldpay PSP')
+            .find('.app-task-list__tag').should('have.text', 'not started')
+        })
       })
     })
 
-    describe('Worldpay 3DS flex account linked', () => {
-      beforeEach(() => {
-        cy.task('setupStubs', [
-          ...getUserAndAccountStubs('smartpay', true, [
-            {
-              payment_provider: 'smartpay',
-              state: 'ACTIVE',
-              id: currentCredentialId,
-              external_id: currentCredentialExternalId
-            },
-            {
-              payment_provider: 'worldpay',
-              state: 'ENTERED',
-              id: switchingToCredentialId,
-              external_id: switchingToCredentialExternalId
-            }
+    describe('When Worldpay MOTO account', () => {
+      describe('When switching is not started', () => {
+        beforeEach(() => {
+          cy.task('setupStubs', getUserAndAccountStubs('smartpay', true, [
+            { payment_provider: 'smartpay', state: 'ACTIVE' },
+            { payment_provider: 'worldpay', state: 'CREATED' }
           ],
           null,
-          true,
-          2),
-          gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
-            gatewayAccountId: gatewayAccountId,
-            result: 'valid',
-            organisational_unit_id: organisationalUnitId,
-            issuer: issuer,
-            jwt_mac_key: jwtMacKey
-          }),
-          gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({
-            gatewayAccountId: gatewayAccountId,
-            organisational_unit_id: organisationalUnitId,
-            issuer: issuer,
-            jwt_mac_key: jwtMacKey
-          })
-        ])
+          null,
+          null,
+          true))
+        })
+
+        it('should have task list for Worldpay with correct tags', () => {
+          cy.setEncryptedCookies(userExternalId)
+          cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+
+          cy.get('.app-task-list>li').eq(0).should('contain', 'Get ready to switch PSP')
+            .within(() => {
+              cy.get('.app-task-list__item').should('have.length', 2)
+              cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
+                .find('.app-task-list__tag').should('have.text', 'not started')
+              cy.get('.app-task-list__item').eq(1).should('contain', 'Make a live payment to test your Worldpay PSP')
+                .find('.app-task-list__tag').should('have.text', 'cannot start yet')
+            })
+          cy.get('button').contains('Switch to Worldpay').should('have.disabled')
+        })
       })
 
-      it('should submit Worldpay 3DS flex credentials', () => {
-        cy.get('#organisational-unit-id').type(organisationalUnitId)
-        cy.get('#issuer').type(issuer)
-        cy.get('#jwt-mac-key').type(jwtMacKey)
-        cy.get('button').contains('Save credentials').click()
-      })
+      describe('When account is linked', () => {
+        beforeEach(() => {
+          cy.task('setupStubs', [
+            ...getUserAndAccountStubs(
+              'smartpay',
+              true,
+              [
+                { payment_provider: 'smartpay', state: 'ACTIVE' },
+                { payment_provider: 'worldpay', state: 'ENTERED' }
+              ],
+              null,
+              null,
+              null,
+              true
+            )
+          ])
+        })
 
-      it('should go back to task list with the link Worldpay account step complete', () => {
-        cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
-          .find('.app-task-list__tag').should('have.text', 'completed')
-        cy.get('.app-task-list__item').eq(1).should('contain', 'Link your Worldpay 3DS Flex account with GOV.UK Pay')
-          .find('.app-task-list__tag').should('have.text', 'completed')
-        cy.get('.app-task-list__item').eq(2).should('contain', 'Make a live payment to test your Worldpay PSP')
-          .find('.app-task-list__tag').should('have.text', 'not started')
+        it('should should the task list with the link Worldpay account step complete', () => {
+          cy.setEncryptedCookies(userExternalId)
+          cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
+            .find('.app-task-list__tag').should('have.text', 'completed')
+          cy.get('.app-task-list__item').eq(1).should('contain', 'Make a live payment to test your Worldpay PSP')
+            .find('.app-task-list__tag').should('have.text', 'not started')
+        })
       })
     })
 
