@@ -132,7 +132,7 @@
     "grunt-contrib-watch": "1.1.x",
     "grunt-sass": "3.1.0",
     "html5shiv": "3.7.x",
-    "jsdom": "^20.0.3",
+    "jsdom": "^21.0.0",
     "lint-staged": "13.1.0",
     "mocha": "^6.2.3",
     "mountebank": "^2.8.1",
