@@ -18,6 +18,7 @@ const VAT_NUMBER_FIELD = 'vat-number'
 const VAT_NUMBER_PROVIDED_FIELD = 'vat-number-declaration'
 
 module.exports = async (req, res, next) => {
+  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
@@ -67,6 +68,8 @@ module.exports = async (req, res, next) => {
       })
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+      } else if (enabledStripeOnboardingTaskList) {
+        return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.account.gateway_account_credentials[0].external_id))
       } else {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
       }
