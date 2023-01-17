@@ -39,8 +39,12 @@ describe('VAT number POST controller', () => {
       account: {
         gateway_account_id: '1',
         external_id: 'a-valid-external-id',
-        connectorGatewayAccountStripeProgress: {}
+        connectorGatewayAccountStripeProgress: {},
+        gateway_account_credentials: [
+          { external_id: 'a-valid-credential-external-id' }
+        ]
       },
+      body: postBody,
       flash: sinon.spy()
     }
     res = {
@@ -140,5 +144,33 @@ describe('VAT number POST controller', () => {
     sinon.assert.notCalled(res.redirect)
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)
+  })
+
+  it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateCompanyMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+  })
+
+  it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateCompanyMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
   })
 })

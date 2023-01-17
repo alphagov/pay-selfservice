@@ -12,7 +12,7 @@ const gatewayAccountExternalId = 'a-valid-external-id'
 const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
 const vatNumberUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/vat-number`
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
-const bankDetailsUrl = `/account/${gatewayAccountExternalId}/your-psp/a-valid-credential-external-id/bank-details`
+const taskListUrl = `/account/${gatewayAccountExternalId}/your-psp/a-valid-credential-external-id`
 
 function setupStubs (vatNumber, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
@@ -88,7 +88,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.get('#vat-number-form > button').click()
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(bankDetailsUrl)
+          expect(location.pathname).to.eq(taskListUrl)
         })
       })
 
