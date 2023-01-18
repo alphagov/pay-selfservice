@@ -45,6 +45,9 @@ describe('VAT number POST controller', () => {
         ]
       },
       body: postBody,
+      params: {
+        credentialId: 'a-valid-credential-external-id'
+      },
       flash: sinon.spy()
     }
     res = {

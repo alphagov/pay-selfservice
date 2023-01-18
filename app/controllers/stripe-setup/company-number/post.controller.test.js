@@ -46,9 +46,9 @@ describe('Company number POST controller', () => {
       },
       body: postBody,
       params: {
-        credentialId: 'a-valid-credential-external-id' 
+        credentialId: 'a-valid-credential-external-id'
       },
-      flash: sinon.spy(),
+      flash: sinon.spy()
     }
     res = {
       setHeader: sinon.stub(),
@@ -155,7 +155,7 @@ describe('Company number POST controller', () => {
     updateCompanyMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
-    
+
     await controller(req, res, next)
 
     sinon.assert.calledWith(updateCompanyMock)
