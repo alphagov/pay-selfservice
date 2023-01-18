@@ -31,6 +31,9 @@ describe('Bank details post controller', () => {
         'sort-code': rawSortCode,
         'answers-checked': true
       },
+      params: {
+        credentialId: 'a-valid-credential-external-id'
+      },
       flash: sinon.spy()
     }
     res = {
