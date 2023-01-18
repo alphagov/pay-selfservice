@@ -13,6 +13,7 @@ const stripeAccountId = `acct_123example123`
 const serviceName = 'Purchase a positron projection permit'
 const accountNumber = '00012345'
 const sortCode = '108800'
+const standardVatNumber = 'GB999 9999 73'
 
 function setupYourPspStubs (opts = {}) {
   const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
@@ -147,6 +148,31 @@ describe('Your PSP Stripe page', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
       cy.get('span').contains('Bank Details').should('not.have.attr', 'href')
+    })
+  })
+  describe('VAT task', () => {
+    it('should click VAT task and display Vat details page correctly', () => {
+      setupYourPspStubs()
+      cy.get('span').contains('VAT registration number').click()
+      cy.get('h1').should('contain', 'VAT registration number')
+    })
+
+    it('should redirect back to the task List when valid VAT number is submitted', () => {
+      setupYourPspStubs()
+
+      cy.get('#have-vat-number').click()
+      cy.get('#vat-number').type(standardVatNumber)
+      cy.get('#vat-number-form > button').click()
+      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+    })
+
+    it('should have VAT number task hyperlink removed when complete and status updated to "COMPLETE " ', () => {
+      setupYourPspStubs({
+        vatNumber: true
+      })
+
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
     })
   })
 })
