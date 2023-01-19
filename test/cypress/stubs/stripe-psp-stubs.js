@@ -39,6 +39,14 @@ function retrieveAccountDetails (opts) {
   })
 }
 
+function updateListPerson (opts) {
+  const path = `/v1/accounts/${opts.stripeAccountId}/persons`
+  const fixtureOpts = parseStripePersonOptions(opts)
+  return stubBuilder('POST', path, 200, {
+    response: stripePspFixtures.validStripePerson(fixtureOpts)
+  })
+}
+
 function createOrUpdatePerson (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}/persons/person_1234`
   const fixtureOpts = parseStripePersonOptions(opts)
@@ -66,6 +74,7 @@ function updateAccount (opts) {
 module.exports = {
   listPersons,
   retrieveAccountDetails,
+  updateListPerson,
   createOrUpdatePerson,
   updateCompany,
   updateAccount
