@@ -278,4 +278,39 @@ describe('Director POST controller', () => {
     const expectedError = sinon.match.instanceOf(Error)
     sinon.assert.calledWith(next, expectedError)
   })
+
+  it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.body = postBody
+    req.params = {
+      credentialId: 'a-valid-credential-external-id'
+    }
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateCompanyMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+  })
+
+  it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.body = postBody
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateCompanyMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
+  })
 })

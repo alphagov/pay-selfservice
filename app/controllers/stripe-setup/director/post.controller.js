@@ -49,6 +49,7 @@ const validationRules = [
 
 module.exports = async function (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
   const collectingAdditionalKycData = isAdditionalKycDataRoute(req)
   const currentCredential = getCurrentCredential(req.account)
 
@@ -104,6 +105,8 @@ module.exports = async function (req, res, next) {
 
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+      } else if (enabledStripeOnboardingTaskList) {
+        return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
       } else if (collectingAdditionalKycData) {
         const taskListComplete = await isKycTaskListComplete(currentCredential)
         if (taskListComplete) {
