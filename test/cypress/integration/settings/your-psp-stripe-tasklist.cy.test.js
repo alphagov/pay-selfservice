@@ -14,6 +14,7 @@ const serviceName = 'Purchase a positron projection permit'
 const accountNumber = '00012345'
 const sortCode = '108800'
 const standardVatNumber = 'GB999 9999 73'
+const validCompanyNumber = '01234567'
 
 function setupYourPspStubs (opts = {}) {
   const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
@@ -121,22 +122,17 @@ describe('Your PSP Stripe page', () => {
   })
 
   describe('Bank details task', () => {
-    it('should click bank details task and display bank details page correctly', () => {
+    it('should click bank details task and redirect to task list when valid bank details is submitted', () => {
       setupYourPspStubs()
 
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+
       cy.get('span').contains('Bank Details').click()
       cy.get('h1').should('contain', 'Enter your organisation’s banking details')
-    })
-
-    it('should redirect back to the task List when valid bank details submitted', () => {
-      setupYourPspStubs()
-
       cy.get('input#account-number[name="account-number"]').type(accountNumber)
       cy.get('input#sort-code[name="sort-code"]').type(sortCode)
       cy.get('#bank-details-form > button').click()
-
       cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
     })
 
@@ -150,16 +146,13 @@ describe('Your PSP Stripe page', () => {
       cy.get('span').contains('Bank Details').should('not.have.attr', 'href')
     })
   })
+
   describe('VAT task', () => {
-    it('should click VAT task and display Vat details page correctly', () => {
+    it('should click VAT number task and redirect back to tasklist when valid VAT number is submitted', () => {
       setupYourPspStubs()
+
       cy.get('span').contains('VAT registration number').click()
       cy.get('h1').should('contain', 'VAT registration number')
-    })
-
-    it('should redirect back to the task List when valid VAT number is submitted', () => {
-      setupYourPspStubs()
-
       cy.get('#have-vat-number').click()
       cy.get('#vat-number').type(standardVatNumber)
       cy.get('#vat-number-form > button').click()
@@ -172,7 +165,31 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('span').contains('VAT registration number').should('not.have.attr', 'href')
       cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
+    })
+  })
+
+  describe('Company number task', () => {
+    it('should click company registration task and redirect back to tasklist when valid company number is submitted', () => {
+      setupYourPspStubs()
+
+      cy.get('span').contains('Company registration number').click()
+      cy.get('h1').should('contain', 'Company registration number')
+      cy.get('#company-number-declaration').click()
+      cy.get('#company-number').type(validCompanyNumber)
+      cy.get('#company-number-form > button').click()
+      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+    })
+
+    it('should have Company registration number task hyperlink removed when complete and status updated to "COMPLETE " ', () => {
+      setupYourPspStubs({
+        companyNumber: true
+      })
+
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('span').contains('Company registration number').should('not.have.attr', 'href')
+      cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
     })
   })
 })
