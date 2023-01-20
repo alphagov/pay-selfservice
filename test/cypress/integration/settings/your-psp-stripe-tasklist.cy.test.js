@@ -4,7 +4,7 @@ const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const { getStripeAccountSuccess } = require('../../stubs/stripe-account-stubs')
-const { updateAccount } = require('../../stubs/stripe-psp-stubs')
+const { updateAccount, listPersons, updateListPerson } = require('../../stubs/stripe-psp-stubs')
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e' // pragma: allowlist secret
 const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-valid-external-id'
@@ -15,6 +15,12 @@ const accountNumber = '00012345'
 const sortCode = '108800'
 const standardVatNumber = 'GB999 9999 73'
 const validCompanyNumber = '01234567'
+const typedFirstName = 'Jane'
+const typedLastName = ' Doe'
+const typedDobDay = '25 '
+const typedDobMonth = ' 02'
+const typedDobYear = '1971 '
+const typedEmail = 'test@example.com'
 
 function setupYourPspStubs (opts = {}) {
   const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
@@ -46,7 +52,9 @@ function setupYourPspStubs (opts = {}) {
   const updateStripeAccountSetupStub = stripeAccountSetupStubs.patchUpdateStripeSetupSuccess(gatewayAccountId)
   const getStripeAccountStub = getStripeAccountSuccess(gatewayAccountId, stripeAccountId)
   const updateStripeAccountStub = updateAccount({ stripeAccountId })
-  const stubs = [user, gatewayAccountByExternalId, stripeAccountSetup, getStripeAccountStub, updateStripeAccountStub, updateStripeAccountSetupStub]
+  const getListPersonStub = listPersons({ stripeAccountId })
+  const updateListPersonStub = updateListPerson({ stripeAccountId })
+  const stubs = [user, gatewayAccountByExternalId, stripeAccountSetup, getStripeAccountStub, updateStripeAccountStub, updateStripeAccountSetupStub, getListPersonStub, updateListPersonStub]
 
   cy.task('setupStubs', stubs)
 }
@@ -190,6 +198,33 @@ describe('Your PSP Stripe page', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('span').contains('Company registration number').should('not.have.attr', 'href')
       cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
+    })
+  })
+
+  describe('Service director task', () => {
+    it('should click on service director task and redirect back to tasklist when valid service director information is submitted', () => {
+      setupYourPspStubs()
+
+      cy.get('span').contains('Service director').click()
+      cy.get('h1').should('contain', 'Enter a director’s details')
+      cy.get('#first-name').type(typedFirstName)
+      cy.get('#last-name').type(typedLastName)
+      cy.get('#dob-day').type(typedDobDay)
+      cy.get('#dob-month').type(typedDobMonth)
+      cy.get('#dob-year').type(typedDobYear)
+      cy.get('#email').type(typedEmail)
+      cy.get('#director-form > button').click()
+      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+    })
+
+    it('should have Service director task hyperlink removed when complete and status updated to "COMPLETE"', () => {
+      setupYourPspStubs({
+        director: true
+      })
+
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('strong[id="task-director-status"]').should('contain', 'complete')
+      cy.get('span').contains('Service director').should('not.have.attr', 'href')
     })
   })
 })
