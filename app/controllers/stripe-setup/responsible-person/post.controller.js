@@ -102,11 +102,11 @@ const validationRules = [
 ]
 
 module.exports = async function submitResponsiblePerson (req, res, next) {
+  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const isSubmittingAdditionalKycData = isAdditionalKycDataRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   const currentCredential = getCurrentCredential(req.account)
-
   if (!isSubmittingAdditionalKycData) {
     if (!stripeAccountSetup) {
       return next(new Error('Stripe setup progress is not available on request'))
@@ -119,7 +119,6 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
   }
 
   const formFields = getFormFields(req.body, fields)
-
   const errors = validateForm(formFields)
 
   const pageData = {
@@ -149,7 +148,6 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
       const personsResponse = await listPersons(stripeAccountId)
       const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
-
       const stripePerson = buildStripePerson(formFields)
       if (responsiblePerson !== undefined) {
         await updatePerson(stripeAccountId, responsiblePerson.id, stripePerson)
@@ -181,6 +179,8 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
           req.flash('generic', 'Responsible person details added successfully')
         }
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
+      } else if (enabledStripeOnboardingTaskList) {
+        return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
       } else {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
       }

@@ -451,4 +451,62 @@ describe('Responsible person POST controller', () => {
     sinon.assert.calledWith(updateCompanyMock, stripeAccountId, { executives_provided: true })
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
+  it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    const personId = 'person-1'
+    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+      data: [
+        {
+          id: personId,
+          relationship: {
+            representative: true
+          }
+        }
+      ]
+    }))
+
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.body = postBody
+    req.params = {
+      credentialId: 'a-valid-credential-external-id'
+    }
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateCompanyMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+  })
+
+  it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+
+    const personId = 'person-1'
+    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+      data: [
+        {
+          id: personId,
+          relationship: {
+            representative: true
+          }
+        }
+      ]
+    }))
+
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.body = postBody
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(updateCompanyMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
+  })
 })
