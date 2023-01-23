@@ -21,6 +21,9 @@ const typedDobDay = '25 '
 const typedDobMonth = ' 02'
 const typedDobYear = '1971 '
 const typedEmail = 'test@example.com'
+const typedHomeAddress = ' 64 Zoo Lane Road'
+const typedPostcode = 'W89 1FZ'
+const typedPhoneNumber = '+44 0808 157 0192'
 
 function setupYourPspStubs (opts = {}) {
   const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
@@ -225,6 +228,37 @@ describe('Your PSP Stripe page', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('strong[id="task-director-status"]').should('contain', 'complete')
       cy.get('span').contains('Service director').should('not.have.attr', 'href')
+    })
+  })
+
+  describe('Responsible person task', () => {
+    it('should click Responsible task and redirect back to tasklist when valid responsible information is submitted', () => {
+      setupYourPspStubs()
+
+      cy.get('span').contains('Responsible person').click()
+      cy.get('h1').should('contain', 'Enter responsible person details')
+      cy.get('#first-name').type(typedFirstName)
+      cy.get('#last-name').type(typedLastName)
+      cy.get('#dob-day').type(typedDobDay)
+      cy.get('#dob-month').type(typedDobMonth)
+      cy.get('#dob-year').type(typedDobYear)
+      cy.get('#email').type(typedEmail)
+      cy.get('#home-address-line-1').type(typedHomeAddress)
+      cy.get('#home-address-city').type('London')
+      cy.get('#home-address-postcode').type(typedPostcode)
+      cy.get('#telephone-number').type(typedPhoneNumber)
+      cy.get('#responsible-person-form > button').click()
+      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+    })
+
+    it('should have Responsible person task hyperlink removed when complete and status updated to "COMPLETE" ', () => {
+      setupYourPspStubs({
+        responsiblePerson: true
+      })
+
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('span').contains('Responsible person').should('not.have.attr', 'href')
+      cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
     })
   })
 })
