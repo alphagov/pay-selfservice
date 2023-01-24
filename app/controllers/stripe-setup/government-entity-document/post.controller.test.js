@@ -304,4 +304,45 @@ describe('Government entity document POST controller', () => {
       sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/credential-external-id`)
     })
   })
+
+  it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    uploadFileMock = sinon.spy(() => Promise.resolve({ id: 'file_id_123' }))
+    updateAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+
+    const controller = getControllerWithMocks()
+
+    req.params = {
+      credentialId: 'a-valid-credential-external-id'
+    }
+    req.file = { ...postBody }
+
+    await controller.postGovernmentEntityDocument(req, res, next)
+
+    sinon.assert.calledWith(uploadFileMock)
+    sinon.assert.calledWith(updateAccountMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+  })
+
+  it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+
+    uploadFileMock = sinon.spy(() => Promise.resolve({ id: 'file_id_123' }))
+    updateAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+
+    const controller = getControllerWithMocks()
+
+    req.file = { ...postBody }
+
+    await controller.postGovernmentEntityDocument(req, res, next)
+
+    sinon.assert.calledWith(uploadFileMock)
+    sinon.assert.calledWith(updateAccountMock)
+    sinon.assert.calledWith(setStripeAccountSetupFlagMock)
+    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
+  })
 })
