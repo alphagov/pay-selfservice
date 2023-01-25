@@ -198,21 +198,21 @@ describe('Transactions List', () => {
 
       // 1. Filtering FROM
       // Ensure both the date/time pickers aren't showing
-      cy.get('.datepicker').should('not.be.visible')
-      cy.get('.ui-timepicker-wrapper').should('not.be.visible')
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
 
       // Fill in a from date
       cy.get('#fromDate').type('03/5/2018')
 
       // Ensure only the datepicker is showing
       cy.get('.datepicker').should('be.visible')
-      cy.get('.ui-timepicker-wrapper').should('not.be.visible')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
 
       // Fill in a from time
       cy.get('#fromTime').type('01:00:00')
 
       // Ensure only the timepicker is showing
-      cy.get('.datepicker').should('not.be.visible')
+      cy.get('.datepicker').should('not.exist')
       cy.get('.ui-timepicker-wrapper').should('be.visible')
 
       // 2. Filtering TO
@@ -228,7 +228,7 @@ describe('Transactions List', () => {
       cy.get('#toTime').type('01:00:00')
 
       // Ensure only the timepicker is showing
-      cy.get('.datepicker').should('not.be.visible')
+      cy.get('.datepicker').should('not.exist')
       cy.get('.ui-timepicker-wrapper').should('be.visible')
 
       // Click the filter button
