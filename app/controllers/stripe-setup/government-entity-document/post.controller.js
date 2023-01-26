@@ -47,7 +47,6 @@ async function postGovernmentEntityDocument (req, res, next) {
   } else {
     try {
       const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
-
       const stripeFile = await uploadFile(`entity_document_for_account_${req.account.gateway_account_id}`, file.mimetype, file.buffer)
       await updateAccount(stripeAccountId, { entity_verification_document_id: stripeFile.id })
 
