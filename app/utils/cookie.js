@@ -2,11 +2,8 @@
 
 const session = require('client-sessions')
 
-const _30_DAYS = 2592000000 // 30 days in ms
 const _1_HOUR = 60 * 60 * 1000
 const DISABLE_INTERNAL_HTTPS = process.env.DISABLE_INTERNAL_HTTPS === 'true'
-const COOKIE_MAX_AGE_GATEWAY_ACCOUNT = process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT
-  ? parseInt(process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT) : _30_DAYS
 const COOKIE_MAX_AGE_REGISTRATION = process.env.COOKIE_MAX_AGE_REGISTRATION
   ? parseInt(process.env.COOKIE_MAX_AGE_REGISTRATION) : _1_HOUR
 
@@ -34,21 +31,6 @@ function sessionCookie () {
   })
 }
 
-function gatewayAccountCookie () {
-  checkEnv()
-  return session({
-    cookieName: 'gateway_account', // cookie name dictates the key name added to the request object
-    secret: process.env.SESSION_ENCRYPTION_KEY,
-    duration: COOKIE_MAX_AGE_GATEWAY_ACCOUNT, // how long the clientSessions will stay valid in ms
-    proxy: true,
-    cookie: {
-      ephemeral: false, // when true, cookie expires when the browser closes
-      httpOnly: true, // when true, cookie is not accessible from javascript
-      secureProxy: !DISABLE_INTERNAL_HTTPS // when true, cookie will only be sent over SSL. use key 'secureProxy' instead if you handle SSL not in your node process
-    }
-  })
-}
-
 function registrationCookie () {
   checkEnv()
   return session({
@@ -66,6 +48,5 @@ function registrationCookie () {
 
 module.exports = {
   sessionCookie,
-  gatewayAccountCookie,
   registrationCookie
 }

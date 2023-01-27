@@ -3,24 +3,24 @@ const request = require('supertest')
 const { getApp } = require('../../server')
 const session = require('../test-helpers/mock-session.js')
 
-describe('URL upgrade utility', () => {
-  it('correctly upgrades URLs in the account specific paths', () => {
-    const app = session.getAppWithLoggedInUserWithGatewayAccountCookie(getApp(), session.getUser())
+describe('URL redirecting from old ones', () => {
+  it('sends user to my services page when using old url', () => {
+    const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
     return request(app)
-      .get('/billing-address')
+      .get('/transactions')
       .expect(302)
       .then((res) => {
-        res.header['location'].should.include('/account/external-id-set-by-create-app-with-session/billing-address') // eslint-disable-line
+        res.header['location'].should.include('/my-services') // eslint-disable-line
       })
   })
 
-  it('correctly upgrades URLs in the account specific paths with complex templated values', () => {
-    const app = session.getAppWithLoggedInUserWithGatewayAccountCookie(getApp(), session.getUser())
+  it('sends user to my services page when using old url', () => {
+    const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
     return request(app)
-      .get('/create-payment-link/manage/some-product-external-id/add-reporting-column/some-metadata-key')
+      .get('/dashboard')
       .expect(302)
       .then((res) => {
-        res.header['location'].should.include('/account/external-id-set-by-create-app-with-session/create-payment-link/manage/some-product-external-id/add-reporting-column/some-metadata-key') // eslint-disable-line
+        res.header['location'].should.include('/my-services') // eslint-disable-line
       })
   })
 
@@ -36,7 +36,7 @@ describe('URL upgrade utility', () => {
       })
   })
 
-  it('redirects to My services for an old URL if there is no gateway account cookie set', () => {
+  it('redirects to My services for an old URL', () => {
     const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
     return request(app)
       .get('/billing-address')
@@ -47,7 +47,7 @@ describe('URL upgrade utility', () => {
   })
 
   it('correctly 404s as expected for non account specific paths', () => {
-    const app = session.getAppWithLoggedInUserWithGatewayAccountCookie(getApp(), session.getUser())
+    const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
     return request(app)
       .get('/unknown-address')
       .expect(404)
