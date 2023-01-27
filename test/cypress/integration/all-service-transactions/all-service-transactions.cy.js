@@ -101,7 +101,7 @@ describe('All service transactions', () => {
 
   describe('Visiting All Service Transactions', () => {
     beforeEach(() => {
-      Cypress.Cookies.preserveOnce('session', 'gateway_account')
+      Cypress.Cookies.preserveOnce('session')
     })
 
     it('should display All Service Transactions list page with live transactions', () => {

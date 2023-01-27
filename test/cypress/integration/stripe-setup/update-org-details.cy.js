@@ -69,7 +69,7 @@ describe('The organisation address page', () => {
   describe('Stripe setup after `go live` request and there are no existing merchant details', () => {
     beforeEach(() => {
       // keep the same session for entire describe block
-      Cypress.Cookies.preserveOnce('session', 'gateway_account')
+      Cypress.Cookies.preserveOnce('session')
     })
 
     describe('Form validation', () => {

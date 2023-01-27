@@ -43,7 +43,7 @@ const mockAgreements = [
 
 describe('Agreements', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    Cypress.Cookies.preserveOnce('session')
   })
 
   it('should correctly display agreements for a given service', () => {

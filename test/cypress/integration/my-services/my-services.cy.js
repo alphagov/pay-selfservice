@@ -84,7 +84,7 @@ describe('The user does not have any services', () => {
 describe('Service has a live account that supports payouts', () => {
   beforeEach(() => {
     // keep the same session for entire describe block
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    Cypress.Cookies.preserveOnce('session')
   })
 
   it('should display link to view payouts', () => {

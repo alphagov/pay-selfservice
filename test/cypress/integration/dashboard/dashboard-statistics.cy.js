@@ -10,7 +10,7 @@ describe('Account dashboard', () => {
   const serviceName = 'Test Service'
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    Cypress.Cookies.preserveOnce('session')
 
     const todayStatisticsStub = transactionsSummaryStubs.getDashboardStatisticsWithFromDate(
       moment().tz('Europe/London').startOf('day').format(),
