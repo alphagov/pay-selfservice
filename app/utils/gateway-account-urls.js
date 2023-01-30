@@ -2,9 +2,7 @@
 // check if a missed URL (404) is a URL that has been upgraded during the
 // account URL structure change. When this utility is reporting few or no
 // upgrades it can be removed
-const urlJoin = require('url-join')
 const paths = require('../paths')
-const formattedPathFor = require('./replace-params-in-path')
 const flattenNestedValues = require('./flatten-nested-values')
 
 // only flatten paths once given the singleton module export patten, these
@@ -41,12 +39,6 @@ function isLegacyAccountsUrl (targetUrl) {
   }
 }
 
-function getUpgradedAccountStructureUrl (url, gatewayAccountExternalId) {
-  const base = formattedPathFor(paths.account.root, gatewayAccountExternalId)
-  return urlJoin(base, url)
-}
-
 module.exports = {
-  isLegacyAccountsUrl,
-  getUpgradedAccountStructureUrl
+  isLegacyAccountsUrl
 }

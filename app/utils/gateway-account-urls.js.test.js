@@ -13,10 +13,4 @@ describe('account URL checker', () => {
     const result = accountsUrl.isLegacyAccountsUrl(url)
     expect(result).to.be.true //eslint-disable-line
   })
-
-  it('correctly upgrades a URL to the account structure', () => {
-    const url = '/create-payment-link/manage/some-product-external-id/add-reporting-column/some-metadata-key'
-    const gatewayAccountExternalId = 'some-account-external-id'
-    expect(accountsUrl.getUpgradedAccountStructureUrl(url, gatewayAccountExternalId)).to.equal('/account/some-account-external-id/create-payment-link/manage/some-product-external-id/add-reporting-column/some-metadata-key')
-  })
 })
