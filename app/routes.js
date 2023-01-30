@@ -488,23 +488,15 @@ module.exports.bind = function (app) {
 
   app.all('*', (req, res, next) => {
     if (accountUrls.isLegacyAccountsUrl(req.url)) {
+      logger.info('Accounts URL utility forwarding a legacy account URL', {
+        url: req.originalUrl,
+        session_has_user: !!req.user
+      })
       if (!req.user) {
         if (req.session) {
           req.session.last_url = req.url
         }
         res.redirect(user.logIn)
-        return
-      }
-
-      const currentSessionAccountExternalId = req.gateway_account && req.gateway_account.currentGatewayAccountExternalId
-      if (currentSessionAccountExternalId) {
-        const upgradedPath = accountUrls.getUpgradedAccountStructureUrl(req.url, currentSessionAccountExternalId)
-        logger.info('Accounts URL utility upgraded a request to a legacy account URL', {
-          url: req.originalUrl,
-          redirected_url: upgradedPath,
-          session_has_user: !!req.user
-        })
-        res.redirect(upgradedPath)
         return
       }
 
