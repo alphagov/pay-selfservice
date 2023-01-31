@@ -19,7 +19,8 @@ module.exports = {
     update: updateProduct,
     disable: disableProduct,
     delete: deleteProduct,
-    getByProductExternalId: getProductByExternalId,
+    getByProductExternalIdAndGatewayAccountId: getProductByExternalIdAndGatewayAccountId,
+    getProductByExternalId: getProductByExternalId,
     getByGatewayAccountIdAndType: getProductsByGatewayAccountIdAndType,
     getByProductPath: getProductByPath
   },
@@ -100,13 +101,27 @@ function updateProduct (gatewayAccountId, productExternalId, options) {
 }
 
 /**
+ * @param {String} gatewayAccountId: the internal id of the gateway account
  * @param {String} productExternalId: the external id of the product you wish to retrieve
  * @returns {Promise<Product>}
  */
-function getProductByExternalId (gatewayAccountId, productExternalId) {
+function getProductByExternalIdAndGatewayAccountId (gatewayAccountId, productExternalId) {
   return baseClient.get({
     baseUrl,
     url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
+    description: `find a product by it's external id`,
+    service: SERVICE_NAME
+  }).then(product => new Product(product))
+}
+
+/**
+ * @param {String} productExternalId: the external id of the product you wish to retrieve
+ * @returns {Promise<Product>}
+ */
+function getProductByExternalId (productExternalId) {
+  return baseClient.get({
+    baseUrl,
+    url: `/products/${productExternalId}`,
     description: `find a product by it's external id`,
     service: SERVICE_NAME
   }).then(product => new Product(product))

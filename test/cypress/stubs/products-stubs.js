@@ -14,7 +14,7 @@ function getProductsByGatewayAccountIdAndTypeStub (products, gatewayAccountId, p
   })
 }
 
-function getProductByExternalIdStub (product, gatewayAccountId) {
+function getProductByExternalIdAndGatewayAccountIdStub (product, gatewayAccountId) {
   const path = `/v1/api/gateway-account/${gatewayAccountId}/products/${product.external_id}`
   return stubBuilder('GET', path, 200, {
     response: productFixtures.validAdhocProductResponse(product)
@@ -60,7 +60,7 @@ function patchUpdateProductSuccess (opts) {
 
 module.exports = {
   getProductsByGatewayAccountIdAndTypeStub,
-  getProductByExternalIdStub,
+  getProductByExternalIdAndGatewayAccountIdStub: getProductByExternalIdAndGatewayAccountIdStub,
   deleteProductStub,
   getProductsByGatewayAccountIdAndTypeFailure,
   postCreateProductSuccess,
