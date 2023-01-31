@@ -116,22 +116,6 @@ describe('Your PSP Stripe page', () => {
     cy.get('span').contains('Government entity document').should('not.have.attr', 'href')
   })
 
-  it('should have government entity document hyperlinked when all other tasks are complete', () => {
-    setupYourPspStubs({
-      bankAccount: true,
-      director: true,
-      vatNumber: true,
-      companyNumber: true,
-      responsiblePerson: true,
-      organisationDetails: true,
-      governmentEntityDocument: false
-    })
-
-    cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    cy.get('span').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
-  })
-
   describe('Bank details task', () => {
     it('should click bank details task and redirect to task list when valid bank details is submitted', () => {
       setupYourPspStubs()
@@ -259,6 +243,26 @@ describe('Your PSP Stripe page', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('span').contains('Responsible person').should('not.have.attr', 'href')
       cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
+    })
+  })
+
+  describe('Government entity task', () => {
+    it('should have Government entity document hyperlinked  when all other tasks are complete and should click Government entity task and display the correct page', () => {
+      setupYourPspStubs({
+        bankAccount: true,
+        director: true,
+        vatNumber: true,
+        companyNumber: true,
+        responsiblePerson: true,
+        organisationDetails: true,
+        governmentEntityDocument: false
+      })
+
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('span').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
+      cy.get('span').contains('Government entity document').click()
+      cy.get('h1').contains('Upload a government entity document')
     })
   })
 })
