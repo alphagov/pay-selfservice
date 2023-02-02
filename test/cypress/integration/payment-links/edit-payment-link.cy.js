@@ -1,6 +1,6 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const { getProductsByGatewayAccountIdAndTypeStub, getProductByExternalIdStub } = require('../../stubs/products-stubs')
+const { getProductsByGatewayAccountIdAndTypeStub, getProductByExternalIdAndGatewayAccountIdStub } = require('../../stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-valid-account-id'
@@ -26,7 +26,7 @@ function setupStubs (product) {
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
     getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
-    getProductByExternalIdStub(product, gatewayAccountId)
+    getProductByExternalIdAndGatewayAccountIdStub(product, gatewayAccountId)
   ])
 }
 

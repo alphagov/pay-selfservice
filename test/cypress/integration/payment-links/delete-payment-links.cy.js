@@ -2,7 +2,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const userStubs = require('../../stubs/user-stubs')
 const {
   getProductsByGatewayAccountIdAndTypeStub,
-  getProductByExternalIdStub,
+  getProductByExternalIdAndGatewayAccountIdStub,
   deleteProductStub
 } = require('../../stubs/products-stubs')
 const { deleteTokenByApiTokenSuccess } = require('../../stubs/token-stubs')
@@ -29,7 +29,7 @@ describe('Should delete payment link', () => {
         paymentProvider: 'worldpay'
       }),
       getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
-      getProductByExternalIdStub(product, gatewayAccountId),
+      getProductByExternalIdAndGatewayAccountIdStub(product, gatewayAccountId),
       deleteProductStub(product, gatewayAccountId),
       deleteTokenByApiTokenSuccess(gatewayAccountId, apiToken)
     ])

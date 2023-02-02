@@ -119,7 +119,7 @@ describe('A payment link with an amount hint set', () => {
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
         productStubs.getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
-        productStubs.getProductByExternalIdStub(product, gatewayAccountId)
+        productStubs.getProductByExternalIdAndGatewayAccountIdStub(product, gatewayAccountId)
       ])
 
       cy.setEncryptedCookies(userExternalId)

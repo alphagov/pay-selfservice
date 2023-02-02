@@ -95,7 +95,8 @@ module.exports = {
         editDescription: '/make-a-demo-payment/edit-description',
         editAmount: '/make-a-demo-payment/edit-amount',
         mockCardDetails: '/make-a-demo-payment/mock-card-numbers',
-        goToPaymentScreens: '/make-a-demo-payment/go-to-payment'
+        goToPaymentScreens: '/make-a-demo-payment/go-to-payment',
+        goToTransaction: '/make-a-demo-payment/:productExternalId/go-to-transactions'
       }
     },
     settings: {
@@ -265,5 +266,8 @@ module.exports = {
     list: '/payments-to-your-bank-account',
     listStatusFilter: '/payments-to-your-bank-account/:statusFilter(test|live)'
   },
-  privacy: '/privacy'
+  privacy: '/privacy',
+  demoPaymentFwd: {
+    goToTransaction: '/make-a-demo-payment/:productExternalId/go-to-transactions'
+  }
 }

@@ -33,7 +33,7 @@ module.exports = async function showEditPaymentLink (req, res, next) {
   const gatewayAccountId = req.account.gateway_account_id
 
   try {
-    const product = await productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId)
+    const product = await productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, productExternalId)
     const productCheck = lodash.cloneDeep(product)
 
     // if this is the first time we're loading the product, update the session editing copy

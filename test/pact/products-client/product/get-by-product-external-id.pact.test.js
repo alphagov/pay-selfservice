@@ -60,7 +60,7 @@ describe('products client - find a product by it\'s external id', function () {
           .withResponseBody(pactify(response))
           .build()
       )
-        .then(() => productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId))
+        .then(() => productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, productExternalId))
         .then(res => {
           result = res
           done()
@@ -100,7 +100,7 @@ describe('products client - find a product by it\'s external id', function () {
           .withResponseHeaders({})
           .build()
       )
-        .then(() => productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId), done)
+        .then(() => productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, productExternalId), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {
           result = err

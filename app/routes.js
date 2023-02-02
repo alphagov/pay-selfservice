@@ -91,6 +91,7 @@ const privacyController = require('./controllers/privacy/privacy.controller')
 // Assignments
 const {
   allServiceTransactions,
+  demoPaymentFwd,
   index,
   invite,
   policyPage,
@@ -231,6 +232,9 @@ module.exports.bind = function (app) {
   app.get(allServiceTransactions.download, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.downloadStatusFilter, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
+
+  // demo payment  return route
+  app.get(demoPaymentFwd.goToTransaction, userIsAuthorised, makeADemoPaymentController.goToTransaction)
 
   // Payouts
   app.get(payouts.list, userIsAuthorised, payoutsController.listAllServicesPayouts)

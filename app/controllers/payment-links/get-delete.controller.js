@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
   const gatewayAccountId = req.account.gateway_account_id
 
   try {
-    const product = await productsClient.product.getByProductExternalId(gatewayAccountId, req.params.productExternalId)
+    const product = await productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, req.params.productExternalId)
 
     const deleteToken = publicAuthClient.deleteTokenForAccount({
       accountId: gatewayAccountId,
