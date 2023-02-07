@@ -98,7 +98,6 @@ async function localStrategyLoginDirectAfterRegistration (req, done) {
     }
 
     const user = await userService.findByExternalId(registrationSession.userExternalId)
-    lodash.set(req, 'gateway_account.currentGatewayAccountId', lodash.get(user, 'serviceRoles[0].service.gatewayAccountIds[0]'))
     req.session.secondFactor = 'totp'
     setSessionVersion(req)
     registrationSession.destroy()
