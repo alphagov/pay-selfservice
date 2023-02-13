@@ -17,6 +17,7 @@ const CONFIRM_ORG_DETAILS = 'confirm-org-details'
 
 module.exports = async function postCheckOrgDetails (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
   if (!stripeAccountSetup) {
@@ -28,14 +29,12 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
       'You’ve already submitted your organisation details. Contact GOV.UK Pay support if you need to update them.')
     return response(req, res, 'error-with-link', errorPageData)
   }
-
   const confirmOrgDetails = lodash.get(req.body, CONFIRM_ORG_DETAILS, '')
 
   const errors = validateConfirmOrgDetails(confirmOrgDetails)
 
   if (!lodash.isEmpty(errors)) {
     const { merchantDetails } = req.service
-
     const data = {
       errors: errors,
       orgName: merchantDetails.name,
@@ -48,9 +47,7 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
 
     return response(req, res, 'stripe-setup/check-org-details/index', data)
   }
-
   const credential = getCredentialByExternalId(req.account, req.params.credentialId)
-
   if (confirmOrgDetails === 'yes') {
     try {
       const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
@@ -63,9 +60,10 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
     } catch (error) {
       next(error)
     }
-
     if (isSwitchingCredentials) {
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
+    } else if (enabledStripeOnboardingTaskList) {
+      return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
     } else {
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
     }

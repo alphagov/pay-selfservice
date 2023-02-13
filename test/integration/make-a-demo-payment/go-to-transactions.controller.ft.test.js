@@ -33,7 +33,7 @@ function mockGetProductsByGatewayAccountId () {
       {
         external_id: PRODUCT_EXTERNAL_ID,
         gateway_account_id: GATEWAY_ACCOUNT_ID
-    }))
+      }))
 }
 
 describe('make a demo payment - go to transactions controller', () => {

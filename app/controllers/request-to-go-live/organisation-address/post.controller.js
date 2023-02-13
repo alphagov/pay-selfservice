@@ -203,6 +203,7 @@ function buildErrorsPageData (form, errors, isRequestToGoLive, isStripeUpdateOrg
 
 module.exports = async function submitOrganisationAddress (req, res, next) {
   try {
+    const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
     const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
     const isStripeUpdateOrgDetails = req.url ? req.url.startsWith('/your-psp/') : false
     const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
@@ -214,8 +215,13 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
 
     if (lodash.isEmpty(errors)) {
       const updatedService = await submitForm(form, req, isRequestToGoLive, isStripeSetupUserJourney, isSwitchingCredentials)
+
       if (isStripeUpdateOrgDetails) {
-        res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
+        if (enabledStripeOnboardingTaskList) {
+          res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
+        } else {
+          res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
+        }
       } else if (isSwitchingCredentials) {
         res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else if (isRequestToGoLive) {
