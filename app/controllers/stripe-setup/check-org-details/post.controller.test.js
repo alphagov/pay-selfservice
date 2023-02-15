@@ -121,6 +121,9 @@ describe('Check org details - post controller', () => {
 
   describe('radio buttons', () => {
     describe('Stripe onboarding', () => {
+      afterEach(() => {
+        process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+      })
       it('when `no` radio button is selected, then it should redirect to `Stripe onboarding > org address` page', () => {
         req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
 
@@ -148,6 +151,37 @@ describe('Check org details - post controller', () => {
         sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
         sinon.assert.calledWith(loggerInfoMock, 'Organisation details confirmed for Stripe account', { stripe_account_id: stripeAcountId })
         sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
+      })
+
+      it('when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and `no` radio button is selected, then it should redirect to `Stripe onboarding > org address` page', () => {
+        process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+
+        req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+
+        req.body = {
+          'confirm-org-details': 'no'
+        }
+
+        controller(req, res, next)
+
+        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-id/update-organisation-details')
+      })
+      it('when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and `yes` radio button is selected, then it should redirect to tasklist page', async () => {
+        process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+        req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
+
+        req.body = {
+          'confirm-org-details': 'yes'
+        }
+
+        await controller(req, res, next)
+
+        sinon.assert.calledWith(stubGetStripeAccountId, req.account)
+
+        sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
+        sinon.assert.calledWith(loggerInfoMock, 'Organisation details confirmed for Stripe account', { stripe_account_id: stripeAcountId })
+        sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-id`)
       })
     })
 

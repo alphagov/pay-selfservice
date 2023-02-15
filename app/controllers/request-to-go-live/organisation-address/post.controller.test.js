@@ -616,6 +616,29 @@ describe('organisation address - post controller', () => {
             address_country: validCountry
           })
         })
+        it('should update Stripe and redirect to task-list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', async () => {
+          process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+          req.params = {
+            credentialId: 'a-valid-credential-external-id'
+          }
+          await controller(req, res, next)
+
+          sinon.assert.calledWith(updateStripeAccountMock, stripeAccountId, {
+            name: validName,
+            address_line1: validLine1,
+            address_line2: validLine2,
+            address_city: validCity,
+            address_postcode: validPostcode,
+            address_country: validCountry
+          })
+
+          sinon.assert.calledWith(stubGetStripeAccountId, req.account)
+
+          sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
+          sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAccountId })
+          sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+        })
       })
     })
 
@@ -659,6 +682,10 @@ describe('organisation address - post controller', () => {
         next = sinon.spy()
         mockResponse.renderErrorView = sinon.spy()
         stubGetStripeAccountId.resetHistory()
+      })
+
+      afterEach(() => {
+        process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
       })
 
       describe('service update success', () => {

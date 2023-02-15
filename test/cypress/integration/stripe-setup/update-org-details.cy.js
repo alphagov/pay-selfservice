@@ -219,7 +219,7 @@ describe('The organisation address page', () => {
             cy.get('[data-cy=continue-button]').click()
 
             cy.location().should((location) => {
-              expect(location.pathname).to.eq(`/account/a-valid-external-id/your-psp/a-valid-credential-external-id/government-entity-document`)
+              expect(location.pathname).to.eq(`/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
             })
           })
       })
