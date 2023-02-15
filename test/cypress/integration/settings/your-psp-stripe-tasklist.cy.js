@@ -246,6 +246,28 @@ describe('Your PSP Stripe page', () => {
     })
   })
 
+  describe('Confirm Organisation details task', () => {
+    it('should click on Confirm organisation details task and redirect to tasklist page when organisation details are correct', () => {
+      setupYourPspStubs()
+
+      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').click()
+      cy.get('h1').contains('Check your organisation’s details')
+      cy.get('[data-cy="yes-radio"]').click()
+      cy.get('[data-cy="continue-button"]').click()
+      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+    })
+
+    it('should have Confirm Organisation details task hyperlink removed when complete and status updated to "COMPLETE" ', () => {
+      setupYourPspStubs({
+        organisationDetails: true
+      })
+
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('not.have.attr', 'href')
+      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'complete')
+    })
+  })
+
   describe('Government entity task', () => {
     it('should have Government entity document hyperlinked  when all other tasks are complete and should click Government entity task and display the correct page', () => {
       setupYourPspStubs({
