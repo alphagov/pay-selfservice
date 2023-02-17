@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Parse Node version
         id: parse-node-version
-        run: echo "::set-output name=nvmrc::$(cat .nvmrc)"
+        run: echo "nvmrc=$(cat .nvmrc)" >> $GITHUB_OUTPUT
   install-and-compile:
     runs-on: ubuntu-latest
     name: Install and compile
@@ -55,7 +55,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-
       - name: Parse Cypress version
         id: parse-cypress-version
-        run: echo "::set-output name=CYPRESS_VERSION::$(jq -r '.devDependencies.cypress' package.json)"
+        run: echo "CYPRESS_VERSION=$(jq -r '.devDependencies.cypress' package.json)" >> $GITHUB_STATE
       - name: Cache Cypress
         uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
@@ -118,7 +118,7 @@ jobs:
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
       - name: Parse Cypress version
         id: parse-cypress-version
-        run: echo "::set-output name=CYPRESS_VERSION::$(jq -r '.devDependencies.cypress' package.json)"
+        run: echo "CYPRESS_VERSION=$(jq -r '.devDependencies.cypress' package.json)" >> $GITHUB_STATE
       - name: Cache Cypress
         uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
         with:
