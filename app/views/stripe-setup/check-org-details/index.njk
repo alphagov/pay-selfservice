@@ -24,6 +24,14 @@
     }) }}
   {% endif %}
 
+  {% if enableStripeOnboardingTaskList %}
+    {{ govukBackLink({
+      text: "Back to information for Stripe",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
+    }) }}
+  {% endif %}
+
   {{ errorSummary ({
     errors: errors,
     hrefs: {

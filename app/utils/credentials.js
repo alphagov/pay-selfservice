@@ -62,6 +62,14 @@ function isAdditionalKycDataRoute (req) {
   return Object.values(paths.account.kyc).includes(req.route && req.route.path) || Boolean(req.url && req.url.startsWith('/kyc/'))
 }
 
+function isEnableStripeOnboardingTaskListRoute (req) {
+  if (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') {
+    return Object.values(paths.account.yourPsp).includes(req.route && req.route.path) || Boolean(req.url && req.url.startsWith('/your-psp/'))
+  } else {
+    return false
+  }
+}
+
 function getPSPPageLinks (gatewayAccount) {
   const supportedYourPSPPageProviders = ['worldpay', 'smartpay', 'epdq']
 
@@ -108,5 +116,6 @@ module.exports = {
   getCredentialByExternalId,
   hasSwitchedProvider,
   getActiveCredential,
-  CREDENTIAL_STATE
+  CREDENTIAL_STATE,
+  isEnableStripeOnboardingTaskListRoute
 }

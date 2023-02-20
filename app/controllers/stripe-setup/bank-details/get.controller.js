@@ -1,11 +1,13 @@
 'use strict'
 
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 
 module.exports = (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+  const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
+  const currentCredential = getCurrentCredential(req.account)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
   if (!stripeAccountSetup) {
@@ -17,5 +19,5 @@ module.exports = (req, res, next) => {
     return response(req, res, 'error-with-link', errorPageData)
   }
 
-  return response(req, res, 'stripe-setup/bank-details/index', { isSwitchingCredentials })
+  return response(req, res, 'stripe-setup/bank-details/index', { isSwitchingCredentials, currentCredential, enableStripeOnboardingTaskList })
 }

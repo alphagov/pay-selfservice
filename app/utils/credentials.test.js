@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const paths = require('../paths')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
 const { InvalidConfigurationError } = require('../errors')
-const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists, getActiveCredential } = require('./credentials')
+const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists, getActiveCredential, isEnableStripeOnboardingTaskListRoute } = require('./credentials')
 
 describe('credentials utility', () => {
   describe('get services current credential', () => {
@@ -107,6 +107,23 @@ describe('credentials utility', () => {
     it('correctly identifies a non switch psp route', () => {
       const req = { route: { path: paths.account.yourPsp.credentialsWithGatewayCheck } }
       expect(isSwitchingCredentialsRoute(req)).to.equal(false)
+    })
+
+    it('correctly identifies a your psp route when ENABLE_STRIPE_ONBOARDING_TASK_LIST true ', () => {
+      process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+      const req = { route: { path: paths.account.yourPsp.credentialsWithGatewayCheck } }
+      expect(isEnableStripeOnboardingTaskListRoute(req)).to.equal(true)
+    })
+
+    it('correctly identifies a your psp route  when ENABLE_STRIPE_ONBOARDING_TASK_LIST false ', () => {
+      process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+      const req = { route: { path: paths.account.switchPSP.credentialsWithGatewayCheck } }
+      expect(isEnableStripeOnboardingTaskListRoute(req)).to.equal(false)
+    })
+
+    it('correctly identifies a non your psp route', () => {
+      const req = { route: { path: paths.account.switchPSP.credentialsWithGatewayCheck } }
+      expect(isEnableStripeOnboardingTaskListRoute(req)).to.equal(false)
     })
 
     it('correctly filters out valid credentials for non-supported providers', () => {
