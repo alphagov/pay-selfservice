@@ -123,7 +123,7 @@
     "dotenv": "16.0.3",
     "envfile": "5.2.0",
     "gaap-analytics": "3.1.0",
-    "grunt": "1.5.x",
+    "grunt": "1.6.x",
     "grunt-babel": "8.0.0",
     "grunt-browserify": "6.0.0",
     "grunt-contrib-clean": "2.0.x",
