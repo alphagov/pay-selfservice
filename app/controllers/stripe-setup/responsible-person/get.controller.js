@@ -1,7 +1,7 @@
 'use strict'
 
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 
 module.exports = async function showResponsiblePersonForm (req, res, next) {
@@ -9,6 +9,7 @@ module.exports = async function showResponsiblePersonForm (req, res, next) {
     const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
     const isSubmittingAdditionalKycData = isAdditionalKycDataRoute(req)
     const currentCredential = getCurrentCredential(req.account)
+    const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
 
     if (!isSubmittingAdditionalKycData) {
       const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
@@ -26,7 +27,8 @@ module.exports = async function showResponsiblePersonForm (req, res, next) {
     return response(req, res, 'stripe-setup/responsible-person/index', {
       isSwitchingCredentials,
       isSubmittingAdditionalKycData,
-      currentCredential
+      currentCredential,
+      enableStripeOnboardingTaskList
     })
   } catch (err) {
     next(err)
