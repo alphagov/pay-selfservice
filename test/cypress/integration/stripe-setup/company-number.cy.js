@@ -66,6 +66,11 @@ describe('Stripe setup: company number page', () => {
           })
       })
 
+      it('should have a back link that redirects back to tasklist page', () => {
+        cy.get('.govuk-back-link').should('contain', 'Back to information for Stripe')
+        cy.get('.govuk-back-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+      })
+
       it('should display an error when no options are selected', () => {
         cy.get('#company-number-form > button').click()
 

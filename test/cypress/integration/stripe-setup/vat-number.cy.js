@@ -68,6 +68,11 @@ describe('Stripe setup: VAT number page', () => {
           })
       })
 
+      it('should have a back link that redirects back to tasklist page', () => {
+        cy.get('.govuk-back-link').should('contain', 'Back to information for Stripe')
+        cy.get('.govuk-back-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+      })
+
       it('should display an error when VAT number input is blank', () => {
         cy.get('input#have-vat-number').click()
         cy.get('#vat-number-form > button').click()

@@ -92,6 +92,11 @@ describe('Stripe setup: responsible person page', () => {
         })
     })
 
+    it('should have a back link that redirects back to tasklist page', () => {
+      cy.get('.govuk-back-link').should('contain', 'Back to information for Stripe')
+      cy.get('.govuk-back-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+    })
+
     it('should show errors when validation fails', () => {
       cy.get('#responsible-person-form').within(() => {
         cy.get('#home-address-postcode').type('1')
