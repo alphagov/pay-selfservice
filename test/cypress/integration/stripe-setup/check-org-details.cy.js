@@ -93,6 +93,11 @@ describe('Stripe setup: Check your organisation’s details', () => {
         })
     })
 
+    it('should have a back link that redirects back to tasklist page', () => {
+      cy.get('.govuk-back-link').should('contain', 'Back to information for Stripe')
+      cy.get('.govuk-back-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+    })
+
     it('should display the account sub nav', () => {
       cy.get('[data-cy=account-sub-nav]')
         .should('exist')

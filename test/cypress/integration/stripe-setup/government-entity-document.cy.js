@@ -72,6 +72,11 @@ describe('Stripe setup: Government entity document', () => {
         })
     })
 
+    it('should have a back link that redirects back to tasklist page', () => {
+      cy.get('.govuk-back-link').should('contain', 'Back to information for Stripe')
+      cy.get('.govuk-back-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+    })
+
     it('should display an error when file is not selected', () => {
       cy.get('#government-entity-document-form > button').click()
 
