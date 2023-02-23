@@ -13,6 +13,7 @@ PRODUCTS_URL=http://localhost:18000
 LEDGER_URL=http://localhost:10700
 PUBLIC_AUTH_BASE=http://localhost:9600
 PUBLIC_AUTH_URL=http://localhost:9600/v1/frontend/auth
+WEBHOOKS_URL=http://localhost:10800
 EOM
 
 read -r -d '' URL_TARGET_TUNNEL << EOM
@@ -22,6 +23,7 @@ PRODUCTS_URL=https://localhost:9005
 LEDGER_URL=https://localhost:9007
 PUBLIC_AUTH_BASE=http://localhost:9006
 PUBLIC_AUTH_URL=http://localhost:9006/v1/frontend/auth
+WEBHOOKS_URL=https://localhost:9008
 EOM
 
 read -r -d '' URL_TARGET_DOCKER_TUNNEL << EOM
@@ -31,6 +33,7 @@ PRODUCTS_URL=https://docker.for.mac.localhost:9005
 LEDGER_URL=https://docker.for.mac.localhost:9007
 PUBLIC_AUTH_BASE=https://docker.for.mac.localhost:9006
 PUBLIC_AUTH_URL=https://docker.for.mac.localhost:9006/v1/frontend/auth
+WEBHOOKS_URL=https://docker.for.mac.localhost:9008
 EOM
 
 if [ "$1" = 'local' ] ; then
