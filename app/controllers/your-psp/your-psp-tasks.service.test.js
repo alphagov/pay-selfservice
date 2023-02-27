@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const { getCurrentCredential } = require('../../utils/credentials')
-const { getStripeTaskList, stripeTaskListIsComplete } = require('./your-psp-tasks.service')
+const { getStripeTaskList, stripeTaskListIsComplete, stripeTaskListNumberOftasksComplete } = require('./your-psp-tasks.service')
 const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
 
 describe('Stripe task list', () => {
@@ -203,6 +203,71 @@ describe('Stripe task list', () => {
       const activeCredential = getCurrentCredential(account)
       const taskList = getStripeTaskList(activeCredential, account)
       expect(stripeTaskListIsComplete(taskList)).to.equal(false)
+    })
+
+    describe('stripeTaskListNumberOftasksComplete ', () => {
+      it('should correctly calculate when zero tasks are complete ', () => {
+        const account = gatewayAccountFixtures.validGatewayAccount({
+          gateway_account_credentials: [
+            { state: 'ACTIVE', payment_provider: 'stripe', id: 100 }
+          ]
+        })
+        account.connectorGatewayAccountStripeProgress = {
+          bankAccount: false,
+          director: false,
+          vatNumber: false,
+          companyNumber: false,
+          responsiblePerson: false,
+          organisationDetails: false,
+          governmentEntityDocument: false
+        }
+        const activeCredential = getCurrentCredential(account)
+        const taskList = getStripeTaskList(activeCredential, account)
+        expect(stripeTaskListNumberOftasksComplete(taskList).no_of_tasks_completed).to.equal(0)
+        expect(stripeTaskListNumberOftasksComplete(taskList).total_number_of_tasks).to.equal(7)
+      })
+
+      it('should correctly calculate when 4 tasks are complete ', () => {
+        const account = gatewayAccountFixtures.validGatewayAccount({
+          gateway_account_credentials: [
+            { state: 'ACTIVE', payment_provider: 'stripe', id: 100 }
+          ]
+        })
+        account.connectorGatewayAccountStripeProgress = {
+          bankAccount: true,
+          director: true,
+          vatNumber: true,
+          companyNumber: true,
+          responsiblePerson: false,
+          organisationDetails: false,
+          governmentEntityDocument: false
+        }
+        const activeCredential = getCurrentCredential(account)
+        const taskList = getStripeTaskList(activeCredential, account)
+        expect(stripeTaskListNumberOftasksComplete(taskList).no_of_tasks_completed).to.equal(4)
+        expect(stripeTaskListNumberOftasksComplete(taskList).total_number_of_tasks).to.equal(7)
+      })
+
+      it('should correctly calculate when all tasks are complete ', () => {
+        const account = gatewayAccountFixtures.validGatewayAccount({
+          gateway_account_credentials: [
+            { state: 'ACTIVE', payment_provider: 'stripe', id: 100 }
+          ]
+        })
+        account.connectorGatewayAccountStripeProgress = {
+          bankAccount: true,
+          director: true,
+          vatNumber: true,
+          companyNumber: true,
+          responsiblePerson: true,
+          organisationDetails: true,
+          governmentEntityDocument: true
+        }
+        const activeCredential = getCurrentCredential(account)
+        const taskList = getStripeTaskList(activeCredential, account)
+        expect(stripeTaskListNumberOftasksComplete(taskList).no_of_tasks_completed).to.equal(7)
+        expect(stripeTaskListNumberOftasksComplete(taskList).total_number_of_tasks).to.equal(7)
+      })
     })
   })
 })
