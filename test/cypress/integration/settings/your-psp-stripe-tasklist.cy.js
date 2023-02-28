@@ -74,10 +74,13 @@ describe('Your PSP Stripe page', () => {
     cy.get('h1').should('contain', 'Information for Stripe')
   })
 
-  it('should display all the required stripe tasks ', () => {
+  it('should display all the required stripe tasks, show stripe progress indicator ', () => {
     setupYourPspStubs()
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+
+    cy.get('h2').should('contain', 'Information incomplete')
+    cy.get('p').should('contain', '0 out of 7 steps complete')
 
     cy.get('span').contains('Bank Details').should('exist')
     cy.get('span').contains('Responsible person').should('exist')
@@ -286,5 +289,31 @@ describe('Your PSP Stripe page', () => {
       cy.get('span').contains('Government entity document').click()
       cy.get('h1').contains('Upload a government entity document')
     })
+  })
+
+  it('should show progress indicator and all completed tasks', () => {
+    setupYourPspStubs({
+      bankAccount: true,
+      director: true,
+      vatNumber: true,
+      companyNumber: true,
+      responsiblePerson: true,
+      organisationDetails: true,
+      governmentEntityDocument: true
+    })
+
+    cy.setEncryptedCookies(userExternalId)
+    cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+
+    cy.get('h2').should('contain', 'Information complete')
+    cy.get('p').should('contain', '7 out of 7 steps complete')
+
+    cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
+    cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
+    cy.get('strong[id="task-director-status"]').should('contain', 'complete')
+    cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
+    cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
+    cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'complete')
+    cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'complete')
   })
 })
