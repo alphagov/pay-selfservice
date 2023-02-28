@@ -53,4 +53,16 @@ function stripeTaskListIsComplete (taskList) {
   return Object.values(taskList).every(task => task.completed)
 }
 
-module.exports = { getStripeTaskList, stripeTaskListIsComplete }
+function stripeTaskListNumberOftasksComplete (taskList) {
+  const totalTasks = Object.keys(taskList).length
+  const completedTasks = Object.values(taskList).reduce(
+    (count, task) => count + task.completed,
+    0
+  )
+  return {
+    no_of_tasks_completed: completedTasks,
+    total_number_of_tasks: totalTasks
+  }
+}
+
+module.exports = { getStripeTaskList, stripeTaskListIsComplete, stripeTaskListNumberOftasksComplete }
