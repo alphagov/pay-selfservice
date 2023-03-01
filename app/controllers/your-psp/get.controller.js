@@ -38,6 +38,7 @@ module.exports = async (req, res, next) => {
       } else {
         stripeData.taskList = yourPspTasks.getStripeTaskList(activeCredential, req.account)
         stripeData.taskListIsComplete = yourPspTasks.stripeTaskListIsComplete(stripeData.taskList)
+        stripeData.progressIndicator = yourPspTasks.stripeTaskListNumberOftasksComplete(stripeData.taskList)
       }
     }
 

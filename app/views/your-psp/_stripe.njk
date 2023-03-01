@@ -3,8 +3,8 @@
     <span class="app-task-list__task-name">
       {% if not item.complete %}
         <a class="govuk-link" href="{{ url }}" aria-describedby="{{ id }}-status">
-        {{ label }}
-      </a>
+          {{ label }}
+        </a>
       {% else %}
         <span>{{ label }}</span>
       {% endif %}
@@ -23,19 +23,19 @@
     <span class="app-task-list__task-name">
       {% if item.enabled %}
         <a class="govuk-link" href="{{ url }}" aria-describedby="{{ id }}-status">
-        {{ label }}
-      </a>
+          {{ label }}
+        </a>
       {% else %}
         <span>{{ label }}</span>
       {% endif %}
     </span>
 
     {% if not item.enabled and not item.completed %}
-    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ id }}-status">cannot start yet</strong>
+      <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ id }}-status">cannot start yet</strong>
     {% elif item.enabled and not item.completed %}
-    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ id }}-status">not started</strong>
+      <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ id }}-status">not started</strong>
     {% elif item.completed %}
-    <strong class="govuk-tag app-task-list__tag" id="{{ id }}-status">completed</strong>
+      <strong class="govuk-tag app-task-list__tag" id="{{ id }}-status">completed</strong>
     {% endif %}
   </li>
 {% endmacro %}
@@ -43,7 +43,8 @@
 {% if requiresAdditionalKycData or kycTaskListComplete %}
   {% if kycTaskListComplete %}
     <p class="govuk-body">Please review the responsible person and director information annually, and if either leaves or changes their role.
-    Email any changes to <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a></p>
+    Email any changes to <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">govuk-pay-support@digital.cabinet-office.gov.uk</a>
+    </p>
   {% else %}
     <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Know your customer (KYC) details</h2>
     <p class="govuk-body">You must add additional details about your organisation for Stripe's anti-money laundering
@@ -59,25 +60,25 @@
   {% endif %}
 
   {% set tasks %}
-    {{ taskListItem(
+  {{ taskListItem(
       'task-organisation-url',
       "Add organisation website address",
       formatAccountPathsFor(routes.account.kyc.organisationUrl, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.ENTER_ORGANISATION_URL
     ) }}
-    {{ taskListItem(
+  {{ taskListItem(
       'task-update-sro',
       "Add responsible person information",
       formatAccountPathsFor(routes.account.kyc.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.UPDATE_RESPONSIBLE_PERSON
     ) }}
-    {{ taskListItem(
+  {{ taskListItem(
       'task-add-director',
       "Add director of service information",
       formatAccountPathsFor(routes.account.kyc.director, currentGatewayAccount.external_id, activeCredential.external_id),
       kycTaskList.ENTER_DIRECTOR
     ) }}
-    {{ taskListItem(
+  {{ taskListItem(
       'task-upload-government-entity-document',
       "Upload a government entity document",
       formatAccountPathsFor(routes.account.kyc.governmentEntityDocument, currentGatewayAccount.external_id, activeCredential.external_id),
@@ -91,57 +92,67 @@
     </div>
   </div>
 
- {% else %}
- {% if  enableStripeOnboardingTaskList %}
+{% else %}
+  {% if enableStripeOnboardingTaskList %}
     <h1 class="govuk-heading-m govuk-!-margin-top-8">Information for Stripe</h1>
+
+    {% if progressIndicator.no_of_tasks_completed < progressIndicator.total_number_of_tasks %}
+      <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Information incomplete</h2>
+    {% else %}
+      <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Information complete</h2>
+    {% endif %}
+      <p class="govuk-body govuk-!-margin-bottom-7">
+        {{progressIndicator.no_of_tasks_completed}} out of {{progressIndicator.total_number_of_tasks}} steps completed
+      </p>
+      
     {% set tasks %}
-      {{ stripeTaskListItem(
+    {{ stripeTaskListItem(
         'task-bank-details',
         "Bank Details",
         formatAccountPathsFor(routes.account.yourPsp.stripeSetup.bankDetails, currentGatewayAccount.external_id, activeCredential.external_id),
         taskList.ENTER_BANK_DETAILS
       ) }}
-      {{ stripeTaskListItem(
+    {{ stripeTaskListItem(
         'task-sro',
         "Responsible person",
         formatAccountPathsFor(routes.account.yourPsp.stripeSetup.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
         taskList.ENTER_RESPONSIBLE_PERSON
       ) }}
-      {{ stripeTaskListItem(
+    {{ stripeTaskListItem(
         'task-director',
         "Service director",
         formatAccountPathsFor(routes.account.yourPsp.stripeSetup.director, currentGatewayAccount.external_id, activeCredential.external_id),
         taskList.ENTER_DIRECTOR
       ) }}
-      {{ stripeTaskListItem(
+    {{ stripeTaskListItem(
         'task-vatNumber',
         "VAT registration number",
         formatAccountPathsFor(routes.account.yourPsp.stripeSetup.vatNumber, currentGatewayAccount.external_id, activeCredential.external_id),
         taskList.ENTER_VAT_NUMBER
       ) }}
-      {{ stripeTaskListItem(
+    {{ stripeTaskListItem(
         'task-Company-number',
         "Company registration number",
         formatAccountPathsFor(routes.account.yourPsp.stripeSetup.companyNumber, currentGatewayAccount.external_id, activeCredential.external_id),
         taskList.ENTER_COMPANY_NUMBER
       ) }}
-      {{ stripeTaskListItem(
+    {{ stripeTaskListItem(
         'task-checkorganisation-details',
         "Confirm your organisation’s name and address match your government entity document",
         formatAccountPathsFor(routes.account.yourPsp.stripeSetup.checkOrgDetails, currentGatewayAccount.external_id, activeCredential.external_id),
         taskList.CONFIRM_ORGANISATION_DETAILS
       ) }}
-      {{ stripeTaskListItem(
+    {{ stripeTaskListItem(
         'task-government-entity-document',
         "Government entity document",
         formatAccountPathsFor(routes.account.yourPsp.stripeSetup.governmentEntityDocument,currentGatewayAccount.external_id, activeCredential.external_id ),
         taskList.UPLOAD_GOVERNMENT_ENTITY_DOCUMENT
       ) }}
-  {% endset %}
-  <div class="app-task-list govuk-body">
-    <div>
-      <span class="app-task-list__items">{{ tasks | safe }}</span>
+    {% endset %}
+    <div class="app-task-list govuk-body">
+      <div>
+        <span class="app-task-list__items">{{ tasks | safe }}</span>
+      </div>
     </div>
-  </div>
-{% endif %}
+  {% endif %}
 {% endif %}
