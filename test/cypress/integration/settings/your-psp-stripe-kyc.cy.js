@@ -87,11 +87,11 @@ describe('Your PSP - Stripe - KYC', () => {
   })
 
   describe('Task list', () => {
-    it('should display link to "Your PSP - Stripe" in the side navigation - when requires additional kyc data is enabled', () => {
+    it('should display link to "Information for Stripe" in the side navigation - when requires additional kyc data is enabled', () => {
       setupYourPspStubs({})
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
+      cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
     })
 
     it('should display responsible person task as COMPLETED if details are updated on Stripe', () => {
@@ -102,7 +102,7 @@ describe('Your PSP - Stripe - KYC', () => {
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
+      cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
 
       cy.get('h2').contains('Know your customer (KYC) details').should('exist')
       cy.get('p').contains('Please review the responsible person').should('not.exist')
@@ -116,7 +116,7 @@ describe('Your PSP - Stripe - KYC', () => {
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
+      cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
 
       cy.get('#task-add-director-status').should('have.html', 'completed')
     })
@@ -126,7 +126,7 @@ describe('Your PSP - Stripe - KYC', () => {
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
+      cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
 
       cy.get('#task-organisation-url-status').should('have.html', 'completed')
     })
@@ -136,7 +136,7 @@ describe('Your PSP - Stripe - KYC', () => {
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Stripe')
+      cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
 
       cy.get('#task-upload-government-entity-document-status').should('have.html', 'completed')
     })
@@ -178,7 +178,7 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.get('p').contains('Please review the responsible person')
 
       cy.get('.settings-navigation').within(() => {
-        cy.get('a').contains('Your PSP - Stripe').should('exist')
+        cy.get('a').contains('Information for Stripe').should('exist')
       })
     })
   })

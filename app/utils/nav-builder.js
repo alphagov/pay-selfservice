@@ -130,14 +130,24 @@ function yourPSPNavigationItems (account, currentPath = '') {
   const credentialsToLink = getPSPPageLinks(account)
   const isSingleCredential = credentialsToLink.length === 1
   return credentialsToLink.map((credential) => {
-    const prefix = credential.state === CREDENTIAL_STATE.RETIRED ? 'Old PSP' : 'Your PSP'
+    const navName = getPSPNavigationName(credential)
     return {
       id: (credential.state === CREDENTIAL_STATE.ACTIVE) || isSingleCredential ? 'navigation-menu-your-psp' : `navigation-menu-your-psp-${credential.external_id}`,
-      name: `${prefix} - ${formatPSPname(credential.payment_provider)}`,
+      name: navName,
       url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, credential.external_id),
       current: currentPath.includes(credential.external_id)
     }
   })
+}
+
+function getPSPNavigationName (credential) {
+  if (credential.state === CREDENTIAL_STATE.RETIRED) {
+    return `Old PSP - ${formatPSPname(credential.payment_provider)}`
+  } else if ((process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') && (credential.payment_provider === 'stripe'))  {
+    return 'Information for Stripe'
+  } else {
+    return `Your PSP - ${formatPSPname(credential.payment_provider)}`
+  }
 }
 
 module.exports = {
