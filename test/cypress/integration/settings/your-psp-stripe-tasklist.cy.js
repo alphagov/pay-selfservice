@@ -67,11 +67,14 @@ describe('Your PSP Stripe page', () => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
-  it('should contain Your PSP - Stripe heading', () => {
+  it('should display Your PSP - Stripe page correctly', () => {
     setupYourPspStubs()
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
     cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+    cy.get('#navigation-menu-your-psp')
+      .should('contain', 'Information for Stripe')
+      .parent().should('have.class', 'govuk-!-font-weight-bold')
   })
 
   it('should display all the required stripe tasks, show stripe progress indicator ', () => {
