@@ -94,17 +94,18 @@
 
 {% else %}
   {% if enableStripeOnboardingTaskList %}
-    <h1 class="govuk-heading-m govuk-!-margin-top-8">Information for Stripe</h1>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+      {% if progressIndicator.no_of_tasks_completed < progressIndicator.total_number_of_tasks %}        
+        Information incomplete
+      {% else %}
+        Information complete 
+      {% endif %}
+    </h2>
 
-    {% if progressIndicator.no_of_tasks_completed < progressIndicator.total_number_of_tasks %}
-      <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Information incomplete</h2>
-    {% else %}
-      <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Information complete</h2>
-    {% endif %}
-      <p class="govuk-body govuk-!-margin-bottom-7">
-        {{progressIndicator.no_of_tasks_completed}} out of {{progressIndicator.total_number_of_tasks}} steps completed
+    <p class="govuk-body govuk-!-margin-bottom-7">
+      {{progressIndicator.no_of_tasks_completed}} out of {{progressIndicator.total_number_of_tasks}} steps completed
       </p>
-      
+
     {% set tasks %}
     {{ stripeTaskListItem(
         'task-bank-details',
