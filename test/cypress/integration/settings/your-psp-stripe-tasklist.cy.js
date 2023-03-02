@@ -71,7 +71,7 @@ describe('Your PSP Stripe page', () => {
     setupYourPspStubs()
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    cy.get('h1').should('contain', 'Information for Stripe')
+    cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
   })
 
   it('should display all the required stripe tasks, show stripe progress indicator ', () => {
