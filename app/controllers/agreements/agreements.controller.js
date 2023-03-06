@@ -19,7 +19,7 @@ async function listAgreements (req, res, next) {
   req.session.agreementsFilter = url.parse(req.url).query
 
   try {
-    const agreements = await agreementsService.agreements(req.service.externalId, req.isLive, page, filters)
+    const agreements = await agreementsService.agreements(req.service.externalId, req.isLive, req.account.gateway_account_id, page, filters)
 
     response(req, res, 'agreements/list', {
       agreements,

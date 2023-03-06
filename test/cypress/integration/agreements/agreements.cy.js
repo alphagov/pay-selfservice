@@ -10,14 +10,23 @@ const serviceExternalId = 'service-id'
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({ userExternalId, serviceExternalId, gatewayAccountId }),
-  gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId, recurringEnabled: true })
+  gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+    gatewayAccountId,
+    gatewayAccountExternalId,
+    serviceExternalId,
+    recurringEnabled: true
+  })
 ]
 
 const mockAgreements = [
   { external_id: 'a-valid-agreement-id', payment_instrument: false, status: 'CREATED' },
   { external_id: 'qgj1709v8t5mtlhd732otv19b1', payment_instrument: { card_details: { card_brand: 'visa' } } },
   { external_id: '3sfh76mobld3tc87lc608q667b', payment_instrument: { card_details: { card_brand: 'master-card' } } },
-  { external_id: 'm0spc7kmbo2ihlg602r9klgiqj', status: 'CANCELLED', payment_instrument: { card_details: { card_brand: 'american-express' } } },
+  {
+    external_id: 'm0spc7kmbo2ihlg602r9klgiqj',
+    status: 'CANCELLED',
+    payment_instrument: { card_details: { card_brand: 'american-express' } }
+  },
   { external_id: 'a-valid-agreement-id-1', payment_instrument: { card_details: { card_brand: 'visa' } } },
   { external_id: 'a-valid-agreement-id-2', payment_instrument: { card_details: { card_brand: 'visa' } } },
   { external_id: 'a-valid-agreement-id-3', payment_instrument: { card_details: { card_brand: 'visa' } } },
@@ -51,7 +60,12 @@ describe('Agreements', () => {
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      agreementStubs.getLedgerAgreementsSuccess({ service_id: serviceExternalId, live: false, agreements: mockAgreements })
+      agreementStubs.getLedgerAgreementsSuccess({
+        service_id: serviceExternalId,
+        live: false,
+        gatewayAccountId,
+        agreements: mockAgreements
+      })
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/agreements')
@@ -65,7 +79,13 @@ describe('Agreements', () => {
   it('should set and persist filters', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      agreementStubs.getLedgerAgreementsSuccess({ service_id: serviceExternalId, live: false, agreements: mockAgreements, filters: { status: statusFilter, reference: referenceFilter } })
+      agreementStubs.getLedgerAgreementsSuccess({
+        service_id: serviceExternalId,
+        live: false,
+        gatewayAccountId,
+        agreements: mockAgreements,
+        filters: { status: statusFilter, reference: referenceFilter }
+      })
     ])
 
     cy.get('#reference').type(referenceFilter)
@@ -78,7 +98,14 @@ describe('Agreements', () => {
   it('should set and persist pagination', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      agreementStubs.getLedgerAgreementsSuccess({ page: 2, service_id: serviceExternalId, live: false, agreements: mockAgreements, filters: { status: statusFilter, reference: referenceFilter } })
+      agreementStubs.getLedgerAgreementsSuccess({
+        page: 2,
+        service_id: serviceExternalId,
+        live: false,
+        gatewayAccountId,
+        agreements: mockAgreements,
+        filters: { status: statusFilter, reference: referenceFilter }
+      })
     ])
 
     cy.get('.pagination.2').first().click()
@@ -89,7 +116,12 @@ describe('Agreements', () => {
   it('should load the details page and preserve filter params', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      agreementStubs.getLedgerAgreementSuccess({ service_id: serviceExternalId, live: false, external_id: 'a-valid-agreement-id' }),
+      agreementStubs.getLedgerAgreementSuccess({
+        service_id: serviceExternalId,
+        live: false,
+        gatewayAccountId,
+        external_id: 'a-valid-agreement-id'
+      }),
       transactionStubs.getLedgerTransactionsSuccess({
         gatewayAccountId,
         transactions: [
@@ -122,7 +154,12 @@ describe('Agreements', () => {
   it('should show no agreements content if filters return nothing', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      agreementStubs.getLedgerAgreementsSuccess({ service_id: serviceExternalId, live: false, agreements: [] })
+      agreementStubs.getLedgerAgreementsSuccess({
+        service_id: serviceExternalId,
+        live: false,
+        gatewayAccountId,
+        agreements: []
+      })
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/agreements')

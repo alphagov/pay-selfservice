@@ -35,9 +35,10 @@ describe('agreements service', () => {
 
       const spy = sinon.spy(async () => agreementsResult)
       const service = getAgreementsService({ agreements: spy })
-      const result = await service.agreements('service-id', true)
+      const accountId = 42
+      const result = await service.agreements('service-id', true, accountId)
 
-      sinon.assert.calledWith(spy, 'service-id', true, 1)
+      sinon.assert.calledWith(spy, 'service-id', true, accountId, 1)
 
       expect(result.total).to.equal(21)
       expect(result.links.length).to.equal(3)
