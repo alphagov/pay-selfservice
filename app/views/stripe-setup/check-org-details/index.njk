@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block side_navigation %}
-  {% if isSwitchingCredentials %}
+  {% if isSwitchingCredentials or enableStripeOnboardingTaskList %}
     {% include "includes/side-navigation.njk" %}
   {% endif %}
 {% endblock %}
