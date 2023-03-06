@@ -121,14 +121,19 @@ const payouts = function payouts (gatewayAccountIds = [], page = 1, displaySize,
   return baseClient.get(configuration)
 }
 
-// agreements use new tuple of service identifier and live flag in favour of
-// internal connector gateway accounts
-const agreements = function agreements (serviceId, live, page = 1, options = {}) {
+/**
+ * The intention is that in the future, getting agreements will use a tuple of service id and live flag, in favour of
+ * the internal gateway account ID. However, this requires having a maximum of 1 test gateway account per service, which
+ * we haven't realised yet. For now, we additionally send the gateway account ID but the intention is to remove the need
+ * to send this.
+ */
+const agreements = function agreements (serviceId, live, accountId, page = 1, options = {}) {
   const config = {
     url: '/v1/agreement',
     qs: {
       service_id: serviceId,
       live,
+      account_id: accountId,
       page,
       ...options.filters
     },

@@ -5,6 +5,7 @@ const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 
 const serviceFixtures = require('../../../test/fixtures/service.fixtures')
+const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
 const agreementFixtures = require('../../../test/fixtures/agreement.fixtures')
 const Service = require('../../models/Service.class')
 const { RESTClientError, NotFoundError } = require('../../errors')
@@ -13,6 +14,7 @@ const agreements = agreementFixtures.validAgreementSearchResponse([{ reference: 
 const responseSpy = sinon.spy()
 
 const service = new Service(serviceFixtures.validServiceResponse())
+const account = gatewayAccountFixtures.validGatewayAccountResponse()
 let req, res, next
 
 describe('The agreements controller', () => {
@@ -22,6 +24,7 @@ describe('The agreements controller', () => {
       url: 'http://selfservice/agreements',
       isLive: true,
       service,
+      account,
       session: {}
     }
     res = {}
@@ -43,7 +46,7 @@ describe('The agreements controller', () => {
         status: 'a-status',
         reference: 'a ref'
       }
-      sinon.assert.calledWith(getAgreementsSpy, service.externalId, true, 1, expectedFilters)
+      sinon.assert.calledWith(getAgreementsSpy, service.externalId, true, account.gateway_account_id, 1, expectedFilters)
       sinon.assert.calledWith(responseSpy, req, res, 'agreements/list', {
         agreements,
         filters: expectedFilters

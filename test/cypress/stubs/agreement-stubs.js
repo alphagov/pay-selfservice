@@ -9,6 +9,7 @@ function getLedgerAgreementsSuccess (opts) {
     query: {
       service_id: opts.service_id,
       live: opts.live,
+      account_id: opts.gatewayAccountId,
       page: opts.page || 1,
       ...opts.filters
     },
