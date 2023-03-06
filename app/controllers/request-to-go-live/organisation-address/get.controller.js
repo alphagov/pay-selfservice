@@ -8,11 +8,12 @@ const { response } = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 const { getAlreadySubmittedErrorPageData } = require('../../stripe-setup/stripe-setup.util')
-const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('../../../utils/credentials')
 
 module.exports = function getOrganisationAddress (req, res) {
   const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
   const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
+  const currentCredential = getCurrentCredential(req.account)
   const isStripeUpdateOrgDetails = Boolean(req.url && req.url.startsWith('/your-psp/'))
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
 
@@ -56,7 +57,8 @@ module.exports = function getOrganisationAddress (req, res) {
     isStripeUpdateOrgDetails,
     isSwitchingCredentials,
     isStripeSetupUserJourney,
-    enableStripeOnboardingTaskList
+    enableStripeOnboardingTaskList,
+    currentCredential
   }
   pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData, 'address_country'))
 

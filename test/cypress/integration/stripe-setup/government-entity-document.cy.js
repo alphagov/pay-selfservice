@@ -63,9 +63,9 @@ describe('Stripe setup: Government entity document', () => {
       cy.get('h1').should('contain', 'Upload a government entity document')
 
       cy.get('#navigation-menu-your-psp')
-      .should('contain', 'Information for Stripe')
-      .parent().should('have.class', 'govuk-!-font-weight-bold')
-      
+        .should('contain', 'Information for Stripe')
+        .parent().should('have.class', 'govuk-!-font-weight-bold')
+
       cy.get('#government-entity-document-form').should('exist')
         .within(() => {
           cy.get('input#government-entity-document').should('exist')
