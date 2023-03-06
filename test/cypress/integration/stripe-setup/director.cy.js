@@ -96,6 +96,10 @@ describe('Stripe setup: director page', () => {
     it('should display form with name, dob and email fields', () => {
       cy.get('h1').should('contain', 'Enter a director’s details')
 
+      cy.get('#navigation-menu-your-psp')
+      .should('contain', 'Information for Stripe')
+      .parent().should('have.class', 'govuk-!-font-weight-bold')
+      
       cy.get('#director-form').should('exist')
         .within(() => {
           cy.get('label[for="first-name"]').should('exist')

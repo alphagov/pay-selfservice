@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block side_navigation %}
-  {% if isSwitchingCredentials or isSubmittingAdditionalKycData %}
+  {% if isSwitchingCredentials or isSubmittingAdditionalKycData or enableStripeOnboardingTaskList %}
     {% include "includes/side-navigation.njk" %}
   {% endif %}
 {% endblock %}

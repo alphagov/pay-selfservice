@@ -55,6 +55,10 @@ describe('Stripe setup: responsible person page', () => {
     it('should display form', () => {
       cy.get('h1').should('contain', 'Enter responsible person details')
 
+      cy.get('#navigation-menu-your-psp')
+      .should('contain', 'Information for Stripe')
+      .parent().should('have.class', 'govuk-!-font-weight-bold')
+
       cy.get('#responsible-person-form').should('exist')
         .within(() => {
           cy.get('label[for="first-name"]').should('exist')

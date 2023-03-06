@@ -78,6 +78,10 @@ describe('Stripe setup: Check your organisation’s details', () => {
     it('should display page correctly', () => {
       cy.get('h1').should('contain', 'Check your organisation’s details')
 
+      cy.get('#navigation-menu-your-psp')
+      .should('contain', 'Information for Stripe')
+      .parent().should('have.class', 'govuk-!-font-weight-bold')
+
       cy.get('[data-cy=org-details]').should('exist')
       cy.get('[data-cy=org-details]').find('dd').eq(0).should('contain', 'HMRC')
       cy.get('[data-cy=org-details]').find('dd').eq(1)
