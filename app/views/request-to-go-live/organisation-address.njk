@@ -2,7 +2,7 @@
 {% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block side_navigation %}
-  {% if isSwitchingCredentials %}
+  {% if isSwitchingCredentials or enableStripeOnboardingTaskList %}
     {% include "includes/side-navigation.njk" %}
   {% endif %}
 {% endblock %}

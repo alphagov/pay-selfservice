@@ -83,6 +83,10 @@ describe('The organisation address page', () => {
 
         cy.get('h1').should('contain', `What is the name and address of your organisation on your government entity document?`)
 
+        cy.get('#navigation-menu-your-psp')
+        .should('contain', 'Information for Stripe')
+        .parent().should('have.class', 'govuk-!-font-weight-bold')
+
         cy.get('[data-cy=form]')
           .should('exist')
           .within(() => {

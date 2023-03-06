@@ -107,6 +107,10 @@ describe('organisation address get controller', () => {
     })
 
     describe('view page when `Stripe setup`', () => {
+      afterEach(() => {
+        process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = undefined
+      })
+
       it('should display the `update org details` form and set `isStripeUpdateOrgDetails=true` ' +
       'and all form fields should be reset to empty', () => {
         const req = {
@@ -127,6 +131,7 @@ describe('organisation address get controller', () => {
         expect(pageData.isStripeUpdateOrgDetails).to.equal(true)
         expect(pageData.isSwitchingCredentials).to.equal(false)
         expect(pageData.isStripeSetupUserJourney).to.equal(true)
+        expect(pageData.enableStripeOnboardingTaskList).to.equal(false)
 
         expect(pageData.name).to.equal(undefined)
         expect(pageData.address_line1).to.equal(undefined)
@@ -135,6 +140,27 @@ describe('organisation address get controller', () => {
         expect(pageData.address_postcode).to.equal(undefined)
         expect(pageData.telephone_number).to.equal(undefined)
         expect(pageData.url).to.equal(undefined)
+      })
+
+      it('should display the `update org details` form and set `enableStripeOnboardingTaskList=true` when ' +
+      'Stripe task list flag is true', () => {
+        process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+        
+        const req = {
+          url: '/your-psp/:credentialId/update-organisation-details',
+          account
+        }
+
+        const controller = getController()
+
+        controller(req, res)
+
+        const responseData = mockResponse.getCalls()[0]
+
+        expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
+
+        const pageData = responseData.args[3]
+        expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
       })
 
       it('should render error if organisation details have already been submitted', async () => {
