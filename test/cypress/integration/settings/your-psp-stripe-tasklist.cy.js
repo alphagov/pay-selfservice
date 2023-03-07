@@ -21,7 +21,7 @@ const typedDobDay = '25 '
 const typedDobMonth = ' 02'
 const typedDobYear = '1971 '
 const typedEmail = 'test@example.com'
-const typedHomeAddress = ' 64 Zoo Lane Road'
+const typedHomeAddress = '64 Zoo Lane Road'
 const typedPostcode = 'W89 1FZ'
 const typedPhoneNumber = '+44 0808 157 0192'
 
@@ -67,60 +67,112 @@ describe('Your PSP Stripe page', () => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
-  it('should display Your PSP - Stripe page correctly', () => {
-    setupYourPspStubs()
-    cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    cy.get('h1').should('contain', 'Information for Stripe')
-    cy.get('#navigation-menu-your-psp')
-      .should('contain', 'Information for Stripe')
-      .parent().should('have.class', 'govuk-!-font-weight-bold')
-  })
+  describe('Should display the page correctly', () => {
+    it('should display Your PSP - Stripe page correctly', () => {
+      setupYourPspStubs()
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('h1').should('contain', 'Information for Stripe')
+      cy.get('#navigation-menu-your-psp')
+        .should('contain', 'Information for Stripe')
+        .parent().should('have.class', 'govuk-!-font-weight-bold')
+    })
 
-  it('should display all the required stripe tasks, show stripe progress indicator ', () => {
-    setupYourPspStubs()
-    cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+    it('should display all the required stripe tasks, show stripe progress indicator ', () => {
+      setupYourPspStubs()
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
-    cy.get('h2').should('contain', 'Information incomplete')
-    cy.get('p').should('contain', '0 out of 7 steps complete')
-    cy.get('h2').should('contain', 'Add your organisation’s details')
+      cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
+      cy.get('h2').should('contain', 'Information incomplete')
+      cy.get('p').should('contain', '0 out of 7 steps complete')
+      cy.get('h2').should('contain', 'Add your organisation’s details')
 
-    cy.get('span').contains('Bank Details').should('exist')
-    cy.get('span').contains('Responsible person').should('exist')
-    cy.get('span').contains('Service director').should('exist')
-    cy.get('span').contains('VAT registration number').should('exist')
-    cy.get('span').contains('Company registration number').should('exist')
-    cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('exist')
-    cy.get('span').contains('Government entity document').should('exist')
-  })
+      cy.get('span').contains('Bank Details').should('exist')
+      cy.get('span').contains('Responsible person').should('exist')
+      cy.get('span').contains('Service director').should('exist')
+      cy.get('span').contains('VAT registration number').should('exist')
+      cy.get('span').contains('Company registration number').should('exist')
+      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('exist')
+      cy.get('span').contains('Government entity document').should('exist')
+    })
 
-  it('should autamatically show government document as cannot start yet and the rest of the tasks as not started', () => {
-    setupYourPspStubs()
-    cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+    it('should show progress indicator and warning text when some steps are not complete', () => {
+      setupYourPspStubs({
+        bankAccount: true,
+        director: false,
+        vatNumber: false,
+        companyNumber: false,
+        responsiblePerson: true,
+        organisationDetails: false,
+        governmentEntityDocument: false
+      })
 
-    cy.get('strong[id="task-bank-details-status"]').should('contain', 'not started')
-    cy.get('strong[id="task-sro-status"]').should('contain', 'not started')
-    cy.get('strong[id="task-director-status"]').should('contain', 'not started')
-    cy.get('strong[id="task-vatNumber-status"]').should('contain', 'not started')
-    cy.get('strong[id="task-Company-number-status"]').should('contain', 'not started')
-    cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'not started')
-    cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'cannot start yet')
-  })
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
-  it('should have all tasks hyperlinked except government entity document', () => {
-    setupYourPspStubs()
-    cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
+      cy.get('h2').should('contain', 'Information incomplete')
+      cy.get('p').should('contain', '2 out of 7 steps complete')
 
-    cy.get('span').contains('Bank Details').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/bank-details`)
-    cy.get('span').contains('Responsible person').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/responsible-person`)
-    cy.get('span').contains('Service director').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/director`)
-    cy.get('span').contains('VAT registration number').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/vat-number`)
-    cy.get('span').contains('Company registration number').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/company-number`)
-    cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/check-organisation-details`)
-    cy.get('span').contains('Government entity document').should('not.have.attr', 'href')
+      cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
+    })
+
+    it('should show progress indicator and all completed tasks', () => {
+      setupYourPspStubs({
+        bankAccount: true,
+        director: true,
+        vatNumber: true,
+        companyNumber: true,
+        responsiblePerson: true,
+        organisationDetails: true,
+        governmentEntityDocument: true
+      })
+
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+
+      cy.get('[data-cy=warning-text]').should('not.exist')
+      cy.get('h2').should('contain', 'Information complete')
+      cy.get('p').should('contain', '7 out of 7 steps complete')
+
+      cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-director-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'complete')
+    })
+
+    it('should autamatically show government document as cannot start yet and the rest of the tasks as not started', () => {
+      setupYourPspStubs()
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+
+      cy.get('strong[id="task-bank-details-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-sro-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-director-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-Company-number-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'cannot start yet')
+    })
+
+    it('should have all tasks hyperlinked except government entity document', () => {
+      setupYourPspStubs()
+      cy.setEncryptedCookies(userExternalId)
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+
+      cy.get('span').contains('Bank Details').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/bank-details`)
+      cy.get('span').contains('Responsible person').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/responsible-person`)
+      cy.get('span').contains('Service director').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/director`)
+      cy.get('span').contains('VAT registration number').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/vat-number`)
+      cy.get('span').contains('Company registration number').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/company-number`)
+      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/check-organisation-details`)
+      cy.get('span').contains('Government entity document').should('not.have.attr', 'href')
+    })
   })
 
   describe('Bank details task', () => {
@@ -293,31 +345,5 @@ describe('Your PSP Stripe page', () => {
       cy.get('span').contains('Government entity document').click()
       cy.get('h1').contains('Upload a government entity document')
     })
-  })
-
-  it('should show progress indicator and all completed tasks', () => {
-    setupYourPspStubs({
-      bankAccount: true,
-      director: true,
-      vatNumber: true,
-      companyNumber: true,
-      responsiblePerson: true,
-      organisationDetails: true,
-      governmentEntityDocument: true
-    })
-
-    cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-
-    cy.get('h2').should('contain', 'Information complete')
-    cy.get('p').should('contain', '7 out of 7 steps complete')
-
-    cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
-    cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
-    cy.get('strong[id="task-director-status"]').should('contain', 'complete')
-    cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
-    cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
-    cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'complete')
-    cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'complete')
   })
 })
