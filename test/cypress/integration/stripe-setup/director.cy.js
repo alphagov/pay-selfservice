@@ -247,7 +247,7 @@ describe('Stripe setup: director page', () => {
         cy.get('button').click()
       })
 
-      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('h1').should('contain', 'Information for Stripe')
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
       })

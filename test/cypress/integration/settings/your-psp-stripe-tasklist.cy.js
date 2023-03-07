@@ -71,7 +71,7 @@ describe('Your PSP Stripe page', () => {
     setupYourPspStubs()
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-    cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+    cy.get('h1').should('contain', 'Information for Stripe')
     cy.get('#navigation-menu-your-psp')
       .should('contain', 'Information for Stripe')
       .parent().should('have.class', 'govuk-!-font-weight-bold')
@@ -134,7 +134,7 @@ describe('Your PSP Stripe page', () => {
       cy.get('input#account-number[name="account-number"]').type(accountNumber)
       cy.get('input#sort-code[name="sort-code"]').type(sortCode)
       cy.get('#bank-details-form > button').click()
-      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('h1').should('contain', 'Information for Stripe')
     })
 
     it('should have Bank details hyperlink removed when complete and status updated to "COMPLETE" ', () => {
@@ -157,7 +157,7 @@ describe('Your PSP Stripe page', () => {
       cy.get('#have-vat-number').click()
       cy.get('#vat-number').type(standardVatNumber)
       cy.get('#vat-number-form > button').click()
-      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('h1').should('contain', 'Information for Stripe')
     })
 
     it('should have VAT number task hyperlink removed when complete and status updated to "COMPLETE " ', () => {
@@ -180,7 +180,7 @@ describe('Your PSP Stripe page', () => {
       cy.get('#company-number-declaration').click()
       cy.get('#company-number').type(validCompanyNumber)
       cy.get('#company-number-form > button').click()
-      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('h1').should('contain', 'Information for Stripe')
     })
 
     it('should have Company registration number task hyperlink removed when complete and status updated to "COMPLETE " ', () => {
@@ -207,7 +207,7 @@ describe('Your PSP Stripe page', () => {
       cy.get('#dob-year').type(typedDobYear)
       cy.get('#email').type(typedEmail)
       cy.get('#director-form > button').click()
-      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('h1').should('contain', 'Information for Stripe')
     })
 
     it('should have Service director task hyperlink removed when complete and status updated to "COMPLETE"', () => {
@@ -238,7 +238,7 @@ describe('Your PSP Stripe page', () => {
       cy.get('#home-address-postcode').type(typedPostcode)
       cy.get('#telephone-number').type(typedPhoneNumber)
       cy.get('#responsible-person-form > button').click()
-      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('h1').should('contain', 'Information for Stripe')
     })
 
     it('should have Responsible person task hyperlink removed when complete and status updated to "COMPLETE" ', () => {
@@ -260,7 +260,7 @@ describe('Your PSP Stripe page', () => {
       cy.get('h1').contains('Check your organisation’s details')
       cy.get('[data-cy="yes-radio"]').click()
       cy.get('[data-cy="continue-button"]').click()
-      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('h1').should('contain', 'Information for Stripe')
     })
 
     it('should have Confirm Organisation details task hyperlink removed when complete and status updated to "COMPLETE" ', () => {
