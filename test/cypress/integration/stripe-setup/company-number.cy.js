@@ -54,9 +54,9 @@ describe('Stripe setup: company number page', () => {
         cy.get('h1').should('contain', 'Company registration number')
 
         cy.get('#navigation-menu-your-psp')
-        .should('contain', 'Information for Stripe')
-        .parent().should('have.class', 'govuk-!-font-weight-bold')
-        
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
+
         cy.get('#company-number-form').should('exist')
           .within(() => {
             cy.get('input#company-number-declaration[name="company-number-declaration"]').check()

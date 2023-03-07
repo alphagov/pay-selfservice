@@ -143,7 +143,7 @@ function yourPSPNavigationItems (account, currentPath = '') {
 function getPSPNavigationName (credential) {
   if (credential.state === CREDENTIAL_STATE.RETIRED) {
     return `Old PSP - ${formatPSPname(credential.payment_provider)}`
-  } else if ((process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') && (credential.payment_provider === 'stripe'))  {
+  } else if ((process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') && (credential.payment_provider === 'stripe')) {
     return 'Information for Stripe'
   } else {
     return `Your PSP - ${formatPSPname(credential.payment_provider)}`

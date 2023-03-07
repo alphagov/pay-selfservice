@@ -19,12 +19,17 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-
   {% if isSwitchingCredentials %}
     {{ govukBackLink({
       text: "Back to Switching payment service provider (PSP)",
       classes: "govuk-!-margin-top-0",
       href: formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id)
+    }) }}
+  {% elif enableStripeOnboardingTaskList %}
+    {{ govukBackLink({
+      text: "Back to check your organisation’s details",
+      classes: "govuk-!-margin-top-0",
+      href: formatAccountPathsFor(routes.account.yourPsp.stripeSetup.checkOrgDetails, currentGatewayAccount.external_id, currentCredential.external_id)
     }) }}
   {% endif %}
 

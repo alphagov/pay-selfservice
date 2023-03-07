@@ -57,8 +57,8 @@ describe('Stripe setup: VAT number page', () => {
         cy.get('h1').should('contain', 'VAT registration number')
 
         cy.get('#navigation-menu-your-psp')
-        .should('contain', 'Information for Stripe')
-        .parent().should('have.class', 'govuk-!-font-weight-bold')
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
 
         cy.get('#vat-number-form').should('exist')
           .within(() => {

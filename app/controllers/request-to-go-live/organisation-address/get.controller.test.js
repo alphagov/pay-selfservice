@@ -145,7 +145,7 @@ describe('organisation address get controller', () => {
       it('should display the `update org details` form and set `enableStripeOnboardingTaskList=true` when ' +
       'Stripe task list flag is true', () => {
         process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-        
+
         const req = {
           url: '/your-psp/:credentialId/update-organisation-details',
           account
