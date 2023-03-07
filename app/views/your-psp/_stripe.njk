@@ -94,7 +94,7 @@
 
 {% else %}
   {% if enableStripeOnboardingTaskList %}
-    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+    <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
       {% if progressIndicator.no_of_tasks_completed < progressIndicator.total_number_of_tasks %}        
         Information incomplete
       {% else %}
@@ -104,9 +104,10 @@
 
     <p class="govuk-body govuk-!-margin-bottom-7">
       {{progressIndicator.no_of_tasks_completed}} out of {{progressIndicator.total_number_of_tasks}} steps completed
-      </p>
+    </p>
 
     {% set tasks %}
+    
     {{ stripeTaskListItem(
         'task-bank-details',
         "Bank Details",
@@ -150,10 +151,11 @@
         taskList.UPLOAD_GOVERNMENT_ENTITY_DOCUMENT
       ) }}
     {% endset %}
-    <div class="app-task-list govuk-body">
-      <div>
-        <span class="app-task-list__items">{{ tasks | safe }}</span>
-      </div>
-    </div>
+    <ol class="app-task-list">
+      <li>
+        <h2 class="app-task-list__section">Add your organisation’s details</h2>
+        <ul class="app-task-list__items govuk-!-padding-left-0">{{ tasks | safe }}</ul>
+      </li>
+    </ol>
   {% endif %}
 {% endif %}
