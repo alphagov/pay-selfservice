@@ -267,7 +267,7 @@ describe('Your PSP - Stripe - KYC', () => {
         cy.get('button').click()
       })
 
-      cy.get('h1').should('contain', 'Your payment service provider (PSP) - Stripe')
+      cy.get('h1').should('contain', 'Information for Stripe')
       cy.get('.govuk-notification-banner__heading').should('contain', 'Organisation website address added successfully')
     })
   })

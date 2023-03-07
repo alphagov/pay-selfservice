@@ -26,7 +26,12 @@
       type: 'success'
     }) }}
   {% endif %}
-  <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ credential.payment_provider | formatPSPname }}</h1>
+
+  {% if enableStripeOnboardingTaskList and activeCredential.payment_provider === 'stripe' %}
+    <h1 class="govuk-heading-l page-title">Information for Stripe</h1>
+  {% else %}
+    <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ credential.payment_provider | formatPSPname }}</h1>
+  {% endif %}
 
   {% if credential.active_end_date %}
   <div id="switched-psp-status" class="govuk-inset-text">
