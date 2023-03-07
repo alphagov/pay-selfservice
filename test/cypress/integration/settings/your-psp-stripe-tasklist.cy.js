@@ -84,6 +84,7 @@ describe('Your PSP Stripe page', () => {
 
     cy.get('h2').should('contain', 'Information incomplete')
     cy.get('p').should('contain', '0 out of 7 steps complete')
+    cy.get('h2').should('contain', 'Add your organisation’s details')
 
     cy.get('span').contains('Bank Details').should('exist')
     cy.get('span').contains('Responsible person').should('exist')
