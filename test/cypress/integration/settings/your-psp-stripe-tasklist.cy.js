@@ -76,34 +76,42 @@ describe('Your PSP Stripe page', () => {
       cy.get('#navigation-menu-your-psp')
         .should('contain', 'Information for Stripe')
         .parent().should('have.class', 'govuk-!-font-weight-bold')
-    })
-
-    it('should display all the required stripe tasks, show stripe progress indicator ', () => {
-      setupYourPspStubs()
-      cy.setEncryptedCookies(userExternalId)
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
       cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
       cy.get('h2').should('contain', 'Information incomplete')
       cy.get('p').should('contain', '0 out of 7 steps complete')
       cy.get('h2').should('contain', 'Add your organisation’s details')
 
-      cy.get('span').contains('Bank Details').should('exist')
-      cy.get('span').contains('Responsible person').should('exist')
-      cy.get('span').contains('Service director').should('exist')
-      cy.get('span').contains('VAT registration number').should('exist')
-      cy.get('span').contains('Company registration number').should('exist')
-      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('exist')
-      cy.get('span').contains('Government entity document').should('exist')
+      cy.get('span').contains('Bank Details')
+        .should('exist')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/bank-details`)
+      cy.get('span').contains('Responsible person')
+        .should('exist')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/responsible-person`)
+      cy.get('span').contains('Service director')
+        .should('exist')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/director`)
+      cy.get('span').contains('VAT registration number')
+        .should('exist')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/vat-number`)
+      cy.get('span').contains('Company registration number')
+        .should('exist')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/company-number`)
+      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document')
+        .should('exist')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/check-organisation-details`)
+      cy.get('span').contains('Government entity document')
+        .should('exist')
+        .should('not.have.attr', 'href')
     })
 
     it('should show progress indicator and warning text when some steps are not complete', () => {
       setupYourPspStubs({
         bankAccount: true,
+        responsiblePerson: true,
         director: false,
         vatNumber: false,
         companyNumber: false,
-        responsiblePerson: true,
         organisationDetails: false,
         governmentEntityDocument: false
       })
@@ -113,10 +121,15 @@ describe('Your PSP Stripe page', () => {
 
       cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
       cy.get('h2').should('contain', 'Information incomplete')
-      cy.get('p').should('contain', '2 out of 7 steps complete')
 
+      cy.get('p').should('contain', '2 out of 7 steps complete')
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
       cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-director-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-Company-number-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'not started')
+      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'cannot start yet')
     })
 
     it('should show progress indicator and all completed tasks', () => {
@@ -158,20 +171,6 @@ describe('Your PSP Stripe page', () => {
       cy.get('strong[id="task-Company-number-status"]').should('contain', 'not started')
       cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'not started')
       cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'cannot start yet')
-    })
-
-    it('should have all tasks hyperlinked except government entity document', () => {
-      setupYourPspStubs()
-      cy.setEncryptedCookies(userExternalId)
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-
-      cy.get('span').contains('Bank Details').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/bank-details`)
-      cy.get('span').contains('Responsible person').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/responsible-person`)
-      cy.get('span').contains('Service director').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/director`)
-      cy.get('span').contains('VAT registration number').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/vat-number`)
-      cy.get('span').contains('Company registration number').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/company-number`)
-      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/check-organisation-details`)
-      cy.get('span').contains('Government entity document').should('not.have.attr', 'href')
     })
   })
 
