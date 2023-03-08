@@ -94,12 +94,26 @@
 
 {% else %}
   {% if enableStripeOnboardingTaskList %}
+    {% if progressIndicator.no_of_tasks_completed === progressIndicator.total_number_of_tasks %}
+      {% set isAllTasksComplete = 'true'%}
+    {% endif %}  
+
+    {% if not isAllTasksComplete %}
+      {% set warningText %}
+        You need to submit additional information to Stripe.
+      {% endset %}
+
+      {{ govukWarningText({
+        text: warningText,
+        iconFallbackText: "Warning",
+        attributes: {
+          'data-cy':'warning-text'
+        }
+      }) }}
+    {% endif %}
+
     <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
-      {% if progressIndicator.no_of_tasks_completed < progressIndicator.total_number_of_tasks %}        
-        Information incomplete
-      {% else %}
-        Information complete 
-      {% endif %}
+      {{ 'Information complete' if isAllTasksComplete else 'Information incomplete' }} 
     </h2>
 
     <p class="govuk-body govuk-!-margin-bottom-7">
