@@ -40,7 +40,7 @@ jobs:
         with:
           node-version: ${{ needs.version.outputs.node-version }}
       - name: Cache build directories
-        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
+        uses: actions/cache@940f3d7cf195ba83374c77632d1e2cbb2f24ae68
         with:
           path: |
             node_modules
@@ -48,7 +48,7 @@ jobs:
             public
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
       - name: Cache NPM packages
-        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
+        uses: actions/cache@940f3d7cf195ba83374c77632d1e2cbb2f24ae68
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -57,7 +57,7 @@ jobs:
         id: parse-cypress-version
         run: echo "CYPRESS_VERSION=$(jq -r '.devDependencies.cypress' package.json)" >> $GITHUB_OUTPUT
       - name: Cache Cypress
-        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
+        uses: actions/cache@940f3d7cf195ba83374c77632d1e2cbb2f24ae68
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ steps.parse-cypress-version.outputs.CYPRESS_VERSION }}
@@ -81,7 +81,7 @@ jobs:
         with:
           node-version: ${{ needs.version.outputs.node-version }}
       - name: Cache build directories
-        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
+        uses: actions/cache@940f3d7cf195ba83374c77632d1e2cbb2f24ae68
         with:
           path: |
             node_modules
@@ -89,7 +89,7 @@ jobs:
             public
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
       - name: Cache pacts directory
-        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
+        uses: actions/cache@940f3d7cf195ba83374c77632d1e2cbb2f24ae68
         with:
           path: pacts
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
@@ -109,7 +109,7 @@ jobs:
         with:
           node-version: ${{ needs.version.outputs.node-version }}
       - name: Cache build directories
-        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
+        uses: actions/cache@940f3d7cf195ba83374c77632d1e2cbb2f24ae68
         with:
           path: |
             node_modules
@@ -120,7 +120,7 @@ jobs:
         id: parse-cypress-version
         run: echo "CYPRESS_VERSION=$(jq -r '.devDependencies.cypress' package.json)" >> $GITHUB_OUTPUT
       - name: Cache Cypress
-        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0
+        uses: actions/cache@940f3d7cf195ba83374c77632d1e2cbb2f24ae68
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ steps.parse-cypress-version.outputs.CYPRESS_VERSION }}
