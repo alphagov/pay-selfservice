@@ -7,6 +7,7 @@ const { validUser } = require('../../../test/fixtures/user.fixtures')
 const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const StripeClient = require('../../services/clients/stripe/stripe.client.js')
+const { expect } = require('chai')
 
 describe('Controller: Dashboard activity', () => {
   const externalServiceId = 'service-external-id'
@@ -14,7 +15,7 @@ describe('Controller: Dashboard activity', () => {
   let req, res, accountSpy, stripeSpy
 
   describe('Stripe test account', () => {
-    before(() => {
+    beforeEach(() => {
       const user = new User(validUser({
         username: 'valid-user',
         service_roles: [{
@@ -44,9 +45,11 @@ describe('Controller: Dashboard activity', () => {
       }
     })
 
-    after(() => {
+    afterEach(() => {
       accountSpy.restore()
       stripeSpy.restore()
+
+      process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = undefined
     })
 
     it(`should not call call the Connector client or the Stripe client`, async () => {
@@ -57,6 +60,23 @@ describe('Controller: Dashboard activity', () => {
 
       sinon.assert.notCalled(accountSpy)
       sinon.assert.notCalled(stripeSpy)
+    })
+
+    it('should set enableStripeOnboardingTaskList to true when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', async () => {
+      process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+      await dashboardController(req, res)
+      const pageData = res.render.args[0][1]
+      expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    })
+
+    it('should set enableStripeOnboardingTaskList to false when ENABLE_STRIPE_ONBOARDING_TASK_LIST is false', async () => {
+      process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
+
+      await dashboardController(req, res)
+
+      const pageData = res.render.args[0][1]
+      expect(pageData.enableStripeOnboardingTaskList).to.equal(false)
     })
   })
 })

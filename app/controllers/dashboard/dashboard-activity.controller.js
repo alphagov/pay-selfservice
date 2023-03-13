@@ -13,6 +13,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 const stripeKycAdditionalDataDueDate = process.env.STRIPE_KYC_ADDITIONAL_DATA_DUE_DATE || '17 December 2021'
+
 const {
   NOT_STARTED,
   ENTERED_ORGANISATION_NAME,
@@ -126,7 +127,8 @@ module.exports = async (req, res) => {
     goLiveNotStarted: req.service.currentGoLiveStage === NOT_STARTED,
     goLiveStarted: goLiveStartedStages.includes(req.service.currentGoLiveStage),
     goLiveRequested: goLiveRequestedStages.includes(req.service.currentGoLiveStage),
-    gatewayAccount: req.account
+    gatewayAccount: req.account,
+    enableStripeOnboardingTaskList: process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true'
   }
 
   if (req.account.payment_provider === 'stripe' && req.account.type === 'live') {
