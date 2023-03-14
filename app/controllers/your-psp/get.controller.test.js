@@ -38,10 +38,6 @@ describe('Your PSP GET controller', () => {
     next = sinon.spy()
   })
 
-  afterEach(() => {
-    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = undefined
-  })
-
   it('should set enableStripeOnboardingTaskList to true when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', async () => {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
 
