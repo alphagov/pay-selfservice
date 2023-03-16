@@ -101,7 +101,7 @@ describe('The Stripe psp details banner', () => {
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
     cy.get('[data-cy=stripe-notification]')
-      .contains('To start taking payments again, please contact support.')
+      .contains('Stripe has restricted your account. To start taking payments again, please contact support govuk-pay-support@digital.cabinet-office.gov.uk')
       .within(() => {
       cy.get('a').should('have.attr', 'href', 'mailto:govuk-pay-support@digital.cabinet-office.gov.uk')
       })
