@@ -11,7 +11,7 @@ function validRetrieveStripeAccountDetails (opts = {}) {
       'card_payments': 'active',
       'transfers': 'active'
     },
-    'charges_enabled': true,
+    'charges_enabled': opts.charges_enabled,
     'company': {
       'directors_provided': true,
       'executives_provided': true,
@@ -19,7 +19,10 @@ function validRetrieveStripeAccountDetails (opts = {}) {
       'tax_id_provided': true,
       'vat_id_provided': true
     },
-    'type': 'custom'
+    'type': 'custom',
+    'requirements': {
+      'current_deadline': opts.current_deadline
+    }
   }
 
   stripeAccount.id = opts.stripe_account_id

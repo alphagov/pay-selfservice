@@ -9,7 +9,13 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
     {% include "./_account-disabled-banner.njk" %}
   {% else %}
     {% include "./_live-account-requested-banner.njk" %}
-    {% include "./_stripe-account-setup-banner.njk" %}
+
+    {% if enableStripeOnboardingTaskList %}
+      {% include "./_stripe-account-setup-banner_tasklist.njk" %}
+    {% else %}
+      {% include "./_stripe-account-setup-banner.njk" %}
+    {% endif %} 
+
     {% include "./_switching-psp-banner.njk" %}
     {% include "./_additional-kyc-info-banner.njk" %}
     {% include "./_worldpay_account_not_configured_banner.njk" %}

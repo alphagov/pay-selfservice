@@ -19,7 +19,9 @@ function parseStripeAccountOptions (opts) {
   return {
     url: opts.url || null,
     stripe_account_id: opts.stripeAccountId || 'stripe-connect-account-id',
-    entity_verified: opts.entity_verified
+    entity_verified: opts.entity_verified,
+    charges_enabled: opts.charges_enabled,
+    current_deadline: opts.current_deadline
   }
 }
 
