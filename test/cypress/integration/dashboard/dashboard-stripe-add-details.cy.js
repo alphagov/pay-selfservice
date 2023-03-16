@@ -5,56 +5,121 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
+const stripeAccountId = 'stripe-account-id'
+const stripePspStubs = require('../../stubs/stripe-psp-stubs')
+
+const gatewayAccountId = '22'
+const gatewayAccountExternalId = 'a-valid-external-id'
+const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+const gatewayAccountCredentials = [{ payment_provider: 'stripe' }]
+
+function setupYourPspStubs (opts = {}) {
+  const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId })
+
+  const stripeAccount = stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'stripe-account-id')
+  const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials })
+  const transactionsSummary = transactionsSummaryStubs.getDashboardStatistics()
+  const gatewayAccountSucess = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials })
+  const stripeAccountSetup = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
+    gatewayAccountId,
+    bankAccount: opts.bankAccount,
+    director: opts.director,
+    vatNumber: opts.vatNumber,
+    companyNumber: opts.companyNumber,
+    responsiblePerson: opts.responsiblePerson,
+    organisationDetails: opts.organisationDetails,
+    governmentEntityDocument: opts.governmentEntityDocument
+  })
+
+  const stripeRestrictedAccountDetails = stripePspStubs.retrieveAccountDetails({
+    stripeAccountId,
+    charges_enabled: opts.charges_enabled,
+    current_deadline: opts.current_deadline
+  })
+
+  const stubs = [user, stripeAccount, gatewayAccountByExternalId, transactionsSummary, gatewayAccountSucess, stripeAccountSetup, stripeRestrictedAccountDetails]
+  cy.task('setupStubs', stubs)
+}
 
 describe('The Stripe psp details banner', () => {
-  const gatewayAccountId = '22'
-  const gatewayAccountExternalId = 'a-valid-external-id'
-  const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-
-  const gatewayAccountCredentials = [{
-    payment_provider: 'stripe'
-  }]
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId)
-    cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId }),
-      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials }),
-      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials }),
-      transactionsSummaryStubs.getDashboardStatistics(),
-      stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
-        gatewayAccountId,
-        responsiblePerson: false,
-        bankAccount: false,
-        vatNumber: false,
-        companyNumber: false,
-        director: false,
-        organisationDetails: false,
-        governmentEntityDocument: false
-      }),
-      stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'stripe-account-id')
-    ])
   })
 
-  it('should display the banner', () => {
-    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
-
-    cy.get('h2').contains('Enter more information to enable payments to your bank account')
-
-    cy.get('[data-cy=stripe-setup-list]').within(() => {
-      cy.get('li').should('have.length', 6)
-      cy.get('li').eq(0).should('have.text', 'organisation bank details')
-      cy.get('li').eq(1).should('have.text', 'the name, date of birth and home address of the person in your organisation legally responsible for payments (called your ‘responsible person’)')
-      cy.get('li').eq(2).should('have.text', 'the name, date of birth and work email address of the director of your service (or someone at director level)')
-      cy.get('li').eq(3).should('have.text', 'VAT number (if applicable)')
-      cy.get('li').eq(4).should('have.text', 'Company registration number (if applicable)')
-      cy.get('li').eq(5).should('have.text', 'government entity document')
+  it('should display call to action banner when all the tasks are not complete ', () => {
+    setupYourPspStubs({
+      bankAccount: false,
+      director: false,
+      vatNumber: false,
+      companyNumber: false,
+      responsiblePerson: false,
+      organisationDetails: false,
+      governmentEntityDocument: false
     })
 
-    cy.get('[data-cy=stripe-setup-cofirm-org-details]').should('contain', 'You must also confirm that the name and address of your organisation in GOV.UK Pay exactly match your government entity document.')
+    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.get('[data-cy=stripe-notification]')
+      .contains('You need to submit additional information to Stripe to be able to take payments')
+      .within(() => {
+      cy.get('a').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
+      })
   })
 
-  it('should redirect to bank account details page when "Add details" button clicked', () => {
-    cy.get('#add-account-details').click()
-    cy.get('h1').contains('Enter your organisation’s banking details')
+  it('should display the restricted banner for a restricted Stripe account', () => {
+    setupYourPspStubs({ charges_enabled: false })
+
+    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.get('[data-cy=stripe-notification]')
+      .contains('Stripe has restricted your account. You need to submit additional information to Stripe to take payments.')
+      .within(() => {
+      cy.get('a').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
+      })
+  })
+
+  it('should display banner with DATE when account is not fully setup and there is a deadline ', () => {
+    setupYourPspStubs({ current_deadline: 1765793670 })
+
+    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.get('[data-cy=stripe-notification]')
+      .contains('You need to submit additional information to Stripe by 15 December 2025 to continue taking payments.')
+      .within(() => {
+      cy.get('a').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
+      })
+  })
+
+  it('should display restricted banner when account is fully setup but the Stripe account is restricted ', () => {
+    setupYourPspStubs({
+      charges_enabled: false,
+      responsiblePerson: true,
+      bankAccount: true,
+      vatNumber: true,
+      companyNumber: true,
+      director: true,
+      organisationDetails: true,
+      governmentEntityDocument: true
+    })
+
+    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.get('[data-cy=stripe-notification]')
+      .contains('To start taking payments again, please contact support.')
+      .within(() => {
+      cy.get('a').should('have.attr', 'href', 'mailto:govuk-pay-support@digital.cabinet-office.gov.uk')
+      })
+  })
+
+  it('should display no banner when the account is not restricted and all tasks are complete ', () => {
+    setupYourPspStubs({
+      charges_enabled: true,
+      responsiblePerson: true,
+      bankAccount: true,
+      vatNumber: true,
+      companyNumber: true,
+      director: true,
+      organisationDetails: true,
+      governmentEntityDocument: true
+    })
+
+    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.get('[data-cy=stripe-notification]').should('not.exist')
   })
 })
