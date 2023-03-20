@@ -7,7 +7,7 @@ const { response } = require('../../../utils/response')
 const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { getCredentialByExternalId, isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { getCredentialByExternalId, isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { getStripeAccountId } = require('../stripe-setup.util')
@@ -17,7 +17,8 @@ const CONFIRM_ORG_DETAILS = 'confirm-org-details'
 
 module.exports = async function postCheckOrgDetails (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
+  const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
+  const currentCredential = getCurrentCredential(req.account)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
   if (!stripeAccountSetup) {
@@ -42,7 +43,9 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
       orgAddressLine2: merchantDetails.address_line2,
       orgCity: merchantDetails.address_city,
       orgPostcode: merchantDetails.address_postcode,
-      isSwitchingCredentials
+      isSwitchingCredentials,
+      enableStripeOnboardingTaskList,
+      currentCredential,
     }
 
     return response(req, res, 'stripe-setup/check-org-details/index', data)
@@ -62,7 +65,7 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
     }
     if (isSwitchingCredentials) {
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
-    } else if (enabledStripeOnboardingTaskList) {
+    } else if (enableStripeOnboardingTaskList) {
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
     } else {
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
