@@ -59,7 +59,7 @@ describe('The Stripe psp details banner', () => {
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
     cy.get('[data-cy=stripe-notification]')
-      .contains('You need to submit additional information to Stripe to be able to take payments')
+      .contains('You need to submit additional information to Stripe to be able to take payments.')
       .within(() => {
       cy.get('a').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
       })
