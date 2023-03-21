@@ -3,6 +3,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const assert = require('assert')
+const { expect } = require('chai')
 const paths = require('../../../paths')
 const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
@@ -296,6 +297,24 @@ describe('Responsible person POST controller', () => {
     sinon.assert.calledWith(res.render, 'error-with-link')
   })
 
+  it('should render error page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async () => {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+
+    const controller = getControllerWithMocks()
+    req.account.connectorGatewayAccountStripeProgress = { responsiblePerson: false }
+    
+    req.url = '/your-psp/:credentialId/esponsible-person'
+    req.body = {}
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(res.render, 'stripe-setup/responsible-person/index')
+    const pageData = res.render.firstCall.args[1]
+    expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    expect(pageData.currentGatewayAccount.external_id).to.equal('a-valid-external-id')
+  })
+
   it('should display an error for phone number when Stripe returns error, not call connector', async function () {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
@@ -328,6 +347,45 @@ describe('Responsible person POST controller', () => {
       'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
   })
 
+  it('should display an error for phone number when Stripe returns error, not call connector and ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    const personId = 'person-1'
+    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+      data: [
+        {
+          id: personId,
+          relationship: {
+            representative: true
+          }
+        }
+      ]
+    }))
+    const errorFromStripe = {
+      type: 'StripeInvalidRequestError',
+      param: 'phone'
+    }
+    updatePersonMock = sinon.spy(() => Promise.reject(errorFromStripe))
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+    
+    req.url = '/your-psp/:credentialId/esponsible-person'
+    req.body = { ...postBody }
+
+    await controller(req, res, next)
+
+    sinon.assert.called(updatePersonMock)
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+
+    sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
+    assert.strictEqual(res.render.getCalls()[0].args[1].errors['telephone-number'],
+      'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+    
+    const pageData = res.render.firstCall.args[1]
+    expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    expect(pageData.currentGatewayAccount.external_id).to.equal('a-valid-external-id')
+  })
+
   it('should display an error for date of birth when Stripe returns error, not call connector', async function () {
     const personId = 'person-1'
     listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
@@ -358,6 +416,45 @@ describe('Responsible person POST controller', () => {
     sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'],
       'Enter a valid date')
+  })
+
+  it('should display an error for date of birth when Stripe returns error, not call connector and ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    const personId = 'person-1'
+    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve({
+      data: [
+        {
+          id: personId,
+          relationship: {
+            representative: true
+          }
+        }
+      ]
+    }))
+    const errorFromStripe = {
+      type: 'StripeInvalidRequestError',
+      param: 'dob[year]'
+    }
+    updatePersonMock = sinon.spy(() => Promise.reject(errorFromStripe))
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+
+    req.url = '/your-psp/:credentialId/esponsible-person'
+    req.body = { ...postBody }
+
+    await controller(req, res, next)
+
+    sinon.assert.called(updatePersonMock)
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+
+    sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
+    assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'],
+      'Enter a valid date')
+
+    const pageData = res.render.firstCall.args[1]
+    expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    expect(pageData.currentGatewayAccount.external_id).to.equal('a-valid-external-id')
   })
 
   it('should render error when Stripe returns error, not call connector, and not redirect', async function () {
@@ -470,6 +567,7 @@ describe('Responsible person POST controller', () => {
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
 
+    req.url = '/your-psp/:credentialId/esponsible-person'
     req.body = postBody
     req.params = {
       credentialId: 'a-valid-credential-external-id'
