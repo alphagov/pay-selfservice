@@ -2,6 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const { expect } = require('chai')
 const paths = require('../../../paths')
 
 describe('Company number POST controller', () => {
@@ -149,8 +150,28 @@ describe('Company number POST controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
+  it('should render error when connector returns error when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    req.url = '/your-psp/:credentialId/company-number'
+
+    updateCompanyMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.reject(new Error()))
+    const controller = getControllerWithMocks()
+
+    req.body = {}
+
+    await controller(req, res, next)
+
+    sinon.assert.calledWith(res.render, `stripe-setup/company-number/index`)
+    const pageData = res.render.firstCall.args[1]
+    expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    expect(pageData.currentCredential.external_id).to.equal('a-valid-credential-external-id')
+  })
+
   it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async function () {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+    req.url = '/your-psp/:credentialId/company-number'
 
     updateCompanyMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
@@ -162,6 +183,7 @@ describe('Company number POST controller', () => {
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
   })
+
   it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async function () {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
 

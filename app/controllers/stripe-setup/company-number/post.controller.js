@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('../../../utils/credentials')
 const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const companyNumberValidations = require('./company-number-validations')
@@ -19,7 +19,8 @@ const COMPANY_NUMBER_FIELD = 'company-number'
 
 module.exports = async (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
+  const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
+  const currentCredential = getCurrentCredential(req.account)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   if (!stripeAccountSetup) {
     return next(new Error('Stripe setup progress is not available on request'))
@@ -40,6 +41,8 @@ module.exports = async (req, res, next) => {
       companyNumberDeclaration: companyNumberDeclaration,
       companyNumber: rawCompanyNumber,
       isSwitchingCredentials,
+      enableStripeOnboardingTaskList,
+      currentCredential,
       errors
     })
   } else {
@@ -63,7 +66,7 @@ module.exports = async (req, res, next) => {
       })
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
-      } else if (enabledStripeOnboardingTaskList) {
+      } else if (enableStripeOnboardingTaskList) {
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
       } else {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
