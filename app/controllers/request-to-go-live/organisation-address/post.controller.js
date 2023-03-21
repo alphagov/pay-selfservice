@@ -23,7 +23,7 @@ const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { updateOrganisationDetails } = require('../../../services/clients/stripe/stripe.client')
-const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('../../../utils/credentials')
 
 const clientFieldNames = {
   name: 'merchant-name',
@@ -183,7 +183,16 @@ async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourne
   }
 }
 
-function buildErrorsPageData (form, errors, isRequestToGoLive, isStripeUpdateOrgDetails, isSwitchingCredentials, isStripeSetupUserJourney) {
+function buildErrorsPageData (
+  form,
+  errors,
+  isRequestToGoLive,
+  isStripeUpdateOrgDetails,
+  isSwitchingCredentials,
+  isStripeSetupUserJourney,
+  enableStripeOnboardingTaskList,
+  currentCredential
+) {
   return {
     errors: errors,
     name: form[clientFieldNames.name],
@@ -197,16 +206,19 @@ function buildErrorsPageData (form, errors, isRequestToGoLive, isStripeUpdateOrg
     isRequestToGoLive,
     isStripeUpdateOrgDetails,
     isSwitchingCredentials,
-    isStripeSetupUserJourney
+    isStripeSetupUserJourney,
+    enableStripeOnboardingTaskList,
+    currentCredential
   }
 }
 
 module.exports = async function submitOrganisationAddress (req, res, next) {
   try {
-    const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
     const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
     const isStripeUpdateOrgDetails = req.url ? req.url.startsWith('/your-psp/') : false
     const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
+    const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
+    const currentCredential = getCurrentCredential(req.account)
 
     const isStripeSetupUserJourney = isStripeUpdateOrgDetails ? true : !!isSwitchingCredentials
 
@@ -217,7 +229,7 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
       const updatedService = await submitForm(form, req, isRequestToGoLive, isStripeSetupUserJourney, isSwitchingCredentials)
 
       if (isStripeUpdateOrgDetails) {
-        if (enabledStripeOnboardingTaskList) {
+        if (enableStripeOnboardingTaskList) {
           res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
         } else {
           res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
@@ -230,7 +242,16 @@ module.exports = async function submitOrganisationAddress (req, res, next) {
         res.redirect(303, formatServicePathsFor(paths.service.organisationDetails.index, req.service.externalId))
       }
     } else {
-      const pageData = buildErrorsPageData(form, errors, isRequestToGoLive, isStripeUpdateOrgDetails, isSwitchingCredentials, isStripeSetupUserJourney)
+      const pageData = buildErrorsPageData(
+        form,
+        errors,
+        isRequestToGoLive,
+        isStripeUpdateOrgDetails,
+        isSwitchingCredentials,
+        isStripeSetupUserJourney,
+        enableStripeOnboardingTaskList,
+        currentCredential
+      )
 
       const templatePath = isStripeSetupUserJourney ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
       return response(req, res, templatePath, pageData)
