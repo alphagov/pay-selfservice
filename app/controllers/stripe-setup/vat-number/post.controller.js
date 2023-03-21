@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
 const vatNumberValidations = require('./vat-number-validations')
@@ -18,7 +18,8 @@ const VAT_NUMBER_FIELD = 'vat-number'
 const VAT_NUMBER_PROVIDED_FIELD = 'vat-number-declaration'
 
 module.exports = async (req, res, next) => {
-  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
+  const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
+  const currentCredential = getCurrentCredential(req.account)
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
 
@@ -47,6 +48,8 @@ module.exports = async (req, res, next) => {
       vatNumber: rawVatNumber,
       vatNumberDeclaration: vatNumberDeclaration,
       isSwitchingCredentials,
+      enableStripeOnboardingTaskList,
+      currentCredential,
       errors
     })
   } else {
@@ -68,7 +71,7 @@ module.exports = async (req, res, next) => {
       })
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
-      } else if (enabledStripeOnboardingTaskList) {
+      } else if (enableStripeOnboardingTaskList) {
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
       } else {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
