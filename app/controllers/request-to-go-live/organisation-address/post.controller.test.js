@@ -212,6 +212,48 @@ describe('organisation address - post controller', () => {
       })
     })
 
+    describe('new Stripe gateway account when process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', () => {
+      beforeEach(() => {
+        process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+        req.url = '/your-psp/:credentialId/update-organisation-details'
+        req.route.path = '/update-organisation-details'
+        req.account = {
+          gateway_account_credentials: [
+            { external_id: 'a-valid-credential-external-id' }
+          ]
+        }
+
+        controller(req, res, next)
+        responseData = mockResponse.getCalls()[0]
+      })
+
+      afterEach(() => {
+        process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = undefined
+      })
+
+      it('should return errors when the required fields are missing', () => {
+        expect(responseData.args[2]).to.equal('stripe-setup/update-org-details/index')
+
+        const errors = responseData.args[3].errors
+        expect(Object.keys(errors).length).to.equal(4)
+        expect(errors[errorKeysAndMessage.errorName.key]).to.equal(errorKeysAndMessage.errorName.text)
+        expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
+        expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
+        expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+      })
+
+      it('should set the flags correctly', () => {
+        expect(responseData.args[3].isRequestToGoLive).to.equal(false)
+        expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(true)
+        expect(responseData.args[3].isSwitchingCredentials).to.equal(false)
+        expect(responseData.args[3].isStripeSetupUserJourney).to.equal(true)
+        console.log(1111, responseData.args[3])
+        expect(responseData.args[3].enableStripeOnboardingTaskList).to.equal(true)
+        expect(responseData.args[3].currentCredential).to.deep.equal({ external_id: 'a-valid-credential-external-id' })
+      })
+    })
+
     describe('`Switch PSP > Stripe`', () => {
       beforeEach(() => {
         req.url = '/switch-psp/:credentialId/update-organisation-details'
@@ -616,6 +658,7 @@ describe('organisation address - post controller', () => {
             address_country: validCountry
           })
         })
+
         it('should update Stripe and redirect to task-list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', async () => {
           process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
 
