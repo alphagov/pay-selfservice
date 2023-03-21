@@ -6,7 +6,7 @@ const ukPostcode = require('uk-postcode')
 const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const {
   validateField,
   validateDoB,
@@ -102,9 +102,9 @@ const validationRules = [
 ]
 
 module.exports = async function submitResponsiblePerson (req, res, next) {
-  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const isSubmittingAdditionalKycData = isAdditionalKycDataRoute(req)
+  const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   const currentCredential = getCurrentCredential(req.account)
   if (!isSubmittingAdditionalKycData) {
@@ -141,7 +141,8 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
       ...pageData,
       isSwitchingCredentials,
       isSubmittingAdditionalKycData,
-      currentCredential
+      currentCredential,
+      enableStripeOnboardingTaskList
     })
   } else {
     try {
@@ -179,7 +180,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
           req.flash('generic', 'Responsible person details added successfully')
         }
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
-      } else if (enabledStripeOnboardingTaskList) {
+      } else if (enableStripeOnboardingTaskList) {
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
       } else {
         return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
@@ -203,6 +204,7 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
             isSwitchingCredentials,
             currentCredential,
             isSubmittingAdditionalKycData,
+            enableStripeOnboardingTaskList,
             errors: error
           })
         }
