@@ -5,7 +5,7 @@ const lodash = require('lodash')
 const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const { response } = require('../../../utils/response')
 const { validateMandatoryField, validateEmail } = require('../../../utils/validation/server-side-form-validations')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
@@ -49,7 +49,7 @@ const validationRules = [
 
 module.exports = async function (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
+  const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
   const collectingAdditionalKycData = isAdditionalKycDataRoute(req)
   const currentCredential = getCurrentCredential(req.account)
 
@@ -79,7 +79,7 @@ module.exports = async function (req, res, next) {
     pageData['errors'] = errors
 
     return response(req, res, 'stripe-setup/director/index', {
-      ...pageData, isSwitchingCredentials, collectingAdditionalKycData, currentCredential
+      ...pageData, isSwitchingCredentials, collectingAdditionalKycData, currentCredential, enableStripeOnboardingTaskList
     })
   } else {
     try {
@@ -105,7 +105,7 @@ module.exports = async function (req, res, next) {
 
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
-      } else if (enabledStripeOnboardingTaskList) {
+      } else if (enableStripeOnboardingTaskList) {
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
       } else if (collectingAdditionalKycData) {
         const taskListComplete = await isKycTaskListComplete(currentCredential)
@@ -126,6 +126,7 @@ module.exports = async function (req, res, next) {
           isSwitchingCredentials,
           collectingAdditionalKycData,
           currentCredential,
+          enableStripeOnboardingTaskList,
           errors: {
             [DOB_DAY_FIELD]: validationErrors.invalidDateOfBirth
           }

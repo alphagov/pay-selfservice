@@ -3,6 +3,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const assert = require('assert')
+const { expect } = require('chai')
 const paths = require('../../../paths')
 const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
@@ -282,6 +283,8 @@ describe('Director POST controller', () => {
   it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async function () {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
 
+    req.url = '/your-psp/:credentialId/director'
+
     updateCompanyMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
@@ -296,6 +299,50 @@ describe('Director POST controller', () => {
     sinon.assert.calledWith(updateCompanyMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+  })
+
+  it('should render error page with side navigation when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
+    
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    req.url = '/your-psp/:credentialId/director'
+
+    const controller = getControllerWithMocks()
+
+    req.body = {}
+
+    await controller(req, res, next)
+    
+    sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
+    const pageData = res.render.firstCall.args[1]
+    expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    expect(pageData.currentCredential.external_id).to.equal('a-credential-external-id')
+  })
+
+  it('should display an error message, when Stripe returns error for date of birth, not call connector when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    req.url = '/your-psp/:credentialId/director'
+
+    const errorFromStripe = {
+      type: 'StripeInvalidRequestError',
+      param: 'dob[year]'
+    }
+    createDirectorMock = sinon.spy(() => Promise.reject(errorFromStripe))
+    req.body = { ...postBody }
+
+    const controller = getControllerWithMocks()
+    await controller(req, res, next)
+
+    sinon.assert.called(createDirectorMock)
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+
+    sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
+    
+    const pageData = res.render.firstCall.args[1]
+    assert.strictEqual(pageData.errors['dob-day'], 'Enter a valid date')
+    expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    expect(pageData.currentCredential.external_id).to.equal('a-credential-external-id')
   })
 
   it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async function () {
