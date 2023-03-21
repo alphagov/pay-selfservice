@@ -2,6 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const { expect } = require('chai')
 const paths = require('../../../paths')
 const assert = require('assert')
 
@@ -219,6 +220,52 @@ describe('Government entity document POST controller', () => {
     sinon.assert.calledWith(next, expectedError)
   })
 
+  it('should render error page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route ', async () => {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    req.url = '/your-psp/:credentialId/government-entity-document'
+    req.file = {}
+
+    const controller = getControllerWithMocks()
+    await controller.postGovernmentEntityDocument(req, res, next)
+
+    sinon.assert.calledWith(res.render, 'stripe-setup/government-entity-document/index')
+    const pageData = res.render.firstCall.args[1]
+    expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    expect(pageData.currentGatewayAccount.external_id).to.equal('a-valid-external-id')
+  })
+
+  it('should display an error message, when Stripe returns error for file, not call connector and when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
+    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+    
+    const errorFromStripe = {
+      type: 'StripeInvalidRequestError',
+      param: 'file'
+    }
+    uploadFileMock = sinon.spy(() => Promise.reject(errorFromStripe))
+
+    updateAccountMock = sinon.spy(() => Promise.resolve())
+    setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
+    const controller = getControllerWithMocks()
+    
+    req.url = '/your-psp/:credentialId/government-entity-document'
+    req.file = { ...postBody }
+
+    await controller.postGovernmentEntityDocument(req, res, next)
+
+    sinon.assert.called(uploadFileMock)
+    sinon.assert.notCalled(updateAccountMock)
+    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
+
+    sinon.assert.calledWith(res.render, `stripe-setup/government-entity-document/index`)
+    assert.strictEqual(res.render.getCalls()[0].args[1].errors['government-entity-document'],
+      'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png')
+
+    const pageData = res.render.firstCall.args[1]
+    expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
+    expect(pageData.currentGatewayAccount.external_id).to.equal('a-valid-external-id')
+  })
+
   describe('Switching PSP', () => {
     it('should redirect to switch PSP route for valid payload', async function () {
       req.url = `/switch-psp/new-stripe-account-id-123/government-entity-document`
@@ -307,6 +354,8 @@ describe('Government entity document POST controller', () => {
 
   it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async function () {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
+
+    req.url = '/your-psp/:credentialId/government-entity-document'
 
     uploadFileMock = sinon.spy(() => Promise.resolve({ id: 'file_id_123' }))
     updateAccountMock = sinon.spy(() => Promise.resolve())
