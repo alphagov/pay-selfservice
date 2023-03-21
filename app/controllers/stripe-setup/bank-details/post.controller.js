@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const bankDetailsValidations = require('./bank-details-validations')
 const { updateBankAccount } = require('../../../services/clients/stripe/stripe.client')
@@ -20,7 +20,8 @@ const SORT_CODE_FIELD = 'sort-code'
 
 module.exports = async (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
+  const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
+  const currentCredential = getCurrentCredential(req.account)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   if (!stripeAccountSetup) {
     return next(new Error('Stripe setup progress is not available on request'))
@@ -42,6 +43,8 @@ module.exports = async (req, res, next) => {
       accountNumber: rawAccountNumber,
       sortCode: rawSortCode,
       isSwitchingCredentials,
+      enableStripeOnboardingTaskList,
+      currentCredential,
       errors
     })
   }
@@ -62,7 +65,7 @@ module.exports = async (req, res, next) => {
     })
     if (isSwitchingCredentials) {
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
-    } else if (enabledStripeOnboardingTaskList) {
+    } else if (enableStripeOnboardingTaskList) {
       return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
     } else {
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
@@ -76,6 +79,8 @@ module.exports = async (req, res, next) => {
           accountNumber: rawAccountNumber,
           sortCode: rawSortCode,
           isSwitchingCredentials,
+          enableStripeOnboardingTaskList,
+          currentCredential,
           errors: {
             [SORT_CODE_FIELD]: fieldValidationChecks.validationErrors.invalidSortCode
           }
@@ -87,6 +92,8 @@ module.exports = async (req, res, next) => {
           accountNumber: rawAccountNumber,
           sortCode: rawSortCode,
           isSwitchingCredentials,
+          enableStripeOnboardingTaskList,
+          currentCredential,
           errors: {
             [ACCOUNT_NUMBER_FIELD]: fieldValidationChecks.validationErrors.invalidBankAccountNumber
           }
