@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const { getStripeAccountId, getAlreadySubmittedErrorPageData, completeKyc } = require('../stripe-setup.util')
 const { uploadFile, updateAccount } = require('../../../services/clients/stripe/stripe.client')
 const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
@@ -17,7 +17,7 @@ const GOVERNMENT_ENTITY_DOCUMENT_FIELD = 'government-entity-document'
 
 async function postGovernmentEntityDocument (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const enabledStripeOnboardingTaskList = (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true')
+  const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
   const collectingAdditionalKycData = isAdditionalKycDataRoute(req)
   const currentCredential = getCurrentCredential(req.account)
 
@@ -42,6 +42,7 @@ async function postGovernmentEntityDocument (req, res, next) {
       isSwitchingCredentials,
       collectingAdditionalKycData,
       currentCredential,
+      enableStripeOnboardingTaskList,
       errors
     })
   } else {
@@ -60,7 +61,7 @@ async function postGovernmentEntityDocument (req, res, next) {
 
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
-      } else if (enabledStripeOnboardingTaskList) {
+      } else if (enableStripeOnboardingTaskList) {
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
       } else if (collectingAdditionalKycData) {
         const taskListComplete = await isKycTaskListComplete(currentCredential)
@@ -80,6 +81,7 @@ async function postGovernmentEntityDocument (req, res, next) {
           isSwitchingCredentials,
           collectingAdditionalKycData,
           currentCredential,
+          enableStripeOnboardingTaskList,
           errors: {
             [GOVERNMENT_ENTITY_DOCUMENT_FIELD]: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png'
           }
