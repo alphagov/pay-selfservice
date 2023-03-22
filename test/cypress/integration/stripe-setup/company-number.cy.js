@@ -83,6 +83,14 @@ describe('Stripe setup: company number page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number-declaration')
 
         cy.get('#company-number-declaration-error').should('contain', 'You must answer this question')
+        
+        cy.get('#navigation-menu-your-psp')
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
+
+        cy.get('.govuk-back-link')
+          .should('contain', 'Back to information for Stripe')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
       })
 
       it('should display an error when company number input is blank and "Yes" option is selected', () => {

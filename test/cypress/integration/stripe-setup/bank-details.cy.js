@@ -93,6 +93,14 @@ describe('Stripe setup: bank details page', () => {
         cy.get('.govuk-form-group--error > input#sort-code').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('contain', 'Enter a sort code')
         })
+
+        cy.get('#navigation-menu-your-psp')
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
+
+        cy.get('.govuk-back-link')
+          .should('contain', 'Back to information for Stripe')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
       })
     })
 
