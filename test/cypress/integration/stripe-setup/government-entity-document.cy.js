@@ -92,7 +92,15 @@ describe('Stripe setup: Government entity document', () => {
         cy.get('.govuk-error-message').should('exist')
         cy.get('span.govuk-error-message').should('contain', 'Select a file to upload')
       })
-    })
+
+      cy.get('#navigation-menu-your-psp')
+        .should('contain', 'Information for Stripe')
+        .parent().should('have.class', 'govuk-!-font-weight-bold')
+
+      cy.get('.govuk-back-link')
+        .should('contain', 'Back to information for Stripe')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+     })
   })
 
   describe('when user is admin, account is Stripe and "Government entity document" is already submitted', () => {

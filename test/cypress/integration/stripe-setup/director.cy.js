@@ -168,6 +168,14 @@ describe('Stripe setup: director page', () => {
 
         cy.get('button').should('exist')
       })
+
+      cy.get('#navigation-menu-your-psp')
+        .should('contain', 'Information for Stripe')
+        .parent().should('have.class', 'govuk-!-font-weight-bold')
+
+      cy.get('.govuk-back-link')
+        .should('contain', 'Back to information for Stripe')
+        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
     })
   })
 

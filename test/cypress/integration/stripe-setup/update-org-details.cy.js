@@ -161,6 +161,14 @@ describe('The organisation address page', () => {
               cy.get('.govuk-error-message').should('contain', 'Enter a real postcode')
             })
           })
+        
+        cy.get('#navigation-menu-your-psp')
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
+
+        cy.get('.govuk-back-link')
+          .should('contain', 'Back to check your organisation’s details')
+          .should('have.attr', 'href', checkOrgDetailsUrl)
       })
 
       it('should keep entered responses when validation fails', () => {

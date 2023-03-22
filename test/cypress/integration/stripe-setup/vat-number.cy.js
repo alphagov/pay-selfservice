@@ -90,6 +90,14 @@ describe('Stripe setup: VAT number page', () => {
           cy.get('.govuk-error-message').should('exist')
           cy.get('span.govuk-error-message').should('contain', 'Enter your VAT registration number')
         })
+
+        cy.get('#navigation-menu-your-psp')
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
+
+        cy.get('.govuk-back-link')
+          .should('contain', 'Back to information for Stripe')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
       })
 
       it('should redirect to tasklist page when "No" VAT number is chosen', () => {
