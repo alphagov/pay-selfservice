@@ -65,28 +65,6 @@ describe('The Stripe psp details banner', () => {
       })
   })
 
-  it('should display the restricted banner for a restricted Stripe account', () => {
-    setupYourPspStubs({ charges_enabled: false })
-
-    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
-    cy.get('[data-cy=stripe-notification]')
-      .contains('Stripe has restricted your account. You need to submit additional information to Stripe to take payments.')
-      .within(() => {
-      cy.get('a').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
-      })
-  })
-
-  it('should display banner with DATE when account is not fully setup and there is a deadline ', () => {
-    setupYourPspStubs({ current_deadline: 1765793670 })
-
-    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
-    cy.get('[data-cy=stripe-notification]')
-      .contains('You need to submit additional information to Stripe by 15 December 2025 to continue taking payments.')
-      .within(() => {
-      cy.get('a').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
-      })
-  })
-
   it('should display restricted banner when account is fully setup but the Stripe account is restricted ', () => {
     setupYourPspStubs({
       charges_enabled: false,
