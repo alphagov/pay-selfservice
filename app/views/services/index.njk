@@ -5,57 +5,10 @@
   Choose service - GOV.UK Pay
 {% endblock %}
 
-{% block pageSpecificJS %}
-  <script src="/public/js/components/notification-banner.js"></script>
-{% endblock %}
-
 {% block beforeContent %}{% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    {% if show_new_contract_terms_banner %}
-      {% set bannerHtml %}
-          <div>
-            <p class="govuk-body">
-              From 21 February 2022 the following terms and conditions will apply. There are also changes to Stripe’s fees which are listed in the documents below. Please contact support
-              (<a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk">govuk-pay-support@digital.cabinet-office.gov.uk</a>)
-              if you need further information.
-            </p>
-            <ul class="govuk-list govuk-list--bullet">
-              <li>
-                <a class="govuk-link" href="/policy/memorandum-of-understanding-for-crown-bodies-2022">Memorandum of understanding for Crown bodies</a>
-              </li>
-              <li>
-                <a class="govuk-link" href="/policy/contract-for-non-crown-bodies-2022">Contract for non-Crown bodies</a>
-              </li>
-              <li>
-                <a class="govuk-link" href="/policy/stripe-connected-account-agreement-2022">Stripe Connected Account Agreement</a>
-              </li>
-            </ul>
-
-            <form method="POST" action="{{routes.serviceSwitcher.removeNotification}}">
-              <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-              {{ govukButton({
-                text: "Close",
-                classes: "govuk-button--secondary govuk-!-margin-bottom-0",
-                type: "submit",
-                attributes: {
-                  "id": "my-services-notification-banner__close-button"
-                }
-              }) }}
-            </form>
-          </div>
-      {% endset %}
-
-      {{ govukNotificationBanner({
-          html: bannerHtml,
-          titleText: 'Changes on GOV.UK Pay',
-          attributes: {
-            id: 'my-services-notification-banner'
-          }
-      }) }}
-    {% endif %}
-
     {% if new_service_name %}
       {% set html %}
         <p class="govuk-notification-banner__heading">
