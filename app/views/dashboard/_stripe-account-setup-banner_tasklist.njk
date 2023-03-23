@@ -4,7 +4,6 @@
   {% set connectorGatewayAccountStripeProgress = gatewayAccount.connectorGatewayAccountStripeProgress %}
 
   {% set isStripeAccountRestricted = stripeAccount.charges_enabled === false %}
-  {% set stripeAccountHasDeadline = stripeAccount.requirements.current_deadline %}
   {% set governmentEntityDocCompleteOrNotRequired = stripeAccount.has_legacy_payments_capability or (not stripeAccount.has_legacy_payments_capability and connectorGatewayAccountStripeProgress.governmentEntityDocument) %}
   {% set isConnectorStripeJourneyComplete = connectorGatewayAccountStripeProgress.bankAccount and connectorGatewayAccountStripeProgress.vatNumber and connectorGatewayAccountStripeProgress.companyNumber and connectorGatewayAccountStripeProgress.responsiblePerson and governmentEntityDocCompleteOrNotRequired %}
 
@@ -12,31 +11,13 @@
       <div class="govuk-grid-column-full">
         {% set html %}
 
-        <p class="govuk-notification-banner__heading" data-cy="stripe-notification">
-          {% if isStripeAccountRestricted %}
-            Stripe has restricted your account. You need to
-            <a class="govuk-notification-banner__link"
-              href="{{formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id)}}">
-              submit additional information to Stripe
-            </a>
-            to take payments.         
-          {% elif stripeAccountHasDeadline %}
-            {% set dateString = stripeAccount.requirements.current_deadline %}
-
-            You need to
-            <a class="govuk-notification-banner__link"
-              href="{{formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id)}}">
-              submit additional information to Stripe
-            </a>
-            by {{dateString}} to continue taking payments.     
-          {% else %}    
-            You need to
-            <a class="govuk-notification-banner__link"
-              href="{{formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id)}}">
-              submit additional information to Stripe
-            </a>
-              to be able to take payments.
-          {% endif %}
+        <p class="govuk-notification-banner__heading" data-cy="stripe-notification">   
+          You need to
+          <a class="govuk-notification-banner__link"
+            href="{{formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, activeCredential.external_id)}}">
+            submit additional information to Stripe
+          </a>
+          to be able to take payments.
         </p>
       {% endset %}
       {{ govukNotificationBanner({
