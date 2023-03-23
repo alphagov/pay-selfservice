@@ -12,7 +12,6 @@ const { ConnectorClient } = require('../../services/clients/connector.client.js'
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
-const stripeKycAdditionalDataDueDate = process.env.STRIPE_KYC_ADDITIONAL_DATA_DUE_DATE || '17 December 2021'
 
 const {
   NOT_STARTED,
@@ -158,7 +157,6 @@ module.exports = async (req, res) => {
         transactionsPeriodString,
         targetCredential,
         activeCredential,
-        stripeKycAdditionalDataDueDate,
         worldpayAccountAndSetupIncomplete: (req.account.payment_provider === 'worldpay' && activeCredential && activeCredential.state === 'CREATED'),
         requiresAdditionalKycData: req.account.requires_additional_kyc_data
       }))
