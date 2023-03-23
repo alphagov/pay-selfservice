@@ -121,7 +121,7 @@ describe('Webhooks', () => {
 
     // based on number of rows stubbed and client pagination logic
     cy.get('.govuk-table__body > .govuk-table__row').should('have.length', 11)
-    cy.get('.paginationForm').should('have.length', 3)
+    cy.get('.paginationForm').should('have.length', 2)
 
     cy.get('a#filter-failed').click()
     cy.get('a#filter-failed').should('have.class', 'govuk-!-font-weight-bold')

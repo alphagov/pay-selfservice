@@ -66,4 +66,32 @@ describe('paginator', function () {
       { type: null, name: 'Show all', value: 100, active: false }
     ])
   })
+
+  describe('should return correct links by count', () => {
+    it('when this is the only page', () => {
+      const paginator1 = new Paginator(null, 10, 1)
+      const navigation1 = paginator1.buildNavigation(5)
+      expect(navigation1.length).to.equal(2)
+      expect(navigation1[0].pageName).to.equal('Previous')
+      expect(navigation1[0].disabled).to.equal(true)
+
+      expect(navigation1[1].pageName).to.equal('Next')
+      expect(navigation1[1].disabled).to.equal(true)
+      expect(navigation1[1].pageNumber).to.equal(null)
+    })
+
+    it('when there are surrounding pages', () => {
+      const paginator2 = new Paginator(null, 10, 4)
+      const navigation2 = paginator2.buildNavigation(10)
+
+      expect(navigation2.length).to.equal(2)
+      expect(navigation2[0].pageName).to.equal('Previous')
+      expect(navigation2[0].disabled).to.equal(undefined)
+      expect(navigation2[0].pageNumber).to.equal(3)
+
+      expect(navigation2[1].pageName).to.equal('Next')
+      expect(navigation2[1].disabled).to.equal(undefined)
+      expect(navigation2[1].pageNumber).to.equal(5)
+    })
+  })
 })

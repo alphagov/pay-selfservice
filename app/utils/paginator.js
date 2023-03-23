@@ -194,6 +194,22 @@ Paginator.prototype = {
     return namedPages
   },
 
+  buildNavigation: function buildNavigation (count) {
+    const namedPages = []
+    if (this.page > 1) {
+      namedPages.push(createPageObject(this.page - 1, 'Previous'))
+    } else {
+      namedPages.push(createPageObject(null, 'Previous', true))
+    }
+
+    if (count >= this.limit) {
+      namedPages.push(createPageObject(this.page + 1, 'Next'))
+    } else {
+      namedPages.push(createPageObject(null, 'Next', true))
+    }
+    return namedPages
+  },
+
   /**
    * @return {array}
    */
