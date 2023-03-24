@@ -4,10 +4,9 @@ const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
-const { getStripeAccountId, getAlreadySubmittedErrorPageData, completeKyc } = require('../stripe-setup.util')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
+const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const { uploadFile, updateAccount } = require('../../../services/clients/stripe/stripe.client')
-const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const paths = require('../../../paths')
@@ -18,7 +17,6 @@ const GOVERNMENT_ENTITY_DOCUMENT_FIELD = 'government-entity-document'
 async function postGovernmentEntityDocument (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
-  const collectingAdditionalKycData = isAdditionalKycDataRoute(req)
   const currentCredential = getCurrentCredential(req.account)
 
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
@@ -40,7 +38,6 @@ async function postGovernmentEntityDocument (req, res, next) {
   if (!lodash.isEmpty(errors)) {
     return response(req, res, 'stripe-setup/government-entity-document/index', {
       isSwitchingCredentials,
-      collectingAdditionalKycData,
       currentCredential,
       enableStripeOnboardingTaskList,
       errors
@@ -55,23 +52,13 @@ async function postGovernmentEntityDocument (req, res, next) {
 
       logger.info('Government entity document uploaded for Stripe account', {
         stripe_account_id: stripeAccountId,
-        is_switching: isSwitchingCredentials,
-        collecting_additional_kyc_data: collectingAdditionalKycData
+        is_switching: isSwitchingCredentials
       })
 
       if (isSwitchingCredentials) {
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
       } else if (enableStripeOnboardingTaskList) {
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
-      } else if (collectingAdditionalKycData) {
-        const taskListComplete = await isKycTaskListComplete(currentCredential)
-        if (taskListComplete) {
-          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId)
-          req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
-        } else {
-          req.flash('generic', 'Document has been submitted successfully')
-        }
-        return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
       }
 
       return res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account && req.account.external_id))
@@ -79,7 +66,6 @@ async function postGovernmentEntityDocument (req, res, next) {
       if (err.type === 'StripeInvalidRequestError' && err.param === 'file') {
         return response(req, res, 'stripe-setup/government-entity-document/index', {
           isSwitchingCredentials,
-          collectingAdditionalKycData,
           currentCredential,
           enableStripeOnboardingTaskList,
           errors: {

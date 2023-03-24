@@ -104,16 +104,6 @@ describe('Your PSP - Stripe - KYC', () => {
 
       cy.get('#task-organisation-url-status').should('have.html', 'completed')
     })
-    it('should display government entity document task as COMPLETED if details are updated on Stripe', () => {
-      setupYourPspStubs({
-        entity_verified: true
-      })
-      cy.setEncryptedCookies(userExternalId)
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
-
-      cy.get('#task-upload-government-entity-document-status').should('have.html', 'completed')
-    })
 
     it('should display all tasks as NOT STARTED if details are not updated on Stripe', () => {
       setupYourPspStubs({
@@ -125,7 +115,6 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('#task-organisation-url-status').should('have.html', 'not started')
-      cy.get('#task-upload-government-entity-document-status').should('have.html', 'not started')
     })
 
     it('should display completed tasks and different content when all tasks are completed', () => {
@@ -142,7 +131,6 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('#task-organisation-url-status').should('have.text', 'completed')
-      cy.get('#task-upload-government-entity-document-status').should('have.text', 'completed')
 
       cy.get('h2').contains('Know your customer (KYC) details').should('not.exist')
       cy.get('p').contains('Please review the responsible person')
@@ -173,23 +161,6 @@ describe('Your PSP - Stripe - KYC', () => {
 
       cy.get('h1').should('contain', 'Information for Stripe')
       cy.get('.govuk-notification-banner__heading').should('contain', 'Organisation website address added successfully')
-    })
-  })
-
-  describe('Government entity document', () => {
-    beforeEach(() => {
-      setupYourPspStubs()
-    })
-
-    it('should show Government entity document page when clicked on task', () => {
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('a').contains('Upload a government entity document').click()
-
-      cy.get('h1').should('contain', 'Upload a government entity document')
-
-      cy.get('.govuk-back-link')
-        .should('have.text', 'Back')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
     })
   })
 })

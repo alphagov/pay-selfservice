@@ -46,8 +46,7 @@ module.exports = {
       refund: '/email-settings-refund'
     },
     kyc: {
-      organisationUrl: '/kyc/:credentialId/organisation-url',
-      governmentEntityDocument: '/kyc/:credentialId/government-entity-document'
+      organisationUrl: '/kyc/:credentialId/organisation-url'
     },
     notificationCredentials: {
       edit: '/your-psp/:credentialId/notification-credentials/edit',

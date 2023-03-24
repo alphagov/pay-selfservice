@@ -33,28 +33,6 @@ describe('KYC additional tasks', () => {
     })
   })
 
-  describe('Government entity document', () => {
-    it('task should be marked complete if entity verification document has been provided for stripe account', async () => {
-      listPersonsMock = sinon.spy(() => Promise.resolve())
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve({ company: { verification: { document: { front: 'file_id_123' } } } }))
-
-      const kycTasksService = getServiceWithMocks()
-      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
-
-      expect(taskList.UPLOAD_GOVERNMENT_ENTITY_DOCUMENT.complete).to.equal(true)
-    })
-
-    it('task should not be marked complete if document has not been updated for stripe account', async () => {
-      listPersonsMock = sinon.spy(() => Promise.resolve())
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve())
-
-      const kycTasksService = getServiceWithMocks()
-      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
-
-      expect(taskList.UPLOAD_GOVERNMENT_ENTITY_DOCUMENT.complete).to.equal(false)
-    })
-  })
-
   describe('Tasks completeness', () => {
     it('isComplete should return true if all tasks are complete', async () => {
       const kycTasksService = getServiceWithMocks()

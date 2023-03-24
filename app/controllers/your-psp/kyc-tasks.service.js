@@ -26,9 +26,6 @@ async function getTaskList (activeCredential) {
   return {
     'ENTER_ORGANISATION_URL': {
       complete: isOrganisationUrlComplete(stripeAccount)
-    },
-    'UPLOAD_GOVERNMENT_ENTITY_DOCUMENT': {
-      complete: entityVerificationDocumentUploaded(stripeAccount)
     }
   }
 }
