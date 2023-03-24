@@ -58,10 +58,6 @@ function isSwitchingCredentialsRoute (req) {
   return Object.values(paths.account.switchPSP).includes(req.route && req.route.path) || Boolean(req.url && req.url.startsWith('/switch-psp/'))
 }
 
-function isAdditionalKycDataRoute (req) {
-  return Object.values(paths.account.kyc).includes(req.route && req.route.path) || Boolean(req.url && req.url.startsWith('/kyc/'))
-}
-
 function isEnableStripeOnboardingTaskListRoute (req) {
   if (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') {
     return Object.values(paths.account.yourPsp).includes(req.route && req.route.path) || Boolean(req.url && req.url.startsWith('/your-psp/'))
@@ -112,7 +108,6 @@ module.exports = {
   getSwitchingCredential,
   getSwitchingCredentialIfExists,
   isSwitchingCredentialsRoute,
-  isAdditionalKycDataRoute,
   getPSPPageLinks,
   getCredentialByExternalId,
   hasSwitchedProvider,

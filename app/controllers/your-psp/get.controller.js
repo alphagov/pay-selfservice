@@ -7,7 +7,6 @@ const {
   getSwitchingCredentialIfExists,
   hasSwitchedProvider
 } = require('../../utils/credentials')
-const { getTaskList, isComplete } = require('./kyc-tasks.service')
 const yourPspTasks = require('./your-psp-tasks.service')
 
 module.exports = async (req, res, next) => {
@@ -30,16 +29,9 @@ module.exports = async (req, res, next) => {
 
     let stripeData = {}
     if (activeCredential && activeCredential.payment_provider === 'stripe') {
-      stripeData.requiresAdditionalKycData = req.account.requires_additional_kyc_data === true
-      const kycCompleted = req.account.connectorGatewayAccountStripeProgress && req.account.connectorGatewayAccountStripeProgress.additionalKycData
-      if (stripeData.requiresAdditionalKycData || kycCompleted) {
-        stripeData.kycTaskList = await getTaskList(activeCredential)
-        stripeData.kycTaskListComplete = isComplete(stripeData.kycTaskList)
-      } else {
-        stripeData.taskList = yourPspTasks.getStripeTaskList(activeCredential, req.account)
-        stripeData.taskListIsComplete = yourPspTasks.stripeTaskListIsComplete(stripeData.taskList)
-        stripeData.progressIndicator = yourPspTasks.stripeTaskListNumberOftasksComplete(stripeData.taskList)
-      }
+      stripeData.taskList = yourPspTasks.getStripeTaskList(activeCredential, req.account)
+      stripeData.taskListIsComplete = yourPspTasks.stripeTaskListIsComplete(stripeData.taskList)
+      stripeData.progressIndicator = yourPspTasks.stripeTaskListNumberOftasksComplete(stripeData.taskList)
     }
 
     const isWorldpay3dsFlexEnabled = is3dsEnabled && req.account.integration_version_3ds === 2

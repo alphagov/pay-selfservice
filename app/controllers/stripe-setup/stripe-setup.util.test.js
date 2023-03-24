@@ -1,7 +1,6 @@
 'use strict'
 
 const proxyquire = require('proxyquire')
-const sinon = require('sinon')
 const { assert, expect } = require('chai')
 const { validateMandatoryField } = require('../../utils/validation/server-side-form-validations')
 
@@ -96,63 +95,6 @@ describe('Stripe setup util', () => {
     it('should not return error message for valid value', () => {
       const result = getStripeSetupUtil().validateField('field_value_1', validateMandatoryField, 13)
       assert(result === null)
-    })
-  })
-
-  describe('Complete KYC', () => {
-    const gatewayAccountId = 'gateway-accnt-id-124'
-    const stripeAccountId = 'stripe-connect-account-id'
-    let service
-
-    beforeEach(() => {
-      service = { merchantDetails: { name: 'service-name' } }
-      addNewCapabilitiesMock = sinon.spy(() => Promise.resolve())
-      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-      disableCollectAdditionalKycMock = sinon.spy(() => Promise.resolve())
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve())
-    })
-
-    it('should update stripe account without telephone number, set connector task as complete, and disable kyc flag on connector', async () => {
-      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId)
-
-      sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', undefined, false)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data')
-      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124')
-    })
-
-    it('should update stripe account including phone number, set connector task as complete, and disable kyc flag on connector', async () => {
-      service.merchantDetails.telephone_number = '01134960000'
-      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId)
-
-      sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', '+44 113 496 0000', false)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data')
-      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124')
-    })
-
-    it('should also disable legacy_payments capabilities if exists for a stripe account', async () => {
-      addNewCapabilitiesMock = sinon.spy(() => Promise.resolve({
-        'capabilities': {
-          'legacy_payments': 'active'
-        }
-      }))
-      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId)
-
-      sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', undefined, false)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data')
-      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124')
-    })
-
-    it('should call add new capabilities with hasMCC flag "true" if account has got MCC already set', async () => {
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve({
-        'business_profile': {
-          'mcc': '9399'
-        }
-      }))
-      await getStripeSetupUtil().completeKyc(gatewayAccountId, service, stripeAccountId)
-
-      sinon.assert.calledWith(addNewCapabilitiesMock, 'stripe-connect-account-id', 'service-name', undefined, true)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, 'gateway-accnt-id-124', 'additional_kyc_data')
-      sinon.assert.calledWith(disableCollectAdditionalKycMock, 'gateway-accnt-id-124')
     })
   })
 })

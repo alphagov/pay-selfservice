@@ -45,9 +45,6 @@ module.exports = {
       confirmation: '/email-settings-confirmation',
       refund: '/email-settings-refund'
     },
-    kyc: {
-      organisationUrl: '/kyc/:credentialId/organisation-url'
-    },
     notificationCredentials: {
       edit: '/your-psp/:credentialId/notification-credentials/edit',
       update: '/your-psp/:credentialId/notification-credentials'
