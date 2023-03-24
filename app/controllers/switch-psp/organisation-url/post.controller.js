@@ -47,7 +47,7 @@ module.exports = async function (req, res, next) {
   if (!lodash.isEmpty(errors)) {
     pageData['errors'] = errors
 
-    return response(req, res, 'kyc/organisation-url', {
+    return response(req, res, 'switch-psp/organisation-url', {
       ...pageData, isSwitchingCredentials, currentCredential
     })
   } else {
@@ -66,7 +66,7 @@ module.exports = async function (req, res, next) {
       return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
     } catch (err) {
       if (err.code && err.code === 'url_invalid') {
-        return response(req, res, 'kyc/organisation-url', {
+        return response(req, res, 'switch-psp/organisation-url', {
           ...pageData,
           isSwitchingCredentials,
           currentCredential,

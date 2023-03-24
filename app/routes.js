@@ -84,7 +84,7 @@ const requestPspTestAccountController = require('./controllers/request-psp-test-
 const defaultBillingAddressCountryController = require('./controllers/settings/default-billing-address-country.controller')
 const webhooksController = require('./controllers/webhooks/webhooks.controller')
 const agreementsController = require('./controllers/agreements/agreements.controller')
-const kycOrganisationUrlController = require('./controllers/kyc/organisation-url')
+const organisationUrlController = require('./controllers/switch-psp/organisation-url')
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
 
@@ -439,8 +439,8 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  account.get(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.get)
-  account.post(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.post)
+  account.get(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, organisationUrlController.get)
+  account.post(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, organisationUrlController.post)
 
   // Stripe setup
   account.get([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
