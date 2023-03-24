@@ -35,12 +35,7 @@ updates:
   ignore:
   - dependency-name: node
     versions:
-    - ">= 14.a"
-    - "< 15"
-  - dependency-name: node
-    versions:
-    - ">= 15.a"
-    - "< 16"
+    - ">= 18"
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
