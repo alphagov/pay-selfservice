@@ -5,7 +5,7 @@ const { assert, expect } = require('chai')
 const { validateMandatoryField } = require('../../utils/validation/server-side-form-validations')
 
 let addNewCapabilitiesMock, retrieveAccountDetailsMock
-let setStripeAccountSetupFlagMock, disableCollectAdditionalKycMock
+let setStripeAccountSetupFlagMock
 
 describe('Stripe setup util', () => {
   const account = {
@@ -111,7 +111,6 @@ function getStripeSetupUtil () {
           stripeAccountId: 'acct_123example123'
         })
         this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
-        this.disableCollectAdditionalKyc = disableCollectAdditionalKycMock
       }
     }
   })

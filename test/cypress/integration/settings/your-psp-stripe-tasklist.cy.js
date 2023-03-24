@@ -31,7 +31,6 @@ function setupYourPspStubs (opts = {}) {
   const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
     gatewayAccountId,
     gatewayAccountExternalId,
-    requiresAdditionalKycData: false,
     type: 'live',
     paymentProvider: 'stripe',
     gatewayAccountCredentials: [{

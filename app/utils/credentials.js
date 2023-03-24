@@ -69,9 +69,7 @@ function isEnableStripeOnboardingTaskListRoute (req) {
 function getPSPPageLinks (gatewayAccount) {
   const supportedYourPSPPageProviders = ['worldpay', 'smartpay', 'epdq']
 
-  if (gatewayAccount.requires_additional_kyc_data ||
-    (gatewayAccount.connectorGatewayAccountStripeProgress && gatewayAccount.connectorGatewayAccountStripeProgress.additionalKycData) ||
-    process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') {
+  if (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') {
     supportedYourPSPPageProviders.push('stripe')
   }
 

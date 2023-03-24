@@ -37,20 +37,6 @@ describe('navigation builder', () => {
         expect(links[0].current).to.equal(true)
       })
 
-      it('correctly labels ids and names and returns valid schema, when there is a Stripe KYC credential only', () => {
-        const account = gatewayAccountFixtures.validGatewayAccount({
-          requires_additional_kyc_data: true,
-          gateway_account_credentials: [
-            { payment_provider: 'stripe', state: 'ACTIVE', external_id: 'a-valid-credential-id-smartpay' }
-          ]
-        })
-
-        const links = yourPSPNavigationItems(account, '/your-psp/a-valid-credential-id-smartpay')
-        expect(links).to.have.length(1)
-        expect(links[0].name).to.equal('Your PSP - Stripe')
-        expect(links[0].current).to.equal(true)
-      })
-
       it('correctly labels ids and names and returns valid schema when Stripe and ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', () => {
         process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
         const account = gatewayAccountFixtures.validGatewayAccount({
@@ -87,27 +73,9 @@ describe('navigation builder', () => {
         expect(links[1].current).to.equal(false)
       })
 
-      it('correctly labels ids and names and returns valid schema, when requires_additional_kyc_data enabled', () => {
-        const account = gatewayAccountFixtures.validGatewayAccount({
-          requires_additional_kyc_data: true,
-          gateway_account_credentials: [
-            { payment_provider: 'stripe', state: 'ACTIVE', external_id: 'a-valid-credential-id-smartpay' },
-            { payment_provider: 'worldpay', state: 'RETIRED', external_id: 'another-valid-credential-id-worldpay' }
-          ]
-        })
-
-        const links = yourPSPNavigationItems(account, '/your-psp/a-valid-credential-id-smartpay')
-        expect(links).to.have.length(2)
-        expect(links[0].name).to.equal('Your PSP - Stripe')
-        expect(links[0].current).to.equal(true)
-        expect(links[1].name).to.equal('Old PSP - Worldpay')
-        expect(links[1].current).to.equal(false)
-      })
-
       it('correctly labels ids and names and returns valid schema, when  ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', () => {
         process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
         const account = gatewayAccountFixtures.validGatewayAccount({
-          requires_additional_kyc_data: true,
           gateway_account_credentials: [
             { payment_provider: 'stripe', state: 'ACTIVE', external_id: 'a-valid-credential-id-smartpay' },
             { payment_provider: 'worldpay', state: 'RETIRED', external_id: 'another-valid-credential-id-worldpay' }

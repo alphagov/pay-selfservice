@@ -23,9 +23,6 @@ function getGatewayAccountStripeSetupSuccess (opts) {
   if (opts.director !== undefined) {
     fixtureOpts.director = opts.director
   }
-  if (opts.additionalKycData !== undefined) {
-    fixtureOpts.additional_kyc_data = opts.additionalKycData
-  }
   if (opts.organisationDetails !== undefined) {
     fixtureOpts.organisation_details = opts.organisationDetails
   }

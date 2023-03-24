@@ -6,10 +6,9 @@
     {% set isLive = currentGatewayAccount.type === "live" %}
     {% set stripeAccountIsSetup = (currentGatewayAccount.connectorGatewayAccountStripeProgress.bankAccount and currentGatewayAccount.connectorGatewayAccountStripeProgress.responsiblePerson
       and currentGatewayAccount.connectorGatewayAccountStripeProgress.vatNumber and currentGatewayAccount.connectorGatewayAccountStripeProgress.companyNumber) %}
-    {% set isRequiresAdditionalKycData = currentGatewayAccount.requires_additional_kyc_data and isAdminUser %}
 
     {% set tagModifierClass %}
-      {% if isRequiresAdditionalKycData or (paymentProvider === 'stripe' and not stripeAccountIsSetup) or
+      {% if (paymentProvider === 'stripe' and not stripeAccountIsSetup) or
         currentGatewayAccount.provider_switch_enabled %}
         govuk-tag--blue
       {% elseif not isLive %}
@@ -27,7 +26,7 @@
       {% else %}
         Live
       {% endif %}
-      {% if isRequiresAdditionalKycData or (paymentProvider === 'stripe' and not stripeAccountIsSetup) %}
+      {% if (paymentProvider === 'stripe' and not stripeAccountIsSetup) %}
         - information needed
       {% endif %}
       {% if isAdminUser and currentGatewayAccount.provider_switch_enabled %}

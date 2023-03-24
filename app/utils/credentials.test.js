@@ -211,26 +211,6 @@ describe('credentials utility', () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = undefined
     })
 
-    it('should return credential for stripe account when requires_additional_kyc_data is enabled for gateway account', () => {
-      const account = gatewayAccountFixtures.validGatewayAccount({
-        requires_additional_kyc_data: true,
-        gateway_account_credentials: [
-          { state: 'ACTIVE', payment_provider: 'stripe', id: 20 }
-        ]
-      })
-      expect(getPSPPageLinks(account)).to.have.length(1)
-    })
-
-    it('should not return credential for stripe account when requires_additional_kyc_data is not enabled on gateway account', () => {
-      const account = gatewayAccountFixtures.validGatewayAccount({
-        requires_additional_kyc_data: false,
-        gateway_account_credentials: [
-          { state: 'ACTIVE', payment_provider: 'stripe', id: 20 }
-        ]
-      })
-      expect(getPSPPageLinks(account)).to.have.length(0)
-    })
-
     it('should return credential for stripe account when ENABLE_STRIPE_ONBOARDING_TASK_LIST is enabled for gateway account', () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
       const account = gatewayAccountFixtures.validGatewayAccount({
@@ -251,10 +231,9 @@ describe('credentials utility', () => {
       expect(getPSPPageLinks(account)).to.have.length(0)
     })
 
-    it('should not return credential for stripe account when ENABLE_STRIPE_ONBOARDING_TASK_LIST and requires_additional_kyc_data is not enabled on gateway account', () => {
+    it('should not return credential for stripe account when ENABLE_STRIPE_ONBOARDING_TASK_LIST is false', () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
       const account = gatewayAccountFixtures.validGatewayAccount({
-        requires_additional_kyc_data: false,
         gateway_account_credentials: [
           { state: 'ACTIVE', payment_provider: 'stripe', id: 20 }
         ]
@@ -262,10 +241,9 @@ describe('credentials utility', () => {
       expect(getPSPPageLinks(account)).to.have.length(0)
     })
 
-    it('should return credential for stripe account when ENABLE_STRIPE_ONBOARDING_TASK_LIST and requires_additional_kyc_data is enabled on gateway account', () => {
+    it('should return credential for stripe account when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
       const account = gatewayAccountFixtures.validGatewayAccount({
-        requires_additional_kyc_data: true,
         gateway_account_credentials: [
           { state: 'ACTIVE', payment_provider: 'stripe', id: 20 }
         ]

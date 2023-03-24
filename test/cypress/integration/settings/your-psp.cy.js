@@ -78,7 +78,6 @@ describe('Your PSP settings page', () => {
       credentials: opts.credentials,
       paymentProvider: opts.gateway,
       notificationCredentials: opts.notificationCredentials,
-      requiresAdditionalKycData: opts.requiresAdditionalKycData,
       ...opts.gatewayAccountCredentials && { gatewayAccountCredentials: opts.gatewayAccountCredentials },
       type: opts.type
     })
@@ -92,7 +91,6 @@ describe('Your PSP settings page', () => {
       credentials: opts.credentials,
       paymentProvider: opts.gateway,
       notificationCredentials: opts.notificationCredentials,
-      requiresAdditionalKycData: opts.requiresAdditionalKycData,
       ...opts.gatewayAccountCredentials && { gatewayAccountCredentials: opts.gatewayAccountCredentials },
       type: opts.type
     })
