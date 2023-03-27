@@ -33,57 +33,6 @@ describe('KYC additional tasks', () => {
     })
   })
 
-  describe('Responsible person', () => {
-    it('task should be marked complete if responsible person details updated for stripe account', async () => {
-      listPersonsMock = sinon.spy(() => Promise.resolve({
-        data: [{
-          id: 'person-1',
-          phone: '0000000',
-          email: 'test@example.org',
-          relationship: {
-            representative: true
-          }
-        }]
-      }))
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve())
-
-      const kycTasksService = getServiceWithMocks()
-      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
-
-      expect(taskList.UPDATE_RESPONSIBLE_PERSON.complete).to.equal(true)
-    })
-
-    it('task should not be marked complete if no persons set on stripe account', async () => {
-      listPersonsMock = sinon.spy(() => Promise.resolve({
-        data: []
-      }))
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve())
-
-      const kycTasksService = getServiceWithMocks()
-      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
-
-      expect(taskList.UPDATE_RESPONSIBLE_PERSON.complete).to.equal(false)
-    })
-
-    it('task should not be marked complete if responsible person is not on stripe account', async () => {
-      listPersonsMock = sinon.spy(() => Promise.resolve({
-        data: [{
-          id: 'person-1',
-          relationship: {
-            representative: false,
-            director: true
-          }
-        }]
-      }))
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve())
-
-      const kycTasksService = getServiceWithMocks()
-      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
-
-      expect(taskList.UPDATE_RESPONSIBLE_PERSON.complete).to.equal(false)
-    })
-  })
-
   describe('Director', () => {
     it('task should be marked complete if director has been provided for stripe account', async () => {
       listPersonsMock = sinon.spy(() => Promise.resolve({

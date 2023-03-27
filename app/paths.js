@@ -47,8 +47,6 @@ module.exports = {
     },
     kyc: {
       organisationUrl: '/kyc/:credentialId/organisation-url',
-      responsiblePerson: '/kyc/:credentialId/responsible-person',
-      changeResponsiblePerson: '/kyc/:credentialId/responsible-person/change',
       director: '/kyc/:credentialId/director',
       governmentEntityDocument: '/kyc/:credentialId/government-entity-document'
     },

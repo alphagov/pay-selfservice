@@ -14,16 +14,6 @@ function isOrganisationUrlComplete (stripeAccount) {
   return isNotEmpty(url)
 }
 
-function isStripeResponsiblePersonComplete (persons, relationship) {
-  const person = getPerson(persons, 'representative').pop()
-
-  if (person) {
-    return isNotEmpty(person.phone) && isNotEmpty(person.email)
-  }
-
-  return false
-}
-
 function isNotEmpty (value) {
   return !(value === undefined || value === null) && value.length > 0
 }
@@ -42,9 +32,6 @@ async function getTaskList (activeCredential) {
   return {
     'ENTER_ORGANISATION_URL': {
       complete: isOrganisationUrlComplete(stripeAccount)
-    },
-    'UPDATE_RESPONSIBLE_PERSON': {
-      complete: isStripeResponsiblePersonComplete(stripePersons)
     },
     'ENTER_DIRECTOR': {
       complete: getPerson(stripePersons, 'director').length > 0

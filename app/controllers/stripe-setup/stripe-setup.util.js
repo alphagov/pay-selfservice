@@ -8,7 +8,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { validateDateOfBirth } = require('../../utils/validation/server-side-form-validations')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { listPersons, addNewCapabilities, retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
+const { addNewCapabilities, retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
 const logger = require('../../utils/logger')(__filename)
 const { formatPhoneNumberWithCountryCode } = require('../../utils/telephone-number-utils')
 
@@ -61,16 +61,6 @@ function getAlreadySubmittedErrorPageData (accountExternalId, errorMessage) {
   }
 }
 
-async function getExistingResponsiblePersonName (account, isSwitchingCredentials) {
-  const stripeAccountId = await getStripeAccountId(account, isSwitchingCredentials)
-  const personsResponse = await listPersons(stripeAccountId)
-  const responsiblePerson = personsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
-  if (!responsiblePerson) {
-    throw new Error('No responsible person exists for Stripe account')
-  }
-  return `${responsiblePerson.first_name} ${responsiblePerson.last_name}`
-}
-
 async function completeKyc (gatewayAccountId, service, stripeAccountId) {
   const stripeAccount = await retrieveAccountDetails(stripeAccountId)
 
@@ -101,6 +91,5 @@ module.exports = {
   validateDoB,
   getFormFields,
   getAlreadySubmittedErrorPageData,
-  getExistingResponsiblePersonName,
   completeKyc
 }

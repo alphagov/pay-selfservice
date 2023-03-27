@@ -84,17 +84,14 @@ describe('Responsible person POST controller', () => {
   let updatePersonMock
   let createPersonMock
   let updateCompanyMock
-  let updatePersonAddAdditionalKYCDetailsMock
-  let completeKycMock
 
-  function getControllerWithMocks (isKycTaskListComplete = false) {
+  function getControllerWithMocks () {
     return proxyquire('./post.controller', {
       '../../../services/clients/stripe/stripe.client': {
         listPersons: listPersonsMock,
         updatePerson: updatePersonMock,
         createPerson: createPersonMock,
-        updateCompany: updateCompanyMock,
-        updatePersonAddAdditionalKYCDetails: updatePersonAddAdditionalKYCDetailsMock
+        updateCompany: updateCompanyMock
       },
       '../../../services/clients/connector.client': {
         ConnectorClient: function () {
@@ -104,11 +101,7 @@ describe('Responsible person POST controller', () => {
       '../stripe-setup.util': {
         getStripeAccountId: () => {
           return Promise.resolve(stripeAccountId)
-        },
-        completeKyc: completeKycMock
-      },
-      '../../../controllers/your-psp/kyc-tasks.service': {
-        isKycTaskListComplete: () => isKycTaskListComplete
+        }
       }
     })
   }
@@ -138,9 +131,7 @@ describe('Responsible person POST controller', () => {
     next = sinon.spy()
     updatePersonMock = sinon.spy(() => Promise.resolve())
     updateCompanyMock = sinon.spy(() => Promise.resolve())
-    updatePersonAddAdditionalKYCDetailsMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-    completeKycMock = sinon.spy(() => Promise.resolve())
   })
 
   it('should call Stripe with normalised details (with second address line), then connector, then redirect to add details redirect route', async function () {
@@ -208,74 +199,6 @@ describe('Responsible person POST controller', () => {
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
 
-  it('should call Stripe to change responsible person for additional KYC details collection', async function () {
-    const personId = 'person-1'
-    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve(stripeListPersonsSingleResultResponse))
-    const controller = getControllerWithMocks()
-
-    req.route = {
-      path: `/kyc/:credentialId/responsible-person`
-    }
-    req.body = {
-      ...postBody,
-      email,
-      'telephone-number': telephone
-    }
-
-    await controller(req, res, next)
-
-    sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
-      first_name: firstNameNormalised,
-      last_name: lastNameNormalised,
-      address_line1: addressLine1Normalised,
-      address_city: addressCityNormalised,
-      address_postcode: addressPostcodeNormalised,
-      dob_day: dobDayNormalised,
-      dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised,
-      phone: telephoneNormalised,
-      email: emailNormalised
-    })
-    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(req.flash, 'generic', 'Responsible person details added successfully')
-    sinon.assert.notCalled(completeKycMock)
-  })
-
-  it('should call completeKyc if all KYC tasks are complete for additional KYC details collection', async function () {
-    const personId = 'person-1'
-    listPersonsMock = sinon.stub((stripeAccountId) => Promise.resolve(stripeListPersonsSingleResultResponse))
-    const controller = getControllerWithMocks(true)
-
-    req.route = {
-      path: `/kyc/:credentialId/responsible-person`
-    }
-    req.body = {
-      ...postBody,
-      email,
-      'telephone-number': telephone
-    }
-
-    await controller(req, res, next)
-
-    sinon.assert.calledWith(updatePersonMock, res.locals.stripeAccount.stripeAccountId, personId, {
-      first_name: firstNameNormalised,
-      last_name: lastNameNormalised,
-      address_line1: addressLine1Normalised,
-      address_city: addressCityNormalised,
-      address_postcode: addressPostcodeNormalised,
-      dob_day: dobDayNormalised,
-      dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised,
-      phone: telephoneNormalised,
-      email: emailNormalised
-    })
-    sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId)
-    sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
-  })
-
   it('should render error page when stripe setup is not available on request', async () => {
     const controller = getControllerWithMocks()
     req.account.connectorGatewayAccountStripeProgress = undefined
@@ -300,10 +223,9 @@ describe('Responsible person POST controller', () => {
   it('should render error page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async () => {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
 
-
     const controller = getControllerWithMocks()
     req.account.connectorGatewayAccountStripeProgress = { responsiblePerson: false }
-    
+
     req.url = '/your-psp/:credentialId/esponsible-person'
     req.body = {}
 
@@ -368,7 +290,7 @@ describe('Responsible person POST controller', () => {
     updatePersonMock = sinon.spy(() => Promise.reject(errorFromStripe))
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
-    
+
     req.url = '/your-psp/:credentialId/esponsible-person'
     req.body = { ...postBody }
 
@@ -380,7 +302,7 @@ describe('Responsible person POST controller', () => {
     sinon.assert.calledWith(res.render, `stripe-setup/responsible-person/index`)
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['telephone-number'],
       'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
-    
+
     const pageData = res.render.firstCall.args[1]
     expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
     expect(pageData.currentGatewayAccount.external_id).to.equal('a-valid-external-id')

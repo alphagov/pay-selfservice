@@ -6,14 +6,13 @@ const ukPostcode = require('uk-postcode')
 const logger = require('../../../utils/logger')(__filename)
 const paths = require('../../../paths')
 const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const {
   validateField,
   validateDoB,
   getFormFields,
   getStripeAccountId,
-  getAlreadySubmittedErrorPageData,
-  completeKyc
+  getAlreadySubmittedErrorPageData
 } = require('../stripe-setup.util')
 const { response } = require('../../../utils/response')
 const {
@@ -26,7 +25,6 @@ const {
 const { formatPhoneNumberWithCountryCode } = require('../../../utils/telephone-number-utils')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 const { listPersons, updatePerson, createPerson, updateCompany } = require('../../../services/clients/stripe/stripe.client')
-const { isKycTaskListComplete } = require('../../../controllers/your-psp/kyc-tasks.service')
 const { ConnectorClient } = require('../../../services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
@@ -103,19 +101,17 @@ const validationRules = [
 
 module.exports = async function submitResponsiblePerson (req, res, next) {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const isSubmittingAdditionalKycData = isAdditionalKycDataRoute(req)
   const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
   const stripeAccountSetup = req.account.connectorGatewayAccountStripeProgress
   const currentCredential = getCurrentCredential(req.account)
-  if (!isSubmittingAdditionalKycData) {
-    if (!stripeAccountSetup) {
-      return next(new Error('Stripe setup progress is not available on request'))
-    }
-    if (stripeAccountSetup.responsiblePerson) {
-      const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
-        'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
-      return response(req, res, 'error-with-link', errorPageData)
-    }
+
+  if (!stripeAccountSetup) {
+    return next(new Error('Stripe setup progress is not available on request'))
+  }
+  if (stripeAccountSetup.responsiblePerson) {
+    const errorPageData = getAlreadySubmittedErrorPageData(req.account.external_id,
+      'You’ve already nominated your responsible person. Contact GOV.UK Pay support if you need to change them.')
+    return response(req, res, 'error-with-link', errorPageData)
   }
 
   const formFields = getFormFields(req.body, fields)
@@ -140,7 +136,6 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
     return response(req, res, 'stripe-setup/responsible-person/index', {
       ...pageData,
       isSwitchingCredentials,
-      isSubmittingAdditionalKycData,
       currentCredential,
       enableStripeOnboardingTaskList
     })
@@ -160,26 +155,14 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
 
       logger.info('Responsible person details submitted for Stripe account', {
         stripe_account_id: stripeAccountId,
-        is_switching: isSwitchingCredentials,
-        collecting_additional_kyc_data: isSubmittingAdditionalKycData
+        is_switching: isSwitchingCredentials
       })
 
-      if (!isSubmittingAdditionalKycData) {
-        await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person')
-      }
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person')
 
       if (isSwitchingCredentials) {
         req.flash('generic', 'Responsible person details added successfully')
         return res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
-      } else if (isSubmittingAdditionalKycData) {
-        const taskListComplete = await isKycTaskListComplete(currentCredential)
-        if (taskListComplete) {
-          await completeKyc(req.account.gateway_account_id, req.service, stripeAccountId)
-          req.flash('generic', 'You’ve successfully added all the Know your customer details for this service.')
-        } else {
-          req.flash('generic', 'Responsible person details added successfully')
-        }
-        return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, currentCredential.external_id))
       } else if (enableStripeOnboardingTaskList) {
         return res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
       } else {
@@ -203,7 +186,6 @@ module.exports = async function submitResponsiblePerson (req, res, next) {
             ...pageData,
             isSwitchingCredentials,
             currentCredential,
-            isSubmittingAdditionalKycData,
             enableStripeOnboardingTaskList,
             errors: error
           })
