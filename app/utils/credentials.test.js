@@ -100,7 +100,7 @@ describe('credentials utility', () => {
     })
 
     it('correctly identifies a kyc route', () => {
-      const req = { route: { path: paths.account.kyc.director } }
+      const req = { route: { path: paths.account.kyc.organisationUrl } }
       expect(isAdditionalKycDataRoute(req)).to.equal(true)
     })
 

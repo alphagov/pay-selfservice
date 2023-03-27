@@ -94,16 +94,6 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
     })
 
-    it('should display director task as COMPLETED if details are updated on Stripe', () => {
-      setupYourPspStubs({
-        director: true
-      })
-      cy.setEncryptedCookies(userExternalId)
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
-
-      cy.get('#task-add-director-status').should('have.html', 'completed')
-    })
     it('should display organisation URL task as COMPLETED if details are updated on Stripe', () => {
       setupYourPspStubs({
         'url': 'http://example.org'
@@ -134,7 +124,6 @@ describe('Your PSP - Stripe - KYC', () => {
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#task-add-director-status').should('have.html', 'not started')
       cy.get('#task-organisation-url-status').should('have.html', 'not started')
       cy.get('#task-upload-government-entity-document-status').should('have.html', 'not started')
     })
@@ -152,7 +141,6 @@ describe('Your PSP - Stripe - KYC', () => {
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#task-add-director-status').should('have.text', 'completed')
       cy.get('#task-organisation-url-status').should('have.text', 'completed')
       cy.get('#task-upload-government-entity-document-status').should('have.text', 'completed')
 

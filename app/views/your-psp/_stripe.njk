@@ -67,12 +67,6 @@
       kycTaskList.ENTER_ORGANISATION_URL
     ) }}
   {{ taskListItem(
-      'task-add-director',
-      "Add director of service information",
-      formatAccountPathsFor(routes.account.kyc.director, currentGatewayAccount.external_id, activeCredential.external_id),
-      kycTaskList.ENTER_DIRECTOR
-    ) }}
-  {{ taskListItem(
       'task-upload-government-entity-document',
       "Upload a government entity document",
       formatAccountPathsFor(routes.account.kyc.governmentEntityDocument, currentGatewayAccount.external_id, activeCredential.external_id),
