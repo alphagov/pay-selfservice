@@ -1,12 +1,11 @@
 'use strict'
 
 const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
 const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 
 module.exports = (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-  const collectingAdditionalKycData = isAdditionalKycDataRoute(req)
   const currentCredential = getCurrentCredential(req.account)
   const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
 
@@ -22,5 +21,5 @@ module.exports = (req, res, next) => {
   }
 
   return response(req, res, 'stripe-setup/director/index',
-    { isSwitchingCredentials, collectingAdditionalKycData, currentCredential, enableStripeOnboardingTaskList })
+    { isSwitchingCredentials, currentCredential, enableStripeOnboardingTaskList })
 }

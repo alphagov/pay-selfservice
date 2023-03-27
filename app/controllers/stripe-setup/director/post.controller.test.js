@@ -52,9 +52,8 @@ describe('Director POST controller', () => {
   let createDirectorMock
   let updateDirectorMock
   let updateCompanyMock
-  let completeKycMock
 
-  function getControllerWithMocks (isKycTaskListComplete = false) {
+  function getControllerWithMocks () {
     return proxyquire('./post.controller', {
       '../../../services/clients/stripe/stripe.client': {
         listPersons: listPersonsMock,
@@ -70,11 +69,7 @@ describe('Director POST controller', () => {
       '../stripe-setup.util': {
         getStripeAccountId: () => {
           return Promise.resolve('acct_123example123')
-        },
-        completeKyc: completeKycMock
-      },
-      '../../../controllers/your-psp/kyc-tasks.service': {
-        isKycTaskListComplete: () => isKycTaskListComplete
+        }
       }
     })
   }
@@ -106,7 +101,6 @@ describe('Director POST controller', () => {
     updateDirectorMock = sinon.spy(() => Promise.resolve())
     updateCompanyMock = sinon.spy(() => Promise.resolve())
     listPersonsMock = sinon.spy(() => Promise.resolve())
-    completeKycMock = sinon.spy(() => Promise.resolve())
   })
 
   it('should call Stripe with director details, update Stripe company, update connector and then redirect to add PSP account details', async () => {
@@ -129,59 +123,6 @@ describe('Director POST controller', () => {
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director')
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}${paths.account.stripe.addPspAccountDetails}`)
     sinon.assert.notCalled(req.flash)
-    sinon.assert.notCalled(completeKycMock)
-  })
-
-  it('should save details and redirect to your PSP for additional KYC details collection', async () => {
-    req.account.connectorGatewayAccountStripeProgress = { director: false }
-    req.body = postBody
-    req.route = {
-      path: `/kyc/:credentialId/director`
-    }
-    const controller = getControllerWithMocks(false)
-
-    await controller(req, res, next)
-
-    sinon.assert.calledWith(createDirectorMock, res.locals.stripeAccount.stripeAccountId, {
-      first_name: firstNameNormalised,
-      last_name: lastNameNormalised,
-      email: emailNormalised,
-      dob_day: dobDayNormalised,
-      dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
-    })
-
-    sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, { directors_provided: true })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director')
-    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(req.flash, 'generic', 'Details of director successfully completed')
-    sinon.assert.notCalled(completeKycMock)
-  })
-
-  it('should call completeKyc if all KYC tasks are complete for additional KYC details collection', async () => {
-    req.account.connectorGatewayAccountStripeProgress = { director: false }
-    req.body = postBody
-    req.route = {
-      path: `/kyc/:credentialId/director`
-    }
-    const controller = getControllerWithMocks(true)
-
-    await controller(req, res, next)
-
-    sinon.assert.calledWith(createDirectorMock, res.locals.stripeAccount.stripeAccountId, {
-      first_name: firstNameNormalised,
-      last_name: lastNameNormalised,
-      email: emailNormalised,
-      dob_day: dobDayNormalised,
-      dob_month: dobMonthNormalised,
-      dob_year: dobYearNormalised
-    })
-
-    sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, { directors_provided: true })
-    sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'director')
-    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId)
-    sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
   })
 
   it('should update director if already exists on Stripe', async () => {
@@ -302,7 +243,6 @@ describe('Director POST controller', () => {
   })
 
   it('should render error page with side navigation when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
-
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
 
     req.url = '/your-psp/:credentialId/director'

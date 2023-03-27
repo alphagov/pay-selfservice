@@ -47,7 +47,6 @@ module.exports = {
     },
     kyc: {
       organisationUrl: '/kyc/:credentialId/organisation-url',
-      director: '/kyc/:credentialId/director',
       governmentEntityDocument: '/kyc/:credentialId/government-entity-document'
     },
     notificationCredentials: {

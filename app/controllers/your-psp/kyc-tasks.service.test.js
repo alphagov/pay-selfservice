@@ -33,55 +33,6 @@ describe('KYC additional tasks', () => {
     })
   })
 
-  describe('Director', () => {
-    it('task should be marked complete if director has been provided for stripe account', async () => {
-      listPersonsMock = sinon.spy(() => Promise.resolve({
-        data: [{
-          id: 'person-1',
-          relationship: {
-            director: true
-          }
-        }]
-      }))
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve())
-
-      const kycTasksService = getServiceWithMocks()
-      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
-
-      expect(taskList.ENTER_DIRECTOR.complete).to.equal(true)
-    })
-
-    it('task should not be marked complete if no persons set on stripe account', async () => {
-      listPersonsMock = sinon.spy(() => Promise.resolve({
-        data: []
-      }))
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve())
-
-      const kycTasksService = getServiceWithMocks()
-      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
-
-      expect(taskList.ENTER_DIRECTOR.complete).to.equal(false)
-    })
-
-    it('task should not be marked complete if director is not on stripe account', async () => {
-      listPersonsMock = sinon.spy(() => Promise.resolve({
-        data: [{
-          id: 'person-1',
-          relationship: {
-            representative: true,
-            director: false
-          }
-        }]
-      }))
-      retrieveAccountDetailsMock = sinon.spy(() => Promise.resolve())
-
-      const kycTasksService = getServiceWithMocks()
-      const taskList = await kycTasksService.getTaskList(gatewayAccountCredential)
-
-      expect(taskList.ENTER_DIRECTOR.complete).to.equal(false)
-    })
-  })
-
   describe('Government entity document', () => {
     it('task should be marked complete if entity verification document has been provided for stripe account', async () => {
       listPersonsMock = sinon.spy(() => Promise.resolve())

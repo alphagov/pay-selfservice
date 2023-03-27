@@ -13,7 +13,6 @@ const gatewayAccountExternalId = 'a-valid-external-id'
 const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
 const stripeAccountId = `acct_123example123`
 const directorUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/director`
-const directorUrlForKyc = `/account/${gatewayAccountExternalId}/kyc/${gatewayAccountCredentialExternalId}/director`
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
 const typedFirstName = 'Jane'
@@ -21,9 +20,8 @@ const typedLastName = ' Doe'
 const typedDobDay = '25 '
 const typedDobMonth = ' 02'
 const typedDobYear = '1971 '
-const typedEmail = 'test@example.com'
 
-function setupStubs (director, type = 'live', paymentProvider = 'stripe', requiresAdditionalKycData = false) {
+function setupStubs (director, type = 'live', paymentProvider = 'stripe') {
   let stripeSetupStub
 
   if (Array.isArray(director)) {
@@ -65,7 +63,6 @@ function setupStubs (director, type = 'live', paymentProvider = 'stripe', requir
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId: gatewayAccountExternalId,
-      requiresAdditionalKycData: requiresAdditionalKycData,
       type,
       paymentProvider,
       gatewayAccountCredentials
@@ -234,33 +231,6 @@ describe('Stripe setup: director page', () => {
     it('should show a permission denied error', () => {
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'not have the administrator rights')
-    })
-  })
-
-  describe('KYC - Additional data collection', () => {
-    beforeEach(() => {
-      setupStubs(false, 'live', 'stripe', true)
-
-      cy.visit(directorUrlForKyc)
-    })
-
-    it('should submit director details and redirect to your-psp page', () => {
-      cy.get('#director-form').within(() => {
-        cy.get('#first-name').type(typedFirstName)
-        cy.get('#last-name').type(typedLastName)
-        cy.get('#dob-day').type(typedDobDay)
-        cy.get('#dob-month').type(typedDobMonth)
-        cy.get('#dob-year').type(typedDobYear)
-        cy.get('#email').type(typedEmail)
-        cy.get('button').click()
-      })
-
-      cy.get('h1').should('contain', 'Information for Stripe')
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
-      })
-
-      cy.get('#task-add-director-status').should('have.html', 'completed')
     })
   })
 })
