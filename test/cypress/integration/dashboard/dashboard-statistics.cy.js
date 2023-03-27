@@ -10,8 +10,6 @@ describe('Account dashboard', () => {
   const serviceName = 'Test Service'
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session')
-
     const todayStatisticsStub = transactionsSummaryStubs.getDashboardStatisticsWithFromDate(
       moment().tz('Europe/London').startOf('day').format(),
       {
@@ -42,9 +40,7 @@ describe('Account dashboard', () => {
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
     cy.title().should('eq', `Dashboard - ${serviceName} Sandbox test - GOV.UK Pay`)
-  })
 
-  it('should display transaction statistics', () => {
     cy.get('.dashboard-total-group__values').eq(0).should('exist').within(() => {
       cy.get('.dashboard-total-group__count').should('have.text', '10')
       cy.get('.dashboard-total-group__amount').should('have.text', '£120.00')
@@ -59,9 +55,8 @@ describe('Account dashboard', () => {
       cy.get('.dashboard-total-group__count').should('not.exist')
       cy.get('.dashboard-total-group__amount').should('have.text', '£97.00')
     })
-  })
 
-  it('should update when a different time range is selected', () => {
+    cy.log('Select a different time range and check statistics are updated')
     cy.get('#activity-period').select('previous-seven-days')
     cy.get('button').contains('Update').click()
 
