@@ -94,22 +94,6 @@ describe('Your PSP - Stripe - KYC', () => {
       cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
     })
 
-    it('should display responsible person task as COMPLETED if details are updated on Stripe', () => {
-      setupYourPspStubs({
-        representative: true,
-        phone: '0000000',
-        email: 'test@example.org'
-      })
-      cy.setEncryptedCookies(userExternalId)
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#navigation-menu-your-psp').should('contain', 'Information for Stripe')
-
-      cy.get('h2').contains('Know your customer (KYC) details').should('exist')
-      cy.get('p').contains('Please review the responsible person').should('not.exist')
-
-      cy.get('#task-update-sro-status').should('have.html', 'completed')
-    })
-
     it('should display director task as COMPLETED if details are updated on Stripe', () => {
       setupYourPspStubs({
         director: true
@@ -150,7 +134,6 @@ describe('Your PSP - Stripe - KYC', () => {
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#task-update-sro-status').should('have.html', 'not started')
       cy.get('#task-add-director-status').should('have.html', 'not started')
       cy.get('#task-organisation-url-status').should('have.html', 'not started')
       cy.get('#task-upload-government-entity-document-status').should('have.html', 'not started')
@@ -169,7 +152,6 @@ describe('Your PSP - Stripe - KYC', () => {
       })
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('#task-update-sro-status').should('have.text', 'completed')
       cy.get('#task-add-director-status').should('have.text', 'completed')
       cy.get('#task-organisation-url-status').should('have.text', 'completed')
       cy.get('#task-upload-government-entity-document-status').should('have.text', 'completed')
@@ -179,72 +161,6 @@ describe('Your PSP - Stripe - KYC', () => {
 
       cy.get('.settings-navigation').within(() => {
         cy.get('a').contains('Information for Stripe').should('exist')
-      })
-    })
-  })
-
-  describe('Responsible person page', () => {
-    beforeEach(() => {
-      setupYourPspStubs({
-        representative: true
-      })
-    })
-
-    it('should show the task list with the responsible person task not completed', () => {
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-
-      cy.get('#task-update-sro-status').should('have.html', 'not started')
-    })
-
-    it('should redirect to the responsible person page with existing persons name displayed', () => {
-      cy.get('a').contains('Add responsible person information').click()
-      cy.get('h1').should('contain', 'Enter responsible person details')
-      cy.get('.govuk-back-link')
-        .should('have.text', 'Back')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('td#responsible-person-name').should('contain', 'Joe Pay')
-      cy.get('input[type="text"]').should('have.length', 2)
-    })
-
-    it('should display validation errors when fields are blank', () => {
-      cy.get('button').contains('Submit').click()
-
-      cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#telephone-number"]').should('contain', 'Work telephone number')
-        cy.get('a[href="#email"]').should('contain', 'Work email address')
-      })
-    })
-
-    it('should redirect to page with all fields when change is clicked', () => {
-      cy.get('a').contains('Change').click()
-      cy.get('input#first-name').should('exist')
-      cy.get('.govuk-back-link')
-        .should('have.text', 'Back')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('form').within(() => {
-        cy.get('button').should('contain', 'Submit')
-      })
-    })
-
-    it('should display validation errors when fields are blank', () => {
-      cy.get('button').contains('Submit').click()
-
-      cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('a[href="#first-name"]').should('contain', 'Enter a first name')
-        cy.get('a[href="#last-name"]').should('contain', 'Enter a last name')
-        cy.get('a[href="#home-address-line-1"]').should('contain', 'Enter a building name, number and street')
-        cy.get('a[href="#home-address-city"]').should('contain', 'Enter a town or city')
-        cy.get('a[href="#home-address-postcode"]').should('contain', 'Enter a postcode')
-        cy.get('a[href="#dob-day"]').should('contain', 'Enter the date of birth')
-        cy.get('a[href="#telephone-number"]').should('contain', 'Enter a telephone number')
-        cy.get('a[href="#email"]').should('contain', 'Enter an email address')
-      })
-
-      cy.get('.govuk-back-link')
-        .should('have.text', 'Back')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('form').within(() => {
-        cy.get('button').should('contain', 'Submit')
       })
     })
   })

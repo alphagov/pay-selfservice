@@ -67,12 +67,6 @@
       kycTaskList.ENTER_ORGANISATION_URL
     ) }}
   {{ taskListItem(
-      'task-update-sro',
-      "Add responsible person information",
-      formatAccountPathsFor(routes.account.kyc.responsiblePerson, currentGatewayAccount.external_id, activeCredential.external_id),
-      kycTaskList.UPDATE_RESPONSIBLE_PERSON
-    ) }}
-  {{ taskListItem(
       'task-add-director',
       "Add director of service information",
       formatAccountPathsFor(routes.account.kyc.director, currentGatewayAccount.external_id, activeCredential.external_id),
@@ -96,7 +90,7 @@
   {% if enableStripeOnboardingTaskList %}
     {% if progressIndicator.no_of_tasks_completed === progressIndicator.total_number_of_tasks %}
       {% set isAllTasksComplete = 'true'%}
-    {% endif %}  
+    {% endif %}
 
     {% if not isAllTasksComplete %}
       {% set warningText %}
@@ -113,7 +107,7 @@
     {% endif %}
 
     <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
-      {{ 'Information complete' if isAllTasksComplete else 'Information incomplete' }} 
+      {{ 'Information complete' if isAllTasksComplete else 'Information incomplete' }}
     </h2>
 
     <p class="govuk-body govuk-!-margin-bottom-7">
@@ -121,7 +115,7 @@
     </p>
 
     {% set tasks %}
-    
+
     {{ stripeTaskListItem(
         'task-bank-details',
         "Bank Details",

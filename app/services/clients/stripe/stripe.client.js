@@ -7,7 +7,6 @@ const StripeCompany = require('./StripeCompany.class')
 const StripePerson = require('./StripePerson.class')
 const StripeDirector = require('./StripeDirector.class')
 const StripeAccount = require('./StripeAccount.class')
-const StripePersonAdditionalKYCDetails = require('./StripePersonAdditionalKYCDetails.class')
 const StripeOrganisationDetails = require('./StripeOrganisationDetails.class')
 
 // Constants
@@ -65,11 +64,6 @@ module.exports = {
   createPerson: function (stripeAccountId, body) {
     const stripePerson = new StripePerson(body)
     return stripe.accounts.createPerson(stripeAccountId, stripePerson.basicObject())
-  },
-
-  updatePersonAddAdditionalKYCDetails: function (stripeAccountId, stripePersonId, body) {
-    const stripePerson = new StripePersonAdditionalKYCDetails(body)
-    return stripe.accounts.updatePerson(stripeAccountId, stripePersonId, stripePerson.basicObject())
   },
 
   updateDirector: function (stripeAccountId, stripeDirectorId, body) {

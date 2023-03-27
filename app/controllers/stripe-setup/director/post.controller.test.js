@@ -136,7 +136,7 @@ describe('Director POST controller', () => {
     req.account.connectorGatewayAccountStripeProgress = { director: false }
     req.body = postBody
     req.route = {
-      path: `/kyc/:credentialId/responsible-person`
+      path: `/kyc/:credentialId/director`
     }
     const controller = getControllerWithMocks(false)
 
@@ -162,7 +162,7 @@ describe('Director POST controller', () => {
     req.account.connectorGatewayAccountStripeProgress = { director: false }
     req.body = postBody
     req.route = {
-      path: `/kyc/:credentialId/responsible-person`
+      path: `/kyc/:credentialId/director`
     }
     const controller = getControllerWithMocks(true)
 
@@ -302,7 +302,7 @@ describe('Director POST controller', () => {
   })
 
   it('should render error page with side navigation when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
-    
+
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
 
     req.url = '/your-psp/:credentialId/director'
@@ -312,7 +312,7 @@ describe('Director POST controller', () => {
     req.body = {}
 
     await controller(req, res, next)
-    
+
     sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
     const pageData = res.render.firstCall.args[1]
     expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
@@ -338,7 +338,7 @@ describe('Director POST controller', () => {
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
     sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
-    
+
     const pageData = res.render.firstCall.args[1]
     assert.strictEqual(pageData.errors['dob-day'], 'Enter a valid date')
     expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
