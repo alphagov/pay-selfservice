@@ -5,30 +5,19 @@ const zendeskStubs = require('../../stubs/zendesk-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 
-function getUserAndAccountStubs (type, paymentProvider) {
-  return [userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' })
-  ]
-}
-
 describe('Feedback page', () => {
-  beforeEach(() => {
-    // keep the same session for entire describe block
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+  it('should display Feedback page and allow submitting feedback', () => {
     cy.task('setupStubs',
       [
-        ...getUserAndAccountStubs('live', 'stripe'),
+        userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
         zendeskStubs.createTicketSuccess()
       ])
-  })
 
-  it('should display Feedback page', () => {
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/feedback')
 
     cy.title().should('eq', 'Give feedback — GOV.UK Pay')
-  })
 
-  it('should submit Feedback form and display Success notification', () => {
     cy.get('button').contains('Send feedback').click()
     cy.get('.govuk-notification-banner__content').contains('Thanks for your feedback')
   })
