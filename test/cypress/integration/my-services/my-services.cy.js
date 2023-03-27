@@ -82,26 +82,16 @@ describe('The user does not have any services', () => {
 })
 
 describe('Service has a live account that supports payouts', () => {
-  beforeEach(() => {
-    // keep the same session for entire describe block
-    Cypress.Cookies.preserveOnce('session')
-  })
-
   it('should display link to view payouts', () => {
-    cy.task('setupStubs', getUserAndAccountStubs('live', 'stripe'))
+    cy.task('setupStubs', [
+      ...getUserAndAccountStubs('live', 'stripe'),
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: '1' })
+    ])
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
-    cy.contains('a', 'View payments to your bank account')
-  })
-
-  it('should direct to the list payouts page', () => {
-    cy.task('setupStubs', [
-      ...getUserAndAccountStubs('live', 'stripe'),
-      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: '1' })
-    ])
     cy.contains('a', 'View payments to your bank account').click()
     cy.get('h1').contains('Payments to your bank account')
   })
