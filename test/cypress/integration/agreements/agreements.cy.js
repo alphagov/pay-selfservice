@@ -52,12 +52,10 @@ const mockAgreements = [
 
 describe('Agreements', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session')
+    cy.setEncryptedCookies(userExternalId)
   })
 
   it('should correctly display agreements for a given service', () => {
-    cy.setEncryptedCookies(userExternalId)
-
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       agreementStubs.getLedgerAgreementsSuccess({
@@ -85,19 +83,7 @@ describe('Agreements', () => {
         gatewayAccountId,
         agreements: mockAgreements,
         filters: { status: statusFilter, reference: referenceFilter }
-      })
-    ])
-
-    cy.get('#reference').type(referenceFilter)
-    cy.get('#status').select(statusFilter)
-    cy.get('#filter').click()
-
-    cy.get('#reference').should('have.value', referenceFilter)
-  })
-
-  it('should set and persist pagination', () => {
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
+      }),
       agreementStubs.getLedgerAgreementsSuccess({
         page: 2,
         service_id: serviceExternalId,
@@ -105,17 +91,7 @@ describe('Agreements', () => {
         gatewayAccountId,
         agreements: mockAgreements,
         filters: { status: statusFilter, reference: referenceFilter }
-      })
-    ])
-
-    cy.get('.pagination.2').first().click()
-
-    cy.get('.pagination.2').first().should('have.class', 'active')
-  })
-
-  it('should load the details page and preserve filter params', () => {
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
+      }),
       agreementStubs.getLedgerAgreementSuccess({
         service_id: serviceExternalId,
         live: false,
@@ -135,6 +111,19 @@ describe('Agreements', () => {
       })
     ])
 
+    cy.get('#reference').type(referenceFilter)
+    cy.get('#status').select(statusFilter)
+    cy.get('#filter').click()
+
+    cy.get('#reference').should('have.value', referenceFilter)
+
+    cy.log('Check pagination works and persists filters')
+    cy.get('.pagination.2').first().click()
+    cy.get('.pagination.2').first().should('have.class', 'active')
+    cy.get('#reference').should('have.value', referenceFilter)
+    cy.get('#status').should('have.value', statusFilter)
+
+    cy.log('Load the details page and check the filters are preserved')
     cy.get('[data-action=update]').then((links) => links[0].click())
     cy.get('.govuk-heading-l').should('have.text', 'Agreement detail')
     cy.get('.govuk-back-link').should('have.attr', 'href')
