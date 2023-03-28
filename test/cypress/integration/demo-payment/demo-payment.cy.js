@@ -21,20 +21,16 @@ describe('Make a demo payment', () => {
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
     cy.get('a').contains('Make a demo payment').click()
     cy.get('h1').should('have.text', 'Make a demo payment')
-  })
 
-  it('should have a default description and amount', () => {
     cy.get('#payment-description').contains('An example payment description')
     cy.get('#payment-amount').contains('£20.00')
-  })
 
-  it('should show the edit description page', () => {
+    cy.log('Edit the payment description')
     cy.get('#payment-description').find('a').contains('Edit').click()
     cy.get('h1').should('have.text', 'Edit payment description')
     cy.get('textarea').should('have.value', 'An example payment description')
-  })
 
-  it('should show error when description is empty', () => {
+    cy.log('Should show error when description is empty')
     cy.get('textarea').clear()
     cy.get('button').contains('Save changes').click()
     cy.get('.govuk-error-summary').should('exist').within(() => {
@@ -45,23 +41,19 @@ describe('Make a demo payment', () => {
         .should('have.attr', 'href', '#payment-description')
     })
     cy.get('textarea').should('have.value', '')
-  })
 
-  it('should submit with a valid description', () => {
+    cy.log('Enter a valid description and continue')
     cy.get('textarea').type('New description')
     cy.get('button').contains('Save changes').click()
     cy.get('h1').should('have.text', 'Make a demo payment')
     cy.get('#payment-description').contains('New description')
     cy.get('#payment-amount').contains('£20.00')
-  })
 
-  it('should show the edit amount page', () => {
     cy.get('#payment-amount').find('a').contains('Edit').click()
     cy.get('h1').should('have.text', 'Edit payment amount')
     cy.get('#payment-amount').should('have.value', '20.00')
-  })
 
-  it('should show error when the amount is invalid', () => {
+    cy.log('Should show error when the amount is invalid')
     cy.get('#payment-amount').type('a')
     cy.get('button').contains('Save changes').click()
     cy.get('.govuk-error-summary').should('exist').within(() => {
@@ -72,9 +64,8 @@ describe('Make a demo payment', () => {
         .should('have.attr', 'href', '#payment-amount')
     })
     cy.get('#payment-amount').should('have.value', '20.00')
-  })
 
-  it('should submit with a valid amount', () => {
+    cy.log('Enter a valid amount and continue')
     cy.get('#payment-amount').clear().type('1.00')
     cy.get('button').contains('Save changes').click()
     cy.get('h1').should('have.text', 'Make a demo payment')
