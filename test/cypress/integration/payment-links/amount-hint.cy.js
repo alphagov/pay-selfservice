@@ -12,13 +12,25 @@ const serviceName = {
 }
 const productName = 'Test'
 const amountHint = 'A hint'
+const token = 'a-token'
 
 describe('A payment link with an amount hint set', () => {
   describe('Creating a new payment link', () => {
     it('should display the amount hint field and show on the review page', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' })
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
+        tokenStubs.postCreateTokenForAccountSuccess({ gatewayAccountId, token }),
+        productStubs.postCreateProductSuccessWithRequestBody({
+          gatewayAccountId,
+          payApiToken: token,
+          name: productName,
+          type: 'ADHOC',
+          service_name_path: 'pay-for-something',
+          product_name_path: 'test',
+          amount_hint: amountHint
+        }),
+        productStubs.getProductsByGatewayAccountIdAndTypeStub([{ name: productName }], gatewayAccountId, 'ADHOC')
       ])
 
       cy.setEncryptedCookies(userExternalId)
@@ -73,28 +85,6 @@ describe('A payment link with an amount hint set', () => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/review`)
       })
 
-      Cypress.Cookies.preserveOnce('session')
-    })
-
-    it('should send a request to products to create the product', () => {
-      const token = 'a-token'
-
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
-        tokenStubs.postCreateTokenForAccountSuccess({ gatewayAccountId, token }),
-        productStubs.postCreateProductSuccessWithRequestBody({
-          gatewayAccountId,
-          payApiToken: token,
-          name: productName,
-          type: 'ADHOC',
-          service_name_path: 'pay-for-something',
-          product_name_path: 'test',
-          amount_hint: amountHint
-        }),
-        productStubs.getProductsByGatewayAccountIdAndTypeStub([{ name: productName }], gatewayAccountId, 'ADHOC')
-      ])
-
       cy.get('button').contains('Create payment link').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
@@ -119,7 +109,15 @@ describe('A payment link with an amount hint set', () => {
         userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
         productStubs.getProductsByGatewayAccountIdAndTypeStub([product], gatewayAccountId, 'ADHOC'),
-        productStubs.getProductByExternalIdAndGatewayAccountIdStub(product, gatewayAccountId)
+        productStubs.getProductByExternalIdAndGatewayAccountIdStub(product, gatewayAccountId),
+        productStubs.patchUpdateProductSuccess({
+          gatewayAccountId,
+          productExternalId: productId,
+          name: productName,
+          reference_enabled: false,
+          price: '',
+          amount_hint: updatedHint
+        })
       ])
 
       cy.setEncryptedCookies(userExternalId)
@@ -147,24 +145,6 @@ describe('A payment link with an amount hint set', () => {
       cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
         cy.get('.govuk-summary-list__value').get('span').should('contain', updatedHint)
       })
-
-      Cypress.Cookies.preserveOnce('session')
-    })
-
-    it('should send a request to products to update the product', () => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'test', paymentProvider: 'worldpay' }),
-        productStubs.patchUpdateProductSuccess({
-          gatewayAccountId,
-          productExternalId: productId,
-          name: productName,
-          reference_enabled: false,
-          price: '',
-          amount_hint: updatedHint
-        }),
-        productStubs.getProductsByGatewayAccountIdAndTypeStub([{ name: productName }], gatewayAccountId, 'ADHOC')
-      ])
 
       cy.get('button').contains('Save changes').click()
       cy.location().should((location) => {
