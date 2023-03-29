@@ -64,13 +64,12 @@ function setupYourPspStubs (opts = {}) {
 
 describe('Your PSP Stripe page', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('Should display the page correctly', () => {
     it('should display Your PSP - Stripe page correctly', () => {
       setupYourPspStubs()
-      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('h1').should('contain', 'Information for Stripe')
       cy.get('#navigation-menu-your-psp')
@@ -116,7 +115,6 @@ describe('Your PSP Stripe page', () => {
         governmentEntityDocument: false
       })
 
-      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
       cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
@@ -143,7 +141,6 @@ describe('Your PSP Stripe page', () => {
         governmentEntityDocument: true
       })
 
-      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
       cy.get('[data-cy=warning-text]').should('not.exist')
@@ -161,7 +158,6 @@ describe('Your PSP Stripe page', () => {
 
     it('should autamatically show government document as cannot start yet and the rest of the tasks as not started', () => {
       setupYourPspStubs()
-      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'not started')
@@ -178,7 +174,6 @@ describe('Your PSP Stripe page', () => {
     it('should click bank details task and redirect to task list when valid bank details is submitted', () => {
       setupYourPspStubs()
 
-      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
       cy.get('span').contains('Bank Details').click()
@@ -204,6 +199,7 @@ describe('Your PSP Stripe page', () => {
     it('should click VAT number task and redirect back to tasklist when valid VAT number is submitted', () => {
       setupYourPspStubs()
 
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('span').contains('VAT registration number').click()
       cy.get('h1').should('contain', 'VAT registration number')
       cy.get('#have-vat-number').click()
@@ -227,6 +223,7 @@ describe('Your PSP Stripe page', () => {
     it('should click company registration task and redirect back to tasklist when valid company number is submitted', () => {
       setupYourPspStubs()
 
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('span').contains('Company registration number').click()
       cy.get('h1').should('contain', 'Company registration number')
       cy.get('#company-number-declaration').click()
@@ -250,6 +247,7 @@ describe('Your PSP Stripe page', () => {
     it('should click on service director task and redirect back to tasklist when valid service director information is submitted', () => {
       setupYourPspStubs()
 
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('span').contains('Service director').click()
       cy.get('h1').should('contain', 'Enter a director’s details')
       cy.get('#first-name').type(typedFirstName)
@@ -277,6 +275,7 @@ describe('Your PSP Stripe page', () => {
     it('should click Responsible task and redirect back to tasklist when valid responsible information is submitted', () => {
       setupYourPspStubs()
 
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('span').contains('Responsible person').click()
       cy.get('h1').should('contain', 'Enter responsible person details')
       cy.get('#first-name').type(typedFirstName)
@@ -308,6 +307,7 @@ describe('Your PSP Stripe page', () => {
     it('should click on Confirm organisation details task and redirect to tasklist page when organisation details are correct', () => {
       setupYourPspStubs()
 
+      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').click()
       cy.get('h1').contains('Check your organisation’s details')
       cy.get('[data-cy="yes-radio"]').click()
@@ -338,7 +338,6 @@ describe('Your PSP Stripe page', () => {
         governmentEntityDocument: false
       })
 
-      cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('span').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
       cy.get('span').contains('Government entity document').click()

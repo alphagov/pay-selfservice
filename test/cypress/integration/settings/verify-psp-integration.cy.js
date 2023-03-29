@@ -17,7 +17,6 @@ function getUserAndAccountStubs (paymentProvider, providerSwitchEnabled, gateway
 
 describe('Verify PSP Integration page', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
     cy.setEncryptedCookies(userExternalId)
   })
 
