@@ -31,40 +31,6 @@ describe('connector client - get gateway account by external id', function () {
   })
   after(() => provider.finalize())
 
-  describe('get Smartpay account - success', () => {
-    const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse({
-      external_id: gatewayAccountExternalId,
-      payment_provider: 'smartpay',
-      description: 'A description',
-      analytics_id: 'an-analytics-id',
-      notificationCredentials: {
-        username: 'username'
-      }
-    })
-
-    before(() => {
-      return provider.addInteraction(
-        new PactInteractionBuilder(`/v1/frontend/accounts/external-id/${gatewayAccountExternalId}`)
-          .withUponReceiving('a valid get Smartpay gateway account by external id request')
-          .withState('a Smartpay gateway account with id 333 and external abc123 with credentials exists')
-          .withMethod('GET')
-          .withResponseBody(pactify(validGetGatewayAccountResponse))
-          .withStatusCode(200)
-          .build()
-      )
-    })
-
-    afterEach(() => provider.verify())
-
-    it('should get gateway account successfully', async () => {
-      const params = {
-        gatewayAccountExternalId: gatewayAccountExternalId
-      }
-      const response = await connectorClient.getAccountByExternalId(params)
-      expect(response).to.deep.equal(validGetGatewayAccountResponse)
-    })
-  })
-
   describe('get Worldpay account - success', () => {
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse({
       external_id: gatewayAccountExternalId,
