@@ -14,7 +14,7 @@ const requestToGoLiveChooseTakesPaymentsOverThePhone = `/service/${serviceExtern
 function setupStubsForSubmittingChoice (nextGoLiveStage) {
   cy.task('setupStubs', [
     userStubs.getUserSuccessRespondDifferentlySecondTime(userExternalId,
-      { gatewayAccountId, serviceExternalId, goLiveStage: 'ENTERED_ORGANISATION_ADDRESS' },
+      { gatewayAccountId, serviceExternalId, goLiveStage: 'CHOSEN_PSP_GOV_BANKING_WORLDPAY' },
       { gatewayAccountId, serviceExternalId, goLiveStage: nextGoLiveStage }
     ),
     gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
@@ -29,12 +29,11 @@ function setupStubsForSubmittingChoice (nextGoLiveStage) {
 
 describe('Request to go live: choose takes payments over the phone', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('Service has correct go live stage', () => {
     it('should display the page correctly', () => {
-      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_GOV_BANKING_WORLDPAY'))
 
       cy.visit(requestToGoLiveChooseTakesPaymentsOverThePhone)
@@ -44,10 +43,8 @@ describe('Request to go live: choose takes payments over the phone', () => {
 
       cy.get('#request-to-go-live-choose-takes-payments-over-the-phone > button').should('exist')
       cy.get('#request-to-go-live-choose-takes-payments-over-the-phone > button').should('contain', 'Continue')
-    })
 
-    it('should show error when no option is selected for `Will you be taking payments over the phone?`', () => {
-      setupStubsForSubmittingChoice('GOV_BANKING_MOTO_OPTION_COMPLETED')
+      cy.log('Check error is shown when no option is selected')
       cy.get('#request-to-go-live-choose-takes-payments-over-the-phone > button').click()
 
       cy.get('h2').should('contain', 'There is a problem')
@@ -61,9 +58,10 @@ describe('Request to go live: choose takes payments over the phone', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-takes-payments-over-phone`)
       })
-    })
 
-    it('should patch adminusers and redirect to agreement', () => {
+      // set up new stubs where the first time we get the service it returns the go_live_stage as CHOSEN_PSP_GOV_BANKING_WORLDPAY,
+      // and the second time GOV_BANKING_MOTO_OPTION_COMPLETED so that the next page in the journey is loaded
+      cy.task('clearStubs')
       setupStubsForSubmittingChoice('GOV_BANKING_MOTO_OPTION_COMPLETED')
 
       cy.get('input#choose-takes-payments-over-phone').check()
@@ -76,13 +74,8 @@ describe('Request to go live: choose takes payments over the phone', () => {
   })
 
   describe('Service has wrong go live stage', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
-    })
-
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
-      cy.setEncryptedCookies(userExternalId)
+      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
       cy.visit(requestToGoLiveChooseTakesPaymentsOverThePhone)
 
       cy.get('h1').should('contain', 'Request a live account')
@@ -94,16 +87,13 @@ describe('Request to go live: choose takes payments over the phone', () => {
   })
 
   describe('User does not have the correct permissions', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
+    it('should show an error when the user does not have enough permissions', () => {
       const serviceRole = utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_GOV_BANKING_WORLDPAY')
       serviceRole.role = {
         permissions: []
       }
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
-    })
 
-    it('should show an error when the user does not have enough permissions', () => {
       cy.visit(requestToGoLiveChooseTakesPaymentsOverThePhone, { failOnStatusCode: false })
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')

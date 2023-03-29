@@ -23,12 +23,11 @@ function setupStubsForSubmittingChoice (nextGoLiveStage) {
 
 describe('Request to go live: choose how to process payments', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('Service has correct go live stage and user selects Stripe account', () => {
-    it('should display the page with non-stipe payment providers collapsed', () => {
-      cy.setEncryptedCookies(userExternalId)
+    it('should allow user to select Stripe', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
@@ -40,9 +39,10 @@ describe('Request to go live: choose how to process payments', () => {
 
       cy.get('#conditional-choose-how-to-process-payments-mode-3').should('exist')
       cy.get('#conditional-choose-how-to-process-payments-mode-3').should('not.be.visible')
-    })
 
-    it('should patch adminusers then redirect to agreement when chosen Stripe', () => {
+      // set up new stubs where the first time we get the service it returns the go_live_stage as ENTERED_ORGANISATION_ADDRESS,
+      // and the second time CHOSEN_PSP_STRIPE so that the next page in the journey is loaded
+      cy.task('clearStubs')
       setupStubsForSubmittingChoice('CHOSEN_PSP_STRIPE')
 
       cy.get('#choose-how-to-process-payments-mode').click()
@@ -58,8 +58,7 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('Service has correct go live stage and user selects non Stripe account', () => {
-    it('should expand other payment provider options', () => {
-      cy.setEncryptedCookies(userExternalId)
+    it('should allow to select ePDQ', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
@@ -75,9 +74,10 @@ describe('Request to go live: choose how to process payments', () => {
 
       cy.get('#choose-how-to-process-payments-mode-other-3').should('exist')
       cy.get('#conditional-choose-how-to-process-payments-mode-3 label[for=choose-how-to-process-payments-mode-other-3]').should('contain', 'ePDQ')
-    })
 
-    it('should patch choice and then redirect to agreement when chosen ePDQ', () => {
+      // set up new stubs where the first time we get the service it returns the go_live_stage as ENTERED_ORGANISATION_ADDRESS,
+      // and the second time CHOSEN_PSP_EPDQ so that the next page in the journey is loaded
+      cy.task('clearStubs')
       setupStubsForSubmittingChoice('CHOSEN_PSP_EPDQ')
 
       cy.get('#choose-how-to-process-payments-mode-other-3').click()
@@ -91,14 +91,14 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('Service has correct go live stage and user selects government banking account', () => {
-    it('should visit page', () => {
-      cy.setEncryptedCookies(userExternalId)
+    it('should allow choosing government banking and redirect to the page to choose whether to take MOTO payments', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
-    })
 
-    it('should patch choice and then redirect to choose-takes-payments-over-phone page when chosen government banking', () => {
+      // set up new stubs where the first time we get the service it returns the go_live_stage as ENTERED_ORGANISATION_ADDRESS,
+      // and the second time CHOSEN_PSP_GOV_BANKING_WORLDPAY so that the next page in the journey is loaded
+      cy.task('clearStubs')
       setupStubsForSubmittingChoice('CHOSEN_PSP_GOV_BANKING_WORLDPAY')
 
       cy.get('#choose-how-to-process-payments-mode-2').click()
@@ -111,7 +111,6 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('Validation', () => {
     beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
     })
 
@@ -159,13 +158,8 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('Service has wrong go live stage', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
-    })
-
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
-      cy.setEncryptedCookies(userExternalId)
+      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
       cy.get('h1').should('contain', 'Request a live account')
@@ -177,16 +171,13 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('User does not have the correct permissions', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
+    it('should show an error when the user does not have enough permissions', () => {
       const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')
       serviceRole.role = {
         permissions: []
       }
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
-    })
 
-    it('should show an error when the user does not have enough permissions', () => {
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl, { failOnStatusCode: false })
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
@@ -194,14 +185,12 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('Adminusers returns an error', () => {
-    beforeEach(() => {
+    it('should show "An error occurred: There is a problem with the payments platform"', () => {
       cy.task('setupStubs', [
         ...utils.getUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'),
           utils.patchUpdateGoLiveStageErrorStub('CHOSEN_PSP_STRIPE'))
       ])
-    })
 
-    it('should show "An error occurred: There is a problem with the payments platform"', () => {
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
       cy.get('#choose-how-to-process-payments-mode').click()
