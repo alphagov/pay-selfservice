@@ -8,7 +8,6 @@ const gatewayAccountExternalId = 'a-valid-external-id'
 
 describe('Make a demo payment', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ gatewayAccountId, userExternalId }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
