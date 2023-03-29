@@ -36,11 +36,10 @@ const userAndGatewayAccountStubs = [
 
 describe('Webhooks', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
   })
 
   it('should correctly list webhooks for a given service', () => {
-    cy.setEncryptedCookies(userExternalId)
     cy.task('setupStubs', [ ...userAndGatewayAccountStubs ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
 
@@ -97,7 +96,8 @@ describe('Webhooks', () => {
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      webhooksStubs.postCreateWebhookSuccess()
+      webhooksStubs.postCreateWebhookSuccess(),
+      webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [{ status: 'FAILED' }], status: 'failed' })
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
@@ -106,13 +106,6 @@ describe('Webhooks', () => {
     cy.get('#description').type(description)
     cy.get('[value=card_payment_captured]').click()
     cy.get('button').contains('Create webhook').click()
-  })
-
-  it('should display a valid webhooks details', () => {
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
-      webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [{ status: 'FAILED' }], status: 'failed' })
-    ])
 
     cy.get('[data-action=update]').then((links) => links[0].click())
 
@@ -151,6 +144,8 @@ describe('Webhooks', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs
     ])
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.get('[data-action=update]').then((links) => links[0].click())
     cy.get('#signing-secret').click()
 
     cy.get('h1').contains('Manage signing secret')
@@ -177,6 +172,8 @@ describe('Webhooks', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs
     ])
+    cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.get('[data-action=update]').then((links) => links[0].click())
     cy.get('[data-action=detail]').then((links) => links[0].click())
     cy.get('h1').contains('Payment captured')
   })
