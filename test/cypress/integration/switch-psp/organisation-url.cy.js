@@ -27,7 +27,7 @@ function getUserAndAccountStubs (paymentProvider, providerSwitchEnabled, gateway
 
 describe('Switch PSP', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('Organisation URL', () => {
@@ -36,8 +36,6 @@ describe('Switch PSP', () => {
 
     describe('User is an admin user', () => {
       beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId)
-
         const stripeUpdateAccountStub = stripePspStubs.updateAccount({
           stripeAccountId: 'acct_123example123',
           url: validUrl
