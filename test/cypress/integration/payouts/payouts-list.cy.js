@@ -29,12 +29,10 @@ const userAndGatewayAccountStubs = [
 
 describe('Payout list page', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
   })
 
   it('should correctly display payouts given a successful response from Ledger', () => {
-    cy.setEncryptedCookies(userExternalId)
-
     const payouts = [
       { gatewayAccountId: liveGatewayAccountId, paidOutDate: '2019-01-29T08:00:00.000000Z' }
     ]
@@ -47,9 +45,7 @@ describe('Payout list page', () => {
     cy.get('h1').find('.govuk-tag').should('have.text', 'LIVE')
     cy.get('#payout-list').find('tr').should('have.length', 2)
     cy.get('#pagination').should('not.exist')
-  })
 
-  it('should have correct breadcrumb navigation', () => {
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Payments to your bank account')
@@ -78,13 +74,15 @@ describe('Payout list page', () => {
   })
 
   it('should show test payouts when Switch to test is clicked', () => {
-    const payouts = [
+    const testPayouts = [
       { gatewayAccountId: testGatewayAccountId, paidOutDate: '2019-01-29T08:00:00.000000Z' }
     ]
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: testGatewayAccountId, payouts })
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: liveGatewayAccountId, payouts: [] }),
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: testGatewayAccountId, payouts: testPayouts })
     ])
+    cy.visit('/payments-to-your-bank-account')
 
     cy.get('a').contains('Switch to test transactions').click()
 
