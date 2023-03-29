@@ -26,34 +26,30 @@ function setupStubs (serviceName, stubs = []) {
 
 describe('Update service name', () => {
   beforeEach(() => {
-    // keep the same session for entire describe block
-    Cypress.Cookies.preserveOnce('session')
+    cy.setEncryptedCookies(authenticatedUserId)
   })
 
   describe('Edit a service name without a Welsh name', () => {
-    it('should display the my services page', () => {
-      cy.setEncryptedCookies(authenticatedUserId)
-      setupStubs(serviceName)
+    it('should allow updating service name', () => {
+      setupStubs(serviceName,
+        [
+          serviceStubs.patchUpdateServiceNameSuccess({
+            serviceExternalId,
+            serviceName: { en: newServiceName },
+            gatewayAccountId
+          }),
+          gatewayAccountStubs.patchUpdateServiceNameSuccess(gatewayAccountId, newServiceName)
+        ])
 
       cy.visit('/my-services')
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
-    })
 
-    it('should navigate to the edit service name form', () => {
-      setupStubs(serviceName)
       cy.get('a').contains('Edit name').click()
 
       cy.title().should('eq', 'Edit service name - GOV.UK Pay')
       cy.get('#service-name').should('have.attr', 'value', 'My Service')
       cy.get('#checkbox-service-name-cy').should('have.attr', 'aria-expanded', 'false')
-    })
 
-    it('should update service name to Updated Service', () => {
-      setupStubs(serviceName,
-        [
-          serviceStubs.patchUpdateServiceNameSuccess({ serviceExternalId, serviceName: { en: newServiceName }, gatewayAccountId }),
-          gatewayAccountStubs.patchUpdateServiceNameSuccess(gatewayAccountId, newServiceName)
-        ])
       cy.get('input#service-name').clear()
       cy.get('input#service-name').type(newServiceName)
       cy.get('button').contains('Save').click()
@@ -63,25 +59,23 @@ describe('Update service name', () => {
   })
 
   describe('Edit a service name with a Welsh name', () => {
-    it('should display the my services page', () => {
-      cy.setEncryptedCookies(authenticatedUserId)
-      setupStubs(welshServiceName)
+    it('should allow updating Welsh name', () => {
+      setupStubs(welshServiceName,
+        [serviceStubs.patchUpdateServiceNameSuccess({
+          serviceExternalId,
+          serviceName: { en: newServiceName, cy: 'Cymraeg' }
+        })])
 
       cy.visit('/my-services')
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
-    })
 
-    it('should navigate to the edit service name form', () => {
-      setupStubs(welshServiceName)
       cy.get('a').contains('Edit name').click()
 
       cy.title().should('eq', 'Edit service name - GOV.UK Pay')
       cy.get('#service-name').should('have.attr', 'value', 'My Service')
       cy.get('#service-name-cy').should('have.attr', 'value', 'Cymru')
-    })
 
-    it('should show a validation errors for service name and Welsh service name fields', () => {
-      setupStubs(welshServiceName)
+      cy.log('check that validation errors are shown for both English and Welsh fields')
       cy.get('input#service-name').clear()
       cy.get('input#service-name-cy').type('Lorem ipsum dolor sit amet, consectetuer adipiscing', { delay: 0 })
       cy.get('button').contains('Save').click()
@@ -99,11 +93,8 @@ describe('Update service name', () => {
       cy.get('.govuk-form-group--error > input#service-name-cy').parent().should('exist').within(() => {
         cy.get('.govuk-error-message').should('contain', 'Welsh service name must be 50 characters or fewer')
       })
-    })
 
-    it('should update Welsh service name to Cymraeg', () => {
-      setupStubs(welshServiceName,
-        [serviceStubs.patchUpdateServiceNameSuccess({ serviceExternalId, serviceName: { en: newServiceName, cy: 'Cymraeg' } })])
+      cy.log('Enter a valid name and submit')
       cy.get('input#service-name').clear()
       cy.get('input#service-name').type(newServiceName)
       cy.get('input#service-name-cy').clear()
