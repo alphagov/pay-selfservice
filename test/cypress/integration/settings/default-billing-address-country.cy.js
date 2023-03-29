@@ -21,33 +21,13 @@ function getUserAndGatewayAccountStubs (defaultBillingAddressCountry) {
 
 describe('Default billing address country', () => {
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
   })
 
   describe('User is an admin', () => {
-    it('should show default country as None', () => {
-      cy.task('setupStubs', getUserAndGatewayAccountStubs(null))
-
-      cy.setEncryptedCookies(userExternalId)
-      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-
-      cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Default billing address country')
-      cy.get('.govuk-summary-list__value').eq(1).should('contain', 'None')
-    })
-
-    it('should show setting as Off', () => {
-      cy.task('setupStubs', getUserAndGatewayAccountStubs(null))
-
-      cy.get('.govuk-summary-list__actions').eq(1).contains('Change').click()
-
-      cy.get('input[type="radio"]').should('have.length', 2)
-      cy.get('input[value="on"]').should('not.be.checked')
-      cy.get('input[value="off"]').should('be.checked')
-    })
-
-    it('should update to On', () => {
+    it('should show default country as None and allow updating', () => {
       cy.task('setupStubs', [
-        ...getUserAndGatewayAccountStubs('GB'),
+        ...getUserAndGatewayAccountStubs(null),
         serviceStubs.patchUpdateDefaultBillingAddressCountrySuccess({
           serviceExternalId,
           gatewayAccountId,
@@ -55,16 +35,35 @@ describe('Default billing address country', () => {
         })
       ])
 
+      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+
+      cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Default billing address country')
+      cy.get('.govuk-summary-list__value').eq(1).should('contain', 'None')
+
+      cy.get('.govuk-summary-list__actions').eq(1).contains('Change').click()
+
+      cy.get('input[type="radio"]').should('have.length', 2)
+      cy.get('input[value="on"]').should('not.be.checked')
+      cy.get('input[value="off"]').should('be.checked')
+
       cy.get('input[value="on"]').click()
       cy.get('.govuk-button').contains('Save changes').click()
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
       })
-      cy.get('.govuk-notification-banner--success').should('contain', 'United Kingdom as the default billing address: On')
 
-      cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Default billing address country')
-      cy.get('.govuk-summary-list__value').eq(1).should('contain', 'United Kingdom')
+      it('should show default billing address country as "United Kingdom"', () => {
+        cy.task('setupStubs', [
+          ...getUserAndGatewayAccountStubs('GB'),
+        ])
+
+        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.get('.govuk-notification-banner--success').should('contain', 'United Kingdom as the default billing address: On')
+
+        cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Default billing address country')
+        cy.get('.govuk-summary-list__value').eq(1).should('contain', 'United Kingdom')
+      })
     })
   })
 

@@ -169,13 +169,11 @@ function postCreateGatewayAccountSuccess (opts) {
 
 function getAcceptedCardTypesSuccess (opts) {
   const path = `/v1/frontend/accounts/${opts.gatewayAccountId}/card-types`
-  const response = opts.updated
-    ? cardFixtures.validUpdatedAcceptedCardTypesResponse()
-    : cardFixtures.validAcceptedCardTypesResponse({
-      account_id: opts.gatewayAccountId,
-      updated: opts.updated,
-      maestro: opts.maestro || ''
-    })
+  const response = cardFixtures.validAcceptedCardTypesResponse({
+    account_id: opts.gatewayAccountId,
+    updated: opts.updated,
+    maestro: opts.maestro || ''
+  })
   return stubBuilder('GET', path, 200, { response: response })
 }
 
@@ -211,6 +209,7 @@ function patchAccountEmailCollectionModeSuccess (opts) {
     request: gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest('MANDATORY')
   })
 }
+
 function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
   return stubBuilder('PATCH', path, 200, {
@@ -224,6 +223,7 @@ function patchAccountUpdateGooglePaySuccess (gatewayAccountId, allowGooglePay) {
     request: gatewayAccountFixtures.validUpdateToggleGooglePayRequest(allowGooglePay)
   })
 }
+
 function patchUpdateServiceNameSuccess (gatewayAccountId, serviceName) {
   const path = `/v1/frontend/accounts/${gatewayAccountId}/servicename`
   return stubBuilder('PATCH', path, 200, {

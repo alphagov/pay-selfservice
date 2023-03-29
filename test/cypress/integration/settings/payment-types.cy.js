@@ -1,11 +1,11 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
-function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, updated = false) {
+function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
-    gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated }),
+    gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId }),
     gatewayAccountStubs.getCardTypesSuccess(),
     gatewayAccountStubs.postUpdateCardTypesSuccess(gatewayAccountId)
   ])
@@ -18,67 +18,51 @@ describe('Payment types', () => {
   const serviceName = 'Purchase a positron projection permit'
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('session', 'gateway_account')
+    cy.setEncryptedCookies(userExternalId)
   })
 
-  describe('Card types', () => {
-    beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
-    })
+  it('should display page and allow updating card types', () => {
+    setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
+    cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
 
-    it('should show page title', () => {
-      cy.setEncryptedCookies(userExternalId)
-      cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
-      cy.title().should('eq', `Manage payment types - ${serviceName} - GOV.UK Pay`)
-    })
-    it('should show accepted debit cards', () => {
-      cy.get('#debit').should('be.checked')
-      cy.get('#debit-2').should('be.checked')
-    })
-    it('should not accepted maestro and should be disabled with hint', () => {
-      cy.get('#debit-3').should('be.not.checked')
-      cy.get('#debit-3').should('be.disabled')
-      cy.get('#debit-3-item-hint').should('be.visible')
-    })
-    it('should show accepted credit cards and hint about Amex', () => {
-      cy.get('#credit').should('be.checked')
-      cy.get('#credit-2').should('be.checked')
-      cy.get('#credit-3').should('be.checked')
-      cy.get('#credit-3-item-hint').should('be.visible')
-      cy.get('#credit-4').should('be.not.checked')
-      cy.get('#credit-5').should('be.not.checked')
-      cy.get('#credit-6').should('be.not.checked')
-      cy.get('#credit-7').should('be.not.checked')
-    })
+    cy.title().should('eq', `Manage payment types - ${serviceName} - GOV.UK Pay`)
+
+    cy.get('#debit').should('be.checked')
+    cy.get('#debit-2').should('be.checked')
+
+    cy.get('#debit-3').should('be.not.checked')
+    cy.get('#debit-3').should('be.disabled')
+    cy.get('#debit-3-item-hint').should('be.visible')
+
+    cy.get('#credit').should('be.checked')
+    cy.get('#credit-2').should('be.checked')
+    cy.get('#credit-3').should('be.checked')
+    cy.get('#credit-3-item-hint').should('be.visible')
+    cy.get('#credit-4').should('be.not.checked')
+    cy.get('#credit-5').should('be.not.checked')
+    cy.get('#credit-6').should('be.not.checked')
+    cy.get('#credit-7').should('be.not.checked')
+
+    cy.get('#credit-4').click()
+    cy.get('#credit-4').should('be.checked')
+    cy.get('#save-card-types').click()
+
+    cy.title().should('eq', `Manage payment types - ${serviceName} - GOV.UK Pay`)
+    cy.get('.govuk-notification-banner--success')
+      .should('exist')
+      .should('contain', 'Accepted card types have been updated')
   })
 
-  describe('Card types', () => {
-    beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, true)
-    })
+  it('should show error if user tries to disable all card types', () => {
+    setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
+    cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
 
-    it('should update if we add Diners Club', () => {
-      cy.get('#credit-4').click()
-      cy.get('#credit-4').should('be.checked')
-      cy.get('#save-card-types').click()
-      cy.get('#credit-4').should('be.checked')
-    })
-  })
-
-  describe('Card types', () => {
-    beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
-    })
-
-    it('should show error if user tries to disable all card types', () => {
-      cy.get('#debit').click()
-      cy.get('#debit-2').click()
-      cy.get('#credit').click()
-      cy.get('#credit-2').click()
-      cy.get('#credit-3').click()
-      cy.get('#credit-4').click()
-      cy.get('#save-card-types').click()
-      cy.get('.error-summary').should('be.visible')
-    })
+    cy.get('#debit').click()
+    cy.get('#debit-2').click()
+    cy.get('#credit').click()
+    cy.get('#credit-2').click()
+    cy.get('#credit-3').click()
+    cy.get('#save-card-types').click()
+    cy.get('.error-summary').should('be.visible')
   })
 })
