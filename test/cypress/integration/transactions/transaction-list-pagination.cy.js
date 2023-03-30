@@ -64,13 +64,13 @@ describe('Transactions list pagination', () => {
         cy.visit(transactionsUrl + '?pageSize=5&page=')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
+        cy.get('form.paginationForm.page-Previous').should('have.length', 2).first().within(() => {
           cy.get('input[name="page"]').should('have.value', '')
         })
         cy.get('button.pagination.Previous').should('exist')
         cy.get('button.pagination.Previous').should('be.disabled')
 
-        cy.get('form.paginationForm.page-Next').should('exist').within(() => {
+        cy.get('form.paginationForm.page-Next').should('have.length', 2).first().within(() => {
           cy.get('input[name="page"]').should('have.value', '2')
         })
         cy.get('button.pagination.Next').should('exist')
@@ -88,12 +88,12 @@ describe('Transactions list pagination', () => {
         cy.visit(transactionsUrl + '?pageSize=5&page=3')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
+        cy.get('form.paginationForm.page-Previous').should('have.length', 2).first().within(() => {
           cy.get('input[name="page"]').should('have.value', '2')
         })
         cy.get('button.pagination.Previous').should('exist')
 
-        cy.get('form.paginationForm.page-Next').should('exist').within(() => {
+        cy.get('form.paginationForm.page-Next').should('have.length', 2).first().within(() => {
           cy.get('input[name="page"]').should('have.value', '4')
         })
         cy.get('button.pagination.Next').should('exist')
@@ -110,12 +110,12 @@ describe('Transactions list pagination', () => {
         cy.visit(transactionsUrl + '?pageSize=5&page=3')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
+        cy.get('form.paginationForm.page-Previous').should('have.length', 2).first().within(() => {
           cy.get('input[name="page"]').should('have.value', '2')
         })
         cy.get('button.pagination.Previous').should('exist')
 
-        cy.get('form.paginationForm.page-Next').should('exist').within(() => {
+        cy.get('form.paginationForm.page-Next').should('have.length', 2).first().within(() => {
           cy.get('input[name="page"]').should('have.value', '')
         })
         cy.get('button.pagination.Next').should('exist')

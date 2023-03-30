@@ -35,18 +35,13 @@ describe('Worldpay account setup banner', () => {
   }
 
   describe('Admin user', () => {
-    beforeEach(() => {
-      setupStubs('admin')
-    })
-
     it('should display banner if account is worldpay and the credentials are in CREATED state', () => {
+      setupStubs('admin')
       cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
 
       cy.get('.govuk-notification-banner__title').contains('Important')
       cy.get('.govuk-notification-banner__content').contains('You have not finished setting up your account. You will not be able to take payments unless you connect your Worldpay account to GOV.UK Pay.')
-    })
 
-    it('should display Your PSP page when "connect your Worldpay account to GOV.UK Pay" link is clicked', () => {
       cy.get('#connect-worldpay-account').click()
       cy.get('h1').contains('Your payment service provider (PSP) - Worldpay')
     })

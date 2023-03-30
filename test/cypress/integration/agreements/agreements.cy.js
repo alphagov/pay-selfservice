@@ -81,6 +81,12 @@ describe('Agreements', () => {
         service_id: serviceExternalId,
         live: false,
         gatewayAccountId,
+        agreements: mockAgreements
+      }),
+      agreementStubs.getLedgerAgreementsSuccess({
+        service_id: serviceExternalId,
+        live: false,
+        gatewayAccountId,
         agreements: mockAgreements,
         filters: { status: statusFilter, reference: referenceFilter }
       }),
@@ -111,6 +117,7 @@ describe('Agreements', () => {
       })
     ])
 
+    cy.visit('/test/service/service-id/account/gateway-account-id/agreements')
     cy.get('#reference').type(referenceFilter)
     cy.get('#status').select(statusFilter)
     cy.get('#filter').click()

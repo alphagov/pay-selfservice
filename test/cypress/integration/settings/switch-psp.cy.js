@@ -509,13 +509,14 @@ describe('Switch PSP settings page', () => {
         })
 
         it('loads the `VAT number` page', () => {
+          cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
           cy.get('a').contains('Provide your organisation’s VAT number').click()
           cy.get('#navigation-menu-switch-psp').parent().should('have.class', 'govuk-!-font-weight-bold')
           cy.get('a').contains('Back to Switching payment service provider (PSP)').should('exist')
         })
 
         it('loads the `check org details` page', () => {
-          cy.get('a').contains('Back to Switching payment service provider (PSP)').click()
+          cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
           cy.get('a').contains('Confirm your organisation details').click()
           cy.get('#navigation-menu-switch-psp').parent().should('have.class', 'govuk-!-font-weight-bold')
           cy.get('a').contains('Back to Switching payment service provider (PSP)').should('exist')
