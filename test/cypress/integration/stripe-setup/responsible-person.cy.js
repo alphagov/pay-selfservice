@@ -87,7 +87,7 @@ describe('Stripe setup: responsible person page', () => {
           cy.get('input#dob-year[name="dob-year"][autocomplete="bday-year"]').should('exist')
 
           cy.get('label[for="telephone-number"]').should('exist')
-          cy.get('input#telephone-number[name="telephone-number"][autocomplete="tel"]').should('exist')
+          cy.get('input#telephone-number[name="telephone-number"][autocomplete="work tel"]').should('exist')
 
           cy.get('label[for="email"]').should('exist')
           cy.get('input#email[name="email"][autocomplete="email"]').should('exist')
