@@ -31,7 +31,9 @@ Sign in to GOV.UK Pay
         id: "username",
         name: "username",
         classes: "govuk-!-width-two-thirds",
-        type: "email"
+        type: "email",
+        autocomplete: "username",
+        spellcheck: "false"
       })
     }}
 
@@ -45,9 +47,7 @@ Sign in to GOV.UK Pay
         name: "password",
         classes: "govuk-!-width-two-thirds",
         type: "password",
-        attributes: {
-          "autocomplete": "current-password"
-        }
+        autocomplete: "current-password"
       })
     }}
 

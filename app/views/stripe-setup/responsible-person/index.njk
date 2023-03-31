@@ -260,8 +260,9 @@
         id: "email",
         name: "email",
         value: email,
-        type: "text",
-        autocomplete: "email",
+        type: "email",
+        autocomplete: "work email",
+        spellcheck: "false",
         errorMessage: { text: errors.email } if errors.email else false,
         classes: "govuk-!-width-two-thirds"
       }) }}
