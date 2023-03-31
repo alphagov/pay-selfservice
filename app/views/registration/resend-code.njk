@@ -39,6 +39,8 @@
         },
         id: "phone",
         name: "phone",
+        type: "tel",
+        autocomplete: "mobile tel",
         errorMessage: { text: errors['phone'] } if errors['phone'] else false,
         value: phoneNumber
       }) }}
