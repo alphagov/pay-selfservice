@@ -106,7 +106,7 @@ describe('Stripe setup: director page', () => {
           cy.get('input#last-name[name="last-name"][autocomplete="family-name"]').should('exist')
 
           cy.get('label[for="email"]').should('exist')
-          cy.get('input#email[name="email"][autocomplete="email"]').should('exist')
+          cy.get('input#email[name="email"][autocomplete="work email"]').should('exist')
 
           cy.get('label[for="dob-day"]').should('exist')
           cy.get('input#dob-day[name="dob-day"][autocomplete="bday-day"]').should('exist')

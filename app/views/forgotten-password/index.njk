@@ -19,7 +19,7 @@ Forgot your password - GOV.UK Pay
     <h1 class="govuk-heading-l page-title">
         Forgot your password?
     </h1>
-    <p class="govuk-body">We'll then send you an email which you can use to set up a new password.</p>
+    <p class="govuk-body">We’ll then send you an email which you can use to set up a new password.</p>
 
     {{ govukInput({
         label: {
@@ -29,7 +29,9 @@ Forgot your password - GOV.UK Pay
         errorMessage: { text: errors.username } if errors.username else false,
         name: "username",
         classes: "govuk-!-width-two-thirds",
-        type: "email"
+        type: "email",
+        autocomplete: "username",
+        spellcheck: "false"
       })
     }}
 

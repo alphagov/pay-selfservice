@@ -31,7 +31,9 @@ Invite a new team member - GOV.UK Pay
       id: "invitee-email",
       name: "invitee-email",
       classes: "govuk-!-width-two-thirds",
-      type: "email"
+      type: "email",
+      autocomplete: "work email",
+      spellcheck: "false"
     }) }}
     {% if serviceHasAgentInitiatedMotoEnabled %}
       {{ govukRadios({
