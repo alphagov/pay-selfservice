@@ -15,7 +15,7 @@ describe('Org URL GET controller', () => {
         connectorGatewayAccountStripeProgress: {}
       },
       flash: sinon.spy(),
-      url: '/kyc/'
+      url: '/switch-psp/'
     }
     res = {
       redirect: sinon.spy(),
@@ -24,20 +24,7 @@ describe('Org URL GET controller', () => {
     next = sinon.spy()
   })
 
-  it('should render error page when on a /kyc/ URL and req.account.requires_additional_kyc_data = false', async () => {
-    req.account.requires_additional_kyc_data = undefined
-
-    await getController(req, res, next)
-
-    sinon.assert.notCalled(res.redirect)
-    const expectedError = sinon.match.instanceOf(Error)
-      .and(sinon.match.has('message', 'requires_additional_kyc_data flag is not enabled for gateway account'))
-    sinon.assert.calledWith(next, expectedError)
-  })
-
-  it('should render organisation URL details form if req.account.requires_additional_kyc_data = true', async () => {
-    req.account.requires_additional_kyc_data = true
-
+  it('should render organisation URL details form', async () => {
     await getController(req, res, next)
 
     sinon.assert.calledWith(res.render, `kyc/organisation-url`)

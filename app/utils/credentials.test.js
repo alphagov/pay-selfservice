@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const paths = require('../paths')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
 const { InvalidConfigurationError } = require('../errors')
-const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, isAdditionalKycDataRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists, getActiveCredential, isEnableStripeOnboardingTaskListRoute } = require('./credentials')
+const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists, getActiveCredential, isEnableStripeOnboardingTaskListRoute } = require('./credentials')
 
 describe('credentials utility', () => {
   describe('get services current credential', () => {
@@ -96,12 +96,6 @@ describe('credentials utility', () => {
     it('correctly identifies a switch psp route', () => {
       const req = { route: { path: paths.account.switchPSP.credentialsWithGatewayCheck } }
       expect(isSwitchingCredentialsRoute(req)).to.equal(true)
-      expect(isAdditionalKycDataRoute(req)).to.equal(false)
-    })
-
-    it('correctly identifies a kyc route', () => {
-      const req = { route: { path: paths.account.kyc.organisationUrl } }
-      expect(isAdditionalKycDataRoute(req)).to.equal(true)
     })
 
     it('correctly identifies a non switch psp route', () => {

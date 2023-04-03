@@ -96,32 +96,5 @@ module.exports = {
       },
       purpose: 'identity_document'
     })
-  },
-
-  addNewCapabilities: function (stripeAccountId, organisationName, phoneNumber, hasMCC) {
-    const payload = {
-      business_profile: {
-        product_description: `Payments for public sector services for organisation ${organisationName}`
-      },
-      capabilities: {
-        card_payments: {
-          requested: true
-        },
-        transfers: {
-          requested: true
-        }
-      }
-    }
-
-    if (!hasMCC) {
-      payload.business_profile.mcc = '9399'
-    }
-
-    if (phoneNumber) {
-      payload.company = {
-        phone: phoneNumber
-      }
-    }
-    return stripe.accounts.update(stripeAccountId, payload)
   }
 }

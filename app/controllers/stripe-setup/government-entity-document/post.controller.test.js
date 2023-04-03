@@ -18,9 +18,8 @@ describe('Government entity document POST controller', () => {
   let setStripeAccountSetupFlagMock
   let uploadFileMock
   let updateAccountMock
-  let completeKycMock
 
-  function getControllerWithMocks (isKycTaskListComplete) {
+  function getControllerWithMocks () {
     return proxyquire('./post.controller', {
       '../../../services/clients/stripe/stripe.client': {
         uploadFile: uploadFileMock,
@@ -34,11 +33,7 @@ describe('Government entity document POST controller', () => {
       '../stripe-setup.util': {
         getStripeAccountId: () => {
           return Promise.resolve('acct_123example123')
-        },
-        completeKyc: completeKycMock
-      },
-      '../../../controllers/your-psp/kyc-tasks.service': {
-        isKycTaskListComplete: () => isKycTaskListComplete
+        }
       }
     })
   }
@@ -237,7 +232,7 @@ describe('Government entity document POST controller', () => {
 
   it('should display an error message, when Stripe returns error for file, not call connector and when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-    
+
     const errorFromStripe = {
       type: 'StripeInvalidRequestError',
       param: 'file'
@@ -247,7 +242,7 @@ describe('Government entity document POST controller', () => {
     updateAccountMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
-    
+
     req.url = '/your-psp/:credentialId/government-entity-document'
     req.file = { ...postBody }
 
@@ -299,56 +294,6 @@ describe('Government entity document POST controller', () => {
       sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
       sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
       sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.switchPSP.index}`)
-    })
-  })
-  describe('Collecting additional KYC data', () => {
-    beforeEach(() => {
-      req.url = `/kyc/new-stripe-account-id-123/government-entity-document`
-
-      req.account.requires_additional_kyc_data = true
-      req.account.gateway_account_credentials = [
-        {
-          external_id: 'credential-external-id',
-          payment_provider: 'stripe',
-          state: 'ACTIVE',
-          credentials: {
-            stripe_account_id: 'new-stripe-account-id-123'
-          }
-        }
-      ]
-      req.file = { ...postBody }
-      req.file.buffer = '0A 0B'
-      req.service = { external_id: 'service-id' }
-
-      uploadFileMock = sinon.spy(() => Promise.resolve({ id: 'file_id_123' }))
-      updateAccountMock = sinon.spy(() => Promise.resolve())
-      setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
-      completeKycMock = sinon.spy(() => Promise.resolve())
-    })
-
-    it('should redirect to your PSP route for valid payload', async function () {
-      const controller = getControllerWithMocks(true)
-
-      await controller.postGovernmentEntityDocument(req, res, next)
-
-      sinon.assert.calledWith(uploadFileMock, 'entity_document_for_account_1', 'image/jpeg', '0A 0B')
-      sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
-      sinon.assert.calledWith(completeKycMock, req.account.gateway_account_id, req.service, res.locals.stripeAccount.stripeAccountId)
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
-      sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/credential-external-id`)
-    })
-
-    it('should not complete KYC if kyc task list is not complete', async function () {
-      const controller = getControllerWithMocks(false)
-
-      await controller.postGovernmentEntityDocument(req, res, next)
-
-      sinon.assert.notCalled(completeKycMock)
-
-      sinon.assert.calledWith(uploadFileMock, 'entity_document_for_account_1', 'image/jpeg', '0A 0B')
-      sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
-      sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
-      sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/credential-external-id`)
     })
   })
 

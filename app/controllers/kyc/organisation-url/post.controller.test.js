@@ -3,7 +3,6 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const assert = require('assert')
-const paths = require('../../../paths')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
@@ -34,9 +33,8 @@ describe('Organisation URL POST controller', () => {
   let res
   let updateAccountMock
   let updateServiceMock
-  let completeKycMock
 
-  function getControllerWithMocks (isKycTaskListComplete = false) {
+  function getControllerWithMocks () {
     return proxyquire('./post.controller', {
       '../../../services/clients/stripe/stripe.client': {
         updateAccount: updateAccountMock
@@ -44,14 +42,10 @@ describe('Organisation URL POST controller', () => {
       '../../stripe-setup/stripe-setup.util': {
         getStripeAccountId: () => {
           return Promise.resolve(stripeAccountId)
-        },
-        completeKyc: completeKycMock
+        }
       },
       '../../../services/service.service': {
         updateService: updateServiceMock
-      },
-      '../../../controllers/your-psp/kyc-tasks.service': {
-        isKycTaskListComplete: () => isKycTaskListComplete
       }
     })
   }
@@ -64,10 +58,7 @@ describe('Organisation URL POST controller', () => {
       },
       user,
       service,
-      flash: sinon.spy(),
-      route: {
-        path: paths.account.kyc.organisationUrl
-      }
+      flash: sinon.spy()
     }
     res = {
       setHeader: sinon.stub(),
@@ -83,12 +74,10 @@ describe('Organisation URL POST controller', () => {
     next = sinon.spy()
     updateAccountMock = sinon.spy(() => Promise.resolve())
     updateServiceMock = sinon.spy(() => Promise.resolve())
-    completeKycMock = sinon.spy(() => Promise.resolve())
   })
 
   it('update Stripe company URL, update admin users client and then redirect to Your PSP page', async () => {
     req.body = postBody
-    req.account.requires_additional_kyc_data = true
     const controller = getControllerWithMocks()
 
     await controller(req, res, next)
@@ -98,26 +87,7 @@ describe('Organisation URL POST controller', () => {
     const updateRequest = new ServiceUpdateRequest()
       .replace(validPaths.merchantDetails.url, organisationUrl)
     sinon.assert.calledWith(updateServiceMock, req.service.externalId, updateRequest.formatPayload())
-    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(req.flash, 'generic', 'Organisation website address added successfully')
-    sinon.assert.notCalled(completeKycMock)
-  })
-
-  it('should call completeKyc if all KYC tasks are complete for additional KYC details collection', async () => {
-    req.body = postBody
-    req.account.requires_additional_kyc_data = true
-    const controller = getControllerWithMocks(true)
-
-    await controller(req, res, next)
-
-    sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { url: organisationUrl })
-
-    const updateRequest = new ServiceUpdateRequest()
-      .replace(validPaths.merchantDetails.url, organisationUrl)
-    sinon.assert.calledWith(updateServiceMock, req.service.externalId, updateRequest.formatPayload())
-    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/your-psp/${credentialId}`)
-    sinon.assert.calledWith(completeKycMock, account.gateway_account_id, service, stripeAccountId)
-    sinon.assert.calledWith(req.flash, 'generic', 'You’ve successfully added all the Know your customer details for this service.')
+    sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/switch-psp`)
   })
 
   it('should display an error message when Stripe returns `url_invalid` error, not call admin users, and redirect url page', async function () {

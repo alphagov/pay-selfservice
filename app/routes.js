@@ -118,8 +118,7 @@ const {
   toggleMotoMaskCardNumberAndSecurityCode,
   transactions,
   yourPsp,
-  switchPSP,
-  kyc
+  switchPSP
 } = paths.account
 const {
   webhooks,
@@ -440,8 +439,8 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  account.get([kyc.organisationUrl, switchPSP.organisationUrl], permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.get)
-  account.post([kyc.organisationUrl, switchPSP.organisationUrl], permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.post)
+  account.get(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.get)
+  account.post(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, kycOrganisationUrlController.post)
 
   // Stripe setup
   account.get([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
@@ -454,8 +453,8 @@ module.exports.bind = function (app) {
   account.post([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.post)
   account.get([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
   account.post([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
-  account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
-  account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument, kyc.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
+  account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
+  account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
   account.get([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.get)
   account.post([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.post)
   account.get([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.get)
