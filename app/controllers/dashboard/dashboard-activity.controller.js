@@ -157,8 +157,7 @@ module.exports = async (req, res) => {
         transactionsPeriodString,
         targetCredential,
         activeCredential,
-        worldpayAccountAndSetupIncomplete: (req.account.payment_provider === 'worldpay' && activeCredential && activeCredential.state === 'CREATED'),
-        requiresAdditionalKycData: req.account.requires_additional_kyc_data
+        worldpayAccountAndSetupIncomplete: (req.account.payment_provider === 'worldpay' && activeCredential && activeCredential.state === 'CREATED')
       }))
     } catch (error) {
       const status = _.get(error.message, 'statusCode', 404)

@@ -666,23 +666,6 @@ ConnectorClient.prototype = {
       description: 'switch account payment service provider',
       service: SERVICE_NAME
     })
-  },
-
-  disableCollectAdditionalKyc: function (gatewayAccountId) {
-    return baseClient.patch(
-      {
-        baseUrl: this.connectorUrl,
-        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: {
-          op: 'replace',
-          path: 'requires_additional_kyc_data',
-          value: false
-        },
-        description: 'Disable the requires_additional_kyc_data flag for gateway account',
-        service: SERVICE_NAME
-      }
-    )
   }
 }
 

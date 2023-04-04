@@ -20,7 +20,7 @@ const mainSettingsPaths = [
 ]
 
 const yourPspPaths = ['your-psp', 'notification-credentials']
-const additionalPspPaths = ['switch-psp', 'kyc']
+const additionalPspPaths = ['switch-psp']
 const webhookPaths = ['webhooks']
 
 const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {

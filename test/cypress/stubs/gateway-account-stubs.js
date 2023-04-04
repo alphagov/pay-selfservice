@@ -65,10 +65,6 @@ function parseGatewayAccountOptions (opts) {
     stubOptions.provider_switch_enabled = opts.providerSwitchEnabled
   }
 
-  if (opts.requiresAdditionalKycData !== undefined) {
-    stubOptions.requires_additional_kyc_data = opts.requiresAdditionalKycData
-  }
-
   if (opts.gatewayAccountCredentials) {
     stubOptions.gateway_account_credentials = opts.gatewayAccountCredentials
   }
@@ -111,8 +107,7 @@ function getGatewayAccountsSuccess (opts) {
         gateway_account_id: opts.gatewayAccountId,
         type: opts.type,
         payment_provider: opts.paymentProvider,
-        external_id: '42',
-        requires_additional_kyc_data: opts.requiresAdditionalKycData || false
+        external_id: '42'
       }]
     })
   })
