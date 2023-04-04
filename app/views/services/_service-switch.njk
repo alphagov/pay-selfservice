@@ -1,5 +1,5 @@
 <li class="service--{{ account.type }}">
-  <form method="post" action="{{routes.serviceSwitcher.switch}}">
+  <form method="post" action="{{routes.serviceSwitcher.switch}}" novalidate>
     <input name="csrfToken" type="hidden" value="{{csrf}}" />
     <input name="gatewayAccountId" type="hidden" value="{{ account.id }}"/>
     <input name="gatewayAccountExternalId" type="hidden" value="{{ account.external_id }}"/>

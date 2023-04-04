@@ -20,7 +20,7 @@
       This is what your users will see when making a payment. You can change this&nbsp;later.
     </p>
 
-    <form id="add-service-form" method="post" action="{{submit_link}}">
+    <form id="add-service-form" method="post" action="{{submit_link}}" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
       {{ govukInput({

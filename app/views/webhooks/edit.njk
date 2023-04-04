@@ -27,7 +27,7 @@
   {% endif %}
   <h1 class="govuk-heading-l page-title">{{ heading }}</h1>
 
-  <form method="POST" action="{{ submitURL }}">
+  <form method="POST" action="{{ submitURL }}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set items = [] %}

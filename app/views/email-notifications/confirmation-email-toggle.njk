@@ -20,7 +20,7 @@
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
-  <form id="confirmation-email-form" method="post">
+  <form id="confirmation-email-form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="govuk-form-group">
       <fieldset class="govuk-fieldset" aria-describedby="email-confirmation-enabled-hint">

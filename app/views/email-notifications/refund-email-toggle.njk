@@ -20,7 +20,7 @@
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
-  <form id="refund-email-form" method="post" action="{{ formatAccountPathsFor(routes.account.emailNotifications.refund, currentGatewayAccount.external_id) }}">
+  <form id="refund-email-form" method="post" action="{{ formatAccountPathsFor(routes.account.emailNotifications.refund, currentGatewayAccount.external_id) }}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="govuk-form-group">
       <fieldset class="govuk-fieldset" aria-describedby="email-confirmation-enabled-hint">

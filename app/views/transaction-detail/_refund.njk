@@ -1,6 +1,6 @@
 <h2 class="govuk-heading-m govuk-!-margin-top-1">Refund</h2>
 
-<form id="refundForm" action="{{ formatAccountPathsFor(routes.account.transactions.refund, currentGatewayAccount.external_id, charge_id) }}" method="post" class="target-to-show {% if flash.genericError %}active{% endif %}">
+<form id="refundForm" action="{{ formatAccountPathsFor(routes.account.transactions.refund, currentGatewayAccount.external_id, charge_id) }}" method="post" class="target-to-show {% if flash.genericError %}active{% endif %}" novalidate>
   <input id="full-amount" type="hidden" name="full-amount" value="{{ refundable_amount }}" >
   <input id="amount-available" type="hidden" name="refund-amount-available-in-pence" value="{{ refund_summary.amount_available }}" />
   <input id="context-is-all-services-transactions" type="hidden" name="context-is-all-services-transactions" value="{{contextIsAllServiceTransactions}}" />

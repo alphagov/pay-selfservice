@@ -15,7 +15,7 @@ Resend security code - GOV.UK Pay
   <p class="govuk-body">
     If you no longer have access to the phone with the number registered for this service, speak to your service manager to reset the number
   </p>
-  <form action="/otp-send-again" class="form" method="post">
+  <form action="/otp-send-again" class="form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <input type="hidden" name="send" value="true">
     {{ govukButton({

@@ -21,7 +21,7 @@
     {% endif %}
 
     <h1 class="govuk-heading-l">Your Worldpay 3DS Flex credentials</h1>
-    <form method="post">
+    <form method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
         {% if errors %}
           {% set errorList = [] %}

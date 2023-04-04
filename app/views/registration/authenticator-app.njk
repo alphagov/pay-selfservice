@@ -29,7 +29,7 @@
 
     {% include "../two-factor-auth/_authenticator-app-instructions.njk" %}
 
-    <form method="post">
+    <form method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {{ govukInput({

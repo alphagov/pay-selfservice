@@ -19,7 +19,7 @@
     <p class="govuk-body">
         Changing your service name affects both live and test environments, including user-facing payment pages and emails.
     </p>
-    <form id="edit-service-name-form" method="post" action="{{submit_link}}">
+    <form id="edit-service-name-form" method="post" action="{{submit_link}}" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
       {{ govukInput({

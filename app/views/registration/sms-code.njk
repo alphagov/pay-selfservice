@@ -31,7 +31,7 @@
       text: "We have sent a code to " + redactedPhoneNumber + "."
     }) }}
 
-    <form method="post">
+    <form method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {{ govukInput({

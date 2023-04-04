@@ -8,7 +8,7 @@ Give feedback — GOV.UK Pay
 <div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Give feedback</h1>
 
-  <form method="POST" action="{{routes.feedback}}">
+  <form method="POST" action="{{routes.feedback}}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input id="email" name="email" type="hidden" value="{{email}}"/>
     <input id="service-name" name="service-name" type="hidden" value="{{currentService.name}}"/>

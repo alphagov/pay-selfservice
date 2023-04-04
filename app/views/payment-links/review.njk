@@ -134,7 +134,7 @@
 
   {% include "./reporting-columns/_manage-reporting-columns.njk" %}
 
-  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.review, currentGatewayAccount.external_id) }}" class="form" method="post" data-virtual-pageview="/create-payment-link/success" data-parameters="dimension1:service-name">
+  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.review, currentGatewayAccount.external_id) }}" class="form" method="post" data-virtual-pageview="/create-payment-link/success" data-parameters="dimension1:service-name" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input name="service-name" type="hidden" value="{{currentService.name}}"/>
 

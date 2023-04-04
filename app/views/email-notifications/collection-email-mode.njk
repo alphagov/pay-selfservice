@@ -20,7 +20,7 @@
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
-  <form id="collection-email-form" method="post">
+  <form id="collection-email-form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{

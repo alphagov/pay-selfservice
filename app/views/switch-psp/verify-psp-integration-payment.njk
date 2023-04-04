@@ -40,7 +40,7 @@
 
   {% if targetCredential.payment_provider === 'worldpay' or allowTestPayment === true %}
     <p class="govuk-body">Make a live payment of £2 with a debit or credit card to check that the connection with {{ targetCredential.payment_provider | formatPSPname }} is working. You can refund the payment anytime.</p>
-    <form method="POST">
+    <form method="POST" novalidate>
       {{ govukButton ({
         text: "Continue to live payment"
       }) }}

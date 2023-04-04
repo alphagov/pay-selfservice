@@ -16,7 +16,7 @@
     </p>
   {% else %}
       {% if requestForPspTestAccountNotStarted %}
-        <form id="submit-request-for-psp-test-account-form" method="post">
+        <form id="submit-request-for-psp-test-account-form" method="post" novalidate>
             <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
             <h1 class="govuk-heading-l">Request Stripe test account</h1>
             <p class="govuk-body">

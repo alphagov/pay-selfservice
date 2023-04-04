@@ -28,7 +28,7 @@ Edit team member permissions - GOV.UK Pay
     <dt class="govuk-heading-s govuk-!-margin-bottom-0">Email address</dt>
     <dd class="govuk-body govuk-!-margin-left-0" id="email">{{email}}</dd>
   </dl>
-  <form id="role-update-form" method="post" action="{{editPermissionsLink}}">
+  <form id="role-update-form" method="post" action="{{editPermissionsLink}}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if serviceHasAgentInitiatedMotoEnabled %}
       {{

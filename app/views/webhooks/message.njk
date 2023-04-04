@@ -24,7 +24,7 @@
 
   {# re-introduce when backend POST route enabled #}
   {# <div>
-    <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.resendMessage, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id, message.external_id) }}">
+    <form method="POST" action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.webhooks.resendMessage, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, webhook.external_id, message.external_id) }}" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
       {{ govukButton({
         text: "Resend event",

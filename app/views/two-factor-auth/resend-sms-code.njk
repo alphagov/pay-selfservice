@@ -26,7 +26,7 @@
 
     <h1 class="form-title govuk-heading-l">Check your mobile number</h1>
     <p class="govuk-body">Check your mobile phone number is correct, then resend the security code.</p>
-    <form class="form" method="post">
+    <form class="form" method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
       {{
       govukInput({

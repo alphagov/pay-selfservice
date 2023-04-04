@@ -6,7 +6,7 @@
     {% if pageSizeLink.active %}
       {{pageSizeLink.name}}
     {% else %}
-      <form class="displaySizeForm govuk-!-display-inline-block" method="get" action="{{pageSizeLink.search_path}}">
+      <form class="displaySizeForm govuk-!-display-inline-block" method="get" action="{{pageSizeLink.search_path}}" novalidate>
         {% include "transactions/common-hidden-search-fields.njk" %}
         <input type="hidden" name="page" value="1"/>
         <input type="hidden" name="pageSize" value="{{pageSizeLink.value}}"/>

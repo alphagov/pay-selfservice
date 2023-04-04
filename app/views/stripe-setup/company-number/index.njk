@@ -38,7 +38,7 @@
     }) }}
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6"><label for="company-number">Company registration number</label></h1>
-    <form id="company-number-form" method="post">
+    <form id="company-number-form" method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set companyNumberError = false %}

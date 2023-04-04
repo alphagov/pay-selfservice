@@ -87,7 +87,7 @@
 
 {% if isTest %}
   {% if (is3dsEnabled and isWorldpay3dsFlexCredentialsConfigured) or isWorldpay3dsFlexEnabled %}
-    <form method="post" action="{{ formatAccountPathsFor(routes.account.yourPsp.worldpay3dsFlex, currentGatewayAccount.external_id, credential.external_id) }}">
+    <form method="post" action="{{ formatAccountPathsFor(routes.account.yourPsp.worldpay3dsFlex, currentGatewayAccount.external_id, credential.external_id) }}" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}">
       {% if is3dsEnabled and isWorldpay3dsFlexCredentialsConfigured and not isWorldpay3dsFlexEnabled %}
           <input id="toggle-worldpay-3ds-flex" name="toggle-worldpay-3ds-flex" type="hidden" value="on">

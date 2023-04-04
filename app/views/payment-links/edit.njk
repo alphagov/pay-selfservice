@@ -131,7 +131,7 @@
 
   {% include "./reporting-columns/_manage-reporting-columns.njk" %}
 
-  <form action="{{ self }}" class="form" method="post">
+  <form action="{{ self }}" class="form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{
       govukButton({

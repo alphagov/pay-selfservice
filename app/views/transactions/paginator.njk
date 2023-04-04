@@ -1,7 +1,7 @@
 {% if hasPaginationLinks %}
 <div class="pagination">
   {% for paginationLink in paginationLinks %}
-    <form class="paginationForm page-{{paginationLink.pageName}}" method="get" action="{{paginationLink.search_path}}">
+    <form class="paginationForm page-{{paginationLink.pageName}}" method="get" action="{{paginationLink.search_path}}" novalidate>
       {% include "transactions/common-hidden-search-fields.njk" %}
       <input type="hidden" name="page" value="{{paginationLink.pageNumber}}"/>
       <input type="hidden" name="pageSize" value="{{filters.pageSize}}"/>

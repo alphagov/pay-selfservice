@@ -171,7 +171,7 @@
               iconFallbackText: "Warning"
             }) }}
 
-            <form method="POST">
+            <form method="POST" novalidate>
               {{ govukButton({
                 text: "Switch to " + (targetCredential.payment_provider | formatPSPname),
                 disabled: (not taskListIsComplete)
