@@ -22,7 +22,7 @@ Invite a new team member - GOV.UK Pay
         Invite a team member</h1>
     </div>
   </div>
-  <form id="invite-member-form" method="post" action="{{teamMemberInviteSubmitLink}}" class="govuk-grid-column-two-thirds">
+  <form id="invite-member-form" method="post" action="{{teamMemberInviteSubmitLink}}" class="govuk-grid-column-two-thirds" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{ govukInput({
       label: {

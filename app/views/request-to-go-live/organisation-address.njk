@@ -60,7 +60,7 @@
     </p>
   {% endif %}
 
-  <form id="request-to-go-live-organisation-address-form" method="post" data-cy="form">
+  <form id="request-to-go-live-organisation-address-form" method="post" data-cy="form" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
     {% if not isRequestToGoLive %}

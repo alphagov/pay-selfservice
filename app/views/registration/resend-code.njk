@@ -29,7 +29,7 @@
 
     <p class="govuk-body">Check your mobile phone number is correct, then resend the security code.</p>
 
-    <form method="post">
+    <form method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {{ govukInput({

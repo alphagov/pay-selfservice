@@ -2,7 +2,7 @@
 {% if links and links.length %}
 <div class="pagination" id="pagination">
   {% for paginationLink in links %}
-    <form class="paginationForm page-{{paginationLink.pageName}}" method="GET">
+    <form class="paginationForm page-{{paginationLink.pageName}}" method="GET" novalidate>
       <input type="hidden" name="page" value="{{paginationLink.pageNumber}}"/>
       <input type="hidden" name="status" value="{{status}}"/>
 

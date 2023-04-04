@@ -48,7 +48,7 @@
       <h2 class="govuk-error-summary__title" id="error-summary">
         Are you sure you want to remove {{username}}?
       </h2>
-      <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}">
+      <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}" novalidate>
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
         {{

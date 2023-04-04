@@ -14,7 +14,7 @@ Forgot your password - GOV.UK Pay
     }
   }) }}
 
-  <form action="/reset-password" method="post" class="form submit-forgotten-email">
+  <form action="/reset-password" method="post" class="form submit-forgotten-email" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <h1 class="govuk-heading-l page-title">
         Forgot your password?

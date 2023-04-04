@@ -108,7 +108,7 @@
           </li>
         </ol>
 
-        <form id="request-to-go-live-index-form" method="post" action="{{formatServicePathsFor(routes.service.requestToGoLive.index, currentService.externalId)}}" class="govuk-!-margin-top-8">
+        <form id="request-to-go-live-index-form" method="post" action="{{formatServicePathsFor(routes.service.requestToGoLive.index, currentService.externalId)}}" class="govuk-!-margin-top-8" novalidate>
           <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
           {% if notStarted %}
             {{ govukButton({ text: "Start now" }) }}

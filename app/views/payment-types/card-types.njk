@@ -1,7 +1,7 @@
 {% extends "./index.njk" %}
 
 {% block page_content %}
-  <form method="post">
+  <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{
       govukCheckboxes({

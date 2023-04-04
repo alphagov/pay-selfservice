@@ -20,7 +20,7 @@
 
   {% set pageHeading = ("Edit reporting column" if isEditing else "Add a reporting column") %}
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
-  <form action="{{ self }}" class="form" method="post">
+  <form action="{{ self }}" class="form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <p class="govuk-body">Reporting columns are added to your CSV payment reports. They are not shown to the user making the payment.</p>
     <p class="govuk-body">If you are adding reporting columns to more than one service or payment link, use consistent wording. This will make it easier to read your payment report.</p>
@@ -85,7 +85,7 @@
     </form>
 
     {% if isEditing %}
-      <form method="post" action="{{ self }}/delete" style="display: inline">
+      <form method="post" action="{{ self }}/delete" style="display: inline" novalidate>
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
         {{
         govukButton({

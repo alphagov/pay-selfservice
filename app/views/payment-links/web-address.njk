@@ -21,7 +21,7 @@
 
   <h1 class="govuk-heading-l">The website address is already taken</h1>
 
-  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.webAddress, currentGatewayAccount.external_id) }}" class="form" method="post">
+  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.webAddress, currentGatewayAccount.external_id) }}" class="form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     <div class="govuk-form-group {% if flash.genericError %}govuk-form-group--error{% endif %}">

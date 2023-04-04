@@ -19,7 +19,7 @@ Sign in to GOV.UK Pay
 
   <p class="govuk-body">If you do not have an account, you can <a href="{{ routes.register.email }}" class="register-link govuk-link">create one now</a>.</p>
 
-  <form action="/login" method="post" name="userLoginForm">
+  <form action="/login" method="post" name="userLoginForm" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{ govukInput({

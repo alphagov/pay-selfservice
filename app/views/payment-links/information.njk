@@ -26,7 +26,7 @@
     <h1 class="govuk-heading-l">Set payment link information</h1>
   {% endif %}
 
-  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.information, currentGatewayAccount.external_id) }}" class="form" method="post">
+  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.information, currentGatewayAccount.external_id) }}" class="form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input type="hidden" name="service-name-path" value="{{serviceName}}">
     {% if change.length %}

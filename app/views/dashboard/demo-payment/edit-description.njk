@@ -25,7 +25,7 @@
     }) }}
 
     <h1 class="govuk-heading-l">Edit payment description</h1>
-    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.editDescription,  currentGatewayAccount.external_id)}}">
+    <form method="post" action="{{formatAccountPathsFor(routes.account.prototyping.demoPayment.editDescription,  currentGatewayAccount.external_id)}}" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
       {{
         govukTextarea({

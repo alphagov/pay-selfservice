@@ -39,7 +39,7 @@
       }}
     {% endif %}
 
-    <form class="permission-main" method="post">
+    <form class="permission-main" method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
       {{
         govukRadios({
