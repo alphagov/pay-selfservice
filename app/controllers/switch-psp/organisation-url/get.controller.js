@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
   const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
   const currentCredential = getCurrentCredential(req.account)
 
-  return response(req, res, 'kyc/organisation-url', {
+  return response(req, res, 'switch-psp/organisation-url', {
     isSwitchingCredentials, currentCredential
   })
 }

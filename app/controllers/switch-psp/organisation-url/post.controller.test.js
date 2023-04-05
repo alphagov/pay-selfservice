@@ -101,7 +101,7 @@ describe('Organisation URL POST controller', () => {
 
     sinon.assert.called(updateAccountMock)
     sinon.assert.notCalled(updateServiceMock)
-    sinon.assert.calledWith(res.render, `kyc/organisation-url`)
+    sinon.assert.calledWith(res.render, `switch-psp/organisation-url`)
 
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['organisation-url'], 'Enter a valid website address')
   })
