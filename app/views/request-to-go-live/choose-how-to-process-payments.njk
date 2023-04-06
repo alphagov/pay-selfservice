@@ -11,8 +11,7 @@
     {{ errorSummary ({
       errors: errors,
       hrefs: {
-        'choose-how-to-process-payments-mode': '#choose-how-to-process-payments-mode',
-        'choose-how-to-process-payments-mode-other': '#choose-how-to-process-payments-mode-other'
+        'choose-how-to-process-payments-mode': '#choose-how-to-process-payments-mode'
       }
     }) }}
 
@@ -21,35 +20,6 @@
     <form id="request-to-go-live-choose-how-to-process-payments-form" method="post"
           action="{{formatServicePathsFor(routes.service.requestToGoLive.chooseHowToProcessPayments, currentService.externalId)}}" >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-
-      {% set otherPSP %}
-        {{ govukRadios({
-          idPrefix: 'choose-how-to-process-payments-mode-other',
-          name: 'choose-how-to-process-payments-mode-other',
-          fieldset: {
-            legend: {
-              text: 'Choose the payment service provider you’ll use',
-              classes: 'pay-text-grey'
-            }
-          },
-          errorMessage: { text: errors['choose-how-to-process-payments-mode-other'] } if errors['choose-how-to-process-payments-mode-other'] else false,
-          items: [
-            {
-              value: 'worldpay',
-              text: 'Worldpay'
-            },
-            {
-              value: 'smartpay',
-              text: 'Smartpay'
-            },
-            {
-              value: 'epdq',
-              text: 'ePDQ'
-            }
-          ]
-        })
-        }}
-      {% endset %}
 
       {{ govukRadios({
         idPrefix: 'choose-how-to-process-payments-mode',
@@ -70,7 +40,7 @@
               classes: "govuk-label--s"
             },
             hint: {
-              text: 'GOV.UK Pay has a contract with Stripe to process payments. Using Stripe means that you don’t need your own contract with a payment service provider.'
+              text: 'For local authorities, police and government-owned charitable groups. GOV.UK Pay has a contract with Stripe to process payments. Using Stripe means that you do not need your own contract with a payment service provider.'
             }
           },
           {
@@ -80,22 +50,8 @@
               classes: "govuk-label--s"
             },
             hint: {
-              text: 'Government Banking has a contract with Worldpay to process payments. It’s open to central government and health organisations. You need an agreement with Government Banking to use their contract.'
+              text: 'For central government, arm’s length bodies and NHS. Government Banking has a contract with Worldpay to process payments. You need an agreement with Government Banking to use their contract.'
             }
-          },
-          {
-            value: 'other_psp',
-            text: 'Other providers',
-            label: {
-              classes: "govuk-label--s"
-            },
-            conditional: {
-              html: otherPSP
-            },
-            hint: {
-              text: 'If you’re already using GOV.UK Pay with one of the following providers, you can continue to use them for new services until 31st July 2021.'
-            },
-            checked: otherPspSelected
           }
         ]
         }) }}
