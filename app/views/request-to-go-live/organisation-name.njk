@@ -42,7 +42,7 @@
         <input class="govuk-input  {% if errors['organisation-name'] %} govuk-input--error {% endif %}"
                id="request-to-go-live-organisation-name-input" name="organisation-name"
                type="text" aria-describedby="request-to-go-live-organisation-name-input-hint"
-               value="{{organisationName}}"/>
+               value="{{organisationName}}" autocomplete="organization">
       </div>
 
       {{ govukButton({ text: "Continue" }) }}
