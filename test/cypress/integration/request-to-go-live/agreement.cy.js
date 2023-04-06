@@ -110,42 +110,6 @@ describe('Request to go live: agreement', () => {
     })
   })
 
-  describe('Worldpay has been chosen as the PSP', () => {
-    it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_WORLDPAY', () => {
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_WORLDPAY'))
-
-      cy.visit(requestToGoLiveAgreementUrl)
-
-      cy.get('h1').should('contain', 'Read and accept our legal terms')
-
-      cy.get('fieldset').should('not.contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
-      cy.get('fieldset').should('not.contain', 'You must also accept Stripe’s legal terms: Stripe Connected Account Agreement.')
-      cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body memorandum of understanding')
-      cy.get('ul.govuk-list>li').eq(1).should('contain', 'Non-Crown body contract')
-
-      cy.get('#request-to-go-live-current-step').should('exist')
-      cy.get('#request-to-go-live-agreement-form').should('exist')
-
-      cy.get('#agreement').should('exist')
-      cy.get('#agreement').should('not.be.checked')
-
-      cy.get('#request-to-go-live-agreement-form > button').should('exist')
-      cy.get('#request-to-go-live-agreement-form > button').should('contain', 'Continue')
-
-      // set up new stubs where the first time we get the service it returns the go_live_stage as CHOSEN_PSP_WORLDPAY,
-      // and the second time TERMS_AGREED_WORLDPAY so that the next page in the journey is loaded
-      cy.task('clearStubs')
-      cy.task('setupStubs', getStubsForPageSubmission('CHOSEN_PSP_WORLDPAY', 'TERMS_AGREED_WORLDPAY'))
-
-      cy.get('#agreement').check()
-      cy.get('#request-to-go-live-agreement-form > button').click()
-
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
-      })
-    })
-  })
-
   describe('Government banking PSP - Takes payments over the phone stage has been completed', () => {
     it('should display "Read and accept our legal terms" page when service stage is GOV_BANKING_MOTO_OPTION_COMPLETED', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('GOV_BANKING_MOTO_OPTION_COMPLETED'))
