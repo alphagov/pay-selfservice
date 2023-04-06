@@ -37,9 +37,6 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('#choose-how-to-process-payments-mode').should('exist')
       cy.get('#choose-how-to-process-payments-mode-2').should('exist')
 
-      cy.get('#conditional-choose-how-to-process-payments-mode-3').should('exist')
-      cy.get('#conditional-choose-how-to-process-payments-mode-3').should('not.be.visible')
-
       // set up new stubs where the first time we get the service it returns the go_live_stage as ENTERED_ORGANISATION_ADDRESS,
       // and the second time CHOSEN_PSP_STRIPE so that the next page in the journey is loaded
       cy.task('clearStubs')
@@ -51,39 +48,6 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('contain', 'Continue')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
 
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
-      })
-    })
-  })
-
-  describe('Service has correct go live stage and user selects non Stripe account', () => {
-    it('should allow to select ePDQ', () => {
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
-
-      cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
-
-      cy.get('#choose-how-to-process-payments-mode-3').click()
-      cy.get('#conditional-choose-how-to-process-payments-mode-3').should('be.visible')
-
-      cy.get('#choose-how-to-process-payments-mode-other').should('exist')
-      cy.get('#conditional-choose-how-to-process-payments-mode-3 label[for=choose-how-to-process-payments-mode-other]').should('contain', 'Worldpay')
-
-      cy.get('#choose-how-to-process-payments-mode-other-2').should('exist')
-      cy.get('#conditional-choose-how-to-process-payments-mode-3 label[for=choose-how-to-process-payments-mode-other-2]').should('contain', 'Smartpay')
-
-      cy.get('#choose-how-to-process-payments-mode-other-3').should('exist')
-      cy.get('#conditional-choose-how-to-process-payments-mode-3 label[for=choose-how-to-process-payments-mode-other-3]').should('contain', 'ePDQ')
-
-      // set up new stubs where the first time we get the service it returns the go_live_stage as ENTERED_ORGANISATION_ADDRESS,
-      // and the second time CHOSEN_PSP_EPDQ so that the next page in the journey is loaded
-      cy.task('clearStubs')
-      setupStubsForSubmittingChoice('CHOSEN_PSP_EPDQ')
-
-      cy.get('#choose-how-to-process-payments-mode-other-3').click()
-      cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('exist')
-      cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('contain', 'Continue')
-      cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
       })
@@ -126,28 +90,6 @@ describe('Request to go live: choose how to process payments', () => {
 
         cy.get('.govuk-form-group--error').should('exist').within(() => {
           cy.get('.govuk-error-message#choose-how-to-process-payments-mode-error').should('contain', 'You need to select an option')
-        })
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
-        })
-      })
-    })
-
-    describe('Other provider radio button selected and no PSP selected', () => {
-      it('should show "You need to select Worldpay, Smartpay or ePDQ" error msg', () => {
-        cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
-
-        cy.get('#choose-how-to-process-payments-mode-3').click()
-        cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
-
-        cy.get('#choose-how-to-process-payments-mode-3').should('have.attr', 'checked')
-
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You need to select Worldpay, Smartpay or ePDQ')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#choose-how-to-process-payments-mode-other')
-
-        cy.get('.govuk-form-group--error').should('exist').within(() => {
-          cy.get('.govuk-error-message#choose-how-to-process-payments-mode-other-error').should('contain', 'You need to select Worldpay, Smartpay or ePDQ')
         })
 
         cy.location().should((location) => {
