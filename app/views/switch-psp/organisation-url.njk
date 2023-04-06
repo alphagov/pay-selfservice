@@ -51,11 +51,9 @@
       hint: {
         text: "Enter the address in full like https://www.example.com"
       },
-      type: "text",
-      attributes: {
-        autocomplete: "off",
-        spellcheck: "false"
-      }
+      type: "url",
+      autocomplete: "url",
+      spellcheck: false
     }) }}
 
     {{ govukButton({ text: "Submit" }) }}
