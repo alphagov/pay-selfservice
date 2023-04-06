@@ -55,7 +55,7 @@
             autofocus
             data-non-numeric
             type="text"
-            inputmode="numeric"
+            spellcheck="false"
             id="payment-amount"
             value="{{ amountInPence | penceToPounds if amountInPence else '' }}"
             data-trim
@@ -81,6 +81,7 @@
           errorMessage: { text: errors.hint } if errors.hint else false,
           classes: "govuk-input--width-20",
           maxlength: 255,
+          spellcheck: true,
           label: {
               text: "Hint text (optional)",
               classes: "govuk-label--s"

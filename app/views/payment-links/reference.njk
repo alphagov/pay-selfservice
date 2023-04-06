@@ -50,6 +50,7 @@
           id: "reference-label",
           name: "reference-label",
           value: paymentReferenceLabel,
+          spellcheck: true,
           errorMessage: { text: errors.label } if errors.label else false,
           classes: "govuk-input--width-20",
           label: {
@@ -70,6 +71,7 @@
           id: "reference-hint-text",
           name: "reference-hint-text",
           value: paymentReferenceHint,
+          spellcheck: true,
           errorMessage: { text: errors.hint } if errors.hint else false,
           classes: "govuk-input--width-20",
           maxlength: 255,
