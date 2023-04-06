@@ -42,6 +42,9 @@
         },
         id: "code",
         name: "code",
+        inputmode: "numeric",
+        pattern: "[0-9]*",
+        autocomplete: "off",
         classes: "govuk-input--width-10",
         errorMessage: { text: errors['code'] } if errors['code'] else false
       }) }}
