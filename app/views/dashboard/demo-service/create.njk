@@ -32,9 +32,7 @@
           text: "Tell users what they are paying for"
         },
         value: paymentDescription,
-        attributes: {
-          autofocus: true
-        }
+        spellcheck: true
       })
     }}
 
@@ -49,9 +47,9 @@
           class="govuk-input govuk-input--width-10"
           aria-label="Enter amount in pounds"
           name="payment-amount"
-          autofocus
           data-non-numeric
           type="text"
+          spellcheck="false"
           id="prototyping__links-input-amount"
           {% if paymentAmount %}
             value="{{ paymentAmount | penceToPounds }}"
@@ -72,9 +70,10 @@
         hint: {
           text: "Enter the secure URL users will go to after they have completed the test payment"
         },
+        type: "url",
+        spellcheck: false,
         value: confirmationPage,
         attributes: {
-          autofocus: true,
           "data-trim": true
         }
       })
