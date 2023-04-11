@@ -186,6 +186,7 @@ describe('Transactions List', () => {
     it('should be able to filter using date-time pickers', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions }),
         transactionsStubs.getLedgerTransactionsSuccess({
           gatewayAccountId,
           transactions: filteredByDatesTransactions,
@@ -195,6 +196,7 @@ describe('Transactions List', () => {
           }
         })
       ])
+      cy.visit(transactionsUrl)
 
       // 1. Filtering FROM
       // Ensure both the date/time pickers aren't showing
@@ -240,13 +242,8 @@ describe('Transactions List', () => {
       // Ensure the expected transactions are shown
       cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', filteredByDatesTransactions[0].reference)
       cy.get('#transactions-list tbody').find('tr').eq(1).find('th').should('contain', filteredByDatesTransactions[1].reference)
-    })
 
-    it('should clear filters when "Clear filter" button is clicked', () => {
-      cy.task('setupStubs', [
-        ...sharedStubs(),
-        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: [], filters: {} })
-      ])
+      // Ensure filters are cleared when "Clear filter" is clicked
       cy.get('a').contains('Clear filter').click()
 
       cy.get('#fromDate').should('be.empty')
@@ -258,6 +255,7 @@ describe('Transactions List', () => {
     it('should return results when filtering by all fields', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions }),
         transactionsStubs.getLedgerTransactionsSuccess({
           gatewayAccountId,
           transactions: filteredByMultipleFieldsTransactions,
@@ -277,6 +275,7 @@ describe('Transactions List', () => {
         })
       ])
 
+      cy.visit(transactionsUrl)
       cy.get('#state').click()
       cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Success']`).trigger('mouseover').click()
       cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='In progress']`).trigger('mouseover').click()
