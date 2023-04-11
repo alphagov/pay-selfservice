@@ -49,6 +49,7 @@
           id: "reference-label",
           name: "reference-label",
           value: referenceLabel,
+          spellcheck: true,
           errorMessage: { text: errors.label } if errors.label else false,
           classes: "govuk-input--width-20",
           label: {
@@ -72,6 +73,7 @@
           errorMessage: { text: errors.hint } if errors.hint else false,
           classes: "govuk-input--width-20",
           maxlength: 255,
+          spellcheck: true,
           label: {
               text: "Hint text (optional)",
               classes: "govuk-label--s"

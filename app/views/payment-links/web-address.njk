@@ -39,7 +39,7 @@
           The website address is already taken
         </span>
       {% endif %}
-      <input class="govuk-input govuk-!-width-one-half {% if flash.genericError %}govuk-input--error{% endif %}" id="payment-name-path" name="payment-name-path" type="text" value="{{productNamePath}}" aria-describedby="payment-name-path-hint" autofocus="true" data-slugify="true">
+      <input class="govuk-input govuk-!-width-one-half {% if flash.genericError %}govuk-input--error{% endif %}" id="payment-name-path" name="payment-name-path" type="text" value="{{productNamePath}}" aria-describedby="payment-name-path-hint" spellcheck="false" autocapitalize="none" autofocus data-slugify="true">
 
       <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-3"><a class="govuk-link" href="https://www.gov.uk/guidance/content-design/url-standards-for-gov-uk">Get guidance on writing a web address (URL)</a></p>
     </div>

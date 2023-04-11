@@ -74,6 +74,7 @@
           html: titleHint
         },
         value: paymentLinkTitle,
+        spellcheck: true,
         attributes: titleAttributes,
         errorMessage: { text: errors.title } if errors.title else false
       })
@@ -91,6 +92,7 @@
           text: detailsHint
         },
         value: paymentLinkDescription,
+        spellcheck: true,
         attributes: descriptionAttributes,
         errorMessage: { text: errors.description } if errors.description else false
       })
