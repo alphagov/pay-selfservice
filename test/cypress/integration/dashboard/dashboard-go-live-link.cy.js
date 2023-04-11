@@ -44,26 +44,8 @@ describe('Go live link on dashboard', () => {
         cy.get('#request-to-go-live-link a').should('have.attr', 'href', `/service/${serviceExternalId}/request-to-go-live`)
       })
 
-      it('should show continue link when go-live stage is CHOSEN_PSP_WORLDPAY', () => {
-        setupStubs('CHOSEN_PSP_WORLDPAY')
-        cy.visit(dashboardUrl)
-
-        cy.get('#request-to-go-live-link').should('exist')
-        cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
-        cy.get('#request-to-go-live-link a').should('have.attr', 'href', `/service/${serviceExternalId}/request-to-go-live`)
-      })
-
-      it('should show continue link when go-live stage is CHOSEN_PSP_SMARTPAY', () => {
-        setupStubs('CHOSEN_PSP_SMARTPAY')
-        cy.visit(dashboardUrl)
-
-        cy.get('#request-to-go-live-link').should('exist')
-        cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
-        cy.get('#request-to-go-live-link a').should('have.attr', 'href', `/service/${serviceExternalId}/request-to-go-live`)
-      })
-
-      it('should show continue link when go-live stage is CHOSEN_PSP_EPDQ', () => {
-        setupStubs('CHOSEN_PSP_EPDQ')
+      it('should show continue link when go-live stage is CHOSEN_PSP_GOV_BANKING_WORLDPAY', () => {
+        setupStubs('CHOSEN_PSP_GOV_BANKING_WORLDPAY')
         cy.visit(dashboardUrl)
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -81,24 +63,8 @@ describe('Go live link on dashboard', () => {
         cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
       })
 
-      it('should show waiting to go live text when go-live stage is TERMS_AGREED_WORLDPAY', () => {
-        setupStubs('TERMS_AGREED_WORLDPAY')
-        cy.visit(dashboardUrl)
-
-        cy.get('#request-to-go-live-link').should('exist')
-        cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
-      })
-
-      it('should show waiting to go live text when go-live stage is TERMS_AGREED_SMARTPAY', () => {
-        setupStubs('TERMS_AGREED_SMARTPAY')
-        cy.visit(dashboardUrl)
-
-        cy.get('#request-to-go-live-link').should('exist')
-        cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
-      })
-
-      it('should show waiting to go live text when go-live stage is TERMS_AGREED_EPDQ', () => {
-        setupStubs('TERMS_AGREED_EPDQ')
+      it('should show waiting to go live text when go-live stage is TERMS_AGREED_GOV_BANKING_WORLDPAY', () => {
+        setupStubs('TERMS_AGREED_GOV_BANKING_WORLDPAY')
         cy.visit(dashboardUrl)
 
         cy.get('#request-to-go-live-link').should('exist')
