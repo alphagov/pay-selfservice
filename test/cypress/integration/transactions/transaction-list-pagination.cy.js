@@ -62,6 +62,7 @@ describe('Transactions list pagination', () => {
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=')
+        cy.percySnapshot()
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
         cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
@@ -86,6 +87,7 @@ describe('Transactions list pagination', () => {
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=3')
+        cy.percySnapshot()
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
         cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
@@ -108,6 +110,7 @@ describe('Transactions list pagination', () => {
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=3')
+        cy.percySnapshot()
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
         cy.get('form.paginationForm.page-Previous').should('exist').within(() => {
@@ -128,6 +131,7 @@ describe('Transactions list pagination', () => {
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=')
+        cy.percySnapshot()
 
         cy.get('form.paginationForm.page-Previous').should('not.exist')
         cy.get('form.paginationForm.page-Next').should('not.exist')
@@ -158,6 +162,7 @@ describe('Transactions list pagination', () => {
 
         cy.task('setupStubs', stubs)
         cy.visit(transactionsUrl + '?pageSize=5&page=1&reference=ref123&email=gds4&cardholderName=doe&lastDigitsCardNumber=4242&fromDate=03%2F05%2F2018&fromTime=1%3A00%3A00&toDate=04%2F05%2F2018&toTime=1%3A00%3A00&brand=visa&brand=master-card&state=Success')
+        cy.percySnapshot()
 
         cy.get('.page-Next').first().click()
 
@@ -178,6 +183,7 @@ describe('Transactions list pagination', () => {
           { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
+        cy.percySnapshot()
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
         cy.get('#displaySize').should('contain', 'Results per page:')
         cy.get('#displaySize').should('contain', '100')
@@ -192,6 +198,7 @@ describe('Transactions list pagination', () => {
           { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
+        cy.percySnapshot()
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
         cy.get('#displaySize').should('contain', 'Results per page:')
         cy.get('#displaySize').should('contain', '100')
@@ -206,6 +213,7 @@ describe('Transactions list pagination', () => {
         const opts = transactionSearchResultOpts(50, 100, 1, {})
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
+        cy.percySnapshot()
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
         cy.get('form.paginationForm').should('not.exist')
@@ -217,6 +225,7 @@ describe('Transactions list pagination', () => {
           { self: { href: '/v1/transactions?&page=1&display_size=500&state=' } })
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=500&page=1')
+        cy.percySnapshot()
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
         cy.get('form.paginationForm').should('not.exist')

@@ -57,6 +57,7 @@ describe('The manage payment links page', () => {
 
     it('should state that there are no payment links', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
@@ -79,6 +80,7 @@ describe('The manage payment links page', () => {
 
     it('should list English payment links and have no Welsh payment links section', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
@@ -116,6 +118,7 @@ describe('The manage payment links page', () => {
 
     it('should list English payment links and Welsh payment links separately', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
@@ -161,6 +164,7 @@ describe('The manage payment links page', () => {
 
     it('should list Welsh payment links', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
@@ -194,6 +198,7 @@ describe('The manage payment links page', () => {
 
     it('should display an error', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
     })
   })

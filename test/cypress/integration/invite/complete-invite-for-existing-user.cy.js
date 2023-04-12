@@ -33,6 +33,7 @@ describe('Complete an invite for an existing user', () => {
     cy.setEncryptedCookies(userExternalId)
 
     cy.visit(`/invites/${inviteCode}`)
+    cy.percySnapshot()
 
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 

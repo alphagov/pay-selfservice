@@ -37,6 +37,7 @@ describe('Request PSP test account: index', () => {
       setupStubs('NOT_STARTED', 'NOT_STARTED')
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request Stripe test account')
     })
@@ -44,6 +45,7 @@ describe('Request PSP test account: index', () => {
       setupStubs('NOT_STARTED', 'NOT_STARTED')
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request Stripe test account')
     })
@@ -54,6 +56,7 @@ describe('Request PSP test account: index', () => {
       setupStubs('NOT_STARTED', 'REQUEST_SUBMITTED')
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Account already requested')
     })
@@ -64,6 +67,7 @@ describe('Request PSP test account: index', () => {
       setupStubs('NOT_STARTED', 'CREATED')
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Stripe test account already set up')
     })
@@ -81,6 +85,7 @@ describe('Request PSP test account: index', () => {
     it('should show an error when the user does not have enough permissions', () => {
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })

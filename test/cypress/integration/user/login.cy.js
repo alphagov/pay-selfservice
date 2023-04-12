@@ -22,6 +22,7 @@ describe('Login Page', () => {
     ])
 
     cy.visit('/')
+    cy.percySnapshot()
   })
 
   describe('Page content', () => {
@@ -42,6 +43,7 @@ describe('Login Page', () => {
   describe('Valid username/password', () => {
     it('should log user in', () => {
       cy.visit('/')
+      cy.percySnapshot()
 
       // enter a valid username and password and submit
       cy.getCookie('session')

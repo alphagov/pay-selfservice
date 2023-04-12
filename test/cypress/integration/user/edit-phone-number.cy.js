@@ -16,6 +16,7 @@ describe('Edit phone number flow', () => {
     describe('Profile page', () => {
       it('should show a link to change phone number', () => {
         cy.visit('/my-profile')
+        cy.percySnapshot()
         cy.get('#telephone-number').should('contain', testPhoneNumber)
         cy.get('#change-phone-link').should('exist').click()
       })
@@ -29,6 +30,7 @@ describe('Edit phone number flow', () => {
 
       it('should show an error if an invalid number is typed', () => {
         cy.visit('/my-profile/phone-number')
+        cy.percySnapshot()
         cy.get('input[name="phone"]').clear().type('not a number')
         cy.get('#save-phone-number').click()
         cy.get('.govuk-error-summary').should('exist')
@@ -47,6 +49,7 @@ describe('Edit phone number flow', () => {
 
     it('should save changes and redirect to my profile', () => {
       cy.visit('/my-profile/phone-number')
+      cy.percySnapshot()
       cy.get('input[name="phone"]').clear().type(testPhoneNumberNew)
       cy.get('#save-phone-number').click()
       cy.get('.govuk-notification-banner--success').should('exist').should('contain', 'Phone number updated')

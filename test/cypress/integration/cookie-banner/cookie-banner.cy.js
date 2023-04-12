@@ -4,6 +4,7 @@ describe('Cookie banner', () => {
   beforeEach(() => {
     cy.clearCookies()
     cy.visit('/')
+    cy.percySnapshot()
   })
 
   describe('Visiting application for first time', () => {
@@ -20,6 +21,7 @@ describe('Cookie banner', () => {
 
     it('should show rejected message if consented is rejected', () => {
       cy.visit('/')
+      cy.percySnapshot()
       cy.get('button[data-accept-cookies=false]').click()
 
       cy.get('.pay-cookie-banner__confirmation-message').contains('You told us not to use analytics cookies')
@@ -31,12 +33,14 @@ describe('Cookie banner', () => {
     it('Should not show cookie banner on page load if consent has been accepted previously', () => {
       cy.setCookie('govuk_pay_cookie_policy', '{"analytics":true}')
       cy.visit('/')
+      cy.percySnapshot()
 
       cy.get('#pay-cookie-banner').should('have.css', 'display', 'none')
     })
     it('Should not show cookie banner on page load if consent has been rejected previously', () => {
       cy.setCookie('govuk_pay_cookie_policy', '{"analytics":false}')
       cy.visit('/')
+      cy.percySnapshot()
 
       cy.get('#pay-cookie-banner').should('have.css', 'display', 'none')
     })

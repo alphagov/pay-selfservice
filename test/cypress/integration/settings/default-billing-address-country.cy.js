@@ -36,6 +36,7 @@ describe('Default billing address country', () => {
       ])
 
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.percySnapshot()
 
       cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Default billing address country')
       cy.get('.govuk-summary-list__value').eq(1).should('contain', 'None')
@@ -59,6 +60,7 @@ describe('Default billing address country', () => {
         ])
 
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.percySnapshot()
         cy.get('.govuk-notification-banner--success').should('contain', 'United Kingdom as the default billing address: On')
 
         cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Default billing address country')
@@ -84,6 +86,7 @@ describe('Default billing address country', () => {
       ])
 
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.percySnapshot()
       cy.get('.govuk-summary-list__actions').eq(1).contains('View').click()
       cy.get('.pay-info-warning-box').contains('You don’t have permission')
       cy.get('input[value="on"]').should('be.disabled')

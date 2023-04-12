@@ -36,6 +36,7 @@ describe('A payment link with an amount hint set', () => {
       cy.setEncryptedCookies(userExternalId)
 
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
+      cy.percySnapshot()
       cy.get('a#create-payment-link').click()
 
       // complete the pages before the amount page with basic info
@@ -122,6 +123,7 @@ describe('A payment link with an amount hint set', () => {
 
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
+      cy.percySnapshot()
 
       cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Payment amount')

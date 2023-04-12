@@ -41,6 +41,7 @@ describe('Add a new service', () => {
       cy.setEncryptedCookies(authenticatedUserId)
 
       cy.visit('/my-services')
+      cy.percySnapshot()
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
       cy.get('a').contains('Add a new service').click()
@@ -72,6 +73,7 @@ describe('Add a new service', () => {
       ])
 
       cy.visit('/my-services')
+      cy.percySnapshot()
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
       cy.get('a').contains('Add a new service').click()

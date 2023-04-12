@@ -42,6 +42,7 @@ describe('Webhooks', () => {
   it('should correctly list webhooks for a given service', () => {
     cy.task('setupStubs', [ ...userAndGatewayAccountStubs ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.percySnapshot()
 
     cy.get('h1').should('have.text', 'Webhooks')
 
@@ -58,6 +59,7 @@ describe('Webhooks', () => {
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.percySnapshot()
     cy.get('[data-action=create').contains('Create a new webhook').click()
 
     // no data has been provided
@@ -79,6 +81,7 @@ describe('Webhooks', () => {
     const description = 'A valid Webhook description'
 
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.percySnapshot()
     cy.get('[data-action=create').contains('Create a new webhook').click()
     cy.get('#callback_url').type(callbackUrl)
     cy.get('#description').type(description)
@@ -101,6 +104,7 @@ describe('Webhooks', () => {
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.percySnapshot()
     cy.get('[data-action=create').contains('Create a new webhook').click()
     cy.get('#callback_url').type(callbackUrl)
     cy.get('#description').type(description)
@@ -126,6 +130,7 @@ describe('Webhooks', () => {
       webhooksStubs.patchUpdateWebhookSuccess(webhookExternalId)
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.percySnapshot()
 
     // link to detail page
     cy.get('[data-action=update]').then((links) => links[0].click())
@@ -145,6 +150,7 @@ describe('Webhooks', () => {
       ...userAndGatewayAccountStubs
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.percySnapshot()
     cy.get('[data-action=update]').then((links) => links[0].click())
     cy.get('#signing-secret').click()
 
@@ -159,6 +165,7 @@ describe('Webhooks', () => {
       webhooksStubs.patchUpdateWebhookSuccess(webhookExternalId)
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.percySnapshot()
     cy.get('[data-action=update]').then((links) => links[0].click())
     cy.get('#toggle-status').click()
 
@@ -173,6 +180,7 @@ describe('Webhooks', () => {
       ...userAndGatewayAccountStubs
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
+    cy.percySnapshot()
     cy.get('[data-action=update]').then((links) => links[0].click())
     cy.get('[data-action=detail]').then((links) => links[0].click())
     cy.get('h1').contains('Payment captured')

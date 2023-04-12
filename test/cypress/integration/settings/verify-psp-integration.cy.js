@@ -33,6 +33,7 @@ describe('Verify PSP Integration page', () => {
 
     it('should display enabled live payment button', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration`)
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Test the connection between Worldpay and GOV.UK Pay')
       cy.get('p').contains('Make a live payment of £2 with a debit or credit card')
       cy.get('button').should('exist')
@@ -56,6 +57,7 @@ describe('Verify PSP Integration page', () => {
 
     it('should display disabled live payment button', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration`)
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Test the connection between Stripe and GOV.UK Pay')
       cy.get('p').contains('Stripe is still verifying your details.')
       cy.get('button').contains('Continue to live payment').should('not.exist')
@@ -77,6 +79,7 @@ describe('Verify PSP Integration page', () => {
 
     it('should display enabled live payment button', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration`)
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Test the connection between Stripe and GOV.UK Pay')
       cy.get('p').contains('Make a live payment of £2 with a debit or credit card')
       cy.get('button').should('exist')

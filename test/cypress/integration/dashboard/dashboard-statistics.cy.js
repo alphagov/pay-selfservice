@@ -39,6 +39,7 @@ describe('Account dashboard', () => {
     cy.setEncryptedCookies(userExternalId)
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.percySnapshot()
     cy.title().should('eq', `Dashboard - ${serviceName} Sandbox test - GOV.UK Pay`)
 
     cy.get('.dashboard-total-group__values').eq(0).should('exist').within(() => {

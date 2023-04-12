@@ -51,6 +51,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.setEncryptedCookies(userExternalId, {})
 
         cy.visit(vatNumberUrl)
+        cy.percySnapshot()
       })
 
       it('should display page correctly', () => {
@@ -127,6 +128,7 @@ describe('Stripe setup: VAT number page', () => {
         setupStubs(true)
 
         cy.visit(vatNumberUrl)
+        cy.percySnapshot()
 
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#back-link').should('contain', 'Back to dashboard')
@@ -138,6 +140,7 @@ describe('Stripe setup: VAT number page', () => {
         setupStubs([false, true])
 
         cy.visit(vatNumberUrl)
+        cy.percySnapshot()
 
         cy.get('input#have-vat-number').click()
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
@@ -162,6 +165,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.visit(vatNumberUrl, {
           failOnStatusCode: false
         })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'Page not found')
       })
     })
@@ -177,6 +181,7 @@ describe('Stripe setup: VAT number page', () => {
         cy.visit(vatNumberUrl, {
           failOnStatusCode: false
         })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'Page not found')
       })
     })
@@ -194,6 +199,7 @@ describe('Stripe setup: VAT number page', () => {
         ])
 
         cy.visit(vatNumberUrl, { failOnStatusCode: false })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })

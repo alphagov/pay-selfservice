@@ -164,6 +164,7 @@ describe('Transactions List', () => {
         transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId })
       ])
       cy.visit(transactionsUrl)
+      cy.percySnapshot()
       cy.get('#transactions-list tbody').should('not.exist')
     })
 
@@ -173,6 +174,7 @@ describe('Transactions List', () => {
         transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
       ])
       cy.visit(transactionsUrl)
+      cy.percySnapshot()
 
       // Ensure the transactions list has the right number of items
       cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
@@ -319,6 +321,7 @@ describe('Transactions List', () => {
         })
       ])
       cy.visit(transactionsUrl)
+      cy.percySnapshot()
 
       // Ensure the transactions list has the right number of items
       cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
@@ -341,6 +344,7 @@ describe('Transactions List', () => {
         })
       ])
       cy.visit(transactionsUrl)
+      cy.percySnapshot()
 
       cy.get('#transactions-list tbody').find('tr').should('have.length', transactionsWithAssociatedFees.length)
 
@@ -359,6 +363,7 @@ describe('Transactions List', () => {
         })
       ])
       cy.visit(transactionsUrl)
+      cy.percySnapshot()
       cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').eq(0).find('span').should('have.text', convertPenceToPoundsFormatted(transactionWithTotalAmountButNotNetAmount[0].total_amount))
     })
 
@@ -380,6 +385,7 @@ describe('Transactions List', () => {
       ])
 
       cy.visit(transactionsUrl)
+      cy.percySnapshot()
 
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute awaiting evidence')
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
@@ -414,6 +420,7 @@ describe('Transactions List', () => {
         })
       ])
       cy.visit(transactionsUrl)
+      cy.percySnapshot()
 
       cy.get('#download-transactions-link').should('not.exist')
       cy.get('#csv-download').should('contain', 'Filter results to download a CSV of transactions')
@@ -430,6 +437,7 @@ describe('Transactions List', () => {
         })
       ])
       cy.visit(transactionsUrl + '?reference=unfiltered')
+      cy.percySnapshot()
 
       cy.get('#download-transactions-link').should('exist')
     })

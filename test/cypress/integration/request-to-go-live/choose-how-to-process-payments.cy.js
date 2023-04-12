@@ -31,6 +31,7 @@ describe('Request to go live: choose how to process payments', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
+      cy.percySnapshot()
 
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
@@ -62,6 +63,7 @@ describe('Request to go live: choose how to process payments', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
+      cy.percySnapshot()
 
       cy.get('#choose-how-to-process-payments-mode-3').click()
       cy.get('#conditional-choose-how-to-process-payments-mode-3').should('be.visible')
@@ -95,6 +97,7 @@ describe('Request to go live: choose how to process payments', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
+      cy.percySnapshot()
 
       // set up new stubs where the first time we get the service it returns the go_live_stage as ENTERED_ORGANISATION_ADDRESS,
       // and the second time CHOSEN_PSP_GOV_BANKING_WORLDPAY so that the next page in the journey is loaded
@@ -117,6 +120,7 @@ describe('Request to go live: choose how to process payments', () => {
     describe('No option selected', () => {
       it('should show "You need to select an option" error msg', () => {
         cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
 
@@ -137,6 +141,7 @@ describe('Request to go live: choose how to process payments', () => {
     describe('Other provider radio button selected and no PSP selected', () => {
       it('should show "You need to select Worldpay, Smartpay or ePDQ" error msg', () => {
         cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
+        cy.percySnapshot()
 
         cy.get('#choose-how-to-process-payments-mode-3').click()
         cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
@@ -161,6 +166,7 @@ describe('Request to go live: choose how to process payments', () => {
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
 
@@ -179,6 +185,7 @@ describe('Request to go live: choose how to process payments', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
@@ -192,6 +199,7 @@ describe('Request to go live: choose how to process payments', () => {
       ])
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
+      cy.percySnapshot()
 
       cy.get('#choose-how-to-process-payments-mode').click()
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()

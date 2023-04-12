@@ -18,6 +18,7 @@ describe('The index page', () => {
 
   it('should redirect to the My services page', () => {
     cy.visit('/')
+    cy.percySnapshot()
     cy.get('h1').should('have.text', 'Overview')
     cy.location().should((location) => {
       expect(location.pathname).to.eq(`/my-services`)

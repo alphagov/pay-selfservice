@@ -58,6 +58,7 @@ describe('The Stripe psp details banner', () => {
     })
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.percySnapshot()
     cy.get('[data-cy=stripe-notification]')
       .contains('You need to submit additional information to Stripe to be able to take payments.')
       .within(() => {
@@ -78,6 +79,7 @@ describe('The Stripe psp details banner', () => {
     })
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.percySnapshot()
     cy.get('[data-cy=stripe-notification]')
       .contains('Stripe has restricted your account. To start taking payments again, please contact support govuk-pay-support@digital.cabinet-office.gov.uk')
       .within(() => {
@@ -98,6 +100,7 @@ describe('The Stripe psp details banner', () => {
     })
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.percySnapshot()
     cy.get('[data-cy=stripe-notification]').should('not.exist')
   })
 })

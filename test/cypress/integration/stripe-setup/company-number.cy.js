@@ -48,6 +48,7 @@ describe('Stripe setup: company number page', () => {
 
         cy.setEncryptedCookies(userExternalId, {})
         cy.visit(companyNumberUrl)
+        cy.percySnapshot()
       })
 
       it('should display page correctly', () => {
@@ -83,7 +84,7 @@ describe('Stripe setup: company number page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number-declaration')
 
         cy.get('#company-number-declaration-error').should('contain', 'You must answer this question')
-        
+
         cy.get('#navigation-menu-your-psp')
           .should('contain', 'Information for Stripe')
           .parent().should('have.class', 'govuk-!-font-weight-bold')
@@ -120,6 +121,7 @@ describe('Stripe setup: company number page', () => {
         setupStubs(true)
 
         cy.visit(companyNumberUrl)
+        cy.percySnapshot()
 
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#back-link').should('contain', 'Back to dashboard')
@@ -131,6 +133,7 @@ describe('Stripe setup: company number page', () => {
         setupStubs([false, true])
 
         cy.visit(companyNumberUrl)
+        cy.percySnapshot()
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
@@ -158,6 +161,7 @@ describe('Stripe setup: company number page', () => {
         cy.visit(companyNumberUrl, {
           failOnStatusCode: false
         })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'Page not found')
       })
     })
@@ -173,6 +177,7 @@ describe('Stripe setup: company number page', () => {
         cy.visit(companyNumberUrl, {
           failOnStatusCode: false
         })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'Page not found')
       })
     })
@@ -190,6 +195,7 @@ describe('Stripe setup: company number page', () => {
         ])
 
         cy.visit(companyNumberUrl, { failOnStatusCode: false })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })

@@ -73,6 +73,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
       cy.setEncryptedCookies(userExternalId, {})
 
       cy.visit(checkOrgDetailsUrl)
+      cy.percySnapshot()
     })
 
     it('should display page correctly', () => {
@@ -115,7 +116,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
         .should('have.attr', 'href', '#confirm-org-details')
 
       cy.get('[data-cy=error-message]').should('contain', 'Select yes if your organisation’s details match the details on your government entity document')
-     
+
       cy.get('#navigation-menu-your-psp')
         .should('contain', 'Information for Stripe')
         .parent().should('have.class', 'govuk-!-font-weight-bold')
@@ -135,6 +136,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
       setupStubs(true)
 
       cy.visit(checkOrgDetailsUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#back-link').should('contain', 'Back to dashboard')
@@ -154,6 +156,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
       cy.visit(checkOrgDetailsUrl, {
         failOnStatusCode: false
       })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Page not found')
     })
   })
@@ -169,6 +172,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
       cy.visit(checkOrgDetailsUrl, {
         failOnStatusCode: false
       })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Page not found')
     })
   })
@@ -191,6 +195,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
       ])
 
       cy.visit(checkOrgDetailsUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })

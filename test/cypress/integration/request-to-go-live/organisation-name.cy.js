@@ -33,6 +33,7 @@ describe('Request to go live: organisation name page', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
       cy.visit(requestToGoLivePageOrganisationNameUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
@@ -46,6 +47,7 @@ describe('Request to go live: organisation name page', () => {
 
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
 
@@ -61,6 +63,7 @@ describe('Request to go live: organisation name page', () => {
       cy.task('setupStubs', utils.getUserAndGatewayAccountStubs(notStartedServiceRole))
 
       cy.visit(requestToGoLivePageOrganisationNameUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Enter the name of your organisation')
 
@@ -111,6 +114,7 @@ describe('Request to go live: organisation name page', () => {
       cy.task('setupStubs', utils.getUserAndGatewayAccountStubs(serviceRoleWithMerchantDetails))
 
       cy.visit(requestToGoLivePageOrganisationNameUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Enter the name of your organisation')
       cy.get('input#request-to-go-live-organisation-name-input').should('have.value', organisationName)

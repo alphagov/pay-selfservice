@@ -23,6 +23,7 @@ describe('The user has fewer than 8 services', () => {
     cy.setEncryptedCookies(authenticatedUserId)
 
     cy.visit('/my-services')
+    cy.percySnapshot()
 
     cy.get('h1').should('contain', 'Overview')
     cy.get('[data-cy=reports-section]').should('exist')
@@ -61,6 +62,7 @@ describe('The user has 8 services', () => {
     cy.setEncryptedCookies(authenticatedUserId)
 
     cy.visit('/my-services')
+    cy.percySnapshot()
     cy.get('[data-cy=service-filter]').should('exist')
   })
 })
@@ -71,6 +73,7 @@ describe('The user does not have any services', () => {
     cy.setEncryptedCookies(authenticatedUserId)
 
     cy.visit('/my-services')
+    cy.percySnapshot()
 
     cy.get('h1').should('contain', 'Overview')
     cy.get('[data-cy=reports-section]').should('not.exist')
@@ -90,6 +93,7 @@ describe('Service has a live account that supports payouts', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
+    cy.percySnapshot()
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
     cy.contains('a', 'View payments to your bank account').click()
@@ -103,6 +107,7 @@ describe('Service does not have a live account that supports payouts', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
+    cy.percySnapshot()
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
     cy.contains('a', 'View payments to your bank account').should('not.exist')
@@ -115,6 +120,7 @@ describe('User has access to no live services', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
+    cy.percySnapshot()
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
     cy.contains('a', 'View transactions for all your services').should('have.attr', 'href', '/all-service-transactions/test')
@@ -127,6 +133,7 @@ describe('User has access to one or more live services', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
+    cy.percySnapshot()
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
     cy.contains('a', 'View transactions for all your services')
@@ -139,6 +146,7 @@ describe('Gateway account requires additional KYC data', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
+    cy.percySnapshot()
     cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
     cy.get('button').should('contain', 'INFORMATION NEEDED')

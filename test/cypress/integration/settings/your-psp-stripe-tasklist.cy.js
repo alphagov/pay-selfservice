@@ -71,6 +71,7 @@ describe('Your PSP Stripe page', () => {
     it('should display Your PSP - Stripe page correctly', () => {
       setupYourPspStubs()
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Information for Stripe')
       cy.get('#navigation-menu-your-psp')
         .should('contain', 'Information for Stripe')
@@ -116,6 +117,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
 
       cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
       cy.get('h2').should('contain', 'Information incomplete')
@@ -142,6 +144,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
 
       cy.get('[data-cy=warning-text]').should('not.exist')
       cy.get('h2').should('contain', 'Information complete')
@@ -159,6 +162,7 @@ describe('Your PSP Stripe page', () => {
     it('should autamatically show government document as cannot start yet and the rest of the tasks as not started', () => {
       setupYourPspStubs()
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
 
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'not started')
       cy.get('strong[id="task-sro-status"]').should('contain', 'not started')
@@ -175,6 +179,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
 
       cy.get('span').contains('Bank Details').click()
       cy.get('h1').should('contain', 'Enter your organisation’s banking details')
@@ -190,6 +195,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
       cy.get('span').contains('Bank Details').should('not.have.attr', 'href')
     })
@@ -200,6 +206,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('VAT registration number').click()
       cy.get('h1').should('contain', 'VAT registration number')
       cy.get('#have-vat-number').click()
@@ -214,6 +221,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('VAT registration number').should('not.have.attr', 'href')
       cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
     })
@@ -224,6 +232,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('Company registration number').click()
       cy.get('h1').should('contain', 'Company registration number')
       cy.get('#company-number-declaration').click()
@@ -238,6 +247,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('Company registration number').should('not.have.attr', 'href')
       cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
     })
@@ -248,6 +258,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('Service director').click()
       cy.get('h1').should('contain', 'Enter a director’s details')
       cy.get('#first-name').type(typedFirstName)
@@ -266,6 +277,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('strong[id="task-director-status"]').should('contain', 'complete')
       cy.get('span').contains('Service director').should('not.have.attr', 'href')
     })
@@ -276,6 +288,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('Responsible person').click()
       cy.get('h1').should('contain', 'Enter responsible person details')
       cy.get('#first-name').type(typedFirstName)
@@ -298,6 +311,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('Responsible person').should('not.have.attr', 'href')
       cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
     })
@@ -308,6 +322,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').click()
       cy.get('h1').contains('Check your organisation’s details')
       cy.get('[data-cy="yes-radio"]').click()
@@ -321,6 +336,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('not.have.attr', 'href')
       cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'complete')
     })
@@ -339,6 +355,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('span').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
       cy.get('span').contains('Government entity document').click()
       cy.get('h1').contains('Upload a government entity document')

@@ -16,6 +16,7 @@ describe('Go live link on dashboard', () => {
       beforeEach(() => {
         setupStubs('NOT_STARTED')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
       })
 
       it('should show request to go live link when go-live stage is NOT_STARTED', () => {
@@ -29,6 +30,7 @@ describe('Go live link on dashboard', () => {
       it('should show continue link when go-live stage is ENTERED_ORGANISATION_NAME', () => {
         setupStubs('ENTERED_ORGANISATION_NAME')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
@@ -38,6 +40,7 @@ describe('Go live link on dashboard', () => {
       it('should show continue link when go-live stage is CHOSEN_PSP_STRIPE', () => {
         setupStubs('CHOSEN_PSP_STRIPE')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
@@ -47,6 +50,7 @@ describe('Go live link on dashboard', () => {
       it('should show continue link when go-live stage is CHOSEN_PSP_WORLDPAY', () => {
         setupStubs('CHOSEN_PSP_WORLDPAY')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
@@ -56,6 +60,7 @@ describe('Go live link on dashboard', () => {
       it('should show continue link when go-live stage is CHOSEN_PSP_SMARTPAY', () => {
         setupStubs('CHOSEN_PSP_SMARTPAY')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
@@ -65,6 +70,7 @@ describe('Go live link on dashboard', () => {
       it('should show continue link when go-live stage is CHOSEN_PSP_EPDQ', () => {
         setupStubs('CHOSEN_PSP_EPDQ')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
@@ -76,6 +82,7 @@ describe('Go live link on dashboard', () => {
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_STRIPE', () => {
         setupStubs('TERMS_AGREED_STRIPE')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
@@ -84,6 +91,7 @@ describe('Go live link on dashboard', () => {
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_WORLDPAY', () => {
         setupStubs('TERMS_AGREED_WORLDPAY')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
@@ -92,6 +100,7 @@ describe('Go live link on dashboard', () => {
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_SMARTPAY', () => {
         setupStubs('TERMS_AGREED_SMARTPAY')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
@@ -100,6 +109,7 @@ describe('Go live link on dashboard', () => {
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_EPDQ', () => {
         setupStubs('TERMS_AGREED_EPDQ')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
@@ -110,6 +120,7 @@ describe('Go live link on dashboard', () => {
       it('should not show request to go live link when go-live stage is LIVE', () => {
         setupStubs('LIVE')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('not.exist')
       })
@@ -117,6 +128,7 @@ describe('Go live link on dashboard', () => {
       it('should not show request to go live link when go-live stage is DENIED', () => {
         setupStubs('DENIED')
         cy.visit(dashboardUrl)
+        cy.percySnapshot()
 
         cy.get('#request-to-go-live-link').should('not.exist')
       })

@@ -42,6 +42,7 @@ describe('Request to go live: agreement', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
       cy.visit(requestToGoLiveAgreementUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
@@ -51,6 +52,7 @@ describe('Request to go live: agreement', () => {
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
       cy.visit(requestToGoLiveAgreementUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
 
@@ -65,6 +67,7 @@ describe('Request to go live: agreement', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE'))
 
       cy.visit(requestToGoLiveAgreementUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Read and accept our legal terms')
 
@@ -115,6 +118,7 @@ describe('Request to go live: agreement', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_WORLDPAY'))
 
       cy.visit(requestToGoLiveAgreementUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Read and accept our legal terms')
 
@@ -151,6 +155,7 @@ describe('Request to go live: agreement', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('GOV_BANKING_MOTO_OPTION_COMPLETED'))
 
       cy.visit(requestToGoLiveAgreementUrl)
+      cy.percySnapshot()
       cy.get('fieldset').should('not.contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
       cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body memorandum of understanding')
 
@@ -185,6 +190,7 @@ describe('Request to go live: agreement', () => {
 
     it('should show "An error occurred: There is a problem with the payments platform"', () => {
       cy.visit(requestToGoLiveAgreementUrl)
+      cy.percySnapshot()
 
       cy.get('#agreement').click()
       cy.get('#request-to-go-live-agreement-form > button').click()

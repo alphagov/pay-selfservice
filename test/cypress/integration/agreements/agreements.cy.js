@@ -69,6 +69,8 @@ describe('Agreements', () => {
     cy.visit('/test/service/service-id/account/gateway-account-id/agreements')
 
     cy.get('#navigation-menu-agreements').should('have.length', 1)
+
+    cy.percySnapshot()
   })
 
   const referenceFilter = 'a-valid-ref'
@@ -111,6 +113,8 @@ describe('Agreements', () => {
       })
     ])
 
+    cy.percySnapshot()
+
     cy.get('#reference').type(referenceFilter)
     cy.get('#status').select(statusFilter)
     cy.get('#filter').click()
@@ -152,6 +156,8 @@ describe('Agreements', () => {
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/agreements')
+
+    cy.percySnapshot()
 
     cy.get('#results-empty').should('be.visible')
     cy.get('#agreements-list').should('not.exist')

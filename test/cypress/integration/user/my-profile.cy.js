@@ -14,6 +14,7 @@ describe('My profile page', () => {
 
     it('should not show telephone number row', () => {
       cy.visit('/my-profile')
+      cy.percySnapshot()
       cy.get('[data-cy=telephone-number-row]').should('not.exist')
     })
   })
@@ -28,6 +29,7 @@ describe('My profile page', () => {
 
     it('should show telephone number row', () => {
       cy.visit('/my-profile')
+      cy.percySnapshot()
       cy.get('[data-cy=telephone-number-row]').should('exist')
       cy.get('[data-cy=telephone-number-row]>dd').should('contain', testPhoneNumber)
     })

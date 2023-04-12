@@ -52,6 +52,7 @@ describe('Stripe setup: bank details page', () => {
       beforeEach(() => {
         setupStubs(false)
         cy.visit(bankDetailsUrl)
+        cy.percySnapshot()
       })
 
       it('should display page correctly', () => {
@@ -109,6 +110,7 @@ describe('Stripe setup: bank details page', () => {
         setupStubs(true)
 
         cy.visit(bankDetailsUrl)
+        cy.percySnapshot()
 
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#back-link').should('contain', 'Back to dashboard')
@@ -120,6 +122,7 @@ describe('Stripe setup: bank details page', () => {
         setupStubs([false, true], 'live', 'stripe')
 
         cy.visit(bankDetailsUrl)
+        cy.percySnapshot()
 
         cy.get('input#account-number[name="account-number"]').type(accountNumber)
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
@@ -139,6 +142,9 @@ describe('Stripe setup: bank details page', () => {
         cy.visit(bankDetailsUrl, {
           failOnStatusCode: false
         })
+
+        cy.percySnapshot()
+
         cy.get('h1').should('contain', 'Page not found')
       })
     })
@@ -150,6 +156,9 @@ describe('Stripe setup: bank details page', () => {
         cy.visit(bankDetailsUrl, {
           failOnStatusCode: false
         })
+
+        cy.percySnapshot()
+
         cy.get('h1').should('contain', 'Page not found')
       })
     })
@@ -165,6 +174,9 @@ describe('Stripe setup: bank details page', () => {
         cy.visit(bankDetailsUrl, {
           failOnStatusCode: false
         })
+
+        cy.percySnapshot()
+        
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })

@@ -80,6 +80,7 @@ describe('The organisation address page', () => {
       it('should display form', () => {
         cy.setEncryptedCookies(userExternalId)
         cy.visit(pageUrl)
+        cy.percySnapshot()
 
         cy.get('h1').should('contain', `What is the name and address of your organisation on your government entity document?`)
 
@@ -161,7 +162,7 @@ describe('The organisation address page', () => {
               cy.get('.govuk-error-message').should('contain', 'Enter a real postcode')
             })
           })
-        
+
         cy.get('#navigation-menu-your-psp')
           .should('contain', 'Information for Stripe')
           .parent().should('have.class', 'govuk-!-font-weight-bold')
@@ -214,6 +215,7 @@ describe('The organisation address page', () => {
       it('should submit the form', () => {
         cy.setEncryptedCookies(userExternalId)
         cy.visit(pageUrl)
+        cy.percySnapshot()
 
         cy.get('h1').should('contain', `What is the name and address of your organisation on your government entity document?`)
 
@@ -251,6 +253,7 @@ describe('The organisation address page', () => {
         cy.visit(pageUrl, {
           failOnStatusCode: false
         })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'Page not found')
       })
     })
@@ -266,6 +269,7 @@ describe('The organisation address page', () => {
         cy.visit(checkOrgDetailsUrl, {
           failOnStatusCode: false
         })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'Page not found')
       })
     })
@@ -288,6 +292,7 @@ describe('The organisation address page', () => {
         ])
 
         cy.visit(checkOrgDetailsUrl, { failOnStatusCode: false })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })

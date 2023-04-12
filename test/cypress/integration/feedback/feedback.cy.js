@@ -15,6 +15,7 @@ describe('Feedback page', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/feedback')
+    cy.percySnapshot()
 
     cy.title().should('eq', 'Give feedback — GOV.UK Pay')
 

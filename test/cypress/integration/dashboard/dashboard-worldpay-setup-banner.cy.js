@@ -41,6 +41,7 @@ describe('Worldpay account setup banner', () => {
 
     it('should display banner if account is worldpay and the credentials are in CREATED state', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+      cy.percySnapshot()
 
       cy.get('.govuk-notification-banner__title').contains('Important')
       cy.get('.govuk-notification-banner__content').contains('You have not finished setting up your account. You will not be able to take payments unless you connect your Worldpay account to GOV.UK Pay.')
@@ -56,6 +57,7 @@ describe('Worldpay account setup banner', () => {
     it('should not display banner for view only user if worldpay account is not fully setup', () => {
       setupStubs('view-only')
       cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+      cy.percySnapshot()
 
       cy.get('.govuk-notification-banner').should('not.exist')
     })

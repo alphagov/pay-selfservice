@@ -37,6 +37,7 @@ describe('Should delete payment link', () => {
 
   it('should list a single English payment links and have no Welsh payment links section', () => {
     cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
+    cy.percySnapshot()
 
     cy.get('h1').should('contain', 'Manage payment links')
     cy.get('.payment-links-list--header').should('contain',

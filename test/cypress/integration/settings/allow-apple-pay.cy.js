@@ -28,6 +28,7 @@ describe('Apple Pay', () => {
     setupStubs(false)
 
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+    cy.percySnapshot()
     cy.get('.govuk-summary-list__value').first().should('contain', 'Off')
     cy.get('a').contains('Change Apple Pay settings').click()
     cy.get('input[type="radio"]').should('have.length', 2)
@@ -41,6 +42,7 @@ describe('Apple Pay', () => {
     setupStubs(true)
 
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+    cy.percySnapshot()
     cy.get('.govuk-summary-list__value').first().should('contain', 'On')
     cy.get('a').contains('Change Apple Pay settings').click()
     cy.get('input[type="radio"]').should('have.length', 2)
@@ -54,6 +56,7 @@ describe('Apple Pay', () => {
     setupStubs(false)
 
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+    cy.percySnapshot()
     cy.get('.govuk-summary-list__value').first().should('contain', 'Off')
     cy.get('a').contains('Change Apple Pay settings').click()
 

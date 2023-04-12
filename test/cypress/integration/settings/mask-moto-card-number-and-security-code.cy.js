@@ -64,6 +64,7 @@ describe('MOTO mask security section', () => {
         setupMotoStubs({ allowMoto: false })
 
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.percySnapshot()
         cy.get('#moto-mask-security-settings-heading').should('not.exist')
       })
     })
@@ -74,6 +75,7 @@ describe('MOTO mask security section', () => {
         setupMotoStubs({ readonly: true, allowMoto: true, motoMaskCardNumber: false })
 
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.percySnapshot()
         cy.get('.govuk-summary-list__key').eq(5).should('contain', 'Hide card numbers')
         cy.get('.govuk-summary-list__value').eq(5).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(5).contains('View')
@@ -92,6 +94,7 @@ describe('MOTO mask security section', () => {
         setupMotoStubs({ readonly: false, allowMoto: true, motoMaskCardNumber: false })
 
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.percySnapshot()
         cy.get('.govuk-summary-list__key').eq(5).should('contain', 'Hide card numbers')
         cy.get('.govuk-summary-list__value').eq(5).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(5).contains('Change')
@@ -116,6 +119,7 @@ describe('MOTO mask security section', () => {
         setupMotoStubs({ readonly: true, allowMoto: true, motoMaskSecurityCode: false })
 
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.percySnapshot()
         cy.get('.govuk-summary-list__key').eq(6).should('contain', 'Hide card security codes')
         cy.get('.govuk-summary-list__value').eq(6).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(6).contains('View')
@@ -134,6 +138,7 @@ describe('MOTO mask security section', () => {
         setupMotoStubs({ readonly: false, allowMoto: true, motoMaskSecurityCode: false })
 
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+        cy.percySnapshot()
         cy.get('.govuk-summary-list__key').eq(6).should('contain', 'Hide card security codes')
         cy.get('.govuk-summary-list__value').eq(6).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(6).contains('Change')

@@ -9,6 +9,7 @@ describe('Start self-signup registration', () => {
     ])
 
     cy.visit('/register/email-address')
+    cy.percySnapshot()
 
     cy.title().should('eq', 'Enter your email address - GOV.UK Pay')
     cy.get('h1').should('contain', 'Enter your email address')
@@ -42,6 +43,7 @@ describe('Start self-signup registration', () => {
     ])
 
     cy.visit('/register/email-address')
+    cy.percySnapshot()
 
     cy.title().should('eq', 'Enter your email address - GOV.UK Pay')
     cy.get('h1').should('contain', 'Enter your email address')

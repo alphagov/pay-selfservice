@@ -42,6 +42,7 @@ describe('Update service name', () => {
         ])
 
       cy.visit('/my-services')
+      cy.percySnapshot()
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
       cy.get('a').contains('Edit name').click()
@@ -67,6 +68,7 @@ describe('Update service name', () => {
         })])
 
       cy.visit('/my-services')
+      cy.percySnapshot()
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
 
       cy.get('a').contains('Edit name').click()

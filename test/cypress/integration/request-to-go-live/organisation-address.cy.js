@@ -28,6 +28,7 @@ describe('The organisation address page', () => {
       const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(pageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', `Enter your organisation’s contact details`)
 
@@ -148,6 +149,7 @@ describe('The organisation address page', () => {
     it('should display form with existing details pre-filled', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(`/service/${serviceExternalId}/request-to-go-live/organisation-address`)
+      cy.percySnapshot()
 
       cy.get(`form[method=post]`)
         .within(() => {
@@ -169,6 +171,7 @@ describe('The organisation address page', () => {
     it('should show an error when the user does not have enough permissions', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(pageUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
@@ -180,6 +183,7 @@ describe('The organisation address page', () => {
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(pageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
 

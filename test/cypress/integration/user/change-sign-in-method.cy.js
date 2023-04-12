@@ -17,6 +17,7 @@ describe('Change sign in method', () => {
           ])
 
           cy.visit('/my-profile/two-factor-auth')
+          cy.percySnapshot()
 
           // check page is correct for when current method is APP
           cy.get('p.govuk-body').contains('You currently use an authenticator app').should('exist')
@@ -157,6 +158,7 @@ describe('Change sign in method', () => {
         ])
 
         cy.visit('/my-profile/two-factor-auth')
+        cy.percySnapshot()
 
         // select option to use APP as sign-in method
         cy.get('input[type="radio"][value="APP"]').click()
@@ -181,6 +183,7 @@ describe('Change sign in method', () => {
         ])
 
         cy.visit('/my-profile/two-factor-auth')
+        cy.percySnapshot()
 
         // check page is correct for when current method is SMS
         cy.get('p.govuk-body').contains('You currently use text message codes').should('exist')

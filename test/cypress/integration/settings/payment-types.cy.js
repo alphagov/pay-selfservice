@@ -24,6 +24,7 @@ describe('Payment types', () => {
   it('should display page and allow updating card types', () => {
     setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
     cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
+    cy.percySnapshot()
 
     cy.title().should('eq', `Manage payment types - ${serviceName} - GOV.UK Pay`)
 
@@ -56,6 +57,7 @@ describe('Payment types', () => {
   it('should show error if user tries to disable all card types', () => {
     setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
     cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
+    cy.percySnapshot()
 
     cy.get('#debit').click()
     cy.get('#debit-2').click()

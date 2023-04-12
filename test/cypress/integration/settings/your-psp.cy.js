@@ -152,6 +152,7 @@ describe('Your PSP settings page', () => {
     it('should not show link to Your PSP in the side navigation', () => {
       setupYourPspStubs()
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.percySnapshot()
       cy.get('#navigation-menu-your-psp').should('have.length', 0)
     })
   })
@@ -175,6 +176,7 @@ describe('Your PSP settings page', () => {
     it('should show link to "Your PSP - Worldpay" in the side navigation and render page when clicked', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.percySnapshot()
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Worldpay')
       cy.get('#navigation-menu-your-psp').click()
 
@@ -188,6 +190,7 @@ describe('Your PSP settings page', () => {
 
     it('should allow account credentials to be configured and all values must be set', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#credentials-change-link').click()
       cy.get('#merchantId').type(testCredentials.merchant_id)
       cy.get('#username').type(testCredentials.username)
@@ -202,6 +205,7 @@ describe('Your PSP settings page', () => {
 
     it('should not allow MOTO merchant account code', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#credentials-change-link').click()
       cy.get('#merchantId').type('merchant-account-code-ending-with-MOTO')
       cy.get('#username').type(testCredentials.username)
@@ -213,6 +217,7 @@ describe('Your PSP settings page', () => {
 
     it('should allow 3DS Flex credentials to be configured (trimming leading and trailing space) and all values must be valid and set', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#flex-credentials-change-link').click()
       cy.get('#removeFlexCredentials').should('not.exist')
       cy.get('#organisational-unit-id').type('Invalid organisational unit ID')
@@ -234,6 +239,7 @@ describe('Your PSP settings page', () => {
 
     it('should not allow invalid 3DS Flex credentials to be saved', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#flex-credentials-change-link').click()
       cy.get('#organisational-unit-id').type(testInvalidFlexCredentials.organisational_unit_id)
       cy.get('#issuer').type(testInvalidFlexCredentials.issuer)
@@ -263,6 +269,7 @@ describe('Your PSP settings page', () => {
 
     it('should display generic problem page when checking 3DS Flex credentials fails', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#flex-credentials-change-link').click()
       cy.get('#organisational-unit-id').clear().type(testFailureFlexCredentials.organisational_unit_id)
       cy.get('#issuer').clear().type(testFailureFlexCredentials.issuer)
@@ -277,6 +284,7 @@ describe('Your PSP settings page', () => {
 
     it('should display generic problem page when getting a bad result from connector', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#flex-credentials-change-link').click()
       cy.get('#organisational-unit-id').type(testBadResultFlexCredentials.organisational_unit_id)
       cy.get('#issuer').type(testBadResultFlexCredentials.issuer)
@@ -304,6 +312,7 @@ describe('Your PSP settings page', () => {
       })
 
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
@@ -333,6 +342,7 @@ describe('Your PSP settings page', () => {
     })
     it('should not have 3DS flex section', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('h2').contains('3DS Flex').should('not.exist')
       cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
       cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
@@ -343,6 +353,7 @@ describe('Your PSP settings page', () => {
 
     it('should not allow non-MOTO merchant account code', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#credentials-change-link').click()
       cy.get('#merchantId').clear()
       cy.get('#merchantId').type('non-moto-merchant-code')
@@ -354,6 +365,7 @@ describe('Your PSP settings page', () => {
 
     it('should allow MOTO merchant account code', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#credentials-change-link').click()
       cy.get('#merchantId').clear()
       cy.get('#merchantId').type(testCredentialsMOTO.merchant_id)
@@ -384,6 +396,7 @@ describe('Your PSP settings page', () => {
         })
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
+        cy.percySnapshot()
 
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
 
@@ -416,6 +429,7 @@ describe('Your PSP settings page', () => {
         })
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
+        cy.percySnapshot()
         cy.get('#worldpay-3ds-flex-is-on').should('exist')
         cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
         cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
@@ -440,6 +454,7 @@ describe('Your PSP settings page', () => {
         })
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
+        cy.percySnapshot()
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
         cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
@@ -461,6 +476,7 @@ describe('Your PSP settings page', () => {
         })
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
+        cy.percySnapshot()
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
         cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
@@ -485,6 +501,7 @@ describe('Your PSP settings page', () => {
         })
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
+        cy.percySnapshot()
 
         cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
@@ -513,6 +530,7 @@ describe('Your PSP settings page', () => {
 
     it('should show link to "Your PSP - Smartpay" in the side navigation and display page when clicked', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.percySnapshot()
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - Smartpay')
       cy.get('#navigation-menu-your-psp').click()
 
@@ -523,6 +541,7 @@ describe('Your PSP settings page', () => {
 
     it('should allow all credentials to be configured and all values must be set', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#credentials-change-link').click()
       cy.get('#merchantId').type(testCredentials.merchant_id)
       cy.get('#username').type(testCredentials.username)
@@ -537,6 +556,7 @@ describe('Your PSP settings page', () => {
 
     it('should allow all notification credentials to be configured and all values must be set', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#notification-credentials-change-link').click()
       cy.get('#notification-username').type(testCredentials.username)
       cy.get('#submitNotificationCredentials').click()
@@ -565,6 +585,7 @@ describe('Your PSP settings page', () => {
 
     it('should show all credentials as configured', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
@@ -588,6 +609,7 @@ describe('Your PSP settings page', () => {
 
     it('should show link to "Your PSP - ePDQ" in the side navigation and navigate to page when clicked', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.percySnapshot()
       cy.get('#navigation-menu-your-psp').should('contain', 'Your PSP - ePDQ')
       cy.get('#navigation-menu-your-psp').click()
 
@@ -600,6 +622,7 @@ describe('Your PSP settings page', () => {
 
     it('should allow all credentials to be configured and all values must be set', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('#credentials-change-link').click()
       cy.get('#merchantId').type(testCredentials.merchant_id)
       cy.get('#username').type(testCredentials.username)
@@ -630,6 +653,7 @@ describe('Your PSP settings page', () => {
 
     it('should show all credentials as configured', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.percySnapshot()
       cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')

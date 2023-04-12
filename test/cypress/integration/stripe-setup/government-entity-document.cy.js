@@ -57,6 +57,7 @@ describe('Stripe setup: Government entity document', () => {
       cy.setEncryptedCookies(userExternalId, {})
 
       cy.visit(governmentEntityDocumentUrl)
+      cy.percySnapshot()
     })
 
     it('should display page correctly', () => {
@@ -112,6 +113,7 @@ describe('Stripe setup: Government entity document', () => {
       setupStubs(true)
 
       cy.visit(governmentEntityDocumentUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#back-link').should('contain', 'Back to dashboard')
@@ -131,6 +133,7 @@ describe('Stripe setup: Government entity document', () => {
       cy.visit(governmentEntityDocumentUrl, {
         failOnStatusCode: false
       })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Page not found')
     })
   })
@@ -146,6 +149,7 @@ describe('Stripe setup: Government entity document', () => {
       cy.visit(governmentEntityDocumentUrl, {
         failOnStatusCode: false
       })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Page not found')
     })
   })
@@ -168,6 +172,7 @@ describe('Stripe setup: Government entity document', () => {
       ])
 
       cy.visit(governmentEntityDocumentUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })

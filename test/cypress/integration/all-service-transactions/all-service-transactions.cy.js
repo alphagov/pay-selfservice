@@ -93,6 +93,7 @@ describe('All service transactions', () => {
     ])
 
     cy.visit(transactionsUrl)
+    cy.percySnapshot()
     cy.title().should('eq', `Transactions for all services`)
 
     cy.get('.govuk-breadcrumbs').within(() => {
@@ -106,6 +107,7 @@ describe('All service transactions', () => {
     cy.get('#charge-id-transaction-id-2').should('exist').should('have.attr', 'href', `/redirect/transactions/transaction-id-2`)
 
     cy.visit(transactionsUrl)
+    cy.percySnapshot()
     cy.log('Switch to view test transactions')
     cy.get('a').contains('Switch to test accounts').click()
 
@@ -143,6 +145,7 @@ describe('All service transactions', () => {
     ])
 
     cy.visit('/all-service-transactions/test')
+    cy.percySnapshot()
     // Add some filters, so we can check the back links will include them
     cy.get('#reference').type('ref3')
     cy.get('#filter').click()

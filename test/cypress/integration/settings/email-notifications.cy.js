@@ -25,6 +25,7 @@ describe('Settings', () => {
       setupStubs()
 
       cy.visit(settingsUrl)
+      cy.percySnapshot()
     })
 
     describe('Settings default page', () => {
@@ -141,6 +142,7 @@ describe('Settings', () => {
       setupStubs(role)
 
       cy.visit(settingsUrl)
+      cy.percySnapshot()
     })
 
     describe('Email notifications home page', () => {

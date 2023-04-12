@@ -35,6 +35,7 @@ describe('Complete registration after following link in invite email', () => {
       ])
 
       cy.visit(`/invites/${inviteCode}`)
+      cy.percySnapshot()
 
       cy.title().should('eq', 'Create your password - GOV.UK Pay')
       cy.get('h1').should('contain', 'Create your password')
@@ -212,6 +213,7 @@ describe('Complete registration after following link in invite email', () => {
       ])
 
       cy.visit(`/invites/${inviteCode}`)
+      cy.percySnapshot()
 
       cy.title().should('eq', 'Create your password - GOV.UK Pay')
       cy.get('h1').should('contain', 'Create your password')
@@ -280,6 +282,7 @@ describe('Complete registration after following link in invite email', () => {
         cy.setEncryptedCookies(userExternalId)
 
         cy.visit('/register/success')
+        cy.percySnapshot()
         cy.title().should('eq', 'Choose service - GOV.UK Pay')
       })
     })
@@ -287,6 +290,7 @@ describe('Complete registration after following link in invite email', () => {
     describe('There is no logged in user', () => {
       it('should redirect to the login page', () => {
         cy.visit('/register/success')
+        cy.percySnapshot()
         cy.title().should('eq', 'Sign in to GOV.UK Pay')
       })
     })

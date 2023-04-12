@@ -9,6 +9,7 @@ describe('Privacy page', () => {
   describe('Logged out user', () => {
     it('should show the privacy page correctly', () => {
       cy.visit('/privacy')
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Privacy notice')
 
@@ -31,6 +32,7 @@ describe('Privacy page', () => {
       cy.setEncryptedCookies(userExternalId)
 
       cy.visit('/privacy')
+      cy.percySnapshot()
 
       cy.get('#navigation').should('contain', 'Sign out')
       cy.get('[data-cy=breadcrumbs]').should('exist')

@@ -35,6 +35,7 @@ describe('Request PSP test account: submit request', () => {
     it('should submit request for Stripe test account', () => {
       setupStubs('NOT_STARTED', 'NOT_STARTED')
       cy.visit(requestStripeTestAccountUrl)
+      cy.percySnapshot()
 
       cy.get('button').contains('Submit request').click()
 
@@ -46,6 +47,7 @@ describe('Request PSP test account: submit request', () => {
     it('should show "Account already requested" page', () => {
       setupStubs('NOT_STARTED', 'REQUEST_SUBMITTED')
       cy.visit(requestStripeTestAccountUrl)
+      cy.percySnapshot()
 
       cy.get('button').contains('Submit request').click()
       cy.get('h1').should('contain', 'Account already requested')
@@ -56,6 +58,7 @@ describe('Request PSP test account: submit request', () => {
     it('should show "Stripe test account already set up" page', () => {
       setupStubs('NOT_STARTED', 'CREATED')
       cy.visit(requestStripeTestAccountUrl)
+      cy.percySnapshot()
 
       cy.get('button').contains('Submit request').click()
       cy.get('h1').should('contain', 'Stripe test account already set up')

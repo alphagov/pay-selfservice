@@ -73,6 +73,7 @@ describe('Editing a payment link', () => {
 
     it('should show the edit page with the payment link details', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage`)
+      cy.percySnapshot()
 
       assertManagePaymentLinksNavItemBold()
 
@@ -133,6 +134,7 @@ describe('Editing a payment link', () => {
     describe('Edit details', () => {
       beforeEach(() => {
         cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
+        cy.percySnapshot()
       })
 
       it('should be able to edit the payment link information', () => {
@@ -276,6 +278,7 @@ describe('Editing a payment link', () => {
     beforeEach(() => {
       setupStubs(product)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link/manage/edit/${productId}`)
+      cy.percySnapshot()
     })
 
     it('should show Welsh instructions on the edit information page', () => {

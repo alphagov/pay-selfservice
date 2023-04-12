@@ -42,7 +42,9 @@
     "cypress:test-headed": "cypress open",
     "cypress:test-no-watch": "cypress open --config watchForFileChanges=false",
     "publish-pacts": "./bin/publish-pacts.js",
-    "snyk-protect": "exit 0; #no-op for ci"
+    "snyk-protect": "exit 0; #no-op for ci",
+    "cypress:test-percy-open": "percy exec -- cypress open",
+    "cypress:test-percy": "percy exec -- cypress run"
   },
   "lint-staged": {
     "*.js": [
@@ -79,7 +81,7 @@
     "csurf": "^1.11.0",
     "express": "4.18.x",
     "google-libphonenumber": "3.2.32",
-    "govuk-frontend": "3.14.0",
+    "govuk-frontend": "4.5.0",
     "http-proxy": "1.18.x",
     "https-proxy-agent": "5.0.1",
     "joi": "14.3.1",
@@ -113,6 +115,8 @@
     "@babel/preset-env": "7.20.2",
     "@pact-foundation/pact": "^9.18.1",
     "@pact-foundation/pact-node": "10.17.7",
+    "@percy/cli": "^1.23.0",
+    "@percy/cypress": "^3.1.2",
     "chai": "4.3.7",
     "chai-arrays": "2.2.0",
     "chai-as-promised": "7.1.1",

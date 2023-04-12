@@ -45,6 +45,7 @@ describe('Manage team members page', () => {
     cy.setEncryptedCookies(AUTHENTICATED_USER_ID)
 
     cy.visit(`/service/${SERVICE_EXTERNAL_ID}/team-members`)
+    cy.percySnapshot()
 
     cy.get('#team-members-admin-list').find('tr').first().find('td').first().find('a').contains('logged-in-user@example.com (you)')
     cy.get('#team-members-admin-list').find('tr').eq(1).find('td').first().find('a').contains('admin-user@example.com')

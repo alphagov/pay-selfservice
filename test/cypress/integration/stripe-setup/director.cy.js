@@ -88,6 +88,7 @@ describe('Stripe setup: director page', () => {
       setupStubs(false)
 
       cy.visit(directorUrl)
+      cy.percySnapshot()
     })
 
     it('should display form with name, dob and email fields', () => {
@@ -181,6 +182,7 @@ describe('Stripe setup: director page', () => {
       setupStubs([false, true])
 
       cy.visit(directorUrl)
+      cy.percySnapshot()
     })
 
     it('should display an error instead of saving details', () => {
@@ -205,6 +207,7 @@ describe('Stripe setup: director page', () => {
       setupStubs(false, 'live', 'worldpay')
 
       cy.visit(directorUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
     })
 
     it('should return a 404', () => {
@@ -226,6 +229,7 @@ describe('Stripe setup: director page', () => {
       ])
 
       cy.visit(directorUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
     })
 
     it('should show a permission denied error', () => {

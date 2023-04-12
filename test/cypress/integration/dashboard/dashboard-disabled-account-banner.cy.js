@@ -23,6 +23,7 @@ describe('The disabled account banner', () => {
 
   it('should be displayed if the account is disabled', () => {
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.percySnapshot()
 
     cy.get('p.govuk-notification-banner__heading').contains('GOV.UK Pay has disabled payment and refund creation for this account')
   })

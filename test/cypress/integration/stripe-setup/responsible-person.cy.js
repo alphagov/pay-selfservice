@@ -50,6 +50,7 @@ describe('Stripe setup: responsible person page', () => {
       setupStubs(false)
 
       cy.visit(responsiblePersonUrl)
+      cy.percySnapshot()
     })
 
     it('should display form', () => {
@@ -162,7 +163,7 @@ describe('Stripe setup: responsible person page', () => {
 
         cy.get('button').should('exist')
       })
-      
+
       cy.get('#navigation-menu-your-psp')
         .should('contain', 'Information for Stripe')
         .parent().should('have.class', 'govuk-!-font-weight-bold')
@@ -178,6 +179,7 @@ describe('Stripe setup: responsible person page', () => {
       setupStubs(true)
 
       cy.visit(responsiblePersonUrl)
+      cy.percySnapshot()
     })
 
     it('should display an error instead of showing form', () => {
@@ -193,6 +195,7 @@ describe('Stripe setup: responsible person page', () => {
       setupStubs([false, true])
 
       cy.visit(responsiblePersonUrl)
+      cy.percySnapshot()
     })
 
     it('should display an error instead of saving details', () => {
@@ -212,6 +215,7 @@ describe('Stripe setup: responsible person page', () => {
       setupStubs(false, 'live', 'worldpay')
 
       cy.visit(responsiblePersonUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
     })
 
     it('should return a 404', () => {
@@ -228,6 +232,7 @@ describe('Stripe setup: responsible person page', () => {
       ])
 
       cy.visit(responsiblePersonUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
     })
 
     it('should show a permission denied error', () => {

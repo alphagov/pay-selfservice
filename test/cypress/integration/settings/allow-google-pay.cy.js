@@ -32,6 +32,7 @@ describe('Google Pay', () => {
   it('should show it is disabled', () => {
     setupStubs(false)
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+    cy.percySnapshot()
     cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
     cy.get('a').contains('Change Google Pay settings').click()
     cy.get('input[type="radio"]').should('have.length', 2)
@@ -44,6 +45,7 @@ describe('Google Pay', () => {
   it('should show it is enabled', () => {
     setupStubs(true)
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+    cy.percySnapshot()
     cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On')
     cy.get('a').contains('Change Google Pay settings').click()
     cy.get('input[type="radio"]').should('have.length', 2)
@@ -57,6 +59,7 @@ describe('Google Pay', () => {
     setupStubs(false)
 
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+    cy.percySnapshot()
     cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
     cy.get('a').contains('Change Google Pay settings').click()
 

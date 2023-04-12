@@ -42,6 +42,7 @@ describe('Payout list page', () => {
     ])
 
     cy.visit('/payments-to-your-bank-account')
+    cy.percySnapshot()
     cy.get('h1').find('.govuk-tag').should('have.text', 'LIVE')
     cy.get('#payout-list').find('tr').should('have.length', 2)
     cy.get('#pagination').should('not.exist')
@@ -65,6 +66,7 @@ describe('Payout list page', () => {
     ])
 
     cy.visit(`/payments-to-your-bank-account?page=${page}`)
+    cy.percySnapshot()
 
     cy.get('#payout-list').find('tr').should('have.length', 3)
 
@@ -83,6 +85,7 @@ describe('Payout list page', () => {
       payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: testGatewayAccountId, payouts: testPayouts })
     ])
     cy.visit('/payments-to-your-bank-account')
+    cy.percySnapshot()
 
     cy.get('a').contains('Switch to test transactions').click()
 
@@ -104,6 +107,7 @@ describe('Payout list page', () => {
     ])
 
     cy.visit('/payments-to-your-bank-account/test')
+    cy.percySnapshot()
     cy.get('h1').find('.govuk-tag').should('have.text', 'TEST')
     cy.get('#payout-list').find('tr').should('have.length', 2)
     cy.get('#pagination').should('not.exist')
@@ -122,6 +126,7 @@ describe('Payout list page', () => {
     ])
 
     cy.visit('/payments-to-your-bank-account')
+    cy.percySnapshot()
     cy.get('h1').find('.govuk-tag').should('have.text', 'LIVE')
     cy.get('#pagination').should('not.exist')
     cy.get('#payout-list').should('not.exist')
@@ -146,6 +151,7 @@ describe('Payout list page', () => {
     ])
 
     cy.visit('/payments-to-your-bank-account/test', { failOnStatusCode: false })
+    cy.percySnapshot()
     cy.get('#errorMsg').should('have.text', 'You do not have any associated services with rights to view payments to bank accounts.')
   })
 })

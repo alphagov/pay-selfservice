@@ -37,6 +37,7 @@ describe('Request to go live: choose takes payments over the phone', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_GOV_BANKING_WORLDPAY'))
 
       cy.visit(requestToGoLiveChooseTakesPaymentsOverThePhone)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Will you be taking payments over the phone?')
       cy.get('input#choose-takes-payments-over-phone').should('exist')
@@ -77,6 +78,7 @@ describe('Request to go live: choose takes payments over the phone', () => {
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
       cy.visit(requestToGoLiveChooseTakesPaymentsOverThePhone)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
 
@@ -95,6 +97,7 @@ describe('Request to go live: choose takes payments over the phone', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
       cy.visit(requestToGoLiveChooseTakesPaymentsOverThePhone, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })

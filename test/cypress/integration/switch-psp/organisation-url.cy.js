@@ -75,6 +75,7 @@ describe('Switch PSP', () => {
         ])
 
         cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+        cy.percySnapshot()
       })
 
       it('should display organisation URL page correctly when switching PSP', () => {
@@ -129,6 +130,7 @@ describe('Switch PSP', () => {
         cy.visit(organisationUrl, {
           failOnStatusCode: false
         })
+        cy.percySnapshot()
         cy.get('h1').should('contain', 'An error occurred')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })

@@ -152,6 +152,7 @@ describe('Transaction details page', () => {
 
       cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: true }))
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+      cy.percySnapshot()
 
       // Reference number
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
@@ -247,6 +248,7 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', getStubs(transactionDetails))
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+      cy.percySnapshot()
 
       // Ensure page details match up
       // Reference number
@@ -340,6 +342,7 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', stubs)
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+      cy.percySnapshot()
 
       cy.get('#refundForm').should('exist')
 
@@ -375,6 +378,7 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', stubs)
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+      cy.percySnapshot()
 
       // Click the refund button
       cy.get('.target-to-show--toggle').click()
@@ -403,6 +407,7 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', getStubs(aFailedRefundTransaction))
 
       cy.visit(`${transactionsUrl}/${aFailedRefundTransaction.transaction_id}`)
+      cy.percySnapshot()
 
       // Ensure the refund button is available
       cy.get('.target-to-show--toggle').should('be.visible')
@@ -427,6 +432,7 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', getStubs(aCorporateCardSurchargeTransaction))
 
       cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeTransaction.transaction_id}`)
+      cy.percySnapshot()
 
       // Click the refund button
       cy.get('.target-to-show--toggle').click()
@@ -439,6 +445,7 @@ describe('Transaction details page', () => {
       const transactionDetails = defaultTransactionDetails()
       cy.task('setupStubs', getStubs(transactionDetails))
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+      cy.percySnapshot()
 
       // Click the refund button
       cy.get('.target-to-show--toggle').click()
@@ -457,6 +464,7 @@ describe('Transaction details page', () => {
 
       cy.task('setupStubs', getStubs(disputedPaymentDetails, {}, disputeTransactionDetails))
       cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
+      cy.percySnapshot()
 
       cy.get('[data-cy=refund-container]').within(() => {
         cy.get('h2').contains('Refund').should('exist')
@@ -474,6 +482,7 @@ describe('Transaction details page', () => {
 
       cy.task('setupStubs', getStubs(disputedPaymentDetails, {}, disputeTransactionDetails))
       cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
+      cy.percySnapshot()
 
       cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain', 'Dispute lost to customer')
 

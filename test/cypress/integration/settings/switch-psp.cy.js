@@ -71,6 +71,7 @@ describe('Switch PSP settings page', () => {
       cy.task('setupStubs', getUserAndAccountStubs('smartpay', false))
 
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.percySnapshot()
       cy.get('.service-info--tag').should('not.contain', 'switching psp')
       cy.get('#navigation-menu-switch-psp').should('have.length', 0)
     })
@@ -86,6 +87,7 @@ describe('Switch PSP settings page', () => {
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+          cy.percySnapshot()
           cy.get('.govuk-notification-banner__heading').should('contain', 'Switch your payment service provider (PSP) to Worldpay')
         })
 
@@ -93,6 +95,7 @@ describe('Switch PSP settings page', () => {
           cy.task('setupStubs', getUserAndAccountStubsForSwitchingNotStarted())
 
           cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.percySnapshot()
           cy.get('a').contains('Your PSP - Smartpay').click()
           cy.get('#switched-psp-status').should('contain', 'Your service is ready to switch PSP from Smartpay to Worldpay.')
         })
@@ -101,6 +104,7 @@ describe('Switch PSP settings page', () => {
           cy.task('setupStubs', getUserAndAccountStubsForSwitchingNotStarted())
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
           cy.get('.service-info--tag').should('contain', 'switch psp')
           cy.get('#navigation-menu-switch-psp').should('have.length', 1)
           cy.get('h1').should('contain', 'Switch payment service provider')
@@ -135,6 +139,7 @@ describe('Switch PSP settings page', () => {
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
 
           cy.get('.app-task-list__item').contains('Link your Worldpay account with GOV.UK Pay').click()
           cy.get('h1').should('contain', 'Your Worldpay credentials')
@@ -167,6 +172,7 @@ describe('Switch PSP settings page', () => {
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
 
           cy.get('.app-task-list__item').contains('Provide your Worldpay 3DS Flex credentials').click()
           cy.get('h1').should('contain', 'Your Worldpay 3DS Flex credentials')
@@ -204,6 +210,7 @@ describe('Switch PSP settings page', () => {
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
           cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
             .find('.app-task-list__tag').should('have.text', 'completed')
           cy.get('.app-task-list__item').eq(1).should('contain', 'Provide your Worldpay 3DS Flex credentials')
@@ -228,6 +235,7 @@ describe('Switch PSP settings page', () => {
 
           it('should have task list for Worldpay with correct tags', () => {
             cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+            cy.percySnapshot()
 
             cy.get('.app-task-list>li').eq(0).should('contain', 'Get ready to switch PSP')
               .within(() => {
@@ -261,6 +269,7 @@ describe('Switch PSP settings page', () => {
 
           it('should should the task list with the link Worldpay account step complete', () => {
             cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+            cy.percySnapshot()
             cy.get('.app-task-list__item').eq(0).should('contain', 'Link your Worldpay account with GOV.UK Pay')
               .find('.app-task-list__tag').should('have.text', 'completed')
             cy.get('.app-task-list__item').eq(1).should('contain', 'Make a live payment to test your Worldpay PSP')
@@ -297,6 +306,7 @@ describe('Switch PSP settings page', () => {
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
           cy.get('.app-task-list__item').contains('Make a live payment to test your Worldpay PSP').click()
           cy.get('h1').should('contain', 'Test the connection between Worldpay and GOV.UK Pay')
           cy.get('.govuk-back-link').should('contain', 'Back to Switching payment service provider (PSP)')
@@ -334,6 +344,7 @@ describe('Switch PSP settings page', () => {
             })
           ])
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration/callback`)
+          cy.percySnapshot()
 
           cy.get('.govuk-error-summary__body').first().contains('Please check your Worldpay credentials and try making another payment.')
           cy.get('.govuk-back-link').click()
@@ -373,9 +384,11 @@ describe('Switch PSP settings page', () => {
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
           cy.get('.app-task-list__item').contains('Make a live payment to test your Worldpay PSP').click()
           cy.get('button').contains('Continue to live payment').click()
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration/callback`)
+          cy.percySnapshot()
           cy.get('.govuk-notification-banner__content').contains('Your live payment has succeeded')
         })
       })
@@ -407,6 +420,7 @@ describe('Switch PSP settings page', () => {
 
         it('submits and navigates through to success page with appropriate message', () => {
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
           cy.get('button').contains('Switch to Worldpay').click()
           cy.get('.govuk-notification-banner__heading').contains('You\'ve switched payment service provider')
           cy.get('.govuk-notification-banner__content').contains('Your service is now taking payments through Worldpay. You can still process refunds of previous payments through Smartpay.')
@@ -436,12 +450,14 @@ describe('Switch PSP settings page', () => {
 
         it('sets transitioned text on the old psp page', () => {
           cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.percySnapshot()
           cy.get('a').contains('Old PSP - Worldpay').click()
           cy.get('#switched-psp-status').should('contain', 'This service is taking payments with Smartpay. It switched from using Worldpay on 3 May 2018')
         })
 
         it('sets transitioned text on the your psp page for new provider', () => {
           cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.percySnapshot()
           cy.get('a').contains('Your PSP - Smartpay').click()
           cy.get('#switched-psp-status').should('contain', 'This service started taking payments with Smartpay on 3 May 2018.')
         })
@@ -464,6 +480,7 @@ describe('Switch PSP settings page', () => {
 
         it('shows Stripe specific tasks', () => {
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
           cy.get('.govuk-heading-l').should('contain', 'Switch payment service provider (PSP)')
 
           cy.get('strong[id="Add organisation website address-status"]').should('contain', 'not started')
@@ -556,6 +573,7 @@ describe('Switch PSP settings page', () => {
         })
         it('all steps are complete', () => {
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
+          cy.percySnapshot()
 
           cy.get('strong[id="Add organisation website address-status"]').should('contain', 'completed')
           cy.get('strong[id="Provide your bank details-status"]').should('contain', 'completed')

@@ -40,6 +40,7 @@ describe('Request to go live: index', () => {
     it('should show an error when the user does not have enough permissions', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl, { failOnStatusCode: false })
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
@@ -53,6 +54,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
@@ -84,6 +86,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
@@ -115,6 +118,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
       cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'Completed')
@@ -143,6 +147,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
       cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'Completed')
@@ -171,6 +176,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
@@ -202,6 +208,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
       cy.get('#request-to-go-live-index-form > button').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-takes-payments-over-phone`)
@@ -217,6 +224,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
@@ -248,6 +256,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
       cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'Completed')
@@ -276,6 +285,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
@@ -307,6 +317,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request submitted')
 
@@ -328,6 +339,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request submitted')
 
@@ -346,6 +358,7 @@ describe('Request to go live: index', () => {
       setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_GOV_BANKING_WORLDPAY'))
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Request submitted')
       cy.get('ul > li').should('not.contain', 'responsible person')
       cy.get('ul > li').should('not.contain', 'bank details')
@@ -359,6 +372,7 @@ describe('Request to go live: index', () => {
       setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_GOV_BANKING_WORLDPAY', true))
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
       cy.get('h1').should('contain', 'Request submitted')
       cy.get('.govuk-inset-text').should('contain', 'To set up telephone payments you need to email govuk-pay-support@digital.cabinet-office.gov.uk.')
 
@@ -376,6 +390,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request submitted')
 
@@ -397,6 +412,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Request submitted')
 
@@ -417,6 +433,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with an error', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('not.exist')
 
@@ -438,6 +455,7 @@ describe('Request to go live: index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+      cy.percySnapshot()
 
       cy.get('h1').should('not.exist')
 

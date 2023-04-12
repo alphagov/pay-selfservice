@@ -45,6 +45,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'live', 'sandbox', 'LIVE'))
 
       cy.visit(dashboardUrl)
+      cy.percySnapshot()
       cy.get('.links__box').should('have.length', 2)
 
       cy.get('#demo-payment-link').should('exist')
@@ -60,6 +61,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'live', 'worldpay', 'LIVE'))
 
       cy.visit(dashboardUrl)
+      cy.percySnapshot()
       cy.get('.links__box').should('have.length', 1)
 
       cy.get('#payment-links-link').should('exist')
@@ -70,6 +72,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED'))
 
       cy.visit(dashboardUrl)
+      cy.percySnapshot()
       cy.get('.links__box').should('have.length', 4)
 
       cy.get('#demo-payment-link').should('exist')
@@ -89,6 +92,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'worldpay', 'NOT_STARTED'))
 
       cy.visit(dashboardUrl)
+      cy.percySnapshot()
       cy.get('.links__box').should('have.length', 2)
 
       cy.get('#payment-links-link').should('exist')
@@ -102,6 +106,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'stripe', 'NOT_STARTED'))
 
       cy.visit(dashboardUrl)
+      cy.percySnapshot()
       cy.get('.links__box').should('have.length', 3)
 
       cy.get('#demo-payment-link').should('exist')
@@ -118,6 +123,7 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED', 'REQUEST_SUBMITTED'))
 
       cy.visit(dashboardUrl)
+      cy.percySnapshot()
       cy.get('.links__box').should('have.length', 4)
 
       cy.get('#demo-payment-link').should('exist')

@@ -18,6 +18,7 @@ describe('Make a demo payment', () => {
   it('should load the demo payment details page', () => {
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.percySnapshot()
     cy.get('a').contains('Make a demo payment').click()
     cy.get('h1').should('have.text', 'Make a demo payment')
 

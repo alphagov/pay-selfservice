@@ -49,6 +49,7 @@ describe('The create payment link start page for a Worldpay MOTO account', () =>
 
     cy.setEncryptedCookies(userExternalId)
     cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
+    cy.percySnapshot()
     cy.get('.govuk-warning-text').should('contain', 'Your service is set up to only use MOTO payments.')
   })
 })
@@ -79,6 +80,7 @@ describe('The create payment link flow', () => {
     it('Should allow creating an english payment link', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
+      cy.percySnapshot()
 
       cy.get('h1').should('contain', 'Create a payment link')
       cy.get('.govuk-warning-text').should('not.exist')
@@ -90,6 +92,7 @@ describe('The create payment link flow', () => {
 
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
+      cy.percySnapshot()
 
       cy.get('a#create-payment-link').click()
 
@@ -285,6 +288,7 @@ describe('The create payment link flow', () => {
     it('should have instructions for creating a Welsh payment link', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
+      cy.percySnapshot()
 
       cy.get(`a[href="/account/${gatewayAccountExternalId}/create-payment-link/information?language=cy"]`).click()
 
