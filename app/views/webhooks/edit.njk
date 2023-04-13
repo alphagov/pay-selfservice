@@ -48,6 +48,8 @@
       id: "callback_url",
       name: "callback_url",
       value: form.values.callback_url,
+      type: "url",
+      spellcheck: false,
       errorMessage: form.errors.callback_url and {
         text: form.errors.callback_url
       }
@@ -59,6 +61,7 @@
       id: "description",
       name: "description",
       value: form.values.description,
+      spellcheck: true,
       errorMessage: form.errors.description and {
         text: form.errors.description
       }
