@@ -1,0 +1,36 @@
+.additional-information {
+  div {
+    &:nth-of-type(1) {
+      p {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    }
+    &:nth-of-type(2) {
+      display: flex;
+      justify-content: right;
+      span {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      @include govuk-media-query($until: 640px) {
+        justify-content: left;
+        span {
+          margin-top: 0;
+        }
+      }
+    }
+  }
+
+  &:last-of-type {
+    margin-bottom: 60px;
+    @include govuk-media-query($until: 640px) {
+      margin-bottom: 40px;
+    }
+  }
+}
+
+.divider {
+  width: 100%;
+  border-bottom: solid 1px $govuk-border-colour
+}
