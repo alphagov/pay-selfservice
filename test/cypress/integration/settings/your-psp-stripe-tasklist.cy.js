@@ -77,28 +77,28 @@ describe('Your PSP Stripe page', () => {
 
       cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
       cy.get('h2').should('contain', 'Information incomplete')
-      cy.get('p').should('contain', '0 out of 7 steps complete')
+      cy.get('[data-cy="progress-indicator"]').should('contain', '0 out of 7 steps completed')
       cy.get('h2').should('contain', 'Add your organisation’s details')
 
-      cy.get('span').contains('Bank Details')
+      cy.get('[data-cy="task-bank-details"]').contains('Bank Details')
         .should('exist')
         .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/bank-details`)
-      cy.get('span').contains('Responsible person')
+      cy.get('[data-cy="task-sro"]').contains('Responsible person')
         .should('exist')
         .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/responsible-person`)
-      cy.get('span').contains('Service director')
+      cy.get('[data-cy="task-director"]').contains('Service director')
         .should('exist')
         .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/director`)
-      cy.get('span').contains('VAT registration number')
+      cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number')
         .should('exist')
         .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/vat-number`)
-      cy.get('span').contains('Company registration number')
+      cy.get('[data-cy="task-Company-number"]').contains('Company registration number')
         .should('exist')
         .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/company-number`)
-      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document')
+      cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document')
         .should('exist')
         .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/check-organisation-details`)
-      cy.get('span').contains('Government entity document')
+      cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document')
         .should('exist')
         .should('not.have.attr', 'href')
     })
@@ -119,7 +119,7 @@ describe('Your PSP Stripe page', () => {
       cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
       cy.get('h2').should('contain', 'Information incomplete')
 
-      cy.get('p').should('contain', '2 out of 7 steps complete')
+      cy.get('[data-cy="progress-indicator"]').should('contain', '2 out of 7 steps complete')
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
       cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
       cy.get('strong[id="task-director-status"]').should('contain', 'not started')
@@ -144,7 +144,7 @@ describe('Your PSP Stripe page', () => {
 
       cy.get('[data-cy=warning-text]').should('not.exist')
       cy.get('h2').should('contain', 'Information complete')
-      cy.get('p').should('contain', '7 out of 7 steps complete')
+      cy.get('[data-cy="progress-indicator"]').should('contain', '7 out of 7 steps complete')
 
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
       cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
@@ -175,7 +175,7 @@ describe('Your PSP Stripe page', () => {
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
-      cy.get('span').contains('Bank Details').click()
+      cy.get('[data-cy="task-bank-details"]').contains('Bank Details').click()
       cy.get('h1').should('contain', 'Enter your organisation’s banking details')
       cy.get('input#account-number[name="account-number"]').type(accountNumber)
       cy.get('input#sort-code[name="sort-code"]').type(sortCode)
@@ -190,7 +190,7 @@ describe('Your PSP Stripe page', () => {
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
-      cy.get('span').contains('Bank Details').should('not.have.attr', 'href')
+      cy.get('[data-cy="task-bank-details"]').contains('Bank Details').should('not.have.attr', 'href')
     })
   })
 
@@ -199,7 +199,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('VAT registration number').click()
+      cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number').click()
       cy.get('h1').should('contain', 'VAT registration number')
       cy.get('#have-vat-number').click()
       cy.get('#vat-number').type(standardVatNumber)
@@ -213,7 +213,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('VAT registration number').should('not.have.attr', 'href')
+      cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number').should('not.have.attr', 'href')
       cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
     })
   })
@@ -223,7 +223,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('Company registration number').click()
+      cy.get('[data-cy="task-Company-number"]').contains('Company registration number').click()
       cy.get('h1').should('contain', 'Company registration number')
       cy.get('#company-number-declaration').click()
       cy.get('#company-number').type(validCompanyNumber)
@@ -237,7 +237,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('Company registration number').should('not.have.attr', 'href')
+      cy.get('[data-cy="task-Company-number"]').contains('Company registration number').should('not.have.attr', 'href')
       cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
     })
   })
@@ -247,7 +247,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('Service director').click()
+      cy.get('[data-cy="task-director"]').contains('Service director').click()
       cy.get('h1').should('contain', 'Enter a director’s details')
       cy.get('#first-name').type(typedFirstName)
       cy.get('#last-name').type(typedLastName)
@@ -266,7 +266,7 @@ describe('Your PSP Stripe page', () => {
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('strong[id="task-director-status"]').should('contain', 'complete')
-      cy.get('span').contains('Service director').should('not.have.attr', 'href')
+      cy.get('[data-cy="task-director"]').contains('Service director').should('not.have.attr', 'href')
     })
   })
 
@@ -275,7 +275,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('Responsible person').click()
+      cy.get('[data-cy="task-sro"]').contains('Responsible person').click()
       cy.get('h1').should('contain', 'Enter responsible person details')
       cy.get('#first-name').type(typedFirstName)
       cy.get('#last-name').type(typedLastName)
@@ -297,7 +297,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('Responsible person').should('not.have.attr', 'href')
+      cy.get('[data-cy="task-sro"]').contains('Responsible person').should('not.have.attr', 'href')
       cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
     })
   })
@@ -307,7 +307,7 @@ describe('Your PSP Stripe page', () => {
       setupYourPspStubs()
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').click()
+      cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document').click()
       cy.get('h1').contains('Check your organisation’s details')
       cy.get('[data-cy="yes-radio"]').click()
       cy.get('[data-cy="continue-button"]').click()
@@ -320,7 +320,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('Confirm your organisation’s name and address match your government entity document').should('not.have.attr', 'href')
+      cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document').should('not.have.attr', 'href')
       cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'complete')
     })
   })
@@ -338,8 +338,8 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('span').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
-      cy.get('span').contains('Government entity document').click()
+      cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
+      cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document').click()
       cy.get('h1').contains('Upload a government entity document')
     })
   })

@@ -1,5 +1,5 @@
 {% macro stripeTaskListItem(id, label, url, item) %}
-	<div class="govuk-grid-row additional-information">
+	<div class="govuk-grid-row additional-information" data-cy="{{ id }}">
 		<div class="govuk-grid-column-two-thirds ">
 			<p class="govuk-body">
 				{% if item.enabled %}
@@ -52,9 +52,8 @@
 		{{ 'Information complete' if isAllTasksComplete else 'Information incomplete' }}
 	</h2>
 
-	<p class="govuk-body govuk-!-margin-bottom-7">
-		{{ progressIndicator.no_of_tasks_completed }} out of {{ progressIndicator.total_number_of_tasks }} steps
-		completed
+	<p class="govuk-body govuk-!-margin-bottom-7" data-cy="progress-indicator">
+		{{progressIndicator.no_of_tasks_completed}} out of {{progressIndicator.total_number_of_tasks}} steps completed
 	</p>
 
 	{% set tasks %}
@@ -104,8 +103,7 @@
 	{% endset %}
 
 	<h2 class="govuk-heading-m">
-		Add your organisation’s
-		details
+		Add your organisation’s details
 	</h2>
 
 	<div class="govuk-grid-row">
