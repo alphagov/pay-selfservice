@@ -68,11 +68,9 @@ describe('webhooks service', () => {
       const result = await service.getWebhookMessages('webhook-id', { status: 'failed' })
 
       sinon.assert.calledWith(spy, 'webhook-id', { status: 'failed' })
-      expect(result.total).to.equal(11)
 
-      // 2 pages and a next button for constant service page settings
-      expect(result.links.length).to.equal(3)
-      expect(result.links[2].pageName).to.equal('next')
+      expect(result.links.length).to.equal(2)
+      expect(result.links[1].pageName).to.equal('Next')
     })
   })
 })

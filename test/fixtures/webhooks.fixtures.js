@@ -62,7 +62,6 @@ function webhookSigningSecretResponse (options = {}) {
 
 function webhookMessageSearchResponse (options = []) {
   return {
-    total: options.length,
     count: options.length,
     page: 1,
     results: options.map(validWebhookMessage)

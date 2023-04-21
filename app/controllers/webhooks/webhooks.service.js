@@ -4,17 +4,16 @@ const webhooksClient = require('./../../services/clients/webhooks.client')
 const Paginator = require('../../utils/paginator')
 
 const PAGE_SIZE = 10
-const MAX_PAGES = 3
 
 function sortByActiveStatus (a, b) {
   return Number(b.status === 'ACTIVE') - Number(a.status === 'ACTIVE')
 }
 
 function formatPages (searchResponse) {
-  const { total, page } = searchResponse
-  const paginator = new Paginator(total, PAGE_SIZE, page)
-  const hasMultiplePages = paginator.getLast() > 1
-  const links = hasMultiplePages && paginator.getNamedCentredRange(MAX_PAGES, true, true)
+  const { page, count } = searchResponse
+  const paginator = new Paginator(null, PAGE_SIZE, page)
+  const hasMultiplePages = count >= PAGE_SIZE
+  const links = hasMultiplePages && paginator.buildNavigation(count)
   return {
     ...searchResponse,
     links

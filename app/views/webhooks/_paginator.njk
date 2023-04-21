@@ -6,12 +6,8 @@
       <input type="hidden" name="page" value="{{paginationLink.pageNumber}}"/>
       <input type="hidden" name="status" value="{{status}}"/>
 
-      <button class="pagination {{paginationLink.pageName}} {% if paginationLink.activePage %}active{% endif %}" type="submit">
-        {% if paginationLink.hasSymbolicName %}
-          {{paginationLink.pageName}}<span class="govuk-visually-hidden"> page of results</span>
-        {% else %}
-          <span class="govuk-visually-hidden">Results page </span>{{paginationLink.pageName}}
-        {% endif %}
+      <button class="pagination {{paginationLink.pageName}} {% if paginationLink.activePage %}active{% endif %} {% if paginationLink.disabled %}govuk-button--disabled {% endif %}" {% if paginationLink.disabled %} disabled="disabled" {% endif %}  type="submit">
+        <span class="govuk-visually-hidden">Results page </span>{{paginationLink.pageName}}
       </button>
     </form>
   {% endfor %}
