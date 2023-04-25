@@ -60,11 +60,12 @@ function webhookSigningSecretResponse (options = {}) {
   return validSigningSecret(options)
 }
 
-function webhookMessageSearchResponse (options = []) {
+function webhookMessageSearchResponse (options = {}) {
+  const messages = options.messages || []
   return {
-    count: options.length,
-    page: 1,
-    results: options.map(validWebhookMessage)
+    count: messages.length,
+    page: options.page || 1,
+    results: messages.map(validWebhookMessage)
   }
 }
 
