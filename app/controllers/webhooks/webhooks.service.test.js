@@ -50,19 +50,21 @@ describe('webhooks service', () => {
   })
   describe('List webhook messages', () => {
     it('should get webhook messages with correctly formatted pagination', async () => {
-      const search = webhooksFixture.webhookMessageSearchResponse([
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } },
-        { latest_attempt: { status: 'SUCCESSFUL' } }
-      ])
+      const search = webhooksFixture.webhookMessageSearchResponse({
+        messages: [
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } },
+          { latest_attempt: { status: 'SUCCESSFUL' } }
+        ]
+      })
       const spy = sinon.spy(async () => search)
       const service = getWebhooksServiceWithStub({ messages: spy })
       const result = await service.getWebhookMessages('webhook-id', { status: 'failed' })
@@ -72,6 +74,44 @@ describe('webhooks service', () => {
       expect(result.links.length).to.equal(2)
       expect(result.links[1].pageName).to.equal('Next')
     })
+  })
+
+  it('should not return enabled pagination for the first page without a full count of results', async () => {
+    const search = webhooksFixture.webhookMessageSearchResponse({
+      messages: [
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } }
+      ],
+      page: 1
+    })
+    const spy = sinon.spy(async () => search)
+    const service = getWebhooksServiceWithStub({ messages: spy })
+    const result = await service.getWebhookMessages('webhook-id')
+
+    sinon.assert.calledWith(spy, 'webhook-id')
+
+    expect(result.links).to.equal(false)
+  })
+
+  it('should return enabled pagination for any page beyond the first page', async () => {
+    const search = webhooksFixture.webhookMessageSearchResponse({
+      messages: [
+        { latest_attempt: { status: 'SUCCESSFUL' } },
+        { latest_attempt: { status: 'SUCCESSFUL' } }
+      ],
+      page: 2
+    })
+    const spy = sinon.spy(async () => search)
+    const service = getWebhooksServiceWithStub({ messages: spy })
+    const result = await service.getWebhookMessages('webhook-id')
+
+    sinon.assert.calledWith(spy, 'webhook-id')
+    expect(result.links.length).to.equal(2)
+    expect(result.links[0].pageName).to.equal('Previous')
+    expect(result.links[0].disabled).to.equal(undefined)
+    expect(result.links[1].pageName).to.equal('Next')
+    expect(result.links[1].disabled).to.equal(true)
+
   })
 })
 

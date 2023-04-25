@@ -12,7 +12,7 @@ function sortByActiveStatus (a, b) {
 function formatPages (searchResponse) {
   const { page, count } = searchResponse
   const paginator = new Paginator(null, PAGE_SIZE, page)
-  const hasMultiplePages = count >= PAGE_SIZE
+  const hasMultiplePages = (count >= PAGE_SIZE) || (page > 1)
   const links = hasMultiplePages && paginator.buildNavigation(count)
   return {
     ...searchResponse,
