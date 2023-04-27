@@ -1,17 +1,11 @@
 'use strict'
 
-const zendesk = require('node-zendesk')
+const axios = require('axios')
 const zendeskConfig = require('../../../config/zendesk')
-
-const zendeskClient = zendesk.createClient({
-  username: process.env.ZENDESK_USER,
-  token: process.env.ZENDESK_API_KEY,
-  remoteUri: process.env.ZENDESK_URL,
-  proxy: process.env.http_proxy
-})
+const urlJoin = require('url-join')
 
 function createTicket (opts) {
-  return zendeskClient.tickets.create({
+  const zendeskTicketData = {
     ticket: {
       requester: {
         email: opts.email,
@@ -26,6 +20,16 @@ function createTicket (opts) {
       organization_id: zendeskConfig.ORG_ID,
       ticket_form_id: zendeskConfig.FORM_ID,
       tags: opts.tags
+    }
+  }
+
+  return axios({
+    method: 'post',
+    url: urlJoin(process.env.ZENDESK_URL, '/tickets'),
+    data: zendeskTicketData,
+    auth: {
+      username: process.env.ZENDESK_USER + '/token',
+      password: process.env.ZENDESK_API_KEY
     }
   })
 }
