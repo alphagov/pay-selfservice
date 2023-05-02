@@ -61,7 +61,13 @@
     ]
   },
   "overrides": {
-    "minimist": "1.2.6"
+    "minimist": "1.2.6",
+    "request": {
+      "qs": "6.11.1"
+    },
+    "cypress": {
+      "@cypress/request": "2.88.11"
+    }
   },
   "dependencies": {
     "@govuk-pay/pay-js-commons": "3.8.9",
