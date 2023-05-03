@@ -17,7 +17,7 @@ const expect = chai.expect
 // Global setup
 chai.use(chaiAsPromised)
 
-const gatewayAccountId = 42
+const gatewayAccountId = 3456
 
 describe('connector client', function () {
   const provider = new Pact({
@@ -39,8 +39,8 @@ describe('connector client', function () {
     describe('success', () => {
       const validPostCreateChargeRequest = chargeFixture.validPostChargeRequestRequest({
         amount: 100,
-        payment_provider: 'stripe',
-        return_url: 'https://somewhere.gov.uk/rainbow/1'
+        return_url: 'https://somewhere.gov.uk/rainbow/1',
+        credential_id: 'creds123'
       })
 
       const validResponse = chargeFixture.validPostChargeRequestResponse()
@@ -49,7 +49,7 @@ describe('connector client', function () {
         return provider.addInteraction(
           new PactInteractionBuilder(`${CHARGES_RESOURCE}/${gatewayAccountId}/charges`)
             .withUponReceiving('a valid post create charge request')
-            .withState('a stripe gateway account with external id 42 exists in the database')
+            .withState('a Worldpay gateway account with id 3456, gateway account credentials with external_id creds123 exists')
             .withMethod('POST')
             .withRequestBody(validPostCreateChargeRequest)
             .withStatusCode(201)

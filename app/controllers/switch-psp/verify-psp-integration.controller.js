@@ -37,10 +37,10 @@ async function startPaymentJourney (req, res, next) {
     const targetCredential = getSwitchingCredential(req.account)
     const charge = await connectorClient.postChargeRequest(req.account.gateway_account_id, {
       amount: VERIFY_PAYMENT_AMOUNT_IN_PENCE,
-      payment_provider: targetCredential.payment_provider,
       description: 'Live payment to verify new PSP',
       reference: 'VERIFY_PSP_INTEGRATION',
-      return_url: urljoin(selfserviceURL, formatAccountPathsFor(paths.account.switchPSP.receiveVerifyPSPIntegrationPayment, req.account.external_id))
+      return_url: urljoin(selfserviceURL, formatAccountPathsFor(paths.account.switchPSP.receiveVerifyPSPIntegrationPayment, req.account.external_id)),
+      credential_id: targetCredential.gateway_account_credential_id
     })
 
     req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY] = charge.charge_id
