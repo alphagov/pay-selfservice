@@ -40,7 +40,7 @@ async function startPaymentJourney (req, res, next) {
       description: 'Live payment to verify new PSP',
       reference: 'VERIFY_PSP_INTEGRATION',
       return_url: urljoin(selfserviceURL, formatAccountPathsFor(paths.account.switchPSP.receiveVerifyPSPIntegrationPayment, req.account.external_id)),
-      credential_id: targetCredential.gateway_account_credential_id
+      credential_id: targetCredential.external_id
     })
 
     req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY] = charge.charge_id
