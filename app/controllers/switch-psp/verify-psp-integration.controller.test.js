@@ -47,7 +47,14 @@ describe('Verify PSP integration controller', () => {
     const nextUrl = defaultCharge.links.filter((link) => link.rel === 'next_url')[0].href
     await controller.startPaymentJourney(req, res, next)
 
-    sinon.assert.called(postChargeRequestMock)
+    sinon.assert.calledWith(postChargeRequestMock, 31, {
+      amount: 200,
+      description: 'Live payment to verify new PSP',
+      reference: 'VERIFY_PSP_INTEGRATION',
+      return_url: 'https://selfservice.pymnt.localdomain/account/a-valid-external-id/switch-psp/verify-psp-integration/callback',
+      credential_id: 'a-valid-external-id'
+    })
+
     expect(req.session.verify_psp_integration_charge_external_id).to.equal(defaultCharge.charge_id)
     sinon.assert.calledWith(res.redirect, nextUrl)
   })
