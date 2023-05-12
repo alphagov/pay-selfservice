@@ -192,7 +192,7 @@ function validGatewayAccountResponse (opts = {}) {
 function validGatewayAccountsResponse (opts = {}) {
   const accounts = opts.accounts.map(validGatewayAccount)
   return {
-    accounts: accounts
+    accounts
   }
 }
 

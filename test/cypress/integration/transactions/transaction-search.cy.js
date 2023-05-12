@@ -277,9 +277,9 @@ describe('Transactions List', () => {
 
       cy.visit(transactionsUrl)
       cy.get('#state').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Success']`).trigger('mouseover').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='In progress']`).trigger('mouseover').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Refund submitted']`).trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Success\']').trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'In progress\']').trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Refund submitted\']').trigger('mouseover').click()
 
       cy.get('#reference').type('ref123')
       cy.get('#fromDate').type('03/5/2018')
@@ -287,8 +287,8 @@ describe('Transactions List', () => {
       cy.get('#toDate').type('04/5/2018')
       cy.get('#toTime').type('01:00:00')
       cy.get('#card-brand').click()
-      cy.get(`#list-of-sectors-brand .govuk-checkboxes__input[value=visa]`).click()
-      cy.get(`#list-of-sectors-brand .govuk-checkboxes__input[value=master-card]`).click()
+      cy.get('#list-of-sectors-brand .govuk-checkboxes__input[value=visa]').click()
+      cy.get('#list-of-sectors-brand .govuk-checkboxes__input[value=master-card]').click()
       cy.get('#email').type('gds4')
       cy.get('#lastDigitsCardNumber').type('4242')
       cy.get('#cardholderName').type('doe')
@@ -386,20 +386,20 @@ describe('Transactions List', () => {
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
 
       cy.get('#state').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Dispute awaiting evidence']`).trigger('mouseover').click()
-      cy.get(`#list-of-sectors-state .govuk-checkboxes__input[value='Dispute under review']`).trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Dispute awaiting evidence\']').trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Dispute under review\']').trigger('mouseover').click()
 
       cy.get('#filter').click()
       cy.get('.transactions-list--row').should('have.length', 2)
       cy.get('#charge-id-parent-transaction-id-1').should('exist')
       cy.get('#charge-id-parent-transaction-id-2').should('exist')
 
-      assertTransactionRow(0, disputeTransactions[0].reference, `/account/a-valid-external-id/transactions/parent-transaction-id-1`,
+      assertTransactionRow(0, disputeTransactions[0].reference, '/account/a-valid-external-id/transactions/parent-transaction-id-1',
         'test@example.org', '–£25.00', 'Visa', 'Dispute awaiting evidence', '', '')
-      assertTransactionRow(1, disputeTransactions[1].reference, `/account/a-valid-external-id/transactions/parent-transaction-id-2`,
+      assertTransactionRow(1, disputeTransactions[1].reference, '/account/a-valid-external-id/transactions/parent-transaction-id-2',
         'test@example.org', '–£35.00', 'Visa', 'Dispute lost to customer', '£15.00', '-£50.00')
 
-      cy.get('#download-transactions-link').should('have.attr', 'href', `/account/a-valid-external-id/transactions/download?dispute_states=needs_response&dispute_states=under_review`)
+      cy.get('#download-transactions-link').should('have.attr', 'href', '/account/a-valid-external-id/transactions/download?dispute_states=needs_response&dispute_states=under_review')
     })
   })
   describe('csv download link', () => {

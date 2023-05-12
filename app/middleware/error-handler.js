@@ -60,7 +60,7 @@ module.exports = function errorHandler (err, req, res, next) {
   }
 
   if (err instanceof RegistrationSessionMissingError || err instanceof InvalidRegistationStateError) {
-    logger.info(`RegistrationSessionMissingError handled. Rendering error page`)
+    logger.info('RegistrationSessionMissingError handled. Rendering error page')
     return renderErrorView(req, res, 'There has been a problem proceeding with this registration. Please try again.', 400)
   }
 

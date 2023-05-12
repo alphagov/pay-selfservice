@@ -30,7 +30,7 @@ const buildUser = (serviceExternalId, gatewayAccountIds) => {
 
 const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAccountExternalId, paymentProvider, serviceExternalId, environmentId) {
   req = {
-    params: { gatewayAccountExternalId: gatewayAccountExternalId, serviceExternalId: serviceExternalId, environmentId: environmentId }
+    params: { gatewayAccountExternalId, serviceExternalId, environmentId }
   }
   req.user = buildUser(serviceExternalId, [`${gatewayAccountID}`])
   next = sinon.spy()
@@ -54,11 +54,11 @@ const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAcco
 }
 const setupGetGatewayAccountClientError = function (gatewayAccountExternalId, errorCode) {
   req = {
-    params: { gatewayAccountExternalId: gatewayAccountExternalId }
+    params: { gatewayAccountExternalId }
   }
   next = sinon.spy()
   connectorGetAccountMock = sinon.spy((params) => {
-    const errorFromConnector = { errorCode: errorCode }
+    const errorFromConnector = { errorCode }
     return Promise.reject(errorFromConnector)
   })
 
@@ -86,8 +86,8 @@ describe('middleware: getGatewayAccountAndService', () => {
   })
   it('should error, if both gateway account external ID and service external ID cannot be resolved', async () => {
     const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
-    req.params['gatewayAccountExternalId'] = undefined
-    req.params['serviceExternalId'] = undefined
+    req.params.gatewayAccountExternalId = undefined
+    req.params.serviceExternalId = undefined
 
     await getGatewayAccountAndService(req, res, next)
 
@@ -97,7 +97,7 @@ describe('middleware: getGatewayAccountAndService', () => {
   })
   it('should continue without setting gateway account, if gateway account external ID is not resolved', async () => {
     const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
-    req.params['gatewayAccountExternalId'] = undefined
+    req.params.gatewayAccountExternalId = undefined
 
     await getGatewayAccountAndService(req, res, next)
 
@@ -117,7 +117,7 @@ describe('middleware: getGatewayAccountAndService', () => {
   })
   it('should set service based on gateway account, when serviceExternalId cannot be resolved', async () => {
     const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
-    req.params['serviceExternalId'] = undefined
+    req.params.serviceExternalId = undefined
 
     await getGatewayAccountAndService(req, res, next)
     sinon.assert.calledOnce(next)
@@ -125,7 +125,7 @@ describe('middleware: getGatewayAccountAndService', () => {
   })
   it('should continue without setting service on request, when service cannot be resolved for serviceExternalId or gateway account (if available)', async () => {
     const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
-    req.params['serviceExternalId'] = 'non-existent-service'
+    req.params.serviceExternalId = 'non-existent-service'
 
     await getGatewayAccountAndService(req, res, next)
     sinon.assert.calledOnce(next)

@@ -246,7 +246,7 @@ function isValidUrl (url) {
     new URL(url)
 
     return validator.isURL(url, {
-      protocols: [ 'http', 'https' ],
+      protocols: ['http', 'https'],
       require_protocol: true
     })
   } catch (err) {

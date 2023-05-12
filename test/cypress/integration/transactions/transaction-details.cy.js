@@ -77,23 +77,23 @@ function defaultTransactionDetails (events, opts = {}) {
 
 function defaultDisputeDetails () {
   return {
-    'parent_transaction_id': transactionId,
-    'gateway_account_id': gatewayAccountId,
-    'transactions': [
+    parent_transaction_id: transactionId,
+    gateway_account_id: gatewayAccountId,
+    transactions: [
       {
-        'gateway_account_id': gatewayAccountId,
-        'amount': 20000,
-        'fee': 1500,
-        'net_amount': -21500,
-        'finished': true,
-        'status': 'lost',
-        'created_date': '2022-07-26T19:57:26.000Z',
-        'type': 'dispute',
-        'includePaymentDetails': true,
-        'evidence_due_date': '2022-08-04T13:59:59.000Z',
-        'reason': 'product_not_received',
-        'transaction_id': disputeTransactionId,
-        'parent_transaction_id': transactionId
+        gateway_account_id: gatewayAccountId,
+        amount: 20000,
+        fee: 1500,
+        net_amount: -21500,
+        finished: true,
+        status: 'lost',
+        created_date: '2022-07-26T19:57:26.000Z',
+        type: 'dispute',
+        includePaymentDetails: true,
+        evidence_due_date: '2022-08-04T13:59:59.000Z',
+        reason: 'product_not_received',
+        transaction_id: disputeTransactionId,
+        parent_transaction_id: transactionId
       }
     ]
   }
@@ -105,7 +105,7 @@ describe('Transaction details page', () => {
   const userEmail = 'a-user@example.com'
 
   const getStubs = (transactionDetails, additionalGatewayAccountOpts = {}, disputeTransactionsDetails) => {
-    let stubs = [
+    const stubs = [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName, email: userEmail }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
         gatewayAccountId,

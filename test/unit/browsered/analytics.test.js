@@ -21,7 +21,7 @@ describe('analytics setup', () => {
     expect(ga.getCall(3).calledWith('set', 'transport', 'beacon')).equals(true)
 
     expect(ga.getCall(4).calledWith('create',
-      'linked-tracking-id', '.service.payments.gov.uk', 'govuk_shared', { 'allowLinker': true })).equals(true)
+      'linked-tracking-id', '.service.payments.gov.uk', 'govuk_shared', { allowLinker: true })).equals(true)
     expect(ga.getCall(5).calledWith('govuk_shared.require', 'linker')).equals(true)
     expect(ga.getCall(6).calledWith('govuk_shared.set', 'anonymizeIp')).equals(true)
     expect(ga.getCall(7).calledWith('govuk_shared.linker:autoLink', ['www.gov.uk'])).equals(true)

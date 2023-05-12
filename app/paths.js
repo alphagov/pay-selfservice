@@ -251,8 +251,8 @@ module.exports = {
     naxsiError: '/request-denied'
   },
   feedback: '/feedback',
-  generateRoute: generateRoute,
-  formattedPathFor: formattedPathFor,
+  generateRoute,
+  formattedPathFor,
   policyPage: '/policy/:key',
   payouts: {
     list: '/payments-to-your-bank-account',

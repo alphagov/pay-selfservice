@@ -14,9 +14,9 @@ ${req.body['feedback-suggestion']}`
     email: req.body.email,
     name: '(no name supplied)',
     type: 'question',
-    subject: `Feedback from service`,
+    subject: 'Feedback from service',
     tags: ['general_feedback', 'govuk_pay_support'],
-    message: message
+    message
   }
 
   try {

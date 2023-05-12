@@ -96,8 +96,8 @@ describe('StripePerson', () => {
       dob_day: dobDay,
       dob_month: dobMonth,
       dob_year: dobYear,
-      phone: phone,
-      email: email
+      phone,
+      email
     })
 
     expect(stripePerson.basicObject()).to.deep.equal({
@@ -119,8 +119,8 @@ describe('StripePerson', () => {
         executive: true,
         representative: true
       },
-      phone: phone,
-      email: email
+      phone,
+      email
     })
   })
 

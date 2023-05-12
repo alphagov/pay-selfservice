@@ -21,7 +21,7 @@ const expect = chai.expect
 const existingServiceExternalId = 'cp5wa'
 
 describe('adminusers client - update service name', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

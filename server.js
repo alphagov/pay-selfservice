@@ -115,8 +115,8 @@ function initialiseTemplateEngine (app) {
   nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
 
   // Load custom Nunjucks filters
-  for (let name in nunjucksFilters) {
-    let filter = nunjucksFilters[name]
+  for (const name in nunjucksFilters) {
+    const filter = nunjucksFilters[name]
     nunjucksEnvironment.addFilter(name, filter)
   }
   nunjucksEnvironment.addFilter('formatPSPname', formatPSPname)
@@ -191,7 +191,7 @@ if (argv.i) {
 }
 
 module.exports = {
-  start: start,
+  start,
   getApp: initialise,
-  staticify: staticify
+  staticify
 }

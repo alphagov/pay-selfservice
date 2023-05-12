@@ -74,14 +74,14 @@ function patchUpdateGoLiveStageErrorStub (currentGoLiveStage) {
   return serviceStubs.patchGoLiveStageFailure({
     serviceExternalId: variables.serviceExternalId,
     gatewayAccountId: variables.gatewayAccountId,
-    currentGoLiveStage: currentGoLiveStage
+    currentGoLiveStage
   })
 }
 
 function patchUpdateServiceSuccessCatchAllStub (currentGoLiveStage) {
   return serviceStubs.patchUpdateServiceSuccessCatchAll({
     serviceExternalId: variables.serviceExternalId,
-    currentGoLiveStage: currentGoLiveStage
+    currentGoLiveStage
   })
 }
 

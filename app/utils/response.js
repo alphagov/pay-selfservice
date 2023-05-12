@@ -6,7 +6,7 @@ const ERROR_MESSAGE = 'There is a problem with the payments platform'
 const ERROR_VIEW = 'error'
 
 function response (req, res, template, data = {}) {
-  let convertedData = displayConverter(req, data, template)
+  const convertedData = displayConverter(req, data, template)
   render(req, res, template, convertedData)
 }
 
@@ -14,11 +14,11 @@ function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500) {
   if (typeof msg !== 'string') {
     msg = 'Please try again or contact support team.'
   }
-  let data = { 'message': msg }
+  const data = { message: msg }
 
   const errorMeta = {
-    'status': status,
-    'error_message': msg
+    status,
+    error_message: msg
   }
 
   logger.info('An error has occurred. Rendering error view', errorMeta)
@@ -44,7 +44,7 @@ function healthCheckResponse (accept, res, data) {
 }
 
 module.exports = {
-  response: response,
-  healthCheckResponse: healthCheckResponse,
+  response,
+  healthCheckResponse,
   renderErrorView: errorResponse
 }

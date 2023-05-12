@@ -96,7 +96,7 @@ describe('Your PSP settings page', () => {
     })
     const card = gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId, updated: false })
     const postCheckWorldpay3dsFlexCredentialsReturnsValid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
-      gatewayAccountId: gatewayAccountId,
+      gatewayAccountId,
       result: 'valid'
     })
     const postCheckWorldpayCredentials = gatewayAccountStubs.postCheckWorldpayCredentials({
@@ -104,17 +104,17 @@ describe('Your PSP settings page', () => {
       gatewayAccountId
     })
     const postCheckWorldpay3dsFlexCredentialsReturnsInvalid = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
-      gatewayAccountId: gatewayAccountId,
+      gatewayAccountId,
       result: 'invalid',
       organisational_unit_id: '5bd9b55e4444761ac0af1c81',
       issuer: '5bd9e0e4444dce153428c941',
       jwt_mac_key: 'ffffffff-aaaa-1111-1111-52805d5cd9e1'
     })
     const postCheckWorldpay3dsFlexCredentialsFails = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsFailure({
-      gatewayAccountId: gatewayAccountId, ...testFailureFlexCredentials
+      gatewayAccountId, ...testFailureFlexCredentials
     })
     const postCheckWorldpay3dsFlexCredentialsReturnsBadResult = gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsWithBadResult({
-      gatewayAccountId: gatewayAccountId, ...testBadResultFlexCredentials
+      gatewayAccountId, ...testBadResultFlexCredentials
     })
     const patchUpdateCredentials = gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, credentialsId)
     const postUpdateWorldpay3dsFlexCredentials = gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({

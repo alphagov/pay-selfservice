@@ -19,7 +19,7 @@ function setupStubs (companyNumber, type = 'live', paymentProvider = 'stripe') {
   if (Array.isArray(companyNumber)) {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
       gatewayAccountId,
-      companyNumber: companyNumber
+      companyNumber
     })
   } else {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber })
@@ -33,7 +33,7 @@ function setupStubs (companyNumber, type = 'live', paymentProvider = 'stripe') {
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: gatewayAccountExternalId, type, paymentProvider, gatewayAccountCredentials }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type, paymentProvider, gatewayAccountCredentials }),
     stripeSetupStub,
     stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'acct_123example123'),
     transactionSummaryStubs.getDashboardStatistics()
@@ -83,7 +83,7 @@ describe('Stripe setup: company number page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number-declaration')
 
         cy.get('#company-number-declaration-error').should('contain', 'You must answer this question')
-        
+
         cy.get('#navigation-menu-your-psp')
           .should('contain', 'Information for Stripe')
           .parent().should('have.class', 'govuk-!-font-weight-bold')
@@ -185,7 +185,7 @@ describe('Stripe setup: company number page', () => {
       it('should show a permission error when the user does not have enough permissions', () => {
         cy.task('setupStubs', [
           userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-          gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId: gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe' }),
+          gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe' }),
           stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, companyNumber: true })
         ])
 

@@ -22,12 +22,12 @@ describe('Worldpay credentials controller', () => {
       ]
     })
     req = {
-      account: account,
+      account,
       user: new User(userFixtures.validUserResponse()),
       body: {
-        'merchantId': 'a-merchant-id',
-        'username': 'a-username',
-        'password': 'a-password' // pragma: allowlist secret
+        merchantId: 'a-merchant-id',
+        username: 'a-username',
+        password: 'a-password' // pragma: allowlist secret
       },
       flash: sinon.spy(),
       route: {

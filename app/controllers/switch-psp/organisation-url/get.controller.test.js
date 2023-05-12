@@ -27,6 +27,6 @@ describe('Org URL GET controller', () => {
   it('should render organisation URL details form', async () => {
     await getController(req, res, next)
 
-    sinon.assert.calledWith(res.render, `switch-psp/organisation-url`)
+    sinon.assert.calledWith(res.render, 'switch-psp/organisation-url')
   })
 })

@@ -34,7 +34,7 @@ describe('Transaction view utilities', () => {
     it('should build dispute data if dispute transaction is available', () => {
       const transaction = transactionFixtures.validTransactionDetailsResponse()
       const events = transactionFixtures.validTransactionEventsResponse()
-      const disputeData = transactionFixtures.validDisputeTransactionDetails({ 'amount': 1000 })
+      const disputeData = transactionFixtures.validDisputeTransactionDetails({ amount: 1000 })
       const paymentView = buildPaymentView(transaction, events, disputeData)
 
       expect(paymentView.dispute.amount_friendly).to.equal('£10.00')

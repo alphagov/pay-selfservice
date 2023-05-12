@@ -11,7 +11,7 @@ const gatewayAccountId = 42
 const userExternalId = 'userExternalId'
 const gatewayAccountExternalId = 'a-valid-external-id'
 const gatewayAccountCredentialExternalId = 'a-valid-credential-external-id'
-const stripeAccountId = `acct_123example123`
+const stripeAccountId = 'acct_123example123'
 const directorUrl = `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}/director`
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
@@ -27,12 +27,12 @@ function setupStubs (director, type = 'live', paymentProvider = 'stripe') {
   if (Array.isArray(director)) {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
       gatewayAccountId,
-      director: director
+      director
     })
   } else {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
       gatewayAccountId,
-      director: director
+      director
     })
   }
 
@@ -62,7 +62,7 @@ function setupStubs (director, type = 'live', paymentProvider = 'stripe') {
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
-      gatewayAccountExternalId: gatewayAccountExternalId,
+      gatewayAccountExternalId,
       type,
       paymentProvider,
       gatewayAccountCredentials
@@ -218,7 +218,7 @@ describe('Stripe setup: director page', () => {
         userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
           gatewayAccountId,
-          gatewayAccountExternalId: gatewayAccountExternalId,
+          gatewayAccountExternalId,
           type: 'live',
           paymentProvider: 'stripe'
         }),

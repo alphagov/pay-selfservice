@@ -62,7 +62,7 @@ describe('Login Page', () => {
       cy.get('.govuk-error-summary__list>li').first()
         .contains('The security code you’ve used is incorrect or has expired')
         .should('have.attr', 'href', '#sms_code')
-      cy.get('#sms_code').parent().get(`.govuk-error-message`)
+      cy.get('#sms_code').parent().get('.govuk-error-message')
         .contains('The security code you’ve used is incorrect or has expired')
 
       // enter a valid code and submit
@@ -83,7 +83,7 @@ describe('Login Page', () => {
       cy.get('[data-cy=error-summary-list-item]').first()
         .contains('Enter a password')
         .should('have.attr', 'href', '#password')
-      cy.get(`.govuk-error-message`)
+      cy.get('.govuk-error-message')
         .contains('Enter a password')
     })
 
@@ -95,7 +95,7 @@ describe('Login Page', () => {
       cy.get('[data-cy=error-summary-list-item]').first()
         .contains('Enter an email address')
         .should('have.attr', 'href', '#username')
-      cy.get(`.govuk-error-message`)
+      cy.get('.govuk-error-message')
         .contains('Enter an email address')
     })
 

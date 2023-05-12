@@ -73,7 +73,7 @@ module.exports = async function (req, res, next) {
     dobYear: formFields[DOB_YEAR_FIELD]
   }
   if (!lodash.isEmpty(errors)) {
-    pageData['errors'] = errors
+    pageData.errors = errors
 
     return response(req, res, 'stripe-setup/director/index', {
       ...pageData, isSwitchingCredentials, currentCredential, enableStripeOnboardingTaskList

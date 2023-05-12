@@ -36,8 +36,8 @@ describe('The transaction view scenarios', function () {
   })
 
   beforeEach(function (done) {
-    let permissions = 'transactions-details:read'
-    let user = session.getUser({
+    const permissions = 'transactions-details:read'
+    const user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
       permissions: [{ name: permissions }]
     })
@@ -56,7 +56,7 @@ describe('The transaction view scenarios', function () {
 
   describe('The transaction redirect endpoint', function () {
     it('should return 302 when the user has permissions', function (done) {
-      let transactionId = 888
+      const transactionId = 888
 
       const response = validTransactionDetailsResponse({
         transaction_id: transactionId,
@@ -80,7 +80,7 @@ describe('The transaction view scenarios', function () {
     })
 
     it('should return 404 when the user does not have permissions', function (done) {
-      let transactionId = 888
+      const transactionId = 888
 
       const response = validTransactionDetailsResponse({
         transaction_id: transactionId,

@@ -20,7 +20,7 @@ describe('The index page', () => {
     cy.visit('/')
     cy.get('h1').should('have.text', 'Overview')
     cy.location().should((location) => {
-      expect(location.pathname).to.eq(`/my-services`)
+      expect(location.pathname).to.eq('/my-services')
     })
   })
 })

@@ -14,6 +14,6 @@ module.exports = (req, res) => {
       lodash.get(credential, 'credentials.merchant_id', '').endsWith('MOTO')
 
   return response(req, res, 'payment-links/index', {
-    accountUsesWorldpayMotoMerchantCode: accountUsesWorldpayMotoMerchantCode
+    accountUsesWorldpayMotoMerchantCode
   })
 }

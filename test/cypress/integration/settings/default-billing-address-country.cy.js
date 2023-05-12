@@ -55,7 +55,7 @@ describe('Default billing address country', () => {
 
       it('should show default billing address country as "United Kingdom"', () => {
         cy.task('setupStubs', [
-          ...getUserAndGatewayAccountStubs('GB'),
+          ...getUserAndGatewayAccountStubs('GB')
         ])
 
         cy.visit(`/account/${gatewayAccountExternalId}/settings`)

@@ -23,7 +23,7 @@ function getProductsClient (baseUrl) {
 }
 
 describe('products client - find a payment by it\'s associated product external id', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'products',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

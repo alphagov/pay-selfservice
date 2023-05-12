@@ -85,7 +85,7 @@ function postRefundAmountNotAvailable (opts) {
 }
 
 function getTransactionsSummarySuccess (opts) {
-  const path = `/v1/report/transactions-summary`
+  const path = '/v1/report/transactions-summary'
   return stubBuilder('GET', path, 200, {
     response: ledgerTransactionFixtures.validTransactionSummaryDetails(opts)
   })

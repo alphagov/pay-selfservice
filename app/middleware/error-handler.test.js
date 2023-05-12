@@ -2,7 +2,8 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
-const { NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError,
+const {
+  NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError,
   ExpiredInviteError
 } = require('../errors')
 const paths = require('../paths')

@@ -39,7 +39,7 @@ function formatCardsForTemplate (allCards, acceptedCards, threeDSEnabled) {
       const formatted = formatCardInfoForNunjucks(card)
       if (['american-express', 'unionpay'].includes(card.brand)) {
         formatted.hint = {
-          html: `You must have already enabled this with your PSP`
+          html: 'You must have already enabled this with your PSP'
         }
       }
       return formatted

@@ -1,12 +1,12 @@
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk'
 
-var assert = require('assert')
-var portfinder = require('portfinder')
-var request = require('request')
-var winston = require('winston')
+const assert = require('assert')
+const portfinder = require('portfinder')
+const request = require('request')
+const winston = require('winston')
 
-var http = require('http')
-var httpProxy = require('http-proxy')
+const http = require('http')
+const httpProxy = require('http-proxy')
 
 /**
  * This test actually tests if request.js honour HTTP_PROXY, NO_PROXY var's as per the documentation.
@@ -19,7 +19,7 @@ var httpProxy = require('http-proxy')
  */
 
 describe('request.js client', function () {
-  var proxiedServer, proxyServer, nonProxiedServer,
+  let proxiedServer, proxyServer, nonProxiedServer,
     proxiedServerUrl, proxyUrl, nonProxiedServerUrl,
     nonProxiedServerPort
 
@@ -83,7 +83,7 @@ describe('request.js client', function () {
   })
 
   it('should proxy requests when HTTP_PROXY enabled', function (done) {
-    var client = request.defaults({ json: true })
+    const client = request.defaults({ json: true })
 
     client(proxiedServerUrl, function (error, response, body) {
       if (error) { done(error) }
@@ -94,7 +94,7 @@ describe('request.js client', function () {
   })
 
   it('should not proxy requests for NO_PROXY hosts', function (done) {
-    var client = request.defaults({ json: true })
+    const client = request.defaults({ json: true })
 
     client(nonProxiedServerUrl, function (error, response, body) {
       if (error) { done(error) }

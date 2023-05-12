@@ -21,7 +21,7 @@ const requestOptions = {
   maxAttempts: 3,
   retryDelay: 5000,
   // Adding retry on ECONNRESET as a temporary fix for PP-1727
-  retryStrategy: retryStrategy
+  retryStrategy
 }
 
 const client = request.defaults(requestOptions)

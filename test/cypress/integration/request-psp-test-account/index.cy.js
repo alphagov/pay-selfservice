@@ -20,7 +20,7 @@ describe('Request PSP test account: index', () => {
     const serviceRole = buildServiceRoleForPspTestAccountStage(goLiveStage, pspTestAccountStage)
     if (permissions) {
       serviceRole.role = {
-        permissions: permissions
+        permissions
       }
     }
     cy.task('setupStubs', [

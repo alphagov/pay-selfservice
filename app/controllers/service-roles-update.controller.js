@@ -2,19 +2,19 @@ const _ = require('lodash')
 const paths = require('../paths')
 const logger = require('../utils/logger')(__filename)
 
-let rolesModule = require('../utils/roles')
+const rolesModule = require('../utils/roles')
 const roles = rolesModule.roles
-let getRole = rolesModule.getRoleByExtId
+const getRole = rolesModule.getRoleByExtId
 
-let userService = require('../services/user.service.js')
+const userService = require('../services/user.service.js')
 
 const { renderErrorView, response } = require('../utils/response')
 
-let hasSameService = (admin, user, externalServiceId) => {
+const hasSameService = (admin, user, externalServiceId) => {
   return admin.hasService(externalServiceId) && user.hasService(externalServiceId)
 }
 
-let serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExternalId, targetUserExternalId) => {
+const serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExternalId, targetUserExternalId) => {
   logger.error(`Service mismatch when admin:${adminUserExternalId} attempting to assign new role on service:${targetServiceExternalId} for user:${targetUserExternalId} without existing role`)
   return renderErrorView(req, res, 'Unable to update permissions for this user')
 }
@@ -22,11 +22,11 @@ let serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExterna
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
 async function index (req, res, next) {
-  let externalUserId = req.params.externalUserId
-  let serviceExternalId = req.service.externalId
-  let serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
+  const externalUserId = req.params.externalUserId
+  const serviceExternalId = req.service.externalId
+  const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
 
-  let viewData = user => {
+  const viewData = user => {
     const editPermissionsLink = formatServicePathsFor(paths.service.teamMembers.permissions, serviceExternalId, user.externalId)
     const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, serviceExternalId)
     const teamMemberProfileLink = formatServicePathsFor(paths.service.teamMembers.show, serviceExternalId, user.externalId)
@@ -39,7 +39,7 @@ async function index (req, res, next) {
       teamMemberProfileLink,
       serviceHasAgentInitiatedMotoEnabled,
       admin: {
-        id: roles['admin'].extId,
+        id: roles.admin.extId,
         checked: _.get(role, 'name') === 'admin' ? 'checked' : ''
       },
       viewAndRefund: {
@@ -78,11 +78,11 @@ async function index (req, res, next) {
 }
 
 async function update (req, res, next) {
-  let externalUserId = req.params.externalUserId
-  let serviceExternalId = req.service.externalId
-  let targetRoleExtId = parseInt(req.body['role-input'])
-  let targetRole = getRole(targetRoleExtId)
-  let onSuccess = (user) => {
+  const externalUserId = req.params.externalUserId
+  const serviceExternalId = req.service.externalId
+  const targetRoleExtId = parseInt(req.body['role-input'])
+  const targetRole = getRole(targetRoleExtId)
+  const onSuccess = (user) => {
     req.flash('generic', 'Permissions have been updated')
     res.redirect(303, formatServicePathsFor(paths.service.teamMembers.show, serviceExternalId, user.externalId))
   }

@@ -42,8 +42,8 @@ function lockOutDisabledUsers (req, res, next) {
 }
 
 function enforceUserFirstFactor (req, res, next) {
-  let hasUser = lodash.get(req, 'user')
-  let disabled = lodash.get(hasUser, 'disabled')
+  const hasUser = lodash.get(req, 'user')
+  const disabled = lodash.get(hasUser, 'disabled')
 
   if (!hasUser) return redirectToLogin(req, res)
   if (disabled === true) return noAccess(req, res, next)

@@ -26,7 +26,7 @@ function setupStubs (organisationDetails, type = 'live', paymentProvider = 'stri
   if (Array.isArray(organisationDetails)) {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
       gatewayAccountId,
-      organisationDetails: organisationDetails
+      organisationDetails
     })
   } else {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
@@ -54,7 +54,7 @@ function setupStubs (organisationDetails, type = 'live', paymentProvider = 'stri
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, merchantDetails }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
-      gatewayAccountExternalId: gatewayAccountExternalId,
+      gatewayAccountExternalId,
       type,
       paymentProvider,
       gatewayAccountCredentials
@@ -90,7 +90,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
         .should('contain', validCity)
         .should('contain', validPostcodeGb)
 
-      cy.get(`[data-cy=form]`)
+      cy.get('[data-cy=form]')
         .within(() => {
           cy.get('[data-cy=yes-radio]').should('exist')
           cy.get('[data-cy=no-radio]').should('exist')
@@ -115,7 +115,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
         .should('have.attr', 'href', '#confirm-org-details')
 
       cy.get('[data-cy=error-message]').should('contain', 'Select yes if your organisation’s details match the details on your government entity document')
-     
+
       cy.get('#navigation-menu-your-psp')
         .should('contain', 'Information for Stripe')
         .parent().should('have.class', 'govuk-!-font-weight-bold')
@@ -183,7 +183,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
         userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
           gatewayAccountId,
-          gatewayAccountExternalId: gatewayAccountExternalId,
+          gatewayAccountExternalId,
           type: 'live',
           paymentProvider: 'stripe'
         }),

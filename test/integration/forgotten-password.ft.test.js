@@ -122,7 +122,7 @@ describe('forgotten_password_controller', function () {
     const res = resFixtures.getStubbedRes()
     const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const token = req.params.id
-    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId, code: token })
     const userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
@@ -150,7 +150,7 @@ describe('forgotten_password_controller', function () {
     const res = resFixtures.getStubbedRes()
     const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const token = req.params.id
-    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId, code: token })
     const userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
@@ -179,9 +179,9 @@ describe('forgotten_password_controller', function () {
     const username = req.body.username
     const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     req.body.password = 'short'
-    const userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
+    const userResponse = userFixtures.validUserResponse({ username, external_id: userExternalId })
     const token = req.params.id
-    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId, code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse)
@@ -203,9 +203,9 @@ describe('forgotten_password_controller', function () {
     const res = resFixtures.getStubbedRes()
     const username = req.body.username
     const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
+    const userResponse = userFixtures.validUserResponse({ username, external_id: userExternalId })
     const token = req.params.id
-    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId, code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse)

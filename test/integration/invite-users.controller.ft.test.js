@@ -18,7 +18,7 @@ describe('invite user controller', function () {
   const userInSession = session.getUser({})
   const EXTERNAL_SERVICE_ID = userInSession.serviceRoles[0].service.externalId
   userInSession.serviceRoles[0].role.permissions.push({ name: 'users-service:create' })
-  const INVITE_RESOURCE = `/v1/api/invites/create-invite-to-join-service`
+  const INVITE_RESOURCE = '/v1/api/invites/create-invite-to-join-service'
 
   describe('invite user index view', function () {
     it('should display invite page', function (done) {
@@ -31,7 +31,7 @@ describe('invite user controller', function () {
         .expect((res) => {
           expect(res.body.teamMemberIndexLink).to.equal(formatServicePathsFor(paths.service.teamMembers.index, EXTERNAL_SERVICE_ID))
           expect(res.body.teamMemberInviteSubmitLink).to.equal(formatServicePathsFor(paths.service.teamMembers.invite, EXTERNAL_SERVICE_ID))
-          expect(res.body.admin.id).to.equal(roles['admin'].extId)
+          expect(res.body.admin.id).to.equal(roles.admin.extId)
           expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId)
           expect(res.body.view.id).to.equal(roles['view-only'].extId)
           expect(res.body.viewAndInitiateMoto.id).to.equal(roles['view-and-initiate-moto'].extId)
@@ -55,7 +55,7 @@ describe('invite user controller', function () {
         .set('x-request-id', 'bob')
         .send({
           'invitee-email': 'invitee@example.com',
-          'role-input': roles['admin'].extId,
+          'role-input': roles.admin.extId,
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
@@ -76,7 +76,7 @@ describe('invite user controller', function () {
         .set('x-request-id', 'bob')
         .send({
           'invitee-email': existingUser,
-          'role-input': roles['admin'].extId,
+          'role-input': roles.admin.extId,
           csrfToken: csrf().create('123')
         })
         .expect(200)

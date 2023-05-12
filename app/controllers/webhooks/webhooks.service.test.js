@@ -17,7 +17,7 @@ describe('webhooks service', () => {
       ])
       const service = getWebhooksService(webhooks)
       const result = await service.listWebhooks('some-service-id', true)
-      expect(result.map(webhook => webhook.external_id)).to.deep.equal([ 2, 5, 1, 3, 4 ])
+      expect(result.map(webhook => webhook.external_id)).to.deep.equal([2, 5, 1, 3, 4])
     })
   })
   describe('create webhooks', () => {
@@ -25,13 +25,13 @@ describe('webhooks service', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ createWebhook: spy })
       service.createWebhook('some-service-id', true, { subscriptions: 'my-subscription' })
-      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-subscription' ] })
+      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: ['my-subscription'] })
     })
     it('should not change a list of valid subscriptions', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ createWebhook: spy })
-      service.createWebhook('some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
-      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
+      service.createWebhook('some-service-id', true, { subscriptions: ['my-first-subscription', 'my-second-subscription'] })
+      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: ['my-first-subscription', 'my-second-subscription'] })
     })
   })
   describe('Toggle webhook status', () => {
@@ -111,7 +111,6 @@ describe('webhooks service', () => {
     expect(result.links[0].disabled).to.equal(undefined)
     expect(result.links[1].pageName).to.equal('Next')
     expect(result.links[1].disabled).to.equal(true)
-
   })
 })
 

@@ -150,7 +150,7 @@ describe('My services controller', () => {
             }
           }]
         })),
-        session: session,
+        session,
         body: {
           gatewayAccountId: '6',
           gatewayAccountExternalId
@@ -176,7 +176,7 @@ describe('My services controller', () => {
           username: 'bob',
           gateway_account_ids: ['8', '666']
         })),
-        session: session
+        session
       }
 
       const res = {

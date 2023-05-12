@@ -32,8 +32,8 @@ describe('Log context async storage', () => {
       .expect(200)
       .end(() => {
         expect(assignedLoggingFields).to.deep.equal({
-          'x_request_id': 'bar',
-          'a_key': 'foo'
+          x_request_id: 'bar',
+          a_key: 'foo'
         })
         done()
       })

@@ -20,7 +20,7 @@ describe('navigation menu', function () {
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card'),
       links: [],
       linksToDisplay: [],
-      formatAccountPathsFor: formatAccountPathsFor
+      formatAccountPathsFor
     }
 
     const body = render('dashboard/index', templateData)
@@ -80,7 +80,7 @@ describe('navigation menu', function () {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox'),
-      formatAccountPathsFor: formatAccountPathsFor
+      formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -107,7 +107,7 @@ describe('navigation menu', function () {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay', account),
-      formatAccountPathsFor: formatAccountPathsFor
+      formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -129,7 +129,7 @@ describe('navigation menu', function () {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'stripe'),
-      formatAccountPathsFor: formatAccountPathsFor
+      formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -151,7 +151,7 @@ describe('navigation menu', function () {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox'),
-      formatAccountPathsFor: formatAccountPathsFor
+      formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -172,7 +172,7 @@ describe('navigation menu', function () {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox'),
-      formatAccountPathsFor: formatAccountPathsFor
+      formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
@@ -196,7 +196,7 @@ describe('navigation menu', function () {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit'),
-      formatAccountPathsFor: formatAccountPathsFor
+      formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)

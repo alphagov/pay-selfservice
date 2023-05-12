@@ -6,77 +6,77 @@ const renderTemplate = require('../test-helpers/html-assertions.js').render
 
 describe('The transaction list view', function () {
   it('should render all transactions', function () {
-    var templateData = {
-      'total': 2,
-      'filtersDescription': '  from 2015-01-11 01:01:01   to 2015-01-11 01:01:01   with <strong>\'Refund success\'</strong>, <strong>\'Success\'</strong> states   with \'Visa\' card brand',
-      'results': [
+    const templateData = {
+      total: 2,
+      filtersDescription: '  from 2015-01-11 01:01:01   to 2015-01-11 01:01:01   with <strong>\'Refund success\'</strong>, <strong>\'Success\'</strong> states   with \'Visa\' card brand',
+      results: [
         {
-          'charge_id': '100',
-          'email': 'example1@mail.fake',
-          'amount': '50.00',
-          'reference': 'ref1',
-          'state_friendly': 'Refund success',
-          'state': {
-            'status': 'success',
-            'finished': true
+          charge_id: '100',
+          email: 'example1@mail.fake',
+          amount: '50.00',
+          reference: 'ref1',
+          state_friendly: 'Refund success',
+          state: {
+            status: 'success',
+            finished: true
           },
-          'card_details': {
-            'billing_address': {
-              'city': 'TEST',
-              'country': 'GB',
-              'line1': 'TEST',
-              'line2': 'TEST - DO NOT PROCESS',
-              'postcode': 'SE1 3UZ'
+          card_details: {
+            billing_address: {
+              city: 'TEST',
+              country: 'GB',
+              line1: 'TEST',
+              line2: 'TEST - DO NOT PROCESS',
+              postcode: 'SE1 3UZ'
             },
-            'card_brand': 'Visa',
-            'cardholder_name': 'TEST',
-            'expiry_date': '12/19',
-            'last_digits_card_number': '4242'
+            card_brand: 'Visa',
+            cardholder_name: 'TEST',
+            expiry_date: '12/19',
+            last_digits_card_number: '4242'
           },
-          'created': '2016-01-11 01:01:01'
+          created: '2016-01-11 01:01:01'
         },
         {
-          'charge_id': '101',
-          'email': 'example2@mail.fake',
-          'amount': '20.00',
-          'reference': 'ref1',
-          'state_friendly': 'Success',
-          'state': {
-            'status': 'success',
-            'finished': true
+          charge_id: '101',
+          email: 'example2@mail.fake',
+          amount: '20.00',
+          reference: 'ref1',
+          state_friendly: 'Success',
+          state: {
+            status: 'success',
+            finished: true
           },
-          'card_details': {
-            'billing_address': {
-              'city': 'TEST',
-              'country': 'GB',
-              'line1': 'TEST',
-              'line2': 'TEST - DO NOT PROCESS',
-              'postcode': 'SE1 3UZ'
+          card_details: {
+            billing_address: {
+              city: 'TEST',
+              country: 'GB',
+              line1: 'TEST',
+              line2: 'TEST - DO NOT PROCESS',
+              postcode: 'SE1 3UZ'
             },
-            'card_brand': 'Mastercard',
-            'cardholder_name': 'TEST',
-            'expiry_date': '12/19',
-            'last_digits_card_number': '4242'
+            card_brand: 'Mastercard',
+            cardholder_name: 'TEST',
+            expiry_date: '12/19',
+            last_digits_card_number: '4242'
           },
-          'created': '2016-01-11 01:01:01'
+          created: '2016-01-11 01:01:01'
         }
       ],
-      'filters': { 'reference': 'ref1', 'state': 'Testing2', 'brand': 'Visa', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01' },
-      'hasResults': true,
-      'downloadTransactionLink':
+      filters: { reference: 'ref1', state: 'Testing2', brand: 'Visa', fromDate: '2015-01-11 01:01:01', toDate: '2015-01-11 01:01:01' },
+      hasResults: true,
+      downloadTransactionLink:
                 '/transactions/download?reference=ref1&state=payment-testing2&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01',
       permissions: {
-        'transactions_amount_read': true,
-        'transactions_email_read': true,
-        'transactions_card_type_read': true,
-        'transactions_download_read': true
+        transactions_amount_read: true,
+        transactions_email_read: true,
+        transactions_card_type_read: true,
+        transactions_download_read: true
       },
       showCsvDownload: true,
       totalFormatted: 2
     }
 
-    var body = renderTemplate('transactions/index', templateData)
-    var $ = cheerio.load(body)
+    const body = renderTemplate('transactions/index', templateData)
+    const $ = cheerio.load(body)
 
     expect($('#download-transactions-link').attr('href')).to.equal(templateData.downloadTransactionLink)
 
@@ -102,12 +102,12 @@ describe('The transaction list view', function () {
   })
 
   it('should render no transactions', function () {
-    var templateData = {
-      'results': [],
-      'hasResults': false
+    const templateData = {
+      results: [],
+      hasResults: false
     }
 
-    var body = renderTemplate('transactions/index', templateData)
+    const body = renderTemplate('transactions/index', templateData)
     const $ = cheerio.load(body)
 
     expect($('#download-transactions-link').length).to.equal(0)

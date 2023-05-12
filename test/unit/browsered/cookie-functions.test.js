@@ -29,8 +29,8 @@ describe('Cookie functions', () => {
   })
   describe('setCookieConsent', () => {
     it('should set consent cookie correctly', () => {
-      cookieFunctions.setConsentCookie({ 'analytics': true })
-      let analyticsCookie = JSON.parse(cookieFunctions.getCookie('govuk_pay_cookie_policy'))
+      cookieFunctions.setConsentCookie({ analytics: true })
+      const analyticsCookie = JSON.parse(cookieFunctions.getCookie('govuk_pay_cookie_policy'))
       expect(analyticsCookie.analytics).to.be.equal(true)
     })
 
@@ -39,9 +39,9 @@ describe('Cookie functions', () => {
       document.cookie = '_ga=ga1;domain=.example.org'
       document.cookie = '_gid=gid1;domain=.example.org'
       document.cookie = '_gat_govuk_shared=shared;domain=.example.org'
-      cookieFunctions.setConsentCookie({ 'analytics': false })
+      cookieFunctions.setConsentCookie({ analytics: false })
 
-      let analyticsCookie = JSON.parse(cookieFunctions.getCookie('govuk_pay_cookie_policy'))
+      const analyticsCookie = JSON.parse(cookieFunctions.getCookie('govuk_pay_cookie_policy'))
       expect(analyticsCookie.analytics).to.be.equal(false)
       expect(cookieFunctions.getCookie('_ga')).to.be.equal(null)
       expect(cookieFunctions.getCookie('_gid')).to.be.equal(null)
@@ -67,9 +67,9 @@ describe('Cookie functions', () => {
       const expiryDateString = cookieString.substring(
         cookieString.indexOf(searchString) + searchString.length)
 
-      let expiryDate = new Date(expiryDateString)
-      let previousDateToTargetExpiryDate = addDaysToDate(cookieExpiryDays - 1)
-      let nextDateToTargetExpiryDate = addDaysToDate(cookieExpiryDays + 1)
+      const expiryDate = new Date(expiryDateString)
+      const previousDateToTargetExpiryDate = addDaysToDate(cookieExpiryDays - 1)
+      const nextDateToTargetExpiryDate = addDaysToDate(cookieExpiryDays + 1)
 
       expect(expiryDate.getTime()).to.be.greaterThan(previousDateToTargetExpiryDate.getTime())
       expect(expiryDate.getTime()).to.be.lessThan(nextDateToTargetExpiryDate.getTime())
@@ -82,13 +82,13 @@ describe('Cookie functions', () => {
   }
 
   describe('getCookieDomain', () => {
-    it(`should remove both www and selfservice from hostname`, () => {
+    it('should remove both www and selfservice from hostname', () => {
       window = new jsdom.JSDOM('', {
         url: 'http://www.selfservice.example.org/search?from_date=2020-01-01'
       }).window
       expect(cookieFunctions.getCookieDomain()).to.be.equal('.example.org')
     })
-    it(`should remove selfservice when www is not present in hostname`, () => {
+    it('should remove selfservice when www is not present in hostname', () => {
       window = new jsdom.JSDOM('', {
         url: 'http://selfservice.example.org/search?from_date=2020-01-01'
       }).window

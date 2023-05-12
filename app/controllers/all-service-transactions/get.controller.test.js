@@ -14,7 +14,7 @@ describe('All service transactions - GET', () => {
   const service = new Service(serviceFixtures.validServiceResponse({}))
   const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse(
     { transactions: [] })
-  let userPermittedAccountsSummary = {
+  const userPermittedAccountsSummary = {
     gatewayAccountIds: [31],
     headers: { shouldGetStripeHeaders: true, shouldGetMotoHeaders: true },
     hasLiveAccounts: false,
@@ -24,10 +24,10 @@ describe('All service transactions - GET', () => {
 
   beforeEach(() => {
     req = {
-      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
+      account: gatewayAccountFixture.validGatewayAccount({ payment_provider: 'stripe' }),
       flash: sinon.spy(),
-      service: service,
-      user: user,
+      service,
+      user,
       params: {},
       url: 'http://selfservice/all-servce-transactions',
       session: {},

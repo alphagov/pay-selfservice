@@ -48,7 +48,7 @@ module.exports = function postAmount (req, res, next) {
   sessionData.paymentAmountType = type
   sessionData.amountHint = hint
 
-  if (req.body['change'] === 'true') {
+  if (req.body.change === 'true') {
     req.flash('generic', 'The details have been updated')
   }
 

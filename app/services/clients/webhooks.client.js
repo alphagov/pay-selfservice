@@ -123,7 +123,7 @@ function createWebhook (serviceId, isLive, options = {}) {
 
 function updateWebhook (id, serviceId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
-  const paths = [ 'callback_url', 'subscriptions', 'description', 'status' ]
+  const paths = ['callback_url', 'subscriptions', 'description', 'status']
   const body = []
   paths.forEach((path) => {
     if (options[path]) {

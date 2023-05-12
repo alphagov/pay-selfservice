@@ -12,15 +12,15 @@ const serviceName = 'A service'
 const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, language, description, price, referenceEnabled, referenceLabel, referenceHint, metadata = null) {
   return {
     external_id: externalId,
-    name: name,
-    description: description,
-    price: price,
-    language: language,
+    name,
+    description,
+    price,
+    language,
     type: 'ADHOC',
     reference_enabled: referenceEnabled,
     reference_label: referenceLabel,
     reference_hint: referenceHint,
-    metadata: metadata
+    metadata
   }
 }
 
@@ -65,7 +65,7 @@ describe('Editing a payment link', () => {
     const referenceLabel = 'Licence number'
     const referenceHint = 'You can find this on your licence card'
     const product = buildPaymentLinkOpts(productId, name, 'en', description, 1000, referenceEnabled, referenceLabel, referenceHint,
-      { 'Finance team': 'Licensing', 'cost_code': '12345', 'group': 'A' })
+      { 'Finance team': 'Licensing', cost_code: '12345', group: 'A' })
 
     beforeEach(() => {
       setupStubs(product)
@@ -238,7 +238,7 @@ describe('Editing a payment link', () => {
         assertCommonPageElements()
         cy.title().should('eq', `Edit your payment link amount - ${serviceName} Worldpay test - GOV.UK Pay`)
 
-        cy.get(`form[method=post]`).should('exist')
+        cy.get('form[method=post]').should('exist')
           .within(() => {
             cy.get('input[type=radio]#amount-type-fixed').should('exist')
             cy.get('input[type=radio]#amount-type-variable').should('exist')
@@ -251,12 +251,12 @@ describe('Editing a payment link', () => {
           cy.get('img').should('exist')
         })
 
-        cy.get(`form[method=post]`).should('exist')
+        cy.get('form[method=post]').should('exist')
           .within(() => {
             cy.get('input#payment-amount').should('have.value', '10.00')
           })
 
-        cy.get(`form[method=post]`).within(() => {
+        cy.get('form[method=post]').within(() => {
           cy.get('button').click()
         })
 

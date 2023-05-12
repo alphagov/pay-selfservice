@@ -290,11 +290,11 @@ describe('organisation address - post controller', () => {
           current_go_live_stage: goLiveStage.ENTERED_ORGANISATION_NAME
         }))
 
-        let req = {
+        const req = {
           route: {
             path: '/request-to-go-live/organisation-address'
           },
-          service: service,
+          service,
           body: {
             'address-line1': validLine1,
             'address-line2': validLine2,
@@ -302,7 +302,7 @@ describe('organisation address - post controller', () => {
             'address-postcode': validPostcode,
             'address-country': validCountry,
             'telephone-number': validTelephoneNumber,
-            'url': validUrl
+            url: validUrl
           }
         }
 
@@ -335,44 +335,44 @@ describe('organisation address - post controller', () => {
           it('should update merchant details and go live stage', async function () {
             const expectedUpdateServiceRequest = [
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_line1',
-                'value': validLine1
+                op: 'replace',
+                path: 'merchant_details/address_line1',
+                value: validLine1
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_line2',
-                'value': validLine2
+                op: 'replace',
+                path: 'merchant_details/address_line2',
+                value: validLine2
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_city',
-                'value': validCity
+                op: 'replace',
+                path: 'merchant_details/address_city',
+                value: validCity
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_postcode',
-                'value': validPostcode
+                op: 'replace',
+                path: 'merchant_details/address_postcode',
+                value: validPostcode
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_country',
-                'value': validCountry
+                op: 'replace',
+                path: 'merchant_details/address_country',
+                value: validCountry
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/telephone_number',
-                'value': validTelephoneNumber
+                op: 'replace',
+                path: 'merchant_details/telephone_number',
+                value: validTelephoneNumber
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/url',
-                'value': validUrl
+                op: 'replace',
+                path: 'merchant_details/url',
+                value: validUrl
               },
               {
-                'op': 'replace',
-                'path': 'current_go_live_stage',
-                'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+                op: 'replace',
+                path: 'current_go_live_stage',
+                value: goLiveStage.ENTERED_ORGANISATION_ADDRESS
               }
             ]
 
@@ -390,49 +390,49 @@ describe('organisation address - post controller', () => {
               'address-postcode': validPostcode,
               'address-country': validCountry,
               'telephone-number': validTelephoneNumber,
-              'url': validUrl
+              url: validUrl
             }
 
             const expectedUpdateServiceRequest = [
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_line1',
-                'value': validLine1
+                op: 'replace',
+                path: 'merchant_details/address_line1',
+                value: validLine1
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_line2',
-                'value': ''
+                op: 'replace',
+                path: 'merchant_details/address_line2',
+                value: ''
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_city',
-                'value': validCity
+                op: 'replace',
+                path: 'merchant_details/address_city',
+                value: validCity
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_postcode',
-                'value': validPostcode
+                op: 'replace',
+                path: 'merchant_details/address_postcode',
+                value: validPostcode
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/address_country',
-                'value': validCountry
+                op: 'replace',
+                path: 'merchant_details/address_country',
+                value: validCountry
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/telephone_number',
-                'value': validTelephoneNumber
+                op: 'replace',
+                path: 'merchant_details/telephone_number',
+                value: validTelephoneNumber
               },
               {
-                'op': 'replace',
-                'path': 'merchant_details/url',
-                'value': validUrl
+                op: 'replace',
+                path: 'merchant_details/url',
+                value: validUrl
               },
               {
-                'op': 'replace',
-                'path': 'current_go_live_stage',
-                'value': goLiveStage.ENTERED_ORGANISATION_ADDRESS
+                op: 'replace',
+                path: 'current_go_live_stage',
+                value: goLiveStage.ENTERED_ORGANISATION_ADDRESS
               }
             ]
 
@@ -477,7 +477,7 @@ describe('organisation address - post controller', () => {
         route: {
           path: '/organisation-details/edit'
         },
-        service: service,
+        service,
         body: {
           'merchant-name': validName,
           'address-line1': validLine1,
@@ -486,7 +486,7 @@ describe('organisation address - post controller', () => {
           'address-postcode': validPostcode,
           'address-country': validCountry,
           'telephone-number': validTeleponeNumber,
-          'url': validUrl
+          url: validUrl
         }
       }
 
@@ -519,44 +519,44 @@ describe('organisation address - post controller', () => {
         it('should update merchant details', async function () {
           const expectedUpdateServiceRequest = [
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_line1',
-              'value': validLine1
+              op: 'replace',
+              path: 'merchant_details/address_line1',
+              value: validLine1
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_line2',
-              'value': validLine2
+              op: 'replace',
+              path: 'merchant_details/address_line2',
+              value: validLine2
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_city',
-              'value': validCity
+              op: 'replace',
+              path: 'merchant_details/address_city',
+              value: validCity
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_postcode',
-              'value': validPostcode
+              op: 'replace',
+              path: 'merchant_details/address_postcode',
+              value: validPostcode
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/address_country',
-              'value': validCountry
+              op: 'replace',
+              path: 'merchant_details/address_country',
+              value: validCountry
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/telephone_number',
-              'value': validTeleponeNumber
+              op: 'replace',
+              path: 'merchant_details/telephone_number',
+              value: validTeleponeNumber
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/url',
-              'value': validUrl
+              op: 'replace',
+              path: 'merchant_details/url',
+              value: validUrl
             },
             {
-              'op': 'replace',
-              'path': 'merchant_details/name',
-              'value': validName
+              op: 'replace',
+              path: 'merchant_details/name',
+              value: validName
             }
           ]
 
@@ -589,7 +589,7 @@ describe('organisation address - post controller', () => {
         req = {
           account: gatewayAccountFixture.validGatewayAccount({}),
           url: '/your-psp/:credentialId/update-organisation-details',
-          service: service,
+          service,
           body: {
             'merchant-name': validName,
             'address-line1': validLine1,
@@ -680,7 +680,7 @@ describe('organisation address - post controller', () => {
 
           sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
           sinon.assert.calledWith(loggerInfoMock, 'Organisation details updated for Stripe account', { stripe_account_id: stripeAccountId })
-          sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+          sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-external-id')
         })
       })
     })
@@ -705,7 +705,7 @@ describe('organisation address - post controller', () => {
         req = {
           account: gatewayAccountFixture.validGatewayAccount({}),
           url: '/switch-psp/:credentialId/update-organisation-details',
-          service: service,
+          service,
           body: {
             'merchant-name': validName,
             'address-line1': validLine1,

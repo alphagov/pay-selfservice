@@ -147,7 +147,7 @@ ConnectorClient.prototype = {
    * @returns {Promise}
    */
   createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, serviceId) {
-    let payload = {
+    const payload = {
       payment_provider: paymentProvider
     }
     if (type) {
@@ -263,7 +263,7 @@ ConnectorClient.prototype = {
     logger.debug('Calling connector to update notification credentials', {
       service: 'connector',
       method: 'POST',
-      url: url
+      url
     })
 
     return baseClient.post({
@@ -367,7 +367,7 @@ ConnectorClient.prototype = {
     logger.debug('Calling connector to get all card types', {
       service: 'connector',
       method: 'GET',
-      url: url
+      url
     })
 
     return baseClient.get({

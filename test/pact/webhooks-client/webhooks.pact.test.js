@@ -39,7 +39,7 @@ describe('webhooks client', function () {
   describe('list webhooks', () => {
     before(() => {
       return provider.addInteraction(
-        new PactInteractionBuilder(`/v1/webhook`)
+        new PactInteractionBuilder('/v1/webhook')
           .withQuery('service_id', serviceId)
           .withQuery('live', isLive.toString())
           .withUponReceiving('a valid list webhooks for service request')
@@ -65,10 +65,10 @@ describe('webhooks client', function () {
   describe('create webhooks', () => {
     const callbackUrl = 'https://a-callback-url.test'
     const description = 'A valid Webhook description'
-    const subscriptions = [ 'card_payment_captured' ]
+    const subscriptions = ['card_payment_captured']
     before(() => {
       return provider.addInteraction(
-        new PactInteractionBuilder(`/v1/webhook`)
+        new PactInteractionBuilder('/v1/webhook')
           .withRequestBody({
             service_id: serviceId,
             callback_url: callbackUrl,

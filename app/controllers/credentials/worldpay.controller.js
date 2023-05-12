@@ -52,7 +52,7 @@ async function updateWorldpayCredentials (req, res, next) {
       const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ gatewayAccountId, payload: results.values })
       if (checkCredentialsWithWorldpay.result !== 'valid') {
         logger.warn('Provided credentials failed validation with Worldpay')
-        results.errorSummaryList = formatErrorsForSummaryList({ 'merchantId': 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
+        results.errorSummaryList = formatErrorsForSummaryList({ merchantId: 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
         return response(req, res, 'credentials/worldpay', { form: results, isSwitchingCredentials, credential })
       }
 

@@ -9,7 +9,7 @@ class Stream {
     this.dataCallback = dataCallback
     this.successCallback = successCallback
     this.errorCallback = errorCallback
-    this.headers = headers || { 'Accept': 'text/csv', 'Content-Type': 'application/json' }
+    this.headers = headers || { Accept: 'text/csv', 'Content-Type': 'application/json' }
   }
 
   request (targetUrl) {

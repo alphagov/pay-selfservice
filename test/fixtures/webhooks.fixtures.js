@@ -9,7 +9,7 @@ function validWebhook (options = {}) {
     description: options.description || 'a valid webhook description',
     status: options.status || 'ACTIVE',
     created_date: options.created_date || '2021-08-20T14:00:00.000Z',
-    subscriptions: options.subscriptions || [ 'card_payment_captured' ]
+    subscriptions: options.subscriptions || ['card_payment_captured']
   }
 }
 

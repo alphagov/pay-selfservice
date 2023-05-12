@@ -20,7 +20,7 @@ module.exports = {
     disable: disableProduct,
     delete: deleteProduct,
     getByProductExternalIdAndGatewayAccountId: getProductByExternalIdAndGatewayAccountId,
-    getProductByExternalId: getProductByExternalId,
+    getProductByExternalId,
     getByGatewayAccountIdAndType: getProductsByGatewayAccountIdAndType,
     getByProductPath: getProductByPath
   },
@@ -48,7 +48,7 @@ module.exports = {
 function createProduct (options) {
   return baseClient.post({
     baseUrl,
-    url: `/products`,
+    url: '/products',
     json: true,
     body: {
       gateway_account_id: options.gatewayAccountId,
@@ -109,7 +109,7 @@ function getProductByExternalIdAndGatewayAccountId (gatewayAccountId, productExt
   return baseClient.get({
     baseUrl,
     url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
-    description: `find a product by it's external id`,
+    description: 'find a product by it\'s external id',
     service: SERVICE_NAME
   }).then(product => new Product(product))
 }
@@ -122,7 +122,7 @@ function getProductByExternalId (productExternalId) {
   return baseClient.get({
     baseUrl,
     url: `/products/${productExternalId}`,
-    description: `find a product by it's external id`,
+    description: 'find a product by it\'s external id',
     service: SERVICE_NAME
   }).then(product => new Product(product))
 }
@@ -148,7 +148,7 @@ function disableProduct (gatewayAccountId, productExternalId) {
   return baseClient.patch({
     baseUrl,
     url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`,
-    description: `disable a product`,
+    description: 'disable a product',
     service: SERVICE_NAME
   })
 }
@@ -162,7 +162,7 @@ function deleteProduct (gatewayAccountId, productExternalId) {
   return baseClient.delete({
     baseUrl,
     url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
-    description: `disable a product`,
+    description: 'disable a product',
     service: SERVICE_NAME
   })
 }
@@ -189,7 +189,7 @@ function getPaymentByPaymentExternalId (paymentExternalId) {
   return baseClient.get({
     baseUrl,
     url: `/payments/${paymentExternalId}`,
-    description: `find a payment by it's external id`,
+    description: 'find a payment by it\'s external id',
     service: SERVICE_NAME
   }).then(charge => new Payment(charge))
 }
@@ -202,7 +202,7 @@ function getPaymentsByProductExternalId (productExternalId) {
   return baseClient.get({
     baseUrl,
     url: `/products/${productExternalId}/payments`,
-    description: `find a payments associated with a particular product`,
+    description: 'find a payments associated with a particular product',
     service: SERVICE_NAME
   }).then(payments => payments.map(payment => new Payment(payment)))
 }
@@ -216,7 +216,7 @@ function getProductByPath (serviceNamePath, productNamePath) {
   return baseClient.get({
     baseUrl,
     url: `/products?serviceNamePath=${serviceNamePath}&productNamePath=${productNamePath}`,
-    description: `find a product by it's product path`,
+    description: 'find a product by it\'s product path',
     service: SERVICE_NAME
   }).then(product => new Product(product))
 }

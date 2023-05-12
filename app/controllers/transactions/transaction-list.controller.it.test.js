@@ -30,7 +30,7 @@ describe('The /transactions endpoint', () => {
       external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
       gateway_account_id: gatewayAccountId,
       payment_provider: 'sandbox',
-      credentials: { 'username': 'a-username' }
+      credentials: { username: 'a-username' }
     }
   )
   const req = {
@@ -53,7 +53,7 @@ describe('The /transactions endpoint', () => {
   describe('Error getting transactions', () => {
     it('should show error message on a bad request while retrieving the list of transactions', async () => {
       const errorMessage = 'There is a problem with the payments platform. Please contact the support team.'
-      ledgerMockResponds(400, { 'message': errorMessage }, ledgerSearchParameters)
+      ledgerMockResponds(400, { message: errorMessage }, ledgerSearchParameters)
 
       await transactionListController(req, res, next)
       const expectedError = sinon.match.instanceOf(Error)
@@ -62,7 +62,7 @@ describe('The /transactions endpoint', () => {
     })
 
     it('should show a generic error message on a ledger service error while retrieving the list of transactions', async () => {
-      ledgerMockResponds(500, { 'message': 'some error from connector' }, ledgerSearchParameters)
+      ledgerMockResponds(500, { message: 'some error from connector' }, ledgerSearchParameters)
 
       await transactionListController(req, res, next)
       const expectedError = sinon.match.instanceOf(Error)

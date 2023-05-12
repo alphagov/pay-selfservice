@@ -91,7 +91,7 @@ describe('auth service', function () {
       const user = mockSession.getUser({ disabled: true })
       const nextSpy = sinon.spy()
 
-      auth.lockOutDisabledUsers({ user: user, headers: {} }, response, nextSpy)
+      auth.lockOutDisabledUsers({ user, headers: {} }, response, nextSpy)
       assert(nextSpy.notCalled)
       assert(response.redirect.calledWithExactly('/noaccess'))
       done()
@@ -101,7 +101,7 @@ describe('auth service', function () {
       const user = mockSession.getUser({ disabled: false })
       const nextSpy = sinon.spy()
 
-      auth.lockOutDisabledUsers({ user: user, headers: {} }, response, nextSpy)
+      auth.lockOutDisabledUsers({ user, headers: {} }, response, nextSpy)
       assert(nextSpy.called)
       assert(response.render.notCalled)
       done()
@@ -287,7 +287,7 @@ describe('auth service', function () {
       const req = {
         headers: { 'x-request-id': 'corrId' },
         register_invite: registerInviteCookie,
-        user: user,
+        user,
         session: {}
       }
 
@@ -364,7 +364,7 @@ describe('auth service', function () {
     })
 
     it('should call next if user is not logged in', function (done) {
-      let invalidSession = validRequest()
+      const invalidSession = validRequest()
       invalidSession.session.version = 1
       auth.redirectLoggedInUser(invalidSession, response, next)
       expect(next.calledOnce).to.be.true // eslint-disable-line

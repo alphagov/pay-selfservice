@@ -88,7 +88,7 @@ describe('The organisation details page', () => {
       cy.get('a[href="#url"]').should('contain', 'Enter a valid website address')
     })
 
-    cy.get(`form[method=post]`)
+    cy.get('form[method=post]')
       .within(() => {
         cy.get('.govuk-form-group--error > input#merchant-name').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('contain', 'Enter a name')
