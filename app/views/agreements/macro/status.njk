@@ -2,13 +2,15 @@
 "CREATED": "govuk-tag--grey",
 "ACTIVE": "govuk-tag--green",
 "EXPIRED": "govuk-tag--yellow",
-"CANCELLED": "govuk-tag--yellow"
+"CANCELLED": "govuk-tag--yellow",
+"INACTIVE": "govuk-tag--yellow"
 } %}
 {% set statusTextMap = {
 "CREATED": "needs payment details",
 "ACTIVE": "active",
 "CANCELLED": "cancelled",
-"EXPIRED": "expired"
+"EXPIRED": "expired",
+"INACTIVE": "inactive"
 } %}
 
 {% macro agreementStatusTag(status) %}
