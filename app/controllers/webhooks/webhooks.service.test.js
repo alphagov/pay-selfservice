@@ -16,7 +16,7 @@ describe('webhooks service', () => {
         { external_id: 5, status: 'ACTIVE' }
       ])
       const service = getWebhooksService(webhooks)
-      const result = await service.listWebhooks('some-service-id', true)
+      const result = await service.listWebhooks('some-service-id', 'some-gateway-account-id', true)
       expect(result.map(webhook => webhook.external_id)).to.deep.equal([ 2, 5, 1, 3, 4 ])
     })
   })
@@ -24,28 +24,28 @@ describe('webhooks service', () => {
     it('should normalise subscriptions from the frontend, uniformly submitting them as a list', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ createWebhook: spy })
-      service.createWebhook('some-service-id', true, { subscriptions: 'my-subscription' })
-      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-subscription' ] })
+      service.createWebhook('some-service-id', 'some-gateway-account-id', true, { subscriptions: 'my-subscription' })
+      sinon.assert.calledWith(spy, 'some-service-id', 'some-gateway-account-id', true, { subscriptions: [ 'my-subscription' ] })
     })
     it('should not change a list of valid subscriptions', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ createWebhook: spy })
-      service.createWebhook('some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
-      sinon.assert.calledWith(spy, 'some-service-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
+      service.createWebhook('some-service-id', 'some-gateway-account-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
+      sinon.assert.calledWith(spy, 'some-service-id', 'some-gateway-account-id', true, { subscriptions: [ 'my-first-subscription', 'my-second-subscription' ] })
     })
   })
   describe('Toggle webhook status', () => {
     it('should deactivate given an active webhook', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ updateWebhook: spy })
-      service.toggleStatus('webhook-id', 'service-id', 'ACTIVE')
-      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', { status: 'INACTIVE' })
+      service.toggleStatus('webhook-id', 'service-id', 'some-gateway-account-id', 'ACTIVE')
+      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', 'some-gateway-account-id', { status: 'INACTIVE' })
     })
     it('should active given an inactive webhook', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ updateWebhook: spy })
-      service.toggleStatus('webhook-id', 'service-id', 'INACTIVE')
-      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', { status: 'ACTIVE' })
+      service.toggleStatus('webhook-id', 'service-id', 'some-gateway-account-id', 'INACTIVE')
+      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', 'some-gateway-account-id', { status: 'ACTIVE' })
     })
   })
   describe('List webhook messages', () => {
