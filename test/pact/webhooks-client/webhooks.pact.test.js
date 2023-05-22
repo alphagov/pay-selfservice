@@ -24,6 +24,7 @@ const provider = new Pact({
 })
 
 const serviceId = 'an-external-service-id'
+const gatewayAccountId = 'an-external-account-id'
 const isLive = true
 const webhookId = 'an-external-webhook-id'
 
@@ -41,6 +42,7 @@ describe('webhooks client', function () {
       return provider.addInteraction(
         new PactInteractionBuilder(`/v1/webhook`)
           .withQuery('service_id', serviceId)
+          .withQuery('gateway_account_id', gatewayAccountId)
           .withQuery('live', isLive.toString())
           .withUponReceiving('a valid list webhooks for service request')
           .withState('webhooks exist for given service id')
@@ -54,7 +56,7 @@ describe('webhooks client', function () {
     afterEach(() => provider.verify())
 
     it('should get list of webhooks for a given service', () => {
-      return webhooksClient.webhooks(serviceId, isLive, { baseUrl: webhooksUrl })
+      return webhooksClient.webhooks(serviceId, gatewayAccountId, isLive, { baseUrl: webhooksUrl })
         .then((response) => {
           // asserts that the client has correctly formatted the request to match the stubbed fixture provider
           expect(response[0].external_id).to.equal(webhookId)
@@ -71,6 +73,7 @@ describe('webhooks client', function () {
         new PactInteractionBuilder(`/v1/webhook`)
           .withRequestBody({
             service_id: serviceId,
+            gateway_account_id: gatewayAccountId,
             callback_url: callbackUrl,
             live: isLive,
             description,
@@ -88,7 +91,7 @@ describe('webhooks client', function () {
     afterEach(() => provider.verify())
 
     it('should submit details to create a webhook', () => {
-      return webhooksClient.createWebhook(serviceId, isLive, { callback_url: callbackUrl, description, subscriptions, baseUrl: webhooksUrl })
+      return webhooksClient.createWebhook(serviceId, gatewayAccountId, isLive, { callback_url: callbackUrl, description, subscriptions, baseUrl: webhooksUrl })
         .then((response) => {
           expect(response.external_id).to.equal(webhookId)
         })

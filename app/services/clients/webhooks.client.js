@@ -9,12 +9,13 @@ const defaultRequestOptions = {
   service: 'webhooks'
 }
 
-function webhook (id, serviceId, options = {}) {
+function webhook (id, serviceId, gatewayAccountId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
   const request = {
     url,
     qs: {
-      service_id: serviceId
+      service_id: serviceId,
+      gateway_account_id: gatewayAccountId
     },
     description: 'Get one webhook',
     ...defaultRequestOptions,
@@ -23,12 +24,13 @@ function webhook (id, serviceId, options = {}) {
   return baseClient.get(request)
 }
 
-function signingSecret (webhookId, serviceId, options = {}) {
+function signingSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
   const url = urlJoin('/v1/webhook/', webhookId, '/signing-key')
   const request = {
     url,
     qs: {
-      service_id: serviceId
+      service_id: serviceId,
+      gateway_account_id: gatewayAccountId
     },
     description: 'Get a Webhook signing secret',
     ...defaultRequestOptions,
@@ -37,12 +39,13 @@ function signingSecret (webhookId, serviceId, options = {}) {
   return baseClient.get(request)
 }
 
-function resetSigningSecret (webhookId, serviceId, options = {}) {
+function resetSigningSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
   const url = urlJoin('/v1/webhook/', webhookId, '/signing-key')
   const request = {
     url,
     qs: {
-      service_id: serviceId
+      service_id: serviceId,
+      gateway_account_id: gatewayAccountId
     },
     description: 'Reset a Webhook signing secret',
     ...defaultRequestOptions,
@@ -51,12 +54,13 @@ function resetSigningSecret (webhookId, serviceId, options = {}) {
   return baseClient.post(request)
 }
 
-function webhooks (serviceId, isLive, options = {}) {
+function webhooks (serviceId, gatewayAccountId, isLive, options = {}) {
   const url = '/v1/webhook'
   const request = {
     url,
     qs: {
       service_id: serviceId,
+      gateway_account_id: gatewayAccountId,
       live: isLive
     },
     description: 'List webhooks for service',
@@ -103,12 +107,13 @@ function messages (id, options = {}) {
   return baseClient.get(request)
 }
 
-function createWebhook (serviceId, isLive, options = {}) {
+function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
   const url = '/v1/webhook'
   const request = {
     url,
     body: {
       service_id: serviceId,
+      gateway_account_id: gatewayAccountId,
       live: isLive,
       callback_url: options.callback_url,
       subscriptions: options.subscriptions,
@@ -121,7 +126,7 @@ function createWebhook (serviceId, isLive, options = {}) {
   return baseClient.post(request)
 }
 
-function updateWebhook (id, serviceId, options = {}) {
+function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
   const paths = [ 'callback_url', 'subscriptions', 'description', 'status' ]
   const body = []
@@ -133,7 +138,8 @@ function updateWebhook (id, serviceId, options = {}) {
   const request = {
     url,
     qs: {
-      service_id: serviceId
+      service_id: serviceId,
+      gateway_account_id: gatewayAccountId
     },
     body,
     ...defaultRequestOptions,

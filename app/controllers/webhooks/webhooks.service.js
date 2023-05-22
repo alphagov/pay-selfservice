@@ -20,23 +20,23 @@ function formatPages (searchResponse) {
   }
 }
 
-async function listWebhooks (serviceId, isLive) {
-  const webhooks = await webhooksClient.webhooks(serviceId, isLive)
+async function listWebhooks (serviceId, gatewayAccountId, isLive) {
+  const webhooks = await webhooksClient.webhooks(serviceId, gatewayAccountId, isLive)
   return webhooks.sort(sortByActiveStatus)
 }
 
-function createWebhook (serviceId, isLive, options = {}) {
+function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
   options.subscriptions = typeof options.subscriptions === 'string' ? [ options.subscriptions ] : options.subscriptions
-  return webhooksClient.createWebhook(serviceId, isLive, options)
+  return webhooksClient.createWebhook(serviceId, gatewayAccountId, isLive, options)
 }
 
-function updateWebhook (id, serviceId, options = {}) {
+function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
   options.subscriptions = typeof options.subscriptions === 'string' ? [ options.subscriptions ] : options.subscriptions
-  return webhooksClient.updateWebhook(id, serviceId, options)
+  return webhooksClient.updateWebhook(id, serviceId, gatewayAccountId, options)
 }
 
-function getWebhook (id, serviceId) {
-  return webhooksClient.webhook(id, serviceId)
+function getWebhook (id, serviceId, gatewayAccountId) {
+  return webhooksClient.webhook(id, serviceId, gatewayAccountId)
 }
 
 function getWebhookMessage (id, webhookId) {
@@ -52,17 +52,17 @@ async function getWebhookMessages (id, options = {}) {
   return formatPages(searchResponse)
 }
 
-function getSigningSecret (webhookId, serviceId) {
-  return webhooksClient.signingSecret(webhookId, serviceId)
+function getSigningSecret (webhookId, serviceId, gatewayAccountId) {
+  return webhooksClient.signingSecret(webhookId, serviceId, gatewayAccountId)
 }
 
-function resetSigningSecret (webhookId, serviceId) {
-  return webhooksClient.resetSigningSecret(webhookId, serviceId)
+function resetSigningSecret (webhookId, serviceId, gatewayAccountId) {
+  return webhooksClient.resetSigningSecret(webhookId, serviceId, gatewayAccountId)
 }
 
-function toggleStatus (webhookId, serviceId, currentStatus) {
+function toggleStatus (webhookId, serviceId, gatewayAccountId, currentStatus) {
   const status = currentStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
-  return webhooksClient.updateWebhook(webhookId, serviceId, { status })
+  return webhooksClient.updateWebhook(webhookId, serviceId, gatewayAccountId, { status })
 }
 
 function resendWebhookMessage (webhookId, messageId) {
