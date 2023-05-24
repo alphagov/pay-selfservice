@@ -53,7 +53,12 @@ async function agreementDetail (req, res, next) {
   }
 }
 
+async function cancelAgreement (req, res, next) {
+  // Placeholder function
+}
+
 module.exports = {
   listAgreements,
-  agreementDetail
+  agreementDetail,
+  cancelAgreement
 }
