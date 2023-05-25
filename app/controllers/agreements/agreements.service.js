@@ -1,4 +1,5 @@
 const Ledger = require('../../services/clients/ledger.client')
+const Connector = require('../../services/clients/connector.client')
 const Paginator = require('../../utils/paginator')
 
 const PAGE_SIZE = 20
@@ -21,7 +22,20 @@ function agreement (id, serviceId) {
   return Ledger.agreement(id, serviceId)
 }
 
+function cancelAgreement (gatewayAccountId, agreementId, userEmail, userExternalId) {
+  const cancelAgreementParams = {
+    gatewayAccountId,
+    agreementId,
+    payload: {
+      'user_email': userEmail,
+      'user_external_id': userExternalId
+    }
+  }
+  return Connector.postCancelAgreement(cancelAgreementParams)
+}
+
 module.exports = {
   agreement,
-  agreements
+  agreements,
+  cancelAgreement
 }

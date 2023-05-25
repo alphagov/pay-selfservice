@@ -45,7 +45,7 @@ describe('connector client', function () {
         return provider.addInteraction(
           new PactInteractionBuilder(`/v1/api/accounts/${gatewayAccountId}/agreements/${agreementId}/cancel`)
             .withUponReceiving('a valid post cancel agreement request')
-            .withState('a gateway account with id 3456, agreement with external_id 3333 exists')
+            .withState('a gateway account with id 3456 and an active agreement exists')
             .withMethod('POST')
             .withRequestHeaders({ 'Content-Type': 'application/json' })
             .withRequestBody(cancelAgreementRequest.payload)
