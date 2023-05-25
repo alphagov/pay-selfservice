@@ -28,6 +28,7 @@ const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notificatio
 const CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/check-3ds-flex-config'
 const CHECK_WORLDPAY_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/check-credentials'
 const FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/3ds-flex-credentials'
+const CANCEL_AGREEMENT_PATH = '/v1/api/accounts/{accountId}/agreements/{agreementId}/cancel'
 
 const responseBodyToStripeAccountSetupTransformer = body => new StripeAccountSetup(body)
 const responseBodyToStripeAccountTransformer = body => new StripeAccount(body)
@@ -75,6 +76,13 @@ function _getNotificationEmailUrlFor (accountID) {
 /** @private */
 function _get3dsFlexCredentialsUrlFor (accountID) {
   return FLEX_CREDENTIALS_PATH.replace('{accountId}', accountID)
+}
+
+/** @private */
+function _getCancelAgreementPathFor (accountId, agreementId) {
+  return CANCEL_AGREEMENT_PATH
+    .replace('{accountId}', accountId)
+    .replace('{agreementId}', agreementId)
 }
 
 /**
@@ -320,6 +328,23 @@ ConnectorClient.prototype = {
       url,
       body: params.payload,
       description: 'Update 3DS Flex credentials',
+      service: SERVICE_NAME
+    })
+  },
+
+  /**
+   *
+   * @param {Object} params
+   * @returns {Promise}
+   */
+  postCancelAgreement: function (params) {
+    const url = _getCancelAgreementPathFor(params.gatewayAccountId, params.agreementId)
+
+    return baseClient.post({
+      baseUrl: this.connectorUrl,
+      url,
+      body: params.payload,
+      description: 'Cancel agreement',
       service: SERVICE_NAME
     })
   },
