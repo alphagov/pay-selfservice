@@ -73,7 +73,7 @@
     "@govuk-pay/pay-js-commons": "3.8.16",
     "@sentry/node": "6.12.0",
     "accessible-autocomplete": "2.0.4",
-    "aws-sdk": "2.1377.0",
+    "aws-sdk": "2.1385.0",
     "axios": "^1.4.0",
     "body-parser": "1.20.2",
     "change-case": "3.1.0",
