@@ -1,7 +1,7 @@
 function cancelAgreementRequest (opts = {}) {
   return {
     gatewayAccountId: opts.gatewayAccountId || 3456,
-    agreementId: opts.agreementId || 3333,
+    agreementId: opts.agreementId || 'abcdefghijklmnopqrstuvwxyz',
     payload: {
       user_email: opts.email || 'test@test.gov.uk',
       user_external_id: opts.userExternalId || 'a-user-external-id'
