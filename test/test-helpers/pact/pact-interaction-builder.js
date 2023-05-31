@@ -53,6 +53,11 @@ class PactInteractionBuilder {
     return this
   }
 
+  withResponseWithoutHeaders() {
+    this.withoutHeaders = true
+    return this
+  }
+
   build () {
     let pact = {
       state: this.state,
@@ -86,6 +91,10 @@ class PactInteractionBuilder {
 
     if (this.responseHeaders) {
       pact.willRespondWith.headers = this.responseHeaders
+    }
+
+    if (this.withoutHeaders) {
+      delete pact.willRespondWith.headers
     }
 
     return pact
