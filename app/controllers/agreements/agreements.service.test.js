@@ -34,7 +34,7 @@ describe('agreements service', () => {
       ])
 
       const spy = sinon.spy(async () => agreementsResult)
-      const service = getAgreementsService({ agreements: spy })
+      const service = getAgreementsService({ agreements: spy }, {})
       const accountId = 42
       const result = await service.agreements('service-id', true, accountId)
 
@@ -45,16 +45,45 @@ describe('agreements service', () => {
       expect(result.links[2].pageName).to.equal('next')
     })
   })
+
   describe('get an agreement', () => {
     it('should request an agreement', async () => {
       const spy = sinon.spy(async () => {})
-      const service = getAgreementsService({ agreement: spy })
+      const service = getAgreementsService({ agreement: spy }, {})
       await service.agreement('an-external-id', 'a-service-id')
       sinon.assert.calledWith(spy, 'an-external-id', 'a-service-id')
     })
   })
+
+  describe('cancel an agreement', () => {
+    it('should cancel an agreement', async () => {
+      const gatewayAccountId = 'a-gateway-external-id'
+      const agreementId = 'an-agreement-id'
+      const userEmail = 'user@test.com'
+      const userExternalId = 'a-user-external-id'
+
+      const spy = sinon.spy(async () => {})
+      const service = getAgreementsService({}, { postCancelAgreement: spy })
+
+      await service.cancelAgreement(gatewayAccountId, agreementId, userEmail, userExternalId)
+
+      const cancelAgreementParams = {
+        gatewayAccountId,
+        agreementId,
+        payload: {
+          'user_email': userEmail,
+          'user_external_id': userExternalId
+        }
+      }
+
+      sinon.assert.calledWith(spy, cancelAgreementParams)
+    })
+  })
 })
 
-function getAgreementsService (stub = {}) {
-  return proxyquire('./agreements.service.js', { './../../services/clients/ledger.client': stub })
+function getAgreementsService (ledgerClientStub = {}, connectorClientStub = {}) {
+  return proxyquire('./agreements.service.js', {
+    './../../services/clients/ledger.client': ledgerClientStub,
+    './../../services/clients/connector.client': connectorClientStub
+  })
 }
