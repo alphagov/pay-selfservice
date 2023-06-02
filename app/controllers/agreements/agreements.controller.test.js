@@ -11,14 +11,13 @@ const transactionFixtures = require('../../../test/fixtures/ledger-transaction.f
 const Service = require('../../models/Service.class')
 const { RESTClientError, NotFoundError } = require('../../errors')
 const { buildPaymentList } = require('../../utils/transaction-view')
-
-const agreements = agreementFixtures.validAgreementSearchResponse([{ reference: 'a-ref' }])
-const singleAgreement = agreementFixtures.validAgreementResponse()
-const transactions = transactionFixtures.validTransactionSearchResponse({ transactions: [] })
+const User = require('../../models/User.class')
+const userFixtures = require('../../../test/fixtures/user.fixtures')
 
 const agreementsServiceSpy = {
   agreements: sinon.spy(() => Promise.resolve(agreements)),
-  agreement: sinon.spy(() => Promise.resolve(singleAgreement))
+  agreement: sinon.spy(() => Promise.resolve(singleAgreement)),
+  cancelAgreement: sinon.spy(() => Promise.resolve())
 }
 
 const responseSpy = {
@@ -29,10 +28,16 @@ const transactionsServiceSpy = {
   search: sinon.spy(() => Promise.resolve(transactions))
 }
 
+const gatewayAccountId = 'a-gateway-account-id'
+const agreementId = 'an-agreement-id'
 const service = new Service(serviceFixtures.validServiceResponse())
 const account = gatewayAccountFixtures.validGatewayAccountResponse()
+const user = new User(userFixtures.validUserResponse({ gateway_account_id: gatewayAccountId }))
+const agreements = agreementFixtures.validAgreementSearchResponse([{ reference: 'a-ref' }])
+const singleAgreement = agreementFixtures.validAgreementResponse({ external_id: agreementId })
+const transactions = transactionFixtures.validTransactionSearchResponse({ transactions: [] })
+
 let req, res, next
-const agreementId = 'an-agreement-id'
 
 describe('The agreements controller', () => {
   beforeEach(() => {
@@ -42,7 +47,8 @@ describe('The agreements controller', () => {
       isLive: true,
       service,
       account,
-      session: {}
+      session: {},
+      user
     }
     res = {}
     next = sinon.spy()
@@ -118,7 +124,44 @@ describe('The agreements controller', () => {
       sinon.assert.calledWith(responseSpy.response, req, res, 'agreements/detail', {
         agreement: singleAgreement,
         transactions: formattedTransactions,
-        listFilter: req.session.agreementsFilter
+        listFilter: req.session.agreementsFilter,
+        isCancel: false
+      })
+    })
+  })
+
+  describe('cancelAgreement', () => {
+    beforeEach(() => {
+      agreementsServiceSpy.cancelAgreement.resetHistory()
+      agreementsServiceSpy.agreement.resetHistory()
+      responseSpy.response.resetHistory()
+      transactionsServiceSpy.search.resetHistory()
+    })
+
+    it('should call cancel agreement correctly', async () => {
+      req.session.agreementsFilter = 'test'
+      req.params = {
+        agreementId,
+        gatewayAccountExternalId: gatewayAccountId
+      }
+
+      const transactionsFilter = { agreementId: req.params.agreementId, pageSize: 5 }
+      const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
+
+      await getControllerWithMocks(agreementsServiceSpy, responseSpy, transactionsServiceSpy)
+        .cancelAgreement(
+          req,
+          res,
+          next
+        )
+
+      sinon.assert.calledWith(agreementsServiceSpy.cancelAgreement, gatewayAccountId, agreementId, req.user.email, req.user.externalId)
+
+      sinon.assert.calledWith(responseSpy.response, req, res, 'agreements/detail', {
+        agreement: singleAgreement,
+        transactions: formattedTransactions,
+        listFilter: req.session.agreementsFilter,
+        isCancel: true
       })
     })
   })
