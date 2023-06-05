@@ -1,5 +1,6 @@
 
 {% from "./macro/status.njk" import agreementStatusTag %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
@@ -9,12 +10,26 @@
 {% block mainContent %}
 
 {% set filter = ("?" + listFilter) if listFilter  %}
+
 <div class="govuk-grid-column-two-thirds">
   {{ govukBackLink({
     text: "Back to agreements",
     classes: "govuk-!-margin-top-0",
     href: formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.index, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id) + filter
   }) }}
+
+  {% if isCancelAgreementSuccess %}
+    {% set html %}
+      <h3 class="govuk-notification-banner__heading">
+        Agreement cancelled
+      </h3>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: html,
+      type: 'success'
+    }) }}
+  {% endif %}
 
   <h1 class="govuk-heading-l">Agreement detail</h1>
 
@@ -116,6 +131,43 @@
   <p class="govuk-body">
     <a class="govuk-link govuk-link__no-visited-state" href="{{ formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id) }}?agreementId={{ agreement.external_id }}">Show all transactions for this agreement</a>
   </p>
-
 </div>
+
+{% if isShowCancelAgreementFunctionality %}
+  <div class="govuk-grid-column-one-third">
+    <h2 class="govuk-heading-m">Cancel</h2>
+
+    <div class="target-to-show--toggle-container {% if not flash.genericError %}active{% endif %}">
+      {{ govukButton({
+        text: "Cancel this agreement",
+        classes: "govuk-button--secondary target-to-show--toggle",
+        href: "#cancel-form"
+      }) }}
+    </div>
+
+    <form
+      class="target-to-show"
+      id="cancel-form"
+      method="post"
+      action="{{ formatFutureStrategyAccountPathsFor(routes.futureAccountStrategy.agreements.cancel, currentGatewayAccount.type, currentGatewayAccount.service_id, currentGatewayAccount.external_id, agreement.external_id) }}">
+
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+      <p class="govuk-body">The agreement will be cancelled immediately.</p>
+
+      <div class="govuk-form-group govuk-!-margin-top-6">
+        {{ govukButton({
+          text: "Confirm cancellation",
+          classes: "govuk-button--warning",
+          type: "submit"
+        }) }}
+
+        <p class="govuk-body govuk-!-display-inline">
+          <a href="#main" class="govuk-link govuk-!-margin-left-3 target-to-show--cancel">Cancel</a>
+        </p>
+      </div>
+    </form>
+  </div>
+{% endif %}
+
 {% endblock %}
