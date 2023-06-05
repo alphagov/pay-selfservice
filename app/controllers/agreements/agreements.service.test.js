@@ -57,7 +57,7 @@ describe('agreements service', () => {
 
   describe('cancel an agreement', () => {
     it('should cancel an agreement', async () => {
-      const gatewayAccountId = 'a-gateway-external-id'
+      const gatewayAccountId = '1'
       const agreementId = 'an-agreement-id'
       const userEmail = 'user@test.com'
       const userExternalId = 'a-user-external-id'
