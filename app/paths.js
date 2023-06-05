@@ -162,7 +162,8 @@ module.exports = {
     },
     agreements: {
       index: '/agreements',
-      detail: '/agreements/:agreementId'
+      detail: '/agreements/:agreementId',
+      cancel: '/agreements/:agreementId/cancel'
     }
   },
   service: {
