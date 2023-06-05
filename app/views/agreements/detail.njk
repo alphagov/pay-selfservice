@@ -116,6 +116,33 @@
   <p class="govuk-body">
     <a class="govuk-link govuk-link__no-visited-state" href="{{ formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id) }}?agreementId={{ agreement.external_id }}">Show all transactions for this agreement</a>
   </p>
+</div>
 
+<div class="govuk-grid-column-one-third">
+  <h2 class="govuk-heading-m">Cancel</h2>
+
+  <div class="target-to-show--toggle-container {% if not flash.genericError %}active{% endif %}">
+    {{ govukButton({
+      text: "Cancel this agreement",
+      classes: "govuk-button--secondary target-to-show--toggle",
+      href: "#cancel-form"
+    }) }}
+  </div>
+
+  <form class="target-to-show" id="cancel-form" method="post" action="{{formatAccountPathsFor(routes.account.apiKeys.revoke, currentGatewayAccount.external_id)}}">
+    <p class="govuk-body">The agreement will be cancelled immediately.</p>
+
+    <div class="govuk-form-group govuk-!-margin-top-6">
+      {{ govukButton({
+        text: "Confirm cancellation",
+        classes: "govuk-button--warning",
+        href: "#cancel-form"
+      }) }}
+
+      <p class="govuk-body govuk-!-display-inline">
+        <a href="#main" class="govuk-link govuk-!-margin-left-3 target-to-show--cancel">Cancel</a>
+      </p>
+    </div>
+  </form>
 </div>
 {% endblock %}
