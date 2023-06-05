@@ -28,11 +28,12 @@ const transactionsServiceSpy = {
   search: sinon.spy(() => Promise.resolve(transactions))
 }
 
-const gatewayAccountId = 'a-gateway-account-id'
+const gatewayAccountId = 111
+const gatewayAccountExternalId = 'a-gateway-account-id'
 const agreementId = 'an-agreement-id'
 const service = new Service(serviceFixtures.validServiceResponse())
-const account = gatewayAccountFixtures.validGatewayAccountResponse()
-const user = new User(userFixtures.validUserResponse({ gateway_account_id: gatewayAccountId }))
+const account = gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId })
+const user = new User(userFixtures.validUserResponse({ gateway_account_id: gatewayAccountExternalId }))
 const agreements = agreementFixtures.validAgreementSearchResponse([{ reference: 'a-ref' }])
 const singleAgreement = agreementFixtures.validAgreementResponse({ external_id: agreementId })
 const transactions = transactionFixtures.validTransactionSearchResponse({ transactions: [] })
@@ -142,7 +143,7 @@ describe('The agreements controller', () => {
       req.session.agreementsFilter = 'test'
       req.params = {
         agreementId,
-        gatewayAccountExternalId: gatewayAccountId
+        gatewayAccountExternalId: gatewayAccountExternalId
       }
 
       const transactionsFilter = { agreementId: req.params.agreementId, pageSize: 5 }

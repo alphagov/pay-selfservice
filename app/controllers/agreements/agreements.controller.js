@@ -41,7 +41,7 @@ async function agreementDetail (req, res, next) {
 async function cancelAgreement (req, res, next) {
   try {
     await agreementsService.cancelAgreement(
-      req.params.gatewayAccountExternalId,
+      req.account.gateway_account_id,
       req.params.agreementId,
       req.user.email,
       req.user.externalId
