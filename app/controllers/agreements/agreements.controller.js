@@ -35,6 +35,25 @@ async function listAgreements (req, res, next) {
 }
 
 async function agreementDetail (req, res, next) {
+  await displayAgreementsDetailsPage(req, res, next, false)
+}
+
+async function cancelAgreement (req, res, next) {
+  try {
+    await agreementsService.cancelAgreement(
+      req.params.gatewayAccountExternalId,
+      req.params.agreementId,
+      req.user.email,
+      req.user.externalId
+    )
+
+    await displayAgreementsDetailsPage(req, res, next, true)
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function displayAgreementsDetailsPage (req, res, next, isCancel) {
   const listFilter = req.session.agreementsFilter
   const transactionsFilter = { agreementId: req.params.agreementId, pageSize: LIMIT_NUMBER_OF_TRANSACTIONS_TO_SHOW }
 
@@ -46,7 +65,8 @@ async function agreementDetail (req, res, next) {
     response(req, res, 'agreements/detail', {
       agreement,
       transactions: formattedTransactions,
-      listFilter
+      listFilter,
+      isCancel
     })
   } catch (error) {
     next(error)
@@ -55,5 +75,6 @@ async function agreementDetail (req, res, next) {
 
 module.exports = {
   listAgreements,
-  agreementDetail
+  agreementDetail,
+  cancelAgreement
 }
