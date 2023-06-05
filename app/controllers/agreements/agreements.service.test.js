@@ -57,13 +57,20 @@ describe('agreements service', () => {
 
   describe('cancel an agreement', () => {
     it('should cancel an agreement', async () => {
-      const gatewayAccountId = 'a-gateway-external-id'
+      const gatewayAccountId = '1'
       const agreementId = 'an-agreement-id'
       const userEmail = 'user@test.com'
       const userExternalId = 'a-user-external-id'
 
       const spy = sinon.spy(async () => {})
-      const service = getAgreementsService({}, { postCancelAgreement: spy })
+
+      const connectorClientMock = {
+        ConnectorClient: function () {
+          this.postCancelAgreement = spy
+        }
+      }
+
+      const service = getAgreementsService({}, connectorClientMock)
 
       await service.cancelAgreement(gatewayAccountId, agreementId, userEmail, userExternalId)
 
