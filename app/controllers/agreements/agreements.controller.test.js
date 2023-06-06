@@ -130,8 +130,7 @@ describe('The agreements controller', () => {
         agreement: singleAgreement,
         transactions: formattedTransactions,
         listFilter: req.session.agreementsFilter,
-        isShowCancelAgreementFunctionality: true,
-        isCancelAgreementSuccess: false
+        isShowCancelAgreementFunctionality: true
       })
     })
 
@@ -163,8 +162,7 @@ describe('The agreements controller', () => {
         agreement: singleAgreement,
         transactions: formattedTransactions,
         listFilter: req.session.agreementsFilter,
-        isShowCancelAgreementFunctionality: true,
-        isCancelAgreementSuccess: false
+        isShowCancelAgreementFunctionality: true
       })
     })
 
@@ -197,8 +195,7 @@ describe('The agreements controller', () => {
         agreement: singleAgreement,
         transactions: formattedTransactions,
         listFilter: req.session.agreementsFilter,
-        isShowCancelAgreementFunctionality: false,
-        isCancelAgreementSuccess: false
+        isShowCancelAgreementFunctionality: false
       })
     })
 
@@ -220,8 +217,7 @@ describe('The agreements controller', () => {
         agreement: singleAgreement,
         transactions: formattedTransactions,
         listFilter: req.session.agreementsFilter,
-        isShowCancelAgreementFunctionality: false,
-        isCancelAgreementSuccess: false
+        isShowCancelAgreementFunctionality: false
       })
     })
   })
@@ -234,16 +230,12 @@ describe('The agreements controller', () => {
         gatewayAccountExternalId: gatewayAccountExternalId
       }
       req.user = new User(userFixtures.validUserResponse())
+      req.flash = sinon.spy()
+      res.redirect = sinon.spy()
       agreementsServiceSpy.cancelAgreement.resetHistory()
-      agreementsServiceSpy.agreement.resetHistory()
-      responseSpy.response.resetHistory()
-      transactionsServiceSpy.search.resetHistory()
     })
 
     it('should call cancel agreement correctly', async () => {
-      const transactionsFilter = { agreementId: req.params.agreementId, pageSize: 5 }
-      const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
-
       await getControllerWithMocks(agreementsServiceSpy, responseSpy, transactionsServiceSpy)
         .cancelAgreement(
           req,
@@ -252,14 +244,10 @@ describe('The agreements controller', () => {
         )
 
       sinon.assert.calledWith(agreementsServiceSpy.cancelAgreement, gatewayAccountId, agreementId, req.user.email, req.user.externalId)
-
-      sinon.assert.calledWith(responseSpy.response, req, res, 'agreements/detail', {
-        agreement: singleAgreement,
-        transactions: formattedTransactions,
-        listFilter: req.session.agreementsFilter,
-        isShowCancelAgreementFunctionality: true,
-        isCancelAgreementSuccess: true
-      })
+      sinon.assert.calledWith(req.flash, 'generic', 'Agreement cancelled')
+      sinon.assert.calledWith(
+        res.redirect,
+        '/test/service/cp5wa/account/a-valid-external-id/agreements/an-agreement-id')
     })
   })
 })
