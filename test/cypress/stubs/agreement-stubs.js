@@ -28,7 +28,13 @@ function getLedgerAgreementSuccess (opts = {}) {
   })
 }
 
+function postConectorCancelAgreementSuccess (opts = {}) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/agreements/${opts.external_id}/cancel`
+  return stubBuilder('POST', path, 200)
+}
+
 module.exports = {
   getLedgerAgreementsSuccess,
-  getLedgerAgreementSuccess
+  getLedgerAgreementSuccess,
+  postConectorCancelAgreementSuccess
 }

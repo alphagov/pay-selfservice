@@ -134,14 +134,15 @@
 </div>
 
 {% if isShowCancelAgreementFunctionality %}
-  <div class="govuk-grid-column-one-third">
+  <div class="govuk-grid-column-one-third" data-cy="cancel-agreement-container">
     <h2 class="govuk-heading-m">Cancel</h2>
 
     <div class="target-to-show--toggle-container {% if not flash.genericError %}active{% endif %}">
       {{ govukButton({
         text: "Cancel this agreement",
         classes: "govuk-button--secondary target-to-show--toggle",
-        href: "#cancel-form"
+        href: "#cancel-form",
+        attributes: { 'data-cy': 'cancel-agreement-button' }
       }) }}
     </div>
 
@@ -159,7 +160,8 @@
         {{ govukButton({
           text: "Confirm cancellation",
           classes: "govuk-button--warning",
-          type: "submit"
+          type: "submit",
+          attributes: { 'data-cy': 'confirm-cancel-agreement-button' }
         }) }}
 
         <p class="govuk-body govuk-!-display-inline">
