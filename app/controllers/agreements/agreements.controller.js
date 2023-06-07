@@ -53,7 +53,7 @@ async function cancelAgreement (req, res, next) {
   }
 }
 
-async function displayAgreementsDetailsPage (req, res, next, isCancel) {
+async function displayAgreementsDetailsPage (req, res, next, isCancelAgreementSuccess) {
   const listFilter = req.session.agreementsFilter
   const transactionsFilter = { agreementId: req.params.agreementId, pageSize: LIMIT_NUMBER_OF_TRANSACTIONS_TO_SHOW }
 
@@ -62,11 +62,16 @@ async function displayAgreementsDetailsPage (req, res, next, isCancel) {
     const transactions = await transactionService.search([req.account.gateway_account_id], transactionsFilter)
     const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
 
+    const user = req.user
+    const isShowCancelAgreementFunctionality = user.hasPermission(req.service.externalId, 'agreements:update') &&
+      (agreement.status === 'ACTIVE')
+
     response(req, res, 'agreements/detail', {
       agreement,
       transactions: formattedTransactions,
       listFilter,
-      isCancel
+      isShowCancelAgreementFunctionality,
+      isCancelAgreementSuccess
     })
   } catch (error) {
     next(error)

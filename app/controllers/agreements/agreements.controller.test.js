@@ -33,12 +33,12 @@ const gatewayAccountExternalId = 'a-gateway-account-id'
 const agreementId = 'an-agreement-id'
 const service = new Service(serviceFixtures.validServiceResponse())
 const account = gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId })
-const user = new User(userFixtures.validUserResponse())
 const agreements = agreementFixtures.validAgreementSearchResponse([{ reference: 'a-ref' }])
-const singleAgreement = agreementFixtures.validAgreementResponse({ external_id: agreementId })
 const transactions = transactionFixtures.validTransactionSearchResponse({ transactions: [] })
+const singleAgreement = agreementFixtures.validAgreementResponse({ external_id: agreementId })
 
 let req, res, next
+let user = new User(userFixtures.validUserResponse())
 
 describe('The agreements controller', () => {
   beforeEach(() => {
@@ -53,6 +53,8 @@ describe('The agreements controller', () => {
     }
     res = {}
     next = sinon.spy()
+
+    singleAgreement.status = 'ACTIVE'
   })
 
   describe('listAgreements', () => {
@@ -94,17 +96,19 @@ describe('The agreements controller', () => {
 
   describe('agreementDetails', () => {
     beforeEach(() => {
-      agreementsServiceSpy.agreement.resetHistory()
-      responseSpy.response.resetHistory()
-      transactionsServiceSpy.search.resetHistory()
-    })
-
-    it('should call agreement details correctly', async () => {
       req.session.agreementsFilter = 'test'
       req.params = {
         agreementId: agreementId
       }
 
+      agreementsServiceSpy.agreement.resetHistory()
+      responseSpy.response.resetHistory()
+      transactionsServiceSpy.search.resetHistory()
+      req.user = new User(userFixtures.validUserResponse())
+      singleAgreement.status = 'ACTIVE'
+    })
+
+    it('should call agreement details correctly', async () => {
       const transactionsFilter = { agreementId: req.params.agreementId, pageSize: 5 }
 
       await getControllerWithMocks(agreementsServiceSpy, responseSpy, transactionsServiceSpy)
@@ -126,13 +130,110 @@ describe('The agreements controller', () => {
         agreement: singleAgreement,
         transactions: formattedTransactions,
         listFilter: req.session.agreementsFilter,
-        isCancel: false
+        isShowCancelAgreementFunctionality: true,
+        isCancelAgreementSuccess: false
+      })
+    })
+
+    it('should show cancel agreement functionality when user has agreements:update permission and agreement is active', async () => {
+      const serviceRoles = [{
+        service: {
+          name: 'System Generated',
+          external_id: service.externalId
+        },
+        role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'agreements:update' }] }
+      }]
+
+      req.user = new User(userFixtures.validUserResponse({
+        service_roles: serviceRoles
+      }))
+
+      const transactionsFilter = { agreementId: req.params.agreementId, pageSize: 5 }
+
+      await getControllerWithMocks(agreementsServiceSpy, responseSpy, transactionsServiceSpy)
+        .agreementDetail(
+          req,
+          res,
+          next
+        )
+
+      const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
+
+      sinon.assert.calledWith(responseSpy.response, req, res, 'agreements/detail', {
+        agreement: singleAgreement,
+        transactions: formattedTransactions,
+        listFilter: req.session.agreementsFilter,
+        isShowCancelAgreementFunctionality: true,
+        isCancelAgreementSuccess: false
+      })
+    })
+
+    it('should not show cancel agreement functionality when user does not have agreements:update permission and agreement is active', async () => {
+      req.user = new User(userFixtures.validUserResponse({
+        service_roles: [
+          {
+            service: {
+              external_id: req.service.external_id
+            },
+            role: {
+              permissions: [{ name: 'a-different-permission' }]
+            }
+          }
+        ]
+      }))
+
+      const transactionsFilter = { agreementId: req.params.agreementId, pageSize: 5 }
+
+      await getControllerWithMocks(agreementsServiceSpy, responseSpy, transactionsServiceSpy)
+        .agreementDetail(
+          req,
+          res,
+          next
+        )
+
+      const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
+
+      sinon.assert.calledWith(responseSpy.response, req, res, 'agreements/detail', {
+        agreement: singleAgreement,
+        transactions: formattedTransactions,
+        listFilter: req.session.agreementsFilter,
+        isShowCancelAgreementFunctionality: false,
+        isCancelAgreementSuccess: false
+      })
+    })
+
+    it('should not show cancel agreement functionality when agreement is NOT active', async () => {
+      singleAgreement.status = 'CREATED'
+
+      const transactionsFilter = { agreementId: req.params.agreementId, pageSize: 5 }
+
+      await getControllerWithMocks(agreementsServiceSpy, responseSpy, transactionsServiceSpy)
+        .agreementDetail(
+          req,
+          res,
+          next
+        )
+
+      const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
+
+      sinon.assert.calledWith(responseSpy.response, req, res, 'agreements/detail', {
+        agreement: singleAgreement,
+        transactions: formattedTransactions,
+        listFilter: req.session.agreementsFilter,
+        isShowCancelAgreementFunctionality: false,
+        isCancelAgreementSuccess: false
       })
     })
   })
 
   describe('cancelAgreement', () => {
     beforeEach(() => {
+      req.session.agreementsFilter = 'test'
+      req.params = {
+        agreementId,
+        gatewayAccountExternalId: gatewayAccountExternalId
+      }
+      req.user = new User(userFixtures.validUserResponse())
       agreementsServiceSpy.cancelAgreement.resetHistory()
       agreementsServiceSpy.agreement.resetHistory()
       responseSpy.response.resetHistory()
@@ -140,12 +241,6 @@ describe('The agreements controller', () => {
     })
 
     it('should call cancel agreement correctly', async () => {
-      req.session.agreementsFilter = 'test'
-      req.params = {
-        agreementId,
-        gatewayAccountExternalId: gatewayAccountExternalId
-      }
-
       const transactionsFilter = { agreementId: req.params.agreementId, pageSize: 5 }
       const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
 
@@ -162,7 +257,8 @@ describe('The agreements controller', () => {
         agreement: singleAgreement,
         transactions: formattedTransactions,
         listFilter: req.session.agreementsFilter,
-        isCancel: true
+        isShowCancelAgreementFunctionality: true,
+        isCancelAgreementSuccess: true
       })
     })
   })
