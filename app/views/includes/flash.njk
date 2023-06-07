@@ -21,7 +21,8 @@
 
       {{ govukNotificationBanner({
         html: html,
-        type: 'success'
+        type: 'success',
+        attributes: { 'data-cy': 'success-notifcation' }
       }) }}
     </div>
   {% endif %}
