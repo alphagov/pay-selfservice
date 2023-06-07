@@ -3,6 +3,8 @@ const url = require('url')
 const agreementsService = require('./agreements.service')
 const transactionService = require('../../services/transaction.service')
 const { buildPaymentList } = require('../../utils/transaction-view')
+const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-strategy-account-paths-for')
+const paths = require('../../paths')
 
 const { response } = require('../../utils/response')
 const { RESTClientError, NotFoundError } = require('../../errors')
@@ -35,25 +37,6 @@ async function listAgreements (req, res, next) {
 }
 
 async function agreementDetail (req, res, next) {
-  await displayAgreementsDetailsPage(req, res, next, false)
-}
-
-async function cancelAgreement (req, res, next) {
-  try {
-    await agreementsService.cancelAgreement(
-      req.account.gateway_account_id,
-      req.params.agreementId,
-      req.user.email,
-      req.user.externalId
-    )
-
-    await displayAgreementsDetailsPage(req, res, next, true)
-  } catch (error) {
-    next(error)
-  }
-}
-
-async function displayAgreementsDetailsPage (req, res, next, isCancelAgreementSuccess) {
   const listFilter = req.session.agreementsFilter
   const transactionsFilter = { agreementId: req.params.agreementId, pageSize: LIMIT_NUMBER_OF_TRANSACTIONS_TO_SHOW }
 
@@ -70,9 +53,32 @@ async function displayAgreementsDetailsPage (req, res, next, isCancelAgreementSu
       agreement,
       transactions: formattedTransactions,
       listFilter,
-      isShowCancelAgreementFunctionality,
-      isCancelAgreementSuccess
+      isShowCancelAgreementFunctionality
     })
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function cancelAgreement (req, res, next) {
+  try {
+    await agreementsService.cancelAgreement(
+      req.account.gateway_account_id,
+      req.params.agreementId,
+      req.user.email,
+      req.user.externalId
+    )
+
+    req.flash('generic', 'Agreement cancelled')
+
+    return res.redirect(
+      formatFutureStrategyAccountPathsFor(
+        paths.futureAccountStrategy.agreements.detail,
+        req.account.type,
+        req.service.externalId,
+        req.account.external_id,
+        req.params.agreementId)
+    )
   } catch (error) {
     next(error)
   }
