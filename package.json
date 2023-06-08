@@ -67,6 +67,9 @@
     },
     "cypress": {
       "@cypress/request": "2.88.11"
+    },
+    "mountebank-formatters": {
+      "ejs": "3.1.8"
     }
   },
   "dependencies": {
