@@ -7,7 +7,7 @@
 
 'use strict'
 
-const request = require('request-promise-native')
+const axios = require('axios')
 
 const cookieMonster = require('./cookie-monster')
 
@@ -33,11 +33,8 @@ module.exports = (on, config) => {
      * the same call.
      */
     setupStubs (stubs) {
-      return request({
-        method: 'POST',
-        url: mountebankImpostersUrl,
-        json: true,
-        body: {
+      return axios.post(mountebankImpostersUrl,
+        {
           port: config.env.MOUNTEBANK_IMPOSTERS_PORT,
           protocol: 'http',
           defaultResponse: {
@@ -46,14 +43,21 @@ module.exports = (on, config) => {
             headers: {}
           },
           stubs
-        }
-      })
+        })
+        .then(function () { return '' })
+        .catch(function (error) {
+          throw error
+        })
     },
     /**
      * Makes a request to Mountebank to delete the existing Imposter along with all stubs that have been set up.
      */
     clearStubs () {
-      return request.delete(mountebankImpostersUrl)
+      return axios.delete(mountebankImpostersUrl)
+        .then(function () { return '' })
+        .catch(function (error) {
+          throw error
+        })
     }
   })
 
