@@ -26,17 +26,17 @@ const messages = {
 }
 
 function index (req, res) {
-  let roles = rolesModule.roles
+  const roles = rolesModule.roles
   const externalServiceId = req.service.externalId
   const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, externalServiceId)
   const teamMemberInviteSubmitLink = formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId)
   const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
   const invitee = lodash.get(req, 'session.pageData.invitee', '')
-  let data = {
-    teamMemberIndexLink: teamMemberIndexLink,
-    teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
-    serviceHasAgentInitiatedMotoEnabled: serviceHasAgentInitiatedMotoEnabled,
-    admin: { id: roles['admin'].extId },
+  const data = {
+    teamMemberIndexLink,
+    teamMemberInviteSubmitLink,
+    serviceHasAgentInitiatedMotoEnabled,
+    admin: { id: roles.admin.extId },
     viewAndRefund: { id: roles['view-and-refund'].extId },
     view: { id: roles['view-only'].extId },
     viewAndInitiateMoto: { id: roles['view-and-initiate-moto'].extId },

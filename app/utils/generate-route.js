@@ -1,17 +1,17 @@
-var _ = require('lodash')
-var querystring = require('querystring')
+const _ = require('lodash')
+const querystring = require('querystring')
 
 module.exports = function (route, params) {
-  var copiedParams = _.cloneDeep(params)
+  const copiedParams = _.cloneDeep(params)
 
-  var init = function () {
+  const init = function () {
     _.forEach(copiedParams, checkNamedParams)
-    var query = constructQueryString()
+    const query = constructQueryString()
     return route + query
   }
 
   var checkNamedParams = function (value, key) {
-    var hasNamedParam = route.indexOf(':' + key) !== -1
+    const hasNamedParam = route.indexOf(':' + key) !== -1
     if (!hasNamedParam) return
     replaceAndDeleteNamedParam(key, value)
   }
@@ -22,7 +22,7 @@ module.exports = function (route, params) {
   }
 
   var constructQueryString = function () {
-    var validParams = _.omitBy(copiedParams, _.isEmpty, _.isUndefined)
+    const validParams = _.omitBy(copiedParams, _.isEmpty, _.isUndefined)
     if (Object.keys(validParams).length === 0) return ''
     return ['?', querystring.stringify(validParams)].join('')
   }

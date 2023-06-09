@@ -49,7 +49,7 @@ const newPasswordGet = async function newPasswordGet (req, res) {
   const { id } = req.params
   try {
     await userService.findByResetToken(id)
-    res.render('forgotten-password/new-password', { id: id })
+    res.render('forgotten-password/new-password', { id })
   } catch (err) {
     req.flash('genericError', 'The password reset request has expired or is invalid. Please try again.')
     res.redirect('/login')
@@ -67,7 +67,7 @@ const newPasswordPost = async function newPasswordPost (req, res) {
     const validPassword = validatePassword(password)
     if (!validPassword.valid) {
       return res.render('forgotten-password/new-password', {
-        id: id,
+        id,
         errors: {
           password: validPassword.message
         }

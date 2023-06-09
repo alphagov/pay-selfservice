@@ -123,7 +123,7 @@ function confirmCustomParagraph (req, res) {
       errors: {
         customEmailText: validationResult.message
       },
-      customEmailText: customEmailText,
+      customEmailText,
       serviceName: req.account.service_name
     })
   }

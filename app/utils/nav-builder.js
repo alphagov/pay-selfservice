@@ -62,12 +62,14 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
-    current: currentPath !== '/' ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
-      ...mainSettingsPaths,
-      paths.account.apiKeys,
-      paths.futureAccountStrategy.webhooks,
-      paths.account.paymentTypes
-    ]) : false,
+    current: currentPath !== '/'
+      ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
+        ...mainSettingsPaths,
+        paths.account.apiKeys,
+        paths.futureAccountStrategy.webhooks,
+        paths.account.paymentTypes
+      ])
+      : false,
     permissions: _.some([
       permissions.tokens_read,
       permissions.gateway_credentials_read,
@@ -151,7 +153,7 @@ function getPSPNavigationName (credential) {
 }
 
 module.exports = {
-  serviceNavigationItems: serviceNavigationItems,
-  adminNavigationItems: adminNavigationItems,
+  serviceNavigationItems,
+  adminNavigationItems,
   yourPSPNavigationItems
 }

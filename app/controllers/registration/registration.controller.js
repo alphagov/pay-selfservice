@@ -324,7 +324,7 @@ function showSuccessPage (req, res) {
 
 function logRegistrationCompleted (secondFactorMethod, userExternalId) {
   logger.info('User completed registration', {
-    'second_factor_method': secondFactorMethod,
+    second_factor_method: secondFactorMethod,
     [USER_EXTERNAL_ID]: userExternalId
   })
 }

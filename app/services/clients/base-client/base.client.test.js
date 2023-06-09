@@ -62,7 +62,7 @@ function getBaseClientWithSuccessStub (response, responseBody) {
     '../../../utils/request-context': {
       getRequestCorrelationIDField: () => { return correlationId }
     },
-    'request': new RequestSuccessStub(response, responseBody)
+    request: new RequestSuccessStub(response, responseBody)
   })
 }
 
@@ -72,7 +72,7 @@ function getBaseClientWithErrorStub () {
     '../../../utils/request-context': {
       getRequestCorrelationIDField: () => { return correlationId }
     },
-    'request': new RequestErrorStub()
+    request: new RequestErrorStub()
   })
 }
 

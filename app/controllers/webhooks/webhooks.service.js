@@ -26,12 +26,12 @@ async function listWebhooks (serviceId, gatewayAccountId, isLive) {
 }
 
 function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
-  options.subscriptions = typeof options.subscriptions === 'string' ? [ options.subscriptions ] : options.subscriptions
+  options.subscriptions = typeof options.subscriptions === 'string' ? [options.subscriptions] : options.subscriptions
   return webhooksClient.createWebhook(serviceId, gatewayAccountId, isLive, options)
 }
 
 function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
-  options.subscriptions = typeof options.subscriptions === 'string' ? [ options.subscriptions ] : options.subscriptions
+  options.subscriptions = typeof options.subscriptions === 'string' ? [options.subscriptions] : options.subscriptions
   return webhooksClient.updateWebhook(id, serviceId, gatewayAccountId, options)
 }
 

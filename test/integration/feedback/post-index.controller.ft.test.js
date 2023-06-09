@@ -22,7 +22,7 @@ describe('Feedback page POST', () => {
     app = createAppWithSession(getApp(), session)
 
     nock(ZENDESK_URL)
-      .post(`/tickets`)
+      .post('/tickets')
       .reply(200)
   })
 

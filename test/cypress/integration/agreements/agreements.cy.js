@@ -28,9 +28,11 @@ const mockAgreements = [
     payment_instrument: { card_details: { card_brand: 'american-express' } }
   },
   { external_id: 'a-valid-agreement-id-1', payment_instrument: { card_details: { card_brand: 'visa' } } },
-  { external_id: 'a-valid-agreement-id-2',
+  {
+    external_id: 'a-valid-agreement-id-2',
     status: 'INACTIVE',
-    payment_instrument: { card_details: { card_brand: 'visa' } } },
+    payment_instrument: { card_details: { card_brand: 'visa' } }
+  },
   { external_id: 'a-valid-agreement-id-3', payment_instrument: { card_details: { card_brand: 'visa' } } },
   { external_id: 'a-valid-agreement-id-4', payment_instrument: { card_details: { card_brand: 'visa' } } },
   { external_id: 'a-valid-agreement-id-5', payment_instrument: { card_details: { card_brand: 'visa' } } },

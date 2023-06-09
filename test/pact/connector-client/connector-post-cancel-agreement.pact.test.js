@@ -53,7 +53,7 @@ describe('connector client', function () {
       afterEach(() => provider.verify())
 
       it('should post cancel agreement successfully', async () => {
-        return  connectorClient.postCancelAgreement(cancelAgreementRequest).should.be.fulfilled
+        return connectorClient.postCancelAgreement(cancelAgreementRequest).should.be.fulfilled
       })
     })
   })

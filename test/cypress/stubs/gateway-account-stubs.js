@@ -169,7 +169,7 @@ function getAcceptedCardTypesSuccess (opts) {
     updated: opts.updated,
     maestro: opts.maestro || ''
   })
-  return stubBuilder('GET', path, 200, { response: response })
+  return stubBuilder('GET', path, 200, { response })
 }
 
 function getCardTypesSuccess () {

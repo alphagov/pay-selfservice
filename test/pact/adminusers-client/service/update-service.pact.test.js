@@ -24,7 +24,7 @@ chai.use(chaiAsPromised)
 const existingServiceExternalId = 'cp5wa'
 
 describe('adminusers client - patch request to update service', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -139,9 +139,9 @@ describe('adminusers client - patch request to update service', function () {
 
   describe('an invalid update service patch request', () => {
     const invalidRequest = [{
-      'op': 'replace',
+      op: 'replace',
       'non-existent-path': 'foo',
-      'value': 'bar'
+      value: 'bar'
     }]
 
     before(() => {

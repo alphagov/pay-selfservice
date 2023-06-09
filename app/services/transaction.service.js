@@ -99,13 +99,13 @@ async function getDisputeTransaction (chargeId, accountId) {
 const refund = async function refundTransaction (gatewayAccountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail) {
   const logContext = {
     refund_amount_available: refundAmountAvailable,
-    amount: amount
+    amount
   }
   logContext[keys.PAYMENT_EXTERNAL_ID] = chargeId
   logger.log('info', 'Submitting a refund for a charge', logContext)
 
   const payload = {
-    amount: amount,
+    amount,
     refund_amount_available: refundAmountAvailable,
     user_external_id: userExternalId,
     user_email: userEmail

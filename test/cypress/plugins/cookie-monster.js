@@ -6,10 +6,10 @@ function getCookie (cookieName, secretKey, val) {
     const encryptionKey = deriveKey(secretKey, 'cookiesession-encryption')
     const signatureKey = deriveKey(secretKey, 'cookiesession-signature')
     const encryptedCookie = session.util.encode({
-      cookieName: cookieName,
-      encryptionKey: encryptionKey,
+      cookieName,
+      encryptionKey,
       encryptionAlgorithm: 'aes-256-cbc',
-      signatureKey: signatureKey
+      signatureKey
     }, val)
     return encryptedCookie
   } catch (e) {
@@ -33,5 +33,5 @@ function deriveKey (master, type) {
 }
 
 module.exports = {
-  getCookie: getCookie
+  getCookie
 }

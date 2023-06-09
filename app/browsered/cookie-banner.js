@@ -39,7 +39,7 @@ CookieBanner.prototype.setupCookieMessage = function () {
 
 CookieBanner.prototype.showCookieMessage = function () {
   // Show the cookie banner if policy cookie not set
-  let hasCookiesPolicy = cookieFunction.getCookie(cookieFunction.GOV_UK_PAY_COOKIE_POLICY)
+  const hasCookiesPolicy = cookieFunction.getCookie(cookieFunction.GOV_UK_PAY_COOKIE_POLICY)
 
   if (this.$module) {
     if (!hasCookiesPolicy) {
@@ -79,7 +79,7 @@ function initialiseAnalytics (analyticsConsent) {
 }
 
 CookieBanner.prototype.showConfirmationMessage = function (analyticsConsent) {
-  let messagePrefix = analyticsConsent ? 'You’ve accepted analytics cookies.' : 'You told us not to use analytics cookies.'
+  const messagePrefix = analyticsConsent ? 'You’ve accepted analytics cookies.' : 'You told us not to use analytics cookies.'
 
   this.$cookieBannerMainContent = document.querySelector('.pay-cookie-banner__wrapper')
   this.$cookieBannerConfirmationMessage = document.querySelector('.pay-cookie-banner__confirmation-message')
@@ -92,7 +92,7 @@ CookieBanner.prototype.showConfirmationMessage = function (analyticsConsent) {
 module.exports.initCookieBanner = () => {
   const $cookieBanner = document.querySelector('.pay-cookie-banner')
   if ($cookieBanner) {
-    let cookieBanner = new CookieBanner($cookieBanner)
+    const cookieBanner = new CookieBanner($cookieBanner)
     cookieBanner.init()
     return cookieBanner
   }

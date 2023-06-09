@@ -19,7 +19,7 @@ describe('StripeDirector', () => {
       dob_day: dobDay,
       dob_month: dobMonth,
       dob_year: dobYear,
-      email: email
+      email
     })
 
     expect(stripePerson.basicObject()).to.deep.equal({
@@ -30,7 +30,7 @@ describe('StripeDirector', () => {
         month: dobMonth,
         year: dobYear
       },
-      email: email,
+      email,
       relationship: {
         director: true
       }
@@ -43,7 +43,7 @@ describe('StripeDirector', () => {
         expect(() => new StripePerson({
           first_name: value,
           last_name: lastName,
-          email: email,
+          email,
           dob_day: dobDay,
           dob_month: dobMonth,
           dob_year: dobYear
@@ -58,7 +58,7 @@ describe('StripeDirector', () => {
         expect(() => new StripePerson({
           first_name: firstName,
           last_name: value,
-          email: email,
+          email,
           dob_day: dobDay,
           dob_month: dobMonth,
           dob_year: dobYear
@@ -88,7 +88,7 @@ describe('StripeDirector', () => {
         expect(() => new StripePerson({
           first_name: firstName,
           last_name: lastName,
-          email: email,
+          email,
           dob_day: value,
           dob_month: dobMonth,
           dob_year: dobYear
@@ -100,7 +100,7 @@ describe('StripeDirector', () => {
       expect(() => new StripePerson({
         first_name: firstName,
         last_name: lastName,
-        email: email,
+        email,
         dob_day: 0,
         dob_month: dobMonth,
         dob_year: dobYear
@@ -111,7 +111,7 @@ describe('StripeDirector', () => {
       expect(() => new StripePerson({
         first_name: firstName,
         last_name: lastName,
-        email: email,
+        email,
         dob_day: 32,
         dob_month: dobMonth,
         dob_year: dobYear
@@ -124,7 +124,7 @@ describe('StripeDirector', () => {
       expect(() => new StripePerson({
         first_name: firstName,
         last_name: lastName,
-        email: email,
+        email,
         dob_day: dobDay,
         dob_month: 0,
         dob_year: dobYear
@@ -135,7 +135,7 @@ describe('StripeDirector', () => {
       expect(() => new StripePerson({
         first_name: firstName,
         last_name: lastName,
-        email: email,
+        email,
         dob_day: dobDay,
         dob_month: 13,
         dob_year: dobYear
@@ -147,7 +147,7 @@ describe('StripeDirector', () => {
       expect(() => new StripePerson({
         first_name: firstName,
         last_name: lastName,
-        email: email,
+        email,
         dob_day: dobDay,
         dob_month: dobMonth,
         dob_year: 999
@@ -158,7 +158,7 @@ describe('StripeDirector', () => {
       expect(() => new StripePerson({
         first_name: firstName,
         last_name: lastName,
-        email: email,
+        email,
         dob_day: dobDay,
         dob_month: dobMonth,
         dob_year: 10000

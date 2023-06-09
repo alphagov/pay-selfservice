@@ -394,7 +394,7 @@ describe('Registration', () => {
     })
 
     it('should render the page with errors if there is a recovered object in the session', async () => {
-      const sessionErrors = { 'key': 'An error' }
+      const sessionErrors = { key: 'An error' }
       req.register_invite.recovered = { errors: sessionErrors }
 
       const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'
@@ -747,7 +747,7 @@ describe('Registration', () => {
     })
 
     it('should render the page with errors if there is a recovered object in the session', async () => {
-      const sessionErrors = { 'key': 'An error' }
+      const sessionErrors = { key: 'An error' }
       req.register_invite.recovered = { errors: sessionErrors }
 
       const invite = inviteFixtures.validInviteResponse({ telephone_number: '+4408081570192' })
@@ -900,7 +900,7 @@ describe('Registration', () => {
 
   describe('show the resend code page', () => {
     it('should render the page when invite retrieved successfully', async () => {
-      let phoneNumber = '+4408081570192'
+      const phoneNumber = '+4408081570192'
       const invite = inviteFixtures.validInviteResponse({ telephone_number: phoneNumber })
       const controller = getControllerWithMockedAdminusersClient({
         getValidatedInvite: () => Promise.resolve(invite)
@@ -1009,6 +1009,6 @@ describe('Registration', () => {
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {
   return proxyquire('./registration.controller.js', {
     '../../services/clients/adminusers.client': () => mockedAdminusersClient,
-    'qrcode': { toDataURL: qrToDataURLSpy }
+    qrcode: { toDataURL: qrToDataURLSpy }
   })
 }

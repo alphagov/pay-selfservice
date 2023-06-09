@@ -12,7 +12,7 @@ module.exports = {
    * @returns {function}
    */
   createCallbackToPromiseConverter: (context, transformer) => {
-    let defer = context.defer
+    const defer = context.defer
 
     return (error, response, body) => {
       requestLogger.logRequestEnd(context)
@@ -20,7 +20,7 @@ module.exports = {
         // TODO : Once anything using response converter has a segment passed, the 'if' test can be removed, with just the .close() function call remaining
         if (context.subsegment) { context.subsegment.close(error) }
         requestLogger.logRequestError(context, error)
-        defer.reject({ error: error })
+        defer.reject({ error })
         return
       }
       // TODO : Same as above

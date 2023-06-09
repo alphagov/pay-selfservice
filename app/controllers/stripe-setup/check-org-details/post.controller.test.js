@@ -65,8 +65,8 @@ describe('Check org details - post controller', () => {
           external_id: credentialId
         }]
       }),
-      service: service,
-      user: user,
+      service,
+      user,
       flash: sinon.spy()
     }
     res = {
@@ -111,7 +111,7 @@ describe('Check org details - post controller', () => {
     expect(renderArgs.args[0]).to.equal('stripe-setup/check-org-details/index')
 
     const pageData = renderArgs.args[1]
-    expect(pageData.errors['confirmOrgDetails']).to.equal('Select yes if your organisation’s details match the details on your government entity document')
+    expect(pageData.errors.confirmOrgDetails).to.equal('Select yes if your organisation’s details match the details on your government entity document')
     expect(pageData.orgName).to.equal('Test organisation')
     expect(pageData.orgAddressLine1).to.equal('Test address line 1')
     expect(pageData.orgAddressLine2).to.equal('Test address line 2')
@@ -169,7 +169,7 @@ describe('Check org details - post controller', () => {
       })
       it('when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and `yes` radio button is selected, then it should redirect to tasklist page', async () => {
         process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-        
+
         req.url = '/your-psp/:credentialId/check-organisation-details'
         req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
 
@@ -183,7 +183,7 @@ describe('Check org details - post controller', () => {
 
         sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'organisation_details')
         sinon.assert.calledWith(loggerInfoMock, 'Organisation details confirmed for Stripe account', { stripe_account_id: stripeAcountId })
-        sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-id`)
+        sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-id')
       })
 
       it('when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and nothing is selected, then it should render error page', async () => {

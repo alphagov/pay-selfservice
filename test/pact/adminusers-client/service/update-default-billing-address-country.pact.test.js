@@ -15,7 +15,7 @@ let adminUsersClient
 const serviceExternalId = 'cp5wa'
 
 describe('adminusers client - patch collect billing address toggle', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

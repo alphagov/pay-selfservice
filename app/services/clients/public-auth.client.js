@@ -40,7 +40,7 @@ function getActiveTokensForAccount (params) {
 function getRevokedTokensForAccount (params) {
   const url = `${getUrlForAccountId(params.accountId)}?state=revoked`
   const configuration = {
-    url: url,
+    url,
     description: 'Get revoked tokens for account',
     service: SERVICE_NAME
   }
@@ -118,9 +118,9 @@ function updateToken (params) {
  * @returns {Promise}
  */
 function deleteTokenForAccount (params) {
-  let url = getUrlForAccountId(params.accountId)
+  const url = getUrlForAccountId(params.accountId)
   const configuration = {
-    url: url,
+    url,
     body: {
       ...params.payload
     },

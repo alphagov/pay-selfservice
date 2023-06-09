@@ -20,7 +20,7 @@ describe('Request to go live - choose takes payments over phone - GET controller
   beforeEach(() => {
     req = {
       user,
-      service: service
+      service
     }
     res = {
       setHeader: sinon.stub(),
@@ -53,7 +53,7 @@ describe('Request to go live - choose takes payments over phone - GET controller
     })
   })
 
-  it(`should redirect to 'choose takes payments over phone' page if current go live stage is CHOSEN_PSP_GOV_BANKING_WORLDPAY`, async () => {
+  it('should redirect to \'choose takes payments over phone\' page if current go live stage is CHOSEN_PSP_GOV_BANKING_WORLDPAY', async () => {
     req.service.currentGoLiveStage = CHOSEN_PSP_GOV_BANKING_WORLDPAY
 
     await getController(req, res, next)

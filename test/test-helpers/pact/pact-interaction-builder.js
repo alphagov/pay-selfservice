@@ -53,19 +53,19 @@ class PactInteractionBuilder {
     return this
   }
 
-  withResponseWithoutHeaders() {
+  withResponseWithoutHeaders () {
     this.withoutHeaders = true
     return this
   }
 
   build () {
-    let pact = {
+    const pact = {
       state: this.state,
       uponReceiving: this.uponReceiving,
       withRequest: {
         method: this.method,
         path: this.url,
-        headers: { 'Accept': 'application/json' }
+        headers: { Accept: 'application/json' }
       },
       willRespondWith: {
         status: this.statusCode,

@@ -45,7 +45,7 @@ describe('Payment types', function () {
   })
 
   beforeEach(function (done) {
-    let user = session.getUser({
+    const user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
       permissions: [{ name: 'payment-types:read' }, { name: 'payment-types:update' }]
     })

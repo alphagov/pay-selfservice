@@ -21,7 +21,7 @@ function setupStubs (bankAccount, type = 'live', paymentProvider = 'stripe') {
   if (Array.isArray(bankAccount)) {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
       gatewayAccountId,
-      bankAccount: bankAccount
+      bankAccount
     })
   } else {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, bankAccount })

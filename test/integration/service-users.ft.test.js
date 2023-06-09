@@ -41,7 +41,7 @@ describe('service users resource', () => {
 
   it('get list of service users should link to my profile for my user', done => {
     const externalServiceId = '734rgw76jhka'
-    let userOpts = {
+    const userOpts = {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN,

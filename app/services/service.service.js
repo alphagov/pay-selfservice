@@ -13,7 +13,7 @@ const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
 
 async function getGatewayAccounts (gatewayAccountIds) {
   const cardGatewayAccounts = await connectorClient.getAccounts({
-    gatewayAccountIds: gatewayAccountIds
+    gatewayAccountIds
   })
 
   return cardGatewayAccounts.accounts
@@ -22,7 +22,7 @@ async function getGatewayAccounts (gatewayAccountIds) {
 
 async function updateServiceName (serviceExternalId, serviceName, serviceNameCy) {
   if (!serviceExternalId) {
-    return Promise.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
+    return Promise.reject(new Error('argument: \'serviceExternalId\' cannot be undefined'))
   }
 
   const result = await adminUsersClient.updateServiceName(serviceExternalId, serviceName, serviceNameCy)
@@ -57,7 +57,7 @@ async function createService (serviceName, serviceNameCy) {
 
   // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
   //               removed once connector integration indexed by services have been migrated
-  await adminUsersClient.addGatewayAccountsToService(service.externalId, [ gatewayAccount.gateway_account_id ])
+  await adminUsersClient.addGatewayAccountsToService(service.externalId, [gatewayAccount.gateway_account_id])
   logger.info('Service associated with internal gateway account ID with legacy mapping')
 
   return service

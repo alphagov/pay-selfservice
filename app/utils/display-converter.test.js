@@ -1,11 +1,11 @@
-var chai = require('chai')
-var displayConverter = require('./display-converter')
+const chai = require('chai')
+const displayConverter = require('./display-converter')
 
 const expect = chai.expect
 
 describe('Display converter', function () {
   it('should add full_type to account if type is test', function () {
-    let data = displayConverter({
+    const data = displayConverter({
       account: {
         type: 'test',
         payment_provider: 'sandbox'
@@ -20,7 +20,7 @@ describe('Display converter', function () {
   })
 
   it('should add full_type with value live to account if type is live', function () {
-    let data = displayConverter({
+    const data = displayConverter({
       account: {
         type: 'live',
         payment_provider: 'worldpay'

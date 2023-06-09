@@ -40,16 +40,20 @@ module.exports = function getOrganisationAddress (req, res) {
 
   const merchantDetails = lodash.get(req, 'service.merchantDetails')
 
-  const merchantFormDetails = !isStripeSetupUserJourney ? { ...lodash.pick(merchantDetails, [
-    'name',
-    'address_line1',
-    'address_line2',
-    'address_city',
-    'address_postcode',
-    'address_country',
-    'telephone_number',
-    'url'
-  ]) } : undefined
+  const merchantFormDetails = !isStripeSetupUserJourney
+    ? {
+        ...lodash.pick(merchantDetails, [
+          'name',
+          'address_line1',
+          'address_line2',
+          'address_city',
+          'address_postcode',
+          'address_country',
+          'telephone_number',
+          'url'
+        ])
+      }
+    : undefined
 
   const pageData = {
     ...merchantFormDetails,

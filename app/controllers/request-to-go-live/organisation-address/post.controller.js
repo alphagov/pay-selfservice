@@ -194,7 +194,7 @@ function buildErrorsPageData (
   currentCredential
 ) {
   return {
-    errors: errors,
+    errors,
     name: form[clientFieldNames.name],
     address_line1: form[clientFieldNames.addressLine1],
     address_line2: form[clientFieldNames.addressLine2],

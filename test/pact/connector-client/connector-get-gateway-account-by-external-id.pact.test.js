@@ -59,7 +59,7 @@ describe('connector client - get gateway account by external id', function () {
 
     it('should get gateway account successfully', async () => {
       const params = {
-        gatewayAccountExternalId: gatewayAccountExternalId
+        gatewayAccountExternalId
       }
       const response = await connectorClient.getAccountByExternalId(params)
       expect(response).to.deep.equal(validGetGatewayAccountResponse)
@@ -90,7 +90,7 @@ describe('connector client - get gateway account by external id', function () {
 
     it('should get gateway account successfully', async () => {
       const params = {
-        gatewayAccountExternalId: gatewayAccountExternalId
+        gatewayAccountExternalId
       }
       const response = await connectorClient.getAccountByExternalId(params)
       expect(response).to.deep.equal(validGetGatewayAccountResponse)

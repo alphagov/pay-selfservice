@@ -55,7 +55,7 @@ describe('ledger client', () => {
     afterEach(() => pactTestProvider.verify())
 
     it('should search payouts successfully', async () => {
-      const ledgerResult = await ledgerClient.payouts([ GATEWAY_ACCOUNT_ID ], 1, null, { baseUrl: ledgerUrl })
+      const ledgerResult = await ledgerClient.payouts([GATEWAY_ACCOUNT_ID], 1, null, { baseUrl: ledgerUrl })
       expect(ledgerResult).to.deep.equal(response)
     })
   })

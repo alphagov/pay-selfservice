@@ -23,7 +23,7 @@ chai.use(chaiAsPromised)
 describe('admin users client - add gateway accounts to service', () => {
   this.timeout = 5000
 
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

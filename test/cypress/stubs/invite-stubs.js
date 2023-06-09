@@ -68,7 +68,7 @@ function postSendOtpSuccess (inviteCode) {
 }
 
 function postValidateOtpSuccess (inviteCode, otpCode) {
-  const path = `/v2/api/invites/otp/validate`
+  const path = '/v2/api/invites/otp/validate'
   return stubBuilder('POST', path, 200)
 }
 

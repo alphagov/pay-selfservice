@@ -12,7 +12,7 @@ const getUser = (opts) => {
 }
 
 const createAppWithSession = function (app, sessionData, registerInviteData) {
-  let proxyApp = express()
+  const proxyApp = express()
   proxyApp.all('*', function (req, res, next) {
     sessionData.destroy = sinon.stub()
     req.session = req.session || sessionData || {}
@@ -55,7 +55,7 @@ const getMockSession = function (user) {
     csrfSecret: '123',
     12345: { refunded_amount: 5 },
     passport: {
-      user: user
+      user
     },
     secondFactor: 'totp',
     last_url: 'last_url',

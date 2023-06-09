@@ -1,4 +1,4 @@
-var passport = require('passport')
+const passport = require('passport')
 passport.serializeUser(function (user, done) {
   done(null, user)
 })

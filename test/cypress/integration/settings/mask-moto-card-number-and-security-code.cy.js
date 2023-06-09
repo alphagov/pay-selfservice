@@ -69,7 +69,6 @@ describe('MOTO mask security section', () => {
     })
 
     describe('mask card number - when user has read permission and card number mask disabled', () => {
-
       it('should show radios as disabled and card number mask disabled', () => {
         setupMotoStubs({ readonly: true, allowMoto: true, motoMaskCardNumber: false })
 

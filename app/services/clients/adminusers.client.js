@@ -21,10 +21,10 @@ const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
   const baseUrl = clientOptions.baseUrl || ADMINUSERS_URL
-  const userResource = `/v1/api/users`
-  const forgottenPasswordResource = `/v1/api/forgotten-passwords`
-  const resetPasswordResource = `/v1/api/reset-password`
-  const serviceResource = `/v1/api/services`
+  const userResource = '/v1/api/users'
+  const forgottenPasswordResource = '/v1/api/forgotten-passwords'
+  const resetPasswordResource = '/v1/api/reset-password'
+  const serviceResource = '/v1/api/services'
 
   /**
    * Get a User by external id
@@ -79,8 +79,8 @@ module.exports = function (clientOptions = {}) {
         url: `${userResource}/authenticate`,
         json: true,
         body: {
-          username: username,
-          password: password
+          username,
+          password
         },
         description: 'authenticate a user',
         service: SERVICE_NAME,
@@ -123,7 +123,7 @@ module.exports = function (clientOptions = {}) {
         url: `${forgottenPasswordResource}`,
         json: true,
         body: {
-          username: username
+          username
         },
         description: 'create a forgotten password for a user',
         service: SERVICE_NAME
@@ -280,7 +280,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `/v1/api/invites/create-invite-to-join-service`,
+        url: '/v1/api/invites/create-invite-to-join-service',
         json: true,
         body: {
           email: invitee,
@@ -302,7 +302,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.get(
       {
         baseUrl,
-        url: `/v1/api/invites`,
+        url: '/v1/api/invites',
         qs: {
           serviceId: serviceExternalId
         },
@@ -416,7 +416,7 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `/v2/api/invites/otp/validate`,
+        url: '/v2/api/invites/otp/validate',
         json: true,
         body: {
           code: inviteCode,
@@ -437,10 +437,10 @@ module.exports = function (clientOptions = {}) {
     return baseClient.post(
       {
         baseUrl,
-        url: `/v1/api/invites/create-self-registration-invite`,
+        url: '/v1/api/invites/create-self-registration-invite',
         json: true,
         body: {
-          email: email
+          email
         },
         description: 'create self-registration invite',
         service: SERVICE_NAME
@@ -449,7 +449,7 @@ module.exports = function (clientOptions = {}) {
   }
 
   function deleteUser (serviceExternalId, removerExternalId, userExternalId) {
-    let headers = {}
+    const headers = {}
     headers[HEADER_USER_CONTEXT] = removerExternalId
 
     return baseClient.delete(
@@ -460,7 +460,7 @@ module.exports = function (clientOptions = {}) {
         body: {
           headers: {}
         },
-        headers: headers,
+        headers,
         userDelete: userExternalId,
         userRemover: removerExternalId,
         description: 'delete a user from a service',
@@ -478,7 +478,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|promise|Constructor}
    */
   function createService (serviceName, serviceNameCy) {
-    let postBody = {
+    const postBody = {
       baseUrl,
       url: `${serviceResource}`,
       json: true,
@@ -650,7 +650,7 @@ module.exports = function (clientOptions = {}) {
         url: `${userResource}/${externalId}/second-factor/activate`,
         json: true,
         body: {
-          code: code,
+          code,
           second_factor: secondFactor
         },
         description: 'configure a new OTP key and method',

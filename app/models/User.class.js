@@ -59,7 +59,7 @@ class User {
    * @returns an 'adminusers' compatible representation of the user object
    **/
   toJson () {
-    let json = this.toMinimalJson()
+    const json = this.toMinimalJson()
 
     return _.merge(json, {
       disabled: this.disabled,
@@ -72,7 +72,7 @@ class User {
    * @returns an minimal 'adminusers' compatible representation of the user object
    **/
   toMinimalJson () {
-    let json = {
+    const json = {
       external_id: this.externalId,
       username: this.username,
       email: this.email,

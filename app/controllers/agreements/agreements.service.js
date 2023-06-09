@@ -30,8 +30,8 @@ async function cancelAgreement (gatewayAccountId, agreementId, userEmail, userEx
     gatewayAccountId,
     agreementId,
     payload: {
-      'user_email': userEmail,
-      'user_external_id': userExternalId
+      user_email: userEmail,
+      user_external_id: userExternalId
     }
   }
   await connectorClient.postCancelAgreement(cancelAgreementParams)

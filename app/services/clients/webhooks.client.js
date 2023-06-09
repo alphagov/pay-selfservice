@@ -128,7 +128,7 @@ function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
 
 function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
   const url = urlJoin('/v1/webhook', id)
-  const paths = [ 'callback_url', 'subscriptions', 'description', 'status' ]
+  const paths = ['callback_url', 'subscriptions', 'description', 'status']
   const body = []
   paths.forEach((path) => {
     if (options[path]) {

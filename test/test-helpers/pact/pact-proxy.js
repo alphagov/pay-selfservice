@@ -1,6 +1,6 @@
-var wrapper = require('@pact-foundation/pact-node')
+const wrapper = require('@pact-foundation/pact-node')
 const pactBrokerUrl = 'http://192.168.99.100'
-var path = require('path')
+const path = require('path')
 
 module.exports = {
   create: function (host, port) {

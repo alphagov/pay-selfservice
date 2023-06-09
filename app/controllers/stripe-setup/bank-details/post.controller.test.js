@@ -178,21 +178,21 @@ describe('Bank details post controller', () => {
 
     sinon.assert.calledWith(updateBankAccountMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-external-id')
   })
 
   it('should render error page with side navigation when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async () => {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-    
+
     req.url = '/your-psp/:credentialId/bank-details'
     req.body = {}
 
     const controller = getControllerWithMocks()
 
     await controller(req, res, next)
-   
+
     const pageData = res.render.firstCall.args[1]
-    
+
     sinon.assert.called(res.render)
     expect(pageData.enableStripeOnboardingTaskList).equal(true)
     expect(pageData.currentCredential).to.deep.equal({ external_id: 'a-valid-credential-external-id' })
@@ -200,9 +200,9 @@ describe('Bank details post controller', () => {
 
   it('should re-render the form page when Stripe returns "routing_number_invalid" error when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async () => {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-    
+
     req.url = '/your-psp/:credentialId/bank-details'
- 
+
     updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
       return new Promise((resolve, reject) => {
         const error = new Error()
@@ -230,7 +230,7 @@ describe('Bank details post controller', () => {
 
   it('should re-render the form page when Stripe returns "account_number_invalid" error when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async () => {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-    
+
     req.url = '/your-psp/:credentialId/bank-details'
 
     updateBankAccountMock = sinon.spy((stripeAccountId, body) => {
@@ -269,7 +269,7 @@ describe('Bank details post controller', () => {
 
     sinon.assert.calledWith(updateBankAccountMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
   })
 
   function getControllerWithMocks () {

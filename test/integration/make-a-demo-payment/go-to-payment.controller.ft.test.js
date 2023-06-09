@@ -20,7 +20,7 @@ const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 const PAYMENT_DESCRIPTION = 'Pay your window tax'
 const PAYMENT_AMOUNT = '2000'
 const VALID_PAYLOAD = {
-  'csrfToken': csrf().create('123')
+  csrfToken: csrf().create('123')
 }
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
@@ -55,9 +55,9 @@ function mockConnectorGetAccount () {
 }
 
 describe('make a demo payment - go to payment controller', () => {
-  describe(`when both paymentDescription and paymentAmount exist in the session`, () => {
-    describe(`when the API token is successfully created`, () => {
-      describe(`and the product is successfully created`, () => {
+  describe('when both paymentDescription and paymentAmount exist in the session', () => {
+    describe('when the API token is successfully created', () => {
+      describe('and the product is successfully created', () => {
         let result, session, app
         before('Arrange', () => {
           nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
@@ -92,7 +92,7 @@ describe('make a demo payment - go to payment controller', () => {
           expect(result.headers).to.have.property('location').to.equal(paylink)
         })
       })
-      describe(`but the product creation fails`, () => {
+      describe('but the product creation fails', () => {
         let result, session, app
 
         before('Arrange', () => {
@@ -134,7 +134,7 @@ describe('make a demo payment - go to payment controller', () => {
         })
       })
     })
-    describe(`when the API token creation fails`, () => {
+    describe('when the API token creation fails', () => {
       let result, session, app
       before('Arrange', () => {
         mockConnectorGetAccount()
@@ -149,7 +149,7 @@ describe('make a demo payment - go to payment controller', () => {
         supertest(app)
           .post(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
           .send({
-            'csrfToken': csrf().create('123')
+            csrfToken: csrf().create('123')
           })
           .end((err, res) => {
             result = res
@@ -175,7 +175,7 @@ describe('make a demo payment - go to payment controller', () => {
       })
     })
   })
-  describe(`when paymentDescription is missing from the session`, () => {
+  describe('when paymentDescription is missing from the session', () => {
     let result, app
 
     before('Arrange', () => {
@@ -189,7 +189,7 @@ describe('make a demo payment - go to payment controller', () => {
       supertest(app)
         .post(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .send({
-          'csrfToken': csrf().create('123')
+          csrfToken: csrf().create('123')
         })
         .end((err, res) => {
           result = res
@@ -209,7 +209,7 @@ describe('make a demo payment - go to payment controller', () => {
       expect(result.headers).to.have.property('location').to.equal(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
   })
-  describe(`when paymentAmount is missing from the session`, () => {
+  describe('when paymentAmount is missing from the session', () => {
     let result, app
 
     before('Arrange', () => {
@@ -223,7 +223,7 @@ describe('make a demo payment - go to payment controller', () => {
       supertest(app)
         .post(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
         .send({
-          'csrfToken': csrf().create('123')
+          csrfToken: csrf().create('123')
         })
         .end((err, res) => {
           result = res

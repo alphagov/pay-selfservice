@@ -14,7 +14,7 @@ module.exports = () => {
     const textToCopy = document.getElementsByClassName(targetElement)[0].innerText
     const originalLabelText = e.target.innerText
 
-    const targetNotificationElement = e.target.dataset['notificationTarget']
+    const targetNotificationElement = e.target.dataset.notificationTarget
     const notificationElement = document.getElementsByClassName(targetNotificationElement)[0]
 
     temp.value = textToCopy

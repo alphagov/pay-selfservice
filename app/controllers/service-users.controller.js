@@ -66,7 +66,7 @@ async function index (req, res, next) {
 
     response(req, res, 'team-members/team-members', {
       team_members: teamMembers,
-      inviteTeamMemberLink: inviteTeamMemberLink,
+      inviteTeamMemberLink,
       invited_team_members: invitedTeamMembers,
       number_invited_members: invitedMembers.length
     })
@@ -98,9 +98,9 @@ async function show (req, res, next) {
         username: user.username,
         email: user.email,
         role: roleInList.description,
-        teamMemberIndexLink: teamMemberIndexLink,
-        editPermissionsLink: editPermissionsLink,
-        removeTeamMemberLink: removeTeamMemberLink
+        teamMemberIndexLink,
+        editPermissionsLink,
+        removeTeamMemberLink
       })
     } else {
       return renderErrorView(req, res, 'You do not have the rights to access this service.', 403)

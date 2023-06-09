@@ -38,7 +38,7 @@ module.exports = async (req, res, next) => {
   const errors = validateCompanyNumberForm(companyNumberDeclaration, rawCompanyNumber.trim())
   if (!lodash.isEmpty(errors)) {
     return response(req, res, 'stripe-setup/company-number/index', {
-      companyNumberDeclaration: companyNumberDeclaration,
+      companyNumberDeclaration,
       companyNumber: rawCompanyNumber,
       isSwitchingCredentials,
       enableStripeOnboardingTaskList,

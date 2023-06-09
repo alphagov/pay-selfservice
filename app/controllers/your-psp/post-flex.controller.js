@@ -35,9 +35,9 @@ module.exports = async function submit3dsFlexCredentials (req, res, next) {
 
     if (!lodash.isEmpty(errors)) {
       lodash.set(req, 'session.pageData.worldpay3dsFlex', {
-        errors: errors,
-        orgUnitId: orgUnitId,
-        issuer: issuer
+        errors,
+        orgUnitId,
+        issuer
       })
       return res.redirect(303, flexUrl)
     }
@@ -46,12 +46,12 @@ module.exports = async function submit3dsFlexCredentials (req, res, next) {
       gatewayAccountId: accountId,
       payload: {
         organisational_unit_id: orgUnitId,
-        issuer: issuer,
+        issuer,
         jwt_mac_key: jwtMacKey
       }
     }
 
-    let response = await connector.postCheckWorldpay3dsFlexCredentials(flexParams)
+    const response = await connector.postCheckWorldpay3dsFlexCredentials(flexParams)
     if (response.result === 'invalid') {
       errors[ORGANISATIONAL_UNIT_ID_FIELD] = validationErrors.invalidWorldpay3dsFlexOrgUnitId
       errors[ISSUER_FIELD] = validationErrors.invalidWorldpay3dsFlexIssuer
@@ -59,9 +59,9 @@ module.exports = async function submit3dsFlexCredentials (req, res, next) {
 
       if (!lodash.isEmpty(errors)) {
         lodash.set(req, 'session.pageData.worldpay3dsFlex', {
-          errors: errors,
-          orgUnitId: orgUnitId,
-          issuer: issuer
+          errors,
+          orgUnitId,
+          issuer
         })
         return res.redirect(303, flexUrl)
       }

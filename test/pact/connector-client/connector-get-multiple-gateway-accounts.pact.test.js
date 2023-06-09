@@ -19,7 +19,7 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('connector client - get multiple gateway accounts', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

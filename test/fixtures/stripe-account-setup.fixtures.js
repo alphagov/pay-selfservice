@@ -37,13 +37,13 @@ module.exports = {
 
   buildGetStripeAccountSetupResponse (opts = {}) {
     return {
-      'bank_account': opts.bank_account || false,
-      'responsible_person': opts.responsible_person || false,
-      'company_number': opts.company_number || false,
-      'government_entity_document': opts.government_entity_document || false,
-      'vat_number': opts.vat_number || false,
-      'director': opts.director || false,
-      'organisation_details': opts.organisation_details || false
+      bank_account: opts.bank_account || false,
+      responsible_person: opts.responsible_person || false,
+      company_number: opts.company_number || false,
+      government_entity_document: opts.government_entity_document || false,
+      vat_number: opts.vat_number || false,
+      director: opts.director || false,
+      organisation_details: opts.organisation_details || false
     }
   }
 }

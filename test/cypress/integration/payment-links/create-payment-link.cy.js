@@ -140,7 +140,7 @@ describe('The create payment link flow', () => {
       assertCommonPageElements()
 
       cy.get('h1').should('contain', 'Do your users already have a payment reference?')
-      cy.get('#reference-type-group-hint').should('contain', `You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.`)
+      cy.get('#reference-type-group-hint').should('contain', 'You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.')
 
       cy.get('input[type=radio]#reference-type-custom').should('exist')
       cy.get('input[type=radio]#reference-type-standard').should('exist')
@@ -327,7 +327,7 @@ describe('The create payment link flow', () => {
       })
 
       cy.get('h1').should('contain', 'Do your users already have a payment reference?')
-      cy.get('#reference-type-group-hint').should('contain', `You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.`)
+      cy.get('#reference-type-group-hint').should('contain', 'You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.')
 
       cy.get('input[type=radio]#reference-type-custom').should('exist')
       cy.get('input[type=radio]#reference-type-custom').click()

@@ -21,7 +21,7 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
     type: 'task',
     subject: `Request for Stripe test account from service (${req.service.name})`,
     tags: ['govuk_pay_support'],
-    message: message
+    message
   }
 
   await zendeskClient.createTicket(zendeskOpts)

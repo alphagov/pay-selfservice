@@ -20,8 +20,8 @@ const TOKEN_RESPONSE = {
 }
 const DESCRIPTION = 'Some words'
 const VALID_PAYLOAD = {
-  'csrfToken': csrf().create('123'),
-  'description': ''
+  csrfToken: csrf().create('123'),
+  description: ''
 }
 
 const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
@@ -52,12 +52,12 @@ describe('POST to create an API key', () => {
 
       nock(PUBLIC_AUTH_URL).post('',
         {
-          'account_id': GATEWAY_ACCOUNT_ID,
-          'description': '',
-          'created_by': user.email,
-          'token_type': 'CARD',
-          'token_account_type': 'live',
-          'type': 'API'
+          account_id: GATEWAY_ACCOUNT_ID,
+          description: '',
+          created_by: user.email,
+          token_type: 'CARD',
+          token_account_type: 'live',
+          type: 'API'
         }
       )
         .reply(200, TOKEN_RESPONSE)
@@ -98,12 +98,12 @@ describe('POST to create an API key', () => {
 
       nock(PUBLIC_AUTH_URL).post('',
         {
-          'account_id': GATEWAY_ACCOUNT_ID,
-          'description': DESCRIPTION,
-          'created_by': user.email,
-          'token_type': 'CARD',
-          'token_account_type': 'test',
-          'type': 'API'
+          account_id: GATEWAY_ACCOUNT_ID,
+          description: DESCRIPTION,
+          created_by: user.email,
+          token_type: 'CARD',
+          token_account_type: 'test',
+          type: 'API'
         }
       )
         .reply(200, TOKEN_RESPONSE)

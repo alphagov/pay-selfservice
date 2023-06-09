@@ -47,6 +47,6 @@ describe('Director GET controller', () => {
 
     await getController(req, res)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/director/index')
   })
 })

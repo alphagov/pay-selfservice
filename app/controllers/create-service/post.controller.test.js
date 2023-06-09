@@ -45,7 +45,7 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should call 'res.redirect' with '/my-service'`, () => {
+    it('should call \'res.redirect\' with \'/my-service\'', () => {
       expect(res.redirect.called).to.equal(true)
       expect(res.redirect.args[0]).to.include('/my-services')
       sinon.assert.calledWith(mockServiceService.createService, serviceName, welshServiceName, req.user)
@@ -66,7 +66,7 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
+    it('should call \'responses.renderErrorView\' with req, res and the error received from the client', () => {
       sinon.assert.calledOnce(next)
       expect(next.firstCall.args[0]).to.be.instanceOf(Error)
     })
@@ -88,7 +88,7 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
+    it('should call \'responses.renderErrorView\' with req, res and the error received from the client', () => {
       sinon.assert.calledOnce(next)
       expect(next.firstCall.args[0]).to.be.instanceOf(Error)
     })
@@ -109,12 +109,12 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should call 'res.redirect' with a to create service`, () => {
+    it('should call \'res.redirect\' with a to create service', () => {
       expect(res.redirect.called).to.equal(true)
-      expect(res.redirect.args[0]).to.include(`/my-services/create`)
+      expect(res.redirect.args[0]).to.include('/my-services/create')
     })
 
-    it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
+    it('should set prexisting pageData that includes the \'current_name\' and errors', () => {
       expect(req.session.pageData.createServiceName).to.have.property('current_name').to.equal(req.body['service-name'])
       expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({ service_name: 'Enter a service name' })
     })
@@ -137,12 +137,12 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should call 'res.redirect' with a to create service`, () => {
+    it('should call \'res.redirect\' with a to create service', () => {
       expect(res.redirect.called).to.equal(true)
-      expect(res.redirect.args[0]).to.include(`/my-services/create`)
+      expect(res.redirect.args[0]).to.include('/my-services/create')
     })
 
-    it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
+    it('should set prexisting pageData that includes the \'current_name\' and errors', () => {
       expect(req.session.pageData.createServiceName).to.have.property('current_name').to.equal(req.body['service-name'])
       expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({
         service_name: 'Service name must be 50 characters or fewer',
@@ -167,7 +167,7 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should call 'res.redirect' with '/my-service'`, () => {
+    it('should call \'res.redirect\' with \'/my-service\'', () => {
       expect(res.redirect.called).to.equal(true)
       expect(res.redirect.args[0]).to.include('/my-services')
     })
