@@ -13,7 +13,7 @@ class Stream {
   }
 
   request (targetUrl) {
-    const parsed = url.parse(targetUrl)
+    const parsed = new url.URL(targetUrl)
     const options = {
       path: `${parsed.pathname}${parsed.search}`,
       host: parsed.hostname,

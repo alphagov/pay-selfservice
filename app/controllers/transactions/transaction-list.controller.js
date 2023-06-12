@@ -19,7 +19,7 @@ module.exports = async function showTransactionList (req, res, next) {
 
   const filters = getFilters(req)
 
-  req.session.filters = url.parse(req.url).query
+  req.session.filters = new url.URL(req.url).search.replace('?', '')
 
   if (!filters.valid) {
     return next(new Error('Invalid search'))

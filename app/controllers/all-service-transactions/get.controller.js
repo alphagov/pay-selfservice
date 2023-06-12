@@ -23,7 +23,7 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
   const { statusFilter } = req.params
   const filterLiveAccounts = statusFilter !== 'test'
 
-  req.session.filters = url.parse(req.url).query
+  req.session.filters = new url.URL(req.url).search.replace('?', '')
   req.session.allServicesTransactionsStatusFilter = statusFilter
   try {
     const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, filterLiveAccounts, 'transactions:read')

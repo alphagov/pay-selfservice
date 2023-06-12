@@ -193,7 +193,7 @@ function getCurrentPageSize (connectorData) {
   let limit
 
   if (selfLink) {
-    queryString = url.parse(selfLink.href).query
+    queryString = new url.URL(selfLink.href).search
     limit = Number(qs.parse(queryString).display_size)
     if (check.number(limit) && limit > 0) {
       return limit

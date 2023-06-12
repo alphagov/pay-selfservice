@@ -37,7 +37,7 @@ describe('The /transactions endpoint', () => {
     account,
     headers,
     session: {},
-    url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID)
+    url: 'http://selfservice' + formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID)
   }
   const res = {}
   let next
@@ -87,7 +87,7 @@ describe('The /transactions endpoint', () => {
         query: {
           page: '-1'
         },
-        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?page=-1'
+        url: 'http://selfservice' + formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?page=-1'
       }
 
       await transactionListController(reqWithInvalidPage, res, next)
@@ -102,7 +102,7 @@ describe('The /transactions endpoint', () => {
         query: {
           pageSize: '600'
         },
-        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?pageSize=600'
+        url: 'http://selfservice' + formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?pageSize=600'
       }
 
       await transactionListController(reqWithInvalidPageSize, res, next)
@@ -117,7 +117,7 @@ describe('The /transactions endpoint', () => {
         query: {
           pageSize: '0'
         },
-        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?pageSize=0'
+        url: 'http://selfservice' + formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?pageSize=0'
       }
 
       await transactionListController(reqWithInvalidPageSize, res, next)

@@ -125,7 +125,7 @@ module.exports = function (req, data, template) {
   convertedData.currentService = service
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
-  const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
+  const currentPath = (relativeUrl && new url.URL(relativeUrl, 'http://selfservice').pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, account)
     convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account, service)
