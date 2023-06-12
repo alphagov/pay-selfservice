@@ -2,7 +2,7 @@
 
 module.exports = (req, res) => {
   let errors = {}
-  if (res.locals.flash.hasOwnProperty('error')) {
+  if (Object.prototype.hasOwnProperty.call(res.locals.flash, 'error')) {
     switch (res.locals.flash.error[0]) {
       case 'invalid':
         errors = { username: 'Enter a valid email address', password: 'Enter a valid password' }
