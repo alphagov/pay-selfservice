@@ -103,7 +103,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       name: 'Webhooks',
       url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.index, account.type, account.service_id, account.external_id),
       current: pathLookup(currentPath, paths.futureAccountStrategy.webhooks.index),
-      permissions: permissions.webhooks_update && (process.env.FEATURE_ENABLE_WEBHOOKS === 'true' || service.experimentalFeaturesEnabled)
+      permissions: permissions.webhooks_update
     },
     ...yourPSPNavigationItems(account, currentPath).map((yourPSPNavigationItem) => ({
       ...yourPSPNavigationItem,
