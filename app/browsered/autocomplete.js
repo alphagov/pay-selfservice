@@ -16,6 +16,7 @@ module.exports = () => {
       if (selected) {
         services.map(service => {
           service.style.display = service.dataset.name === selected ? 'block' : 'none'
+          return true
         })
       }
     }
@@ -36,6 +37,7 @@ module.exports = () => {
       const services = Array.prototype.slice.call(document.getElementsByClassName('service_list_item'))
       services.map(service => {
         service.style.display = 'block'
+        return true
       })
     })
   }

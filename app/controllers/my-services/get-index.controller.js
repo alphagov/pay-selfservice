@@ -69,8 +69,8 @@ module.exports = async function getServiceList (req, res) {
     servicesData.find(service => {
       if (service.external_id === newServiceId) {
         data.new_service_name = service.name
-        return true
       }
+      return true
     })
   }
 

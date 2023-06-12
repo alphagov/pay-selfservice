@@ -30,8 +30,8 @@ class CredentialsForm {
         const valid = validator.method(formData[field.id])
         if (!valid) {
           errors[field.id] = validator.message
-          return true
         }
+        return true
       })
     })
     return {

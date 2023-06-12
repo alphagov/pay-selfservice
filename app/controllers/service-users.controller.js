@@ -28,6 +28,7 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
       }
       userRolesMap[userRoleName].push(mappedUser)
     }
+    return true
   })
   return userRolesMap
 }
@@ -45,6 +46,7 @@ const mapInvitesByRoles = function (invitedUsers) {
       }
       userRolesMap[user.role].push(mappedUser)
     }
+    return true
   })
   return userRolesMap
 }
