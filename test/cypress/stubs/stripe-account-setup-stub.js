@@ -94,7 +94,7 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
 
   const allStripeCallResponsesArray = []
 
-  for (var i = 0; i < numberOfStripeSetupCalls; i++) {
+  for (let i = 0; i < numberOfStripeSetupCalls; i++) {
     const singleStripeCallResponse = {}
 
     optionKeys.forEach(function (key) {

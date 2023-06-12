@@ -10,18 +10,18 @@ module.exports = function (route, params) {
     return route + query
   }
 
-  var checkNamedParams = function (value, key) {
+  const checkNamedParams = function (value, key) {
     const hasNamedParam = route.indexOf(':' + key) !== -1
     if (!hasNamedParam) return
     replaceAndDeleteNamedParam(key, value)
   }
 
-  var replaceAndDeleteNamedParam = function (key, value) {
+  const replaceAndDeleteNamedParam = function (key, value) {
     route = route.replace(':' + key, value)
     delete copiedParams[key]
   }
 
-  var constructQueryString = function () {
+  const constructQueryString = function () {
     const validParams = _.omitBy(copiedParams, _.isEmpty, _.isUndefined)
     if (Object.keys(validParams).length === 0) return ''
     return ['?', querystring.stringify(validParams)].join('')
