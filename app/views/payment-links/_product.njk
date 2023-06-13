@@ -10,7 +10,7 @@
         <h3 class="govuk-visually-hidden">Reporting columns</h3>
         <dl class="reporting-columns govuk-body-s">
            {% for key, value in product.metadata|dictsort %}
-               <div class="reporting-columns__keypair"> 
+               <div class="reporting-columns__keypair">
                     <dt class="reporting-columns__key" id="metadata-key">{{key}}</dt>
                     <dd class="reporting-columns__value" id="metadata-value">{{value}}</dd>
                 </div>
@@ -33,7 +33,8 @@
                     <h2 tabindex="0" class="target-to-show__heading govuk-error-summary__title" id="error-summary">
                         Are you sure you want to delete this link?
                     </h2>
-                    <div class="button-group">
+
+                    <div class="govuk-button-group">
                       {{
                         govukButton({
                           text: "Yes, delete this link",
@@ -41,10 +42,9 @@
                           href: "manage/delete/" + product.externalId
                         })
                       }}
+
+                      <a class="govuk-link target-to-show--cancel govuk-link--no-visited-state" href="#main">Cancel</a>
                     </div>
-                    <a class="govuk-link govuk-link--no-visited-state govuk-link--no-visited-state target-to-show--cancel" href="#main">
-                        Cancel
-                    </a>
                 </div>
             </div>
         </div>

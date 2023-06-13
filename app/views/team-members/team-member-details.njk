@@ -51,17 +51,17 @@
       <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}" novalidate>
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
-        {{
-          govukButton({
-            text: "Yes, remove",
-            classes: "govuk-button--warning",
-            attributes: {
-              id: "remove-team-member-confirm"
-            }
-          })
-        }}
+        <div class="govuk-button-group">
+          {{govukButton({
+              text: "Yes, remove",
+              classes: "govuk-button--warning",
+              attributes: {
+                id: "remove-team-member-confirm"
+              }
+          })}}
 
-        <a class="govuk-link govuk-link--no-visited-state target-to-show--cancel" id="remove-team-member-cancel" href="#main">Cancel</a>
+          <a href="#main" class="govuk-link target-to-show--cancel" id="remove-team-member-cancel">Cancel</a>
+        </div>
       </form>
     </div>
   </div>
