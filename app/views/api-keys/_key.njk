@@ -47,7 +47,7 @@
         <p class="govuk-body">
           If revoked it will no longer enable integration with the platform.
         </p>
-        <div class="button-group">
+        <div class="govuk-button-group">
           {{
             govukButton({
               text: "Yes, revoke this API key",
@@ -57,8 +57,7 @@
               }
             })
           }}
-          <a class="govuk-link govuk-link--no-visited-state
-govuk-link--no-visited-state target-to-show--cancel" href="#main">Cancel</a>
+          <a class="govuk-link target-to-show--cancel govuk-link--no-visited-state" href="#main">Cancel</a>
         </div>
       </div>
     </form>
@@ -83,18 +82,20 @@ govuk-link--no-visited-state target-to-show--cancel" href="#main">Cancel</a>
           })
         }}
 
-        {% set buttonID %}update-token-{{token.token_link}}{% endset %}
-        {{
-          govukButton({
-            text: "Save changes",
-            classes: "js-save-description",
-            attributes: {
-              id: buttonID
-            }
-          })
-        }}
-        <a class="govuk-link govuk-link--no-visited-state
-govuk-link--no-visited-state target-to-show--cancel js-toggle-description" href="#main">Cancel</a>
+        <div class="govuk-button-group">
+          {% set buttonID %}update-token-{{token.token_link}}{% endset %}
+          {{
+            govukButton({
+              text: "Save changes",
+              classes: "js-save-description",
+              attributes: {
+                id: buttonID
+              }
+            })
+          }}
+
+          <a class="govuk-link target-to-show--cancel js-toggle-description govuk-link--no-visited-state" href="#main">Cancel</a>
+        </div>
       </form>
     {% endif %}
   </div>

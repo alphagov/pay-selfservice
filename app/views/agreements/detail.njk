@@ -156,7 +156,7 @@
 
       <p class="govuk-body">The agreement will be cancelled immediately.</p>
 
-      <div class="govuk-form-group govuk-!-margin-top-6">
+      <div class="govuk-button-group">
         {{ govukButton({
           text: "Confirm cancellation",
           classes: "govuk-button--warning",
@@ -164,9 +164,7 @@
           attributes: { 'data-cy': 'confirm-cancel-agreement-button' }
         }) }}
 
-        <p class="govuk-body govuk-!-display-inline">
-          <a href="#main" class="govuk-link govuk-!-margin-left-3 target-to-show--cancel">Do not cancel</a>
-        </p>
+        <a href="#main" class="govuk-link target-to-show--cancel">Do not cancel</a>
       </div>
     </form>
   </div>
