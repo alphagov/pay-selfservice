@@ -71,7 +71,9 @@ describe('Agreement detail page', () => {
         live: false,
         gatewayAccountId,
         external_id: 'a-valid-agreement-id',
-        status: 'CANCELLED'
+        status: 'CANCELLED',
+        cancelledDate: '2023-06-15T12:36:00.000Z',
+        cancelledByUserEmail: 'sandor@example.gov'
       }),
       transactionsStub
     ])
@@ -81,6 +83,9 @@ describe('Agreement detail page', () => {
 
     cy.get('[data-cy=success-notifcation]').contains('Agreement cancelled')
     cy.get('[data-cy=cancel-agreement-container]').should('not.exist')
+
+    cy.get('[data-cy=agreement-detail]').contains('15 June 2023')
+    cy.get('[data-cy=agreement-detail]').contains('sandor@example.gov')
   })
 
   it('should display generic error page when cancelling an agreement fails', () => {

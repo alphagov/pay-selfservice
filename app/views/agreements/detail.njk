@@ -33,7 +33,24 @@
 
   <h1 class="govuk-heading-l">Agreement detail</h1>
 
+  {% if agreement.cancelled_date %}
+    {% set cancelledDate = {
+        key: { text: "Cancelled date" },
+        value: { html: agreement.cancelled_date | datetime('datelong') }
+       }
+    %}
+   {% endif %}
+
+   {% if agreement.cancelled_by_user_email %}
+       {% set cancelledBy = {
+           key: { text: "Cancelled by" },
+           value: { text: agreement.cancelled_by_user_email }
+          }
+       %}
+  {% endif %}
+
   {{ govukSummaryList({
+    attributes: { 'data-cy': 'agreement-detail' },
     rows: [{
       key: { text: "ID" },
       value: { text: agreement.external_id }
@@ -52,7 +69,10 @@
     },{
       key: { text: "Date created" },
       value: { html: agreement.created_date | datetime('datelong') }
-    }]
+    },
+    cancelledDate,
+    cancelledBy
+    ]
   }) }}
 
   <h2 class="govuk-heading-m govuk-!-margin-top-9">Payment instrument</h2>
