@@ -30,7 +30,7 @@ function buildPaymentInstrument (opts = {}) {
 }
 
 function buildAgreement (opts = {}) {
-  return {
+  const data = {
     external_id: opts.external_id || 'agreement-external-identifier',
     reference: opts.reference || 'valid-reference',
     description: opts.description || 'Reason shown to paying user for taking agreement',
@@ -38,6 +38,13 @@ function buildAgreement (opts = {}) {
     created_date: opts.created_date || '2022-03-01T01:00:00.000Z',
     ...opts.payment_instrument !== false && { payment_instrument: buildPaymentInstrument(opts.payment_instrument) }
   }
+  if (opts.cancelledDate) {
+    data.cancelled_date = opts.cancelledDate
+  }
+  if (opts.cancelledByUserEmail) {
+    data.cancelled_by_user_email = opts.cancelledByUserEmail
+  }
+  return data
 }
 
 module.exports = {
