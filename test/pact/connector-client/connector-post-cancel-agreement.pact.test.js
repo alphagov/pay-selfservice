@@ -42,7 +42,7 @@ describe('connector client', function () {
         return provider.addInteraction(
           new PactInteractionBuilder(`/v1/api/accounts/${gatewayAccountId}/agreements/${agreementId}/cancel`)
             .withUponReceiving('a valid post cancel agreement request')
-            .withState('a gateway account with id 3456 and an active agreement exists')
+            .withState('a gateway account and an active agreement exists')
             .withMethod('POST')
             .withRequestBody(cancelAgreementRequest.payload)
             .withStatusCode(204)
@@ -50,7 +50,6 @@ describe('connector client', function () {
             .build()
         )
       })
-
       afterEach(() => provider.verify())
 
       it('should post cancel agreement successfully', async () => {
