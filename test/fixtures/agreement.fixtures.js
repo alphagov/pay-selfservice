@@ -24,7 +24,6 @@ function buildPaymentInstrument (opts = {}) {
   return {
     type: opts.type || 'CARD',
     created_date: opts.created_date || '2022-03-01T01:00:00.000Z',
-    gateway_expiration_date: opts.gateway_expiration_date || '2022-03-01T01:00:00.000Z',
     card_details: buildCardDetails(opts.card_details)
   }
 }
@@ -32,6 +31,7 @@ function buildPaymentInstrument (opts = {}) {
 function buildAgreement (opts = {}) {
   const data = {
     external_id: opts.external_id || 'agreement-external-identifier',
+    service_id: opts.service_id || 'a-service-id',
     reference: opts.reference || 'valid-reference',
     description: opts.description || 'Reason shown to paying user for taking agreement',
     status: opts.status || 'ACTIVE',
