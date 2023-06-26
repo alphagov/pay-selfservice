@@ -57,4 +57,32 @@ describe('ledger client', function () {
         })
     })
   })
+
+  describe('not found', () => {
+    const nonExistentAgreementExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+    before(done => {
+      pactTestProvider.addInteraction(
+        new PactInteractionBuilder(`${AGREEMENT_RESOURCE}/${nonExistentAgreementExternalId}`)
+          .withQuery('service_id', existingServiceId)
+          .withUponReceiving('a valid get agreement request with non-existing agreement id')
+          .withState('an agreement with payment instrument exists')
+          .withStatusCode(404)
+          .withResponseBody(pactify(agreementFixtures.validAgreementNotFoundResponse()))
+          .build()
+      ).then(() => done())
+    })
+
+    afterEach(() => pactTestProvider.verify())
+
+    it('should return not found if agreement not exist', function (done) {
+      ledgerClient.agreement(nonExistentAgreementExternalId, existingServiceId, { baseUrl: ledgerUrl })
+        .should.be.rejected
+        .then(
+          err => {
+            expect(err.errorCode).to.equal(404)
+          }
+        ).should.notify(done)
+    })
+  })
 })
