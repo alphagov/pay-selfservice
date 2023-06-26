@@ -65,5 +65,13 @@ module.exports = {
       code: 404,
       message: opts.message || 'HTTP 404 Not Found'
     }
+  },
+  validAgreementsNotFoundResponse: () =>  {
+    return {
+      results: [],
+      total: 0,
+      count: 0,
+      page: 1
+    }
   }
 }
