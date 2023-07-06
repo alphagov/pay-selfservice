@@ -11,7 +11,7 @@ const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures'
 const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
-const ACCOUNTS_RESOURCE = '/v1/frontend/accounts'
+const ACCOUNTS_RESOURCE = '/v1/api/accounts'
 let connectorClient
 const expect = chai.expect
 

@@ -4,15 +4,18 @@ const chai = require('chai')
 const nock = require('nock')
 const sinon = require('sinon')
 const _ = require('lodash')
-const connectorMock = nock(process.env.CONNECTOR_URL)
-const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
+const chaiAsPromised = require('chai-as-promised')
+const { expect } = require('chai')
+
 const myServicesController = require('./my-services')
 const User = require('../models/User.class')
 const userFixtures = require('../../test/fixtures/user.fixtures')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
-const chaiAsPromised = require('chai-as-promised')
-const { expect } = require('chai')
+
 chai.use(chaiAsPromised)
+
+const connectorMock = nock(process.env.CONNECTOR_URL)
+const ACCOUNTS_API_PATH = '/v1/api/accounts'
 
 describe('My services controller', () => {
   describe('service list', function () {
@@ -90,7 +93,7 @@ describe('My services controller', () => {
     let res
 
     before(async () => {
-      connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${accountIds.join(',')}`)
+      connectorMock.get(ACCOUNTS_API_PATH + `?accountIds=${accountIds.join(',')}`)
         .reply(200, gatewayAccountFixtures.validGatewayAccountsResponse({ accounts }))
 
       res = {
@@ -201,7 +204,7 @@ describe('My services controller', () => {
       const newServiceGatewayAccountIds = ['3', '6', '7']
       const gatewayAccountIds = _.concat(service1gatewayAccountIds, newServiceGatewayAccountIds)
 
-      connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${gatewayAccountIds.join(',')}`)
+      connectorMock.get(ACCOUNTS_API_PATH + `?accountIds=${gatewayAccountIds.join(',')}`)
         .reply(200, {
           accounts: gatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
             gateway_account_id: iter,

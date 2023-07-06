@@ -40,7 +40,7 @@ function _accountApiUrlFor (gatewayAccountId) {
 
 /** @private */
 function _accountUrlFor (gatewayAccountId) {
-  return ACCOUNT_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
+  return ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
@@ -50,7 +50,7 @@ function _accountByExternalIdUrlFor (gatewayAccountExternalId) {
 
 /** @private */
 function _accountsUrlFor (gatewayAccountIds) {
-  return ACCOUNTS_FRONTEND_PATH + '?accountIds=' + gatewayAccountIds.join(',')
+  return ACCOUNTS_API_PATH + '?accountIds=' + gatewayAccountIds.join(',')
 }
 
 /** @private */
