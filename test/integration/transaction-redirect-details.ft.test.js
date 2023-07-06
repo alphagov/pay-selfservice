@@ -45,7 +45,7 @@ describe('The transaction view scenarios', function () {
 
     userCreator.mockUserResponse(user.toJson(), done)
 
-    connectorMock.get(`/v1/frontend/accounts/${gatewayAccountId}`)
+    connectorMock.get(`/v1/api/accounts/${gatewayAccountId}`)
       .reply(200, validGatewayAccountResponse(
         {
           external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,

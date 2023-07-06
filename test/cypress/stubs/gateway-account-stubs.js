@@ -81,7 +81,7 @@ function parseGatewayAccountOptions (opts) {
 }
 
 function getGatewayAccountSuccess (opts) {
-  const path = `/v1/frontend/accounts/${opts.gatewayAccountId}`
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}`
   const fixtureOpts = parseGatewayAccountOptions(opts)
   return stubBuilder('GET', path, 200, {
     response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)
@@ -97,7 +97,7 @@ function getGatewayAccountByExternalIdSuccess (opts) {
 }
 
 function getGatewayAccountsSuccess (opts) {
-  const path = '/v1/frontend/accounts'
+  const path = '/v1/api/accounts'
   return stubBuilder('GET', path, 200, {
     query: {
       accountIds: opts.gatewayAccountId.toString()
@@ -114,7 +114,7 @@ function getGatewayAccountsSuccess (opts) {
 }
 
 function getGatewayAccountsSuccessForMultipleAccounts (accountsOpts) {
-  const path = '/v1/frontend/accounts'
+  const path = '/v1/api/accounts'
   return stubBuilder('GET', path, 200, {
     query: {
       accountIds: accountsOpts.map(account => account.gatewayAccountId).join(',')
