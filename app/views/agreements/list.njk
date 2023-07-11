@@ -12,7 +12,7 @@ Agreements - GOV.UK Pay
 
   <div class="transactions-filter govuk-grid-row">
     {# markup should be refined and not rely on clearfix - directly lifted from transactions #}
-    <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate>
+    <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate  data-cy="filter-container">
       {% set statuses = [{
         value: '',
         text: 'All',
@@ -35,7 +35,7 @@ Agreements - GOV.UK Pay
         <legend class="govuk-visually-hidden">
           Status
         </legend>
-        <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset" data-cy="status-select">
         {{
           govukSelect({
             id: "status",
