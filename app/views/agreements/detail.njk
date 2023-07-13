@@ -75,7 +75,7 @@
     ]
   }) }}
 
-  <h2 class="govuk-heading-m govuk-!-margin-top-9">Payment instrument</h2>
+  <h2 class="govuk-heading-m govuk-!-margin-top-9" data-cy="payment-instrument-title">Payment instrument</h2>
   {% set paymentInstrument = agreement.payment_instrument %}
 
   {% if paymentInstrument %}
@@ -120,7 +120,7 @@
   <p id="empty-payment-instrument" class="govuk-body">No payment instrument set for this agreement.</p>
   {% endif %}
 
-  <h2 class="govuk-heading-m govuk-!-margin-top-9">Transactions</h2>
+  <h2 class="govuk-heading-m govuk-!-margin-top-9" data-cy="transaction-list-title">Transactions</h2>
   <table id="transactions-list" class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
@@ -148,7 +148,7 @@
     </tbody>
   </table>
 
-  <p class="govuk-body">
+  <p class="govuk-body" data-cy="all-payment-link">
     <a class="govuk-link govuk-link__no-visited-state" href="{{ formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id) }}?agreementId={{ agreement.external_id }}">Show all transactions for this agreement</a>
   </p>
 </div>

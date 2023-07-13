@@ -71,6 +71,27 @@ describe('Agreements', () => {
     cy.visit('/test/service/service-id/account/gateway-account-id/agreements')
 
     cy.get('#navigation-menu-agreements').should('have.length', 1)
+
+    cy.get('h1').contains('Agreements')
+
+    cy.get('[data-cy=filter-container]').should('exist')
+    cy.get('[data-cy=status-select]').should('exist')
+    cy.get('#status').get('label').contains('Status')
+    cy.get('#status-hint').contains('Select an option')
+    cy.get('#reference').get('label').contains('Reference number')
+    cy.get('#reference-hint').contains('Enter full or partial reference')
+
+    cy.get('#filter').should('exist')
+
+    cy.get('[data-cy=pagination-form]').should('exist')
+
+    cy.get('#agreements-list').should('exist')
+    cy.get('#agreements-list thead').find('th').eq(0).should('have.text', 'ID')
+    cy.get('#agreements-list thead').find('th').eq(1).should('have.text', 'Reference')
+    cy.get('#agreements-list thead').find('th').eq(2).should('contain', 'Status')
+    cy.get('#agreements-list thead').find('th').eq(3).should('contain', 'Payment instrument')
+    cy.get('#agreements-list thead').find('th').eq(4).should('contain', 'Date created')
+    cy.get('#agreements-list tbody').find('tr').should('have.length', 25)
   })
 
   const referenceFilter = 'a-valid-ref'
