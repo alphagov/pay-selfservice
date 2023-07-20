@@ -90,7 +90,7 @@ describe('Stripe setup: Government entity document', () => {
 
       cy.get('.govuk-form-group--error > input#government-entity-document').parent().should('exist').within(() => {
         cy.get('.govuk-error-message').should('exist')
-        cy.get('span.govuk-error-message').should('contain', 'Select a file to upload')
+        cy.get('p.govuk-error-message').should('contain', 'Select a file to upload')
       })
 
       cy.get('#navigation-menu-your-psp')

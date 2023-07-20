@@ -11,7 +11,7 @@
 {% if isRequestToGoLive %}
   Enter your organisation’s contact details - Request a live account - {{ currentService.name }} - GOV.UK Pay
 {% elif isStripeSetupUserJourney %}
-  What is the name and address of your organisation on your government entity document? - {{ currentService.name }} - GOV.UK Pay 
+  What is the name and address of your organisation on your government entity document? - {{ currentService.name }} - GOV.UK Pay
 {% else %}
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endif %}
@@ -69,17 +69,17 @@
         Organisation name
       </label>
 
-      {% if not isStripeSetupUserJourney %} 
+      {% if not isStripeSetupUserJourney %}
         <div id="merchant-name-hint" class="govuk-hint govuk-!-width-two-thirds">
-          <p class="govuk-hint">Enter the main name of your organisation, not your local office or individual department.</p>
-          <p class="govuk-hint">Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>
+          <div class="govuk-hint">Enter the main name of your organisation, not your local office or individual department.</div>
+          <div class="govuk-hint">Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</div>
         </div>
       {% endif %}
-      
+
       {% if errors['merchant-name'] %}
-      <span id="merchant-name-error" class="govuk-error-message">
+      <p id="merchant-name-error" class="govuk-error-message">
         <span class="govuk-visually-hidden">Error:</span> {{errors["merchant-name"]}}
-      </span>
+      </p>
       {% endif %}
       <input class="govuk-input govuk-!-width-two-thirds {% if errors['merchant-name'] %} govuk-input--error {% endif %}"
              id="merchant-name" name="merchant-name" type="text" aria-describedby="merchant-name-hint" data-cy="input-org-name"
@@ -209,9 +209,9 @@
     {% endif %}
 
     {% if isRequestToGoLive or isStripeSetupUserJourney %}
-      {{ govukButton({ 
+      {{ govukButton({
         text: "Continue",
-        attributes: { 'data-cy': 'continue-button' } 
+        attributes: { 'data-cy': 'continue-button' }
       }) }}
     {% else %}
       {{ govukButton({

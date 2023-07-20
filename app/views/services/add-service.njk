@@ -51,7 +51,7 @@
             "lang": "cy"
           }
         }) }}
-        <p class="govuk-hint">To turn on Welsh translations, follow the instructions in our&nbsp;documentation</p>
+        <div class="govuk-hint">To turn on Welsh translations, follow the instructions in our&nbsp;documentation</div>
       {% endset -%}
 
       {{ govukCheckboxes({
@@ -64,7 +64,7 @@
             conditional: {
               html: welshServiceNameHTML
             },
-            checked: true if current_name_cy else false 
+            checked: true if current_name_cy else false
           }
         ]
       }) }}
