@@ -41,9 +41,9 @@
           Enter the amount
           <span class="govuk-visually-hidden">in &pound;</span>
           {% if errors.amount %}
-          <span class="govuk-error-message">
+          <p class="govuk-error-message">
             Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”
-          </span>
+          </p>
           {% endif %}
         </label>
         <div class="currency-input__inner">
@@ -71,7 +71,7 @@
       {% set amountHintHint = 'Tell users how to work out how much they should pay, or where to find the payment amount.' %}
       {% set lang = 'en' %}
     {% endif %}
-    
+
     {% set userProvidedAmountHTML %}
       {{
         govukCharacterCount({

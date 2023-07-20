@@ -28,16 +28,16 @@
       <label class="govuk-label govuk-label--s" for="payment-name-path">
         Please change the website address
       </label>
-      <span id="payment-name-path-hint" class="govuk-hint">
+      <div id="payment-name-path-hint" class="govuk-hint">
         This will not change the title<br>
-      </span>
+      </div>
       <span class="govuk-hint pay-text-black">
         {{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/
       </span>
       {% if errors.path %}
-        <span id="payment-name-path-error" class="govuk-error-message">
+        <p id="payment-name-path-error" class="govuk-error-message">
           The website address is already taken
-        </span>
+        </p>
       {% endif %}
       <input class="govuk-input govuk-!-width-one-half {% if flash.genericError %}govuk-input--error{% endif %}" id="payment-name-path" name="payment-name-path" type="text" value="{{productNamePath}}" aria-describedby="payment-name-path-hint" spellcheck="false" autocapitalize="none" autofocus data-slugify="true">
 

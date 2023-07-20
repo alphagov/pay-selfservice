@@ -27,16 +27,16 @@
           </label>
         </h1>
 
-        <span id="request-to-go-live-organisation-name-input-hint" class="govuk-hint">
+        <div id="request-to-go-live-organisation-name-input-hint" class="govuk-hint">
           <p>Your organisation's details must be shown on your payment pages.</p>
           <p>Enter the main name of your organisation, not your local office or individual department.</p>
             Enter the full name. Only use acronyms that are widely understood, like NHS.
-        </span>
+        </div>
 
         {% if errors['organisation-name'] %}
-          <span id="request-to-go-live-organisation-name-input-error" class="govuk-error-message">
+          <p id="request-to-go-live-organisation-name-input-error" class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span> {{errors['organisation-name']}}
-          </span>
+          </p>
         {% endif %}
 
         <input class="govuk-input  {% if errors['organisation-name'] %} govuk-input--error {% endif %}"

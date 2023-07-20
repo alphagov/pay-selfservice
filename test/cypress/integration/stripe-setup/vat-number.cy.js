@@ -88,7 +88,7 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.get('.govuk-form-group--error > input#vat-number').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
-          cy.get('span.govuk-error-message').should('contain', 'Enter your VAT registration number')
+          cy.get('p.govuk-error-message').should('contain', 'Enter your VAT registration number')
         })
 
         cy.get('#navigation-menu-your-psp')
