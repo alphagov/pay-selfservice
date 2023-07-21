@@ -17,7 +17,6 @@ module.exports = async (req, res, next) => {
     const credential = getCredentialByExternalId(req.account, credentialId)
     const activeCredential = getCurrentCredential(req.account)
     const switchingCredential = getSwitchingCredentialIfExists(req.account)
-    const isAccountCredentialsConfigured = credential.credentials && credential.credentials.merchant_id !== undefined
     const switchedProvider = hasSwitchedProvider(req.account)
 
     const isWorldpay3dsFlexCredentialsConfigured = req.account.worldpay_3ds_flex &&
@@ -41,7 +40,6 @@ module.exports = async (req, res, next) => {
       activeCredential,
       switchingCredential,
       switchedProvider,
-      isAccountCredentialsConfigured,
       is3dsEnabled,
       isMotoEnabled,
       isWorldpay3dsFlexEnabled,

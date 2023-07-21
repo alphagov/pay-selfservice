@@ -90,4 +90,3 @@ describe('Your PSP GET controller', () => {
     sinon.assert.calledWith(res.render, 'your-psp/index')
   })
 })
-

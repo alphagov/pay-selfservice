@@ -46,7 +46,8 @@ describe('ledger client', function () {
           .withStatusCode(200)
           .withResponseBody(pactify(validGetOneAgreementResponse))
           .build()
-      )})
+      )
+    })
 
     afterEach(() => pactTestProvider.verify())
 

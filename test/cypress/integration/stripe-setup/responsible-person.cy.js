@@ -162,7 +162,7 @@ describe('Stripe setup: responsible person page', () => {
 
         cy.get('button').should('exist')
       })
-      
+
       cy.get('#navigation-menu-your-psp')
         .should('contain', 'Information for Stripe')
         .parent().should('have.class', 'govuk-!-font-weight-bold')

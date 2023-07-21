@@ -64,7 +64,7 @@ module.exports = async function getServiceList (req, res) {
     has_account_with_payouts: hasStripeAccount(aggregatedGatewayAccounts),
     has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length
   }
-  
+
   if (newServiceId) {
     servicesData.find(service => {
       if (service.external_id === newServiceId) {

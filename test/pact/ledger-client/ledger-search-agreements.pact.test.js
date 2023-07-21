@@ -50,7 +50,8 @@ describe('ledger client', function () {
           .withStatusCode(200)
           .withResponseBody(pactify(validSearchAgreementResponse))
           .build()
-      )})
+      )
+    })
 
     afterEach(() => pactTestProvider.verify())
 
@@ -63,7 +64,7 @@ describe('ledger client', function () {
   })
 
   describe('search agreement by status', () => {
-    const validSearchAgreementResponse = agreementFixtures.validAgreementSearchResponse([{ external_id: 'agreement-3', payment_instrument: false }]);
+    const validSearchAgreementResponse = agreementFixtures.validAgreementSearchResponse([{ external_id: 'agreement-3', payment_instrument: false }])
 
     before(() => {
       return pactTestProvider.addInteraction(
@@ -79,7 +80,8 @@ describe('ledger client', function () {
           .withStatusCode(200)
           .withResponseBody(pactify(validSearchAgreementResponse))
           .build()
-      )})
+      )
+    })
 
     afterEach(() => pactTestProvider.verify())
 
@@ -92,7 +94,7 @@ describe('ledger client', function () {
   })
 
   describe('search agreement not found', () => {
-    const validSearchAgreementResponse = agreementFixtures.validAgreementsNotFoundResponse();
+    const validSearchAgreementResponse = agreementFixtures.validAgreementsNotFoundResponse()
 
     before(() => {
       return pactTestProvider.addInteraction(
@@ -108,7 +110,8 @@ describe('ledger client', function () {
           .withStatusCode(200)
           .withResponseBody(pactify(validSearchAgreementResponse))
           .build()
-      )})
+      )
+    })
 
     afterEach(() => pactTestProvider.verify())
 

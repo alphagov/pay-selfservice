@@ -11,7 +11,7 @@ module.exports = (req, res) => {
   const credential = getCurrentCredential(req.account)
 
   const accountUsesWorldpayMotoMerchantCode = lodash.get(credential, 'payment_provider', '') === 'worldpay' &&
-      lodash.get(credential, 'credentials.merchant_id', '').endsWith('MOTO')
+      lodash.get(credential, 'credentials.one_off_customer_initiated.merchant_code', '').endsWith('MOTO')
 
   return response(req, res, 'payment-links/index', {
     accountUsesWorldpayMotoMerchantCode: accountUsesWorldpayMotoMerchantCode

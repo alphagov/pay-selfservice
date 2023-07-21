@@ -134,18 +134,6 @@ function getAccountAuthSuccess (opts) {
   })
 }
 
-function getDirectDebitGatewayAccountSuccess (opts) {
-  const path = `/v1/api/accounts/${opts.gatewayAccountId}`
-  return stubBuilder('GET', path, 200, {
-    response: gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
-      gateway_account_id: opts.gatewayAccountId,
-      type: opts.type,
-      payment_provider: opts.paymentProvider,
-      is_connected: opts.isConnected
-    })
-  })
-}
-
 function postCreateGatewayAccountSuccess (opts) {
   const fixtureOpts = {
     service_name: opts.serviceName,
@@ -243,7 +231,7 @@ function patchUpdateMaskSecurityCodeSuccess (gatewayAccountId, mask) {
 function patchUpdate3dsVersionSuccess (gatewayAccountId, version) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
   return stubBuilder('PATCH', path, 200, {
-    requests: gatewayAccountFixtures.validPatchIntegrationVersion3dsRequest(version)
+    request: gatewayAccountFixtures.validPatchIntegrationVersion3dsRequest(version)
   })
 }
 
@@ -292,6 +280,13 @@ function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId) {
   return stubBuilder('PATCH', path, 200)
 }
 
+function patchUpdateWorldpayOneOffCredentialsSuccess (opts = {}) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/credentials/${opts.credentialId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest(opts)
+  })
+}
+
 function postUpdateNotificationCredentialsSuccess (gatewayAccountId) {
   const path = `/v1/api/accounts/${gatewayAccountId}/notification-credentials`
   return stubBuilder('POST', path, 200)
@@ -309,7 +304,6 @@ module.exports = {
   getGatewayAccountByExternalIdSuccess,
   getGatewayAccountsSuccessForMultipleAccounts,
   getAcceptedCardTypesSuccess,
-  getDirectDebitGatewayAccountSuccess,
   postCreateGatewayAccountSuccess,
   getCardTypesSuccess,
   postUpdateCardTypesSuccess,
@@ -326,6 +320,7 @@ module.exports = {
   postCheckWorldpayCredentials,
   postUpdateWorldpay3dsFlexCredentials,
   patchUpdateCredentialsSuccess,
+  patchUpdateWorldpayOneOffCredentialsSuccess,
   postUpdateNotificationCredentialsSuccess,
   postSwitchPspSuccess,
   patchAccountUpdateApplePaySuccess,

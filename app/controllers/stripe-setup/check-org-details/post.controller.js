@@ -45,7 +45,7 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
       orgPostcode: merchantDetails.address_postcode,
       isSwitchingCredentials,
       enableStripeOnboardingTaskList,
-      currentCredential,
+      currentCredential
     }
 
     return response(req, res, 'stripe-setup/check-org-details/index', data)

@@ -111,7 +111,6 @@ describe('webhooks service', () => {
     expect(result.links[0].disabled).to.equal(undefined)
     expect(result.links[1].pageName).to.equal('Next')
     expect(result.links[1].disabled).to.equal(true)
-
   })
 })
 

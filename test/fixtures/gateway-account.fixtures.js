@@ -3,14 +3,21 @@
 function validCredentials (opts = {}) {
   const credentials = {}
 
+  // Worldpay
+  if (opts.one_off_customer_initiated) {
+    credentials.one_off_customer_initiated = {
+      merchant_code: opts.one_off_customer_initiated.merchant_code,
+      username: opts.one_off_customer_initiated.username
+    }
+  }
+
+  // ePDQ
   if (opts.merchant_id) {
     credentials.merchant_id = opts.merchant_id
   }
-
   if (opts.username) {
     credentials.username = opts.username
   }
-
   if (opts.sha_in_passphrase) {
     credentials.sha_in_passphrase = opts.sha_in_passphrase
   }
@@ -18,6 +25,7 @@ function validCredentials (opts = {}) {
     credentials.sha_out_passphrase = opts.sha_out_passphrase
   }
 
+  // Stripe
   if (opts.stripe_account_id) {
     credentials.stripe_account_id = opts.stripe_account_id
   }
@@ -329,6 +337,25 @@ function validPatchIntegrationVersion3dsRequest (version) {
   }
 }
 
+function validPatchWorldpayOneOffCustomerInitiatedRequest (opts = {}) {
+  return [
+    {
+      op: 'replace',
+      path: 'credentials',
+      value: {
+        merchant_id: opts.merchantCode,
+        username: opts.username,
+        password: opts.password
+      }
+    },
+    {
+      op: 'replace',
+      path: 'last_updated_by_user_external_id',
+      value: opts.userExternalId
+    }
+  ]
+}
+
 function validPatchGatewayCredentialsResponse (opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
@@ -379,6 +406,7 @@ module.exports = {
   validUpdateGatewayAccountCredentialsRequest,
   validGatewayAccountCredentialsResponse,
   validPatchGatewayMerchantIdRequest,
+  validPatchWorldpayOneOffCustomerInitiatedRequest,
   validPatchGatewayCredentialsResponse,
   validPatchAccountGatewayAccountCredentialsStateRequest,
   validPatchServiceNameRequest,

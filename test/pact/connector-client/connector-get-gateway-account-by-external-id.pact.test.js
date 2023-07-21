@@ -37,6 +37,14 @@ describe('connector client - get gateway account by external id', function () {
       payment_provider: 'worldpay',
       description: 'A description',
       analytics_id: 'an-analytics-id',
+      gateway_account_credentials: [{
+        credentials: {
+          one_off_customer_initiated: {
+            merchant_code: 'a-merchant-code',
+            username: 'a-username'
+          }
+        }
+      }],
       worldpay_3ds_flex: {
         organisational_unit_id: 'an-org-id',
         issuer: 'an-issues'

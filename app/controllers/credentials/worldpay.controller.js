@@ -10,7 +10,7 @@ const { CONNECTOR_URL, SKIP_PSP_CREDENTIAL_CHECKS } = process.env
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
 
 const credentialsForm = new CredentialsForm([
-  { id: 'merchantId', key: 'merchant_id', valid: [{ method: isNotEmpty, message: 'Enter your merchant code' }] },
+  { id: 'merchantId', key: 'merchant_code', valid: [{ method: isNotEmpty, message: 'Enter your merchant code' }] },
   { id: 'username', valid: [{ method: isNotEmpty, message: 'Enter your username' }] },
   { id: 'password', valid: [{ method: isNotEmpty, message: 'Enter your password' }] }
 ])
@@ -18,7 +18,7 @@ const credentialsForm = new CredentialsForm([
 function showWorldpayCredentialsPage (req, res, next) {
   try {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
-    const form = credentialsForm.from(credential.credentials)
+    const form = credentialsForm.from(credential.credentials && credential.credentials.one_off_customer_initiated)
     const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
     response(req, res, 'credentials/worldpay', { form, isSwitchingCredentials, credential })
   } catch (error) {
@@ -49,7 +49,15 @@ async function updateWorldpayCredentials (req, res, next) {
     }
 
     if (SKIP_PSP_CREDENTIAL_CHECKS !== 'true') {
-      const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({ gatewayAccountId, payload: results.values })
+      const checkCredentialsPayload = {
+        merchant_id: results.values.merchant_code,
+        username: results.values.username,
+        password: results.values.password
+      }
+      const checkCredentialsWithWorldpay = await connectorClient.postCheckWorldpayCredentials({
+        gatewayAccountId,
+        payload: checkCredentialsPayload
+      })
       if (checkCredentialsWithWorldpay.result !== 'valid') {
         logger.warn('Provided credentials failed validation with Worldpay')
         results.errorSummaryList = formatErrorsForSummaryList({ 'merchantId': 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided' })
@@ -62,8 +70,12 @@ async function updateWorldpayCredentials (req, res, next) {
     await connectorClient.patchAccountGatewayAccountCredentials({
       gatewayAccountId,
       gatewayAccountCredentialsId: credential.gateway_account_credential_id,
-      credentials: results.values,
-      userExternalId: req.user.externalId
+      userExternalId: req.user.externalId,
+      credentials: {
+        merchant_id: results.values.merchant_code,
+        username: results.values.username,
+        password: results.values.password
+      }
     })
     logger.info('Successfully updated Worldpay credentials on account')
 

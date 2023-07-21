@@ -100,7 +100,7 @@ describe('Stripe setup: Government entity document', () => {
       cy.get('.govuk-back-link')
         .should('contain', 'Back to information for Stripe')
         .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
-     })
+    })
   })
 
   describe('when user is admin, account is Stripe and "Government entity document" is already submitted', () => {

@@ -56,7 +56,6 @@ describe('Request to go live: organisation name page', () => {
   })
 
   describe('Service has NOT_STARTED go live stage and organisation name is not pre-filled', () => {
-
     it('should display an empty form', () => {
       cy.task('setupStubs', utils.getUserAndGatewayAccountStubs(notStartedServiceRole))
 

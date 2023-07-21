@@ -115,7 +115,7 @@ describe('Stripe setup: Check your organisation’s details', () => {
         .should('have.attr', 'href', '#confirm-org-details')
 
       cy.get('[data-cy=error-message]').should('contain', 'Select yes if your organisation’s details match the details on your government entity document')
-     
+
       cy.get('#navigation-menu-your-psp')
         .should('contain', 'Information for Stripe')
         .parent().should('have.class', 'govuk-!-font-weight-bold')

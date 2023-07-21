@@ -168,9 +168,9 @@ describe('VAT number POST controller', () => {
 
   it('should redirect to the task list page when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to true ', async function () {
     process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-    
+
     req.url = '/your-psp/:credentialId/vat-number'
-    
+
     updateCompanyMock = sinon.spy(() => Promise.resolve())
     setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
     const controller = getControllerWithMocks()
