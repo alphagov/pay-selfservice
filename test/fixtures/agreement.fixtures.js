@@ -60,13 +60,13 @@ module.exports = {
       page: opts.page || 1
     }
   },
-  validAgreementNotFoundResponse: (opts = {}) =>  {
+  validAgreementNotFoundResponse: (opts = {}) => {
     return {
       code: 404,
       message: opts.message || 'HTTP 404 Not Found'
     }
   },
-  validAgreementsNotFoundResponse: () =>  {
+  validAgreementsNotFoundResponse: () => {
     return {
       results: [],
       total: 0,

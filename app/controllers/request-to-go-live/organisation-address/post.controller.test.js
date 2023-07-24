@@ -248,7 +248,6 @@ describe('organisation address - post controller', () => {
         expect(responseData.args[3].isStripeUpdateOrgDetails).to.equal(true)
         expect(responseData.args[3].isSwitchingCredentials).to.equal(false)
         expect(responseData.args[3].isStripeSetupUserJourney).to.equal(true)
-        console.log(1111, responseData.args[3])
         expect(responseData.args[3].enableStripeOnboardingTaskList).to.equal(true)
         expect(responseData.args[3].currentCredential).to.deep.equal({ external_id: 'a-valid-credential-external-id' })
       })

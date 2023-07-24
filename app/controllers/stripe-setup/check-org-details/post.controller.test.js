@@ -169,7 +169,7 @@ describe('Check org details - post controller', () => {
       })
       it('when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and `yes` radio button is selected, then it should redirect to tasklist page', async () => {
         process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-        
+
         req.url = '/your-psp/:credentialId/check-organisation-details'
         req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }
 

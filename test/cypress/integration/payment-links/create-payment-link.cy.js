@@ -40,7 +40,9 @@ describe('The create payment link start page for a Worldpay MOTO account', () =>
             payment_provider: 'worldpay',
             state: 'ACTIVE',
             credentials: {
-              merchant_id: 'worldpay-merchant-code-ending-with-MOTO'
+              one_off_customer_initiated: {
+                merchant_code: 'worldpay-merchant-code-ending-with-MOTO'
+              }
             }
           }
         ]

@@ -53,7 +53,7 @@ class PactInteractionBuilder {
     return this
   }
 
-  withResponseWithoutHeaders() {
+  withResponseWithoutHeaders () {
     this.withoutHeaders = true
     return this
   }

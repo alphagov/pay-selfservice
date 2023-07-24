@@ -61,7 +61,7 @@ describe('The Stripe psp details banner', () => {
     cy.get('[data-cy=stripe-notification]')
       .contains('You need to submit additional information to Stripe to be able to take payments.')
       .within(() => {
-      cy.get('a').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
+        cy.get('a').should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
       })
   })
 
@@ -81,7 +81,7 @@ describe('The Stripe psp details banner', () => {
     cy.get('[data-cy=stripe-notification]')
       .contains('Stripe has restricted your account. To start taking payments again, please contact support govuk-pay-support@digital.cabinet-office.gov.uk')
       .within(() => {
-      cy.get('a').should('have.attr', 'href', 'mailto:govuk-pay-support@digital.cabinet-office.gov.uk')
+        cy.get('a').should('have.attr', 'href', 'mailto:govuk-pay-support@digital.cabinet-office.gov.uk')
       })
   })
 

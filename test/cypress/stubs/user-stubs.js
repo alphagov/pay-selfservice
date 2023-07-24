@@ -275,7 +275,6 @@ function buildUserWithServiceRoleOpts (opts) {
 }
 
 module.exports = {
-  buildGetUserSuccessStub,
   getUserSuccess,
   getUsersSuccess,
   getUserSuccessWithNoServices,

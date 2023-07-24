@@ -4,6 +4,8 @@
 
 <h2 class="govuk-heading-m">Account credentials</h2>
 
+{% set isAccountCredentialsConfigured = (credential.credentials and credential.credentials.merchant_id) %}
+
 {{
   govukSummaryList({
     rows: [

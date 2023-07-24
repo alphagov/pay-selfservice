@@ -62,9 +62,22 @@ describe('Post 3DS Flex controller', () => {
     sinon.assert.notCalled(updateIntegrationVersion3dsMock)
   })
 
+  it('should call next when there is an error checking flex credentials', async () => {
+    req.account = getGatewayAcountWithType('live')
+    const expectedError = new Error('error from connector')
+
+    postCheckWorldpay3dsFlexCredentials = sinon.stub().rejects(expectedError)
+    const controller = getControllerWithMocks()
+
+    await controller(req, res, next)
+
+    sinon.assert.called(postCheckWorldpay3dsFlexCredentials)
+    sinon.assert.calledWith(next, expectedError)
+  })
+
   it('should call next when there is an error updating the 3DS integration version to 2', async () => {
     req.account = getGatewayAcountWithType('live')
-    const expectedError = new Error('error from adminusers')
+    const expectedError = new Error('error from connector')
 
     updateIntegrationVersion3dsMock = sinon.stub().rejects(expectedError)
     const controller = getControllerWithMocks()
