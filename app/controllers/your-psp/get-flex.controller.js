@@ -7,8 +7,6 @@ const { isSwitchingCredentialsRoute } = require('../../utils/credentials')
 const { response } = require('../../utils/response')
 
 module.exports = (req, res, next) => {
-  const { change } = req.query || {}
-
   try {
     const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
@@ -37,7 +35,7 @@ module.exports = (req, res, next) => {
       }
     }
 
-    return response(req, res, 'your-psp/flex', { errors, change, isFlexConfigured, orgUnitId, issuer, credential, isSwitchingCredentials })
+    return response(req, res, 'your-psp/flex', { errors, isFlexConfigured, orgUnitId, issuer, credential, isSwitchingCredentials })
   } catch (error) {
     next(error)
   }

@@ -21,8 +21,25 @@
   You’ll find these details in your <a class="govuk-link" href="https://secure.worldpay.com/sso/public/auth/login.html">Worldpay account</a>.
 </p>
 
-{{  govukSummaryList({
+{{govukSummaryList({
     attributes: {'data-cy': 'worldpay-flex-settings-summary-list'},
+    card: {
+      title: {
+        text: "3DS Flex credentials"
+      },
+      actions: {
+        items: [
+          {
+            href: formatAccountPathsFor(routes.account.yourPsp.flex, currentGatewayAccount.external_id, credential.external_id),
+            text: "Change",
+            visuallyHiddenText: "3DS Flex credentials",
+            attributes: {
+              id: "flex-credentials-change-link"
+            }
+          }
+        ]
+      }
+    },
     rows: [
       {
         key: {
@@ -31,18 +48,6 @@
         value: {
           text: currentGatewayAccount.worldpay_3ds_flex.organisational_unit_id if isWorldpay3dsFlexCredentialsConfigured else "Not configured",
           classes: "value-organisational-unit-id"
-        },
-        actions: {
-          items: [
-            {
-              href: formatAccountPathsFor(routes.account.yourPsp.flex, currentGatewayAccount.external_id, credential.external_id) + "?change=organisationalUnitId",
-              text: "Change",
-              visuallyHiddenText: "3DS Flex credentials",
-              attributes: {
-                id: "flex-credentials-change-link"
-              }
-            }
-          ]
         }
       },
       {
@@ -52,15 +57,6 @@
         value: {
           text: currentGatewayAccount.worldpay_3ds_flex.issuer if isWorldpay3dsFlexCredentialsConfigured else "Not configured",
           classes: "value-issuer"
-        },
-        actions: {
-          items: [
-            {
-              href: formatAccountPathsFor(routes.account.yourPsp.flex, currentGatewayAccount.external_id, credential.external_id) + "?change=issuer",
-              text: "Change",
-              visuallyHiddenText: "3DS Flex credentials"
-            }
-          ]
         }
       },
       {
@@ -70,15 +66,6 @@
         value: {
           text: '●●●●●●●●' if isWorldpay3dsFlexCredentialsConfigured else "Not configured",
           classes: "value-jwt-mac-key"
-        },
-        actions: {
-          items: [
-            {
-              href: formatAccountPathsFor(routes.account.yourPsp.flex, currentGatewayAccount.external_id, credential.external_id) + "?change=password",
-              text: "Change",
-              visuallyHiddenText: "3DS Flex credentials"
-            }
-          ]
         }
       }
     ]
