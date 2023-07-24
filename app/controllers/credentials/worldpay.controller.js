@@ -18,7 +18,7 @@ const credentialsForm = new CredentialsForm([
 function showWorldpayCredentialsPage (req, res, next) {
   try {
     const credential = getCredentialByExternalId(req.account, req.params.credentialId)
-    const form = credentialsForm.from(credential.credentials && credential.credentials.one_off_customer_initiated)
+    const form = credentialsForm.from((credential.credentials && credential.credentials.one_off_customer_initiated) || {})
     const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
     response(req, res, 'credentials/worldpay', { form, isSwitchingCredentials, credential })
   } catch (error) {
