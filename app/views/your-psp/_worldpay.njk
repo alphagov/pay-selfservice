@@ -2,55 +2,169 @@
 
 <p class="govuk-body">Go to your <a class="govuk-link" href="https://secure.worldpay.com/sso/public/auth/login.html">Worldpay account</a> to get the details you need to enter here, or <a class="govuk-link" href="https://docs.payments.service.gov.uk/switching_to_live/set_up_a_live_worldpay_account/#connect-your-live-account-to-worldpay">read more in our documentation.</a></p>
 
-{% set isAccountCredentialsConfigured = (credential.credentials and credential.credentials.one_off_customer_initiated|length) %}
+{% if isRecurringEnabled %}
+  {% set isCitCredentialsConfigured = (credential.credentials and credential.credentials.recurring_customer_initiated|length) %}
+  {% set isMitCredentialsConfigured = (credential.credentials and credential.credentials.recurring_merchant_initiated|length) %}
 
-{{
-  govukSummaryList({
-    card: {
-      title: {
-        text: "Account credentials"
+  {{
+    govukSummaryList({
+      attributes: {
+        "data-cy": "cit-credentials-summary-list"
       },
-      actions: {
-        items: [
-          {
-            href: formatAccountPathsFor(routes.account.yourPsp.credentialsWithGatewayCheck, currentGatewayAccount.external_id, credential.external_id),
-            text: "Change",
-            visuallyHiddenText: "account credentials",
-            attributes: {
-              id: "credentials-change-link"
+      card: {
+        title: {
+          text: "Recurring customer initiated transaction (CIT) credentials"
+        },
+        actions: {
+          items: [
+            {
+              href: '#',
+              text: "Change",
+              visuallyHiddenText: "Recurring customer initiated transaction (CIT) credentials",
+              attributes: {
+                "data-cy": "cit-credentials-change-link"
+              }
             }
+          ]
+        }
+      },
+      rows: [
+        {
+          key: {
+            text: "CIT merchant code"
+          },
+          value: {
+            text: credential.credentials.recurring_customer_initiated.merchant_code if isCitCredentialsConfigured else "Not configured",
+            classes: "value-merchant-id"
           }
-        ]
-      }
-    },
-    rows: [
-      {
-        key: {
-          text: "Merchant code"
         },
-        value: {
-        text: credential.credentials.one_off_customer_initiated.merchant_code if isAccountCredentialsConfigured else "Not configured",
-          classes: "value-merchant-id"
+        {
+          key: {
+            text: "Username"
+          },
+          value: {
+            text: credential.credentials.recurring_customer_initiated.username if isCitCredentialsConfigured else "Not configured",
+            classes: "value-username"
+          }
+        },
+        {
+          key: {
+            text: "Password"
+          },
+          value: {
+            text: '●●●●●●●●' if isCitCredentialsConfigured else "Not configured",
+            classes: "value-password"
+          }
+        }
+      ]
+    })
+  }}
+
+  {{
+    govukSummaryList({
+      attributes: {
+        'data-cy': 'mit-credentials-summary-list'
+      },
+      card: {
+        title: {
+          text: "Recurring merchant initiated transaction (MIT) credentials"
+        },
+        actions: {
+          items: [
+            {
+              href: '#',
+              text: "Change",
+              visuallyHiddenText: "Recurring merchant initiated transaction (MIT) credentials",
+              attributes: {
+                id: "mit-credentials-change-link"
+              }
+            }
+          ]
         }
       },
-      {
-        key: {
-          text: "Username"
+      rows: [
+        {
+          key: {
+            text: "MIT merchant code"
+          },
+          value: {
+            text: credential.credentials.recurring_merchant_initiated.merchant_code if isMitCredentialsConfigured else "Not configured",
+            classes: "value-merchant-id"
+          }
         },
-        value: {
-          text: credential.credentials.one_off_customer_initiated.username if isAccountCredentialsConfigured else "Not configured",
-          classes: "value-username"
+        {
+          key: {
+            text: "Username"
+          },
+          value: {
+            text: credential.credentials.recurring_merchant_initiated.username if isMitCredentialsConfigured else "Not configured",
+            classes: "value-username"
+          }
+        },
+        {
+          key: {
+            text: "Password"
+          },
+          value: {
+            text: '●●●●●●●●' if isMitCredentialsConfigured else "Not configured",
+            classes: "value-password"
+          }
+        }
+      ]
+    })
+  }}
+{% else %}
+  {% set isAccountCredentialsConfigured = (credential.credentials and credential.credentials.one_off_customer_initiated|length) %}
+
+  {{
+    govukSummaryList({
+      card: {
+        title: {
+          text: "Account credentials"
+        },
+        actions: {
+          items: [
+            {
+              href: formatAccountPathsFor(routes.account.yourPsp.credentialsWithGatewayCheck, currentGatewayAccount.external_id, credential.external_id),
+              text: "Change",
+              visuallyHiddenText: "account credentials",
+              attributes: {
+                id: "credentials-change-link"
+              }
+            }
+          ]
         }
       },
-      {
-        key: {
-          text: "Password"
+      rows: [
+        {
+          key: {
+            text: "Merchant code"
+          },
+          value: {
+            text: credential.credentials.one_off_customer_initiated.merchant_code if isAccountCredentialsConfigured else "Not configured",
+            classes: "value-merchant-id"
+          }
         },
-        value: {
-          text: '●●●●●●●●' if isAccountCredentialsConfigured else "Not configured",
-          classes: "value-password"
+        {
+          key: {
+            text: "Username"
+          },
+          value: {
+            text: credential.credentials.one_off_customer_initiated.username if isAccountCredentialsConfigured else "Not configured",
+            classes: "value-username"
+          }
+        },
+        {
+          key: {
+            text: "Password"
+          },
+          value: {
+            text: '●●●●●●●●' if isAccountCredentialsConfigured else "Not configured",
+            classes: "value-password"
+          }
         }
-      }
-    ]
-  })
-}}
+      ]
+    })
+  }}
+
+{% endif %}

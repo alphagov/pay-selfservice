@@ -25,6 +25,7 @@ module.exports = async (req, res, next) => {
 
     const is3dsEnabled = req.account.requires3ds === true
     const isMotoEnabled = req.account.allow_moto === true
+    const isRecurringEnabled = req.account.recurring_enabled === true
 
     let stripeData = {}
     if (activeCredential && activeCredential.payment_provider === 'stripe') {
@@ -44,6 +45,7 @@ module.exports = async (req, res, next) => {
       isMotoEnabled,
       isWorldpay3dsFlexEnabled,
       isWorldpay3dsFlexCredentialsConfigured,
+      isRecurringEnabled,
       ...stripeData,
       enableStripeOnboardingTaskList
     })
