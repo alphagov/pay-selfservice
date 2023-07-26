@@ -30,7 +30,7 @@ describe('connector client - patch gateway account credentials.state', () => {
   })
   after(() => provider.finalize())
 
-  describe('when a request to update google pay gateway merchant id for gateway account credentials is made', () => {
+  describe('when a request to update the state of gateway account credentials is made', () => {
     const state = 'VERIFIED_WITH_LIVE_PAYMENT'
     const userExternalId = 'a-user-external-id'
     const requestPayload = {

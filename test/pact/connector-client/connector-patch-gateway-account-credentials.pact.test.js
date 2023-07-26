@@ -34,11 +34,13 @@ describe('connector client - patch gateway account credentials', () => {
     const credentialsInRequest = {
       username: 'a-username',
       password: 'a-password', // pragma: allowlist secret
-      merchant_id: 'a-merchant-id'
+      merchant_id: 'a-merchant-code'
     }
     const credentialsInResponse = {
-      username: 'a-username',
-      merchant_id: 'a-merchant-id'
+      one_off_customer_initiated: {
+        username: 'a-username',
+        merchant_code: 'a-merchant-code'
+      }
     }
     const userExternalId = 'a-user-external-id'
     const request = gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest({
