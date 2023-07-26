@@ -357,10 +357,7 @@ function validPatchWorldpayOneOffCustomerInitiatedRequest (opts = {}) {
 }
 
 function validPatchGatewayCredentialsResponse (opts = {}) {
-  const defaultCredentials = {
-    username: 'a-username',
-    merchant_id: 'a-merchant-id'
-  }
+  const defaultCredentials = {}
   if (opts.gatewayMerchantId !== undefined) {
     defaultCredentials.gateway_merchant_id = opts.gatewayMerchantId
   }

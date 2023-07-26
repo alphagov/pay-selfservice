@@ -34,8 +34,6 @@ describe('connector client - patch gateway account credentials.gateway_merchant_
     const userExternalId = 'a-user-external-id'
     const googlePayGatewayMerchantId = 'abcdef123abcdef'
     const credentialsInResponse = {
-      username: 'a-username',
-      merchant_id: 'a-merchant-id',
       gateway_merchant_id: googlePayGatewayMerchantId
     }
     const request = gatewayAccountFixtures.validPatchGatewayMerchantIdRequest({
