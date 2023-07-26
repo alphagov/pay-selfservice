@@ -14,7 +14,7 @@ const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords'
 
 describe('adminusers client - create forgotten password', function () {
   const provider = new Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
