@@ -126,7 +126,7 @@ describe('Switch PSP settings page', () => {
             ...getUserAndAccountStubsForSwitchingNotStarted(),
             gatewayAccountStubs.postCheckWorldpayCredentials({
               gatewayAccountId,
-              merchant_id: merchantId,
+              merchant_code: merchantId,
               username,
               password
             }),

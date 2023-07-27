@@ -13,6 +13,25 @@ const CREDENTIAL_STATE = {
 
 const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED]
 
+const worldpayMerchantDetailOperations = {
+  ONE_OFF_CUSTOMER_INITIATED: {
+    key: 'one-off-customer-initiated',
+    patch: 'credentials/worldpay/one_off_customer_initiated',
+    path: 'one_off_customer_initiated'
+  },
+  RECURRING_CUSTOMER_INITIATED: {
+    key: 'recurring-customer-initiated',
+    patch: 'credentials/worldpay/recurring_customer_initiated',
+    path: 'recurring_customer_initiated'
+  },
+  RECURRING_MERCHANT_INITIATED: {
+    key: 'recurring-merchant-initiated',
+    patch: 'credentials/worldpay/recurring_merchant_initiated',
+    path: 'recurring_merchant_initiated'
+  }
+}
+const worldpayMerchantDetailOperationsIndex = Object.entries(worldpayMerchantDetailOperations).reduce((aggregate, [ key, value ]) => ({ [ value.key ]: value, ...aggregate }), {})
+
 function getActiveCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
   return credentials
@@ -101,6 +120,10 @@ function hasSwitchedProvider (gatewayAccount = {}) {
   return credentials.some((credential) => credential.state === CREDENTIAL_STATE.RETIRED)
 }
 
+function getWorldpayMerchantDetailOperationByKey(key) {
+  return worldpayMerchantDetailOperationsIndex[key]
+}
+
 module.exports = {
   getCurrentCredential,
   getSwitchingCredential,
@@ -111,5 +134,7 @@ module.exports = {
   hasSwitchedProvider,
   getActiveCredential,
   CREDENTIAL_STATE,
-  isEnableStripeOnboardingTaskListRoute
+  isEnableStripeOnboardingTaskListRoute,
+  worldpayMerchantDetailOperations,
+  getWorldpayMerchantDetailOperationByKey
 }

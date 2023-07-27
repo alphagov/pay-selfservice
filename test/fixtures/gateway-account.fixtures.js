@@ -250,12 +250,12 @@ function validUpdateGatewayAccountCredentialsRequest (opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
     password: 'a-password', // pragma: allowlist secret
-    merchant_id: 'a-merchant-id'
+    merchant_code: 'a-merchant-id'
   }
   return [
     {
       op: 'replace',
-      path: 'credentials',
+      path: opts.path || 'credentials/worldpay/one_off_customer_initiated',
       value: opts.credentials || defaultCredentials
     },
     {

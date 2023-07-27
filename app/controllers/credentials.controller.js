@@ -100,6 +100,7 @@ async function update (req, res, next) {
       gatewayAccountId: accountId,
       gatewayAccountCredentialsId: credential.gateway_account_credential_id,
       userExternalId: req.user.externalId,
+      path: 'credentials',
       ...credentialsPatchRequestValueOf(req.body)
     })
 

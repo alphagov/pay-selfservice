@@ -334,8 +334,8 @@ module.exports.bind = function (app) {
   account.get(switchPSP.receiveVerifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.completePaymentJourney)
 
   // Credentials
-  account.get(yourPsp.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
-  account.post(yourPsp.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
+  account.get(yourPsp.worldpayCredentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
+  account.post(yourPsp.worldpayCredentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
   account.get(switchPSP.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
   account.post(switchPSP.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
 

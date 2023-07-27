@@ -13,13 +13,13 @@ describe('Your PSP settings page', () => {
   const yourPspPath = `/account/${gatewayAccountExternalId}/your-psp`
 
   const testCredentials = {
-    merchant_id: 'positron-permit-people',
+    merchant_code: 'positron-permit-people',
     username: 'jonheslop',
     password: 'anti-matter'
   }
 
   const testCredentialsMOTO = {
-    merchant_id: 'merchant-code-ending-with-MOTO',
+    merchant_code: 'merchant-code-ending-with-MOTO',
     username: 'user-name',
     password: 'anti-matter'
   }
@@ -150,7 +150,7 @@ describe('Your PSP settings page', () => {
       ])
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#credentials-change-link').click()
-      cy.get('#merchantId').type(testCredentials.merchant_id)
+      cy.get('#merchantId').type(testCredentials.merchant_code)
       cy.get('#username').type(testCredentials.username)
       cy.get('#submitCredentials').click()
       cy.get('.govuk-error-summary').should('have.length', 1)
@@ -343,7 +343,7 @@ describe('Your PSP settings page', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#credentials-change-link').click()
       cy.get('#merchantId').clear()
-      cy.get('#merchantId').type(testCredentialsMOTO.merchant_id)
+      cy.get('#merchantId').type(testCredentialsMOTO.merchant_code)
       cy.get('#username').type(testCredentialsMOTO.username)
       cy.get('#password').type(testCredentialsMOTO.password)
       cy.get('#submitCredentials').click()
@@ -613,7 +613,7 @@ describe('Your PSP settings page', () => {
       ])
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#credentials-change-link').click()
-      cy.get('#merchantId').type(testCredentials.merchant_id)
+      cy.get('#merchantId').type(testCredentials.merchant_code)
       cy.get('#username').type(testCredentials.username)
       cy.get('#password').type(testCredentials.password)
       cy.get('#shaInPassphrase').type(testCredentials.password)
@@ -633,13 +633,13 @@ describe('Your PSP settings page', () => {
         gateway: 'epdq',
         gatewayAccountCredentials: [{
           payment_provider: 'epdq',
-          credentials: testCredentials,
+          credentials: { ...testCredentials, merchant_id: testCredentials.merchant_code },
           external_id: credentialExternalId,
           id: credentialsId
         }]
       }))
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
-      cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
+      cy.get('.value-merchant-id').should('contain', testCredentials.merchant_code)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
     })

@@ -133,7 +133,7 @@ module.exports = {
       index: '/your-psp/:credentialId',
       flex: '/your-psp/:credentialId/flex',
       worldpay3dsFlex: '/your-psp/:credentialId/worldpay-3ds-flex',
-      credentialsWithGatewayCheck: '/your-psp/:credentialId/credentials-with-gateway-check',
+      worldpayCredentialsWithGatewayCheck: '/your-psp/:credentialId/credentials-with-gateway-check/:merchantDetailsKey',
       stripeSetup: {
         bankDetails: '/your-psp/:credentialId/bank-details',
         responsiblePerson: '/your-psp/:credentialId/responsible-person',

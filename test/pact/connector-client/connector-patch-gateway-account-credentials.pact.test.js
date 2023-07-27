@@ -34,7 +34,7 @@ describe('connector client - patch gateway account credentials', () => {
     const credentialsInRequest = {
       username: 'a-username',
       password: 'a-password', // pragma: allowlist secret
-      merchant_id: 'a-merchant-code'
+      merchant_code: 'a-merchant-code'
     }
     const credentialsInResponse = {
       one_off_customer_initiated: {
@@ -45,6 +45,7 @@ describe('connector client - patch gateway account credentials', () => {
     const userExternalId = 'a-user-external-id'
     const request = gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest({
       credentials: credentialsInRequest,
+      path: 'credentials/worldpay/one_off_customer_initiated',
       userExternalId
     })
     const response = gatewayAccountFixtures.validGatewayAccountCredentialsResponse({
@@ -73,6 +74,7 @@ describe('connector client - patch gateway account credentials', () => {
         gatewayAccountId: existingGatewayAccountId,
         gatewayAccountCredentialsId: existingGatewayAccountCredentialsId,
         credentials: credentialsInRequest,
+        path: 'credentials/worldpay/one_off_customer_initiated',
         userExternalId
       })
       expect(connectorResponse.credentials).to.deep.equal(credentialsInResponse)
