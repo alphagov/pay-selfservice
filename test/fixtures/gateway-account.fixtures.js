@@ -11,6 +11,20 @@ function validCredentials (opts = {}) {
     }
   }
 
+  if (opts.recurring_customer_initiated) {
+    credentials.recurring_customer_initiated = {
+      merchant_code: opts.recurring_customer_initiated.merchant_code,
+      username: opts.recurring_customer_initiated.username
+    }
+  }
+
+  if (opts.recurring_merchant_initiated) {
+    credentials.recurring_merchant_initiated = {
+      merchant_code: opts.recurring_merchant_initiated.merchant_code,
+      username: opts.recurring_merchant_initiated.username
+    }
+  }
+
   // ePDQ
   if (opts.merchant_id) {
     credentials.merchant_id = opts.merchant_id
@@ -86,6 +100,7 @@ function validGatewayAccount (opts) {
     allow_moto: opts.allow_moto || false,
     moto_mask_card_number_input: opts.moto_mask_card_number_input || false,
     moto_mask_card_security_code_input: opts.moto_mask_card_security_code_input || false,
+    recurring_enabled: opts.recurring_enabled || false,
     requires3ds: opts.requires3ds || false,
     integration_version_3ds: opts.integrationVersion3ds || 1,
     disabled: opts.disabled || false
