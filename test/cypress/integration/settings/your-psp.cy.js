@@ -17,21 +17,25 @@ describe('Your PSP settings page', () => {
     username: 'jonheslop',
     password: 'anti-matter'
   }
+
   const testCredentialsMOTO = {
     merchant_id: 'merchant-code-ending-with-MOTO',
     username: 'user-name',
     password: 'anti-matter'
   }
+
   const testFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c80',
     issuer: '5bd9e0e4444dce153428c940',
     jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0'
   }
+
   const testInvalidFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c81',
     issuer: '5bd9e0e4444dce153428c941',
     jwt_mac_key: 'ffffffff-aaaa-1111-1111-52805d5cd9e1'
   }
+
   const testBadResultFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c83',
     issuer: '5bd9e0e4444dce153428c943',
@@ -63,6 +67,7 @@ describe('Your PSP settings page', () => {
       gatewayAccountId,
       requires3ds: opts.requires3ds,
       allowMoto: opts.allowMoto,
+      recurringEnabled: opts.recurringEnabled,
       integrationVersion3ds: opts.integrationVersion3ds,
       worldpay3dsFlex: opts.worldpay3dsFlex,
       credentials: opts.credentials,
@@ -76,6 +81,7 @@ describe('Your PSP settings page', () => {
       gatewayAccountExternalId,
       requires3ds: opts.requires3ds,
       allowMoto: opts.allowMoto,
+      recurringEnabled: opts.recurringEnabled,
       integrationVersion3ds: opts.integrationVersion3ds,
       worldpay3dsFlex: opts.worldpay3dsFlex,
       credentials: opts.credentials,
@@ -345,6 +351,95 @@ describe('Your PSP settings page', () => {
         expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
       cy.get('h1').contains('Your payment service provider (PSP) - Worldpay').should('exist')
+    })
+  })
+
+  describe('When using a Worldpay account with recurring payments enabled', () => {
+    it('should render the page correctly when there are no existing credentials', () => {
+      cy.task('setupStubs', getUserAndGatewayAccountStubs({
+        gateway: 'worldpay',
+        requires3ds: true,
+        recurringEnabled: true,
+        integrationVersion3ds: 1,
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          credentials: {},
+          external_id: credentialExternalId,
+          id: credentialsId
+        }],
+        validateCredentials: testCredentialsMOTO
+      }))
+
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
+
+      cy.get('[data-cy=cit-credentials-summary-list]').within(() => {
+        cy.get('.value-merchant-id').should('contain', 'Not configured')
+        cy.get('.value-username').should('contain', 'Not configured')
+        cy.get('.value-password').should('contain', 'Not configured')
+      })
+
+      cy.get('[data-cy=mit-credentials-summary-list]').within(() => {
+        cy.get('.value-merchant-id').should('contain', 'Not configured')
+        cy.get('.value-username').should('contain', 'Not configured')
+        cy.get('.value-password').should('contain', 'Not configured')
+      })
+
+      cy.get('[data-cy=worldpay-flex-settings-summary-list]').within(() => {
+        cy.get('.value-organisational-unit-id').should('contain', 'Not configured')
+        cy.get('.value-issuer').should('contain', 'Not configured')
+        cy.get('.value-jwt-mac-key').should('contain', 'Not configured')
+      })
+    })
+
+    it('should render the page correctly when there are existing credentials', () => {
+      const citMerchantCode = 'a-cit-merchant-code'
+      const mitMerchantCode = 'a-mit-merchant-code'
+
+      const citUsername = 'a-cit-username'
+      const mitUsername = 'a-mit-username'
+
+      cy.task('setupStubs', getUserAndGatewayAccountStubs({
+        gateway: 'worldpay',
+        requires3ds: true,
+        recurringEnabled: true,
+        integrationVersion3ds: 1,
+        gatewayAccountCredentials: [{
+          payment_provider: 'worldpay',
+          credentials: {
+            recurring_customer_initiated: {
+              merchant_code: citMerchantCode,
+              username: citUsername
+            },
+            recurring_merchant_initiated: {
+              merchant_code: mitMerchantCode,
+              username: mitUsername
+            }
+          },
+          external_id: credentialExternalId,
+          id: credentialsId
+        }],
+        worldpay3dsFlex: testFlexCredentials
+      }))
+
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
+
+      cy.get('[data-cy=cit-credentials-summary-list]').within(() => {
+        cy.get('.value-merchant-id').should('contain', citMerchantCode)
+        cy.get('.value-username').should('contain', citUsername)
+        cy.get('.value-password').should('contain', '●●●●●●●●')
+      })
+
+      cy.get('[data-cy=mit-credentials-summary-list]').within(() => {
+        cy.get('.value-merchant-id').should('contain', mitMerchantCode)
+        cy.get('.value-username').should('contain', mitUsername)
+        cy.get('.value-password').should('contain', '●●●●●●●●')
+      })
+
+      cy.get('[data-cy=worldpay-flex-settings-summary-list]').within(() => {
+        cy.get('.value-organisational-unit-id').should('contain', testFlexCredentials.organisational_unit_id)
+        cy.get('.value-issuer').should('contain', testFlexCredentials.issuer)
+        cy.get('.value-jwt-mac-key').should('contain', '●●●●●●●●')
+      })
     })
   })
 
