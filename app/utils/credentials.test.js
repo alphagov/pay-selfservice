@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const paths = require('../paths')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
 const { InvalidConfigurationError } = require('../errors')
-const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists, getActiveCredential, isEnableStripeOnboardingTaskListRoute } = require('./credentials')
+const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists, getActiveCredential, isEnableStripeOnboardingTaskListRoute, getWorldpayMerchantDetailOperationByKey, worldpayMerchantDetailOperations } = require('./credentials')
 
 describe('credentials utility', () => {
   describe('get services current credential', () => {
@@ -99,13 +99,13 @@ describe('credentials utility', () => {
     })
 
     it('correctly identifies a non switch psp route', () => {
-      const req = { route: { path: paths.account.yourPsp.credentialsWithGatewayCheck } }
+      const req = { route: { path: paths.account.yourPsp.worldpayCredentialsWithGatewayCheck } }
       expect(isSwitchingCredentialsRoute(req)).to.equal(false)
     })
 
     it('correctly identifies a your psp route when ENABLE_STRIPE_ONBOARDING_TASK_LIST true ', () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
-      const req = { route: { path: paths.account.yourPsp.credentialsWithGatewayCheck } }
+      const req = { route: { path: paths.account.yourPsp.worldpayCredentialsWithGatewayCheck } }
       expect(isEnableStripeOnboardingTaskListRoute(req)).to.equal(true)
     })
 
@@ -274,6 +274,12 @@ describe('credentials utility', () => {
 
       const credential = getActiveCredential(account)
       expect(credential).to.equal(null)
+    })
+  })
+
+  describe('stores and index worldpay merchant detail operations', () => {
+    it('gets a worldpay merchant detail operation by key, using the index', () => {
+      expect(getWorldpayMerchantDetailOperationByKey('recurring-customer-initiated')).to.equal(worldpayMerchantDetailOperations.RECURRING_CUSTOMER_INITIATED)
     })
   })
 })

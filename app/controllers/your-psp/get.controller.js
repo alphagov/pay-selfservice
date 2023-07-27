@@ -5,7 +5,8 @@ const {
   getCredentialByExternalId,
   getCurrentCredential,
   getSwitchingCredentialIfExists,
-  hasSwitchedProvider
+  hasSwitchedProvider,
+  worldpayMerchantDetailOperations
 } = require('../../utils/credentials')
 const yourPspTasks = require('./your-psp-tasks.service')
 
@@ -47,7 +48,8 @@ module.exports = async (req, res, next) => {
       isWorldpay3dsFlexCredentialsConfigured,
       isRecurringEnabled,
       ...stripeData,
-      enableStripeOnboardingTaskList
+      enableStripeOnboardingTaskList,
+      worldpayMerchantDetailOperations
     })
   } catch (error) {
     next(error)

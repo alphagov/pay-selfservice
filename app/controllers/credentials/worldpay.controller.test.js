@@ -31,9 +31,12 @@ describe('Worldpay credentials controller', () => {
       },
       flash: sinon.spy(),
       route: {
-        path: '/your-psp/:credentialId/credentials-with-gateway-check'
+        path: '/your-psp/:credentialId/credentials-with-gateway-check/one-off-customer-initiated'
       },
-      params: { credentialId: 'a-valid-credential-id-smartpay' },
+      params: {
+        credentialId: 'a-valid-credential-id-smartpay',
+        merchantDetailsKey: 'one-off-customer-initiated'
+      },
       headers: {
         'x-request-id': 'correlation-id'
       }

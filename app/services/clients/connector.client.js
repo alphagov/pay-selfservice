@@ -188,7 +188,7 @@ ConnectorClient.prototype = {
     const payload = [
       {
         op: 'replace',
-        path: 'credentials',
+        path: params.path,
         value: params.credentials
       },
       {

@@ -13,13 +13,13 @@ describe('Your PSP settings page', () => {
   const yourPspPath = `/account/${gatewayAccountExternalId}/your-psp`
 
   const testCredentials = {
-    merchant_id: 'positron-permit-people',
+    merchant_code: 'positron-permit-people',
     username: 'jonheslop',
     password: 'anti-matter'
   }
 
   const testCredentialsMOTO = {
-    merchant_id: 'merchant-code-ending-with-MOTO',
+    merchant_code: 'merchant-code-ending-with-MOTO',
     username: 'user-name',
     password: 'anti-matter'
   }
@@ -150,7 +150,7 @@ describe('Your PSP settings page', () => {
       ])
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#credentials-change-link').click()
-      cy.get('#merchantId').type(testCredentials.merchant_id)
+      cy.get('#merchantId').type(testCredentials.merchant_code)
       cy.get('#username').type(testCredentials.username)
       cy.get('#submitCredentials').click()
       cy.get('.govuk-error-summary').should('have.length', 1)
@@ -343,7 +343,7 @@ describe('Your PSP settings page', () => {
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#credentials-change-link').click()
       cy.get('#merchantId').clear()
-      cy.get('#merchantId').type(testCredentialsMOTO.merchant_id)
+      cy.get('#merchantId').type(testCredentialsMOTO.merchant_code)
       cy.get('#username').type(testCredentialsMOTO.username)
       cy.get('#password').type(testCredentialsMOTO.password)
       cy.get('#submitCredentials').click()
@@ -366,8 +366,7 @@ describe('Your PSP settings page', () => {
           credentials: {},
           external_id: credentialExternalId,
           id: credentialsId
-        }],
-        validateCredentials: testCredentialsMOTO
+        }]
       }))
 
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
@@ -440,6 +439,77 @@ describe('Your PSP settings page', () => {
         cy.get('.value-issuer').should('contain', testFlexCredentials.issuer)
         cy.get('.value-jwt-mac-key').should('contain', '●●●●●●●●')
       })
+    })
+
+    it('should link to and appropriately pre-populate the pages for updating recurring merchant details', () => {
+      const citMerchantCode = 'a-cit-merchant-code'
+      const mitMerchantCode = 'a-mit-merchant-code'
+
+      const citUsername = 'a-cit-username'
+      const mitUsername = 'a-mit-username'
+
+      const validateCredentials = {
+        merchant_code: citMerchantCode,
+        username: citUsername,
+        password: 'a-password'
+      }
+
+      cy.task('setupStubs', [
+        ...getUserAndGatewayAccountStubs({
+          gateway: 'worldpay',
+          requires3ds: true,
+          recurringEnabled: true,
+          integrationVersion3ds: 1,
+          gatewayAccountCredentials: [{
+            payment_provider: 'worldpay',
+            credentials: {
+              recurring_customer_initiated: {
+                merchant_code: citMerchantCode,
+                username: citUsername
+              },
+              recurring_merchant_initiated: {
+                merchant_code: mitMerchantCode,
+                username: mitUsername
+              }
+            },
+            external_id: credentialExternalId,
+            id: credentialsId
+          }],
+          worldpay3dsFlex: testFlexCredentials,
+          validateCredentials
+        }),
+        gatewayAccountStubs.postCheckWorldpayCredentials({ ...validateCredentials, gatewayAccountId }),
+        gatewayAccountStubs.patchUpdateWorldpayOneOffCredentialsSuccess({
+          gatewayAccountId,
+          credentialId: credentialsId,
+          userExternalId,
+          path: 'credentials/worldpay/recurring_customer_initiated',
+          credentials: validateCredentials
+        })
+      ])
+
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
+
+      cy.get('#mit-credentials-change-link').click()
+
+      cy.get('h1').should('contain', 'Recurring merchant initiated transaction (MIT) credentials')
+      cy.get('#merchantId').should('have.value', mitMerchantCode)
+      cy.get('#username').should('have.value', mitUsername)
+
+      cy.get('.govuk-back-link').click()
+
+      cy.get('#cit-credentials-change-link').click()
+
+      cy.get('h1').should('contain', 'Recurring customer initiated transaction (CIT) credentials')
+      cy.get('#merchantId').should('have.value', citMerchantCode)
+      cy.get('#username').should('have.value', citUsername)
+
+      cy.get('#password').type('a-password')
+      cy.get('#submitCredentials').click()
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
+      })
+      cy.get('h1').contains('Your payment service provider (PSP) - Worldpay').should('exist')
     })
   })
 
@@ -613,7 +683,7 @@ describe('Your PSP settings page', () => {
       ])
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
       cy.get('#credentials-change-link').click()
-      cy.get('#merchantId').type(testCredentials.merchant_id)
+      cy.get('#merchantId').type(testCredentials.merchant_code)
       cy.get('#username').type(testCredentials.username)
       cy.get('#password').type(testCredentials.password)
       cy.get('#shaInPassphrase').type(testCredentials.password)
@@ -633,13 +703,13 @@ describe('Your PSP settings page', () => {
         gateway: 'epdq',
         gatewayAccountCredentials: [{
           payment_provider: 'epdq',
-          credentials: testCredentials,
+          credentials: { ...testCredentials, merchant_id: testCredentials.merchant_code },
           external_id: credentialExternalId,
           id: credentialsId
         }]
       }))
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
-      cy.get('.value-merchant-id').should('contain', testCredentials.merchant_id)
+      cy.get('.value-merchant-id').should('contain', testCredentials.merchant_code)
       cy.get('.value-username').should('contain', testCredentials.username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
     })

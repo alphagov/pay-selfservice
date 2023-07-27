@@ -2,7 +2,7 @@ function checkValidWorldpayCredentialsRequest (opts = {}) {
   return {
     gatewayAccountId: opts.gatewayAccountId || 333,
     payload: {
-      merchant_id: opts.merchant_id || 'a-merchant-id',
+      merchant_id: opts.merchant_code || 'a-merchant-id',
       username: opts.username || 'a-username',
       password: opts.password || 'a-password'
     }

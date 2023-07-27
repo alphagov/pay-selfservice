@@ -3,8 +3,8 @@
 <p class="govuk-body">Go to your <a class="govuk-link" href="https://secure.worldpay.com/sso/public/auth/login.html">Worldpay account</a> to get the details you need to enter here, or <a class="govuk-link" href="https://docs.payments.service.gov.uk/switching_to_live/set_up_a_live_worldpay_account/#connect-your-live-account-to-worldpay">read more in our documentation.</a></p>
 
 {% if isRecurringEnabled %}
-  {% set isCitCredentialsConfigured = (credential.credentials and credential.credentials.recurring_customer_initiated|length) %}
-  {% set isMitCredentialsConfigured = (credential.credentials and credential.credentials.recurring_merchant_initiated|length) %}
+  {% set isCitCredentialsConfigured = (credential.credentials and credential.credentials[worldpayMerchantDetailOperations.RECURRING_CUSTOMER_INITIATED.path] | length) %}
+  {% set isMitCredentialsConfigured = (credential.credentials and credential.credentials[worldpayMerchantDetailOperations.RECURRING_MERCHANT_INITIATED.path] | length) %}
 
   {{
     govukSummaryList({
@@ -18,11 +18,11 @@
         actions: {
           items: [
             {
-              href: '#',
+              href: formatAccountPathsFor(routes.account.yourPsp.worldpayCredentialsWithGatewayCheck, currentGatewayAccount.external_id, credential.external_id, worldpayMerchantDetailOperations.RECURRING_CUSTOMER_INITIATED.key),
               text: "Change",
               visuallyHiddenText: "Recurring customer initiated transaction (CIT) credentials",
               attributes: {
-                "data-cy": "cit-credentials-change-link"
+                "id": "cit-credentials-change-link"
               }
             }
           ]
@@ -72,7 +72,7 @@
         actions: {
           items: [
             {
-              href: '#',
+              href: formatAccountPathsFor(routes.account.yourPsp.worldpayCredentialsWithGatewayCheck, currentGatewayAccount.external_id, credential.external_id, worldpayMerchantDetailOperations.RECURRING_MERCHANT_INITIATED.key),
               text: "Change",
               visuallyHiddenText: "Recurring merchant initiated transaction (MIT) credentials",
               attributes: {
@@ -125,7 +125,7 @@
         actions: {
           items: [
             {
-              href: formatAccountPathsFor(routes.account.yourPsp.credentialsWithGatewayCheck, currentGatewayAccount.external_id, credential.external_id),
+              href: formatAccountPathsFor(routes.account.yourPsp.worldpayCredentialsWithGatewayCheck, currentGatewayAccount.external_id, credential.external_id, worldpayMerchantDetailOperations.ONE_OFF_CUSTOMER_INITIATED.key),
               text: "Change",
               visuallyHiddenText: "account credentials",
               attributes: {
