@@ -535,17 +535,18 @@ describe('Your PSP settings page', () => {
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
 
-        cy.get('#worldpay-3ds-flex-is-off').should('exist')
-
-        cy.get('[data-cy=3ds-flex-text-for-test-accounts]').should('exist')
+        cy.get('[data-cy=3ds-flex-section-for-test-worldpay-accounts]').should('exist')
 
         cy.get('#toggle-worldpay-3ds-flex').should('exist')
 
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-        cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
 
-        cy.get('#enable-worldpay-3ds-flex-button').should('exist').click()
+        cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
+        cy.get('#enable-worldpay-3ds-flex-button')
+          .should('exist')
+          .click()
+
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
         })
@@ -572,9 +573,12 @@ describe('Your PSP settings page', () => {
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
         cy.get('#worldpay-3ds-flex-is-on').should('exist')
         cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
-        cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
 
-        cy.get('#disable-worldpay-3ds-flex-button').should('exist').click()
+        cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
+        cy.get('#disable-worldpay-3ds-flex-button')
+          .should('exist')
+          .click()
+
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
         })
@@ -640,14 +644,7 @@ describe('Your PSP settings page', () => {
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
 
-        cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
-        cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-
-        cy.get('[data-cy=worldpay-flex-settings-summary-list]').should('exist')
-
-        cy.get('[data-cy=3ds-flex-text-for-test-accounts]').should('not.exist')
-
-        cy.get('#toggle-worldpay-3ds-flex').should('not.exist')
+        cy.get('[data-cy=3ds-flex-section-for-test-worldpay-accounts]').should('not.exist')
       })
     })
   })

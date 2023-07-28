@@ -2,23 +2,47 @@
 {% set isTest = currentGatewayAccount.type === "test" %}
 
 {% if isTest %}
-  <h2 class="govuk-heading-m govuk-!-margin-top-9">3DS Flex</h2>
+  <div data-cy="3ds-flex-section-for-test-worldpay-accounts">
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">3DS Flex</h2>
 
-  {{ govukInsetText({
-    "attributes": {
-      "id": "worldpay-3ds-flex-is-on" if isWorldpay3dsFlexEnabled else "worldpay-3ds-flex-is-off"
-    },
-    text: "3DS Flex is turned on." if isWorldpay3dsFlexEnabled else "3DS Flex is turned off."
-  }) }}
+    {{ govukInsetText({
+      "attributes": {
+        "id": "worldpay-3ds-flex-is-on" if isWorldpay3dsFlexEnabled else "worldpay-3ds-flex-is-off"
+      },
+      text: "3DS Flex is turned on." if isWorldpay3dsFlexEnabled else "3DS Flex is turned off."
+    }) }}
 
-  <p class="govuk-body">
-    {% if isTest %}
-      <span data-cy="3ds-flex-text-for-test-accounts">
-        If you have set up 3DS Flex on your Worldpay account, you need to enter the following details to turn 3DS Flex on.
-      </span>
+    <p class="govuk-body">
+      If you have set up 3DS Flex on your Worldpay account, you need to enter the following details to turn 3DS Flex on.
+      You’ll find these details in your <a class="govuk-link" href="https://secure.worldpay.com/sso/public/auth/login.html">Worldpay account</a>.
+    </p>
+
+    {% if (is3dsEnabled and isWorldpay3dsFlexCredentialsConfigured) or isWorldpay3dsFlexEnabled %}
+      <form method="post" action="{{ formatAccountPathsFor(routes.account.yourPsp.worldpay3dsFlex, currentGatewayAccount.external_id, credential.external_id) }}" novalidate>
+        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}">
+        {% if is3dsEnabled and isWorldpay3dsFlexCredentialsConfigured and not isWorldpay3dsFlexEnabled %}
+            <input id="toggle-worldpay-3ds-flex" name="toggle-worldpay-3ds-flex" type="hidden" value="on">
+            {{ govukButton({
+              attributes: {
+                id: "enable-worldpay-3ds-flex-button"
+              },
+              text: "Turn on 3DS Flex",
+              classes: "govuk-button--secondary"
+            }) }}
+        {% elif isWorldpay3dsFlexEnabled %}
+          <input id="toggle-worldpay-3ds-flex" name="toggle-worldpay-3ds-flex" type="hidden" value="off">
+          {{ govukButton({
+            attributes: {
+              id: "disable-worldpay-3ds-flex-button"
+            },
+            text: "Turn off 3DS Flex",
+            classes: "govuk-button--secondary"
+          }) }}
+        {% endif %}
+      </form>
     {% endif %}
-    You’ll find these details in your <a class="govuk-link" href="https://secure.worldpay.com/sso/public/auth/login.html">Worldpay account</a>.
-  </p>
+
+  </div>
 {% endif %}
 
 {{govukSummaryList({
@@ -71,30 +95,3 @@
     ]
   })
 }}
-
-{% if isTest %}
-  {% if (is3dsEnabled and isWorldpay3dsFlexCredentialsConfigured) or isWorldpay3dsFlexEnabled %}
-    <form method="post" action="{{ formatAccountPathsFor(routes.account.yourPsp.worldpay3dsFlex, currentGatewayAccount.external_id, credential.external_id) }}" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}">
-      {% if is3dsEnabled and isWorldpay3dsFlexCredentialsConfigured and not isWorldpay3dsFlexEnabled %}
-          <input id="toggle-worldpay-3ds-flex" name="toggle-worldpay-3ds-flex" type="hidden" value="on">
-          {{ govukButton({
-            attributes: {
-              id: "enable-worldpay-3ds-flex-button"
-            },
-            text: "Turn on 3DS Flex",
-            classes: "govuk-button--secondary"
-          }) }}
-      {% elif isWorldpay3dsFlexEnabled %}
-        <input id="toggle-worldpay-3ds-flex" name="toggle-worldpay-3ds-flex" type="hidden" value="off">
-        {{ govukButton({
-          attributes: {
-            id: "disable-worldpay-3ds-flex-button"
-          },
-          text: "Turn off 3DS Flex",
-          classes: "govuk-button--secondary"
-        }) }}
-      {% endif %}
-    </form>
-  {% endif %}
-{% endif %}
