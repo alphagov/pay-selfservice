@@ -17,7 +17,7 @@ let adminUsersClient
 
 describe('adminusers client - authenticate', function () {
   const provider = new Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
@@ -32,8 +32,10 @@ describe('adminusers client - authenticate', function () {
   after(() => provider.finalize())
 
   describe('authenticate user API - success', () => {
-    const request = userFixtures.validAuthenticateRequest({ username: 'existing-user' })
-    const validUserResponse = userFixtures.validUserResponse()
+    const request = userFixtures.validAuthenticateRequest({ username: 'existing-user@example.com' })
+    const validUserResponse = userFixtures.validUserResponse({
+      username: 'existing-user@example.com',
+      email: 'existing-user@example.com'})
 
     before((done) => {
       provider.addInteraction(
@@ -64,7 +66,7 @@ describe('adminusers client - authenticate', function () {
   })
 
   describe('authenticate user API - unauthorized', () => {
-    const request = userFixtures.validAuthenticateRequest({ username: 'nonexisting' })
+    const request = userFixtures.validAuthenticateRequest({ username: 'nonexisting@example.com' })
 
     const unauthorizedResponse = userFixtures.unauthorizedUserResponse()
 

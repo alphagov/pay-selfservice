@@ -21,7 +21,7 @@ const expect = chai.expect
 
 describe('adminusers client - authenticate', () => {
   const provider = new Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
@@ -35,14 +35,14 @@ describe('adminusers client - authenticate', () => {
   })
   after(() => provider.finalize())
 
-  const existingUsername = 'existing-user'
+  const existingUserEmail = 'existing-user@example.com'
   const validPassword = 'password'
 
   describe('user is authenticated successfully', () => {
-    const validPasswordResponse = userFixtures.validUserResponse({ username: existingUsername })
+    const validPasswordResponse = userFixtures.validUserResponse({ username: existingUserEmail })
     const request = userFixtures
       .validPasswordAuthenticateRequest({
-        username: existingUsername,
+        username: existingUserEmail,
         password: validPassword
       })
 
@@ -50,7 +50,7 @@ describe('adminusers client - authenticate', () => {
       provider.addInteraction(
         new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
           .withUponReceiving('a correct password for a user')
-          .withState(`a user exists with username ${existingUsername} and password ${validPassword}`)
+          .withState(`a user exists with email ${existingUserEmail} and password ${validPassword}`)
           .withMethod('POST')
           .withRequestBody(request)
           .withResponseBody(userResponsePactifier.pactify(validPasswordResponse))
@@ -62,7 +62,7 @@ describe('adminusers client - authenticate', () => {
     afterEach(() => provider.verify())
 
     it('should return the right authentication success response', done => {
-      adminUsersClient.authenticateUser(existingUsername, validPassword).then((response) => {
+      adminUsersClient.authenticateUser(existingUserEmail, validPassword).then((response) => {
         expect(response).to.deep.equal(new User(validPasswordResponse))
         done()
       })
@@ -74,7 +74,7 @@ describe('adminusers client - authenticate', () => {
     const invalidPasswordResponse = userFixtures.invalidPasswordAuthenticateResponse()
     const request = userFixtures
       .validPasswordAuthenticateRequest({
-        username: existingUsername,
+        username: existingUserEmail,
         password: invalidPassword
       })
 
@@ -82,7 +82,7 @@ describe('adminusers client - authenticate', () => {
       provider.addInteraction(
         new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
           .withUponReceiving('an incorrect password for a user')
-          .withState(`a user exists with username ${existingUsername} and password ${validPassword}`)
+          .withState(`a user exists with email ${existingUserEmail} and password ${validPassword}`)
           .withMethod('POST')
           .withRequestBody(request)
           .withResponseBody(userResponsePactifier.pactify(invalidPasswordResponse))
@@ -94,7 +94,7 @@ describe('adminusers client - authenticate', () => {
     afterEach(() => provider.verify())
 
     it('should return the right authentication failure response', done => {
-      adminUsersClient.authenticateUser(existingUsername, invalidPassword).then(() => {
+      adminUsersClient.authenticateUser(existingUserEmail, invalidPassword).then(() => {
         done('should not resolve here')
       }).catch(err => {
         expect(err.errorCode).to.equal(401)
