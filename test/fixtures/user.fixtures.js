@@ -345,6 +345,7 @@ module.exports = {
   validAuthenticateRequest: (options) => {
     return {
       username: options.username || 'username',
+      email: options.username|| 'username@example.com',
       password: options.password || 'password'
     }
   },
@@ -398,6 +399,7 @@ module.exports = {
   validPasswordAuthenticateRequest: (opts = {}) => {
     return {
       username: opts.username || 'validuser',
+      email: opts.username || 'valid-email@example.com',
       password: opts.password || 'validpassword'
     }
   },
