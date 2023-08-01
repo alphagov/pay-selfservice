@@ -68,19 +68,18 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-   * @param username
+   * @param email
    * @param password
    * @returns {Promise<User>}
    */
-  function authenticateUser (username, password) {
+  function authenticateUser (email, password) {
     return baseClient.post(
       {
         baseUrl,
         url: `${userResource}/authenticate`,
         json: true,
         body: {
-          username: username,
-          email: username,
+          email: email,
           password: password
         },
         description: 'authenticate a user',

@@ -64,7 +64,7 @@ function getUserWithNoPermissions (userExternalId, gatewayAccountId) {
 function postUserAuthenticateSuccess (userExternalId, username, password) {
   const fixtureOpts = {
     external_id: userExternalId,
-    username: username,
+    email: username,
     password: password
   }
   const path = '/v1/api/users/authenticate'

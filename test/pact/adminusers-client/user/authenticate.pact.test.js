@@ -32,7 +32,7 @@ describe('adminusers client - authenticate', function () {
   after(() => provider.finalize())
 
   describe('authenticate user API - success', () => {
-    const request = userFixtures.validAuthenticateRequest({ username: 'existing-user@example.com' })
+    const request = userFixtures.validAuthenticateRequest({ email: 'existing-user@example.com' })
     const validUserResponse = userFixtures.validUserResponse({
       username: 'existing-user@example.com',
       email: 'existing-user@example.com'})
@@ -53,7 +53,7 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should authenticate a user successfully', function (done) {
-      adminUsersClient.authenticateUser(request.username, request.password).should.be.fulfilled.then(function (user) {
+      adminUsersClient.authenticateUser(request.email, request.password).should.be.fulfilled.then(function (user) {
         expect(user.username).to.be.equal(validUserResponse.username)
         expect(user.email).to.be.equal(validUserResponse.email)
         expect(_.isEqual(user.serviceRoles[0].gatewayAccountIds, validUserResponse.service_roles[0].gateway_account_ids)).to.be.equal(true)
@@ -66,7 +66,7 @@ describe('adminusers client - authenticate', function () {
   })
 
   describe('authenticate user API - unauthorized', () => {
-    const request = userFixtures.validAuthenticateRequest({ username: 'nonexisting@example.com' })
+    const request = userFixtures.validAuthenticateRequest({ email: 'nonexisting@example.com' })
 
     const unauthorizedResponse = userFixtures.unauthorizedUserResponse()
 
@@ -86,7 +86,7 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should fail authentication if invalid username / password', function (done) {
-      adminUsersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (err) {
+      adminUsersClient.authenticateUser(request.email, request.password).should.be.rejected.then(function (err) {
         expect(err.errorCode).to.equal(401)
         expect(err.message).to.equal(unauthorizedResponse.errors[0])
       }).should.notify(done)
@@ -94,7 +94,7 @@ describe('adminusers client - authenticate', function () {
   })
 
   describe('authenticate user API - bad request', () => {
-    const request = { username: '', email: '', password: '' }
+    const request = { email: '', password: '' }
 
     const badAuthenticateResponse = userFixtures.badAuthenticateResponse()
 
@@ -114,7 +114,7 @@ describe('adminusers client - authenticate', function () {
     afterEach(() => provider.verify())
 
     it('should error bad request if mandatory fields are missing', function (done) {
-      adminUsersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (err) {
+      adminUsersClient.authenticateUser(request.email, request.password).should.be.rejected.then(function (err) {
         expect(err.errorCode).to.equal(400)
         expect(err.message).to.equal(badAuthenticateResponse.errors.join(', '))
       }).should.notify(done)

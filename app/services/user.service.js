@@ -6,15 +6,15 @@ const adminUsersClient = getAdminUsersClient()
 module.exports = {
 
   /**
-   * @param username
+   * @param email
    * @param submittedPassword
    * @returns {Promise<User>}
    */
-  authenticate: function (username, submittedPassword) {
-    if (!username || !submittedPassword) {
+  authenticate: function (email, submittedPassword) {
+    if (!email || !submittedPassword) {
       return Promise.reject(new Error('Failed to authenticate'))
     }
-    return adminUsersClient.authenticateUser(username, submittedPassword)
+    return adminUsersClient.authenticateUser(email, submittedPassword)
   },
 
   /**
