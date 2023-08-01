@@ -94,7 +94,7 @@ describe('adminusers client - authenticate', function () {
   })
 
   describe('authenticate user API - bad request', () => {
-    const request = { username: '', password: '' }
+    const request = { username: '', email: '', password: '' }
 
     const badAuthenticateResponse = userFixtures.badAuthenticateResponse()
 

@@ -80,6 +80,7 @@ module.exports = function (clientOptions = {}) {
         json: true,
         body: {
           username: username,
+          email: username,
           password: password
         },
         description: 'authenticate a user',
