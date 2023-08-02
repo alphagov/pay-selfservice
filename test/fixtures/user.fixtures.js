@@ -344,21 +344,20 @@ module.exports = {
 
   validAuthenticateRequest: (options) => {
     return {
-      username: options.username || 'username',
-      email: options.username|| 'username@example.com',
+      email: options.email|| 'username@example.com',
       password: options.password || 'password'
     }
   },
 
   unauthorizedUserResponse: () => {
     return {
-      errors: ['invalid username and/or password']
+      errors: ['invalid email and/or password']
     }
   },
 
   badAuthenticateResponse: () => {
     return {
-      errors: ['Field [username] is required', 'Field [password] is required']
+      errors: ['Field [email] is required', 'Field [password] is required']
     }
   },
 
@@ -398,8 +397,7 @@ module.exports = {
 
   validPasswordAuthenticateRequest: (opts = {}) => {
     return {
-      username: opts.username || 'validuser',
-      email: opts.username || 'valid-email@example.com',
+      email: opts.email || 'valid-email@example.com',
       password: opts.password || 'validpassword'
     }
   },
@@ -414,7 +412,7 @@ module.exports = {
 
   invalidPasswordAuthenticateResponse: () => {
     return {
-      errors: ['invalid username and/or password']
+      errors: ['invalid email and/or password']
     }
   },
 

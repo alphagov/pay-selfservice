@@ -4,7 +4,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 describe('Login Page', () => {
   const gatewayAccountId = 42
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const validUsername = 'some-user@example.com'
+  const validEmail = 'some-user@example.com'
   const validPassword = 'some-valid-password'
   const invalidPassword = 'some-invalid-password'
   const invalidCode = '654321'
@@ -14,8 +14,8 @@ describe('Login Page', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName: 'service-name' }),
       gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
-      userStubs.postUserAuthenticateSuccess(userExternalId, validUsername, validPassword),
-      userStubs.postUserAuthenticateInvalidPassword(validUsername, invalidPassword),
+      userStubs.postUserAuthenticateSuccess(userExternalId, validEmail, validPassword),
+      userStubs.postUserAuthenticateInvalidPassword(validEmail, invalidPassword),
       userStubs.postSecondFactorSuccess(userExternalId),
       userStubs.postAuthenticateSecondFactorInvalidCode(userExternalId, invalidCode),
       userStubs.postAuthenticateSecondFactorSuccess(userExternalId, validCode)
@@ -45,7 +45,7 @@ describe('Login Page', () => {
 
       // enter a valid username and password and submit
       cy.getCookie('session')
-      cy.get('#username').type(validUsername)
+      cy.get('#username').type(validEmail)
       cy.get('#password').type(validPassword)
       cy.contains('Continue').click()
 
@@ -100,7 +100,7 @@ describe('Login Page', () => {
     })
 
     it('should deny access to selfservice if the password is incorrect', () => {
-      cy.get('#username').type(validUsername)
+      cy.get('#username').type(validEmail)
       cy.get('#password').type(invalidPassword)
       cy.contains('Continue').click()
       cy.title().should('eq', 'Sign in to GOV.UK Pay')
