@@ -180,6 +180,10 @@ describe('Your PSP settings page', () => {
         gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({ gatewayAccountId, ...testFlexCredentials })
       ])
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+
+      cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('exist')
+      cy.get('[data-cy=toggle-3ds-button]').should('not.exist')
+
       cy.get('#flex-credentials-change-link').click()
       cy.get('#removeFlexCredentials').should('not.exist')
       cy.get('#organisational-unit-id').type('Invalid organisational unit ID')
@@ -276,10 +280,15 @@ describe('Your PSP settings page', () => {
           external_id: credentialExternalId,
           id: credentialsId
         }],
+        requires3ds: true,
         worldpay3dsFlex: testFlexCredentials
       }))
 
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
+
+      cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('not.exist')
+      cy.get('[data-cy=toggle-3ds-button]').should('exist')
+
       cy.get('.value-merchant-id').should('contain', merchantCode)
       cy.get('.value-username').should('contain', username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
@@ -571,6 +580,9 @@ describe('Your PSP settings page', () => {
         ])
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
+
+        cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('not.exist')
+
         cy.get('#worldpay-3ds-flex-is-on').should('exist')
         cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
 
@@ -598,6 +610,9 @@ describe('Your PSP settings page', () => {
         }))
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
+
+        cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('exist')
+
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
         cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
@@ -619,6 +634,9 @@ describe('Your PSP settings page', () => {
         }))
 
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
+
+        cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('not.exist')
+
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
         cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
