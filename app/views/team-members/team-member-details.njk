@@ -19,7 +19,7 @@
 <div class="govuk-grid-column-two-thirds admin-list">
   <span class="govuk-caption-l">Team members</span>
   <h1 id="details-for" class="govuk-heading-l ">
-    Details for {{username}}
+    Details for {{email}}
   </h1>
 
   <table class="govuk-table">
@@ -46,7 +46,7 @@
   <div id="confirm-remove-user-dialog" class="target-to-show">
     <div class="govuk-error-summary govuk-!-margin-top-6" role="group" aria-labelledby="error-summary" tabindex="-1">
       <h2 class="govuk-error-summary__title" id="error-summary">
-        Are you sure you want to remove {{username}}?
+        Are you sure you want to remove {{email}}?
       </h2>
       <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}" novalidate>
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

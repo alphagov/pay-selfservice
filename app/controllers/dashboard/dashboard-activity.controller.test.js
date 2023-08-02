@@ -17,7 +17,7 @@ describe('Controller: Dashboard activity', () => {
   describe('Stripe test account', () => {
     beforeEach(() => {
       const user = new User(validUser({
-        username: 'valid-user',
+        email: 'valid-user@example.com',
         service_roles: [{
           service: {
             external_id: externalServiceId,

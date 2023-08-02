@@ -260,7 +260,6 @@ const buildRoleWithDefaults = (opts = {}) => {
 function buildUserWithDefaults (opts) {
   lodash.defaults(opts, {
     external_id: '7d19aff33f8948deb97ed16b2912dcd3',
-    username: 'some-user@example.com',
     email: 'some-user@example.com',
     otp_key: 'krb6fcianbdjkt01ecvi08jcln',
     telephone_number: '9127979',
@@ -280,7 +279,6 @@ function buildUserWithDefaults (opts) {
   const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, buildServiceRole) : [buildServiceRole()]
   return {
     external_id: opts.external_id,
-    username: opts.username,
     email: opts.email,
     otp_key: opts.otp_key,
     telephone_number: opts.telephone_number,
@@ -301,7 +299,6 @@ module.exports = {
    */
   validUser: (opts = {}) => {
     const newExternalId = opts.external_id || '121391373c1844dd99cb3416b70785c8'
-    const newUsername = 'm87bmh'
     const defaultServiceId = opts.default_service_id || '193'
     const gatewayAccountIds = opts.gateway_account_ids || ['540']
     const collectBillingAddress = (opts.collect_billing_address && opts.collect_billing_address === true)
@@ -311,8 +308,7 @@ module.exports = {
 
     const userOpts = {
       external_id: opts.external_id || newExternalId,
-      username: opts.username || newUsername,
-      email: opts.email || `${newUsername}@example.com`,
+      email: opts.email || 'user@example.com',
       service_roles: opts.service_roles || [{
         service: {
           name: 'System Generated',

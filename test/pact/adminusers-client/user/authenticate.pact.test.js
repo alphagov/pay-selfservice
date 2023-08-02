@@ -34,7 +34,6 @@ describe('adminusers client - authenticate', function () {
   describe('authenticate user API - success', () => {
     const request = userFixtures.validAuthenticateRequest({ email: 'existing-user@example.com' })
     const validUserResponse = userFixtures.validUserResponse({
-      username: 'existing-user@example.com',
       email: 'existing-user@example.com'})
 
     before((done) => {
@@ -54,7 +53,6 @@ describe('adminusers client - authenticate', function () {
 
     it('should authenticate a user successfully', function (done) {
       adminUsersClient.authenticateUser(request.email, request.password).should.be.fulfilled.then(function (user) {
-        expect(user.username).to.be.equal(validUserResponse.username)
         expect(user.email).to.be.equal(validUserResponse.email)
         expect(_.isEqual(user.serviceRoles[0].gatewayAccountIds, validUserResponse.service_roles[0].gateway_account_ids)).to.be.equal(true)
         expect(user.telephoneNumber).to.be.equal(validUserResponse.telephone_number)

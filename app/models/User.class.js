@@ -8,7 +8,6 @@ const { isInternalGDSEmail } = require('../utils/email-tools')
  * @class User
  * @description An instance of a user
  * @property {String} externalId - The user's external ID
- * @property {String} username - The user's username
  * @property {String} email - The user's email
  * @property {number} sessionVersion - The user's current session version
  * @property {string} otpKey - The user's OTP key
@@ -24,7 +23,6 @@ class User {
    * @constructor Create an instance of User
    * @param {Object} userData - raw 'user' object from server
    * @param {string} userData.external_id - The user's external ID
-   * @param {string} userData.username - The user's username
    * @param {string} userData.email - The user's email address
    * @param {string} userData.otp_key - The user's OTP key
    * @param {string} userData.telephone_number - The user's telephone number
@@ -37,10 +35,9 @@ class User {
    **/
   constructor (userData) {
     if (!userData) {
-      throw Error('Must provide username')
+      throw Error('Must provide data')
     }
     this.externalId = userData.external_id
-    this.username = userData.username
     this.email = userData.email || ''
     this.serviceRoles = userData.service_roles.map(serviceRoleData => new ServiceRole(serviceRoleData))
     this.otpKey = userData.otp_key || ''
@@ -74,7 +71,6 @@ class User {
   toMinimalJson () {
     let json = {
       external_id: this.externalId,
-      username: this.username,
       email: this.email,
       telephone_number: this.telephoneNumber,
       provisional_otp_key: this.provisionalOtpKey,

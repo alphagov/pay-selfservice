@@ -36,7 +36,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 {% set team_member_label %}
-                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                  {{ team_member.email }} {% if team_member.is_current %}(you){% endif %}
                 {% endset %}
                 {% if permissions.users_service_read %}
                   <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="admin-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
@@ -62,7 +62,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 {% set team_member_label %}
-                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                  {{ team_member.email }} {% if team_member.is_current %}(you){% endif %}
                 {% endset %}
                 {% if permissions.users_service_read %}
                   <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="view-and-refund-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
@@ -89,7 +89,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 {% set team_member_label %}
-                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                  {{ team_member.email }} {% if team_member.is_current %}(you){% endif %}
                 {% endset %}
                 {% if permissions.users_service_read %}
                   <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="view-only-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
@@ -116,7 +116,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 {% set team_member_label %}
-                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                  {{ team_member.email }} {% if team_member.is_current %}(you){% endif %}
                 {% endset %}
                 {% if permissions.users_service_read %}
                   <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="view-and-intiate-moto-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
@@ -143,7 +143,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 {% set team_member_label %}
-                  {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                  {{ team_member.email }} {% if team_member.is_current %}(you){% endif %}
                 {% endset %}
                 {% if permissions.users_service_read %}
                   <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block" id="view-refund-and-initiate-moto-member-{{ loop.index }}-trnk" href="{{ team_member.link }}">
@@ -174,7 +174,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 <span>
-                  {{ admin.username }}
+                  {{ admin.email }}
                 </span>
               </td>
             </tr>
@@ -194,7 +194,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 <span>
-                  {{ team_member.username }}
+                  {{ team_member.email }}
                 </span>
               </td>
             </tr>
@@ -214,7 +214,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 <span>
-                  {{ team_member.username }}
+                  {{ team_member.email }}
                 </span>
               </td>
             </tr>
@@ -234,7 +234,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 <span>
-                  {{ team_member.username }}
+                  {{ team_member.email }}
                 </span>
               </td>
             </tr>
@@ -254,7 +254,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 <span>
-                  {{ team_member.username }}
+                  {{ team_member.email }}
                 </span>
               </td>
             </tr>

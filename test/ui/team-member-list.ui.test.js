@@ -6,22 +6,22 @@ describe('The team members view', function () {
     let templateData = {
       'team_members': {
         'admin': [
-          { username: 'username1', link: 'view-username1-link' },
-          { username: 'username2', link: 'view-username2-my-profile-link', is_current: true }
+          { email: 'username1', link: 'view-username1-link' },
+          { email: 'username2', link: 'view-username2-my-profile-link', is_current: true }
         ],
         'view-only': [
-          { username: 'username3', link: 'view-username3-link' },
-          { username: 'username4', link: 'view-username4-link' },
-          { username: 'username5', link: 'view-username5-link' }
+          { email: 'username3', link: 'view-username3-link' },
+          { email: 'username4', link: 'view-username4-link' },
+          { email: 'username5', link: 'view-username5-link' }
         ],
         'view-and-refund': [
-          { username: 'username6', link: 'view-username6-link' }
+          { email: 'username6', link: 'view-username6-link' }
         ],
         'view-and-initiate-moto': [
-          { username: 'username7', link: 'view-username7-link' }
+          { email: 'username7', link: 'view-username7-link' }
         ],
         'view-refund-and-initiate-moto': [
-          { username: 'username8', link: 'view-username8-link' }
+          { email: 'username8', link: 'view-username8-link' }
         ]
       },
       permissions: {
@@ -113,21 +113,21 @@ describe('The team members view', function () {
       'number_invited_members': 7,
       'invited_team_members': {
         'admin': [
-          { username: 'username1' },
-          { username: 'username2' }
+          { email: 'username1' },
+          { email: 'username2' }
         ],
         'view-only': [
-          { username: 'username3' }
+          { email: 'username3' }
         ],
         'view-and-refund': [
-          { username: 'username6' },
-          { username: 'username5' }
+          { email: 'username6' },
+          { email: 'username5' }
         ],
         'view-and-initiate-moto': [
-          { username: 'username7' }
+          { email: 'username7' }
         ],
         'view-refund-and-initiate-moto': [
-          { username: 'username8' }
+          { email: 'username8' }
         ]
       },
       permissions: {

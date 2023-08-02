@@ -154,21 +154,21 @@ describe('auth service', function () {
       const req = {
         headers: { 'x-request-id': 'corrId' }
       }
-      const username = 'user@example.com'
+      const email = 'user@example.com'
       const password = 'imagineThisIsInvalid'
       const doneSpy = sinon.spy(() => {
       })
       const userServiceMock = {
-        authenticate: (username, password) => {
+        authenticate: (email, password) => {
           return new Promise(function (resolve, reject) {
-            expect(username).to.be.equal('user@example.com')
+            expect(email).to.be.equal('user@example.com')
             expect(password).to.be.equal('imagineThisIsInvalid')
             reject(new Error())
           })
         }
       }
 
-      getServiceWithMockedUserService(userServiceMock).localStrategyAuth(req, username, password, doneSpy)
+      getServiceWithMockedUserService(userServiceMock).localStrategyAuth(req, email, password, doneSpy)
         .then(() => {
           assert(doneSpy.calledWithExactly(null, false, { message: 'Invalid email or password' }))
           done()

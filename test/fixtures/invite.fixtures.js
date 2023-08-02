@@ -49,12 +49,6 @@ module.exports = {
     return opts.map(buildInviteWithDefaults)
   },
 
-  notPermittedInviteResponse: (userName, serviceId) => {
-    return {
-      errors: ['user [' + userName + '] not authorised to perform operation [invite] in service [' + serviceId + ']']
-    }
-  },
-
   validRegistrationRequest: (opts = {}) => {
     return {
       telephone_number: opts.telephone_number || '12345678901',
