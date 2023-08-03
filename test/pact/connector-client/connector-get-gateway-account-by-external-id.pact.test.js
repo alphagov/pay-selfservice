@@ -42,6 +42,14 @@ describe('connector client - get gateway account by external id', function () {
           one_off_customer_initiated: {
             merchant_code: 'a-merchant-code',
             username: 'a-username'
+          },
+          recurring_customer_initiated: {
+            username: 'a-username',
+            merchant_code: 'a-merchant-code'
+          },
+          recurring_merchant_initiated: {
+            username: 'a-username',
+            merchant_code: 'a-merchant-code'
           }
         }
       }],

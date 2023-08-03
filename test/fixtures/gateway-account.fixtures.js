@@ -247,16 +247,17 @@ function validCreateGatewayAccountRequest (opts = {}) {
 }
 
 function validUpdateGatewayAccountCredentialsRequest (opts = {}) {
-  const defaultCredentials = {
-    username: 'a-username',
-    password: 'a-password', // pragma: allowlist secret
-    merchant_code: 'a-merchant-id'
+  const credentials = {
+    username: (opts.credentials && opts.credentials.username) || 'a-username',
+    password: (opts.credentials && opts.credentials.password) || 'a-password',
+    merchant_code: (opts.credentials && opts.credentials.merchant_code) || 'a-merchant-id'
   }
+
   return [
     {
       op: 'replace',
       path: opts.path || 'credentials/worldpay/one_off_customer_initiated',
-      value: opts.credentials || defaultCredentials
+      value: credentials
     },
     {
       op: 'replace',
