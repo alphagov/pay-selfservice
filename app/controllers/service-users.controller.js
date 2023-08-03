@@ -17,7 +17,7 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
     const userRoleName = _.get(user.getRoleForService(externalServiceId), 'name')
     if (roles[userRoleName]) {
       const mappedUser = {
-        username: user.username,
+        email: user.email,
         external_id: user.externalId
       }
       if (currentUser.externalId === user.externalId) {
@@ -40,7 +40,7 @@ const mapInvitesByRoles = function (invitedUsers) {
   invitedUsers.map((user) => {
     if (roles[user.role]) {
       const mappedUser = {
-        username: user.email,
+        email: user.email,
         expired: user.expired
       }
       userRolesMap[user.role].push(mappedUser)
@@ -95,7 +95,6 @@ async function show (req, res, next) {
 
     if (roleInList && hasSameService) {
       return response(req, res, 'team-members/team-member-details', {
-        username: user.username,
         email: user.email,
         role: roleInList.description,
         teamMemberIndexLink: teamMemberIndexLink,
@@ -126,7 +125,7 @@ async function remove (req, res, next) {
   try {
     const user = await userService.findByExternalId(userToRemoveExternalId)
     await userService.delete(externalServiceId, removerExternalId, userToRemoveExternalId)
-    req.flash('generic', user.username + ' was successfully removed')
+    req.flash('generic', user.email + ' was successfully removed')
     res.redirect(formatServicePathsFor(paths.service.teamMembers.index, externalServiceId))
   } catch (err) {
     if (err.errorCode === 404) {
@@ -156,7 +155,6 @@ async function profile (req, res, next) {
     const user = await userService.findByExternalId(req.user.externalId)
     response(req, res, 'team-members/team-member-profile', {
       secondFactorMethod,
-      username: user.username,
       email: user.email,
       telephone_number: user.telephoneNumber,
       two_factor_auth: user.secondFactor,

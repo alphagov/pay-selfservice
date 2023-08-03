@@ -29,9 +29,9 @@ chai.use(chaiAsPromised)
 
 describe('service users resource', () => {
   let EXTERNAL_ID_LOGGED_IN = '7d19aff33f8948deb97ed16b2912dcd3'
-  const USERNAME_LOGGED_IN = 'existing-user@example.com'
+  const USER_EMAIL_LOGGED_IN = 'existing-user@example.com'
   const EXTERNAL_ID_OTHER_USER = '393266e872594f1593558549caad95ec'
-  const USERNAME_OTHER_USER = 'other-user@example.com'
+  const USER_EMAIL_OTHER_USER = 'other-user@example.com'
 
   afterEach(done => {
     nock.cleanAll()
@@ -43,8 +43,7 @@ describe('service users resource', () => {
     const externalServiceId = '734rgw76jhka'
     let userOpts = {
       external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN,
+      email: USER_EMAIL_LOGGED_IN,
       service_roles: [{
         service: {
           name: 'System Generated',
@@ -59,6 +58,7 @@ describe('service users resource', () => {
         }
       }]
     }
+
     const serviceUsersRes = userFixtures.validUsersResponse([userOpts])
     const getInvitesRes = inviteFixtures.validListInvitesResponse()
     const user = new User(userFixtures.validUserResponse(userOpts))
@@ -75,7 +75,7 @@ describe('service users resource', () => {
       .expect(200)
       .expect(res => {
         expect(res.body.team_members.admin.length).to.equal(1)
-        expect(res.body.team_members.admin[0].username).to.equal(USERNAME_LOGGED_IN)
+        expect(res.body.team_members.admin[0].email).to.equal(USER_EMAIL_LOGGED_IN)
         expect(res.body.team_members.admin[0].link).to.equal('/my-profile')
         expect(res.body.team_members.admin[0].is_current).to.equal(true)
         expect(res.body.team_members['view-only'].length).to.equal(0)
@@ -98,8 +98,7 @@ describe('service users resource', () => {
     }]
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
+      email: USER_EMAIL_LOGGED_IN + '@example.com',
       service_roles: serviceRoles
     })
 
@@ -141,8 +140,7 @@ describe('service users resource', () => {
 
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
+      email: USER_EMAIL_LOGGED_IN + '@example.com',
       service_roles: serviceRoles
     })
 
@@ -172,8 +170,7 @@ describe('service users resource', () => {
     const externalServiceId = '734rgw76jhka'
     const userInSession = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN,
+      email: USER_EMAIL_LOGGED_IN,
       service_roles: [{
         service: {
           name: 'System Generated',
@@ -185,8 +182,7 @@ describe('service users resource', () => {
 
     const userToView = {
       external_id: EXTERNAL_ID_OTHER_USER,
-      username: USERNAME_OTHER_USER,
-      email: USERNAME_OTHER_USER,
+      email: USER_EMAIL_OTHER_USER,
       service_roles: [{
         service: {
           name: 'System Generated',
@@ -207,7 +203,6 @@ describe('service users resource', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
-        expect(res.body.username).to.equal(USERNAME_OTHER_USER)
         expect(res.body.email).to.equal('other-user@example.com')
         expect(res.body.role).to.equal('View only')
         expect(res.body.editPermissionsLink).to.equal(formatServicePathsFor(paths.service.teamMembers.permissions, externalServiceId, EXTERNAL_ID_OTHER_USER))
@@ -219,8 +214,7 @@ describe('service users resource', () => {
   it('should show my profile', done => {
     const user = {
       external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN,
+      email: USER_EMAIL_LOGGED_IN,
       telephone_number: '+447876548778',
       // TODO: fix to use serviceRoles
       services: [{
@@ -241,7 +235,6 @@ describe('service users resource', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .expect(res => {
-        expect(res.body.username).to.equal(user.username)
         expect(res.body.email).to.equal(user.email)
         expect(res.body.telephone_number).to.equal(user.telephone_number)
       })
@@ -251,8 +244,7 @@ describe('service users resource', () => {
   it('should not show my profile without second factor', done => {
     const user = {
       external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
+      email: USER_EMAIL_LOGGED_IN + '@example.com',
       telephone_number: '+447876548778',
       // TODO: fix to use serviceRoles
       services: [{
@@ -298,8 +290,7 @@ describe('service users resource', () => {
     const externalServiceId2 = '7huh4y7tu6g'
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
+      email: USER_EMAIL_LOGGED_IN,
       service_roles: [{
         service: {
           name: 'System Generated',
@@ -310,7 +301,7 @@ describe('service users resource', () => {
     })
     const getUserResponse = userFixtures.validUserResponse({
       external_id: EXTERNAL_ID_OTHER_USER,
-      username: USERNAME_OTHER_USER,
+      email: USER_EMAIL_OTHER_USER,
       service_roles: [{
         service: {
           name: 'System Generated',
@@ -348,7 +339,7 @@ describe('service users resource', () => {
 
     const userToDelete = {
       external_id: EXTERNAL_ID_OTHER_USER,
-      username: USERNAME_OTHER_USER,
+      username: USER_EMAIL_OTHER_USER,
       role: { name: 'view-only' }
     }
 
@@ -409,8 +400,7 @@ describe('service users resource', () => {
     }]
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN,
+      email: USER_EMAIL_LOGGED_IN,
       service_roles: serviceRoles
     })
     const FIRST_EMAIL = 'esdfkjh@email.test'
@@ -446,9 +436,9 @@ describe('service users resource', () => {
       .expect(res => {
         expect(res.body.number_invited_members).to.equal(2)
         expect(res.body.invited_team_members.admin.length).to.equal(1)
-        expect(res.body.invited_team_members.admin[0].username).to.equal(FIRST_EMAIL)
+        expect(res.body.invited_team_members.admin[0].email).to.equal(FIRST_EMAIL)
         expect(res.body.invited_team_members['view-only'].length).to.equal(1)
-        expect(res.body.invited_team_members['view-only'][0].username).to.equal(SECOND_EMAIL)
+        expect(res.body.invited_team_members['view-only'][0].email).to.equal(SECOND_EMAIL)
         expect(res.body.invited_team_members['view-and-refund'].length).to.equal(0)
         expect(res.body.invited_team_members['view-and-initiate-moto'].length).to.equal(0)
         expect(res.body.invited_team_members['view-refund-and-initiate-moto'].length).to.equal(0)

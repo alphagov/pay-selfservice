@@ -61,10 +61,10 @@ function getUserWithNoPermissions (userExternalId, gatewayAccountId) {
   return getUserSuccess({ userExternalId, gatewayAccountId, goLiveStage: 'NOT_STARTED', role: { permissions: [] } })
 }
 
-function postUserAuthenticateSuccess (userExternalId, username, password) {
+function postUserAuthenticateSuccess (userExternalId, email, password) {
   const fixtureOpts = {
     external_id: userExternalId,
-    email: username,
+    email: email,
     password: password
   }
   const path = '/v1/api/users/authenticate'
@@ -266,7 +266,6 @@ function buildUserWithServiceRoleOpts (opts) {
   return {
     external_id: opts.userExternalId,
     service_roles: [serviceRole],
-    username: opts.email,
     email: opts.email,
     telephone_number: opts.telephoneNumber,
     second_factor: opts.secondFactor,
