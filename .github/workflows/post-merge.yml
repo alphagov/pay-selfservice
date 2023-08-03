@@ -46,7 +46,7 @@ jobs:
           key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
       - name: Publish and tag selfservice consumer pact
         env:
-          PACT_BROKER_URL: https://pay-pact-broker.cloudapps.digital
+          PACT_BROKER_URL: https://pact-broker.deploy.payments.service.gov.uk
           PACT_CONSUMER_VERSION: ${{ github.sha }}
           PACT_BROKER_USERNAME: ${{ secrets.pact_broker_username }}
           PACT_BROKER_PASSWORD: ${{ secrets.pact_broker_password }}
