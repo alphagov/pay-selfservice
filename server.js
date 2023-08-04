@@ -1,4 +1,5 @@
 const express = require('express')
+const metrics = require('@govuk-pay/pay-js-metrics')
 const nunjucks = require('nunjucks')
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
@@ -157,6 +158,9 @@ function listen () {
  */
 function initialise () {
   const app = unconfiguredApp
+  if (NODE_ENV !== 'test') {
+    app.use(metrics.initialise())
+  }
 
   app.disable('x-powered-by')
   app.use(flash())
