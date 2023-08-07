@@ -1,225 +1,229 @@
 
 <div class="transactions-filter govuk-grid-row">
   <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate>
-    <div class="govuk-grid-column-one-quarter inputs-less-margin">
-      {{
-        govukInput({
-          id: 'reference',
-          name: 'reference',
-          value: filters.reference,
-          spellcheck: false,
-          attributes: {
-            'autocapitalize': 'none'
-          },
-          classes: 'govuk-!-font-size-16',
-          label: {
-            text: 'Reference number',
-            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-          },
-          hint: {
-            text: 'Enter full or partial number',
-            classes: 'govuk-!-font-size-14'
-          }
-        })
-      }}
+    <div class="govuk-grid-row govuk-!-padding-left-3 govuk-!-padding-right-3">
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {{
+          govukInput({
+            id: 'reference',
+            name: 'reference',
+            value: filters.reference,
+            spellcheck: false,
+            attributes: {
+              'autocapitalize': 'none'
+            },
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: 'Reference number',
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: 'Enter full or partial number',
+              classes: 'govuk-!-font-size-14'
+            }
+          })
+        }}
+      </div>
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {{
+          govukInput({
+            id: 'email',
+            name: 'email',
+            value: filters.email,
+            type: 'text',
+            inputmode: 'email',
+            spellcheck: false,
+            attributes: {
+              'autocapitalize': 'none'
+            },
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: 'Email address',
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: 'Enter full or partial email',
+              classes: 'govuk-!-font-size-14'
+            }
+          })
+        }}
+      </div>
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {{
+          govukInput({
+            id: 'cardholderName',
+            name: 'cardholderName',
+            value: filters.cardholderName,
+            spellcheck: false,
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: 'Name on card',
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: 'Enter full or partial name',
+              classes: 'govuk-!-font-size-14'
+            }
+          })
+        }}
+      </div>
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {{
+          govukInput({
+            id: 'lastDigitsCardNumber',
+            name: 'lastDigitsCardNumber',
+            value: filters.lastDigitsCardNumber,
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: 'Last 4 card numbers',
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: 'Last 4 digits of associated card',
+              classes: 'govuk-!-font-size-14'
+            },
+            attributes: {
+              "autocomplete": "off",
+              "inputmode": "numeric",
+              "pattern": "[0-9]*",
+              "maxlength": "4"
+            }
+          })
+        }}
+      </div>
     </div>
-    <div class="govuk-grid-column-one-quarter inputs-less-margin">
-      {{
-        govukInput({
-          id: 'email',
-          name: 'email',
-          value: filters.email,
-          type: 'text',
-          inputmode: 'email',
-          spellcheck: false,
-          attributes: {
-            'autocapitalize': 'none'
-          },
-          classes: 'govuk-!-font-size-16',
-          label: {
-            text: 'Email address',
-            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-          },
-          hint: {
-            text: 'Enter full or partial email',
-            classes: 'govuk-!-font-size-14'
-          }
-        })
-      }}
-    </div>
-    <div class="govuk-grid-column-one-quarter inputs-less-margin">
-      {{
-        govukInput({
-          id: 'cardholderName',
-          name: 'cardholderName',
-          value: filters.cardholderName,
-          spellcheck: false,
-          classes: 'govuk-!-font-size-16',
-          label: {
-            text: 'Name on card',
-            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-          },
-          hint: {
-            text: 'Enter full or partial name',
-            classes: 'govuk-!-font-size-14'
-          }
-        })
-      }}
-    </div>
-    <div class="govuk-grid-column-one-quarter inputs-less-margin">
-      {{
-        govukInput({
-          id: 'lastDigitsCardNumber',
-          name: 'lastDigitsCardNumber',
-          value: filters.lastDigitsCardNumber,
-          classes: 'govuk-!-font-size-16',
-          label: {
-            text: 'Last 4 card numbers',
-            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-          },
-          hint: {
-            text: 'Last 4 digits of associated card',
-            classes: 'govuk-!-font-size-14'
-          },
-          attributes: {
-            "autocomplete": "off",
-            "inputmode": "numeric",
-            "pattern": "[0-9]*",
-            "maxlength": "4"
-          }
-        })
-      }}
-    </div>
-    <div class="govuk-grid-column-one-quarter">
-      <fieldset class="govuk-fieldset">
-        <legend class="govuk-visually-hidden">
-            Card brand
-        </legend>
+    <div class="govuk-grid-row govuk-!-padding-left-3 govuk-!-padding-right-3">
+      <div class="govuk-grid-column-one-quarter">
         <fieldset class="govuk-fieldset">
-        {{
-          govukSelect({
-            id: "card-brand",
-            name: "brand",
-            classes: 'govuk-!-font-size-16',
-            label: {
-              text: "Card brand",
-              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-            },
-            hint: {
-              text: "Select a brand",
-              classes: 'govuk-!-font-size-14'
-            },
-            attributes: {
-              'data-enhance-multiple': true
-            },
-            items: cardBrands
-          })
-        }}
-        </fieldset>
-      </fieldset>
-    </div>
-    <div class="govuk-grid-column-one-quarter">
-      <fieldset class="govuk-fieldset">
-        <legend class="govuk-visually-hidden">
-            Payment status
-        </legend>
-        {{
-          govukSelect({
-            id: "state",
-            name: "state",
-            classes: 'govuk-!-font-size-16',
-            label: {
-              text: "Payment status",
-              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-            },
-            hint: {
-              text: "Select an option",
-              classes: 'govuk-!-font-size-14'
-            },
-            attributes: {
-              'data-enhance-multiple': true
-            },
-            items: eventStates
-          })
-        }}
-        </fieldset>
-    </div>
-    <div class="govuk-grid-column-one-half">
-      <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-font-size-16 govuk-!-margin-bottom-0 govuk-!-display-block">
-          Date range
-        </legend>
-        <fieldset class="govuk-fieldset datetime-filter datetime-filter-from">
           <legend class="govuk-visually-hidden">
-            From this date and time
+              Card brand
+          </legend>
+          <fieldset class="govuk-fieldset">
+          {{
+            govukSelect({
+              id: "card-brand",
+              name: "brand",
+              classes: 'govuk-!-font-size-16',
+              label: {
+                text: "Card brand",
+                classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+              },
+              hint: {
+                text: "Select a brand",
+                classes: 'govuk-!-font-size-14'
+              },
+              attributes: {
+                'data-enhance-multiple': true
+              },
+              items: cardBrands
+            })
+          }}
+          </fieldset>
+        </fieldset>
+      </div>
+      <div class="govuk-grid-column-one-quarter">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-visually-hidden">
+              Payment status
           </legend>
           {{
-            govukInput({
-              id: 'fromDate',
-              name: 'fromDate',
-              value: filters.fromDate,
-              classes: 'date-picker start govuk-!-font-size-16',
+            govukSelect({
+              id: "state",
+              name: "state",
+              classes: 'govuk-!-font-size-16',
               label: {
-                text: 'Start date',
-                classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                text: "Payment status",
+                classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+              },
+              hint: {
+                text: "Select an option",
+                classes: 'govuk-!-font-size-14'
               },
               attributes: {
-                autocomplete: 'off'
-              }
-            })
-          }}
-          {{
-            govukInput({
-              id: 'fromTime',
-              name: 'fromTime',
-              value: filters.fromTime,
-              classes: 'time-picker start govuk-!-font-size-16',
-              label: {
-                text: 'Start time',
-                classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                'data-enhance-multiple': true
               },
-              attributes: {
-                autocomplete: 'off'
-              }
+              items: eventStates
             })
           }}
-        </fieldset>
-        <fieldset class="govuk-fieldset datetime-filter datetime-filter-to">
-          <legend class="datetime-separator">
-            to<span class="govuk-visually-hidden"> this date and time</span>
+          </fieldset>
+      </div>
+      <div class="govuk-grid-column-one-half">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-font-size-16 govuk-!-margin-bottom-0 govuk-!-display-block">
+            Date range
           </legend>
-          {{
-            govukInput({
-              id: 'toDate',
-              name: 'toDate',
-              value: filters.toDate,
-              classes: 'date-picker end govuk-!-font-size-16',
-              label: {
-                text: 'End date',
-                classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
-              },
-              attributes: {
-                autocomplete: 'off'
-              }
-            })
-          }}
-          {{
-            govukInput({
-              id: 'toTime',
-              name: 'toTime',
-              value: filters.toTime,
-              classes: 'time-picker end govuk-!-font-size-16',
-              label: {
-                text: 'End time',
-                classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
-              },
-              attributes: {
-                autocomplete: 'off'
-              }
-            })
-          }}
+          <fieldset class="govuk-fieldset datetime-filter datetime-filter-from">
+            <legend class="govuk-visually-hidden">
+              From this date and time
+            </legend>
+            {{
+              govukInput({
+                id: 'fromDate',
+                name: 'fromDate',
+                value: filters.fromDate,
+                classes: 'date-picker start govuk-!-font-size-16',
+                label: {
+                  text: 'Start date',
+                  classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                },
+                attributes: {
+                  autocomplete: 'off'
+                }
+              })
+            }}
+            {{
+              govukInput({
+                id: 'fromTime',
+                name: 'fromTime',
+                value: filters.fromTime,
+                classes: 'time-picker start govuk-!-font-size-16',
+                label: {
+                  text: 'Start time',
+                  classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                },
+                attributes: {
+                  autocomplete: 'off'
+                }
+              })
+            }}
+          </fieldset>
+          <fieldset class="govuk-fieldset datetime-filter datetime-filter-to">
+            <legend class="datetime-separator">
+              to<span class="govuk-visually-hidden"> this date and time</span>
+            </legend>
+            {{
+              govukInput({
+                id: 'toDate',
+                name: 'toDate',
+                value: filters.toDate,
+                classes: 'date-picker end govuk-!-font-size-16',
+                label: {
+                  text: 'End date',
+                  classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                },
+                attributes: {
+                  autocomplete: 'off'
+                }
+              })
+            }}
+            {{
+              govukInput({
+                id: 'toTime',
+                name: 'toTime',
+                value: filters.toTime,
+                classes: 'time-picker end govuk-!-font-size-16',
+                label: {
+                  text: 'End time',
+                  classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                },
+                attributes: {
+                  autocomplete: 'off'
+                }
+              })
+            }}
+          </fieldset>
         </fieldset>
-      </fieldset>
+      </div>
     </div>
     {% if filters.metadataValue or filters.agreementId %}
       {% set detailsElementOpenHtml = 'open="true"' %}
