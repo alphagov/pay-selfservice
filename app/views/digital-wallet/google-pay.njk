@@ -39,17 +39,19 @@
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
         {% set merchantID %}
-          {{
-            govukInput({
-              id: "merchantId",
-              name: "merchantId",
-              label: {
-                text: "Merchant ID"
-              },
-              classes: "govuk-!-width-two-thirds",
-              errorMessage: { text: errors.merchantId } if errors.merchantId else false
-            })
-          }}
+          {% if currentGatewayAccount.payment_provider === "worldpay" %}
+            {{
+              govukInput({
+                id: "merchantId",
+                name: "merchantId",
+                label: {
+                  text: "Merchant ID"
+                },
+                classes: "govuk-!-width-two-thirds",
+                errorMessage: { text: errors.merchantId } if errors.merchantId else false
+              })
+            }}
+          {% endif %}
         {% endset %}
 
         {{

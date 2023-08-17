@@ -13,14 +13,15 @@ module.exports = async function updateGooglePaySettings (req, res, next) {
   const enable = req.body['google-pay'] === 'on'
   const gatewayMerchantId = req.body.merchantId
 
-  if (enable && !gatewayMerchantId) {
+  const updateGatewayMerchantId = enable && req.account.payment_provider === 'worldpay'
+  if (updateGatewayMerchantId && !gatewayMerchantId) {
     return response(req, res, 'digital-wallet/google-pay', {
       errors: { merchantId: 'Enter a valid Merchant ID' },
       enabled: enable
     })
   }
 
-  if (enable) {
+  if (updateGatewayMerchantId) {
     try {
       const credential = getCurrentCredential(req.account)
       await connector.patchGooglePayGatewayMerchantId(gatewayAccountId, credential.gateway_account_credential_id, gatewayMerchantId, req.user && req.user.externalId)

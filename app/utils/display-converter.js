@@ -109,6 +109,7 @@ module.exports = function (req, data, template) {
   const permissions = getPermissions(user, service)
   const isAdminUser = service && user && user.isAdminUserForService(service.externalId)
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
+  const paymentProvider = account && account.payment_provider
   convertedData.loggedIn = user && session && user.sessionVersion === session.version
   convertedData.paymentMethod = paymentMethod
   convertedData.permissions = permissions
@@ -119,9 +120,9 @@ module.exports = function (req, data, template) {
   addGatewayAccountProviderDisplayNames(convertedData)
   convertedData.currentGatewayAccount = getAccount(account)
   convertedData.isTestGateway = _.get(convertedData, 'currentGatewayAccount.type') === 'test'
-  convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
-  convertedData.isDigitalWalletSupported = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'worldpay'
-  const paymentProvider = _.get(convertedData, 'currentGatewayAccount.payment_provider')
+  convertedData.isSandbox = paymentProvider === 'sandbox'
+  convertedData.isDigitalWalletSupported = paymentProvider === 'worldpay' ||
+    (paymentProvider === 'stripe' && process.env.ALLOW_ENABLING_DIGITAL_WALLETS_FOR_STRIPE_ACCOUNT === 'true')
   convertedData.currentService = service
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
