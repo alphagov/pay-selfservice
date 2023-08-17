@@ -6,16 +6,18 @@ const logger = require('../../utils/logger')(__filename)
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { getCurrentCredential } = require('../../utils/credentials')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const { response } = require('../../utils/response')
 
-module.exports = async (req, res, next) => {
+module.exports = async function updateGooglePaySettings (req, res, next) {
   const gatewayAccountId = req.account.gateway_account_id
   const enable = req.body['google-pay'] === 'on'
   const gatewayMerchantId = req.body.merchantId
-  const googlePayPath = formatAccountPathsFor(paths.account.digitalWallet.googlePay, req.account && req.account.external_id)
 
   if (enable && !gatewayMerchantId) {
-    req.flash('genericError', 'Enter a valid Merchant ID')
-    return res.redirect(googlePayPath)
+    return response(req, res, 'digital-wallet/google-pay', {
+      errors: { merchantId: 'Enter a valid Merchant ID' },
+      enabled: enable
+    })
   }
 
   if (enable) {
@@ -26,10 +28,12 @@ module.exports = async (req, res, next) => {
     } catch (error) {
       logger.info('Error setting google pay merchant ID', { error })
       if (error.errorCode === 400) {
-        req.flash('genericError', 'There was an error enabling google pay. Check that the Merchant ID you entered is correct and that your PSP account credentials have been set.')
-        return res.redirect(googlePayPath)
+        return response(req, res, 'digital-wallet/google-pay', {
+          errors: { merchantId: 'There was an error enabling google pay. Check that the Merchant ID you entered is correct and that your PSP account credentials have been set.' },
+          enabled: enable
+        })
       } else {
-        next(error)
+        return next(error)
       }
     }
   }
