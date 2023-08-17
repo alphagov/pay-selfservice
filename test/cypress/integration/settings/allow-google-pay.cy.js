@@ -1,5 +1,6 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = 42
@@ -62,6 +63,33 @@ describe('Google Pay', () => {
 
     cy.log('Enter a valid merchant ID and submit')
     cy.get('#merchantId').type('111111111111111')
+    cy.get('.govuk-button').contains('Save changes').click()
+
+    cy.location().should((location) => {
+      expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
+    })
+    cy.get('.govuk-notification-banner--success').should('contain', 'Google Pay successfully enabled')
+  })
+
+  it('should allow us to enable and does not require a gateway merchant ID for a Stripe account', () => {
+    cy.task('setupStubs', [
+      ...getUserAndAccountStubs(false, 'stripe'),
+      stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId }),
+      gatewayAccountStubs.patchAccountUpdateGooglePaySuccess(gatewayAccountId, true)
+    ])
+
+    cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+    cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
+    cy.get('a').contains('Change Google Pay settings').click()
+
+    cy.get('input[type="radio"]').should('have.length', 2)
+    cy.get('input[value="on"]').should('not.be.checked')
+    cy.get('input[value="off"]').should('be.checked')
+    cy.get('#merchantId').should('not.exist')
+
+    cy.get('input[value="on"]').click()
+    cy.get('input[value="on"]').should('be.checked')
+
     cy.get('.govuk-button').contains('Save changes').click()
 
     cy.location().should((location) => {

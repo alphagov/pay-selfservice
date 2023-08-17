@@ -139,6 +139,27 @@ describe('Google Pay settings POST controller', () => {
       sinon.assert.calledWith(res.redirect, formatAccountPathsFor(paths.account.settings.index, req.account.external_id))
     })
   })
+
+  describe('Stripe account', () => {
+    it('should call connector to toggle Google Pay to enabled without requiring gateway merchant ID', async () => {
+      const req = {
+        body: {
+          'google-pay': 'on'
+        },
+        account: validGatewayAccount({
+          payment_provider: 'stripe'
+        }),
+        flash: sinon.spy()
+      }
+      const controller = getControllerWithMocks(patchGooglePayGatewayMerchantIdSuccess, toggleGooglePaySuccess)
+      await controller(req, res, next)
+
+      sinon.assert.notCalled(patchGooglePayGatewayMerchantIdSuccess)
+      sinon.assert.calledWith(toggleGooglePaySuccess, req.account.gateway_account_id, true)
+      sinon.assert.calledWith(req.flash, 'generic', 'Google Pay successfully enabled')
+      sinon.assert.calledWith(res.redirect, formatAccountPathsFor(paths.account.settings.index, req.account.external_id))
+    })
+  })
 })
 
 function getControllerWithMocks (patchGooglePayGatewayMerchantIdMock, toggleGooglePayMock) {
