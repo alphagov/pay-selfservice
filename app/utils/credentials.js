@@ -120,7 +120,7 @@ function hasSwitchedProvider (gatewayAccount = {}) {
   return credentials.some((credential) => credential.state === CREDENTIAL_STATE.RETIRED)
 }
 
-function getWorldpayMerchantDetailOperationByKey(key) {
+function getWorldpayMerchantDetailOperationByKey (key) {
   return worldpayMerchantDetailOperationsIndex[key]
 }
 

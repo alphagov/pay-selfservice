@@ -340,7 +340,7 @@ module.exports = {
 
   validAuthenticateRequest: (options) => {
     return {
-      email: options.email|| 'username@example.com',
+      email: options.email || 'username@example.com',
       password: options.password || 'password'
     }
   },

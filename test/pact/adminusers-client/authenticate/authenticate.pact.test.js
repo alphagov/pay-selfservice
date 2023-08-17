@@ -41,9 +41,9 @@ describe('adminusers client - authenticate', () => {
   describe('user is authenticated successfully', () => {
     const validPasswordResponse = userFixtures.validUserResponse({ email: existingUserEmail })
     const request = userFixtures.validPasswordAuthenticateRequest({
-        email: existingUserEmail,
-        password: validPassword
-      })
+      email: existingUserEmail,
+      password: validPassword
+    })
 
     before((done) => {
       provider.addInteraction(
