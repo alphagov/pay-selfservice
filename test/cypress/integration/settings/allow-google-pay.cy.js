@@ -44,6 +44,8 @@ describe('Google Pay', () => {
     cy.get('input[value="off"]').should('be.checked')
     cy.get('#merchantId').should('not.be.visible')
 
+    cy.get('p').contains('You’ll need a Google Pay merchant ID').should('exist')
+
     cy.get('input[value="on"]').click()
     cy.get('input[value="on"]').should('be.checked')
 
@@ -86,6 +88,8 @@ describe('Google Pay', () => {
     cy.get('input[value="on"]').should('not.be.checked')
     cy.get('input[value="off"]').should('be.checked')
     cy.get('#merchantId').should('not.exist')
+
+    cy.get('p').contains('You’ll need a Google Pay merchant ID').should('not.exist')
 
     cy.get('input[value="on"]').click()
     cy.get('input[value="on"]').should('be.checked')
