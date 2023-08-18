@@ -31,9 +31,11 @@
         <li>corporate card fees cannot be applied to payments made with Google Pay.</li>
       </ul>
 
-      <p class="govuk-body">
-        You’ll need a Google Pay merchant ID. Refer to the <a class="govuk-link" href="https://docs.payments.service.gov.uk/digital_wallets/#enable-google-pay">GOV.UK Pay documentation on enabling Google Pay</a> to learn where to find your merchant ID.
-      </p>
+      {% if currentGatewayAccount.payment_provider === "worldpay" %}
+        <p class="govuk-body">
+          You’ll need a Google Pay merchant ID. Refer to the <a class="govuk-link" href="https://docs.payments.service.gov.uk/digital_wallets/#enable-google-pay">GOV.UK Pay documentation on enabling Google Pay</a> to learn where to find your merchant ID.
+        </p>
+      {%  endif %}
 
       <form method="post" novalidate>
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
