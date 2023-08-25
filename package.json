@@ -116,7 +116,7 @@
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
     "validator": "^13.11.0",
-    "winston": "3.9.0"
+    "winston": "3.10.0"
   },
   "devDependencies": {
     "@babel/core": "7.22.10",
