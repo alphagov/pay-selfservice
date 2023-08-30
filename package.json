@@ -146,7 +146,7 @@
     "lint-staged": "14.0.1",
     "mocha": "^10.2.0",
     "mountebank": "^2.8.2",
-    "nock": "13.3.2",
+    "nock": "13.3.3",
     "nodemon": "3.0.1",
     "notp": "2.0.3",
     "nunjucksify": "2.2.0",
