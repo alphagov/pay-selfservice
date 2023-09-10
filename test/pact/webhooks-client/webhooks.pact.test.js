@@ -33,7 +33,7 @@ describe('webhooks client', function () {
 
   before(async () => {
     const opts = await provider.setup()
-    webhooksUrl = `http://localhost:${opts.port}`
+    webhooksUrl = `http://127.0.0.1:${opts.port}`
   })
   after(() => provider.finalize())
 

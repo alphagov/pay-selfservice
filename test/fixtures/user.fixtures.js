@@ -272,7 +272,7 @@ function buildUserWithDefaults (opts) {
     _links: [{
       rel: 'self',
       method: 'GET',
-      href: 'http://localhost:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
+      href: 'http://127.0.0.1:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
     }]
   })
 
@@ -426,7 +426,7 @@ module.exports = {
       code: request.code || code,
       date: '2010-12-31T22:59:59.132Z',
       '_links': [{
-        'href': `http://localhost:8080/v1/api/forgotten-passwords/${code}`,
+        'href': `http://127.0.0.1:8080/v1/api/forgotten-passwords/${code}`,
         'rel': 'self',
         'method': 'GET'
       }]

@@ -34,7 +34,7 @@ describe('admin users client - add gateway accounts to service', () => {
 
   before(async () => {
     const opts = await provider.setup()
-    adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${opts.port}` })
+    adminUsersClient = getAdminUsersClient({ baseUrl: `http://127.0.0.1:${opts.port}` })
   })
   after(() => provider.finalize())
 

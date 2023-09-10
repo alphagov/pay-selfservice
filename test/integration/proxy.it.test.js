@@ -47,9 +47,9 @@ describe('request.js client', function () {
             portfinder.getPort(function (err, aPort) {
               if (err) { throw err }
               proxyServer = httpProxy
-                .createProxyServer({ target: { host: 'localhost', port: proxiedServer.address().port } })
+                .createProxyServer({ target: { host: '127.0.0.1', port: proxiedServer.address().port } })
                 .listen(aPort)
-              proxyUrl = 'http://localhost:' + aPort
+              proxyUrl = 'http://127.0.0.1:' + aPort
 
               proxyServer.on('proxyRes', function (proxyRes, req, res) {
                 proxyRes.headers['X-Proxy-Header'] = 'touched by proxy'
@@ -58,17 +58,17 @@ describe('request.js client', function () {
           })
 
           nonProxiedServerPort = aPort
-          nonProxiedServerUrl = 'http://localhost:' + aPort
+          nonProxiedServerUrl = 'http://127.0.0.1:' + aPort
         })
       })
 
-      proxiedServerUrl = 'http://localhost:' + aPort
+      proxiedServerUrl = 'http://127.0.0.1:' + aPort
     })
   })
 
   beforeEach(function () {
     process.env.HTTP_PROXY = proxyUrl
-    process.env.NO_PROXY = 'localhost:' + nonProxiedServerPort
+    process.env.NO_PROXY = '127.0.0.1:' + nonProxiedServerPort
   })
 
   afterEach(function () {

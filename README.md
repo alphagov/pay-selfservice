@@ -28,7 +28,7 @@ Build the Selfservice app and start it
  ```
 
 Open application in browser: 
-- http://localhost:3000
+- http://127.0.0.1:3000
 
 ##### Log output
 When using Docker, you can view log out with the following command:
