@@ -28,7 +28,7 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
 
   before(async () => {
     const opts = await provider.setup()
-    connectorClient = new Connector(`http://localhost:${opts.port}`)
+    connectorClient = new Connector(`http://127.0.0.1:${opts.port}`)
   })
   afterEach(() => provider.verify())
   after(() => provider.finalize())

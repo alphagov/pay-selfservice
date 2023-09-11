@@ -35,7 +35,7 @@ describe('products client - create a new product', () => {
 
   before(async () => {
     const opts = await provider.setup()
-    productsClient = getProductsClient(`http://localhost:${opts.port}`)
+    productsClient = getProductsClient(`http://127.0.0.1:${opts.port}`)
   })
   after(() => provider.finalize())
 

@@ -38,7 +38,7 @@ describe('publicauth client - get tokens', function () {
 
   before(async () => {
     const opts = await provider.setup()
-    publicAuthClient = getPublicAuthClient(`http://localhost:${opts.port}/${TOKENS_PATH}`)
+    publicAuthClient = getPublicAuthClient(`http://127.0.0.1:${opts.port}/${TOKENS_PATH}`)
   })
   after(() => provider.finalize())
 

@@ -5,7 +5,7 @@ var path = require('path')
 module.exports = {
   create: function (host, port) {
     return wrapper.createServer({
-      host: host || 'localhost',
+      host: host || '127.0.0.1',
       port: port || Math.floor(Math.random() * 40000) + 1024,
       log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
       dir: path.resolve(process.cwd(), 'pacts'),

@@ -18,7 +18,7 @@ describe('ledger client', () => {
 
   before(async () => {
     const opts = await pactTestProvider.setup()
-    ledgerUrl = `http://localhost:${opts.port}`
+    ledgerUrl = `http://127.0.0.1:${opts.port}`
   })
   after(() => pactTestProvider.finalize())
 

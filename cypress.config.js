@@ -6,7 +6,7 @@ module.exports = defineConfig({
   env: {
     TEST_SESSION_ENCRYPTION_KEY:
       'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk',
-    MOUNTEBANK_URL: 'http://localhost:2525',
+    MOUNTEBANK_URL: 'http://127.0.0.1:2525',
     MOUNTEBANK_IMPOSTERS_PORT: 8000
   },
   fileServerFolder: './test/cypress',
@@ -19,7 +19,7 @@ module.exports = defineConfig({
     setupNodeEvents (on, config) {
       return require('./test/cypress/plugins')(on, config)
     },
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'http://127.0.0.1:3000',
     specPattern: './test/cypress/integration/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: './test/cypress/support'
   }

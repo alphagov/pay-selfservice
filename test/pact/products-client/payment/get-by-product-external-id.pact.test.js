@@ -34,7 +34,7 @@ describe('products client - find a payment by it\'s associated product external 
 
   before(async () => {
     const opts = await provider.setup()
-    productsClient = getProductsClient(`http://localhost:${opts.port}`)
+    productsClient = getProductsClient(`http://127.0.0.1:${opts.port}`)
   })
   after(() => provider.finalize())
 

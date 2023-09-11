@@ -33,7 +33,7 @@ describe('connector client - patch MOTO mask card number toggle (enabled) reques
 
   before(async () => {
     const opts = await provider.setup()
-    connectorClient = new Connector(`http://localhost:${opts.port}`)
+    connectorClient = new Connector(`http://127.0.0.1:${opts.port}`)
   })
   after(() => provider.finalize())
 
