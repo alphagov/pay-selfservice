@@ -14,7 +14,7 @@ module.exports = async function showConfigureSecondFactorMethod (req, res) {
   lodash.unset(req, 'session.pageData.configureTwoFactorAuthMethodRecovered')
 
   const prettyPrintedSecret = req.user.provisionalOtpKey.match(/.{4}/g).join(' ')
-  const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent(req.user.username)}?secret=${encodeURIComponent(req.user.provisionalOtpKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
+  const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent(req.user.email)}?secret=${encodeURIComponent(req.user.provisionalOtpKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
 
   try {
     const qrCodeDataUrl = await qrcode.toDataURL(otpUrl)

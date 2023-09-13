@@ -70,7 +70,6 @@ describe('adminusers client - get users', function () {
       return result.to.be.fulfilled.then(function (users) {
         users.forEach((user, index) => {
           expect(user.externalId).to.be.equal(expectedUsers[index].external_id)
-          expect(user.username).to.be.equal(expectedUsers[index].username)
           expect(user.email).to.be.equal(expectedUsers[index].email)
           expect(user.serviceRoles.length).to.be.equal(1)
           expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(2)

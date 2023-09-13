@@ -52,7 +52,6 @@ describe('adminusers client - get user', () => {
     it('should find a user successfully', done => {
       adminUsersClient.getUserByExternalId(getUserResponse.external_id).should.be.fulfilled.then(user => {
         expect(user.externalId).to.be.equal(getUserResponse.external_id)
-        expect(user.username).to.be.equal(getUserResponse.username)
         expect(user.email).to.be.equal(getUserResponse.email)
         expect(user.serviceRoles.length).to.be.equal(1)
         expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(1)
