@@ -1,6 +1,7 @@
 'use strict'
 
 const Sentry = require('@sentry/node')
+const { AxiosError } = require('axios')
 
 const logger = require('../utils/logger')(__filename)
 const {
@@ -83,6 +84,11 @@ module.exports = function errorHandler (err, req, res, next) {
     logger.info(`Unhandled REST client error caught: ${err.message}`, {
       service: err.service,
       status: err.statusCode
+    })
+  } else if (err instanceof AxiosError) {
+    logger.info(`Unhandled AxiosError caught: ${err.message}`, {
+      'status': err.response && err.response.status,
+      'response_data': err.response && err.response.data
     })
   } else {
     logger.info(`Unhandled error caught: ${err.message}`, {
