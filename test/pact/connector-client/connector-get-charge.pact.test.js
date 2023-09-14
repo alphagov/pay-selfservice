@@ -49,7 +49,7 @@ describe('connector client - get single charge', () => {
     const response = chargeFixture.validGetChargeResponse(opts)
 
     before(() => {
-      provider.addInteraction(
+      return provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/charges/${existingChargeExternalId}`)
           .withUponReceiving('a valid get charge request')
           .withState(defaultState)
