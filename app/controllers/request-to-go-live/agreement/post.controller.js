@@ -66,15 +66,15 @@ module.exports = async (req, res, next) => {
         serviceExternalId: req.service.externalId,
         psp: stages[req.service.currentGoLiveStage],
         ipAddress: ipAddress || '',
-        email: agreement.email,
+        email: req.user.email,
         timestamp: agreement.agreement_time,
         serviceCreated: req.service.createdDate || '(service was created before we captured this date)',
         takesPaymentsOverPhone: req.service.takesPaymentsOverPhone
       }
 
       const zendeskOpts = {
-        email: agreement.email,
-        name: req.user.username,
+        email: req.user.email,
+        name: req.user.email,
         type: 'task',
         subject: `Service (${req.service.name}) has finished go live request`,
         tags: ['govuk_pay_support'],

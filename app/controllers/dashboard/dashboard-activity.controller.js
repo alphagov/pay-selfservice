@@ -104,7 +104,6 @@ module.exports = async (req, res) => {
   const telephonePaymentLink = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId)
   const linksToDisplay = getLinksToDisplay(req.service, req.account, req.user, telephonePaymentLink)
   const model = {
-    name: req.user.username,
     serviceId: req.service.externalId,
     period,
     links,
