@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Git checkout
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       - name: Detect secrets
         uses: alphagov/pay-ci/actions/detect-secrets@master
 
@@ -23,7 +23,7 @@ jobs:
       node-version: ${{ steps.parse-node-version.outputs.nvmrc }}
     steps:
       - name: Checkout
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       - name: Parse Node version
         id: parse-node-version
         run: echo "nvmrc=$(cat .nvmrc)" >> $GITHUB_OUTPUT
@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       - name: Setup
         uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
         with:
@@ -75,7 +75,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       - name: Setup
         uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
         with:
@@ -109,7 +109,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
       - name: Setup
         uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
         with:
