@@ -122,7 +122,8 @@ module.exports = function (req, data, template) {
   convertedData.isTestGateway = _.get(convertedData, 'currentGatewayAccount.type') === 'test'
   convertedData.isSandbox = paymentProvider === 'sandbox'
   convertedData.isDigitalWalletSupported = paymentProvider === 'worldpay' ||
-    (paymentProvider === 'stripe' && process.env.ALLOW_ENABLING_DIGITAL_WALLETS_FOR_STRIPE_ACCOUNT === 'true')
+    (paymentProvider === 'stripe' && process.env.ALLOW_ENABLING_DIGITAL_WALLETS_FOR_STRIPE_ACCOUNT === 'true') ||
+    (paymentProvider === 'stripe' && convertedData.isTestGateway === true)
   convertedData.currentService = service
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'

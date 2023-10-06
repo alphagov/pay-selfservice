@@ -69,4 +69,15 @@ describe('Display converter', function () {
     }, {}, {})
     expect(data.isDigitalWalletSupported).to.equal(true)
   })
+
+  it('should return isDigitalWalletSupported=true for Stripe account when gateway type is test and ALLOW_ENABLING_DIGITAL_WALLETS_FOR_STRIPE_ACCOUNT is false', () => {
+    process.env.ALLOW_ENABLING_DIGITAL_WALLETS_FOR_STRIPE_ACCOUNT = 'false'
+    const data = displayConverter({
+      account: {
+        type: 'test',
+        payment_provider: 'stripe'
+      }
+    }, {}, {})
+    expect(data.isDigitalWalletSupported).to.equal(true)
+  })
 })
