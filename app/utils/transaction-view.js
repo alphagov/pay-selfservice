@@ -15,6 +15,7 @@ const DisputeTransaction = require('../models/DisputeTransaction.class')
 const formatAccountPathsFor = require('../utils/format-account-paths-for')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
+const REDACTED_PII_FIELD_VALUE = '<DELETED>'
 const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 module.exports = {
@@ -114,9 +115,21 @@ module.exports = {
       chargeData.corporate_card_surcharge = asGBP(chargeData.corporate_card_surcharge)
     }
 
+    if (chargeData.reference === REDACTED_PII_FIELD_VALUE) {
+      chargeData.reference = DATA_UNAVAILABLE
+    }
+
+    if (chargeData.description === REDACTED_PII_FIELD_VALUE) {
+      chargeData.description = DATA_UNAVAILABLE
+    }
+
+    if (chargeData.email === REDACTED_PII_FIELD_VALUE) {
+      chargeData.email = DATA_UNAVAILABLE
+    }
+
     if (chargeData.card_details) {
       if (chargeData.card_details.card_brand == null) chargeData.card_details.card_brand = DATA_UNAVAILABLE
-      if (chargeData.card_details.cardholder_name == null) chargeData.card_details.cardholder_name = DATA_UNAVAILABLE
+      if (chargeData.card_details.cardholder_name == null || chargeData.card_details.cardholder_name === REDACTED_PII_FIELD_VALUE) chargeData.card_details.cardholder_name = DATA_UNAVAILABLE
       if (chargeData.card_details.expiry_date == null) chargeData.card_details.expiry_date = DATA_UNAVAILABLE
       if (chargeData.card_details.last_digits_card_number == null) chargeData.card_details.last_digits_card_number = '****'
       if (chargeData.card_details.first_digits_card_number == null) chargeData.card_details.first_digits_card_number = '**** **'

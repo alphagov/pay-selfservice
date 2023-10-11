@@ -1,16 +1,22 @@
-<table class="transaction-events govuk-table">
-  <tbody class="govuk-table__body">
+{% if events.length > 0 %}
+  <h2 class="govuk-heading-m govuk-!-margin-top-9">Transaction events</h2>
+  <table class="transaction-events govuk-table">
+    <tbody class="govuk-table__body">
     {% for event in events %}
-      <tr class="govuk-table__row" {% if event.refund_reference %} data-gateway-refund-id="{{ event.refund_reference }}" {% endif %}>
+      <tr
+        class="govuk-table__row" {% if event.refund_reference %} data-gateway-refund-id="{{ event.refund_reference }}" {% endif %}>
         <td class="govuk-table__cell govuk-!-width-one-third govuk-!-font-size-16">
           <span class="state">{{ event.state_friendly }}</span>
-          {% if event.state.message %}<br>{{ event.state.code}} - {{ event.state.message}}{% endif %}
+          {% if event.state.message %}<br>{{ event.state.code }} - {{ event.state.message }}{% endif %}
           {% if event.submitted_by_friendly %}by <br>{% endif %}
-          <span class="submitted-by">{% if event.submitted_by_friendly %}{{ event.submitted_by_friendly }}{% endif %}</span>
+          <span
+            class="submitted-by">{% if event.submitted_by_friendly %}{{ event.submitted_by_friendly }}{% endif %}</span>
         </td>
         <td class="govuk-table__cell amount govuk-!-font-size-16">{{ event.amount_friendly }}</td>
-        <td class="govuk-table__cell govuk-table__cell--numeric date govuk-!-font-size-16">{{ event.updated_friendly }}</td>
+        <td
+          class="govuk-table__cell govuk-table__cell--numeric date govuk-!-font-size-16">{{ event.updated_friendly }}</td>
       </tr>
     {% endfor %}
-  </tbody>
-</table>
+    </tbody>
+  </table>
+{% endif %}

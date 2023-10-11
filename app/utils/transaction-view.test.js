@@ -8,11 +8,20 @@ const transactionFixtures = require('../../test/fixtures/ledger-transaction.fixt
 describe('Transaction view utilities', () => {
   describe('disputed payment refundable', () => {
     const testCases = [
-      { refund_summary_status: 'unavailable', expectations: { refund_unavailable_due_to_dispute: true, refundable: false } },
-      { refund_summary_status: 'available', expectations: { refund_unavailable_due_to_dispute: false, refundable: true } },
+      {
+        refund_summary_status: 'unavailable',
+        expectations: { refund_unavailable_due_to_dispute: true, refundable: false }
+      },
+      {
+        refund_summary_status: 'available',
+        expectations: { refund_unavailable_due_to_dispute: false, refundable: true }
+      },
       { refund_summary_status: 'error', expectations: { refund_unavailable_due_to_dispute: false, refundable: true } },
       { refund_summary_status: 'full', expectations: { refund_unavailable_due_to_dispute: false, refundable: false } },
-      { refund_summary_status: 'pending', expectations: { refund_unavailable_due_to_dispute: false, refundable: false } }
+      {
+        refund_summary_status: 'pending',
+        expectations: { refund_unavailable_due_to_dispute: false, refundable: false }
+      }
     ]
 
     testCases.forEach(testCase => {
@@ -39,5 +48,37 @@ describe('Transaction view utilities', () => {
 
       expect(paymentView.dispute.amount_friendly).to.equal('£10.00')
     })
+  })
+
+  it(`should set text to 'Data unavailable' for fields redacted for PII`, () => {
+    const transaction = transactionFixtures.validTransactionDetailsResponse({
+      reference: '<DELETED>',
+      description: '<DELETED>',
+      email: '<DELETED>',
+      cardholder_name: '<DELETED>'
+    })
+    const events = transactionFixtures.validTransactionEventsResponse()
+    const paymentView = buildPaymentView(transaction, events)
+
+    expect(paymentView.reference).to.equal('Data unavailable')
+    expect(paymentView.description).to.equal('Data unavailable')
+    expect(paymentView.email).to.equal('Data unavailable')
+    expect(paymentView.card_details.cardholder_name).to.equal('Data unavailable')
+  })
+
+  it(`should not set text to 'Data unavailable' for fields not redacted`, () => {
+    const transaction = transactionFixtures.validTransactionDetailsResponse({
+      reference: 'ref-1',
+      description: 'desc-1',
+      email: 'test@example.org',
+      cardholder_name: 'Jane D'
+    })
+    const events = transactionFixtures.validTransactionEventsResponse()
+    const paymentView = buildPaymentView(transaction, events)
+
+    expect(paymentView.reference).to.equal('ref-1')
+    expect(paymentView.description).to.equal('desc-1')
+    expect(paymentView.email).to.equal('test@example.org')
+    expect(paymentView.card_details.cardholder_name).to.equal('Jane D')
   })
 })
