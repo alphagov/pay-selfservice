@@ -51,10 +51,10 @@ function defaultTransactionDetails (events, opts = {}) {
   return {
     amount: defaultAmount,
     state: { finished: true, status: 'success' },
-    description: 'description',
-    reference: 'ref188888',
+    description: opts.description || 'description',
+    reference: opts.reference || 'ref188888',
     transaction_id: transactionId,
-    email: 'j.doe@example.org',
+    email: opts.email || 'j.doe@example.org',
     payment_provider: 'sandbox',
     created_date: '2018-05-01T13:27:00.057Z',
     delayed_capture: false,
@@ -64,7 +64,7 @@ function defaultTransactionDetails (events, opts = {}) {
     refund_summary_available: opts.refund_amount_available || defaultAmount,
     refund_summary_submitted: opts.refund_summary_submitted || 0,
     gateway_transaction_id: 'a-gateway-transaction-id',
-    cardholder_name: 'J Doe',
+    cardholder_name: opts.cardholder_name || 'J Doe',
     card_brand: 'Visa',
     last_digits_card_number: '0002',
     expiry_date: '08/23',
@@ -318,6 +318,38 @@ describe('Transaction details page', () => {
         convertPenceToPoundsFormatted(events[0].amount))
       cy.get('.transaction-events tbody').find('tr').eq(3).find('td').eq(2).should('contain',
         formatDate(new Date(events[0].timestamp)))
+    })
+
+    it(`should display 'Data unavailable' for redact fields and hide transaction events section when there are no events`, () => {
+      const events = []
+      const opts = {
+        includeAddress: false,
+        reference: '<DELETED>',
+        description: '<DELETED>',
+        email: '<DELETED>',
+        cardholder_name: '<DELETED>'
+      }
+
+      const transactionDetails = defaultTransactionDetails(events, opts)
+      cy.task('setupStubs', getStubs(transactionDetails))
+
+      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+      // Reference number
+      cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
+        'Data unavailable')
+      // description
+      cy.get('.transaction-details tbody').find('tr').eq(1).find('td').first().should('have.text',
+        'Data unavailable')
+      // Name on card
+      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
+        'Data unavailable')
+      // Email
+      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
+        'Data unavailable')
+
+      // transaction events
+      cy.get('.transaction-events').should('not.exist')
     })
   })
 
