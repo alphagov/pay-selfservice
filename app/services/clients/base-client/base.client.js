@@ -84,9 +84,10 @@ function makeRequest (method, opts) {
       requestLogger.logRequestError(loggingContext, err)
     })
     call.on('response', response => {
-      requestLogger.logRequestEnd(loggingContext, response)
+      loggingContext.status = response.statusCode
+      requestLogger.logRequestEnd(loggingContext)
       if (!(response && SUCCESS_CODES.includes(response.statusCode))) {
-        requestLogger.logRequestFailure(loggingContext, response)
+        requestLogger.logRequestFailure(loggingContext)
       }
     })
     return call

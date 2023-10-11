@@ -11,26 +11,31 @@ module.exports = {
     })
   },
 
-  logRequestEnd: (context, response) => {
-    let duration = new Date() - context.startTime
-    logger.info(`${context.method} to ${context.url} ended - elapsed time: ${duration} ms`, {
+  logRequestEnd: (context) => {
+    const responseTime = (context.startTime && new Date() - context.startTime) || context.responseTime
+    logger.info(`${context.method} to ${context.url} ended - elapsed time: ${responseTime} ms`, {
       service: context.service,
       method: context.method,
       url: context.url,
       description: context.description,
-      response_time: duration,
-      status: response && response.statusCode,
+      response_time: responseTime,
+      status: context.status,
       ...context.additionalLoggingFields
     })
   },
 
-  logRequestFailure: (context, response) => {
-    logger.info(`Calling ${context.service} to ${context.description} failed`, {
+  logRequestFailure: (context) => {
+    let message = `Calling ${context.service} to ${context.description} failed`
+    if (context.retry) {
+      message = message + ' - request will be retried'
+    }
+
+    logger.info(message, {
       service: context.service,
       method: context.method,
       url: context.url,
       description: context.description,
-      status: response.statusCode,
+      status: context.status,
       ...context.additionalLoggingFields
     })
   },

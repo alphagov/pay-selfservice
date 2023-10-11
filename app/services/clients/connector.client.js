@@ -1,9 +1,10 @@
 'use strict'
 
 const logger = require('../../utils/logger')(__filename)
-const baseClient = require('./base-client/base.client')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 const StripeAccount = require('../../models/StripeAccount.class')
+const { Client } = require('./base-client/axios-base-client')
+const { configureClient } = require('./base-client/config')
 
 // Constants
 const SERVICE_NAME = 'connector'
@@ -30,8 +31,6 @@ const CHECK_WORLDPAY_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/c
 const FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/3ds-flex-credentials'
 const CANCEL_AGREEMENT_PATH = '/v1/api/accounts/{accountId}/agreements/{agreementId}/cancel'
 
-const responseBodyToStripeAccountSetupTransformer = body => new StripeAccountSetup(body)
-const responseBodyToStripeAccountTransformer = body => new StripeAccount(body)
 
 /** @private */
 function _accountApiUrlFor (gatewayAccountId) {
@@ -90,7 +89,8 @@ function _getCancelAgreementPathFor (accountId, agreementId) {
  * @param {string} connectorUrl connector url
  */
 function ConnectorClient (connectorUrl) {
-  this.connectorUrl = connectorUrl
+  this.client = new Client(SERVICE_NAME)
+  configureClient(this.client, connectorUrl)
 }
 
 ConnectorClient.prototype = {
@@ -103,12 +103,8 @@ ConnectorClient.prototype = {
    */
   getAccount: function (params) {
     const url = _accountUrlFor(params.gatewayAccountId)
-    return baseClient.get({
-      baseUrl: this.connectorUrl,
-      url,
-      description: 'get an account',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.get(url, { description: 'get an account' })
+      .then(response => response.data)
   },
   /**
    * Retrieves gateway account by external ID
@@ -119,12 +115,8 @@ ConnectorClient.prototype = {
    */
   getAccountByExternalId: function (params) {
     const url = _accountByExternalIdUrlFor(params.gatewayAccountExternalId)
-    return baseClient.get({
-      baseUrl: this.connectorUrl,
-      url,
-      description: 'get an account',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.get(url, { description: 'get an account' })
+      .then(response => response.data)
   },
 
   /**
@@ -136,12 +128,8 @@ ConnectorClient.prototype = {
    */
   getAccounts: function (params) {
     const url = _accountsUrlFor(params.gatewayAccountIds)
-    return baseClient.get({
-      baseUrl: this.connectorUrl,
-      url,
-      description: 'get an account',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.get(url, { description: 'get an account' })
+      .then(response => response.data)
   },
 
   /**
@@ -171,13 +159,9 @@ ConnectorClient.prototype = {
       payload.analytics_id = analyticsId
     }
 
-    return baseClient.post({
-      baseUrl: this.connectorUrl,
-      url: ACCOUNTS_API_PATH,
-      body: payload,
-      description: 'create a gateway account',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.post(ACCOUNTS_API_PATH, payload,
+      { description: 'create a gateway account' })
+      .then(response => response.data)
   },
 
   patchAccountGatewayAccountCredentials: function (params) {
@@ -198,13 +182,9 @@ ConnectorClient.prototype = {
       }
     ]
 
-    return baseClient.patch({
-      baseUrl: this.connectorUrl,
-      url,
-      body: payload,
-      description: 'patch gateway account credentials',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.patch(url, payload,
+      { description: 'patch gateway account credentials' })
+      .then(response => response.data)
   },
 
   patchGooglePayGatewayMerchantId: function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId) {
@@ -225,13 +205,9 @@ ConnectorClient.prototype = {
       }
     ]
 
-    return baseClient.patch({
-      baseUrl: this.connectorUrl,
-      url,
-      body: payload,
-      description: 'patch gateway account credentials for google pay merchant id',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.patch(url, payload,
+      { description: 'patch gateway account credentials for google pay merchant id' })
+      .then(response => response.data)
   },
 
   patchAccountGatewayAccountCredentialsState: function (params) {
@@ -251,13 +227,9 @@ ConnectorClient.prototype = {
         value: params.userExternalId
       }]
 
-    return baseClient.patch({
-      baseUrl: this.connectorUrl,
-      url,
-      body: payload,
-      description: 'patch gateway account credentials state',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.patch(url, payload,
+      { description: 'patch gateway account credentials state' })
+      .then(response => response.data)
   },
 
   /**
@@ -274,13 +246,9 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    return baseClient.post({
-      baseUrl: this.connectorUrl,
-      url,
-      body: params.payload,
-      description: 'patch gateway account credentials',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.post(url, params.payload,
+      { description: 'patch gateway account credentials' })
+      .then(response => response.data)
   },
 
   /**
@@ -290,29 +258,17 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   postCheckWorldpay3dsFlexCredentials: function (params) {
-    return baseClient.post(
-      {
-        baseUrl: this.connectorUrl,
-        url: CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId),
-        json: true,
-        body: params.payload,
-        description: 'Check Worldpay 3DS Flex credentials',
-        service: SERVICE_NAME
-      }
-    )
+    const url = CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId)
+    return this.client._axios.post(url, params.payload,
+      { description: 'Check Worldpay 3DS Flex credentials' })
+      .then(response => response.data)
   },
 
   postCheckWorldpayCredentials: function (params) {
-    return baseClient.post(
-      {
-        baseUrl: this.connectorUrl,
-        url: CHECK_WORLDPAY_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId),
-        json: true,
-        body: params.payload,
-        description: 'Check Worldpay credentials',
-        service: SERVICE_NAME
-      }
-    )
+    const url = CHECK_WORLDPAY_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId)
+    return this.client._axios.post(url, params.payload,
+      { description: 'Check Worldpay credentials' })
+      .then(response => response.data)
   },
 
   /**
@@ -323,13 +279,9 @@ ConnectorClient.prototype = {
   post3dsFlexAccountCredentials: function (params) {
     const url = _get3dsFlexCredentialsUrlFor(params.gatewayAccountId)
 
-    return baseClient.post({
-      baseUrl: this.connectorUrl,
-      url,
-      body: params.payload,
-      description: 'Update 3DS Flex credentials',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.post(url, params.payload,
+      { description: 'Update 3DS Flex credentials' })
+      .then(response => response.data)
   },
 
   /**
@@ -340,13 +292,9 @@ ConnectorClient.prototype = {
   postCancelAgreement: function (params) {
     const url = _getCancelAgreementPathFor(params.gatewayAccountId, params.agreementId)
 
-    return baseClient.post({
-      baseUrl: this.connectorUrl,
-      url,
-      body: params.payload,
-      description: 'Cancel agreement',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.post(url, params.payload,
+      { description: 'Cancel agreement' })
+      .then(response => response.data)
   },
 
   /**
@@ -357,12 +305,8 @@ ConnectorClient.prototype = {
   getAcceptedCardsForAccountPromise: function (gatewayAccountId) {
     const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId)
 
-    return baseClient.get({
-      baseUrl: this.connectorUrl,
-      url,
-      description: 'get accepted card types for account',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.get(url, { description: 'get accepted card types for account' })
+      .then(response => response.data)
   },
 
   /**
@@ -374,13 +318,9 @@ ConnectorClient.prototype = {
   postAcceptedCardsForAccount: function (gatewayAccountId, payload) {
     const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId)
 
-    return baseClient.post({
-      baseUrl: this.connectorUrl,
-      url,
-      body: payload,
-      description: 'post accepted card types for account',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.post(url, payload,
+      { description: 'post accepted card types for account' })
+      .then(response => response.data)
   },
 
   /**
@@ -389,18 +329,9 @@ ConnectorClient.prototype = {
    */
   getAllCardTypes: function () {
     const url = CARD_TYPES_API_PATH
-    logger.debug('Calling connector to get all card types', {
-      service: 'connector',
-      method: 'GET',
-      url: url
-    })
 
-    return baseClient.get({
-      baseUrl: this.connectorUrl,
-      url,
-      description: 'Retrieves all card types',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.get(url, { description: 'Retrieves all card types' })
+      .then(response => response.data)
   },
 
   /**
@@ -411,15 +342,12 @@ ConnectorClient.prototype = {
   patchServiceName: function (gatewayAccountId, serviceName) {
     const url = _serviceNameUrlFor(gatewayAccountId)
 
-    return baseClient.patch({
-      baseUrl: this.connectorUrl,
-      url,
-      body: {
-        service_name: serviceName
-      },
-      description: 'update service name',
-      service: SERVICE_NAME
-    })
+    const payload = {
+      service_name: serviceName
+    }
+    return this.client._axios.patch(url, payload,
+      { description: 'update service name' })
+      .then(response => response.data)
   },
 
   /**
@@ -428,20 +356,15 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   toggleApplePay: function (gatewayAccountId, allowApplePay) {
-    return baseClient.patch(
-      {
-        baseUrl: this.connectorUrl,
-        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: {
-          op: 'replace',
-          path: 'allow_apple_pay',
-          value: allowApplePay
-        },
-        description: 'toggle allow apple pay',
-        service: SERVICE_NAME
-      }
-    )
+    const url = ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
+    const payload = {
+      op: 'replace',
+      path: 'allow_apple_pay',
+      value: allowApplePay
+    }
+    return this.client._axios.patch(url, payload,
+      { description: 'toggle allow apple pay' })
+      .then(response => response.data)
   },
 
   /**
@@ -450,20 +373,15 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   toggleGooglePay: function (gatewayAccountId, allowGooglePay) {
-    return baseClient.patch(
-      {
-        baseUrl: this.connectorUrl,
-        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: {
-          op: 'replace',
-          path: 'allow_google_pay',
-          value: allowGooglePay
-        },
-        description: 'toggle allow google pay',
-        service: SERVICE_NAME
-      }
-    )
+    const url = ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
+    const payload = {
+      op: 'replace',
+      path: 'allow_google_pay',
+      value: allowGooglePay
+    }
+    return this.client._axios.patch(url, payload,
+      { description: 'toggle allow google pay' })
+      .then(response => response.data)
   },
 
   /**
@@ -472,20 +390,15 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   toggleMotoMaskCardNumberInput: function (gatewayAccountId, isMaskCardNumber) {
-    return baseClient.patch(
-      {
-        baseUrl: this.connectorUrl,
-        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: {
-          op: 'replace',
-          path: 'moto_mask_card_number_input',
-          value: isMaskCardNumber
-        },
-        description: 'Toggle gateway account card number masking setting',
-        service: SERVICE_NAME
-      }
-    )
+    const url = ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
+    const payload = {
+      op: 'replace',
+      path: 'moto_mask_card_number_input',
+      value: isMaskCardNumber
+    }
+    return this.client._axios.patch(url, payload,
+      { description: 'Toggle gateway account card number masking setting' })
+      .then(response => response.data)
   },
 
   /**
@@ -494,20 +407,15 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   toggleMotoMaskSecurityCodeInput: function (gatewayAccountId, isMaskSecurityCode) {
-    return baseClient.patch(
-      {
-        baseUrl: this.connectorUrl,
-        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: {
-          op: 'replace',
-          path: 'moto_mask_card_security_code_input',
-          value: isMaskSecurityCode
-        },
-        description: 'Toggle gateway account card security code masking setting',
-        service: SERVICE_NAME
-      }
-    )
+    const url = ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
+    const payload = {
+      op: 'replace',
+      path: 'moto_mask_card_security_code_input',
+      value: isMaskSecurityCode
+    }
+    return this.client._axios.patch(url, payload,
+      { description: 'Toggle gateway account card security code masking setting' })
+      .then(response => response.data)
   },
 
   /**
@@ -517,16 +425,10 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   postChargeRefund: function (gatewayAccountId, chargeId, payload) {
-    return baseClient.post(
-      {
-        baseUrl: this.connectorUrl,
-        url: CHARGE_REFUNDS_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId),
-        json: true,
-        body: payload,
-        description: 'submit refund',
-        service: SERVICE_NAME
-      }
-    )
+    const url = CHARGE_REFUNDS_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId)
+    return this.client._axios.post(url, payload,
+      { description: 'submit refund' })
+      .then(response => response.data)
   },
   /**
    *
@@ -535,13 +437,9 @@ ConnectorClient.prototype = {
   updateConfirmationEmail: function (params) {
     const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return baseClient.patch({
-      baseUrl: this.connectorUrl,
-      url,
-      body: params.payload,
-      description: 'update confirmation email',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.patch(url, params.payload,
+      { description: 'update confirmation email' })
+      .then(response => response.data)
   },
 
   /**
@@ -551,13 +449,9 @@ ConnectorClient.prototype = {
   updateConfirmationEmailEnabled: function (params) {
     const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return baseClient.patch({
-      baseUrl: this.connectorUrl,
-      url,
-      body: params.payload,
-      description: 'update confirmation email enabled',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.patch(url, params.payload,
+      { description: 'update confirmation email enabled' })
+      .then(response => response.data)
   },
 
   /**
@@ -567,13 +461,9 @@ ConnectorClient.prototype = {
   updateEmailCollectionMode: function (params) {
     const url = _accountApiUrlFor(params.gatewayAccountId)
 
-    return baseClient.patch({
-      baseUrl: this.connectorUrl,
-      url,
-      body: params.payload,
-      description: 'update email collection mode',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.patch(url, params.payload,
+      { description: 'update email collection mode' })
+      .then(response => response.data)
   },
 
   /**
@@ -583,13 +473,9 @@ ConnectorClient.prototype = {
   updateRefundEmailEnabled: function (params) {
     const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return baseClient.patch({
-      baseUrl: this.connectorUrl,
-      url,
-      body: params.payload,
-      description: 'update refund email enabled',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.patch(url, params.payload,
+      { description: 'update refund email enabled' })
+      .then(response => response.data)
   },
 
   /**
@@ -598,99 +484,63 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   updateIntegrationVersion3ds: function (gatewayAccountId, integrationVersion3ds) {
-    return baseClient.patch(
-      {
-        baseUrl: this.connectorUrl,
-        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: {
-          op: 'replace',
-          path: 'integration_version_3ds',
-          value: integrationVersion3ds
-        },
-        description: 'Set the 3DS integration version to use when authorising with the gateway',
-        service: SERVICE_NAME
-      }
-    )
+    const url = ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
+    const payload = {
+      op: 'replace',
+      path: 'integration_version_3ds',
+      value: integrationVersion3ds
+    }
+    return this.client._axios.patch(url, payload,
+      { description: 'Set the 3DS integration version to use when authorising with the gateway' })
+      .then(response => response.data)
   },
 
   getStripeAccountSetup: function (gatewayAccountId) {
-    return baseClient.get(
-      {
-        baseUrl: this.connectorUrl,
-        url: STRIPE_ACCOUNT_SETUP_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        description: 'get stripe account setup flags for gateway account',
-        service: SERVICE_NAME,
-        transform: responseBodyToStripeAccountSetupTransformer
-      }
-    )
+    const url = STRIPE_ACCOUNT_SETUP_PATH.replace('{accountId}', gatewayAccountId)
+    return this.client._axios.get(url, {
+      description: 'get stripe account setup flags for gateway account'
+    }).then(response => (new StripeAccountSetup(response.data)))
   },
 
   setStripeAccountSetupFlag: function (gatewayAccountId, stripeAccountSetupFlag) {
-    return baseClient.patch(
+    const url = STRIPE_ACCOUNT_SETUP_PATH.replace('{accountId}', gatewayAccountId)
+    const payload = [
       {
-        baseUrl: this.connectorUrl,
-        url: STRIPE_ACCOUNT_SETUP_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: [
-          {
-            op: 'replace',
-            path: stripeAccountSetupFlag,
-            value: true
-          }
-        ],
-        description: 'set stripe account setup flag to true for gateway account',
-        service: SERVICE_NAME
+        op: 'replace',
+        path: stripeAccountSetupFlag,
+        value: true
       }
-    )
+    ]
+    return this.client._axios.patch(url, payload,
+      { description: 'set stripe account setup flag to true for gateway account' })
+      .then(response => response.data)
   },
 
   getStripeAccount: function (gatewayAccountId) {
-    return baseClient.get(
-      {
-        baseUrl: this.connectorUrl,
-        url: STRIPE_ACCOUNT_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        description: 'get stripe account for gateway account',
-        service: SERVICE_NAME,
-        transform: responseBodyToStripeAccountTransformer
-      }
-    )
+    const url = STRIPE_ACCOUNT_PATH.replace('{accountId}', gatewayAccountId)
+    return this.client._axios.get(url, {
+      description: 'get stripe account for gateway account'
+    }).then(response => (new StripeAccount(response.data)))
   },
 
   postChargeRequest: function (gatewayAccountId, payload) {
-    return baseClient.post(
-      {
-        baseUrl: this.connectorUrl,
-        url: CHARGES_API_PATH.replace('{accountId}', gatewayAccountId),
-        json: true,
-        body: payload,
-        description: 'create payment',
-        service: SERVICE_NAME
-      }
-    )
+    const url = CHARGES_API_PATH.replace('{accountId}', gatewayAccountId)
+    return this.client._axios.post(url, payload,
+      { description: 'create payment' })
+      .then(response => response.data)
   },
 
   getCharge: function (gatewayAccountId, chargeExternalId) {
     const url = CHARGE_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeExternalId)
-    return baseClient.get({
-      baseUrl: this.connectorUrl,
-      url,
-      description: 'get a charge',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.get(url, { description: 'get a charge' })
+      .then(response => response.data)
   },
 
   postAccountSwitchPSP: function (gatewayAccountId, payload) {
     const url = SWITCH_PSP_PATH.replace('{accountId}', gatewayAccountId)
-    return baseClient.post({
-      baseUrl: this.connectorUrl,
-      url,
-      body: payload,
-      description: 'switch account payment service provider',
-      service: SERVICE_NAME
-    })
+    return this.client._axios.post(url, payload,
+      { description: 'switch account payment service provider' })
+      .then(response => response.data)
   }
 }
 
