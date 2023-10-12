@@ -30,7 +30,7 @@ describe('Client config', () => {
     nock(baseUrl)
       .get('/')
       .reply(200)
-    return expect(client._axios.get('/', { description: 'foo' })).to.be.fulfilled.then((response) => {
+    return expect(client.get('/', 'foo')).to.be.fulfilled.then((response) => {
       expect(response.request.headers).to.have.property('x-request-id', 'abc123')
     })
   })
@@ -43,7 +43,7 @@ describe('Client config', () => {
     nock(baseUrl)
       .get('/')
       .reply(200)
-    return expect(client._axios.get('/', { description: 'foo' })).to.be.fulfilled.then((response) => {
+    return expect(client.get('/', 'foo')).to.be.fulfilled.then((response) => {
       expect(response.request.headers).to.not.have.key('x-request-id')
     })
   })

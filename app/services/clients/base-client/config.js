@@ -27,7 +27,7 @@ function onFailureResponse (context) {
 }
 
 function configureClient (client, baseUrl) {
-  client._configure(baseUrl, {
+  client.configure(baseUrl, {
     transformRequestAddHeaders,
     onRequestStart,
     onSuccessResponse,

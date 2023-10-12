@@ -17,7 +17,7 @@ describe('Axios base client', () => {
   const requestSuccessSpy = sinon.spy()
   const requestFailureSpy = sinon.spy()
   const client = new Client(app)
-  client._configure(baseUrl, {
+  client.configure(baseUrl, {
     onRequestStart: requestStartSpy,
     onSuccessResponse: requestSuccessSpy,
     onFailureResponse: requestFailureSpy
@@ -36,7 +36,7 @@ describe('Axios base client', () => {
         .get('/')
         .reply(200, body)
 
-      return expect(client._axios.get('/', { description: 'foo' })).to.be.fulfilled.then((response) => {
+      return expect(client.get('/', 'foo')).to.be.fulfilled.then((response) => {
         expect(response.data).to.deep.equal(body)
       })
     })
@@ -50,7 +50,7 @@ describe('Axios base client', () => {
         .get('/')
         .reply(400, body)
 
-      return expect(client._axios.get('/', { description: 'foo' })).to.be.rejected.then((error) => {
+      return expect(client.get('/', 'foo')).to.be.rejected.then((error) => {
         expect(error.message).to.equal('a-message')
         expect(error.errorCode).to.equal(400)
         expect(error.errorIdentifier).to.equal('AN-ERROR')
@@ -67,7 +67,7 @@ describe('Axios base client', () => {
         .get('/')
         .reply(500, body)
 
-      return expect(client._axios.get('/', { description: 'foo' })).to.be.rejected.then((error) => {
+      return expect(client.get('/', 'foo')).to.be.rejected.then((error) => {
         expect(error.message).to.equal('a-message')
         expect(error.errorCode).to.equal(500)
         expect(error.errorIdentifier).to.equal('AN-ERROR')
@@ -86,7 +86,7 @@ describe('Axios base client', () => {
           response: { status: 500 }
         })
 
-      return expect(client._axios.get('/', { description: 'foo' })).to.be.rejected.then(error => {
+      return expect(client.get('/', 'foo')).to.be.rejected.then(error => {
         expect(error.errorCode).to.equal(500)
         sinon.assert.calledThrice(requestStartSpy)
         requestStartSpy.getCall(0).calledWithMatch({
@@ -116,7 +116,7 @@ describe('Axios base client', () => {
           response: { status: 500 }
         })
 
-      return expect(client._axios.get('/')).to.be.rejected.then(error => {
+      return expect(client.get('/')).to.be.rejected.then(error => {
         expect(error.errorCode).to.equal(500)
         sinon.assert.calledOnce(requestStartSpy)
         sinon.assert.calledOnce(requestFailureSpy)

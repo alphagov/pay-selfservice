@@ -31,7 +31,6 @@ const CHECK_WORLDPAY_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/worldpay/c
 const FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/3ds-flex-credentials'
 const CANCEL_AGREEMENT_PATH = '/v1/api/accounts/{accountId}/agreements/{agreementId}/cancel'
 
-
 /** @private */
 function _accountApiUrlFor (gatewayAccountId) {
   return ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
@@ -103,7 +102,7 @@ ConnectorClient.prototype = {
    */
   getAccount: function (params) {
     const url = _accountUrlFor(params.gatewayAccountId)
-    return this.client._axios.get(url, { description: 'get an account' })
+    return this.client.get(url, 'get an account')
       .then(response => response.data)
   },
   /**
@@ -115,7 +114,7 @@ ConnectorClient.prototype = {
    */
   getAccountByExternalId: function (params) {
     const url = _accountByExternalIdUrlFor(params.gatewayAccountExternalId)
-    return this.client._axios.get(url, { description: 'get an account' })
+    return this.client.get(url, 'get an account')
       .then(response => response.data)
   },
 
@@ -128,7 +127,7 @@ ConnectorClient.prototype = {
    */
   getAccounts: function (params) {
     const url = _accountsUrlFor(params.gatewayAccountIds)
-    return this.client._axios.get(url, { description: 'get an account' })
+    return this.client.get(url, 'get an account')
       .then(response => response.data)
   },
 
@@ -159,8 +158,7 @@ ConnectorClient.prototype = {
       payload.analytics_id = analyticsId
     }
 
-    return this.client._axios.post(ACCOUNTS_API_PATH, payload,
-      { description: 'create a gateway account' })
+    return this.client.post(ACCOUNTS_API_PATH, payload, 'create a gateway account')
       .then(response => response.data)
   },
 
@@ -182,8 +180,7 @@ ConnectorClient.prototype = {
       }
     ]
 
-    return this.client._axios.patch(url, payload,
-      { description: 'patch gateway account credentials' })
+    return this.client.patch(url, payload, 'patch gateway account credentials')
       .then(response => response.data)
   },
 
@@ -205,8 +202,7 @@ ConnectorClient.prototype = {
       }
     ]
 
-    return this.client._axios.patch(url, payload,
-      { description: 'patch gateway account credentials for google pay merchant id' })
+    return this.client.patch(url, payload, 'patch gateway account credentials for google pay merchant id')
       .then(response => response.data)
   },
 
@@ -227,8 +223,7 @@ ConnectorClient.prototype = {
         value: params.userExternalId
       }]
 
-    return this.client._axios.patch(url, payload,
-      { description: 'patch gateway account credentials state' })
+    return this.client.patch(url, payload, 'patch gateway account credentials state')
       .then(response => response.data)
   },
 
@@ -246,8 +241,7 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    return this.client._axios.post(url, params.payload,
-      { description: 'patch gateway account credentials' })
+    return this.client.post(url, params.payload, 'patch gateway account credentials')
       .then(response => response.data)
   },
 
@@ -259,15 +253,13 @@ ConnectorClient.prototype = {
    */
   postCheckWorldpay3dsFlexCredentials: function (params) {
     const url = CHECK_WORLDPAY_3DS_FLEX_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId)
-    return this.client._axios.post(url, params.payload,
-      { description: 'Check Worldpay 3DS Flex credentials' })
+    return this.client.post(url, params.payload, 'Check Worldpay 3DS Flex credentials')
       .then(response => response.data)
   },
 
   postCheckWorldpayCredentials: function (params) {
     const url = CHECK_WORLDPAY_CREDENTIALS_PATH.replace('{accountId}', params.gatewayAccountId)
-    return this.client._axios.post(url, params.payload,
-      { description: 'Check Worldpay credentials' })
+    return this.client.post(url, params.payload, 'Check Worldpay credentials')
       .then(response => response.data)
   },
 
@@ -279,8 +271,7 @@ ConnectorClient.prototype = {
   post3dsFlexAccountCredentials: function (params) {
     const url = _get3dsFlexCredentialsUrlFor(params.gatewayAccountId)
 
-    return this.client._axios.post(url, params.payload,
-      { description: 'Update 3DS Flex credentials' })
+    return this.client.post(url, params.payload, 'Update 3DS Flex credentials')
       .then(response => response.data)
   },
 
@@ -292,8 +283,7 @@ ConnectorClient.prototype = {
   postCancelAgreement: function (params) {
     const url = _getCancelAgreementPathFor(params.gatewayAccountId, params.agreementId)
 
-    return this.client._axios.post(url, params.payload,
-      { description: 'Cancel agreement' })
+    return this.client.post(url, params.payload, 'Cancel agreement')
       .then(response => response.data)
   },
 
@@ -305,7 +295,7 @@ ConnectorClient.prototype = {
   getAcceptedCardsForAccountPromise: function (gatewayAccountId) {
     const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId)
 
-    return this.client._axios.get(url, { description: 'get accepted card types for account' })
+    return this.client.get(url, 'get accepted card types for account')
       .then(response => response.data)
   },
 
@@ -318,8 +308,7 @@ ConnectorClient.prototype = {
   postAcceptedCardsForAccount: function (gatewayAccountId, payload) {
     const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId)
 
-    return this.client._axios.post(url, payload,
-      { description: 'post accepted card types for account' })
+    return this.client.post(url, payload, 'post accepted card types for account')
       .then(response => response.data)
   },
 
@@ -330,7 +319,7 @@ ConnectorClient.prototype = {
   getAllCardTypes: function () {
     const url = CARD_TYPES_API_PATH
 
-    return this.client._axios.get(url, { description: 'Retrieves all card types' })
+    return this.client.get(url, 'Retrieves all card types')
       .then(response => response.data)
   },
 
@@ -345,8 +334,7 @@ ConnectorClient.prototype = {
     const payload = {
       service_name: serviceName
     }
-    return this.client._axios.patch(url, payload,
-      { description: 'update service name' })
+    return this.client.patch(url, payload, 'update service name')
       .then(response => response.data)
   },
 
@@ -362,8 +350,7 @@ ConnectorClient.prototype = {
       path: 'allow_apple_pay',
       value: allowApplePay
     }
-    return this.client._axios.patch(url, payload,
-      { description: 'toggle allow apple pay' })
+    return this.client.patch(url, payload, 'toggle allow apple pay')
       .then(response => response.data)
   },
 
@@ -379,8 +366,7 @@ ConnectorClient.prototype = {
       path: 'allow_google_pay',
       value: allowGooglePay
     }
-    return this.client._axios.patch(url, payload,
-      { description: 'toggle allow google pay' })
+    return this.client.patch(url, payload, 'toggle allow google pay')
       .then(response => response.data)
   },
 
@@ -396,8 +382,7 @@ ConnectorClient.prototype = {
       path: 'moto_mask_card_number_input',
       value: isMaskCardNumber
     }
-    return this.client._axios.patch(url, payload,
-      { description: 'Toggle gateway account card number masking setting' })
+    return this.client.patch(url, payload, 'Toggle gateway account card number masking setting')
       .then(response => response.data)
   },
 
@@ -413,8 +398,7 @@ ConnectorClient.prototype = {
       path: 'moto_mask_card_security_code_input',
       value: isMaskSecurityCode
     }
-    return this.client._axios.patch(url, payload,
-      { description: 'Toggle gateway account card security code masking setting' })
+    return this.client.patch(url, payload, 'Toggle gateway account card security code masking setting')
       .then(response => response.data)
   },
 
@@ -426,8 +410,7 @@ ConnectorClient.prototype = {
    */
   postChargeRefund: function (gatewayAccountId, chargeId, payload) {
     const url = CHARGE_REFUNDS_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId)
-    return this.client._axios.post(url, payload,
-      { description: 'submit refund' })
+    return this.client.post(url, payload, 'submit refund')
       .then(response => response.data)
   },
   /**
@@ -437,8 +420,7 @@ ConnectorClient.prototype = {
   updateConfirmationEmail: function (params) {
     const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return this.client._axios.patch(url, params.payload,
-      { description: 'update confirmation email' })
+    return this.client.patch(url, params.payload, 'update confirmation email')
       .then(response => response.data)
   },
 
@@ -449,8 +431,7 @@ ConnectorClient.prototype = {
   updateConfirmationEmailEnabled: function (params) {
     const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return this.client._axios.patch(url, params.payload,
-      { description: 'update confirmation email enabled' })
+    return this.client.patch(url, params.payload, 'update confirmation email enabled')
       .then(response => response.data)
   },
 
@@ -461,8 +442,7 @@ ConnectorClient.prototype = {
   updateEmailCollectionMode: function (params) {
     const url = _accountApiUrlFor(params.gatewayAccountId)
 
-    return this.client._axios.patch(url, params.payload,
-      { description: 'update email collection mode' })
+    return this.client.patch(url, params.payload, 'update email collection mode')
       .then(response => response.data)
   },
 
@@ -473,8 +453,7 @@ ConnectorClient.prototype = {
   updateRefundEmailEnabled: function (params) {
     const url = _getNotificationEmailUrlFor(params.gatewayAccountId)
 
-    return this.client._axios.patch(url, params.payload,
-      { description: 'update refund email enabled' })
+    return this.client.patch(url, params.payload, 'update refund email enabled')
       .then(response => response.data)
   },
 
@@ -490,16 +469,14 @@ ConnectorClient.prototype = {
       path: 'integration_version_3ds',
       value: integrationVersion3ds
     }
-    return this.client._axios.patch(url, payload,
-      { description: 'Set the 3DS integration version to use when authorising with the gateway' })
+    return this.client.patch(url, payload, 'Set the 3DS integration version to use when authorising with the gateway')
       .then(response => response.data)
   },
 
   getStripeAccountSetup: function (gatewayAccountId) {
     const url = STRIPE_ACCOUNT_SETUP_PATH.replace('{accountId}', gatewayAccountId)
-    return this.client._axios.get(url, {
-      description: 'get stripe account setup flags for gateway account'
-    }).then(response => (new StripeAccountSetup(response.data)))
+    return this.client.get(url, 'get stripe account setup flags for gateway account')
+      .then(response => (new StripeAccountSetup(response.data)))
   },
 
   setStripeAccountSetupFlag: function (gatewayAccountId, stripeAccountSetupFlag) {
@@ -511,35 +488,31 @@ ConnectorClient.prototype = {
         value: true
       }
     ]
-    return this.client._axios.patch(url, payload,
-      { description: 'set stripe account setup flag to true for gateway account' })
+    return this.client.patch(url, payload, 'set stripe account setup flag to true for gateway account')
       .then(response => response.data)
   },
 
   getStripeAccount: function (gatewayAccountId) {
     const url = STRIPE_ACCOUNT_PATH.replace('{accountId}', gatewayAccountId)
-    return this.client._axios.get(url, {
-      description: 'get stripe account for gateway account'
-    }).then(response => (new StripeAccount(response.data)))
+    return this.client.get(url, 'get stripe account for gateway account')
+      .then(response => (new StripeAccount(response.data)))
   },
 
   postChargeRequest: function (gatewayAccountId, payload) {
     const url = CHARGES_API_PATH.replace('{accountId}', gatewayAccountId)
-    return this.client._axios.post(url, payload,
-      { description: 'create payment' })
+    return this.client.post(url, payload, 'create payment')
       .then(response => response.data)
   },
 
   getCharge: function (gatewayAccountId, chargeExternalId) {
     const url = CHARGE_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeExternalId)
-    return this.client._axios.get(url, { description: 'get a charge' })
+    return this.client.get(url, 'get a charge')
       .then(response => response.data)
   },
 
   postAccountSwitchPSP: function (gatewayAccountId, payload) {
     const url = SWITCH_PSP_PATH.replace('{accountId}', gatewayAccountId)
-    return this.client._axios.post(url, payload,
-      { description: 'switch account payment service provider' })
+    return this.client.post(url, payload, 'switch account payment service provider')
       .then(response => response.data)
   }
 }

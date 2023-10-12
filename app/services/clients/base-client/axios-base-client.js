@@ -14,7 +14,7 @@ class Client {
   /**
    * Configure the client. Should only be called once.
    */
-  _configure (baseURL, options) {
+  configure (baseURL, options) {
     this._axios = axios.create({
       baseURL,
       timeout: 60 * 1000,
@@ -110,6 +110,35 @@ class Client {
       throw new RESTClientError(errorContext.message, errorContext.service, errorContext.status, errorContext.errorIdentifier, errorContext.reason)
     })
   }
+
+  _getConfigWithDescription (config = {}, description) {
+    return {
+      ...config,
+      description
+    }
+  }
+
+  get (url, description, config) {
+    return this._axios.get(url, this._getConfigWithDescription(config, description))
+  }
+
+  post (url, payload, description, config) {
+    return this._axios.post(url, payload, this._getConfigWithDescription(config, description))
+  }
+
+  put (url, payload, description, config) {
+    return this._axios.put(url, payload, this._getConfigWithDescription(config, description))
+  }
+
+  patch (url, payload, description, config) {
+    return this._axios.patch(url, payload, this._getConfigWithDescription(config, description))
+  }
+
+  delete (url, description, config) {
+    return this._axios.delete(url, this._getConfigWithDescription(config, description))
+  }
 }
 
-module.exports = { Client }
+module.exports = {
+  Client
+}
