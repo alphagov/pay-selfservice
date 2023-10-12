@@ -36,42 +36,97 @@ describe('Axios base client', () => {
         .get('/')
         .reply(200, body)
 
-      return expect(client.get('/', 'foo')).to.be.fulfilled.then((response) => {
+      return expect(client.get('/', 'doing something', {
+        additionalLoggingFields: { foo: 'bar' }
+      })).to.be.fulfilled.then((response) => {
         expect(response.data).to.deep.equal(body)
+        sinon.assert.calledWith(requestStartSpy, {
+          service: app,
+          method: 'get',
+          url: '/',
+          description: 'doing something',
+          additionalLoggingFields: { foo: 'bar' }
+        })
+        sinon.assert.calledWith(requestSuccessSpy, {
+          service: app,
+          responseTime: sinon.match.number,
+          method: 'get',
+          params: undefined,
+          status: 200,
+          url: '/',
+          description: 'doing something',
+          additionalLoggingFields: { foo: 'bar' }
+        })
       })
     })
 
     it('should throw error and call failure hook on 400 response', () => {
       const body = {
         error_identifier: 'AN-ERROR',
-        message: 'a-message'
+        message: 'a-message',
+        reason: 'something'
       }
       nock(baseUrl)
         .get('/')
         .reply(400, body)
 
-      return expect(client.get('/', 'foo')).to.be.rejected.then((error) => {
+      return expect(client.get('/', 'doing something', {
+        additionalLoggingFields: { foo: 'bar' }
+      })).to.be.rejected.then((error) => {
         expect(error.message).to.equal('a-message')
         expect(error.errorCode).to.equal(400)
         expect(error.errorIdentifier).to.equal('AN-ERROR')
         expect(error.service).to.equal(app)
+
+        sinon.assert.calledWith(requestFailureSpy, {
+          service: app,
+          responseTime: sinon.match.number,
+          method: 'get',
+          params: undefined,
+          status: 400,
+          url: '/',
+          code: 400,
+          errorIdentifier: body.error_identifier,
+          reason: 'something',
+          message: body.message,
+          description: 'doing something',
+          additionalLoggingFields: { foo: 'bar' }
+        })
       })
     })
 
     it('should throw error and call failure hook on 500 response', () => {
       const body = {
         error_identifier: 'AN-ERROR',
-        message: 'a-message'
+        message: 'a-message',
+        reason: 'something'
       }
       nock(baseUrl)
         .get('/')
         .reply(500, body)
 
-      return expect(client.get('/', 'foo')).to.be.rejected.then((error) => {
+      return expect(client.get('/', 'doing something', {
+        additionalLoggingFields: { foo: 'bar' }
+      })).to.be.rejected.then((error) => {
         expect(error.message).to.equal('a-message')
         expect(error.errorCode).to.equal(500)
         expect(error.errorIdentifier).to.equal('AN-ERROR')
         expect(error.service).to.equal(app)
+
+        sinon.assert.calledWith(requestFailureSpy, {
+          service: app,
+          responseTime: sinon.match.number,
+          method: 'get',
+          params: undefined,
+          status: 500,
+          url: '/',
+          code: 500,
+          errorIdentifier: body.error_identifier,
+          reason: 'something',
+          message: body.message,
+          description: 'doing something',
+          additionalLoggingFields: { foo: 'bar' }
+        })
       })
     })
   })
