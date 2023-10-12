@@ -38,6 +38,7 @@ class Client {
         method: config.method,
         url: config.url,
         description: config.description,
+        additionalLoggingFields: config.additionalLoggingFields,
         ...config.retryCount && { retryCount: config.retryCount }
       }
       if (options.onRequestStart) {
@@ -64,7 +65,8 @@ class Client {
         params: response.config.params,
         status: response.status,
         url: response.config.url,
-        description: response.config.description
+        description: response.config.description,
+        additionalLoggingFields: response.config.additionalLoggingFields
       }
       if (options.onSuccessResponse) {
         options.onSuccessResponse(responseContext)
@@ -87,7 +89,8 @@ class Client {
         errorIdentifier: error.response && error.response.data && error.response.data.error_identifier,
         reason: error.response && error.response.data && error.response.data.reason,
         message: errors || error.response.data || 'Unknown error',
-        description: config.description
+        description: config.description,
+        additionalLoggingFields: config.additionalLoggingFields
       }
 
       // TODO: could use axios-retry to achieve this if desired
