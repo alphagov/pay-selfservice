@@ -132,7 +132,7 @@ describe('Axios base client', () => {
   })
 
   describe('Retries', () => {
-    it('should retry 3 times when ECONNRESET error thrown', () => {
+    it('should retry GET request 3 times when ECONNRESET error thrown', () => {
       nock(baseUrl)
         .get('/')
         .times(3)
@@ -160,6 +160,23 @@ describe('Axios base client', () => {
         })
         sinon.assert.calledThrice(requestFailureSpy)
         sinon.assert.calledWithMatch(requestFailureSpy, { retry: true })
+        expect(nock.isDone()).to.eq(true)
+      })
+    })
+
+    it('should not retry POST requests when ECONNRESET error returned', () => {
+      nock(baseUrl)
+        .post('/')
+        .replyWithError({
+          code: 'ECONNRESET',
+          response: { status: 500 }
+        })
+
+      return expect(client.post('/')).to.be.rejected.then(error => {
+        expect(error.errorCode).to.equal(500)
+        sinon.assert.calledOnce(requestStartSpy)
+        sinon.assert.calledOnce(requestFailureSpy)
+        expect(requestFailureSpy.getCall(0).args.retry === undefined)
         expect(nock.isDone()).to.eq(true)
       })
     })

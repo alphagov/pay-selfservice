@@ -94,8 +94,8 @@ class Client {
       }
 
       // TODO: could use axios-retry to achieve this if desired
-      // Retry ECONNRESET errors 3 times in total
-      if (error.code === 'ECONNRESET') {
+      // Retry ECONNRESET errors for GET requests 3 times in total
+      if (config.method === 'get' && error.code === 'ECONNRESET') {
         const retryCount = config.retryCount || 0
         if (retryCount < 2) {
           config.retryCount = retryCount + 1
