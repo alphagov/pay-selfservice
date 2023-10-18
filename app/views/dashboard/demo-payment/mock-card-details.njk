@@ -1,5 +1,13 @@
 {% extends "../../layout.njk" %}
 
+{% set card %}
+{% if currentGatewayAccount.payment_provider === 'stripe' %}
+   <p class="govuk-!-font-size-24 govuk-!-font-weight-bold">4000<span class="govuk-!-padding-left-3 govuk-!-padding-right-3">0582</span><span class="govuk-!-padding-right-3">6000</span>0005</p>
+{% else %}
+   <p class="govuk-!-font-size-24 govuk-!-font-weight-bold">4000<span class="govuk-!-padding-left-3 govuk-!-padding-right-3">0566</span><span class="govuk-!-padding-right-3">5566</span>5556</p>
+{% endif %}
+{% endset %}
+
 {% block pageTitle %}
   Mock card numbers for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
@@ -21,7 +29,7 @@
 
   {{
     govukInsetText({
-      html: '<p class="govuk-!-font-size-24 govuk-!-font-weight-bold">4000<span class="govuk-!-padding-left-3 govuk-!-padding-right-3">0566</span><span class="govuk-!-padding-right-3">5566</span>5556</p>'
+      html: card
     })
   }}
 
