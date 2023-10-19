@@ -43,7 +43,7 @@ describe('invite user controller', () => {
     }
 
     await inviteUserController.invite(req, res)
-    sinon.assert.calledWith(req.flash, 'genericError', 'Select the team member\'s permission level')
+    sinon.assert.calledWith(req.flash, 'genericError', 'Select the team member’s permission level')
     sinon.assert.calledWith(res.redirect, 303, `/service/${externalServiceId}/team-members/invite`)
   })
 })
