@@ -25,7 +25,7 @@ const searchLedger = async function searchLedger (gatewayAccountIds = [], filter
     const transactions = await Ledger.transactions(gatewayAccountIds, filters)
     return transactions
   } catch (error) {
-    throw new Error('GET_FAILED')
+    throw getStatusCodeForFailedSearch(error)
   }
 }
 
@@ -146,6 +146,13 @@ function getStatusCodeForError (err, response) {
   if (code > 200) status = 'GET_FAILED'
   if (code === 404) status = 'NOT_FOUND'
   return status
+}
+
+function getStatusCodeForFailedSearch (err, response) {
+  let status = 'GET_FAILED'
+  const code = (response || {}).statusCode || (err || {}).errorCode
+  if (code === 504) status = 'GATEWAY_TIMED_OUT'
+  return new Error(status)
 }
 
 module.exports = {
