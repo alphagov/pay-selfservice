@@ -430,7 +430,6 @@ describe('Transactions List', () => {
       cy.get('#download-transactions-link').should('have.attr', 'href', `/account/a-valid-external-id/transactions/download?dispute_states=needs_response&dispute_states=under_review`)
     })
   })
-
   describe('csv download link', () => {
     it('should not display csv download link when results >5k and no filter applied', function () {
       cy.task('setupStubs', [
@@ -463,13 +462,32 @@ describe('Transactions List', () => {
     })
   })
 
-  describe('Should display relevant error page on search failure ', () => {
-    it('should show error message on a bad request while retrieving the list of transactions', () => {
+  describe('Should display an error pages on search failure ', () => {
+    it('should display a generic error page, if a 500 error response is returned when search is done', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
         transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
       ])
       cy.visit(transactionsUrl, { failOnStatusCode: false })
+
+      // 1. Filtering FROM
+      // Ensure both the date/time pickers aren't showing
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
+
+      // Fill in a from date
+      cy.get('#fromDate').type('03/5/2018')
+
+      // Fill in a from time
+      cy.get('#fromTime').type('01:00:00')
+
+      // 2. Filtering TO
+
+      // Fill in a to date
+      cy.get('#toDate').type('03/5/2023')
+
+      // Fill in a to time
+      cy.get('#toTime').type('01:00:00')
 
       cy.task('clearStubs')
 
@@ -480,45 +498,8 @@ describe('Transactions List', () => {
             account_id: gatewayAccountId,
             limit_total: 'true',
             limit_total_size: '5001',
-            from_date: '',
-            to_date: '',
-            page: '1',
-            display_size: '100'
-          },
-          400)
-      ])
-
-      // Click the filter button
-      cy.get('#filter').click()
-
-      // Ensure that transaction list is not displayed
-      cy.get('#transactions-list tbody').should('not.exist')
-
-      // Ensure an error message header is displayed
-      cy.get('h1').contains('An error occurred')
-
-      // Ensure a generic error message is displayed
-      cy.get('#errorMsg').contains('There is a problem with the payments platform. Please contact the support team.')
-    })
-
-    it('should display the generic error page, if an internal server error occurs while retrieving the list of transactions', () => {
-      cy.task('setupStubs', [
-        ...sharedStubs(),
-        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
-      ])
-      cy.visit(transactionsUrl, { failOnStatusCode: false })
-
-      cy.task('clearStubs')
-
-      cy.task('setupStubs', [
-        ...sharedStubs(),
-        transactionsStubs.getLedgerTransactionsFailure(
-          {
-            account_id: gatewayAccountId,
-            limit_total: 'true',
-            limit_total_size: '5001',
-            from_date: '',
-            to_date: '',
+            from_date: '2018-05-03T00:00:00.000Z',
+            to_date: '2023-05-03T00:00:01.000Z',
             page: '1',
             display_size: '100'
           },
@@ -531,28 +512,37 @@ describe('Transactions List', () => {
       // Ensure that transaction list is not displayed
       cy.get('#transactions-list tbody').should('not.exist')
 
-      // Ensure an error message header is displayed
-      cy.get('h1').contains('An error occurred')
-
       // Ensure a generic error message is displayed
-      cy.get('#errorMsg').contains('There is a problem with the payments platform. Please contact the support team.')
+      cy.get('h1').contains('An error occurred')
+      cy.get('#errorMsg').contains('Unable to retrieve list of transactions or card types')
     })
 
-    it('should display the gateway timeout error page, if a gateway timeout error occurs while retrieving the list of transactions', () => {
+    it('should display a gateway timeout error page, if a 504 error response is returned when search is done', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
         transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
       ])
-
       cy.visit(transactionsUrl, { failOnStatusCode: false })
 
-      // Fill from and to date
+      // 1. Filtering FROM
+      // Ensure both the date/time pickers aren't showing
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
+
+      // Fill in a from date
       cy.get('#fromDate').type('03/5/2018')
+
+      // Fill in a from time
       cy.get('#fromTime').type('01:00:00')
+
+      // 2. Filtering TO
+
+      // Fill in a to date
       cy.get('#toDate').type('03/5/2023')
+
+      // Fill in a to time
       cy.get('#toTime').type('01:00:00')
 
-      // 1. Filtering
       cy.task('clearStubs')
 
       cy.task('setupStubs', [
@@ -576,10 +566,8 @@ describe('Transactions List', () => {
       // Ensure that transaction list is not displayed
       cy.get('#transactions-list tbody').should('not.exist')
 
-      // Ensure an error message header is displayed
-      cy.get('h1').contains('An error occurred')
-
       // Ensure a gateway timeout error message is displayed
+      cy.get('h1').contains('An error occurred')
       cy.get('#errorMsg').contains('Your request has timed out. Please apply more filters and try again')
     })
   })

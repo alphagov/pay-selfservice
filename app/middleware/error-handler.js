@@ -15,8 +15,7 @@ const {
   InvalidRegistationStateError,
   InvalidConfigurationError,
   ExpiredInviteError,
-  RESTClientError,
-  GatewayTimeoutError
+  RESTClientError, GatewayTimeoutError, GenericServerError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
@@ -81,11 +80,6 @@ module.exports = function errorHandler (err, req, res, next) {
     return renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team', 400)
   }
 
-  if (err instanceof GatewayTimeoutError) {
-    logger.info('Gateway Time out Error occurred on Transactions Search Page. Rendering error page')
-    return renderErrorView(req, res, err.message, 504)
-  }
-
   if (err instanceof RESTClientError) {
     logger.info(`Unhandled REST client error caught: ${err.message}`, {
       service: err.service,
@@ -101,6 +95,17 @@ module.exports = function errorHandler (err, req, res, next) {
       stack: err.stack
     })
   }
+
+  if (err instanceof GatewayTimeoutError) {
+    logger.info('Gateway Time out Error occurred on Transactions Search Page. Rendering error page')
+    return renderErrorView(req, res, err.message, 504)
+  }
+
+  if (err instanceof GenericServerError) {
+    logger.info('General Error occurred on Transactions Search Page. Rendering error page')
+    return renderErrorView(req, res, err.message, 500)
+  }
+
   Sentry.captureException(err)
   renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team.', 500)
 }
