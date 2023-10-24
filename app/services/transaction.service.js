@@ -11,6 +11,7 @@ const getQueryStringForParams = require('../utils/get-query-string-for-params')
 const userService = require('../services/user.service')
 const transactionView = require('../utils/transaction-view')
 const errorIdentifier = require('../models/error-identifier')
+const { GatewayTimeoutError, GenericServerError } = require('../errors')
 
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
@@ -22,10 +23,9 @@ const connectorRefundFailureReasons = {
 
 const searchLedger = async function searchLedger (gatewayAccountIds = [], filters) {
   try {
-    const transactions = await Ledger.transactions(gatewayAccountIds, filters)
-    return transactions
+    return await Ledger.transactions(gatewayAccountIds, filters)
   } catch (error) {
-    throw getStatusCodeForFailedSearch(error)
+    throw handleErrorForFailedSearch(error)
   }
 }
 
@@ -148,11 +148,13 @@ function getStatusCodeForError (err, response) {
   return status
 }
 
-function getStatusCodeForFailedSearch (err, response) {
-  let status = 'GET_FAILED'
+function handleErrorForFailedSearch (err, response) {
   const code = (response || {}).statusCode || (err || {}).errorCode
-  if (code === 504) status = 'GATEWAY_TIMED_OUT'
-  return new Error(status)
+  if (code === 504) {
+    return new GatewayTimeoutError('Your request has timed out. Please apply more filters and try again')
+  } else {
+    return new GenericServerError('Unable to retrieve list of transactions or card types')
+  }
 }
 
 module.exports = {

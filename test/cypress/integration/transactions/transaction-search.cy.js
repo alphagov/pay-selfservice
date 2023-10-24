@@ -462,8 +462,8 @@ describe('Transactions List', () => {
     })
   })
 
-  describe('Should display error pages on search failures ', () => {
-    it.only('should display a generic error page, if a 500 error response is returned', () => {
+  describe('Should display an error pages on search failure ', () => {
+    it('should display a generic error page, if a 500 error response is returned when search is done', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
         transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
@@ -517,7 +517,7 @@ describe('Transactions List', () => {
       cy.get('#errorMsg').contains('Unable to retrieve list of transactions or card types')
     })
 
-    it('should display a gateway timeout error page, if a 504 error response is returned', () => {
+    it('should display a gateway timeout error page, if a 504 error response is returned when search is done', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
         transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })

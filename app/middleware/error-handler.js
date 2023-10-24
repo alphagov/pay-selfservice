@@ -15,7 +15,7 @@ const {
   InvalidRegistationStateError,
   InvalidConfigurationError,
   ExpiredInviteError,
-  RESTClientError
+  RESTClientError, GatewayTimeoutError, GenericServerError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
@@ -96,12 +96,12 @@ module.exports = function errorHandler (err, req, res, next) {
     })
   }
 
-  if (err && err.message === 'Your request has timed out. Please apply more filters and try again') {
+  if (err instanceof GatewayTimeoutError) {
     logger.info('Gateway Time out Error occurred on Transactions Search Page. Rendering error page')
     return renderErrorView(req, res, err.message, 504)
   }
 
-  if (err && err.message === 'Unable to retrieve list of transactions or card types') {
+  if (err instanceof GenericServerError) {
     logger.info('General Error occurred on Transactions Search Page. Rendering error page')
     return renderErrorView(req, res, err.message, 500)
   }

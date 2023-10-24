@@ -19,6 +19,22 @@ class DomainError extends Error {
   }
 }
 
+class GatewayTimeoutError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = this.constructor.name
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
+class GenericServerError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = this.constructor.name
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
 /**
  * Thrown when there is no authentication session for the user.
  */
@@ -96,5 +112,7 @@ module.exports = {
   RegistrationSessionMissingError,
   InvalidRegistationStateError,
   InvalidConfigurationError,
-  ExpiredInviteError
+  ExpiredInviteError,
+  GatewayTimeoutError,
+  GenericServerError
 }

@@ -32,11 +32,7 @@ module.exports = async function showTransactionList (req, res, next) {
       client.getAllCardTypes()
     ])
   } catch (error) {
-    if (error.message === 'GATEWAY_TIMED_OUT') {
-      return next(new Error('Your request has timed out. Please apply more filters and try again'))
-    } else {
-      return next(new Error('Unable to retrieve list of transactions or card types'))
-    }
+    return next(error)
   }
 
   const transactionsDownloadLink = formatAccountPathsFor(router.paths.account.transactions.download, req.account.external_id)
