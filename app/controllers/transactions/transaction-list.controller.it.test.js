@@ -61,26 +61,6 @@ describe('The /transactions endpoint', () => {
       sinon.assert.calledWith(next, expectedError)
     })
 
-    it('should show a generic error message on a ledger service error while retrieving the list of transactions', async () => {
-      ledgerMockResponds(500, { 'message': 'some error from connector' }, ledgerSearchParameters)
-
-      await transactionListController(req, res, next)
-      const expectedError = sinon.match.instanceOf(Error)
-        .and(sinon.match.has('message', 'Unable to retrieve list of transactions or card types'))
-      sinon.assert.calledWith(next, expectedError)
-    })
-
-    it('should show a gateway timeout message while retrieving the list of transactions', async () => {
-      ledgerMockResponds(504,
-        { 'message': 'Gateway Timeout' },
-        ledgerSearchParameters)
-
-      await transactionListController(req, res, next)
-      const expectedError = sinon.match.instanceOf(Error)
-        .and(sinon.match.has('message', 'Your request has timed out. Please apply more filters and try again'))
-      sinon.assert.calledWith(next, expectedError)
-    })
-
     it('should show internal error message if any error happens while retrieving the list of transactions', async () => {
       // No ledgerMock defined on purpose to mock a network failure
 

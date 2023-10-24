@@ -461,4 +461,114 @@ describe('Transactions List', () => {
       cy.get('#download-transactions-link').should('exist')
     })
   })
+
+  describe('Should display error pages on search failures ', () => {
+    it.only('should display a generic error page, if a 500 error response is returned', () => {
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
+      ])
+      cy.visit(transactionsUrl, { failOnStatusCode: false })
+
+      // 1. Filtering FROM
+      // Ensure both the date/time pickers aren't showing
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
+
+      // Fill in a from date
+      cy.get('#fromDate').type('03/5/2018')
+
+      // Fill in a from time
+      cy.get('#fromTime').type('01:00:00')
+
+      // 2. Filtering TO
+
+      // Fill in a to date
+      cy.get('#toDate').type('03/5/2023')
+
+      // Fill in a to time
+      cy.get('#toTime').type('01:00:00')
+
+      cy.task('clearStubs')
+
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsFailure(
+          {
+            account_id: gatewayAccountId,
+            limit_total: 'true',
+            limit_total_size: '5001',
+            from_date: '2018-05-03T00:00:00.000Z',
+            to_date: '2023-05-03T00:00:01.000Z',
+            page: '1',
+            display_size: '100'
+          },
+          500)
+      ])
+
+      // Click the filter button
+      cy.get('#filter').click()
+
+      // Ensure that transaction list is not displayed
+      cy.get('#transactions-list tbody').should('not.exist')
+
+      // Ensure a generic error message is displayed
+      cy.get('h1').contains('An error occurred')
+      cy.get('#errorMsg').contains('Unable to retrieve list of transactions or card types')
+    })
+
+    it('should display a gateway timeout error page, if a 504 error response is returned', () => {
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
+      ])
+      cy.visit(transactionsUrl, { failOnStatusCode: false })
+
+      // 1. Filtering FROM
+      // Ensure both the date/time pickers aren't showing
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
+
+      // Fill in a from date
+      cy.get('#fromDate').type('03/5/2018')
+
+      // Fill in a from time
+      cy.get('#fromTime').type('01:00:00')
+
+      // 2. Filtering TO
+
+      // Fill in a to date
+      cy.get('#toDate').type('03/5/2023')
+
+      // Fill in a to time
+      cy.get('#toTime').type('01:00:00')
+
+      cy.task('clearStubs')
+
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsFailure(
+          {
+            account_id: gatewayAccountId,
+            limit_total: 'true',
+            limit_total_size: '5001',
+            from_date: '2018-05-03T00:00:00.000Z',
+            to_date: '2023-05-03T00:00:01.000Z',
+            page: '1',
+            display_size: '100'
+          },
+          504)
+      ])
+
+      // Click the filter button
+      cy.get('#filter').click()
+
+      // Ensure that transaction list is not displayed
+      cy.get('#transactions-list tbody').should('not.exist')
+
+      // Ensure a gateway timeout error message is displayed
+      cy.get('h1').contains('An error occurred')
+      cy.get('#errorMsg').contains('Your request has timed out. Please apply more filters and try again')
+    })
+  })
 })

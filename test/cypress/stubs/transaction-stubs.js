@@ -91,6 +91,20 @@ function getTransactionsSummarySuccess (opts) {
   })
 }
 
+function getLedgerTransactionsFailure (opts, responseCode) {
+  const path = `/v1/transaction`
+  return stubBuilder('GET', path, responseCode, {
+    query: {
+      account_id: opts.account_id,
+      limit_total: opts.limit_total,
+      limit_total_size: opts.limit_total_size,
+      from_date: opts.from_date,
+      to_date: opts.to_date,
+      page: opts.page,
+      display_size: opts.display_size
+    } })
+}
+
 module.exports = {
   getLedgerEventsSuccess,
   getLedgerTransactionSuccess,
@@ -98,5 +112,6 @@ module.exports = {
   getLedgerDisputeTransactionsSuccess,
   postRefundSuccess,
   postRefundAmountNotAvailable,
-  getTransactionsSummarySuccess
+  getTransactionsSummarySuccess,
+  getLedgerTransactionsFailure
 }

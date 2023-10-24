@@ -95,6 +95,17 @@ module.exports = function errorHandler (err, req, res, next) {
       stack: err.stack
     })
   }
+
+  if (err && err.message === 'Your request has timed out. Please apply more filters and try again') {
+    logger.info('Gateway Time out Error occurred on Transactions Search Page. Rendering error page')
+    return renderErrorView(req, res, err.message, 504)
+  }
+
+  if (err && err.message === 'Unable to retrieve list of transactions or card types') {
+    logger.info('General Error occurred on Transactions Search Page. Rendering error page')
+    return renderErrorView(req, res, err.message, 500)
+  }
+
   Sentry.captureException(err)
   renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team.', 500)
 }
