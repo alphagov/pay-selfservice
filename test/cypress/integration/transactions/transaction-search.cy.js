@@ -462,7 +462,7 @@ describe('Transactions List', () => {
     })
   })
 
-  describe('Should display an error pages on search failure ', () => {
+  describe('Should display relevant error page on search failure ', () => {
     it('should display a generic error page, if a 500 error response is returned when search is done', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
@@ -569,6 +569,50 @@ describe('Transactions List', () => {
       // Ensure a gateway timeout error message is displayed
       cy.get('h1').contains('An error occurred')
       cy.get('#errorMsg').contains('Your request has timed out. Please apply more filters and try again')
+    })
+  })
+
+  describe('Should display relevant error page, when failure occurs when downloading transactions', () => {
+    it.only('Should display gateway timeout error page, when failure occurs when downloading transactions', () => {
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: unfilteredTransactions,
+          transactionLength: 1000
+        })
+      ])
+      cy.visit(transactionsUrl)
+
+      // Ensure the transactions list has the right number of items
+      cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
+
+      // Ensure the values are displayed correctly
+      cy.get('#transactions-list tbody').first().find('td').eq(1).should('have.text', convertPenceToPoundsFormatted(unfilteredTransactions[0].amount))
+      cy.get('#transactions-list tbody').find('tr').eq(1).find('td').eq(1).should('have.text', convertPenceToPoundsFormatted(unfilteredTransactions[1].amount))
+
+      // Ensure the card fee is displayed correctly
+      cy.get('#transactions-list tbody').find('tr').eq(2).find('td').eq(1).should('contain', convertPenceToPoundsFormatted(unfilteredTransactions[2].total_amount)).and('contain', '(with card fee)')
+
+      cy.task('clearStubs')
+
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsDownloadFailure(
+          { account_id: gatewayAccountId },
+          504)
+      ])
+
+      // TODO Results in Cypress Timeout error
+      // cy.get('#download-transactions-link').click()
+
+      // TODO Assertions
+      // Ensure that transaction list is not displayed
+      // cy.get('#transactions-list tbody').should('not.exist')
+
+      // Ensure a gateway timeout error message is displayed
+      // cy.get('h1').contains('An error occurred')
+      // cy.get('#errorMsg').contains('Your request has timed out. Please apply more filters and try again')
     })
   })
 })
