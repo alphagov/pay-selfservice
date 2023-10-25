@@ -22,7 +22,14 @@ const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (re
     transactionService.logCsvFileStreamComplete(timestampStreamStart, filters, [accountId], req.user, false, req.account.type === 'live')
     res.end()
   }
-  const error = () => renderErrorView(req, res, 'Unable to download list of transactions.')
+  const error = () => {
+    const code = (res || {}).statusCode
+    if (code === 504) {
+      renderErrorView(req, res, 'Your request has timed out. Please apply more filters and try again.')
+    } else {
+      renderErrorView(req, res, 'Unable to download list of transactions.')
+    }
+  }
   const client = new Stream(data, complete, error)
 
   res.setHeader('Content-disposition', `attachment; filename="${name}"`)

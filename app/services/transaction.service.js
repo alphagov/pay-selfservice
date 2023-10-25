@@ -151,9 +151,9 @@ function getStatusCodeForError (err, response) {
 function handleErrorForFailedSearch (err, response) {
   const code = (response || {}).statusCode || (err || {}).errorCode
   if (code === 504) {
-    return new GatewayTimeoutError('Your request has timed out. Please apply more filters and try again')
+    return new GatewayTimeoutError('Your request has timed out. Please apply more filters and try again.')
   } else {
-    return new GenericServerError('Unable to retrieve list of transactions or card types')
+    return new GenericServerError('Unable to retrieve list of transactions or card types.')
   }
 }
 
