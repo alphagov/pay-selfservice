@@ -60,9 +60,7 @@ async function invite (req, res, next) {
     lodash.set(req, 'session.pageData', { invitee })
     res.redirect(303, formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId))
   } else if (!role) {
-    req.flash('genericError', 'Select the team member’s permission level')
-    lodash.set(req, 'session.pageData', { invitee })
-    res.redirect(303, formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId))
+    next(new Error(`Cannot identify role from user input ${roleId}`))
   } else {
     try {
       await userService.createInviteToJoinService(invitee, senderId, externalServiceId, role.name)

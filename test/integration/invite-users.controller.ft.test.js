@@ -85,5 +85,27 @@ describe('invite user controller', function () {
         })
         .end(done)
     })
+
+    it('should error on unknown role externalId', function (done) {
+      const unknownRoleId = '999'
+
+      const app = session.getAppWithLoggedInUser(getApp(), userInSession)
+
+      supertest(app)
+        .post(formatServicePathsFor(paths.service.teamMembers.invite, EXTERNAL_SERVICE_ID))
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'invitee-email': 'invitee@example.com',
+          'role-input': unknownRoleId,
+          csrfToken: csrf().create('123')
+        })
+        .expect(500)
+        .expect((res) => {
+          expect(res.body.message).to.equal('There is a problem with the payments platform. Please contact the support team.')
+        })
+        .end(done)
+    })
   })
 })
