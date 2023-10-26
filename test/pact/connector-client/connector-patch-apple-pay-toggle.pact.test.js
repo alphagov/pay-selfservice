@@ -12,7 +12,6 @@ const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures'
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
 let connectorClient
-const expect = chai.expect
 const existingGatewayAccountId = 666
 
 // Global setup
