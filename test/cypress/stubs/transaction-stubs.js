@@ -105,13 +105,6 @@ function getLedgerTransactionsFailure (opts, responseCode) {
     } })
 }
 
-function getLedgerTransactionsDownloadFailure (opts, responseCode) {
-  const path = `/v1/transaction`
-  return stubBuilder('GET', path, responseCode, {
-    query: {
-      account_id: opts.account_id
-    } })
-}
 module.exports = {
   getLedgerEventsSuccess,
   getLedgerTransactionSuccess,
@@ -120,6 +113,5 @@ module.exports = {
   postRefundSuccess,
   postRefundAmountNotAvailable,
   getTransactionsSummarySuccess,
-  getLedgerTransactionsFailure,
-  getLedgerTransactionsDownloadFailure
+  getLedgerTransactionsFailure
 }

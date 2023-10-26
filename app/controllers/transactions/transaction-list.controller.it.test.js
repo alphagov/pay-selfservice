@@ -1,28 +1,16 @@
 'use strict'
 
-const nock = require('nock')
 const sinon = require('sinon')
-
 const paths = require('../../paths')
-const getQueryStringForParams = require('../../utils/get-query-string-for-params')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
 const transactionListController = require('./transaction-list.controller')
 
 // Setup
 const gatewayAccountId = '651342'
-const ledgerSearchParameters = {}
 const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
-const LEDGER_TRANSACTION_PATH = '/v1/transaction?account_id=' + gatewayAccountId
 const requestId = 'unique-request-id'
 const headers = { 'x-request-id': requestId }
-const ledgerMock = nock(process.env.LEDGER_URL, { reqheaders: headers })
-
-function ledgerMockResponds (code, data, searchParameters) {
-  const queryString = getQueryStringForParams(searchParameters)
-  return ledgerMock.get(LEDGER_TRANSACTION_PATH + '&' + queryString)
-    .reply(code, data)
-}
 
 describe('The /transactions endpoint', () => {
   const account = validGatewayAccountResponse(
@@ -42,31 +30,17 @@ describe('The /transactions endpoint', () => {
   const res = {}
   let next
 
-  afterEach(() => {
-    nock.cleanAll()
-  })
-
   beforeEach(() => {
     next = sinon.spy()
   })
 
   describe('Error getting transactions', () => {
-    it('should show error message on a bad request while retrieving the list of transactions', async () => {
-      const errorMessage = 'There is a problem with the payments platform. Please contact the support team.'
-      ledgerMockResponds(400, { 'message': errorMessage }, ledgerSearchParameters)
-
-      await transactionListController(req, res, next)
-      const expectedError = sinon.match.instanceOf(Error)
-        .and(sinon.match.has('message', 'Unable to retrieve list of transactions or card types'))
-      sinon.assert.calledWith(next, expectedError)
-    })
-
     it('should show internal error message if any error happens while retrieving the list of transactions', async () => {
-      // No ledgerMock defined on purpose to mock a network failure
-
+      // No mocking defined on purpose to mock a network failure,
+      // This integration test will cover server errors outside the 500 and 504 defined in the Cypress test
       await transactionListController(req, res, next)
       const expectedError = sinon.match.instanceOf(Error)
-        .and(sinon.match.has('message', 'Unable to retrieve list of transactions or card types'))
+        .and(sinon.match.has('message', 'Unable to retrieve list of transactions or card types.'))
       sinon.assert.calledWith(next, expectedError)
     })
   })
