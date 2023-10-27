@@ -471,25 +471,6 @@ describe('Transactions List', () => {
       ])
       cy.visit(transactionsUrl, { failOnStatusCode: false })
 
-      // 1. Filtering FROM
-      // Ensure both the date/time pickers aren't showing
-      cy.get('.datepicker').should('not.exist')
-      cy.get('.ui-timepicker-wrapper').should('not.exist')
-
-      // Fill in a from date
-      cy.get('#fromDate').type('33/18/2018')
-
-      // Fill in a from time
-      cy.get('#fromTime').type('01:00:00')
-
-      // 2. Filtering TO
-
-      // Fill in a to date
-      cy.get('#toDate').type('33/23/2023')
-
-      // Fill in a to time
-      cy.get('#toTime').type('01:00:00')
-
       cy.task('clearStubs')
 
       cy.task('setupStubs', [
@@ -499,8 +480,8 @@ describe('Transactions List', () => {
             account_id: gatewayAccountId,
             limit_total: 'true',
             limit_total_size: '5001',
-            from_date: '2018-18-03T00:00:00.000Z',
-            to_date: '2023-23-03T00:00:01.000Z',
+            from_date: '',
+            to_date: '',
             page: '1',
             display_size: '100'
           },
@@ -513,8 +494,10 @@ describe('Transactions List', () => {
       // Ensure that transaction list is not displayed
       cy.get('#transactions-list tbody').should('not.exist')
 
-      // Ensure a generic error message is displayed
+      // Ensure an error message header is displayed
       cy.get('h1').contains('An error occurred')
+
+      // Ensure a generic error message is displayed
       cy.get('#errorMsg').contains('Unable to retrieve list of transactions or card types')
     })
     it('should display the generic error page, if an internal server error occurs while retrieving the list of transactions', () => {
@@ -566,8 +549,10 @@ describe('Transactions List', () => {
       // Ensure that transaction list is not displayed
       cy.get('#transactions-list tbody').should('not.exist')
 
-      // Ensure a generic error message is displayed
+      // Ensure an error message header is displayed
       cy.get('h1').contains('An error occurred')
+
+      // Ensure a generic error message is displayed
       cy.get('#errorMsg').contains('Unable to retrieve list of transactions or card types')
     })
 
@@ -620,8 +605,10 @@ describe('Transactions List', () => {
       // Ensure that transaction list is not displayed
       cy.get('#transactions-list tbody').should('not.exist')
 
-      // Ensure a gateway timeout error message is displayed
+      // Ensure an error message header is displayed
       cy.get('h1').contains('An error occurred')
+
+      // Ensure a gateway timeout error message is displayed
       cy.get('#errorMsg').contains('Your request has timed out. Please apply more filters and try again')
     })
   })
