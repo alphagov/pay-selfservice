@@ -148,9 +148,8 @@ function getStatusCodeForError (err, response) {
   return status
 }
 
-function handleErrorForFailedSearch (err, response) {
-  const code = (response || {}).statusCode || (err || {}).errorCode
-  if (code === 504) {
+function handleErrorForFailedSearch (err) {
+  if (err.errorCode === 504) {
     return new GatewayTimeoutError('Your request has timed out. Please apply more filters and try again.')
   } else {
     return new GenericServerError('Unable to retrieve list of transactions or card types.')
