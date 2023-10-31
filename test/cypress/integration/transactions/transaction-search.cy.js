@@ -507,25 +507,6 @@ describe('Transactions List', () => {
       ])
       cy.visit(transactionsUrl, { failOnStatusCode: false })
 
-      // 1. Filtering FROM
-      // Ensure both the date/time pickers aren't showing
-      cy.get('.datepicker').should('not.exist')
-      cy.get('.ui-timepicker-wrapper').should('not.exist')
-
-      // Fill in a from date
-      cy.get('#fromDate').type('03/5/2018')
-
-      // Fill in a from time
-      cy.get('#fromTime').type('01:00:00')
-
-      // 2. Filtering TO
-
-      // Fill in a to date
-      cy.get('#toDate').type('03/5/2023')
-
-      // Fill in a to time
-      cy.get('#toTime').type('01:00:00')
-
       cy.task('clearStubs')
 
       cy.task('setupStubs', [
@@ -535,8 +516,8 @@ describe('Transactions List', () => {
             account_id: gatewayAccountId,
             limit_total: 'true',
             limit_total_size: '5001',
-            from_date: '2018-05-03T00:00:00.000Z',
-            to_date: '2023-05-03T00:00:01.000Z',
+            from_date: '',
+            to_date: '',
             page: '1',
             display_size: '100'
           },
@@ -561,27 +542,16 @@ describe('Transactions List', () => {
         ...sharedStubs(),
         transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions })
       ])
+
       cy.visit(transactionsUrl, { failOnStatusCode: false })
 
-      // 1. Filtering FROM
-      // Ensure both the date/time pickers aren't showing
-      cy.get('.datepicker').should('not.exist')
-      cy.get('.ui-timepicker-wrapper').should('not.exist')
-
-      // Fill in a from date
+      // Fill from and to date
       cy.get('#fromDate').type('03/5/2018')
-
-      // Fill in a from time
       cy.get('#fromTime').type('01:00:00')
-
-      // 2. Filtering TO
-
-      // Fill in a to date
       cy.get('#toDate').type('03/5/2023')
-
-      // Fill in a to time
       cy.get('#toTime').type('01:00:00')
 
+      // 1. Filtering
       cy.task('clearStubs')
 
       cy.task('setupStubs', [

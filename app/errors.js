@@ -27,14 +27,6 @@ class GatewayTimeoutError extends Error {
   }
 }
 
-class GenericServerError extends Error {
-  constructor (message) {
-    super(message)
-    this.name = this.constructor.name
-    Error.captureStackTrace(this, this.constructor)
-  }
-}
-
 /**
  * Thrown when there is no authentication session for the user.
  */
@@ -113,6 +105,5 @@ module.exports = {
   InvalidRegistationStateError,
   InvalidConfigurationError,
   ExpiredInviteError,
-  GatewayTimeoutError,
-  GenericServerError
+  GatewayTimeoutError
 }
