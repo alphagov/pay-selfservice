@@ -498,8 +498,9 @@ describe('Transactions List', () => {
       cy.get('h1').contains('An error occurred')
 
       // Ensure a generic error message is displayed
-      cy.get('#errorMsg').contains('Unable to retrieve list of transactions or card types')
+      cy.get('#errorMsg').contains('There is a problem with the payments platform. Please contact the support team.')
     })
+
     it('should display the generic error page, if an internal server error occurs while retrieving the list of transactions', () => {
       cy.task('setupStubs', [
         ...sharedStubs(),
@@ -534,7 +535,7 @@ describe('Transactions List', () => {
       cy.get('h1').contains('An error occurred')
 
       // Ensure a generic error message is displayed
-      cy.get('#errorMsg').contains('Unable to retrieve list of transactions or card types')
+      cy.get('#errorMsg').contains('There is a problem with the payments platform. Please contact the support team.')
     })
 
     it('should display the gateway timeout error page, if a gateway timeout error occurs while retrieving the list of transactions', () => {
