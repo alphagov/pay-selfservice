@@ -15,7 +15,8 @@ const {
   InvalidRegistationStateError,
   InvalidConfigurationError,
   ExpiredInviteError,
-  RESTClientError
+  RESTClientError,
+  GatewayTimeoutError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
@@ -78,6 +79,11 @@ module.exports = function errorHandler (err, req, res, next) {
   if (err && err.code === 'EBADCSRFTOKEN') {
     logger.warn('CSRF secret provided is invalid')
     return renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team', 400)
+  }
+
+  if (err instanceof GatewayTimeoutError) {
+    logger.info('Gateway Time out Error occurred on Transactions Search Page. Rendering error page')
+    return renderErrorView(req, res, err.message, 504)
   }
 
   if (err instanceof RESTClientError) {

@@ -31,8 +31,8 @@ module.exports = async function showTransactionList (req, res, next) {
       transactionService.search([accountId], filters.result),
       client.getAllCardTypes()
     ])
-  } catch (err) {
-    return next(new Error('Unable to retrieve list of transactions or card types'))
+  } catch (error) {
+    return next(error)
   }
 
   const transactionsDownloadLink = formatAccountPathsFor(router.paths.account.transactions.download, req.account.external_id)
