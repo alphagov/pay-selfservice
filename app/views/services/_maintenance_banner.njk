@@ -1,0 +1,19 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% if display_maintenance_banner %}
+  <div class="govuk-grid-column-two-thirds">
+    {% set html %}
+      <p class="govuk-notification-banner__heading">
+        GOV.UK Pay will be unavailable for three 4-hour windows between 14 November and 28 November 2023.
+        <a class="govuk-notification-banner__link" href="https://docs.payments.service.gov.uk/support_contact_and_more_information/scheduled_maintenance/">Read more about this downtime</a>.
+      </p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: html,
+      attributes: {
+        id: 'my-services-notification-banner'
+      }
+    }) }}
+  </div>
+{% endif %}

@@ -8,6 +8,8 @@
 {% block beforeContent %}{% endblock %}
 
 {% block mainContent %}
+  {% include "./_maintenance_banner.njk" %}
+
   <div class="govuk-grid-column-two-thirds">
     {% if new_service_name %}
       {% set html %}

@@ -7,6 +7,7 @@ const serviceService = require('../../services/service.service')
 const { filterGatewayAccountIds } = require('../../utils/permissions')
 const getHeldPermissions = require('../../utils/get-held-permissions')
 const { DEFAULT_SERVICE_NAME } = require('../../utils/constants')
+const maintenanceBannerEndDate = process.env.MAINTENANCE_BANNER_END_DATE || '2023-11-28T08:00:00'
 
 function hasStripeAccount (gatewayAccounts) {
   return gatewayAccounts.some(gatewayAccount =>
@@ -25,6 +26,13 @@ function sortServicesByLiveThenName (a, b) {
   if (aName < bName) { return -1 }
   if (aName > bName) { return 1 }
   return 0
+}
+
+function shouldShowMaintenanceBanner () {
+  const currentDateTime = new Date()
+  const endDateTime = new Date(maintenanceBannerEndDate)
+
+  return currentDateTime <= endDateTime
 }
 
 module.exports = async function getServiceList (req, res) {
@@ -62,7 +70,8 @@ module.exports = async function getServiceList (req, res) {
     services_singular: servicesData.length === 1,
     env: process.env,
     has_account_with_payouts: hasStripeAccount(aggregatedGatewayAccounts),
-    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length
+    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length,
+    display_maintenance_banner: shouldShowMaintenanceBanner()
   }
 
   if (newServiceId) {

@@ -131,3 +131,19 @@ describe('User has access to one or more live services', () => {
     cy.contains('a', 'View transactions for all your services')
   })
 })
+
+describe('My services notification banner', () => {
+  it('should display the maintenance banner', () => {
+    const userExternalId = 'authenticated-user-id'
+
+    cy.task('setupStubs', [
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId: '1' }),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' })
+    ])
+    cy.setEncryptedCookies(userExternalId, 1)
+    cy.visit('/my-services')
+    cy.get('#my-services-notification-banner').should('exist')
+
+    cy.get('.govuk-notification-banner__heading').contains('GOV.UK Pay will be unavailable for three 4-hour windows between 14 November and 28 November 2023')
+  })
+})
