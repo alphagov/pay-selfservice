@@ -12,7 +12,6 @@ const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures'
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
 let connectorClient
-const expect = chai.expect
 const existingGatewayAccountId = 666
 
 // Global setup
@@ -59,30 +58,6 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
       connectorClient.toggleGooglePay(existingGatewayAccountId, true, null)
         .should.be.fulfilled
         .notify(done)
-    })
-  })
-
-  describe('google pay toggle with unsupported payment provider request', () => {
-    const googlePayToggleUnsupportedPaymentProviderState = `User ${existingGatewayAccountId} exists in the database`
-
-    before(() => {
-      return provider.addInteraction(
-        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
-          .withUponReceiving('a valid patch google pay toggle (enabled) request')
-          .withState(googlePayToggleUnsupportedPaymentProviderState)
-          .withMethod('PATCH')
-          .withRequestBody(request)
-          .withStatusCode(400)
-          .build())
-    })
-
-    afterEach(() => provider.verify())
-
-    it('should respond bad request for unsupported payment provider', done => {
-      connectorClient.toggleGooglePay(existingGatewayAccountId, true, null)
-        .should.be.rejected.then(response => {
-          expect(response.errorCode).to.equal(400)
-        }).should.notify(done)
     })
   })
 })

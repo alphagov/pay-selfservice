@@ -14,17 +14,17 @@ function setupYourPspStubs (opts = {}) {
     gatewayAccountId,
     gatewayAccountExternalId,
     type: 'test',
-    paymentProvider: 'stripe',
+    paymentProvider: 'stripe'
   })
 
   const stripeAccountSetup = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
-    gatewayAccountId,
+    gatewayAccountId
   })
 
   const stubs = [
     user,
     gatewayAccountByExternalId,
-    stripeAccountSetup,
+    stripeAccountSetup
   ]
 
   cy.task('setupStubs', stubs)
