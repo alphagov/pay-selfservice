@@ -72,10 +72,7 @@ module.exports = async function submit3dsFlexCredentials (req, res, next) {
     }
 
     await connector.post3dsFlexAccountCredentials(flexParams)
-
-    if (req.account.type === 'live') {
-      await connector.updateIntegrationVersion3ds(accountId, INTEGRATION_VERSION_3DS)
-    }
+    await connector.updateIntegrationVersion3ds(accountId, INTEGRATION_VERSION_3DS)
 
     req.flash('generic', 'Your Worldpay 3DS Flex settings have been updated')
     return res.redirect(indexUrl)

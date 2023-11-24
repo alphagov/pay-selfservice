@@ -30,15 +30,6 @@
               text: "Turn on 3DS Flex",
               classes: "govuk-button--secondary"
             }) }}
-        {% elif isWorldpay3dsFlexEnabled %}
-          <input id="toggle-worldpay-3ds-flex" name="toggle-worldpay-3ds-flex" type="hidden" value="off" data-cy="toggle-3ds-button">
-          {{ govukButton({
-            attributes: {
-              id: "disable-worldpay-3ds-flex-button"
-            },
-            text: "Turn off 3DS Flex",
-            classes: "govuk-button--secondary"
-          }) }}
         {% endif %}
       </form>
     {% endif %}

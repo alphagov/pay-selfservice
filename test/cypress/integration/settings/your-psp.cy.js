@@ -322,7 +322,6 @@ describe('Your PSP settings page', () => {
       cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
       cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
       cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-      cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
       cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
     })
 
@@ -545,49 +544,10 @@ describe('Your PSP settings page', () => {
         cy.visit(`${yourPspPath}/${credentialExternalId}`)
 
         cy.get('[data-cy=3ds-flex-section-for-test-worldpay-accounts]').should('exist')
-
         cy.get('#toggle-worldpay-3ds-flex').should('exist')
-
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-
-        cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
         cy.get('#enable-worldpay-3ds-flex-button')
-          .should('exist')
-          .click()
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
-        })
-      })
-
-      it('should have a button to disable 3DS Flex if 3DS is enabled and 3DS integration version is 2', () => {
-        const gatewayAccountOpts = {
-          gateway: 'worldpay',
-          requires3ds: true,
-          integrationVersion3ds: 2,
-          gatewayAccountCredentials: [{
-            payment_provider: 'worldpay',
-            credentials: testCredentials,
-            external_id: credentialExternalId,
-            id: credentialsId
-          }],
-          worldpay3dsFlex: testFlexCredentials
-        }
-        cy.task('setupStubs', [
-          ...getUserAndGatewayAccountStubs(gatewayAccountOpts),
-          gatewayAccountStubs.patchUpdate3dsVersionSuccess(gatewayAccountId, 1)
-        ])
-
-        cy.visit(`${yourPspPath}/${credentialExternalId}`)
-
-        cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('not.exist')
-
-        cy.get('#worldpay-3ds-flex-is-on').should('exist')
-        cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
-
-        cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
-        cy.get('#disable-worldpay-3ds-flex-button')
           .should('exist')
           .click()
 
@@ -615,11 +575,10 @@ describe('Your PSP settings page', () => {
 
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-        cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
         cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
       })
 
-      it('should have not have a button to enable or disable 3DS Flex if 3DS is disabled', () => {
+      it('should have not have a button to enable 3DS Flex if 3DS is disabled', () => {
         cy.task('setupStubs', getUserAndGatewayAccountStubs({
           gateway: 'worldpay',
           requires3ds: false,
@@ -639,7 +598,6 @@ describe('Your PSP settings page', () => {
 
         cy.get('#worldpay-3ds-flex-is-off').should('exist')
         cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-        cy.get('#disable-worldpay-3ds-flex-button').should('not.exist')
         cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
       })
     })
