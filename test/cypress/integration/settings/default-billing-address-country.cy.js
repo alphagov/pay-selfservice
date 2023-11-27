@@ -37,10 +37,11 @@ describe('Default billing address country', () => {
 
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
 
-      cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Default billing address country')
-      cy.get('.govuk-summary-list__value').eq(1).should('contain', 'None')
-
-      cy.get('.govuk-summary-list__actions').eq(1).contains('Change').click()
+      cy.get('[data-cy=billing-address-settings]').within(() => {
+        cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Default billing address country')
+        cy.get('.govuk-summary-list__value').eq(1).should('contain', 'None')
+        cy.get('.govuk-summary-list__actions').eq(1).contains('Change').click()
+      })
 
       cy.get('input[type="radio"]').should('have.length', 2)
       cy.get('input[value="on"]').should('not.be.checked')
@@ -84,7 +85,8 @@ describe('Default billing address country', () => {
       ])
 
       cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-      cy.get('.govuk-summary-list__actions').eq(1).contains('View').click()
+
+      cy.get('[data-cy=billing-address-settings]').contains('View').click()
       cy.get('.pay-info-warning-box').contains('You don’t have permission')
       cy.get('input[value="on"]').should('be.disabled')
       cy.get('input[value="off"]').should('be.disabled')

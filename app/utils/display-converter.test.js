@@ -4,11 +4,6 @@ var displayConverter = require('./display-converter')
 const expect = chai.expect
 
 describe('Display converter', function () {
-  afterEach(() => {
-    process.env.ALLOW_ENABLING_DIGITAL_WALLETS_FOR_STRIPE_ACCOUNT = undefined
-    process.env.ALLOW_ENABLING_DIGITAL_WALLETS_FOR_SANDBOX_ACCOUNT = undefined
-  })
-
   it('should add full_type to account if type is test', function () {
     let data = displayConverter({
       account: {
@@ -89,29 +84,7 @@ describe('Display converter', function () {
     expect(data.isDigitalWalletSupported).to.equal(true)
   })
 
-  it('should return isDigitalWalletSupported=false for sandbox account when ALLOW_ENABLING_DIGITAL_WALLETS_FOR_SANDBOX_ACCOUNT is not set', () => {
-    const data = displayConverter({
-      account: {
-        type: 'test',
-        payment_provider: 'sandbox'
-      }
-    }, {}, {})
-    expect(data.isDigitalWalletSupported).to.equal(false)
-  })
-
-  it('should return isDigitalWalletSupported=false for sandbox account when ALLOW_ENABLING_DIGITAL_WALLETS_FOR_SANDBOX_ACCOUNT is false', () => {
-    process.env.ALLOW_ENABLING_DIGITAL_WALLETS_FOR_SANDBOX_ACCOUNT = 'false'
-    const data = displayConverter({
-      account: {
-        type: 'test',
-        payment_provider: 'sandbox'
-      }
-    }, {}, {})
-    expect(data.isDigitalWalletSupported).to.equal(false)
-  })
-
-  it('should return isDigitalWalletSupported=true for sandbox account when ALLOW_ENABLING_DIGITAL_WALLETS_FOR_SANDBOX_ACCOUNT is true', () => {
-    process.env.ALLOW_ENABLING_DIGITAL_WALLETS_FOR_SANDBOX_ACCOUNT = 'true'
+  it('should return isDigitalWalletSupported=true for sandbox accounts', () => {
     const data = displayConverter({
       account: {
         type: 'test',
@@ -119,5 +92,15 @@ describe('Display converter', function () {
       }
     }, {}, {})
     expect(data.isDigitalWalletSupported).to.equal(true)
+  })
+
+  it('should return isDigitalWalletSupported=false for unsupported provider', () => {
+    const data = displayConverter({
+      account: {
+        type: 'test',
+        payment_provider: 'epdq'
+      }
+    }, {}, {})
+    expect(data.isDigitalWalletSupported).to.equal(false)
   })
 })
