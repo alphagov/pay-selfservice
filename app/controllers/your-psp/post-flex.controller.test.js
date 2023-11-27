@@ -52,14 +52,16 @@ describe('Post 3DS Flex controller', () => {
     sinon.assert.calledWith(res.redirect, `/account/${gatewayAccountExternalId}/your-psp/${credentialId}`)
   })
 
-  it('should NOT set 3DS integration version to 2 for TEST account', async () => {
+  it('should set 3DS integration version to 2 for TEST account', async () => {
     req.account = getGatewayAcountWithType('test')
 
     const controller = getControllerWithMocks()
 
     await controller(req, res, next)
 
-    sinon.assert.notCalled(updateIntegrationVersion3dsMock)
+    sinon.assert.calledWith(updateIntegrationVersion3dsMock, req.account.gateway_account_id, 2)
+    sinon.assert.calledWith(req.flash, 'generic', 'Your Worldpay 3DS Flex settings have been updated')
+    sinon.assert.calledWith(res.redirect, `/account/${gatewayAccountExternalId}/your-psp/${credentialId}`)
   })
 
   it('should call next when there is an error checking flex credentials', async () => {
