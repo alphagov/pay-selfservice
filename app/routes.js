@@ -323,7 +323,6 @@ module.exports.bind = function (app) {
 
   // Your PSP
   account.get(yourPsp.index, permission('gateway-credentials:read'), yourPspController.getIndex)
-  account.post(yourPsp.worldpay3dsFlex, permission('toggle-3ds:update'), yourPspController.postToggleWorldpay3dsFlex)
   account.get([yourPsp.flex, switchPSP.flex], permission('gateway-credentials:update'), yourPspController.getFlex)
   account.post([yourPsp.flex, switchPSP.flex], permission('gateway-credentials:update'), yourPspController.postFlex)
 

@@ -177,12 +177,10 @@ describe('Your PSP settings page', () => {
       cy.task('setupStubs', [
         ...getUserAndGatewayAccountStubs(gatewayAccountOpts),
         gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({ gatewayAccountId, result: 'valid' }),
-        gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({ gatewayAccountId, ...testFlexCredentials })
+        gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({ gatewayAccountId, ...testFlexCredentials }),
+        gatewayAccountStubs.patchUpdate3dsVersionSuccess(gatewayAccountId, 2)
       ])
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
-
-      cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('exist')
-      cy.get('[data-cy=toggle-3ds-button]').should('not.exist')
 
       cy.get('#flex-credentials-change-link').click()
       cy.get('#removeFlexCredentials').should('not.exist')
@@ -286,9 +284,6 @@ describe('Your PSP settings page', () => {
 
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
 
-      cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('not.exist')
-      cy.get('[data-cy=toggle-3ds-button]').should('exist')
-
       cy.get('.value-merchant-id').should('contain', merchantCode)
       cy.get('.value-username').should('contain', username)
       cy.get('.value-password').should('contain', '●●●●●●●●')
@@ -322,7 +317,6 @@ describe('Your PSP settings page', () => {
       cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
       cy.get('#worldpay-3ds-flex-is-off').should('not.exist')
       cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-      cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
     })
 
     it('should not allow non-MOTO merchant account code', () => {
@@ -518,110 +512,6 @@ describe('Your PSP settings page', () => {
         expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
       })
       cy.get('h1').contains('Your payment service provider (PSP) - Worldpay').should('exist')
-    })
-  })
-
-  describe('When using a Worldpay account to toggle 3DS Flex', () => {
-    describe('Test gateway account', () => {
-      it('should show button to turn on 3DS flex when it is disabled', () => {
-        const gatewayAccountOpts = {
-          gateway: 'worldpay',
-          requires3ds: true,
-          integrationVersion3ds: 1,
-          gatewayAccountCredentials: [{
-            payment_provider: 'worldpay',
-            credentials: testCredentials,
-            external_id: credentialExternalId,
-            id: credentialsId
-          }],
-          worldpay3dsFlex: testFlexCredentials
-        }
-        cy.task('setupStubs', [
-          ...getUserAndGatewayAccountStubs(gatewayAccountOpts),
-          gatewayAccountStubs.patchUpdate3dsVersionSuccess(gatewayAccountId, 2)
-        ])
-
-        cy.visit(`${yourPspPath}/${credentialExternalId}`)
-
-        cy.get('[data-cy=3ds-flex-section-for-test-worldpay-accounts]').should('exist')
-        cy.get('#toggle-worldpay-3ds-flex').should('exist')
-        cy.get('#worldpay-3ds-flex-is-off').should('exist')
-        cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-        cy.get('#enable-worldpay-3ds-flex-button')
-          .should('exist')
-          .click()
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
-        })
-      })
-
-      it('should have not have a button to enable 3DS Flex if 3DS is enabled, 3DS integration version is 1 but there are no 3DS Flex credentials', () => {
-        cy.task('setupStubs', getUserAndGatewayAccountStubs({
-          gateway: 'worldpay',
-          requires3ds: false,
-          integrationVersion3ds: 1,
-          gatewayAccountCredentials: [{
-            payment_provider: 'worldpay',
-            credentials: testCredentials,
-            external_id: credentialExternalId,
-            id: credentialsId
-          }]
-        }))
-
-        cy.visit(`${yourPspPath}/${credentialExternalId}`)
-
-        cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('exist')
-
-        cy.get('#worldpay-3ds-flex-is-off').should('exist')
-        cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-        cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
-      })
-
-      it('should have not have a button to enable 3DS Flex if 3DS is disabled', () => {
-        cy.task('setupStubs', getUserAndGatewayAccountStubs({
-          gateway: 'worldpay',
-          requires3ds: false,
-          integrationVersion3ds: 1,
-          gatewayAccountCredentials: [{
-            payment_provider: 'worldpay',
-            credentials: testCredentials,
-            external_id: credentialExternalId,
-            id: credentialsId
-          }],
-          worldpay3dsFlex: testFlexCredentials
-        }))
-
-        cy.visit(`${yourPspPath}/${credentialExternalId}`)
-
-        cy.get('[data-cy=set-up-3ds-flex-credentials-text]').should('not.exist')
-
-        cy.get('#worldpay-3ds-flex-is-off').should('exist')
-        cy.get('#worldpay-3ds-flex-is-on').should('not.exist')
-        cy.get('#enable-worldpay-3ds-flex-button').should('not.exist')
-      })
-    })
-
-    describe('Live gateway account', () => {
-      it('should display the page correctly for live gateway accounts', () => {
-        cy.task('setupStubs', getUserAndGatewayAccountStubs({
-          gateway: 'worldpay',
-          requires3ds: true,
-          integrationVersion3ds: 2,
-          gatewayAccountCredentials: [{
-            payment_provider: 'worldpay',
-            credentials: testCredentials,
-            external_id: credentialExternalId,
-            id: credentialsId
-          }],
-          worldpay3dsFlex: testFlexCredentials,
-          type: 'live'
-        }))
-
-        cy.visit(`${yourPspPath}/${credentialExternalId}`)
-
-        cy.get('[data-cy=3ds-flex-section-for-test-worldpay-accounts]').should('not.exist')
-      })
     })
   })
 

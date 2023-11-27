@@ -163,7 +163,8 @@ describe('Switch PSP settings page', () => {
               organisational_unit_id: organisationalUnitId,
               issuer: issuer,
               jwt_mac_key: jwtMacKey
-            })
+            }),
+            gatewayAccountStubs.patchUpdate3dsVersionSuccess(gatewayAccountId, 2)
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
