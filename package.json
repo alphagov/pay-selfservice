@@ -62,6 +62,15 @@
   },
   "overrides": {
     "minimist": "1.2.6",
+    "qrcode": { 
+      "ansi-regex": "3.0.1"
+    },
+    "grunt-contrib-copy": { 
+      "ansi-regex": "3.0.1"
+    },
+    "cli-color": { 
+      "ansi-regex": "3.0.1"
+    },
     "request": {
       "qs": "6.11.1"
     },
