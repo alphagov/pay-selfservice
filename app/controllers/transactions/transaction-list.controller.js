@@ -21,6 +21,12 @@ module.exports = async function showTransactionList (req, res, next) {
 
   req.session.filters = url.parse(req.url).query
 
+  // This ssort of error handling may not be appropriate
+  //if (!filters.dateRangeState.validDateRange) {
+  //  console.log('You have entered an invalid date range')
+  //  return next(new Error('You have entered an invalid date range'))
+  //}
+
   if (!filters.valid) {
     return next(new Error('Invalid search'))
   }
@@ -36,7 +42,7 @@ module.exports = async function showTransactionList (req, res, next) {
   }
 
   const transactionsDownloadLink = formatAccountPathsFor(router.paths.account.transactions.download, req.account.external_id)
-  const model = buildPaymentList(result[0], result[1], gatewayAccountExternalId, filters.result, transactionsDownloadLink)
+  const model = buildPaymentList(result[0], result[1], gatewayAccountExternalId, filters.result, filters.dateRangeState, transactionsDownloadLink)
   model.search_path = formatAccountPathsFor(router.paths.account.transactions.index, req.account.external_id)
   model.filtersDescription = describeFilters(filters.result)
 

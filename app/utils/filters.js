@@ -24,6 +24,22 @@ function trimFilterValues (filters) {
   return filters
 }
 
+function validateDateRange(filters){
+  var fromDate = new Date(filters.fromDate).getTime()
+  var toDate = new Date(filters.toDate).getTime()
+  var isValid = false
+
+   if (fromDate < toDate) {
+    isValid = true
+   }
+
+   return {
+    validDateRange: isValid,
+    fromDateParam: filters.fromDate,
+    toDateParam: filters.toDate
+  }
+}
+
 function getFilters (req) {
   let filters = trimFilterValues(qs.parse(req.query))
   filters.selectedStates = []
@@ -41,6 +57,7 @@ function getFilters (req) {
 
   filters = _.omitBy(filters, _.isEmpty)
   return {
+    dateRangeState: validateDateRange(filters),
     valid: validateFilters(filters),
     result: filters
   }

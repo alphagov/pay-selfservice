@@ -92,6 +92,11 @@
   {% include "transactions/paginator.njk" %}
 
   {% include "transactions/list.njk" %}
+        
+  {% if (!filtersDateRangeState.isValid) %}
+      <p class="govuk-body" id="invalid-date-range">You have entered an invalid date range, the from date must be earlier than the to date.</p>
+      <p class="govuk-body" id="invalid-date-range">The from date entered is {{showInvalidDateRangeError.fromDateParam}} and the to date entered is {{showInvalidDateRangeError.toDateParam}} </p>
+  {% endif %}
 
   {% include "transactions/paginator.njk" %}
 </div>

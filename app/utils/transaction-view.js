@@ -20,13 +20,14 @@ const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 module.exports = {
   /** prepares the transaction list view */
-  buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, route, backPath) {
+  buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, filtersDateRangeState, route, backPath) {
     connectorData.filters = filtersResult
     connectorData.hasFilters = Object.keys(filtersResult).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
     connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length)
     connectorData.totalOverLimit = connectorData.total > LEDGER_TRANSACTION_COUNT_LIMIT
     connectorData.showCsvDownload = showCsvDownload(connectorData, filtersResult)
+    connectorData.filtersDateRangeState = filtersDateRangeState
     connectorData.totalFormatted = connectorData.total.toLocaleString()
     connectorData.maxLimitFormatted = parseInt(LEDGER_TRANSACTION_COUNT_LIMIT).toLocaleString()
     connectorData.paginationLinks = getPaginationLinks(connectorData)
