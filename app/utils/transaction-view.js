@@ -27,15 +27,18 @@ module.exports = {
     connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length)
     connectorData.totalOverLimit = connectorData.total > LEDGER_TRANSACTION_COUNT_LIMIT
     connectorData.showCsvDownload = showCsvDownload(connectorData, filtersResult)
-    connectorData.isInvalidDateRange = filtersDateRangeState.isInvalidDateRange === true
-    connectorData.fromDateParam = filtersDateRangeState.fromDateParam
-    connectorData.toDateParam = filtersDateRangeState.toDateParam
     connectorData.totalFormatted = connectorData.total.toLocaleString()
     connectorData.maxLimitFormatted = parseInt(LEDGER_TRANSACTION_COUNT_LIMIT).toLocaleString()
     connectorData.paginationLinks = getPaginationLinks(connectorData)
     connectorData.hasPaginationLinks = !!getPaginationLinks(connectorData)
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
+
+    if(filtersDateRangeState){
+      connectorData.isInvalidDateRange = filtersDateRangeState.isInvalidDateRange === true
+      connectorData.fromDateParam = filtersDateRangeState.fromDateParam
+      connectorData.toDateParam = filtersDateRangeState.toDateParam
+    }
 
     connectorData.cardBrands = lodash.uniqBy(allCards.card_types, 'brand')
       .map(card => {
