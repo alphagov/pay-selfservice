@@ -1,6 +1,7 @@
 'use strict'
 
 const qs = require('qs')
+const moment = require('moment-timezone')
 const check = require('check-types')
 const Paginator = require('../utils/paginator.js')
 const states = require('../utils/states')
@@ -25,16 +26,14 @@ function trimFilterValues (filters) {
 }
 
 function validateDateRange(filters){
-  var fromDate = new Date(filters.fromDate).getTime()
-  var toDate = new Date(filters.toDate).getTime()
-  var isValid = false
+  let result = moment(filters.fromDate, 'DD/MM/YYYY').isAfter(moment(filters.toDate, 'DD/MM/YYYY'))? 1: -1;
+  var isInvalid = false
 
-   if (fromDate < toDate) {
-    isValid = true
+   if (result == 1) {
+     isInvalid = true
    }
-
    return {
-    validDateRange: isValid,
+    isInvalidDateRange: isInvalid,
     fromDateParam: filters.fromDate,
     toDateParam: filters.toDate
   }

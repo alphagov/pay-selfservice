@@ -21,22 +21,26 @@ module.exports = async function showTransactionList (req, res, next) {
 
   req.session.filters = url.parse(req.url).query
 
-  // This ssort of error handling may not be appropriate
-  //if (!filters.dateRangeState.validDateRange) {
-  //  console.log('You have entered an invalid date range')
-  //  return next(new Error('You have entered an invalid date range'))
-  //}
-
   if (!filters.valid) {
     return next(new Error('Invalid search'))
   }
 
+  let noTransactionSearchResults = {
+    total: 0,
+    count: 0,
+    page: 1,
+    results: [],
+    _links: {},
+    filters: {},
+  }
   let result
+
   try {
-    result = await Promise.all([
-      transactionService.search([accountId], filters.result),
-      client.getAllCardTypes()
-    ])
+      result = await Promise.all([
+        (filters.dateRangeState.isInvalidDateRange) ?
+          noTransactionSearchResults : transactionService.search([accountId], filters.result) ,
+        client.getAllCardTypes()
+      ])
   } catch (error) {
     return next(error)
   }

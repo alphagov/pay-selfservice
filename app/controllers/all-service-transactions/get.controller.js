@@ -40,7 +40,7 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
     const searchResultOutput = await transactionService.search(userPermittedAccountsSummary.gatewayAccountIds, filters.result)
     const cardTypes = await client.getAllCardTypes()
     const downloadRoute = filterLiveAccounts ? paths.allServiceTransactions.download : paths.formattedPathFor(paths.allServiceTransactions.downloadStatusFilter, 'test')
-    const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, downloadRoute, req.session.backPath)
+    const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result,filters.dateRangeState, downloadRoute, req.session.backPath)
     delete req.session.backPath
     model.search_path = filterLiveAccounts ? paths.allServiceTransactions.index : paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test')
     model.filtersDescription = describeFilters(filters.result)

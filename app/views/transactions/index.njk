@@ -65,7 +65,11 @@
 
   {% include "transactions/display-size.njk" %}
 
-  <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
+  {% if (isInvalidDateRange) %}
+      <p class="govuk-body" id="invalid-date-range">End date must be after start date</p>
+      <p class="govuk-body" id="invalid-date-range">The from date entered is <strong>{{fromDateParam}}</strong> and the to date entered is <strong>{{toDateParam}}</strong> </p>
+   {% else %}
+    <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
     {% if totalOverLimit %}
       Over {{maxLimitFormatted}} transactions
     {% else %}
@@ -73,6 +77,7 @@
     {% endif %}
     {{ filtersDescription | safe }}
   </h3>
+  {% endif %}
 
   {% if allServiceTransactions or permissions.transactions_download_read %}
 
@@ -92,11 +97,6 @@
   {% include "transactions/paginator.njk" %}
 
   {% include "transactions/list.njk" %}
-        
-  {% if (!filtersDateRangeState.isValid) %}
-      <p class="govuk-body" id="invalid-date-range">You have entered an invalid date range, the from date must be earlier than the to date.</p>
-      <p class="govuk-body" id="invalid-date-range">The from date entered is {{showInvalidDateRangeError.fromDateParam}} and the to date entered is {{showInvalidDateRangeError.toDateParam}} </p>
-  {% endif %}
 
   {% include "transactions/paginator.njk" %}
 </div>
