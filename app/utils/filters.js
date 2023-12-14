@@ -29,7 +29,7 @@ function validateDateRange(filters){
   let result = moment(filters.fromDate, 'DD/MM/YYYY').isAfter(moment(filters.toDate, 'DD/MM/YYYY'))? 1: -1;
   var isInvalid = false
 
-   if (result == 1) {
+   if (result === 1) {
      isInvalid = true
    }
    return {
