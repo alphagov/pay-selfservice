@@ -66,8 +66,8 @@
   {% include "transactions/display-size.njk" %}
 
   {% if (isInvalidDateRange) %}
-      <p class="govuk-body" id="invalid-date-range">End date must be after start date</p>
-      <p class="govuk-body" id="invalid-date-range">The from date entered is <strong>{{fromDateParam}}</strong> and the to date entered is <strong>{{toDateParam}}</strong> </p>
+      <p class="govuk-body" id="invalid-date-range-1">End date must be after start date</p>
+      <p class="govuk-body" id="invalid-date-range-2">The from date entered is <span class="govuk-body govuk-!-font-weight-bold">{{fromDateParam}}</span> and the to date entered is <span class="govuk-body govuk-!-font-weight-bold">{{toDateParam}}</span> </p>
    {% else %}
     <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
     {% if totalOverLimit %}
