@@ -34,13 +34,10 @@ module.exports = async function showTransactionList (req, res, next) {
     filters: {},
   }
   let result
-
+  let transactionSearchResults = (filters.dateRangeState.isInvalidDateRange) ?
+      noTransactionSearchResults : transactionService.search([accountId], filters.result)
   try {
-      result = await Promise.all([
-        (filters.dateRangeState.isInvalidDateRange) ?
-          noTransactionSearchResults : transactionService.search([accountId], filters.result) ,
-        client.getAllCardTypes()
-      ])
+      result = await Promise.all([ transactionSearchResults, client.getAllCardTypes() ])
   } catch (error) {
     return next(error)
   }
