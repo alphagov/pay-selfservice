@@ -16,16 +16,8 @@ const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 module.exports = async function showTransactionList (req, res, next) {
   const accountId = req.account.gateway_account_id
   const gatewayAccountExternalId = req.account.external_id
-
   const filters = getFilters(req)
-
-  req.session.filters = url.parse(req.url).query
-
-  if (!filters.valid) {
-    return next(new Error('Invalid search'))
-  }
-
-  let noTransactionSearchResults = {
+  const EMPTY_TRANSACTION_SEARCH_RESULTS = {
     total: 0,
     count: 0,
     page: 1,
@@ -33,9 +25,15 @@ module.exports = async function showTransactionList (req, res, next) {
     _links: {},
     filters: {},
   }
+  req.session.filters = url.parse(req.url).query
+
+  if (!filters.valid) {
+    return next(new Error('Invalid search'))
+  }
+
   let result
   let transactionSearchResults = (filters.dateRangeState.isInvalidDateRange) ?
-      noTransactionSearchResults : transactionService.search([accountId], filters.result)
+      EMPTY_TRANSACTION_SEARCH_RESULTS : transactionService.search([accountId], filters.result)
   try {
       result = await Promise.all([ transactionSearchResults, client.getAllCardTypes() ])
   } catch (error) {

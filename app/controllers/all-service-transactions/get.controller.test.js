@@ -6,6 +6,7 @@ const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fi
 const Service = require('../../models/Service.class')
 const serviceFixtures = require('../../../test/fixtures/service.fixtures')
 const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
+const {expect} = require("chai");
 
 describe('All service transactions - GET', () => {
   let req, res, next
@@ -50,6 +51,37 @@ describe('All service transactions - GET', () => {
 
       sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, true)
       sinon.assert.called(res.render)
+    })
+  })
+
+  describe('Error results when from date is later than to date', () => {
+    const request = {
+      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
+      service: service,
+      user: user,
+      params: {},
+      query: {
+        fromDate: '03/5/2018',
+        fromTime: '01:00:00',
+        toDate: '01/5/2018',
+        toTime: '01:00:00'
+      },
+      url: 'http://selfservice/all-servce-transactions',
+      session: {}
+    }
+    const response = {
+      render: sinon.spy()
+    }
+
+    it('should return the response with the date-range failing validation with empty transaction results indicator', async () => {
+      await getController()(request, response, next)
+
+      sinon.assert.called(response.render)
+      expect(response.render.firstCall.args[0]).to.equal('transactions/index')
+      expect(response.render.firstCall.args[1].hasResults).to.equal(false)
+      expect(response.render.firstCall.args[1].isInvalidDateRange).to.equal(true)
+      expect(response.render.firstCall.args[1].fromDateParam).to.equal('03/5/2018')
+      expect(response.render.firstCall.args[1].toDateParam).to.equal('01/5/2018')
     })
   })
 

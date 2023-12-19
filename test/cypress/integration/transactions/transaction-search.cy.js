@@ -334,6 +334,64 @@ describe('Transactions List', () => {
       assertTransactionRow(1, filteredByMultipleFieldsTransactions[1].reference, `/account/${gatewayAccountExternalId}/transactions/payment-transaction-id2`,
         'test@example.org', '–£15.00', 'Visa', 'Refund submitted')
     })
+
+    it('should be display error message when searching with from date later than to date', () => {
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions }),
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: filteredByDatesTransactions,
+          filters: {
+            from_date: '2018-05-03T00:00:00.000Z',
+            to_date: '2018-05-03T00:00:01.000Z'
+          }
+        })
+      ])
+      cy.visit(transactionsUrl)
+
+      // 1. Filtering FROM
+      // Ensure both the date/time pickers aren't showing
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
+
+      // Fill in a from date
+      cy.get('#fromDate').type('03/5/2018')
+
+      // Ensure only the datepicker is showing
+      cy.get('.datepicker').should('be.visible')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
+
+      // Fill in a from time
+      cy.get('#fromTime').type('01:00:00')
+
+      // Ensure only the timepicker is showing
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('be.visible')
+
+      // Fill in the to date
+      cy.get('#toDate').type('02/5/2018')
+
+      // Ensure only the datepicker is showing
+      cy.get('.datepicker').should('be.visible')
+      cy.get('.ui-timepicker-wrapper').should('not.be.visible')
+
+      // Fill in the to time
+      cy.get('#toTime').type('01:00:00')
+
+      // Ensure only the timepicker is showing
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('be.visible')
+
+      // Click the filter button
+      cy.get('#filter').click()
+
+      // Ensure that transaction list is not displayed
+      cy.get('#transactions-list tbody').should('not.exist')
+
+      // Ensure a filter failed validation message is displayed
+      cy.get('h3').contains('End date must be after start date' )
+    })
   })
   describe('Transactions are displayed correctly', () => {
     it('should display card fee with corporate card surcharge transaction', () => {
