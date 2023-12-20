@@ -91,5 +91,6 @@ function describeFilters (filters) {
 
 module.exports = {
   getFilters: getFilters,
-  describeFilters: describeFilters
+  describeFilters: describeFilters,
+  validateDateRange: validateDateRange
 }

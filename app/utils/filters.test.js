@@ -79,5 +79,18 @@ describe('filters', () => {
         expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong>')
       })
     })
+
+    describe('validateDateRange', () => {
+      it('should validate the date range filter and return an array with the result and the associated from and to date', function () {
+        const testFilter = {
+          fromDate: '03/03/2023',
+          toDate: '01/03/2023'
+        }
+        const result = filters.validateDateRange(testFilter)
+        expect(result.isInvalidDateRange).to.equal(true)
+        expect(result.fromDateParam).to.equal('03/03/2023')
+        expect(result.toDateParam).to.equal('01/03/2023')
+      })
+    })
   })
 })
