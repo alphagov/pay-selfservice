@@ -53,6 +53,37 @@ describe('All service transactions - GET', () => {
     })
   })
 
+  describe('Error results when from date is later than to date', () => {
+    const request = {
+      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
+      service: service,
+      user: user,
+      params: {},
+      query: {
+        fromDate: '03/5/2018',
+        fromTime: '01:00:00',
+        toDate: '01/5/2018',
+        toTime: '01:00:00'
+      },
+      url: 'http://selfservice/all-servce-transactions',
+      session: {}
+    }
+    const response = {
+      render: sinon.spy()
+    }
+
+    it('should return the response with the date-range failing validation with empty transaction results indicator', async () => {
+      await getController()(request, response, next)
+
+      sinon.assert.calledWith(response.render,'transactions/index',sinon.match({
+        'isInvalidDateRange': true,
+        'hasResults': false,
+        'fromDateParam': "03/5/2018",
+        'toDateParam': "01/5/2018",
+      }))
+    })
+  })
+
   describe('Non stripe account', () => {
     it('should NOT get dispute states', async () => {
       userPermittedAccountsSummary.hasStripeAccount = false

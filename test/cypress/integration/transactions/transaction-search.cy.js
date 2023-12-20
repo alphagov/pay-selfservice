@@ -334,6 +334,51 @@ describe('Transactions List', () => {
       assertTransactionRow(1, filteredByMultipleFieldsTransactions[1].reference, `/account/${gatewayAccountExternalId}/transactions/payment-transaction-id2`,
         'test@example.org', '–£15.00', 'Visa', 'Refund submitted')
     })
+
+    it('should display error message when searching with from date later than to date', () => {
+      cy.task('setupStubs', [
+        ...sharedStubs(),
+        transactionsStubs.getLedgerTransactionsSuccess({ gatewayAccountId, transactions: unfilteredTransactions }),
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: filteredByDatesTransactions,
+          filters: {
+            from_date: '2018-05-03T00:00:00.000Z',
+            to_date: '2018-05-03T00:00:01.000Z'
+          }
+        })
+      ])
+      cy.visit(transactionsUrl)
+
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
+
+      cy.get('#fromDate').type('03/5/2018')
+
+      cy.get('.datepicker').should('be.visible')
+      cy.get('.ui-timepicker-wrapper').should('not.exist')
+
+      cy.get('#fromTime').type('01:00:00')
+
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('be.visible')
+
+      cy.get('#toDate').type('02/5/2018')
+
+      cy.get('.datepicker').should('be.visible')
+      cy.get('.ui-timepicker-wrapper').should('not.be.visible')
+
+      cy.get('#toTime').type('01:00:00')
+
+      cy.get('.datepicker').should('not.exist')
+      cy.get('.ui-timepicker-wrapper').should('be.visible')
+
+      cy.get('#filter').click()
+
+      cy.get('#transactions-list tbody').should('not.exist')
+
+      cy.get('h3').contains('End date must be after start date' )
+    })
   })
   describe('Transactions are displayed correctly', () => {
     it('should display card fee with corporate card surcharge transaction', () => {

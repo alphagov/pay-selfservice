@@ -51,5 +51,10 @@
   </tbody>
 </table>
 {% else %}
-  <p class="govuk-body" id="no-results">There are no results for the filters you used.</p>
+  {% if not isInvalidDateRange %}
+     <p class="govuk-body" id="no-results">There are no results for the filters you used.</p>
+  {% endif %}
 {% endif %}
+
+
+

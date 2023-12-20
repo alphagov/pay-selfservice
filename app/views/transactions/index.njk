@@ -66,12 +66,17 @@
   {% include "transactions/display-size.njk" %}
 
   <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
+  {% if (isInvalidDateRange) %}
+      <p> End date must be after start date </p>
+      <p> The from date entered is <span class="govuk-body govuk-!-font-weight-bold">{{fromDateParam}}</span> and the to date entered is <span class="govuk-body govuk-!-font-weight-bold">{{toDateParam}}</span></p>
+   {% else %}
     {% if totalOverLimit %}
       Over {{maxLimitFormatted}} transactions
     {% else %}
       {{totalFormatted}} transactions
     {% endif %}
     {{ filtersDescription | safe }}
+  {% endif %}
   </h3>
 
   {% if allServiceTransactions or permissions.transactions_download_read %}

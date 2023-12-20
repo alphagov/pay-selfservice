@@ -16,9 +16,15 @@ const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 module.exports = async function showTransactionList (req, res, next) {
   const accountId = req.account.gateway_account_id
   const gatewayAccountExternalId = req.account.external_id
-
   const filters = getFilters(req)
-
+  const EMPTY_TRANSACTION_SEARCH_RESULTS = {
+    total: 0,
+    count: 0,
+    page: 1,
+    results: [],
+    _links: {},
+    filters: {},
+  }
   req.session.filters = url.parse(req.url).query
 
   if (!filters.valid) {
@@ -26,17 +32,16 @@ module.exports = async function showTransactionList (req, res, next) {
   }
 
   let result
+  let transactionSearchResults = (filters.dateRangeState.isInvalidDateRange) ?
+      EMPTY_TRANSACTION_SEARCH_RESULTS : transactionService.search([accountId], filters.result)
   try {
-    result = await Promise.all([
-      transactionService.search([accountId], filters.result),
-      client.getAllCardTypes()
-    ])
+      result = await Promise.all([ transactionSearchResults, client.getAllCardTypes() ])
   } catch (error) {
     return next(error)
   }
 
   const transactionsDownloadLink = formatAccountPathsFor(router.paths.account.transactions.download, req.account.external_id)
-  const model = buildPaymentList(result[0], result[1], gatewayAccountExternalId, filters.result, transactionsDownloadLink)
+  const model = buildPaymentList(result[0], result[1], gatewayAccountExternalId, filters.result, filters.dateRangeState, transactionsDownloadLink)
   model.search_path = formatAccountPathsFor(router.paths.account.transactions.index, req.account.external_id)
   model.filtersDescription = describeFilters(filters.result)
 

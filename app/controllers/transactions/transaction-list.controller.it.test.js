@@ -5,6 +5,13 @@ const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
 const transactionListController = require('./transaction-list.controller')
+const proxyquire = require("proxyquire");
+const ledgerTransactionFixture = require("../../../test/fixtures/ledger-transaction.fixtures");
+const gatewayAccountFixture = require("../../../test/fixtures/gateway-account.fixtures");
+const Service = require("../../models/Service.class");
+const serviceFixtures = require("../../../test/fixtures/service.fixtures");
+const User = require("../../models/User.class");
+const userFixtures = require("../../../test/fixtures/user.fixtures");
 
 // Setup
 const gatewayAccountId = '651342'
@@ -13,6 +20,8 @@ const requestId = 'unique-request-id'
 const headers = { 'x-request-id': requestId }
 
 describe('The /transactions endpoint', () => {
+  const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse(
+      { transactions: [] })
   const account = validGatewayAccountResponse(
     {
       external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
@@ -21,6 +30,9 @@ describe('The /transactions endpoint', () => {
       credentials: { 'username': 'a-username' }
     }
   )
+  const service = new Service(serviceFixtures.validServiceResponse({}))
+  const user = new User(userFixtures.validUserResponse())
+
   const req = {
     account,
     headers,
@@ -45,6 +57,35 @@ describe('The /transactions endpoint', () => {
     })
   })
 
+  describe('Error results when from date is later than to date', () => {
+    const request = {
+      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
+      service: service,
+      user: user,
+      query: {
+        fromDate: '03/5/2018',
+        fromTime: '01:00:00',
+        toDate: '01/5/2018',
+        toTime: '01:00:00'
+      },
+      url: 'http://selfservice/servce-transactions',
+      session: {}
+    }
+    const response = {
+      render: sinon.spy()
+    }
+    it('should return the response with the date-range failing validation with empty transaction results indicator', async () => {
+      await getController()(request, response, next)
+
+      sinon.assert.calledWith(response.render,'transactions/index',sinon.match({
+        'isInvalidDateRange': true,
+        'hasResults': false,
+        'fromDateParam': "03/5/2018",
+        'toDateParam': "01/5/2018",
+    }))
+    })
+  })
+
   describe('Pagination', () => {
     it('should return return error if page out of bounds', async () => {
       const reqWithInvalidPage = {
@@ -61,7 +102,7 @@ describe('The /transactions endpoint', () => {
       sinon.assert.calledWith(next, expectedError)
     })
 
-    it('should return return error if pageSize out of bounds 1', async () => {
+    it('should return error if pageSize out of bounds 1', async () => {
       const reqWithInvalidPageSize = {
         ...req,
         query: {
@@ -76,7 +117,7 @@ describe('The /transactions endpoint', () => {
       sinon.assert.calledWith(next, expectedError)
     })
 
-    it('should return return error if pageSize out of bounds 2', async () => {
+    it('should return error if pageSize out of bounds 2', async () => {
       const reqWithInvalidPageSize = {
         ...req,
         query: {
@@ -91,4 +132,16 @@ describe('The /transactions endpoint', () => {
       sinon.assert.calledWith(next, expectedError)
     })
   })
+
+  function getController () {
+    return proxyquire('./transaction-list.controller', {
+      '../../services/transaction.service': {
+        search: sinon.spy(() => Promise.resolve(transactionSearchResponse))
+      },
+      '../../services/clients/connector.client.js': {
+        ConnectorClient: class {async getAllCardTypes () { return {} }}
+      }
+    })
+  }
+
 })

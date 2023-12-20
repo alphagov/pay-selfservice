@@ -20,7 +20,7 @@ const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 module.exports = {
   /** prepares the transaction list view */
-  buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, route, backPath) {
+  buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, filtersDateRangeState, route, backPath) {
     connectorData.filters = filtersResult
     connectorData.hasFilters = Object.keys(filtersResult).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
@@ -31,9 +31,14 @@ module.exports = {
     connectorData.maxLimitFormatted = parseInt(LEDGER_TRANSACTION_COUNT_LIMIT).toLocaleString()
     connectorData.paginationLinks = getPaginationLinks(connectorData)
     connectorData.hasPaginationLinks = !!getPaginationLinks(connectorData)
-
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
+
+    if(filtersDateRangeState){
+      connectorData.isInvalidDateRange = filtersDateRangeState.isInvalidDateRange === true
+      connectorData.fromDateParam = filtersDateRangeState.fromDateParam
+      connectorData.toDateParam = filtersDateRangeState.toDateParam
+    }
 
     connectorData.cardBrands = lodash.uniqBy(allCards.card_types, 'brand')
       .map(card => {
