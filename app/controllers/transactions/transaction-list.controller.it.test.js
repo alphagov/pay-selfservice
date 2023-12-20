@@ -77,7 +77,7 @@ describe('The /transactions endpoint', () => {
     it('should return the response with the date-range failing validation with empty transaction results indicator', async () => {
       await getController()(request, response, next)
 
-      sinon.assert.calledWith(response.render,'transactions/index',response.render.firstCall.args[1])
+      sinon.assert.calledWith(response.render,'transactions/index')
     })
   })
 
