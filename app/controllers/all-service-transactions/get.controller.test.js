@@ -6,7 +6,6 @@ const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fi
 const Service = require('../../models/Service.class')
 const serviceFixtures = require('../../../test/fixtures/service.fixtures')
 const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
-const {expect} = require("chai");
 
 describe('All service transactions - GET', () => {
   let req, res, next

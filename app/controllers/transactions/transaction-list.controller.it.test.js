@@ -1,7 +1,6 @@
 'use strict'
 
 const sinon = require('sinon')
-const { expect } = require('chai')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
