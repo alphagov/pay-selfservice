@@ -49,14 +49,14 @@ describe('publicauth client - get tokens', function () {
 
     const getServiceAuthResponse = gatewayAccountFixtures.validGatewayAccountTokensResponse(params)
 
-    before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${TOKENS_PATH}/${params.accountId}`)
-          .withState(`Gateway account ${params.accountId} exists in the database`)
+    before(() => {
+      return provider.addInteraction(
+        new PactInteractionBuilder(`/${TOKENS_PATH}/${params.accountId}`)
           .withUponReceiving('a valid service auth request')
+          .withState(`Gateway account ${params.accountId} exists in the database`)
           .withResponseBody(pactify(getServiceAuthResponse))
           .build()
-      ).then(() => { done() })
+      )
     })
 
     afterEach(() => provider.verify())
