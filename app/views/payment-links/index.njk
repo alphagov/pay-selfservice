@@ -28,11 +28,19 @@
     }) }}
   {% endif %}
 
-  <p class="govuk-body">You can create a payment link so that users can make online payments to your service. Even if you don’t have a digital service, GOV.UK Pay can still take payments for you.</p>
-  <p class="govuk-body">It’s quick and easy to create a payment link and you don’t need any technical knowledge.</p>
-  <p class="govuk-body">The same payment link can be used by all users of your service.</p>
-    
-  {% include "./_pre-filled-payment-moto-content.njk" %}
+  <p class="govuk-body">You can create payment links and send them to your users so they can pay you. The same payment
+    link can be used by all users of your service. You can create payment links without any technical knowledge.</p>
+  <p class="govuk-body">You can prefill the amount and reference fields or allow users to put them in. Learn <a
+    href="https://docs.payments.service.gov.uk/prefill_payment_links/" class="govuk-link">how to create prefilled
+    links</a>.</p>
+
+  <h2 class="govuk-heading-m">What to call your link</h2>
+  <p class="govuk-body">Make sure the payment link name describes exactly what the user is paying for, and can be
+    understood out of context. Use plain language and spell out acronyms in the description if necessary.</p>
+  <p class="govuk-body">Bad:</p>
+  <p class="govuk-body">R1</p>
+  <p class="govuk-body">Good:</p>
+  <p class="govuk-body">Pay for your registration on the Register of Overseas Entities (R1)</p>
 
   {{ govukButton({
       text: "Create a payment link",
