@@ -39,6 +39,7 @@ class User {
     }
     this.externalId = userData.external_id
     this.email = userData.email || ''
+    this.role = userData.role || ''
     this.serviceRoles = userData.service_roles.map(serviceRoleData => new ServiceRole(serviceRoleData))
     this.otpKey = userData.otp_key || ''
     this.telephoneNumber = userData.telephone_number || ''
@@ -94,9 +95,16 @@ class User {
    * @returns {boolean} Whether or not the user has the given permission
    */
   hasPermission (serviceExternalId, permissionName) {
-    return _.get(this.getRoleForService(serviceExternalId), 'permissions', [])
+    let hasPermission = _.get(this.getRoleForService(serviceExternalId), 'permissions', [])
       .map(permission => permission.name)
       .includes(permissionName)
+
+    if (!hasPermission && this.role) {
+      return _.get(this, 'role.permissions', [])
+        .map(permission => permission.name)
+        .includes(permissionName)
+    }
+    return hasPermission
   }
 
   /**
@@ -127,11 +135,19 @@ class User {
     return _.get(this.getRoleForService(serviceExternalId), 'permissions', []).map(permission => permission.name)
   }
 
+  hasGlobalRole () {
+    return _.get(this, 'role') !== undefined
+  }
+
+  getGlobalPermissions () {
+    return _.get(this, 'role.permissions', []).map(permission => permission.name)
+  }
+
   isAdminUserForService (serviceExternalId) {
-    return this.serviceRoles
+    return (this.serviceRoles
       .filter(serviceRole => serviceRole.role && serviceRole.role.name === 'admin' &&
         serviceRole.service && serviceRole.service.externalId === serviceExternalId)
-      .length > 0
+      .length > 0) || (_.get(this, 'role.name') === 'admin')
   }
 }
 

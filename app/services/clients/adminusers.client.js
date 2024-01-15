@@ -500,6 +500,24 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   * Fidd a service by external ID
+   *
+   * @returns {*|promise|Constructor}
+   */
+  function findServiceByExternalId (serviceExternalId) {
+    return baseClient.get(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}`,
+        json: true,
+        description: 'find a service by external ID',
+        service: SERVICE_NAME,
+        transform: responseBodyToServiceTransformer
+      }
+    )
+  }
+
+  /**
    * Update service
    *
    * @param serviceExternalId
@@ -779,6 +797,7 @@ module.exports = function (clientOptions = {}) {
 
     // Service-related Methods
     createService,
+    findServiceByExternalId,
     updateService,
     updateServiceName,
     updateCollectBillingAddress,

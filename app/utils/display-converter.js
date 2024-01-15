@@ -71,7 +71,12 @@ const digitalWalletsSupportedProviders = [
 const getPermissions = (user, service) => {
   if (service) {
     let userPermissions
-    const permissionsForService = user.getPermissionsForService(service.externalId)
+    let permissionsForService = user.getPermissionsForService(service.externalId)
+
+    if (permissionsForService.length === 0 && user.role) {
+      permissionsForService = user.getGlobalPermissions()
+    }
+
     if (user && permissionsForService) {
       userPermissions = _.clone(permissionsForService)
       return getHeldPermissions(userPermissions)
