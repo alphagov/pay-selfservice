@@ -22,14 +22,17 @@ module.exports = function userIsAuthorised (req, res, next) {
     return next(new UserAccountDisabledError('User account is disabled'))
   }
 
-  if (params[GATEWAY_ACCOUNT_EXTERNAL_ID] || params[SERVICE_EXTERNAL_ID]) {
-    if (!service) {
-      return next(new NotAuthorisedError('Service not found on request'))
+  if (user.role && user.role.name != null) {
+    next()
+  } else {
+    if (params[GATEWAY_ACCOUNT_EXTERNAL_ID] || params[SERVICE_EXTERNAL_ID]) {
+      if (!service) {
+        return next(new NotAuthorisedError('Service not found on request'))
+      }
+      if (!user.serviceRoles.find(serviceRole => serviceRole.service.externalId === service.externalId)) {
+        return next(new NotAuthorisedError('User does not have service role for service'))
+      }
     }
-    if (!user.serviceRoles.find(serviceRole => serviceRole.service.externalId === service.externalId)) {
-      return next(new NotAuthorisedError('User does not have service role for service'))
-    }
+    next()
   }
-
-  next()
 }

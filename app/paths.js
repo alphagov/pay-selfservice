@@ -230,6 +230,10 @@ module.exports = {
     switch: '/my-services/switch',
     create: '/my-services/create'
   },
+  browseAsUser: {
+    index: '/browse-as-a-user',
+    clear: '/browse-as-a-user/clear'
+  },
   invite: {
     validateInvite: '/invites/:code',
     subscribeService: '/subscribe'

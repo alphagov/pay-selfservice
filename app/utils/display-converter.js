@@ -21,6 +21,7 @@ const hideServiceHeaderTemplates = [
 ]
 
 const hideServiceNavTemplates = [
+  'browse-as-a-user/index',
   'services/edit-service-name',
   'merchant-details/merchant-details',
   'merchant-details/edit-merchant-details',
@@ -71,7 +72,12 @@ const digitalWalletsSupportedProviders = [
 const getPermissions = (user, service) => {
   if (service) {
     let userPermissions
-    const permissionsForService = user.getPermissionsForService(service.externalId)
+    let permissionsForService = user.getPermissionsForService(service.externalId)
+
+    if (permissionsForService.length === 0 && user.role) {
+      permissionsForService = user.getGlobalPermissions()
+    }
+
     if (user && permissionsForService) {
       userPermissions = _.clone(permissionsForService)
       return getHeldPermissions(userPermissions)
@@ -118,6 +124,7 @@ module.exports = function (req, data, template) {
   const paymentProvider = account && account.payment_provider
   convertedData.loggedIn = user && session && user.sessionVersion === session.version
   convertedData.paymentMethod = paymentMethod
+  convertedData.assumedUserEmail = session.assumedUserEmail
   convertedData.permissions = permissions
   convertedData.isAdminUser = isAdminUser
   convertedData.hideServiceHeader = hideServiceHeader(template)

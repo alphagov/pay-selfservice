@@ -39,6 +39,14 @@ module.exports = {
   },
 
   /**
+   * @param emailAddress
+   * @returns {Promise<User>}
+   */
+  findUserByEmail: (emailAddress) => {
+    return adminUsersClient.findUserByEmail(emailAddress)
+  },
+
+  /**
    * @param {Array} externalIds
    * @returns {Promise<User>}
    */

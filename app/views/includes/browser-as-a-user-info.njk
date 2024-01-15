@@ -1,0 +1,8 @@
+{% from "../macro/breadcrumbs.njk" import breadcrumbs %}
+
+{% if assumedUserEmail %}
+  <div class="govuk-tag--yellow govuk-body govuk-phase-banner govuk-clearfix pay-top-navigation govuk-!-font-weight-bold">
+    <p class="govuk-grid-column-three-quarters">Viewing user '{{ assumedUserEmail }}' services </p>
+    <p class="govuk-!-text-align-right"><a href="/browse-as-a-user/clear" class="govuk-link" rel="noreferrer noopener">Clear</a></p>
+  </div>
+{% endif %}

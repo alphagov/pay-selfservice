@@ -40,6 +40,7 @@
 
 {% block beforeContent %}
   {% if loggedIn %}
+    {% include "includes/browser-as-a-user-info.njk" %}
     {% include "includes/phase-banner.njk" %}
   {% endif %}
 {% endblock %}

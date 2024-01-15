@@ -7,6 +7,8 @@ const serviceService = require('../../services/service.service')
 const { filterGatewayAccountIds } = require('../../utils/permissions')
 const getHeldPermissions = require('../../utils/get-held-permissions')
 const { DEFAULT_SERVICE_NAME } = require('../../utils/constants')
+const getAdminUsersClient = require('../../services/clients/adminusers.client')
+const adminUsersClient = getAdminUsersClient()
 
 function hasStripeAccount (gatewayAccounts) {
   return gatewayAccounts.some(gatewayAccount =>
@@ -28,7 +30,14 @@ function sortServicesByLiveThenName (a, b) {
 }
 
 module.exports = async function getServiceList (req, res) {
-  const servicesRoles = lodash.get(req, 'user.serviceRoles', [])
+  let servicesRoles
+  if (req.session.assumedUserId) {
+    const assumedUser = await adminUsersClient.getUserByExternalId(req.session.assumedUserId)
+    servicesRoles = lodash.get(assumedUser, 'serviceRoles', [])
+  } else {
+    servicesRoles = lodash.get(req, 'user.serviceRoles', [])
+  }
+
   const newServiceId = res.locals.flash && res.locals.flash.inviteSuccessServiceId &&
     res.locals.flash.inviteSuccessServiceId[0]
 
@@ -62,7 +71,9 @@ module.exports = async function getServiceList (req, res) {
     services_singular: servicesData.length === 1,
     env: process.env,
     has_account_with_payouts: hasStripeAccount(aggregatedGatewayAccounts),
-    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length
+    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length,
+    has_global_role: req.user.hasGlobalRole(),
+    assumedUserEmail: req.session.assumedUserEmail
   }
 
   if (newServiceId) {

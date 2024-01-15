@@ -46,6 +46,28 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   * Get a User by email address
+   *
+   * @param {string} externalId
+   * @return {Promise<User>} A promise of a User
+   */
+  function findUserByEmail (emailAddress) {
+    return baseClient.post(
+      {
+        baseUrl,
+        url: `${userResource}/find`,
+        body: {
+          'email': emailAddress
+        },
+        json: true,
+        description: 'find a user by email',
+        service: SERVICE_NAME,
+        transform: responseBodyToUserTransformer
+      }
+    )
+  }
+
+  /**
    * Get a User by external id
    *
    * @return {Promise<User>} A promise of a User
@@ -500,6 +522,24 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   * Fidd a service by external ID
+   *
+   * @returns {*|promise|Constructor}
+   */
+  function findServiceByExternalId (serviceExternalId) {
+    return baseClient.get(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}`,
+        json: true,
+        description: 'find a service by external ID',
+        service: SERVICE_NAME,
+        transform: responseBodyToServiceTransformer
+      }
+    )
+  }
+
+  /**
    * Update service
    *
    * @param serviceExternalId
@@ -750,6 +790,7 @@ module.exports = function (clientOptions = {}) {
     createForgottenPassword,
     incrementSessionVersionForUser,
     getUserByExternalId,
+    findUserByEmail,
     getUsersByExternalIds,
     authenticateUser,
     updatePasswordForUser,
@@ -779,6 +820,7 @@ module.exports = function (clientOptions = {}) {
 
     // Service-related Methods
     createService,
+    findServiceByExternalId,
     updateService,
     updateServiceName,
     updateCollectBillingAddress,

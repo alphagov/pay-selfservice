@@ -5,14 +5,16 @@
   Choose service - GOV.UK Pay
 {% endblock %}
 
-{% block beforeContent %}{% endblock %}
+{% block beforeContent %}
+  {% include "../includes/browser-as-a-user-info.njk" %}
+{% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     {% if new_service_name %}
       {% set html %}
         <p class="govuk-notification-banner__heading">
-          You have been added to {{new_service_name}}
+          You have been added to {{ new_service_name }}
         </p>
       {% endset %}
 
@@ -25,29 +27,49 @@
     <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Overview</h1>
   </div>
 
+  {% if has_global_role and not assumedUserEmail %}
+    <div class="govuk-grid-column-two-thirds" data-cy="reports-section">
+      <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Admin</h2>
+
+      <p class="govuk-body">
+        <a href="/browse-as-a-user"
+           class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+          Browser as a user
+        </a>
+      </p>
+
+    </div>
+
+    <div class="govuk-grid-column-full" data-cy="divider">
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible overview-divider">
+    </div>
+  {% endif %}
+
   {% if services.length %}
     <div class="govuk-grid-column-two-thirds" data-cy="reports-section">
-        <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Reports</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Reports</h2>
 
-        {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else
-          routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
+      {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else
+        routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
 
+      <p class="govuk-body">
+        <a href="{{ allServiceTransactionsPath }}"
+           class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+          View transactions for all your services
+        </a>
+      </p>
+
+      {% set payoutsPath = routes.payouts.list if has_live_account else
+        routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
+
+      {% if has_account_with_payouts %}
         <p class="govuk-body">
-          <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
-            View transactions for all your services
+          <a href="{{ payoutsPath }}"
+             class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+            View payments to your bank account
           </a>
         </p>
-
-        {% set payoutsPath = routes.payouts.list if has_live_account else
-          routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
-
-        {% if has_account_with_payouts %}
-          <p class="govuk-body">
-            <a href="{{ payoutsPath }}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
-              View payments to your bank account
-            </a>
-          </p>
-        {% endif %}
+      {% endif %}
 
     </div>
 
@@ -60,13 +82,15 @@
 
     <h2 class="govuk-heading-m govuk-!-margin-top-4 govuk-!-margin-bottom-6">Services</h2>
 
-    <p class="govuk-body">
-      {{ govukButton({
+    {% if not assumedUserEmail %}
+      <p class="govuk-body">
+        {{ govukButton({
           classes: "govuk-button--secondary",
           text: "Add a new service",
           href: routes.serviceSwitcher.create
         }) }}
-    </p>
+      </p>
+    {% endif %}
 
     {% if services.length %}
       {% if services.length > 7 %}
@@ -89,10 +113,11 @@
     {% else %}
       <p class="govuk-body">
         You do not have any services set up at the moment. Either
-        <a href="{{ routes.serviceSwitcher.create }}" class="govuk-link govuk-link--no-visited-state">create a new one</a>
+        <a href="{{ routes.serviceSwitcher.create }}" class="govuk-link govuk-link--no-visited-state">create a new
+          one</a>
         or contact an administrator of an existing service to be added to it.
       </p>
-  {% endif %}
+    {% endif %}
 
   </div>
 {% endblock %}

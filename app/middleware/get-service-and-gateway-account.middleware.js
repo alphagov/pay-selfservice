@@ -10,6 +10,8 @@ const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { addField } = require('../utils/request-context')
 const { getSwitchingCredentialIfExists } = require('../utils/credentials')
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
+const getAdminUsersClient = require('../services/clients/adminusers.client')
+const adminUsersClient = getAdminUsersClient()
 
 async function getGatewayAccountByExternalId (gatewayAccountExternalId) {
   try {
@@ -47,21 +49,29 @@ async function getGatewayAccountByExternalId (gatewayAccountExternalId) {
   }
 }
 
-function getService (user, serviceExternalId, gatewayAccount) {
+async function getService (user, serviceExternalId, gatewayAccount) {
   let service
   const serviceRoles = _.get(user, 'serviceRoles', [])
 
-  if (serviceRoles.length > 0) {
+  if (user.role) {
     if (serviceExternalId) {
-      service = _.get(serviceRoles.find(serviceRole => {
-        return (serviceRole.service.externalId === serviceExternalId &&
-          (!gatewayAccount || serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))))
-      }), 'service')
-    } else {
-      if (gatewayAccount) {
+      service = await adminUsersClient.findServiceByExternalId(serviceExternalId)
+    } else if (gatewayAccount) {
+      service = await adminUsersClient.findServiceByExternalId(gatewayAccount.service_id)
+    }
+  } else {
+    if (serviceRoles.length > 0) {
+      if (serviceExternalId) {
         service = _.get(serviceRoles.find(serviceRole => {
-          return serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))
+          return (serviceRole.service.externalId === serviceExternalId &&
+            (!gatewayAccount || serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))))
         }), 'service')
+      } else {
+        if (gatewayAccount) {
+          service = _.get(serviceRoles.find(serviceRole => {
+            return serviceRole.service.gatewayAccountIds.includes(String(gatewayAccount.gateway_account_id))
+          }), 'service')
+        }
       }
     }
   }
@@ -98,12 +108,11 @@ module.exports = async function getServiceAndGatewayAccount (req, res, next) {
 
       // uses req.user object which is set by passport (auth.service.js) and has all user services information to find service by serviceExternalId or gatewayAccountId.
       // A separate API call to adminusers to find service makes it independent of user object but most of tests setup currently relies on req.user
-      const service = getService(req.user, serviceExternalId, gatewayAccount)
+      const service = await getService(req.user, serviceExternalId, gatewayAccount)
       if (service) {
         req.service = service
         addField(keys.SERVICE_EXTERNAL_ID, service.externalId)
       }
-
       if (environment) {
         req.isLive = environment === 'live'
       }

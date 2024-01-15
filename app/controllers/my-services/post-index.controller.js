@@ -13,7 +13,7 @@ module.exports = (req, res) => {
   const gatewayAccountId = req.body && req.body.gatewayAccountId
   const gatewayAccountExternalId = req.body && req.body.gatewayAccountExternalId
 
-  if (validAccountId(gatewayAccountId, req.user)) {
+  if (validAccountId(gatewayAccountId, req.user) || req.user.hasGlobalRole()) {
     res.redirect(302, formatAccountPathsFor(paths.account.dashboard.index, gatewayAccountExternalId))
   } else {
     logger.warn(`Attempted to switch to invalid account ${gatewayAccountId}`)

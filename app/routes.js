@@ -40,6 +40,7 @@ const digitalWalletController = require('./controllers/digital-wallet')
 const emailNotificationsController = require('./controllers/email-notifications/email-notifications.controller')
 const forgotPasswordController = require('./controllers/forgotten-password.controller')
 const myServicesController = require('./controllers/my-services')
+const browseAsAUserController = require('./controllers/browser-as-a-user/browse-as-a-user.controller')
 const editServiceNameController = require('./controllers/edit-service-name/edit-service-name.controller')
 const serviceUsersController = require('./controllers/service-users.controller')
 const organisationDetailsController = require('./controllers/organisation-details.controller')
@@ -87,6 +88,7 @@ const agreementsController = require('./controllers/agreements/agreements.contro
 const organisationUrlController = require('./controllers/switch-psp/organisation-url')
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
+const { browseAsUser } = require('./paths')
 
 // Assignments
 const {
@@ -217,6 +219,10 @@ module.exports.bind = function (app) {
   // -------------------------
   // OUTSIDE OF SERVICE ROUTES
   // -------------------------
+
+  app.get(browseAsUser.index, userIsAuthorised, browseAsAUserController.get)
+  app.post(browseAsUser.index, userIsAuthorised, browseAsAUserController.post)
+  app.get(browseAsUser.clear, userIsAuthorised, browseAsAUserController.clear)
 
   // Service switcher
   app.get(serviceSwitcher.index, userIsAuthorised, myServicesController.getIndex)

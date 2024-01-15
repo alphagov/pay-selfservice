@@ -1,0 +1,33 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Search user - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-three-quarters">
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search user by email</h1>
+
+    <form class="find-user" method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {{ govukInput({
+        id: "emailAddress",
+        name: "emailAddress",
+        value: emailAddress,
+        label: {
+          text: "Enter full email address"
+        },
+        type: "text",
+        classes: "govuk-input--width-200"
+      }) }}
+
+      {{ govukButton({
+        text: "Search",
+        classes: "govuk-!-margin-bottom-4"
+      }) }}
+
+    </form>
+  </div>
+{% endblock %}
