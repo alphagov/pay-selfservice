@@ -1,4 +1,6 @@
 {% from "../macro/breadcrumbs.njk" import breadcrumbs %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
@@ -42,6 +44,22 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-full">
+
+  {% if (isInvalidDateRange) %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      attributes: {
+        'data-cy': 'error-summary'
+      },
+      errorList: [
+        {
+          text: "End date must be after start date",
+          href: "#toDate"
+        }
+      ]
+    }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">
     {% if allServiceTransactions %}
        Transactions for all services
@@ -66,17 +84,13 @@
   {% include "transactions/display-size.njk" %}
 
   <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
-  {% if (isInvalidDateRange) %}
-      <p> End date must be after start date </p>
-      <p> The from date entered is <span class="govuk-body govuk-!-font-weight-bold">{{fromDateParam}}</span> and the to date entered is <span class="govuk-body govuk-!-font-weight-bold">{{toDateParam}}</span></p>
-   {% else %}
     {% if totalOverLimit %}
       Over {{maxLimitFormatted}} transactions
     {% else %}
       {{totalFormatted}} transactions
     {% endif %}
     {{ filtersDescription | safe }}
-  {% endif %}
+
   </h3>
 
   {% if allServiceTransactions or permissions.transactions_download_read %}

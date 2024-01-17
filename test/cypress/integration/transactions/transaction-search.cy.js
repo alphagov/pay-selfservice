@@ -377,7 +377,10 @@ describe('Transactions List', () => {
 
       cy.get('#transactions-list tbody').should('not.exist')
 
-      cy.get('h3').contains('End date must be after start date' )
+      cy.get('[data-cy=error-summary]').contains('End date must be after start date')
+      cy.get('[data-cy=from-date-error-message]').contains('End date must be after start date')
+      cy.get('[data-cy=from-date-error-message]').parent().should('have.class', 'govuk-form-group--error')
+      cy.get('[data-cy=to-date-field]').should('have.class', 'govuk-input--error')
     })
   })
   describe('Transactions are displayed correctly', () => {
