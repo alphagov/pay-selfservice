@@ -19,21 +19,27 @@
     width: 50%;
   }
 
-  .govuk-form-group {
+  &__input-container {
     float: left;
 
     width: 50%;
     box-sizing: border-box;
 
-    &:first-of-type {
+
+    &--date-input,
+    .govuk-form-group--error &--date-input {
       padding-right: govuk-spacing(1);
+      margin-bottom: govuk-spacing(2);
     }
 
-    &:last-of-type {
-      padding-left: govuk-spacing(1);
+    &--time-input,
+    .govuk-form-group--error &--time-input {
+      padding-right: govuk-spacing(1);
     }
   }
 }
+
+
 
 .datetime-filter-from {
   padding-right: govuk-spacing(3);
@@ -41,7 +47,16 @@
 
 .datetime-filter-to {
   position: relative;
-  padding-left: govuk-spacing(3);
+  // padding-left: govuk-spacing(3);
+
+  @include govuk-media-query(tablet) {
+    padding-left: govuk-spacing(3);
+  }
+
+  &__container {
+    width: auto;
+    padding: 0;
+  }
 }
 
 .datetime-separator {
@@ -51,9 +66,8 @@
   @include govuk-media-query(tablet) {
     @include govuk-font($size: 14);
     position: absolute;
-    top: 50%;
     left: -8px;
-    transform: translateY(-50%);
+    margin-top: govuk-spacing(7);
   }
 }
 

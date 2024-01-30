@@ -28,7 +28,7 @@
           })
         }}
       </div>
-      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+            <div class="govuk-grid-column-one-quarter inputs-less-margin">
         {{
           govukInput({
             id: 'email',
@@ -54,7 +54,7 @@
         }}
       </div>
       <div class="govuk-grid-column-one-quarter inputs-less-margin">
-        {{
+          {{
           govukInput({
             id: 'cardholderName',
             name: 'cardholderName',
@@ -65,9 +65,9 @@
               text: 'Name on card',
               classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
             },
-            hint: {
-              text: 'Enter full or partial name',
-              classes: 'govuk-!-font-size-14'
+                    hint: {
+                    text: 'Enter full or partial name',
+                    classes: 'govuk-!-font-size-14'
             }
           })
         }}
@@ -153,81 +153,116 @@
           </fieldset>
       </div>
       <div class="govuk-grid-column-one-half">
-        <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-font-size-16 govuk-!-margin-bottom-0 govuk-!-display-block">
-            Date range
-          </legend>
-          <fieldset class="govuk-fieldset datetime-filter datetime-filter-from">
-            <legend class="govuk-visually-hidden">
-              From this date and time
+        <div class="govuk-form-group govuk-!-margin-bottom-0">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-font-size-16 govuk-!-display-block govuk-!-margin-bottom-0">
+              Date range
             </legend>
-            {{
-              govukInput({
-                id: 'fromDate',
-                name: 'fromDate',
-                value: filters.fromDate,
-                classes: 'date-picker start govuk-!-font-size-16',
-                label: {
-                  text: 'Start date',
-                  classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
-                },
-                attributes: {
-                  autocomplete: 'off'
-                }
-              })
-            }}
-            {{
-              govukInput({
-                id: 'fromTime',
-                name: 'fromTime',
-                value: filters.fromTime,
-                classes: 'time-picker start govuk-!-font-size-16',
-                label: {
-                  text: 'Start time',
-                  classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
-                },
-                attributes: {
-                  autocomplete: 'off'
-                }
-              })
-            }}
+            <fieldset class="govuk-fieldset datetime-filter datetime-filter-from">
+              <legend class="govuk-visually-hidden">
+                From this date and time
+              </legend>
+              {{
+                govukInput({
+                  id: 'fromDate',
+                  name: 'fromDate',
+                  value: filters.fromDate,
+                  classes: 'date-picker start govuk-!-font-size-16',
+                  label: {
+                    text: 'Start date',
+                    classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                  },
+                  attributes: {
+                    autocomplete: 'off'
+                  },
+                  formGroup: {
+                    classes: 'datetime-filter__input-container datetime-filter__input-container--date-input'
+                  }
+                })
+              }}
+              {{
+                govukInput({
+                  id: 'fromTime',
+                  name: 'fromTime',
+                  value: filters.fromTime,
+                  classes: 'time-picker start govuk-!-font-size-16',
+                  label: {
+                    text: 'Start time',
+                    classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                  },
+                  attributes: {
+                    autocomplete: 'off'
+                  },
+                  formGroup: {
+                    classes: 'datetime-filter__input-container datetime-filter__input-container--time-input'
+                  }
+                })
+              }}
+            </fieldset>
+              <fieldset class="govuk-fieldset datetime-filter datetime-filter-to">
+                <div class="govuk-form-group datetime-filter-to__container">
+                  <legend class="datetime-separator">
+                    to<span class="govuk-visually-hidden"> this date and time</span>
+                  </legend>
+
+                  <div class="govuk-form-group govuk-!-margin-bottom-0 datetime-filter-to__container {% if isInvalidDateRange %}govuk-!-padding-left-3 govuk-!-margin-bottom-2 govuk-form-group--error{% endif %}">
+                    {% if isInvalidDateRange %}
+                      <p class="govuk-error-message govuk-!-font-size-16 end-date-error-message" data-cy="from-date-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> End date must be after start date
+                      </p>
+                    {% endif %}
+
+                    {% set cssClassesForToDateInput = 'date-picker end govuk-!-font-size-16 ' %}
+                    {% set cssClassesForToDateFormGroup = 'datetime-filter__input-container datetime-filter__input-container--date-input filter-date-input' %}
+
+                    {% if isInvalidDateRange %}
+                      {% set cssClassesForToDateInput =  cssClassesForToDateInput + ' govuk-input--error govuk-!-margin-bottom-0 govuk-!-padding-right-1' %}
+                      {% set cssClassesForToDateFormGroup = cssClassesForToDateFormGroup + ' govuk-!-margin-bottom-0' %}
+                    {% endif %}
+
+                    {{
+                      govukInput({
+                        id: 'toDate',
+                        name: 'toDate',
+                        value: filters.toDate,
+                        classes: cssClassesForToDateInput,
+                        label: {
+                          text: 'End date',
+                          classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                        },
+                        attributes: {
+                          autocomplete: 'off',
+                          'data-cy': 'to-date-field'
+                        },
+                        formGroup: {
+                          classes: cssClassesForToDateFormGroup
+                        }
+                      })
+                    }}
+
+                    {{
+                      govukInput({
+                        id: 'toTime',
+                        name: 'toTime',
+                        value: filters.toTime,
+                        classes: 'time-picker end govuk-!-font-size-16',
+                        label: {
+                          text: 'End time',
+                          classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                        },
+                        attributes: {
+                          autocomplete: 'off'
+                        },
+                        formGroup: {
+                          classes: 'datetime-filter__input-container datetime-filter__input-container--time-input'
+                        }
+                      })
+                    }}
+                  </div>
+                </div>
+              </fieldset>
           </fieldset>
-          <fieldset class="govuk-fieldset datetime-filter datetime-filter-to">
-            <legend class="datetime-separator">
-              to<span class="govuk-visually-hidden"> this date and time</span>
-            </legend>
-            {{
-              govukInput({
-                id: 'toDate',
-                name: 'toDate',
-                value: filters.toDate,
-                classes: 'date-picker end govuk-!-font-size-16',
-                label: {
-                  text: 'End date',
-                  classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
-                },
-                attributes: {
-                  autocomplete: 'off'
-                }
-              })
-            }}
-            {{
-              govukInput({
-                id: 'toTime',
-                name: 'toTime',
-                value: filters.toTime,
-                classes: 'time-picker end govuk-!-font-size-16',
-                label: {
-                  text: 'End time',
-                  classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
-                },
-                attributes: {
-                  autocomplete: 'off'
-                }
-              })
-            }}
-          </fieldset>
-        </fieldset>
+        </div>
       </div>
     </div>
     {% if filters.metadataValue or filters.agreementId %}
