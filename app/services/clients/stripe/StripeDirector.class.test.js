@@ -104,7 +104,7 @@ describe('StripeDirector', () => {
         dob_day: 0,
         dob_month: dobMonth,
         dob_year: dobYear
-      })).to.throw('StripeDirector "dob_day" must be larger than or equal to 1')
+      })).to.throw('StripeDirector "dob_day" must be greater than or equal to 1')
     })
 
     it('Should throw error when day is more than 31', () => {
@@ -128,7 +128,7 @@ describe('StripeDirector', () => {
         dob_day: dobDay,
         dob_month: 0,
         dob_year: dobYear
-      })).to.throw('StripeDirector "dob_month" must be larger than or equal to 1')
+      })).to.throw('StripeDirector "dob_month" must be greater than or equal to 1')
     })
 
     it('Should throw error when month is larger than 12', () => {
@@ -151,7 +151,7 @@ describe('StripeDirector', () => {
         dob_day: dobDay,
         dob_month: dobMonth,
         dob_year: 999
-      })).to.throw('StripeDirector "dob_year" must be larger than or equal to 1900')
+      })).to.throw('StripeDirector "dob_year" must be greater than or equal to 1900')
     })
 
     it('Should throw error when year is more than 9999', () => {

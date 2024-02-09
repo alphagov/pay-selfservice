@@ -2,7 +2,7 @@
 
 const Joi = require('joi')
 
-const schema = {
+const schema = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
   email: Joi.string().required(),
@@ -10,13 +10,13 @@ const schema = {
   dob_month: Joi.number().integer().strict().min(1).max(12),
   dob_year: Joi.number().integer().strict().min(1900).max(2100),
   relationship: Joi.string().optional()
-}
+})
 
 class StripeDirector {
   constructor (body) {
     const params = Object.assign({}, body)
 
-    const { error, value: model } = Joi.validate(params, schema, { allowUnknown: true, stripUnknown: true })
+    const { error, value: model } = schema.validate(params, { allowUnknown: true, stripUnknown: true })
 
     if (error) {
       throw new Error(`StripeDirector ${error.details[0].message}`)

@@ -2,17 +2,17 @@
 
 const Joi = require('joi')
 
-const schema = {
+const schema = Joi.object({
   vat_id: Joi.string().optional(),
   tax_id: Joi.string().optional(),
   directors_provided: Joi.boolean().optional(),
   executives_provided: Joi.boolean().optional()
-}
+})
 
 class StripeCompany {
   constructor (body) {
     const params = Object.assign({}, body)
-    const { error, value: model } = Joi.validate(params, schema)
+    const { error, value: model } = schema.validate(params)
 
     if (error) {
       throw new Error(`StripeCompany ${error.details[0].message}`)

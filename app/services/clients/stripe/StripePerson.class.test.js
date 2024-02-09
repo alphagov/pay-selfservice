@@ -212,7 +212,7 @@ describe('StripePerson', () => {
       dob_day: 0,
       dob_month: dobMonth,
       dob_year: dobYear
-    })).to.throw('StripePerson "dob_day" must be larger than or equal to 1')
+    })).to.throw('StripePerson "dob_day" must be greater than or equal to 1')
   })
 
   it('should fail when day is more than 31', () => {
@@ -238,7 +238,7 @@ describe('StripePerson', () => {
       dob_day: dobDay,
       dob_month: 0,
       dob_year: dobYear
-    })).to.throw('StripePerson "dob_month" must be larger than or equal to 1')
+    })).to.throw('StripePerson "dob_month" must be greater than or equal to 1')
   })
 
   it('should fail when month is larger than 12', () => {
@@ -264,7 +264,7 @@ describe('StripePerson', () => {
       dob_day: dobDay,
       dob_month: dobMonth,
       dob_year: 999
-    })).to.throw('StripePerson "dob_year" must be larger than or equal to 1000')
+    })).to.throw('StripePerson "dob_year" must be greater than or equal to 1000')
   })
 
   it('should fail when year is more than 9999', () => {
