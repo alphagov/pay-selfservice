@@ -2,16 +2,16 @@
 
 const Joi = require('joi')
 
-const schema = {
+const schema = Joi.object({
   url: Joi.string().optional(),
   entity_verification_document_id: Joi.string().optional()
-}
+})
 
 class StripeAccount {
   constructor (body) {
     const params = Object.assign({}, body)
 
-    const { error, value: model } = Joi.validate(params, schema, { allowUnknown: true, stripUnknown: true })
+    const { error, value: model } = schema.validate(params, { allowUnknown: true, stripUnknown: true })
 
     if (error) {
       throw new Error(`StripeAccount ${error.details[0].message}`)

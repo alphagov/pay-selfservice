@@ -2,15 +2,15 @@
 
 const Joi = require('joi')
 
-const schema = {
+const schema = Joi.object({
   bank_account_sort_code: Joi.string().required(),
   bank_account_number: Joi.string().required()
-}
+})
 
 class StripeBankAccount {
   constructor (body) {
     const params = Object.assign({}, body)
-    const { error, value: model } = Joi.validate(params, schema, { allowUnknown: true, stripUnknown: true })
+    const { error, value: model } = schema.validate(params, { allowUnknown: true, stripUnknown: true })
 
     if (error) {
       throw new Error(`StripeBankAccount ${error.details[0].message}`)
