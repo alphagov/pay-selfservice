@@ -2,7 +2,8 @@
 
 const Product = require('../../models/Product.class')
 const Payment = require('../../models/Payment.class')
-const baseClient = require('./base-client/base.client')
+const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
+const { configureClient } = require('./base/config')
 const { PRODUCTS_URL } = require('../../../config')
 const supportedLanguage = require('../../models/supported-language')
 
@@ -45,31 +46,29 @@ module.exports = {
  * @param {string=} options.productNamePath - second part of friendly url derived from the payment link title
  * @returns {Promise<Product>}
  */
-function createProduct (options) {
-  return baseClient.post({
-    baseUrl,
-    url: `/products`,
-    json: true,
-    body: {
-      gateway_account_id: options.gatewayAccountId,
-      pay_api_token: options.payApiToken,
-      name: options.name,
-      price: options.price,
-      description: options.description,
-      type: options.type,
-      return_url: options.returnUrl,
-      service_name_path: options.serviceNamePath,
-      product_name_path: options.productNamePath,
-      reference_enabled: options.referenceEnabled,
-      reference_label: options.referenceLabel,
-      reference_hint: options.referenceHint,
-      amount_hint: options.amountHint,
-      language: options.language || supportedLanguage.ENGLISH,
-      ...options.metadata && { metadata: options.metadata }
-    },
-    description: 'create a product for a service',
-    service: SERVICE_NAME
-  }).then(product => new Product(product))
+async function createProduct (options) {
+  const body =  {
+    gateway_account_id: options.gatewayAccountId,
+    pay_api_token: options.payApiToken,
+    name: options.name,
+    price: options.price,
+    description: options.description,
+    type: options.type,
+    return_url: options.returnUrl,
+    service_name_path: options.serviceNamePath,
+    product_name_path: options.productNamePath,
+    reference_enabled: options.referenceEnabled,
+    reference_label: options.referenceLabel,
+    reference_hint: options.referenceHint,
+    amount_hint: options.amountHint,
+    language: options.language || supportedLanguage.ENGLISH,
+    ...options.metadata && { metadata: options.metadata }
+  }
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/products`
+  configureClient(this.client, url)
+  const response = await this.client.post(url, body, 'create a product for a service')
+  return new Product(response.data)
 }
 
 /**
@@ -80,24 +79,22 @@ function createProduct (options) {
  * @param {number} options.price - The price of product in pence
  * @returns {Promise<Product>}
 */
-function updateProduct (gatewayAccountId, productExternalId, options) {
-  return baseClient.patch({
-    baseUrl,
-    url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
-    json: true,
-    body: {
-      name: options.name,
-      description: options.description,
-      price: options.price,
-      reference_enabled: options.referenceEnabled,
-      reference_label: options.referenceLabel,
-      reference_hint: options.referenceHint,
-      amount_hint: options.amountHint,
-      ...options.metadata && { metadata: options.metadata }
-    },
-    description: 'update an existing product',
-    service: SERVICE_NAME
-  }).then(product => new Product(product))
+async function updateProduct (gatewayAccountId, productExternalId, options) {
+  const body = {
+    name: options.name,
+    description: options.description,
+    price: options.price,
+    reference_enabled: options.referenceEnabled,
+    reference_label: options.referenceLabel,
+    reference_hint: options.referenceHint,
+    amount_hint: options.amountHint,
+    ...options.metadata && { metadata: options.metadata }
+  }
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
+  configureClient(this.client, url)
+  const response = await this.client.patch(url, body, 'update an existing product')
+  return new Product(response.data)
 }
 
 /**
@@ -105,52 +102,48 @@ function updateProduct (gatewayAccountId, productExternalId, options) {
  * @param {String} productExternalId: the external id of the product you wish to retrieve
  * @returns {Promise<Product>}
  */
-function getProductByExternalIdAndGatewayAccountId (gatewayAccountId, productExternalId) {
-  return baseClient.get({
-    baseUrl,
-    url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
-    description: `find a product by it's external id`,
-    service: SERVICE_NAME
-  }).then(product => new Product(product))
+async function getProductByExternalIdAndGatewayAccountId (gatewayAccountId, productExternalId) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'find a product by it\'s external id')
+  return new Product(response.data)
 }
 
 /**
  * @param {String} productExternalId: the external id of the product you wish to retrieve
  * @returns {Promise<Product>}
  */
-function getProductByExternalId (productExternalId) {
-  return baseClient.get({
-    baseUrl,
-    url: `/products/${productExternalId}`,
-    description: `find a product by it's external id`,
-    service: SERVICE_NAME
-  }).then(product => new Product(product))
+async function getProductByExternalId (productExternalId) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/products/${productExternalId}`
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'find a product by it\'s external id')
+  return new Product(response.data)
 }
 
 /**
  * @param {String} gatewayAccountId - The id of the gateway account to retrieve products associated with
  * @returns {Promise<Array<Product>>}
  */
-function getProductsByGatewayAccountIdAndType (gatewayAccountId, productType) {
-  return baseClient.get({
-    baseUrl,
-    url: `/gateway-account/${gatewayAccountId}/products?type=${productType}`,
-    description: 'find a list products associated with a gateway account and a specific type',
-    service: SERVICE_NAME
-  }).then(products => products.map(product => new Product(product)))
+async function getProductsByGatewayAccountIdAndType (gatewayAccountId, productType) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/gateway-account/${gatewayAccountId}/products?type=${productType}`
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'find a list products associated with a gateway account and a specific type')
+  return response.data.map(product => new Product(product))
 }
 
 /**
  * @param {String} productExternalId: the external id of the product you wish to disable
  * @returns Promise<undefined>
  */
-function disableProduct (gatewayAccountId, productExternalId) {
-  return baseClient.patch({
-    baseUrl,
-    url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`,
-    description: `disable a product`,
-    service: SERVICE_NAME
-  })
+async function disableProduct (gatewayAccountId, productExternalId) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`
+  configureClient(this.client, url)
+  const response = await this.client.patch(url, 'disable a product')
+  return // new Product(response.data)
 }
 
 /**
@@ -158,13 +151,12 @@ function disableProduct (gatewayAccountId, productExternalId) {
  * @param {String} productExternalId: the external id of the product you wish to delete
  * @returns Promise<undefined>
  */
-function deleteProduct (gatewayAccountId, productExternalId) {
-  return baseClient.delete({
-    baseUrl,
-    url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
-    description: `disable a product`,
-    service: SERVICE_NAME
-  })
+async function deleteProduct (gatewayAccountId, productExternalId) { 
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
+  configureClient(this.client, url)
+  const response = await this.client.delete(url, 'disable a product')
+  return // new Product(response.data)
 }
 
 // PAYMENT
@@ -172,39 +164,36 @@ function deleteProduct (gatewayAccountId, productExternalId) {
  * @param {String} productExternalId The external ID of the product to create a payment for
  * @returns Promise<Payment>
  */
-function createPayment (productExternalId) {
-  return baseClient.post({
-    baseUrl,
-    url: `/products/${productExternalId}/payments`,
-    description: 'create a payment for a product',
-    service: SERVICE_NAME
-  }).then(payment => new Payment(payment))
+async function createPayment (productExternalId) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/products/${productExternalId}/payments`
+  configureClient(this.client, url)
+  const response = await this.client.post(url, 'create a payment for a product')
+  return new Payment(response.data)
 }
 
 /**
  * @param {String} paymentExternalId
  * @returns Promise<Payment>
  */
-function getPaymentByPaymentExternalId (paymentExternalId) {
-  return baseClient.get({
-    baseUrl,
-    url: `/payments/${paymentExternalId}`,
-    description: `find a payment by it's external id`,
-    service: SERVICE_NAME
-  }).then(charge => new Payment(charge))
+async function getPaymentByPaymentExternalId (paymentExternalId) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/payments/${paymentExternalId}`
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'find a payment by it\'s external id')
+  return new Payment(response.data)
 }
 
 /**
  * @param {String} productExternalId
  * @returns Promise<Array<Payment>>
  */
-function getPaymentsByProductExternalId (productExternalId) {
-  return baseClient.get({
-    baseUrl,
-    url: `/products/${productExternalId}/payments`,
-    description: `find a payments associated with a particular product`,
-    service: SERVICE_NAME
-  }).then(payments => payments.map(payment => new Payment(payment)))
+async function getPaymentsByProductExternalId (productExternalId) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/products/${productExternalId}/payments`
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'find payments associated with a particular product')
+  return response.data.map(payment => new Payment(payment))
 }
 
 /**
@@ -212,11 +201,10 @@ function getPaymentsByProductExternalId (productExternalId) {
  * @param {String} productNamePath: the product name path of the product you wish to retrieve
  * @returns {Promise<Product>}
  */
-function getProductByPath (serviceNamePath, productNamePath) {
-  return baseClient.get({
-    baseUrl,
-    url: `/products?serviceNamePath=${serviceNamePath}&productNamePath=${productNamePath}`,
-    description: `find a product by it's product path`,
-    service: SERVICE_NAME
-  }).then(product => new Product(product))
+async function getProductByPath (serviceNamePath, productNamePath) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${baseUrl}/products?serviceNamePath=${serviceNamePath}&productNamePath=${productNamePath}`
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'find a product by it\'s product path')
+  return new Product(response.data)
 }
