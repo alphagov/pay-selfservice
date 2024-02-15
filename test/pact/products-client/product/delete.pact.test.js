@@ -57,7 +57,7 @@ describe('products client - delete a product', () => {
     afterEach(() => provider.verify())
 
     it('should delete the product', () => {
-      expect(result).to.equal(undefined)
+      expect(result.status).to.equal(204)
     })
   })
 
