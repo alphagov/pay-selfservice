@@ -142,8 +142,8 @@ async function disableProduct (gatewayAccountId, productExternalId) {
   this.client = new Client(SERVICE_NAME)
   const url = `${baseUrl}/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`
   configureClient(this.client, url)
-  const response = await this.client.patch(url, 'disable a product')
-  return // new Product(response.data)
+  await this.client.patch(url, 'disable a product')
+  return
 }
 
 /**
@@ -155,8 +155,8 @@ async function deleteProduct (gatewayAccountId, productExternalId) {
   this.client = new Client(SERVICE_NAME)
   const url = `${baseUrl}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
   configureClient(this.client, url)
-  const response = await this.client.delete(url, 'disable a product')
-  return // new Product(response.data)
+  await this.client.delete(url, 'disable a product')
+  return
 }
 
 // PAYMENT
