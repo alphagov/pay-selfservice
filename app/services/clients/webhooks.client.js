@@ -1,6 +1,7 @@
 'use strict'
 
-const baseClient = require('./base-client/base.client')
+const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
+const { configureClient } = require('./base/config')
 const urlJoin = require('url-join')
 
 const defaultRequestOptions = {
@@ -9,125 +10,87 @@ const defaultRequestOptions = {
   service: 'webhooks'
 }
 
-function webhook (id, serviceId, gatewayAccountId, options = {}) {
-  const url = urlJoin('/v1/webhook', id)
-  const request = {
-    url,
-    qs: {
-      service_id: serviceId,
-      gateway_account_id: gatewayAccountId
-    },
-    description: 'Get one webhook',
-    ...defaultRequestOptions,
-    ...options
-  }
-  return baseClient.get(request)
+async function webhook (id, serviceId, gatewayAccountId, options = {}) {
+  const url = urlJoin(defaultRequestOptions.baseUrl,'/v1/webhook', id)
+  this.client = new Client(defaultRequestOptions.service)
+  const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}`
+  configureClient(this.client, fullUrl)
+  const response = await this.client.get(fullUrl, 'Get one webhook')
+  return response.data
 }
 
-function signingSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
-  const url = urlJoin('/v1/webhook/', webhookId, '/signing-key')
-  const request = {
-    url,
-    qs: {
-      service_id: serviceId,
-      gateway_account_id: gatewayAccountId
-    },
-    description: 'Get a Webhook signing secret',
-    ...defaultRequestOptions,
-    ...options
-  }
-  return baseClient.get(request)
+async function signingSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
+  const url = urlJoin(defaultRequestOptions.baseUrl,'/v1/webhook/', webhookId, '/signing-key')
+  this.client = new Client(defaultRequestOptions.service)
+  const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}`
+  configureClient(this.client, fullUrl)
+  const response = await this.client.get(fullUrl, 'Get a Webhook signing secret')
+  return response.data
 }
 
-function resetSigningSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
-  const url = urlJoin('/v1/webhook/', webhookId, '/signing-key')
-  const request = {
-    url,
-    qs: {
-      service_id: serviceId,
-      gateway_account_id: gatewayAccountId
-    },
-    description: 'Reset a Webhook signing secret',
-    ...defaultRequestOptions,
-    ...options
-  }
-  return baseClient.post(request)
+async function resetSigningSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
+  const url = urlJoin(defaultRequestOptions.baseUrl,'/v1/webhook/', webhookId, '/signing-key')
+  this.client = new Client(defaultRequestOptions.service)
+  const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}`
+  configureClient(this.client, fullUrl)
+  const response = await this.client.post(fullUrl, 'Reset a Webhook signing secret')
+  return response.data
 }
 
-function webhooks (serviceId, gatewayAccountId, isLive, options = {}) {
-  const url = '/v1/webhook'
-  const request = {
-    url,
-    qs: {
-      service_id: serviceId,
-      gateway_account_id: gatewayAccountId,
-      live: isLive
-    },
-    description: 'List webhooks for service',
-    ...defaultRequestOptions,
-    ...options
-  }
-  return baseClient.get(request)
+async function webhooks (serviceId, gatewayAccountId, isLive, options = {}) {
+  const baseUrl = options.baseUrl ?? defaultRequestOptions.baseUrl
+  const url = urlJoin(baseUrl,'/v1/webhook')
+  this.client = new Client(defaultRequestOptions.service)
+  const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}&live=${isLive}`
+  configureClient(this.client, fullUrl)
+  const response = await this.client.get(fullUrl, 'List webhooks for service')
+  return response.data
 }
 
-function message (id, webhookId, options = {}) {
-  const url = urlJoin('/v1/webhook', webhookId, 'message', id)
-  const request = {
-    url,
-    description: 'Get webhook message',
-    ...defaultRequestOptions,
-    ...options
-  }
-  return baseClient.get(request)
+async function message (id, webhookId, options = {}) {
+  const url = urlJoin(defaultRequestOptions.baseUrl,'/v1/webhook', webhookId, 'message', id)
+  this.client = new Client(defaultRequestOptions.service)
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'Get webhook message')
+  return response.data
 }
 
-function attempts (messageId, webhookId, options = {}) {
-  const url = urlJoin('/v1/webhook', webhookId, 'message', messageId, 'attempt')
-  const request = {
-    url,
-    description: 'Get webhook message delivery attempts',
-    ...defaultRequestOptions,
-    ...options
-  }
-  return baseClient.get(request)
+async function attempts (messageId, webhookId, options = {}) {
+  const url = urlJoin(defaultRequestOptions.baseUrl,'/v1/webhook', webhookId, 'message', messageId, 'attempt')
+  this.client = new Client(defaultRequestOptions.service)
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'Get webhook message delivery attempts')
+  return response.data
 }
 
-function messages (id, options = {}) {
-  const url = urlJoin('/v1/webhook', id, 'message')
-  const request = {
-    url,
-    qs: {
-      page: options.page,
-      ...options.status && { status: options.status.toUpperCase() }
-    },
-    description: 'List messages for webhook',
-    ...defaultRequestOptions,
-    ...options
-  }
-  return baseClient.get(request)
+async function messages (id, options = {}) {
+  const url = urlJoin(defaultRequestOptions.baseUrl,'/v1/webhook', id, 'message')
+  this.client = new Client(defaultRequestOptions.service)
+  const status = options.status
+  const fullUrl = `${url}?page=${options.page}`
+  configureClient(this.client, fullUrl)
+  const response = await this.client.get(fullUrl, 'List messages for webhook')
+  return response.data
 }
 
-function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
-  const url = '/v1/webhook'
-  const request = {
-    url,
-    body: {
-      service_id: serviceId,
-      gateway_account_id: gatewayAccountId,
-      live: isLive,
-      callback_url: options.callback_url,
-      subscriptions: options.subscriptions,
-      description: options.description
-    },
-    ...defaultRequestOptions,
-    ...options,
-    description: 'Create a Webhook'
+async function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
+  const body = {
+    service_id: serviceId,
+    gateway_account_id: gatewayAccountId,
+    live: isLive,
+    callback_url: options.callback_url,
+    subscriptions: options.subscriptions,
+    description: options.description
   }
-  return baseClient.post(request)
+  const baseUrl = options.baseUrl ?? defaultRequestOptions.baseUrl
+  const url = urlJoin(baseUrl,'/v1/webhook')
+  this.client = new Client(defaultRequestOptions.service)
+  configureClient(this.client, url)
+  const response = await this.client.post(url, body, 'Create a Webhook')
+  return response.data
 }
 
-function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
-  const url = urlJoin('/v1/webhook', id)
+async function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
   const paths = [ 'callback_url', 'subscriptions', 'description', 'status' ]
   const body = []
   paths.forEach((path) => {
@@ -135,29 +98,20 @@ function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
       body.push({ op: 'replace', path, value: options[path] })
     }
   })
-  const request = {
-    url,
-    qs: {
-      service_id: serviceId,
-      gateway_account_id: gatewayAccountId
-    },
-    body,
-    ...defaultRequestOptions,
-    ...options,
-    description: 'Update a Webhook'
-  }
-  return baseClient.patch(request)
+  const url = urlJoin(defaultRequestOptions.baseUrl, '/v1/webhook', id)
+  this.client = new Client(defaultRequestOptions.service)
+  const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}`
+  configureClient(this.client, fullUrl)
+  const response = await this.client.patch(fullUrl, body, 'Create a Webhook')
+  return response.data
 }
 
-function resendWebhookMessage (webhookId, messageId, options = {}) {
-  const url = urlJoin('/v1/webhook', webhookId, 'message', messageId, 'resend')
-  const request = {
-    url,
-    ...defaultRequestOptions,
-    ...options,
-    description: 'Schedule resending a message'
-  }
-  return baseClient.post(request)
+async function resendWebhookMessage (webhookId, messageId, options = {}) {
+  const url = urlJoin(defaultRequestOptions.baseUrl,'/v1/webhook', webhookId, 'message', messageId, 'resend')
+  this.client = new Client(defaultRequestOptions.service)
+  configureClient(this.client, url)
+  const response = await this.client.post(url, {}, 'Schedule resending a message')
+  return response.data
 }
 
 module.exports = {
