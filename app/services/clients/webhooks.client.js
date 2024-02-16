@@ -38,7 +38,7 @@ async function resetSigningSecret (webhookId, serviceId, gatewayAccountId, optio
 }
 
 async function webhooks (serviceId, gatewayAccountId, isLive, options = {}) {
-  const baseUrl = options.baseUrl ?? defaultRequestOptions.baseUrl
+  const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl,'/v1/webhook')
   this.client = new Client(defaultRequestOptions.service)
   const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}&live=${isLive}`
@@ -82,7 +82,7 @@ async function createWebhook (serviceId, gatewayAccountId, isLive, options = {})
     subscriptions: options.subscriptions,
     description: options.description
   }
-  const baseUrl = options.baseUrl ?? defaultRequestOptions.baseUrl
+  const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl,'/v1/webhook')
   this.client = new Client(defaultRequestOptions.service)
   configureClient(this.client, url)
