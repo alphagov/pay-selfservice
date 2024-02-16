@@ -1,6 +1,7 @@
 'use strict'
 
-const baseClient = require('./base-client/base.client')
+const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
+const { configureClient } = require('./base/config')
 const { PUBLIC_AUTH_URL } = require('../../../config')
 // Constants
 const SERVICE_NAME = 'publicauth'
@@ -17,14 +18,12 @@ const getUrlForAccountId = accountId => `${PUBLIC_AUTH_URL}/${accountId}`
  *  accountId: accountId
  * }
  */
-function getActiveTokensForAccount (params) {
-  const configuration = {
-    url: getUrlForAccountId(params.accountId),
-    description: 'Get active tokens for account',
-    service: SERVICE_NAME
-  }
-
-  return baseClient.get(configuration)
+async function getActiveTokensForAccount (params) {
+  this.client = new Client(SERVICE_NAME)
+  const url = getUrlForAccountId(params.accountId)
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'Get active tokens for account')
+  return response.data
 }
 
 /**
@@ -37,15 +36,12 @@ function getActiveTokensForAccount (params) {
  * @param {Object} params
  * @returns {Promise}
  */
-function getRevokedTokensForAccount (params) {
+async function getRevokedTokensForAccount (params) {
+  this.client = new Client(SERVICE_NAME)
   const url = `${getUrlForAccountId(params.accountId)}?state=revoked`
-  const configuration = {
-    url: url,
-    description: 'Get revoked tokens for account',
-    service: SERVICE_NAME
-  }
-
-  return baseClient.get(configuration)
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'Get revoked tokens for account')
+  return response.data
 }
 
 /**
@@ -63,17 +59,12 @@ function getRevokedTokensForAccount (params) {
  * @param {Object} params
  * @returns {Promise}
  */
-function createTokenForAccount (params) {
-  const configuration = {
-    url: process.env.PUBLIC_AUTH_URL,
-    body: {
-      ...params.payload
-    },
-    description: 'create new token',
-    service: SERVICE_NAME
-  }
-
-  return baseClient.post(configuration)
+async function createTokenForAccount (params) {
+  this.client = new Client(SERVICE_NAME)
+  const url = process.env.PUBLIC_AUTH_URL
+  configureClient(this.client, url)
+  const response = await this.client.post(url, params.payload, 'create new token')
+  return response.data
 }
 
 /**
@@ -90,17 +81,12 @@ function createTokenForAccount (params) {
  * @param {Object} params
  * @returns {Promise}
  */
-function updateToken (params) {
-  const configuration = {
-    url: process.env.PUBLIC_AUTH_URL,
-    body: {
-      ...params.payload
-    },
-    description: 'update token',
-    service: SERVICE_NAME
-  }
-
-  return baseClient.put(configuration)
+async function updateToken (params) {
+  this.client = new Client(SERVICE_NAME)
+  const url = process.env.PUBLIC_AUTH_URL
+  configureClient(this.client, url)
+  const response = await this.client.put(url, params.payload, 'update token')
+  return response.data
 }
 
 /**
@@ -117,18 +103,12 @@ function updateToken (params) {
  * @param {Object} params
  * @returns {Promise}
  */
-function deleteTokenForAccount (params) {
-  let url = getUrlForAccountId(params.accountId)
-  const configuration = {
-    url: url,
-    body: {
-      ...params.payload
-    },
-    description: 'delete token',
-    service: SERVICE_NAME
-  }
-
-  return baseClient.delete(configuration)
+async function deleteTokenForAccount (params) {
+  this.client = new Client(SERVICE_NAME)
+  const url =  getUrlForAccountId(params.accountId)
+  configureClient(this.client, url)
+  const response = await this.client.delete(url, 'delete token', { data: params.payload })
+  return response.data
 }
 
 module.exports = {
