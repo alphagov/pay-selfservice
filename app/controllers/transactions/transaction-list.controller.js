@@ -23,7 +23,7 @@ module.exports = async function showTransactionList (req, res, next) {
     page: 1,
     results: [],
     _links: {},
-    filters: {},
+    filters: {}
   }
   req.session.filters = url.parse(req.url).query
 
@@ -32,10 +32,10 @@ module.exports = async function showTransactionList (req, res, next) {
   }
 
   let result
-  let transactionSearchResults = (filters.dateRangeState.isInvalidDateRange) ?
-      EMPTY_TRANSACTION_SEARCH_RESULTS : transactionService.search([accountId], filters.result)
+  let transactionSearchResults = (filters.dateRangeState.isInvalidDateRange)
+    ? EMPTY_TRANSACTION_SEARCH_RESULTS : transactionService.search([accountId], filters.result)
   try {
-      result = await Promise.all([ transactionSearchResults, client.getAllCardTypes() ])
+    result = await Promise.all([ transactionSearchResults, client.getAllCardTypes() ])
   } catch (error) {
     return next(error)
   }

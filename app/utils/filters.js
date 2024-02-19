@@ -25,14 +25,14 @@ function trimFilterValues (filters) {
   return filters
 }
 
-function validateDateRange(filters){
-  const result = moment(filters.fromDate, 'DD/MM/YYYY').isAfter(moment(filters.toDate, 'DD/MM/YYYY'))? 1: -1;
+function validateDateRange (filters) {
+  const result = moment(filters.fromDate, 'DD/MM/YYYY').isAfter(moment(filters.toDate, 'DD/MM/YYYY')) ? 1 : -1
   let isInvalid = false
 
-   if (result === 1) {
-     isInvalid = true
-   }
-   return {
+  if (result === 1) {
+    isInvalid = true
+  }
+  return {
     isInvalidDateRange: isInvalid,
     fromDateParam: filters.fromDate,
     toDateParam: filters.toDate

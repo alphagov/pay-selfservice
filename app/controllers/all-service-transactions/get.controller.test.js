@@ -75,11 +75,11 @@ describe('All service transactions - GET', () => {
     it('should return the response with the date-range failing validation with empty transaction results indicator', async () => {
       await getController()(request, response, next)
 
-      sinon.assert.calledWith(response.render,'transactions/index',sinon.match({
+      sinon.assert.calledWith(response.render, 'transactions/index', sinon.match({
         'isInvalidDateRange': true,
         'hasResults': false,
-        'fromDateParam': "03/5/2018",
-        'toDateParam': "01/5/2018",
+        'fromDateParam': '03/5/2018',
+        'toDateParam': '01/5/2018'
       }))
     })
   })

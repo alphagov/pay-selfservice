@@ -5,13 +5,13 @@ const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
 const transactionListController = require('./transaction-list.controller')
-const proxyquire = require("proxyquire");
-const ledgerTransactionFixture = require("../../../test/fixtures/ledger-transaction.fixtures");
-const gatewayAccountFixture = require("../../../test/fixtures/gateway-account.fixtures");
-const Service = require("../../models/Service.class");
-const serviceFixtures = require("../../../test/fixtures/service.fixtures");
-const User = require("../../models/User.class");
-const userFixtures = require("../../../test/fixtures/user.fixtures");
+const proxyquire = require('proxyquire')
+const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
+const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
+const Service = require('../../models/Service.class')
+const serviceFixtures = require('../../../test/fixtures/service.fixtures')
+const User = require('../../models/User.class')
+const userFixtures = require('../../../test/fixtures/user.fixtures')
 
 // Setup
 const gatewayAccountId = '651342'
@@ -21,7 +21,7 @@ const headers = { 'x-request-id': requestId }
 
 describe('The /transactions endpoint', () => {
   const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse(
-      { transactions: [] })
+    { transactions: [] })
   const account = validGatewayAccountResponse(
     {
       external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
@@ -77,12 +77,12 @@ describe('The /transactions endpoint', () => {
     it('should return the response with the date-range failing validation with empty transaction results indicator', async () => {
       await getController()(request, response, next)
 
-      sinon.assert.calledWith(response.render,'transactions/index',sinon.match({
+      sinon.assert.calledWith(response.render, 'transactions/index', sinon.match({
         'isInvalidDateRange': true,
         'hasResults': false,
-        'fromDateParam': "03/5/2018",
-        'toDateParam': "01/5/2018",
-    }))
+        'fromDateParam': '03/5/2018',
+        'toDateParam': '01/5/2018'
+      }))
     })
   })
 
@@ -143,5 +143,4 @@ describe('The /transactions endpoint', () => {
       }
     })
   }
-
 })
