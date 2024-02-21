@@ -53,7 +53,7 @@ async function submitEmailPage (req, res, next) {
 
     res.redirect(paths.register.checkEmail)
   } catch (err) {
-    if (err instanceof RESTClientError) {
+    if (err instanceof RESTClientError | err.constructor.name === 'RESTClientError') {
       if (err.errorCode === 403) {
         errors[EMAIL_INPUT_FIELD_NAME] = validationErrors.notPublicSectorEmail
         return res.render('registration/email', { errors, email })
