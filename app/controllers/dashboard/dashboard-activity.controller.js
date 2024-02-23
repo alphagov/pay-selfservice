@@ -184,10 +184,10 @@ function getTransactionDateRange (period) {
       daysAgo = 1
       break
     case 'previous-seven-days':
-      daysAgo = 8 // 7+1 because we count starting from yesterday
+      daysAgo = 7
       break
     case 'previous-thirty-days':
-      daysAgo = 31 // 30+1 because we count starting from yesterday
+      daysAgo = 30
       break
   }
 

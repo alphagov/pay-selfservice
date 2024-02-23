@@ -19,7 +19,7 @@ describe('Account dashboard', () => {
         refundTotal: 2300
       })
     const prevSevenDaysStatisticsStub = transactionsSummaryStubs.getDashboardStatisticsWithFromDate(
-      moment().subtract(8, 'days').tz('Europe/London').startOf('day').format(),
+      moment().subtract(7, 'days').tz('Europe/London').startOf('day').format(),
       {
         paymentCount: 50,
         paymentTotal: 70000,

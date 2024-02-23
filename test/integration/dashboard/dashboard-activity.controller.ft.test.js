@@ -291,7 +291,7 @@ describe('dashboard-activity-controller', () => {
         nock(LEDGER_URL)
           .get('/v1/report/transactions-summary')
           .query(obj => {
-            return obj.from_date === moment().tz('Europe/London').startOf('day').subtract(8, 'days').format()
+            return obj.from_date === moment().tz('Europe/London').startOf('day').subtract(7, 'days').format()
           })
           .reply(200, DASHBOARD_RESPONSE)
 
@@ -325,7 +325,7 @@ describe('dashboard-activity-controller', () => {
 
       it('it should print the time period in the summary box', () => {
         expect($('.dashboard-total-explainer').text())
-          .to.contain(moment().tz('Europe/London').startOf('day').subtract(8, 'days').format('D MMMM YYYY h:mm:ssa z'))
+          .to.contain(moment().tz('Europe/London').startOf('day').subtract(7, 'days').format('D MMMM YYYY h:mm:ssa z'))
       })
     })
     describe('and the period is set to previous 30 days', () => {
@@ -344,7 +344,7 @@ describe('dashboard-activity-controller', () => {
         nock(LEDGER_URL)
           .get('/v1/report/transactions-summary')
           .query(obj => {
-            return obj.from_date === moment().tz('Europe/London').startOf('day').subtract(31, 'days').format()
+            return obj.from_date === moment().tz('Europe/London').startOf('day').subtract(30, 'days').format()
           })
           .reply(200, DASHBOARD_RESPONSE)
 
@@ -378,7 +378,7 @@ describe('dashboard-activity-controller', () => {
 
       it('it should print the time period in the summary box', () => {
         expect($('.dashboard-total-explainer').text())
-          .to.contain(moment().tz('Europe/London').startOf('day').subtract(31, 'days').format('D MMMM YYYY h:mm:ssa z'))
+          .to.contain(moment().tz('Europe/London').startOf('day').subtract(30, 'days').format('D MMMM YYYY h:mm:ssa z'))
       })
     })
   })

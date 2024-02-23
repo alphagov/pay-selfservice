@@ -34,7 +34,7 @@ module.exports = {
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
 
-    if(filtersDateRangeState){
+    if (filtersDateRangeState) {
       connectorData.isInvalidDateRange = filtersDateRangeState.isInvalidDateRange === true
       connectorData.fromDateParam = filtersDateRangeState.fromDateParam
       connectorData.toDateParam = filtersDateRangeState.toDateParam
