@@ -62,6 +62,7 @@ const requestToGoLiveOrganisationAddressController = require('./controllers/requ
 const requestToGoLiveChooseHowToProcessPaymentsController = require('./controllers/request-to-go-live/choose-how-to-process-payments')
 const requestToGoLiveChooseTakesPaymentsOverPhoneController = require('./controllers/request-to-go-live/choose-takes-payments-over-phone')
 const requestToGoLiveAgreementController = require('./controllers/request-to-go-live/agreement')
+const stripeTermsAndConditionsController = require('./controllers/stripeTermsAndConditions.controller.js')
 const policyDocumentsController = require('./controllers/policy')
 const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
 const stripeSetupCheckOrgDetailsController = require('./controllers/stripe-setup/check-org-details')
@@ -94,6 +95,7 @@ const {
   demoPaymentFwd,
   index,
   invite,
+  stripeTermsAndConditions,
   policyPage,
   payouts,
   register,
@@ -237,6 +239,9 @@ module.exports.bind = function (app) {
   // Payouts
   app.get(payouts.list, userIsAuthorised, payoutsController.listAllServicesPayouts)
   app.get(payouts.listStatusFilter, userIsAuthorised, payoutsController.listAllServicesPayouts)
+
+  // Stripe terms and conditions
+  app.get(stripeTermsAndConditions, userIsAuthorised, stripeTermsAndConditionsController.get)
 
   // Policy document downloads
   app.get(policyPage, userIsAuthorised, policyDocumentsController.get)
