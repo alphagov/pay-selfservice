@@ -254,6 +254,7 @@ module.exports = {
   feedback: '/feedback',
   generateRoute: generateRoute,
   formattedPathFor: formattedPathFor,
+  stripeTermsAndConditions: '/policy/stripe-terms-and-conditions',
   policyPage: '/policy/:key',
   payouts: {
     list: '/payments-to-your-bank-account',

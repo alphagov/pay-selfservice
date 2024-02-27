@@ -17,7 +17,8 @@ const hideServiceHeaderTemplates = [
   'policy/document/stripe-connected-account-agreement',
   'policy/document/v2/contract-for-non-crown-bodies',
   'policy/document/v2/memorandum-of-understanding-for-crown-bodies',
-  'policy/document/v2/stripe-connected-account-agreement'
+  'policy/document/v2/stripe-connected-account-agreement',
+  'policy/stripe-terms-and-conditions/stripe-terms-and-conditions'
 ]
 
 const hideServiceNavTemplates = [
