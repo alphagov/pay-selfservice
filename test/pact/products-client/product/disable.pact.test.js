@@ -57,7 +57,7 @@ describe('products client - disable a product', () => {
     afterEach(() => provider.verify())
 
     it('should disable the product', () => {
-      expect(result).to.equal(undefined)
+      expect(result.status).to.equal(204)
     })
   })
 
