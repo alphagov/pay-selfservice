@@ -113,7 +113,7 @@ function validatePostcode (postcode, countryCode) {
     return validReturnObject
   }
 
-  if (!/^[A-z0-9 ]+$/.test(postcode)) {
+  if (!/^[A-Za-z0-9 ]+$/.test(postcode)) {
     return notValidReturnObject('Enter a real postcode')
   }
 

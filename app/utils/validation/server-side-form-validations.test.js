@@ -154,6 +154,13 @@ describe('Server side form validations', () => {
       })
     })
 
+    it('should not be valid when postcode is UK postcode with ^ character', () => {
+      expect(validations.validatePostcode('NW1^ 5GH')).to.deep.equal({
+        valid: false,
+        message: 'Enter a real postcode'
+      })
+    })
+
     it('should not be valid when postcode is not UK postcode and country not provided', () => {
       expect(validations.validatePostcode('CA90210')).to.deep.equal({
         valid: false,
