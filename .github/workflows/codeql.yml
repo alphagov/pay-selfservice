@@ -6,6 +6,8 @@ on:
     paths:
       - 'app/**'
       - 'test/**'
+  push:
+    branches: [ "master" ]
   schedule:
     # Weekly schedule
     - cron: '43 7 * * 1'
@@ -31,6 +33,10 @@ jobs:
         with:
           # CodeQL options: [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
           languages: 'javascript-typescript'
+          config: |
+            paths:
+              - 'app/**'
+              - 'test/**'
 
       - name: Parse Node version
         id: parse-node-version
