@@ -4,7 +4,8 @@ const qrcode = require('qrcode')
 const lodash = require('lodash')
 
 const logger = require('../../utils/logger')(__filename)
-const { RESTClientError, ExpiredInviteError } = require('../../errors')
+const { ExpiredInviteError } = require('../../errors')
+const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const adminusersClient = require('../../services/clients/adminusers.client')()
 const paths = require('../../paths')
 const {
