@@ -27,7 +27,7 @@ function onFailureResponse (context) {
 }
 
 function configureClient (client, baseUrl) {
-  client.configure(baseUrl, {
+  client.configure(encodeURI(baseUrl), {
     transformRequestAddHeaders,
     onRequestStart,
     onSuccessResponse,

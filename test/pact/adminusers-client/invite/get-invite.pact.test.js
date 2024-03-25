@@ -61,4 +61,36 @@ describe('adminusers client - get an invite', function () {
       }).should.notify(done)
     })
   })
+
+  describe('success with encoded URI', () => {
+    const inviteCode = 'an- invite- code'
+    const encInviteCode = 'an-%20invite-%20code'
+
+
+    const getInviteResponse = inviteFixtures.validInviteResponse({
+      telephone_number: '0123456789'
+    })
+
+    before((done) => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${INVITES_PATH}/${encInviteCode}`)
+          .withState('a valid invite to add a user to a service exists with invite code an- invite- code')
+          .withUponReceiving('a valid get invite request')
+          .withStatusCode(200)
+          .withResponseBody(pactify(getInviteResponse))
+          .build()
+      ).then(() => done())
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should find an invite successfully', function (done) {
+      adminUsersClient.getValidatedInvite(inviteCode).should.be.fulfilled.then(function (invite) {
+        expect(invite.email).to.be.equal(getInviteResponse.email)
+        expect(invite.telephone_number).to.be.equal(getInviteResponse.telephone_number)
+        expect(invite.is_invite_to_join_service).to.be.equal(getInviteResponse.is_invite_to_join_service)
+        expect(invite.password_set).to.be.equal(getInviteResponse.password_set)
+      }).should.notify(done)
+    })
+  })
 })
