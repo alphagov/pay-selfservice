@@ -87,4 +87,34 @@ describe('Client config', () => {
       })
     })
   })
+
+  describe('Encoding URI', () => {
+    it('should encode URI', async () => {
+      const client = new Client(app)
+      const config = getConfigWithMocks('abc123')
+      const baseUrl = 'http://localhost:8000'
+
+      nock(baseUrl)
+      .get('/x?y=z%20z')
+      .reply(200)
+
+      const url = `${baseUrl}/x?y=z z`
+      config.configureClient(client, url)
+
+      const response = await client.get(url, 'do something', {
+        additionalLoggingFields: { foo: 'bar' }
+      })
+
+      expect(response.status).to.equal(200)
+      expect(response.request.path).to.equal('/x?y=z%20z')
+
+      sinon.assert.calledWith(logInfoSpy, 'Calling an-app to do something', {
+        service: app,
+        method: 'get',
+        url: 'http://localhost:8000/x?y=z z',
+        description: 'do something',
+        foo: 'bar'
+      })
+    })
+  })
 })
