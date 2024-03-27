@@ -27,6 +27,8 @@ const serviceId = 'an-external-service-id'
 const gatewayAccountId = 'an-external-account-id'
 const isLive = true
 const webhookId = 'an-external-webhook-id'
+const status = 'FAILED'
+const page = 1
 
 describe('webhooks client', function () {
   let webhooksUrl
@@ -94,6 +96,32 @@ describe('webhooks client', function () {
       return webhooksClient.createWebhook(serviceId, gatewayAccountId, isLive, { callback_url: callbackUrl, description, subscriptions, baseUrl: webhooksUrl })
         .then((response) => {
           expect(response.external_id).to.equal(webhookId)
+        })
+    })
+  })
+
+  describe('messages', () => {
+    before(() => {
+      return provider.addInteraction(
+        new PactInteractionBuilder(`/v1/webhook/${serviceId}/message`)
+          .withQuery('page', page)
+          .withQuery('status', status)
+          .withUponReceiving('a valid list of messages for webhook')
+          .withState('webhooks exist for given service id')
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactify(webhookFixtures.webhooksListResponse([{ external_id: webhookId }])))
+          .build()
+      )
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get list of messages for webhook for a given service', () => {
+      return webhooksClient.messages(serviceId, { baseUrl: webhooksUrl, page, status })
+        .then((response) => {
+          // asserts that the client has correctly formatted the request to match the stubbed fixture provider
+          expect(response[0].external_id).to.equal(webhookId)
         })
     })
   })
