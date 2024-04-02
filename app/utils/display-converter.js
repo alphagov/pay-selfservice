@@ -133,6 +133,10 @@ module.exports = function (req, data, template) {
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
+  convertedData.displayTimeZone = (currentPath.includes('transactions') || currentPath.includes('dashboard') ||
+    currentPath.includes('agreements') || currentPath.includes('all-service-transactions'))
+  convertedData.timeZone = user && user.timeZone
+
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, account)
     convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account, service)

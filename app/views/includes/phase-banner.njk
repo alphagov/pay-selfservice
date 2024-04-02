@@ -35,6 +35,7 @@
     {% endset %}
     <strong class="service-info--tag govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
   {% endif %}
+
 {% endset %}
 
 {% set breadcrumbItems = [
@@ -47,7 +48,19 @@
 }), breadcrumbItems) %}
 {% endif %}
 
-{{ breadcrumbs(breadcrumbItems) }}
+<div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
+  <div class="govuk-grid-column-two-thirds govuk-!-padding-left-0">
+    {{ breadcrumbs(breadcrumbItems) }}
+  </div>
+  {% if displayTimeZone %}
+    <div class="govuk-grid-column-one-third govuk-!-margin-top-2">
+      <p class="govuk-body  govuk-!-text-align-right ">
+        Time zone: <span class="govuk-!-font-weight-bold">{{ timeZone }}</span>
+        (<a href="/my-profile/time-zone" class="govuk-link">Change</a>)
+      </p>
+    </div>
+  {% endif %}
+</div>
 
 {% if not hideServiceNav and not hideServiceHeader %}
 <div class="govuk-phase-banner govuk-clearfix pay-top-navigation" data-cy="service-nav">

@@ -514,6 +514,24 @@ module.exports = function (clientOptions = {}) {
     return response.data
   }
 
+  /**
+   *
+   * @param externalId
+   * @param newPhoneNumber
+   * @returns {Promise}
+   */
+  async function updateTimeZone (externalId, timeZone) {
+    const url = `${baseUrl}${userResource}/${externalId}`
+    configureClient(client, url)
+    const body = {
+      op: 'replace',
+      path: 'time_zone',
+      value: timeZone
+    }
+    const response = await client.patch(url, body, 'update time zone for a user')
+    return response.data
+  }
+
   return {
     // User-related Methods
     getForgottenPassword,
@@ -529,6 +547,7 @@ module.exports = function (clientOptions = {}) {
     provisionNewOtpKey,
     configureNewOtpKey,
     updatePhoneNumberForUser,
+    updateTimeZone,
 
     // UserServiceRole-related Methods
     updateServiceRole,

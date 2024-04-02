@@ -217,6 +217,7 @@ module.exports = {
     profile: {
       index: '/my-profile',
       phoneNumber: '/my-profile/phone-number',
+      timeZone: '/my-profile/time-zone',
       twoFactorAuth: {
         index: '/my-profile/two-factor-auth',
         phoneNumber: '/my-profile/two-factor-auth/phone-number',

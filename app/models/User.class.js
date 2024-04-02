@@ -12,6 +12,7 @@ const { isInternalGDSEmail } = require('../utils/email-tools')
  * @property {number} sessionVersion - The user's current session version
  * @property {string} otpKey - The user's OTP key
  * @property {string} telephoneNumber - The user's telephone number
+ * @property {string} timeZone - The user's timezone for UI
  * @property {boolean} disabled - Whether or not the user is disabled
  * @property {ServiceRole[]} serviceRoles - An array of the user's serviceRoles
  * @property {boolean} internalUser - Whether the user is internal
@@ -26,6 +27,7 @@ class User {
    * @param {string} userData.email - The user's email address
    * @param {string} userData.otp_key - The user's OTP key
    * @param {string} userData.telephone_number - The user's telephone number
+   * @param {string} userData.time_zone - The user's time zone
    * @param {boolean} userData.disabled - Whether or not the user's account is locked
    * @param {number} userData.session_version - The user's current session version
    * @param {Object[]} userData.service_roles - An array of the user's serviceRoles
@@ -49,6 +51,7 @@ class User {
     this.provisionalOtpKey = userData.provisional_otp_key || ''
     this.internalUser = isInternalGDSEmail(this.email)
     this.numberOfLiveServices = this.serviceRoles.filter(serviceRole => serviceRole.service.currentGoLiveStage === 'LIVE').length
+    this.timeZone = userData.time_zone
   }
 
   /**
@@ -74,8 +77,8 @@ class User {
       email: this.email,
       telephone_number: this.telephoneNumber,
       provisional_otp_key: this.provisionalOtpKey,
-      second_factor: this.secondFactor
-
+      second_factor: this.secondFactor,
+      time_zone: this.timeZone
     }
 
     if (this.otpKey) {

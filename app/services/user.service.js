@@ -184,5 +184,14 @@ module.exports = {
    */
   updatePhoneNumber: function (externalId, newPhoneNumber) {
     return adminUsersClient.updatePhoneNumberForUser(externalId, newPhoneNumber)
+  },
+
+  /**
+   * @param externalId
+   * @param newTimeZone
+   * @returns {Promise}
+   */
+  updateTimeZone: function (externalId, timeZone) {
+    return adminUsersClient.updateTimeZone(externalId, timeZone)
   }
 }

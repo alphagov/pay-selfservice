@@ -1,0 +1,54 @@
+{% extends "../layout.njk" %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% block pageTitle %}
+  Change time zone
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ govukBackLink({
+    text: "My profile",
+    href: routes.user.profile.index
+  }) }}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l page-title">
+      Change time zone
+    </h1>
+  </div>
+  <div class="govuk-grid-column-two-thirds">
+    <form method="post" action="{{ routes.user.profile.timeZone }}" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      <p class="govuk-body">Changes your time zone for the admin tool. This will only affect times displayed in your
+        Dashboard and transaction pages. </p>
+
+      <p class="govuk-body govuk-!-font-weight-bold">This does not affect times returned in CSV downloads or API</p>
+
+      {{ govukSelect({
+        id: "timezone",
+        name: "timeZone",
+        label: {
+          text: "Time zone"
+        },
+        items: [
+          {
+            value: "Europe/London",
+            text: "Europe - London",
+            selected: timeZone === 'Europe/London'
+          },
+          {
+            value: "UTC",
+            text: "UTC",
+            selected: timeZone === 'UTC'
+          }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Update" }) }}
+    </form>
+  </div>
+{% endblock %}
