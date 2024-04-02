@@ -174,9 +174,10 @@ module.exports = async (req, res) => {
 }
 
 function getTransactionDateRange (period) {
+  const dateTimeFormat = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'
   const toDateTime = period === 'today'
-    ? moment().tz('Europe/London').format()
-    : moment().tz('Europe/London').startOf('day').format()
+    ? moment().tz('Europe/London').format(dateTimeFormat)
+    : moment().tz('Europe/London').startOf('day').format(dateTimeFormat)
   let daysAgo = 0
 
   switch (period) {
@@ -191,7 +192,7 @@ function getTransactionDateRange (period) {
       break
   }
 
-  const fromDateTime = moment().tz('Europe/London').startOf('day').subtract(daysAgo, 'days').format()
+  const fromDateTime = moment().tz('Europe/London').startOf('day').subtract(daysAgo, 'days').format(dateTimeFormat)
 
   return { fromDateTime, toDateTime }
 }
