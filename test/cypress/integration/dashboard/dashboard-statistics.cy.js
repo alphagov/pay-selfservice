@@ -3,6 +3,8 @@ const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
 
+const dateTimeFormat = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'
+
 describe('Account dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = '42'
@@ -11,7 +13,7 @@ describe('Account dashboard', () => {
 
   beforeEach(() => {
     const todayStatisticsStub = transactionsSummaryStubs.getDashboardStatisticsWithFromDate(
-      moment().tz('Europe/London').startOf('day').format(),
+      moment().tz('Europe/London').startOf('day').format(dateTimeFormat),
       {
         paymentCount: 10,
         paymentTotal: 12000,
@@ -19,7 +21,7 @@ describe('Account dashboard', () => {
         refundTotal: 2300
       })
     const prevSevenDaysStatisticsStub = transactionsSummaryStubs.getDashboardStatisticsWithFromDate(
-      moment().subtract(7, 'days').tz('Europe/London').startOf('day').format(),
+      moment().subtract(7, 'days').tz('Europe/London').startOf('day').format(dateTimeFormat),
       {
         paymentCount: 50,
         paymentTotal: 70000,
