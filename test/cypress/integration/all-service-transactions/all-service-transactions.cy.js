@@ -179,4 +179,30 @@ describe('All service transactions', () => {
       .should('have.text', 'Back to transactions for all services')
       .should('have.attr', 'href', '/all-service-transactions/test?reference=ref3&email=&cardholderName=&lastDigitsCardNumber=&fromDate=&fromTime=&toDate=&toTime=&metadataValue=&agreementId=')
   })
+
+  it('should redirect to failure page when ledger returns 504 and allow user to navigate to no autosearch transactions page', () => {
+    cy.task('setupStubs', [
+      userStub,
+      gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccountStripe, gatewayAccount2, gatewayAccount3]),
+
+      transactionStubs.getLedgerTransactionsFailure({
+        account_id: `${gatewayAccountStripe.gatewayAccountId},${gatewayAccount2.gatewayAccountId}`,
+        page: 1,
+        display_size: 100,
+        limit_total: true,
+        limit_total_size: 5001
+      }, 504),
+      gatewayAccountStubs.getCardTypesSuccess()
+    ])
+
+    cy.visit('/all-service-transactions/live', { failOnStatusCode: false })
+
+    cy.get('.govuk-heading-l').should('have.text', "An error occurred")
+    cy.get('#errorMsg').should('have.text', "The search has timed out. Try searching for a specific date range or applying other filters.")
+
+    cy.get('.govuk-body').get('a').contains('Back to transactions search').click()
+
+    cy.location('pathname').should('eq', '/all-service-transactions/nosearch/live')
+  })
+
 })

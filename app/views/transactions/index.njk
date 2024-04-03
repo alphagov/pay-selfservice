@@ -84,12 +84,14 @@
   {% include "transactions/display-size.njk" %}
 
   <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
-    {% if totalOverLimit %}
-      Over {{maxLimitFormatted}} transactions
-    {% else %}
-      {{totalFormatted}} transactions
+    {% if not allServicesTimeout %}
+      {% if totalOverLimit %}
+        Over {{maxLimitFormatted}} transactions
+      {% else %}
+        {{totalFormatted}} transactions
+      {% endif %}
+      {{ filtersDescription | safe }}
     {% endif %}
-    {{ filtersDescription | safe }}
 
   </h3>
 

@@ -8,5 +8,11 @@
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l page-title">An error occurred</h1>
     <div class="govuk-body" id="errorMsg">{{message}}</div>
+    {% if allServicesTimeout %}
+      <div>
+        <p class="govuk-body"><a class="govuk-link" href="{{ allServiceTransactionsNoSearchPath }}" id="linkToAllServicesSearch">Back to transactions search</a></p>
+      </div>
+    {% endif %}
   </div>
+
 {% endblock %}

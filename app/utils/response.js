@@ -10,11 +10,11 @@ function response (req, res, template, data = {}) {
   render(req, res, template, convertedData)
 }
 
-function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500) {
+function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500, additionalModel) {
   if (typeof msg !== 'string') {
     msg = 'Please try again or contact support team.'
   }
-  let data = { 'message': msg }
+  const model = { 'message': msg, ...additionalModel }
 
   const errorMeta = {
     'status': status,
@@ -25,7 +25,7 @@ function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500) {
   res.setHeader('Content-Type', 'text/html')
 
   res.status(status)
-  response(req, res, ERROR_VIEW, data)
+  response(req, res, ERROR_VIEW, model)
 }
 
 function render (req, res, template, data) {

@@ -16,7 +16,7 @@ const {
   InvalidConfigurationError,
   ExpiredInviteError,
   RESTClientError,
-  GatewayTimeoutError
+  GatewayTimeoutError, GatewayTimeoutForAllServicesSearchError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
@@ -84,6 +84,21 @@ module.exports = function errorHandler (err, req, res, next) {
   if (err instanceof GatewayTimeoutError) {
     logger.info('Gateway Time out Error occurred on Transactions Search Page. Rendering error page')
     return renderErrorView(req, res, err.message, 504)
+  }
+
+  if (err instanceof GatewayTimeoutForAllServicesSearchError) {
+    logger.info('Gateway Time out Error occurred on Transactions for All Services Search Page. Rendering error page')
+    let allServiceTransactionsNoSearchPath = paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilterWithoutSearch, req.session.allServicesTransactionsStatusFilter)
+
+    const queryString = req.originalUrl.split('?')[1]
+    if (queryString) {
+      allServiceTransactionsNoSearchPath += '?' + queryString
+    }
+
+    return renderErrorView(req, res, err.message, 504, {
+      allServicesTimeout: true,
+      allServiceTransactionsNoSearchPath: allServiceTransactionsNoSearchPath
+    })
   }
 
   if (err instanceof RESTClientError) {

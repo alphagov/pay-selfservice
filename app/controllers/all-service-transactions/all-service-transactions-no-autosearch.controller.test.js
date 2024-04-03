@@ -5,14 +5,11 @@ const userFixtures = require('../../../test/fixtures/user.fixtures')
 const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
 const Service = require('../../models/Service.class')
 const serviceFixtures = require('../../../test/fixtures/service.fixtures')
-const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
 
-describe('All service transactions - GET', () => {
+describe('All service transactions no autosearch - GET', () => {
   let req, res, next
   const user = new User(userFixtures.validUserResponse())
   const service = new Service(serviceFixtures.validServiceResponse({}))
-  const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse(
-    { transactions: [] })
   let userPermittedAccountsSummary = {
     gatewayAccountIds: [31],
     headers: { shouldGetStripeHeaders: true, shouldGetMotoHeaders: true },
@@ -47,36 +44,30 @@ describe('All service transactions - GET', () => {
   })
 
   describe('Stripe account', () => {
-    it('should return a response with correct model and filters', async () => {
+    it('should return a response with a model with `allServicesTimeout: true`', async () => {
       await getController()(req, res, next)
 
       sinon.assert.calledWith(filterMock, req)
-      sinon.assert.calledWith(modelMock, req, transactionSearchResponse, ['a-filter'], 'download-path', true, userPermittedAccountsSummary)
+      sinon.assert.calledWith(modelMock, req, { results: [] }, ['a-filter'], null, true, userPermittedAccountsSummary)
 
       sinon.assert.calledWith(responseMock, req, res, 'transactions/index', {
         isStripeAccount: true,
-        filterLiveAccounts: true
+        filterLiveAccounts: true,
+        allServicesTimeout: true
       })
     })
   })
 
   function getController () {
-    return proxyquire('./get.controller', {
+    return proxyquire('./all-service-transactions-no-autosearch.controller', {
       '../../utils/permissions': {
         getGatewayAccountsFor: sinon.spy(() => Promise.resolve(userPermittedAccountsSummary))
-      },
-      '../../services/transaction.service': {
-        search: sinon.spy(() => Promise.resolve(transactionSearchResponse))
       },
       './populateModel': {
         populateModel: modelMock
       },
       '../../utils/response': {
         response: responseMock
-      },
-      '../../paths': {
-        allServiceTransactions: { download: 'download-path' },
-        formattedPathFor: () => 'formatted-path'
       },
       '../../utils/filters.js': {
         getFilters: filterMock

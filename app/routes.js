@@ -229,6 +229,7 @@ module.exports.bind = function (app) {
   // All service transactions
   app.get(allServiceTransactions.index, userIsAuthorised, allTransactionsController.getController)
   app.get(allServiceTransactions.indexStatusFilter, userIsAuthorised, allTransactionsController.getController)
+  app.get(allServiceTransactions.indexStatusFilterWithoutSearch, userIsAuthorised, allTransactionsController.noAutosearchTransactions)
   app.get(allServiceTransactions.download, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.downloadStatusFilter, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
