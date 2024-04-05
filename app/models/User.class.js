@@ -136,6 +136,10 @@ class User {
         serviceRole.service && serviceRole.service.externalId === serviceExternalId)
       .length > 0
   }
+
+  getTimeZone () {
+    return this.timeZone || 'Europe/London'
+  }
 }
 
 module.exports = User

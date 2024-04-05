@@ -2,6 +2,7 @@
 
 const _ = require('lodash')
 const moment = require('moment-timezone')
+const { DateTime } = require('luxon')
 
 const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response').response
@@ -11,7 +12,6 @@ const ProductsClient = require('../../services/clients/products.client.js')
 const { ConnectorClient } = require('../../services/clients/connector.client.js')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
-const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
 const {
   NOT_STARTED,
@@ -129,14 +129,17 @@ module.exports = async (req, res) => {
     } catch (notSwitchingError) {
       // it's valid to not be switching on the dashboard, no op here
     }
-    const { fromDateTime, toDateTime } = getTransactionDateRange(period)
+    const toDateTime = getToDateForRange(period, req.user)
+    const fromDateTime = getFromDateForRange(period, req.user)
 
-    const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
+    const transactionsPeriodString = `fromDate=${encodeURIComponent(toDateOrTime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(toDateOrTime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(toDateOrTime(toDateTime, 'date'))}&toTime=${encodeURIComponent(toDateOrTime(toDateTime, 'time'))}`
 
     logger.info('Successfully logged in')
 
     try {
-      const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime)
+      const fromDateUTC = getFromDateUTCForRange(period, req.user)
+      const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateUTC.toISO(), toDateTime.toUTC().toISO())
+
       response(req, res, 'dashboard/index', Object.assign(model, {
         activity: result,
         fromDateTime,
@@ -173,11 +176,28 @@ module.exports = async (req, res) => {
   }
 }
 
-function getTransactionDateRange (period) {
-  const dateTimeFormat = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'
+function getToDateForRange (period, user) {
   const toDateTime = period === 'today'
-    ? moment().tz('Europe/London').format(dateTimeFormat)
-    : moment().tz('Europe/London').startOf('day').format(dateTimeFormat)
+    ? DateTime.now().setZone(user.getTimeZone())
+    : DateTime.now().setZone(user.getTimeZone()).startOf('day')
+
+  return toDateTime
+}
+
+function getFromDateForRange (period, user) {
+  let daysAgo = getDaysAgoForFromDate(period)
+  let fromDateTime = DateTime.now().setZone(user.getTimeZone()).startOf('day').minus({ day: daysAgo })
+
+  return fromDateTime
+}
+function getFromDateUTCForRange (period, user) {
+  let daysAgo = getDaysAgoForFromDate(period)
+  let fromDateTime = DateTime.now().setZone(user.getTimeZone()).startOf('day').toUTC().minus({ day: daysAgo })
+
+  return fromDateTime
+}
+
+function getDaysAgoForFromDate (period) {
   let daysAgo = 0
 
   switch (period) {
@@ -191,10 +211,19 @@ function getTransactionDateRange (period) {
       daysAgo = 30
       break
   }
+  return daysAgo
+}
 
-  const fromDateTime = moment().tz('Europe/London').startOf('day').subtract(daysAgo, 'days').format(dateTimeFormat)
-
-  return { fromDateTime, toDateTime }
+function toDateOrTime (isoTimeString, format, user) {
+  let formatString = 'D MMMM yyyy h:mm:ssa z'
+  if (format === 'date') {
+    formatString = 'dd/MM/yyyy'
+  } else if (format === 'datelong') {
+    formatString = 'd MMMM yyyy'
+  } else if (format === 'time') {
+    formatString = 'HH:mm:ss'
+  }
+  return isoTimeString.toFormat(formatString)
 }
 
 async function getStripeAccountDetails (gatewayAccountId) {
