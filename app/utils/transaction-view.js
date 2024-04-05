@@ -20,7 +20,7 @@ const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 module.exports = {
   /** prepares the transaction list view */
-  buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, filtersDateRangeState, route, backPath) {
+  buildPaymentList: function (connectorData, allCards, timeZoneToReturnDatesIn, gatewayAccountExternalId, filtersResult, filtersDateRangeState, route, backPath) {
     connectorData.filters = filtersResult
     connectorData.hasFilters = Object.keys(filtersResult).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
@@ -63,8 +63,8 @@ module.exports = {
         element.total_amount = asGBP(element.total_amount)
       }
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '…' : element.email
-      element.updated = dates.utcToDisplay(element.updated)
-      element.created = dates.utcToDisplay(element.created_date)
+      element.updated = dates.utcToTimeZoneDisplay(element.updated, timeZoneToReturnDatesIn)
+      element.created = dates.utcToTimeZoneDisplay(element.created_date, timeZoneToReturnDatesIn)
       if (!gatewayAccountExternalId) {
         element.link = router.generateRoute(router.paths.allServiceTransactions.redirectDetail, {
           chargeId: element.charge_id
@@ -103,7 +103,7 @@ module.exports = {
     return connectorData
   },
 
-  buildPaymentView: function (chargeData, eventsData, disputeTransactionData, users = []) {
+  buildPaymentView: function (chargeData, eventsData, disputeTransactionData, timeZoneToReturnDatesIn, users = []) {
     chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
     chargeData.refund_summary = chargeData.refund_summary || {}
 
@@ -158,7 +158,7 @@ module.exports = {
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.wallet_type = changeCase.titleCase(chargeData.wallet_type)
-    chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated)
+    chargeData.updated = dates.utcToTimeZoneDisplay(eventsData.events[0] && eventsData.events[0].updated, timeZoneToReturnDatesIn)
     chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData)).reverse()
     chargeData.events.forEach(event => {
       if (event.submitted_by && event.state_friendly === 'Refund submitted') {
@@ -167,7 +167,7 @@ module.exports = {
     })
 
     if (disputeTransactionData) {
-      chargeData.dispute = new DisputeTransaction(disputeTransactionData)
+      chargeData.dispute = new DisputeTransaction(disputeTransactionData, timeZoneToReturnDatesIn)
     }
 
     delete chargeData['links']

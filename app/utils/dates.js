@@ -1,4 +1,5 @@
 var moment = require('moment-timezone')
+const { DateTime } = require('luxon')
 
 module.exports = (function () {
   var DEFAULT_FORMAT = 'YYYY-MM-DD HH:mm:ss'
@@ -29,6 +30,12 @@ module.exports = (function () {
     return moment(date).tz('Europe/London').format('DD MMM YYYY — HH:mm:ss')
   }
 
+  const utcToTimeZoneDisplay = function (date, timeZoneToReturnDatesIn) {
+    if (date) {
+      return DateTime.fromISO(date, { zone: 'UTC' }).setZone(timeZoneToReturnDatesIn).toFormat('dd MMM yyyy - HH:mm:ss')
+    }
+  }
+
   const utcToDate = function (date) {
     return moment(date).tz('Europe/London').format('DD MMM YYYY')
   }
@@ -42,6 +49,7 @@ module.exports = (function () {
     fromDateToApiFormat: fromDateToApiFormat,
     toDateToApiFormat: toDateToApiFormat,
     utcToDisplay: utcToDisplay,
+    utcToTimeZoneDisplay: utcToTimeZoneDisplay,
     utcToDate: utcToDate,
     utcToTime: utcToTime
   }

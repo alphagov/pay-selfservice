@@ -65,7 +65,7 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
   })
 }
 
-const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, chargeId) {
+const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, chargeId, timeZoneToReturnDatesIn) {
   try {
     const charge = await Ledger.transaction(chargeId, accountId)
     const transactionEvents = await Ledger.events(chargeId, accountId)
@@ -84,9 +84,9 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
 
     if (userIds.length !== 0) {
       const users = await userService.findMultipleByExternalIds(userIds)
-      return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction, users)
+      return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction, timeZoneToReturnDatesIn, users)
     } else {
-      return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction)
+      return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction, timeZoneToReturnDatesIn)
     }
   } catch (error) {
     throw getStatusCodeForError(error)

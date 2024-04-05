@@ -43,7 +43,7 @@ async function agreementDetail (req, res, next) {
   try {
     const agreement = await agreementsService.agreement(req.params.agreementId, req.service.externalId)
     const transactions = await transactionService.search([req.account.gateway_account_id], transactionsFilter)
-    const formattedTransactions = buildPaymentList(transactions, {}, req.account.gateway_account_id, transactionsFilter)
+    const formattedTransactions = buildPaymentList(transactions, {}, req.user.getTimeZone(), req.account.gateway_account_id, transactionsFilter)
 
     const user = req.user
     const isShowCancelAgreementFunctionality = user.hasPermission(req.service.externalId, 'agreements:update') &&

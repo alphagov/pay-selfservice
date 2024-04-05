@@ -8,7 +8,7 @@ module.exports = async function showTransactionDetails (req, res, next) {
   const accountId = req.account.gateway_account_id
   const chargeId = req.params.chargeId
   try {
-    const data = await ledgerFindWithEvents(accountId, chargeId)
+    const data = await ledgerFindWithEvents(accountId, chargeId, req.user.getTimeZone())
     data.indexFilters = req.session.filters
     if (req.session.contextIsAllServiceTransactions) {
       data.contextIsAllServiceTransactions = req.session.contextIsAllServiceTransactions

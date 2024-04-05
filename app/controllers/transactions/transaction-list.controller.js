@@ -41,7 +41,7 @@ module.exports = async function showTransactionList (req, res, next) {
   }
 
   const transactionsDownloadLink = formatAccountPathsFor(router.paths.account.transactions.download, req.account.external_id)
-  const model = buildPaymentList(result[0], result[1], gatewayAccountExternalId, filters.result, filters.dateRangeState, transactionsDownloadLink)
+  const model = buildPaymentList(result[0], result[1], req.user.getTimeZone(), gatewayAccountExternalId, filters.result, filters.dateRangeState, transactionsDownloadLink)
   model.search_path = formatAccountPathsFor(router.paths.account.transactions.index, req.account.external_id)
   model.filtersDescription = describeFilters(filters.result)
 

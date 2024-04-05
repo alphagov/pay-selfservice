@@ -18,8 +18,8 @@ reasonToFriendlyString.set('subscription_canceled', 'Subscription cancelled')
 reasonToFriendlyString.set('other', 'Other')
 
 class DisputeTransaction {
-  constructor (transactionData) {
-    this.created_date = dates.utcToDisplay(transactionData.created_date)
+  constructor (transactionData, timeZoneToReturnDatesIn) {
+    this.created_date = dates.utcToTimeZoneDisplay(transactionData.created_date, timeZoneToReturnDatesIn)
     this.state = {
       status: lodash.get(transactionData, 'state.status'),
       finished: lodash.get(transactionData, 'state.finished')
@@ -41,7 +41,7 @@ class DisputeTransaction {
       this.fee_friendly = penceToPoundsWithCurrency(transactionData.fee)
     }
     if (transactionData.evidence_due_date) {
-      this.evidence_due_date_friendly = dates.utcToDisplay(transactionData.evidence_due_date)
+      this.evidence_due_date_friendly = dates.utcToTimeZoneDisplay(transactionData.evidence_due_date)
     }
   }
 }

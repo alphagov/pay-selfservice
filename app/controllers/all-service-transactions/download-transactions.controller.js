@@ -6,7 +6,7 @@ const Stream = require('../../services/clients/stream.client')
 const permissions = require('../../utils/permissions')
 const { NoServicesWithPermissionError } = require('../../errors')
 
-module.exports = async function dowmloadTransactions (req, res, next) {
+module.exports = async function downloadTransactions (req, res, next) {
   const filters = req.query
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
 
