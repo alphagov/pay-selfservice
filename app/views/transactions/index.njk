@@ -33,10 +33,22 @@
       <span>Transactions for all services</span>
       <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
     {% endset %}
-    {{ breadcrumbs([
-      { text: "My services", href: routes.serviceSwitcher.index },
-      { html: pageTitleBreadcrumbWithTag  }
-    ]) }}
+    <div class="govuk-phase-banner govuk-clearfix pay-top-navigation">
+      <div class="govuk-grid-column-two-thirds govuk-!-padding-left-0">
+        {{ breadcrumbs([
+          { text: "My services", href: routes.serviceSwitcher.index },
+          { html: pageTitleBreadcrumbWithTag  }
+        ]) }}
+      </div>
+      {% if displayTimeZone %}
+        <div class="govuk-grid-column-one-third govuk-!-margin-top-2">
+          <p class="govuk-body  govuk-!-text-align-right ">
+            Time zone: <span class="govuk-!-font-weight-bold">{{ timeZone }}</span>
+            (<a href="/my-profile/time-zone" class="govuk-link">Change</a>)
+          </p>
+        </div>
+      {% endif %}
+    </div>
   {% else %}
     {{ super() }}
   {% endif %}

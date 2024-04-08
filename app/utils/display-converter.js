@@ -40,7 +40,8 @@ const hideServiceNavTemplates = [
   'two-factor-auth/index',
   'two-factor-auth/phone-number',
   'two-factor-auth/configure',
-  'two-factor-auth/resend-sms-code'
+  'two-factor-auth/resend-sms-code',
+  'time-zone/index'
 ]
 
 const digitalWalletsSupportedProviders = [
