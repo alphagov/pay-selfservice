@@ -22,7 +22,7 @@ module.exports = async function downloadTransactions (req, res, next) {
     }
     filters.feeHeaders = userPermittedAccountsSummary.headers.shouldGetStripeHeaders
     filters.motoHeader = userPermittedAccountsSummary.headers.shouldGetMotoHeaders
-    const url = transactionService.csvSearchUrl(filters, userPermittedAccountsSummary.gatewayAccountIds)
+    const url = transactionService.csvSearchUrl(filters, userPermittedAccountsSummary.gatewayAccountIds, req.user.getTimeZone())
 
     const timestampStreamStart = Date.now()
     const data = (chunk) => { res.write(chunk) }

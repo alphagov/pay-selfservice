@@ -159,7 +159,7 @@ module.exports = {
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.wallet_type = changeCase.titleCase(chargeData.wallet_type)
     chargeData.updated = dates.utcToTimeZoneDisplay(eventsData.events[0] && eventsData.events[0].updated, timeZoneToReturnDatesIn)
-    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData)).reverse()
+    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData, timeZoneToReturnDatesIn)).reverse()
     chargeData.events.forEach(event => {
       if (event.submitted_by && event.state_friendly === 'Refund submitted') {
         event.submitted_by_friendly = lodash.get(users.find(user => user.externalId === event.submitted_by) || {}, 'email')

@@ -37,7 +37,9 @@ module.exports = async function getTransactionsForAllServices (req, res, next) {
     if (!userPermittedAccountsSummary.gatewayAccountIds.length) {
       return next(new NoServicesWithPermissionError('You do not have any associated services with rights to view these transactions.'))
     }
-    const searchResultOutput = await transactionService.search(userPermittedAccountsSummary.gatewayAccountIds, filters.result)
+    const searchResultOutput = await transactionService.search(
+      userPermittedAccountsSummary.gatewayAccountIds, filters.result, req.user.getTimeZone())
+
     const cardTypes = await client.getAllCardTypes()
     const downloadRoute = filterLiveAccounts ? paths.allServiceTransactions.download : paths.formattedPathFor(paths.allServiceTransactions.downloadStatusFilter, 'test')
     const model = buildPaymentList(searchResultOutput, cardTypes, req.user.getTimeZone(),

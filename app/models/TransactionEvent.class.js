@@ -6,7 +6,7 @@ const states = require('../utils/states')
 const dates = require('../utils/dates')
 
 class TransactionEvent {
-  constructor (eventData) {
+  constructor (eventData, timeZoneToReturnDatesIn) {
     this.type = eventData.type
     this.amount = eventData.amount
     this.updated = eventData.updated
@@ -20,7 +20,7 @@ class TransactionEvent {
     }
 
     this.state_friendly = states.getEventDisplayNameForConnectorState(this.state, this.type)
-    this.updated_friendly = dates.utcToDisplay(this.updated)
+    this.updated_friendly = dates.utcToTimeZoneDisplay(this.updated, timeZoneToReturnDatesIn)
     this.amount_friendly = penceToPoundsWithCurrency(this.amount)
     const transactionType = this.type.toLowerCase()
     if (this.amount && (transactionType === 'refund' || transactionType === 'dispute')) {

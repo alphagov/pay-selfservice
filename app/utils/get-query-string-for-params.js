@@ -4,7 +4,7 @@ const querystring = require('querystring')
 const _ = require('lodash')
 const dates = require('./dates.js')
 
-function getQueryStringForParams (params = {}, removeEmptyParams = false, flattenCardBrandsParam = false, ignorePagination = false) {
+function getQueryStringForParams (params = {}, removeEmptyParams = false, flattenCardBrandsParam = false, ignorePagination = false, timeZone) {
   let queryStrings = {
     reference: params.reference,
     email: params.email,
@@ -12,8 +12,8 @@ function getQueryStringForParams (params = {}, removeEmptyParams = false, flatte
     last_digits_card_number: params.lastDigitsCardNumber,
     card_brand: params.brand,
     gateway_payout_id: params.gatewayPayoutId,
-    from_date: dates.fromDateToApiFormat(params.fromDate, params.fromTime),
-    to_date: dates.toDateToApiFormat(params.toDate, params.toTime),
+    from_date: dates.fromDateInTimeZoneToUTCAndIsoFormat(params.fromDate, params.fromTime, timeZone),
+    to_date: dates.toDateInTimeZoneToUTCAndIsoFormat(params.toDate, params.toTime, timeZone),
     ...params.feeHeaders && { fee_headers: params.feeHeaders },
     ...params.motoHeader && { moto_header: params.motoHeader },
     metadata_value: params.metadataValue,

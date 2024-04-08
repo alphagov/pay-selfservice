@@ -33,7 +33,8 @@ module.exports = async function showTransactionList (req, res, next) {
 
   let result
   let transactionSearchResults = (filters.dateRangeState.isInvalidDateRange)
-    ? EMPTY_TRANSACTION_SEARCH_RESULTS : transactionService.search([accountId], filters.result)
+    ? EMPTY_TRANSACTION_SEARCH_RESULTS : transactionService.search([accountId], filters.result,
+      req.user.getTimeZone())
   try {
     result = await Promise.all([ transactionSearchResults, client.getAllCardTypes() ])
   } catch (error) {

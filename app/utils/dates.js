@@ -13,6 +13,23 @@ module.exports = (function () {
     return (date) ? moment.tz(`${date} ${time}`, 'DD/M/YYYY HH:mm:ss', 'Europe/London').toISOString() : ''
   }
 
+  const fromDateInTimeZoneToUTCAndIsoFormat = function (date, time, timeZone) {
+    return DateTime.fromFormat(`${date} ${time}`, 'dd/M/yyyy H:mm:ss').setZone(timeZone).toUTC().toISO()
+  }
+
+  var toDateInTimeZoneToUTCAndIsoFormat = function (date, time, timeZone) {
+    var fixedTime = time
+
+    // Increment needed to make the toDate inclusive
+    var increment = 1
+
+    if (!time) {
+      fixedTime = MAX_TIME
+    }
+
+    return (date) ? DateTime.fromFormat(`${date} ${fixedTime}`, 'dd/M/yyyy H:mm:ss').setZone(timeZone).toUTC().plus({ second: increment }).toISO() : ''
+  }
+
   var toDateToApiFormat = function (date, time) {
     var fixedTime = time
 
@@ -47,6 +64,8 @@ module.exports = (function () {
   return {
     dateToDefaultFormat: dateToDefaultFormat,
     fromDateToApiFormat: fromDateToApiFormat,
+    fromDateInTimeZoneToUTCAndIsoFormat: fromDateInTimeZoneToUTCAndIsoFormat,
+    toDateInTimeZoneToUTCAndIsoFormat: toDateInTimeZoneToUTCAndIsoFormat,
     toDateToApiFormat: toDateToApiFormat,
     utcToDisplay: utcToDisplay,
     utcToTimeZoneDisplay: utcToTimeZoneDisplay,

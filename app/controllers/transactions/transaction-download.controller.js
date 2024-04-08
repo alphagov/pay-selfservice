@@ -14,7 +14,7 @@ const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (re
   }
 
   filters.motoHeader = req.account && req.account.allow_moto
-  const url = transactionService.csvSearchUrl(filters, accountId)
+  const url = transactionService.csvSearchUrl(filters, accountId, req.user.getTimeZone())
 
   const timestampStreamStart = Date.now()
   const data = (chunk) => { res.write(chunk) }

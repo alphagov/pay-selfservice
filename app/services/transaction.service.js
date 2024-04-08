@@ -21,9 +21,9 @@ const connectorRefundFailureReasons = {
   AMOUNT_BELOW_MINIMUM: 'amount_min_validation'
 }
 
-const searchLedger = async function searchLedger (gatewayAccountIds = [], filters) {
+const searchLedger = async function searchLedger (gatewayAccountIds = [], filters, userTimeZone) {
   try {
-    return await Ledger.transactions(gatewayAccountIds, filters)
+    return await Ledger.transactions(gatewayAccountIds, filters, userTimeZone)
   } catch (error) {
     if (error.errorCode === 504) {
       throw new GatewayTimeoutError('Your request has timed out. Please apply more filters and try again.')
@@ -33,14 +33,14 @@ const searchLedger = async function searchLedger (gatewayAccountIds = [], filter
   }
 }
 
-const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = []) {
+const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = [], userTimeZone) {
   const formatOptions = { arrayFormat: 'comma' }
   const params = {
     account_id: gatewayAccountIds
   }
 
   const formattedParams = qs.stringify(params, formatOptions)
-  const formattedFilterParams = getQueryStringForParams(filters, true, true, true)
+  const formattedFilterParams = getQueryStringForParams(filters, true, true, true, userTimeZone)
   return `${process.env.LEDGER_URL}/v1/transaction?${formattedParams}&${formattedFilterParams}`
 }
 
@@ -61,7 +61,8 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
     all_service_transactions: allServiceTransactions,
     user_number_of_live_services: user.numberOfLiveServices,
     is_live: liveAccounts,
-    filters: Object.keys(filters).sort().join(', ')
+    filters: Object.keys(filters).sort().join(', '),
+    user_time_zone: user.getTimeZone()
   })
 }
 

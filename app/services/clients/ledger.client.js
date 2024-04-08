@@ -62,7 +62,7 @@ const events = async function events (transactionId, gatewayAccountId, options =
   return body
 }
 
-const transactions = async function transactions (gatewayAccountIds = [], filters = {}, options = {}) {
+const transactions = async function transactions (gatewayAccountIds = [], filters = {}, options = {}, userTimeZone) {
   const formatOptions = { arrayFormat: 'comma' }
   const path = '/v1/transaction'
   const params = {
@@ -72,7 +72,7 @@ const transactions = async function transactions (gatewayAccountIds = [], filter
   }
 
   const formattedParams = qs.stringify(params, formatOptions)
-  const formattedFilterParams = getQueryStringForParams(filters, true, true)
+  const formattedFilterParams = getQueryStringForParams(filters, true, true, userTimeZone)
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = `${baseUrl}${path}?${formattedParams}&${formattedFilterParams}`
   configureClient(client, url)
