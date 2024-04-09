@@ -129,18 +129,18 @@ module.exports = async (req, res) => {
     } catch (notSwitchingError) {
       // it's valid to not be switching on the dashboard, no op here
     }
-    const { fromDateTime, toDateTime } = getTransactionDateRange(period)
+    const { fromDateTimeInUTC, toDateTimeInUTC } = getTransactionDateRangeInUTC(period)
 
-    const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
+    const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTimeInUTC, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTimeInUTC, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTimeInUTC, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTimeInUTC, 'time'))}`
 
     logger.info('Successfully logged in')
 
     try {
-      const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTime, toDateTime)
+      const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTimeInUTC, toDateTimeInUTC)
       response(req, res, 'dashboard/index', Object.assign(model, {
         activity: result,
-        fromDateTime,
-        toDateTime,
+        fromDateTime: fromDateTimeInUTC,
+        toDateTime: toDateTimeInUTC,
         transactionsPeriodString,
         targetCredential,
         activeCredential,
@@ -173,11 +173,10 @@ module.exports = async (req, res) => {
   }
 }
 
-function getTransactionDateRange (period) {
-  const dateTimeFormat = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'
-  const toDateTime = period === 'today'
-    ? moment().tz('Europe/London').format(dateTimeFormat)
-    : moment().tz('Europe/London').startOf('day').format(dateTimeFormat)
+function getTransactionDateRangeInUTC (period) {
+  const toDateTimeInUTC = period === 'today'
+    ? moment().tz('Europe/London').toISOString()
+    : moment().tz('Europe/London').startOf('day').toISOString()
   let daysAgo = 0
 
   switch (period) {
@@ -192,9 +191,9 @@ function getTransactionDateRange (period) {
       break
   }
 
-  const fromDateTime = moment().tz('Europe/London').startOf('day').subtract(daysAgo, 'days').format(dateTimeFormat)
+  const fromDateTimeInUTC = moment().tz('Europe/London').startOf('day').subtract(daysAgo, 'days').toISOString()
 
-  return { fromDateTime, toDateTime }
+  return { fromDateTimeInUTC, toDateTimeInUTC }
 }
 
 async function getStripeAccountDetails (gatewayAccountId) {
