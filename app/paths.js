@@ -200,6 +200,7 @@ module.exports = {
   allServiceTransactions: {
     index: '/all-service-transactions',
     indexStatusFilter: '/all-service-transactions/:statusFilter(test|live)',
+    indexStatusFilterWithoutSearch: '/all-service-transactions/nosearch/:statusFilter(test|live)',
     download: '/all-service-transactions/download',
     downloadStatusFilter: '/all-service-transactions/download/:statusFilter(test|live)',
     redirectDetail: '/redirect/transactions/:chargeId'

@@ -52,7 +52,11 @@
 </table>
 {% else %}
   {% if not isInvalidDateRange %}
-     <p class="govuk-body" id="no-results">There are no results for the filters you used.</p>
+    {% if (allServicesTimeout) %}
+      <p class="govuk-body" id="update-filters-after-timeout">Update the filters and select the Filter button.</p>
+    {% else %}
+      <p class="govuk-body" id="no-results">There are no results for the filters you used.</p>
+    {% endif %}
   {% endif %}
 {% endif %}
 
