@@ -16,7 +16,8 @@ const {
   InvalidConfigurationError,
   ExpiredInviteError,
   RESTClientError,
-  GatewayTimeoutError, GatewayTimeoutForAllServicesSearchError
+  GatewayTimeoutError,
+  GatewayTimeoutForAllServicesSearchError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
