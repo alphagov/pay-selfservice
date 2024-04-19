@@ -19,7 +19,42 @@ Generate the environment variables file. This only needs to be done the first ti
   ```
   ./scripts/generate-dev-environment.sh local
   ```
- 
+
+Check that you are using the right version of Node, which should match what specified in package.json for engines/node.
+
+```
+node -v
+```
+
+If the node version is not what specified in package.json, then you need to install it and set it, e.g. for 18.17.1:
+
+```
+nvm install 18.17.1
+nvm use
+nvm alias default 18.17.1
+```
+
+Run the test server in one terminal tab:
+
+```
+npm run cypress:server
+```
+
+Run the tests in another terminal tab:
+
+```
+npm run cypress:test
+```
+
+To run the tests in a more visual way:
+
+```
+npm run cypress:test-headed
+```
+
+This will open a Cypress application window. Follow the instructions and when you have to choose mode, select `E2E Testing` and then select a browser, and then `Start E2E Testing in {browser}`.
+You will then be able to click on individual specs and see the tests running in the UI.
+
 Build the Selfservice app and start it
 
  ```
