@@ -71,9 +71,6 @@
     "cli-color": {
       "ansi-regex": "3.0.1"
     },
-    "cypress": {
-      "@cypress/request": "2.88.11"
-    },
     "mountebank-formatters": {
       "ejs": "3.1.8"
     }
@@ -134,7 +131,7 @@
     "cheerio": "1.0.0-rc.12",
     "chokidar-cli": "*",
     "csrf": "^3.1.0",
-    "cypress": "^12.16.0",
+    "cypress": "13.8.0",
     "dotenv": "16.3.1",
     "gaap-analytics": "3.1.0",
     "grunt": "1.6.x",
