@@ -19,12 +19,26 @@ Generate the environment variables file. This only needs to be done the first ti
   ```
   ./scripts/generate-dev-environment.sh local
   ```
- 
-Build the Selfservice app and start it
 
- ```
-  npm install && npm run compile
-  npm run start:dev
+Check that you are using the right version of Node, which should match what specified in package.json for engines/node.
+
+```
+node -v
+```
+
+If the node version is not what specified in package.json, then you need to install it and set it, e.g. for 18.17.1:
+
+```
+nvm install 18.17.1
+nvm use
+nvm alias default 18.17.1
+```
+
+Run the following to build and start the app:
+
+```
+npm run compile
+npm run start:dev
  ```
 
 Open application in browser: 
@@ -86,6 +100,10 @@ Run in two separate terminals:
 - `npm run cypress:test` to run headless 
 - `npm run cypress:test-headed` to run headed
 - `npm run cypress:test-no-watch` to run headed with auto-running of tests when the test file is edited turned off
+
+Selecting headed tests, with  `npm run cypress:test-headed`, will open a Cypress application window. 
+Follow the instructions and when you have to choose mode, select `E2E Testing` and then select a browser, and then `Start E2E Testing in {browser}`.
+You will then be able to click on individual specs and see the tests running in the UI.
 
 See [About Cypress tests in selfservice](./test/cypress/cypress-testing.md) for more information about running and writing Cypress tests.
 
