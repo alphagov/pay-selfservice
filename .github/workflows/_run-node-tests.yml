@@ -1,0 +1,196 @@
+name: Github Actions Tests
+
+on:
+  workflow_call:
+    inputs:
+      publish_pacts:
+        type: boolean
+        required: false
+        default: false
+        description: Set to `true` if app is a consumer and to publish pacts
+      consumer_tag:
+        type: string
+        required: true
+      run_cypress_tests:
+        type: string
+        required: true
+        default: false
+        description: Set to `true` to run cypress tests
+    secrets:
+      pact_broker_username:
+        required: false
+        description: required if `publish_pacts` is `true`
+      pact_broker_password:
+        required: false
+        description: required if `publish_pacts` is `true`
+
+permissions:
+  contents: read
+
+jobs:
+  detect-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+      - name: Detect secrets
+        uses: alphagov/pay-ci/actions/detect-secrets@master
+
+  node-version:
+    runs-on: ubuntu-latest
+    name: Parse versions
+    outputs:
+      node-version: ${{ steps.parse-node-version.outputs.nvmrc }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+      - name: Parse Node version
+        id: parse-node-version
+        run: echo "nvmrc=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+  install-and-compile:
+    runs-on: ubuntu-latest
+    name: Install and compile
+    needs: node-version
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+      - name: Setup
+        uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
+        with:
+          node-version: ${{ needs.version.outputs.node-version }}
+      - name: Cache build directories
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+        with:
+          path: |
+            node_modules
+            govuk_modules
+            public
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+      - name: Cache NPM packages
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
+      - name: Compile
+        run: npm run compile
+      - name: Run lint
+        run: npm run lint
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    name: Unit tests
+    needs: [node-version, install-and-compile]
+
+    steps:
+#      - name: Checkout
+#        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+#      - name: Setup
+#        uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
+#        with:
+#          node-version: ${{ needs.version.outputs.node-version }}
+#      - name: Cache build directories
+#        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+#        with:
+#          path: |
+#            node_modules
+#            govuk_modules
+#            public
+#          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+#      - name: Cache pacts directory
+#        if: ${{ inputs.publish_pacts }}
+#        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+#        with:
+#          path: pacts
+#          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
+      - name: Run unit tests
+        run: npm test -- --forbid-only --forbid-pending
+      - name: Check for generated pacts
+        if: ${{ inputs.publish_pacts }}
+        run: |
+          if [ ! -d pacts ]; then
+            echo "The pact files were not generated, this means that no pact results will be published and this build will fail to deploy"
+            exit 1
+          fi
+
+  cypress-tests:
+    if: ${{ inputs.run_cypress_tests }}
+    runs-on: ubuntu-latest
+    name: Cypress tests
+    needs: [node-version, install-and-compile]
+
+    steps:
+#      - name: Checkout
+#        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+#      - name: Setup
+#        uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
+#        with:
+#          node-version: ${{ needs.version.outputs.node-version }}
+#      - name: Cache build directories
+#        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+#        with:
+#          path: |
+#            node_modules
+#            govuk_modules
+#            public
+#          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+      - name: Parse Cypress version
+        id: parse-cypress-version
+        run: echo "CYPRESS_VERSION=$(jq -r '.devDependencies.cypress' package.json)" >> $GITHUB_OUTPUT
+      - name: Cache Cypress
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ steps.parse-cypress-version.outputs.CYPRESS_VERSION }}
+      - name: Run cypress tests
+        run: |
+          npm run cypress:server > /dev/null 2>&1 &
+          sleep 3
+          npm run cypress:test
+
+
+  publish-consumer-contract-tests:
+#    if: ${{ inputs.publish_pacts }}
+    needs: unit-tests
+    runs-on: ubuntu-latest
+
+    name: Publish and tag consumer pact
+    steps:
+#      - name: Checkout
+#        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+#      - name: Parse Node version
+#        run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+#        id: parse-node-version
+#      - name: Setup
+#        uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
+#        with:
+#          node-version: "${{ steps.parse-node-version.outputs.NVMRC }}"
+#      - name: Cache build directories
+#        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+#        with:
+#          path: |
+#            node_modules
+#            govuk_modules
+#            public
+#          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+      - name: Cache pacts directory
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+        with:
+          path: pacts
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
+      - name: Publish and tag consumer pact
+        if: ${{ inputs.publish_pacts }}
+        env:
+          PACT_BROKER_URL: https://pact-broker.deploy.payments.service.gov.uk
+          PACT_CONSUMER_VERSION: ${{ github.sha }}
+          PACT_BROKER_USERNAME: ${{ secrets.pact_broker_username }}
+          PACT_BROKER_PASSWORD: ${{ secrets.pact_broker_password }}
+          PACT_CONSUMER_TAG: ${{ consumer_tag }}
+        run: npm run publish-pacts
+
+  check-docker-base-images-are-manifests:
+    uses: alphagov/pay-ci/.github/workflows/_validate_docker_image_is_manifest.yml@master
