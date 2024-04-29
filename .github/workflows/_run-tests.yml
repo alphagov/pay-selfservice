@@ -1,0 +1,60 @@
+name: PR
+
+on:
+  workflow_call:
+    secrets:
+      pact_broker_username:
+        required: true
+      pact_broker_password:
+        required: true
+
+
+permissions:
+  contents: read
+
+jobs:
+  detect-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+      - name: Detect secrets
+        uses: alphagov/pay-ci/actions/detect-secrets@master
+
+  install-and-compile:
+    name: "Install and compile"
+    uses: alphagov/pay-ci/.github/workflows/_run-node-install-and-compile.yml@master
+    with:
+      has_cypress_tests: true
+
+  tests:
+    name: "Unit tests and pacts"
+    needs: [ install-and-compile ]
+    uses: alphagov/pay-ci/.github/workflows/_run-node-unit-tests-and-publish-pacts.yml@master
+    with:
+      publish_pacts: true
+    secrets:
+      pact_broker_username: ${{ secrets.pact_broker_username }}
+      pact_broker_password: ${{ secrets.pact_broker_password }}
+
+  cypress-tests:
+    name: "Cypress"
+    needs: [ install-and-compile ]
+    uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests.yml@master
+
+  pact-providers-contract-tests:
+    name: "Provider tests"
+    needs: tests
+    uses: alphagov/pay-ci/.github/workflows/_run-provider-pact-tests-for-consumer.yml@master
+    strategy:
+      matrix:
+        provider: [ 'adminusers', 'connector', 'ledger', 'products' ]
+    with:
+      consumer: "selfservice"
+      provider: ${{ matrix.provider }}
+    secrets:
+      pact_broker_username: ${{ secrets.pact_broker_username }}
+      pact_broker_password: ${{ secrets.pact_broker_password }}
+
+  check-docker-base-images-are-manifests:
+    uses: alphagov/pay-ci/.github/workflows/_validate_docker_image_is_manifest.yml@master
