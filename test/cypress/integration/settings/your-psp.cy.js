@@ -24,6 +24,12 @@ describe('Your PSP settings page', () => {
     password: 'anti-matter'
   }
 
+  const testCredentialsMOTOGBP = {
+    merchant_code: 'merchant-code-ending-with-MOTOGBP',
+    username: 'user-name',
+    password: 'anti-matter'
+  }
+
   const testFlexCredentials = {
     organisational_unit_id: '5bd9b55e4444761ac0af1c80',
     issuer: '5bd9e0e4444dce153428c940',
@@ -348,6 +354,30 @@ describe('Your PSP settings page', () => {
       cy.get('#merchantId').type(testCredentialsMOTO.merchant_code)
       cy.get('#username').type(testCredentialsMOTO.username)
       cy.get('#password').type(testCredentialsMOTO.password)
+      cy.get('#submitCredentials').click()
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
+      })
+      cy.get('h1').contains('Your payment service provider (PSP) - Worldpay').should('exist')
+    })
+
+    it('should allow MOTO merchant account code ending MOTOGBP', () => {
+      cy.task('setupStubs', [
+        ...getUserAndGatewayAccountStubs(gatewayAccountOpts),
+        gatewayAccountStubs.postCheckWorldpayCredentials({ ...testCredentialsMOTOGBP, gatewayAccountId }),
+        gatewayAccountStubs.patchUpdateWorldpayOneOffCredentialsSuccess({
+          gatewayAccountId,
+          credentialId: credentialsId,
+          userExternalId,
+          credentials: testCredentialsMOTOGBP
+        })
+      ])
+      cy.visit(`${yourPspPath}/${credentialExternalId}`)
+      cy.get('#credentials-change-link').click()
+      cy.get('#merchantId').clear()
+      cy.get('#merchantId').type(testCredentialsMOTOGBP.merchant_code)
+      cy.get('#username').type(testCredentialsMOTOGBP.username)
+      cy.get('#password').type(testCredentialsMOTOGBP.password)
       cy.get('#submitCredentials').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`${yourPspPath}/${credentialExternalId}`)
