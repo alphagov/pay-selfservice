@@ -1,0 +1,115 @@
+name: Github Actions for NodeJS apps - run unit tests and publish pacts
+
+on:
+  workflow_call:
+    inputs:
+      publish_pacts:
+        type: boolean
+        required: false
+        default: false
+        description: Set to `true` if app is a consumer and to publish pacts
+    secrets:
+      pact_broker_username:
+        required: false
+        description: required if `publish_pacts` is `true`
+      pact_broker_password:
+        required: false
+        description: required if `publish_pacts` is `true`
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    name: Unit tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+      - name: Parse Node version
+        id: parse-node-version
+        run: echo "node-version=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+      - name: Setup
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: ${{ steps.parse-node-version.outputs.node-version }}
+      - name: Cache build directories
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9
+        with:
+          path: |
+            node_modules
+            govuk_modules
+            public
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+      - name: Cache pacts directory
+        if: ${{ inputs.publish_pacts }}
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9
+        with:
+          path: pacts
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
+      - name: Run unit tests
+        run: npm test -- --forbid-only --forbid-pending
+
+  publish-consumer-contracts:
+    if: ${{ inputs.publish_pacts }}
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    name: Publish and tag consumer pacts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+      - name: Parse Node version
+        run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+        id: parse-node-version
+      - name: Setup
+        uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
+        with:
+          node-version: "${{ steps.parse-node-version.outputs.NVMRC }}"
+      - name: Cache build directories
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+        with:
+          path: |
+            node_modules
+            govuk_modules
+            public
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+      - name: Cache pacts directory
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+        with:
+          path: pacts
+          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
+      - name: Check for generated pacts
+        run: |
+          if [ ! -d pacts ]; then
+            echo "The pact files were not generated, this means that no pact results will be published and this build will fail to deploy"
+            exit 1
+          fi
+      - name: Set Pact Consumer variables
+        id: set-pact-consumer-variables
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # Github actually creates a phantom merge commit on PR actions, but we want to record
+            # in the pact broker something we can actually trace back to a PR, using the _actual_
+            # phantom merge commit sha (github.sha) would make this essentially impossible for us
+            CONSUMER_VERSION=${{ github.event.pull_request.head.sha }}
+            CONSUMER_TAG=${{ github.event.pull_request.number }}
+          elif [[ "${{ github.ref }}" == "refs/heads/master" ]] || [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            CONSUMER_VERSION=${{ github.sha }}
+            CONSUMER_TAG=master
+          else
+            echo "Unknown type to get consumer tag from, failing on purpose"
+            exit 1
+          fi
+          echo "Setting Consumer version to ${CONSUMER_VERSION}"
+          echo "pact-consumer-version=${CONSUMER_VERSION}" >> $GITHUB_OUTPUT
+          echo "Setting Consumer tag to ${CONSUMER_TAG}"
+          echo "pact-consumer-tag=${CONSUMER_TAG}" >> $GITHUB_OUTPUT
+      - name: Publish and tag consumer pacts
+        env:
+          PACT_BROKER_URL: https://pact-broker.deploy.payments.service.gov.uk
+          PACT_BROKER_USERNAME: ${{ secrets.pact_broker_username }}
+          PACT_BROKER_PASSWORD: ${{ secrets.pact_broker_password }}
+          PACT_CONSUMER_TAG: ${{ steps.set-pact-consumer-variables.outputs.pact-consumer-tag }}
+          PACT_CONSUMER_VERSION: ${{ steps.set-pact-consumer-variables.outputs.pact-consumer-version }}
+        run: npm run publish-pacts

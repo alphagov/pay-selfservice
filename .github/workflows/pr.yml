@@ -8,27 +8,7 @@ permissions:
 
 jobs:
   tests:
-    uses: alphagov/pay-ci/.github/workflows/_run-node-tests.yml@pp_12590_reusable_workflows
-    with:
-      consumer_tag: ${{ github.event.pull_request.number }}
-      publish_pacts: true
-      run_cypress_tests: true
+    uses: ./.github/workflows/_run-tests.yml
     secrets:
       pact_broker_username: ${{ secrets.pact_broker_username }}
       pact_broker_password: ${{ secrets.pact_broker_password }}
-
-  pact-providers-contract-tests:
-    name: "Provider tests"
-    needs: publish-consumer-contracts
-    uses: alphagov/pay-ci/.github/workflows/_run-provider-pact-tests-for-consumer.yml@pp_12590_reusable_workflows
-    strategy:
-      matrix:
-        provider: [ 'adminusers', 'connector', 'ledger', 'products' ]
-    with:
-      consumer: selfservice
-      consumer_tag: ${{ github.event.pull_request.number }}
-      provider: ${{ matrix.provider }}
-    secrets:
-      pact_broker_username: ${{ secrets.pact_broker_username }}
-      pact_broker_password: ${{ secrets.pact_broker_password }}
-

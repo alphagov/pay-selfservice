@@ -14,33 +14,14 @@ concurrency: selfservice-post-merge
 
 jobs:
   tests:
-    uses: alphagov/pay-ci/.github/workflows/_run-node-tests.yml@pp_12590_reusable_workflows
-    with:
-      consumer_tag: master
-      publish_pacts: false
-      run_cypress_tests: false
-    secrets:
-      pact_broker_username: ${{ secrets.pact_broker_username }}
-      pact_broker_password: ${{ secrets.pact_broker_password }}
-
-  pact-providers-contract-tests:
-    name: "Provider tests"
-    needs: tests
-    uses: alphagov/pay-ci/.github/workflows/_run-provider-pact-tests-for-consumer.yml@pp_12590_reusable_workflows
-    strategy:
-      matrix:
-        provider: [ 'adminusers', 'connector', 'ledger', 'products' ]
-    with:
-      consumer: selfservice
-      consumer_tag: master
-      provider: ${{ matrix.provider }}
+    uses: ./.github/workflows/_run-tests.yml
     secrets:
       pact_broker_username: ${{ secrets.pact_broker_username }}
       pact_broker_password: ${{ secrets.pact_broker_password }}
 
   tag-release:
     needs:
-      - pact-providers-contract-tests
+      - tests
     permissions:
       contents: write
     uses: alphagov/pay-ci/.github/workflows/_create-alpha-release-tag.yml@master
