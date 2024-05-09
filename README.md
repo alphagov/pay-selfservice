@@ -105,7 +105,6 @@ Selecting headed tests, with  `npm run cypress:test-headed`, will open a Cypress
 Follow the instructions and when you have to choose mode, select `E2E Testing` and then select a browser, and then `Start E2E Testing in {browser}`.
 You will then be able to click on individual specs and see the tests running in the UI.
 
-See [About Cypress tests in selfservice](./test/cypress/cypress-testing.md) for more information about running and writing Cypress tests.
 
 ## Key environment variables
 
