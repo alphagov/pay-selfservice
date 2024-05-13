@@ -59,8 +59,6 @@ docker logs -f selfservice
     * This will run the app in debug mode.
     * Uses `nodemon` so it will automatically restart on code changes.
 
-
-
 #### Watching for changes
 
 You shouldn’t need to restart the app to see changes you make.
