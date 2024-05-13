@@ -28,7 +28,8 @@ function formatCardsForTemplate (allCards, acceptedCards, account) {
 
       if (card.requires3ds && !threeDSEnabled) {
         formatted.disabled = true
-        formatted.hint = { html: account.type === 'sandbox' ? `${card.label} is not available on sandbox test accounts` : `${card.label} cannot be used because 3D Secure is not available. Please contact support`
+        formatted.hint = {
+          html: account.type === 'sandbox' ? `${card.label} is not available on sandbox test accounts` : `${card.label} cannot be used because 3D Secure is not available. Please contact support`
         }
       }
       return formatted

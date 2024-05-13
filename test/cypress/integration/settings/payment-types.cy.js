@@ -56,7 +56,7 @@ describe('Payment types', () => {
   context('when the account is test', () => {
     context('when 3DS is not enabled', () => {
       beforeEach(() => {
-        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName)
+        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, 'test')
         cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
       })
 
