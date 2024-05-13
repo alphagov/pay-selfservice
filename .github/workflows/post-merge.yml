@@ -14,91 +14,14 @@ concurrency: selfservice-post-merge
 
 jobs:
   tests:
-    uses: ./.github/workflows/run-tests.yml
-
-  publish-selfservice-consumer-contract-tests:
-    needs: tests
-    runs-on: ubuntu-latest
-
-    name: Publish and tag selfservice consumer pact
-    steps:
-      - name: Checkout
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
-      - name: Parse Node version
-        run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
-        id: parse-node-version
-      - name: Setup
-        uses: actions/setup-node@bea5baf987ba7aa777a8a0b4ace377a21c45c381
-        with:
-          node-version: "${{ steps.parse-node-version.outputs.NVMRC }}"
-      - name: Cache build directories
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
-        with:
-          path: |
-            node_modules
-            govuk_modules
-            public
-          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
-      - name: Cache pacts directory
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
-        with:
-          path: pacts
-          key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
-      - name: Publish and tag selfservice consumer pact
-        env:
-          PACT_BROKER_URL: https://pact-broker.deploy.payments.service.gov.uk
-          PACT_CONSUMER_VERSION: ${{ github.sha }}
-          PACT_BROKER_USERNAME: ${{ secrets.pact_broker_username }}
-          PACT_BROKER_PASSWORD: ${{ secrets.pact_broker_password }}
-          PACT_CONSUMER_TAG: master
-        run: npm run publish-pacts
-
-  adminusers-provider-contract-tests:
-    needs: publish-selfservice-consumer-contract-tests
-    uses: alphagov/pay-adminusers/.github/workflows/_run-pact-provider-tests.yml@master
-    with:
-      consumer: selfservice
-      consumer_tag: master
-    secrets:
-      pact_broker_username: ${{ secrets.pact_broker_username }}
-      pact_broker_password: ${{ secrets.pact_broker_password }}
-
-  connector-provider-contract-tests:
-    needs: publish-selfservice-consumer-contract-tests
-    uses: alphagov/pay-connector/.github/workflows/_run-pact-provider-tests.yml@master
-    with:
-      consumer: selfservice
-      consumer_tag: master
-    secrets:
-      pact_broker_username: ${{ secrets.pact_broker_username }}
-      pact_broker_password: ${{ secrets.pact_broker_password }}
-
-  ledger-provider-contract-tests:
-    needs: publish-selfservice-consumer-contract-tests
-    uses: alphagov/pay-ledger/.github/workflows/_run-pact-provider-tests.yml@master
-    with:
-      consumer: selfservice
-      consumer_tag: master
-    secrets:
-      pact_broker_username: ${{ secrets.pact_broker_username }}
-      pact_broker_password: ${{ secrets.pact_broker_password }}
-
-  products-provider-contract-tests:
-    needs: publish-selfservice-consumer-contract-tests
-    uses: alphagov/pay-products/.github/workflows/_run-pact-provider-tests.yml@master
-    with:
-      consumer: selfservice
-      consumer_tag: master
+    uses: ./.github/workflows/_run-tests.yml
     secrets:
       pact_broker_username: ${{ secrets.pact_broker_username }}
       pact_broker_password: ${{ secrets.pact_broker_password }}
 
   tag-release:
     needs:
-      - adminusers-provider-contract-tests
-      - connector-provider-contract-tests
-      - ledger-provider-contract-tests
-      - products-provider-contract-tests
+      - tests
     permissions:
       contents: write
     uses: alphagov/pay-ci/.github/workflows/_create-alpha-release-tag.yml@master
