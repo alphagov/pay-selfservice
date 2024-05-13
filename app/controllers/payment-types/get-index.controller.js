@@ -12,7 +12,7 @@ function formatLabel (card) {
   }
 }
 
-function formatCardsForTemplate (allCards, acceptedCards, threeDSEnabled) {
+function formatCardsForTemplate (allCards, acceptedCards, account) {
   const formatCardInfoForNunjucks = card => {
     return {
       value: card.id,
@@ -24,11 +24,12 @@ function formatCardsForTemplate (allCards, acceptedCards, threeDSEnabled) {
   const debitCards = allCards.filter(card => card.type === 'DEBIT')
     .map(card => {
       const formatted = formatCardInfoForNunjucks(card)
+      const threeDSEnabled = account.requires3ds
 
       if (card.requires3ds && !threeDSEnabled) {
         formatted.disabled = true
         formatted.hint = {
-          html: `You must <a class="govuk-link" href="/3ds">enable 3D Secure</a> to accept ${card.label}`
+          html: account.type === 'sandbox' ? `${card.label} is not available on sandbox test accounts` : `${card.label} cannot be used because 3D Secure is not available. Please contact support`
         }
       }
       return formatted
@@ -58,7 +59,7 @@ module.exports = async function showCardTypes (req, res, next) {
     const { card_types: allCards } = await connector.getAllCardTypes()
     const { card_types: acceptedCards } = await connector.getAcceptedCardsForAccountPromise(accountId)
 
-    response(req, res, 'payment-types/card-types', formatCardsForTemplate(allCards, acceptedCards, req.account.requires3ds))
+    response(req, res, 'payment-types/card-types', formatCardsForTemplate(allCards, acceptedCards, req.account))
   } catch (err) {
     next(err)
   }
