@@ -33,7 +33,7 @@ function buildAgreement (opts = {}) {
     external_id: opts.external_id || 'agreement-external-identifier',
     service_id: opts.service_id || 'a-service-id',
     reference: opts.reference || 'valid-reference',
-    description: opts.description || 'Reason shown to paying user for taking agreement',
+    description: opts.description || "Reason shown to paying user for taking agreement <script>console.log('AGREEMENT')</script>",
     status: opts.status || 'ACTIVE',
     created_date: opts.created_date || '2022-03-01T01:00:00.000Z',
     ...opts.payment_instrument !== false && { payment_instrument: buildPaymentInstrument(opts.payment_instrument) }

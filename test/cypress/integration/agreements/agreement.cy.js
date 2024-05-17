@@ -68,6 +68,7 @@ describe('Agreement detail page', () => {
     cy.get('[data-cy=agreement-detail]').find('dd').eq(2).contains('active')
     cy.get('[data-cy=agreement-detail]').find('dt').eq(3).contains('Description')
     cy.get('[data-cy=agreement-detail]').find('dd').eq(3).contains('Reason shown to paying user for taking agreement')
+    cy.get('[data-cy=agreement-detail]').find('dd').eq(3).contains("console.log('AGREEMENT')")
     cy.get('[data-cy=agreement-detail]').find('dt').eq(4).contains('Date created')
     cy.get('[data-cy=agreement-detail]').find('dd').eq(4).contains('1 March 2022')
 
