@@ -96,7 +96,8 @@ function initialiseTemplateEngine (app) {
   // see https://mozilla.github.io/nunjucks/api.html#configure
   const nunjucksEnvironment = nunjucks.configure([
     'node_modules/govuk-frontend/',
-    'app/views'
+    'app/views',
+    'app/degateway/views'
   ], {
     express: app, // the express app that nunjucks should install to
     autoescape: true, // controls if output with dangerous characters are escaped automatically

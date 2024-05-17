@@ -1,0 +1,11 @@
+{% extends 'layout.njk' %}
+{% block beforeContent %}
+  {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Experimental"
+    },
+    text: 'This is the degatewayaccountification view.'
+  }) }}
+{% endblock %}

@@ -3,7 +3,7 @@ const userIsAuthorised = require('../middleware/user-is-authorised')
 const router = express.Router()
 
 router.get('/my-services', [ userIsAuthorised ], (req, res) => {
-  res.send("Hello degatewayification!")
+  res.render('degateway/index')
 })
 
 module.exports = {
