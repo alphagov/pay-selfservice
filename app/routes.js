@@ -22,6 +22,7 @@ const restrictToStripeAccountContext = require('./middleware/stripe-setup/restri
 const restrictToSwitchingAccount = require('./middleware/restrict-to-switching-account')
 const uploadGovernmentEntityDocument = require('./middleware/multer-middleware')
 const inviteCookieIsPresent = require('./middleware/invite-cookie-is-present')
+const degatewayRouter = require('./degateway/controllers')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -491,6 +492,9 @@ module.exports.bind = function (app) {
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
   app.get('/.well-known/security.txt', (req, res) => res.redirect(securitytxt))
   app.get('/security.txt', (req, res) => res.redirect(securitytxt))
+
+  // degatewayification
+  app.use('/degateway', degatewayRouter.router)
 
   app.all('*', (req, res, next) => {
     if (accountUrls.isLegacyAccountsUrl(req.url)) {
