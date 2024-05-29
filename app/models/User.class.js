@@ -133,6 +133,10 @@ class User {
         serviceRole.service && serviceRole.service.externalId === serviceExternalId)
       .length > 0
   }
+
+  isDegatewayed () {
+    return this.features.includes('degatewayaccountification')
+  }
 }
 
 module.exports = User

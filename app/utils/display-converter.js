@@ -31,6 +31,7 @@ const hideServiceNavTemplates = [
   'team-members/team-member-profile',
   'team-members/team-member-permissions',
   'team-members/edit-phone-number',
+  'team-members/edit-degateway-preference',
   'request-to-go-live/agreement',
   'request-to-go-live/choose-how-to-process-payments',
   'request-to-go-live/index',
@@ -115,9 +116,11 @@ module.exports = function (req, data, template) {
   const { user, account, service, session, url: relativeUrl } = req
   const permissions = getPermissions(user, service)
   const isAdminUser = service && user && user.isAdminUserForService(service.externalId)
+  const isDegatewayed = user && session && user.isDegatewayed()
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
   const paymentProvider = account && account.payment_provider
   convertedData.loggedIn = user && session && user.sessionVersion === session.version
+  convertedData.isDegatewayed = isDegatewayed
   convertedData.paymentMethod = paymentMethod
   convertedData.permissions = permissions
   convertedData.isAdminUser = isAdminUser

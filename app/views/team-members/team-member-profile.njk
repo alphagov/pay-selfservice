@@ -68,6 +68,19 @@ My profile - GOV.UK Pay
           </span>
       </dd>
     </div>
+    {% if DEGATEWAY_FLAG %}
+      <div class="profile-settings__row">
+        <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
+          Degatewayaccountification
+        </dt>
+        <dd class="profile-settings__value govuk-table__cell" id="degatewayaccountification">
+          {{degatewayaccountification}}
+          <span class="profile-settings__change-link">
+            <a class="govuk-link" href="{{ routes.user.profile.degateway }}" id="change-degateway-preference-link">Change <span class="govuk-visually-hidden">degateway preference</span></a>
+          </span>
+        </dd>
+      </div>
+    {% endif %}
   </dl>
 </div>
 <div class="govuk-grid-column-one-third">

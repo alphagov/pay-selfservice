@@ -184,5 +184,14 @@ module.exports = {
    */
   updatePhoneNumber: function (externalId, newPhoneNumber) {
     return adminUsersClient.updatePhoneNumberForUser(externalId, newPhoneNumber)
+  },
+
+  /**
+   * @param {string} externalId - External ID of the User
+   * @param {string} features - Comma separated list of features
+   * @returns {Promise}
+   */
+  updateFeatures: function (externalId, features) {
+    return adminUsersClient.updateFeaturesForUser(externalId, features)
   }
 }
