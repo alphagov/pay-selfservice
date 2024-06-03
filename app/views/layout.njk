@@ -39,9 +39,7 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% if isDegatewayed %}
-    {% include "includes/degateway-banner.njk" %}
-  {% endif %}
+  {% include "includes/degateway-banner.njk" %}
   {% if loggedIn %}
     {% include "includes/phase-banner.njk" %}
   {% endif %}

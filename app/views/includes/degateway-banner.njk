@@ -1,10 +1,11 @@
-<div class="govuk-phase-banner">
-  <p class="govuk-phase-banner__content">
-    <strong class="govuk-tag govuk-phase-banner__content__tag govuk-tag--orange">
-      Experimental
-    </strong>
-    <span class="govuk-phase-banner__text">
-      Your account is opted in to the experimental degateway view – <a class="govuk-link" href="{{ routes.user.profile.degateway }}">opt out</a>.
-    </span>
-  </p>
-</div>
+{% if isDegatewayed %}
+  {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Experimental",
+      classes: "govuk-tag--orange"
+    },
+    html: 'You are seeing an experimental version of this page, it is only intended for the GOV.UK Pay Team.  If you think you should not be seeing this please <a class="govuk-link" href="https://www.payments.service.gov.uk/support/">contact the GOV.UK Pay Team</a>.'
+  }) }}
+{% endif %}

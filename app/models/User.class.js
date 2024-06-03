@@ -136,7 +136,7 @@ class User {
   }
 
   isDegatewayed () {
-    return (DEGATEWAY_FLAG && this.features.includes('degatewayaccountification'))
+    return DEGATEWAY_FLAG && this.features.includes('degatewayaccountification')
   }
 }
 

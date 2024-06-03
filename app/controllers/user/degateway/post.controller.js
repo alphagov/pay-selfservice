@@ -2,7 +2,7 @@
 
 const userService = require('../../../services/user.service')
 const paths = require('../../../paths')
-const SHOW_DEGATEWAY_SETTINGS = process.env.SHOW_DEGATEWAY_SETTINGS === 'true'
+const { SHOW_DEGATEWAY_SETTINGS } = require('../../../utils/constants')
 
 module.exports = async function postDegatewayPreference (req, res, next) {
   const degatewayPreference = req.body['degateway-preference']

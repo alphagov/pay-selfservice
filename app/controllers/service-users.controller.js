@@ -5,8 +5,7 @@ const userService = require('../services/user.service.js')
 const paths = require('../paths.js')
 const roles = require('../utils/roles').roles
 const secondFactorMethod = require('../models/second-factor-method')
-const SHOW_DEGATEWAY_SETTINGS = process.env.SHOW_DEGATEWAY_SETTINGS === 'true'
-
+const { SHOW_DEGATEWAY_SETTINGS } = require('../utils/constants')
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
 const mapByRoles = function (users, externalServiceId, currentUser) {
