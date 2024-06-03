@@ -2,13 +2,13 @@
 
 const userService = require('../../../services/user.service')
 const paths = require('../../../paths')
-const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
+const SHOW_DEGATEWAY_SETTINGS = process.env.SHOW_DEGATEWAY_SETTINGS === 'true'
 
 module.exports = async function postDegatewayPreference (req, res, next) {
   const degatewayPreference = req.body['degateway-preference']
 
   try {
-    if (!DEGATEWAY_FLAG) {
+    if (!SHOW_DEGATEWAY_SETTINGS) {
       return res.redirect(paths.user.profile.index)
     }
     const { features } = await userService.findByExternalId(req.user.externalId)

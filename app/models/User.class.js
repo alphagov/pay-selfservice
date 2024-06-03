@@ -3,6 +3,7 @@
 const _ = require('lodash')
 const ServiceRole = require('./ServiceRole.class')
 const { isInternalGDSEmail } = require('../utils/email-tools')
+const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
 
 /**
  * @class User
@@ -135,7 +136,7 @@ class User {
   }
 
   isDegatewayed () {
-    return this.features.includes('degatewayaccountification')
+    return (this.features.includes('degatewayaccountification') && DEGATEWAY_FLAG)
   }
 }
 

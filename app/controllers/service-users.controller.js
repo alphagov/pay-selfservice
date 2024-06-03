@@ -5,7 +5,7 @@ const userService = require('../services/user.service.js')
 const paths = require('../paths.js')
 const roles = require('../utils/roles').roles
 const secondFactorMethod = require('../models/second-factor-method')
-const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
+const SHOW_DEGATEWAY_SETTINGS = process.env.SHOW_DEGATEWAY_SETTINGS === 'true'
 
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
@@ -160,7 +160,7 @@ async function profile (req, res, next) {
       telephone_number: user.telephoneNumber,
       two_factor_auth: user.secondFactor,
       two_factor_auth_link: paths.user.profile.twoFactorAuth.index,
-      DEGATEWAY_FLAG,
+      SHOW_DEGATEWAY_SETTINGS,
       degatewayaccountification: user.isDegatewayed() ? 'Enabled' : 'Disabled'
     })
   } catch (err) {
