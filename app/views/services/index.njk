@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% include "includes/degateway-banner.njk" %}
+  {% if isDegatewayed %}
+    {% include "includes/degateway-banner.njk" %}
+  {% endif %}
 {% endblock %}
 
 {% block mainContent %}

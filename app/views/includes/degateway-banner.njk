@@ -1,11 +1,8 @@
-{% if isDegatewayed %}
-  {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
-
-  {{ govukPhaseBanner({
-    tag: {
-      text: "Experimental",
-      classes: "govuk-tag--orange"
-    },
-    html: 'You are seeing an experimental version of this page, it is only intended for the GOV.UK Pay Team.  If you think you should not be seeing this please <a class="govuk-link" href="https://www.payments.service.gov.uk/support/">contact the GOV.UK Pay Team</a>.'
-  }) }}
-{% endif %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{{ govukPhaseBanner({
+  tag: {
+    text: "Experimental",
+    classes: "govuk-tag--orange"
+  },
+  html: 'You are seeing an experimental version of this page, it is only intended for the GOV.UK Pay Team.  If you think you should not be seeing this please <a class="govuk-link" href="https://www.payments.service.gov.uk/support/">contact the GOV.UK Pay Team</a>.'
+}) }}
