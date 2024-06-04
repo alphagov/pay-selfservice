@@ -158,6 +158,13 @@ function patchUpdateUserPhoneNumberSuccess (userExternalId, telephoneNumber) {
   })
 }
 
+function patchUpdateFeaturesSuccess (userExternalId, featuresString) {
+  const path = `/v1/api/users/${userExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: userFixtures.validUpdateFeaturesRequest(featuresString)
+  })
+}
+
 /**
  * This is used when calling a route expects a user to be in a certain state to proceed, and then
  * performs a redirect to another route which expects the user to have changed.
@@ -269,7 +276,8 @@ function buildUserWithServiceRoleOpts (opts) {
     email: opts.email,
     telephone_number: opts.telephoneNumber,
     second_factor: opts.secondFactor,
-    provisional_otp_key: opts.provisionalOtpKey
+    provisional_otp_key: opts.provisionalOtpKey,
+    features: opts.features
   }
 }
 
@@ -292,5 +300,6 @@ module.exports = {
   postProvisionSecondFactorSuccess,
   putUpdateServiceRoleSuccess,
   getUserSuccessWithMultipleServices,
-  patchUpdateUserPhoneNumberSuccess
+  patchUpdateUserPhoneNumberSuccess,
+  patchUpdateFeaturesSuccess
 }
