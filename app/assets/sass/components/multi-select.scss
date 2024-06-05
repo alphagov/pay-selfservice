@@ -109,10 +109,10 @@
   }
 
   .govuk-checkboxes__item [type=checkbox] + label::after {
-    top: 15px;
-    left: 12px;
+    top: 18px;
+    left: 14px;
     height: 5px;
-    width: 13px;
+    width: 12px;
     border-width: 0 0 3px 3px;
   }
 }
