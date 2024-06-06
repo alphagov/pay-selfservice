@@ -269,7 +269,7 @@ function buildUserWithDefaults (opts) {
     disabled: false,
     login_counter: 0,
     session_version: 0,
-    features: 'default',
+    features: null,
     _links: [{
       rel: 'self',
       method: 'GET',
