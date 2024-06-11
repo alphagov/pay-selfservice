@@ -23,7 +23,6 @@ function setupUser (isDegatewayed) {
 }
 
 describe('Degateway', () => {
-
   describe('User is set up for degateway', () => {
     beforeEach(() => {
       setupUser(true)
