@@ -3,6 +3,8 @@
 const _ = require('lodash')
 const ServiceRole = require('./ServiceRole.class')
 const { isInternalGDSEmail } = require('../utils/email-tools')
+const logger = require('../utils/logger')(__filename)
+const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
 
 /**
  * @class User
@@ -132,6 +134,14 @@ class User {
       .filter(serviceRole => serviceRole.role && serviceRole.role.name === 'admin' &&
         serviceRole.service && serviceRole.service.externalId === serviceExternalId)
       .length > 0
+  }
+
+  isDegatewayed () {
+    const isDegatewayed = DEGATEWAY_FLAG && this.hasFeature('degatewayaccountification')
+    if (isDegatewayed) {
+      logger.info('Page viewed with degateway turned on')
+    }
+    return isDegatewayed
   }
 }
 

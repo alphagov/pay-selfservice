@@ -269,6 +269,7 @@ function buildUserWithDefaults (opts) {
     disabled: false,
     login_counter: 0,
     session_version: 0,
+    features: null,
     _links: [{
       rel: 'self',
       method: 'GET',
@@ -289,6 +290,7 @@ function buildUserWithDefaults (opts) {
     disabled: opts.disabled,
     login_counter: opts.login_counter,
     session_version: opts.session_version,
+    features: opts.features,
     _links: opts._links
   }
 }
@@ -444,6 +446,14 @@ module.exports = {
       op: 'replace',
       path: 'telephone_number',
       value: telephoneNumber
+    }
+  },
+
+  validUpdateFeaturesRequest: (featuresString) => {
+    return {
+      op: 'replace',
+      path: 'features',
+      value: featuresString
     }
   }
 }

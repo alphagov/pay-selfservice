@@ -514,6 +514,23 @@ module.exports = function (clientOptions = {}) {
     return response.data
   }
 
+  /**
+   * @param {string} externalId - External ID of the User
+   * @param {string} features - Comma separated list of features
+   * @returns {Promise}
+   */
+  async function updateFeaturesForUser (externalId, features) {
+    const url = `${baseUrl}${userResource}/${externalId}`
+    configureClient(client, url)
+    const body = {
+      op: 'replace',
+      path: 'features',
+      value: features
+    }
+    const response = await client.patch(url, body, 'update features for a user')
+    return response.data
+  }
+
   return {
     // User-related Methods
     getForgottenPassword,
@@ -529,6 +546,7 @@ module.exports = function (clientOptions = {}) {
     provisionNewOtpKey,
     configureNewOtpKey,
     updatePhoneNumberForUser,
+    updateFeaturesForUser,
 
     // UserServiceRole-related Methods
     updateServiceRole,

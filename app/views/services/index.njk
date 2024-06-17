@@ -5,7 +5,11 @@
   Choose service - GOV.UK Pay
 {% endblock %}
 
-{% block beforeContent %}{% endblock %}
+{% block beforeContent %}
+  {% if isDegatewayed %}
+    {% include "includes/degateway-banner.njk" %}
+  {% endif %}
+{% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">

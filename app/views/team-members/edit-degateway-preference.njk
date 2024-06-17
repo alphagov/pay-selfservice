@@ -1,0 +1,73 @@
+{% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
+
+{% block pageTitle %}
+  Enable feature preview - My profile - GOV.UK Pay
+{% endblock %}
+
+{% block beforeContent %}
+  {{ super() }}
+  {{
+  govukBackLink({
+    text: "My profile",
+    href: routes.user.profile.index
+  })
+  }}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        degateway: "#degateway"
+      }
+    }) }}
+
+    <h1 class="govuk-heading-l">Enable feature preview</h1>
+    <p class="govuk-body">Degatewayaccountification is an experimental feature preview. Some unexpected behaviour may occur.</p>
+
+    {% set degatewayError = false %}
+    {% if errors.degateway %}
+      {% set degatewayError = {
+        text: errors.degateway
+      } %}
+    {% endif %}
+
+    <form method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      {{
+      govukRadios({
+        name: 'degateway-preference',
+        fieldset: {
+          legend: {
+            text: 'Degateway opt-in',
+            classes: 'govuk-!-font-weight-bold'
+          }
+        },
+        items: [
+          {
+            text: 'Enabled',
+            value: 'enabled',
+            checked: true if degatewayPreference else false
+          },
+          {
+            text: 'Disabled',
+            value: 'disabled',
+            checked: true if not degatewayPreference else false
+          }
+        ]
+      })
+      }}
+
+      {{
+      govukButton({
+        text: "Save changes",
+        attributes: {
+          id: "save-degateway-preference"
+        }
+      })
+      }}
+    </form>
+  </div>
+{% endblock %}

@@ -5,7 +5,8 @@ const userService = require('../services/user.service.js')
 const paths = require('../paths.js')
 const roles = require('../utils/roles').roles
 const secondFactorMethod = require('../models/second-factor-method')
-
+const logger = require('../utils/logger.js')(__filename)
+const { SHOW_DEGATEWAY_SETTINGS } = require('../utils/constants')
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
 const mapByRoles = function (users, externalServiceId, currentUser) {
@@ -153,12 +154,17 @@ async function remove (req, res, next) {
 async function profile (req, res, next) {
   try {
     const user = await userService.findByExternalId(req.user.externalId)
+    if (SHOW_DEGATEWAY_SETTINGS) {
+      logger.info('User viewed page with Degateway settings')
+    }
     response(req, res, 'team-members/team-member-profile', {
       secondFactorMethod,
       email: user.email,
       telephone_number: user.telephoneNumber,
       two_factor_auth: user.secondFactor,
-      two_factor_auth_link: paths.user.profile.twoFactorAuth.index
+      two_factor_auth_link: paths.user.profile.twoFactorAuth.index,
+      SHOW_DEGATEWAY_SETTINGS,
+      degatewayaccountification: user.isDegatewayed() ? 'Enabled' : 'Disabled'
     })
   } catch (err) {
     next(err)
