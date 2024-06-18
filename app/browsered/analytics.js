@@ -6,15 +6,18 @@ function setupAnalytics () {
   gtagScript.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=G-XE9K05CFFE')
   document.head.appendChild(gtagScript)
 
-  window.dataLayer = window.dataLayer || [];
+  window.dataLayer = window.dataLayer || []
 
-  function gtag() {
-      dataLayer.push(arguments);
+  // Disabling eslint as the Google snippet conflicts with the our linting rules
+  /* eslint-disable */
+  function gtag () {
+    dataLayer.push(arguments)
   }
+  /* eslint-enable */
 
   gtagScript.onload = function () {
-      gtag('js', new Date());
-      gtag('config', 'G-XE9K05CFFE');
+    gtag('js', new Date())
+    gtag('config', 'G-XE9K05CFFE')
   }
 }
 
