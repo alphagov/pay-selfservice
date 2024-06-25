@@ -1,4 +1,4 @@
-FROM node:18.20.3-alpine3.19@sha256:7b107ff15badea2943b278013055f0af97fa2e73ee2631fcb9a78c5b7d1fa99e as builder
+FROM node:18.20.3-alpine3.19@sha256:acb08e6aa07aa2c24bd4b8bb8031b9032dfa7b4aefadf111b634d3e0b7b18f39 as builder
 
 ### Needed to run pact-mock-service
 COPY sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
@@ -14,7 +14,7 @@ RUN npm ci --quiet
 COPY . .
 RUN npm run compile
 
-FROM node:18.20.3-alpine3.19@sha256:7b107ff15badea2943b278013055f0af97fa2e73ee2631fcb9a78c5b7d1fa99e AS final
+FROM node:18.20.3-alpine3.19@sha256:acb08e6aa07aa2c24bd4b8bb8031b9032dfa7b4aefadf111b634d3e0b7b18f39 AS final
 
 RUN ["apk", "--no-cache", "upgrade"]
 
