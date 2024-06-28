@@ -45,6 +45,9 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'live', 'sandbox', 'LIVE'))
 
       cy.visit(dashboardUrl)
+
+      cy.percySnapshot()
+
       cy.get('.links__box').should('have.length', 2)
 
       cy.get('#demo-payment-link').should('exist')
