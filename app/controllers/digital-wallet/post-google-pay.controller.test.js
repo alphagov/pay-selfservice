@@ -8,7 +8,7 @@ const { validUserResponse } = require('../../../test/fixtures/user.fixtures')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const paths = require('../../paths')
 const User = require('../../models/User.class')
-const { RESTClientError } = require('../../errors')
+const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 const gatewayAccountCredentialId = 12
 const gatewayMerchantId = 'a-gateway-merchant-id'

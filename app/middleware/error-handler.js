@@ -2,6 +2,7 @@
 
 const Sentry = require('@sentry/node')
 const { AxiosError } = require('axios')
+const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 const logger = require('../utils/logger')(__filename)
 const {
@@ -15,7 +16,6 @@ const {
   InvalidRegistationStateError,
   InvalidConfigurationError,
   ExpiredInviteError,
-  RESTClientError,
   GatewayTimeoutError,
   GatewayTimeoutForAllServicesSearchError
 } = require('../errors')

@@ -13,7 +13,7 @@ const mockSession = require('../../test/test-helpers/mock-session.js')
 const userFixtures = require('../../test/fixtures/user.fixtures')
 const User = require('../models/User.class')
 const secondFactorMethod = require('../models/second-factor-method')
-const { RESTClientError } = require('../errors')
+const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 // Assignments and Variables
 const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3'

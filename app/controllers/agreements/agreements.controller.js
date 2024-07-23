@@ -7,7 +7,8 @@ const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-s
 const paths = require('../../paths')
 
 const { response } = require('../../utils/response')
-const { RESTClientError, NotFoundError } = require('../../errors')
+const { NotFoundError } = require('../../errors')
+const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 const LIMIT_NUMBER_OF_TRANSACTIONS_TO_SHOW = 5
 
