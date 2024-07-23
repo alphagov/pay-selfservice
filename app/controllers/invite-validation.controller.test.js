@@ -2,7 +2,8 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const { NotFoundError, ExpiredInviteError, RESTClientError } = require('../errors')
+const { NotFoundError, ExpiredInviteError } = require('../errors')
+const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const paths = require('../paths')
 const inviteFixtures = require('../../test/fixtures/invite.fixtures')
 

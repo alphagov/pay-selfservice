@@ -7,7 +7,8 @@ const userFixtures = require('../../test/fixtures/user.fixtures')
 const inviteFixtures = require('../../test/fixtures/invite.fixtures')
 const paths = require('../paths')
 const User = require('../models/User.class')
-const { ExpiredInviteError, RESTClientError } = require('../errors')
+const { ExpiredInviteError } = require('../errors')
+const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 describe('Subscribe service controller', () => {
   const email = 'invited-user@example.com'
