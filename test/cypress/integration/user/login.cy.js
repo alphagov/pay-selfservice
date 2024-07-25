@@ -70,7 +70,7 @@ describe('Login Page', () => {
       cy.get('button').contains('Continue').click()
 
       // should redirect to my services page
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
     })
   })
 

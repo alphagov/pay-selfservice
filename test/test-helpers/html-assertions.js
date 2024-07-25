@@ -2,6 +2,7 @@
 
 const cheerio = require('cheerio')
 const chai = require('chai')
+chai.should()
 const nunjucks = require('nunjucks')
 
 const router = require('../../app/routes.js')

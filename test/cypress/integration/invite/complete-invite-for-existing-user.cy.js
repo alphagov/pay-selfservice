@@ -34,7 +34,7 @@ describe('Complete an invite for an existing user', () => {
 
     cy.visit(`/invites/${inviteCode}`)
 
-    cy.title().should('eq', 'Choose service - GOV.UK Pay')
+    cy.title().should('eq', 'My services - GOV.UK Pay')
 
     cy.get('.govuk-notification-banner--success').should('exist').should('contain', 'You have been added to Cake service')
   })

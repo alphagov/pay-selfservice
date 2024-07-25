@@ -42,7 +42,7 @@ describe('The organisation details page', () => {
 
     cy.setEncryptedCookies(userExternalId)
     cy.visit('/my-services')
-    cy.title().should('eq', 'Choose service - GOV.UK Pay')
+    cy.title().should('eq', 'My services - GOV.UK Pay')
     cy.get('.edit-merchant-details').click()
 
     cy.get('h1').should('contain', 'Organisation details')

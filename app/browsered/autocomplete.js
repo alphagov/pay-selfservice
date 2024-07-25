@@ -9,9 +9,6 @@ module.exports = () => {
     const services = Array.prototype.slice.call(document.getElementsByClassName('service_list_item'))
     const names = services.map(service => service.dataset.name)
 
-    // Add blank option to beginning so that if user focuses and then blurs it doesn’t select the first option
-    names.unshift('')
-
     const jumpToService = selected => {
       if (selected) {
         services.map(service => {
@@ -26,13 +23,14 @@ module.exports = () => {
       source: names,
       onConfirm: jumpToService,
       autoselect: true,
-      showAllValues: true,
+      showAllValues: false,
       displayMenu: 'overlay'
     })
 
     const clearButton = document.getElementById('clear-filters')
 
     clearButton.addEventListener('click', () => {
+      document.getElementById('service-filter').value = ''
       const services = Array.prototype.slice.call(document.getElementsByClassName('service_list_item'))
       services.map(service => {
         service.style.display = 'block'
