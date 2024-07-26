@@ -23,14 +23,24 @@
   }
 }
 
-.manage-service-links-container{
-  margin-top: govuk-spacing(3);
+.reports {
+  margin-top: govuk-spacing(2);
+  margin-bottom: govuk-spacing(4);
+}
 
-  @include govuk-media-query(tablet) {
-    margin-top: govuk-spacing(0);
+.service-filter {
+  margin-bottom: govuk-spacing(6);
+}
+
+.service_list_item {
+  hr {
+    border: none;
+    border-top: 1px solid $govuk-border-colour;
+    margin-top: 0;
+    margin-bottom: govuk-spacing(3);
   }
 }
 
-.overview-divider {
-  border-bottom: 5px solid $govuk-border-colour;
+.service_list_item {
+  margin-top: govuk-spacing(1);
 }

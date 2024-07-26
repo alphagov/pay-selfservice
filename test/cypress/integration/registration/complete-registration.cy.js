@@ -186,7 +186,7 @@ describe('Complete registration after following link in invite email', () => {
       cy.get('a[role=button]').contains('Continue').click()
 
       // should redirect to my services page
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
     })
   })
 
@@ -263,7 +263,7 @@ describe('Complete registration after following link in invite email', () => {
       cy.get('a[role=button]').contains('Continue').click()
 
       // should redirect to my services page
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
     })
   })
 
@@ -280,7 +280,7 @@ describe('Complete registration after following link in invite email', () => {
         cy.setEncryptedCookies(userExternalId)
 
         cy.visit('/register/success')
-        cy.title().should('eq', 'Choose service - GOV.UK Pay')
+        cy.title().should('eq', 'My services - GOV.UK Pay')
       })
     })
 

@@ -42,7 +42,7 @@ describe('Update service name', () => {
         ])
 
       cy.visit('/my-services')
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
 
       cy.get('a').contains('Edit name').click()
 
@@ -54,7 +54,7 @@ describe('Update service name', () => {
       cy.get('input#service-name').type(newServiceName)
       cy.get('button').contains('Save').click()
 
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
     })
   })
 
@@ -67,7 +67,7 @@ describe('Update service name', () => {
         })])
 
       cy.visit('/my-services')
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
 
       cy.get('a').contains('Edit name').click()
 
@@ -100,7 +100,7 @@ describe('Update service name', () => {
       cy.get('input#service-name-cy').clear()
       cy.get('input#service-name-cy').type('Cymraeg')
       cy.get('button').contains('Save').click()
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
     })
   })
 })

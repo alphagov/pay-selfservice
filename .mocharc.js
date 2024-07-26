@@ -5,6 +5,6 @@ module.exports = {
   exit: true,
   package: './package.json',
   reporter: 'spec',
-  file: ['test/test-helpers/test-env.js', 'test/test-helpers/supress-logs.js'],
+  file: ['test/test-helpers/test-env.js', 'test/test-helpers/suppress-logs.js'],
   timeout: '10000'
 }

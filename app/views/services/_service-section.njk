@@ -1,5 +1,6 @@
-<div class="flex-grid--row service_list_item" data-name="{{ service.name }}">
-  <div class="flex-grid--heading-group marked">
+<div class="govuk-grid-row service_list_item" data-name="{{ service.name }}">
+  <div class="govuk-grid-column-full">
+    <hr/>
     <h3 class="govuk-heading-s service-name">
       {{ service.name }}
       {% if service.permissions.service_name_update %}
@@ -7,18 +8,18 @@
         Edit name <span class="govuk-visually-hidden">for {{ service.name }}</span>
       </a>
       {% endif %}
-    </h2>
+    </h3>
   </div>
-  <div class="flex-grid--column-two-thirds tight marked">
-    {% if service.gatewayAccounts.length %}
-    <ul class="govuk-list">
-    {% for account in service.gatewayAccounts %}
-      {% include "./_service-switch.njk" %}
-    {% endfor %}
-    </ul>
+  <div class="govuk-grid-column-two-thirds">
+  {% if service.gatewayAccounts.length %}
+      <ul class="govuk-list">
+        {% for account in service.gatewayAccounts %}
+          {% include "./_service-switch.njk" %}
+        {% endfor %}
+      </ul>
     {% endif %}
   </div>
-  <div id="team-members" class="manage-service-links-container flex-grid--column-third tight marked">
+  <div id="team-members" class="govuk-grid-column-one-third">
     <ul class="govuk-list">
       <li>
       {% if service.permissions.users_service_create %}

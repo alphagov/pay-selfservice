@@ -5,6 +5,7 @@ const userStubs = require('../../stubs/user-stubs')
 const payoutStubs = require('../../stubs/payout-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
+const myServicesPageTitle = 'My services - GOV.UK Pay'
 
 function getUserAndAccountStubs (type, paymentProvider) {
   return [userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
@@ -23,9 +24,8 @@ describe('The user has fewer than 8 services', () => {
 
     cy.visit('/my-services')
 
-    cy.get('h1').should('contain', 'Overview')
+    cy.get('h1').should('contain', 'My services')
     cy.get('[data-cy=reports-section]').should('exist')
-    cy.get('[data-cy=divider]').should('exist')
     cy.get('[data-cy=service-list]').should('exist')
 
     cy.get('[data-cy=service-filter]').should('not.exist')
@@ -71,7 +71,7 @@ describe('The user does not have any services', () => {
 
     cy.visit('/my-services')
 
-    cy.get('h1').should('contain', 'Overview')
+    cy.get('h1').should('contain', 'My services')
     cy.get('[data-cy=reports-section]').should('not.exist')
     cy.get('[data-cy=divider]').should('not.exist')
     cy.get('[data-cy=service-filter]').should('not.exist')
@@ -89,9 +89,9 @@ describe('Service has a live account that supports payouts', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
-    cy.title().should('eq', 'Choose service - GOV.UK Pay')
+    cy.title().should('eq', myServicesPageTitle)
 
-    cy.contains('a', 'View payments to your bank account').click()
+    cy.contains('a', 'Payments to your bank account').click()
     cy.get('h1').contains('Payments to your bank account')
   })
 })
@@ -102,9 +102,9 @@ describe('Service does not have a live account that supports payouts', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
-    cy.title().should('eq', 'Choose service - GOV.UK Pay')
+    cy.title().should('eq', myServicesPageTitle)
 
-    cy.contains('a', 'View payments to your bank account').should('not.exist')
+    cy.contains('a', 'Payments to your bank account').should('not.exist')
   })
 })
 
@@ -114,9 +114,9 @@ describe('User has access to no live services', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
-    cy.title().should('eq', 'Choose service - GOV.UK Pay')
+    cy.title().should('eq', myServicesPageTitle)
 
-    cy.contains('a', 'View transactions for all your services').should('have.attr', 'href', '/all-service-transactions/test')
+    cy.contains('a', 'Transactions for all services').should('have.attr', 'href', '/all-service-transactions/test')
   })
 })
 
@@ -126,8 +126,8 @@ describe('User has access to one or more live services', () => {
 
     cy.setEncryptedCookies(authenticatedUserId)
     cy.visit('/my-services')
-    cy.title().should('eq', 'Choose service - GOV.UK Pay')
+    cy.title().should('eq', myServicesPageTitle)
 
-    cy.contains('a', 'View transactions for all your services')
+    cy.contains('a', 'Transactions for all services')
   })
 })

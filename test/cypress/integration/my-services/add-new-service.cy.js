@@ -41,7 +41,7 @@ describe('Add a new service', () => {
       cy.setEncryptedCookies(authenticatedUserId)
 
       cy.visit('/my-services')
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
 
       cy.get('a').contains('Add a new service').click()
 
@@ -51,7 +51,7 @@ describe('Add a new service', () => {
       cy.get('input#service-name').type(newServiceName)
       cy.get('button').contains('Add service').click()
 
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
     })
   })
 
@@ -72,7 +72,7 @@ describe('Add a new service', () => {
       ])
 
       cy.visit('/my-services')
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
 
       cy.get('a').contains('Add a new service').click()
 
@@ -108,7 +108,7 @@ describe('Add a new service', () => {
       cy.get('input#service-name-cy').type(newServiceWelshName)
       cy.get('button').contains('Add service').click()
 
-      cy.title().should('eq', 'Choose service - GOV.UK Pay')
+      cy.title().should('eq', 'My services - GOV.UK Pay')
     })
   })
 })
