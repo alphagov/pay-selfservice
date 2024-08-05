@@ -7,19 +7,18 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../app/services/clients/connector.client').ConnectorClient
-const chargeFixture = require('../../fixtures/charge.fixtures')
+const { string } = require('@pact-foundation/pact').Matchers
 
 // Constants
-const CHARGES_RESOURCE = '/v1/api/accounts'
 let connectorClient
 const expect = chai.expect
 
 // Global setup
 chai.use(chaiAsPromised)
 
-const gatewayAccountId = 3456
+const serviceId = 'a-service-id'
 
-describe('connector client', function () {
+describe('connector client - request stripe test account', function () {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
@@ -35,24 +34,21 @@ describe('connector client', function () {
   })
   after(() => provider.finalize())
 
-  describe('post create charge', () => {
+  describe('when a post to request stripe test account is made', () => {
     describe('success', () => {
-      const validPostCreateChargeRequest = chargeFixture.validPostChargeRequestRequest({
-        amount: 100,
-        return_url: 'https://somewhere.gov.uk/rainbow/1',
-        credential_id: 'creds123'
-      })
-
-      const validResponse = chargeFixture.validPostChargeRequestResponse()
+      const validResponse = {
+        stripe_connect_account_id: 'acct_123',
+        gateway_account_id: string('1'),
+        gateway_account_external_id: string('an-external-id')
+      }
 
       before(() => {
         return provider.addInteraction(
-          new PactInteractionBuilder(`${CHARGES_RESOURCE}/${gatewayAccountId}/charges`)
+          new PactInteractionBuilder(`/v1/service/${serviceId}/request-stripe-test-account`)
             .withUponReceiving('a valid post create charge request')
-            .withState('a Worldpay gateway account with id 3456, gateway account credentials with external_id creds123 exists')
+            .withState('a sandbox gateway account with service id a-service-id exists')
             .withMethod('POST')
-            .withRequestBody(validPostCreateChargeRequest)
-            .withStatusCode(201)
+            .withStatusCode(200)
             .withResponseHeaders({ 'Content-Type': 'application/json' })
             .withResponseBody(validResponse)
             .build()
@@ -61,11 +57,9 @@ describe('connector client', function () {
 
       afterEach(() => provider.verify())
 
-      it('should create a charge request successfully', async () => {
-        const connectorResponse = await connectorClient.postChargeRequest(gatewayAccountId, validPostCreateChargeRequest)
-        expect(connectorResponse.state.status).to.equal('created')
-        expect(connectorResponse.return_url).to.equal('https://somewhere.gov.uk/rainbow/1')
-        expect(connectorResponse.links).to.be.a('array')
+      it('a stripe test account and new gateway account should be created', async () => {
+        const connectorResponse = await connectorClient.requestStripeTestAccount(serviceId)
+        expect(connectorResponse.state.status).to.equal('ok')
       })
     })
   })
