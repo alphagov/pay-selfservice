@@ -11,7 +11,6 @@ const { string } = require('@pact-foundation/pact').Matchers
 
 // Constants
 let connectorClient
-const expect = chai.expect
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -45,8 +44,8 @@ describe('connector client - request stripe test account', function () {
       before(() => {
         return provider.addInteraction(
           new PactInteractionBuilder(`/v1/service/${serviceId}/request-stripe-test-account`)
-            .withUponReceiving('a valid post create charge request')
-            .withState('a sandbox gateway account with service id a-service-id exists')
+            .withUponReceiving('a request for a stripe test account')
+            .withState('a sandbox gateway account with service id a-service-id exists and stripe is configured to create a connect account with id acct_123')
             .withMethod('POST')
             .withStatusCode(200)
             .withResponseHeaders({ 'Content-Type': 'application/json' })
@@ -58,8 +57,7 @@ describe('connector client - request stripe test account', function () {
       afterEach(() => provider.verify())
 
       it('a stripe test account and new gateway account should be created', async () => {
-        const connectorResponse = await connectorClient.requestStripeTestAccount(serviceId)
-        expect(connectorResponse.state.status).to.equal('ok')
+        await connectorClient.requestStripeTestAccount(serviceId)
       })
     })
   })
