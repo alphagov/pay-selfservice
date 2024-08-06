@@ -61,7 +61,7 @@ describe('connector client', function () {
 
       afterEach(() => provider.verify())
 
-      it('should post a refund request successfully', async () => {
+      it('should create a charge request successfully', async () => {
         const connectorResponse = await connectorClient.postChargeRequest(gatewayAccountId, validPostCreateChargeRequest)
         expect(connectorResponse.state.status).to.equal('created')
         expect(connectorResponse.return_url).to.equal('https://somewhere.gov.uk/rainbow/1')
