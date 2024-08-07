@@ -38,7 +38,7 @@ module.exports = async function submitRequestForPspTestAccount (req, res, next) 
         { current_psp_test_account_stage: service.currentPspTestAccountStage })
     }
 
-    res.flash('request-stripe-test-account', 'success')
+    req.flash('requestStripeTestAccount', 'success')
     return response(req, res, 'request-psp-test-account/index', pageData)
   } catch (error) {
     return next(error)

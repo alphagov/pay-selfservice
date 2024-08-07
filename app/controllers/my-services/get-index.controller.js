@@ -28,7 +28,6 @@ function sortServicesByLiveThenName (a, b) {
 }
 
 module.exports = async function getServiceList (req, res) {
-  console.log(req.session)
   const servicesRoles = lodash.get(req, 'user.serviceRoles', [])
   const newServiceId = res.locals.flash && res.locals.flash.inviteSuccessServiceId &&
     res.locals.flash.inviteSuccessServiceId[0]
@@ -63,7 +62,9 @@ module.exports = async function getServiceList (req, res) {
     services_singular: servicesData.length === 1,
     env: process.env,
     has_account_with_payouts: hasStripeAccount(aggregatedGatewayAccounts),
-    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length
+    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length,
+    showStripeCreatedPanelSuccess: res.locals.flash && res.locals.flash.requestStripeTestAccount &&
+      res.locals.flash.requestStripeTestAccount[0] === 'success'
   }
 
   if (newServiceId) {
