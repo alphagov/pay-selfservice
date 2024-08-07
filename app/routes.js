@@ -292,7 +292,7 @@ module.exports.bind = function (app) {
 
   // Merchant details
   service.get(organisationDetails.index, permission('merchant-details:read'), organisationDetailsController.showOrganisationDetails)
-  service.get(organisationDetails.edit, permission('merchant-details:update'), ToGoLiveOrganisationAddressController.get)
+  service.get(organisationDetails.edit, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.get)
   service.post(organisationDetails.edit, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.post)
 
   // Request to go live
@@ -496,6 +496,10 @@ module.exports.bind = function (app) {
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
   app.get('/.well-known/security.txt', (req, res) => res.redirect(securitytxt))
   app.get('/security.txt', (req, res) => res.redirect(securitytxt))
+
+  app.get('/hello', (req, res) => {
+    req.flash('abc', 'def')
+  })
 
   app.all('*', (req, res, next) => {
     if (accountUrls.isLegacyAccountsUrl(req.url)) {

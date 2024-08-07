@@ -28,6 +28,7 @@ function sortServicesByLiveThenName (a, b) {
 }
 
 module.exports = async function getServiceList (req, res) {
+  console.log(req.session)
   const servicesRoles = lodash.get(req, 'user.serviceRoles', [])
   const newServiceId = res.locals.flash && res.locals.flash.inviteSuccessServiceId &&
     res.locals.flash.inviteSuccessServiceId[0]

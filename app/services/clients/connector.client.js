@@ -525,8 +525,8 @@ ConnectorClient.prototype = {
   requestStripeTestAccount: async function (serviceId) {
     const url = `${this.connectorUrl}/v1/service/${serviceId}/request-stripe-test-account`
     configureClient(client, url)
-    const ids = await client.post(url)
-    return ids
+    const response = await client.post(url)
+    return response.data
   },
 
   postChargeRequest: async function (gatewayAccountId, payload) {
