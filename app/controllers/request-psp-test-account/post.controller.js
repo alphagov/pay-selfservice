@@ -2,7 +2,6 @@
 
 const { response } = require('../../utils/response')
 const getAdminUsersClient = require('../../services/clients/adminusers.client')
-// const getPublicAuthClient = require('../../services/clients/public-auth.client.client')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const logger = require('../../utils/logger')(__filename)
 const { CREATED, NOT_STARTED, REQUEST_SUBMITTED } = require('../../models/psp-test-account-stage')
