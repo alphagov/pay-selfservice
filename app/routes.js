@@ -292,7 +292,7 @@ module.exports.bind = function (app) {
 
   // Merchant details
   service.get(organisationDetails.index, permission('merchant-details:read'), organisationDetailsController.showOrganisationDetails)
-  service.get(organisationDetails.edit, permission('merchant-details:update'), ToGoLiveOrganisationAddressController.get)
+  service.get(organisationDetails.edit, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.get)
   service.post(organisationDetails.edit, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.post)
 
   // Request to go live

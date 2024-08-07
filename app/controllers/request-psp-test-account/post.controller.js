@@ -37,8 +37,10 @@ module.exports = async function submitRequestForPspTestAccount (req, res, next) 
       pageData.pspTestAccountCreated = (service.currentPspTestAccountStage === CREATED)
       logger.info('Request for stripe test account cannot be submitted',
         { current_psp_test_account_stage: service.currentPspTestAccountStage })
-      return response(req, res, 'request-psp-test-account/index', pageData)
     }
+
+    res.flash('request-stripe-test-account', 'success')
+    return response(req, res, 'request-psp-test-account/index', pageData)
   } catch (error) {
     return next(error)
   }
