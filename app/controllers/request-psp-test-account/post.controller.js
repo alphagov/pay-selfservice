@@ -20,7 +20,8 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
   adminUsersClient.addGatewayAccountsToService(req.service.externalId, [ ids.gateway_account_id ])
   await adminUsersClient.updatePspTestAccountStage(req.service.externalId, CREATED)
   logger.info('Request submitted for Stripe test account')
-  // await publicAuthClient.revokeTokensForAccount()
+  // TODO await publicAuthClient.revokeTokensForAccount()
+  return ids.gateway_account_external_id
 }
 
 module.exports = async function submitRequestForPspTestAccount (req, res, next) {
@@ -29,17 +30,16 @@ module.exports = async function submitRequestForPspTestAccount (req, res, next) 
     const pageData = {}
 
     if (service.currentPspTestAccountStage === NOT_STARTED || !service.currentPspTestAccountStage) {
-      await submitRequestAndUpdatePspTestAccountStatus(req)
-      pageData.pspTestAccountRequestSubmitted = true
+      const gatewayAccountExternalId = await submitRequestAndUpdatePspTestAccountStatus(req)
+      req.flash('requestStripeTestAccount', 'success')
+      res.redirect(`/account/${gatewayAccountExternalId}/dashboard`)
     } else {
       pageData.requestForPspTestAccountSubmitted = (service.currentPspTestAccountStage === REQUEST_SUBMITTED)
       pageData.pspTestAccountCreated = (service.currentPspTestAccountStage === CREATED)
       logger.info('Request for stripe test account cannot be submitted',
         { current_psp_test_account_stage: service.currentPspTestAccountStage })
+      return response(req, res, 'request-psp-test-account/index', pageData)
     }
-
-    req.flash('requestStripeTestAccount', 'success')
-    return response(req, res, 'request-psp-test-account/index', pageData)
   } catch (error) {
     return next(error)
   }

@@ -62,9 +62,7 @@ module.exports = async function getServiceList (req, res) {
     services_singular: servicesData.length === 1,
     env: process.env,
     has_account_with_payouts: hasStripeAccount(aggregatedGatewayAccounts),
-    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length,
-    showStripeCreatedPanelSuccess: res.locals.flash && res.locals.flash.requestStripeTestAccount &&
-      res.locals.flash.requestStripeTestAccount[0] === 'success'
+    has_live_account: filterGatewayAccountIds(aggregatedGatewayAccounts, true).length
   }
 
   if (newServiceId) {
