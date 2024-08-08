@@ -105,10 +105,17 @@ async function updateToken (params) {
  */
 async function deleteTokenForAccount (params) {
   this.client = new Client(SERVICE_NAME)
-  const url =  getUrlForAccountId(params.accountId)
+  const url = getUrlForAccountId(params.accountId)
   configureClient(this.client, url)
   const response = await this.client.delete(url, 'delete token', { data: params.payload })
   return response.data
+}
+
+async function revokeTokensForAccount (accountId) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${PUBLIC_AUTH_URL}/v1/frontend/auth/${accountId}/revoke-all`
+  configureClient(this.client, url)
+  await this.client.delete(url, 'delete token') // how to catch error?
 }
 
 module.exports = {
@@ -116,5 +123,6 @@ module.exports = {
   getRevokedTokensForAccount,
   createTokenForAccount,
   updateToken,
-  deleteTokenForAccount
+  deleteTokenForAccount,
+  revokeTokensForAccount
 }
