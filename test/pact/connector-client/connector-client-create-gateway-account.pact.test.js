@@ -19,7 +19,7 @@ chai.use(chaiAsPromised)
 
 describe('connector client - create gateway account', function () {
   const provider = new Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
@@ -56,17 +56,17 @@ describe('connector client - create gateway account', function () {
         validCreateGatewayAccountRequest.payment_provider,
         validCreateGatewayAccountRequest.type,
         validCreateGatewayAccountRequest.service_name,
-        validCreateGatewayAccountRequest.analytics_id
+        validCreateGatewayAccountRequest.analytics_id,
+        validCreateGatewayAccountRequest.service_id
       ).should.be.fulfilled.should.notify(done)
     })
   })
 
-  describe('create gateway account - bad request', () => {
+  describe('create gateway account - invalid request', () => {
     const invalidCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
-    const nonExistentPaymentProvider = 'non-existent-payment-provider'
-    invalidCreateGatewayAccountRequest.payment_provider = nonExistentPaymentProvider
+    invalidCreateGatewayAccountRequest.payment_provider = 'non-existent-payment-provider'
     const errorResponse = {
-      message: `Unsupported payment provider ${nonExistentPaymentProvider}.`
+      message: ['Unsupported payment provider value.']
     }
 
     before((done) => {
@@ -75,7 +75,7 @@ describe('connector client - create gateway account', function () {
           .withUponReceiving('an invalid create gateway account request')
           .withMethod('POST')
           .withRequestBody(invalidCreateGatewayAccountRequest)
-          .withStatusCode(400)
+          .withStatusCode(422)
           .withResponseBody(errorResponse)
           .build()
       )
@@ -85,15 +85,16 @@ describe('connector client - create gateway account', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return 400 on missing fields', function (done) {
+    it('should return 422 for unsupported payment provider', function (done) {
       connectorClient.createGatewayAccount(
         invalidCreateGatewayAccountRequest.payment_provider,
         invalidCreateGatewayAccountRequest.type,
         invalidCreateGatewayAccountRequest.service_name,
-        invalidCreateGatewayAccountRequest.analytics_id
+        invalidCreateGatewayAccountRequest.analytics_id,
+        invalidCreateGatewayAccountRequest.service_id
       ).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message).to.equal(errorResponse.message)
+        expect(response.errorCode).to.equal(422)
+        expect(response.message).to.equal(errorResponse.message[0])
       }).should.notify(done)
     })
   })
