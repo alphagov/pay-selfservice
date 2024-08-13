@@ -25,8 +25,8 @@ function ConnectorClient (connectorUrl) {
 ConnectorClient.prototype = {
   getAccountByServiceIdAndAccountType: async function (params) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}`
-      .replace('{serviceId}', params.serviceId)
-      .replace('{accountId}', params.accountType)
+      .replace('{serviceId}', encodeURIComponent(params.serviceId))
+      .replace('{accountId}', encodeURIComponent(params.accountType))
     configureClient(client, url)
     const response = await client.get(url, 'get gateway account by service Id and account type')
     return response.data
@@ -40,7 +40,8 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccount: async function (params) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`.replace('{accountId}', params.gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.get(url, 'get an account')
     return response.data
@@ -54,7 +55,7 @@ ConnectorClient.prototype = {
    */
   getAccountByExternalId: async function (params) {
     const url = `${this.connectorUrl}/v1/frontend/accounts/external-id/{externalId}`
-      .replace('{externalId}', params.gatewayAccountExternalId)
+      .replace('{externalId}', encodeURIComponent(params.gatewayAccountExternalId))
     configureClient(client, url)
     const response = await client.get(url, 'get an account')
     return response.data
@@ -109,8 +110,8 @@ ConnectorClient.prototype = {
 
   patchAccountGatewayAccountCredentials: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/credentials/{credentialsId}`
-      .replace('{accountId}', params.gatewayAccountId)
-      .replace('{credentialsId}', params.gatewayAccountCredentialsId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
+      .replace('{credentialsId}', encodeURIComponent(params.gatewayAccountCredentialsId))
 
     const payload = [
       {
@@ -132,8 +133,8 @@ ConnectorClient.prototype = {
 
   patchGooglePayGatewayMerchantId: async function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/credentials/{credentialsId}`
-      .replace('{accountId}', gatewayAccountId)
-      .replace('{credentialsId}', gatewayAccountCredentialsId)
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
+      .replace('{credentialsId}', encodeURIComponent(gatewayAccountCredentialsId))
 
     const payload = [
       {
@@ -155,8 +156,8 @@ ConnectorClient.prototype = {
 
   patchAccountGatewayAccountCredentialsState: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/credentials/{credentialsId}`
-      .replace('{accountId}', params.gatewayAccountId)
-      .replace('{credentialsId}', params.gatewayAccountCredentialsId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
+      .replace('{credentialsId}', encodeURIComponent(params.gatewayAccountCredentialsId))
 
     const payload = [
       {
@@ -182,7 +183,7 @@ ConnectorClient.prototype = {
    */
   postAccountNotificationCredentials: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/notification-credentials`
-      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     logger.debug('Calling connector to update notification credentials', {
       service: 'connector',
       method: 'POST',
@@ -201,7 +202,7 @@ ConnectorClient.prototype = {
    */
   postCheckWorldpay3dsFlexCredentials: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/worldpay/check-3ds-flex-config`
-      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.post(url, params.payload, 'Check Worldpay 3DS Flex credentials')
     return response.data
@@ -209,7 +210,7 @@ ConnectorClient.prototype = {
 
   postCheckWorldpayCredentials: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/worldpay/check-credentials`
-      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.post(url, params.payload, 'Check Worldpay credentials')
     return response.data
@@ -222,7 +223,7 @@ ConnectorClient.prototype = {
    */
   post3dsFlexAccountCredentials: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/3ds-flex-credentials`
-      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.post(url, params.payload, 'Update 3DS Flex credentials')
     return response.data
@@ -235,8 +236,8 @@ ConnectorClient.prototype = {
    */
   postCancelAgreement: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/agreements/{agreementId}/cancel`
-      .replace('{accountId}', params.gatewayAccountId)
-      .replace('{agreementId}', params.agreementId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
+      .replace('{agreementId}', encodeURIComponent(params.agreementId))
     configureClient(client, url)
     const response = await client.post(url, params.payload, 'Cancel agreement')
     return response.data
@@ -248,7 +249,8 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   getAcceptedCardsForAccountPromise: async function (gatewayAccountId) {
-    const url = `${this.connectorUrl}/v1/frontend/accounts/{accountId}/card-types`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/frontend/accounts/{accountId}/card-types`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     configureClient(client, url)
     const response = await client.get(url, 'get accepted card types for account')
     return response.data
@@ -261,7 +263,8 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   postAcceptedCardsForAccount: async function (gatewayAccountId, payload) {
-    const url = `${this.connectorUrl}/v1/frontend/accounts/{accountId}/card-types`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/frontend/accounts/{accountId}/card-types`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     configureClient(client, url)
     const response = await client.post(url, payload, 'post accepted card types for account')
     return response.data
@@ -289,7 +292,8 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   patchServiceName: async function (gatewayAccountId, serviceName) {
-    const url = `${this.connectorUrl}/v1/frontend/accounts/{accountId}/servicename`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/frontend/accounts/{accountId}/servicename`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     configureClient(client, url)
     const response = await client.patch(url, { service_name: serviceName }, 'update service name')
     return response.data
@@ -301,7 +305,8 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   toggleApplePay: async function (gatewayAccountId, allowApplePay) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     const body = {
       op: 'replace',
       path: 'allow_apple_pay',
@@ -318,7 +323,8 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   toggleGooglePay: async function (gatewayAccountId, allowGooglePay) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     const body = {
       op: 'replace',
       path: 'allow_google_pay',
@@ -335,7 +341,8 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   toggleMotoMaskCardNumberInput: async function (gatewayAccountId, isMaskCardNumber) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     const body = {
       op: 'replace',
       path: 'moto_mask_card_number_input',
@@ -352,7 +359,8 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   toggleMotoMaskSecurityCodeInput: async function (gatewayAccountId, isMaskSecurityCode) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     const body = {
       op: 'replace',
       path: 'moto_mask_card_security_code_input',
@@ -371,8 +379,8 @@ ConnectorClient.prototype = {
    */
   postChargeRefund: async function (gatewayAccountId, chargeId, payload) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/charges/{chargeId}/refunds`
-      .replace('{accountId}', gatewayAccountId)
-      .replace('{chargeId}', chargeId)
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
+      .replace('{chargeId}', encodeURIComponent(chargeId))
     configureClient(client, url)
     const response = await client.post(url, payload, 'submit refund')
     return response.data
@@ -383,7 +391,7 @@ ConnectorClient.prototype = {
    */
   updateConfirmationEmail: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/email-notification`
-      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.patch(url, params.payload, 'update confirmation email')
     return response.data
@@ -395,7 +403,7 @@ ConnectorClient.prototype = {
    */
   updateConfirmationEmailEnabled: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/email-notification`
-      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.patch(url, params.payload, 'update confirmation email enabled')
     return response.data
@@ -406,7 +414,8 @@ ConnectorClient.prototype = {
    * @param {Object} params
    */
   updateEmailCollectionMode: async function (params) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`.replace('{accountId}', params.gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.patch(url, params.payload, 'update email collection mode')
     return response.data
@@ -418,7 +427,7 @@ ConnectorClient.prototype = {
    */
   updateRefundEmailEnabled: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/email-notification`
-      .replace('{accountId}', params.gatewayAccountId)
+      .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.patch(url, params.payload, 'update refund email enabled')
     return response.data
@@ -430,7 +439,8 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   updateIntegrationVersion3ds: async function (gatewayAccountId, integrationVersion3ds) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     const body = {
       op: 'replace',
       path: 'integration_version_3ds',
@@ -442,14 +452,16 @@ ConnectorClient.prototype = {
   },
 
   getStripeAccountSetup: async function (gatewayAccountId) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/stripe-setup`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/stripe-setup`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     configureClient(client, url)
     const response = await client.get(url, 'get stripe account setup flags for gateway account')
     return responseBodyToStripeAccountSetupTransformer(response.data)
   },
 
   setStripeAccountSetupFlag: async function (gatewayAccountId, stripeAccountSetupFlag) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/stripe-setup`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/stripe-setup`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     const body = [
       {
         op: 'replace',
@@ -463,20 +475,22 @@ ConnectorClient.prototype = {
   },
 
   getStripeAccount: async function (gatewayAccountId) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/stripe-account`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/stripe-account`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     configureClient(client, url)
     const response = await client.get(url, 'get stripe account for gateway account')
     return responseBodyToStripeAccountTransformer(response.data)
   },
 
   requestStripeTestAccount: async function (serviceId) {
-    const url = `${this.connectorUrl}/v1/service/${serviceId}/request-stripe-test-account`
+    const url = `${this.connectorUrl}/v1/service/${encodeURIComponent(serviceId)}/request-stripe-test-account`
     configureClient(client, url)
     await client.post(url)
   },
 
   postChargeRequest: async function (gatewayAccountId, payload) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/charges`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/charges`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     configureClient(client, url)
     const response = await client.post(url, payload, 'create payment')
     return response.data
@@ -484,15 +498,16 @@ ConnectorClient.prototype = {
 
   getCharge: async function (gatewayAccountId, chargeExternalId) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/charges/{chargeId}`
-      .replace('{accountId}', gatewayAccountId)
-      .replace('{chargeId}', chargeExternalId)
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
+      .replace('{chargeId}', encodeURIComponent(chargeExternalId))
     configureClient(client, url)
     const response = await client.get(url, 'get a charge')
     return response.data
   },
 
   postAccountSwitchPSP: async function (gatewayAccountId, payload) {
-    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/switch-psp`.replace('{accountId}', gatewayAccountId)
+    const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/switch-psp`
+      .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     configureClient(client, url)
     const response = await client.post(url, payload, 'switch account payment service provider')
     return response.data
