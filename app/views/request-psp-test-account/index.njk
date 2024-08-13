@@ -1,5 +1,7 @@
 {% extends "../layout.njk" %}
 
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
 {% block pageTitle %}
   Request Stripe test account - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
@@ -41,9 +43,11 @@
             </p>
 
           <div class="button-group">
-            <button type="submit" id="submit-request" href="" class="govuk-button govuk-!-margin-bottom-0">
-              Get a Stripe test account
-            </button>
+            {{ govukButton({
+              text: "Get a Stripe test account",
+              classes: "govuk-!-margin-bottom-0",
+              preventDoubleClick: true
+            }) }}
           </div>
         </form>
     {% elif requestForPspTestAccountSubmitted %}
