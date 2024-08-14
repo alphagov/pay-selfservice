@@ -424,7 +424,7 @@ module.exports = function (clientOptions = {}) {
       path: 'gateway_account_ids',
       value: gatewayAccountIds
     }
-    const response = await client.patch(url, body, 'update service name')
+    const response = await client.patch(url, body, 'add gateway accounts to service')
     return responseBodyToServiceTransformer(response.data)
   }
 

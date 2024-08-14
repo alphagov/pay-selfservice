@@ -304,12 +304,16 @@ function getAccountByServiceIdAndAccountType (serviceExternalId, opts = {}) {
   })
 }
 
-function requestStripeTestAccount (serviceExternalId) {
-  const path = `/v1/service/${serviceExternalId}/request-stripe-test-account`
-  cy.log(`Setting up request stripe test account mock with ${path}`)
+function requestStripeTestAccount (serviceExternalId, opts = {}) {
+  const path = `/v1/api/service/${serviceExternalId}/request-stripe-test-account`
   return stubBuilder('POST', path, 200, {
-    response: gatewayAccountFixtures.requestStripeTestAccountResponse()
+    response: gatewayAccountFixtures.requestStripeTestAccountResponse(opts)
   })
+}
+
+function addGatewayAccountsToService (serviceExternalId) {
+  const path = `/v1/api/services/${serviceExternalId}`
+  return stubBuilder('PATCH', path, 200)
 }
 
 module.exports = {
@@ -341,5 +345,6 @@ module.exports = {
   patchAccountUpdateApplePaySuccess,
   patchAccountUpdateGooglePaySuccess,
   getAccountByServiceIdAndAccountType,
-  requestStripeTestAccount
+  requestStripeTestAccount,
+  addGatewayAccountsToService
 }

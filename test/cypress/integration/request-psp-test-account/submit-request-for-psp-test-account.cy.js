@@ -8,7 +8,7 @@ describe('Request PSP test account: submit request', () => {
   const sandboxGatewayAccountId = 42
   const serviceExternalId = 'afe452323dd04d1898672bfaba25e3a6'
   const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
-  // const stripeGatewayAccountExternalId = 'a-stripe-gw-external-id'
+  const stripeGatewayAccountExternalId = 'a-stripe-gw-external-id'
 
   const setupStubs = (pspTestAccountStageFirstResponse, pspTestAccountStageSecondResponse) => {
     cy.task('setupStubs', [
@@ -25,7 +25,8 @@ describe('Request PSP test account: submit request', () => {
         }
       ),
       gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, { gateway_account_id: sandboxGatewayAccountId }),
-      gatewayAccountStubs.requestStripeTestAccount(serviceExternalId),
+      gatewayAccountStubs.requestStripeTestAccount(serviceExternalId, { gateway_account_external_id: stripeGatewayAccountExternalId }),
+      gatewayAccountStubs.addGatewayAccountsToService(serviceExternalId),
       serviceStubs.patchUpdateServicePspTestAccountStage({ serviceExternalId, gatewayAccountId: sandboxGatewayAccountId, pspTestAccountStage: 'REQUEST_SUBMITTED' }),
       tokenStubs.revokeTokensForAccount(sandboxGatewayAccountId)
     ])

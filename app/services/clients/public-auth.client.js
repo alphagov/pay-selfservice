@@ -115,7 +115,7 @@ async function revokeTokensForAccount (accountId) {
   this.client = new Client(SERVICE_NAME)
   const url = `${PUBLIC_AUTH_URL}/${accountId}/revoke-all`
   configureClient(this.client, url)
-  await this.client.delete(url, 'delete token')
+  await this.client.delete(url, 'revoke all tokens for gateway account')
 }
 
 module.exports = {
