@@ -38,14 +38,14 @@ describe('Request PSP test account: index', () => {
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl)
 
-      cy.get('h1').should('contain', 'Request Stripe test account')
+      cy.get('h1').should('contain', 'Get a Stripe test account')
     })
     it('should show "Test account cannot be requested" when service is not LIVE', () => {
       setupStubs('NOT_STARTED', 'NOT_STARTED')
       const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
       cy.visit(requestStripeTestAccountUrl)
 
-      cy.get('h1').should('contain', 'Request Stripe test account')
+      cy.get('h1').should('contain', 'Get a Stripe test account')
     })
   })
 

@@ -405,6 +405,14 @@ function validPostAccountSwitchPSPRequest (opts = {}) {
   }
 }
 
+function requestStripeTestAccountResponse () {
+  return {
+    stripe_connect_account_id: 'acct_1234',
+    gateway_account_id: '2',
+    gateway_account_external_id: 'a-gateway-account-external-id'
+  }
+}
+
 module.exports = {
   validGatewayAccount,
   validGatewayAccountPatchRequest,
@@ -428,5 +436,6 @@ module.exports = {
   validPatchIntegrationVersion3dsRequest,
   validPostAccountSwitchPSPRequest,
   validUpdateToggleApplePayRequest,
-  validUpdateToggleGooglePayRequest
+  validUpdateToggleGooglePayRequest,
+  requestStripeTestAccountResponse
 }

@@ -297,6 +297,21 @@ function postSwitchPspSuccess (gatewayAccountId) {
   return stubBuilder('POST', path, 200)
 }
 
+function getAccountByServiceIdAndAccountType (serviceExternalId, opts = {}) {
+  const path = `/v1/api/service/${serviceExternalId}/account/test`
+  return stubBuilder('GET', path, 200, {
+    response: gatewayAccountFixtures.validGatewayAccountResponse(opts)
+  })
+}
+
+function requestStripeTestAccount (serviceExternalId) {
+  const path = `/v1/service/${serviceExternalId}/request-stripe-test-account`
+  cy.log(`Setting up request stripe test account mock with ${path}`)
+  return stubBuilder('POST', path, 200, {
+    response: gatewayAccountFixtures.requestStripeTestAccountResponse()
+  })
+}
+
 module.exports = {
   getAccountAuthSuccess,
   getGatewayAccountSuccess,
@@ -324,5 +339,7 @@ module.exports = {
   postUpdateNotificationCredentialsSuccess,
   postSwitchPspSuccess,
   patchAccountUpdateApplePaySuccess,
-  patchAccountUpdateGooglePaySuccess
+  patchAccountUpdateGooglePaySuccess,
+  getAccountByServiceIdAndAccountType,
+  requestStripeTestAccount
 }
