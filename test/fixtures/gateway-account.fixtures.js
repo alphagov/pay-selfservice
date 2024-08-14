@@ -234,14 +234,11 @@ function validCreateGatewayAccountRequest (opts = {}) {
   const data = {
     payment_provider: opts.payment_provider || 'sandbox',
     service_name: opts.service_name || 'This is an account for the GOV.UK Pay team',
-    type: opts.type || 'test'
+    type: opts.type || 'test',
+    service_id: opts.service_id || '46eb1b601348499196c99de90482ee68'
   }
-
   if (opts.analytics_id) {
     data.analytics_id = opts.analytics_id
-  }
-  if (opts.service_id) {
-    data.service_id = opts.service_id
   }
   return data
 }
