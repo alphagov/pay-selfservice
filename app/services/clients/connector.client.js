@@ -70,6 +70,7 @@ ConnectorClient.prototype = {
    */
   getAccounts: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts?accountIds=` + encodeURIComponent(params.gatewayAccountIds.join(','))
+    const url = `${this.connectorUrl}/v1/api/accounts?accountIds=` + params.gatewayAccountIds.join(',')
     configureClient(client, url)
     const response = await client.get(url, 'get an account')
     return response.data
