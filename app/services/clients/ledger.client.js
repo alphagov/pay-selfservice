@@ -25,7 +25,7 @@ const client = new Client(defaultOptions.service)
 const transaction = async function transaction (id, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   let url = `${baseUrl}/v1/transaction/${id}?account_id=${gatewayAccountId}`
-  if ( options.transaction_type ) {
+  if (options.transaction_type) {
     url = `${url}&transaction_type=${options.transaction_type}`
   }
   configureClient(client, url)
@@ -36,7 +36,7 @@ const transaction = async function transaction (id, gatewayAccountId, options = 
 
 const transactionWithAccountOverride = async function transactionWithAccountOverride (id, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  const url = urlJoin(baseUrl,'/v1/transaction', id)
+  const url = urlJoin(baseUrl, '/v1/transaction', id)
   const fullUrl = `${url}?override_account_id_restriction=true`
   configureClient(client, fullUrl)
   const response = await client.get(fullUrl, 'Get individual transaction details with no accountId restriction')
@@ -45,7 +45,7 @@ const transactionWithAccountOverride = async function transactionWithAccountOver
 
 async function getDisputesForTransaction (id, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  const url = urlJoin(baseUrl,'/v1/transaction', id, 'transaction')
+  const url = urlJoin(baseUrl, '/v1/transaction', id, 'transaction')
   const fullUrl = `${url}?gateway_account_id=${gatewayAccountId}&transaction_type=DISPUTE`
   configureClient(client, fullUrl)
   const response = await client.get(fullUrl, 'Get disputes for payment')
@@ -54,7 +54,7 @@ async function getDisputesForTransaction (id, gatewayAccountId, options = {}) {
 
 const events = async function events (transactionId, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  const url = urlJoin(baseUrl,'/v1/transaction', transactionId, 'event')
+  const url = urlJoin(baseUrl, '/v1/transaction', transactionId, 'event')
   const fullUrl = `${url}?gateway_account_id=${gatewayAccountId}`
   configureClient(client, fullUrl)
   const response = await client.get(fullUrl, 'List events for a given transaction')
@@ -80,7 +80,7 @@ const transactions = async function transactions (gatewayAccountIds = [], filter
     url,
     'List transactions for a given gateway account ID',
     {
-      data : {
+      data: {
         gateway_account_ids: gatewayAccountIds,
         multiple_accounts: gatewayAccountIds.length > 1,
         filters: Object.keys(filters).sort().join(', ')
@@ -96,7 +96,7 @@ const transactionSummary = async function transactionSummary (gatewayAccountId, 
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = `${baseUrl}${path}?account_id=${gatewayAccountId}&from_date=${fromDate}&to_date=${toDate}`
   configureClient(client, url)
-  const response = await client.get(url,'Transaction summary statistics for a given gateway account ID')
+  const response = await client.get(url, 'Transaction summary statistics for a given gateway account ID')
   const body = legacyConnectorTransactionSummaryParity(response.data)
   return body
 }
@@ -104,11 +104,11 @@ const transactionSummary = async function transactionSummary (gatewayAccountId, 
 const payouts = async function payouts (gatewayAccountIds = [], page = 1, displaySize, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   let url = `${baseUrl}/v1/payout?gateway_account_id=${gatewayAccountIds.join(',')}&state=paidout&page=${page}`
-  if ( displaySize ) {
+  if (displaySize) {
     url = `${url}&display_size=${displaySize}`
   }
   configureClient(client, url)
-  const response = await client.get(url,'List payouts for a given gateway account ID')
+  const response = await client.get(url, 'List payouts for a given gateway account ID')
   return response.data
 }
 
@@ -121,12 +121,12 @@ const payouts = async function payouts (gatewayAccountIds = [], page = 1, displa
 const agreements = async function agreements (serviceId, live, accountId, page = 1, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   let url = `${baseUrl}/v1/agreement?service_id=${serviceId}&account_id=${accountId}&live=${live}&page=${page}`
-  if ( options.filters ) {
+  if (options.filters) {
     const filterParams = new URLSearchParams(options.filters).toString()
     url = `${url}&${filterParams}`
   }
   configureClient(client, url)
-  const response = await client.get(url,'List agreements for a given service and environment')
+  const response = await client.get(url, 'List agreements for a given service and environment')
   return response.data
 }
 
@@ -134,7 +134,7 @@ const agreement = async function agreement (id, serviceId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   let url = `${baseUrl}/v1/agreement/${id}?service_id=${serviceId}`
   configureClient(client, url)
-  const response = await client.get(url,'Get agreement by ID')
+  const response = await client.get(url, 'Get agreement by ID')
   return response.data
 }
 

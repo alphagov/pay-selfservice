@@ -10,7 +10,7 @@ module.exports = async function getTransactionsForAllServicesNoSearch (req, res,
   const { statusFilter } = req.params
   const filterLiveAccounts = statusFilter !== 'test'
   const userPermittedAccountsSummary = await permissions.getGatewayAccountsFor(req.user, filterLiveAccounts, 'transactions:read')
-  const model = await populateModel(req, { results: [] }, filters, null, filterLiveAccounts, userPermittedAccountsSummary);
+  const model = await populateModel(req, { results: [] }, filters, null, filterLiveAccounts, userPermittedAccountsSummary)
   model.allServicesTimeout = true
   try {
     return response(req, res, 'transactions/index', model)

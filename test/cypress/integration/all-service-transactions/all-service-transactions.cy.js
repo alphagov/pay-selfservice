@@ -197,8 +197,8 @@ describe('All service transactions', () => {
 
     cy.visit('/all-service-transactions/live', { failOnStatusCode: false })
 
-    cy.get('.govuk-heading-l').should('have.text', "An error occurred")
-    cy.get('#errorMsg').should('have.text', "The search has timed out. Try searching for a specific date range or applying other filters.")
+    cy.get('.govuk-heading-l').should('have.text', 'An error occurred')
+    cy.get('#errorMsg').should('have.text', 'The search has timed out. Try searching for a specific date range or applying other filters.')
 
     cy.get('.govuk-body').get('a').contains('Back to transactions search').click()
 
@@ -222,8 +222,8 @@ describe('All service transactions', () => {
 
     cy.visit('/all-service-transactions/test', { failOnStatusCode: false })
 
-    cy.get('.govuk-heading-l').should('have.text', "An error occurred")
-    cy.get('#errorMsg').should('have.text', "The search has timed out. Try searching for a specific date range or applying other filters.")
+    cy.get('.govuk-heading-l').should('have.text', 'An error occurred')
+    cy.get('#errorMsg').should('have.text', 'The search has timed out. Try searching for a specific date range or applying other filters.')
 
     cy.get('.govuk-body').get('a').contains('Back to transactions search').click()
 
@@ -247,12 +247,11 @@ describe('All service transactions', () => {
 
     cy.visit('/all-service-transactions', { failOnStatusCode: false })
 
-    cy.get('.govuk-heading-l').should('have.text', "An error occurred")
-    cy.get('#errorMsg').should('have.text', "The search has timed out. Try searching for a specific date range or applying other filters.")
+    cy.get('.govuk-heading-l').should('have.text', 'An error occurred')
+    cy.get('#errorMsg').should('have.text', 'The search has timed out. Try searching for a specific date range or applying other filters.')
 
     cy.get('.govuk-body').get('a').contains('Back to transactions search').click()
 
     cy.location('pathname').should('eq', '/all-service-transactions/nosearch/live')
   })
-
 })
