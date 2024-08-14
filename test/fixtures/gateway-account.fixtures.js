@@ -72,7 +72,8 @@ function validWorldpay3dsFlexCredentials (opts = {}) {
   return {
     organisational_unit_id: opts.organisational_unit_id || '5bd9b55e4444761ac0af1c80',
     issuer: opts.issuer || '5bd9e0e4444dce153428c940', // pragma: allowlist secret
-    exemption_engine_enabled: opts.exemption_engine_enabled || false
+    exemption_engine_enabled: opts.exemption_engine_enabled || false,
+    corporate_exemptions_enabled: opts.corporate_exemptions_enabled || false
   }
 }
 
