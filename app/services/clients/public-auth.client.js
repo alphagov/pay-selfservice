@@ -113,9 +113,9 @@ async function deleteTokenForAccount (params) {
 
 async function revokeTokensForAccount (accountId) {
   this.client = new Client(SERVICE_NAME)
-  const url = `${PUBLIC_AUTH_URL}/v1/frontend/auth/${accountId}/revoke-all`
+  const url = `${PUBLIC_AUTH_URL}/${accountId}/revoke-all`
   configureClient(this.client, url)
-  await this.client.delete(url, 'delete token') // how to catch error?
+  await this.client.delete(url, 'delete token')
 }
 
 module.exports = {
