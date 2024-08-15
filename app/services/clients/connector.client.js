@@ -26,7 +26,7 @@ ConnectorClient.prototype = {
   getAccountByServiceIdAndAccountType: async function (params) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}`
       .replace('{serviceId}', encodeURIComponent(params.serviceId))
-      .replace('{accountId}', encodeURIComponent(params.accountType))
+      .replace('{accountType}', encodeURIComponent(params.accountType))
     configureClient(client, url)
     const response = await client.get(url, 'get gateway account by service Id and account type')
     return response.data
@@ -69,7 +69,7 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccounts: async function (params) {
-    const url = `${this.connectorUrl}/v1/api/accounts?accountIds=` + params.gatewayAccountIds.join(',')
+    const url = `${this.connectorUrl}/v1/api/accounts?accountIds=` + encodeURIComponent(params.gatewayAccountIds.join(','))
     configureClient(client, url)
     const response = await client.get(url, 'get an account')
     return response.data
@@ -483,9 +483,10 @@ ConnectorClient.prototype = {
   },
 
   requestStripeTestAccount: async function (serviceId) {
-    const url = `${this.connectorUrl}/v1/service/${encodeURIComponent(serviceId)}/request-stripe-test-account`
+    const url = `${this.connectorUrl}/v1/api/service/${encodeURIComponent(serviceId)}/request-stripe-test-account`
     configureClient(client, url)
-    await client.post(url)
+    const response = await client.post(url)
+    return response.data
   },
 
   postChargeRequest: async function (gatewayAccountId, payload) {

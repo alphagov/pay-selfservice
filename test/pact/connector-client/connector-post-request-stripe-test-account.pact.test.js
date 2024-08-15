@@ -43,7 +43,7 @@ describe('connector client - request stripe test account', function () {
 
       before(() => {
         return provider.addInteraction(
-          new PactInteractionBuilder(`/v1/service/${serviceId}/request-stripe-test-account`)
+          new PactInteractionBuilder(`/v1/api/service/${serviceId}/request-stripe-test-account`)
             .withUponReceiving('a request for a stripe test account')
             .withState('a sandbox gateway account with service id a-service-id exists and stripe is configured to create a connect account with id acct_123')
             .withMethod('POST')

@@ -95,8 +95,8 @@ describe('Client config', () => {
       const baseUrl = 'http://localhost:8000'
 
       nock(baseUrl)
-      .get('/x?y=z%20z')
-      .reply(200)
+        .get('/x?y=z%20z')
+        .reply(200)
 
       const url = `${baseUrl}/x?y=z z`
       config.configureClient(client, url)

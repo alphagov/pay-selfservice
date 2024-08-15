@@ -86,7 +86,7 @@ describe('Payment types', () => {
       })
 
       it('should show debit cards requiring 3DS as enabled and without hint', () => {
-        cy.get('#debit-3').should('not.be.disabled');
+        cy.get('#debit-3').should('not.be.disabled')
         cy.get('#debit-3-item-hint').should('not.exist')
       })
     })
@@ -145,7 +145,7 @@ describe('Payment types', () => {
       })
 
       it('should show debit cards requiring 3DS as enabled and without hint', () => {
-        cy.get('#debit-3').should('not.be.disabled');
+        cy.get('#debit-3').should('not.be.disabled')
         cy.get('#debit-3-item-hint').should('not.exist')
       })
     })

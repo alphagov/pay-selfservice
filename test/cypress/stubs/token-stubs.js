@@ -17,7 +17,13 @@ function deleteTokenByApiTokenSuccess (gatewayAccountId, apiToken) {
   })
 }
 
+function revokeTokensForAccount (gatewayAccountId) {
+  const path = `/v1/frontend/auth/${gatewayAccountId}/revoke-all`
+  return stubBuilder('DELETE', path, 200)
+}
+
 module.exports = {
   postCreateTokenForAccountSuccess,
-  deleteTokenByApiTokenSuccess
+  deleteTokenByApiTokenSuccess,
+  revokeTokensForAccount
 }

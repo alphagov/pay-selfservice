@@ -144,7 +144,10 @@ module.exports = async (req, res) => {
         transactionsPeriodString,
         targetCredential,
         activeCredential,
-        worldpayAccountAndSetupIncomplete: (req.account.payment_provider === 'worldpay' && activeCredential && activeCredential.state === 'CREATED')
+        worldpayAccountAndSetupIncomplete: (req.account.payment_provider === 'worldpay' && activeCredential && activeCredential.state === 'CREATED'),
+        showStripeCreatedPanelSuccess: res.locals.flash && res.locals.flash.requestStripeTestAccount &&
+          res.locals.flash.requestStripeTestAccount[0] === 'success',
+        apiKeysLink: `/account/${encodeURIComponent(req.account.external_id)}/api-keys`
       }))
     } catch (error) {
       const status = _.get(error.message, 'statusCode', 404)

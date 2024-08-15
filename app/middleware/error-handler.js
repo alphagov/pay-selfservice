@@ -89,9 +89,9 @@ module.exports = function errorHandler (err, req, res, next) {
 
   if (err instanceof GatewayTimeoutForAllServicesSearchError) {
     logger.info('Gateway Time out Error occurred on Transactions for All Services Search Page. Rendering error page')
-    let allServiceTransactionsNoSearchPath = req.session.allServicesTransactionsStatusFilter ?
-      paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilterWithoutSearch, req.session.allServicesTransactionsStatusFilter) :
-      paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilterWithoutSearch, 'live')
+    let allServiceTransactionsNoSearchPath = req.session.allServicesTransactionsStatusFilter
+      ? paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilterWithoutSearch, req.session.allServicesTransactionsStatusFilter)
+      : paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilterWithoutSearch, 'live')
     const queryString = req.originalUrl.split('?')[1]
     if (queryString) {
       allServiceTransactionsNoSearchPath += '?' + queryString

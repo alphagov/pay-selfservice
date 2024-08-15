@@ -297,6 +297,25 @@ function postSwitchPspSuccess (gatewayAccountId) {
   return stubBuilder('POST', path, 200)
 }
 
+function getAccountByServiceIdAndAccountType (serviceExternalId, opts = {}) {
+  const path = `/v1/api/service/${serviceExternalId}/account/test`
+  return stubBuilder('GET', path, 200, {
+    response: gatewayAccountFixtures.validGatewayAccountResponse(opts)
+  })
+}
+
+function requestStripeTestAccount (serviceExternalId, opts = {}) {
+  const path = `/v1/api/service/${serviceExternalId}/request-stripe-test-account`
+  return stubBuilder('POST', path, 200, {
+    response: gatewayAccountFixtures.requestStripeTestAccountResponse(opts)
+  })
+}
+
+function addGatewayAccountsToService (serviceExternalId) {
+  const path = `/v1/api/services/${serviceExternalId}`
+  return stubBuilder('PATCH', path, 200)
+}
+
 module.exports = {
   getAccountAuthSuccess,
   getGatewayAccountSuccess,
@@ -324,5 +343,8 @@ module.exports = {
   postUpdateNotificationCredentialsSuccess,
   postSwitchPspSuccess,
   patchAccountUpdateApplePaySuccess,
-  patchAccountUpdateGooglePaySuccess
+  patchAccountUpdateGooglePaySuccess,
+  getAccountByServiceIdAndAccountType,
+  requestStripeTestAccount,
+  addGatewayAccountsToService
 }

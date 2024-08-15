@@ -1,3 +1,4 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
@@ -5,6 +6,20 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
 {% endblock %}
 
 {% block mainContent %}
+  {% if showStripeCreatedPanelSuccess %}
+    {% set html %}
+      <p class="govuk-notification-banner__heading">
+        This test account has been changed to a Stripe test account.
+      </p>
+      <p>
+        If you use the GOV.UK Pay API, you will need to <a href="{{ apiKeysLink }}">create new API keys</a>.
+      </p>
+    {% endset %}
+    {{ govukNotificationBanner({
+      html: html,
+      type: 'success'
+    }) }}
+  {% endif %}
   {% if currentGatewayAccount.disabled %}
     {% include "./_account-disabled-banner.njk" %}
   {% else %}
