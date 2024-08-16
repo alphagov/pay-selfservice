@@ -19,7 +19,7 @@ const serviceId = 'a-service-id'
 
 describe('connector client - request stripe test account', function () {
   const provider = new Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
