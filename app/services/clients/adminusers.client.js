@@ -6,6 +6,7 @@ const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-clien
 const { configureClient } = require('./base/config')
 const User = require('../../models/User.class')
 const Service = require('../../models/Service.class')
+const { generateUrl } = require('./utils/generateUrl')
 
 // Constants
 const SERVICE_NAME = 'adminusers'
@@ -22,10 +23,6 @@ const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
   const baseUrl = clientOptions.baseUrl || ADMINUSERS_URL
-  const userResource = `/v1/api/users`
-  const forgottenPasswordResource = `/v1/api/forgotten-passwords`
-  const resetPasswordResource = `/v1/api/reset-password`
-  const serviceResource = `/v1/api/services`
   const client = new Client(SERVICE_NAME)
 
   /**
@@ -35,7 +32,9 @@ module.exports = function (clientOptions = {}) {
    * @return {Promise<User>} A promise of a User
    */
   async function getUserByExternalId (externalId) {
-    const url = `${baseUrl}${userResource}/${externalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}`, {
+      externalId
+    })
     configureClient(client, url)
     const response = await client.get(url, 'find a user')
     return responseBodyToUserTransformer(response.data)
@@ -48,7 +47,9 @@ module.exports = function (clientOptions = {}) {
    * @param externalIds
    */
   async function getUsersByExternalIds (externalIds = []) {
-    const url = `${baseUrl}${userResource}?ids=${externalIds.join()}`
+    const url = generateUrl(`${baseUrl}/v1/api/users?ids={externalIds}`, {
+      externalIds
+    })
     configureClient(client, url)
     const response = await client.get(url, 'find a user')
     return responseBodyToUserListTransformer(response.data)
@@ -60,7 +61,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<User>}
    */
   async function authenticateUser (email, password) {
-    const url = `${baseUrl}${userResource}/authenticate`
+    const url = `${baseUrl}/v1/api/users/authenticate`
     configureClient(client, url)
     const response = await client.post(url, { email: email, password: password }, 'find a user')
     return responseBodyToUserTransformer(response.data)
@@ -72,7 +73,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function incrementSessionVersionForUser (externalId) {
-    const url = `${baseUrl}${userResource}/${externalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}`, {
+      externalId
+    })
     configureClient(client, url)
     const body = {
       op: 'append',
@@ -89,7 +92,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<ForgottenPassword>}
    */
   async function createForgottenPassword (username) {
-    const url = `${baseUrl}${forgottenPasswordResource}`
+    const url = `${baseUrl}/v1/api/forgotten-passwords`
     configureClient(client, url)
     const response = await client.post(url, { username: username }, 'create a forgotten password for a user')
     return response.data
@@ -101,7 +104,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<ForgottenPassword>}
    */
   async function getForgottenPassword (code) {
-    const url = `${baseUrl}${forgottenPasswordResource}/${code}`
+    const url = generateUrl(`${baseUrl}/v1/api/forgotten-passwords/{code}`, {
+      code
+    })
     configureClient(client, url)
     const response = await client.get(url, 'get a forgotten password')
     return response.data
@@ -114,7 +119,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function updatePasswordForUser (token, newPassword) {
-    const url = `${baseUrl}${resetPasswordResource}`
+    const url = `${baseUrl}/v1/api/reset-password`
     configureClient(client, url)
     const response = await client.post(url, { forgotten_password_code: token, new_password: newPassword }, 'update a password for a user')
     return response.data
@@ -127,7 +132,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function sendSecondFactor (externalId, provisional) {
-    const url = `${baseUrl}${userResource}/${externalId}/second-factor`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}/second-factor`, {
+      externalId
+    })
     configureClient(client, url)
     const response = await client.post(url, { provisional }, 'post a second factor auth token to the user')
     return response.data
@@ -140,14 +147,18 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function authenticateSecondFactor (externalId, code) {
-    const url = `${baseUrl}${userResource}/${externalId}/second-factor/authenticate`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}/second-factor/authenticate`, {
+      externalId
+    })
     configureClient(client, url)
     const response = await client.post(url, { code }, 'authenticate a second factor auth token entered by user')
     return responseBodyToUserTransformer(response.data)
   }
 
   async function getServiceUsers (serviceExternalId) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}/users`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}/users`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const response = await client.get(url, 'get a services users')
     return responseBodyToUserListTransformer(response.data)
@@ -160,7 +171,9 @@ module.exports = function (clientOptions = {}) {
    * @param roleName
    */
   async function assignServiceRole (userExternalId, serviceExternalId, roleName) {
-    const url = `${baseUrl}${userResource}/${userExternalId}/services`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{userExternalId}/services`, {
+      userExternalId
+    })
     configureClient(client, url)
     const response = await client.post(url, { service_external_id: serviceExternalId, role_name: roleName }, 'assigns user to a new service')
     return responseBodyToUserTransformer(response.data)
@@ -174,7 +187,10 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<User>}
    */
   async function updateServiceRole (externalId, serviceExternalId, roleName) {
-    const url = `${baseUrl}${userResource}/${externalId}/services/${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}/services/{serviceExternalId}`, {
+      externalId,
+      serviceExternalId
+    })
     configureClient(client, url)
     const response = await client.put(url, { role_name: roleName }, 'update role of a service that currently belongs to a user')
     return responseBodyToUserTransformer(response.data)
@@ -206,7 +222,9 @@ module.exports = function (clientOptions = {}) {
    * @param serviceExternalId
    */
   async function getInvitedUsersList (serviceExternalId) {
-    const url = `${baseUrl}/v1/api/invites?serviceId=${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/invites?serviceId={serviceExternalId}`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const response = await client.get(url, 'get invited users for a service')
     return response.data
@@ -217,14 +235,18 @@ module.exports = function (clientOptions = {}) {
    * @param inviteCode
    */
   async function getValidatedInvite (inviteCode) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}`
+    const url = generateUrl(`${baseUrl}/v1/api/invites/{inviteCode}`, {
+      inviteCode
+    })
     configureClient(client, url)
     const response = await client.get(url, 'find a validated invitation')
     return response.data
   }
 
   async function updateInvitePassword (inviteCode, password) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}`
+    const url = generateUrl(`${baseUrl}/v1/api/invites/{inviteCode}`, {
+      inviteCode
+    })
     configureClient(client, url)
     const body = [{
       op: 'replace',
@@ -236,7 +258,9 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function updateInvitePhoneNumber (inviteCode, phoneNumber) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}`
+    const url = generateUrl(`${baseUrl}/v1/api/invites/{inviteCode}`, {
+      inviteCode
+    })
     configureClient(client, url)
     const body = [{
       op: 'replace',
@@ -248,14 +272,18 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function sendOtp (inviteCode) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}/send-otp`
+    const url = generateUrl(`${baseUrl}/v1/api/invites/{inviteCode}/send-otp`, {
+      inviteCode
+    })
     configureClient(client, url)
     const response = await client.post(url, 'send OTP code')
     return response.data
   }
 
   async function reprovisionOtp (inviteCode) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}/reprovision-otp`
+    const url = generateUrl(`${baseUrl}/v1/api/invites/{inviteCode}/reprovision-otp`, {
+      inviteCode
+    })
     configureClient(client, url)
     const response = await client.post(url, 're-provision OTP key')
     return response.data
@@ -269,7 +297,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|promise|Constructor}
    */
   async function completeInvite (inviteCode, secondFactorMethod) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}/complete`
+    const url = generateUrl(`${baseUrl}/v1/api/invites/{inviteCode}/complete`, {
+      inviteCode
+    })
     configureClient(client, url)
     const body = secondFactorMethod ? { second_factor: secondFactorMethod } : {}
     const response = await client.post(url, body, 'complete invite')
@@ -309,7 +339,10 @@ module.exports = function (clientOptions = {}) {
         userRemover: removerExternalId
       }
     }
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}/users/${userExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}/users/{userExternalId}`, {
+      serviceExternalId,
+      userExternalId
+    })
     configureClient(client, url)
     const response = await client.delete(url, 'delete a user from a service', config)
     return response.data
@@ -324,7 +357,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|promise|Constructor}
    */
   async function createService (serviceName, serviceNameCy) {
-    const url = `${baseUrl}${serviceResource}`
+    const url = `${baseUrl}/v1/api/services`
     configureClient(client, url)
     const body = {}
     if (serviceName) {
@@ -345,7 +378,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|Constructor|promise}
    */
   async function updateService (serviceExternalId, body) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const response = await client.patch(url, body, 'update service')
     return responseBodyToServiceTransformer(response.data)
@@ -360,7 +395,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|Constructor|promise}
    */
   async function updateServiceName (serviceExternalId, serviceName, serviceNameCy) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const body = [
       {
@@ -386,7 +423,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|Constructor|promise}
    */
   async function updateCollectBillingAddress (serviceExternalId, collectBillingAddress) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -398,7 +437,9 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function updateDefaultBillingAddressCountry (serviceExternalId, countryCode) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -417,7 +458,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<Service|Error>}
    */
   async function addGatewayAccountsToService (serviceExternalId, gatewayAccountIds) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const body = {
       op: 'add',
@@ -434,7 +477,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function provisionNewOtpKey (externalId) {
-    const url = `${baseUrl}${userResource}/${externalId}/second-factor/provision`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}/second-factor/provision`, {
+      externalId
+    })
     configureClient(client, url)
     const response = await client.post(url, 'create a new 2FA provisional OTP key')
     return responseBodyToUserTransformer(response.data)
@@ -448,7 +493,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function configureNewOtpKey (externalId, code, secondFactor) {
-    const url = `${baseUrl}${userResource}/${externalId}/second-factor/activate`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}/second-factor/activate`, {
+      externalId
+    })
     configureClient(client, url)
     const body = {
       code: code,
@@ -459,7 +506,9 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function updateCurrentGoLiveStage (serviceExternalId, newStage) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -471,7 +520,9 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function updatePspTestAccountStage (serviceExternalId, newStage) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -483,14 +534,18 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function addStripeAgreementIpAddress (serviceExternalId, ipAddress) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}/stripe-agreement`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}/stripe-agreement`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const response = await client.post(url, { ip_address: ipAddress }, 'post the ip address of the user who agreed to stripe terms')
     return response.data
   }
 
   async function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId) {
-    const url = `${baseUrl}${serviceResource}/${serviceExternalId}/govuk-pay-agreement`
+    const url = generateUrl(`${baseUrl}/v1/api/services/{serviceExternalId}/govuk-pay-agreement`, {
+      serviceExternalId
+    })
     configureClient(client, url)
     const response = await client.post(url, { user_external_id: userExternalId }, 'post the external id of the user who agreed to GovUk Pay terms')
     return response.data
@@ -503,7 +558,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function updatePhoneNumberForUser (externalId, newPhoneNumber) {
-    const url = `${baseUrl}${userResource}/${externalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}`, {
+      externalId
+    })
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -520,7 +577,9 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function updateFeaturesForUser (externalId, features) {
-    const url = `${baseUrl}${userResource}/${externalId}`
+    const url = generateUrl(`${baseUrl}/v1/api/users/{externalId}`, {
+      externalId
+    })
     configureClient(client, url)
     const body = {
       op: 'replace',

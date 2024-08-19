@@ -11,6 +11,7 @@ const {
 } = require('./utils/ledger-legacy-connector-parity')
 const getQueryStringForParams = require('../../utils/get-query-string-for-params')
 const qs = require('qs')
+const { generateUrl } = require('./utils/generateUrl')
 
 const defaultOptions = {
   baseUrl: process.env.LEDGER_URL,
@@ -24,42 +25,55 @@ const client = new Client(defaultOptions.service)
 
 const transaction = async function transaction (id, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  let url = `${baseUrl}/v1/transaction/${id}?account_id=${gatewayAccountId}`
-  if (options.transaction_type) {
-    url = `${url}&transaction_type=${options.transaction_type}`
+  const queryStringParams = {
+    account_id: gatewayAccountId
   }
+  if (options.transaction_type) {
+    queryStringParams['transaction_type'] = options.transaction_type
+  }
+  let url = generateUrl(`${baseUrl}/v1/transaction/{id}`, {
+    id
+  }, queryStringParams)
   configureClient(client, url)
   const response = await client.get(url, 'Get individual transaction details')
-  const body = legacyConnectorTransactionParity(response.data)
-  return body
+  return legacyConnectorTransactionParity(response.data)
 }
 
 const transactionWithAccountOverride = async function transactionWithAccountOverride (id, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  const url = urlJoin(baseUrl, '/v1/transaction', id)
-  const fullUrl = `${url}?override_account_id_restriction=true`
-  configureClient(client, fullUrl)
-  const response = await client.get(fullUrl, 'Get individual transaction details with no accountId restriction')
+  const url = generateUrl(`${baseUrl}/v1/transaction/{id}`, {
+    id
+  }, {
+    'override_account_id_restriction': true
+  })
+  configureClient(client, url)
+  const response = await client.get(url, 'Get individual transaction details with no accountId restriction')
   return response.data
 }
 
 async function getDisputesForTransaction (id, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  const url = urlJoin(baseUrl, '/v1/transaction', id, 'transaction')
-  const fullUrl = `${url}?gateway_account_id=${gatewayAccountId}&transaction_type=DISPUTE`
-  configureClient(client, fullUrl)
-  const response = await client.get(fullUrl, 'Get disputes for payment')
+  const url = generateUrl(`${baseUrl}/v1/transaction/{id}/transaction`, {
+    id
+  }, {
+    gateway_account_id: gatewayAccountId,
+    transaction_type: 'DISPUTE'
+  })
+  configureClient(client, url)
+  const response = await client.get(url, 'Get disputes for payment')
   return response.data
 }
 
 const events = async function events (transactionId, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  const url = urlJoin(baseUrl, '/v1/transaction', transactionId, 'event')
-  const fullUrl = `${url}?gateway_account_id=${gatewayAccountId}`
-  configureClient(client, fullUrl)
-  const response = await client.get(fullUrl, 'List events for a given transaction')
-  const body = legacyConnectorEventsParity(response.data)
-  return body
+  const url = generateUrl(`${baseUrl}/v1/transaction/{transactionId}/event`, {
+    transactionId
+  }, {
+    gateway_account_id: gatewayAccountId
+  })
+  configureClient(client, url)
+  const response = await client.get(url, 'List events for a given transaction')
+  return legacyConnectorEventsParity(response.data)
 }
 
 const transactions = async function transactions (gatewayAccountIds = [], filters = {}, options = {}) {
@@ -87,26 +101,33 @@ const transactions = async function transactions (gatewayAccountIds = [], filter
       }
     }
   )
-  const body = legacyConnectorTransactionsParity(response.data)
-  return body
+  return legacyConnectorTransactionsParity(response.data)
 }
 
 const transactionSummary = async function transactionSummary (gatewayAccountId, fromDate, toDate, options = {}) {
-  const path = '/v1/report/transactions-summary'
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  const url = `${baseUrl}${path}?account_id=${gatewayAccountId}&from_date=${fromDate}&to_date=${toDate}`
+  const url = generateUrl(`${baseUrl}/v1/report/transactions-summary`, {}, {
+    'account_id': gatewayAccountId,
+    'from_date': fromDate,
+    'to_date': toDate
+  })
+
   configureClient(client, url)
   const response = await client.get(url, 'Transaction summary statistics for a given gateway account ID')
-  const body = legacyConnectorTransactionSummaryParity(response.data)
-  return body
+  return legacyConnectorTransactionSummaryParity(response.data)
 }
 
 const payouts = async function payouts (gatewayAccountIds = [], page = 1, displaySize, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  let url = `${baseUrl}/v1/payout?gateway_account_id=${gatewayAccountIds.join(',')}&state=paidout&page=${page}`
-  if (displaySize) {
-    url = `${url}&display_size=${displaySize}`
+  const queryParams = {
+    gateway_account_id: gatewayAccountIds,
+    state: 'paidout',
+    page
   }
+  if (displaySize) {
+    queryParams['display_size'] = displaySize
+  }
+  let url = generateUrl(`${baseUrl}/v1/payout`, {}, queryParams)
   configureClient(client, url)
   const response = await client.get(url, 'List payouts for a given gateway account ID')
   return response.data
@@ -120,11 +141,13 @@ const payouts = async function payouts (gatewayAccountIds = [], page = 1, displa
  */
 const agreements = async function agreements (serviceId, live, accountId, page = 1, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  let url = `${baseUrl}/v1/agreement?service_id=${serviceId}&account_id=${accountId}&live=${live}&page=${page}`
-  if (options.filters) {
-    const filterParams = new URLSearchParams(options.filters).toString()
-    url = `${url}&${filterParams}`
-  }
+  let url = generateUrl(`${baseUrl}/v1/agreement`, {}, {
+    'service_id': serviceId,
+    'account_id': accountId,
+    live,
+    page,
+    ...options.filters
+  })
   configureClient(client, url)
   const response = await client.get(url, 'List agreements for a given service and environment')
   return response.data
@@ -132,7 +155,11 @@ const agreements = async function agreements (serviceId, live, accountId, page =
 
 const agreement = async function agreement (id, serviceId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  let url = `${baseUrl}/v1/agreement/${id}?service_id=${serviceId}`
+  let url = generateUrl(`${baseUrl}/v1/agreement/{id}`, {
+    id
+  }, {
+    'service_id': serviceId
+  })
   configureClient(client, url)
   const response = await client.get(url, 'Get agreement by ID')
   return response.data

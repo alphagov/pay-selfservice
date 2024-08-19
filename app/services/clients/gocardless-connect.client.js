@@ -1,5 +1,6 @@
 'use strict'
 
+const { generateUrl } = require('./utils/generateUrl')
 module.exports = {
   startOAuth: redirectToGocardless
 }
@@ -14,5 +15,13 @@ module.exports = {
  * @param params.state              {String} An extra parameter that GoCardless will send back. Can be a CSRF token, for security
  */
 function redirectToGocardless (req, res, params) {
-  res.redirect(`${params.goCardlessOauthUrl}/oauth/authorize?client_id=${params.clientId}&initial_view=login&redirect_uri=${params.redirectUri}&response_type=code&scope=read_write&access_type=offline&state=${params.state}`)
+  res.redirect(generateUrl(`${params.goCardlessOauthUrl}/oauth/authorize`, {}, {
+    client_id: params.clientId,
+    initial_view: 'login',
+    redirect_uri: params.redirectUri,
+    response_type: 'code',
+    scope: 'read_write',
+    access_type: 'offline',
+    state: params.state
+  }))
 }
