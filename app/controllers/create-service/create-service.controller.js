@@ -1,57 +1,50 @@
 'use strict'
 
-const lodash = require('lodash')
+const _ = require('lodash')
 
 const { response } = require('../../utils/response')
 const paths = require('../../paths')
+const logger = require('../../utils/logger')(__filename)
 const serviceService = require('../../services/service.service')
 const userService = require('../../services/user.service')
-const {
-  validateMandatoryField,
-  validateOptionalField,
-  SERVICE_NAME_MAX_LENGTH
-} = require('../../utils/validation/server-side-form-validations')
 
 function get (req, res) {
-  const pageData = lodash.get(req, 'session.pageData.createServiceName', {})
-  lodash.unset(req, 'session.pageData.createServiceName')
-
-  pageData.submit_link = paths.serviceSwitcher.create
-  pageData.my_services = paths.serviceSwitcher.index
-
-  return response(req, res, 'services/add-service', pageData)
+  const createServiceState = _.get(req, 'session.pageData.createService', {})
+  const context = {
+    ...createServiceState,
+    back_link: paths.serviceSwitcher.index,
+    submit_link: paths.serviceSwitcher.create.selectOrgType
+  }
+  _.unset(req, 'session.pageData.createService')
+  return response(req, res, 'services/add-service', context)
 }
 
 async function post (req, res, next) {
-  const { body } = req
-  const serviceName = body['service-name'] && body['service-name'].trim()
-  const serviceHasNameCy = body['welsh-service-name-bool']
-  const serviceNameCy = serviceHasNameCy ? body['service-name-cy'] && body['service-name-cy'].trim() : ''
-
-  const errors = {}
-  const nameValidationResult = validateMandatoryField(serviceName, SERVICE_NAME_MAX_LENGTH, 'service name')
-  if (!nameValidationResult.valid) {
-    errors['service_name'] = nameValidationResult.message
-  }
-  const welshNameValidationResult = validateOptionalField(serviceNameCy, SERVICE_NAME_MAX_LENGTH, 'welsh service name')
-  if (!welshNameValidationResult.valid) {
-    errors['service_name_cy'] = welshNameValidationResult.message
-  }
-  if (!lodash.isEmpty(errors)) {
-    lodash.set(req, 'session.pageData.createServiceName', {
-      errors,
-      current_name: serviceName,
-      current_name_cy: serviceNameCy
-    })
-    return res.redirect(paths.serviceSwitcher.create)
-  }
-
-  try {
-    const service = await serviceService.createService(serviceName, serviceNameCy, req.user)
-    await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
+  const createServiceState = _.get(req, 'session.pageData.createService', {})
+  const serviceName = createServiceState.current_name.trim()
+  const serviceNameCy = createServiceState.service_selected_cy && createServiceState.current_name_cy ? createServiceState.current_name_cy.trim() : ''
+  const organisationType = req.body['select-org-type']
+  if (organisationType && (organisationType === 'central' || organisationType === 'local')) {
+    logger.info(`creating service with following details: ${JSON.stringify({
+      serviceName,
+      serviceNameCy,
+      organisationType
+    })}`)
+    // todo create stripe / sandbox account depending on org type
+    // try {
+    //   const service = await serviceService.createService(serviceName, serviceNameCy, req.user)
+    //   await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
+    //   res.redirect(paths.serviceSwitcher.index)
+    // } catch (err) {
+    //   next(err)
+    // }
+    _.unset(req, 'session.pageData.createService')
     res.redirect(paths.serviceSwitcher.index)
-  } catch (err) {
-    next(err)
+  } else {
+    _.set(req, 'session.pageData.createService.errors', {
+      organisation_type: 'Organisation type is required'
+    })
+    return res.redirect(paths.serviceSwitcher.create.selectOrgType)
   }
 }
 

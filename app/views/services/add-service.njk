@@ -5,6 +5,16 @@
   Add a new service - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{
+  govukBackLink({
+    text: "Back",
+    classes: "govuk-!-margin-bottom-0",
+    href: routes.serviceSwitcher.index
+  })
+  }}
+{% endblock %}
+
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
     {{ errorSummary ({
@@ -69,9 +79,9 @@
         ]
       }) }}
 
-      {{ govukButton({ text: "Add service" })}}
+      {{ govukButton({ text: "Continue" })}}
       <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" id="service-name-cancel-link" href="{{my_services}}">
+        <a class="govuk-link govuk-link--no-visited-state" id="service-name-cancel-link" href="{{back_link}}">
             Cancel
         </a>
       </p>
