@@ -2,7 +2,6 @@
 
 const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
 const { configureClient } = require('./base/config')
-const urlJoin = require('url-join')
 const {
   legacyConnectorTransactionParity,
   legacyConnectorEventsParity,
