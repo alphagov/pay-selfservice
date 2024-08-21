@@ -1,0 +1,11 @@
+{% macro systemMessages(params) %}
+  <div class="govuk-notification-banner govuk-notification-banner--success" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__content">
+      {% for message in params.messages %}
+        <p class="govuk-notification-banner__heading">
+          <span style="color: #00703c">{{ message.icon | safe }}</span> {{ message.content | safe }}
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+{% endmacro %}

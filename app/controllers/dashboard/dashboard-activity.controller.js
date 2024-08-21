@@ -99,7 +99,7 @@ const displayRequestTestStripeAccountLink = (service, account, user) => {
 
 module.exports = async (req, res) => {
   const gatewayAccountId = req.account.gateway_account_id
-
+  const messages = res.locals.flash.messages
   const period = _.get(req, 'query.period', 'today')
   const telephonePaymentLink = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId)
   const linksToDisplay = getLinksToDisplay(req.service, req.account, req.user, telephonePaymentLink)
@@ -139,6 +139,7 @@ module.exports = async (req, res) => {
       const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTimeInUTC, toDateTimeInUTC)
       response(req, res, 'dashboard/index', Object.assign(model, {
         activity: result,
+        messages,
         fromDateTime: fromDateTimeInUTC,
         toDateTime: toDateTimeInUTC,
         transactionsPeriodString,

@@ -45,7 +45,7 @@ function updateService (serviceExternalId, serviceUpdateRequest) {
   return adminUsersClient.updateService(serviceExternalId, serviceUpdateRequest)
 }
 
-async function createService (serviceName, serviceNameCy) {
+async function createService (serviceName, serviceNameCy, serviceOrgType = 'central') {
   if (!serviceName) serviceName = DEFAULT_SERVICE_NAME
   if (!serviceNameCy) serviceNameCy = ''
 
@@ -55,12 +55,23 @@ async function createService (serviceName, serviceNameCy) {
   const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId)
   logger.info('New test card gateway account registered with service')
 
+  let stripeTestGatewayAccount
+  if (serviceOrgType === 'local') {
+    stripeTestGatewayAccount = await connectorClient.requestStripeTestAccount(service.externalId)
+    logger.info(stripeTestGatewayAccount)
+  }
+
   // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
   //               removed once connector integration indexed by services have been migrated
-  await adminUsersClient.addGatewayAccountsToService(service.externalId, [ gatewayAccount.gateway_account_id ])
+
+  const actualAccountId = stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_id : gatewayAccount.gateway_account_id
+  await adminUsersClient.addGatewayAccountsToService(service.externalId, [actualAccountId])
   logger.info('Service associated with internal gateway account ID with legacy mapping')
 
-  return service
+  return {
+    service,
+    externalAccountId: stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_external_id : gatewayAccount.external_id
+  }
 }
 
 function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress) {
