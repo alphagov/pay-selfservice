@@ -10,6 +10,7 @@ const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
 const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
+const { CREATED } = require('../models/psp-test-account-stage')
 
 async function getGatewayAccounts (gatewayAccountIds) {
   const cardGatewayAccounts = await connectorClient.getAccounts({
@@ -66,6 +67,9 @@ async function createService (serviceName, serviceNameCy, serviceOrgType = 'cent
 
   const actualAccountId = stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_id : gatewayAccount.gateway_account_id
   await adminUsersClient.addGatewayAccountsToService(service.externalId, [actualAccountId])
+  if (stripeTestGatewayAccount) {
+    await adminUsersClient.updatePspTestAccountStage(service.externalId, CREATED)
+  }
   logger.info('Service associated with internal gateway account ID with legacy mapping')
 
   return {

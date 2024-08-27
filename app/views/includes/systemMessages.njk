@@ -1,11 +1,27 @@
 {% macro systemMessages(params) %}
-  <div class="govuk-notification-banner govuk-notification-banner--success" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-    <div class="govuk-notification-banner__content">
-      {% for message in params.messages %}
-        <p class="govuk-notification-banner__heading">
-          <span style="color: #00703c">{{ message.icon | safe }}</span> {{ message.content | safe }}
-        </p>
-      {% endfor %}
-    </div>
+  <div class="messages">
+    {% for message in params.messages %}
+      {% if message.state === 'error' %}
+        <div class="govuk-error-summary" data-module="govuk-error-summary">
+          <div role="alert">
+            <h2 class="govuk-error-summary__title govuk-!-margin-bottom-0">
+              <span class="error">{{ message.icon | safe }}</span> {{ message.content | safe }}
+            </h2>
+          </div>
+        </div>
+      {% else %}
+        <div
+          class="govuk-notification-banner {% if message.state === 'success' %}govuk-notification-banner--success{% endif %}"
+          role="region"
+          aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+            <span
+              class="{% if message.state === 'success' %}success{% else %}info{% endif %}">{{ message.icon | safe }}</span> {{ message.content | safe }}
+            </p>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
   </div>
 {% endmacro %}

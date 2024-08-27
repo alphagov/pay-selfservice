@@ -1,0 +1,11 @@
+.messages {
+  .success {
+    color: $govuk-success-colour;
+  }
+  .info {
+    color: $govuk-brand-colour;
+  }
+  .error {
+    color: $govuk-error-colour;
+  }
+}

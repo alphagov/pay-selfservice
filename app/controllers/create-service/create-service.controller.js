@@ -7,9 +7,7 @@ const paths = require('../../paths')
 const logger = require('../../utils/logger')(__filename)
 const serviceService = require('../../services/service.service')
 const userService = require('../../services/user.service')
-const { ConnectorClient } = require('../../services/clients/connector.client')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 function get (req, res) {
   const createServiceState = _.get(req, 'session.pageData.createService', {})
@@ -37,7 +35,7 @@ async function post (req, res, next) {
       const { service, externalAccountId } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
       await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
       _.unset(req, 'session.pageData.createService')
-      req.flash('messages', { icon: '&check;', content: 'We\'ve created your service.' })
+      req.flash('messages', { state: 'success', icon: '&check;', content: 'We\'ve created your service.' })
       res.redirect(formatAccountPathsFor(paths.account.dashboard.index, externalAccountId))
     } catch (err) {
       next(err)

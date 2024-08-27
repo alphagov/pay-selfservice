@@ -36,7 +36,7 @@ My profile - GOV.UK Pay
         Email
       </dt>
       <dd class="profile-settings__value govuk-table__cell" id="email">
-        {{email}}
+        {{email | truncate(10, true)}}
       </dd>
     </div>
     {% if telephone_number %}
