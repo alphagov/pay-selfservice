@@ -24,21 +24,21 @@ async function post (req, res, next) {
   const serviceName = createServiceState.current_name.trim()
   const serviceNameCy = createServiceState.service_selected_cy && createServiceState.current_name_cy ? createServiceState.current_name_cy.trim() : ''
   const organisationType = req.body['select-org-type']
-  if (organisationType && (organisationType === 'central' || organisationType === 'local')) {
-    try {
-      const { service, externalAccountId } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
-      await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
-      _.unset(req, 'session.pageData.createService')
-      req.flash('messages', { state: 'success', icon: '&check;', content: 'We\'ve created your service.' })
-      res.redirect(formatAccountPathsFor(paths.account.dashboard.index, externalAccountId))
-    } catch (err) {
-      next(err)
-    }
-  } else {
+  if (!organisationType || organisationType !== 'central' || organisationType !== 'local') {
     _.set(req, 'session.pageData.createService.errors', {
       organisation_type: 'Organisation type is required'
     })
     return res.redirect(paths.serviceSwitcher.create.selectOrgType)
+  }
+
+  try {
+    const { service, externalAccountId } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
+    await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
+    _.unset(req, 'session.pageData.createService')
+    req.flash('messages', { state: 'success', icon: '&check;', content: 'We\'ve created your service.' })
+    res.redirect(formatAccountPathsFor(paths.account.dashboard.index, externalAccountId))
+  } catch (err) {
+    next(err)
   }
 }
 
