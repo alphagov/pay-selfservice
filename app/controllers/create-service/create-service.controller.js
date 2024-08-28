@@ -4,7 +4,6 @@ const _ = require('lodash')
 
 const { response } = require('../../utils/response')
 const paths = require('../../paths')
-const logger = require('../../utils/logger')(__filename)
 const serviceService = require('../../services/service.service')
 const userService = require('../../services/user.service')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
@@ -26,11 +25,6 @@ async function post (req, res, next) {
   const serviceNameCy = createServiceState.service_selected_cy && createServiceState.current_name_cy ? createServiceState.current_name_cy.trim() : ''
   const organisationType = req.body['select-org-type']
   if (organisationType && (organisationType === 'central' || organisationType === 'local')) {
-    logger.info(`creating service with following details: ${JSON.stringify({
-      serviceName,
-      serviceNameCy,
-      organisationType
-    })}`)
     try {
       const { service, externalAccountId } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
       await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')

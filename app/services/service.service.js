@@ -53,7 +53,7 @@ async function createService (serviceName, serviceNameCy, serviceOrgType = 'cent
   const service = await adminUsersClient.createService(serviceName, serviceNameCy)
   logger.info('New service added by existing user')
 
-  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId)
+  const sandboxGatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId)
   logger.info('New test card gateway account registered with service')
 
   let stripeTestGatewayAccount
@@ -65,7 +65,7 @@ async function createService (serviceName, serviceNameCy, serviceOrgType = 'cent
   // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
   //               removed once connector integration indexed by services have been migrated
 
-  const actualAccountId = stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_id : gatewayAccount.gateway_account_id
+  const actualAccountId = stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_id : sandboxGatewayAccount.gateway_account_id
   await adminUsersClient.addGatewayAccountsToService(service.externalId, [actualAccountId])
   if (stripeTestGatewayAccount) {
     await adminUsersClient.updatePspTestAccountStage(service.externalId, CREATED)
@@ -74,7 +74,7 @@ async function createService (serviceName, serviceNameCy, serviceOrgType = 'cent
 
   return {
     service,
-    externalAccountId: stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_external_id : gatewayAccount.external_id
+    externalAccountId: stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_external_id : sandboxGatewayAccount.external_id
   }
 }
 
