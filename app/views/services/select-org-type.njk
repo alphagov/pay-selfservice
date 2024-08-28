@@ -21,6 +21,7 @@
 
     <form id="add-service-form" method="post" action="{{ submit_link }}" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <p class="govuk-body"></p>
 
       {{ govukRadios({
         idPrefix: "select-org-type",
@@ -58,7 +59,7 @@
 
       {{ govukDetails({
         summaryText: "Help with choosing",
-        text: "¯\\_(ツ)_/¯"
+        html: "<p class=\"govuk-body\">Contact <a class=\"govuk-link\" href=\"mailto:govuk-pay-support@digital.cabinet-office.gov.uk\">govuk-pay-support@digital.cabinet-office.gov.uk</a> for help deciding which provider you should use.</p>"
       }) }}
 
       {{ govukButton({ text: "Continue" })}}
