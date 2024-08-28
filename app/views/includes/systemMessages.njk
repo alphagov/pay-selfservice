@@ -1,5 +1,5 @@
 {% macro systemMessages(params) %}
-  <div class="messages">
+  <div id="system-messages" class="messages">
     {% for message in params.messages %}
       {% if message.state === 'error' %}
         <div class="govuk-error-summary" data-module="govuk-error-summary">

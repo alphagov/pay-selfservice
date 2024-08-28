@@ -41,7 +41,10 @@ describe('Controller: Dashboard activity', () => {
 
       res = {
         status: sinon.spy(),
-        render: sinon.spy()
+        render: sinon.spy(),
+        locals: {
+          flash: sinon.spy()
+        }
       }
     })
 

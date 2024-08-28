@@ -54,7 +54,7 @@ describe('The team member details view', function () {
 
     let body = renderTemplate('team-members/team-member-profile', templateData)
 
-    body.should.containSelector('#email').withExactText('john.smith@example.com')
+    body.should.containSelector('#email').withExactText('john.smith...') // should truncate strings longer than 10 chars and append ellipsis
     body.should.containSelector('#telephone-number').withText('+447769897329')
     body.should.containSelector('#two-factor-auth').withText('Text message')
   })
