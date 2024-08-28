@@ -126,6 +126,15 @@ describe('Add a new service', () => {
       cy.get('button').contains('Continue').click()
       cy.title().should('eq', 'Select your organisation type - GOV.UK Pay')
 
+      cy.get('button').contains('Continue').click()
+
+      cy.title().should('eq', 'Select your organisation type - GOV.UK Pay')
+
+      cy.get('.govuk-error-summary').find('li').should('have.length', 1)
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('li').should('contain', 'Organisation type is required')
+      })
+
       cy.get('input#org-type-central').click()
       cy.get('button').contains('Continue').click()
 
