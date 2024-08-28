@@ -24,7 +24,7 @@ async function post (req, res, next) {
   const serviceName = createServiceState.current_name.trim()
   const serviceNameCy = createServiceState.service_selected_cy && createServiceState.current_name_cy ? createServiceState.current_name_cy.trim() : ''
   const organisationType = req.body['select-org-type']
-  if (!organisationType || organisationType !== 'central' || organisationType !== 'local') {
+  if (!organisationType && (organisationType !== 'central' || organisationType !== 'local')) {
     _.set(req, 'session.pageData.createService.errors', {
       organisation_type: 'Organisation type is required'
     })
