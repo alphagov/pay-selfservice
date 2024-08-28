@@ -59,7 +59,7 @@ async function createService (serviceName, serviceNameCy, serviceOrgType = 'cent
   let stripeTestGatewayAccount
   if (serviceOrgType === 'local') {
     stripeTestGatewayAccount = await connectorClient.requestStripeTestAccount(service.externalId)
-    logger.info(stripeTestGatewayAccount)
+    logger.info('Sandbox gateway account converted to Stripe Test gateway account')
   }
 
   // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
