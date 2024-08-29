@@ -1,5 +1,7 @@
 {% extends "../layout.njk" %}
 {% from "../macro/error-summary.njk" import errorSummary %}
+{% from "includes/spinner.njk" import spinner %}
+
 
 {% block pageTitle %}
   Select your organisation type - GOV.UK Pay
@@ -60,8 +62,33 @@
         html: "<p class=\"govuk-body\">Contact <a class=\"govuk-link\" href=\"mailto:govuk-pay-support@digital.cabinet-office.gov.uk\">govuk-pay-support@digital.cabinet-office.gov.uk</a> for help deciding which provider you should use.</p>"
       }) }}
 
-      {{ govukButton({ text: "Create service" })}}
+      {{ govukButton({
+        html: "Create service <span class=\"spinner\"></span>",
+        id: "submit-button",
+        preventDoubleClick: true
+      }) }}
     </form>
 
+    <div id="spinner" hidden="hidden">
+      {{ spinner({
+        text: "We're creating your service, please wait..."
+      }) }}
+    </div>
   </div>
+
+  <script>
+    document.getElementById('submit-button').addEventListener('click', function () {
+      disableButtonAndShowSpinner()
+      document.getElementById('add-service-form').submit()
+    })
+
+    function disableButtonAndShowSpinner () {
+      document.getElementById('add-service-form').hidden = true
+      document.getElementById('spinner').hidden = false
+
+      document.getElementById('submit-button').setAttribute('disabled', true)
+      document.getElementById('submit-button').setAttribute('aria-disabled', true)
+      document.getElementById('submit-button').setAttribute('class', 'govuk-button govuk-button--disabled')
+    }
+  </script>
 {% endblock %}

@@ -1,0 +1,37 @@
+.spinner {
+  margin: 20px auto;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 16px solid govuk-colour("light-grey");
+  border-bottom-color: govuk-colour("light-blue"); /* Annulus sector colour */
+  animation: rotate 3s linear infinite;
+  will-change: transform;
+}
+
+
+button {
+  .spinner {
+    display: none;
+    width: 8px;
+    height: 8px;
+    border-width: 4px;
+    margin: 0 0 0 5px;
+  }
+
+  &:disabled {
+    .spinner {
+      display: inline-block;
+    }
+  }
+}
+
+
+@keyframes rotate {
+  from {
+    transform: rotate3d(0, 0, 1, -360deg) translate3d(0, 0, 0);
+  }
+  to {
+    transform: rotate3d(0, 0, 1, 360deg) translate3d(0, 0, 0);
+  }
+}

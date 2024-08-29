@@ -32,11 +32,15 @@ async function post (req, res, next) {
   }
 
   try {
-    const { service, externalAccountId } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
-    await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
-    _.unset(req, 'session.pageData.createService')
+    // ADD THESE LINES BACK IN
+    // const { service, externalAccountId } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
+    // await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
+    // _.unset(req, 'session.pageData.createService')
     req.flash('messages', { state: 'success', icon: '&check;', content: 'We\'ve created your service.' })
-    res.redirect(formatAccountPathsFor(paths.account.dashboard.index, externalAccountId))
+    // res.redirect(formatAccountPathsFor(paths.account.dashboard.index, externalAccountId))
+    setTimeout(function () { // SIMULATE LONG RUNNING REQUEST
+      res.redirect(paths.serviceSwitcher.index)
+    }, 3000)
   } catch (err) {
     next(err)
   }
