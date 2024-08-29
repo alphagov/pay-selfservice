@@ -60,7 +60,7 @@ describe('Add a new service', () => {
       cy.title().should('eq', 'Select your organisation type - GOV.UK Pay')
 
       cy.get('input#org-type-central').click()
-      cy.get('button').contains('Continue').click()
+      cy.get('button').contains('Create service').click()
 
       cy.title().should('contain', 'Dashboard')
       cy.get('#system-messages').contains("We've created your service")
@@ -126,7 +126,7 @@ describe('Add a new service', () => {
       cy.get('button').contains('Continue').click()
       cy.title().should('eq', 'Select your organisation type - GOV.UK Pay')
 
-      cy.get('button').contains('Continue').click()
+      cy.get('button').contains('Create service').click()
 
       cy.title().should('eq', 'Select your organisation type - GOV.UK Pay')
 
@@ -136,7 +136,7 @@ describe('Add a new service', () => {
       })
 
       cy.get('input#org-type-central').click()
-      cy.get('button').contains('Continue').click()
+      cy.get('button').contains('Create service').click()
 
       cy.title().should('contain', 'Dashboard')
       cy.get('#system-messages').contains("We've created your service")
