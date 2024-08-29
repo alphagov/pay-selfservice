@@ -230,7 +230,10 @@ module.exports = {
   serviceSwitcher: {
     index: '/my-services',
     switch: '/my-services/switch',
-    create: '/my-services/create'
+    create: {
+      index: '/my-services/create',
+      selectOrgType: '/my-services/create/select-org-type'
+    }
   },
   invite: {
     validateInvite: '/invites/:code',

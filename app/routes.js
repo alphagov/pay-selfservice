@@ -49,6 +49,7 @@ const serviceRolesUpdateController = require('./controllers/service-roles-update
 const toggleMotoMaskCardNumber = require('./controllers/toggle-moto-mask-card-number')
 const toggleMotoMaskSecurityCode = require('./controllers/toggle-moto-mask-security-code')
 const createServiceController = require('./controllers/create-service/create-service.controller')
+const selectOrgTypeController = require('./controllers/create-service/select-organisation-type/select-organisation-type.controller')
 const inviteValidationController = require('./controllers/invite-validation.controller')
 const testWithYourUsersController = require('./controllers/test-with-your-users')
 const makeADemoPaymentController = require('./controllers/make-a-demo-payment')
@@ -224,8 +225,10 @@ module.exports.bind = function (app) {
   // Service switcher
   app.get(serviceSwitcher.index, userIsAuthorised, myServicesController.getIndex)
   app.post(serviceSwitcher.switch, userIsAuthorised, myServicesController.postIndex)
-  app.get(serviceSwitcher.create, userIsAuthorised, createServiceController.get)
-  app.post(serviceSwitcher.create, userIsAuthorised, createServiceController.post)
+  app.get(serviceSwitcher.create.index, userIsAuthorised, createServiceController.get)
+  app.post(serviceSwitcher.create.index, userIsAuthorised, createServiceController.post)
+  app.post(serviceSwitcher.create.selectOrgType, userIsAuthorised, selectOrgTypeController.post)
+  app.get(serviceSwitcher.create.selectOrgType, userIsAuthorised, selectOrgTypeController.get)
 
   // All service transactions
   app.get(allServiceTransactions.index, userIsAuthorised, allTransactionsController.getController)

@@ -23,6 +23,8 @@ const hideServiceHeaderTemplates = [
 
 const hideServiceNavTemplates = [
   'services/edit-service-name',
+  'services/add-service',
+  'services/select-org-type',
   'merchant-details/merchant-details',
   'merchant-details/edit-merchant-details',
   'team-members/team-members',

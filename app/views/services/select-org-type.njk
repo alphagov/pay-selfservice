@@ -1,0 +1,69 @@
+{% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
+
+{% block pageTitle %}
+  Select your organisation type - GOV.UK Pay
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    text: "Back",
+    classes: "govuk-!-margin-bottom-0",
+    href: back_link
+  }) }}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors
+    }) }}
+
+    <form id="add-service-form" method="post" action="{{ submit_link }}" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <p class="govuk-body"></p>
+
+      {{ govukRadios({
+        idPrefix: "select-org-type",
+        name: "select-org-type",
+        fieldset: {
+          legend: {
+            text: "Which type of organisation do you work for?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: {
+          text: "This tells us which payment provider to use to take payments for your service. You can change it later if you need to."
+        },
+        errorMessage: errors.organisation_type,
+        items: [
+          {
+            value: "local",
+            html: "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Local authority, armed forces or police</h3>",
+            hint: {
+            text: 'We use Stripe for card payments.'
+          },
+            id: "org-type-local"
+          },
+          {
+            value: "central",
+            html: "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Central government, NHS or Arms Length Body (ALB)</h3>",
+            hint: {
+            text: 'We use Government Banking\'s contract with Worldpay for card payments. You will need to set up an agreement with Government Banking. You can do this later.'
+          },
+            id: "org-type-central"
+          }
+        ]
+      }) }}
+
+      {{ govukDetails({
+        summaryText: "Help with choosing",
+        html: "<p class=\"govuk-body\">Contact <a class=\"govuk-link\" href=\"mailto:govuk-pay-support@digital.cabinet-office.gov.uk\">govuk-pay-support@digital.cabinet-office.gov.uk</a> for help deciding which provider you should use.</p>"
+      }) }}
+
+      {{ govukButton({ text: "Continue" })}}
+    </form>
+
+  </div>
+{% endblock %}

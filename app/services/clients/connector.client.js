@@ -482,6 +482,11 @@ ConnectorClient.prototype = {
     return responseBodyToStripeAccountTransformer(response.data)
   },
 
+  /**
+   * Returns an object of account ids for the newly created Stripe test gateway account
+   * @param serviceId
+   * @returns {Promise<{stripe_connect_account_id: string, gateway_account_id: string, gateway_account_external_id: string}>}
+   */
   requestStripeTestAccount: async function (serviceId) {
     const url = `${this.connectorUrl}/v1/api/service/${encodeURIComponent(serviceId)}/request-stripe-test-account`
     configureClient(client, url)

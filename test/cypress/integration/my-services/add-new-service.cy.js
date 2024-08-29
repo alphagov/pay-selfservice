@@ -3,6 +3,7 @@
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const userStubs = require('../../stubs/user-stubs')
 const serviceStubs = require('../../stubs/service-stubs')
+const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 const newServiceName = 'Pay for a thing'
@@ -24,7 +25,7 @@ const assignUserRoleStub =
 
 describe('Add a new service', () => {
   describe('Add a new service without a Welsh name', () => {
-    it('should display the my services page', () => {
+    it('should display the service dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
         gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' }),
@@ -35,7 +36,12 @@ describe('Add a new service', () => {
           gatewayAccountId: newGatewayAccountId,
           serviceName: { en: newServiceName }
         }),
-        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId })
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId }),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+          gatewayAccountExternalId: 'a-valid-external-id',
+          gatewayAccountId: '1'
+        }),
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.setEncryptedCookies(authenticatedUserId)
@@ -49,14 +55,20 @@ describe('Add a new service', () => {
       cy.get('#checkbox-service-name-cy').should('have.attr', 'aria-expanded', 'false')
 
       cy.get('input#service-name').type(newServiceName)
-      cy.get('button').contains('Add service').click()
+      cy.get('button').contains('Continue').click()
 
-      cy.title().should('eq', 'My services - GOV.UK Pay')
+      cy.title().should('eq', 'Select your organisation type - GOV.UK Pay')
+
+      cy.get('input#org-type-central').click()
+      cy.get('button').contains('Continue').click()
+
+      cy.title().should('contain', 'Dashboard')
+      cy.get('#system-messages').contains("We've created your service")
     })
   })
 
   describe('Add a new service with a Welsh name', () => {
-    it('should display the my services page', () => {
+    it('should display the service dashboard', () => {
       cy.setEncryptedCookies(authenticatedUserId)
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
@@ -68,7 +80,12 @@ describe('Add a new service', () => {
           gatewayAccountId: newGatewayAccountId,
           serviceName: { en: newServiceName, cy: newServiceWelshName }
         }),
-        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId })
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId }),
+        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+          gatewayAccountExternalId: 'a-valid-external-id',
+          gatewayAccountId: '1'
+        }),
+        transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.visit('/my-services')
@@ -85,7 +102,7 @@ describe('Add a new service', () => {
 
       cy.log('Enter a name that is too long and check validation errors are displayed')
       cy.get('input#service-name-cy').type('Lorem ipsum dolor sit amet, consectetuer adipiscing', { delay: 0 })
-      cy.get('button').contains('Add service').click()
+      cy.get('button').contains('Continue').click()
 
       cy.title().should('eq', 'Add a new service - GOV.UK Pay')
 
@@ -106,9 +123,23 @@ describe('Add a new service', () => {
       cy.get('input#service-name-cy').clear()
       cy.get('input#service-name').type(newServiceName)
       cy.get('input#service-name-cy').type(newServiceWelshName)
-      cy.get('button').contains('Add service').click()
+      cy.get('button').contains('Continue').click()
+      cy.title().should('eq', 'Select your organisation type - GOV.UK Pay')
 
-      cy.title().should('eq', 'My services - GOV.UK Pay')
+      cy.get('button').contains('Continue').click()
+
+      cy.title().should('eq', 'Select your organisation type - GOV.UK Pay')
+
+      cy.get('.govuk-error-summary').find('li').should('have.length', 1)
+      cy.get('.govuk-error-summary').should('exist').within(() => {
+        cy.get('li').should('contain', 'Organisation type is required')
+      })
+
+      cy.get('input#org-type-central').click()
+      cy.get('button').contains('Continue').click()
+
+      cy.title().should('contain', 'Dashboard')
+      cy.get('#system-messages').contains("We've created your service")
     })
   })
 })

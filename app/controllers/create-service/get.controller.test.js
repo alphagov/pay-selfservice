@@ -37,8 +37,8 @@ describe('Controller: createService, Method: get', () => {
     })
 
     it(`should pass pageData to the responses.response method that has properly formatted 'submit_link' and 'my_services' properties`, () => {
-      expect(mockResponses.response.args[0][3]).to.have.property('submit_link').to.equal(`/my-services/create`)
-      expect(mockResponses.response.args[0][3]).to.have.property('my_services').to.equal('/my-services')
+      expect(mockResponses.response.args[0][3]).to.have.property('submit_link').to.equal(`/my-services/create/select-org-type`)
+      expect(mockResponses.response.args[0][3]).to.have.property('back_link').to.equal('/my-services')
     })
   })
 
@@ -50,7 +50,7 @@ describe('Controller: createService, Method: get', () => {
       req = {
         session: {
           pageData: {
-            createServiceName: {
+            createService: {
               current_name: 'Blah',
               current_name_cy: 'Some Cymraeg service name',
               errors: {

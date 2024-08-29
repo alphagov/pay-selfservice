@@ -10,6 +10,7 @@ const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
 const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
+const { CREATED } = require('../models/psp-test-account-stage')
 
 async function getGatewayAccounts (gatewayAccountIds) {
   const cardGatewayAccounts = await connectorClient.getAccounts({
@@ -45,22 +46,36 @@ function updateService (serviceExternalId, serviceUpdateRequest) {
   return adminUsersClient.updateService(serviceExternalId, serviceUpdateRequest)
 }
 
-async function createService (serviceName, serviceNameCy) {
+async function createService (serviceName, serviceNameCy, serviceOrgType = 'central') {
   if (!serviceName) serviceName = DEFAULT_SERVICE_NAME
   if (!serviceNameCy) serviceNameCy = ''
 
   const service = await adminUsersClient.createService(serviceName, serviceNameCy)
   logger.info('New service added by existing user')
 
-  const gatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId)
+  const sandboxGatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId)
   logger.info('New test card gateway account registered with service')
+
+  let stripeTestGatewayAccount
+  if (serviceOrgType === 'local') {
+    stripeTestGatewayAccount = await connectorClient.requestStripeTestAccount(service.externalId)
+    logger.info('Sandbox gateway account converted to Stripe Test gateway account')
+  }
 
   // @TODO(sfount) PP-8438 support existing method of associating services with internal card accounts, this should be
   //               removed once connector integration indexed by services have been migrated
-  await adminUsersClient.addGatewayAccountsToService(service.externalId, [ gatewayAccount.gateway_account_id ])
+
+  const actualAccountId = stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_id : sandboxGatewayAccount.gateway_account_id
+  await adminUsersClient.addGatewayAccountsToService(service.externalId, [actualAccountId])
+  if (stripeTestGatewayAccount) {
+    await adminUsersClient.updatePspTestAccountStage(service.externalId, CREATED)
+  }
   logger.info('Service associated with internal gateway account ID with legacy mapping')
 
-  return service
+  return {
+    service,
+    externalAccountId: stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_external_id : sandboxGatewayAccount.external_id
+  }
 }
 
 function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress) {
