@@ -71,8 +71,8 @@ describe('Payment link metadata form model', () => {
 
   it('correctly validates when the number of metadata columns exceeds the max number of allowed metadata columns', () => {
     const body = {
-      'metadata-column-header': 'test 11 header',
-      'metadata-cell-value': 'test 11 value'
+      'metadata-column-header': 'test 16 header',
+      'metadata-cell-value': 'test 16 value'
     }
 
     const existingMetadata = {
@@ -85,7 +85,12 @@ describe('Payment link metadata form model', () => {
       'test 7 header': 'test 7 value',
       'test 8 header': 'test 8 value',
       'test 9 header': 'test 9 value',
-      'test 10 header': 'test 10 value'
+      'test 10 header': 'test 10 value',
+      'test 11 header': 'test 10 value',
+      'test 12 header': 'test 10 value',
+      'test 13 header': 'test 10 value',
+      'test 14 header': 'test 10 value',
+      'test 15 header': 'test 10 value'
     }
 
     const form = new MetadataForm(body, existingMetadata)
