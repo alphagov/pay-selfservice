@@ -51,7 +51,7 @@ describe('Add a new service', () => {
 
       cy.get('a').contains('Add a new service').click()
 
-      cy.title().should('eq', 'Add a new service - GOV.UK Pay')
+      cy.title().should('eq', 'Service name - GOV.UK Pay')
       cy.get('#checkbox-service-name-cy').should('have.attr', 'aria-expanded', 'false')
 
       cy.get('input#service-name').type(newServiceName)
@@ -93,7 +93,7 @@ describe('Add a new service', () => {
 
       cy.get('a').contains('Add a new service').click()
 
-      cy.title().should('eq', 'Add a new service - GOV.UK Pay')
+      cy.title().should('eq', 'Service name - GOV.UK Pay')
       cy.get('#checkbox-service-name-cy').should('have.attr', 'aria-expanded', 'false')
 
       cy.get('#checkbox-service-name-cy').click()
@@ -104,7 +104,7 @@ describe('Add a new service', () => {
       cy.get('input#service-name-cy').type('Lorem ipsum dolor sit amet, consectetuer adipiscing', { delay: 0 })
       cy.get('button').contains('Continue').click()
 
-      cy.title().should('eq', 'Add a new service - GOV.UK Pay')
+      cy.title().should('eq', 'Service name - GOV.UK Pay')
 
       cy.get('.govuk-error-summary').find('a').should('have.length', 2)
       cy.get('.govuk-error-summary').should('exist').within(() => {
