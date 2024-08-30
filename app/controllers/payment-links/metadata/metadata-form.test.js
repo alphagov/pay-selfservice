@@ -86,11 +86,11 @@ describe('Payment link metadata form model', () => {
       'test 8 header': 'test 8 value',
       'test 9 header': 'test 9 value',
       'test 10 header': 'test 10 value',
-      'test 11 header': 'test 10 value',
-      'test 12 header': 'test 10 value',
-      'test 13 header': 'test 10 value',
-      'test 14 header': 'test 10 value',
-      'test 15 header': 'test 10 value'
+      'test 11 header': 'test 11 value',
+      'test 12 header': 'test 12 value',
+      'test 13 header': 'test 13 value',
+      'test 14 header': 'test 14 value',
+      'test 15 header': 'test 15 value'
     }
 
     const form = new MetadataForm(body, existingMetadata)
