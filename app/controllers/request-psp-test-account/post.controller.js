@@ -21,36 +21,31 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
 
 module.exports = async function submitRequestForPspTestAccount (req, res, next) {
   const service = req.service
-  try {
-    const pageData = {}
-
-    if (service.currentPspTestAccountStage === NOT_STARTED || !service.currentPspTestAccountStage) {
-      const gatewayAccount = await connectorClient.getAccountByServiceIdAndAccountType({ serviceId: service.externalId, accountType: 'test' })
-      if (gatewayAccount.payment_provider === 'sandbox') {
-        const sandboxGatewayAccountId = gatewayAccount.gateway_account_id
-        const gatewayAccountExternalId = await submitRequestAndUpdatePspTestAccountStatus(req)
-
-        try {
-          await publicAuthClient.revokeTokensForAccount(sandboxGatewayAccountId)
-        } catch (error) {
-          logger.error(`There was an error revoking tokens for sandbox account with id ${sandboxGatewayAccountId}. ${error}`)
-        }
-
-        req.flash('requestStripeTestAccount', 'success')
-        res.redirect(`/account/${gatewayAccountExternalId}/dashboard`)
-      } else {
-        throw new Error('Existing test account must be a sandbox one in order to request a Stripe test account.')
-      }
-    } else {
-      pageData.requestForPspTestAccountSubmitted = (service.currentPspTestAccountStage === REQUEST_SUBMITTED)
-      pageData.pspTestAccountCreated = (service.currentPspTestAccountStage === CREATED)
-      logger.info('Request for stripe test account cannot be submitted',
-        { current_psp_test_account_stage: service.currentPspTestAccountStage })
+  if (!(service.currentPspTestAccountStage === NOT_STARTED || !service.currentPspTestAccountStage)) {
+    const pageData = {
+      requestForPspTestAccountSubmitted: (service.currentPspTestAccountStage === REQUEST_SUBMITTED),
+      pspTestAccountCreated: (service.currentPspTestAccountStage === CREATED)
     }
+    logger.info('Request for stripe test account cannot be submitted',
+      { current_psp_test_account_stage: service.currentPspTestAccountStage })
 
-    res.flash('request-stripe-test-account', 'success')
     return response(req, res, 'request-psp-test-account/index', pageData)
-  } catch (error) {
-    return next(error)
   }
+
+  const gatewayAccount = await connectorClient.getAccountByServiceIdAndAccountType({ serviceId: service.externalId, accountType: 'test' })
+  if (!(gatewayAccount.payment_provider === 'sandbox')) {
+    throw new Error('Existing test account must be a sandbox one in order to request a Stripe test account.')
+  }
+
+  const sandboxGatewayAccountId = gatewayAccount.gateway_account_id
+  const gatewayAccountExternalId = await submitRequestAndUpdatePspTestAccountStatus(req)
+
+  try {
+    await publicAuthClient.revokeTokensForAccount(sandboxGatewayAccountId)
+  } catch (error) {
+    logger.error(`There was an error revoking tokens for sandbox account with id ${sandboxGatewayAccountId}. ${error}`)
+  }
+
+  req.flash('requestStripeTestAccount', 'success')
+  res.redirect(`/account/${gatewayAccountExternalId}/dashboard`)
 }

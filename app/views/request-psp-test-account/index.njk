@@ -44,11 +44,18 @@
           </p>
 
           {{ govukButton({
-            html: "Get a Stripe test account <span class=\"spinner\"></span>",
+            html: "Get a Stripe test account",
             id: "submit-button",
             preventDoubleClick: true
           }) }}
         </form>
+
+        <div id="spinner" hidden="hidden" aria-hidden="true">
+          {{ spinner({
+            text: "We're setting up your Stripe test account, please wait..."
+          }) }}
+        </div>
+
         {% elif requestForPspTestAccountSubmitted %}
         <h1 class="govuk-heading-l">
           Account already requested
@@ -93,6 +100,10 @@
     })
 
     function disableButtonAndShowSpinner () {
+      document.getElementById('submit-request-for-psp-test-account-form').hidden = true
+      document.getElementById('spinner').hidden = false
+      document.getElementById('spinner').setAttribute('aria-hidden', false)
+
       document.getElementById('submit-button').setAttribute('disabled', true)
       document.getElementById('submit-button').setAttribute('aria-disabled', true)
       document.getElementById('submit-button').setAttribute('class', 'govuk-button govuk-button--disabled')
