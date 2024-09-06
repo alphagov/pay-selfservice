@@ -4,7 +4,7 @@ const express = require('express')
 const request = require('supertest')
 const { expect } = require('chai')
 
-const requestContext = require('../../app/utils/request-context')
+const requestContext = require('../../app/services/clients/base/request-context')
 
 describe('Log context async storage', () => {
   const path = '/test-request-context'
