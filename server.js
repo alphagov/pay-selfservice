@@ -27,6 +27,7 @@ const formatServicePathsFor = require('./app//utils/format-service-paths-for')
 const healthcheckController = require('./app/controllers/healthcheck.controller')
 const { healthcheck } = require('./app/paths.js')
 // Global constants
+const bindHost = (process.env.BIND_HOST || '127.0.0.1')
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
 const { NODE_ENV } = process.env
@@ -148,8 +149,8 @@ function initialiseErrorHandling (app) {
 
 function listen () {
   const app = initialise()
-  app.listen(port)
-  logger.info('Listening on port ' + port)
+  app.listen(port, bindHost)
+  logger.info(`Listening on ${bindHost}:${port}`)
 }
 
 /**

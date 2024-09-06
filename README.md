@@ -108,6 +108,7 @@ You will then be able to click on individual specs and see the tests running in 
 
 | Variable                    | required | default value | Description                               |
 | --------------------------- |:--------:|:-------------:| ----------------------------------------- |
+| BIND_HOST                   |   | 127.0.0.1 | The IP address for the application to bind to |
 | PORT                        | X | 9200 | The port number for the express server to be bound at runtime |
 | SESSION_ENCRYPTION_KEY      | X |      | Key to be used by the cookie encryption algorithm. Should be a large unguessable string ([More Info](https://www.npmjs.com/package/client-sessions)).  |
 | PUBLIC_AUTH_URL             | X |      | The publicauth endpoint to use when API Tokens. |
