@@ -53,7 +53,7 @@
           }) }}
         </form>
 
-        <div id="spinner" hidden="hidden" aria-hidden="true">
+        <div id="spinner-container" hidden="hidden" aria-hidden="true">
           {{ spinner({
             text: "We're setting up your Stripe test account, please wait..."
           }) }}
@@ -106,8 +106,8 @@
 
     function disableButtonAndShowSpinner () {
       document.getElementById('submit-request-for-psp-test-account-form').hidden = true
-      document.getElementById('spinner').hidden = false
-      document.getElementById('spinner').setAttribute('aria-hidden', false)
+      document.getElementById('spinner-container').hidden = false
+      document.getElementById('spinner-container').setAttribute('aria-hidden', false)
 
       document.getElementById('submit-button').setAttribute('disabled', true)
       document.getElementById('submit-button').setAttribute('aria-disabled', true)

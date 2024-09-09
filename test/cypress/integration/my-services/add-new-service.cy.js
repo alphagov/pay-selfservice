@@ -71,18 +71,7 @@ describe('Add a new service', () => {
         userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
         gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' }),
         createGatewayAccountStub,
-        assignUserRoleStub,
-        serviceStubs.postCreateServiceSuccess({
-          serviceExternalId: newServiceId,
-          gatewayAccountId: newGatewayAccountId,
-          serviceName: { en: newServiceName }
-        }),
-        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
-          gatewayAccountExternalId: 'a-valid-external-id',
-          gatewayAccountId: '1'
-        }),
-        transactionsSummaryStubs.getDashboardStatistics()
+        assignUserRoleStub
       ])
       cy.setEncryptedCookies(authenticatedUserId)
 
@@ -100,7 +89,7 @@ describe('Add a new service', () => {
 
       cy.get('button').contains('Create service').click()
 
-      cy.get('#spinner').should('be.visible')
+      cy.get('#spinner-container').should('be.visible')
     })
   })
 

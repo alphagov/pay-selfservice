@@ -69,7 +69,7 @@
       }) }}
     </form>
 
-    <div id="spinner" hidden="hidden" aria-hidden="true">
+    <div id="spinner-container" hidden="hidden" aria-hidden="true">
       {{ spinner({
         text: "We're creating your service, please wait..."
       }) }}
@@ -86,8 +86,8 @@
 
     function disableButtonAndShowSpinner () {
       document.getElementById('add-service-form').hidden = true
-      document.getElementById('spinner').hidden = false
-      document.getElementById('spinner').setAttribute('aria-hidden', false)
+      document.getElementById('spinner-container').hidden = false
+      document.getElementById('spinner-container').setAttribute('aria-hidden', false)
 
       document.getElementById('submit-button').setAttribute('disabled', true)
       document.getElementById('submit-button').setAttribute('aria-disabled', true)

@@ -60,7 +60,7 @@ describe('Request PSP test account: submit request', () => {
 
       cy.get('button').contains('Get a Stripe test account').click()
 
-      cy.get('#spinner').should('be.visible')
+      cy.get('#spinner-container').should('be.visible')
     })
   })
 })
