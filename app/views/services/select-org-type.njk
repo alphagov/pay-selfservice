@@ -79,7 +79,7 @@
   <script>
     document.getElementById('submit-button').addEventListener('click', function () {
       disableButtonAndShowSpinner()
-      document.getElementById('add-service-form').submit()
+      document.getElementById('add-service-form').requestSubmit()
     })
 
     function disableButtonAndShowSpinner () {
