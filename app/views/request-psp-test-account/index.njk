@@ -1,6 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "includes/spinner.njk" import spinner %}
 
 {% block pageTitle %}
   Request Stripe test account - {{ currentService.name }} - GOV.UK Pay
@@ -9,77 +10,91 @@
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
 
-  {% if isServiceLive %}
-    <h1 class="govuk-heading-l">
-      Test account cannot be requested
-    <h1>
-    <p class="govuk-body">
-      Stripe test accounts cannot be requested for a live service. You can create another service and request a Stripe test account
-    </p>
-  {% else %}
-      {% if requestForPspTestAccountNotStarted %}
-        <form id="submit-request-for-psp-test-account-form" method="post" novalidate>
-            <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-            <h1 class="govuk-heading-l">Get a Stripe test account</h1>
-            <p class="govuk-body">
-              Test your end-to-end reporting process with a Stripe test account. The Stripe reports are different from
-              reports in a regular 'sandbox' account. You’ll be able to access new reports showing
-            </p>
-            <ul class="govuk-list govuk-list--bullet">
-                      <li>PSP fees, and gross and net payments</li>
-                      <li>payments into your bank account</li>
-            </ul>
-            <p class="govuk-body">
-              You can download the data as a CSV file or by integrating with our reporting and reconciliation API.
-            </p>
-            <p class="govuk-body">
-              If you choose to get a Stripe test account, it will replace your sandbox account
-              immediately. You will not be able to change your account back. If you have any existing API keys they
-              will be disabled.
-            </p>
-            <p class="govuk-body">
-              You will need to create new API keys and add them to your integration as your old keys will stop working.
-            </p>
-
-          <div class="button-group">
-            {{ govukButton({
-              text: "Get a Stripe test account",
-              classes: "govuk-!-margin-bottom-0",
-              preventDoubleClick: true
-            }) }}
-          </div>
-        </form>
-    {% elif requestForPspTestAccountSubmitted %}
+    {% if isServiceLive %}
       <h1 class="govuk-heading-l">
-        Account already requested
+        Test account cannot be requested
       </h1>
       <p class="govuk-body">
-        A user has requested a Stripe test account for this service. We usually set up the account within 2 working days.
+        Stripe test accounts cannot be requested for a live service. You can create another service and request a Stripe
+        test account
       </p>
-      <p class="govuk-body">
-        When it’s ready, you’ll find it in
-        <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}">My services</a>
-      </p>
-    {% elif pspTestAccountCreated %}
-      <h1 class="govuk-heading-l">
-        Stripe test account already set up
-      <h1>
-      <p class="govuk-body">
-        There is a test account for this service. Find it in
-        <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}">My services</a>
-      </p>
-    {% elif pspTestAccountRequestSubmitted %}
-      <h1 class="govuk-heading-l">
-        Thanks for requesting a Stripe test account
-      <h1>
-      <p class="govuk-body">
-        Your service’s test account will be ready within 1 working day. We’ll email with confirmation and further information.
-      </p>
-      <p class="govuk-body">
-        Access your live and test services in <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}">My services</a>.
-      </p>
+    {% else %}
+      {% if requestForPspTestAccountNotStarted %}
+        <form id="submit-request-for-psp-test-account-form" method="post" novalidate>
+          <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+          <h1 class="govuk-heading-l">Get a Stripe test account</h1>
+          <p class="govuk-body">
+            Test your end-to-end reporting process with a Stripe test account. The Stripe reports are different from
+            reports in a regular 'sandbox' account. You’ll be able to access new reports showing
+          </p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>PSP fees, and gross and net payments</li>
+            <li>payments into your bank account</li>
+          </ul>
+          <p class="govuk-body">
+            You can download the data as a CSV file or by integrating with our reporting and reconciliation API.
+          </p>
+          <p class="govuk-body">
+            If you choose to get a Stripe test account, it will replace your sandbox account
+            immediately. You will not be able to change your account back. If you have any existing API keys they
+            will be disabled.
+          </p>
+          <p class="govuk-body">
+            You will need to create new API keys and add them to your integration as your old keys will stop working.
+          </p>
+          <p class="govuk-body">
+            Creating your Stripe account may take around ten seconds.
+          </p>
+
+          {{ govukButton({
+            html: "Get a Stripe test account",
+            id: "submit-button",
+            preventDoubleClick: true
+          }) }}
+        </form>
+
+        <div id="spinner-container" hidden="hidden" aria-hidden="true">
+          {{ spinner({
+            text: "We're setting up your Stripe test account, please wait..."
+          }) }}
+        </div>
+
+        {% elif requestForPspTestAccountSubmitted %}
+        <h1 class="govuk-heading-l">
+          Account already requested
+        </h1>
+        <p class="govuk-body">
+          A user has requested a Stripe test account for this service. We usually set up the account within 2 working
+          days.
+        </p>
+        <p class="govuk-body">
+          When it’s ready, you’ll find it in
+          <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}">My services</a>
+        </p>
+        {% elif pspTestAccountCreated %}
+        <h1 class="govuk-heading-l">
+          Stripe test account already set up
+        </h1>
+        <p class="govuk-body">
+          There is a test account for this service. Find it in
+          <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}">My services</a>
+        </p>
+        {% elif pspTestAccountRequestSubmitted %}
+        <h1 class="govuk-heading-l">
+          Thanks for requesting a Stripe test account
+        </h1>
+        <p class="govuk-body">
+          Your service’s test account will be ready within 1 working day. We’ll email with confirmation and further
+          information.
+        </p>
+        <p class="govuk-body">
+          Access your live and test services in <a class="govuk-link" href="{{ routes.serviceSwitcher.index }}">My
+            services</a>.
+        </p>
+      {% endif %}
     {% endif %}
-  {% endif %}
 
   </div>
+
+  <script src="/public/js/components/request-psp-test-account-spinner.js"></script>
 {% endblock %}

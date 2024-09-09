@@ -32,7 +32,10 @@ async function post (req, res, next) {
   }
 
   try {
-    const { service, externalAccountId } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
+    const {
+      service,
+      externalAccountId
+    } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
     await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
     _.unset(req, 'session.pageData.createService')
     req.flash('messages', { state: 'success', icon: '&check;', content: 'We\'ve created your service.' })

@@ -47,5 +47,20 @@ describe('Request PSP test account: submit request', () => {
         expect(location.pathname).to.eq(`/account/${stripeGatewayAccountExternalId}/dashboard`)
       })
     })
+
+    it('should show the loading spinner when the submit button is clicked', () => {
+      setupStubs('NOT_STARTED', 'NOT_STARTED')
+      cy.visit(requestStripeTestAccountUrl)
+
+      cy.get('form').then(form$ => {
+        form$.on('submit', e => {
+          e.preventDefault()
+        })
+      })
+
+      cy.get('button').contains('Get a Stripe test account').click()
+
+      cy.get('#spinner-container').should('be.visible')
+    })
   })
 })

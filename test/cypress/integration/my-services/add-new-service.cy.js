@@ -65,6 +65,32 @@ describe('Add a new service', () => {
       cy.title().should('contain', 'Dashboard')
       cy.get('#system-messages').contains("We've created your service")
     })
+
+    it('should show the loading spinner when the submit button is clicked', () => {
+      cy.task('setupStubs', [
+        userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
+        gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' }),
+        createGatewayAccountStub,
+        assignUserRoleStub
+      ])
+      cy.setEncryptedCookies(authenticatedUserId)
+
+      cy.visit('/my-services')
+      cy.get('a').contains('Add a new service').click()
+      cy.get('input#service-name').type(newServiceName)
+      cy.get('button').contains('Continue').click()
+      cy.get('input#org-type-local').click()
+
+      cy.get('form').then(form$ => {
+        form$.on('submit', e => {
+          e.preventDefault()
+        })
+      })
+
+      cy.get('button').contains('Create service').click()
+
+      cy.get('#spinner-container').should('be.visible')
+    })
   })
 
   describe('Add a new service with a Welsh name', () => {

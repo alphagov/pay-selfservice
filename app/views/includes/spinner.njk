@@ -1,0 +1,7 @@
+{% macro spinner(params) %}
+  <div class="spinner"></div>
+  {% if params.text %}
+    <h3 class="govuk-heading-m govuk-!-text-align-centre">{{ params.text }}</h3>
+  {% endif %}
+{% endmacro %}
+
