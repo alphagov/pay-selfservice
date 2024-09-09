@@ -78,7 +78,9 @@
 
   <script>
     document.getElementById('submit-button').addEventListener('click', function () {
-      disableButtonAndShowSpinner()
+      if (document.getElementById('org-type-local').checked) {
+        disableButtonAndShowSpinner()
+      }
       document.getElementById('add-service-form').requestSubmit()
     })
 
