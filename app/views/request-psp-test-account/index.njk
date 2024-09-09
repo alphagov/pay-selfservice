@@ -94,10 +94,12 @@
   </div>
 
   <script>
-    document.getElementById('submit-button').addEventListener('click', function () {
-      disableButtonAndShowSpinner()
-      document.getElementById('submit-request-for-psp-test-account-form').requestSubmit()
-    })
+    if (document.getElementById('submit-button')) {
+      document.getElementById('submit-button').addEventListener('click', function () {
+        disableButtonAndShowSpinner()
+        document.getElementById('submit-request-for-psp-test-account-form').requestSubmit()
+      })
+    }
 
     function disableButtonAndShowSpinner () {
       document.getElementById('submit-request-for-psp-test-account-form').hidden = true
