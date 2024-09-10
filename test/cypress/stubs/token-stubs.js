@@ -10,6 +10,13 @@ function postCreateTokenForAccountSuccess (opts) {
   })
 }
 
+function getTokensForAccountSuccess (gatewayAccountId) {
+  const path = `/v1/frontend/auth/${gatewayAccountId}`
+  return stubBuilder('GET', path, 200, {
+    response: tokenFixtures.validGetTokensForGatewayAccountResponse()
+  })
+}
+
 function deleteTokenByApiTokenSuccess (gatewayAccountId, apiToken) {
   const path = `/v1/frontend/auth/${gatewayAccountId}`
   return stubBuilder('DELETE', path, 200, {
@@ -24,6 +31,7 @@ function revokeTokensForAccount (gatewayAccountId) {
 
 module.exports = {
   postCreateTokenForAccountSuccess,
+  getTokensForAccountSuccess,
   deleteTokenByApiTokenSuccess,
   revokeTokensForAccount
 }

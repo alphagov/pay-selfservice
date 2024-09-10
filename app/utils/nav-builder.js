@@ -82,7 +82,6 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
 
 const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}, service = {}) => {
   const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, account.external_id)
-
   return [
     {
       id: 'navigation-menu-settings-home',
@@ -96,7 +95,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       name: 'API keys',
       url: apiKeysPath,
       current: pathLookup(currentPath, paths.account.apiKeys.index),
-      permissions: permissions.tokens_update
+      permissions: permissions.tokens_update && !account.disabled
     },
     {
       id: 'navigation-menu-webhooks',
