@@ -20,6 +20,21 @@ const responseBodyToUserTransformer = body => new User(body)
 const responseBodyToUserListTransformer = body => body.map(userData => new User(userData))
 const responseBodyToServiceTransformer = body => new Service(body)
 
+const encode = (pathStrings, baseURL, ...pathParameters) => {
+  console.log(pathStrings, baseURL, pathParameters)
+  if (pathStrings.length !== pathParameters.length + 2) {
+    throw new TypeError('')
+  }
+
+  let result = `${pathStrings[0]}${baseURL}`
+  for (let i = 0; i < pathParameters.length; i++) {
+    result += pathStrings[i + 1]
+    result += encodeURIComponent(pathParameters[i])
+  }
+  result += pathStrings[pathStrings.length - 1]
+  return result
+}
+
 module.exports = function (clientOptions = {}) {
   const baseUrl = clientOptions.baseUrl || ADMINUSERS_URL
   const client = new Client(SERVICE_NAME)
@@ -31,7 +46,7 @@ module.exports = function (clientOptions = {}) {
    * @return {Promise<User>} A promise of a User
    */
   async function getUserByExternalId (externalId) {
-    const url = `${baseUrl}/v1/api/users/${externalId}`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}`
     configureClient(client, url)
     const response = await client.get(url, 'find a user')
     return responseBodyToUserTransformer(response.data)
@@ -44,7 +59,7 @@ module.exports = function (clientOptions = {}) {
    * @param externalIds
    */
   async function getUsersByExternalIds (externalIds = []) {
-    const url = `${baseUrl}/v1/api/users`
+    const url = encode`${baseUrl}/v1/api/users`
     configureClient(client, url)
     const response = await client.get(url, 'find a user', { params: { ids: externalIds.join() } })
     return responseBodyToUserListTransformer(response.data)
@@ -56,7 +71,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<User>}
    */
   async function authenticateUser (email, password) {
-    const url = `${baseUrl}/v1/api/users/authenticate`
+    const url = encode`${baseUrl}/v1/api/users/authenticate`
     configureClient(client, url)
     const response = await client.post(url, { email: email, password: password }, 'find a user')
     return responseBodyToUserTransformer(response.data)
@@ -68,7 +83,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function incrementSessionVersionForUser (externalId) {
-    const url = `${baseUrl}/v1/api/users/${externalId}`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}`
     configureClient(client, url)
     const body = {
       op: 'append',
@@ -85,7 +100,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<ForgottenPassword>}
    */
   async function createForgottenPassword (username) {
-    const url = `${baseUrl}/v1/api/forgotten-passwords`
+    const url = encode`${baseUrl}/v1/api/forgotten-passwords`
     configureClient(client, url)
     const response = await client.post(url, { username: username }, 'create a forgotten password for a user')
     return response.data
@@ -97,7 +112,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<ForgottenPassword>}
    */
   async function getForgottenPassword (code) {
-    const url = `${baseUrl}/v1/api/forgotten-passwords/${code}`
+    const url = encode`${baseUrl}/v1/api/forgotten-passwords/${code}`
     configureClient(client, url)
     const response = await client.get(url, 'get a forgotten password')
     return response.data
@@ -110,7 +125,8 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function updatePasswordForUser (token, newPassword) {
-    const url = `${baseUrl}/v1/api/reset-password`
+    const url = encode`${baseUrl}/v1/api/reset-password`
+    console.log(url)
     configureClient(client, url)
     const response = await client.post(url, { forgotten_password_code: token, new_password: newPassword }, 'update a password for a user')
     return response.data
@@ -123,7 +139,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function sendSecondFactor (externalId, provisional) {
-    const url = `${baseUrl}/v1/api/users/${externalId}/second-factor`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}/second-factor`
     configureClient(client, url)
     const response = await client.post(url, { provisional }, 'post a second factor auth token to the user')
     return response.data
@@ -136,14 +152,14 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function authenticateSecondFactor (externalId, code) {
-    const url = `${baseUrl}/v1/api/users/${externalId}/second-factor/authenticate`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}/second-factor/authenticate`
     configureClient(client, url)
     const response = await client.post(url, { code }, 'authenticate a second factor auth token entered by user')
     return responseBodyToUserTransformer(response.data)
   }
 
   async function getServiceUsers (serviceExternalId) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}/users`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}/users`
     configureClient(client, url)
     const response = await client.get(url, 'get a services users')
     return responseBodyToUserListTransformer(response.data)
@@ -156,7 +172,7 @@ module.exports = function (clientOptions = {}) {
    * @param roleName
    */
   async function assignServiceRole (userExternalId, serviceExternalId, roleName) {
-    const url = `${baseUrl}/v1/api/users/${userExternalId}/services`
+    const url = encode`${baseUrl}/v1/api/users/${userExternalId}/services`
     configureClient(client, url)
     const response = await client.post(url, { service_external_id: serviceExternalId, role_name: roleName }, 'assigns user to a new service')
     return responseBodyToUserTransformer(response.data)
@@ -170,7 +186,8 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<User>}
    */
   async function updateServiceRole (externalId, serviceExternalId, roleName) {
-    const url = `${baseUrl}/v1/api/users/${externalId}/services/${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}/services/${serviceExternalId}`
+
     configureClient(client, url)
     const response = await client.put(url, { role_name: roleName }, 'update role of a service that currently belongs to a user')
     return responseBodyToUserTransformer(response.data)
@@ -185,7 +202,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function createInviteToJoinService (invitee, senderId, serviceExternalId, roleName) {
-    const url = `${baseUrl}/v1/api/invites/create-invite-to-join-service`
+    const url = encode`${baseUrl}/v1/api/invites/create-invite-to-join-service`
     configureClient(client, url)
     const body = {
       email: invitee,
@@ -202,7 +219,7 @@ module.exports = function (clientOptions = {}) {
    * @param serviceExternalId
    */
   async function getInvitedUsersList (serviceExternalId) {
-    const url = `${baseUrl}/v1/api/invites?serviceId=${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/invites?serviceId=${serviceExternalId}`
     configureClient(client, url)
     const response = await client.get(url, 'get invited users for a service')
     return response.data
@@ -213,14 +230,14 @@ module.exports = function (clientOptions = {}) {
    * @param inviteCode
    */
   async function getValidatedInvite (inviteCode) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}`
+    const url = encode`${baseUrl}/v1/api/invites/${inviteCode}`
     configureClient(client, url)
     const response = await client.get(url, 'find a validated invitation')
     return response.data
   }
 
   async function updateInvitePassword (inviteCode, password) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}`
+    const url = encode`${baseUrl}/v1/api/invites/${inviteCode}`
     configureClient(client, url)
     const body = [{
       op: 'replace',
@@ -232,7 +249,7 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function updateInvitePhoneNumber (inviteCode, phoneNumber) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}`
+    const url = encode`${baseUrl}/v1/api/invites/${inviteCode}`
     configureClient(client, url)
     const body = [{
       op: 'replace',
@@ -244,14 +261,14 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function sendOtp (inviteCode) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}/send-otp`
+    const url = encode`${baseUrl}/v1/api/invites/${inviteCode}/send-otp`
     configureClient(client, url)
     const response = await client.post(url, 'send OTP code')
     return response.data
   }
 
   async function reprovisionOtp (inviteCode) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}/reprovision-otp`
+    const url = encode`${baseUrl}/v1/api/invites/${inviteCode}/reprovision-otp`
     configureClient(client, url)
     const response = await client.post(url, 're-provision OTP key')
     return response.data
@@ -265,7 +282,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|promise|Constructor}
    */
   async function completeInvite (inviteCode, secondFactorMethod) {
-    const url = `${baseUrl}/v1/api/invites/${inviteCode}/complete`
+    const url = encode`${baseUrl}/v1/api/invites/${inviteCode}/complete`
     configureClient(client, url)
     const body = secondFactorMethod ? { second_factor: secondFactorMethod } : {}
     const response = await client.post(url, body, 'complete invite')
@@ -273,7 +290,7 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function verifyOtpForInvite (inviteCode, securityCode) {
-    const url = `${baseUrl}/v2/api/invites/otp/validate`
+    const url = encode`${baseUrl}/v2/api/invites/otp/validate`
     configureClient(client, url)
     const body = {
       code: inviteCode,
@@ -289,7 +306,7 @@ module.exports = function (clientOptions = {}) {
    * @param email
    */
   async function createSelfSignupInvite (email) {
-    const url = `${baseUrl}/v1/api/invites/create-self-registration-invite`
+    const url = encode`${baseUrl}/v1/api/invites/create-self-registration-invite`
     configureClient(client, url)
     const response = await client.post(url, { email: email }, 'create self-registration invite')
     return response.data
@@ -305,7 +322,7 @@ module.exports = function (clientOptions = {}) {
         userRemover: removerExternalId
       }
     }
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}/users/${userExternalId}`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}/users/${userExternalId}`
     configureClient(client, url)
     const response = await client.delete(url, 'delete a user from a service', config)
     return response.data
@@ -320,7 +337,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|promise|Constructor}
    */
   async function createService (serviceName, serviceNameCy) {
-    const url = `${baseUrl}/v1/api/services`
+    const url = encode`${baseUrl}/v1/api/services`
     configureClient(client, url)
     const body = {}
     if (serviceName) {
@@ -341,7 +358,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|Constructor|promise}
    */
   async function updateService (serviceExternalId, body) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}`
     configureClient(client, url)
     const response = await client.patch(url, body, 'update service')
     return responseBodyToServiceTransformer(response.data)
@@ -356,7 +373,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|Constructor|promise}
    */
   async function updateServiceName (serviceExternalId, serviceName, serviceNameCy) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}`
     configureClient(client, url)
     const body = [
       {
@@ -382,7 +399,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {*|Constructor|promise}
    */
   async function updateCollectBillingAddress (serviceExternalId, collectBillingAddress) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}`
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -394,7 +411,7 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function updateDefaultBillingAddressCountry (serviceExternalId, countryCode) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}`
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -413,7 +430,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<Service|Error>}
    */
   async function addGatewayAccountsToService (serviceExternalId, gatewayAccountIds) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}`
     configureClient(client, url)
     const body = {
       op: 'add',
@@ -430,7 +447,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function provisionNewOtpKey (externalId) {
-    const url = `${baseUrl}/v1/api/users/${externalId}/second-factor/provision`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}/second-factor/provision`
     configureClient(client, url)
     const response = await client.post(url, 'create a new 2FA provisional OTP key')
     return responseBodyToUserTransformer(response.data)
@@ -444,7 +461,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function configureNewOtpKey (externalId, code, secondFactor) {
-    const url = `${baseUrl}/v1/api/users/${externalId}/second-factor/activate`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}/second-factor/activate`
     configureClient(client, url)
     const body = {
       code: code,
@@ -455,7 +472,7 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function updateCurrentGoLiveStage (serviceExternalId, newStage) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}`
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -467,7 +484,7 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function updatePspTestAccountStage (serviceExternalId, newStage) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}`
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -479,14 +496,14 @@ module.exports = function (clientOptions = {}) {
   }
 
   async function addStripeAgreementIpAddress (serviceExternalId, ipAddress) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}/stripe-agreement`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}/stripe-agreement`
     configureClient(client, url)
     const response = await client.post(url, { ip_address: ipAddress }, 'post the ip address of the user who agreed to stripe terms')
     return response.data
   }
 
   async function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId) {
-    const url = `${baseUrl}/v1/api/services/${serviceExternalId}/govuk-pay-agreement`
+    const url = encode`${baseUrl}/v1/api/services/${serviceExternalId}/govuk-pay-agreement`
     configureClient(client, url)
     const response = await client.post(url, { user_external_id: userExternalId }, 'post the external id of the user who agreed to GovUk Pay terms')
     return response.data
@@ -499,7 +516,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function updatePhoneNumberForUser (externalId, newPhoneNumber) {
-    const url = `${baseUrl}/v1/api/users/${externalId}`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}`
     configureClient(client, url)
     const body = {
       op: 'replace',
@@ -516,7 +533,7 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   async function updateFeaturesForUser (externalId, features) {
-    const url = `${baseUrl}/v1/api/users/${externalId}`
+    const url = encode`${baseUrl}/v1/api/users/${externalId}`
     configureClient(client, url)
     const body = {
       op: 'replace',
