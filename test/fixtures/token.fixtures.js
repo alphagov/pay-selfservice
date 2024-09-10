@@ -1,18 +1,21 @@
 'use strict'
 
-function validCreateTokenForGatewayAccountRequest (opts = {}) {
-  return {
-    account_id: opts.account_id,
-    created_by: opts.created_by || 'foo@example.com',
-    type: opts.type || 'PRODUCTS',
-    description: opts.description || 'A token'
-  }
-}
-
 function validCreateTokenForGatewayAccountResponse (opts = {}) {
   return {
     token: opts.token || 'a-token'
   }
+}
+
+function validGetTokensForGatewayAccountResponse () {
+  return {tokens: [{
+    token_link: '12345678901234567890',
+    description: 'my-token-description',
+    token_type: 'CARD',
+    type: 'API',
+    issued_date: "10 Sept 2024 - 11:52",
+    last_used: "10 Sept 2024 - 12:52",
+    created_by: "user-name"
+  }]}
 }
 
 function validDeleteTokenByApiTokenRequest (apiToken) {
@@ -22,7 +25,7 @@ function validDeleteTokenByApiTokenRequest (apiToken) {
 }
 
 module.exports = {
-  validCreateTokenForGatewayAccountRequest,
   validCreateTokenForGatewayAccountResponse,
+  validGetTokensForGatewayAccountResponse,
   validDeleteTokenByApiTokenRequest
 }

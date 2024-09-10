@@ -79,13 +79,32 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox'),
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox', account),
       formatAccountPathsFor: formatAccountPathsFor
     }
 
     const body = render('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('API keys')
+  })
+
+  it('should not render API keys navigation link when account is disabled', function () {
+    const account = gatewayAccountFixtures.validGatewayAccount({
+      disabled: true
+    })
+    const testPermissions = {
+      tokens_update: true
+    }
+    const templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox', account),
+      formatAccountPathsFor: formatAccountPathsFor
+    }
+
+    const body = render('api-keys/index', templateData)
+
+    body.should.containNoSelectorWithText('API keys')
   })
 
   it('should render Accounts credentials navigation link when user have gateway credentials read permission' +
