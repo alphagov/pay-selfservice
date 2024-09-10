@@ -219,9 +219,9 @@ module.exports = function (clientOptions = {}) {
    * @param serviceExternalId
    */
   async function getInvitedUsersList (serviceExternalId) {
-    const url = encode`${baseUrl}/v1/api/invites?serviceId=${serviceExternalId}`
+    const url = encode`${baseUrl}/v1/api/invites`
     configureClient(client, url)
-    const response = await client.get(url, 'get invited users for a service')
+    const response = await client.get(url, 'get invited users for a service', { params: { serviceId: serviceExternalId } })
     return response.data
   }
 
