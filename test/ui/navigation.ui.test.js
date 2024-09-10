@@ -73,6 +73,7 @@ describe('navigation menu', function () {
   })
 
   it('should render API keys navigation link when user have tokens read permission', function () {
+    const account = gatewayAccountFixtures.validGatewayAccount({})
     const testPermissions = {
       tokens_update: true
     }
