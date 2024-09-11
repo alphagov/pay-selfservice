@@ -7,7 +7,7 @@ const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID, ENVIRONMENT_ID } = req
 const Connector = require('../services/clients/connector.client.js').ConnectorClient
 
 const { keys } = require('@govuk-pay/pay-js-commons').logging
-const { addField } = require('../utils/request-context')
+const { addField } = require('../services/clients/base/request-context')
 const { getSwitchingCredentialIfExists } = require('../utils/credentials')
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
