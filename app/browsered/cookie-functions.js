@@ -1,7 +1,8 @@
 'use strict'
 
 const DEFAULT_COOKIE_CONSENT = {
-  analytics: false
+  analytics: false,
+  SameSite: 'Lax'
 }
 
 const COOKIE_CATEGORIES = {
@@ -98,7 +99,7 @@ function setConsentCookie (options) {
 
           if (Cookie(cookie)) {
             document.cookie = cookie + '=;expires=' + new Date() + ';domain=' +
-              getCookieDomain() + ';path=/'
+              getCookieDomain() + ';path=/' + ';SameSite=Lax'
           }
         }
       }
@@ -155,7 +156,7 @@ function setCookie (name, value, options) {
     if (typeof options === 'undefined') {
       options = {}
     }
-    var cookieString = name + '=' + value + '; path=/; domain=' + getCookieDomain()
+    var cookieString = name + '=' + value + '; path=/; domain=' + getCookieDomain() + '; SameSite=Lax'
     if (options.days) {
       var date = new Date()
       date.setTime(date.getTime() + (options.days * 24 * 60 * 60 * 1000))

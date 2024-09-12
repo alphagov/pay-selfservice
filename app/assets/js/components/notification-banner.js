@@ -7,7 +7,7 @@
     e.preventDefault()
 
     document.cookie = 'govuk_pay_notifications={"new_contract_terms_banner_dismissed":true}'
-      + ';max-age=' + SIX_MONTHS_IN_SECS
+      + ';max-age=' + SIX_MONTHS_IN_SECS + ';SameSite=Lax'
     runAnalytics()
     removeBanner()
   }
