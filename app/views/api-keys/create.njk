@@ -48,19 +48,19 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
     </p>
   {% else %}
     <h1 class="govuk-heading-l page-title">New API key</h1>
-    <p class="govuk-body">Copy your key to somewhere safe. You won’t be able to see it again once you leave this page. You must copy the whole key, including the <code>api_test_</code> or <code>api_live_</code> prefix.</p>
-
     <div class="govuk-warning-text govuk-!-margin-bottom-0">
       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
       <strong class="govuk-warning-text__text">
         <span class="govuk-warning-text__assistive">Warning</span>
-        <h2 class="govuk-heading-m">API security</h2>
+        <h2 class="govuk-heading-m">Store your API key securely</h2>
+</strong>
+    <p class="govuk-body">Do not:</p>
         <ul class="govuk-list govuk-list--bullet">
-          <li>You must store your API keys securely.</li>
-          <li>You must not share this key in publicly accessible documents or repositories.</li>
-          <li>You must not share it with anyone who should not be using the GOV.UK Pay API directly.</li>
-        </ul>  
-      </strong>
+          <li>email it to anyone</li>
+          <li>keep it in documents or repositories publicly available on the internet</li>
+          <li>share it with anyone who should not have direct access to the GOV.UK Pay API</li>
+        </ul>
+    <p class="govuk-body">Copy your key to somewhere safe. You will not be able to see it again after you leave this page. You must copy the whole key, including the <code>api_test_</code> or <code>api_live_</code> prefix.</p>
       <strong class="govuk-warning-text__text">
         <p class="govuk-body">
           More about <a class="govuk-link" href="https://docs.payments.service.gov.uk/security/#securing-your-developer-keys">securing your API keys</a>. 
