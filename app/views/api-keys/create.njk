@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
-Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  Create an API key - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -9,14 +9,15 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
-  {% if not token %}
-  <h1 class="govuk-heading-l page-title">Create an API key</h1>
-    <form class="form" method="post" action="{{formatAccountPathsFor(routes.account.apiKeys.create, currentGatewayAccount.external_id)}}" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+  <div class="govuk-grid-column-two-thirds">
+    {% if not token %}
+      <h1 class="govuk-heading-l page-title">Create an API key</h1>
+      <form class="form" method="post"
+            action="{{ formatAccountPathsFor(routes.account.apiKeys.create, currentGatewayAccount.external_id) }}"
+            novalidate>
+        <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
-      {{
-        govukInput({
+        {{ govukInput({
           id: "description",
           name: "description",
           type: "text",
@@ -30,53 +31,53 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
           hint: {
             text: "For example, “John Smith’s API key”"
           }
-        })
-      }}
-      <p class="govuk-body">When generated the key will only be shown once.</p>
+        }) }}
+        <p class="govuk-body">When generated the key will only be shown once.</p>
 
-      {{
-        govukButton({
+        {{ govukButton({
           text: "Continue",
           attributes: {
             id: "generate-button"
           }
-        })
-      }}
-    </form>
-    <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state" href="{{formatAccountPathsFor(routes.account.apiKeys.index, currentGatewayAccount.external_id)}}">Cancel</a>
-    </p>
-  {% else %}
-    <h1 class="govuk-heading-l page-title">New API key</h1>
-    <p class="govuk-body">Copy your key to somewhere safe. You won’t be able to see it again once you leave this page. You must copy the whole key, including the <code>api_test_</code> or <code>api_live_</code> prefix.</p>
+        }) }}
+      </form>
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state"
+           href="{{ formatAccountPathsFor(routes.account.apiKeys.index, currentGatewayAccount.external_id) }}">Cancel</a>
+      </p>
+    {% else %}
+      <h1 class="govuk-heading-l page-title">New API key</h1>
 
-    <div class="govuk-warning-text govuk-!-margin-bottom-0">
-      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-      <strong class="govuk-warning-text__text">
-        <span class="govuk-warning-text__assistive">Warning</span>
-        <h2 class="govuk-heading-m">API security</h2>
+      <div class="govuk-warning-text govuk-!-margin-bottom-0">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-warning-text__assistive">Warning</span>
+          <h2 class="govuk-heading-m">Store your API key securely</h2>
+        </strong>
+
+        <p class="govuk-body">Do not:</p>
         <ul class="govuk-list govuk-list--bullet">
-          <li>You must store your API keys securely.</li>
-          <li>You must not share this key in publicly accessible documents or repositories.</li>
-          <li>You must not share it with anyone who should not be using the GOV.UK Pay API directly.</li>
-        </ul>  
-      </strong>
-      <strong class="govuk-warning-text__text">
-        <p class="govuk-body">
-          More about <a class="govuk-link" href="https://docs.payments.service.gov.uk/security/#securing-your-developer-keys">securing your API keys</a>. 
-        </p>
-      </strong> 
-    </div>
+          <li>email it to anyone</li>
+          <li>keep it in documents or repositories publicly available on the internet</li>
+          <li>share it with anyone who should not have direct access to the GOV.UK Pay API</li>
+        </ul>
+        <p class="govuk-body">Copy your key to somewhere safe. You will not be able to see it again after you leave this
+          page. You must copy the whole key, including the <code>api_test_</code> or <code>api_live_</code> prefix.</p>
+          <p class="govuk-body">
+            More about <a class="govuk-link"
+                          href="https://docs.payments.service.gov.uk/security/#securing-your-developer-keys">securing
+              your API keys</a>.
+          </p>
+      </div>
 
-    <h2 class="govuk-heading-m">
-      {{description}}
-    </h2>
-    <div>
-      <span id="token" class="code copy-this-api-key">{{token}}</span>
-    </div>
+      <h2 class="govuk-heading-m">
+        {{ description }}
+      </h2>
+      <div>
+        <span id="token" class="code copy-this-api-key">{{ token }}</span>
+      </div>
 
-    {{
-      govukButton({
+      {{ govukButton({
         text: "Copy API key to clipboard",
         classes: "govuk-button--secondary govuk-!-margin-top-4",
         attributes: {
@@ -84,18 +85,19 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
           "data-copy-text": true,
           "data-target": "copy-this-api-key",
           "data-success": "API key has been copied",
-          "data-notification-target": "copy-this-api-key-notification" 
+          "data-notification-target": "copy-this-api-key-notification"
         }
-      })
-    }}
+      }) }}
 
-    <div class="copy-this-api-key-notification govuk-visually-hidden" aria-live="assertive"></div>
+      <div class="copy-this-api-key-notification govuk-visually-hidden" aria-live="assertive"></div>
 
-    <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state" href="{{formatAccountPathsFor(routes.account.apiKeys.index, currentGatewayAccount.external_id)}}" id="finish-link">
-        Back to API keys
-      </a>
-    </p>
-  {% endif %}
-</div>
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state"
+           href="{{ formatAccountPathsFor(routes.account.apiKeys.index, currentGatewayAccount.external_id) }}"
+           id="finish-link">
+          Back to API keys
+        </a>
+      </p>
+    {% endif %}
+  </div>
 {% endblock %}
