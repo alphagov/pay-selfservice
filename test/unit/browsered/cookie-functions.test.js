@@ -29,10 +29,9 @@ describe('Cookie functions', () => {
   })
   describe('setCookieConsent', () => {
     it('should set consent cookie correctly', () => {
-      cookieFunctions.setConsentCookie({ 'analytics': true, 'SameSite': 'Lax' })
+      cookieFunctions.setConsentCookie({ 'analytics': true })
       let analyticsCookie = JSON.parse(cookieFunctions.getCookie('govuk_pay_cookie_policy'))
       expect(analyticsCookie.analytics).to.be.equal(true)
-      expect(analyticsCookie.SameSite).to.be.equal('Lax')
     })
 
     it('should update existing analytics and delete analytics cookies if not consented', () => {
@@ -40,11 +39,10 @@ describe('Cookie functions', () => {
       document.cookie = '_ga=ga1;domain=.example.org'
       document.cookie = '_gid=gid1;domain=.example.org'
       document.cookie = '_gat_govuk_shared=shared;domain=.example.org'
-      cookieFunctions.setConsentCookie({ 'analytics': false, 'SameSite': 'Lax' })
+      cookieFunctions.setConsentCookie({ 'analytics': false })
 
       let analyticsCookie = JSON.parse(cookieFunctions.getCookie('govuk_pay_cookie_policy'))
       expect(analyticsCookie.analytics).to.be.equal(false)
-      expect(analyticsCookie.SameSite).to.be.equal('Lax')
       expect(cookieFunctions.getCookie('_ga')).to.be.equal(null)
       expect(cookieFunctions.getCookie('_gid')).to.be.equal(null)
       expect(cookieFunctions.getCookie('_gat_govuk_shared')).to.be.equal(null)
@@ -75,14 +73,6 @@ describe('Cookie functions', () => {
 
       expect(expiryDate.getTime()).to.be.greaterThan(previousDateToTargetExpiryDate.getTime())
       expect(expiryDate.getTime()).to.be.lessThan(nextDateToTargetExpiryDate.getTime())
-    })
-
-    it('should set SameSite on the cookie', () => {
-      const cookieExpiryDays = 10
-      const cookieString = cookieFunctions.setCookie('govuk_pay_cookie_policy',
-        '{"analytics":false}', { days: cookieExpiryDays })
-
-      expect(cookieString).to.contain('SameSite=Lax')
     })
   })
 
