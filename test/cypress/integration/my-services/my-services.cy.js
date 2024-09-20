@@ -17,6 +17,50 @@ function getUserAndAccountStubs (type, paymentProvider) {
   ]
 }
 
+describe('User has access to Worldpay services', () => {
+  it('should display WORLDPAY TEST SERVICE label on the Worldpay Test Service only', () => {
+    cy.task('setupStubs', [
+      userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
+        { serviceName: 'Service with a Worldpay test account only', gatewayAccountIds: ['10'] }
+      ]),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '10', type: 'test', paymentProvider: 'worldpay' })
+    ])
+    cy.setEncryptedCookies(authenticatedUserId)
+
+    cy.visit('/my-services')
+    cy.get('strong').should('have.class', 'govuk-tag govuk-tag--grey').contains('WORLDPAY TEST SERVICE')
+  })
+
+  it('should not display WORLDPAY TEST SERVICE label where there is a Worldpay Live account', () => {
+    cy.task('setupStubs', [
+      userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
+        { serviceName: 'Service with a Worldpay test account only', gatewayAccountIds: ['13'] }
+      ]),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '13', type: 'live', paymentProvider: 'worldpay' })
+    ])
+    cy.setEncryptedCookies(authenticatedUserId)
+
+    cy.visit('/my-services')
+    cy.get('h3').should('not.have.class', 'govuk-tag govuk-tag--grey')
+  })
+
+  it('should not display WORLDPAY TEST SERVICE label where there are Worldpay and sandbox accounts', () => {
+    cy.task('setupStubs', [
+      userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
+        { serviceName: 'Old service with Worldpay and Sandbox test accounts', gatewayAccountIds: ['11', '12'] }
+      ]),
+      gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
+        { gatewayAccountId: '11', type: 'test', paymentProvider: 'sandbox' },
+        { gatewayAccountId: '12', type: 'test', paymentProvider: 'worldpay' }
+      ])
+    ])
+    cy.setEncryptedCookies(authenticatedUserId)
+
+    cy.visit('/my-services')
+    cy.get('h3').should('not.have.class', 'govuk-tag govuk-tag--grey')
+  })
+})
+
 describe('The user has fewer than 8 services', () => {
   it('should show the reports section and list services, but not display the service filter', () => {
     cy.task('setupStubs', getUserAndAccountStubs('live', 'sandbox'))
