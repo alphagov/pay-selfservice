@@ -1,8 +1,16 @@
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+
 <div class="govuk-grid-row service_list_item" data-name="{{ service.name }}">
   <div class="govuk-grid-column-full">
     <hr/>
     <h3 class="govuk-heading-s service-name">
       {{ service.name }}
+      {% if service.isWorldpayTestService %}
+        {{govukTag({
+          text: "WORLDPAY TEST SERVICE",
+          classes: "govuk-tag--grey"
+        })}}
+      {% endif %}
       {% if service.permissions.service_name_update %}
       <a href="{{formatServicePathsFor(routes.service.editServiceName.index, service.external_id)}}" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-regular govuk-!-margin-left-2 edit-service-name">
         Edit name <span class="govuk-visually-hidden">for {{ service.name }}</span>
@@ -12,12 +20,12 @@
   </div>
   <div class="govuk-grid-column-two-thirds">
   {% if service.gatewayAccounts.length %}
-      <ul class="govuk-list">
-        {% for account in service.gatewayAccounts %}
-          {% include "./_service-switch.njk" %}
-        {% endfor %}
-      </ul>
-    {% endif %}
+    <ul class="govuk-list">
+      {% for account in service.gatewayAccounts %}
+        {% include "./_service-switch.njk" %}
+      {% endfor %}
+    </ul>
+  {% endif %}
   </div>
   <div id="team-members" class="govuk-grid-column-one-third">
     <ul class="govuk-list">

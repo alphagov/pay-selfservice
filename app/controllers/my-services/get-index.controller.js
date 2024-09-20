@@ -27,6 +27,11 @@ function sortServicesByLiveThenName (a, b) {
   return 0
 }
 
+function isWorldpayTestService (gatewayAccounts) {
+  return gatewayAccounts.length === 1 && gatewayAccounts[0].type === 'test' &&
+    gatewayAccounts[0].payment_provider.toUpperCase() === 'WORLDPAY'
+}
+
 module.exports = async function getServiceList (req, res) {
   const servicesRoles = lodash.get(req, 'user.serviceRoles', [])
   const newServiceId = res.locals.flash && res.locals.flash.inviteSuccessServiceId &&
@@ -51,7 +56,8 @@ module.exports = async function getServiceList (req, res) {
         external_id: serviceRole.service.externalId,
         gatewayAccounts: lodash.sortBy(gatewayAccounts, 'type', 'asc'),
         permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name)),
-        isAdminUser: isAdminUser
+        isAdminUser: isAdminUser,
+        isWorldpayTestService: isWorldpayTestService(gatewayAccounts)
       }
       return serviceData
     })
