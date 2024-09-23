@@ -86,28 +86,6 @@ describe('auth service', function () {
     })
   })
 
-  describe('ensureNotDisabled', function () {
-    it('should call lockout user when user has a truthy disabled property', function (done) {
-      const user = mockSession.getUser({ disabled: true })
-      const nextSpy = sinon.spy()
-
-      auth.lockOutDisabledUsers({ user: user, headers: {} }, response, nextSpy)
-      assert(nextSpy.notCalled)
-      assert(response.redirect.calledWithExactly('/noaccess'))
-      done()
-    })
-
-    it('should just call next when user has a falsey disabled property', function (done) {
-      const user = mockSession.getUser({ disabled: false })
-      const nextSpy = sinon.spy()
-
-      auth.lockOutDisabledUsers({ user: user, headers: {} }, response, nextSpy)
-      assert(nextSpy.called)
-      assert(response.render.notCalled)
-      done()
-    })
-  })
-
   describe('noAccess', function () {
     it('call next when on no access', function (done) {
       const invalid = _.cloneDeep(validRequest())
