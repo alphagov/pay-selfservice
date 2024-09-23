@@ -20,7 +20,6 @@ const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
 // Exports
 module.exports = {
   enforceUserFirstFactor,
-  lockOutDisabledUsers,
   initialise,
   deserializeUser,
   serializeUser,
@@ -33,13 +32,6 @@ module.exports = {
 }
 
 // Middleware
-function lockOutDisabledUsers (req, res, next) {
-  if (req.user && req.user.disabled) {
-    logger.info('User locked out due to many password attempts')
-    return noAccess(req, res, next)
-  }
-  return next()
-}
 
 function enforceUserFirstFactor (req, res, next) {
   let hasUser = lodash.get(req, 'user')
