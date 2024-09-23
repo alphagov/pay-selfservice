@@ -14,7 +14,7 @@ const getServiceAndAccount = require('./middleware/get-service-and-gateway-accou
 const { NotFoundError } = require('./errors')
 
 // Middleware
-const { lockOutDisabledUsers, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
+const { enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth.service')
 const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
 const restrictToSandboxOrStripeTestAccount = require('./middleware/restrict-to-sandbox-or-stripe-test-account')
@@ -152,8 +152,6 @@ module.exports.bind = function (app) {
   service.use(getServiceAndAccount, userIsAuthorised)
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
-
-  app.all(lockOutDisabledUsers) // On all requests, if there is a user, and its disabled, lock out.
 
   // ----------------------
   // UNAUTHENTICATED ROUTES
