@@ -11,6 +11,7 @@ const accountUrls = require('./utils/gateway-account-urls')
 
 const userIsAuthorised = require('./middleware/user-is-authorised')
 const getServiceAndAccount = require('./middleware/get-service-and-gateway-account.middleware')
+const checkDegatewayParameters = require('./middleware/check-degateway-parameters')
 const { NotFoundError } = require('./errors')
 
 // Middleware
@@ -141,6 +142,11 @@ const {
 module.exports.generateRoute = generateRoute
 module.exports.paths = paths
 
+const keys = {
+  SERVICE_EXTERNAL_ID: 'serviceExternalId',
+  ACCOUNT_TYPE: 'gatewayAccountExternalId'
+}
+
 module.exports.bind = function (app) {
   const account = new Router({ mergeParams: true })
   account.use(getServiceAndAccount, userIsAuthorised)
@@ -152,6 +158,14 @@ module.exports.bind = function (app) {
   service.use(getServiceAndAccount, userIsAuthorised)
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
+
+  // -------------------------------------------------------------------------------
+  // ROUTES BY SERVICE ID AND ACCOUNT TYPE - ACCOUNT SIMPLIFICATION
+  // checkDegatewayParameters middleware is temporary and will eventually be deleted
+  // -------------------------------------------------------------------------------
+
+  service.get(`/:${keys.ACCOUNT_TYPE}/settings/service-name`,
+    checkDegatewayParameters, permission('service-name:read'), editServiceNameController.get)
 
   // ----------------------
   // UNAUTHENTICATED ROUTES
