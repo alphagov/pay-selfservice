@@ -92,6 +92,9 @@ const organisationUrlController = require('./controllers/switch-psp/organisation
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
 
+// Simplified Accounts controllers
+const serviceNameController = require('./controllers/settings/service-name.controller')
+
 // Assignments
 const {
   allServiceTransactions,
@@ -165,7 +168,7 @@ module.exports.bind = function (app) {
   // -------------------------------------------------------------------------------
 
   service.get(`/:${keys.ACCOUNT_TYPE}/settings/service-name`,
-    checkDegatewayParameters, permission('service-name:read'), editServiceNameController.get)
+    checkDegatewayParameters, permission('service-name:read'), serviceNameController.getServiceNamePage)
 
   // ----------------------
   // UNAUTHENTICATED ROUTES
