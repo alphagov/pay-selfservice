@@ -27,7 +27,7 @@ function sessionCookie () {
       ephemeral: false, // when true, cookie expires when the browser closes
       httpOnly: true, // when true, cookie is not accessible from javascript
       secureProxy: !DISABLE_INTERNAL_HTTPS,
-      sameSite: "Lax"
+      sameSite: 'Lax'
     }
   })
 }
@@ -43,7 +43,7 @@ function registrationCookie () {
       ephemeral: false, // when true, cookie expires when the browser closes
       httpOnly: true, // when true, cookie is not accessible from javascript
       secureProxy: !DISABLE_INTERNAL_HTTPS, // when true, cookie will only be sent over SSL. use key 'secureProxy' instead if you handle SSL not in your node process
-      SameSite: 'Lax'
+      sameSite: 'Lax'
     }
   })
 }
