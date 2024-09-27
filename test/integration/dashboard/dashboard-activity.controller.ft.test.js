@@ -1,5 +1,7 @@
 'use strict'
 
+require('../../test-helpers/serialize-mock.js')
+
 const supertest = require('supertest')
 const { expect } = require('chai')
 const cheerio = require('cheerio')
@@ -39,6 +41,19 @@ const mockConnectorGetGatewayAccount = (paymentProvider, type) => {
       external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
       payment_provider: paymentProvider,
       type
+    }))
+}
+
+const mockConnectorGetGatewayAccounts = (paymentProvider, type) => {
+  nock(CONNECTOR_URL)
+    .get(`/v1/api/accounts?accountIds=${GATEWAY_ACCOUNT_ID}`)
+    .reply(200, gatewayAccountFixtures.validGatewayAccountsResponse({
+      accounts: [{
+        gateway_account_id: `${GATEWAY_ACCOUNT_ID}`,
+        type: type || 'test',
+        payment_provider: paymentProvider || 'sandbox',
+        external_id: `${GATEWAY_ACCOUNT_EXTERNAL_ID}`
+      }]
     }))
 }
 
@@ -103,6 +118,7 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetGatewayAccounts()
         mockConnectorGetStripeAccount()
         mockStripeRetrieveAccount(true, null)
 
@@ -179,6 +195,7 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetGatewayAccounts()
         mockConnectorGetStripeAccount()
         mockStripeRetrieveAccount(true, null)
 
@@ -232,6 +249,7 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetGatewayAccounts()
         mockConnectorGetStripeAccount()
         mockStripeRetrieveAccount(true, null)
 
@@ -285,6 +303,7 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetGatewayAccounts()
         mockConnectorGetStripeAccount()
         mockStripeRetrieveAccount(true, null)
 
@@ -338,6 +357,7 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetGatewayAccounts()
         mockConnectorGetStripeAccount()
         mockStripeRetrieveAccount(true, null)
 
@@ -393,6 +413,7 @@ describe('dashboard-activity-controller', () => {
         }))
 
         mockConnectorGetGatewayAccount()
+        mockConnectorGetGatewayAccounts()
         mockConnectorGetStripeAccount()
         mockStripeRetrieveAccount(true, null)
 
@@ -430,6 +451,7 @@ describe('dashboard-activity-controller', () => {
       })
     })
   })
+
   describe('When the dashboard is retrieved for a service that has requested to go live', () => {
     let session
 
@@ -442,6 +464,7 @@ describe('dashboard-activity-controller', () => {
 
       mockLedgerGetTransactionsSummary()
       mockConnectorGetGatewayAccount('sandbox', 'test')
+      mockConnectorGetGatewayAccounts()
       mockConnectorGetStripeAccount()
       mockStripeRetrieveAccount(true, null)
 
@@ -471,6 +494,7 @@ describe('dashboard-activity-controller', () => {
 
       mockLedgerGetTransactionsSummary()
       mockConnectorGetGatewayAccount('sandbox', 'test')
+      mockConnectorGetGatewayAccounts()
       mockConnectorGetStripeAccount()
       mockStripeRetrieveAccount(true, null)
 
@@ -504,6 +528,7 @@ describe('dashboard-activity-controller', () => {
 
       beforeEach('Arrange', () => {
         mockConnectorGetGatewayAccount('stripe', 'live')
+        mockConnectorGetGatewayAccounts('stripe', 'live')
         mockConnectorGetStripeAccount()
       })
 
@@ -607,6 +632,7 @@ describe('dashboard-activity-controller', () => {
 
       mockLedgerGetTransactionsSummary()
       mockConnectorGetGatewayAccount('sandbox', 'live')
+      mockConnectorGetGatewayAccounts()
       mockConnectorGetStripeSetup(true, true, true)
       app = createAppWithSession(getApp(), session)
     })
@@ -626,6 +652,7 @@ describe('dashboard-activity-controller', () => {
 
     before('Arrange', () => {
       mockConnectorGetGatewayAccount()
+      mockConnectorGetGatewayAccounts()
 
       nock(PRODUCTS_URL)
         .get(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products?type=AGENT_INITIATED_MOTO`)

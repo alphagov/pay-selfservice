@@ -73,6 +73,13 @@ describe('Go live link on dashboard', () => {
     })
 
     describe('Go live link not shown', () => {
+      it('should not show Request a live account link when go-live stage is NOT_STARTED and account is a Worldpay test account', () => {
+        setupStubs('NOT_STARTED', 'worldpay')
+        cy.visit(dashboardUrl)
+
+        cy.get('#request-to-go-live-link').should('not.contain', 'Request a live account')
+      })
+
       it('should not show request to go live link when go-live stage is LIVE', () => {
         setupStubs('LIVE')
         cy.visit(dashboardUrl)
@@ -99,9 +106,9 @@ describe('Go live link on dashboard', () => {
     })
   })
 
-  function setupStubs (goLiveStage) {
+  function setupStubs (goLiveStage, paymentProvider) {
     cy.task('setupStubs', [
-      ...utils.getUserAndGatewayAccountByExternalIdStubs(utils.buildServiceRoleForGoLiveStage(goLiveStage)),
+      ...utils.getUserAndGatewayAccountByExternalIdStubs(utils.buildServiceRoleForGoLiveStage(goLiveStage), paymentProvider),
       transactionStubs.getTransactionsSummarySuccess()
     ])
   }

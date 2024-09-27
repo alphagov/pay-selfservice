@@ -220,17 +220,6 @@ function validGatewayAccountsResponse (opts = {}) {
   }
 }
 
-function validDirectDebitGatewayAccountResponse (opts = {}) {
-  return {
-    gateway_account_id: opts.gateway_account_id || 73,
-    gateway_account_external_id: opts.gateway_account_external_id || 'DIRECT_DEBIT:' + 'a9c797ab271448bdba21359e15672076',
-    payment_provider: opts.payment_provider || 'sandbox',
-    type: opts.type || 'test',
-    analytics_id: opts.analytics_id || 'd82dae5bcb024828bb686574a932b5a5',
-    is_connected: opts.is_connected || false
-  }
-}
-
 function validCreateGatewayAccountRequest (opts = {}) {
   const data = {
     payment_provider: opts.payment_provider || 'sandbox',
@@ -420,7 +409,6 @@ module.exports = {
   validGatewayAccountTokensResponse,
   validGatewayAccountResponse,
   validGatewayAccountsResponse,
-  validDirectDebitGatewayAccountResponse,
   validCreateGatewayAccountRequest,
   validUpdateGatewayAccountCredentialsRequest,
   validGatewayAccountCredentialsResponse,

@@ -26,6 +26,7 @@ const {
   DENIED
 } = require('../../models/go-live-stage')
 const pspTestAccountStage = require('../../models/psp-test-account-stage')
+const serviceService = require('../../services/service.service')
 
 const links = {
   demoPayment: 0,
@@ -97,11 +98,19 @@ const displayRequestTestStripeAccountLink = (service, account, user) => {
     user.hasPermission(service.externalId, 'psp-test-account-stage:update')
 }
 
+async function isWorldpayTestService (gatewayAccountIds) {
+  const gatewayAccounts = await serviceService.getGatewayAccounts(gatewayAccountIds)
+  logger.info(`returned gateway accounts: ${JSON.stringify(gatewayAccounts)}`)
+  return gatewayAccounts.length === 1 && gatewayAccounts[0].type === 'test' &&
+    gatewayAccounts[0].payment_provider.toUpperCase() === 'WORLDPAY'
+}
+
 module.exports = async (req, res) => {
   const gatewayAccountId = req.account.gateway_account_id
   const messages = res.locals.flash.messages
   const period = _.get(req, 'query.period', 'today')
   const telephonePaymentLink = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId)
+  const worldpayTestService = await isWorldpayTestService(req.service.gatewayAccountIds)
   const linksToDisplay = getLinksToDisplay(req.service, req.account, req.user, telephonePaymentLink)
   const model = {
     serviceId: req.service.externalId,
@@ -114,7 +123,8 @@ module.exports = async (req, res) => {
     goLiveStarted: goLiveStartedStages.includes(req.service.currentGoLiveStage),
     goLiveRequested: goLiveRequestedStages.includes(req.service.currentGoLiveStage),
     gatewayAccount: req.account,
-    enableStripeOnboardingTaskList: process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true'
+    enableStripeOnboardingTaskList: process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true',
+    isWorldpayTestService: worldpayTestService
   }
 
   if (req.account.payment_provider === 'stripe' && req.account.type === 'live') {

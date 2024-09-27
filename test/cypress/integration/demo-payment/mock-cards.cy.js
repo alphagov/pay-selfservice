@@ -15,6 +15,7 @@ describe('Show Mock cards screen', () => {
         gatewayAccountExternalId,
         paymentProvider: 'sandbox'
       }),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
       transactionStubs.getTransactionsSummarySuccess()
     ])
   })
