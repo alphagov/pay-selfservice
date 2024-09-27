@@ -52,13 +52,19 @@ function getUserAndGatewayAccountsStubs (serviceRole) {
   ]
 }
 
-function getUserAndGatewayAccountByExternalIdStubs (serviceRole) {
+function getUserAndGatewayAccountByExternalIdStubs (serviceRole, paymentProvider, accountType) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId: variables.gatewayAccountId,
       gatewayAccountExternalId: variables.gatewayAccountExternalId
-    })
+    }),
+    gatewayAccountStubs.getGatewayAccountsSuccess(
+      {
+        gatewayAccountId: variables.gatewayAccountId,
+        paymentProvider: paymentProvider || 'sandbox',
+        type: accountType || 'test'
+      })
   ]
 }
 

@@ -30,6 +30,7 @@ describe('Worldpay account setup banner', () => {
         paymentProvider: 'worldpay',
         gatewayAccountCredentials
       }),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
       transactionsSummaryStubs.getDashboardStatistics()
     ])
   }

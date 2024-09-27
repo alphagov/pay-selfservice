@@ -430,6 +430,7 @@ describe('dashboard-activity-controller', () => {
       })
     })
   })
+
   describe('When the dashboard is retrieved for a service that has requested to go live', () => {
     let session
 
