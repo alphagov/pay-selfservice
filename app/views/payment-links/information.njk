@@ -2,7 +2,7 @@
 {% from "../macro/error-summary.njk" import errorSummary %}
 
 {% block pageTitle %}
-  Set payment link information - Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  Set payment link information - Create a payment link - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -11,52 +11,53 @@
 {% endblock %}
 
 {% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
-  {{ errorSummary ({
-    errors: errors,
-    hrefs: {
-      title: "#payment-link-title",
-      description: "#payment-link-description"
-    }
-  }) }}
-
-  {% if isWelsh %}
-    <h1 class="govuk-heading-l">Set Welsh payment link information</h1>
-  {% else %}
-    <h1 class="govuk-heading-l">Set payment link information</h1>
-  {% endif %}
-
-  <form action="{{ formatAccountPathsFor(routes.account.paymentLinks.information, currentGatewayAccount.external_id) }}" class="form" method="post" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input type="hidden" name="service-name-path" value="{{serviceName}}">
-    {% if change.length %}
-      <input name="change" type="hidden" value="true"/>
-    {% endif %}
-
-    {% set confirmationLabel %}{{friendlyURL}}/{{serviceName | removeIndefiniteArticles | slugify}}/{% endset %}
+  <section class="govuk-grid-column-two-thirds">
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        title: "#payment-link-title",
+        description: "#payment-link-description"
+      }
+    }) }}
 
     {% if isWelsh %}
-      {% set titleLabel = 'Welsh title' %}
-      {% set titleHint = 'Briefly describe what the user is paying for. For example, <span lang="cy">“Talu am drwydded barcio”</span>. This will also be your website address. Do not include names or personal information.' %}
-      {% set detailsHint = 'Give your users more information in Welsh. For example, you could tell them how long it takes for their application to be processed.' %}
-      {% set lang = "cy" %}
+      <h1 class="govuk-heading-l">Set Welsh payment link information</h1>
     {% else %}
-      {% set titleLabel = 'Title' %}
-      {% set titleHint = 'Briefly describe what the user is paying for. For example, “Pay for a parking permit”. This will also be your website address. Do not include names or personal information.' %}
-      {% set detailsHint = 'Give your users more information. For example, you could tell them how long it takes for their application to be processed.' %}
-      {% set lang = "en" %}
+      <h1 class="govuk-heading-l">Set payment link information</h1>
     {% endif %}
 
-    {{
-      govukInput({
+    <form
+      action="{{ formatAccountPathsFor(routes.account.paymentLinks.information, currentGatewayAccount.external_id) }}"
+      class="form" method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <input type="hidden" name="service-name-path" value="{{ serviceName }}">
+      {% if change.length %}
+        <input name="change" type="hidden" value="true"/>
+      {% endif %}
+
+      {% set confirmationLabel %}{{ friendlyURL }}/{{ serviceName | removeIndefiniteArticles | slugify }}/{% endset %}
+
+      {% if isWelsh %}
+        {% set titleLabel = 'Welsh title' %}
+        {% set titleHint = 'Briefly describe what the user is paying for. For example, <span lang="cy">“Talu am drwydded barcio”</span>. This will also be your website address. Do not include names or personal information.' %}
+        {% set detailsHint = 'Give your users more information in Welsh. For example, you could tell them how long it takes for their application to be processed.' %}
+        {% set lang = "cy" %}
+      {% else %}
+        {% set titleLabel = 'Title' %}
+        {% set titleHint = 'Briefly describe what the user is paying for. For example, “Pay for a parking permit”. This will also be your website address. Do not include names or personal information.' %}
+        {% set detailsHint = 'Give your users more information. For example, you could tell them how long it takes for their application to be processed.' %}
+        {% set lang = "en" %}
+      {% endif %}
+
+      {{ govukInput({
         id: 'payment-link-title',
         name: 'payment-link-title',
         value: paymentLinkTitle,
         spellcheck: true,
         classes: '',
         label: {
-            text: titleLabel,
-            classes: 'govuk-label--s'
+          text: titleLabel,
+          classes: 'govuk-label--s'
         },
         hint: {
           html: titleHint
@@ -71,19 +72,17 @@
           "data-confirmation-display": "onload" if change.length else false,
           "lang": lang
         }
-      })
-    }}
+      }) }}
 
-    {{
-      govukTextarea({
+      {{ govukTextarea({
         id: 'payment-link-description',
         name: 'payment-link-description',
         value: paymentLinkDescription,
         spellcheck: true,
         classes: '',
         label: {
-            text: 'Details (optional)',
-            classes: 'govuk-label--s'
+          text: 'Details (optional)',
+          classes: 'govuk-label--s'
         },
         hint: {
           text: detailsHint
@@ -94,24 +93,67 @@
           "rows": "5",
           "lang": lang
         }
-      })
-    }}
+      }) }}
 
-    {{
-      govukButton({
+      {% set formattingHelpHTML %}
+        <h3 class="govuk-heading-m">Links and URLs</h3>
+
+        <p>To add a link, use square brackets [ ] around the link text, and round brackets ( ) around the full URL. Make
+          sure there are no spaces between the two sets of brackets. For example:</p>
+
+        <div class="govuk-inset-text">
+          <pre class="app-markdown-editor__markdown-example-block"><code
+              class="app-markdown-editor__markdown-example-block-code">[Link text](https://www.gov.uk/link-text-url)</code></pre>
+        </div>
+        <h3 class="govuk-heading-m">Bulleted lists</h3>
+
+        <p>To add bullet points, start each item with * (asterisk) or - (dash). Make sure there is one space after the
+          asterisk or dash.</p>
+
+        <p>Leave one empty line before adding the first bullet point and another after the last bullet point. For
+          example:
+        </p>
+
+        <div class="govuk-inset-text">
+    <pre class="app-markdown-editor__markdown-example-block"><code class="app-markdown-editor__markdown-example-block-code">* First bullet point
+* Second bullet point
+* Third bullet point</code></pre>
+        </div>
+        <h3 class="govuk-heading-m">Numbered lists</h3>
+
+        <p>Use numbers for each list item, followed by a full stop. Make sure there is one space after the full
+          stop.</p>
+
+        <p>Leave one empty line before adding the first list item and another after the last list item. For example:
+        </p>
+
+        <div class="govuk-inset-text">
+    <pre class="app-markdown-editor__markdown-example-block"><code class="app-markdown-editor__markdown-example-block-code">1. First item
+2. Second item
+3. Third item</code></pre>
+        </div>
+      {% endset %}
+
+      {{ govukDetails({
+        summaryText: "Formatting help",
+        html: formattingHelpHTML
+      }) }}
+
+      {{ govukButton({
         text: 'Continue',
         classes: 'button'
-      })
-     }}
+      }) }}
 
-    <p class="govuk-body"><a class="govuk-link cancel govuk-link--no-visited-state" href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}" data-cy="cancel-link">Cancel</a></p>
-  </form>
+      <p class="govuk-body"><a class="govuk-link cancel govuk-link--no-visited-state"
+                               href="{{ formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) }}"
+                               data-cy="cancel-link">Cancel</a></p>
+    </form>
 
-  {% if not isWelsh %}
-  <div class="govuk-!-margin-top-9" id="payment-link-example">
-    <h3 class="govuk-heading-s">Example of what the user will see</h3>
-    <img src="/public/images/payment-links/start-page.svg" alt="Screenshot of payment link landing page">
-  </div>
-  {% endif %}
-</section>
+    {% if not isWelsh %}
+      <div class="govuk-!-margin-top-9" id="payment-link-example">
+        <h3 class="govuk-heading-s">Example of what the user will see</h3>
+        <img src="/public/images/payment-links/start-page.svg" alt="Screenshot of payment link landing page">
+      </div>
+    {% endif %}
+  </section>
 {% endblock %}

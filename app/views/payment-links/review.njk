@@ -32,6 +32,8 @@
             {{ pageData.paymentReferenceHint | striptags(true) | escape | nl2br }}
           </span>
         {% endif %}
+      {% elif pageData.paymentReferenceType === "govUkForms" %}
+        <span>Created by GOV.UK Forms</span>
       {% else %}
         <span>Created by GOV.UK Pay</span>
       {% endif %}

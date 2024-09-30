@@ -18,6 +18,7 @@ module.exports = function postReference (req, res, next) {
   const type = req.body['reference-type-group']
   const label = req.body['reference-label'].trim()
   const hint = req.body['reference-hint-text'].trim()
+  const govUkFormsUrl = req.body['gov-uk-forms-url'].trim()
 
   const errors = {}
   if (!type) {
@@ -39,7 +40,8 @@ module.exports = function postReference (req, res, next) {
       errors,
       type,
       label,
-      hint
+      hint,
+      govUkFormsUrl
     }
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.reference, req.account && req.account.external_id))
   }
@@ -47,6 +49,7 @@ module.exports = function postReference (req, res, next) {
   sessionData.paymentReferenceType = type
   sessionData.paymentReferenceLabel = type === 'custom' ? label : ''
   sessionData.paymentReferenceHint = type === 'custom' ? hint : ''
+  sessionData.govUkFormsUrl = type === 'govUkForms' ? govUkFormsUrl : ''
 
   if (req.body['change'] === 'true') {
     req.flash('generic', 'The details have been updated')
