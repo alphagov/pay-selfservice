@@ -16,6 +16,7 @@ module.exports = function showReferencePage (req, res, next) {
   const paymentReferenceType = recovered.type || sessionData.paymentReferenceType || ''
   const paymentReferenceLabel = recovered.label || sessionData.paymentReferenceLabel || ''
   const paymentReferenceHint = recovered.hint || sessionData.paymentReferenceHint || ''
+  const govUkFormsUrl = recovered.govUkFormsUrl || sessionData.govUkFormsUrl || ''
 
   const change = lodash.get(req, 'query.change', {})
 
@@ -24,6 +25,7 @@ module.exports = function showReferencePage (req, res, next) {
     paymentReferenceType,
     paymentReferenceLabel,
     paymentReferenceHint,
+    govUkFormsUrl,
     isWelsh: sessionData.isWelsh,
     errors: recovered.errors
   })
