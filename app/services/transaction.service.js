@@ -32,6 +32,7 @@ const searchLedger = async function searchLedger (gatewayAccountIds = [], filter
         throw new GatewayTimeoutError('Your request has timed out. Please apply more filters and try again.')
       }
     } else {
+      console.error('Unable to retrieve list of transactions or card types.', error)
       throw new Error('Unable to retrieve list of transactions or card types.')
     }
   }

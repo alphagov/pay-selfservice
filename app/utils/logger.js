@@ -11,7 +11,7 @@ const supplementSharedLoggingFields = format((info) => {
   return info
 })
 
-const logger = createLogger({
+const prodLogger = createLogger({
   format: format.combine(
     supplementSharedLoggingFields(),
     splat(),
@@ -22,7 +22,14 @@ const logger = createLogger({
   transports: [
     new transports.Console()
   ]
-})
+});
+
+const basicLogger = {
+  ...console,
+  child: () => console
+}
+
+const logger = process.env.USE_BASIC_LOGGER === 'true' ? basicLogger : prodLogger
 
 module.exports = (loggerName) => {
   const childLogger = logger.child({ logger_name: loggerName })

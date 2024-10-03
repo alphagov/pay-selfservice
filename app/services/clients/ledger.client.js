@@ -75,6 +75,13 @@ const transactions = async function transactions (gatewayAccountIds = [], filter
   const formattedFilterParams = getQueryStringForParams(filters, true, true)
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = `${baseUrl}${path}?${formattedParams}&${formattedFilterParams}`
+  console.log('')
+  console.log('------')
+  console.log('')
+  console.log('Calling URL:', url)
+  console.log('')
+  console.log('------')
+  console.log('')
   configureClient(client, url)
   const response = await client.get(
     url,
