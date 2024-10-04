@@ -123,7 +123,7 @@
     "@babel/core": "7.22.10",
     "@babel/polyfill": "7.12.1",
     "@babel/preset-env": "7.22.10",
-    "@govuk-pay/http-configurable-mock-server": "github:alphagov/http-configurable-mock-server#4bb2b2b",
+    "@govuk-pay/http-configurable-mock-server": "github:alphagov/http-configurable-mock-server#ac13d2d",
     "@pact-foundation/pact": "^12.1.1",
     "@pact-foundation/pact-core": "^14.0.5",
     "chai": "4.3.8",
