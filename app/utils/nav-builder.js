@@ -4,6 +4,7 @@ const process = require('process')
 const _ = require('lodash')
 const paths = require('./../paths')
 const formatAccountPathsFor = require('./format-account-paths-for')
+const formatSimplifiedAccountPathsFor = require('./simplified-account/format/format-simplified-account-paths-for')
 const formatFutureStrategyAccountPathsFor = require('./format-future-strategy-account-paths-for')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
@@ -23,7 +24,7 @@ const yourPspPaths = ['your-psp', 'notification-credentials']
 const additionalPspPaths = ['switch-psp']
 const webhookPaths = ['webhooks']
 
-const serviceNavigationItems = (currentPath, permissions, type, account = {}) => {
+const serviceNavigationItems = (currentPath, permissions, type, account = {}, isDegatewayed, currentUrl) => {
   const navigationItems = []
   navigationItems.push({
     id: 'navigation-menu-home',
@@ -62,7 +63,7 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
-    current: currentPath !== '/' ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
+    current: currentPath !== '/' && !currentUrl.includes('simplified') ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
       ...mainSettingsPaths,
       paths.account.apiKeys,
       paths.futureAccountStrategy.webhooks,
@@ -76,6 +77,15 @@ const serviceNavigationItems = (currentPath, permissions, type, account = {}) =>
       permissions.email_notification_template_read
     ], Boolean)
   })
+  if (isDegatewayed) {
+    navigationItems.push({
+      id: 'simplified-account-settings',
+      name: 'Simplified Account Settings',
+      url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, account.service_id, account.type),
+      current: currentUrl.includes('simplified') && currentUrl.includes('settings'),
+      permissions: true
+    })
+  }
 
   return navigationItems
 }
