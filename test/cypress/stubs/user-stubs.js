@@ -265,6 +265,10 @@ function buildServiceRoleOpts (opts) {
     serviceRole.role = opts.role
   }
 
+  if (opts.createdDate) {
+    service.created_date = opts.createdDate
+  }
+
   return serviceRole
 }
 

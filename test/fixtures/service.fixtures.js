@@ -118,7 +118,8 @@ module.exports = {
       current_go_live_stage: 'NOT_STARTED',
       current_psp_test_account_stage: 'NOT_STARTED',
       agent_initiated_moto_enabled: false,
-      takes_payments_over_phone: false
+      takes_payments_over_phone: false,
+      created_date: '2024-08-30'
     })
 
     const service = {
@@ -133,7 +134,8 @@ module.exports = {
       experimental_features_enabled: true,
       current_psp_test_account_stage: opts.current_psp_test_account_stage,
       agent_initiated_moto_enabled: opts.agent_initiated_moto_enabled,
-      takes_payments_over_phone: opts.takes_payments_over_phone
+      takes_payments_over_phone: opts.takes_payments_over_phone,
+      created_date: opts.created_date
     }
 
     if (opts.merchant_details) {
