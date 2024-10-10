@@ -17,7 +17,8 @@ describe('The disabled account banner', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'sandbox', gatewayAccountCredentials, disabled: true }),
-      transactionsSummaryStubs.getDashboardStatistics()
+      transactionsSummaryStubs.getDashboardStatistics(),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId })
     ])
   })
 

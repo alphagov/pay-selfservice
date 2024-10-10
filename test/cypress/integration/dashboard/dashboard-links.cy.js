@@ -20,7 +20,8 @@ function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveSt
       type,
       paymentProvider
     }),
-    transactionsSummaryStubs.getDashboardStatistics())
+    transactionsSummaryStubs.getDashboardStatistics(),
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }))
 
   if (paymentProvider === 'stripe') {
     stubs.push(stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({

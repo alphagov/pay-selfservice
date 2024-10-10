@@ -17,9 +17,12 @@ function setupYourPspStubs (opts = {}) {
   const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId })
 
   const stripeAccount = stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'stripe-account-id')
-  const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials })
+  const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess(
+    { gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials })
+  const gatewayAccounts = gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId })
   const transactionsSummary = transactionsSummaryStubs.getDashboardStatistics()
-  const gatewayAccountSucess = gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials })
+  const gatewayAccountSucess = gatewayAccountStubs.getGatewayAccountSuccess(
+    { gatewayAccountId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials })
   const stripeAccountSetup = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
     gatewayAccountId,
     bankAccount: opts.bankAccount,
@@ -37,7 +40,8 @@ function setupYourPspStubs (opts = {}) {
     current_deadline: opts.current_deadline
   })
 
-  const stubs = [user, stripeAccount, gatewayAccountByExternalId, transactionsSummary, gatewayAccountSucess, stripeAccountSetup, stripeRestrictedAccountDetails]
+  const stubs = [user, stripeAccount, gatewayAccountByExternalId, transactionsSummary, gatewayAccountSucess,
+    stripeAccountSetup, stripeRestrictedAccountDetails, gatewayAccounts]
   cy.task('setupStubs', stubs)
 }
 

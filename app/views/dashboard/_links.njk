@@ -84,7 +84,7 @@
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Next steps to go live</h2>
         <p class="govuk-body govuk-!-margin-bottom-0">Read our documentation to see how your service can go live with GOV.UK&nbsp;Pay.</p>
       </a>
-      {% elif goLiveNotStarted %}
+      {% elif goLiveNotStarted and not isWorldpayTestService %}
       <a href="{{formatServicePathsFor(routes.service.requestToGoLive.index, currentService.externalId)}}">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Request a live account</h2>
         <p class="govuk-body govuk-!-margin-bottom-0">To request a live account, tell us your organisation’s name, your payment service provider and agree to our terms and conditions. Once that’s done our team will email you.</p>
