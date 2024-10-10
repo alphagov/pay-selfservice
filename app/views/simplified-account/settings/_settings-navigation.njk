@@ -1,0 +1,16 @@
+<div class="govuk-grid-column-one-quarter service-settings-nav">
+  <nav role="navigation">
+      {% for key, array in serviceSettings %}
+        {% if array and array.length > 0 %}
+        <h2 class="service-settings-nav__h3">{{ key | smartCaps }}</h2>
+        <ul class="govuk-list">
+          {% for setting in array %}
+            <li class="service-settings-nav__li{% if setting.current %} service-settings-nav__li--active{% endif %}">
+              <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" id="{{setting.id}}" href="{{setting.url}}">{{setting.name | smartCaps}}</a>
+            </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      {% endfor %}
+  </nav>
+</div>

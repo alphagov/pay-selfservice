@@ -11,6 +11,8 @@ const accountUrls = require('./utils/gateway-account-urls')
 
 const userIsAuthorised = require('./middleware/user-is-authorised')
 const getServiceAndAccount = require('./middleware/get-service-and-gateway-account.middleware')
+const getSimplifiedAccount = require('./middleware/simplified-account/simplified-account-strategy.middleware')
+const isOptedInToSimplifiedAccounts = require('./middleware/simplified-account/simplified-account-opt-in.middleware')
 const { NotFoundError } = require('./errors')
 
 // Middleware
@@ -91,6 +93,9 @@ const organisationUrlController = require('./controllers/switch-psp/organisation
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
 
+// Simplified Accounts controllers
+const serviceSettingsController = require('./controllers/simplified-account/settings')
+
 // Assignments
 const {
   allServiceTransactions,
@@ -150,6 +155,9 @@ module.exports.bind = function (app) {
 
   const service = new Router({ mergeParams: true })
   service.use(getServiceAndAccount, userIsAuthorised)
+
+  const simplifiedAccount = new Router({ mergeParams: true })
+  simplifiedAccount.use(isOptedInToSimplifiedAccounts, getSimplifiedAccount, userIsAuthorised)
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 
@@ -489,9 +497,22 @@ module.exports.bind = function (app) {
   futureAccountStrategy.get(webhooks.toggleActive, permission('webhooks:update'), webhooksController.toggleActivePage)
   futureAccountStrategy.post(webhooks.toggleActive, permission('webhooks:update'), webhooksController.toggleActiveWebhook)
 
+  // -------------------------------------------------------------------------------
+  // ROUTES BY SERVICE ID AND ACCOUNT TYPE - ACCOUNT SIMPLIFICATION
+  // -------------------------------------------------------------------------------
+
+  simplifiedAccount.get(paths.simplifiedAccount.settings.index, serviceSettingsController.index.get)
+  // service name
+  simplifiedAccount.get(paths.simplifiedAccount.settings.serviceName.index, permission('service-name:update'), serviceSettingsController.serviceName.get)
+  simplifiedAccount.get(paths.simplifiedAccount.settings.serviceName.edit, permission('service-name:update'), serviceSettingsController.serviceName.getEditServiceName)
+  simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, permission('service-name:update'), serviceSettingsController.serviceName.postEditServiceName)
+  // email notifications
+  simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('service-name:update'), serviceSettingsController.emailNotifications.get)
+
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
   app.use(paths.futureAccountStrategy.root, futureAccountStrategy)
+  app.use(paths.simplifiedAccount.root, simplifiedAccount)
 
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
