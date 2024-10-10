@@ -10,10 +10,10 @@ const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-gateway-account-external-id'
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
-function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveStage, pspTestAccountStage) {
+function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveStage, pspTestAccountStage, createdDate) {
   let stubs = []
 
-  stubs.push(userStubs.getUserSuccess({ userExternalId, gatewayAccountId, goLiveStage, pspTestAccountStage }),
+  stubs.push(userStubs.getUserSuccess({ userExternalId, gatewayAccountId, goLiveStage, pspTestAccountStage, createdDate }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
@@ -66,8 +66,25 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.get('#payment-links-link').should('have.class', 'flex-grid--column-half')
     })
 
-    it('should display 4 links for a test sandbox account', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED'))
+    it('should display 3 links for a test sandbox account created since onboarding flow changed on 29/08/2024', () => {
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED', null, '2024-08-30'))
+
+      cy.visit(dashboardUrl)
+      cy.get('.links__box').should('have.length', 3)
+
+      cy.get('#demo-payment-link').should('exist')
+      cy.get('#demo-payment-link').should('have.class', 'flex-grid--column-third')
+
+      cy.get('#test-payment-link-link').should('exist')
+      cy.get('#test-payment-link-link').should('have.class', 'flex-grid--column-third')
+
+      cy.get('#request-to-go-live-link').should('exist')
+      cy.get('#request-to-go-live-link').should('have.class', 'flex-grid--column-third')
+
+    })
+
+    it('should display 4 links for a test sandbox account created before 29/08/2024', () => {
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED', null, '2024-08-28'))
 
       cy.visit(dashboardUrl)
       cy.get('.links__box').should('have.length', 4)
@@ -115,7 +132,7 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display `Stripe test account requested` section if request has been submitted', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED', 'REQUEST_SUBMITTED'))
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED', 'REQUEST_SUBMITTED', '2024-08-28'))
 
       cy.visit(dashboardUrl)
       cy.get('.links__box').should('have.length', 4)

@@ -92,7 +92,10 @@ const displayGoLiveLink = (service, account, user) => {
 }
 
 const displayRequestTestStripeAccountLink = (service, account, user) => {
-  return account.payment_provider === 'sandbox' && service.currentGoLiveStage !== LIVE &&
+  //Since 29/08/2024, services that identified as local govt were automatically allocated Stripe test accounts
+  //So services created after that date don't need a link to create a Stripe test account
+  const serviceCreatedBeforeOrgTypeCaptured = new Date(service.createdDate) <= new Date('2024-08-29');
+  return account.payment_provider === 'sandbox' && service.currentGoLiveStage !== LIVE && serviceCreatedBeforeOrgTypeCaptured &&
     service.currentPspTestAccountStage !== pspTestAccountStage.CREATED &&
     user.hasPermission(service.externalId, 'psp-test-account-stage:update')
 }
