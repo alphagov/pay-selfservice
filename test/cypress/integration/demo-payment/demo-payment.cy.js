@@ -11,6 +11,7 @@ describe('Make a demo payment', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ gatewayAccountId, userExternalId }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
       transactionStubs.getTransactionsSummarySuccess()
     ])
   })

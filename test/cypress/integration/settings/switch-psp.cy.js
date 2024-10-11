@@ -40,7 +40,8 @@ function getUserAndAccountStubs (
       requires3ds,
       integrationVersion3ds,
       allowMoto
-    })
+    }),
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId })
   ]
 }
 

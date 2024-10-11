@@ -30,6 +30,7 @@ describe('Account dashboard', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
       todayStatisticsStub,
       prevSevenDaysStatisticsStub
     ])

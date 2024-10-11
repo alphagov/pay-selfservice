@@ -1,13 +1,14 @@
 'use strict'
 
 const sinon = require('sinon')
-const dashboardController = require('./dashboard-activity.controller')
 const User = require('../../models/User.class')
 const { validUser } = require('../../../test/fixtures/user.fixtures')
 const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const StripeClient = require('../../services/clients/stripe/stripe.client.js')
 const { expect } = require('chai')
+const proxyquire = require('proxyquire')
+const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
 
 describe('Controller: Dashboard activity', () => {
   const externalServiceId = 'service-external-id'
@@ -55,11 +56,14 @@ describe('Controller: Dashboard activity', () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = undefined
     })
 
-    it(`should not call call the Connector client or the Stripe client`, async () => {
+    it(`should not call the Connector client or the Stripe client`, async () => {
       accountSpy = sinon.stub(ConnectorClient.prototype, 'getStripeAccount')
       stripeSpy = sinon.stub(StripeClient, 'retrieveAccountDetails')
 
-      await dashboardController(req, res)
+      const gatewayAccounts = gatewayAccountFixtures.validGatewayAccountsResponse(
+        { accounts: serviceGatewayAccountIds.map(id => ({ gateway_account_id: id })) })
+      const controller = getControllerWithMocks(gatewayAccounts.accounts)
+      await controller(req, res)
 
       sinon.assert.notCalled(accountSpy)
       sinon.assert.notCalled(stripeSpy)
@@ -68,7 +72,11 @@ describe('Controller: Dashboard activity', () => {
     it('should set enableStripeOnboardingTaskList to true when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true', async () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'true'
 
-      await dashboardController(req, res)
+      const gatewayAccounts = gatewayAccountFixtures.validGatewayAccountsResponse(
+        { accounts: serviceGatewayAccountIds.map(id => ({ gateway_account_id: id })) })
+      const controller = getControllerWithMocks(gatewayAccounts.accounts)
+      await controller(req, res)
+
       const pageData = res.render.args[0][1]
       expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
     })
@@ -76,10 +84,21 @@ describe('Controller: Dashboard activity', () => {
     it('should set enableStripeOnboardingTaskList to false when ENABLE_STRIPE_ONBOARDING_TASK_LIST is false', async () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = 'false'
 
-      await dashboardController(req, res)
+      const gatewayAccounts = gatewayAccountFixtures.validGatewayAccountsResponse(
+        { accounts: serviceGatewayAccountIds.map(id => ({ gateway_account_id: id })) })
+      const controller = getControllerWithMocks(gatewayAccounts.accounts)
+      await controller(req, res)
 
       const pageData = res.render.args[0][1]
       expect(pageData.enableStripeOnboardingTaskList).to.equal(false)
     })
   })
 })
+
+function getControllerWithMocks (gatewayAccounts) {
+  return proxyquire('./dashboard-activity.controller', {
+    '../../services/service.service': {
+      getGatewayAccounts: sinon.spy(() => Promise.resolve(gatewayAccounts))
+    }
+  })
+}

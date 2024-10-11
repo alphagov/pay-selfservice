@@ -17,6 +17,8 @@ function setupYourPspStubs (opts = {}) {
     paymentProvider: 'stripe'
   })
 
+  const gatewayAccounts = gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId })
+
   const stripeAccountSetup = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
     gatewayAccountId
   })
@@ -24,6 +26,7 @@ function setupYourPspStubs (opts = {}) {
   const stubs = [
     user,
     gatewayAccountByExternalId,
+    gatewayAccounts,
     stripeAccountSetup
   ]
 
