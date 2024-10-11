@@ -10,6 +10,8 @@ const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const supportedLanguage = require('../../models/supported-language')
 
+const GOV_UK_FORMS_REFERENCE_LABEL = "Form reference number"
+
 module.exports = async function createPaymentLink (req, res) {
   const gatewayAccountId = req.account.gateway_account_id
   const {
@@ -23,7 +25,8 @@ module.exports = async function createPaymentLink (req, res) {
     paymentReferenceLabel,
     paymentReferenceHint,
     isWelsh,
-    metadata
+    metadata,
+    govUkFormsUrl
   } = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
@@ -62,9 +65,14 @@ module.exports = async function createPaymentLink (req, res) {
       if (paymentReferenceHint) {
         productPayload.referenceHint = paymentReferenceHint
       }
+    } else if (paymentReferenceType === 'govUkForms') {
+      productPayload.referenceLabel = GOV_UK_FORMS_REFERENCE_LABEL
     }
     if (!paymentLinkAmount && amountHint) {
       productPayload.amountHint = amountHint
+    }
+    if (govUkFormsUrl) {
+      productPayload.returnUrl = govUkFormsUrl
     }
 
     await productsClient.product.create(productPayload)
