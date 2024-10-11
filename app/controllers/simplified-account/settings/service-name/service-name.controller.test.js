@@ -1,11 +1,8 @@
-'use strict'
-
-const { SERVICE_NAME_MAX_LENGTH } = require('../../../../utils/validation/server-side-form-validations')
-
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const paths = require('../../../../paths')
 const { expect } = require('chai')
+const { SERVICE_NAME_MAX_LENGTH } = require('../../../../utils/validation/server-side-form-validations')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
@@ -54,7 +51,7 @@ describe('Controller: settings/service-name', () => {
     before(() => setupTest('get'))
 
     it('should call the response method', () => {
-      expect(responseStub.called).to.equal(true)
+      expect(responseStub.called).to.be.true // eslint-disable-line
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -79,7 +76,7 @@ describe('Controller: settings/service-name', () => {
       before(() => setupTest('getEditServiceName', { query: queryParams }))
 
       it('should call the response method', () => {
-        expect(responseStub.called).to.equal(true)
+        expect(responseStub.called).to.be.true // eslint-disable-line
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -131,14 +128,14 @@ describe('Controller: settings/service-name', () => {
       before(() => {
         setupTest('postEditServiceName', {
           body: {
-            'service-name-input': 'New Welsh Name',
+            'service-name-input': 'Enw Cymraeg newydd',
             cy: 'true'
           }
         })
       })
 
       it('should update the service name', () => {
-        expect(updateServiceNameStub.calledWith(SERVICE_ID, EN_SERVICE_NAME, 'New Welsh Name')).to.be.true // eslint-disable-line
+        expect(updateServiceNameStub.calledWith(SERVICE_ID, EN_SERVICE_NAME, 'Enw Cymraeg newydd')).to.be.true // eslint-disable-line
       })
 
       it('should redirect to the service name index page', () => {
@@ -171,7 +168,7 @@ describe('Controller: settings/service-name', () => {
 
       it('should render the edit page with errors', () => {
         expect(responseStub.calledOnce).to.be.true // eslint-disable-line
-        const [ , , template, context] = responseStub.args[0]
+        const [, , template, context] = responseStub.args[0]
         expect(template).to.equal('simplified-account/settings/service-name/edit-service-name')
         expect(context.errors).to.deep.equal({
           summary: ['Error summary'],

@@ -1,11 +1,10 @@
-'use strict'
-const _ = require('lodash')
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { addField } = require('../../services/clients/base/request-context')
-const Connector = require('../../services/clients/connector.client.js').ConnectorClient
 const { getSwitchingCredentialIfExists } = require('../../utils/credentials')
-const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, ENVIRONMENT_ID } = require('../../paths').keys
+const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE } = require('../../paths').keys
+const _ = require('lodash')
 const logger = require('../../utils/logger')(__filename)
+const Connector = require('../../services/clients/connector.client.js').ConnectorClient
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
 function getService (user, serviceExternalId, gatewayAccountId) {
@@ -76,9 +75,8 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
         req.account = gatewayAccount
         addField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
         addField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
-        req.gateway_account = {
-          currentGatewayAccountExternalId: gatewayAccount.external_id
-        }
+      } else {
+        throw new Error('getGatewayAccountByServiceIdAndAccountType failed for provided parameters')
       }
       const service = getService(req.user, serviceExternalId, gatewayAccount.gateway_account_id)
       if (service) {

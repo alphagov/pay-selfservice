@@ -1,4 +1,3 @@
-'use strict'
 const { body, validationResult } = require('express-validator')
 const { SERVICE_NAME_MAX_LENGTH } = require('../../../../utils/validation/server-side-form-validations')
 const { response } = require('../../../../utils/response')

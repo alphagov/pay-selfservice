@@ -1,6 +1,6 @@
 const { InvalidConfigurationError } = require('../../errors')
 
-module.exports = function checkDegatewayParameters (req, res, next) {
+module.exports = (req, res, next) => {
   const user = req.user
   if (user.isDegatewayed()) {
     return next()

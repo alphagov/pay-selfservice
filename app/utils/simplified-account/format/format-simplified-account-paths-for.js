@@ -1,4 +1,3 @@
-'use strict'
 const urlJoin = require('url-join')
 
 const paths = require('./../../../paths')
