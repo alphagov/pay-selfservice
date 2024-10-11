@@ -1,8 +1,6 @@
 'use strict'
-// EXTERNAL IMPORTS
 const _ = require('lodash')
 const { keys } = require('@govuk-pay/pay-js-commons').logging
-// LOCAL IMPORTS
 const { addField } = require('../../services/clients/base/request-context')
 const Connector = require('../../services/clients/connector.client.js').ConnectorClient
 const { getSwitchingCredentialIfExists } = require('../../utils/credentials')
@@ -68,7 +66,6 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
     if (req.user) {
       const serviceExternalId = req.params[SERVICE_EXTERNAL_ID]
       const accountType = req.params[ACCOUNT_TYPE]
-      const environment = req.params[ENVIRONMENT_ID]
 
       if (!serviceExternalId || !accountType) {
         throw new Error('Could not resolve service external ID or gateway account type from request params')
@@ -87,10 +84,6 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
       if (service) {
         req.service = service
         addField(keys.SERVICE_EXTERNAL_ID, service.externalId)
-      }
-
-      if (environment) {
-        req.isLive = environment === 'live'
       }
     }
 

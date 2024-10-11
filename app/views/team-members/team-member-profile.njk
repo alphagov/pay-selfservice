@@ -47,7 +47,7 @@ My profile - GOV.UK Pay
       <dd class="profile-settings__value govuk-table__cell" id="telephone-number">
         {{telephone_number}}
         <span class="profile-settings__change-link">
-          <a class="govuk-link" href="{{routes.user.profile.phoneNumber }}" id="change-phone-link">Change <span class="govuk-visually-hidden">mobile number</span></a>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{routes.user.profile.phoneNumber }}" id="change-phone-link">Change <span class="govuk-visually-hidden">mobile number</span></a>
         </span>
       </dd>
     </div>
@@ -64,7 +64,7 @@ My profile - GOV.UK Pay
             Text message
           {% endif %}
           <span class="profile-settings__change-link">
-            <a class="govuk-link" href="{{two_factor_auth_link}}">Change <span class="govuk-visually-hidden">sign-in method</span></a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{{two_factor_auth_link}}">Change <span class="govuk-visually-hidden">sign-in method</span></a>
           </span>
       </dd>
     </div>
@@ -76,7 +76,7 @@ My profile - GOV.UK Pay
         <dd class="profile-settings__value govuk-table__cell" id="degatewayaccountification">
           {{degatewayaccountification}}
           <span class="profile-settings__change-link">
-            <a class="govuk-link" href="{{ routes.user.profile.degateway }}" id="change-degateway-preference-link">Change <span class="govuk-visually-hidden">Account simplification preference</span></a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.user.profile.degateway }}" id="change-degateway-preference-link">Change <span class="govuk-visually-hidden">Account simplification preference</span></a>
           </span>
         </dd>
       </div>
