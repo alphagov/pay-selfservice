@@ -32,7 +32,7 @@ async function getGatewayAccountByServiceIdAndAccountType (serviceExternalId, ac
     let account = await connectorClient.getAccountByServiceIdAndAccountType(params)
 
     account = _.extend({}, account, {
-      supports3ds: ['worldpay', 'stripe', 'epdq', 'smartpay'].includes(account.payment_provider),
+      supports3ds: ['worldpay', 'stripe'].includes(account.payment_provider),
       disableToggle3ds: account.payment_provider === 'stripe'
     })
 

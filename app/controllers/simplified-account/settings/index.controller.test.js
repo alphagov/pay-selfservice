@@ -23,6 +23,9 @@ describe('Controller: settings/index', () => {
         redirect: sinon.spy()
       }
       req = {
+        user: {
+          isAdminUserForService: () => false
+        },
         account: {
           service_id: SERVICE_ID,
           type: TEST_ACCOUNT_TYPE
@@ -33,18 +36,38 @@ describe('Controller: settings/index', () => {
       }
     })
 
-    it('should redirect to service name index for test account on service with no live account', () => {
+    it('should redirect to service name index for test account on service with no live account when user is an admin', () => {
+      req.user.isAdminUserForService = () => true
       indexController.get(req, res)
       expect(res.redirect.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_ID, TEST_ACCOUNT_TYPE))).to.be.true // eslint-disable-line
     })
 
-    it('should redirect to service name index for live account', () => {
+    it('should redirect to email notifications index for test account on service with no live account when user is not an admin', () => {
+      indexController.get(req, res)
+      expect(res.redirect.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, SERVICE_ID, TEST_ACCOUNT_TYPE))).to.be.true // eslint-disable-line
+    })
+
+    it('should redirect to service name index for live account when user is an admin', () => {
+      req.user.isAdminUserForService = () => true
       req.account.type = 'live'
       indexController.get(req, res)
       expect(res.redirect.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_ID, LIVE_ACCOUNT_TYPE))).to.be.true // eslint-disable-line
     })
 
-    it('should redirect to email notifications index for test account on service with live account', () => {
+    it('should redirect to email notifications index for live account when user is not an admin', () => {
+      req.account.type = 'live'
+      indexController.get(req, res)
+      expect(res.redirect.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, SERVICE_ID, LIVE_ACCOUNT_TYPE))).to.be.true // eslint-disable-line
+    })
+
+    it('should redirect to email notifications index for test account on service with live account when user is an admin', () => {
+      req.user.isAdminUserForService = () => true
+      req.service.currentGoLiveStage = LIVE
+      indexController.get(req, res)
+      expect(res.redirect.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, SERVICE_ID, TEST_ACCOUNT_TYPE))).to.be.true // eslint-disable-line
+    })
+
+    it('should redirect to email notifications index for test account on service with live account when user is not an admin', () => {
       req.service.currentGoLiveStage = LIVE
       indexController.get(req, res)
       expect(res.redirect.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, SERVICE_ID, TEST_ACCOUNT_TYPE))).to.be.true // eslint-disable-line

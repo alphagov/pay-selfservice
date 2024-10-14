@@ -123,19 +123,17 @@ describe('Middleware: getSimplifiedAccount', () => {
     sinon.assert.calledWith(next, expectedError)
   })
   describe('extend gateway account data with disableToggle3ds field', () => {
-    ['worldpay', 'smartpay', 'epdq'].forEach(function (paymentProvider) {
-      it('should extend the account data with disableToggle3ds set to false if payment provider is ' + paymentProvider, async () => {
-        const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-          gatewayAccountID: '1',
-          gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
-          paymentProvider,
-          serviceExternalId: A_SERVICE_EXTERNAL_ID,
-          accountType: 'test'
-        })
-        await simplifiedAccountStrategy(req, res, next)
-        expect(req.account.disableToggle3ds).to.equal(false)
-        expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
+    it('should extend the account data with disableToggle3ds set to false if payment provider is worldpay', async () => {
+      const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
+        gatewayAccountID: '1',
+        gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
+        paymentProvider: 'worldpay',
+        serviceExternalId: A_SERVICE_EXTERNAL_ID,
+        accountType: 'test'
       })
+      await simplifiedAccountStrategy(req, res, next)
+      expect(req.account.disableToggle3ds).to.equal(false)
+      expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
     })
     it('should extend the account data with disableToggle3ds set to true if payment provider is stripe', async () => {
       const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
@@ -151,7 +149,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     })
   })
   describe('extend gateway account data with supports3ds field', () => {
-    ['worldpay', 'smartpay', 'epdq', 'stripe'].forEach(function (paymentProvider) {
+    ['worldpay', 'stripe'].forEach(function (paymentProvider) {
       it('should extend the account data with supports3ds set to true if payment provider is ' + paymentProvider, async () => {
         const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
           gatewayAccountID: '1',
@@ -179,7 +177,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     })
   })
   describe('extend gateway account data stripe setup', () => {
-    ['worldpay', 'smartpay', 'epdq', 'sandbox'].forEach(function (paymentProvider) {
+    ['worldpay', 'sandbox'].forEach(function (paymentProvider) {
       it('should not extend the account data with stripe setup if payment provider is ' + paymentProvider, async () => {
         const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
           gatewayAccountID: '1',

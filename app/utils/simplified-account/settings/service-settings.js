@@ -1,11 +1,11 @@
 const paths = require('../../../paths')
 const formatSimplifiedAccountPathsFor = require('../format/format-simplified-account-paths-for')
-const ServiceSettings = require('./SettingsBuilder.class')
+const SettingsBuilder = require('./SettingsBuilder.class')
 const { LIVE } = require('../../../models/go-live-stage')
 
 module.exports = (account, currentUrl, goLiveStage, permissions) => {
-  const settingsBuilder = new ServiceSettings(account, currentUrl, permissions, formatSimplifiedAccountPathsFor)
-  const result = settingsBuilder
+  const settingsBuilder = new SettingsBuilder(account, currentUrl, permissions, formatSimplifiedAccountPathsFor)
+  const serviceSettings = settingsBuilder
     .category('about your service')
     .add({
       id: 'service-name',
@@ -17,7 +17,7 @@ module.exports = (account, currentUrl, goLiveStage, permissions) => {
       id: 'email-notifications',
       name: 'email notifications',
       path: paths.simplifiedAccount.settings.emailNotifications.index,
-      permission: true, // TODO
+      permission: true, // everyone can view email notifications settings
       alwaysViewable: true
     })
     .add({
@@ -30,7 +30,7 @@ module.exports = (account, currentUrl, goLiveStage, permissions) => {
       id: 'org-details',
       name: 'organisation details',
       path: paths.simplifiedAccount.settings.orgDetails.index,
-      permission: true // TODO
+      permission: 'merchant_details_update' // TODO find a better way of defining these
     })
     .category('payments')
     .add({
@@ -52,23 +52,23 @@ module.exports = (account, currentUrl, goLiveStage, permissions) => {
       id: 'api-keys',
       name: 'API keys',
       path: paths.simplifiedAccount.settings.apiKeys.index,
-      permission: true, // TODO
+      permission: 'tokens_update', // TODO find a better way of defining these
       alwaysViewable: true
     })
     .add({
       id: 'webhooks',
       name: 'webhooks',
       path: paths.simplifiedAccount.settings.webhooks.index,
-      permission: true, // TODO
+      permission: 'webhooks_update', // TODO find a better way of defining these
       alwaysViewable: true
     })
     .build()
-  return getViewableSettings(result, account, goLiveStage)
+  return getViewableSettings(serviceSettings, account, goLiveStage)
 }
 
 const shouldShowSettingForAccountTypeAndGoLiveStage = (account, goLiveStage) => {
   if (account.type === 'test') {
-    // For test accounts, show setting only if goLive status is not LIVE
+    // For test accounts, show setting only if the go live stage is not LIVE
     return goLiveStage !== LIVE
   } else if (account.type === 'live') {
     // Always display settings for live accounts

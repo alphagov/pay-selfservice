@@ -31,7 +31,7 @@ module.exports = class SettingsBuilder {
       ),
       current: this.currentUrl.includes('simplified') && this.currentUrl.includes(`settings/${id}`),
       permitted: typeof permission === 'boolean' ? permission : this.permissions[permission],
-      alwaysViewable: alwaysViewable
+      alwaysViewable: alwaysViewable // when true, this setting will appear for all users and account types
     }
 
     this.categories[this.currentCategory].push(setting)

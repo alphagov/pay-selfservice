@@ -507,7 +507,7 @@ module.exports.bind = function (app) {
   simplifiedAccount.get(paths.simplifiedAccount.settings.serviceName.edit, permission('service-name:update'), serviceSettingsController.serviceName.getEditServiceName)
   simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, permission('service-name:update'), serviceSettingsController.serviceName.postEditServiceName)
   // email notifications
-  simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('service-name:update'), serviceSettingsController.emailNotifications.get)
+  simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('transactions:read'), serviceSettingsController.emailNotifications.get) // TODO: add a more descriptive permission to adminsusers, all roles can view transactions so using as default for now
 
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
