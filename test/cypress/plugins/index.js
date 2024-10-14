@@ -14,7 +14,8 @@ const cookieMonster = require('./cookie-monster')
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 module.exports = (on, config) => {
-  const mountebankImpostersUrl = config.env.MOUNTEBANK_URL + '/imposters'
+  const stubSetupUrl = config.env.MOCK_HTTP_SERVER_URL + '/__add-mock-endpoints__'
+  const stubResetUrl = config.env.MOCK_HTTP_SERVER_URL + '/__clear-mock-endpoints__'
 
   on('task', {
     getCookies (opts) {
@@ -33,9 +34,9 @@ module.exports = (on, config) => {
      * the same call.
      */
     setupStubs (stubs) {
-      return axios.post(mountebankImpostersUrl,
+      return axios.post(stubSetupUrl,
         {
-          port: config.env.MOUNTEBANK_IMPOSTERS_PORT,
+          port: config.env.MOCK_HTTP_SERVER_PORT,
           protocol: 'http',
           defaultResponse: {
             statusCode: 404,
@@ -53,7 +54,7 @@ module.exports = (on, config) => {
      * Makes a request to Mountebank to delete the existing Imposter along with all stubs that have been set up.
      */
     clearStubs () {
-      return axios.delete(mountebankImpostersUrl)
+      return axios.post(stubResetUrl)
         .then(function () { return '' })
         .catch(function (error) {
           throw error
