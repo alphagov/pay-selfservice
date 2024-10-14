@@ -12,14 +12,14 @@ let asyncStorageMock = {}
 function getRequestContext () {
   return proxyquire('./request-context', {
     'crypto': {
-      randomBytes : function () {
+      randomBytes: function () {
         return 'test-correlation-id'
       }
     },
     'async_hooks': {
-      AsyncLocalStorage : function () {
+      AsyncLocalStorage: function () {
         return {
-          getStore: function (){
+          getStore: function () {
             return asyncStorageMock
           },
           run: function (object, callback) {
@@ -33,7 +33,7 @@ function getRequestContext () {
 
 describe('Request Context', () => {
   beforeEach(() => {
-    asyncStorageMock = {} 
+    asyncStorageMock = {}
   })
 
   it('sets the correlation id when there is no x-request-id header', () => {
@@ -42,7 +42,7 @@ describe('Request Context', () => {
     const req = {
       headers: {}
     }
-    const res = null 
+    const res = null
     const next = sinon.spy()
 
     requestContext.requestContextMiddleware(req, res, next)
@@ -52,15 +52,15 @@ describe('Request Context', () => {
 
   it('sets the correlation id using the x-request-id header when it exists', () => {
     const requestContext = getRequestContext()
-    const xRequestIdHeaderValue = 'x-request-id-value' 
+    const xRequestIdHeaderValue = 'x-request-id-value'
 
     const req = {
       headers: {}
     }
-    
+
     req.headers[CORRELATION_HEADER] = xRequestIdHeaderValue
-    
-    const res = null 
+
+    const res = null
     const next = sinon.spy()
 
     requestContext.requestContextMiddleware(req, res, next)
