@@ -3,7 +3,7 @@ const url = require('url')
 const getHeldPermissions = require('./get-held-permissions')
 const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder')
 const formatPSPname = require('./format-PSP-name')
-const serviceSettings = require('./simplified-account/settings-builder')
+const serviceSettings = require('./simplified-account/settings/service-settings')
 
 const hideServiceHeaderTemplates = [
   'services/add-service',
