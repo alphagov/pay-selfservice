@@ -3,6 +3,7 @@ const url = require('url')
 const getHeldPermissions = require('./get-held-permissions')
 const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder')
 const formatPSPname = require('./format-PSP-name')
+const serviceSettings = require('./simplified-account/settings/service-settings')
 
 const hideServiceHeaderTemplates = [
   'services/add-service',
@@ -138,9 +139,13 @@ module.exports = function (req, data, template) {
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
+  const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, account)
+    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, isDegatewayed, currentUrl, account)
     convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account, service)
+    if (currentUrl.includes('simplified') && currentUrl.includes('settings')) {
+      convertedData.serviceSettings = serviceSettings(account, currentUrl, service.currentGoLiveStage, permissions)
+    }
   }
   convertedData._features = {}
   if (req.user && req.user.features) {

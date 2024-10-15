@@ -1,0 +1,35 @@
+// https://getbem.com/naming/
+
+.service-settings-nav {
+  @include govuk-font(16);
+}
+
+.service-settings-nav__h3 {
+  @include govuk-font(19);
+  @include govuk-typography-weight-regular();
+  margin: 0;
+  padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) 0;
+  color: govuk-colour("dark-grey");
+}
+
+.service-settings-nav__li {
+  @include govuk-font(16);
+  position: relative;
+  margin-bottom: govuk-spacing(1);
+  padding-top: govuk-spacing(1);
+  padding-bottom: govuk-spacing(1);
+}
+
+.service-settings-nav__li--active:before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: $govuk-brand-colour;
+}
+
+.service-settings-nav__li--active {
+  @include govuk-typography-weight-bold();
+}

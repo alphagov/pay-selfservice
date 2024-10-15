@@ -22,7 +22,7 @@ module.exports = async function postDegatewayPreference (req, res, next) {
     degatewayPreference === 'enabled' ? featureSet.add('degatewayaccountification') : featureSet.delete('degatewayaccountification')
     const updatedFeatures = Array.from(featureSet).join(',')
     await userService.updateFeatures(req.user.externalId, (updatedFeatures !== '' ? updatedFeatures : null))
-    req.flash('generic', 'Degateway preference updated')
+    req.flash('generic', 'Account simplification preference updated')
     return res.redirect(paths.user.profile.index)
   } catch (err) {
     next(err)

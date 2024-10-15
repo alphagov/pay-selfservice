@@ -44,5 +44,4 @@ describe('API keys', () => {
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
     cy.get('#navigation-menu-api-keys').should('not.exist')
   })
-
 })

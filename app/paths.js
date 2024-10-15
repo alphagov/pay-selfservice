@@ -6,7 +6,8 @@ const formattedPathFor = require('./utils/replace-params-in-path')
 const keys = {
   ENVIRONMENT_ID: 'environmentId',
   SERVICE_EXTERNAL_ID: 'serviceExternalId',
-  GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId'
+  GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId',
+  ACCOUNT_TYPE: 'accountType'
 }
 
 module.exports = {
@@ -164,6 +165,37 @@ module.exports = {
       index: '/agreements',
       detail: '/agreements/:agreementId',
       cancel: '/agreements/:agreementId/cancel'
+    }
+  },
+  simplifiedAccount: {
+    root: `/simplified/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.ACCOUNT_TYPE}`,
+    settings: {
+      index: '/settings',
+      serviceName: {
+        index: '/settings/service-name',
+        edit: '/settings/service-name/edit'
+      },
+      emailNotifications: {
+        index: '/settings/email-notifications'
+      },
+      teamMembers: {
+        index: '/settings/team-members'
+      },
+      orgDetails: {
+        index: '/settings/organisation-details'
+      },
+      cardPayments: {
+        index: '/settings/card-payments'
+      },
+      cardTypes: {
+        index: '/settings/card-types'
+      },
+      apiKeys: {
+        index: '/settings/api-keys'
+      },
+      webhooks: {
+        index: '/settings/webhooks'
+      }
     }
   },
   service: {
