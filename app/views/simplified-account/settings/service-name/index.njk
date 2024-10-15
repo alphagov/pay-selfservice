@@ -9,16 +9,6 @@
   {% include "../_settings-navigation.njk" %}
 {% endblock %}
 
-{% set manage_en_link %}
-  <a class='govuk-link govuk-link--no-visited-state' href='{{ manage_en }}'>Change</a>
-{% endset %}
-
-{% set manage_cy_link %}
-  {% if service_name_cy %}
-    <a class='govuk-link govuk-link--no-visited-state' href='{{ manage_cy }}'>Change</a>
-  {% endif %}
-{% endset %}
-
 {% set add_cy_link %}
   <a class='govuk-link govuk-link--no-visited-state' href='{{ manage_cy }}'>Add Welsh service name</a>
 {% endset %}
@@ -26,37 +16,46 @@
 {% block mainContent %}
   <div class="govuk-grid-column-three-quarters">
     <h2 class="govuk-heading-l">Service name</h2>
-    {{ govukTable({
-      firstCellIsHeader: false,
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-9",
       rows: [
-        [
-          {
-            text: "Service name",
-            classes: "govuk-!-width-two-fifths, govuk-!-font-weight-bold"
-          },
-          {
-            html: service_name_en,
-            classes: "govuk-!-width-two-fifths"
-          },
-          {
-            html: manage_en_link,
-            classes: "govuk-!-width-one-fifth, govuk-!-text-align-right"
-          }
-        ],
-        [
-          {
-            html: "Welsh service name",
-            classes: "govuk-!-width-two-fifths, govuk-!-font-weight-bold"
-          },
-          {
-            html: service_name_cy | default(add_cy_link),
-            classes: "govuk-!-width-two-fifths"
-          },
-          {
-            html: manage_cy_link,
-            classes: "govuk-!-width-one-fifth, govuk-!-text-align-right"
-          }
-        ]
+        {
+          key: {
+          text: "Service name"
+        },
+          value: {
+          text: service_name_en
+        },
+          actions: {
+          items: [
+            {
+              href: manage_en,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "Edit English service name"
+            }
+          ]
+        }
+        },
+        {
+          key: {
+          text: "Welsh service name"
+        },
+          value: {
+          html: service_name_cy | default(add_cy_link)
+        },
+          actions: {
+          items: [
+            {
+              href: manage_cy,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "Edit Welsh service name"
+            } if service_name_cy else {}
+          ]
+        }
+        }
       ]
     }) }}
   </div>

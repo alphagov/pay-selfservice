@@ -139,9 +139,9 @@ module.exports = function (req, data, template) {
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
-  const currentUrl = req.baseUrl && req.baseUrl ? req.baseUrl + req.path : 'unavailable'
+  const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, account, isDegatewayed, currentUrl)
+    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, isDegatewayed, currentUrl, account)
     convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account, service)
     if (currentUrl.includes('simplified') && currentUrl.includes('settings')) {
       convertedData.serviceSettings = serviceSettings(account, currentUrl, service.currentGoLiveStage, permissions)

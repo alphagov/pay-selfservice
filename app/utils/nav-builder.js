@@ -24,7 +24,7 @@ const yourPspPaths = ['your-psp', 'notification-credentials']
 const additionalPspPaths = ['switch-psp']
 const webhookPaths = ['webhooks']
 
-const serviceNavigationItems = (currentPath, permissions, type, account = {}, isDegatewayed, currentUrl) => {
+const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, currentUrl, account = {}) => {
   const navigationItems = []
   navigationItems.push({
     id: 'navigation-menu-home',

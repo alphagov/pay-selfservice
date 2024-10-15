@@ -18,13 +18,13 @@ module.exports = (account, currentUrl, goLiveStage, permissions) => {
       name: 'email notifications',
       path: paths.simplifiedAccount.settings.emailNotifications.index,
       permission: true, // everyone can view email notifications settings
-      alwaysViewable: true
+      alwaysViewable: true // viewable on test and live accounts
     })
     .add({
       id: 'team-members',
       name: 'team members',
       path: paths.simplifiedAccount.settings.teamMembers.index,
-      permission: true // TODO
+      permission: true // everyone can view team member settings
     })
     .add({
       id: 'org-details',
@@ -34,18 +34,18 @@ module.exports = (account, currentUrl, goLiveStage, permissions) => {
     })
     .category('payments')
     .add({
-      id: 'card-paymemts',
+      id: 'card-payments',
       name: 'card payments',
       path: paths.simplifiedAccount.settings.cardPayments.index,
-      permission: true, // TODO
-      alwaysViewable: true
+      permission: true, // everyone can view team member settings
+      alwaysViewable: true // viewable on test and live accounts
     })
     .add({
       id: 'card-types',
       name: 'card types',
       path: paths.simplifiedAccount.settings.cardTypes.index,
-      permission: true, // TODO
-      alwaysViewable: true
+      permission: true, // everyone can view team member settings
+      alwaysViewable: true // viewable on test and live accounts
     })
     .category('developers')
     .add({
@@ -53,14 +53,14 @@ module.exports = (account, currentUrl, goLiveStage, permissions) => {
       name: 'API keys',
       path: paths.simplifiedAccount.settings.apiKeys.index,
       permission: 'tokens_update', // TODO find a better way of defining these
-      alwaysViewable: true
+      alwaysViewable: true // viewable on test and live accounts
     })
     .add({
       id: 'webhooks',
       name: 'webhooks',
       path: paths.simplifiedAccount.settings.webhooks.index,
       permission: 'webhooks_update', // TODO find a better way of defining these
-      alwaysViewable: true
+      alwaysViewable: true // viewable on test and live accounts
     })
     .build()
   return getViewableSettings(serviceSettings, account, goLiveStage)
