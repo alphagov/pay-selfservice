@@ -119,7 +119,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     await simplifiedAccountStrategy(req, res, next)
 
     const expectedError = sinon.match.instanceOf(Error)
-      .and(sinon.match.has('message', 'getGatewayAccountByServiceIdAndAccountType failed for provided parameters'))
+      .and(sinon.match.has('message', 'Could not retrieve gateway account with provided parameters'))
     sinon.assert.calledWith(next, expectedError)
   })
   describe('extend gateway account data with disableToggle3ds field', () => {
