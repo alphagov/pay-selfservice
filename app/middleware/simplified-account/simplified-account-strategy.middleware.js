@@ -11,13 +11,11 @@ function getService (user, serviceExternalId, gatewayAccountId) {
   let service
   const serviceRoles = _.get(user, 'serviceRoles', [])
 
-  if (serviceRoles.length > 0) {
-    if (serviceExternalId) {
-      service = _.get(serviceRoles.find(serviceRole => {
-        return (serviceRole.service.externalId === serviceExternalId &&
-          (!gatewayAccountId || serviceRole.service.gatewayAccountIds.includes(String(gatewayAccountId))))
-      }), 'service')
-    }
+  if (serviceRoles.length > 0 && serviceExternalId) {
+    service = _.get(serviceRoles.find(serviceRole => {
+      return (serviceRole.service.externalId === serviceExternalId &&
+        (!gatewayAccountId || serviceRole.service.gatewayAccountIds.includes(String(gatewayAccountId))))
+    }), 'service')
   }
 
   return service
@@ -70,21 +68,22 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
         throw new Error('Could not resolve service external ID or gateway account type from request params')
       }
 
-      let gatewayAccount = await getGatewayAccountByServiceIdAndAccountType(serviceExternalId, accountType)
+      const gatewayAccount = await getGatewayAccountByServiceIdAndAccountType(serviceExternalId, accountType)
       if (gatewayAccount) {
         req.account = gatewayAccount
         addField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
         addField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
       } else {
-        throw new Error('getGatewayAccountByServiceIdAndAccountType failed for provided parameters')
+        throw new Error('Could not retrieve gateway account with provided parameters')
       }
       const service = getService(req.user, serviceExternalId, gatewayAccount.gateway_account_id)
       if (service) {
         req.service = service
         addField(keys.SERVICE_EXTERNAL_ID, service.externalId)
+      } else {
+        throw new Error('Could not find role for user on service')
       }
     }
-
     next()
   } catch (err) {
     next(err)
