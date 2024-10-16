@@ -2,19 +2,15 @@ const session = require('client-sessions')
 const crypto = require('crypto')
 
 function getCookie (cookieName, secretKey, val) {
-  try {
-    const encryptionKey = deriveKey(secretKey, 'cookiesession-encryption')
-    const signatureKey = deriveKey(secretKey, 'cookiesession-signature')
-    const encryptedCookie = session.util.encode({
-      cookieName,
-      encryptionKey,
-      encryptionAlgorithm: 'aes-256-cbc',
-      signatureKey
-    }, val)
-    return encryptedCookie
-  } catch (e) {
-    throw e
-  }
+  const encryptionKey = deriveKey(secretKey, 'cookiesession-encryption')
+  const signatureKey = deriveKey(secretKey, 'cookiesession-signature')
+  const encryptedCookie = session.util.encode({
+    cookieName,
+    encryptionKey,
+    encryptionAlgorithm: 'aes-256-cbc',
+    signatureKey
+  }, val)
+  return encryptedCookie
 }
 
 function forceBuffer (binaryOrBuffer) {

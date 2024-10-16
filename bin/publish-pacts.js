@@ -2,7 +2,7 @@
 const { unlink, readdir } = require('fs').promises
 const path = require('path')
 const pact = require('@pact-foundation/pact-core')
-const pactDirPath = `${__dirname}/../pacts/`
+const pactDirPath = path.join(__dirname, '../pacts')
 const opts = {
   pactFilesOrDirs: [pactDirPath],
   pactBroker: process.env.PACT_BROKER_URL,
