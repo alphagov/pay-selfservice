@@ -93,7 +93,7 @@ async function createWebhook (serviceId, gatewayAccountId, isLive, options = {})
 }
 
 async function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
-  const paths = [ 'callback_url', 'subscriptions', 'description', 'status' ]
+  const paths = ['callback_url', 'subscriptions', 'description', 'status']
   const body = []
   paths.forEach((path) => {
     if (options[path]) {

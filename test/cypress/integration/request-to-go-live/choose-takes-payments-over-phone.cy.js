@@ -19,7 +19,7 @@ function setupStubsForSubmittingChoice (nextGoLiveStage) {
     ),
     gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
     serviceStubs.patchUpdateServiceSuccessCatchAll({
-      serviceExternalId: serviceExternalId,
+      serviceExternalId,
       currentGoLiveStage: 'GOV_BANKING_MOTO_OPTION_COMPLETED',
       takesPaymentsOverPhone: true
     }),

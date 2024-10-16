@@ -14,7 +14,7 @@ const connectorClient = new Connector(process.env.CONNECTOR_URL)
 async function getGatewayAccountByExternalId (gatewayAccountExternalId) {
   try {
     const params = {
-      gatewayAccountExternalId: gatewayAccountExternalId
+      gatewayAccountExternalId
     }
     let account = await connectorClient.getAccountByExternalId(params)
 

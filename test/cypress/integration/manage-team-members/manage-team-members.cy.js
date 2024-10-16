@@ -36,7 +36,7 @@ describe('Manage team members page', () => {
       }),
       inviteStubs.getInvitedUsersSuccess({
         serviceExternalId: SERVICE_EXTERNAL_ID,
-        invites: invites
+        invites
       })
     ])
   })

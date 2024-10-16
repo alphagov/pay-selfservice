@@ -51,14 +51,14 @@ module.exports = function (options = {}) {
   }
 
   const pactifyMatch = (generate, matcher) => {
-    return term({ generate: generate, matcher: matcher })
+    return term({ generate, matcher })
   }
 
   return {
-    pactifyMatch: pactifyMatch,
-    pactifySimpleArray: pactifySimpleArray,
-    pactifyNestedArray: pactifyNestedArray,
-    pactify: pactify,
-    withPactified: withPactified
+    pactifyMatch,
+    pactifySimpleArray,
+    pactifyNestedArray,
+    pactify,
+    withPactified
   }
 }

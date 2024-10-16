@@ -42,10 +42,10 @@ module.exports = async function (req, res, next) {
   const errors = validateOrgUrl(organisationUrl)
 
   const pageData = {
-    organisationUrl: organisationUrl
+    organisationUrl
   }
   if (!lodash.isEmpty(errors)) {
-    pageData['errors'] = errors
+    pageData.errors = errors
 
     return response(req, res, 'switch-psp/organisation-url', {
       ...pageData, isSwitchingCredentials, currentCredential

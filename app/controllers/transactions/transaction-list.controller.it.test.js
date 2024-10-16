@@ -27,7 +27,7 @@ describe('The /transactions endpoint', () => {
       external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
       gateway_account_id: gatewayAccountId,
       payment_provider: 'sandbox',
-      credentials: { 'username': 'a-username' }
+      credentials: { username: 'a-username' }
     }
   )
   const service = new Service(serviceFixtures.validServiceResponse({}))
@@ -59,9 +59,9 @@ describe('The /transactions endpoint', () => {
 
   describe('Error results when from date is later than to date', () => {
     const request = {
-      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
-      service: service,
-      user: user,
+      account: gatewayAccountFixture.validGatewayAccount({ payment_provider: 'stripe' }),
+      service,
+      user,
       query: {
         fromDate: '03/5/2018',
         fromTime: '01:00:00',
@@ -78,10 +78,10 @@ describe('The /transactions endpoint', () => {
       await getController()(request, response, next)
 
       sinon.assert.calledWith(response.render, 'transactions/index', sinon.match({
-        'isInvalidDateRange': true,
-        'hasResults': false,
-        'fromDateParam': '03/5/2018',
-        'toDateParam': '01/5/2018'
+        isInvalidDateRange: true,
+        hasResults: false,
+        fromDateParam: '03/5/2018',
+        toDateParam: '01/5/2018'
       }))
     })
   })

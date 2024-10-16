@@ -170,8 +170,8 @@ module.exports = {
       chargeData.dispute = new DisputeTransaction(disputeTransactionData)
     }
 
-    delete chargeData['links']
-    delete chargeData['return_url']
+    delete chargeData.links
+    delete chargeData.return_url
     return chargeData
   }
 }

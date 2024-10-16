@@ -16,7 +16,7 @@ describe('policy HTML download controller', () => {
   beforeEach(() => {
     req = {
       params: {
-        key: key
+        key
       },
       user: {
         externalId: 'user-id'

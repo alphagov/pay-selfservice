@@ -289,8 +289,8 @@ module.exports = {
     naxsiError: '/request-denied'
   },
   feedback: '/feedback',
-  generateRoute: generateRoute,
-  formattedPathFor: formattedPathFor,
+  generateRoute,
+  formattedPathFor,
   stripeTermsAndConditions: '/policy/stripe-terms-and-conditions',
   policyPage: '/policy/:key',
   payouts: {

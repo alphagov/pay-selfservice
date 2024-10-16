@@ -14,10 +14,10 @@ const COOKIE_CATEGORIES = {
 const GOV_UK_PAY_COOKIE_POLICY = 'govuk_pay_cookie_policy'
 
 function getCookie (name) {
-  var nameEQ = name + '='
-  var cookies = document.cookie.split(';')
-  for (var i = 0, len = cookies.length; i < len; i++) {
-    var cookie = cookies[i]
+  const nameEQ = name + '='
+  const cookies = document.cookie.split(';')
+  for (let i = 0, len = cookies.length; i < len; i++) {
+    let cookie = cookies[i]
     while (cookie.charAt(0) === ' ') {
       cookie = cookie.substring(1, cookie.length)
     }
@@ -61,8 +61,8 @@ function Cookie (name, value, options) {
 }
 
 function getConsentCookie () {
-  var consentCookie = getCookie(GOV_UK_PAY_COOKIE_POLICY)
-  var consentCookieObj
+  const consentCookie = getCookie(GOV_UK_PAY_COOKIE_POLICY)
+  let consentCookieObj
 
   if (consentCookie) {
     try {
@@ -82,18 +82,18 @@ function getConsentCookie () {
 }
 
 function setConsentCookie (options) {
-  var cookieConsent = getConsentCookie()
+  let cookieConsent = getConsentCookie()
 
   if (!cookieConsent) {
     cookieConsent = JSON.parse(JSON.stringify(DEFAULT_COOKIE_CONSENT))
   }
 
-  for (var cookieType in options) {
+  for (const cookieType in options) {
     cookieConsent[cookieType] = options[cookieType]
 
     // Delete cookies of that type if consent being set to false
     if (!options[cookieType]) {
-      for (var cookie in COOKIE_CATEGORIES) {
+      for (const cookie in COOKIE_CATEGORIES) {
         if (COOKIE_CATEGORIES[cookie] === cookieType) {
           Cookie(cookie, null)
 
@@ -114,7 +114,7 @@ function getCookieDomain () {
 }
 
 function checkConsentCookieCategory (cookieName, cookieCategory) {
-  var currentConsentCookie = getConsentCookie()
+  let currentConsentCookie = getConsentCookie()
 
   // If the consent cookie doesn't exist, but the cookie is in our known list, return true
   if (!currentConsentCookie && COOKIE_CATEGORIES[cookieName]) {
@@ -139,7 +139,7 @@ function checkConsentCookie (cookieName, cookieValue) {
   }
 
   if (COOKIE_CATEGORIES[cookieName]) {
-    var cookieCategory = COOKIE_CATEGORIES[cookieName]
+    const cookieCategory = COOKIE_CATEGORIES[cookieName]
 
     return checkConsentCookieCategory(cookieName, cookieCategory)
   } else {
@@ -156,9 +156,9 @@ function setCookie (name, value, options) {
     if (typeof options === 'undefined') {
       options = {}
     }
-    var cookieString = name + '=' + value + '; path=/; domain=' + getCookieDomain() + '; SameSite=Lax'
+    let cookieString = name + '=' + value + '; path=/; domain=' + getCookieDomain() + '; SameSite=Lax'
     if (options.days) {
-      var date = new Date()
+      const date = new Date()
       date.setTime(date.getTime() + (options.days * 24 * 60 * 60 * 1000))
       cookieString = cookieString + '; expires=' + date.toGMTString()
     }
@@ -171,10 +171,10 @@ function setCookie (name, value, options) {
 }
 
 module.exports = {
-  setConsentCookie: setConsentCookie,
-  getConsentCookie: getConsentCookie,
-  getCookie: getCookie,
-  setCookie: setCookie,
-  getCookieDomain: getCookieDomain,
-  GOV_UK_PAY_COOKIE_POLICY: GOV_UK_PAY_COOKIE_POLICY
+  setConsentCookie,
+  getConsentCookie,
+  getCookie,
+  setCookie,
+  getCookieDomain,
+  GOV_UK_PAY_COOKIE_POLICY
 }

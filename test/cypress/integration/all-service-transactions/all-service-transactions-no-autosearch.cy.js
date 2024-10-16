@@ -5,7 +5,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionStubs = require('../../stubs/transaction-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-const liveTransactionsUrl = `/all-service-transactions/nosearch/live`
+const liveTransactionsUrl = '/all-service-transactions/nosearch/live'
 
 const gatewayAccountStripe = {
   gatewayAccountId: 42,
@@ -74,7 +74,7 @@ describe('All service transactions without automatic search', () => {
     ])
 
     cy.visit(liveTransactionsUrl)
-    cy.title().should('eq', `Transactions for all services`)
+    cy.title().should('eq', 'Transactions for all services')
 
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)

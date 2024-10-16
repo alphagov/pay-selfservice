@@ -10,7 +10,7 @@ describe('All service transactions no autosearch - GET', () => {
   let req, res, next
   const user = new User(userFixtures.validUserResponse())
   const service = new Service(serviceFixtures.validServiceResponse({}))
-  let userPermittedAccountsSummary = {
+  const userPermittedAccountsSummary = {
     gatewayAccountIds: [31],
     headers: { shouldGetStripeHeaders: true, shouldGetMotoHeaders: true },
     hasLiveAccounts: false,
@@ -26,10 +26,10 @@ describe('All service transactions no autosearch - GET', () => {
 
   beforeEach(() => {
     req = {
-      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
+      account: gatewayAccountFixture.validGatewayAccount({ payment_provider: 'stripe' }),
       flash: sinon.spy(),
-      service: service,
-      user: user,
+      service,
+      user,
       params: {},
       url: 'http://selfservice/all-servce-transactions',
       session: {},

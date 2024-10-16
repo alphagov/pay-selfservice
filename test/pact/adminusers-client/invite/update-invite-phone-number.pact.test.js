@@ -15,7 +15,7 @@ chai.use(chaiAsPromised)
 let adminUsersClient
 
 describe('adminusers client - update invite phone number', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

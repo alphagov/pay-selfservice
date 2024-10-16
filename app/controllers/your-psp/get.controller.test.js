@@ -25,7 +25,7 @@ describe('Your PSP GET controller', () => {
     })
 
     req = {
-      account: account,
+      account,
       params: { credentialId },
       flash: sinon.spy(),
       url: '/your-psp/'

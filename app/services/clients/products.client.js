@@ -21,7 +21,7 @@ module.exports = {
     disable: disableProduct,
     delete: deleteProduct,
     getByProductExternalIdAndGatewayAccountId: getProductByExternalIdAndGatewayAccountId,
-    getProductByExternalId: getProductByExternalId,
+    getProductByExternalId,
     getByGatewayAccountIdAndType: getProductsByGatewayAccountIdAndType,
     getByProductPath: getProductByPath
   },

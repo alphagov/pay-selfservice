@@ -63,7 +63,7 @@ module.exports = function errorHandler (err, req, res, next) {
   }
 
   if (err instanceof RegistrationSessionMissingError || err instanceof InvalidRegistationStateError) {
-    logger.info(`RegistrationSessionMissingError handled. Rendering error page`)
+    logger.info('RegistrationSessionMissingError handled. Rendering error page')
     return renderErrorView(req, res, 'There has been a problem proceeding with this registration. Please try again.', 400)
   }
 
@@ -99,7 +99,7 @@ module.exports = function errorHandler (err, req, res, next) {
 
     return renderErrorView(req, res, err.message, 504, {
       allServicesTimeout: true,
-      allServiceTransactionsNoSearchPath: allServiceTransactionsNoSearchPath
+      allServiceTransactionsNoSearchPath
     })
   }
 
@@ -110,8 +110,8 @@ module.exports = function errorHandler (err, req, res, next) {
     })
   } else if (err instanceof AxiosError) {
     logger.info(`Unhandled AxiosError caught: ${err.message}`, {
-      'status': err.response && err.response.status,
-      'response_data': err.response && err.response.data
+      status: err.response && err.response.status,
+      response_data: err.response && err.response.data
     })
   } else {
     logger.info(`Unhandled error caught: ${err.message}`, {

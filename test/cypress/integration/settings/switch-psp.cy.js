@@ -153,16 +153,16 @@ describe('Switch PSP settings page', () => {
           cy.task('setupStubs', [
             ...getUserAndAccountStubsForSwitchingNotStarted(),
             gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
-              gatewayAccountId: gatewayAccountId,
+              gatewayAccountId,
               result: 'valid',
               organisational_unit_id: organisationalUnitId,
-              issuer: issuer,
+              issuer,
               jwt_mac_key: jwtMacKey
             }),
             gatewayAccountStubs.postUpdateWorldpay3dsFlexCredentials({
-              gatewayAccountId: gatewayAccountId,
+              gatewayAccountId,
               organisational_unit_id: organisationalUnitId,
-              issuer: issuer,
+              issuer,
               jwt_mac_key: jwtMacKey
             }),
             gatewayAccountStubs.patchUpdate3dsVersionSuccess(gatewayAccountId, 2)
@@ -305,7 +305,7 @@ describe('Switch PSP settings page', () => {
 
           cy.get('button').contains('Continue to live payment').click()
           cy.location().should((location) => {
-            expect(location.pathname).to.eq(`/should_follow_to_payment_page`)
+            expect(location.pathname).to.eq('/should_follow_to_payment_page')
           })
         })
 
@@ -384,7 +384,7 @@ describe('Switch PSP settings page', () => {
 
       describe('Switch PSP', () => {
         beforeEach(() => {
-          let userAndAccountStubs = getUserAndAccountStubs('smartpay', true, [
+          const userAndAccountStubs = getUserAndAccountStubs('smartpay', true, [
             {
               payment_provider: 'smartpay',
               state: 'ACTIVE',
@@ -500,7 +500,7 @@ describe('Switch PSP settings page', () => {
                 {
                   payment_provider: 'stripe',
                   state: 'CREATED',
-                  credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' }
+                  credentials: { stripe_account_id: 'a-valid-stripe-account-id' }
                 }
               ]
             ),
@@ -540,7 +540,7 @@ describe('Switch PSP settings page', () => {
                 {
                   payment_provider: 'stripe',
                   state: 'VERIFIED_WITH_LIVE_PAYMENT',
-                  credentials: { 'stripe_account_id': 'a-valid-stripe-account-id' }
+                  credentials: { stripe_account_id: 'a-valid-stripe-account-id' }
                 }
               ],
               merchantDetails

@@ -14,7 +14,7 @@ function setupStubs (allowApplePay) {
       gatewayAccountId,
       gatewayAccountExternalId,
       paymentProvider: 'worldpay',
-      allowApplePay: allowApplePay
+      allowApplePay
     })
   ])
 }

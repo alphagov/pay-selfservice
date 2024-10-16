@@ -8,14 +8,14 @@ const gatewayAccountExternalId = 'a-valid-account-id'
 
 const buildPaymentLinkOpts = function buildPaymentLinkOpts (name, href, language) {
   return {
-    name: name,
-    language: language,
+    name,
+    language,
     type: 'ADHOC',
     links: [
       {
-        'rel': 'friendly',
-        'method': 'GET',
-        'href': href
+        rel: 'friendly',
+        method: 'GET',
+        href
       }
     ]
   }
@@ -23,15 +23,15 @@ const buildPaymentLinkOpts = function buildPaymentLinkOpts (name, href, language
 
 const buildPaymentLinkWithMetadataOpts = function buildPaymentLinkWithMetadataOpts (name, href, language, metadata) {
   return {
-    name: name,
-    language: language,
+    name,
+    language,
     type: 'ADHOC',
-    metadata: metadata,
+    metadata,
     links: [
       {
-        'rel': 'friendly',
-        'method': 'GET',
-        'href': href
+        rel: 'friendly',
+        method: 'GET',
+        href
       }
     ]
   }

@@ -47,11 +47,11 @@ function validateServiceName (serviceName, serviceNameCy) {
   const errors = {}
   const nameValidationResult = validateMandatoryField(serviceName, SERVICE_NAME_MAX_LENGTH, 'service name')
   if (!nameValidationResult.valid) {
-    errors['service_name'] = nameValidationResult.message
+    errors.service_name = nameValidationResult.message
   }
   const welshNameValidationResult = validateOptionalField(serviceNameCy, SERVICE_NAME_MAX_LENGTH, 'welsh service name')
   if (!welshNameValidationResult.valid) {
-    errors['service_name_cy'] = welshNameValidationResult.message
+    errors.service_name_cy = welshNameValidationResult.message
   }
   return errors
 }

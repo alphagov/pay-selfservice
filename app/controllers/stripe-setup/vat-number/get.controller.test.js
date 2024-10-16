@@ -48,6 +48,6 @@ describe('VAT number GET controller', () => {
 
     await getController(req, res)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/vat-number/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/vat-number/index')
   })
 })

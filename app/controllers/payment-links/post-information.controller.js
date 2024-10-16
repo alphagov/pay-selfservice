@@ -49,7 +49,7 @@ module.exports = async function postInformation (req, res, next) {
   sessionData.serviceNamePath = makeNiceURL(serviceNamePath)
   sessionData.productNamePath = makeNiceURL(title)
 
-  if (req.body['change'] === 'true') {
+  if (req.body.change === 'true') {
     req.flash('generic', 'The details have been updated')
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, req.account && req.account.external_id))
   }

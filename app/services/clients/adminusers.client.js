@@ -22,10 +22,10 @@ const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
   const baseUrl = clientOptions.baseUrl || ADMINUSERS_URL
-  const userResource = `/v1/api/users`
-  const forgottenPasswordResource = `/v1/api/forgotten-passwords`
-  const resetPasswordResource = `/v1/api/reset-password`
-  const serviceResource = `/v1/api/services`
+  const userResource = '/v1/api/users'
+  const forgottenPasswordResource = '/v1/api/forgotten-passwords'
+  const resetPasswordResource = '/v1/api/reset-password'
+  const serviceResource = '/v1/api/services'
   const client = new Client(SERVICE_NAME)
 
   /**
@@ -62,7 +62,7 @@ module.exports = function (clientOptions = {}) {
   async function authenticateUser (email, password) {
     const url = `${baseUrl}${userResource}/authenticate`
     configureClient(client, url)
-    const response = await client.post(url, { email: email, password: password }, 'find a user')
+    const response = await client.post(url, { email, password }, 'find a user')
     return responseBodyToUserTransformer(response.data)
   }
 
@@ -91,7 +91,7 @@ module.exports = function (clientOptions = {}) {
   async function createForgottenPassword (username) {
     const url = `${baseUrl}${forgottenPasswordResource}`
     configureClient(client, url)
-    const response = await client.post(url, { username: username }, 'create a forgotten password for a user')
+    const response = await client.post(url, { username }, 'create a forgotten password for a user')
     return response.data
   }
 
@@ -295,15 +295,15 @@ module.exports = function (clientOptions = {}) {
   async function createSelfSignupInvite (email) {
     const url = `${baseUrl}/v1/api/invites/create-self-registration-invite`
     configureClient(client, url)
-    const response = await client.post(url, { email: email }, 'create self-registration invite')
+    const response = await client.post(url, { email }, 'create self-registration invite')
     return response.data
   }
 
   async function deleteUser (serviceExternalId, removerExternalId, userExternalId) {
-    let headers = {}
+    const headers = {}
     headers[HEADER_USER_CONTEXT] = removerExternalId
     const config = {
-      headers: headers,
+      headers,
       data: {
         userDelete: userExternalId,
         userRemover: removerExternalId
@@ -451,7 +451,7 @@ module.exports = function (clientOptions = {}) {
     const url = `${baseUrl}${userResource}/${externalId}/second-factor/activate`
     configureClient(client, url)
     const body = {
-      code: code,
+      code,
       second_factor: secondFactor
     }
     const response = await client.post(url, body, 'configure a new OTP key and method')

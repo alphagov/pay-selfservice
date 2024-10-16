@@ -61,11 +61,11 @@ describe('make a demo payment - mock card details controller', () => {
       expect(result.statusCode).to.equal(200)
     })
 
-    it(`should include a back link linking to the demoservice index page`, () => {
+    it('should include a back link linking to the demoservice index page', () => {
       expect($('.govuk-back-link').attr('href')).to.equal(formatAccountPathsFor(paths.account.prototyping.demoPayment.index, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
 
-    it(`should include form which has the go to demo payment page as its action`, () => {
+    it('should include form which has the go to demo payment page as its action', () => {
       expect($('form').attr('action')).to.equal(formatAccountPathsFor(paths.account.prototyping.demoPayment.goToPaymentScreens, EXTERNAL_GATEWAY_ACCOUNT_ID))
     })
   })

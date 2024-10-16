@@ -60,7 +60,7 @@ describe('Controller: settings/service-name', () => {
       expect(responseStub.args[0]).to.include('simplified-account/settings/service-name/index')
     })
 
-    it(`should pass context data to the response method`, () => {
+    it('should pass context data to the response method', () => {
       expect(responseStub.args[0][3]).to.have.property('service_name_en').to.equal(EN_SERVICE_NAME)
       expect(responseStub.args[0][3]).to.have.property('service_name_cy').to.equal(CY_SERVICE_NAME)
       expect(responseStub.args[0][3]).to.have.property('manage_en').to.contain(`service/${SERVICE_ID}/account/${ACCOUNT_TYPE}`)

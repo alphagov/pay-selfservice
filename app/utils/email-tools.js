@@ -6,7 +6,7 @@ function isValidEmail (email) {
   if (!rfc822Validator(email)) {
     return false
   } else {
-    let domain = email.split('@')[1]
+    const domain = email.split('@')[1]
     return !(domain && domain.indexOf('.') === -1)
   }
 }

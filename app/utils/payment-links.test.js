@@ -55,7 +55,7 @@ describe('payment links helper methods', () => {
     it('updates session to add a new metadata correctly', () => {
       const mockPaymentLinkSession = {}
       metadata.addMetadata(mockPaymentLinkSession, 'key', 'a-value')
-      expect(mockPaymentLinkSession.metadata['key']).to.equal('a-value')
+      expect(mockPaymentLinkSession.metadata.key).to.equal('a-value')
     })
     it('updates session replacing a metadata value if the key exists', () => {
       const mockPaymentLinkSession = {
@@ -64,7 +64,7 @@ describe('payment links helper methods', () => {
         }
       }
       metadata.addMetadata(mockPaymentLinkSession, 'key', 'second-value')
-      expect(mockPaymentLinkSession.metadata['key']).to.equal('second-value')
+      expect(mockPaymentLinkSession.metadata.key).to.equal('second-value')
     })
   })
 
@@ -85,7 +85,7 @@ describe('payment links helper methods', () => {
       }
     }
     metadata.updateMetadata(mockPaymentLinkSession, 'key', 'key', 'second-value')
-    expect(mockPaymentLinkSession.metadata['key']).to.equal('second-value')
+    expect(mockPaymentLinkSession.metadata.key).to.equal('second-value')
   })
 
   it('updates session to consistently replace a metadata key if a new key is used', () => {

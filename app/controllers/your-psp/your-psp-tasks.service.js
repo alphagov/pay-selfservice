@@ -10,31 +10,31 @@ function stripeSetupStageComplete (account, stage) {
 function getStripeTaskList (targetCredential, account) {
   if (targetCredential.payment_provider === 'stripe') {
     return {
-      'ENTER_BANK_DETAILS': {
+      ENTER_BANK_DETAILS: {
         enabled: !stripeSetupStageComplete(account, 'bankAccount'),
         completed: stripeSetupStageComplete(account, 'bankAccount')
       },
-      'ENTER_RESPONSIBLE_PERSON': {
+      ENTER_RESPONSIBLE_PERSON: {
         enabled: !stripeSetupStageComplete(account, 'responsiblePerson'),
         completed: stripeSetupStageComplete(account, 'responsiblePerson')
       },
-      'ENTER_DIRECTOR': {
+      ENTER_DIRECTOR: {
         enabled: !stripeSetupStageComplete(account, 'director'),
         completed: stripeSetupStageComplete(account, 'director')
       },
-      'ENTER_VAT_NUMBER': {
+      ENTER_VAT_NUMBER: {
         enabled: !stripeSetupStageComplete(account, 'vatNumber'),
         completed: stripeSetupStageComplete(account, 'vatNumber')
       },
-      'ENTER_COMPANY_NUMBER': {
+      ENTER_COMPANY_NUMBER: {
         enabled: !stripeSetupStageComplete(account, 'companyNumber'),
         completed: stripeSetupStageComplete(account, 'companyNumber')
       },
-      'CONFIRM_ORGANISATION_DETAILS': {
+      CONFIRM_ORGANISATION_DETAILS: {
         enabled: !stripeSetupStageComplete(account, 'organisationDetails'),
         completed: stripeSetupStageComplete(account, 'organisationDetails')
       },
-      'UPLOAD_GOVERNMENT_ENTITY_DOCUMENT': {
+      UPLOAD_GOVERNMENT_ENTITY_DOCUMENT: {
         enabled: stripeSetupStageComplete(account, 'bankAccount') &&
           stripeSetupStageComplete(account, 'responsiblePerson') &&
           stripeSetupStageComplete(account, 'director') &&

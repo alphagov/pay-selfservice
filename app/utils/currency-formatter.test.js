@@ -15,7 +15,7 @@ const invalidAmountWithoutDecimals = '10'
 const invalidAmountWithOneDecimals = '10.5'
 const invalidAmountWithLetter = '10.50g'
 
-describe(`Pence to pounds`, () => {
+describe('Pence to pounds', () => {
   describe(`when given valid pence amount ${validPoundsAndPenceAmount}`, () => {
     it(`should return ${validPoundsAndPenceAmount}`, () => {
       expect(penceToPounds(validPenceAmount)).to.equal(validPoundsAndPenceAmount)
@@ -23,7 +23,7 @@ describe(`Pence to pounds`, () => {
   })
 })
 
-describe(`Pounds to pence`, () => {
+describe('Pounds to pence', () => {
   describe(`when given valid pounds amount ${validPoundsAndPenceAmount}`, () => {
     it(`should return ${validPenceAmount}`, () => {
       expect(poundsToPence(validPoundsAndPenceAmount)).to.equal('1050')
@@ -31,7 +31,7 @@ describe(`Pounds to pence`, () => {
   })
 })
 
-describe(`Pounds to pence with currency`, () => {
+describe('Pounds to pence with currency', () => {
   describe(`when given valid pence amount ${validPenceAmount}`, () => {
     it(`should return ${validPoundsAndPenceAmountWithCurrency}`, () => {
       expect(penceToPoundsWithCurrency(validPenceAmount)).to.equal(validPoundsAndPenceAmountWithCurrency)
@@ -39,7 +39,7 @@ describe(`Pounds to pence with currency`, () => {
   })
 })
 
-describe(`Sanitise pounds and pence user input`, () => {
+describe('Sanitise pounds and pence user input', () => {
   describe(`when given pounds and pence amount from user input ${validPoundsAndPenceAmount}`, () => {
     it(`should return ${validPenceAmount}`, () => {
       expect(safeConvertPoundsStringToPence(validPoundsAndPenceAmount)).to.equal(validPenceAmount)

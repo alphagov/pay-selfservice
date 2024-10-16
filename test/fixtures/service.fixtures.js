@@ -74,7 +74,7 @@ module.exports = {
     return {
       op: 'replace',
       path: 'current_go_live_stage',
-      value: value
+      value
     }
   },
 
@@ -82,7 +82,7 @@ module.exports = {
     return {
       op: 'replace',
       path: 'current_psp_test_account_stage',
-      value: value
+      value
     }
   },
 
@@ -154,7 +154,8 @@ module.exports = {
 
     if (opts.default_billing_address_country !== null) {
       service.default_billing_address_country = opts.default_billing_address_country === undefined
-        ? 'GB' : opts.default_billing_address_country
+        ? 'GB'
+        : opts.default_billing_address_country
     }
 
     return service

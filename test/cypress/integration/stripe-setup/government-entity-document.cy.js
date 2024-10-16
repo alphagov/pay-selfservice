@@ -19,7 +19,7 @@ function setupStubs (governmentEntityDocument, type = 'live', paymentProvider = 
   if (Array.isArray(governmentEntityDocument)) {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupFlagForMultipleCalls({
       gatewayAccountId,
-      governmentEntityDocument: governmentEntityDocument
+      governmentEntityDocument
     })
   } else {
     stripeSetupStub = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
@@ -38,7 +38,7 @@ function setupStubs (governmentEntityDocument, type = 'live', paymentProvider = 
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
-      gatewayAccountExternalId: gatewayAccountExternalId,
+      gatewayAccountExternalId,
       type,
       paymentProvider,
       gatewayAccountCredentials
@@ -160,7 +160,7 @@ describe('Stripe setup: Government entity document', () => {
         userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
           gatewayAccountId,
-          gatewayAccountExternalId: gatewayAccountExternalId,
+          gatewayAccountExternalId,
           type: 'live',
           paymentProvider: 'stripe'
         }),

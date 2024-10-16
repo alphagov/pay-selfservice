@@ -100,8 +100,8 @@ describe('Middleware: getSimplifiedAccount', () => {
       serviceExternalId: A_SERVICE_EXTERNAL_ID,
       accountType: 'test'
     })
-    req.params['serviceExternalId'] = undefined
-    req.params['accountType'] = undefined
+    req.params.serviceExternalId = undefined
+    req.params.accountType = undefined
 
     await simplifiedAccountStrategy(req, res, next)
 

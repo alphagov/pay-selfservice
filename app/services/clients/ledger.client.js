@@ -132,7 +132,7 @@ const agreements = async function agreements (serviceId, live, accountId, page =
 
 const agreement = async function agreement (id, serviceId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
-  let url = `${baseUrl}/v1/agreement/${id}?service_id=${serviceId}`
+  const url = `${baseUrl}/v1/agreement/${id}?service_id=${serviceId}`
   configureClient(client, url)
   const response = await client.get(url, 'Get agreement by ID')
   return response.data

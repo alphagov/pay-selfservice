@@ -56,7 +56,7 @@ module.exports = async function getServiceList (req, res) {
         external_id: serviceRole.service.externalId,
         gatewayAccounts: lodash.sortBy(gatewayAccounts, 'type', 'asc'),
         permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name)),
-        isAdminUser: isAdminUser,
+        isAdminUser,
         isWorldpayTestService: isWorldpayTestService(gatewayAccounts)
       }
       return serviceData

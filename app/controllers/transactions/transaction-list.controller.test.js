@@ -17,9 +17,9 @@ describe('List transactions - GET', () => {
 
   beforeEach(() => {
     req = {
-      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
-      service: service,
-      user: user,
+      account: gatewayAccountFixture.validGatewayAccount({ payment_provider: 'stripe' }),
+      service,
+      user,
       params: {},
       url: 'http://selfservice/account/accountId/transactions',
       session: {},

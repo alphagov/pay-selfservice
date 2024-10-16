@@ -48,7 +48,7 @@ module.exports = function postReference (req, res, next) {
   sessionData.paymentReferenceLabel = type === 'custom' ? label : ''
   sessionData.paymentReferenceHint = type === 'custom' ? hint : ''
 
-  if (req.body['change'] === 'true') {
+  if (req.body.change === 'true') {
     req.flash('generic', 'The details have been updated')
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, req.account && req.account.external_id))
   }

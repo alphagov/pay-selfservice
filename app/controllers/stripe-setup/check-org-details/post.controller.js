@@ -37,7 +37,7 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
   if (!lodash.isEmpty(errors)) {
     const { merchantDetails } = req.service
     const data = {
-      errors: errors,
+      errors,
       orgName: merchantDetails.name,
       orgAddressLine1: merchantDetails.address_line1,
       orgAddressLine2: merchantDetails.address_line2,
@@ -83,7 +83,7 @@ function validateConfirmOrgDetails (confirmOrgDetails) {
   const errors = {}
 
   if (!confirmOrgDetails) {
-    errors['confirmOrgDetails'] = 'Select yes if your organisation’s details match the details on your government entity document'
+    errors.confirmOrgDetails = 'Select yes if your organisation’s details match the details on your government entity document'
   }
 
   return errors

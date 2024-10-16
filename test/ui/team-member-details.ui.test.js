@@ -4,7 +4,7 @@ const secondFactorMethod = require('../../app/models/second-factor-method')
 
 describe('The team member details view', function () {
   it('should render team member details', function () {
-    let templateData = {
+    const templateData = {
       email: 'oscar.smith@example.com',
       role: 'View only',
       editPermissionsLink: 'some-link',
@@ -15,7 +15,7 @@ describe('The team member details view', function () {
       secondFactorMethod
     }
 
-    let body = renderTemplate('team-members/team-member-details', templateData)
+    const body = renderTemplate('team-members/team-member-details', templateData)
 
     body.should.containSelector('h1#details-for').withOnlyText('Details for oscar.smith@example.com')
     body.should.containSelector('td#email').withExactText('oscar.smith@example.com')
@@ -26,7 +26,7 @@ describe('The team member details view', function () {
   })
 
   it('should render team member details without remove team member link', function () {
-    let templateData = {
+    const templateData = {
       email: 'oscar.smith@example.com',
       role: 'View only',
       editPermissionsLink: 'some-link',
@@ -35,7 +35,7 @@ describe('The team member details view', function () {
       secondFactorMethod
     }
 
-    let body = renderTemplate('team-members/team-member-details', templateData)
+    const body = renderTemplate('team-members/team-member-details', templateData)
 
     body.should.containSelector('h1#details-for').withOnlyText('Details for oscar.smith@example.com')
     body.should.containSelector('td#email').withExactText('oscar.smith@example.com')
@@ -45,14 +45,14 @@ describe('The team member details view', function () {
   })
 
   it('should render team member My profile view', function () {
-    let templateData = {
+    const templateData = {
       email: 'john.smith@example.com',
       telephone_number: '+447769897329',
       two_factor_auth: secondFactorMethod.SMS,
       secondFactorMethod
     }
 
-    let body = renderTemplate('team-members/team-member-profile', templateData)
+    const body = renderTemplate('team-members/team-member-profile', templateData)
 
     body.should.containSelector('#email').withExactText('john.smith@example.com')
     body.should.containSelector('#telephone-number').withText('+447769897329')

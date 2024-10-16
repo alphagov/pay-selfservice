@@ -29,7 +29,7 @@ describe('The organisation address page', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(pageUrl)
 
-      cy.get('h1').should('contain', `Enter your organisation’s contact details`)
+      cy.get('h1').should('contain', 'Enter your organisation’s contact details')
 
       cy.get('label[for="address-line1"]').should('exist')
       cy.get('input#address-line1[name="address-line1"]').should('exist')
@@ -149,7 +149,7 @@ describe('The organisation address page', () => {
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(`/service/${serviceExternalId}/request-to-go-live/organisation-address`)
 
-      cy.get(`form[method=post]`)
+      cy.get('form[method=post]')
         .within(() => {
           cy.get('#address-line1').should('have.value', merchantDetails.address_line1)
           cy.get('#address-line2').should('have.value', merchantDetails.address_line2)

@@ -68,7 +68,7 @@ describe('The logged in endpoint', function () {
     request(app)
       .get('/')
       .expect(302)
-      .expect('Location', `/my-services`)
+      .expect('Location', '/my-services')
       .end(done)
   })
 
@@ -119,7 +119,7 @@ describe('The postlogin endpoint', function () {
     const req = {
       session: _.merge(session, { currentGatewayAccountId: '13' }),
       headers: { 'x-request-id': 'some-unique-id' },
-      user: user
+      user
     }
     const res = mockRes.getStubbedRes()
 
@@ -145,7 +145,7 @@ describe('The otplogin endpoint', function () {
     const sessionData = {
       csrfSecret: '123',
       passport: {
-        user: user
+        user
       }
     }
 
@@ -168,7 +168,7 @@ describe('The otplogin endpoint', function () {
     const sessionData = {
       csrfSecret: '123',
       passport: {
-        user: user
+        user
       },
       sentCode: true
     }
@@ -189,9 +189,9 @@ describe('The afterOtpLogin endpoint', function () {
     const user = mockSession.getUser()
     const session = mockSession.getMockSession(user)
     const req = {
-      session: session,
+      session,
       headers: { 'x-request-id': 'some-unique-id' },
-      user: user
+      user
     }
     const lastUrl = session.last_url
     const res = mockRes.getStubbedRes()
@@ -207,7 +207,7 @@ describe('The afterOtpLogin endpoint', function () {
     const req = {
       session: mockSession.getMockSession(user),
       headers: { 'x-request-id': 'some-unique-id' },
-      user: user
+      user
     }
     const res = mockRes.getStubbedRes()
     delete req.session.last_url
@@ -224,26 +224,26 @@ describe('The afterOtpLogin endpoint', function () {
 
 describe('login get endpoint', function () {
   it('should set the right flash message if both fields are empty', function (done) {
-    const req = { 'body': { 'username': '', 'password': '' } }
+    const req = { body: { username: '', password: '' } }
     const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_all')
 
-    res.locals = { 'flash': {} }
+    res.locals = { flash: {} }
     testController(loginController.loginGet, req, res)
     expect(res.locals.flash === { username: 'You must enter a username', password: 'You must enter a password' })
     done()
   })
 
   it('should set the right flash message if individual fields are empty', function (done) {
-    const req = { 'body': { 'username': '', 'password': '123' } }
+    const req = { body: { username: '', password: '123' } }
     const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_username')
 
-    res.locals = { 'flash': {} }
+    res.locals = { flash: {} }
     testController(loginController.loginGet, req, res)
     expect(res.locals.flash === { username: 'You must enter a username' })
     done()
@@ -252,7 +252,7 @@ describe('login get endpoint', function () {
 
 describe('login post endpoint', function () {
   it('should set the right flash message if both fields are empty', function (done) {
-    const req = { 'body': { 'username': '', 'password': '' } }
+    const req = { body: { username: '', password: '' } }
     const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
@@ -261,7 +261,7 @@ describe('login post endpoint', function () {
   })
 
   it('should set the right flash message if individual fields are empty', function (done) {
-    const req = { 'body': { 'username': '', 'password': '123' } }
+    const req = { body: { username: '', password: '123' } }
     const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)

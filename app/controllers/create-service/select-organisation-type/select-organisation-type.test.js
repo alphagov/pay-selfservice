@@ -64,7 +64,7 @@ describe('Controller: selectOrganisationType, Method: get', () => {
       expect(responseContext).to.have.property('submit_link').to.equal(paths.serviceSwitcher.create.index)
     })
 
-    it(`should remove errors pageData from the session`, () => {
+    it('should remove errors pageData from the session', () => {
       expect(req.session.pageData.createService).to.not.have.property('errors')
     })
   })

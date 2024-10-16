@@ -30,7 +30,7 @@ describe('adminusers client - get forgotten password', function () {
 
   describe('success', () => {
     const code = 'existing-code'
-    const validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ code: code })
+    const validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ code })
 
     before((done) => {
       provider.addInteraction(
