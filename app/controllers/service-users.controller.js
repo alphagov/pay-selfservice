@@ -38,7 +38,7 @@ const mapInvitesByRoles = function (invitedUsers) {
   for (const role in roles) {
     userRolesMap[roles[role].name] = []
   }
-  invitedUsers.map((user) => {
+  invitedUsers.forEach((user) => {
     if (roles[user.role]) {
       const mappedUser = {
         email: user.email,
