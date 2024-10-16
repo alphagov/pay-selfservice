@@ -32,6 +32,40 @@ describe('Credentials forms', () => {
     expect(results.errorSummaryList).to.have.length(0)
   })
 
+  it('correctly validates multiple fields with multiple validators', () => {
+    const form = new CredentialsForm([
+      {
+        id: 'some-id', key: 'someId', valid: [{ method: isNotEmpty, message: 'Enter some ID' }]
+      },
+      {
+        id: 'some-thing', key: 'someThing', valid: [{ method: isNotEmpty, message: 'Enter some Thing' }]
+      },
+      {
+        id: 'another-thing', key: 'anotherThing', valid: [{ method: isNotEmpty, message: 'Enter some other Thing' }]
+      },
+      {
+        id: 'a-third-thing',
+        key: 'aThirdThing',
+        valid: [
+          { method: isNotEmpty, message: 'Enter some third Thing' },
+          { method: value => value === 'this-is-th-only-valid-value', message: 'Invalid value' }
+        ]
+      }
+    ])
+    const results = form.validate({
+      'some-id': 'some-value',
+      'some-thing': '',
+      'another-thing': 'another-value',
+      'a-third-thing': 'this-value-is-not-empty-but-will-be-invalid'
+    })
+    expect(results.values.someId).to.equal('some-value')
+    expect(results.errors['some-thing']).to.equal('Enter some Thing')
+    expect(results.errors['a-third-thing']).to.equal('Invalid value')
+    expect(results.errorSummaryList[0]).to.have.keys('href', 'text')
+
+    expect(results.errorSummaryList).to.have.length(2)
+  })
+
   it('populates form values from an entity', () => {
     const form = new CredentialsForm([{
       id: 'someId', key: 'some_id'
