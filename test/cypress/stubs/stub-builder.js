@@ -21,7 +21,7 @@ function stubBuilder (method, path, responseCode, additionalParams = {}) {
   }
 
   let predicate
-  if (!additionalParams.hasOwnProperty('deepMatchRequest') || additionalParams.deepMatchRequest) {
+  if (!additionalParams.hasOwnProperty('deepMatchRequest') || additionalParams.deepMatchRequest) { // eslint-disable-line no-prototype-builtins
     predicate = { deepEquals: request }
   } else {
     predicate = { equals: request }
