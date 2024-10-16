@@ -32,6 +32,7 @@ class CredentialsForm {
           errors[field.id] = validator.message
           return true
         }
+        return false
       })
     })
     return {

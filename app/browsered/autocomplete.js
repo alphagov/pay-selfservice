@@ -11,7 +11,7 @@ module.exports = () => {
 
     const jumpToService = selected => {
       if (selected) {
-        services.map(service => {
+        services.forEach(service => {
           service.style.display = service.dataset.name === selected ? 'block' : 'none'
         })
       }
@@ -32,7 +32,7 @@ module.exports = () => {
     clearButton.addEventListener('click', () => {
       document.getElementById('service-filter').value = ''
       const services = Array.prototype.slice.call(document.getElementsByClassName('service_list_item'))
-      services.map(service => {
+      services.forEach(service => {
         service.style.display = 'block'
       })
     })
