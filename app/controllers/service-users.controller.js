@@ -14,7 +14,7 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
   for (const role in roles) {
     userRolesMap[roles[role].name] = []
   }
-  users.map((user) => {
+  users.forEach((user) => {
     const userRoleName = _.get(user.getRoleForService(externalServiceId), 'name')
     if (roles[userRoleName]) {
       const mappedUser = {

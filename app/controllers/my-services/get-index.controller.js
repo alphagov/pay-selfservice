@@ -77,6 +77,7 @@ module.exports = async function getServiceList (req, res) {
         data.new_service_name = service.name
         return true
       }
+      return false
     })
   }
 

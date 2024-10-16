@@ -52,6 +52,7 @@ class WebhooksForm {
           errors[field.id] = validator.message
           return true
         }
+        return false
       })
     })
     return {
