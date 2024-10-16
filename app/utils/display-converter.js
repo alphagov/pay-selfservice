@@ -138,6 +138,7 @@ module.exports = function (req, data, template) {
   convertedData.currentService = service
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
+  /* eslint-disable-next-line n/no-deprecated-api */ // TODO update this as url.parse is deprecated
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
   if (permissions) {
