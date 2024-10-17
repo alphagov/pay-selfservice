@@ -16,7 +16,7 @@
   </thead>
   <tbody class="govuk-table__body">
   {% for result in results %}
-    <tr data-follow-link data-link="{{result.link}}" class="transactions-list--row govuk-table__row vertical-align-top">
+    <tr class="transactions-list--row govuk-table__row vertical-align-top">
       <th scope="row" class="charge-column reference govuk-table__header" data-gateway-transaction-id="{{result.gateway_transaction_id}}">
         <a class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-14 reference govuk-!-display-block" id="charge-id-{{result.charge_id}}" data-charge-id="{{result.charge_id}}" href="{{result.link}}">
           {{result.reference}}
