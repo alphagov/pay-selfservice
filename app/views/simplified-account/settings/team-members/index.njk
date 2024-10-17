@@ -1,0 +1,97 @@
+{% extends "../../../layout.njk" %}
+
+{% block pageTitle %}
+  Settings - Team members
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "../_settings-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l page-title govuk-!-margin-bottom-2">Team members</h1>
+    {% if permissions.users_service_create %}
+      <p class="govuk-body govuk-!-margin-bottom-6 admin-lede">Team member changes affect both live and test environments.</p>
+    {% else %}
+      <p class="govuk-body govuk-!-margin-bottom-6 admin-lede">Contact an administrator to invite team members and change permissions.</p>
+    {% endif %}
+
+    {% if permissions.users_service_create %}
+      {{
+        govukButton({
+          text: "Invite a team member",
+          href: inviteTeamMemberLink,
+          attributes: {
+            id: "invite-team-member-link"
+          }
+        })
+      }}
+    {% endif %}
+  </div>
+
+  <div class="govuk-grid-column-two-thirds admin-list-group govuk-!-margin-top-6">
+    {% for role, roleDetails in team_members %}
+      {% set membersForRole = roleDetails.members %}
+      {% if membersForRole.length %}
+      <div class="{{ role }}-list" id="team-members-{{ role }}-list">
+        <h3 id="{{ role }}-role-header" class="govuk-heading-m">
+          {{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{membersForRole.length}})</span>
+        </h3>
+        <table class="govuk-table pay-!-border-top">
+          <tbody class="govuk-table__body">
+          {% for team_member in membersForRole %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>{{ team_member.email }} {% if team_member.is_current %}(you){% endif %}</span>
+              </td>
+              {% if team_member.is_current %}
+                <td class="govuk-table__cell">
+                  <a href={{ team_member.link }}>View</a>
+                </td>
+              {% else %}
+                <td class="govuk-table__cell">
+                  <a href={{ team_member.changePermissionLink }}>Change permission</a>
+                </td>
+                <td class="govuk-table__cell">
+                  <a href={{ team_member.removeLink }}>Remove</a>
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  {% if number_invited_members > 0 %}
+  <div class="govuk-grid-column-two-thirds admin-list-group govuk-!-margin-top-6">
+    <h2 id="invited-team-members-heading" class="govuk-heading-m">
+      Invited <span class="govuk-!-font-weight-regular pay-text-grey">({{number_invited_members}})</span>
+    </h2>
+    {% for role, roleDetails in invited_team_members %}
+      {% set invitedMembersForRole = roleDetails.members %}
+      {% if invitedMembersForRole.length %}
+      <div class="{{ role }}-list" id="invited-team-members-{{ role }}-list">
+        <h3 id="invited-team-members-{{ role }}-role-header" class="govuk-heading-s">{{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{invitedMembersForRole.length}})</span></h3>
+        <table class="govuk-table pay-!-border-top">
+          <tbody class="govuk-table__body">
+          {% for invitedMember in invitedMembersForRole %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                  <span>
+                    {{ invitedMember.email }}
+                  </span>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endblock %}
