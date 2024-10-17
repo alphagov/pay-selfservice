@@ -8,9 +8,9 @@ function get (req, res) {
   const isServiceAdmin = req.user.isAdminUserForService(service.externalId)
 
   if (!isServiceAdmin || (account.type === 'test' && service.currentGoLiveStage === LIVE)) {
-    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, req.account.service_id, req.account.type))
+    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, service.externalId, account.type))
   } else {
-    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.account.service_id, req.account.type))
+    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, service.externalId, account.type))
   }
 }
 

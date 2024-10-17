@@ -96,6 +96,14 @@ function getGatewayAccountByExternalIdSuccess (opts) {
   })
 }
 
+function getGatewayAccountByServiceExternalIdAndAccountType (opts) {
+  const fixtureOpts = parseGatewayAccountOptions(opts)
+  const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}`
+  return stubBuilder('GET', path, 200, {
+    response: gatewayAccountFixtures.validGatewayAccountResponse(fixtureOpts)
+  })
+}
+
 function getGatewayAccountsSuccess (opts) {
   const path = '/v1/api/accounts'
   return stubBuilder('GET', path, 200, {
@@ -297,8 +305,8 @@ function postSwitchPspSuccess (gatewayAccountId) {
   return stubBuilder('POST', path, 200)
 }
 
-function getAccountByServiceIdAndAccountType (serviceExternalId, opts = {}) {
-  const path = `/v1/api/service/${serviceExternalId}/account/test`
+function getAccountByServiceIdAndAccountType (serviceExternalId, accountType = 'test', opts = {}) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
   return stubBuilder('GET', path, 200, {
     response: gatewayAccountFixtures.validGatewayAccountResponse(opts)
   })
@@ -321,6 +329,7 @@ module.exports = {
   getGatewayAccountSuccess,
   getGatewayAccountsSuccess,
   getGatewayAccountByExternalIdSuccess,
+  getGatewayAccountByServiceExternalIdAndAccountType,
   getGatewayAccountsSuccessForMultipleAccounts,
   getAcceptedCardTypesSuccess,
   postCreateGatewayAccountSuccess,

@@ -60,8 +60,28 @@
           </a>
         {% endif %}
       </p>
-
-      {{ govukButton({ text: "Save changes" }) }}
     </form>
+
+    {% if edit_cy and service_name %}
+      <form id="remove-welsh-service-name-form" action="{{ remove_cy_link }}" method="POST">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+        <input type="hidden" name="method" value="DELETE">
+      </form>
+    {% endif %}
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Save changes",
+        attributes: { form: "edit-service-name-form" }
+      }) }}
+
+      {% if edit_cy and service_name %}
+        {{ govukButton({
+          text: "Remove Welsh service name",
+          classes: "govuk-button--secondary",
+          attributes: { form: "remove-welsh-service-name-form" }
+        }) }}
+      {% endif %}
+    </div>
   </div>
 {% endblock %}

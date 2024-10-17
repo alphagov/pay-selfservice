@@ -24,7 +24,7 @@ describe('Request PSP test account: submit request', () => {
           pspTestAccountStage: pspTestAccountStageSecondResponse
         }
       ),
-      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, { gateway_account_id: sandboxGatewayAccountId }),
+      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, 'test', { gateway_account_id: sandboxGatewayAccountId }),
       gatewayAccountStubs.requestStripeTestAccount(serviceExternalId, { gateway_account_external_id: stripeGatewayAccountExternalId }),
       gatewayAccountStubs.addGatewayAccountsToService(serviceExternalId),
       serviceStubs.patchUpdateServicePspTestAccountStage({ serviceExternalId, gatewayAccountId: sandboxGatewayAccountId, pspTestAccountStage: 'REQUEST_SUBMITTED' }),
