@@ -205,7 +205,7 @@ module.exports = function (clientOptions = {}) {
    * Get a invited users for a given service
    * @param serviceExternalId
    */
-  async function getInvitedUsersList (serviceExternalId) {
+  async function getInvitedUsers (serviceExternalId) {
     const url = `${baseUrl}/v1/api/invites?serviceId=${serviceExternalId}`
     configureClient(client, url)
     const response = await client.get(url, 'get invited users for a service')
@@ -557,7 +557,7 @@ module.exports = function (clientOptions = {}) {
     createSelfSignupInvite,
     verifyOtpForInvite,
     createInviteToJoinService,
-    getInvitedUsersList,
+    getInvitedUsers,
     getValidatedInvite,
     updateInvitePassword,
     updateInvitePhoneNumber,

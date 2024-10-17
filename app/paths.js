@@ -180,7 +180,8 @@ module.exports = {
         index: '/settings/email-notifications'
       },
       teamMembers: {
-        index: '/settings/team-members'
+        index: '/settings/team-members',
+        userDetails: '/settings/team-members/:externalUserId'
       },
       orgDetails: {
         index: '/settings/organisation-details'

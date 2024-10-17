@@ -59,7 +59,7 @@ async function index (req, res, next) {
   try {
     const [members, invitedMembers] = await Promise.all([
       userService.getServiceUsers(externalServiceId),
-      userService.getInvitedUsersList(externalServiceId)
+      userService.getInvitedUsers(externalServiceId)
     ])
     const teamMembers = mapByRoles(members, externalServiceId, req.user)
     const invitedTeamMembers = mapInvitesByRoles(invitedMembers)

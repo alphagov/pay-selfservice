@@ -137,8 +137,8 @@ module.exports = {
   /**
    * @param externalServiceId
    */
-  getInvitedUsersList: function (externalServiceId) {
-    return adminUsersClient.getInvitedUsersList(externalServiceId)
+  getInvitedUsers: function (externalServiceId) {
+    return adminUsersClient.getInvitedUsers(externalServiceId)
   },
 
   /**
