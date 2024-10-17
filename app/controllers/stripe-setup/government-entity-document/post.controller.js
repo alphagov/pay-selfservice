@@ -30,10 +30,8 @@ async function postGovernmentEntityDocument (req, res, next) {
     return response(req, res, 'error-with-link', errorPageData)
   }
 
-  let errors
   const file = req.file
-
-  errors = validateFile(file)
+  const errors = validateFile(file)
 
   if (!lodash.isEmpty(errors)) {
     return response(req, res, 'stripe-setup/government-entity-document/index', {

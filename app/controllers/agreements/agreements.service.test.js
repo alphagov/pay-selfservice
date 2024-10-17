@@ -78,8 +78,8 @@ describe('agreements service', () => {
         gatewayAccountId,
         agreementId,
         payload: {
-          'user_email': userEmail,
-          'user_external_id': userExternalId
+          user_email: userEmail,
+          user_external_id: userExternalId
         }
       }
 

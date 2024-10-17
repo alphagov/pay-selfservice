@@ -28,7 +28,7 @@ module.exports = async (req, res, next) => {
     const isMotoEnabled = req.account.allow_moto === true
     const isRecurringEnabled = req.account.recurring_enabled === true
 
-    let stripeData = {}
+    const stripeData = {}
     if (activeCredential && activeCredential.payment_provider === 'stripe') {
       stripeData.taskList = yourPspTasks.getStripeTaskList(activeCredential, req.account)
       stripeData.taskListIsComplete = yourPspTasks.stripeTaskListIsComplete(stripeData.taskList)

@@ -44,7 +44,7 @@ function setupStubs (stripeSetupOptions, type = 'live', paymentProvider = 'strip
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
-      gatewayAccountExternalId: gatewayAccountExternalId,
+      gatewayAccountExternalId,
       type,
       paymentProvider,
       gatewayAccountCredentials
@@ -78,7 +78,7 @@ describe('The organisation address page', () => {
     it('should allow updating organisation details', () => {
       cy.visit(pageUrl)
 
-      cy.get('h1').should('contain', `What is the name and address of your organisation on your government entity document?`)
+      cy.get('h1').should('contain', 'What is the name and address of your organisation on your government entity document?')
 
       cy.get('.govuk-back-link').should('contain', 'Back to check your organisation’s details')
       cy.get('.govuk-back-link').should('have.attr', 'href', checkOrgDetailsUrl)
@@ -180,7 +180,7 @@ describe('The organisation address page', () => {
       cy.get('[data-cy=continue-button]').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+        expect(location.pathname).to.eq('/account/a-valid-external-id/your-psp/a-valid-credential-external-id')
       })
     })
   })
@@ -225,7 +225,7 @@ describe('The organisation address page', () => {
         userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
           gatewayAccountId,
-          gatewayAccountExternalId: gatewayAccountExternalId,
+          gatewayAccountExternalId,
           type: 'live',
           paymentProvider: 'stripe'
         }),

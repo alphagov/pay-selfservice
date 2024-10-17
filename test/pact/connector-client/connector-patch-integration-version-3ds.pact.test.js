@@ -21,7 +21,7 @@ const existingGatewayAccountId = 42
 const defaultState = `Gateway account ${existingGatewayAccountId} exists and has a charge for £1 with id abc123`
 
 describe('Update 3DS integration version', () => {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

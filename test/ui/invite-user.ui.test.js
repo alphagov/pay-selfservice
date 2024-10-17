@@ -1,6 +1,6 @@
-let path = require('path')
-let renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
-let paths = require('../../app/paths.js')
+const path = require('path')
+const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+const paths = require('../../app/paths.js')
 
 const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
 
@@ -10,9 +10,9 @@ describe('Invite a team member view', function () {
     const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, externalServiceId)
     const teamMemberInviteSubmitLink = formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId)
 
-    let templateData = {
-      teamMemberIndexLink: teamMemberIndexLink,
-      teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
+    const templateData = {
+      teamMemberIndexLink,
+      teamMemberInviteSubmitLink,
       admin: { id: 2 },
       viewAndRefund: { id: 3 },
       view: { id: 4 },
@@ -21,7 +21,7 @@ describe('Invite a team member view', function () {
       serviceHasAgentInitiatedMotoEnabled: false
     }
 
-    let body = renderTemplate('team-members/team-member-invite', templateData)
+    const body = renderTemplate('team-members/team-member-invite', templateData)
 
     body.should.containSelector('.govuk-back-link').withAttribute('href', teamMemberIndexLink)
     body.should.containSelector('form#invite-member-form').withAttribute('action', teamMemberInviteSubmitLink)
@@ -46,9 +46,9 @@ describe('Invite a team member view', function () {
     const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, externalServiceId)
     const teamMemberInviteSubmitLink = formatServicePathsFor(paths.service.teamMembers.invite, externalServiceId)
 
-    let templateData = {
-      teamMemberIndexLink: teamMemberIndexLink,
-      teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
+    const templateData = {
+      teamMemberIndexLink,
+      teamMemberInviteSubmitLink,
       admin: { id: 2 },
       viewAndRefund: { id: 3 },
       view: { id: 4 },
@@ -57,7 +57,7 @@ describe('Invite a team member view', function () {
       serviceHasAgentInitiatedMotoEnabled: true
     }
 
-    let body = renderTemplate('team-members/team-member-invite', templateData)
+    const body = renderTemplate('team-members/team-member-invite', templateData)
 
     body.should.containSelector('.govuk-back-link').withAttribute('href', teamMemberIndexLink)
     body.should.containSelector('form#invite-member-form').withAttribute('action', teamMemberInviteSubmitLink)

@@ -8,7 +8,7 @@ const { response } = require('../../../utils/response')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
 const { CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED } = goLiveStage
-const chosenOptions = [ CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED ]
+const chosenOptions = [CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED]
 
 module.exports = (req, res) => {
   if (chosenOptions.includes(req.service.currentGoLiveStage)) {

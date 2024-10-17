@@ -20,8 +20,8 @@ const environment = nunjucks.configure([
 })
 
 // Load custom Nunjucks filters
-for (let name in nunjucksFilters) {
-  let filter = nunjucksFilters[name]
+for (const name in nunjucksFilters) {
+  const filter = nunjucksFilters[name]
   environment.addFilter(name, filter)
 }
 environment.addFilter('formatPSPname', formatPSPname)
@@ -134,8 +134,8 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withAttributes', function (attributes) {
-    for (let attr in attributes) {
-      if (attributes.hasOwnProperty(attr)) {
+    for (const attr in attributes) {
+      if (attributes.hasOwnProperty(attr)) { // eslint-disable-line no-prototype-builtins
         this.withAttribute(attr, attributes[attr])
       }
     }
@@ -153,7 +153,7 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('containInputField', function (idAndName, type) {
-    this.containSelector('input#' + idAndName).withAttributes({ name: idAndName, type: type })
+    this.containSelector('input#' + idAndName).withAttributes({ name: idAndName, type })
     utils.flag(this, 'inputId', idAndName)
   })
 

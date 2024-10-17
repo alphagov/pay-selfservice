@@ -43,7 +43,7 @@ const buildChargeEventStateWithDefaults = (opts = {}) => {
 }
 
 const buildPaymentEvents = (opts = {}) => {
-  let events = []
+  const events = []
   if (opts.payment_states) {
     opts.payment_states.forEach(paymentState => {
       events.push({
@@ -224,13 +224,13 @@ module.exports = {
     return buildDisputeDetails(opts)
   },
   validDisputeTransactionsResponse: (opts = {}) => {
-    let transactions = []
+    const transactions = []
     opts.transactions.forEach(transaction => {
       transactions.push(buildDisputeDetails(transaction))
     })
     return {
       parent_transaction_id: opts.parent_transaction_id || 'adb123def456',
-      transactions: transactions
+      transactions
     }
   },
   validTransactionCreatedDetailsResponse: (opts = {}) => {
@@ -259,7 +259,7 @@ module.exports = {
 
     return {
       transaction_id: opts.transaction_id || 'ht439nfg2l1e303k0dmifrn4fc',
-      events: events
+      events
     }
   },
   validTransactionRefundRequest: (opts = {}) => {
@@ -276,7 +276,7 @@ module.exports = {
     }
   },
   validTransactionSearchResponse: (opts = {}) => {
-    let results = []
+    const results = []
     opts.transactions.forEach(transaction => {
       if (!transaction.type || transaction.type === 'payment') {
         transaction.includeRefundSummary = true
@@ -292,7 +292,7 @@ module.exports = {
       total: opts.transaction_length || opts.transactions.length,
       count: opts.transaction_count || opts.transactions.length,
       page: opts.page || 1,
-      results: results
+      results
     }
     if (opts.links) {
       data._links = opts.links

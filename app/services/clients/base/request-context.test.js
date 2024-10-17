@@ -11,12 +11,12 @@ let asyncStorageMock = {}
 
 function getRequestContext () {
   return proxyquire('./request-context', {
-    'crypto': {
+    crypto: {
       randomBytes: function () {
         return 'test-correlation-id'
       }
     },
-    'async_hooks': {
+    async_hooks: {
       AsyncLocalStorage: function () {
         return {
           getStore: function () {

@@ -93,9 +93,9 @@ const hideServiceNav = template => {
 }
 
 const addGatewayAccountProviderDisplayNames = data => {
-  let gatewayAccounts = _.get(data, 'gatewayAccounts', null)
+  const gatewayAccounts = _.get(data, 'gatewayAccounts', null)
   if (gatewayAccounts) {
-    let convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
+    const convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
       if (gatewayAccount.payment_provider) {
         gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider)
       }
@@ -138,6 +138,7 @@ module.exports = function (req, data, template) {
   convertedData.currentService = service
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
+  /* eslint-disable-next-line n/no-deprecated-api */ // TODO update this as url.parse is deprecated
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
   if (permissions) {

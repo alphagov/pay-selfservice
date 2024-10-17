@@ -85,14 +85,14 @@ function postRefundAmountNotAvailable (opts) {
 }
 
 function getTransactionsSummarySuccess (opts) {
-  const path = `/v1/report/transactions-summary`
+  const path = '/v1/report/transactions-summary'
   return stubBuilder('GET', path, 200, {
     response: ledgerTransactionFixtures.validTransactionSummaryDetails(opts)
   })
 }
 
 function getLedgerTransactionsFailure (opts, responseCode) {
-  const path = `/v1/transaction`
+  const path = '/v1/transaction'
   return stubBuilder('GET', path, responseCode, {
     query: {
       account_id: opts.account_id,
@@ -102,7 +102,8 @@ function getLedgerTransactionsFailure (opts, responseCode) {
       to_date: opts.to_date,
       page: opts.page,
       display_size: opts.display_size
-    } })
+    }
+  })
 }
 
 module.exports = {

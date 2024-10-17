@@ -25,17 +25,19 @@ module.exports = async function showTransactionList (req, res, next) {
     _links: {},
     filters: {}
   }
-  req.session.filters = url.parse(req.url).query
+  // eslint-disable-next-line n/no-deprecated-api
+  req.session.filters = url.parse(req.url).query // TODO update this as url.parse is deprecated
 
   if (!filters.valid) {
     return next(new Error('Invalid search'))
   }
 
   let result
-  let transactionSearchResults = (filters.dateRangeState.isInvalidDateRange)
-    ? EMPTY_TRANSACTION_SEARCH_RESULTS : transactionService.search([accountId], filters.result)
+  const transactionSearchResults = (filters.dateRangeState.isInvalidDateRange)
+    ? EMPTY_TRANSACTION_SEARCH_RESULTS
+    : transactionService.search([accountId], filters.result)
   try {
-    result = await Promise.all([ transactionSearchResults, client.getAllCardTypes() ])
+    result = await Promise.all([transactionSearchResults, client.getAllCardTypes()])
   } catch (error) {
     return next(error)
   }

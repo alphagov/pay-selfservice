@@ -30,7 +30,7 @@ const worldpayMerchantDetailOperations = {
     path: 'recurring_merchant_initiated'
   }
 }
-const worldpayMerchantDetailOperationsIndex = Object.entries(worldpayMerchantDetailOperations).reduce((aggregate, [ key, value ]) => ({ [ value.key ]: value, ...aggregate }), {})
+const worldpayMerchantDetailOperationsIndex = Object.entries(worldpayMerchantDetailOperations).reduce((aggregate, [key, value]) => ({ [value.key]: value, ...aggregate }), {})
 
 function getActiveCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []

@@ -62,7 +62,7 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should redirect to newly created service dashboard`, () => {
+    it('should redirect to newly created service dashboard', () => {
       sinon.assert.calledWith(mockServiceService.createService, SERVICE_NAME, WELSH_SERVICE_NAME, 'central')
       sinon.assert.calledWith(mockUserService.assignServiceRole, '38475y38q4758ow4', 'def456', 'admin')
       sinon.assert.calledWith(req.flash, 'messages', { state: 'success', icon: '&check;', content: 'We\'ve created your service.' })
@@ -93,7 +93,7 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
+    it('should call \'responses.renderErrorView\' with req, res and the error received from the client', () => {
       sinon.assert.calledOnce(next)
       expect(next.firstCall.args[0]).to.be.instanceOf(Error)
     })
@@ -128,7 +128,7 @@ describe('Controller: createService, Method: post', () => {
       await addServiceCtrl.post(req, res, next)
     })
 
-    it(`should call 'responses.renderErrorView' with req, res and the error received from the client`, () => {
+    it('should call \'responses.renderErrorView\' with req, res and the error received from the client', () => {
       sinon.assert.calledOnce(next)
       expect(next.firstCall.args[0]).to.be.instanceOf(Error)
     })

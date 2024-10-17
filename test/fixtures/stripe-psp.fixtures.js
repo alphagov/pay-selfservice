@@ -2,26 +2,26 @@
 
 function validRetrieveStripeAccountDetails (opts = {}) {
   const stripeAccount = {
-    'object': 'account',
-    'business_profile': {
-      'mcc': '5734'
+    object: 'account',
+    business_profile: {
+      mcc: '5734'
     },
-    'business_type': 'company',
-    'capabilities': {
-      'card_payments': 'active',
-      'transfers': 'active'
+    business_type: 'company',
+    capabilities: {
+      card_payments: 'active',
+      transfers: 'active'
     },
-    'charges_enabled': opts.charges_enabled,
-    'company': {
-      'directors_provided': true,
-      'executives_provided': true,
-      'owners_provided': true,
-      'tax_id_provided': true,
-      'vat_id_provided': true
+    charges_enabled: opts.charges_enabled,
+    company: {
+      directors_provided: true,
+      executives_provided: true,
+      owners_provided: true,
+      tax_id_provided: true,
+      vat_id_provided: true
     },
-    'type': 'custom',
-    'requirements': {
-      'current_deadline': opts.current_deadline
+    type: 'custom',
+    requirements: {
+      current_deadline: opts.current_deadline
     }
   }
 
@@ -43,24 +43,24 @@ function validRetrieveStripeAccountDetails (opts = {}) {
 
 function validListStripePersons (opts = {}) {
   const stripePersons = {
-    'object': 'list',
-    'has_more': false,
-    'data': [
+    object: 'list',
+    has_more: false,
+    data: [
       {
-        'id': 'person_1234',
-        'object': 'person',
-        'created': 1635794225,
-        'dob': {
-          'day': 1,
-          'month': 8,
-          'year': 1990
+        id: 'person_1234',
+        object: 'person',
+        created: 1635794225,
+        dob: {
+          day: 1,
+          month: 8,
+          year: 1990
         },
-        'first_name': opts.firstName || null,
-        'last_name': opts.lastName || null,
-        'relationship': {
-          'owner': false,
-          'percent_ownership': null,
-          'title': null
+        first_name: opts.firstName || null,
+        last_name: opts.lastName || null,
+        relationship: {
+          owner: false,
+          percent_ownership: null,
+          title: null
         }
       }
     ]
@@ -78,20 +78,20 @@ function validListStripePersons (opts = {}) {
 
 function validStripePerson (opts = {}) {
   const stripePerson = {
-    'id': 'person_1234',
-    'object': 'person',
-    'created': 1635794225,
-    'dob': {
-      'day': 1,
-      'month': 8,
-      'year': 1990
+    id: 'person_1234',
+    object: 'person',
+    created: 1635794225,
+    dob: {
+      day: 1,
+      month: 8,
+      year: 1990
     },
-    'first_name': null,
-    'last_name': null,
-    'relationship': {
-      'owner': false,
-      'percent_ownership': null,
-      'title': null
+    first_name: null,
+    last_name: null,
+    relationship: {
+      owner: false,
+      percent_ownership: null,
+      title: null
     }
   }
 

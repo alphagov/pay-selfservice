@@ -22,23 +22,23 @@ const existingGatewayAccountId = '123456'
 
 function defaultDisputeDetails () {
   return {
-    'parent_transaction_id': paymentTransactionId,
-    'gateway_account_id': existingGatewayAccountId,
-    'transactions': [
+    parent_transaction_id: paymentTransactionId,
+    gateway_account_id: existingGatewayAccountId,
+    transactions: [
       {
-        'gateway_account_id': existingGatewayAccountId,
-        'amount': 20000,
-        'fee': 1500,
-        'net_amount': -21500,
-        'finished': true,
-        'status': 'lost',
-        'created_date': '2022-07-26T19:57:26.000Z',
-        'type': 'dispute',
-        'includePaymentDetails': true,
-        'evidence_due_date': '2022-08-04T13:59:59.000Z',
-        'reason': 'product_not_received',
-        'transaction_id': disputeTransactionId,
-        'parent_transaction_id': paymentTransactionId
+        gateway_account_id: existingGatewayAccountId,
+        amount: 20000,
+        fee: 1500,
+        net_amount: -21500,
+        finished: true,
+        status: 'lost',
+        created_date: '2022-07-26T19:57:26.000Z',
+        type: 'dispute',
+        includePaymentDetails: true,
+        evidence_due_date: '2022-08-04T13:59:59.000Z',
+        reason: 'product_not_received',
+        transaction_id: disputeTransactionId,
+        parent_transaction_id: paymentTransactionId
       }
     ]
   }

@@ -14,7 +14,7 @@ async function submitRequestAndUpdatePspTestAccountStatus (req) {
   const ids = await connectorClient.requestStripeTestAccount(req.service.externalId)
   logger.info(`Stripe connect account ${ids.stripe_connect_account_id} and gateway account with id ${ids.gateway_account_id}
   and external id ${ids.gateway_account_external_id} was created for service ${req.service.external_id}.`)
-  await adminUsersClient.addGatewayAccountsToService(req.service.externalId, [ ids.gateway_account_id ])
+  await adminUsersClient.addGatewayAccountsToService(req.service.externalId, [ids.gateway_account_id])
   await adminUsersClient.updatePspTestAccountStage(req.service.externalId, CREATED)
   return ids.gateway_account_external_id
 }

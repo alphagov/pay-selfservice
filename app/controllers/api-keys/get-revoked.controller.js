@@ -7,13 +7,13 @@ module.exports = async function listRevokedApiKeys (req, res, next) {
   const accountId = req.account.gateway_account_id
   try {
     const publicAuthData = await publicAuthClient.getRevokedTokensForAccount({
-      accountId: accountId
+      accountId
     })
     const revokedTokens = publicAuthData.tokens || []
 
     response(req, res, 'api-keys/revoked-keys', {
-      'tokens': revokedTokens,
-      'tokens_singular': revokedTokens.length === 1
+      tokens: revokedTokens,
+      tokens_singular: revokedTokens.length === 1
     })
   } catch (err) {
     next(err)

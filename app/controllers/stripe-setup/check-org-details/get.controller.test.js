@@ -30,8 +30,8 @@ describe('Check org details - get controller', () => {
     req = {
       account: gatewayAccountFixture.validGatewayAccount({}),
       flash: sinon.spy(),
-      service: service,
-      user: user
+      service,
+      user
     }
     res = {
       redirect: sinon.spy(),

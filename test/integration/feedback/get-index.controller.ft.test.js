@@ -33,11 +33,11 @@ describe('Feedback page GET', () => {
     expect(result.statusCode).to.equal(200)
   })
 
-  it(`should have itself as the form action`, () => {
+  it('should have itself as the form action', () => {
     expect($('form').attr('action')).to.equal(paths.feedback)
   })
 
-  it(`should have a button with “Send feedback”`, () => {
+  it('should have a button with “Send feedback”', () => {
     expect($('.govuk-button').text()).to.contain('Send feedback')
   })
 })

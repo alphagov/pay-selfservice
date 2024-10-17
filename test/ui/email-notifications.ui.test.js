@@ -7,7 +7,7 @@ const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-asser
 describe('The email body view', function () {
   it('should display the automatically generate email disclaimer', function () {
     const templateData = {
-      'customEmailText': 'Custom text'
+      customEmailText: 'Custom text'
     }
     const body = renderTemplate('email-notifications/email-confirmation-body', templateData)
 
@@ -18,7 +18,7 @@ describe('The email body view', function () {
 
   it('should indicate custom text is optional by default', function () {
     const templateData = {
-      'serviceName': 'service name'
+      serviceName: 'service name'
     }
 
     const body = renderTemplate('email-notifications/email-confirmation-body', templateData)

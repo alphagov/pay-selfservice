@@ -1,9 +1,9 @@
-let path = require('path')
-let renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+const path = require('path')
+const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
 
 describe('The service role update view', function () {
   it('should render the standard service role update view', function () {
-    let templateData = {
+    const templateData = {
       email: 'oscar.smith@example.com',
       admin: { id: 2, checked: '' },
       viewAndRefund: { id: 3, checked: '' },
@@ -14,7 +14,7 @@ describe('The service role update view', function () {
       serviceHasAgentInitiatedMotoEnabled: false
     }
 
-    let body = renderTemplate('team-members/team-member-permissions', templateData)
+    const body = renderTemplate('team-members/team-member-permissions', templateData)
 
     body.should.containSelector('#email').withExactText('oscar.smith@example.com')
     body.should.containSelector('#role-update-form').withAttribute('action', 'some-link')
@@ -35,7 +35,7 @@ describe('The service role update view', function () {
   })
 
   it('should render the agent-initiated-MOTO-enhanced service role update view', function () {
-    let templateData = {
+    const templateData = {
       email: 'oscar.smith@example.com',
       admin: { id: 2, checked: '' },
       viewAndRefund: { id: 3, checked: '' },
@@ -46,7 +46,7 @@ describe('The service role update view', function () {
       serviceHasAgentInitiatedMotoEnabled: true
     }
 
-    let body = renderTemplate('team-members/team-member-permissions', templateData)
+    const body = renderTemplate('team-members/team-member-permissions', templateData)
 
     body.should.containSelector('#email').withExactText('oscar.smith@example.com')
     body.should.containSelector('#role-update-form').withAttribute('action', 'some-link')

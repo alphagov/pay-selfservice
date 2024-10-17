@@ -67,12 +67,12 @@ function getWebhookMessageAttempts (opts = {}) {
 }
 
 function postCreateWebhookSuccess () {
-  const path = `/v1/webhook`
+  const path = '/v1/webhook'
   return stubBuilder('POST', path, 200)
 }
 
 function createWebhookViolatesBackend (opts = {}) {
-  const path = `/v1/webhook`
+  const path = '/v1/webhook'
   return stubBuilder('POST', path, 400, {
     response: {
       error_identifier: 'CALLBACK_URL_NOT_ON_ALLOW_LIST',

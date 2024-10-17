@@ -32,7 +32,7 @@ describe('Request to go live - choose takes payments over phone - POST', () => {
   beforeEach(() => {
     req = {
       user,
-      service: service,
+      service,
       body: {}
     }
     res = {

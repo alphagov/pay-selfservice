@@ -55,8 +55,8 @@ describe('API keys index', () => {
       await controller(req, res)
 
       sinon.assert.calledWith(res.render, 'api-keys/index', sinon.match({
-        'tokens': [],
-        'tokens_singular': false
+        tokens: [],
+        tokens_singular: false
       }))
     })
   })
@@ -68,8 +68,8 @@ describe('API keys index', () => {
       await controller(req, res)
 
       sinon.assert.calledWith(res.render, 'api-keys/index', sinon.match({
-        'tokens': [TOKEN_1],
-        'tokens_singular': true
+        tokens: [TOKEN_1],
+        tokens_singular: true
       }))
     })
   })
@@ -81,8 +81,8 @@ describe('API keys index', () => {
       await controller(req, res)
 
       sinon.assert.calledWith(res.render, 'api-keys/index', sinon.match({
-        'tokens': [TOKEN_1, TOKEN_2],
-        'tokens_singular': false
+        tokens: [TOKEN_1, TOKEN_2],
+        tokens_singular: false
       }))
     })
   })

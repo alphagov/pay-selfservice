@@ -1,8 +1,8 @@
-let path = require('path')
-let nock = require('nock')
+const path = require('path')
+const nock = require('nock')
 const userFixtures = require(path.join(__dirname, '/../fixtures/user.fixtures'))
 
-let adminusersMock = nock(process.env.ADMINUSERS_URL)
+const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const USER_RESOURCE = '/v1/api/users'
 
 function mockUserResponse (userData, cb) {
@@ -16,5 +16,5 @@ function mockUserResponse (userData, cb) {
 }
 
 module.exports = {
-  mockUserResponse: mockUserResponse
+  mockUserResponse
 }

@@ -58,12 +58,6 @@
       {% include "./_worldpay-flex.njk" %}
     {% endif %}
   {% endif %}
-  {% if credential.payment_provider === "smartpay" %}
-    {% include "./_smartpay.njk" %}
-  {% endif %}
-  {% if credential.payment_provider === "epdq" %}
-    {% include "./_epdq.njk" %}
-  {% endif %}
   {% if credential.payment_provider === "stripe" %}
     {% include "./_stripe.njk" %}
   {% endif %}

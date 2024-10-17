@@ -12,7 +12,7 @@ module.exports = function showInformationPage (req, res) {
   }
 
   const sessionData = req.session.pageData.createPaymentLink
-  if (!sessionData.hasOwnProperty('isWelsh')) {
+  if (!sessionData.hasOwnProperty('isWelsh')) { // eslint-disable-line no-prototype-builtins
     sessionData.isWelsh = lodash.get(req, 'query.language') === supportedLanguage.WELSH
   }
 

@@ -64,8 +64,8 @@ function getUserWithNoPermissions (userExternalId, gatewayAccountId) {
 function postUserAuthenticateSuccess (userExternalId, email, password) {
   const fixtureOpts = {
     external_id: userExternalId,
-    email: email,
-    password: password
+    email,
+    password
   }
   const path = '/v1/api/users/authenticate'
   return stubBuilder('POST', path, 200, {
@@ -76,8 +76,8 @@ function postUserAuthenticateSuccess (userExternalId, email, password) {
 
 function postUserAuthenticateInvalidPassword (username, password) {
   const fixtureOpts = {
-    username: username,
-    password: password
+    username,
+    password
   }
   const path = '/v1/api/users/authenticate'
   return stubBuilder('POST', path, 401, {
@@ -192,7 +192,7 @@ function getUserSuccessRespondDifferentlySecondTime (userExternalId, firstRespon
         method: 'GET',
         path: `/v1/api/users/${userExternalId}`,
         headers: {
-          'Accept': 'application/json'
+          Accept: 'application/json'
         }
       }
     }],

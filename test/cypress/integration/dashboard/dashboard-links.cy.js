@@ -11,7 +11,7 @@ const gatewayAccountExternalId = 'a-gateway-account-external-id'
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
 
 function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveStage, pspTestAccountStage, createdDate) {
-  let stubs = []
+  const stubs = []
 
   stubs.push(userStubs.getUserSuccess({ userExternalId, gatewayAccountId, goLiveStage, pspTestAccountStage, createdDate }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
@@ -83,7 +83,6 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.get('#request-to-go-live-link').should('have.class', 'flex-grid--column-third')
 
       cy.get('#request-stripe-test-account').should('not.exist')
-
     })
 
     it('should display 4 links for a test sandbox account created before 29/08/2024', () => {

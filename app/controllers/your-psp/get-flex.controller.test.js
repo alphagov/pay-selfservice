@@ -23,7 +23,7 @@ describe('Flex credentials - GET controller', () => {
 
   beforeEach(() => {
     req = {
-      account: account,
+      account,
       params: { credentialId },
       url: `/switch-psp/${credentialId}/flex`
     }

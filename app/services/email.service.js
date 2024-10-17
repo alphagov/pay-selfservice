@@ -7,7 +7,7 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 async function updateConfirmationTemplate (accountID, emailText) {
   try {
-    const patch = { 'op': 'replace', 'path': '/payment_confirmed/template_body', 'value': emailText }
+    const patch = { op: 'replace', path: '/payment_confirmed/template_body', value: emailText }
 
     await connectorClient.updateConfirmationEmail({
       payload: patch,
@@ -20,7 +20,7 @@ async function updateConfirmationTemplate (accountID, emailText) {
 
 async function setEmailCollectionMode (accountID, collectionMode) {
   try {
-    const patch = { 'op': 'replace', 'path': 'email_collection_mode', 'value': collectionMode }
+    const patch = { op: 'replace', path: 'email_collection_mode', value: collectionMode }
     await connectorClient.updateEmailCollectionMode({
       payload: patch,
       gatewayAccountId: accountID
@@ -31,7 +31,7 @@ async function setEmailCollectionMode (accountID, collectionMode) {
 }
 
 async function setConfirmationEnabled (accountID, enabled) {
-  const patch = { 'op': 'replace', 'path': '/payment_confirmed/enabled', 'value': enabled }
+  const patch = { op: 'replace', path: '/payment_confirmed/enabled', value: enabled }
 
   try {
     await connectorClient.updateConfirmationEmailEnabled({
@@ -45,7 +45,7 @@ async function setConfirmationEnabled (accountID, enabled) {
 
 async function setRefundEmailEnabled (accountID, enabled) {
   try {
-    const patch = { 'op': 'replace', 'path': '/refund_issued/enabled', 'value': enabled }
+    const patch = { op: 'replace', path: '/refund_issued/enabled', value: enabled }
     await connectorClient.updateRefundEmailEnabled({
       payload: patch,
       gatewayAccountId: accountID

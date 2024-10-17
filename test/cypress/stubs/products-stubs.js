@@ -60,7 +60,7 @@ function patchUpdateProductSuccess (opts) {
 
 module.exports = {
   getProductsByGatewayAccountIdAndTypeStub,
-  getProductByExternalIdAndGatewayAccountIdStub: getProductByExternalIdAndGatewayAccountIdStub,
+  getProductByExternalIdAndGatewayAccountIdStub,
   deleteProductStub,
   getProductsByGatewayAccountIdAndTypeFailure,
   postCreateProductSuccess,

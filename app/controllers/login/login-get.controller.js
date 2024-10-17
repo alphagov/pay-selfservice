@@ -2,6 +2,7 @@
 
 module.exports = (req, res) => {
   let errors = {}
+  // eslint-disable-next-line no-prototype-builtins
   if (res.locals.flash.hasOwnProperty('error')) {
     switch (res.locals.flash.error[0]) {
       case 'invalid':

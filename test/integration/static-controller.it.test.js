@@ -1,8 +1,8 @@
-var path = require('path')
+const path = require('path')
 require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
-var request = require('supertest')
-var getApp = require(path.join(__dirname, '/../../server.js')).getApp
-var _ = require('lodash')
+const request = require('supertest')
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const _ = require('lodash')
 
 describe('static controller', function () {
   _.each(['get', 'post', 'delete', 'put', 'patch'], function (verb) {

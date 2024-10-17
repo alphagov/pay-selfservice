@@ -43,14 +43,14 @@ describe('Transaction view utilities', () => {
     it('should build dispute data if dispute transaction is available', () => {
       const transaction = transactionFixtures.validTransactionDetailsResponse()
       const events = transactionFixtures.validTransactionEventsResponse()
-      const disputeData = transactionFixtures.validDisputeTransactionDetails({ 'amount': 1000 })
+      const disputeData = transactionFixtures.validDisputeTransactionDetails({ amount: 1000 })
       const paymentView = buildPaymentView(transaction, events, disputeData)
 
       expect(paymentView.dispute.amount_friendly).to.equal('£10.00')
     })
   })
 
-  it(`should set text to 'Data unavailable' for fields redacted for PII`, () => {
+  it('should set text to \'Data unavailable\' for fields redacted for PII', () => {
     const transaction = transactionFixtures.validTransactionDetailsResponse({
       reference: '<DELETED>',
       description: '<DELETED>',
@@ -66,7 +66,7 @@ describe('Transaction view utilities', () => {
     expect(paymentView.card_details.cardholder_name).to.equal('Data unavailable')
   })
 
-  it(`should not set text to 'Data unavailable' for fields not redacted`, () => {
+  it('should not set text to \'Data unavailable\' for fields not redacted', () => {
     const transaction = transactionFixtures.validTransactionDetailsResponse({
       reference: 'ref-1',
       description: 'desc-1',

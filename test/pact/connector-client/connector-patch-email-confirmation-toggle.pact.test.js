@@ -21,7 +21,7 @@ const existingGatewayAccountId = 42
 const defaultState = `a stripe gateway account with external id ${existingGatewayAccountId} exists in the database`
 
 describe('connector client - patch email confirmation toggle', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

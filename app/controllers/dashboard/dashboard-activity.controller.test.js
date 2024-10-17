@@ -12,7 +12,7 @@ const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.f
 
 describe('Controller: Dashboard activity', () => {
   const externalServiceId = 'service-external-id'
-  const serviceGatewayAccountIds = [ '2', '5' ]
+  const serviceGatewayAccountIds = ['2', '5']
   let req, res, accountSpy, stripeSpy
 
   describe('Stripe test account', () => {
@@ -56,7 +56,7 @@ describe('Controller: Dashboard activity', () => {
       process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST = undefined
     })
 
-    it(`should not call the Connector client or the Stripe client`, async () => {
+    it('should not call the Connector client or the Stripe client', async () => {
       accountSpy = sinon.stub(ConnectorClient.prototype, 'getStripeAccount')
       stripeSpy = sinon.stub(StripeClient, 'retrieveAccountDetails')
 
