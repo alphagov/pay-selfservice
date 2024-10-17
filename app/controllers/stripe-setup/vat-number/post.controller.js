@@ -46,7 +46,7 @@ module.exports = async (req, res, next) => {
   if (!lodash.isEmpty(errors)) {
     return response(req, res, 'stripe-setup/vat-number/index', {
       vatNumber: rawVatNumber,
-      vatNumberDeclaration: vatNumberDeclaration,
+      vatNumberDeclaration,
       isSwitchingCredentials,
       enableStripeOnboardingTaskList,
       currentCredential,

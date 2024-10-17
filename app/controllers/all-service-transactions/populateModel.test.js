@@ -14,7 +14,7 @@ describe('Populate Model', () => {
   const user = new User(userFixtures.validUserResponse())
   const service = new Service(serviceFixtures.validServiceResponse({}))
 
-  let userPermittedAccountsSummary = {
+  const userPermittedAccountsSummary = {
     gatewayAccountIds: [31],
     headers: { shouldGetStripeHeaders: true, shouldGetMotoHeaders: true },
     hasLiveAccounts: false,
@@ -24,10 +24,10 @@ describe('Populate Model', () => {
 
   beforeEach(() => {
     req = {
-      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
+      account: gatewayAccountFixture.validGatewayAccount({ payment_provider: 'stripe' }),
       flash: sinon.spy(),
-      service: service,
-      user: user,
+      service,
+      user,
       params: {},
       url: 'http://selfservice/all-service-transactions',
       session: {},
@@ -65,9 +65,9 @@ describe('Populate Model', () => {
 
   describe('Error results when from date is later than to date', () => {
     const invalidDatesReq = {
-      account: gatewayAccountFixture.validGatewayAccount({ 'payment_provider': 'stripe' }),
-      service: service,
-      user: user,
+      account: gatewayAccountFixture.validGatewayAccount({ payment_provider: 'stripe' }),
+      service,
+      user,
       params: {},
       query: {
         fromDate: '03/5/2018',
@@ -88,10 +88,10 @@ describe('Populate Model', () => {
     it('should return a model including invalid date range', async () => {
       const model = await populateModel()(req, searchResultOutput, filters, downloadRoute, filterLiveAccounts, userPermittedAccountsSummary)
       expect(model).to.deep.include({
-        'isInvalidDateRange': true,
-        'hasResults': false,
-        'fromDateParam': '03/5/2018',
-        'toDateParam': '01/5/2018'
+        isInvalidDateRange: true,
+        hasResults: false,
+        fromDateParam: '03/5/2018',
+        toDateParam: '01/5/2018'
       })
     })
   })

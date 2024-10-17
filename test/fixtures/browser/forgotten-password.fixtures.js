@@ -1,6 +1,6 @@
 'use strict'
 
-var sinon = require('sinon')
+const sinon = require('sinon')
 
 module.exports = {
   validForgottenPasswordPost: (username) => {

@@ -20,9 +20,9 @@ describe('service service', function () {
     const updatePspTestAccountStage = sinon.stub().resolves()
     const adminUsersStub = () => {
       return {
-        createService: createService,
-        addGatewayAccountsToService: addGatewayAccountsToService,
-        updatePspTestAccountStage: updatePspTestAccountStage
+        createService,
+        addGatewayAccountsToService,
+        updatePspTestAccountStage
       }
     }
 
@@ -37,8 +37,8 @@ describe('service service', function () {
     const connectorStub = {
       ConnectorClient: function () {
         return {
-          createGatewayAccount: createGatewayAccount,
-          requestStripeTestAccount: requestStripeTestAccount
+          createGatewayAccount,
+          requestStripeTestAccount
         }
       }
     }

@@ -33,8 +33,7 @@ describe('adminusers client - authenticate', function () {
 
   describe('authenticate user API - success', () => {
     const request = userFixtures.validAuthenticateRequest({ email: 'existing-user@example.com' })
-    const validUserResponse = userFixtures.validUserResponse({
-      email: 'existing-user@example.com' })
+    const validUserResponse = userFixtures.validUserResponse({ email: 'existing-user@example.com' })
 
     before((done) => {
       provider.addInteraction(

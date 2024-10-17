@@ -4,7 +4,7 @@ const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.
 const { stubBuilder } = require('./stub-builder')
 
 function getGatewayAccountStripeSetupSuccess (opts) {
-  let fixtureOpts = {
+  const fixtureOpts = {
     gateway_account_id: opts.gatewayAccountId
   }
 
@@ -37,7 +37,7 @@ function getGatewayAccountStripeSetupSuccess (opts) {
 }
 
 function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
-  let stripeSetupStepOptions = {}
+  const stripeSetupStepOptions = {}
 
   if (opts.companyNumber) {
     stripeSetupStepOptions.company_number = opts.companyNumber.map(completed => (
@@ -94,7 +94,7 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
 
   const allStripeCallResponsesArray = []
 
-  for (var i = 0; i < numberOfStripeSetupCalls; i++) {
+  for (let i = 0; i < numberOfStripeSetupCalls; i++) {
     const singleStripeCallResponse = {}
 
     optionKeys.forEach(function (key) {
@@ -126,7 +126,7 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
         method: 'GET',
         path: `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`,
         headers: {
-          'Accept': 'application/json'
+          Accept: 'application/json'
         }
       }
     }],

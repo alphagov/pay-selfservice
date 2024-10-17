@@ -3,73 +3,73 @@
 const lodash = require('lodash')
 
 const PAYMENT_STATE_DESCRIPTIONS = {
-  'created': {
+  created: {
     displayName: 'In progress',
     eventDisplayName: 'Created'
   },
-  'started': {
+  started: {
     displayName: 'In progress',
     eventDisplayName: 'Started'
   },
-  'submitted': {
+  submitted: {
     displayName: 'In progress',
     eventDisplayName: 'Submitted'
   },
-  'capturable': {
+  capturable: {
     displayName: 'In progress',
     eventDisplayName: 'Capturable'
   },
-  'success': {
+  success: {
     displayName: 'Success'
   },
-  'declined': {
+  declined: {
     displayName: 'Declined'
   },
-  'timedout': {
+  timedout: {
     displayName: 'Timed out'
   },
-  'cancelled': {
+  cancelled: {
     displayName: 'Cancelled'
   },
-  'error': {
+  error: {
     displayName: 'Error'
   }
 }
 
 const REFUND_STATE_DESCRIPTIONS = {
-  'submitted': {
+  submitted: {
     description: 'Refund submitted',
     displayName: 'Refund submitted'
   },
-  'error': {
+  error: {
     description: 'Error processing refund',
     displayName: 'Refund error'
   },
-  'success': {
+  success: {
     description: 'Refund successful',
     displayName: 'Refund success'
   }
 }
 
 const DISPUTE_STATE_DESCRIPTIONS = {
-  'needs_response': {
+  needs_response: {
     displayName: 'Dispute awaiting evidence'
   },
-  'under_review': {
+  under_review: {
     displayName: 'Dispute under review'
   },
-  'won': {
+  won: {
     displayName: 'Dispute won in your favour'
   },
-  'lost': {
+  lost: {
     displayName: 'Dispute lost to customer'
   }
 }
 
 const ERROR_CODE_TO_DISPLAY_STATE = {
-  'P0010': 'Declined',
-  'P0020': 'Timed out',
-  'P0030': 'Cancelled'
+  P0010: 'Declined',
+  P0020: 'Timed out',
+  P0030: 'Cancelled'
 }
 
 exports.allDisplayStates = () => [...uniqueDisplayStates(PAYMENT_STATE_DESCRIPTIONS), ...uniqueDisplayStates(REFUND_STATE_DESCRIPTIONS)]
@@ -119,7 +119,7 @@ function displayNameForConnectorState (connectorState, type) {
 }
 
 function getDisplayNameFromConnectorState (connectorState, type = 'payment') {
-  let stateToConvert = connectorState.status || connectorState
+  const stateToConvert = connectorState.status || connectorState
   if (type === 'payment') {
     if (PAYMENT_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]) {
       return PAYMENT_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]

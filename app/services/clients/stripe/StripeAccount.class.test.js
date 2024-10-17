@@ -9,12 +9,12 @@ const url = 'https://www.example.com'
 describe('StripeAccount', () => {
   it('should successfully create a stripe account for valid url', () => {
     const stripeAccount = new StripeAccount({
-      url: url
+      url
     })
 
     expect(stripeAccount.basicObject()).to.deep.equal({
       business_profile: {
-        url: url
+        url
       }
     })
   })

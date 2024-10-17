@@ -11,7 +11,7 @@ const {
 describe('field validation checks', () => {
   describe('isAboveMaxAmount', () => {
     it('should return an error string if it is passed an currency string exceeding £100 thousand', () => {
-      expect(isAboveMaxAmount('10000000.01')).to.equal(`Enter an amount under £100,000`)
+      expect(isAboveMaxAmount('10000000.01')).to.equal('Enter an amount under £100,000')
     })
 
     it('should not return false if it is not passed an currency string', () => {
@@ -30,13 +30,13 @@ describe('field validation checks', () => {
 
   describe('isFieldGreaterThanMaxLengthChars', () => {
     it('should return an error if value passed is greater than max length as string', () => {
-      expect(isFieldGreaterThanMaxLengthChars('123456', '5')).to.equal(`The text is too long`)
+      expect(isFieldGreaterThanMaxLengthChars('123456', '5')).to.equal('The text is too long')
     })
     it('should return false if value passed is less/equal than max length as string', () => {
       expect(isFieldGreaterThanMaxLengthChars('12345', '5')).to.equal(false)
     })
     it('should return an error if value passed is greater than max length as number', () => {
-      expect(isFieldGreaterThanMaxLengthChars('123456', 5)).to.equal(`The text is too long`)
+      expect(isFieldGreaterThanMaxLengthChars('123456', 5)).to.equal('The text is too long')
     })
     it('should return false if value passed is less/equal than max length as number', () => {
       expect(isFieldGreaterThanMaxLengthChars('12345', 5)).to.equal(false)

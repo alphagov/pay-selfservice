@@ -19,7 +19,8 @@ async function listAgreements (req, res, next) {
     ...req.query.status && { status: req.query.status },
     ...req.query.reference && { reference: req.query.reference.trim() }
   }
-  req.session.agreementsFilter = url.parse(req.url).query
+  // eslint-disable-next-line n/no-deprecated-api
+  req.session.agreementsFilter = url.parse(req.url).query // TODO update this as url.parse is deprecated
 
   try {
     const agreements = await agreementsService.agreements(req.service.externalId, req.isLive, req.account.gateway_account_id, page, filters)

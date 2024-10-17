@@ -134,7 +134,7 @@ describe('service service', function () {
       connectorClientStub = {
         ConnectorClient: function () {
           return {
-            patchServiceName: patchServiceName
+            patchServiceName
           }
         }
       }

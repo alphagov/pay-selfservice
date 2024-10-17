@@ -76,7 +76,7 @@ describe('user permissions update controller', function () {
         .expect((res) => {
           expect(res.body.email).to.equal(userToView.email)
           expect(res.body.editPermissionsLink).to.equal(formatServicePathsFor(paths.service.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
-          expect(res.body.admin.id).to.equal(roles['admin'].extId)
+          expect(res.body.admin.id).to.equal(roles.admin.extId)
           expect(res.body.admin.checked).to.equal('')
           expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId)
           expect(res.body.viewAndRefund.checked).to.equal('')
@@ -140,7 +140,7 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse)
 
-      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'admin' })
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { role_name: 'admin' })
         .reply(200, getUserResponse)
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
@@ -151,7 +151,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': roles['admin'].extId,
+          'role-input': roles.admin.extId,
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
@@ -165,7 +165,7 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse)
 
-      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'view-only' })
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { role_name: 'view-only' })
         .reply(200, getUserResponse)
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
@@ -193,7 +193,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': roles['admin'].extId,
+          'role-input': roles.admin.extId,
           csrfToken: csrf().create('123')
         })
         .expect(403)
@@ -215,7 +215,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': roles['admin'].extId,
+          'role-input': roles.admin.extId,
           csrfToken: csrf().create('123')
         })
         .expect(500)
@@ -238,7 +238,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': roles['admin'].extId,
+          'role-input': roles.admin.extId,
           csrfToken: csrf().create('123')
         })
         .expect(500)
@@ -272,7 +272,7 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse)
 
-      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'admin' })
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { role_name: 'admin' })
         .reply(409)
 
       supertest(app)
@@ -281,7 +281,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': roles['admin'].extId,
+          'role-input': roles.admin.extId,
           csrfToken: csrf().create('123')
         })
         .expect(500)

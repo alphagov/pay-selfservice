@@ -4,7 +4,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, type = 'test', requires3ds = false) {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type: type, requires3ds: requires3ds }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type, requires3ds }),
     gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId }),
     gatewayAccountStubs.getCardTypesSuccess(),
     gatewayAccountStubs.postUpdateCardTypesSuccess(gatewayAccountId)

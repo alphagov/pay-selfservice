@@ -19,7 +19,7 @@ const serviceExternalId = 'cp5wa'
 chai.use(chaiAsPromised)
 
 describe('adminusers client - post govuk pay agreement - email address', () => {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

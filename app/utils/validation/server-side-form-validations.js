@@ -16,7 +16,7 @@ const {
 } = require('./field-validation-checks')
 const { invalidTelephoneNumber } = require('../telephone-number-utils')
 
-const NUMBERS_ONLY = new RegExp('^[0-9]+$')
+const NUMBERS_ONLY = /^[0-9]+$/
 const NAXSI_NOT_ALLOWED_CHARACTERS = ['<', '>', '|']
 
 const validReturnObject = {
@@ -246,7 +246,7 @@ function isValidUrl (url) {
     new URL(url)
 
     return validator.isURL(url, {
-      protocols: [ 'http', 'https' ],
+      protocols: ['http', 'https'],
       require_protocol: true
     })
   } catch (err) {

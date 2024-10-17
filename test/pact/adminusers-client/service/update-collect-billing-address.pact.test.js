@@ -20,7 +20,7 @@ const serviceExternalId = 'cp5wa'
 chai.use(chaiAsPromised)
 
 describe('adminusers client - patch collect billing address toggle', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

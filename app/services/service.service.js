@@ -14,7 +14,7 @@ const { CREATED } = require('../models/psp-test-account-stage')
 
 async function getGatewayAccounts (gatewayAccountIds) {
   const cardGatewayAccounts = await connectorClient.getAccounts({
-    gatewayAccountIds: gatewayAccountIds
+    gatewayAccountIds
   })
 
   return cardGatewayAccounts.accounts
@@ -23,7 +23,7 @@ async function getGatewayAccounts (gatewayAccountIds) {
 
 async function updateServiceName (serviceExternalId, serviceName, serviceNameCy) {
   if (!serviceExternalId) {
-    return Promise.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
+    return Promise.reject(new Error('argument: \'serviceExternalId\' cannot be undefined'))
   }
 
   const result = await adminUsersClient.updateServiceName(serviceExternalId, serviceName, serviceNameCy)

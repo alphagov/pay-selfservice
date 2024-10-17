@@ -33,16 +33,16 @@ describe('response converter', function () {
   })
 
   let noError
-  let body = {}
+  const body = {}
 
   it('should resolve if response is any one of success codes', function (done) {
-    let noOfSuccessCodes = responseConverter.successCodes().length
+    const noOfSuccessCodes = responseConverter.successCodes().length
 
     expect(noOfSuccessCodes).to.be.equal(5)
 
     responseConverter.successCodes().forEach((code, index) => {
-      let converter = responseConverter.createCallbackToPromiseConverter(context)
-      let successResponse = { statusCode: code }
+      const converter = responseConverter.createCallbackToPromiseConverter(context)
+      const successResponse = { statusCode: code }
 
       converter(noError, successResponse, body)
 
@@ -55,8 +55,8 @@ describe('response converter', function () {
   })
 
   it('should reject if response returned with a non success code', function (done) {
-    let converter = responseConverter.createCallbackToPromiseConverter(context)
-    let errorResponse = { statusCode: 401 }
+    const converter = responseConverter.createCallbackToPromiseConverter(context)
+    const errorResponse = { statusCode: 401 }
     converter(noError, errorResponse, body)
 
     sinon.assert.calledWith(spyReject, { errorCode: errorResponse.statusCode, message: undefined })
@@ -65,12 +65,12 @@ describe('response converter', function () {
   })
 
   it('should reject if response returned with an error', function (done) {
-    let converter = responseConverter.createCallbackToPromiseConverter(context)
-    let response = {}
-    let error = 'error'
+    const converter = responseConverter.createCallbackToPromiseConverter(context)
+    const response = {}
+    const error = 'error'
     converter(error, response, body)
 
-    sinon.assert.calledWith(spyReject, { error: error })
+    sinon.assert.calledWith(spyReject, { error })
 
     done()
   })

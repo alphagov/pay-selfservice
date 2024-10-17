@@ -13,8 +13,9 @@ const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({ userExternalId, serviceExternalId, gatewayAccountId }),
   gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, serviceExternalId }),
   webhooksStubs.getWebhooksListSuccess({ service_id: serviceExternalId, gateway_account_id: gatewayAccountId, live: false, webhooks: [{ external_id: webhookExternalId }, { status: 'INACTIVE' }, { status: 'DISABLED' }] }),
-  webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, gateway_account_id: gatewayAccountId, external_id: webhookExternalId, subscriptions: [ 'card_payment_captured', 'card_payment_succeeded', 'card_payment_refunded' ] }),
-  webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId,
+  webhooksStubs.getWebhookSuccess({ service_id: serviceExternalId, gateway_account_id: gatewayAccountId, external_id: webhookExternalId, subscriptions: ['card_payment_captured', 'card_payment_succeeded', 'card_payment_refunded'] }),
+  webhooksStubs.getWebhookMessagesListSuccess({
+    service_id: serviceExternalId,
     gateway_account_id: gatewayAccountId,
     external_id: webhookExternalId,
     messages: [
@@ -29,10 +30,11 @@ const userAndGatewayAccountStubs = [
       { latest_attempt: { status: 'SUCCESSFUL' } },
       { latest_attempt: { status: 'SUCCESSFUL' } },
       { latest_attempt: { status: 'SUCCESSFUL' } }
-    ] }),
+    ]
+  }),
   webhooksStubs.getWebhookSigningSecret({ service_id: serviceExternalId, gateway_account_id: gatewayAccountId, external_id: webhookExternalId }),
   webhooksStubs.getWebhookMessage({ external_id: messageExternalId, webhook_id: webhookExternalId }),
-  webhooksStubs.getWebhookMessageAttempts({ message_id: messageExternalId, webhook_id: webhookExternalId, attempts: [ {} ] })
+  webhooksStubs.getWebhookMessageAttempts({ message_id: messageExternalId, webhook_id: webhookExternalId, attempts: [{}] })
 ]
 
 describe('Webhooks', () => {
@@ -41,7 +43,7 @@ describe('Webhooks', () => {
   })
 
   it('should correctly list webhooks for a given service', () => {
-    cy.task('setupStubs', [ ...userAndGatewayAccountStubs ])
+    cy.task('setupStubs', [...userAndGatewayAccountStubs])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
 
     cy.get('h1').should('have.text', 'Webhooks')

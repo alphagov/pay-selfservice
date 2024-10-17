@@ -15,7 +15,7 @@ function setupStubs (disabled) {
       gatewayAccountId,
       gatewayAccountExternalId,
       paymentProvider: 'worldpay',
-      disabled: disabled
+      disabled
     })
   ])
 }

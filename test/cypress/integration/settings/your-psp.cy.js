@@ -211,7 +211,7 @@ describe('Your PSP settings page', () => {
       cy.task('setupStubs', [
         ...getUserAndGatewayAccountStubs(gatewayAccountOpts),
         gatewayAccountStubs.postCheckWorldpay3dsFlexCredentials({
-          gatewayAccountId: gatewayAccountId,
+          gatewayAccountId,
           result: 'invalid',
           organisational_unit_id: '5bd9b55e4444761ac0af1c81',
           issuer: '5bd9e0e4444dce153428c941',
@@ -250,7 +250,7 @@ describe('Your PSP settings page', () => {
       cy.task('setupStubs', [
         ...getUserAndGatewayAccountStubs(gatewayAccountOpts),
         gatewayAccountStubs.postCheckWorldpay3dsFlexCredentialsWithBadResult({
-          gatewayAccountId: gatewayAccountId, ...testBadResultFlexCredentials
+          gatewayAccountId, ...testBadResultFlexCredentials
         })
       ])
       cy.visit(`${yourPspPath}/${credentialExternalId}`)
@@ -278,7 +278,7 @@ describe('Your PSP settings page', () => {
           credentials: {
             one_off_customer_initiated: {
               merchant_code: merchantCode,
-              username: username
+              username
             }
           },
           external_id: credentialExternalId,

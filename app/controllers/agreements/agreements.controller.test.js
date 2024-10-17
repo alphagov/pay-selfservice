@@ -39,7 +39,7 @@ const transactions = transactionFixtures.validTransactionSearchResponse({ transa
 const singleAgreement = agreementFixtures.validAgreementResponse({ external_id: agreementId })
 
 let req, res, next
-let user = new User(userFixtures.validUserResponse())
+const user = new User(userFixtures.validUserResponse())
 
 describe('The agreements controller', () => {
   beforeEach(() => {
@@ -99,7 +99,7 @@ describe('The agreements controller', () => {
     beforeEach(() => {
       req.session.agreementsFilter = 'test'
       req.params = {
-        agreementId: agreementId
+        agreementId
       }
 
       agreementsServiceSpy.agreement.resetHistory()
@@ -228,7 +228,7 @@ describe('The agreements controller', () => {
       req.session.agreementsFilter = 'test'
       req.params = {
         agreementId,
-        gatewayAccountExternalId: gatewayAccountExternalId
+        gatewayAccountExternalId
       }
       req.user = new User(userFixtures.validUserResponse())
       req.flash = sinon.spy()

@@ -178,7 +178,7 @@ describe('Bank details post controller', () => {
 
     sinon.assert.calledWith(updateBankAccountMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-external-id')
   })
 
   it('should render error page with side navigation when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async () => {
@@ -269,7 +269,7 @@ describe('Bank details post controller', () => {
 
     sinon.assert.calledWith(updateBankAccountMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
   })
 
   function getControllerWithMocks () {

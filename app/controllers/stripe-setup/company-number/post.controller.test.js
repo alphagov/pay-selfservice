@@ -75,7 +75,7 @@ describe('Company number POST controller', () => {
     await controller(req, res, next)
 
     sinon.assert.calledWith(updateCompanyMock, res.locals.stripeAccount.stripeAccountId, {
-      'tax_id': '01234567'
+      tax_id: '01234567'
     })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'company_number')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
@@ -163,7 +163,7 @@ describe('Company number POST controller', () => {
 
     await controller(req, res, next)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/company-number/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/company-number/index')
     const pageData = res.render.firstCall.args[1]
     expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
     expect(pageData.currentCredential.external_id).to.equal('a-valid-credential-external-id')
@@ -181,7 +181,7 @@ describe('Company number POST controller', () => {
 
     sinon.assert.calledWith(updateCompanyMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-external-id')
   })
 
   it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async function () {
@@ -195,6 +195,6 @@ describe('Company number POST controller', () => {
 
     sinon.assert.calledWith(updateCompanyMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
   })
 })

@@ -170,8 +170,8 @@ module.exports = {
       chargeData.dispute = new DisputeTransaction(disputeTransactionData)
     }
 
-    delete chargeData['links']
-    delete chargeData['return_url']
+    delete chargeData.links
+    delete chargeData.return_url
     return chargeData
   }
 }
@@ -211,7 +211,8 @@ function getCurrentPageSize (connectorData) {
   let limit
 
   if (selfLink) {
-    queryString = url.parse(selfLink.href).query
+    // eslint-disable-next-line n/no-deprecated-api
+    queryString = url.parse(selfLink.href).query // TODO update this as url.parse is deprecated
     limit = Number(qs.parse(queryString).display_size)
     if (check.number(limit) && limit > 0) {
       return limit

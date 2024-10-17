@@ -3,7 +3,7 @@
 const _ = require('lodash')
 
 module.exports = permissions => {
-  let permissionMap = {}
+  const permissionMap = {}
   if (permissions) {
     _.forEach(permissions, x => {
       permissionMap[x.replace(/[-:]/g, '_')] = true

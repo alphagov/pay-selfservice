@@ -9,11 +9,12 @@ class Stream {
     this.dataCallback = dataCallback
     this.successCallback = successCallback
     this.errorCallback = errorCallback
-    this.headers = headers || { 'Accept': 'text/csv', 'Content-Type': 'application/json' }
+    this.headers = headers || { Accept: 'text/csv', 'Content-Type': 'application/json' }
   }
 
   request (targetUrl) {
-    const parsed = url.parse(targetUrl)
+    // eslint-disable-next-line n/no-deprecated-api
+    const parsed = url.parse(targetUrl) // TODO update this as url.parse is deprecated
     const options = {
       path: `${parsed.pathname}${parsed.search}`,
       host: parsed.hostname,

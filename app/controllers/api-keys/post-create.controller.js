@@ -7,7 +7,7 @@ module.exports = async function createApiKey (req, res, next) {
   const accountId = req.account.gateway_account_id
   const description = req.body.description
   const payload = {
-    description: description,
+    description,
     account_id: accountId,
     created_by: req.user.email,
     type: 'API',

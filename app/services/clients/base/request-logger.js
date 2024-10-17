@@ -46,7 +46,7 @@ module.exports = {
       method: context.method,
       url: context.url,
       description: context.description,
-      error: error,
+      error,
       ...context.additionalLoggingFields
     })
   }

@@ -1,7 +1,7 @@
 'use strict'
 
 function setupAnalytics () {
-  var gtagScript = document.createElement('script')
+  const gtagScript = document.createElement('script')
   gtagScript.async = true
   gtagScript.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=G-XE9K05CFFE')
   document.head.appendChild(gtagScript)

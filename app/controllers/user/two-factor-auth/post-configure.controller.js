@@ -11,7 +11,7 @@ const { validationErrors } = require('../../../utils/validation/field-validation
 const { sanitiseSecurityCode } = require('../../../utils/security-code-utils')
 
 module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
-  const code = sanitiseSecurityCode(req.body['code'])
+  const code = sanitiseSecurityCode(req.body.code)
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)
 
   const validationResult = validateOtp(code)

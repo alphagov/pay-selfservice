@@ -14,7 +14,7 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
   for (const role in roles) {
     userRolesMap[roles[role].name] = []
   }
-  users.map((user) => {
+  users.forEach((user) => {
     const userRoleName = _.get(user.getRoleForService(externalServiceId), 'name')
     if (roles[userRoleName]) {
       const mappedUser = {
@@ -38,7 +38,7 @@ const mapInvitesByRoles = function (invitedUsers) {
   for (const role in roles) {
     userRolesMap[roles[role].name] = []
   }
-  invitedUsers.map((user) => {
+  invitedUsers.forEach((user) => {
     if (roles[user.role]) {
       const mappedUser = {
         email: user.email,
@@ -67,7 +67,7 @@ async function index (req, res, next) {
 
     response(req, res, 'team-members/team-members', {
       team_members: teamMembers,
-      inviteTeamMemberLink: inviteTeamMemberLink,
+      inviteTeamMemberLink,
       invited_team_members: invitedTeamMembers,
       number_invited_members: invitedMembers.length
     })
@@ -98,9 +98,9 @@ async function show (req, res, next) {
       return response(req, res, 'team-members/team-member-details', {
         email: user.email,
         role: roleInList.description,
-        teamMemberIndexLink: teamMemberIndexLink,
-        editPermissionsLink: editPermissionsLink,
-        removeTeamMemberLink: removeTeamMemberLink
+        teamMemberIndexLink,
+        editPermissionsLink,
+        removeTeamMemberLink
       })
     } else {
       return renderErrorView(req, res, 'You do not have the rights to access this service.', 403)

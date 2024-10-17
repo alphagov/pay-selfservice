@@ -22,8 +22,8 @@ module.exports = class SettingsBuilder {
     }
 
     const setting = {
-      id: id,
-      name: name,
+      id,
+      name,
       url: this.pathFormatter(
         path,
         this.account.service_id,
@@ -31,7 +31,7 @@ module.exports = class SettingsBuilder {
       ),
       current: this.currentUrl.includes('simplified') && this.currentUrl.includes(`settings/${id}`),
       permitted: typeof permission === 'boolean' ? permission : this.permissions[permission],
-      alwaysViewable: alwaysViewable // when true, this setting will appear on all account types
+      alwaysViewable // when true, this setting will appear on all account types
     }
 
     this.categories[this.currentCategory].push(setting)

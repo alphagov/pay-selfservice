@@ -65,7 +65,7 @@ const mockConnectorGetStripeSetup = (bankAccount, responsiblePerson, vatNumber, 
       responsible_person: responsiblePerson,
       vat_number: vatNumber,
       company_number: companyNumber,
-      director: director,
+      director,
       government_entity_document: governmentEntitydocument
     })
     .persist()
@@ -75,18 +75,18 @@ const mockConnectorGetStripeAccount = () => {
   nock(CONNECTOR_URL)
     .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/stripe-account`)
     .reply(200, {
-      'stripe_account_id': 'acct_123example123'
+      stripe_account_id: 'acct_123example123'
     })
     .persist()
 }
 
 const mockStripeRetrieveAccount = (isChargesEnabled, currentDeadlineUnixDate) => {
   nock(`https://${STRIPE_HOST}:${STRIPE_PORT}`)
-    .get(`/v1/accounts/acct_123example123`)
+    .get('/v1/accounts/acct_123example123')
     .reply(200, {
-      'charges_enabled': isChargesEnabled,
-      'requirements': {
-        'current_deadline': currentDeadlineUnixDate
+      charges_enabled: isChargesEnabled,
+      requirements: {
+        current_deadline: currentDeadlineUnixDate
       }
     })
     .persist()
@@ -472,8 +472,8 @@ describe('dashboard-activity-controller', () => {
     })
 
     it('it should display the live account requested panel', async () => {
-      let res = await getDashboard()
-      let $ = cheerio.load(res.text)
+      const res = await getDashboard()
+      const $ = cheerio.load(res.text)
       expect($('.govuk-notification-banner__content').length).to.equal(1)
       expect($('.govuk-notification-banner__content h2').text()).to.equal('GOV.UK Pay is reviewing your go live request')
     })
@@ -502,8 +502,8 @@ describe('dashboard-activity-controller', () => {
     })
 
     it('it should not display the live account requested panel', async () => {
-      let res = await getDashboard()
-      let $ = cheerio.load(res.text)
+      const res = await getDashboard()
+      const $ = cheerio.load(res.text)
       expect($('.account-status-panel').length).to.equal(0)
     })
 
@@ -539,9 +539,9 @@ describe('dashboard-activity-controller', () => {
       it('it should display account status panel when account is not fully setup', async () => {
         mockConnectorGetStripeSetup(false, false, true, true, false)
         mockStripeRetrieveAccount(true, null)
-        let res = await getDashboard(createAppWithSession(getApp(), session))
-        let $ = cheerio.load(res.text)
-        let resultText = $('.govuk-notification-banner__content').text()
+        const res = await getDashboard(createAppWithSession(getApp(), session))
+        const $ = cheerio.load(res.text)
+        const resultText = $('.govuk-notification-banner__content').text()
         expect($('.govuk-notification-banner__content').length).to.equal(1)
         expect(resultText).to.contain('the name, date of birth and home address of the person in your organisation legally responsible for payments')
         expect(resultText).to.contain('organisation bank details')
@@ -553,16 +553,16 @@ describe('dashboard-activity-controller', () => {
       it('it should not display account status panel when account is fully setup', async () => {
         mockConnectorGetStripeSetup(true, true, true, true, true, true)
         mockStripeRetrieveAccount(true, null)
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
         expect($('.govuk-notification-banner__content').length).to.equal(0)
       })
 
       it('it should display account status panel with DATE when account is not fully setup and there is a deadline', async () => {
         mockConnectorGetStripeSetup(true, true, false, false, true)
         mockStripeRetrieveAccount(true, 1606820691)
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
         expect($('.govuk-notification-banner__content').length).to.equal(1)
         const resultText = $('.govuk-notification-banner__content').text()
         expect(resultText).to.contain('You must add more details by 1 December 2020 to continue taking payments')
@@ -572,8 +572,8 @@ describe('dashboard-activity-controller', () => {
         mockConnectorGetStripeSetup(true, true, false, false, false)
         mockStripeRetrieveAccount(false, null)
 
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
         expect($('.govuk-notification-banner__content').length).to.equal(1)
         const resultText = $('.govuk-notification-banner__content').text()
         expect(resultText).to.contain('Stripe has restricted your account')
@@ -583,8 +583,8 @@ describe('dashboard-activity-controller', () => {
         mockConnectorGetStripeSetup(true, true, true, true, true, true)
         mockStripeRetrieveAccount(false, null)
 
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
         expect($('.govuk-notification-banner__content').length).to.equal(1)
         const resultText = $('.govuk-notification-banner__content').text()
         expect(resultText).to.contain('Stripe has restricted your account')
@@ -615,8 +615,8 @@ describe('dashboard-activity-controller', () => {
 
       it('it should not display account status panel when account is not fully setup', async () => {
         mockConnectorGetStripeSetup(false, false, false, false, false)
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
         expect($('.govuk-notification-banner__content').length).to.equal(0)
       })
     })
@@ -642,8 +642,8 @@ describe('dashboard-activity-controller', () => {
     })
 
     it('it should not display account status panel', async () => {
-      let res = await getDashboard()
-      let $ = cheerio.load(res.text)
+      const res = await getDashboard()
+      const $ = cheerio.load(res.text)
       expect($('.govuk-notification-banner__content').length).to.equal(0)
     })
   })
@@ -677,8 +677,8 @@ describe('dashboard-activity-controller', () => {
 
         app = createAppWithSession(getApp(), session)
 
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
 
         expect($('#take-a-telephone-payment-link a:first-of-type').attr('href'))
           .to.equal(`http://products-ui.url/pay/${AGENT_INITIATED_MOTO_PRODUCT_EXTERNAL_ID}`)
@@ -692,8 +692,8 @@ describe('dashboard-activity-controller', () => {
 
         app = createAppWithSession(getApp(), session)
 
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
 
         expect($('#take-a-telephone-payment-link').length).to.equal(0)
       })
@@ -708,8 +708,8 @@ describe('dashboard-activity-controller', () => {
 
         app = createAppWithSession(getApp(), session)
 
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
 
         expect($('#take-a-telephone-payment-link').length).to.equal(0)
       })
@@ -740,8 +740,8 @@ describe('dashboard-activity-controller', () => {
 
         app = createAppWithSession(getApp(), session)
 
-        let res = await getDashboard()
-        let $ = cheerio.load(res.text)
+        const res = await getDashboard()
+        const $ = cheerio.load(res.text)
 
         expect($('#take-a-telephone-payment-link').length).to.equal(0)
       })

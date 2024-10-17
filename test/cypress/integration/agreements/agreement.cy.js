@@ -14,7 +14,7 @@ const userAndGatewayAccountStubs = function (role) {
       userExternalId,
       serviceExternalId,
       gatewayAccountId,
-      role: role
+      role
     }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,

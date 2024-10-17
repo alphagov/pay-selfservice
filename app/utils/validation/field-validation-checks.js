@@ -17,7 +17,7 @@ const validationErrors = {
   isAboveMaxAmount: `Enter an amount under £${MAX_AMOUNT.toLocaleString()}`,
   isPasswordLessThanTenChars: 'Password must be 10 characters or more', // pragma: allowlist secret
   isGreaterThanMaxLengthChars: 'The text is too long',
-  invalidCharacters: `You cannot use any of the following characters < > ; |`,
+  invalidCharacters: 'You cannot use any of the following characters < > ; |',
   invalidBankAccountNumber: 'Enter a valid account number like 00733445',
   invalidSortCode: 'Enter a valid sort code like 309430',
   invalidVatNumber: 'Enter your VAT registration number in the correct format',
@@ -75,7 +75,7 @@ exports.isAboveMaxAmount = value => {
 }
 
 exports.isFieldGreaterThanMaxLengthChars = (value, maxLength) => {
-  let parsedMaxLength = parseInt(maxLength)
+  const parsedMaxLength = parseInt(maxLength)
   return parsedMaxLength && value.length > parsedMaxLength ? validationErrors.isGreaterThanMaxLengthChars : false
 }
 

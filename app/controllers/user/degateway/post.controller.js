@@ -15,7 +15,7 @@ module.exports = async function postDegatewayPreference (req, res, next) {
     logger.info('User updated Degateway settings')
     const { features } = await userService.findByExternalId(req.user.externalId)
     // todo: should probably fix adminusers to take empty string for features rather than always having a value for subsequent patch requests
-    let featureSet = new Set(['default'])
+    const featureSet = new Set(['default'])
     features.forEach(feature => {
       if (feature !== '') featureSet.add(feature)
     })

@@ -14,8 +14,8 @@ function getUserAndAccountStubs (allowGooglePay, paymentProvider = 'worldpay') {
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
       gatewayAccountExternalId,
-      paymentProvider: paymentProvider,
-      allowGooglePay: allowGooglePay,
+      paymentProvider,
+      allowGooglePay,
       gatewayAccountCredentials: [{
         payment_provider: paymentProvider
       }]

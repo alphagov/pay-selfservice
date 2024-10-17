@@ -22,7 +22,7 @@ describe('Post 3DS Flex controller', () => {
       flash: sinon.spy(),
       body: {
         'organisational-unit-id': '111111111111111111111111',
-        'issuer': '111111111111111111111111',
+        issuer: '111111111111111111111111',
         'jwt-mac-key': '11111111-1111-1111-1111-111111111111'
       }
     }

@@ -22,7 +22,7 @@ function getProductsClient (baseUrl) {
 }
 
 describe('products client - find products associated with a particular gateway account id and type', function () {
-  let provider = new Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'products',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

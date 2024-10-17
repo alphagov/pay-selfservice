@@ -26,7 +26,7 @@ describe('Director POST controller', () => {
   const postBody = {
     'first-name': firstName,
     'last-name': lastName,
-    'email': email,
+    email,
     'dob-day': dobDay,
     'dob-month': dobMonth,
     'dob-year': dobYear
@@ -187,7 +187,7 @@ describe('Director POST controller', () => {
     sinon.assert.called(createDirectorMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/director/index')
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['dob-day'], 'Enter a valid date')
   })
 
@@ -239,7 +239,7 @@ describe('Director POST controller', () => {
 
     sinon.assert.calledWith(updateCompanyMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-external-id')
   })
 
   it('should render error page with side navigation when ENABLE_STRIPE_ONBOARDING_TASK_LIST is true and on the your-psp route', async function () {
@@ -253,7 +253,7 @@ describe('Director POST controller', () => {
 
     await controller(req, res, next)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/director/index')
     const pageData = res.render.firstCall.args[1]
     expect(pageData.enableStripeOnboardingTaskList).to.equal(true)
     expect(pageData.currentCredential.external_id).to.equal('a-credential-external-id')
@@ -277,7 +277,7 @@ describe('Director POST controller', () => {
     sinon.assert.called(createDirectorMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/director/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/director/index')
 
     const pageData = res.render.firstCall.args[1]
     assert.strictEqual(pageData.errors['dob-day'], 'Enter a valid date')
@@ -298,6 +298,6 @@ describe('Director POST controller', () => {
 
     sinon.assert.calledWith(updateCompanyMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
   })
 })

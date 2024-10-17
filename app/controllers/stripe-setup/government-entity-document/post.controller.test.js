@@ -8,8 +8,8 @@ const assert = require('assert')
 
 describe('Government entity document POST controller', () => {
   const postBody = {
-    'mimetype': 'image/jpeg',
-    'size': 100000
+    mimetype: 'image/jpeg',
+    size: 100000
   }
 
   let req
@@ -73,7 +73,7 @@ describe('Government entity document POST controller', () => {
     await controller.postGovernmentEntityDocument(req, res, next)
 
     sinon.assert.calledWith(uploadFileMock, 'entity_document_for_account_1', 'image/jpeg', '0A 0B')
-    sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
+    sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { entity_verification_document_id: 'file_id_123' })
     sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
     sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.stripe.addPspAccountDetails}`)
   })
@@ -92,7 +92,7 @@ describe('Government entity document POST controller', () => {
     sinon.assert.notCalled(uploadFileMock)
     sinon.assert.notCalled(updateAccountMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.render, `stripe-setup/government-entity-document/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/government-entity-document/index')
 
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['government-entity-document'], 'File size must be less than 10MB')
   })
@@ -110,7 +110,7 @@ describe('Government entity document POST controller', () => {
     sinon.assert.notCalled(uploadFileMock)
     sinon.assert.notCalled(updateAccountMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.render, `stripe-setup/government-entity-document/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/government-entity-document/index')
 
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['government-entity-document'], 'Select a file to upload')
   })
@@ -129,7 +129,7 @@ describe('Government entity document POST controller', () => {
     sinon.assert.notCalled(uploadFileMock)
     sinon.assert.notCalled(updateAccountMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.render, `stripe-setup/government-entity-document/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/government-entity-document/index')
 
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['government-entity-document'], 'File type must be pdf, jpeg or png')
   })
@@ -174,7 +174,7 @@ describe('Government entity document POST controller', () => {
     sinon.assert.notCalled(updateAccountMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/government-entity-document/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/government-entity-document/index')
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['government-entity-document'],
       'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png')
   })
@@ -252,7 +252,7 @@ describe('Government entity document POST controller', () => {
     sinon.assert.notCalled(updateAccountMock)
     sinon.assert.notCalled(setStripeAccountSetupFlagMock)
 
-    sinon.assert.calledWith(res.render, `stripe-setup/government-entity-document/index`)
+    sinon.assert.calledWith(res.render, 'stripe-setup/government-entity-document/index')
     assert.strictEqual(res.render.getCalls()[0].args[1].errors['government-entity-document'],
       'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png')
 
@@ -263,7 +263,7 @@ describe('Government entity document POST controller', () => {
 
   describe('Switching PSP', () => {
     it('should redirect to switch PSP route for valid payload', async function () {
-      req.url = `/switch-psp/new-stripe-account-id-123/government-entity-document`
+      req.url = '/switch-psp/new-stripe-account-id-123/government-entity-document'
 
       req.account.provider_switch_enabled = true
       req.account.gateway_account_credentials = [
@@ -291,7 +291,7 @@ describe('Government entity document POST controller', () => {
       await controller.postGovernmentEntityDocument(req, res, next)
 
       sinon.assert.calledWith(uploadFileMock, 'entity_document_for_account_1', 'image/jpeg', '0A 0B')
-      sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { 'entity_verification_document_id': 'file_id_123' })
+      sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { entity_verification_document_id: 'file_id_123' })
       sinon.assert.calledWith(setStripeAccountSetupFlagMock, req.account.gateway_account_id, 'government_entity_document')
       sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id${paths.account.switchPSP.index}`)
     })
@@ -318,7 +318,7 @@ describe('Government entity document POST controller', () => {
     sinon.assert.calledWith(uploadFileMock)
     sinon.assert.calledWith(updateAccountMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/your-psp/a-valid-credential-external-id`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/your-psp/a-valid-credential-external-id')
   })
 
   it('should redirect to add psp account details route when ENABLE_STRIPE_ONBOARDING_TASK_LIST is set to false ', async function () {
@@ -337,6 +337,6 @@ describe('Government entity document POST controller', () => {
     sinon.assert.calledWith(uploadFileMock)
     sinon.assert.calledWith(updateAccountMock)
     sinon.assert.calledWith(setStripeAccountSetupFlagMock)
-    sinon.assert.calledWith(res.redirect, 303, `/account/a-valid-external-id/stripe/add-psp-account-details`)
+    sinon.assert.calledWith(res.redirect, 303, '/account/a-valid-external-id/stripe/add-psp-account-details')
   })
 })
