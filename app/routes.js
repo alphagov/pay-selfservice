@@ -508,6 +508,8 @@ module.exports.bind = function (app) {
   simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, permission('service-name:update'), serviceSettingsController.serviceName.postEditServiceName)
   // email notifications
   simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('transactions:read'), serviceSettingsController.emailNotifications.get) // TODO: add a more descriptive permission to adminsusers, all roles can view transactions so using as default for now
+  // team members
+  simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.index, permission('transactions:read'), serviceSettingsController.teamMembers.get) // TODO: add a more descriptive permission to adminusers, all roles can view transactions so using as default for now
 
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
