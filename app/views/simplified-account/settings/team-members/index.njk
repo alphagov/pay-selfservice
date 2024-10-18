@@ -29,199 +29,69 @@
       }}
     {% endif %}
   </div>
+
   <div class="govuk-grid-column-two-thirds admin-list-group govuk-!-margin-top-6">
-    <div class="admin-list" id="team-members-admin-list">
-      <h3 id="admin-role-header" class="govuk-heading-m">
-        Administrators <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["admin"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in team_members["admin"] %}
+    {% for role, roleDetails in team_members %}
+      {% set membersForRole = roleDetails.members %}
+      {% if membersForRole.length %}
+      <div class="{{ role }}-list" id="team-members-{{ role }}-list">
+        <h3 id="{{ role }}-role-header" class="govuk-heading-m">
+          {{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{membersForRole.length}})</span>
+        </h3>
+        <table class="govuk-table pay-!-border-top">
+          <tbody class="govuk-table__body">
+          {% for team_member in membersForRole %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 <span>{{ team_member.email }} {% if team_member.is_current %}(you){% endif %}</span>
               </td>
+              {% if team_member.is_current %}
+                <td class="govuk-table__cell">
+                  <a href={{ team_member.link }}>View</a>
+                </td>
+              {% else %}
+                <td class="govuk-table__cell">
+                  <a href={{ team_member.changePermissionLink }}>Change permission</a>
+                </td>
+                <td class="govuk-table__cell">
+                  <a href={{ team_member.removeLink }}>Remove</a>
+                </td>
+              {% endif %}
             </tr>
           {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% if team_members["view-and-refund"].length %}
-    <div class="admin-list" id="team-members-view-and-refund-list">
-      <h3 id="view-and-refund-role-header" class="govuk-heading-m">
-        View and refund <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["view-and-refund"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in team_members["view-and-refund"] %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <span>{{ team_member.email }} {% if team_member.is_current %}(you){% endif %}</span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-    {% if team_members["view-only"].length %}
-    <div class="admin-list" id="team-members-view-only-list">
-      <h3 id="view-only-role-header" class="govuk-heading-m">
-        View only <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["view-only"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in team_members["view-only"] %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <span>{{ team_member.email }} {% if team_member.is_current %}(you){% endif %}</span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-    {% if team_members["view-and-initiate-moto"].length %}
-    <div class="admin-list" id="team-members-view-and-initiate-moto-list">
-      <h3 id="view-and-initiate-moto-role-header" class="govuk-heading-m">
-        View and take telephone payments <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["view-and-initiate-moto"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in team_members["view-and-initiate-moto"] %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <span>{{ team_member.email }} {% if team_member.is_current %}(you){% endif %}</span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-    {% if team_members["view-refund-and-initiate-moto"].length %}
-    <div class="admin-list" id="team-members-view-refund-and-initiate-moto-list">
-      <h3 id="view-refund-and-initiate-moto-role-header" class="govuk-heading-m">
-        View, refund and take telephone payments <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["view-refund-and-initiate-moto"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in team_members["view-refund-and-initiate-moto"] %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <span>{{ team_member.email }} {% if team_member.is_current %}(you){% endif %}</span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    {% endfor %}
   </div>
+
   {% if number_invited_members > 0 %}
   <div class="govuk-grid-column-two-thirds admin-list-group govuk-!-margin-top-6">
     <h2 id="invited-team-members-heading" class="govuk-heading-m">
       Invited <span class="govuk-!-font-weight-regular pay-text-grey">({{number_invited_members}})</span>
     </h2>
-    {% if invited_team_members["admin"].length %}
-    <div class="admin-list" id="invited-team-members-admin-list">
-      <h3 id="invited-team-members-admin-role-header" class="govuk-heading-s">Administrators <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["admin"].length}})</span></h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for admin in invited_team_members["admin"] %}
+    {% for role, roleDetails in invited_team_members %}
+      {% set invitedMembersForRole = roleDetails.members %}
+      {% if invitedMembersForRole.length %}
+      <div class="{{ role }}-list" id="invited-team-members-{{ role }}-list">
+        <h3 id="invited-team-members-{{ role }}-role-header" class="govuk-heading-s">{{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{invitedMembersForRole.length}})</span></h3>
+        <table class="govuk-table pay-!-border-top">
+          <tbody class="govuk-table__body">
+          {% for invitedMember in invitedMembersForRole %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
-                <span>
-                  {{ admin.email }}
-                </span>
+                  <span>
+                    {{ invitedMember.email }}
+                  </span>
               </td>
             </tr>
           {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-    {% if invited_team_members["view-and-refund"].length %}
-    <div class="admin-list" id="invited-team-members-view-and-refund-list">
-      <h3 id="invited-team-members-view-and-refund-role-header" class="govuk-heading-s">
-        View and refund <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["view-and-refund"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in invited_team_members["view-and-refund"] %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <span>
-                  {{ team_member.email }}
-                </span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-    {% if invited_team_members["view-only"].length %}
-    <div class="admin-list" id="invited-team-members-view-only-list">
-      <h3 id="invited-team-members-view-only-role-header" class="govuk-heading-s">
-        View only <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["view-only"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in invited_team_members["view-only"] %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <span>
-                  {{ team_member.email }}
-                </span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-    {% if invited_team_members["view-and-initiate-moto"].length %}
-    <div class="admin-list" id="invited-team-members-view-and-initiate-moto-list">
-      <h3 id="invited-team-members-view-and-initiate-moto-role-header" class="govuk-heading-s">
-        View and take telephone payments <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["view-and-initiate-moto"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in invited_team_members["view-and-initiate-moto"] %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <span>
-                  {{ team_member.email }}
-                </span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-    {% if invited_team_members["view-refund-and-initiate-moto"].length %}
-    <div class="admin-list" id="invited-team-members-view-refund-and-initiate-moto-list">
-      <h3 id="invited-team-members-view-refund-and-initiate-moto-role-header" class="govuk-heading-s">
-        View, refund and take telephone payments <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["view-refund-and-initiate-moto"].length}})</span>
-      </h3>
-      <table class="govuk-table pay-!-border-top">
-        <tbody class="govuk-table__body">
-          {% for team_member in invited_team_members["view-refund-and-initiate-moto"] %}
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                <span>
-                  {{ team_member.email }}
-                </span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-  {% endif %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    {% endfor %}
   </div>
+  {% endif %}
 {% endblock %}

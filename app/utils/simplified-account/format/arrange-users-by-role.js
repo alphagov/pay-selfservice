@@ -21,7 +21,7 @@ function mapServiceUsersByRoles (users, externalServiceId, accountType, currentU
         mappedUser.removeLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.delete, externalServiceId, accountType, user.externalId)
         mappedUser.changePermissionLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.permissions, externalServiceId, accountType, user.externalId)
       }
-      serviceUserRolesMap[userRoleName].push(mappedUser)
+      serviceUserRolesMap[userRoleName]['members'].push(mappedUser)
     }
   })
   return serviceUserRolesMap
@@ -35,7 +35,7 @@ function mapInvitedUsersByRoles(invitedUsers) {
         email: user.email,
         expired: user.expired
       }
-      invitedUserRolesMap[user.role].push(mappedUser)
+      invitedUserRolesMap[user.role]['members'].push(mappedUser)
     }
   })
   return invitedUserRolesMap
@@ -44,7 +44,7 @@ function mapInvitedUsersByRoles(invitedUsers) {
 function getEmptyUserRolesMap() {
   const userRolesMap = {}
   for (const role in roles) {
-    userRolesMap[roles[role].name] = []
+    userRolesMap[roles[role].name] = { description: roles[role].description, members: [] }
   }
   return userRolesMap
 }
