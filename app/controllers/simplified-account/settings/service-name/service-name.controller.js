@@ -65,10 +65,8 @@ async function postEditServiceName (req, res) {
 }
 
 async function postRemoveWelshServiceName (req, res) {
-  if (req.body.method === 'DELETE') {
-    await updateServiceName(req.service.externalId, req.service.serviceName.en, '')
-    req.flash('messages', { state: 'success', icon: '&check;', content: 'Welsh service name removed' })
-  }
+  await updateServiceName(req.service.externalId, req.service.serviceName.en, '')
+  req.flash('messages', { state: 'success', icon: '&check;', content: 'Welsh service name removed' })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type))
 }
 

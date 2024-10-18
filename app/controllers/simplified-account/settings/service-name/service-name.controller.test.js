@@ -239,10 +239,7 @@ describe('Controller: settings/service-name', () => {
 
   describe('postRemoveWelshServiceName', () => {
     before(() => setupTest('postRemoveWelshServiceName', {}, {
-      flash: sinon.stub(),
-      body: {
-        method: 'DELETE'
-      }
+      flash: sinon.stub()
     }))
 
     it('should set Welsh service name to blank and redirect to the service name index page', () => {
