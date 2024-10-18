@@ -1,8 +1,8 @@
 {% extends "../../../layout.njk" %}
-{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "includes/systemMessages.njk" import systemMessages %}
 
 {% block pageTitle %}
-  Settings - Service name
+  Settings - Service name - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -10,12 +10,16 @@
 {% endblock %}
 
 {% set add_cy_link %}
-  <a class='govuk-link govuk-link--no-visited-state' href='{{ manage_cy }}'>Add Welsh service name</a>
+  <a class='govuk-link govuk-link--no-visited-state' href='{{ manage_cy }}' data-cy="add-welsh-name">Add Welsh service name</a>
 {% endset %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-three-quarters">
-    <h2 class="govuk-heading-l">Service name</h2>
+    {% if messages is defined and messages is iterable and messages|length > 0 %}
+      {{ systemMessages({ messages: messages }) }}
+    {% endif %}
+
+    <h1 class="govuk-heading-l">Service name</h1>
 
     {{ govukSummaryList({
       classes: "govuk-!-margin-bottom-9",
@@ -33,7 +37,8 @@
               href: manage_en,
               text: "Change",
               classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Edit English service name"
+              visuallyHiddenText: "Edit English service name",
+              attributes: { 'data-cy': 'edit-english-name' }
             }
           ]
         }
@@ -51,7 +56,8 @@
               href: manage_cy,
               text: "Change",
               classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Edit Welsh service name"
+              visuallyHiddenText: "Edit Welsh service name",
+              attributes: { 'data-cy': 'edit-welsh-name' }
             } if service_name_cy else {}
           ]
         }

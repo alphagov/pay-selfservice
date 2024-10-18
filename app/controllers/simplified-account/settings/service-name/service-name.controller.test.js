@@ -19,7 +19,7 @@ const getController = (stubs = {}) => {
   })
 }
 
-const setupTest = (method, additionalReqProps = {}, additionalStubs = {}) => {
+const setupTest = (method, additionalResProps = {}, additionalReqProps = {}, additionalStubs = {}) => {
   responseStub = sinon.spy()
   updateServiceNameStub = sinon.stub().resolves()
   serviceNameController = getController({
@@ -28,7 +28,8 @@ const setupTest = (method, additionalReqProps = {}, additionalStubs = {}) => {
     ...additionalStubs
   })
   res = {
-    redirect: sinon.spy()
+    redirect: sinon.spy(),
+    ...additionalResProps
   }
   req = {
     account: {
@@ -68,12 +69,25 @@ describe('Controller: settings/service-name', () => {
       expect(responseStub.args[0][3]).to.have.property('manage_cy').to.contain(`service/${SERVICE_ID}/account/${ACCOUNT_TYPE}`)
       expect(responseStub.args[0][3]).to.have.property('manage_cy').to.contain('?cy=true')
     })
+
+    describe('when messages are available', () => {
+      before(() => setupTest('get', {
+        locals: {
+          flash: {
+            messages: 'blah'
+          }
+        }
+      }))
+      it('should pass messages to the response method', () => {
+        expect(responseStub.args[0][3]).to.have.property('messages').to.equal('blah')
+      })
+    })
   })
 
   describe('getEditServiceName', () => {
     const testEditServiceName = (isWelsh) => {
       const queryParams = isWelsh ? { cy: 'true' } : {}
-      before(() => setupTest('getEditServiceName', { query: queryParams }))
+      before(() => setupTest('getEditServiceName', {}, { query: queryParams }))
 
       it('should call the response method', () => {
         expect(responseStub.called).to.be.true // eslint-disable-line
@@ -91,6 +105,7 @@ describe('Controller: settings/service-name', () => {
         expect(context).to.have.property('back_link').to.contain(paths.simplifiedAccount.settings.index)
         expect(context).to.have.property('submit_link').to.contain(paths.simplifiedAccount.settings.serviceName.edit)
         expect(context).to.have.property('service_name').to.equal(isWelsh ? CY_SERVICE_NAME : EN_SERVICE_NAME)
+        expect(context).to.have.property('remove_cy_link').to.contain(paths.simplifiedAccount.settings.serviceName.removeCy)
       })
     }
 
@@ -106,7 +121,7 @@ describe('Controller: settings/service-name', () => {
   describe('postEditServiceName', () => {
     describe('when submitting a valid English service name', () => {
       before(() => {
-        setupTest('postEditServiceName', {
+        setupTest('postEditServiceName', {}, {
           body: {
             'service-name-input': 'New English Name',
             cy: 'false'
@@ -126,7 +141,7 @@ describe('Controller: settings/service-name', () => {
 
     describe('when submitting a valid Welsh service name', () => {
       before(() => {
-        setupTest('postEditServiceName', {
+        setupTest('postEditServiceName', {}, {
           body: {
             'service-name-input': 'Enw Cymraeg newydd',
             cy: 'true'
@@ -151,15 +166,16 @@ describe('Controller: settings/service-name', () => {
       })
 
       before(() => {
-        setupTest('postEditServiceName', {
-          body: {
-            'service-name-input': 'A'.repeat(SERVICE_NAME_MAX_LENGTH + 1),
-            cy: 'false'
-          }
-        },
-        {
-          formatValidationErrors: mockFormatValidationErrors
-        })
+        setupTest('postEditServiceName', {},
+          {
+            body: {
+              'service-name-input': 'A'.repeat(SERVICE_NAME_MAX_LENGTH + 1),
+              cy: 'false'
+            }
+          },
+          {
+            formatValidationErrors: mockFormatValidationErrors
+          })
       })
 
       it('should not update the service name', () => {
@@ -179,12 +195,13 @@ describe('Controller: settings/service-name', () => {
 
     describe('when submitting an empty English service name', () => {
       before(() => {
-        setupTest('postEditServiceName', {
-          body: {
-            'service-name-input': '',
-            cy: 'false'
-          }
-        })
+        setupTest('postEditServiceName', {},
+          {
+            body: {
+              'service-name-input': '',
+              cy: 'false'
+            }
+          })
       })
 
       it('should not update the service name', () => {
@@ -200,12 +217,13 @@ describe('Controller: settings/service-name', () => {
 
     describe('when submitting an empty Welsh service name', () => {
       before(() => {
-        setupTest('postEditServiceName', {
-          body: {
-            'service-name-input': '',
-            cy: 'true'
-          }
-        })
+        setupTest('postEditServiceName', {},
+          {
+            body: {
+              'service-name-input': '',
+              cy: 'true'
+            }
+          })
       })
 
       it('should update the service name with an empty Welsh name', () => {
@@ -216,6 +234,21 @@ describe('Controller: settings/service-name', () => {
         expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.serviceName.index)
       })
+    })
+  })
+
+  describe('postRemoveWelshServiceName', () => {
+    before(() => setupTest('postRemoveWelshServiceName', {}, {
+      flash: sinon.stub(),
+      body: {
+        method: 'DELETE'
+      }
+    }))
+
+    it('should set Welsh service name to blank and redirect to the service name index page', () => {
+      expect(updateServiceNameStub.calledWith(SERVICE_ID, EN_SERVICE_NAME, '')).to.be.true // eslint-disable-line
+      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+      expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.serviceName.index)
     })
   })
 })

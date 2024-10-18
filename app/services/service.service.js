@@ -30,6 +30,7 @@ async function updateServiceName (serviceExternalId, serviceName, serviceNameCy)
 
   const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
 
+  // TODO update this to use the service and account type model api endpoint
   await Promise.all(
     gatewayAccountIds.map(async gatewayAccountId => {
       if (gatewayAccountId) {
