@@ -33,10 +33,10 @@ const setupTest = (method, additionalResProps = {}, additionalReqProps = {}, add
   }
   req = {
     account: {
-      service_id: SERVICE_ID,
       type: ACCOUNT_TYPE
     },
     service: {
+      externalId: SERVICE_ID,
       serviceName: {
         en: EN_SERVICE_NAME,
         cy: CY_SERVICE_NAME
