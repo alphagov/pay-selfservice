@@ -100,7 +100,7 @@ describe('Webhooks', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       webhooksStubs.postCreateWebhookSuccess(),
-      webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [{ status: 'FAILED' }], status: 'failed' })
+      webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [{ status: 'FAILED' }], status: 'FAILED' })
     ])
 
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
