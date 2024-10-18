@@ -327,7 +327,7 @@ describe('Service name settings', () => {
           setStubs({
             serviceName: {
               en: SERVICE_NAME.en,
-              cy: ''
+              cy: undefined
             }
           }, [
             serviceStubs.patchUpdateServiceNameSuccess({
