@@ -297,8 +297,8 @@ function postSwitchPspSuccess (gatewayAccountId) {
   return stubBuilder('POST', path, 200)
 }
 
-function getAccountByServiceIdAndAccountType (serviceExternalId, opts = {}) {
-  const path = `/v1/api/service/${serviceExternalId}/account/test`
+function getAccountByServiceIdAndAccountType (serviceExternalId, accountType = 'test', opts = {}) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
   return stubBuilder('GET', path, 200, {
     response: gatewayAccountFixtures.validGatewayAccountResponse(opts)
   })
