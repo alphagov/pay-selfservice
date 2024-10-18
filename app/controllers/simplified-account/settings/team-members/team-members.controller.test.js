@@ -1,20 +1,20 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const paths = require('../../../../paths')
 const { expect } = require('chai')
-const User = require('../../../../models/User.class')
-const { mapServiceUsersByRoles, mapInvitedUsersByRoles } = require('../../../../utils/simplified-account/format/arrange-users-by-role')
-
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 
-let req, res, responseStub, getServiceUsersStub, getInvitedUsers, teamMembersController
+let req, res, responseStub, getServiceUsersStub, getInvitedUsersStub, teamMembersController
 
 const getController = (stubs = {}) => {
   return proxyquire('./team-members.controller', {
     '../../../../utils/response': { response: stubs.response },
-    '../../../../services/user.service': { getServiceUsers: stubs.getServiceUsers, getInvitedUsers: stubs.getInvitedUsers },
-    '../../../../utils/simplified-account/format/arrange-users-by-role': { mapServiceUsersByRoles: stubs.mapServiceUsersByRoles, mapInvitedUsersByRoles: stubs.mapInvitedUsersByRoles }
+    '../../../../services/user.service':
+      { getServiceUsers: stubs.getServiceUsers,
+        getInvitedUsers: stubs.getInvitedUsers },
+    '../../../../utils/simplified-account/format/arrange-users-by-role':
+      { mapTeamMembersByRoles: stubs.mapTeamMembersByRoles,
+        mapInvitedTeamMembersByRoles: stubs.mapInvitedTeamMembersByRoles }
   })
 }
 
@@ -22,18 +22,15 @@ const setupTest = (method, additionalReqProps = {}, additionalStubs = {}) => {
   responseStub = sinon.spy()
   getServiceUsersStub = sinon.stub().resolves([])
   getInvitedUsersStub = sinon.stub().resolves([{}])
-  mapServiceUsersByRolesStub = sinon.stub().returns({ admin:
-      [ { email: 'user@user.gov.uk', external_id: 'valid-user-external-id' }]
-  })
-  mapInvitedUsersByRolesStub = sinon.stub().returns({ admin:
-      [ { email: 'invited_user@user.gov.uk', expired: false } ]
-  })
+  mapTeamMembersByRolesStub = sinon.stub().returns(
+    { 'admin': { members: [ { email: 'user@user.gov.uk' } ] }})
+  mapInvitedTeamMembersByRolesStub = sinon.stub().returns({ 'view-only': { members: [] }})
   teamMembersController = getController({
     response: responseStub,
     getServiceUsers: getServiceUsersStub,
     getInvitedUsers: getInvitedUsersStub,
-    mapServiceUsersByRoles: mapServiceUsersByRolesStub,
-    mapInvitedUsersByRoles: mapInvitedUsersByRolesStub,
+    mapTeamMembersByRoles: mapTeamMembersByRolesStub,
+    mapInvitedTeamMembersByRoles: mapInvitedTeamMembersByRolesStub,
     ...additionalStubs
   })
   res = {
@@ -61,22 +58,24 @@ describe('Controller: settings/team-members', () => {
     })
 
     it('should pass req, res and template path to the response method', () => {
+      expect(getServiceUsersStub.called).to.be.true
       expect(responseStub.args[0]).to.include(req)
       expect(responseStub.args[0]).to.include(res)
       expect(responseStub.args[0]).to.include('simplified-account/settings/team-members/index')
-      console.log("Response Stub args[0]: ")
-      console.log(responseStub.args[0])
     })
 
     it(`should pass context data to the response method`, () => {
-      expect(responseStub.args[0][3]).to.have.property('team_members').to.have.property('admin').to.deep.include({
-        email: 'user@user.gov.uk',
-        external_id: 'valid-user-external-id'
-      })
-      expect(responseStub.args[0][3]).to.have.property('invited_team_members').to.have.property('admin').to.deep.include({
-        email: 'invited_user@user.gov.uk', expired: false
-      })
-      expect(responseStub.args[0][3]).to.have.property('inviteTeamMemberLink').to.equal('/simplified/service/service-id-123abc/account/test/team-members/invite')
+      expect(responseStub.args[0][3]).to.have.property('team_members')
+        .to.have.property('admin')
+        .to.have.property('members')
+        .to.have.length(1)
+        .to.deep.include({email: 'user@user.gov.uk'})
+      expect(responseStub.args[0][3]).to.have.property('invited_team_members')
+        .to.have.property('view-only')
+        .to.have.property('members')
+        .to.have.length(0)
+      expect(responseStub.args[0][3]).to.have.property('inviteTeamMemberLink')
+        .to.equal('/simplified/service/service-id-123abc/account/test/team-members/invite')
       expect(responseStub.args[0][3]).to.have.property('number_invited_members').to.equal(1)
     })
   })

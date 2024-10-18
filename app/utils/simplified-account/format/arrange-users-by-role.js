@@ -3,42 +3,42 @@ const _ = require('lodash')
 const paths = require('../../../paths')
 const formatSimplifiedAccountPathsFor = require('../../../utils/simplified-account/format/format-simplified-account-paths-for')
 
-function mapServiceUsersByRoles (users, externalServiceId, accountType, currentUser) {
-  const serviceUserRolesMap = getEmptyUserRolesMap()
+function mapTeamMembersByRoles (users, externalServiceId, accountType, currentUser) {
+  const teamMembersRoleMap = getEmptyUserRolesMap()
   users.map((user) => {
     const userRoleName = _.get(user.getRoleForService(externalServiceId), 'name')
     if (roles[userRoleName]) {
       const isCurrentUser = currentUser.externalId === user.externalId
-      const mappedUser = {
+      const teamMember = {
         email: user.email,
         external_id: user.externalId,
       }
       if (isCurrentUser) {
-        mappedUser.is_current = true
-        mappedUser.link = paths.user.profile.index
+        teamMember.is_current = true
+        teamMember.link = paths.user.profile.index
       }
       else {
-        mappedUser.removeLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.delete, externalServiceId, accountType, user.externalId)
-        mappedUser.changePermissionLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.permissions, externalServiceId, accountType, user.externalId)
+        teamMember.removeLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.delete, externalServiceId, accountType, user.externalId)
+        teamMember.changePermissionLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.permissions, externalServiceId, accountType, user.externalId)
       }
-      serviceUserRolesMap[userRoleName]['members'].push(mappedUser)
+      teamMembersRoleMap[userRoleName]['members'].push(teamMember)
     }
   })
-  return serviceUserRolesMap
+  return teamMembersRoleMap
 }
 
-function mapInvitedUsersByRoles(invitedUsers) {
-  const invitedUserRolesMap = getEmptyUserRolesMap()
+function mapInvitedTeamMembersByRoles(invitedUsers) {
+  const invitedTeamMembersRolesMap = getEmptyUserRolesMap()
   invitedUsers.map((user) => {
     if (roles[user.role]) {
-      const mappedUser = {
+      const invitedTeamMember = {
         email: user.email,
         expired: user.expired
       }
-      invitedUserRolesMap[user.role]['members'].push(mappedUser)
+      invitedTeamMembersRolesMap[user.role]['members'].push(invitedTeamMember)
     }
   })
-  return invitedUserRolesMap
+  return invitedTeamMembersRolesMap
 }
 
 function getEmptyUserRolesMap() {
@@ -50,6 +50,6 @@ function getEmptyUserRolesMap() {
 }
 
 module.exports = {
-  mapServiceUsersByRoles,
-  mapInvitedUsersByRoles
+  mapTeamMembersByRoles,
+  mapInvitedTeamMembersByRoles
 }
