@@ -173,7 +173,8 @@ module.exports = {
       index: '/settings',
       serviceName: {
         index: '/settings/service-name',
-        edit: '/settings/service-name/edit'
+        edit: '/settings/service-name/edit',
+        removeCy: '/settings/service-name/cy/remove'
       },
       emailNotifications: {
         index: '/settings/email-notifications'

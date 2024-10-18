@@ -1,7 +1,8 @@
 module.exports = class SettingsBuilder {
-  constructor (account, currentUrl, permissions, pathFormatter) {
+  constructor (account, service, currentUrl, permissions, pathFormatter) {
     this.categories = {}
     this.account = account
+    this.service = service
     this.currentUrl = currentUrl
     this.permissions = permissions
     this.pathFormatter = pathFormatter
@@ -26,7 +27,7 @@ module.exports = class SettingsBuilder {
       name,
       url: this.pathFormatter(
         path,
-        this.account.service_id,
+        this.service.externalId,
         this.account.type
       ),
       current: this.currentUrl.includes('simplified') && this.currentUrl.includes(`settings/${id}`),

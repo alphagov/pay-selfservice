@@ -3,8 +3,8 @@ const formatSimplifiedAccountPathsFor = require('../format/format-simplified-acc
 const SettingsBuilder = require('./SettingsBuilder.class')
 const { LIVE } = require('../../../models/go-live-stage')
 
-module.exports = (account, currentUrl, goLiveStage, permissions) => {
-  const settingsBuilder = new SettingsBuilder(account, currentUrl, permissions, formatSimplifiedAccountPathsFor)
+module.exports = (account, service, currentUrl, permissions) => {
+  const settingsBuilder = new SettingsBuilder(account, service, currentUrl, permissions, formatSimplifiedAccountPathsFor)
   const serviceSettings = settingsBuilder
     .category('about your service')
     .add({
@@ -63,7 +63,7 @@ module.exports = (account, currentUrl, goLiveStage, permissions) => {
       alwaysViewable: true // viewable on test and live accounts
     })
     .build()
-  return getViewableSettings(serviceSettings, account, goLiveStage)
+  return getViewableSettings(serviceSettings, account, service.currentGoLiveStage)
 }
 
 const shouldShowSettingForAccountTypeAndGoLiveStage = (account, goLiveStage) => {

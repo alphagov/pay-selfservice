@@ -8,10 +8,11 @@ const formatValidationErrors = require('../../../../utils/simplified-account/for
 
 function get (req, res) {
   const context = {
+    messages: res.locals?.flash?.messages ?? [],
     service_name_en: req.service.serviceName.en,
     service_name_cy: req.service.serviceName.cy,
-    manage_en: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.account.service_id, req.account.type),
-    manage_cy: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.account.service_id, req.account.type) + '?cy=true'
+    manage_en: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.service.externalId, req.account.type),
+    manage_cy: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.service.externalId, req.account.type) + '?cy=true'
   }
   return response(req, res, 'simplified-account/settings/service-name/index', context)
 }
@@ -20,8 +21,9 @@ function getEditServiceName (req, res) {
   const editCy = req.query.cy === 'true'
   const context = {
     edit_cy: editCy,
-    back_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.account.service_id, req.account.type),
-    submit_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.account.service_id, req.account.type)
+    back_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type),
+    submit_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.service.externalId, req.account.type),
+    remove_cy_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.removeCy, req.service.externalId, req.account.type)
   }
   if (editCy) {
     Object.assign(context, { service_name: req.service.serviceName.cy })
@@ -52,18 +54,25 @@ async function postEditServiceName (req, res) {
       },
       edit_cy: editCy,
       service_name: req.body['service-name-input'],
-      back_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.account.service_id, req.account.type),
-      submit_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.account.service_id, req.account.type)
+      back_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type),
+      submit_link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.service.externalId, req.account.type)
     })
   }
 
   const newServiceName = req.body['service-name-input']
-  editCy ? await updateServiceName(req.account.service_id, req.service.serviceName.en, newServiceName) : await updateServiceName(req.account.service_id, newServiceName, req.service.serviceName.cy)
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.account.service_id, req.account.type))
+  editCy ? await updateServiceName(req.service.externalId, req.service.serviceName.en, newServiceName) : await updateServiceName(req.service.externalId, newServiceName, req.service.serviceName.cy)
+  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type))
+}
+
+async function postRemoveWelshServiceName (req, res) {
+  await updateServiceName(req.service.externalId, req.service.serviceName.en, '')
+  req.flash('messages', { state: 'success', icon: '&check;', content: 'Welsh service name removed' })
+  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type))
 }
 
 module.exports = {
   get,
   getEditServiceName,
+  postRemoveWelshServiceName,
   postEditServiceName
 }
