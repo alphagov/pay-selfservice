@@ -33,3 +33,7 @@
 .service-settings-nav__li--active {
   @include govuk-typography-weight-bold();
 }
+
+.service-settings-permissions-inset {
+  background-color: govuk-colour("light-grey");
+}
