@@ -1,5 +1,3 @@
-'use strict'
-
 const { Router } = require('express')
 
 const getSimplifiedAccount = require('./middleware/simplified-account/simplified-account-strategy.middleware')
@@ -10,6 +8,7 @@ const serviceSettingsController = require('./controllers/simplified-account/sett
 const permission = require('./middleware/permission')
 
 const simplifiedAccount = new Router({ mergeParams: true })
+
 simplifiedAccount.use(isOptedInToSimplifiedAccounts, getSimplifiedAccount, userIsAuthorised)
 
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, serviceSettingsController.index.get)

@@ -91,7 +91,7 @@ const organisationUrlController = require('./controllers/switch-psp/organisation
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
 
-const simplifiedAccountRoutes = require('./simplifiedAccountRoutes')
+const simplifiedAccountRoutes = require('./simplified-account-routes')
 
 // Assignments
 const {
