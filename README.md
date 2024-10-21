@@ -92,7 +92,7 @@ npm run compile && npm test
 Run in two separate terminals:
 1. `npm run cypress:server`
 
-    _This runs both the Cypress server and Mountebank which is the virtualisation server used for stubbing out external API calls._
+    _This runs both the Cypress server and @govuk-pay/run-amock which is the mock server used for stubbing out external API calls.
 
 2. Either:
 - `npm run cypress:test` to run headless 
