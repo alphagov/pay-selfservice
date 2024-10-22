@@ -9,9 +9,77 @@
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-two-thirds">
+
+  <div class="govuk-grid-column-three-quarters">
+
+    {% if not isServiceAdmin %}
+      {{ govukInsetText({
+        text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure,
+        accepted card types, email notifications, billing address or mask card numbers or security codes for MOTO services.",
+        classes: "service-settings-inset-text--grey"
+      }) }}
+    {% endif %}
+
     <h1 class="govuk-heading-l">Email notifications</h1>
-    <p class="govuk-body">coming soon...</p>
-    <!-- TODO -->
+
+    {{ govukSummaryList({
+      classes: "govuk-!-margin-bottom-9",
+      rows: [
+        {
+          key: {
+            text: "Collect email addresses"
+          },
+          value: {
+            text: emailCollectionMode
+          },
+          actions: {
+            items: [
+              {
+                href: "#",
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "Edit collect email addresses"
+              } if isServiceAdmin else {}
+            ]
+          }
+        },
+        {
+          key: {
+            text: "Payment confirmation emails"
+          },
+          value: {
+            text: 'On' if confirmationEmailEnabled else 'Off'
+          },
+          actions: {
+            items: [
+              {
+                href: "#",
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "Payment confirmation emails settings"
+              } if isServiceAdmin else {}
+            ]
+          }
+        },
+        {
+          key: {
+          text: "Refund emails"
+        },
+          value: {
+          text: 'On' if refundEmailEnabled else 'Off'
+        },
+          actions: {
+          items: [
+            {
+              href: "#",
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "Refund emails settings"
+            } if isServiceAdmin else {}
+          ]
+        }
+        }
+     ]})
+    }}
   </div>
 {% endblock %}
