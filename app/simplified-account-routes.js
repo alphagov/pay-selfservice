@@ -19,6 +19,9 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.serviceName.edit, permiss
 simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.removeCy, permission('service-name:update'), serviceSettingsController.serviceName.postRemoveWelshServiceName)
 simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, permission('service-name:update'), serviceSettingsController.serviceName.postEditServiceName)
 
+// team members
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.index, permission('transactions:read'), serviceSettingsController.teamMembers.get)
+
 // email notifications
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('transactions:read'), serviceSettingsController.emailNotifications.get)
 
