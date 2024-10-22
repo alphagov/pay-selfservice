@@ -69,10 +69,10 @@ describe('Controller: settings/email-notifications', () => {
     })
 
     it('should pass context data to the response method', () => {
-      expect(responseStub.args[0][3]).to.have.property('emailCollectionMode').to.equal('On (mandatory)')
-      expect(responseStub.args[0][3]).to.have.property('confirmationEmailEnabled').to.equal(true)
-      expect(responseStub.args[0][3]).to.have.property('refundEmailEnabled').to.equal(true)
-      expect(responseStub.args[0][3]).to.have.property('isServiceAdmin').to.equal(true)
+      expect(responseStub.args[0][3]).to.have.property('email_collection_mode').to.equal('On (mandatory)')
+      expect(responseStub.args[0][3]).to.have.property('confirmation_email_enabled').to.equal(true)
+      expect(responseStub.args[0][3]).to.have.property('refund_email_enabled').to.equal(true)
+      expect(responseStub.args[0][3]).to.have.property('is_service_admin').to.equal(true)
     })
   })
 })

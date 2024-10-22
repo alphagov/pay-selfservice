@@ -14,9 +14,9 @@
 
     {% if not isServiceAdmin %}
       {{ govukInsetText({
-        text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D secure,
+        text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure,
         accepted card types, email notifications, billing address or mask card numbers or security codes for MOTO services.",
-        classes: "service-settings-permissions-inset"
+        classes: "service-settings-inset-text--grey"
       }) }}
     {% endif %}
 
@@ -30,7 +30,7 @@
             text: "Collect email addresses"
           },
           value: {
-            text: emailCollectionMode
+            text: email_collection_mode
           },
           actions: {
             items: [
@@ -48,7 +48,7 @@
             text: "Payment confirmation emails"
           },
           value: {
-            text: 'On' if confirmationEmailEnabled else 'Off'
+            text: 'On' if confirmation_email_enabled else 'Off'
           },
           actions: {
             items: [
@@ -66,7 +66,7 @@
           text: "Refund emails"
         },
           value: {
-          text: 'On' if refundEmailEnabled else 'Off'
+          text: 'On' if refund_email_enabled else 'Off'
         },
           actions: {
           items: [
@@ -75,7 +75,7 @@
               text: "Change",
               classes: "govuk-link--no-visited-state",
               visuallyHiddenText: "Refund emails settings"
-            } if isServiceAdmin else {}
+            } if is_service_admin else {}
           ]
         }
         }
