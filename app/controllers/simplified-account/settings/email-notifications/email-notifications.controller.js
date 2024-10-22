@@ -7,7 +7,7 @@ function get (req, res) {
 
   const context = {
     emailCollectionMode: humaniseEmailMode(account.email_collection_mode),
-    confirmationEmailEnabled: account.email_notifications.PAYMENT_CONFIRMED.enabled,
+    confirmationEmailEnabled: account.email_notifications?.PAYMENT_CONFIRMED?.enabled ?? false,
     refundEmailEnabled: account.email_notifications?.REFUND_ISSUED?.enabled ?? false,
     isServiceAdmin: req.user.isAdminUserForService(service.externalId)
   }
