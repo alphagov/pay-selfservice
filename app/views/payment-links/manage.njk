@@ -5,7 +5,7 @@
   {% if permissions.tokens_create %}Manage{% else %}View{% endif %} a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% if permissions.tokens_create %}
     {% include "./_nav.njk" %}
   {% endif%}

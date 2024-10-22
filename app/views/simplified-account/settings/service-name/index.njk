@@ -5,12 +5,12 @@
   Settings - Service name - GOV.UK Pay
 {% endblock %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% include "../_settings-navigation.njk" %}
 {% endblock %}
 
-{% set add_cy_link %}
-  <a class='govuk-link govuk-link--no-visited-state' href='{{ manage_cy }}' data-cy="add-welsh-name">Add Welsh service name</a>
+{% set addCyLink %}
+  <a class='govuk-link govuk-link--no-visited-state' href='{{ manageCy }}' data-cy="add-welsh-name">Add Welsh service name</a>
 {% endset %}
 
 {% block mainContent %}
@@ -29,12 +29,12 @@
           text: "Service name"
         },
           value: {
-          text: service_name_en
+          text: serviceNameEn
         },
           actions: {
           items: [
             {
-              href: manage_en,
+              href: manageEn,
               text: "Change",
               classes: "govuk-link--no-visited-state",
               visuallyHiddenText: "Edit English service name",
@@ -48,17 +48,17 @@
           text: "Welsh service name"
         },
           value: {
-          html: service_name_cy | default(add_cy_link)
+          html: serviceNameCy | default(addCyLink)
         },
           actions: {
           items: [
             {
-              href: manage_cy,
+              href: manageCy,
               text: "Change",
               classes: "govuk-link--no-visited-state",
               visuallyHiddenText: "Edit Welsh service name",
               attributes: { 'data-cy': 'edit-welsh-name' }
-            } if service_name_cy else {}
+            } if serviceNameCy else {}
           ]
         }
         }

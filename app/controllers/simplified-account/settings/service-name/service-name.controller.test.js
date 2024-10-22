@@ -62,12 +62,12 @@ describe('Controller: settings/service-name', () => {
     })
 
     it('should pass context data to the response method', () => {
-      expect(responseStub.args[0][3]).to.have.property('service_name_en').to.equal(EN_SERVICE_NAME)
-      expect(responseStub.args[0][3]).to.have.property('service_name_cy').to.equal(CY_SERVICE_NAME)
-      expect(responseStub.args[0][3]).to.have.property('manage_en').to.contain(`service/${SERVICE_ID}/account/${ACCOUNT_TYPE}`)
-      expect(responseStub.args[0][3]).to.have.property('manage_en').to.not.contain('?cy=true')
-      expect(responseStub.args[0][3]).to.have.property('manage_cy').to.contain(`service/${SERVICE_ID}/account/${ACCOUNT_TYPE}`)
-      expect(responseStub.args[0][3]).to.have.property('manage_cy').to.contain('?cy=true')
+      expect(responseStub.args[0][3]).to.have.property('serviceNameEn').to.equal(EN_SERVICE_NAME)
+      expect(responseStub.args[0][3]).to.have.property('serviceNameCy').to.equal(CY_SERVICE_NAME)
+      expect(responseStub.args[0][3]).to.have.property('manageEn').to.contain(`service/${SERVICE_ID}/account/${ACCOUNT_TYPE}`)
+      expect(responseStub.args[0][3]).to.have.property('manageEn').to.not.contain('?cy=true')
+      expect(responseStub.args[0][3]).to.have.property('manageCy').to.contain(`service/${SERVICE_ID}/account/${ACCOUNT_TYPE}`)
+      expect(responseStub.args[0][3]).to.have.property('manageCy').to.contain('?cy=true')
     })
 
     describe('when messages are available', () => {
@@ -101,11 +101,11 @@ describe('Controller: settings/service-name', () => {
 
       it('should pass context data to the response method', () => {
         const context = responseStub.args[0][3]
-        expect(context).to.have.property('edit_cy').to.equal(isWelsh)
-        expect(context).to.have.property('back_link').to.contain(paths.simplifiedAccount.settings.index)
-        expect(context).to.have.property('submit_link').to.contain(paths.simplifiedAccount.settings.serviceName.edit)
-        expect(context).to.have.property('service_name').to.equal(isWelsh ? CY_SERVICE_NAME : EN_SERVICE_NAME)
-        expect(context).to.have.property('remove_cy_link').to.contain(paths.simplifiedAccount.settings.serviceName.removeCy)
+        expect(context).to.have.property('editCy').to.equal(isWelsh)
+        expect(context).to.have.property('backLink').to.contain(paths.simplifiedAccount.settings.index)
+        expect(context).to.have.property('submitLink').to.contain(paths.simplifiedAccount.settings.serviceName.edit)
+        expect(context).to.have.property('serviceName').to.equal(isWelsh ? CY_SERVICE_NAME : EN_SERVICE_NAME)
+        expect(context).to.have.property('removeCyLink').to.contain(paths.simplifiedAccount.settings.serviceName.removeCy)
       })
     }
 

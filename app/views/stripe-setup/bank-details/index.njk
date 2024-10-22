@@ -5,7 +5,7 @@
   Enter your organisation’s banking details - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% if isSwitchingCredentials or enableStripeOnboardingTaskList %}
     {% include "includes/side-navigation.njk" %}
   {% endif %}
@@ -28,7 +28,7 @@
         classes: "govuk-!-margin-top-0",
         href: formatAccountPathsFor(routes.account.yourPsp.index, currentGatewayAccount.external_id, currentCredential.external_id)
       }) }}
-    {% endif %}    
+    {% endif %}
     {{ errorSummary ({
       errors: errors,
       hrefs: {

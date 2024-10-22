@@ -4,7 +4,7 @@
 Revoked API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% include "includes/side-navigation.njk" %}
 {% endblock %}
 
@@ -21,6 +21,6 @@ Revoked API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} -
     {% set token_state = "revoked" %}
     {% set header_id = "revoked-tokens" %}
     {% include "./_keys.njk" %}
-    
+
   </div>
 {% endblock %}
