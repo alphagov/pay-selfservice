@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 {% from "../macro/error-summary.njk" import errorSummary %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% if isSwitchingCredentials or enableStripeOnboardingTaskList %}
     {% include "includes/side-navigation.njk" %}
   {% endif %}

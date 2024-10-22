@@ -6,7 +6,7 @@
   Check your organisation's details - {{currentService.name}} - GOV.UK Pay
 {% endblock %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% if isSwitchingCredentials or enableStripeOnboardingTaskList %}
     {% include "includes/side-navigation.njk" %}
   {% endif %}
@@ -64,7 +64,7 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set orgFullAddressHtml =  orgAddressLine1 %}
-    
+
     {% if orgAddressLine2 %}
       {% set orgFullAddressHtml =  orgFullAddressHtml + '</br>' + orgAddressLine2 %}
     {% endif %}

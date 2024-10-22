@@ -4,7 +4,7 @@
 API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% include "includes/side-navigation.njk" %}
 {% endblock %}
 
@@ -14,10 +14,10 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
 
   <p class="govuk-body">Use these to connect your digital service to Pay, and to access the reporting API.</p>
   <p class="govuk-body">
-    You do not need API keys to use 
+    You do not need API keys to use
     <a class="govuk-link" href="https://www.payments.service.gov.uk/govuk-payment-pages/">payment links</a>.
   </p>
-  
+
   {% if permissions.tokens_create %}
     {{
       govukButton({

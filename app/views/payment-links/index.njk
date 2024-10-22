@@ -4,7 +4,7 @@
   Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% set createLink = true %}
   {% include "./_nav.njk" %}
 {% endblock %}
@@ -15,9 +15,9 @@
 
   {% if accountUsesWorldpayMotoMerchantCode %}
     {% set worldpayMotoMerchantCodeWarningHtml %}
-      Your service is set up to only use MOTO payments. Do not create payment links and send them to paying users. Use a non-MOTO service or 
+      Your service is set up to only use MOTO payments. Do not create payment links and send them to paying users. Use a non-MOTO service or
       <a class="govuk-link" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk" target="_top">
-        contact support 
+        contact support
       <a>
       for help.
     {% endset %}
@@ -64,7 +64,7 @@
         </li>
         <li class="govuk-!-margin-bottom-5">
           <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-3">The user arrives at this page, which tells them what they’re paying for. You can customise the wording that goes here.</p>
-          <img src="/public/images/payment-links/start-page.svg" alt="Screenshot of payment link start page"> 
+          <img src="/public/images/payment-links/start-page.svg" alt="Screenshot of payment link start page">
         </li>
         <li class="govuk-!-margin-bottom-5">
           <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-3">You can choose to use a unique payment reference number for the user to enter or we can create one for you.</p>

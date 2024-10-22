@@ -4,19 +4,19 @@
   Settings - Edit service name
 {% endblock %}
 
-{% block side_navigation %}
+{% block sideNavigation %}
   {% include "../_settings-navigation.njk" %}
 {% endblock %}
 
 {% set heading %}
-  Service name ({% if edit_cy %}Welsh{% else %}English{% endif %})
+  Service name ({% if editCy %}Welsh{% else %}English{% endif %})
 {% endset %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-three-quarters">
     {{ govukBackLink({
       text: "Back",
-      href: back_link
+      href: backLink
     }) }}
 
     {% if errors %}
@@ -26,9 +26,9 @@
       }) }}
     {% endif %}
 
-    <form id="edit-service-name-form" method="post" action="{{ submit_link }}" novalidate>
+    <form id="edit-service-name-form" method="post" action="{{ submitLink }}" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-      <input id="cy" name="cy" type="hidden" value="{{ edit_cy }}"/>
+      <input id="cy" name="cy" type="hidden" value="{{ editCy }}"/>
 
       {{ govukInput({
         label: {
@@ -39,7 +39,7 @@
         errorMessage: { text: errors.formErrors['service-name-input'] } if errors.formErrors['service-name-input'] else false,
         id: "service-name-input",
         name: "service-name-input",
-        value: service_name,
+        value: serviceName,
         classes: "govuk-!-width-one-half",
         type: "text",
         hint: {
@@ -48,7 +48,7 @@
       }) }}
 
       <p class="govuk-body">
-        {% if edit_cy %}
+        {% if editCy %}
           <a class="govuk-link govuk-link--no-visited-state" id="welsh-language-guidance"
              href="https://docs.payments.service.gov.uk/optional_features/welsh_language/">
             Read our documentation on how to use Welsh on your payment pages
@@ -62,8 +62,8 @@
       </p>
     </form>
 
-    {% if edit_cy and service_name %}
-      <form id="remove-welsh-service-name-form" action="{{ remove_cy_link }}" method="POST">
+    {% if editCy and serviceName %}
+      <form id="remove-welsh-service-name-form" action="{{ removeCyLink }}" method="POST">
         <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
       </form>
     {% endif %}
@@ -74,7 +74,7 @@
         attributes: { form: "edit-service-name-form" }
       }) }}
 
-      {% if edit_cy and service_name %}
+      {% if editCy and serviceName %}
         {{ govukButton({
           text: "Remove Welsh service name",
           classes: "govuk-button--secondary",
