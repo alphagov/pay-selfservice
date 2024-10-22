@@ -73,7 +73,7 @@
     }
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "^6.0.6",
+    "@govuk-pay/pay-js-commons": "^6.0.15",
     "@govuk-pay/pay-js-metrics": "^1.0.6",
     "@sentry/node": "6.12.0",
     "accessible-autocomplete": "2.0.4",
