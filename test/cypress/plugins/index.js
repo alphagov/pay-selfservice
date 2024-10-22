@@ -27,8 +27,7 @@ module.exports = (on, config) => {
       return { encryptedSessionCookie }
     },
     /**
-     * Makes a post request to Mountebank to setup an Imposter with stubs built using the array of
-     * stubs
+     * Makes a post request to @govuk-pay/run-amock to setup stubs built using the array of stubs
      *
      * Note: this task can only be called once per test, so all stubs for a test must be set up in
      * the same call.
@@ -51,7 +50,7 @@ module.exports = (on, config) => {
         })
     },
     /**
-     * Makes a request to Mountebank to delete the existing Imposter along with all stubs that have been set up.
+     * Makes a request to @govuk-pay/run-amock to delete the existing mocks along with all stubs that have been set up.
      */
     clearStubs () {
       return axios.post(stubResetUrl)
