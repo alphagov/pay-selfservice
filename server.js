@@ -59,7 +59,7 @@ function addCsrfMiddleware (app) {
       // supports CSRF validation only through POST requests and ignores csrf tokens in headers/query strings.
       return (req.body && req.body.csrfToken) || (req.query && req.query.csrfToken)
     }
-  }))
+  }).csrfSynchronisedProtection)
   // sets the csrf token on response local variable scoped to request, so token is available to the views
   app.use(function (req, res, next) {
     res.locals.csrf = req.csrfToken()
