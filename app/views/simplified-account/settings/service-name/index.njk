@@ -1,68 +1,58 @@
-{% extends "../../../layout.njk" %}
-{% from "includes/systemMessages.njk" import systemMessages %}
-
-{% block pageTitle %}
-  Settings - Service name - GOV.UK Pay
-{% endblock %}
-
-{% block sideNavigation %}
-  {% include "../_settings-navigation.njk" %}
-{% endblock %}
+{% extends "../settings-layout.njk" %}
 
 {% set addCyLink %}
-  <a class='govuk-link govuk-link--no-visited-state' href='{{ manageCy }}' data-cy="add-welsh-name">Add Welsh service name</a>
+  <a class='govuk-link govuk-link--no-visited-state' href='{{ manageCy }}' data-cy="add-welsh-name">Add Welsh service
+    name</a>
 {% endset %}
 
-{% block mainContent %}
-  <div class="govuk-grid-column-three-quarters">
-    {% if messages is defined and messages is iterable and messages|length > 0 %}
-      {{ systemMessages({ messages: messages }) }}
-    {% endif %}
+{% block settingsPageTitle %}
+  Service name
+{% endblock %}
 
-    <h1 class="govuk-heading-l">Service name</h1>
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">Service name</h1>
 
-    {{ govukSummaryList({
-      classes: "govuk-!-margin-bottom-9",
-      rows: [
-        {
-          key: {
-          text: "Service name"
-        },
-          value: {
-          text: serviceNameEn
-        },
-          actions: {
-          items: [
-            {
-              href: manageEn,
-              text: "Change",
-              classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Edit English service name",
-              attributes: { 'data-cy': 'edit-english-name' }
-            }
-          ]
-        }
-        },
-        {
-          key: {
-          text: "Welsh service name"
-        },
-          value: {
-          html: serviceNameCy | default(addCyLink)
-        },
-          actions: {
-          items: [
-            {
-              href: manageCy,
-              text: "Change",
-              classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Edit Welsh service name",
-              attributes: { 'data-cy': 'edit-welsh-name' }
-            } if serviceNameCy else {}
-          ]
-        }
-        }
-      ]
-    }) }}
-  </div>
+  {{ govukSummaryList({
+    classes: "govuk-!-margin-bottom-9",
+    rows: [
+      {
+        key: {
+        text: "Service name"
+      },
+        value: {
+        text: serviceNameEn
+      },
+        actions: {
+        items: [
+          {
+            href: manageEn,
+            text: "Change",
+            classes: "govuk-link--no-visited-state",
+            visuallyHiddenText: "Edit English service name",
+            attributes: { 'data-cy': 'edit-english-name' }
+          }
+        ]
+      }
+      },
+      {
+        key: {
+        text: "Welsh service name"
+      },
+        value: {
+        html: serviceNameCy | default(addCyLink)
+      },
+        actions: {
+        items: [
+          {
+            href: manageCy,
+            text: "Change",
+            classes: "govuk-link--no-visited-state",
+            visuallyHiddenText: "Edit Welsh service name",
+            attributes: { 'data-cy': 'edit-welsh-name' }
+          } if serviceNameCy else {}
+        ]
+      }
+      }
+    ]
+  }) }}
 {% endblock %}

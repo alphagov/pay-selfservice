@@ -139,7 +139,7 @@ class User {
   isDegatewayed () {
     const isDegatewayed = DEGATEWAY_FLAG && this.hasFeature('degatewayaccountification')
     if (isDegatewayed) {
-      logger.info('Page viewed with degateway turned on')
+      logger.info('Page viewed with account simplification turned on')
     }
     return isDegatewayed
   }
