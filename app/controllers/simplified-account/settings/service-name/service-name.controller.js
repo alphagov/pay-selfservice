@@ -20,7 +20,7 @@ function get (req, res) {
 function getEditServiceName (req, res) {
   const editCy = req.query.cy === 'true'
   const context = {
-    editCy: editCy,
+    editCy,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type),
     submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.service.externalId, req.account.type),
     removeCyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.removeCy, req.service.externalId, req.account.type)
@@ -52,7 +52,7 @@ async function postEditServiceName (req, res) {
         summary: formattedErrors.errorSummary,
         formErrors: formattedErrors.formErrors
       },
-      editCy: editCy,
+      editCy,
       serviceName: req.body['service-name-input'],
       backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type),
       submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.service.externalId, req.account.type)
@@ -66,7 +66,7 @@ async function postEditServiceName (req, res) {
 
 async function postRemoveWelshServiceName (req, res) {
   await updateServiceName(req.service.externalId, req.service.serviceName.en, '')
-  req.flash('messages', { state: 'success', icon: '&check;', content: 'Welsh service name removed' })
+  req.flash('messages', { state: 'success', icon: '&check;', heading: 'Welsh service name removed' })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type))
 }
 

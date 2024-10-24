@@ -1,0 +1,32 @@
+{% macro systemMessages(params) %}
+  <div class="system-messages">
+    {% for message in params.messages %}
+      {% set intent %}
+        {% if message.state %}{{ message.state }}{% else %}info{% endif %}
+      {% endset %}
+      {% set role %}
+        {% if message.state == 'error' %}alert{% else %}status{% endif %}
+      {% endset %}
+      <div
+        class="govuk-notification-banner govuk-notification-banner--{{ intent }}"
+        role="{{ role }}"
+        aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__content system-message__container">
+          {% if message.icon %}
+            <div class="system-message__icon system-message__icon--{{ intent }}">
+              {{ message.icon | safe }}
+            </div>
+          {% endif %}
+          <div class="system-message__text">
+            <p class="govuk-notification-banner__heading govuk-!-margin-bottom-0">
+              {{ message.heading | safe }}
+            </p>
+            {% if message.body %}
+              <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-1">{{ message.body | safe }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}

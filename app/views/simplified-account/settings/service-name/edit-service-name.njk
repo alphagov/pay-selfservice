@@ -1,86 +1,80 @@
-{% extends "../../../layout.njk" %}
-
-{% block pageTitle %}
-  Settings - Edit service name
-{% endblock %}
-
-{% block sideNavigation %}
-  {% include "../_settings-navigation.njk" %}
-{% endblock %}
+{% extends "../settings-layout.njk" %}
 
 {% set heading %}
   Service name ({% if editCy %}Welsh{% else %}English{% endif %})
 {% endset %}
 
-{% block mainContent %}
-  <div class="govuk-grid-column-three-quarters">
-    {{ govukBackLink({
-      text: "Back",
-      href: backLink
+{% block settingsPageTitle %}
+  Edit {{ heading }}
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
+  <form id="edit-service-name-form" method="post" action="{{ submitLink }}" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    <input id="cy" name="cy" type="hidden" value="{{ editCy }}"/>
+
+    {{ govukInput({
+      label: {
+        text: heading,
+        classes: "govuk-label--l",
+        isPageHeading: true
+      },
+      errorMessage: { text: errors.formErrors['service-name-input'] } if errors.formErrors['service-name-input'] else false,
+      id: "service-name-input",
+      name: "service-name-input",
+      value: serviceName,
+      classes: "govuk-!-width-one-half",
+      type: "text",
+      hint: {
+        text: "This is what your users will see when making a payment."
+      }
     }) }}
 
-    {% if errors %}
-      {{ govukErrorSummary({
-        titleText: "There is a problem",
-        errorList: errors.summary
-      }) }}
-    {% endif %}
+    <p class="govuk-body">
+      {% if editCy %}
+        <a class="govuk-link govuk-link--no-visited-state" id="welsh-language-guidance"
+           href="https://docs.payments.service.gov.uk/optional_features/welsh_language/">
+          Read our documentation on how to use Welsh on your payment pages
+        </a>
+      {% else %}
+        <a class="govuk-link govuk-link--no-visited-state" id="service-name-guidance"
+           href="https://www.gov.uk/service-manual/design/naming-your-service">
+          Get guidance on choosing a name for your service
+        </a>
+      {% endif %}
+    </p>
+  </form>
 
-    <form id="edit-service-name-form" method="post" action="{{ submitLink }}" novalidate>
+  {% if editCy and serviceName %}
+    <form id="remove-welsh-service-name-form" action="{{ removeCyLink }}" method="POST">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-      <input id="cy" name="cy" type="hidden" value="{{ editCy }}"/>
-
-      {{ govukInput({
-        label: {
-          text: heading,
-          classes: "govuk-label--l",
-          isPageHeading: true
-        },
-        errorMessage: { text: errors.formErrors['service-name-input'] } if errors.formErrors['service-name-input'] else false,
-        id: "service-name-input",
-        name: "service-name-input",
-        value: serviceName,
-        classes: "govuk-!-width-one-half",
-        type: "text",
-        hint: {
-          text: "This is what your users will see when making a payment."
-        }
-      }) }}
-
-      <p class="govuk-body">
-        {% if editCy %}
-          <a class="govuk-link govuk-link--no-visited-state" id="welsh-language-guidance"
-             href="https://docs.payments.service.gov.uk/optional_features/welsh_language/">
-            Read our documentation on how to use Welsh on your payment pages
-          </a>
-        {% else %}
-          <a class="govuk-link govuk-link--no-visited-state" id="service-name-guidance"
-             href="https://www.gov.uk/service-manual/design/naming-your-service">
-            Get guidance on choosing a name for your service
-          </a>
-        {% endif %}
-      </p>
     </form>
+  {% endif %}
+
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "Save changes",
+      attributes: { form: "edit-service-name-form" }
+    }) }}
 
     {% if editCy and serviceName %}
-      <form id="remove-welsh-service-name-form" action="{{ removeCyLink }}" method="POST">
-        <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-      </form>
-    {% endif %}
-
-    <div class="govuk-button-group">
       {{ govukButton({
-        text: "Save changes",
-        attributes: { form: "edit-service-name-form" }
+        text: "Remove Welsh service name",
+        classes: "govuk-button--secondary",
+        attributes: { form: "remove-welsh-service-name-form" }
       }) }}
-
-      {% if editCy and serviceName %}
-        {{ govukButton({
-          text: "Remove Welsh service name",
-          classes: "govuk-button--secondary",
-          attributes: { form: "remove-welsh-service-name-form" }
-        }) }}
-      {% endif %}
-    </div>
+    {% endif %}
   </div>
 {% endblock %}

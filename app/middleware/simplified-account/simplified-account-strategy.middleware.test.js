@@ -1,4 +1,5 @@
 const { expect } = require('chai')
+const { NotFoundError } = require('../../errors')
 const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
@@ -105,7 +106,7 @@ describe('Middleware: getSimplifiedAccount', () => {
 
     await simplifiedAccountStrategy(req, res, next)
 
-    const expectedError = sinon.match.instanceOf(Error)
+    const expectedError = sinon.match.instanceOf(NotFoundError)
       .and(sinon.match.has('message', 'Could not resolve service external ID or gateway account type from request params'))
     sinon.assert.calledWith(next, expectedError)
   })
@@ -118,7 +119,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     })
     await simplifiedAccountStrategy(req, res, next)
 
-    const expectedError = sinon.match.instanceOf(Error)
+    const expectedError = sinon.match.instanceOf(NotFoundError)
       .and(sinon.match.has('message', 'Could not retrieve gateway account with provided parameters'))
     sinon.assert.calledWith(next, expectedError)
   })

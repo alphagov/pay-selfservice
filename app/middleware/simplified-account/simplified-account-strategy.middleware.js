@@ -1,3 +1,4 @@
+const { NotFoundError } = require('../../errors')
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { addField } = require('../../services/clients/base/request-context')
 const { getSwitchingCredentialIfExists } = require('../../utils/credentials')
@@ -60,29 +61,27 @@ async function getGatewayAccountByServiceIdAndAccountType (serviceExternalId, ac
 
 module.exports = async function getSimplifiedAccount (req, res, next) {
   try {
-    if (req.user) {
-      const serviceExternalId = req.params[SERVICE_EXTERNAL_ID]
-      const accountType = req.params[ACCOUNT_TYPE]
+    const serviceExternalId = req.params[SERVICE_EXTERNAL_ID]
+    const accountType = req.params[ACCOUNT_TYPE]
 
-      if (!serviceExternalId || !accountType) {
-        throw new Error('Could not resolve service external ID or gateway account type from request params')
-      }
+    if (!serviceExternalId || !accountType) {
+      next(new NotFoundError('Could not resolve service external ID or gateway account type from request params'))
+    }
 
-      const gatewayAccount = await getGatewayAccountByServiceIdAndAccountType(serviceExternalId, accountType)
-      if (gatewayAccount) {
-        req.account = gatewayAccount
-        addField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
-        addField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
-      } else {
-        throw new Error('Could not retrieve gateway account with provided parameters')
-      }
-      const service = getService(req.user, serviceExternalId, gatewayAccount.gateway_account_id)
-      if (service) {
-        req.service = service
-        addField(keys.SERVICE_EXTERNAL_ID, service.externalId)
-      } else {
-        throw new Error('Could not find role for user on service')
-      }
+    const gatewayAccount = await getGatewayAccountByServiceIdAndAccountType(serviceExternalId, accountType)
+    if (gatewayAccount) {
+      req.account = gatewayAccount
+      addField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
+      addField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
+    } else {
+      next(new NotFoundError('Could not retrieve gateway account with provided parameters'))
+    }
+    const service = getService(req.user, serviceExternalId, gatewayAccount.gateway_account_id)
+    if (service) {
+      req.service = service
+      addField(keys.SERVICE_EXTERNAL_ID, service.externalId)
+    } else {
+      next(new NotFoundError('Could not find role for user on service'))
     }
     next()
   } catch (err) {

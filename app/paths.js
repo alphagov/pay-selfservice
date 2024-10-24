@@ -185,6 +185,16 @@ module.exports = {
       orgDetails: {
         index: '/settings/organisation-details'
       },
+      stripeDetails: {
+        index: '/settings/stripe-details',
+        bankAccount: '/settings/stripe-details/bank-account',
+        responsiblePerson: '/settings/stripe-details/responsible-person',
+        vatNumber: '/settings/stripe-details/vat-number',
+        companyNumber: '/settings/stripe-details/company-number',
+        director: '/settings/stripe-details/director',
+        governmentEntityDocument: '/settings/stripe-details/government-entity-document',
+        organisationDetails: '/settings/stripe-details/organisation-details'
+      },
       cardPayments: {
         index: '/settings/card-payments'
       },

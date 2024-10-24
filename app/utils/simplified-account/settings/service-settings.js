@@ -24,7 +24,7 @@ module.exports = (account, service, currentUrl, permissions) => {
       id: 'team-members',
       name: 'team members',
       path: paths.simplifiedAccount.settings.teamMembers.index,
-      permission: true // everyone can view team member settings
+      permission: true // everyone can view team members settings
     })
     .add({
       id: 'org-details',
@@ -32,19 +32,27 @@ module.exports = (account, service, currentUrl, permissions) => {
       path: paths.simplifiedAccount.settings.orgDetails.index,
       permission: 'merchant_details_update' // TODO find a better way of defining these
     })
+    .category('payment provider')
+    .add({
+      id: 'stripe-details',
+      name: 'stripe details',
+      path: paths.simplifiedAccount.settings.stripeDetails.index,
+      permission: account.payment_provider === 'stripe' && Boolean(permissions?.stripe_account_details_update),
+      alwaysViewable: true // viewable on test and live accounts
+    })
     .category('payments')
     .add({
       id: 'card-payments',
       name: 'card payments',
       path: paths.simplifiedAccount.settings.cardPayments.index,
-      permission: true, // everyone can view team member settings
+      permission: true, // everyone can view card payments settings
       alwaysViewable: true // viewable on test and live accounts
     })
     .add({
       id: 'card-types',
       name: 'card types',
       path: paths.simplifiedAccount.settings.cardTypes.index,
-      permission: true, // everyone can view team member settings
+      permission: true, // everyone can view card types settings
       alwaysViewable: true // viewable on test and live accounts
     })
     .category('developers')

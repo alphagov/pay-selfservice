@@ -38,7 +38,7 @@ async function post (req, res, next) {
     } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
     await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
     _.unset(req, 'session.pageData.createService')
-    req.flash('messages', { state: 'success', icon: '&check;', content: 'We\'ve created your service.' })
+    req.flash('messages', { state: 'success', icon: '&check;', heading: 'We\'ve created your service.' })
     res.redirect(formatAccountPathsFor(paths.account.dashboard.index, externalAccountId))
   } catch (err) {
     next(err)
