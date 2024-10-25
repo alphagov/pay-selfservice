@@ -34,6 +34,16 @@ async function get (req, res, next) {
   }
 }
 
+async function getRemoveUser (req, res, next) {
+  // TODO implement remove user page
+}
+
+async function getChangePermission (req, res, next) {
+  // TODO implement change permission page
+}
+
 module.exports = {
-  get
+  get,
+  getRemoveUser,
+  getChangePermission
 }

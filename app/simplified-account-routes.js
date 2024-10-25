@@ -24,6 +24,8 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, enforc
 
 // team members
 simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.index, permission('transactions:read'), serviceSettingsController.teamMembers.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.delete, permission('transactions:read'), serviceSettingsController.teamMembers.getRemoveUser)
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.permission, permission('transactions:read'), serviceSettingsController.teamMembers.getChangePermission)
 
 // email notifications
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('transactions:read'), serviceSettingsController.emailNotifications.get)

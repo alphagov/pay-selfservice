@@ -16,8 +16,8 @@ function mapTeamMembersByRoles (users, externalServiceId, accountType, currentUs
       teamMember.isCurrent = true
       teamMember.link = paths.user.profile.index
     } else {
-      teamMember.removeLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.delete, externalServiceId, accountType, user.externalId)
-      teamMember.changePermissionLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.permissions, externalServiceId, accountType, user.externalId)
+      teamMember.removeLink = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.delete, externalServiceId, accountType, user.externalId)
+      teamMember.changePermissionLink = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.permission, externalServiceId, accountType, user.externalId)
     }
     addMemberToMap(teamMember, userRole, teamMembersRoleMap)
   })
