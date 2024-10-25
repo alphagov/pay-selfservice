@@ -474,11 +474,48 @@ ConnectorClient.prototype = {
     return response.data
   },
 
+  /**
+   * Sets Stripe account setup flag for the given service and account type
+   * @param serviceExternalId {string}
+   * @param accountType {string}
+   * @param stripeAccountSetupFlag {string}
+   */
+  setStripeAccountSetupFlagByServiceIdAndAccountType: async function (serviceExternalId, accountType, stripeAccountSetupFlag) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    const body = [
+      {
+        op: 'replace',
+        path: stripeAccountSetupFlag,
+        value: true
+      }
+    ]
+    configureClient(client, url)
+    const response = await client.patch(url, body, 'set stripe account setup flag to true for service')
+    return response.data
+  },
+
   getStripeAccount: async function (gatewayAccountId) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/stripe-account`
       .replace('{accountId}', encodeURIComponent(gatewayAccountId))
     configureClient(client, url)
     const response = await client.get(url, 'get stripe account for gateway account')
+    return responseBodyToStripeAccountTransformer(response.data)
+  },
+
+  /**
+   * Get Stripe account for the given service and account type
+   * @param serviceExternalId {string}
+   * @param accountType {string}
+   * @returns {StripeAccount}
+   */
+  getStripeAccountByServiceIdAndAccountType: async function (serviceExternalId, accountType) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-account`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.get(url, 'get stripe account for service')
     return responseBodyToStripeAccountTransformer(response.data)
   },
 

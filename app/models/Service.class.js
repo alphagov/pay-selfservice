@@ -1,5 +1,9 @@
 'use strict'
 
+/**
+ * @class GOVUKPayService
+ * @property externalId {string} - The name of the gateway account
+ */
 class Service {
   constructor (serviceData) {
     this.id = serviceData.id

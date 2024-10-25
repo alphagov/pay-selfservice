@@ -4,6 +4,8 @@
   <a class='govuk-link govuk-link--no-visited-state' href='{{ manageCy }}' data-cy="add-welsh-name">Add Welsh service name</a>
 {% endset %}
 
+
+
 {% block settingsPageTitle %}
   Service name
 {% endblock %}
@@ -48,8 +50,8 @@
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Edit Welsh service name",
             attributes: { 'data-cy': 'edit-welsh-name' }
-          } if serviceNameCy else {}
-        ]
+          }
+        ] if serviceNameCy else []
       }
       }
     ]

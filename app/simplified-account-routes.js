@@ -27,5 +27,7 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index,
 
 // stripe details
 simplifiedAccount.get(paths.simplifiedAccount.settings.stripeDetails.index, permission('stripe-account-details:update'), serviceSettingsController.stripeDetails.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.stripeDetails.bankAccount, permission('stripe-account-details:update'), serviceSettingsController.stripeDetails.bankAccount.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.stripeDetails.bankAccount, permission('stripe-account-details:update'), serviceSettingsController.stripeDetails.bankAccount.post)
 
 module.exports = simplifiedAccount

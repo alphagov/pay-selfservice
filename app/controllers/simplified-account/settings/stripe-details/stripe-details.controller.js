@@ -8,8 +8,10 @@ async function get (req, res) {
   return response(req, res, 'simplified-account/settings/stripe-details/index', {
     messages: res.locals?.flash?.messages ?? [],
     stripeDetailsTasks,
-    incompleteTasks: Object.values(stripeDetailsTasks).some(task => task.status === false)
+    incompleteTasks: Object.values(stripeDetailsTasks).some(task => task.status === false),
+    serviceId: service.externalId
   })
 }
 
 module.exports.get = get
+module.exports.bankAccount = require('./bank-account/bank-account.controller')

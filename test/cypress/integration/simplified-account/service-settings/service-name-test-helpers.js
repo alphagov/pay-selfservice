@@ -25,17 +25,17 @@ const checkServiceNameValidation = (options) => {
     expectedErrorMessage
   } = options
   cy.visit(settingsUrl)
-  cy.get('input[name="service-name-input"]').clear({ force: true })
+  cy.get('input[name="serviceNameInput"]').clear({ force: true })
   if (expectedInputValue) {
-    cy.get('input[name="service-name-input"]').type(expectedInputValue)
+    cy.get('input[name="serviceNameInput"]').type(expectedInputValue)
   }
-  cy.get('input[name="service-name-input"]').should('have.value', expectedInputValue)
+  cy.get('input[name="serviceNameInput"]').should('have.value', expectedInputValue)
   cy.get('.govuk-error-summary').should('not.exist')
-  cy.get('button[form="edit-service-name-form"]').click()
+  cy.get('button[form="edit-service-name"]').click()
   cy.get('.govuk-error-summary').should('exist').should('contain', expectedErrorMessage)
-  cy.get('input[name="service-name-input"]').should('have.class', 'govuk-input--error')
+  cy.get('input[name="serviceNameInput"]').should('have.class', 'govuk-input--error')
   cy.get('#service-name-input-error').should('contain.text', expectedErrorMessage)
-  cy.get('input[name="service-name-input"]').should('have.value', expectedInputValue)
+  cy.get('input[name="serviceNameInput"]').should('have.value', expectedInputValue)
 }
 
 const checkServiceNameEditActionNavigation = (options) => {

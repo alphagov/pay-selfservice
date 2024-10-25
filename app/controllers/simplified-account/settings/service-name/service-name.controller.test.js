@@ -123,7 +123,7 @@ describe('Controller: settings/service-name', () => {
       before(() => {
         setupTest('postEditServiceName', {}, {
           body: {
-            'service-name-input': 'New English Name',
+            serviceNameInput: 'New English Name',
             cy: 'false'
           }
         })
@@ -143,7 +143,7 @@ describe('Controller: settings/service-name', () => {
       before(() => {
         setupTest('postEditServiceName', {}, {
           body: {
-            'service-name-input': 'Enw Cymraeg newydd',
+            serviceNameInput: 'Enw Cymraeg newydd',
             cy: 'true'
           }
         })
@@ -162,14 +162,14 @@ describe('Controller: settings/service-name', () => {
     describe('when submitting an invalid service name', () => {
       const mockFormatValidationErrors = sinon.stub().returns({
         errorSummary: ['Error summary'],
-        formErrors: { 'service-name-input': 'Error message' }
+        formErrors: { serviceNameInput: 'Error message' }
       })
 
       before(() => {
         setupTest('postEditServiceName', {},
           {
             body: {
-              'service-name-input': 'A'.repeat(SERVICE_NAME_MAX_LENGTH + 1),
+              serviceNameInput: 'A'.repeat(SERVICE_NAME_MAX_LENGTH + 1),
               cy: 'false'
             }
           },
@@ -188,7 +188,7 @@ describe('Controller: settings/service-name', () => {
         expect(template).to.equal('simplified-account/settings/service-name/edit-service-name')
         expect(context.errors).to.deep.equal({
           summary: ['Error summary'],
-          formErrors: { 'service-name-input': 'Error message' }
+          formErrors: { serviceNameInput: 'Error message' }
         })
       })
     })
@@ -198,7 +198,7 @@ describe('Controller: settings/service-name', () => {
         setupTest('postEditServiceName', {},
           {
             body: {
-              'service-name-input': '',
+              serviceNameInput: '',
               cy: 'false'
             }
           })
@@ -220,7 +220,7 @@ describe('Controller: settings/service-name', () => {
         setupTest('postEditServiceName', {},
           {
             body: {
-              'service-name-input': '',
+              serviceNameInput: '',
               cy: 'true'
             }
           })
