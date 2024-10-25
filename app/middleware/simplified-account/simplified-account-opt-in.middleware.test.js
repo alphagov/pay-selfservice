@@ -1,15 +1,13 @@
 const { expect } = require('chai')
+const { InvalidConfigurationError } = require('../../errors')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
 describe('Middleware: isOptedInToSimplifiedAccounts', () => {
-  let isOptedInToSimplifiedAccounts, req, res, next, invalidConfigurationError
+  let isOptedInToSimplifiedAccounts, req, res, next
 
   beforeEach(() => {
-    invalidConfigurationError = sinon.stub()
-    isOptedInToSimplifiedAccounts = proxyquire('./simplified-account-opt-in.middleware', {
-      '../../errors': { InvalidConfigurationError: invalidConfigurationError }
-    })
+    isOptedInToSimplifiedAccounts = proxyquire('./simplified-account-opt-in.middleware', {})
 
     req = {
       user: {
@@ -32,13 +30,9 @@ describe('Middleware: isOptedInToSimplifiedAccounts', () => {
 
   it('should call next() with error when user is not opted in', () => {
     req.user.isDegatewayed.returns(false)
-
     isOptedInToSimplifiedAccounts(req, res, next)
-
-    expect(next.calledOnce).to.be.true // eslint-disable-line
-    expect(invalidConfigurationError.calledOnce).to.be.true // eslint-disable-line
-    expect(invalidConfigurationError.args[0][0]).to.equal(
-      'User with id user-123 not opted in to account simplification or feature is disabled in this environment.'
-    )
+    const expectedError = sinon.match.instanceOf(InvalidConfigurationError)
+      .and(sinon.match.has('message', 'User with id user-123 not opted in to account simplification or feature is disabled in this environment.'))
+    sinon.assert.calledWith(next, expectedError)
   })
 })

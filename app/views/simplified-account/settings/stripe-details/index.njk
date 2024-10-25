@@ -1,0 +1,45 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details
+{% endblock %}
+
+{% macro stripeTask(key, value) %}
+  <li class="govuk-task-list__item {% if value.status == false %}govuk-task-list__item--with-link{% endif %}">
+    {% if value.status == false %}
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link govuk-link--no-visited-state" href="{{ value.href }}"
+           aria-describedby="{{ value.id }}">
+          {{ key }}
+        </a>
+      </div>
+    {% else %}
+      {{ key }}
+    {% endif %}
+    <div class="govuk-task-list__status" id="{{ value.id }}">
+      {% if value.status == 'disabled' %}
+        <strong class="govuk-tag govuk-tag--grey">
+          Cannot start yet
+        </strong>
+      {% elseif value.status == true %}
+        <strong class="govuk-tag">
+          Completed
+        </strong>
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Not yet started
+        </strong>
+      {% endif %}
+    </div>
+  </li>
+{% endmacro %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">Stripe details</h1>
+  <p class="govuk-body govuk-!-font-weight-bold">Add your organisation's details</p>
+  <ul class="govuk-task-list">
+    {% for key, value in stripeDetailsTasks %}
+      {{ stripeTask(key, value) }}
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -124,7 +124,7 @@ describe('Service name settings', () => {
         checkServiceNameEditActionNavigation({
           selector: '[data-cy="edit-english-name"]',
           expectedUrl: 'service-name/edit',
-          expectedPageTitle: 'Settings - Edit service name',
+          expectedPageTitle: 'Settings - Edit Service name (English) - GOV.UK Pay',
           expectedHeader: 'Service name (English)'
         })
       })
@@ -133,7 +133,7 @@ describe('Service name settings', () => {
         checkServiceNameEditActionNavigation({
           selector: '[data-cy="edit-welsh-name"]',
           expectedUrl: 'service-name/edit?cy=true',
-          expectedPageTitle: 'Settings - Edit service name',
+          expectedPageTitle: 'Settings - Edit Service name (Welsh) - GOV.UK Pay',
           expectedHeader: 'Service name (Welsh)'
         })
       })
@@ -171,7 +171,7 @@ describe('Service name settings', () => {
         checkServiceNameEditActionNavigation({
           selector: '[data-cy="edit-english-name"]',
           expectedUrl: 'service-name/edit',
-          expectedPageTitle: 'Settings - Edit service name',
+          expectedPageTitle: 'Settings - Edit Service name (English) - GOV.UK Pay',
           expectedHeader: 'Service name (English)'
         })
       })
@@ -180,7 +180,7 @@ describe('Service name settings', () => {
         checkServiceNameEditActionNavigation({
           selector: '[data-cy="add-welsh-name"]',
           expectedUrl: 'service-name/edit?cy=true',
-          expectedPageTitle: 'Settings - Edit service name',
+          expectedPageTitle: 'Settings - Edit Service name (Welsh) - GOV.UK Pay',
           expectedHeader: 'Service name (Welsh)'
         })
       })

@@ -1,0 +1,31 @@
+.system-messages {
+}
+
+.govuk-notification-banner--error {
+  border-color: $govuk-error-colour;
+  background-color: $govuk-error-colour;
+}
+
+.system-message__container {
+  display: flex;
+  align-items: center;
+  gap: govuk-spacing(2);
+}
+
+.system-message__icon {
+  flex: 0;
+}
+
+.system-message__text {
+  flex: 1;
+}
+
+.system-message__icon--success {
+  color: $govuk-success-colour;
+}
+.system-message__icon--info {
+  color: $govuk-brand-colour;
+}
+.system-message__icon--error {
+  color: $govuk-error-colour;
+}

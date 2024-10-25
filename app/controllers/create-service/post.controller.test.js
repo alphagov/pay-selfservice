@@ -65,7 +65,7 @@ describe('Controller: createService, Method: post', () => {
     it('should redirect to newly created service dashboard', () => {
       sinon.assert.calledWith(mockServiceService.createService, SERVICE_NAME, WELSH_SERVICE_NAME, 'central')
       sinon.assert.calledWith(mockUserService.assignServiceRole, '38475y38q4758ow4', 'def456', 'admin')
-      sinon.assert.calledWith(req.flash, 'messages', { state: 'success', icon: '&check;', content: 'We\'ve created your service.' })
+      sinon.assert.calledWith(req.flash, 'messages', { state: 'success', icon: '&check;', heading: 'We\'ve created your service.' })
       expect(res.redirect.called).to.equal(true)
       expect(res.redirect.args[0][0]).to.equal(formatAccountPathsFor(paths.account.dashboard.index, 'abc123'))
     })
