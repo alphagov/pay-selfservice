@@ -1,14 +1,10 @@
-{% extends "../../../layout.njk" %}
+{% extends "../settings-layout.njk" %}
 
-{% block pageTitle %}
-  Settings - Email notifications
+{% block settingsPageTitle %}
+  Email notifications
 {% endblock %}
 
-{% block sideNavigation %}
-  {% include "../_settings-navigation.njk" %}
-{% endblock %}
-
-{% block mainContent %}
+{% block settingsContent %}
 
   <div class="govuk-grid-column-three-quarters">
 
@@ -35,7 +31,7 @@
           actions: {
             items: [
               {
-                href: "#",
+                href: editEmailCollectionHref,
                 text: "Change",
                 classes: "govuk-link--no-visited-state",
                 visuallyHiddenText: "Edit collect email addresses"

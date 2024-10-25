@@ -177,7 +177,8 @@ module.exports = {
         removeCy: '/settings/service-name/cy/remove'
       },
       emailNotifications: {
-        index: '/settings/email-notifications'
+        index: '/settings/email-notifications',
+        collectionSettings: '/settings/email-notifications/collection-settings'
       },
       teamMembers: {
         index: '/settings/team-members'

@@ -30,6 +30,14 @@ async function setEmailCollectionMode (accountID, collectionMode) {
   }
 }
 
+async function setEmailCollectionModeByServiceIdAndAccountType (serviceExternalId, accountType, collectionMode) {
+  try {
+    await connectorClient.updateEmailCollectionModeByServiceId(serviceExternalId, accountType, collectionMode)
+  } catch (err) {
+    clientFailure(err, 'PATCH', false)
+  }
+}
+
 async function setConfirmationEnabled (accountID, enabled) {
   const patch = { op: 'replace', path: '/payment_confirmed/enabled', value: enabled }
 
@@ -70,6 +78,7 @@ function clientFailure (err, methodType, isPatchEndpoint) {
 module.exports = {
   updateConfirmationTemplate,
   setEmailCollectionMode,
+  setEmailCollectionModeByServiceIdAndAccountType,
   setConfirmationEnabled,
   setRefundEmailEnabled
 }

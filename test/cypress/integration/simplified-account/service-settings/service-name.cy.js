@@ -77,7 +77,7 @@ describe('Service name settings', () => {
         cy.visit(SERVICE_SETTINGS_URL)
       })
       it('should be Email notifications', () => {
-        cy.title().should('eq', 'Settings - Email notifications')
+        cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
       })
       it('should show the correct heading', () => {
         cy.get('h1').should('contain', 'Email notifications')
