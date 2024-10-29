@@ -19,7 +19,7 @@ function getEmailNotificationsSettingsPage (req, res) {
   return response(req, res, 'simplified-account/settings/email-notifications/index', context)
 }
 
-function getEmailCollectionPage (req, res) {
+function getEditEmailCollectionModePage (req, res) {
   return response(req, res, 'simplified-account/settings/email-notifications/collect-email-page', {
     emailCollectionModes: {
       mandatory: 'MANDATORY',
@@ -31,7 +31,7 @@ function getEmailCollectionPage (req, res) {
   })
 }
 
-async function postEditEmailCollection (req, res) {
+async function postEditEmailCollectionMode (req, res) {
   const emailCollectionMode = req.body['email-collection-mode']
   const serviceExternalId = req.service.externalId
   const accountType = req.account.type
@@ -46,6 +46,6 @@ async function postEditEmailCollection (req, res) {
 
 module.exports = {
   getEmailNotificationsSettingsPage,
-  getEmailCollectionPage,
-  postEditEmailCollection
+  getEditEmailCollectionModePage,
+  postEditEmailCollectionMode
 }

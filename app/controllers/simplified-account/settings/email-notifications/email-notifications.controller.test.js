@@ -84,10 +84,10 @@ describe('Controller: settings/email-notifications', () => {
     })
   })
 
-  describe('getEmailCollectionPage', () => {
+  describe('getEditEmailCollectionModePage', () => {
     before(() => {
       setupTest()
-      emailNotificationsController.getEmailCollectionPage(req, res)
+      emailNotificationsController.getEditEmailCollectionModePage(req, res)
     })
 
     it('should call the response method', () => {
@@ -112,14 +112,14 @@ describe('Controller: settings/email-notifications', () => {
     })
   })
 
-  describe('postEditEmailCollection', () => {
+  describe('postEditEmailCollectionMode', () => {
     before(() => {
       setupTest({
         body: {
           'email-collection-mode': 'OPTIONAL'
         }
       })
-      emailNotificationsController.postEditEmailCollection(req, res)
+      emailNotificationsController.postEditEmailCollectionMode(req, res)
     })
 
     it('should update the email collection mode', () => {

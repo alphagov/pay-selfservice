@@ -1,7 +1,7 @@
 {% extends "../settings-layout.njk" %}
 
 {% block settingsPageTitle %}
-  Settings - Email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  Email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}}
 {% endblock %}
 
 {% block settingsContent %}
@@ -11,7 +11,7 @@
       href: backLink
     }) }}
 
-    <form id="collection-email-form" method="post" novalidate>
+    <form id="email-collection-mode" method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
       {{
