@@ -5,7 +5,7 @@ const paths = require('../../../../paths')
 const { setEmailCollectionModeByServiceIdAndAccountType } = require('../../../../services/email.service')
 const logger = require('../../../../utils/logger')(__filename)
 
-function landingPage (req, res) {
+function getEmailNotificationsSettingsPage (req, res) {
   const service = req.service
   const account = req.account
 
@@ -45,7 +45,7 @@ async function editCollectEmail (req, res) {
 }
 
 module.exports = {
-  landingPage,
+  getEmailNotificationsSettingsPage,
   getCollectEmailPage,
   editCollectEmail
 }

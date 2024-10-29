@@ -60,10 +60,10 @@ const setupTest = (additionalReqProps = {}) => {
 }
 
 describe('Controller: settings/email-notifications', () => {
-  describe('landingPage', () => {
+  describe('getEmailNotificationsSettingsPage', () => {
     before(() => {
       setupTest()
-      emailNotificationsController.landingPage(req, res)
+      emailNotificationsController.getEmailNotificationsSettingsPage(req, res)
     })
 
     it('should call the response method', () => {
