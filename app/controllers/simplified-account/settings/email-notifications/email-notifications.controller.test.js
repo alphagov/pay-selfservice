@@ -97,7 +97,7 @@ describe('Controller: settings/email-notifications', () => {
     it('should pass req, res and template path to the response method', () => {
       expect(responseStub.args[0]).to.include(req)
       expect(responseStub.args[0]).to.include(res)
-      expect(responseStub.args[0]).to.include('simplified-account/settings/email-notifications/collect-email-page')
+      expect(responseStub.args[0]).to.include('simplified-account/settings/email-notifications/edit-email-collection-mode')
     })
 
     it('should pass context data to the response method', () => {

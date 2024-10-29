@@ -20,7 +20,7 @@ function getEmailNotificationsSettingsPage (req, res) {
 }
 
 function getCollectEmailPage (req, res) {
-  return response(req, res, 'simplified-account/settings/email-notifications/collect-email-page', {
+  return response(req, res, 'simplified-account/settings/email-notifications/edit-email-collection-mode', {
     emailCollectionModes: {
       mandatory: 'MANDATORY',
       optional: 'OPTIONAL',
