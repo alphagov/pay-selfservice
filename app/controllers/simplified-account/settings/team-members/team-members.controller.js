@@ -1,7 +1,7 @@
 const paths = require('../../../../paths')
 const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
 const { response } = require('../../../../utils/response')
-const { getServiceUsers, getInvitedUsers } = require('../../../../services/user.service')
+const { getServiceUsers, getInvitedUsers, findByExternalId } = require('../../../../services/user.service')
 const { mapTeamMembersByRoles, mapInvitedTeamMembersByRoles } = require('../../../../utils/simplified-account/format/arrange-users-by-role')
 const { roles } = require('../../../../utils/roles')
 
@@ -33,7 +33,20 @@ async function get (req, res, next) {
 }
 
 async function getRemoveUser (req, res, next) {
-  // TODO implement remove user page
+  const externalServiceId = req.service.externalId
+  const accountType = req.account.type
+  try {
+    const { externalId, email } = await findByExternalId(req.params.externalUserId)
+    response(req, res, 'simplified-account/settings/team-members/removeUser',
+      {
+        externalId,
+        email,
+        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, externalServiceId, accountType)
+  })}
+  catch (err) {
+    next(err)
+  }
+
 }
 
 async function getChangePermission (req, res, next) {
