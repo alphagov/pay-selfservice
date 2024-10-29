@@ -15,7 +15,40 @@
       href: backLink
     }) }}
 
-    <h1 class="govuk-heading-l">Are you sure you want to remove {{ email }}?</h1>
-    <p class="govuk-body govuk-!-margin-bottom-6 admin-lede">They will no longer have access to this service.</p>
+    <form method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+      {{ govukRadios({
+        idPrefix: "confirmRemoveUser",
+        name: "confirmRemoveUser",
+        fieldset: {
+          legend: {
+            text: "Are you sure you want to remove " + email + "?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: {
+          text: "They will no longer have access to this service."
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes",
+            attributes: {'data-cy': 'yes-radio'}
+          },
+          {
+            value: "no",
+            text: "No",
+            attributes: {'data-cy': 'no-radio'}
+          }
+        ]
+      }) }}
+      {{
+      govukButton({
+        text: "Save changes"
+      })
+      }}
+    </form>
   </div>
 {% endblock %}

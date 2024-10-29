@@ -46,7 +46,22 @@ async function getRemoveUser (req, res, next) {
   catch (err) {
     next(err)
   }
+}
 
+async function postRemoveUser (req, res, next) {
+  console.log(req)
+  const externalServiceId = req.service.externalId
+  const accountType = req.account.type
+  if (req.body.confirmRemoveUser === 'no') {
+    //redirect to team members page
+    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, externalServiceId, accountType))
+  }
+  if (req.body.confirmRemoveUser === 'yes') {
+    //need to remove the user
+
+    //need to show a notification when redirecting to team members page
+    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, externalServiceId, accountType))
+  }
 }
 
 async function getChangePermission (req, res, next) {
@@ -56,5 +71,6 @@ async function getChangePermission (req, res, next) {
 module.exports = {
   get,
   getRemoveUser,
+  postRemoveUser,
   getChangePermission
 }
