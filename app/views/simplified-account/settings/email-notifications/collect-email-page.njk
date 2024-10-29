@@ -29,7 +29,7 @@
             {
                 value: emailCollectionModes.mandatory,
                 text: 'Yes – as a mandatory field',
-                checked: emailCollectionMode === 'MANDATORY',
+                checked: emailCollectionMode === emailCollectionModes.mandatory,
                 hint: {
                   text: 'Users must enter an email address to complete a payment – they can receive notifications'
                 },
@@ -38,7 +38,7 @@
             {
                 value: emailCollectionModes.optional,
                 text: 'Yes – as an optional field',
-                checked: emailCollectionMode === 'OPTIONAL',
+                checked: emailCollectionMode === emailCollectionModes.optional,
                 hint: {
                   text: 'Users can choose to enter an email address – if they do, they can receive notifications'
                 },
@@ -47,7 +47,7 @@
             {
                 value: emailCollectionModes.no,
                 text: 'No',
-                checked: emailCollectionMode === 'OFF',
+                checked: emailCollectionMode === emailCollectionModes.no,
                 hint: {
                   text: 'Users do not have the option to enter an email address – they will not receive notifications'
                 },
