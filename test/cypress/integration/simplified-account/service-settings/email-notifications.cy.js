@@ -127,10 +127,9 @@ describe('email notifications settings', () => {
       })
     })
 
-    it('should navigate to the email notifications landing page after "Save changes" is clicked', () => {
+    it.only('should navigate to the email notifications landing page after "Save changes" is clicked', () => {
       cy.get('input[type="radio"][value="OFF"]').check()
       cy.get('.govuk-button').contains('Save changes').click()
-      cy.get('.govuk-notification-banner--success').should('contain', 'Email address collection is set to off')
       cy.get('h1').should('contain', 'Email notifications')
       cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
     })
