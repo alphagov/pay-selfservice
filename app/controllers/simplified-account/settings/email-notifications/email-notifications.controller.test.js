@@ -116,7 +116,7 @@ describe('Controller: settings/email-notifications', () => {
     before(() => {
       setupTest({
         body: {
-          'email-collection-mode': 'OPTIONAL'
+          'emailCollectionMode': 'OPTIONAL'
         }
       })
       emailNotificationsController.postEditEmailCollectionMode(req, res)

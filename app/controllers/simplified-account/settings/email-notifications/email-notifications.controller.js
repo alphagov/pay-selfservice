@@ -32,7 +32,7 @@ function getEditEmailCollectionModePage (req, res) {
 }
 
 async function postEditEmailCollectionMode (req, res) {
-  const emailCollectionMode = req.body['email-collection-mode']
+  const emailCollectionMode = req.body.emailCollectionMode
   const serviceExternalId = req.service.externalId
   const accountType = req.account.type
   await setEmailCollectionModeByServiceIdAndAccountType(serviceExternalId, accountType, emailCollectionMode)
