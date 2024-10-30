@@ -56,9 +56,10 @@
                   actions: {
                   items: [
                     { href: member.removeLink, text: "View", classes: "govuk-link--no-visited-state" }
-                  ] if member.isCurrent else [
-                  { href: member.changePermissionLink, text: "Change permission", classes: "govuk-link--no-visited-state" },
-                  { href: member.removeLink, text: "Remove", classes: "govuk-link--no-visited-state" }
+                  ] if member.isCurrent else
+                  [
+                  { href: member.changePermissionLink, text: "Change permission", classes: "govuk-link--no-visited-state" } if member.changePermissionLink and isServiceAdmin,
+                  { href: member.removeLink, text: "Remove", classes: "govuk-link--no-visited-state" } if member.removeLink and isServiceAdmin
               ]
             }
               }

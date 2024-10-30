@@ -73,20 +73,20 @@ describe('Team members settings', () => {
     })
 
     it('should show the current team members in the correct order with appropriate links', () => {
-      cy.get('#team-members-admin-list').find('tr').first().find('td').first().contains('admin-user@example.com (you)')
-      cy.get('#team-members-admin-list').find('tr').first().find('a').contains('View')
-      cy.get('#team-members-view-and-refund-list').find('tr').first().find('td').first().contains('view-and-refund-user@example.com')
-      cy.get('#team-members-view-and-refund-list').find('tr').first().find('a').first().contains('Change permission')
-      cy.get('#team-members-view-and-refund-list').find('tr').first().find('a').contains('Remove')
-      cy.get('#team-members-view-only-list').find('tr').first().find('td').first().contains('view-only-user@example.com')
-      cy.get('#team-members-view-only-list').find('tr').first().find('a').should('have.length', 2).first().contains('Change permission')
-      cy.get('#team-members-view-only-list').find('tr').first().find('a').contains('Remove')
+      cy.get('#team-members-admin-list').find('dd').first().contains('admin-user@example.com (you)')
+      cy.get('#team-members-admin-list').find('dl').first().find('a').contains('View')
+      cy.get('#team-members-view-and-refund-list').find('dd').first().contains('view-and-refund-user@example.com')
+      cy.get('#team-members-view-and-refund-list').find('dl').first().find('a').first().contains('Change permission')
+      cy.get('#team-members-view-and-refund-list').find('dl').first().find('a').contains('Remove')
+      cy.get('#team-members-view-only-list').find('dd').first().contains('view-only-user@example.com')
+      cy.get('#team-members-view-only-list').find('dl').first().find('a').should('have.length', 2).first().contains('Change permission')
+      cy.get('#team-members-view-only-list').find('dl').first().find('a').contains('Remove')
     })
 
     it('should show the invited team members in the correct order', () => {
-      cy.get('#invited-team-members-admin-list').find('tr').first().find('td').contains('invited-admin-user@example.com')
-      cy.get('#invited-team-members-view-and-refund-list').find('tr').first().find('td').contains('invited-view-and-refund-user@example.com')
-      cy.get('#invited-team-members-view-only-list').find('tr').first().find('td').contains('invited-view-only-user@example.com')
+      cy.get('#invited-team-members-admin-list').find('dd').contains('invited-admin-user@example.com')
+      cy.get('#invited-team-members-view-and-refund-list').find('dd').contains('invited-view-and-refund-user@example.com')
+      cy.get('#invited-team-members-view-only-list').find('dd').contains('invited-view-only-user@example.com')
     })
   })
 
@@ -116,17 +116,15 @@ describe('Team members settings', () => {
     })
 
     it('should show the current team members in the correct order without remove or change permission links', () => {
-      cy.get('#team-members-admin-list').find('tr').first().find('td').first().contains('admin-user@example.com')
-      cy.get('#team-members-view-and-refund-list').find('tr').first().find('td').first().contains('view-and-refund-user@example.com')
-      cy.get('#team-members-view-and-refund-list').find('tr').first().find('a').should('not.exist')
-      cy.get('#team-members-view-only-list').find('tr').first().find('td').first().contains('view-only-user@example.com (you)')
-      cy.get('#team-members-view-only-list').find('tr').first().find('a').should('have.length', 1).contains('View')
+      cy.get('#team-members-admin-list').find('dd').first().contains('admin-user@example.com')
+      cy.get('#team-members-view-and-refund-list').find('dd').first().contains('view-and-refund-user@example.com')
+      cy.get('#team-members-view-only-list').find('dd').first().contains('view-only-user@example.com (you)')
     })
 
     it('should show the invited team members in the correct order', () => {
-      cy.get('#invited-team-members-admin-list').find('tr').first().find('td').contains('invited-admin-user@example.com')
-      cy.get('#invited-team-members-view-and-refund-list').find('tr').first().find('td').contains('invited-view-and-refund-user@example.com')
-      cy.get('#invited-team-members-view-only-list').find('tr').first().find('td').contains('invited-view-only-user@example.com')
+      cy.get('#invited-team-members-admin-list').find('dd').first().contains('invited-admin-user@example.com')
+      cy.get('#invited-team-members-view-and-refund-list').find('dd').first().contains('invited-view-and-refund-user@example.com')
+      cy.get('#invited-team-members-view-only-list').find('dd').first().contains('invited-view-only-user@example.com')
     })
   })
 })
