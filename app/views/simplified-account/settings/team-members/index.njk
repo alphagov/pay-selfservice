@@ -1,4 +1,5 @@
 {% extends "../../../layout.njk" %}
+
 {% macro teamMemberEmail(email, isCurrent, isServiceAdmin) %}
   <p class="govuk-body">{{email}}{% if isCurrent %} (you){% endif %}</p>
 {% endmacro %}
@@ -33,13 +34,6 @@
     {% endif %}
   </div>
 
-  <style>
-    .team-member-email-list {
-      .govuk-summary-list__actions {
-        width: 30% !important;
-      }
-    }
-  </style>
   <div class="govuk-grid-column-three-quarters admin-list-group govuk-!-margin-top-6">
   {% for role, roleDetails in roles %}
     {% if role in teamMembers %}
