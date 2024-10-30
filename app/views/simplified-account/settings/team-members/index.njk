@@ -1,4 +1,7 @@
 {% extends "../../../layout.njk" %}
+{% macro teamMemberEmail(email, isCurrent, isServiceAdmin) %}
+  <p class="govuk-body">{{email}}{% if isCurrent %} (you){% endif %}</p>
+{% endmacro %}
 
 {% block pageTitle %}
   Settings - Team members
@@ -19,52 +22,60 @@
 
     {% if isServiceAdmin %}
       {{
-        govukButton({
-          text: "Invite a team member",
-          href: inviteTeamMemberLink,
-          attributes: {
-            id: "invite-team-member-link"
-          }
-        })
+      govukButton({
+        text: "Invite a team member",
+        href: inviteTeamMemberLink,
+        attributes: {
+          id: "invite-team-member-link"
+        }
+      })
       }}
     {% endif %}
   </div>
 
+  <style>
+    .team-member-email-list {
+      .govuk-summary-list__actions {
+        width: 30% !important;
+      }
+    }
+  </style>
   <div class="govuk-grid-column-three-quarters admin-list-group govuk-!-margin-top-6">
-    {% for role, roleDetails in roles %}
-      {% if role in teamMembers %}
-        {% if teamMembers[role].length %}
-          <div class="{{ role }}-list" id="team-members-{{ role }}-list">
-            <h3 id="{{ role }}-role-header" class="govuk-heading-m">
-              {{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{ teamMembers[role].length }})</span>
-            </h3>
-            <table class="govuk-table pay-!-border-top">
-              <tbody class="govuk-table__body">
-              {% for member in teamMembers[role] %}
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
-                    <span>{{ member.email }} {% if member.isCurrent %}(you){% endif %}</span>
-                  </td>
-                  {% if member.isCurrent %}
-                    <td class="govuk-table__cell">
-                      <a href={{ member.link }}>View</a>
-                    </td>
-                  {% elseif isServiceAdmin %}
-                    <td class="govuk-table__cell">
-                      <a href={{ member.changePermissionLink }}>Change permission</a>
-                    </td>
-                    <td class="govuk-table__cell">
-                      <a href={{ member.removeLink }}>Remove</a>
-                    </td>
-                  {% endif %}
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        {% endif %}
+  {% for role, roleDetails in roles %}
+    {% if role in teamMembers %}
+      {% if teamMembers[role].length %}
+        <div class="team-member-email-list" id="team-members-{{ role }}-list">
+          <h3 id="{{ role }}-role-header" class="govuk-heading-m">
+            {{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{ teamMembers[role].length }})</span>
+          </h3>
+          {% for member in teamMembers[role] %}
+            {{ govukSummaryList({
+              rows: [
+                {
+                  key: {
+                  text: "Email address",
+                  classes: "govuk-!-display-none"
+                },
+                  value: {
+                  html: teamMemberEmail(member.email, member.isCurrent)
+                },
+                  actions: {
+                  items: [
+                    { href: member.removeLink, text: "View", classes: "govuk-link--no-visited-state" }
+                  ] if member.isCurrent else [
+                  { href: member.changePermissionLink, text: "Change permission", classes: "govuk-link--no-visited-state" },
+                  { href: member.removeLink, text: "Remove", classes: "govuk-link--no-visited-state" }
+              ]
+            }
+              }
+              ]
+              }) }}
+          {% endfor %}
+        </div>
       {% endif %}
-    {% endfor %}
+    {% endif %}
+  {% endfor %}
+
 
   {% if numberInvitedMembers > 0 %}
     <h2 id="invited-team-members-heading" class="govuk-heading-m">
@@ -73,22 +84,24 @@
     {% for role, roleDetails in roles %}
       {% if role in invitedTeamMembers %}
         {% if invitedTeamMembers[role].length %}
-        <div class="{{ role }}-list" id="invited-team-members-{{ role }}-list">
-          <h3 id="invited-team-members-{{ role }}-role-header" class="govuk-heading-s">{{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{invitedTeamMembers[role].length}})</span></h3>
-          <table class="govuk-table pay-!-border-top">
-            <tbody class="govuk-table__body">
-            {% for invitedMember in invitedTeamMembers[role] %}
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">
-                    <span>
-                      {{ invitedMember.email }}
-                    </span>
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-        </div>
+          <div id="invited-team-members-{{ role }}-list">
+            <h3 id="invited-team-members-{{ role }}-role-header" class="govuk-heading-s">{{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{invitedTeamMembers[role].length}})</span></h3>
+              {% for invitedMember in invitedTeamMembers[role] %}
+                {{ govukSummaryList({
+                  rows: [
+                    {
+                      key: {
+                      text: "Email address",
+                      classes: "govuk-!-display-none"
+                      },
+                        value: {
+                        html: invitedMember.email
+                      }
+                    }
+                  ]
+                  }) }}
+              {% endfor %}
+          </div>
         {% endif %}
       {% endif %}
     {% endfor %}
