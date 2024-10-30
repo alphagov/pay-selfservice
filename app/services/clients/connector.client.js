@@ -421,6 +421,20 @@ ConnectorClient.prototype = {
     return response.data
   },
 
+  updateEmailCollectionModeByServiceId: async function (serviceId, accountType, emailCollectionMode) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}`
+      .replace('{serviceId}', encodeURIComponent(serviceId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    const payload = {
+      op: 'replace',
+      path: 'email_collection_mode',
+      value: emailCollectionMode
+    }
+    configureClient(client, url)
+    const response = await client.patch(url, payload, 'update email collection mode')
+    return response.data
+  },
+
   /**
    *
    * @param {Object} params

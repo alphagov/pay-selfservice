@@ -53,7 +53,7 @@ describe('email notifications settings', () => {
 
       it('should show the correct heading and title', () => {
         cy.get('h1').should('contain', 'Email notifications')
-        cy.title().should('eq', 'Settings - Email notifications')
+        cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
       })
 
       it('should show links to change email settings', () => {
