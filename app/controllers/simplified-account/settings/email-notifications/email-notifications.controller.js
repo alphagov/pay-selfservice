@@ -19,8 +19,8 @@ function getEmailNotificationsSettingsPage (req, res) {
   return response(req, res, 'simplified-account/settings/email-notifications/index', context)
 }
 
-function getCollectEmailPage (req, res) {
-  return response(req, res, 'simplified-account/settings/email-notifications/edit-email-collection-mode', {
+function getEditEmailCollectionModePage (req, res) {
+  return response(req, res, 'simplified-account/settings/email-notifications/collect-email-page', {
     emailCollectionModes: {
       mandatory: 'MANDATORY',
       optional: 'OPTIONAL',
@@ -31,8 +31,8 @@ function getCollectEmailPage (req, res) {
   })
 }
 
-async function editCollectEmail (req, res) {
-  const emailCollectionMode = req.body['email-collection-mode']
+async function postEditEmailCollectionMode (req, res) {
+  const emailCollectionMode = req.body.emailCollectionMode
   const serviceExternalId = req.service.externalId
   const accountType = req.account.type
   await setEmailCollectionModeByServiceIdAndAccountType(serviceExternalId, accountType, emailCollectionMode)
@@ -40,12 +40,11 @@ async function editCollectEmail (req, res) {
     service: serviceExternalId,
     accountType
   })
-  req.flash('generic', `Email address collection is set to ${humaniseEmailMode(emailCollectionMode).toLowerCase()}`)
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, serviceExternalId, accountType))
 }
 
 module.exports = {
   getEmailNotificationsSettingsPage,
-  getCollectEmailPage,
-  editCollectEmail
+  getEditEmailCollectionModePage,
+  postEditEmailCollectionMode
 }

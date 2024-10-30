@@ -24,8 +24,8 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, enforc
 
 // email notifications
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('transactions:read'), serviceSettingsController.emailNotifications.getEmailNotificationsSettingsPage)
-simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.collectionSettings, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.getCollectEmailPage)
-simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.collectionSettings, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.editCollectEmail)
+simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.collectionSettings, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.getEditEmailCollectionModePage)
+simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.collectionSettings, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.postEditEmailCollectionMode)
 
 // stripe details
 simplifiedAccount.get(paths.simplifiedAccount.settings.stripeDetails.index, permission('stripe-account-details:update'), serviceSettingsController.stripeDetails.get)

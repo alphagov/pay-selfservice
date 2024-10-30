@@ -27,7 +27,6 @@ const setupTest = (additionalReqProps = {}) => {
     redirect: sinon.spy()
   }
   req = {
-    flash: sinon.stub(),
     account: {
       type: ACCOUNT_TYPE,
       email_collection_mode: 'MANDATORY',
@@ -84,10 +83,10 @@ describe('Controller: settings/email-notifications', () => {
     })
   })
 
-  describe('getCollectEmailPage', () => {
+  describe('getEditEmailCollectionModePage', () => {
     before(() => {
       setupTest()
-      emailNotificationsController.getCollectEmailPage(req, res)
+      emailNotificationsController.getEditEmailCollectionModePage(req, res)
     })
 
     it('should call the response method', () => {
@@ -97,7 +96,7 @@ describe('Controller: settings/email-notifications', () => {
     it('should pass req, res and template path to the response method', () => {
       expect(responseStub.args[0]).to.include(req)
       expect(responseStub.args[0]).to.include(res)
-      expect(responseStub.args[0]).to.include('simplified-account/settings/email-notifications/edit-email-collection-mode')
+      expect(responseStub.args[0]).to.include('simplified-account/settings/email-notifications/collect-email-page')
     })
 
     it('should pass context data to the response method', () => {
@@ -112,14 +111,14 @@ describe('Controller: settings/email-notifications', () => {
     })
   })
 
-  describe('editCollectEmail', () => {
+  describe('postEditEmailCollectionMode', () => {
     before(() => {
       setupTest({
         body: {
-          'email-collection-mode': 'OPTIONAL'
+          emailCollectionMode: 'OPTIONAL'
         }
       })
-      emailNotificationsController.editCollectEmail(req, res)
+      emailNotificationsController.postEditEmailCollectionMode(req, res)
     })
 
     it('should update the email collection mode', () => {
