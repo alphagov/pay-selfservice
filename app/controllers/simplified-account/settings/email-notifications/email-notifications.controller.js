@@ -40,7 +40,6 @@ async function postEditEmailCollectionMode (req, res) {
     service: serviceExternalId,
     accountType
   })
-  req.flash('generic', `Email address collection is set to ${humaniseEmailMode(emailCollectionMode).toLowerCase()}`)
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, serviceExternalId, accountType))
 }
 
