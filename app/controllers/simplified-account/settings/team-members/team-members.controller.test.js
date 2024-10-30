@@ -57,18 +57,7 @@ const setupTest = (method, additionalReqProps = {}, additionalStubs = {}) => {
     redirect: sinon.spy()
   }
   req = {
-    user: new User({
-      service_roles: [
-        {
-          role: {
-            name: 'admin'
-          },
-          service: {
-            external_id: SERVICE_ID
-          }
-        }
-      ]
-    }),
+    user: adminUser,
     service: {
       externalId: SERVICE_ID
     },

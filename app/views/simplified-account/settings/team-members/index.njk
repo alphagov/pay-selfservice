@@ -1,24 +1,19 @@
-{% extends "../../../layout.njk" %}
+{% extends "../settings-layout.njk" %}
 
 {% macro teamMemberEmail(email, isCurrent, isServiceAdmin) %}
   <p class="govuk-body">{{email}}{% if isCurrent %} (you){% endif %}</p>
 {% endmacro %}
 
-{% block pageTitle %}
+{% block settingsPageTitle %}
   Settings - Team members
 {% endblock %}
 
-{% block sideNavigation %}
-  {% include "../_settings-navigation.njk" %}
-{% endblock %}
-
-{% block mainContent %}
-  <div class="govuk-grid-column-three-quarters">
+{% block settingsContent %}
     <h1 class="govuk-heading-l">Team members</h1>
     {% if isServiceAdmin %}
-      <p class="govuk-body govuk-!-margin-bottom-6 admin-lede">Team member changes affect both live and test environments.</p>
+      <p class="govuk-body govuk-!-margin-bottom-6">Team member changes affect both live and test environments.</p>
     {% else %}
-      <p class="govuk-body govuk-!-margin-bottom-6 admin-lede">Contact an administrator to invite team members and change permissions.</p>
+      <p class="govuk-body govuk-!-margin-bottom-6">Contact an administrator to invite team members and change permissions.</p>
     {% endif %}
 
     {% if isServiceAdmin %}
@@ -32,13 +27,9 @@
       })
       }}
     {% endif %}
-  </div>
 
-  <div class="govuk-grid-column-three-quarters admin-list-group govuk-!-margin-top-6">
   {% for role, roleDetails in roles %}
-    {% if role in teamMembers %}
       {% if teamMembers[role].length %}
-        <div class="team-member-email-list" id="team-members-{{ role }}-list">
           <h3 id="{{ role }}-role-header" class="govuk-heading-m">
             {{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{ teamMembers[role].length }})</span>
           </h3>
@@ -66,9 +57,7 @@
               ]
               }) }}
           {% endfor %}
-        </div>
       {% endif %}
-    {% endif %}
   {% endfor %}
 
 
@@ -79,7 +68,6 @@
     {% for role, roleDetails in roles %}
       {% if role in invitedTeamMembers %}
         {% if invitedTeamMembers[role].length %}
-          <div id="invited-team-members-{{ role }}-list">
             <h3 id="invited-team-members-{{ role }}-role-header" class="govuk-heading-s">{{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{invitedTeamMembers[role].length}})</span></h3>
               {% for invitedMember in invitedTeamMembers[role] %}
                 {{ govukSummaryList({
@@ -96,10 +84,8 @@
                   ]
                   }) }}
               {% endfor %}
-          </div>
         {% endif %}
       {% endif %}
     {% endfor %}
-    </div>
   {% endif %}
 {% endblock %}

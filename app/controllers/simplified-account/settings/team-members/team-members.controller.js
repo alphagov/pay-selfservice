@@ -4,9 +4,7 @@ const { response } = require('../../../../utils/response')
 const { getServiceUsers, getInvitedUsers } = require('../../../../services/user.service')
 const { mapTeamMembersByRoles, mapInvitedTeamMembersByRoles } = require('../../../../utils/simplified-account/format/arrange-users-by-role')
 const { roles } = require('../../../../utils/roles')
-/**
- * Team members list view
- */
+
 async function get (req, res, next) {
   const externalServiceId = req.service.externalId
   const accountType = req.account.type
