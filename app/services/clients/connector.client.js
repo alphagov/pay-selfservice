@@ -435,10 +435,20 @@ ConnectorClient.prototype = {
     return response.data
   },
 
-  /**
-   *
-   * @param {Object} params
-   */
+  updateRefundEmailEnabledByServiceId: async function (serviceId, accountType, enabled) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}/email-notification`
+      .replace('{serviceId}', encodeURIComponent(serviceId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    const payload = {
+      op: 'replace',
+      path: '/refund_issued/enabled',
+      value: enabled
+    }
+    configureClient(client, url)
+    const response = await client.patch(url, payload, `update refund email enabled to ${enabled}`)
+    return response.data
+  },
+
   updateRefundEmailEnabled: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/email-notification`
       .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))

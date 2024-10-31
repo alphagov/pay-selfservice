@@ -51,6 +51,14 @@ async function setConfirmationEnabled (accountID, enabled) {
   }
 }
 
+async function setRefundEmailEnabledByServiceIdAndAccountType (serviceExternalId, accountType, enabled) {
+  try {
+    await connectorClient.updateRefundEmailEnabledByServiceId(serviceExternalId, accountType, enabled)
+  } catch (err) {
+    clientFailure(err, 'PATCH', false)
+  }
+}
+
 async function setRefundEmailEnabled (accountID, enabled) {
   try {
     const patch = { op: 'replace', path: '/refund_issued/enabled', value: enabled }
@@ -80,5 +88,6 @@ module.exports = {
   setEmailCollectionMode,
   setEmailCollectionModeByServiceIdAndAccountType,
   setConfirmationEnabled,
-  setRefundEmailEnabled
+  setRefundEmailEnabled,
+  setRefundEmailEnabledByServiceIdAndAccountType
 }
