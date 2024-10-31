@@ -37,8 +37,7 @@ module.exports = (account, service, currentUrl, permissions) => {
       id: 'stripe-details',
       name: 'stripe details',
       path: paths.simplifiedAccount.settings.stripeDetails.index,
-      permission: account.payment_provider === 'stripe' && Boolean(permissions?.stripe_account_details_update),
-      alwaysViewable: true // viewable on test and live accounts
+      permission: account.payment_provider === 'stripe' && account.type === 'live' && Boolean(permissions?.stripe_account_details_update)
     })
     .category('payments')
     .add({

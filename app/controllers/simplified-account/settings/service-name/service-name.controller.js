@@ -36,11 +36,11 @@ function getEditServiceName (req, res) {
 async function postEditServiceName (req, res) {
   const editCy = req.body.cy === 'true'
   const validations = [
-    body('service-name-input').trim().isLength({ max: SERVICE_NAME_MAX_LENGTH }).withMessage(`Service name must be ${SERVICE_NAME_MAX_LENGTH} characters or fewer`)
+    body('serviceNameInput').trim().isLength({ max: SERVICE_NAME_MAX_LENGTH }).withMessage(`Service name must be ${SERVICE_NAME_MAX_LENGTH} characters or fewer`)
   ]
   // we don't check presence for welsh names
   if (!editCy) {
-    validations.push(body('service-name-input').trim().notEmpty().withMessage('Service name is required'))
+    validations.push(body('serviceNameInput').trim().notEmpty().withMessage('Service name is required'))
   }
 
   await Promise.all(validations.map(validation => validation.run(req)))
@@ -53,13 +53,13 @@ async function postEditServiceName (req, res) {
         formErrors: formattedErrors.formErrors
       },
       editCy,
-      serviceName: req.body['service-name-input'],
+      serviceName: req.body.serviceNameInput,
       backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type),
       submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.edit, req.service.externalId, req.account.type)
     })
   }
 
-  const newServiceName = req.body['service-name-input']
+  const newServiceName = req.body.serviceNameInput.trim()
   editCy ? await updateServiceName(req.service.externalId, req.service.serviceName.en, newServiceName) : await updateServiceName(req.service.externalId, newServiceName, req.service.serviceName.cy)
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, req.service.externalId, req.account.type))
 }

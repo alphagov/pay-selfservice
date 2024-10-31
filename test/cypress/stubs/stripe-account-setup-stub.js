@@ -3,7 +3,17 @@
 const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
+function getServiceAndAccountTypeStripeSetupSuccess (opts) {
+  const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/stripe-setup`
+  return getStripeSetupSuccess(path, opts)
+}
+
 function getGatewayAccountStripeSetupSuccess (opts) {
+  const path = `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`
+  return getStripeSetupSuccess(path, opts)
+}
+
+function getStripeSetupSuccess (path, opts) {
   const fixtureOpts = {
     gateway_account_id: opts.gatewayAccountId
   }
@@ -30,7 +40,6 @@ function getGatewayAccountStripeSetupSuccess (opts) {
     fixtureOpts.government_entity_document = opts.governmentEntityDocument
   }
 
-  const path = `/v1/api/accounts/${opts.gatewayAccountId}/stripe-setup`
   return stubBuilder('GET', path, 200, {
     response: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(fixtureOpts)
   })
@@ -141,6 +150,7 @@ function patchUpdateStripeSetupSuccess (gatewayAccountId) {
 
 module.exports = {
   getGatewayAccountStripeSetupSuccess,
+  getServiceAndAccountTypeStripeSetupSuccess,
   getGatewayAccountStripeSetupFlagForMultipleCalls,
   patchUpdateStripeSetupSuccess
 }

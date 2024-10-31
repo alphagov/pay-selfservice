@@ -36,7 +36,12 @@
 
 {% block settingsContent %}
   <h1 class="govuk-heading-l">Stripe details</h1>
-  <p class="govuk-body govuk-!-font-weight-bold">Add your organisation's details</p>
+  {% if incompleteTasks %}
+    <p class="govuk-body govuk-!-font-weight-bold">Add your organisation's details</p>
+  {% else %}
+    <p class="govuk-body">If you need to change these details, <a class="govuk-link govuk-link--no-visited-state"
+                                                                  href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk?subject=Change request - Stripe details [service id: {{ serviceId }}]">contact GOV.UK Pay</a></p>
+  {% endif %}
   <ul class="govuk-task-list">
     {% for key, value in stripeDetailsTasks %}
       {{ stripeTask(key, value) }}

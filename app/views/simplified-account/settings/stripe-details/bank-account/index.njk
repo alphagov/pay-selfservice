@@ -1,0 +1,123 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Organisation's bank details
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
+  <form id="bank-account" autocomplete="off" method="post" action="{{ submitLink }}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    {% call govukFieldset({
+      legend: {
+        text: "Organisation's bank details",
+        classes: "govuk-fieldset__legend--l",
+        isPageHeading: true
+      }
+    }) %}
+
+      {{ govukInput({
+        label: {
+          text: "Sort code"
+        },
+        classes: "govuk-!-width-one-quarter",
+        id: "sort-code-input",
+        name: "sortCodeInput",
+        inputmode: "numeric",
+        value: sortCode,
+        errorMessage: { text: errors.formErrors['sortCodeInput'] } if errors.formErrors['sortCodeInput'] else false,
+        hint: {
+          text: "Must be 6 digits long"
+        },
+        attributes: {
+          maxlength: "8"
+        }
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Account number"
+        },
+        classes: "govuk-!-width-one-quarter",
+        id: "account-number-input",
+        name: "accountNumberInput",
+        inputmode: "numeric",
+        value: accountNumber,
+        errorMessage: { text: errors.formErrors['accountNumberInput'] } if errors.formErrors['accountNumberInput'] else false,
+        hint: {
+          text: "Must be between 6 and 8 digits long"
+        },
+        attributes: {
+          maxlength: "8"
+        }
+      }) }}
+
+      {{ govukButton({
+        id: "bank-account-submit",
+        text: "Save and continue",
+        preventDoubleClick: true
+      }) }}
+    {% endcall %}
+  </form>
+
+  <script>
+    // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
+    const submitButton = document.getElementById('bank-account-submit')
+    document.getElementById('bank-account').addEventListener('submit', function () {
+      submitButton.setAttribute('disabled', 'true')
+      submitButton.setAttribute('aria-disabled', 'true')
+      submitButton.setAttribute('class', 'govuk-button govuk-button--disabled')
+      submitButton.textContent = "Saving..."
+    })
+
+    // progressively enhance the account number input to only accept digits
+    document.getElementById('account-number-input').addEventListener('input', function (e) {
+      let value = e.target.value
+      e.target.value = value.replace(/\D/g, '').slice(0, 8)
+    })
+
+    // progressively enhance the sort code input to only accept digits and add dashes automatically
+    document.getElementById('sort-code-input').addEventListener('input', function (e) {
+      let value = e.target.value
+
+      value = value.replace(/\D/g, '').slice(0, 6)
+
+      if (!value) {
+        e.target.value = ''
+        return
+      }
+
+      if (value.length >= 2) {
+        const parts = value.match(/.{1,2}/g) || []
+        e.target.value = parts.join('-')
+      } else {
+        e.target.value = value
+      }
+    })
+
+    document.getElementById('sort-code-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && this.value.endsWith('-')) {
+        e.preventDefault()
+        this.value = this.value.slice(0, -2)
+      }
+
+      if (e.key === ' ' || e.key === '-') {
+        e.preventDefault()
+        if ((this.value.length === 2 || this.value.length === 5) && !this.value.endsWith('-')) {
+          e.target.value = this.value + '-'
+        }
+      }
+    })
+  </script>
+{% endblock %}

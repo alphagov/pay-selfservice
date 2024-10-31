@@ -1,11 +1,15 @@
 {% extends "../settings-layout.njk" %}
 
-{% set heading %}
-  Service name ({% if editCy %}Welsh{% else %}English{% endif %})
+{% set inputLabel %}
+  <h1 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--l" for="service-name-input">
+      {% if editCy %}Welsh service name (<span lang="cy">Cymraeg</span>){% else %}Service name (English){% endif %}
+    </label>
+  </h1>
 {% endset %}
 
 {% block settingsPageTitle %}
-  Edit {{ heading }}
+  Edit {% if editCy %}Welsh{% else %}English{% endif%} service name
 {% endblock %}
 
 {% block settingsContent %}
@@ -21,24 +25,26 @@
     }) }}
   {% endif %}
 
-  <form id="edit-service-name-form" method="post" action="{{ submitLink }}" novalidate>
+  <form id="edit-service-name" method="post" action="{{ submitLink }}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     <input id="cy" name="cy" type="hidden" value="{{ editCy }}"/>
 
     {{ govukInput({
       label: {
-        text: heading,
-        classes: "govuk-label--l",
-        isPageHeading: true
+        html: inputLabel
       },
-      errorMessage: { text: errors.formErrors['service-name-input'] } if errors.formErrors['service-name-input'] else false,
+      errorMessage: { text: errors.formErrors['serviceNameInput'] } if errors.formErrors['serviceNameInput'] else false,
       id: "service-name-input",
-      name: "service-name-input",
+      name: "serviceNameInput",
       value: serviceName,
       classes: "govuk-!-width-one-half",
       type: "text",
+      spellcheck: true,
       hint: {
         text: "This is what your users will see when making a payment."
+      },
+      attributes: {
+        lang: "cy" if editCy else "en"
       }
     }) }}
 
@@ -58,7 +64,7 @@
   </form>
 
   {% if editCy and serviceName %}
-    <form id="remove-welsh-service-name-form" action="{{ removeCyLink }}" method="POST">
+    <form id="remove-welsh-service-name" action="{{ removeCyLink }}" method="POST">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     </form>
   {% endif %}
@@ -66,14 +72,14 @@
   <div class="govuk-button-group">
     {{ govukButton({
       text: "Save changes",
-      attributes: { form: "edit-service-name-form" }
+      attributes: { form: "edit-service-name" }
     }) }}
 
     {% if editCy and serviceName %}
       {{ govukButton({
         text: "Remove Welsh service name",
         classes: "govuk-button--secondary",
-        attributes: { form: "remove-welsh-service-name-form" }
+        attributes: { form: "remove-welsh-service-name" }
       }) }}
     {% endif %}
   </div>

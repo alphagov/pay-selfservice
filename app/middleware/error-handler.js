@@ -13,7 +13,7 @@ const {
   NoServicesWithPermissionError,
   NotFoundError,
   RegistrationSessionMissingError,
-  InvalidRegistationStateError,
+  InvalidRegistrationStateError,
   InvalidConfigurationError,
   ExpiredInviteError,
   GatewayTimeoutError,
@@ -62,7 +62,7 @@ module.exports = function errorHandler (err, req, res, next) {
     return response(req, res, '404')
   }
 
-  if (err instanceof RegistrationSessionMissingError || err instanceof InvalidRegistationStateError) {
+  if (err instanceof RegistrationSessionMissingError || err instanceof InvalidRegistrationStateError) {
     logger.info('RegistrationSessionMissingError handled. Rendering error page')
     return renderErrorView(req, res, 'There has been a problem proceeding with this registration. Please try again.', 400)
   }
