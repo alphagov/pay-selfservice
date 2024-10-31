@@ -65,7 +65,7 @@ describe('Team members settings', () => {
 
     it('should show the correct heading and title', () => {
       cy.get('h1').should('contain', 'Team members')
-      cy.title().should('eq', 'Settings - Team members')
+      cy.title().should('eq', 'Settings - Team members - GOV.UK Pay')
     })
 
     it('should show the Invite a team member button', () => {
@@ -108,7 +108,7 @@ describe('Team members settings', () => {
 
     it('should show the correct heading and title', () => {
       cy.get('h1').should('contain', 'Team members')
-      cy.title().should('eq', 'Settings - Team members')
+      cy.title().should('eq', 'Settings - Team members - GOV.UK Pay')
     })
 
     it('should not show the Invite a team member button', () => {

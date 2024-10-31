@@ -5,7 +5,7 @@
 {% endmacro %}
 
 {% block settingsPageTitle %}
-  Settings - Team members
+  Team members
 {% endblock %}
 
 {% block settingsContent %}
@@ -30,6 +30,7 @@
 
   {% for role, roleDetails in roles %}
       {% if teamMembers[role].length %}
+        <div class="team-member-email-list" id="team-members-{{ role }}-list">
           <h3 id="{{ role }}-role-header" class="govuk-heading-m">
             {{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{ teamMembers[role].length }})</span>
           </h3>
@@ -57,6 +58,7 @@
               ]
               }) }}
           {% endfor %}
+        </div>
       {% endif %}
   {% endfor %}
 
@@ -68,6 +70,7 @@
     {% for role, roleDetails in roles %}
       {% if role in invitedTeamMembers %}
         {% if invitedTeamMembers[role].length %}
+          <div class="team-member-email-list" id="invited-team-members-{{ role }}-list">
             <h3 id="invited-team-members-{{ role }}-role-header" class="govuk-heading-s">{{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{invitedTeamMembers[role].length}})</span></h3>
               {% for invitedMember in invitedTeamMembers[role] %}
                 {{ govukSummaryList({
@@ -84,8 +87,10 @@
                   ]
                   }) }}
               {% endfor %}
+          </div>
         {% endif %}
       {% endif %}
     {% endfor %}
   {% endif %}
+  </div>
 {% endblock %}
