@@ -27,7 +27,6 @@ const setupTest = (additionalReqProps = {}) => {
     redirect: sinon.spy()
   }
   req = {
-    flash: sinon.stub(),
     account: {
       type: ACCOUNT_TYPE,
       email_collection_mode: 'MANDATORY',
@@ -116,7 +115,7 @@ describe('Controller: settings/email-notifications', () => {
     before(() => {
       setupTest({
         body: {
-          'emailCollectionMode': 'OPTIONAL'
+          emailCollectionMode: 'OPTIONAL'
         }
       })
       emailNotificationsController.postEditEmailCollectionMode(req, res)

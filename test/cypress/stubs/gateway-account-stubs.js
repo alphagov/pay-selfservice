@@ -193,6 +193,12 @@ function patchAccountEmailCollectionModeSuccess (opts) {
   })
 }
 
+function patchAccountEmailCollectionModeSuccessByServiceIdAndAccountType (serviceId, accountType, emailCollectionMode = 'MANDATORY') {
+  const path = `/v1/api/service/${serviceId}/account/${accountType}`
+  return stubBuilder('PATCH', path, 200,
+    { op: 'replace', path: 'email_collection_mode', value: emailCollectionMode })
+}
+
 function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
   return stubBuilder('PATCH', path, 200, {
@@ -329,6 +335,7 @@ module.exports = {
   patchConfirmationEmailToggleSuccess,
   patchRefundEmailToggleSuccess,
   patchAccountEmailCollectionModeSuccess,
+  patchAccountEmailCollectionModeSuccessByServiceIdAndAccountType,
   patchUpdateServiceNameSuccess,
   patchUpdateMaskCardNumberSuccess,
   patchUpdateMaskSecurityCodeSuccess,
