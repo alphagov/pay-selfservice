@@ -459,6 +459,20 @@ ConnectorClient.prototype = {
     return responseBodyToStripeAccountSetupTransformer(response.data)
   },
 
+  /**
+   * @param serviceExternalId {string}
+   * @param accountType {string}
+   * @returns {StripeAccountSetup}
+   */
+  getStripeAccountSetupByServiceIdAndAccountType: async function (serviceExternalId, accountType) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.get(url, 'get stripe account setup flags for gateway account')
+    return responseBodyToStripeAccountSetupTransformer(response.data)
+  },
+
   setStripeAccountSetupFlag: async function (gatewayAccountId, stripeAccountSetupFlag) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/stripe-setup`
       .replace('{accountId}', encodeURIComponent(gatewayAccountId))

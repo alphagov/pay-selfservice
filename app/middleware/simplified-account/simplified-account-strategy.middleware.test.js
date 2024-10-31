@@ -54,7 +54,7 @@ const setupSimplifiedAccountStrategyTest = function (options) {
     ConnectorClient: function () {
       return {
         getAccountByServiceIdAndAccountType: connectorGetAccountMock,
-        getStripeAccountSetup: paymentProvider === 'stripe'
+        getStripeAccountSetupByServiceIdAndAccountType: paymentProvider === 'stripe'
           ? sinon.stub().resolves(stripeAccountSetupFixture.buildGetStripeAccountSetupResponse())
           : undefined
       }

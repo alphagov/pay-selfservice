@@ -2,7 +2,7 @@
 
 /**
  * @class GOVUKPayService
- * @property externalId {string} - The name of the gateway account
+ * @property externalId {string} - The external id of the service
  */
 class Service {
   constructor (serviceData) {

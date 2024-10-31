@@ -40,7 +40,9 @@
         text: "Welsh service name"
       },
         value: {
-        html: serviceNameCy | default(addCyLink)
+        html: '<span lang="cy">' + serviceNameCy + '</span>'
+      } if serviceNameCy else {
+        html: addCyLink
       },
         actions: {
         items: [

@@ -38,7 +38,7 @@ async function getGatewayAccountByServiceIdAndAccountType (serviceExternalId, ac
     const switchingCredential = getSwitchingCredentialIfExists(account)
     const isSwitchingToStripe = switchingCredential && switchingCredential.payment_provider === 'stripe'
     if (account.payment_provider === 'stripe' || isSwitchingToStripe) {
-      const stripeAccountSetup = await connectorClient.getStripeAccountSetup(account.gateway_account_id)
+      const stripeAccountSetup = await connectorClient.getStripeAccountSetupByServiceIdAndAccountType(serviceExternalId, accountType)
       if (stripeAccountSetup) {
         account.connectorGatewayAccountStripeProgress = stripeAccountSetup
       }

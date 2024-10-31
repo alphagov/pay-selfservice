@@ -253,7 +253,10 @@ describe('Service name settings', () => {
       })
       it('should show expected form elements', () => {
         cy.get('h1').should('contain.text', 'Service name (English)')
-        cy.get('input[name="serviceNameInput"]').should('have.value', SERVICE_NAME.en)
+        cy.get('input[name="serviceNameInput"]')
+          .should('have.value', SERVICE_NAME.en)
+          .should('have.attr', 'lang', 'en')
+          .should('have.attr', 'spellcheck', 'true')
         cy.get('.govuk-button').should('contain.text', 'Save changes')
         cy.get('.govuk-button').should('not.contain.text', 'Remove Welsh service name')
       })
@@ -282,7 +285,10 @@ describe('Service name settings', () => {
         })
         it('should show expected form elements', () => {
           cy.get('h1').should('contain.text', 'Welsh service name (Cymraeg)')
-          cy.get('input[name="serviceNameInput"]').should('have.value', SERVICE_NAME.cy)
+          cy.get('input[name="serviceNameInput"]')
+            .should('have.value', SERVICE_NAME.cy)
+            .should('have.attr', 'lang', 'cy')
+            .should('have.attr', 'spellcheck', 'true')
           cy.get('.govuk-button').should('contain.text', 'Save changes')
           cy.get('.govuk-button').should('contain.text', 'Remove Welsh service name')
         })

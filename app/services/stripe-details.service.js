@@ -1,4 +1,4 @@
-const { updateBankAccount, errorCodes } = require('./clients/stripe/stripe.client')
+const { updateBankAccount } = require('./clients/stripe/stripe.client')
 const { ConnectorClient } = require('./clients/connector.client')
 const logger = require('../utils/logger')(__filename)
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -23,6 +23,5 @@ const updateStripeDetailsBankAccount = async (service, account, sortCode, accoun
 }
 
 module.exports = {
-  updateStripeDetailsBankAccount,
-  errorCodes
+  updateStripeDetailsBankAccount
 }

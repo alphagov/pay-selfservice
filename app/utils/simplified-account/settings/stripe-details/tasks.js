@@ -1,5 +1,6 @@
 const formatSimplifiedAccountPathsFor = require('../../format/format-simplified-account-paths-for')
 const paths = require('../../../../paths')
+const logger = require('../../../logger')(__filename)
 
 const stripeDetailsTasks = Object.freeze({
   bankAccount: {
@@ -49,7 +50,7 @@ const orderTasks = (target) => {
 
   Object.keys(target).forEach(key => {
     if (!(key in orderedTasks)) {
-      // log this probably
+      logger.warn(`Unexpected Stripe account setup step found in Connector response [key: ${key}]`)
     }
   })
   return orderedTasks
