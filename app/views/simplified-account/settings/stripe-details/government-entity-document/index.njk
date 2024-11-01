@@ -1,0 +1,13 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Government entity document
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+  <h1 class="govuk-heading-l">Government entity document</h1>
+{% endblock %}

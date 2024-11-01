@@ -3,12 +3,14 @@ const { Router } = require('express')
 const {
   simplifiedAccountStrategy,
   simplifiedAccountOptIn,
-  enforceLiveAccountOnly
+  enforceLiveAccountOnly,
+  enforcePaymentProviderType
 } = require('./middleware/simplified-account')
 const userIsAuthorised = require('./middleware/user-is-authorised')
 const permission = require('./middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('./controllers/simplified-account/settings')
+const { STRIPE } = require('./models/payment-providers')
 
 const simplifiedAccount = new Router({ mergeParams: true })
 
@@ -28,8 +30,19 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.collec
 simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.collectionSettings, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.postEditEmailCollectionMode)
 
 // stripe details
-simplifiedAccount.get(paths.simplifiedAccount.settings.stripeDetails.index, permission('stripe-account-details:update'), serviceSettingsController.stripeDetails.get)
-simplifiedAccount.get(paths.simplifiedAccount.settings.stripeDetails.bankAccount, permission('stripe-account-details:update'), serviceSettingsController.stripeDetails.bankAccount.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.stripeDetails.bankAccount, permission('stripe-account-details:update'), serviceSettingsController.stripeDetails.bankAccount.post)
+const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
+const stripeDetailsRouter = new Router({ mergeParams: true })
+  .use(enforcePaymentProviderType(STRIPE), permission('stripe-account-details:update'))
+stripeDetailsRouter.get(stripeDetailsPath.index, serviceSettingsController.stripeDetails.get)
+stripeDetailsRouter.get(stripeDetailsPath.bankAccount, serviceSettingsController.stripeDetails.bankAccount.get)
+stripeDetailsRouter.post(stripeDetailsPath.bankAccount, serviceSettingsController.stripeDetails.bankAccount.post)
+// -- new stuff
+stripeDetailsRouter.get(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.get)
+stripeDetailsRouter.get(stripeDetailsPath.organisationDetails, serviceSettingsController.stripeDetails.organisationDetails.get)
+stripeDetailsRouter.get(stripeDetailsPath.responsiblePerson, serviceSettingsController.stripeDetails.responsiblePerson.get)
+stripeDetailsRouter.get(stripeDetailsPath.governmentEntityDocument, serviceSettingsController.stripeDetails.governmentEntityDocument.get)
+stripeDetailsRouter.get(stripeDetailsPath.vatNumber, serviceSettingsController.stripeDetails.vatNumber.get)
+stripeDetailsRouter.get(stripeDetailsPath.director, serviceSettingsController.stripeDetails.director.get)
+simplifiedAccount.use(stripeDetailsRouter)
 
 module.exports = simplifiedAccount

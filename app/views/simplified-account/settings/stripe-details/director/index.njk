@@ -1,0 +1,13 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Service director
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+  <h1 class="govuk-heading-l">Service director</h1>
+{% endblock %}
