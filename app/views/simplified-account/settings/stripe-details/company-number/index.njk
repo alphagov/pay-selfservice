@@ -1,0 +1,13 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Company registration number
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+  <h1 class="govuk-heading-l">Company registration number</h1>
+{% endblock %}

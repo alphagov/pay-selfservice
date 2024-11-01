@@ -1,0 +1,13 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Organisation details
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+  <h1 class="govuk-heading-l">Confirm your organisation's name and address match your government entity document</h1>
+{% endblock %}
