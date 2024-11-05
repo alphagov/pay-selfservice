@@ -33,7 +33,7 @@
         {
           value: 'true',
           text: 'Yes',
-          checked: refundEmailEnabled === 'true',
+          checked: refundEmailEnabled === true,
           hint: {
             text: 'Users might not receive refund emails because entering an email address is optional'
           } if emailCollectionMode === 'OPTIONAL'
@@ -41,7 +41,7 @@
         {
           value: 'false',
           text: 'No',
-          checked: refundEmailEnabled === 'false'
+          checked: refundEmailEnabled === false
         }
       ]
     }) }}

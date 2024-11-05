@@ -141,4 +141,8 @@ describe('email notifications settings', () => {
       cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
     })
   })
+
+  describe('edit refund email settings', () => {
+
+  })
 })
