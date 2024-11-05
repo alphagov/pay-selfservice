@@ -24,7 +24,7 @@
         text: "Collect email addresses"
       },
         value: {
-        text: emailCollectionMode
+        text: 'Yes' if (emailCollectionMode === 'MANDATORY') else ('Yes - as an optional field' if (emailCollectionMode === 'OPTIONAL') else 'No')
       },
         actions: {
         items: [
@@ -39,11 +39,11 @@
       },
       {
         key: {
-        text: "Payment confirmation emails"
-      },
+          text: "Payment confirmation emails"
+        },
         value: {
-        text: 'On' if confirmationEmailEnabled else 'Off'
-      },
+          text: 'Yes' if confirmationEmailEnabled else 'No - email notification off'
+        },
         actions: {
         items: [
           {
@@ -57,11 +57,11 @@
       },
       {
         key: {
-        text: "Refund emails"
-      },
+          text: "Refund emails"
+        },
         value: {
-        text: 'On' if refundEmailEnabled else 'Off'
-      },
+          text: 'Yes' if refundEmailEnabled else 'No - email notification off'
+        },
         actions: {
         items: [
           {

@@ -19,7 +19,9 @@
       name: 'refundEmailToggle',
       hint: {
         text: 'Users will receive an email confirming their refund from GOV.UK Pay'
-      } if emailCollectionMode === 'MANDATORY',
+      } if emailCollectionMode === 'MANDATORY' else {
+        text: 'If they entered an email address, users will receive an email confirming their refund from GOV.UK Pay'
+      },
       fieldset: {
         legend: {
           text: 'Do you want to send refund emails?',
@@ -33,8 +35,8 @@
           text: 'Yes',
           checked: refundEmailEnabled === 'true',
           hint: {
-            text: "Users might not receive refund emails because entering an email address is optional"
-          }
+            text: 'Users might not receive refund emails because entering an email address is optional'
+          } if emailCollectionMode === 'OPTIONAL'
         },
         {
           value: 'false',
