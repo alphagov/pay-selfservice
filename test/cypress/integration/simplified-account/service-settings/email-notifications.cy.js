@@ -65,18 +65,19 @@ describe('email notifications settings', () => {
       it('should show links to change email settings', () => {
         cy.get('.govuk-summary-list').within(() => {
           cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Collect email addresses')
-          cy.get('.govuk-summary-list__value').eq(0).should('contain', 'On (mandatory)')
+          cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Yes')
           cy.get('.govuk-summary-list__actions a').eq(0).should('contain', 'Change')
-          cy.get('.govuk-summary-list__actions a.govuk-link').eq(0).should('have.attr', 'href')
-            .and('contain', `/account/${ACCOUNT_TYPE}/settings/email-notifications/collection-settings`)
-
+          cy.get('.govuk-summary-list__actions a.govuk-link').eq(0).should('have.attr', 'href',
+            `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`)
           cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Payment confirmation emails')
-          cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On')
+          cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Yes')
           cy.get('.govuk-summary-list__actions a').eq(1).should('contain', 'Change')
 
           cy.get('.govuk-summary-list__key').eq(2).should('contain', 'Refund emails')
-          cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
+          cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Yes')
           cy.get('.govuk-summary-list__actions a').eq(2).should('contain', 'Change')
+          cy.get('.govuk-summary-list__actions a.govuk-link').eq(2).should('have.attr', 'href',
+            `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`)
         })
       })
     })
@@ -89,13 +90,13 @@ describe('email notifications settings', () => {
       it('should not show links to change email settings', () => {
         cy.get('.govuk-summary-list').within(() => {
           cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Collect email addresses')
-          cy.get('.govuk-summary-list__value').eq(0).should('contain', 'On (mandatory)')
+          cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Yes')
           cy.get('.govuk-summary-list__actions a').eq(0).should('not.contain', 'Change')
           cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Payment confirmation emails')
-          cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On')
+          cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Yes')
           cy.get('.govuk-summary-list__actions a').eq(1).should('not.contain', 'Change')
           cy.get('.govuk-summary-list__key').eq(2).should('contain', 'Refund emails')
-          cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
+          cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Yes')
           cy.get('.govuk-summary-list__actions a').eq(2).should('not.contain', 'Change')
         })
       })
@@ -139,5 +140,9 @@ describe('email notifications settings', () => {
       cy.get('h1').should('contain', 'Email notifications')
       cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
     })
+  })
+
+  describe('edit refund email settings', () => {
+
   })
 })

@@ -178,7 +178,8 @@ module.exports = {
       },
       emailNotifications: {
         index: '/settings/email-notifications',
-        collectionSettings: '/settings/email-notifications/email-collection-mode'
+        emailCollectionMode: '/settings/email-notifications/email-collection-mode',
+        refundEmailToggle: '/settings/email-notifications/refund-email-toggle'
       },
       teamMembers: {
         index: '/settings/team-members'

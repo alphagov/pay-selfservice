@@ -24,7 +24,7 @@
         text: "Collect email addresses"
       },
         value: {
-        text: emailCollectionMode
+        text: 'Yes' if (emailCollectionMode === 'MANDATORY') else ('Yes - as an optional field' if (emailCollectionMode === 'OPTIONAL') else 'No')
       },
         actions: {
         items: [
@@ -39,11 +39,12 @@
       },
       {
         key: {
-        text: "Payment confirmation emails"
-      },
+          text: "Payment confirmation emails"
+        },
         value: {
-        text: 'On' if confirmationEmailEnabled else 'Off'
-      },
+          text: 'Yes' if (confirmationEmailEnabled and emailCollectionMode !== 'OFF') else
+          ('No' if (not confirmationEmailEnabled and emailCollectionMode !== 'OFF') else 'No - email notification off')
+        },
         actions: {
         items: [
           {
@@ -57,19 +58,20 @@
       },
       {
         key: {
-        text: "Refund emails"
-      },
+          text: "Refund emails"
+        },
         value: {
-        text: 'On' if refundEmailEnabled else 'Off'
-      },
+          text: 'Yes' if (refundEmailEnabled and emailCollectionMode !== 'OFF') else
+          ('No' if (not refundEmailEnabled and emailCollectionMode !== 'OFF') else 'No - email notification off')
+        },
         actions: {
         items: [
           {
-            href: "#",
+            href: editRefundEmailToggleHref,
             text: "Change",
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Refund emails settings"
-          } if isServiceAdmin else {}
+          } if (isServiceAdmin and emailCollectionMode !== 'OFF') else {}
         ]
       }
       }

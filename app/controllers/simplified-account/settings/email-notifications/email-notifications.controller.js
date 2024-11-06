@@ -1,5 +1,4 @@
 const { response } = require('../../../../utils/response')
-const humaniseEmailMode = require('../../../../utils/humanise-email-mode')
 const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('../../../../paths')
 const { setEmailCollectionModeByServiceIdAndAccountType } = require('../../../../services/email.service')
@@ -10,11 +9,12 @@ function getEmailNotificationsSettingsPage (req, res) {
   const account = req.account
 
   const context = {
-    emailCollectionMode: humaniseEmailMode(account.email_collection_mode),
+    emailCollectionMode: account.email_collection_mode,
     confirmationEmailEnabled: account.email_notifications?.PAYMENT_CONFIRMED?.enabled ?? false,
     refundEmailEnabled: account.email_notifications?.REFUND_ISSUED?.enabled ?? false,
     isServiceAdmin: req.user.isAdminUserForService(service.externalId),
-    editEmailCollectionHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.collectionSettings, service.externalId, account.type)
+    editEmailCollectionHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode, service.externalId, account.type),
+    editRefundEmailToggleHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.refundEmailToggle, service.externalId, account.type)
   }
   return response(req, res, 'simplified-account/settings/email-notifications/index', context)
 }
