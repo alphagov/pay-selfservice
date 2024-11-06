@@ -199,6 +199,16 @@ function patchAccountEmailCollectionModeSuccessByServiceIdAndAccountType (servic
     { op: 'replace', path: 'email_collection_mode', value: emailCollectionMode })
 }
 
+function setRefundEmailEnabledByServiceIdAndAccountType (serviceId, accountType, enabled) {
+  const path = `/v1/api/service/${serviceId}/account/${accountType}/email-notification`
+  const payload = {
+    op: 'replace',
+    path: '/refund_issued/enabled',
+    value: enabled
+  }
+  return stubBuilder('PATCH', path, 200, payload)
+}
+
 function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
   return stubBuilder('PATCH', path, 200, {
@@ -257,13 +267,6 @@ function postCheckWorldpayCredentials (opts) {
   })
 }
 
-function postCheckWorldpay3dsFlexCredentialsFailure (opts) {
-  const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
-  return stubBuilder('POST', path, 500, {
-    request: worldpay3dsFlexCredentialsFixtures.checkValidWorldpay3dsFlexCredentialsRequest(opts).payload
-  })
-}
-
 function postCheckWorldpay3dsFlexCredentialsWithBadResult (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
   return stubBuilder('POST', path, 200, {
@@ -293,11 +296,6 @@ function patchUpdateWorldpayOneOffCredentialsSuccess (opts = {}) {
   })
 }
 
-function postUpdateNotificationCredentialsSuccess (gatewayAccountId) {
-  const path = `/v1/api/accounts/${gatewayAccountId}/notification-credentials`
-  return stubBuilder('POST', path, 200)
-}
-
 function postSwitchPspSuccess (gatewayAccountId) {
   const path = `/v1/api/accounts/${gatewayAccountId}/switch-psp`
   return stubBuilder('POST', path, 200)
@@ -323,7 +321,9 @@ function addGatewayAccountsToService (serviceExternalId) {
 }
 
 module.exports = {
+  addGatewayAccountsToService,
   getAccountAuthSuccess,
+  getAccountByServiceIdAndAccountType,
   getGatewayAccountSuccess,
   getGatewayAccountsSuccess,
   getGatewayAccountByExternalIdSuccess,
@@ -341,17 +341,14 @@ module.exports = {
   patchUpdateMaskSecurityCodeSuccess,
   patchUpdate3dsVersionSuccess,
   postCheckWorldpay3dsFlexCredentials,
-  postCheckWorldpay3dsFlexCredentialsFailure,
   postCheckWorldpay3dsFlexCredentialsWithBadResult,
   postCheckWorldpayCredentials,
   postUpdateWorldpay3dsFlexCredentials,
   patchUpdateCredentialsSuccess,
   patchUpdateWorldpayOneOffCredentialsSuccess,
-  postUpdateNotificationCredentialsSuccess,
   postSwitchPspSuccess,
   patchAccountUpdateApplePaySuccess,
   patchAccountUpdateGooglePaySuccess,
-  getAccountByServiceIdAndAccountType,
   requestStripeTestAccount,
-  addGatewayAccountsToService
+  setRefundEmailEnabledByServiceIdAndAccountType
 }
