@@ -435,6 +435,11 @@ ConnectorClient.prototype = {
     return response.data
   },
 
+  /**
+   * @param {string} serviceId
+   * @param {string} accountType
+   * @param {boolean} enabled
+   */
   updateRefundEmailEnabledByServiceId: async function (serviceId, accountType, enabled) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}/email-notification`
       .replace('{serviceId}', encodeURIComponent(serviceId))

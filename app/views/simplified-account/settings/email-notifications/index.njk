@@ -42,8 +42,8 @@
           text: "Payment confirmation emails"
         },
         value: {
-          text: 'Yes' if (confirmationEmailEnabled and emailCollectionMode === 'MANDATORY') else
-            ('No' if (not confirmationEmailEnabled and emailCollectionMode === 'MANDATORY') else 'No - email notification off')
+          text: 'Yes' if (confirmationEmailEnabled and emailCollectionMode !== 'OFF') else
+          ('No' if (not confirmationEmailEnabled and emailCollectionMode !== 'OFF') else 'No - email notification off')
         },
         actions: {
         items: [
@@ -61,8 +61,8 @@
           text: "Refund emails"
         },
         value: {
-          text: 'Yes' if (refundEmailEnabled and emailCollectionMode === 'MANDATORY') else
-            ('No' if (not refundEmailEnabled and emailCollectionMode === 'MANDATORY') else 'No - email notification off')
+          text: 'Yes' if (refundEmailEnabled and emailCollectionMode !== 'OFF') else
+          ('No' if (not refundEmailEnabled and emailCollectionMode !== 'OFF') else 'No - email notification off')
         },
         actions: {
         items: [
