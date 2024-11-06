@@ -207,7 +207,6 @@ describe('email notifications settings', () => {
       })
 
       it('should return 404 when navigating directly to the refund email settings page', () => {
-        // cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`)
         cy.request({
           url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`,
           failOnStatusCode: false
