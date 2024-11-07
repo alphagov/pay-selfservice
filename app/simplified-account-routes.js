@@ -31,6 +31,8 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.emailC
 simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.postEditEmailCollectionMode)
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.refundEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-template:read'), serviceSettingsController.refundEmails.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.refundEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-template:read'), serviceSettingsController.refundEmails.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.paymentConfirmationEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-template:read'), serviceSettingsController.paymentConfirmationEmails.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.paymentConfirmationEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-template:read'), serviceSettingsController.paymentConfirmationEmails.post)
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails

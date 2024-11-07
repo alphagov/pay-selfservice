@@ -179,7 +179,8 @@ module.exports = {
       emailNotifications: {
         index: '/settings/email-notifications',
         emailCollectionMode: '/settings/email-notifications/email-collection-mode',
-        refundEmailToggle: '/settings/email-notifications/refund-email-toggle'
+        refundEmailToggle: '/settings/email-notifications/refund-email-toggle',
+        paymentConfirmationEmailToggle: '/settings/email-notifications/payment-confirmation-email-toggle'
       },
       teamMembers: {
         index: '/settings/team-members'

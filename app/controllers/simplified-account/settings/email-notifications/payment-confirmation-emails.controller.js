@@ -1,13 +1,13 @@
 const { response } = require('../../../../utils/response')
 const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('../../../../paths')
-const { setRefundEmailEnabledByServiceIdAndAccountType } = require('../../../../services/email.service')
+const { setConfirmationEnabledByServiceIdAndAccountType } = require('../../../../services/email.service')
 const logger = require('../../../../utils/logger')(__filename)
 
 function get (req, res) {
   const account = req.account
-  response(req, res, 'simplified-account/settings/email-notifications/refund-email-toggle', {
-    refundEmailEnabled: account.email_notifications.REFUND_ISSUED && account.email_notifications.REFUND_ISSUED.enabled,
+  response(req, res, 'simplified-account/settings/email-notifications/payment-confirmation-email-toggle', {
+    confirmationEnabled: account.email_notifications?.PAYMENT_CONFIRMED?.enabled,
     emailCollectionMode: account.email_collection_mode,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index,
       req.service.externalId, account.type)
@@ -15,11 +15,11 @@ function get (req, res) {
 }
 
 async function post (req, res) {
-  const refundEmailToggle = req.body.refundEmailToggle
+  const paymentConfirmationEmailToggle = req.body.paymentConfirmationEmailToggle
   const serviceExternalId = req.service.externalId
   const accountType = req.account.type
-  await setRefundEmailEnabledByServiceIdAndAccountType(serviceExternalId, accountType, refundEmailToggle)
-  logger.info(`Updated send refund emails to ${refundEmailToggle}`)
+  await setConfirmationEnabledByServiceIdAndAccountType(serviceExternalId, accountType, paymentConfirmationEmailToggle)
+  logger.info(`Updated send payment confirmation emails to ${paymentConfirmationEmailToggle}`)
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index,
     serviceExternalId, accountType))
 }
