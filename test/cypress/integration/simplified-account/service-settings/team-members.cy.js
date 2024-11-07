@@ -117,8 +117,13 @@ describe('Team members settings', () => {
 
     it('should show the current team members in the correct order without remove or change permission links', () => {
       cy.get('#team-members-admin-list').find('dd').first().contains('admin-user@example.com')
+      cy.get('#team-members-admin-list').contains('Change permission').should('not.exist')
+      cy.get('#team-members-admin-list').contains('Remove').should('not.exist')
       cy.get('#team-members-view-and-refund-list').find('dd').first().contains('view-and-refund-user@example.com')
+      cy.get('#team-members-view-and-refund-list').contains('Change permission').should('not.exist')
+      cy.get('#team-members-view-and-refund-list').contains('Remove').should('not.exist')
       cy.get('#team-members-view-only-list').find('dd').first().contains('view-only-user@example.com (you)')
+      cy.get('#team-members-view-only-list').find('dl').first().find('a').should('have.length', 1).first().contains('View')
     })
 
     it('should show the invited team members in the correct order', () => {
