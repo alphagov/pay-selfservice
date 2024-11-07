@@ -1,5 +1,5 @@
-const userStubs = require('../../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../../stubs/gateway-account-stubs')
+const userStubs = require('../../../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../../../stubs/gateway-account-stubs')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -49,11 +49,11 @@ const setupStubs = (role = ADMIN_ROLE, emailCollectionMode = 'MANDATORY') => {
   ])
 }
 
-describe('email notifications settings', () => {
+describe('Email notifications settings', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
-  describe('email notifications settings page', () => {
+  describe('Settings landing page', () => {
     describe('for an admin user', () => {
       beforeEach(() => {
         setupStubs()
@@ -111,7 +111,7 @@ describe('email notifications settings', () => {
     })
   })
 
-  describe('edit collect email mode', () => {
+  describe('Edit collect email mode', () => {
     beforeEach(() => {
       setupStubs()
       cy.task('setupStubs', [
