@@ -21,10 +21,10 @@
     rows: [
       {
         key: {
-        text: "Collect email addresses"
+        text: "Ask users for their email address"
       },
         value: {
-        text: 'Yes' if (emailCollectionMode === 'MANDATORY') else ('Yes - as an optional field' if (emailCollectionMode === 'OPTIONAL') else 'No')
+        text: 'On' if (emailCollectionMode === 'MANDATORY') else ('On - as an optional field' if (emailCollectionMode === 'OPTIONAL') else 'Off')
       },
         actions: {
         items: [
@@ -39,11 +39,11 @@
       },
       {
         key: {
-          text: "Payment confirmation emails"
+          text: "Send payment confirmation emails"
         },
         value: {
-          text: 'Yes' if (confirmationEmailEnabled and emailCollectionMode !== 'OFF') else
-          ('No' if (not confirmationEmailEnabled and emailCollectionMode !== 'OFF') else 'No - email notification off')
+          text: 'On' if (confirmationEmailEnabled and emailCollectionMode !== 'OFF') else
+          ('Off' if (not confirmationEmailEnabled and emailCollectionMode !== 'OFF') else 'Off (not asking users for their email address)')
         },
         actions: {
         items: [
@@ -58,11 +58,11 @@
       },
       {
         key: {
-          text: "Refund emails"
+          text: "Send refund emails"
         },
         value: {
-          text: 'Yes' if (refundEmailEnabled and emailCollectionMode !== 'OFF') else
-          ('No' if (not refundEmailEnabled and emailCollectionMode !== 'OFF') else 'No - email notification off')
+          text: 'On' if (refundEmailEnabled and emailCollectionMode !== 'OFF') else
+          ('Off' if (not refundEmailEnabled and emailCollectionMode !== 'OFF') else 'Off (not asking users for their email address)')
         },
         actions: {
         items: [
