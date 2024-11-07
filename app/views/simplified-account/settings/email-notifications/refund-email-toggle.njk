@@ -20,11 +20,11 @@
       hint: {
         text: 'Users will receive an email confirming their refund from GOV.UK Pay'
       } if emailCollectionMode === 'MANDATORY' else {
-        text: 'If they entered an email address, users will receive an email confirming their refund from GOV.UK Pay'
+        text: 'If they entered an email address, users will get a refund confirmation email from GOV.UK Pay'
       },
       fieldset: {
         legend: {
-          text: 'Do you want to send refund emails?',
+          text: 'Send refund emails',
           isPageHeading: true,
           classes: 'govuk-fieldset__legend--l'
         }
@@ -32,15 +32,15 @@
       items: [
         {
           value: 'true',
-          text: 'Yes',
+          text: 'On',
           checked: refundEmailEnabled === true,
           hint: {
-            text: 'Users might not receive refund emails because entering an email address is optional'
+            text: 'Entering an email address is currently optional so users might not get a refund confirmation'
           } if emailCollectionMode === 'OPTIONAL'
         },
         {
           value: 'false',
-          text: 'No',
+          text: 'Off',
           checked: refundEmailEnabled === false
         }
       ]
