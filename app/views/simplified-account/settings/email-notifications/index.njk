@@ -52,7 +52,7 @@
             text: "Change",
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Payment confirmation emails settings"
-          } if isServiceAdmin else {}
+          } if (isServiceAdmin and emailCollectionMode !== 'OFF') else {}
         ]
       }
       },
