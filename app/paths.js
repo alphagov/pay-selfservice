@@ -183,7 +183,9 @@ module.exports = {
         paymentConfirmationEmailToggle: '/settings/email-notifications/payment-confirmation-email-toggle'
       },
       teamMembers: {
-        index: '/settings/team-members'
+        index: '/settings/team-members',
+        delete: '/settings/team-members/:externalUserId/delete',
+        permission: '/settings/team-members/:externalUserId/permission'
       },
       orgDetails: {
         index: '/settings/organisation-details'

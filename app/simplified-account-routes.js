@@ -25,6 +25,11 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.serviceName.edit, enforce
 simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.removeCy, enforceLiveAccountOnly, permission('service-name:update'), serviceSettingsController.serviceName.postRemoveWelshServiceName)
 simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, enforceLiveAccountOnly, permission('service-name:update'), serviceSettingsController.serviceName.postEditServiceName)
 
+// team members
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.index, permission('transactions:read'), serviceSettingsController.teamMembers.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.delete, permission('transactions:read'), serviceSettingsController.teamMembers.getRemoveUser)
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.permission, permission('transactions:read'), serviceSettingsController.teamMembers.getChangePermission)
+
 // email notifications
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('transactions:read'), serviceSettingsController.emailNotifications.getEmailNotificationsSettingsPage)
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.getEditEmailCollectionModePage)

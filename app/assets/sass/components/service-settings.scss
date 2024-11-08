@@ -37,3 +37,9 @@
 .service-settings-inset-text--grey {
   background-color: govuk-colour("light-grey");
 }
+
+.team-member-email-list {
+  .govuk-summary-list__actions {
+    width: 30% !important;
+  }
+}
