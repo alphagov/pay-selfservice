@@ -28,36 +28,47 @@
       }}
     {% endif %}
 
+
   {% for role, roleDetails in roles %}
       {% if teamMembers[role].length %}
         <div class="team-member-email-list" id="team-members-{{ role }}-list">
           <h3 id="{{ role }}-role-header" class="govuk-heading-m">
             {{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{ teamMembers[role].length }})</span>
           </h3>
+
+          {% set teamMembersListedForRole = [] %}
           {% for member in teamMembers[role] %}
-            {{ govukSummaryList({
-              rows: [
-                {
-                  key: {
-                  text: "Email address",
-                  classes: "govuk-!-display-none"
-                },
-                  value: {
-                  html: teamMemberEmail(member.email, member.isCurrent)
-                },
-                  actions: {
-                  items: [
-                    { href: member.link, text: "View", classes: "govuk-link--no-visited-state" }
-                  ] if member.isCurrent else
-                  [
-                  { href: member.changePermissionLink, text: "Change permission", classes: "govuk-link--no-visited-state" } if member.changePermissionLink and isServiceAdmin,
-                  { href: member.removeLink, text: "Remove", classes: "govuk-link--no-visited-state" } if member.removeLink and isServiceAdmin
-              ]
-            }
+
+            {% set actionItems = [] %}
+            {% if member.isCurrent %}
+              {% set actionItems = [{ href: member.link, text: "View", classes: "govuk-link--no-visited-state" }] %}
+            {% else %}
+              {% if isServiceAdmin %}
+                {% set actionItems = [
+                  { href: member.changePermissionLink, text: "Change permission", classes: "govuk-link--no-visited-state" },
+                  { href: member.removeLink, text: "Remove", classes: "govuk-link--no-visited-state" }
+                ] %}
+              {% endif %}
+            {% endif %}
+
+            {% set teamMemberListItem = {
+              key: {
+                text: "Email address",
+                classes: "govuk-!-display-none"
+              },
+              value: {
+                html: teamMemberEmail(member.email, member.isCurrent)
+              },
+              actions: {
+                items: actionItems
               }
-              ]
-              }) }}
+            } %}
+
+            {% set teamMembersListedForRole = (teamMembersListedForRole.push(teamMemberListItem), teamMembersListedForRole) %}
           {% endfor %}
+
+          {{ govukSummaryList({ rows: teamMembersListedForRole }) }}
+
         </div>
       {% endif %}
   {% endfor %}
@@ -72,21 +83,23 @@
         {% if invitedTeamMembers[role].length %}
           <div class="team-member-email-list" id="invited-team-members-{{ role }}-list">
             <h3 id="invited-team-members-{{ role }}-role-header" class="govuk-heading-s">{{ roleDetails.description }} <span class="govuk-!-font-weight-regular pay-text-grey">({{invitedTeamMembers[role].length}})</span></h3>
-              {% for invitedMember in invitedTeamMembers[role] %}
-                {{ govukSummaryList({
-                  rows: [
-                    {
-                      key: {
-                      text: "Email address",
-                      classes: "govuk-!-display-none"
-                      },
-                        value: {
-                        html: invitedMember.email
-                      }
-                    }
-                  ]
-                  }) }}
-              {% endfor %}
+
+            {% set invitedTeamMembersListedForRole = [] %}
+            {% for invitedMember in invitedTeamMembers[role] %}
+              {% set invitedTeamMemberListItem = {
+                key: {
+                  text: "Email address",
+                  classes: "govuk-!-display-none"
+                },
+                value: {
+                  html: invitedMember.email
+                }
+              } %}
+              {% set invitedTeamMembersListedForRole = (invitedTeamMembersListedForRole.push(invitedTeamMemberListItem), invitedTeamMembersListedForRole) %}
+            {% endfor %}
+
+            {{ govukSummaryList({ rows: invitedTeamMembersListedForRole }) }}
+
           </div>
         {% endif %}
       {% endif %}
