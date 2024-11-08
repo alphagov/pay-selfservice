@@ -1,7 +1,7 @@
 const sinon = require('sinon')
-const User = require('../../../../models/User.class')
+const User = require('../../../../../models/User.class')
 const { expect } = require('chai')
-const paths = require('../../../../paths')
+const paths = require('../../../../../paths')
 const proxyquire = require('proxyquire')
 
 const ACCOUNT_TYPE = 'test'
@@ -11,8 +11,8 @@ let req, res, responseStub, paymentConfirmationEmailsController, setConfirmation
 
 const getController = (stubs = {}) => {
   return proxyquire('./payment-confirmation-emails.controller', {
-    '../../../../utils/response': { response: stubs.response },
-    '../../../../services/email.service': { setConfirmationEnabledByServiceIdAndAccountType: stubs.setConfirmationEnabledByServiceIdAndAccountType }
+    '../../../../../utils/response': { response: stubs.response },
+    '../../../../../services/email.service': { setConfirmationEnabledByServiceIdAndAccountType: stubs.setConfirmationEnabledByServiceIdAndAccountType }
   })
 }
 
@@ -92,7 +92,7 @@ describe('Controller: settings/email-notifications/payment-confirmation-emails',
 
     it('should update refund email enabled', () => {
       expect(setConfirmationEnabledByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-      expect(setConfirmationEnabledByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'true')).to.be.true // eslint-disable-line
+      sinon.assert.calledWith(setConfirmationEnabledByServiceIdAndAccountTypeStub, SERVICE_ID, ACCOUNT_TYPE, 'true')
     })
 
     it('should redirect to the email notifications landing page', () => {

@@ -1,7 +1,7 @@
 const sinon = require('sinon')
-const User = require('../../../../models/User.class')
+const User = require('../../../../../models/User.class')
 const { expect } = require('chai')
-const paths = require('../../../../paths')
+const paths = require('../../../../../paths')
 const proxyquire = require('proxyquire')
 
 const ACCOUNT_TYPE = 'test'
@@ -11,8 +11,8 @@ let req, res, responseStub, refundEmailsController, setRefundEmailEnabledByServi
 
 const getController = (stubs = {}) => {
   return proxyquire('./refund-emails.controller', {
-    '../../../../utils/response': { response: stubs.response },
-    '../../../../services/email.service': { setRefundEmailEnabledByServiceIdAndAccountType: stubs.setRefundEmailEnabledByServiceIdAndAccountType }
+    '../../../../../utils/response': { response: stubs.response },
+    '../../../../../services/email.service': { setRefundEmailEnabledByServiceIdAndAccountType: stubs.setRefundEmailEnabledByServiceIdAndAccountType }
   })
 }
 

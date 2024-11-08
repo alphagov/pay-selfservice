@@ -54,3 +54,5 @@ module.exports = {
   getEditEmailCollectionModePage,
   postEditEmailCollectionMode
 }
+module.exports.refundEmails = require('./refund-emails/refund-emails.controller')
+module.exports.paymentConfirmationEmails = require('./payment-confirmation-emails/payment-confirmation-emails.controller')
