@@ -410,6 +410,25 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * @param {string} serviceId
+   * @param {string} accountType
+   * @param {boolean} enabled
+   */
+  updateConfirmationEmailEnabledByServiceId: async function (serviceId, accountType, enabled) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}/email-notification`
+      .replace('{serviceId}', encodeURIComponent(serviceId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    const payload = {
+      op: 'replace',
+      path: '/payment_confirmed/enabled',
+      value: enabled
+    }
+    configureClient(client, url)
+    const response = await client.patch(url, payload, `update payment confirmation email enabled to ${enabled}`)
+    return response.data
+  },
+
+  /**
    *
    * @param {Object} params
    */

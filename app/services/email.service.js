@@ -51,6 +51,14 @@ async function setConfirmationEnabled (accountID, enabled) {
   }
 }
 
+async function setConfirmationEnabledByServiceIdAndAccountType (serviceExternalId, accountType, enabled) {
+  try {
+    await connectorClient.updateConfirmationEmailEnabledByServiceId(serviceExternalId, accountType, enabled)
+  } catch (err) {
+    clientFailure(err, 'PATCH', false)
+  }
+}
+
 async function setRefundEmailEnabledByServiceIdAndAccountType (serviceExternalId, accountType, enabled) {
   try {
     await connectorClient.updateRefundEmailEnabledByServiceId(serviceExternalId, accountType, enabled)
@@ -88,6 +96,7 @@ module.exports = {
   setEmailCollectionMode,
   setEmailCollectionModeByServiceIdAndAccountType,
   setConfirmationEnabled,
+  setConfirmationEnabledByServiceIdAndAccountType,
   setRefundEmailEnabled,
   setRefundEmailEnabledByServiceIdAndAccountType
 }
