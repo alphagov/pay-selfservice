@@ -33,7 +33,7 @@
             text: "Change",
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Edit collect email addresses"
-          } if isServiceAdmin else {}
+          } if isAdminUser else {}
         ]
       }
       },
@@ -52,7 +52,7 @@
             text: "Change",
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Payment confirmation emails settings"
-          } if (isServiceAdmin and emailCollectionMode !== 'OFF') else {}
+          } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
         ]
       }
       },
@@ -71,7 +71,7 @@
             text: "Change",
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Refund emails settings"
-          } if (isServiceAdmin and emailCollectionMode !== 'OFF') else {}
+          } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
         ]
       }
       }
