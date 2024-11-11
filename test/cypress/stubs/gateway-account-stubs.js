@@ -209,6 +209,16 @@ function setRefundEmailEnabledByServiceIdAndAccountType (serviceId, accountType,
   return stubBuilder('PATCH', path, 200, payload)
 }
 
+function setPaymentConfirmationEmailEnabledByServiceIdAndAccountType (serviceId, accountType, enabled) {
+  const path = `/v1/api/service/${serviceId}/account/${accountType}/email-notification`
+  const payload = {
+    op: 'replace',
+    path: '/payment_confirmed/enabled',
+    value: enabled
+  }
+  return stubBuilder('PATCH', path, 200, payload)
+}
+
 function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
   return stubBuilder('PATCH', path, 200, {
@@ -350,5 +360,6 @@ module.exports = {
   patchAccountUpdateApplePaySuccess,
   patchAccountUpdateGooglePaySuccess,
   requestStripeTestAccount,
+  setPaymentConfirmationEmailEnabledByServiceIdAndAccountType,
   setRefundEmailEnabledByServiceIdAndAccountType
 }

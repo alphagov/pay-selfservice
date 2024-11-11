@@ -148,6 +148,85 @@ describe('Email notifications settings', () => {
     })
   })
 
+  describe('When email collection mode is OFF', () => {
+    beforeEach(() => {
+      setupStubs(ADMIN_ROLE, 'OFF')
+    })
+    it('there should be no "Change" link on the Payment confirmation emails and Refund emails rows', () => {
+      cy.visit(EMAIL_NOTIFICATIONS_URL)
+
+      cy.get('.govuk-summary-list').within(() => {
+        cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Ask users for their email address')
+        cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Off')
+        cy.get('.govuk-summary-list__actions a').eq(0).should('contain', 'Change')
+        cy.get('.govuk-summary-list__actions a.govuk-link').eq(0).should('have.attr', 'href',
+          `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`)
+
+        // Verify there's only one change link. It's currently not possible to verify there is no 'Change' link on the 1st and 2nd row
+        cy.get('a.govuk-link').contains('Change').should('have.length', 1)
+
+        cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Send payment confirmation emails')
+        cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off (not asking users for their email address)')
+
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', 'Send refund emails')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Off (not asking users for their email address)')
+      })
+    })
+
+    it('should return 404 when navigating directly to the refund email settings page', () => {
+      cy.request({
+        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`,
+        failOnStatusCode: false
+      }).then((response) => {
+        expect(response.status).to.eq(404)
+      })
+    })
+
+    it('should return 404 when navigating directly to the payment confirmation email settings page', () => {
+      cy.request({
+        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/payment-confirmation-email-toggle`,
+        failOnStatusCode: false
+      }).then((response) => {
+        expect(response.status).to.eq(404)
+      })
+    })
+  })
+
+  describe('Payment confirmation email settings', () => {
+    describe('When email collection mode is MANDATORY or OPTIONAL', () => {
+      beforeEach(() => {
+        cy.task('setupStubs', [
+          gatewayAccountStubs.setPaymentConfirmationEmailEnabledByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'false')
+        ])
+      })
+
+      it('should navigate to the payment confirmation email toggle page', () => {
+        ['MANDATORY', 'OPTIONAL'].forEach(mode => {
+          setupStubs(ADMIN_ROLE, mode)
+          cy.visit(EMAIL_NOTIFICATIONS_URL)
+          cy.get('.govuk-summary-list').within(() => {
+            cy.get('.govuk-summary-list__actions a').eq(1).click()
+          })
+
+          cy.title().should('contains', 'Settings - Email notifications')
+          cy.url().should('include', '/settings/email-notifications/payment-confirmation-email-toggle')
+          cy.get('.govuk-fieldset__heading').first().should('contain', 'Send payment confirmation emails')
+
+          cy.get('.govuk-radios').within(() => {
+            cy.get('.govuk-radios__item').eq(0).should('contain', 'On')
+            cy.get('.govuk-radios__item').eq(1).should('contain', 'Off')
+          })
+
+          // navigate back to email notifications page
+          cy.get('input[type="radio"][value="false"]').check()
+          cy.get('.govuk-button').contains('Save changes').click()
+          cy.get('h1').should('contain', 'Email notifications')
+          cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
+        })
+      })
+    })
+  })
+
   describe('Refund email settings', () => {
     describe('When email collection mode is MANDATORY or OPTIONAL', () => {
       beforeEach(() => {
@@ -173,45 +252,11 @@ describe('Email notifications settings', () => {
             cy.get('.govuk-radios__item').eq(1).should('contain', 'Off')
           })
 
+          // navigate back to email notifications page
           cy.get('input[type="radio"][value="false"]').check()
           cy.get('.govuk-button').contains('Save changes').click()
           cy.get('h1').should('contain', 'Email notifications')
           cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
-        })
-      })
-    })
-
-    describe('When email collection mode is OFF', () => {
-      beforeEach(() => {
-        setupStubs(ADMIN_ROLE, 'OFF')
-      })
-      it('there should be no "Change" link on the Payment confirmation emails and Refund emails rows', () => {
-        cy.visit(EMAIL_NOTIFICATIONS_URL)
-
-        cy.get('.govuk-summary-list').within(() => {
-          cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Ask users for their email address')
-          cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Off')
-          cy.get('.govuk-summary-list__actions a').eq(0).should('contain', 'Change')
-          cy.get('.govuk-summary-list__actions a.govuk-link').eq(0).should('have.attr', 'href',
-            `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`)
-
-          // Verify there's only one change link. It's currently not possible to verify there is no 'Change' link on the 1st and 2nd row
-          cy.get('a.govuk-link').contains('Change').should('have.length', 1)
-
-          cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Send payment confirmation emails')
-          cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off (not asking users for their email address)')
-
-          cy.get('.govuk-summary-list__key').eq(2).should('contain', 'Send refund emails')
-          cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Off (not asking users for their email address)')
-        })
-      })
-
-      it('should return 404 when navigating directly to the refund email settings page', () => {
-        cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`,
-          failOnStatusCode: false
-        }).then((response) => {
-          expect(response.status).to.eq(404)
         })
       })
     })
