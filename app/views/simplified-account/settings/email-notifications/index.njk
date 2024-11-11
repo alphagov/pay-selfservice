@@ -6,7 +6,7 @@
 
 {% block settingsContent %}
 
-  {% if not isServiceAdmin %}
+  {% if not isAdminUser %}
     {{ govukInsetText({
       text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure,
         accepted card types, email notifications, billing address or mask card numbers or security codes for MOTO services.",
@@ -76,4 +76,6 @@
       }
       }
     ]}) }}
+
+  <p class="govuk-body"><a class="govuk-link" href="{{ templatesHref }}" id="templates-link">View email templates and add a custom paragraph</a></p>
 {% endblock %}

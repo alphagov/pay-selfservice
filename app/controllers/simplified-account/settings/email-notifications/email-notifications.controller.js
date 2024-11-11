@@ -12,12 +12,13 @@ function getEmailNotificationsSettingsPage (req, res) {
     emailCollectionMode: account.email_collection_mode,
     confirmationEmailEnabled: account.email_notifications?.PAYMENT_CONFIRMED?.enabled ?? false,
     refundEmailEnabled: account.email_notifications?.REFUND_ISSUED?.enabled ?? false,
-    isServiceAdmin: req.user.isAdminUserForService(service.externalId),
     editEmailCollectionHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode,
       service.externalId, account.type),
     editRefundEmailToggleHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.refundEmailToggle,
       service.externalId, account.type),
     editPaymentConfirmationEmailToggleHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.paymentConfirmationEmailToggle,
+      service.externalId, account.type),
+    templatesHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
       service.externalId, account.type)
   }
   return response(req, res, 'simplified-account/settings/email-notifications/index', context)
@@ -56,3 +57,4 @@ module.exports = {
 }
 module.exports.refundEmails = require('./refund-emails/refund-emails.controller')
 module.exports.paymentConfirmationEmails = require('./payment-confirmation-emails/payment-confirmation-emails.controller')
+module.exports.templates = require('./templates/templates.controller')
