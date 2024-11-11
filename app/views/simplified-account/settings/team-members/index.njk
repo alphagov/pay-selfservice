@@ -1,7 +1,7 @@
 {% extends "../settings-layout.njk" %}
 
 {% macro teamMemberEmail(email, isCurrent, isServiceAdmin) %}
-  <p class="govuk-body">{{email}}{% if isCurrent %} (you){% endif %}</p>
+  <p class="govuk-body">{{email}}{% if isCurrent %} (me){% endif %}</p>
 {% endmacro %}
 
 {% block settingsPageTitle %}
@@ -41,7 +41,7 @@
 
             {% set actionItems = [] %}
             {% if member.isCurrent %}
-              {% set actionItems = [{ href: member.link, text: "View", classes: "govuk-link--no-visited-state" }] %}
+              {% set actionItems = [{ href: member.link, text: "View my profile", classes: "govuk-link--no-visited-state" }] %}
             {% else %}
               {% if isServiceAdmin %}
                 {% set actionItems = [

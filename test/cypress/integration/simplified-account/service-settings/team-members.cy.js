@@ -79,8 +79,8 @@ describe('Team members settings', () => {
     })
 
     it('should show the current team members in the correct order with appropriate links', () => {
-      cy.get('#team-members-admin-list').find('dd').first().contains('admin-user@example.com (you)')
-      cy.get('#team-members-admin-list').find('dl').first().find('a').contains('View')
+      cy.get('#team-members-admin-list').find('dd').first().contains('admin-user@example.com (me)')
+      cy.get('#team-members-admin-list').find('dl').first().find('a').contains('View my profile')
       cy.get('#team-members-view-and-refund-list').find('dd').first().contains('view-and-refund-user@example.com')
       cy.get('#team-members-view-and-refund-list').find('dl').first().find('a').first().contains('Change permission')
       cy.get('#team-members-view-and-refund-list').find('dl').first().find('a').contains('Remove')
@@ -130,8 +130,8 @@ describe('Team members settings', () => {
       cy.get('#team-members-view-and-refund-list').find('dd').first().contains('view-and-refund-user@example.com')
       cy.get('#team-members-view-and-refund-list').contains('Change permission').should('not.exist')
       cy.get('#team-members-view-and-refund-list').contains('Remove').should('not.exist')
-      cy.get('#team-members-view-only-list').find('dd').first().contains('view-only-user@example.com (you)')
-      cy.get('#team-members-view-only-list').find('dl').first().find('a').should('have.length', 1).first().contains('View')
+      cy.get('#team-members-view-only-list').find('dd').first().contains('view-only-user@example.com (me)')
+      cy.get('#team-members-view-only-list').find('dl').first().find('a').should('have.length', 1).first().contains('View my profile')
       cy.get('#team-members-view-only-list').find('dd').eq(2).contains('another-view-only-user@example.com')
       cy.get('#team-members-view-only-list').contains('Change permission').should('not.exist')
       cy.get('#team-members-view-only-list').contains('Remove').should('not.exist')
