@@ -60,6 +60,7 @@ describe('Stripe details settings', () => {
             .then(li => {
               cy.wrap(li)
                 .should('have.attr', 'href', `${SERVICE_SETTINGS_URL}/stripe-details`)
+                .parent().should('have.class', 'service-settings-nav__li--active')
             })
         })
       })

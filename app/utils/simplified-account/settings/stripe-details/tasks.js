@@ -11,7 +11,7 @@ const stripeDetailsTasks = Object.freeze({
   responsiblePerson: {
     name: 'responsiblePerson',
     friendlyName: 'Responsible person',
-    path: paths.simplifiedAccount.settings.stripeDetails.responsiblePerson
+    path: paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index
   },
   director: {
     name: 'director',
@@ -92,4 +92,7 @@ const friendlyStripeTasks = (account, service) => {
   }
 }
 
-module.exports = friendlyStripeTasks
+module.exports = {
+  friendlyStripeTasks,
+  stripeDetailsTasks
+}

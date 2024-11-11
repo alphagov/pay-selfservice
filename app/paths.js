@@ -189,7 +189,12 @@ module.exports = {
       stripeDetails: {
         index: '/settings/stripe-details',
         bankAccount: '/settings/stripe-details/bank-account',
-        responsiblePerson: '/settings/stripe-details/responsible-person',
+        responsiblePerson: {
+          index: '/settings/stripe-details/responsible-person',
+          homeAddress: '/settings/stripe-details/responsible-person/home-address',
+          contactDetails: '/settings/stripe-details/responsible-person/contact-details',
+          checkYourAnswers: '/settings/stripe-details/responsible-person/check-your-answers'
+        },
         vatNumber: '/settings/stripe-details/vat-number',
         companyNumber: '/settings/stripe-details/company-number',
         director: '/settings/stripe-details/director',

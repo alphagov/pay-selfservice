@@ -4,10 +4,129 @@
   Stripe details - Responsible person
 {% endblock %}
 
+
+
 {% block settingsContent %}
   {{ govukBackLink({
     text: "Back",
     href: backLink
   }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">Responsible person</h1>
+  <p class="govuk-body">We need details of a <a class="govuk-link"
+                                                href="https://www.payments.service.gov.uk/required-responsible-person-and-director-information/">responsible
+      person</a> so that Stripe can run anti-money laundering checks. Liability stays at an organisational and not
+    individual level.</p>
+  <p class="govuk-body">The responsible person can be:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>someone in your organisation authorised to sign contracts</li>
+    <li>the head of finance</li>
+    <li>the head of the organisation</li>
+  </ul>
+
+  <p class="govuk-body">Stripe will store the responsible person’s details, not GOV.UK Pay.</p>
+
+  <form id="responsible-person" method="post" class="govuk-!-margin-top-4" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {% call govukFieldset({
+      legend: {
+        text: "Name",
+        classes: "govuk-fieldset__legend--m",
+        isPageHeading: false
+      }
+    }) %}
+      {{ govukInput({
+        label: {
+          text: "First name"
+        },
+        id: "first-name",
+        name: "firstName",
+        value: name.firstName,
+        type: "text",
+        autocomplete: "section-person given-name",
+        spellcheck: false,
+        errorMessage: { text: errors.formErrors['firstName'] } if errors.formErrors['firstName'] else false,
+        classes: "govuk-input--width-20"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Last name"
+        },
+        id: "last-name",
+        name: "lastName",
+        value: name.lastName,
+        type: "text",
+        autocomplete: "section-person family-name",
+        spellcheck: false,
+        errorMessage: { text: errors.formErrors['lastName'] } if errors.formErrors['lastName'] else false,
+        classes: "govuk-input--width-20"
+      }) }}
+
+    {% endcall %}
+
+    {{ govukDateInput({
+      id: "dob",
+      fieldset: {
+        legend: {
+          classes: "govuk-fieldset__legend--m",
+          text: "Date of birth"
+        }
+      },
+      hint: {
+        text: "For example, 26 5 1980"
+      },
+      errorMessage: {
+        text: errors.formErrors['dobDay'] or errors.formErrors['dobMonth'] or errors.formErrors['dobYear']
+      } if (errors.formErrors['dobDay'] or errors.formErrors['dobMonth'] or errors.formErrors['dobYear']) else false,
+      items: [
+        {
+          label: "Day",
+          value: dob.dobDay,
+          name: "dobDay",
+          id: "dob-day",
+          classes: "govuk-input--width-2",
+          autocomplete: "section-person bday-day"
+        },
+        {
+          label: "Month",
+          value: dob.dobMonth,
+          name: "dobMonth",
+          id: "dob-month",
+          classes: "govuk-input--width-2",
+          autocomplete: "section-person bday-month"
+        },
+        {
+          label: "Year",
+          value: dob.dobYear,
+          name: "dobYear",
+          id: "dob-year",
+          classes: "govuk-input--width-4",
+          autocomplete: "section-person bday-year"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({ text: "Save and continue" }) }}
+
+  </form>
+
+  <script>
+    // progressively enhance dob input to only accept digits
+    const elementIds = [{id: 'dob-day', length: 2}, {id: 'dob-month', length: 2}, {id: 'dob-year', length: 4}]
+    elementIds.forEach(element => {
+      document.getElementById(element.id).addEventListener('input', function (e) {
+        let value = e.target.value
+        e.target.value = value.replace(/\D/g, '').slice(0, element.length)
+      })
+    })
+  </script>
 {% endblock %}

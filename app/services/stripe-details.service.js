@@ -1,4 +1,4 @@
-const { updateBankAccount } = require('./clients/stripe/stripe.client')
+const { updateBankAccount, listPersons, updatePerson, createPerson, updateCompany } = require('./clients/stripe/stripe.client')
 const { ConnectorClient } = require('./clients/connector.client')
 const logger = require('../utils/logger')(__filename)
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
@@ -22,6 +22,29 @@ const updateStripeDetailsBankAccount = async (service, account, sortCode, accoun
   })
 }
 
+/**
+ * Updates Stripe account responsible person for the given service and account type
+ * @param account {GatewayAccount}
+ * @param service {GOVUKPayService}
+ * @param responsiblePerson {object}
+ */
+const updateStipeDetailsResponsiblePerson = async (service, account, responsiblePerson) => {
+  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
+  const stripePersonsResponse = await listPersons(stripeAccount.stripeAccountId)
+  const possiblyExistingResponsiblePerson = stripePersonsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
+  if (possiblyExistingResponsiblePerson !== undefined) {
+    await updatePerson(stripeAccount.stripeAccountId, possiblyExistingResponsiblePerson.id, responsiblePerson)
+  } else {
+    await createPerson(stripeAccount.stripeAccountId, responsiblePerson)
+  }
+  await updateCompany(stripeAccount.stripeAccountId, { executives_provided: true })
+  await connector.setStripeAccountSetupFlagByServiceIdAndAccountType(service.externalId, account.type, 'responsible_person')
+  logger.info('Responsible person details submitted for Stripe account', {
+    stripe_account_id: stripeAccount.stripeAccountId
+  })
+}
+
 module.exports = {
-  updateStripeDetailsBankAccount
+  updateStripeDetailsBankAccount,
+  updateStipeDetailsResponsiblePerson
 }

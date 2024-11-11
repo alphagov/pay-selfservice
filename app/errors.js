@@ -90,6 +90,12 @@ class InvalidConfigurationError extends DomainError {
 class ExpiredInviteError extends DomainError {
 }
 
+/**
+ * Thrown when trying to visit a task page when the task has already been completed
+ */
+class TaskAlreadyCompletedError extends DomainError {
+}
+
 module.exports = {
   NotAuthenticatedError,
   UserAccountDisabledError,
@@ -102,5 +108,6 @@ module.exports = {
   InvalidConfigurationError,
   ExpiredInviteError,
   GatewayTimeoutError,
-  GatewayTimeoutForAllServicesSearchError
+  GatewayTimeoutForAllServicesSearchError,
+  TaskAlreadyCompletedError
 }
