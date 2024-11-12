@@ -22,6 +22,7 @@ const { requestContextMiddleware } = require('./app/services/clients/base/reques
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 const formatPSPname = require('./app/utils/format-PSP-name')
 const smartCaps = require('./app/utils/custom-nunjucks-filters/smart-caps')
+const govukDate = require('./app/utils/custom-nunjucks-filters/govuk-date')
 const formatAccountPathsFor = require('./app/utils/format-account-paths-for')
 const formatFutureStrategyAccountPathsFor = require('./app/utils/format-future-strategy-account-paths-for')
 const formatServicePathsFor = require('./app//utils/format-service-paths-for')
@@ -125,6 +126,7 @@ function initialiseTemplateEngine (app) {
   nunjucksEnvironment.addFilter('formatPSPname', formatPSPname)
   nunjucksEnvironment.addFilter('isList', (n) => Array.isArray(n))
   nunjucksEnvironment.addFilter('smartCaps', smartCaps)
+  nunjucksEnvironment.addFilter('govukDate', govukDate)
 }
 
 function initialisePublic (app) {
