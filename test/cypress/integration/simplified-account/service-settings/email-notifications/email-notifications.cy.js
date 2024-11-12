@@ -60,15 +60,16 @@ describe('Email notifications settings', () => {
     describe('for an admin user', () => {
       beforeEach(() => {
         setupStubs()
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
       })
 
       it('should show the correct heading and title', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('h1').should('contain', 'Email notifications')
         cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
       })
 
       it('should show links to change email settings', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('.govuk-summary-list').within(() => {
           cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Ask users for their email address')
           cy.get('.govuk-summary-list__value').eq(0).should('contain', 'On')
@@ -91,9 +92,9 @@ describe('Email notifications settings', () => {
     describe('for a non admin user', () => {
       beforeEach(() => {
         setupStubs(NON_ADMIN_ROLE)
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
       })
       it('should not show links to change email settings', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('.govuk-summary-list').within(() => {
           cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Ask users for their email address')
           cy.get('.govuk-summary-list__value').eq(0).should('contain', 'On')
@@ -108,6 +109,7 @@ describe('Email notifications settings', () => {
       })
 
       it('should show the permissions banner', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('.govuk-inset-text').should('contain',
           'You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure')
       })
@@ -269,14 +271,11 @@ describe('Email notifications settings', () => {
     describe('for an admin user', () => {
       beforeEach(() => {
         setupStubs()
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
       })
-      it('should show the Confirmation email tab', () => {
+      it('should show relevant tabs and Add Custom Paragraph link', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
         cy.get('#tab_confirmation-html').should('have.attr', 'href', '#confirmation-html')
         cy.get('#add-custom-paragraph-link').should('have.attr', 'href', '#') // TODO verify actual href
-      })
-
-      it('should show the Refund email tab', () => {
         cy.get('#tab_refund-html').eq(0).should('have.attr', 'href', '#refund-html')
       })
     })
@@ -284,14 +283,11 @@ describe('Email notifications settings', () => {
     describe('for a non-admin user', () => {
       beforeEach(() => {
         setupStubs(NON_ADMIN_ROLE)
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
       })
-      it('should show the Confirmation email tab', () => {
+      it('should show relevant tabs only', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
         cy.get('#tab_confirmation-html').should('have.attr', 'href', '#confirmation-html')
         cy.get('#add-custom-paragraph-link').should('have.attr', 'disabled', 'disabled')
-      })
-
-      it('should show the Refund email tab', () => {
         cy.get('#tab_refund-html').eq(0).should('have.attr', 'href', '#refund-html')
       })
     })
