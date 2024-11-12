@@ -8,6 +8,7 @@ const { roles } = require('../../../../utils/roles')
 async function get (req, res, next) {
   const externalServiceId = req.service.externalId
   const accountType = req.account.type
+  const messages = res.locals?.flash?.messages ?? []
   try {
     const [serviceUsers, invitedUsers] = await Promise.all([
       getServiceUsers(externalServiceId),
@@ -20,6 +21,7 @@ async function get (req, res, next) {
     const isServiceAdmin = req.user.isAdminUserForService(externalServiceId)
 
     response(req, res, 'simplified-account/settings/team-members/index', {
+      messages,
       teamMembers,
       inviteTeamMemberLink,
       invitedTeamMembers,
@@ -32,16 +34,10 @@ async function get (req, res, next) {
   }
 }
 
-async function getRemoveUser (req, res, next) {
-  // TODO implement remove user page
-}
-
 async function getChangePermission (req, res, next) {
   // TODO implement change permission page
 }
 
-module.exports = {
-  get,
-  getRemoveUser,
-  getChangePermission
-}
+module.exports.get = get
+module.exports.getChangePermission = getChangePermission
+module.exports.removeUser = require('./remove-user/remove-user.controller')

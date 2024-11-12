@@ -5,7 +5,8 @@ const {
   simplifiedAccountOptIn,
   enforceEmailCollectionModeNotOff,
   enforceLiveAccountOnly,
-  enforcePaymentProviderType
+  enforcePaymentProviderType,
+  enforceCannotRemoveSelfFromService
 } = require('./middleware/simplified-account')
 const userIsAuthorised = require('./middleware/user-is-authorised')
 const permission = require('./middleware/permission')
@@ -27,7 +28,8 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, enforc
 
 // team members
 simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.index, permission('transactions:read'), serviceSettingsController.teamMembers.get)
-simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.delete, permission('transactions:read'), serviceSettingsController.teamMembers.getRemoveUser)
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.delete, enforceCannotRemoveSelfFromService, permission('users-service:delete'), serviceSettingsController.teamMembers.removeUser.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.teamMembers.delete, enforceCannotRemoveSelfFromService, permission('users-service:delete'), serviceSettingsController.teamMembers.removeUser.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.permission, permission('transactions:read'), serviceSettingsController.teamMembers.getChangePermission)
 
 // email notifications
