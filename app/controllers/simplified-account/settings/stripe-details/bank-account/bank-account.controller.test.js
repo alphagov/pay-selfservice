@@ -15,7 +15,9 @@ let req, res, next, responseStub, updateStripeDetailsBankAccountStub, bankAccoun
 const getController = (stubs = {}) => {
   return proxyquire('./bank-account.controller', {
     '../../../../../utils/response': { response: stubs.response },
-    '../../../../../services/stripe-details.service': { updateStripeDetailsBankAccount: stubs.updateStripeDetailsBankAccount }
+    '../../../../../services/stripe-details.service': {
+      updateStripeDetailsBankAccount: stubs.updateStripeDetailsBankAccount
+    }
   })
 }
 
@@ -41,7 +43,7 @@ const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additi
     ...additionalReqProps
   }
   next = sinon.spy()
-  bankAccountController[method](req, res, next)
+  bankAccountController[method][1](req, res, next)
 }
 
 describe('Controller: settings/stripe-details/bank-account', () => {

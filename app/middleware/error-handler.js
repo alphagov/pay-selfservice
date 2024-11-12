@@ -17,10 +17,11 @@ const {
   InvalidConfigurationError,
   ExpiredInviteError,
   GatewayTimeoutError,
-  GatewayTimeoutForAllServicesSearchError
+  GatewayTimeoutForAllServicesSearchError, TaskAlreadyCompletedError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
+const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/format/format-simplified-account-paths-for')
 
 module.exports = function errorHandler (err, req, res, next) {
   if (res.headersSent) {
@@ -69,12 +70,28 @@ module.exports = function errorHandler (err, req, res, next) {
 
   if (err instanceof InvalidConfigurationError) {
     logger.info(`InvalidConigurationError handled: ${err.message}. Rendering error page`)
-    return renderErrorView(req, res, 'This account is not configured to perform this action. Please contact support the support team.', 400)
+    return renderErrorView(req, res, 'This account is not configured to perform this action. Please contact the support team.', 400)
   }
 
   if (err instanceof ExpiredInviteError) {
     logger.info(`ExpiredInviteError handled: ${err.message}. Rendering error page`)
     return renderErrorView(req, res, 'This invitation is no longer valid', 410)
+  }
+
+  if (err instanceof TaskAlreadyCompletedError) {
+    logger.info(`TaskAlreadyCompletedError handled: ${err.message}. Rendering error page`)
+    res.status(302)
+    return response(req, res, 'error-with-link', {
+      error: {
+        title: 'You\'ve already completed this task',
+        message: 'Contact GOV.UK Pay support if you need to change your answers.'
+      },
+      enable_link: true,
+      link: {
+        text: 'Click here to return to settings',
+        link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type)
+      }
+    })
   }
 
   if (err && err.code === 'EBADCSRFTOKEN') {

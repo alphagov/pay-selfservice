@@ -1,0 +1,138 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Responsible person - Check your answers
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-l">Check your responsible person details</h1>
+
+  {{ govukSummaryList({
+    classes: "govuk-!-margin-bottom-9",
+    rows: [
+      {
+        key: {
+        text: "Name"
+      },
+        value: {
+        text: answers.name
+      },
+        actions: {
+        items: [
+          {
+            href: changeResponsiblePersonLink,
+            text: "Change",
+            visuallyHiddenText: "change name",
+            classes: "govuk-link--no-visited-state"
+          }
+        ]
+      }
+      },
+      {
+        key: {
+        text: "Date of birth"
+      },
+        value: {
+        text: answers.dob | govukDate
+      },
+        actions: {
+        items: [
+          {
+            href: changeResponsiblePersonLink,
+            text: "Change",
+            visuallyHiddenText: "change date of birth",
+            classes: "govuk-link--no-visited-state"
+          }
+        ]
+      }
+      },
+      {
+        key: {
+        text: "Home address"
+      },
+        value: {
+        html: answers.address | safe
+      },
+        actions: {
+        items: [
+          {
+            href: changeHomeAddressLink,
+            text: "Change",
+            visuallyHiddenText: "change address",
+            classes: "govuk-link--no-visited-state"
+          }
+        ]
+      }
+      },
+      {
+        key: {
+        text: "Work telephone number"
+      },
+        value: {
+        text: answers.phone
+      },
+        actions: {
+        items: [
+          {
+            href: changeContactDetailsLink,
+            text: "Change",
+            visuallyHiddenText: "change contact details",
+            classes: "govuk-link--no-visited-state"
+          }
+        ]
+      }
+      },
+      {
+        key: {
+        text: "Work email address"
+      },
+        value: {
+        text: answers.email
+      },
+        actions: {
+        items: [
+          {
+            href: changeContactDetailsLink,
+            text: "Change",
+            visuallyHiddenText: "change contact details",
+            classes: "govuk-link--no-visited-state"
+          }
+        ]
+      }
+      }
+    ]
+  }) }}
+
+
+  <form id="responsible-person-check-your-answers" method="post" class="govuk-!-margin-top-4" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukButton({
+      text: "Save and continue",
+      id: "responsible-person-submit"
+    }) }}
+  </form>
+
+  <script>
+    // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
+    const submitButton = document.getElementById('responsible-person-submit')
+    document.getElementById('responsible-person-check-your-answers').addEventListener('submit', function () {
+      submitButton.setAttribute('disabled', 'true')
+      submitButton.setAttribute('aria-disabled', 'true')
+      submitButton.setAttribute('class', 'govuk-button govuk-button--disabled')
+      submitButton.textContent = "Saving..."
+    })
+  </script>
+{% endblock %}

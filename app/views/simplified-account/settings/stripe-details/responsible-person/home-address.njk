@@ -1,0 +1,88 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Responsible person - Home address
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-l">Responsible person home address</h1>
+
+  <form id="responsible-person-home-address" method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {% call govukFieldset({}) %}
+
+      <p class="govuk-body">Do not use a work address. Stripe needs the responsible person’s home address to check their
+        identity</p>
+
+      {{ govukInput({
+        label: {
+          html: 'Address line 1'
+        },
+        id: "home-address-line-1",
+        name: "homeAddressLine1",
+        value: address.homeAddressLine1,
+        type: "text",
+        autocomplete: "section-address address-line1",
+        errorMessage: { text: errors.formErrors['homeAddressLine1'] } if errors.formErrors['homeAddressLine1'] else false,
+        classes: "govuk-!-width-two-thirds"
+      }) }}
+      {{ govukInput({
+        label: {
+          html: 'Address line 2 (optional)'
+        },
+        id: "home-address-line-2",
+        name: "homeAddressLine2",
+        value: address.homeAddressLine2,
+        type: "text",
+        autocomplete: "section-address address-line2",
+        errorMessage: { text: errors.formErrors['homeAddressLine2'] } if errors.formErrors['homeAddressLine2'] else false,
+        attributes: {
+          "aria-label": "Enter address line 2"
+        },
+        classes: "govuk-!-width-two-thirds"
+      }) }}
+      {{ govukInput({
+        label: {
+          text: "Town or city"
+        },
+        id: "home-address-city",
+        name: "homeAddressCity",
+        value: address.homeAddressCity,
+        type: "text",
+        autocomplete: "section-address address-level2",
+        errorMessage: { text: errors.formErrors['homeAddressCity'] } if errors.formErrors['homeAddressCity'] else false,
+        classes: "govuk-input--width-20"
+      }) }}
+      {{ govukInput({
+        label: {
+          text: "Postcode"
+        },
+        id: "home-address-postcode",
+        name: "homeAddressPostcode",
+        value: address.homeAddressPostcode,
+        type: "text",
+        autocomplete: "section-address postal-code",
+        classes: "govuk-input--width-10",
+        errorMessage: { text: errors.formErrors['homeAddressPostcode'] } if errors.formErrors['homeAddressPostcode'] else false
+      }) }}
+
+    {% endcall %}
+
+
+    {{ govukButton({ text: "Save and continue" }) }}
+
+  </form>
+{% endblock %}

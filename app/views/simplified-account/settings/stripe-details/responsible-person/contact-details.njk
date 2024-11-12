@@ -1,0 +1,60 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Responsible person - Contact details
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-l">Responsible person contact details</h1>
+
+  <form id="responsible-person-contact-details" method="post" class="govuk-!-margin-top-4" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukInput({
+      label: {
+        text: "Work telephone number",
+        classes: "govuk-label--m"
+      },
+      hint: {
+        text: "For international numbers include the country code with a leading plus (e.g. +44)"
+      },
+      id: "work-telephone-number",
+      name: "workTelephoneNumber",
+      value: contact.workTelephoneNumber,
+      type: "tel",
+      autocomplete: "section-contact work tel",
+      errorMessage: { text: errors.formErrors['workTelephoneNumber'] } if errors.formErrors['workTelephoneNumber'] else false,
+      classes: "govuk-!-width-two-thirds"
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Work email address",
+        classes: "govuk-label--m"
+      },
+      id: "work-email",
+      name: "workEmail",
+      value: contact.workEmail,
+      type: "email",
+      autocomplete: "section-contact work email",
+      spellcheck: false,
+      errorMessage: { text: errors.formErrors['workEmail'] } if errors.formErrors['workEmail'] else false,
+      classes: "govuk-!-width-two-thirds"
+    }) }}
+
+    {{ govukButton({ text: "Save and continue" }) }}
+
+  </form>
+{% endblock %}

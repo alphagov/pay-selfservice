@@ -1,5 +1,5 @@
 const { response } = require('../../../../utils/response')
-const friendlyStripeTasks = require('../../../../utils/simplified-account/settings/stripe-details/tasks')
+const { friendlyStripeTasks } = require('../../../../utils/simplified-account/settings/stripe-details/tasks')
 
 async function get (req, res) {
   const account = req.account

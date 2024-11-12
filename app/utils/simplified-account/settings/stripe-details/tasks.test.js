@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const friendlyStripeTasks = require('./tasks')
+const { friendlyStripeTasks } = require('./tasks')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
