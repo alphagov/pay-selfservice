@@ -107,7 +107,7 @@
     "express": "4.21.1",
     "express-validator": "^7.2.0",
     "google-libphonenumber": "3.2.33",
-    "govuk-frontend": "^4.8.0",
+    "govuk-frontend": "^5.7.1",
     "http-proxy": "1.18.x",
     "https-proxy-agent": "5.0.1",
     "joi": "17.12.1",

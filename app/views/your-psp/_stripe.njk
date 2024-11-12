@@ -14,11 +14,11 @@
 		<div class="govuk-grid-column-one-third">
 			<span>
 				{% if not item.enabled and not item.completed %}
-					<strong class="govuk-tag govuk-tag--grey" id="{{ id }}-status">cannot start yet</strong>
+					<strong class="govuk-tag govuk-tag--grey" id="{{ id }}-status">Cannot start yet</strong>
 				{% elif item.enabled and not item.completed %}
-						<strong class="govuk-tag govuk-tag--grey" id="{{ id }}-status">not started</strong>
+						<strong class="govuk-tag govuk-tag--grey" id="{{ id }}-status">Not started</strong>
 				{% elif item.completed %}
-						<strong class="govuk-tag" id="{{ id }}-status">completed</strong>
+						<strong class="govuk-tag" id="{{ id }}-status">Completed</strong>
 				{% endif %}
 			</span>
 		</div>

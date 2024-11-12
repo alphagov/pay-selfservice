@@ -22,11 +22,11 @@
     </span>
 
     {% if not item.enabled and not item.complete %}
-    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ label }}-status">cannot start yet</strong>
+    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ label }}-status">Cannot start yet</strong>
     {% elif item.enabled and not item.complete %}
-    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ label }}-status">not started</strong>
+    <strong class="govuk-tag app-task-list__tag govuk-tag--grey" id="{{ label }}-status">Not started</strong>
     {% elif item.complete %}
-    <strong class="govuk-tag app-task-list__tag" id="{{ label }}-status">completed</strong>
+    <strong class="govuk-tag app-task-list__tag" id="{{ label }}-status">Completed</strong>
     {% endif %}
   </li>
 {% endmacro %}

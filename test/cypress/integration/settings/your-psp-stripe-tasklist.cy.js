@@ -120,13 +120,13 @@ describe('Your PSP Stripe page', () => {
       cy.get('h2').should('contain', 'Information incomplete')
 
       cy.get('[data-cy="progress-indicator"]').should('contain', '2 out of 7 steps complete')
-      cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
-      cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
-      cy.get('strong[id="task-director-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-Company-number-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'cannot start yet')
+      cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
+      cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
+      cy.get('strong[id="task-director-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-Company-number-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Cannot start yet')
     })
 
     it('should show progress indicator and all completed tasks', () => {
@@ -146,26 +146,26 @@ describe('Your PSP Stripe page', () => {
       cy.get('h2').should('contain', 'Information complete')
       cy.get('[data-cy="progress-indicator"]').should('contain', '7 out of 7 steps complete')
 
-      cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
-      cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
-      cy.get('strong[id="task-director-status"]').should('contain', 'complete')
-      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
-      cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
-      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'complete')
-      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
+      cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
+      cy.get('strong[id="task-director-status"]').should('contain', 'Complete')
+      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Complete')
+      cy.get('strong[id="task-Company-number-status"]').should('contain', 'Complete')
+      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Complete')
+      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Complete')
     })
 
     it('should autamatically show government document as cannot start yet and the rest of the tasks as not started', () => {
       setupYourPspStubs()
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
-      cy.get('strong[id="task-bank-details-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-sro-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-director-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-Company-number-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'not started')
-      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'cannot start yet')
+      cy.get('strong[id="task-bank-details-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-sro-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-director-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-Company-number-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Not started')
+      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Cannot start yet')
     })
   })
 
@@ -189,7 +189,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('strong[id="task-bank-details-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
       cy.get('[data-cy="task-bank-details"]').contains('Bank Details').should('not.have.attr', 'href')
     })
   })
@@ -214,7 +214,7 @@ describe('Your PSP Stripe page', () => {
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number').should('not.have.attr', 'href')
-      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Complete')
     })
   })
 
@@ -238,7 +238,7 @@ describe('Your PSP Stripe page', () => {
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-Company-number"]').contains('Company registration number').should('not.have.attr', 'href')
-      cy.get('strong[id="task-Company-number-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-Company-number-status"]').should('contain', 'Complete')
     })
   })
 
@@ -265,7 +265,7 @@ describe('Your PSP Stripe page', () => {
       })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('strong[id="task-director-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-director-status"]').should('contain', 'Complete')
       cy.get('[data-cy="task-director"]').contains('Service director').should('not.have.attr', 'href')
     })
   })
@@ -298,7 +298,7 @@ describe('Your PSP Stripe page', () => {
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-sro"]').contains('Responsible person').should('not.have.attr', 'href')
-      cy.get('strong[id="task-sro-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
     })
   })
 
@@ -321,7 +321,7 @@ describe('Your PSP Stripe page', () => {
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document').should('not.have.attr', 'href')
-      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'complete')
+      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Complete')
     })
   })
 
