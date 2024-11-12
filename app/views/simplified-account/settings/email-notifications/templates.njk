@@ -1,0 +1,181 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Email notifications - {{ currentService.name }} {{ currentGatewayAccount.full_type }}
+{% endblock %}
+
+{% block settingsContent %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+
+  {% if not isAdminUser %}
+    {{ govukInsetText({
+      text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure,
+        accepted card types, email notifications, billing address or mask card numbers or security codes for MOTO services.",
+      classes: "service-settings-inset-text--grey"
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-l">Email templates</h1>
+
+  <p class="govuk-body-l">
+    GOV.UK Pay can send notifications to users.
+  </p>
+
+  {% set confirmationEmailHtml %}
+    <h2 class="govuk-heading-l">Confirmation email</h2>
+    {{ govukTable({
+      rows: [
+        [
+          {
+            text: 'From'
+          },
+          {
+            text: 'GOV.UK Pay'
+          }
+        ],
+        [
+          {
+            text: 'To'
+          },
+          {
+            text: '[email address]'
+          }
+        ],
+        [
+          {
+            text: 'Subject'
+          },
+          {
+            text: 'Your payment of £[amount] to ' + serviceName + ' was successful'
+          }
+        ]
+      ]
+    }) }}
+
+    <div class="pay-email-template-body">
+      <h3 class="govuk-heading-m pay-email-heading">Your payment of £<span class="govuk-grey-text">[amount]</span> to <span class="govuk-grey-text">{{ serviceName }}</span> was successful</h3>
+      <ul class="govuk-list">
+        <li>Payment for: <span class="govuk-grey-text">[description]</span></li>
+        <li>Reference: <span class="govuk-grey-text">[service reference]</span></li>
+        <li>Date of payment: <span class="govuk-grey-text">[date]</span></li>
+      </ul>
+      {% if customEmailText %}
+        <p class="govuk-body qa-custom-p">
+          {{ customEmailText | striptags(true) | escape | nl2br }}
+        </p>
+      {% else %}
+        <p class="govuk-body govuk-grey-text qa-custom-p">*Optional custom paragraph - add this below*</p>
+      {% endif %}
+
+      <p class="govuk-body">This email address is not monitored. If you have any questions about your payment, contact the service you made the payment to directly.</p>
+    </div>
+
+    <div class="pay-email-custom-paragraph">
+      <h2 class="govuk-heading-m">Custom paragraph</h2>
+
+      {% if permissions.email_notification_toggle_update and isAdminUser %}
+        <p class="govuk-body">
+          You can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
+        </p>
+        {{ govukButton({
+          href: '#',
+          text: 'Add a custom paragraph',
+          attributes: {
+            id: 'add-custom-paragraph-link'
+          }
+        }) }}
+      {% else %}
+        <p class="govuk-body">
+          Admin users can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
+        </p>
+        {{ govukButton({
+          text: 'Add a custom paragraph',
+          attributes: {
+            id: 'add-custom-paragraph-link'
+          },
+          disabled: true
+        }) }}
+      {% endif %}
+    </div>
+
+    <div class="pay-email-custom-paragraph">
+      <h3 class="govuk-heading-m">What we mean by ‘description’</h3>
+      <p class="govuk-body">
+        You added a payment description when you created a new payment call to the Pay API. If you’re using a payment link, the description is taken from the payment link title.
+      </p>
+    </div>
+  {% endset -%}
+
+  {% set refundEmailHtml %}
+    <h2 class="govuk-heading-l">Refund email</h2>
+    {{ govukTable({
+      rows: [
+        [
+          {
+            text: 'From'
+          },
+          {
+            text: 'GOV.UK Pay'
+          }
+        ],
+        [
+          {
+            text: 'To'
+          },
+          {
+            text: '[email address]'
+          }
+        ],
+        [
+          {
+            text: 'Subject'
+          },
+          {
+            text: 'You have been refunded £[amount] by ' + serviceName
+          }
+        ]
+      ]
+    }) }}
+
+    <div class="pay-email-template-body">
+      <h3 class="govuk-heading-m email-heading">You have been refunded £<span class="govuk-grey-text">[amount]</span> by <span class="govuk-grey-text">{{ serviceName }}</span></h3>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Refund for: <span class="govuk-grey-text">[description]</span></li>
+        <li>Reference: <span class="govuk-grey-text">[service reference]</span></li>
+        <li>Date of original payment: <span class="govuk-grey-text">[date]</span></li>
+      </ul>
+      <p class="govuk-body">Your refund may take up to 6 days to appear in your account.</p>
+      <p class="govuk-body">This email address is not monitored. If you have any questions about your refund, contact the service you made the original payment to directly.</p>
+    </div>
+
+    <div class="pay-email-custom-paragraph">
+      <h2 class="govuk-heading-m">What we mean by ‘description’</h2>
+      <p class="govuk-body">
+        You added a payment description when you created a new payment call to the Pay API. If you’re using a payment link, the description is taken from the payment link title.
+      </p>
+    </div>
+  {% endset -%}
+
+  {{ govukTabs({
+    items: [
+      {
+        label: 'Confirmation email',
+        id: 'confirmation-html',
+        panel: {
+          html: confirmationEmailHtml
+        }
+      },
+      {
+        label: 'Refund email',
+        id: 'refund-html',
+        panel: {
+        html: refundEmailHtml
+      }
+      }
+    ]
+  }) }}
+{% endblock %}

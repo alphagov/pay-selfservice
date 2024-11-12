@@ -6,7 +6,7 @@
 
 {% block settingsContent %}
 
-  {% if not isServiceAdmin %}
+  {% if not isAdminUser %}
     {{ govukInsetText({
       text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure,
         accepted card types, email notifications, billing address or mask card numbers or security codes for MOTO services.",
@@ -33,7 +33,7 @@
             text: "Change",
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Edit collect email addresses"
-          } if isServiceAdmin else {}
+          } if isAdminUser else {}
         ]
       }
       },
@@ -52,7 +52,7 @@
             text: "Change",
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Payment confirmation emails settings"
-          } if (isServiceAdmin and emailCollectionMode !== 'OFF') else {}
+          } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
         ]
       }
       },
@@ -71,9 +71,15 @@
             text: "Change",
             classes: "govuk-link--no-visited-state",
             visuallyHiddenText: "Refund emails settings"
-          } if (isServiceAdmin and emailCollectionMode !== 'OFF') else {}
+          } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
         ]
       }
       }
     ]}) }}
+
+  {% if isAdminUser %}
+    <p class="govuk-body"><a class="govuk-link" href="{{ templatesHref }}" id="templates-link">View email templates and add a custom paragraph</a></p>
+  {% else %}
+    <p class="govuk-body"><a class="govuk-link" href="{{ templatesHref }}" id="templates-link">View email templates</a></p>
+  {% endif %}
 {% endblock %}
