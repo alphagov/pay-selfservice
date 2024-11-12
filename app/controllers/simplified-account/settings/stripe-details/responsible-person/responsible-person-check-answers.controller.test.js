@@ -3,6 +3,8 @@ const paths = require('@root/paths')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
+const _ = require('lodash')
+const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
@@ -171,6 +173,10 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
             address_postcode: 'SW1A 1AA'
           }
         ])
+      })
+
+      it('should unset the form state key', () => {
+        expect(_.get(req, FORM_STATE_KEY)).to.be.undefined // eslint-disable-line
       })
 
       it('should redirect to the stripe details index page', () => {

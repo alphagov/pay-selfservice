@@ -45,8 +45,6 @@ async function post (req, res, next) {
   }
   try {
     await updateStipeDetailsResponsiblePerson(req.service, req.account, responsiblePerson)
-    _.unset(req, FORM_STATE_KEY)
-    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
   } catch (err) {
     if (err.type === 'StripeInvalidRequestError') {
       switch (err.param) {
@@ -62,6 +60,8 @@ async function post (req, res, next) {
     }
     next(err)
   }
+  _.unset(req, FORM_STATE_KEY)
+  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
 }
 
 const postErrorResponse = (req, res, errors) => {
