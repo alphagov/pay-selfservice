@@ -29,6 +29,10 @@ const NON_ADMIN_ROLE = {
     {
       description: 'Viewtransactionslist',
       name: 'transactions:read'
+    },
+    {
+      description: 'Viewemailnotificationstemplate',
+      name: 'email-notification-template:read'
     }
   ]
 }
