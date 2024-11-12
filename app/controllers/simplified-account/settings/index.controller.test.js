@@ -1,9 +1,9 @@
 const { expect } = require('chai')
-const { LIVE, NOT_STARTED } = require('../../../models/go-live-stage')
+const { LIVE, NOT_STARTED } = require('@models/go-live-stage')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const paths = require('../../../paths')
-const formatSimplifiedAccountPathsFor = require('../../../utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 
 const LIVE_ACCOUNT_TYPE = 'live'
 const TEST_ACCOUNT_TYPE = 'test'

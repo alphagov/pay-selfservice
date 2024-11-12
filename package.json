@@ -7,6 +7,15 @@
   "engines": {
     "node": "^18.20.4"
   },
+  "_moduleAliases": {
+    "@root": "app",
+    "@controllers": "app/controllers",
+    "@middleware": "app/middleware",
+    "@models": "app/models",
+    "@services": "app/services",
+    "@utils": "app/utils",
+    "@views": "app/views"
+  },
   "standard": {
     "globals": [
       "describe",
@@ -99,6 +108,7 @@
     "luhn-js": "^1.1.2",
     "luxon": "^3.5.0",
     "minimist": "1.2.6",
+    "module-alias": "^2.2.3",
     "moment-timezone": "0.5.43",
     "morgan": "1.10.0",
     "multer": "^1.4.5-lts.1",

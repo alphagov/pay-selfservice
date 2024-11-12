@@ -1,3 +1,4 @@
+require('module-alias/register')
 const express = require('express')
 const metrics = require('@govuk-pay/pay-js-metrics')
 const nunjucks = require('nunjucks')

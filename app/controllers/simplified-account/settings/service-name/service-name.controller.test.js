@@ -1,8 +1,8 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const paths = require('../../../../paths')
+const paths = require('@root/paths')
 const { expect } = require('chai')
-const { SERVICE_NAME_MAX_LENGTH } = require('../../../../utils/validation/server-side-form-validations')
+const { SERVICE_NAME_MAX_LENGTH } = require('@utils/validation/server-side-form-validations')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
@@ -13,9 +13,9 @@ let req, res, responseStub, updateServiceNameStub, serviceNameController
 
 const getController = (stubs = {}) => {
   return proxyquire('./service-name.controller', {
-    '../../../../utils/response': { response: stubs.response },
-    '../../../../services/service.service': { updateServiceName: stubs.updateServiceName },
-    '../../../../utils/simplified-account/format/format-validation-errors': stubs.formatValidationErrors || (() => ({}))
+    '@utils/response': { response: stubs.response },
+    '@services/service.service': { updateServiceName: stubs.updateServiceName },
+    '@utils/simplified-account/format/format-validation-errors': stubs.formatValidationErrors || (() => ({}))
   })
 }
 

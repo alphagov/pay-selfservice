@@ -1,14 +1,15 @@
-const { response } = require('../../../../../utils/response')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('../../../../../paths')
-const { responsiblePersonSchema } = require('../../../../../utils/simplified-account/validation/responsible-person.schema')
+const { formatSimplifiedAccountPathsFor, formatValidationErrors } = require('@utils/simplified-account/format/')
+const { checkTaskCompletion } = require('@middleware/simplified-account')
+const paths = require('@root/paths')
+const _ = require('lodash')
+const { response } = require('@utils/response')
+const { responsiblePersonSchema } = require('@utils/simplified-account/validation/responsible-person.schema')
 const { validationResult } = require('express-validator')
-const formatValidationErrors = require('../../../../../utils/simplified-account/format/format-validation-errors')
-const checkTaskCompletion = require('../../../../../middleware/simplified-account/check-task-completion')
-const { stripeDetailsTasks } = require('../../../../../utils/simplified-account/settings/stripe-details/tasks')
+const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
 
 async function get (req, res) {
-  const { address } = req.session?.formData ?? {}
+  const { address } = _.get(req, FORM_STATE_KEY, {})
   return response(req, res, 'simplified-account/settings/stripe-details/responsible-person/home-address', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index, req.service.externalId, req.account.type),
     address
@@ -34,15 +35,16 @@ async function post (req, res) {
   }
 
   const { homeAddressLine1, homeAddressLine2, homeAddressCity, homeAddressPostcode } = req.body
-  req.session.formData = {
-    ...req.session.formData,
+  const existingFormState = _.get(req, FORM_STATE_KEY, {})
+  _.set(req, FORM_STATE_KEY, {
+    ...existingFormState,
     address: {
       homeAddressLine1,
-      homeAddressLine2,
+      homeAddressLine2: homeAddressLine2.trim(),
       homeAddressCity,
       homeAddressPostcode
     }
-  }
+  })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.contactDetails, req.service.externalId, req.account.type))
 }
 
@@ -57,7 +59,7 @@ const postErrorResponse = (req, res, errors) => {
       homeAddressCity,
       homeAddressPostcode
     },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type),
+    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index, req.service.externalId, req.account.type),
   })
 }
 

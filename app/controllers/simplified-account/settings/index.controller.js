@@ -1,6 +1,6 @@
-const formatSimplifiedAccountPathsFor = require('../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('../../../paths')
-const { LIVE } = require('../../../models/go-live-stage')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
+const { LIVE } = require('@models/go-live-stage')
 
 function get (req, res) {
   const account = req.account

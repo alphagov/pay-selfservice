@@ -1,5 +1,5 @@
 const { body } = require('express-validator')
-const { formatPhoneNumberWithCountryCode } = require('../../telephone-number-utils')
+const { formatPhoneNumberWithCountryCode } = require('@utils/telephone-number-utils')
 
 const responsiblePersonSchema = {
   name: {
@@ -55,6 +55,7 @@ const responsiblePersonSchema = {
           const { dobDay, dobMonth, dobYear } = req.body
           return dobDay || dobMonth || dobYear
         })
+        .trim()
         .notEmpty()
         .withMessage('Date of birth must include a day')
         .bail()
@@ -67,6 +68,7 @@ const responsiblePersonSchema = {
           const { dobDay, dobMonth, dobYear } = req.body
           return dobDay || dobMonth || dobYear
         })
+        .trim()
         .notEmpty()
         .withMessage('Date of birth must include a month')
         .bail()
@@ -79,6 +81,7 @@ const responsiblePersonSchema = {
           const { dobDay, dobMonth, dobYear } = req.body
           return dobDay || dobMonth || dobYear
         })
+        .trim()
         .notEmpty()
         .withMessage('Date of birth must include a year')
         .bail()
@@ -89,6 +92,7 @@ const responsiblePersonSchema = {
   address: {
     homeAddressLine1: {
       validate: body('homeAddressLine1')
+        .trim()
         .notEmpty()
         .withMessage('Address line 1 is required')
         .bail()
@@ -103,6 +107,7 @@ const responsiblePersonSchema = {
     },
     homeAddressCity: {
       validate: body('homeAddressCity')
+        .trim()
         .notEmpty()
         .withMessage('Town or city is required')
         .bail()
@@ -111,6 +116,7 @@ const responsiblePersonSchema = {
     },
     homeAddressPostcode: {
       validate: body('homeAddressPostcode')
+        .trim()
         .notEmpty()
         .withMessage('Postcode is required')
         .bail()
@@ -121,6 +127,7 @@ const responsiblePersonSchema = {
   contactDetails: {
     workTelephoneNumber: {
       validate: body('workTelephoneNumber')
+        .trim()
         .notEmpty()
         .withMessage('Work telephone number is required')
         .bail()
@@ -132,6 +139,7 @@ const responsiblePersonSchema = {
     },
     workEmail: {
       validate: body('workEmail')
+        .trim()
         .notEmpty()
         .withMessage('Work email is required')
         .bail()

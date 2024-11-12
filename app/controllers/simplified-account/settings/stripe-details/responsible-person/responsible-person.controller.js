@@ -1,14 +1,15 @@
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const formatValidationErrors = require('../../../../../utils/simplified-account/format/format-validation-errors')
-const checkTaskCompletion = require('../../../../../middleware/simplified-account/check-task-completion')
-const paths = require('../../../../../paths')
+const { formatSimplifiedAccountPathsFor, formatValidationErrors } = require('@utils/simplified-account/format/')
+const { checkTaskCompletion } = require('@middleware/simplified-account')
+const paths = require('@root/paths')
+const _ = require('lodash')
 const { validationResult } = require('express-validator')
-const { response } = require('../../../../../utils/response')
-const { responsiblePersonSchema } = require('../../../../../utils/simplified-account/validation/responsible-person.schema')
-const { stripeDetailsTasks } = require('../../../../../utils/simplified-account/settings/stripe-details/tasks')
+const { response } = require('@utils/response')
+const { responsiblePersonSchema } = require('@utils/simplified-account/validation/responsible-person.schema')
+const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
 
 async function get (req, res) {
-  const { name, dob } = req.session?.formData ?? {}
+  const { name, dob } = _.get(req, FORM_STATE_KEY, {})
   return response(req, res, 'simplified-account/settings/stripe-details/responsible-person/index', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type),
     name,
@@ -36,11 +37,12 @@ async function post (req, res) {
     })
   }
   const { firstName, lastName, dobDay, dobMonth, dobYear } = req.body
-  req.session.formData = {
-    ...req.session.formData,
+  const existingFormState = _.get(req, FORM_STATE_KEY, {})
+  _.set(req, FORM_STATE_KEY, {
+    ...existingFormState,
     name: { firstName, lastName },
     dob: { dobDay, dobMonth, dobYear }
-  }
+  })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.homeAddress, req.service.externalId, req.account.type))
 }
 
