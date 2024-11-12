@@ -68,37 +68,37 @@
           {{ customEmailText | striptags(true) | escape | nl2br }}
         </p>
       {% else %}
-        <span class="govuk-body govuk-grey-text qa-custom-p">*Optional custom paragraph - add this below*</span>
+        <p class="govuk-body govuk-grey-text qa-custom-p">*Optional custom paragraph - add this below*</p>
       {% endif %}
+
       <p class="govuk-body">This email address is not monitored. If you have any questions about your payment, contact the service you made the payment to directly.</p>
     </div>
 
     <div class="pay-email-custom-paragraph">
       <h2 class="govuk-heading-m">Custom paragraph</h2>
-      <p class="govuk-body">
-        You can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
-      </p>
 
       {% if permissions.email_notification_toggle_update and isAdminUser %}
-        {{
-        govukButton({
+        <p class="govuk-body">
+          You can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
+        </p>
+        {{ govukButton({
           href: '#',
           text: 'Add a custom paragraph',
           attributes: {
             id: 'add-custom-paragraph-link'
           }
-        })
-        }}
+        }) }}
       {% else %}
-        {{
-        govukButton({
+        <p class="govuk-body">
+          Admin users can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
+        </p>
+        {{ govukButton({
           text: 'Add a custom paragraph',
           attributes: {
             id: 'add-custom-paragraph-link'
           },
           disabled: true
-        })
-        }}
+        }) }}
       {% endif %}
     </div>
 
