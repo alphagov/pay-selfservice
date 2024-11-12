@@ -188,8 +188,9 @@ module.exports = {
         delete: '/settings/team-members/:externalUserId/delete',
         permission: '/settings/team-members/:externalUserId/permission'
       },
-      orgDetails: {
-        index: '/settings/organisation-details'
+      organisationDetails: {
+        index: '/settings/organisation-details',
+        edit: '/settings/organisation-details/edit'
       },
       stripeDetails: {
         index: '/settings/stripe-details',
