@@ -1,4 +1,4 @@
-FROM node:18.20.4-alpine3.20@sha256:02376a266c84acbf45bd19440e08e48b1c8b98037417334046029ab585de03e2 AS builder
+FROM node:18.20.4-alpine3.20@sha256:a25c1e4ecc284985f4cbc449021e9259560c644dd9611e5a72d9c4750f24f6c7 AS builder
 
 RUN ["apk", "--no-cache", "add", "ca-certificates", "python3", "build-base", "bash", "ruby"]
 
@@ -10,7 +10,7 @@ RUN npm ci --quiet
 COPY . .
 RUN npm run compile
 
-FROM node:18.20.4-alpine3.20@sha256:02376a266c84acbf45bd19440e08e48b1c8b98037417334046029ab585de03e2 AS final
+FROM node:18.20.4-alpine3.20@sha256:a25c1e4ecc284985f4cbc449021e9259560c644dd9611e5a72d9c4750f24f6c7 AS final
 
 RUN ["apk", "--no-cache", "upgrade"]
 
