@@ -42,6 +42,10 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.paymen
 simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.paymentConfirmationEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.paymentConfirmationEmails.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.templates, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.templates.get)
 
+// organisation details
+simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.index, serviceSettingsController.organisationDetails.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.edit, serviceSettingsController.organisationDetails.edit.get)
+
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })

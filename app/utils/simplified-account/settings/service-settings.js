@@ -29,7 +29,7 @@ module.exports = (account, service, currentUrl, permissions) => {
     .add({
       id: 'org-details',
       name: 'organisation details',
-      path: paths.simplifiedAccount.settings.orgDetails.index,
+      path: paths.simplifiedAccount.settings.organisationDetails.index,
       permission: 'merchant_details_update' // TODO find a better way of defining these
     })
     .category('payment provider')
