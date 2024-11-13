@@ -18,5 +18,6 @@ function get (req, res) {
 }
 
 module.exports = {
-  get
+  get,
+  edit: require('./edit-organisation-details.controller')
 }

@@ -41,7 +41,7 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.payme
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.templates, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.templates.get)
 
 // organisation details
-simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.index, serviceSettingsController.organisationDetails.index.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.index, serviceSettingsController.organisationDetails.get)
 simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.edit, serviceSettingsController.organisationDetails.edit.get)
 
 // stripe details
