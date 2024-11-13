@@ -19,6 +19,10 @@ const ADMIN_ROLE = {
     {
       description: 'Turnemailnotificationson/off',
       name: 'email-notification-toggle:update'
+    },
+    {
+      description: 'Editemailnotificationsparagraph',
+      name: 'email-notification-paragraph:update'
     }
   ]
 }
@@ -279,7 +283,8 @@ describe('Email notifications settings', () => {
       it('should show relevant tabs and Add Custom Paragraph link', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
         cy.get('#tab_confirmation-html').should('have.attr', 'href', '#confirmation-html')
-        cy.get('#add-custom-paragraph-link').should('have.attr', 'href', '#') // TODO verify actual href
+        cy.get('#add-custom-paragraph-link').should('have.attr',
+          'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`)
         cy.get('#tab_refund-html').eq(0).should('have.attr', 'href', '#refund-html')
       })
     })

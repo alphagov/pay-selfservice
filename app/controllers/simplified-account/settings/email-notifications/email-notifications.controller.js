@@ -58,3 +58,4 @@ module.exports = {
 module.exports.refundEmails = require('./refund-emails/refund-emails.controller')
 module.exports.paymentConfirmationEmails = require('./payment-confirmation-emails/payment-confirmation-emails.controller')
 module.exports.templates = require('./templates/templates.controller')
+module.exports.customParagraph = require('./templates/custom-paragraph.controller')

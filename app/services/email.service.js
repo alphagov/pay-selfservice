@@ -18,6 +18,14 @@ async function updateConfirmationTemplate (accountID, emailText) {
   }
 }
 
+async function updateConfirmationTemplateByServiceIdAndAccountType (serviceExternalId, accountType, emailText) {
+  try {
+    await connectorClient.updateConfirmationEmailByServiceId(serviceExternalId, accountType, emailText)
+  } catch (err) {
+    clientFailure(err, 'PATCH', false)
+  }
+}
+
 async function setEmailCollectionMode (accountID, collectionMode) {
   try {
     const patch = { op: 'replace', path: 'email_collection_mode', value: collectionMode }
@@ -93,6 +101,7 @@ function clientFailure (err, methodType, isPatchEndpoint) {
 
 module.exports = {
   updateConfirmationTemplate,
+  updateConfirmationTemplateByServiceIdAndAccountType,
   setEmailCollectionMode,
   setEmailCollectionModeByServiceIdAndAccountType,
   setConfirmationEnabled,
