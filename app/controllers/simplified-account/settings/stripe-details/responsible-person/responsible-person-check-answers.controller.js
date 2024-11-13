@@ -21,7 +21,7 @@ async function get (req, res) {
     answers: {
       name: `${name.firstName} ${name.lastName}`,
       dob: `${dob.dobYear}-${dob.dobMonth}-${dob.dobDay}`,
-      address: Object.values(address).filter(value => value !== '').join('<br>'),
+      address: ['homeAddressLine1', 'homeAddressLine2', 'homeAddressCity', 'homeAddressPostcode'].map(k => address?.[k]).filter(v => v && v !== '').join('<br>'),
       phone: formatPhoneNumberWithCountryCode(contact.workTelephoneNumber),
       email: contact.workEmail
     }
@@ -75,7 +75,7 @@ const postErrorResponse = (req, res, errors) => {
     answers: {
       name: `${name.firstName} ${name.lastName}`,
       dob: `${dob.dobYear}-${dob.dobMonth}-${dob.dobDay}`,
-      address: Object.values(address).filter(value => value != null).join('<br>'),
+      address: ['homeAddressLine1', 'homeAddressLine2', 'homeAddressCity', 'homeAddressPostcode'].map(k => address?.[k]).filter(v => v && v !== '').join('<br>'),
       phone: formatPhoneNumberWithCountryCode(contact.workTelephoneNumber),
       email: contact.workEmail
     }
