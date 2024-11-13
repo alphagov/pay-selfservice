@@ -1,13 +1,18 @@
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('../../../../../paths')
-const { response } = require('../../../../../utils/response')
-const { updateStipeDetailsResponsiblePerson } = require('../../../../../services/stripe-details.service')
-const { formatPhoneNumberWithCountryCode } = require('../../../../../utils/telephone-number-utils')
-const checkTaskCompletion = require('../../../../../middleware/simplified-account/check-task-completion')
-const { stripeDetailsTasks } = require('../../../../../utils/simplified-account/settings/stripe-details/tasks')
+const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format/')
+const { checkTaskCompletion } = require('@middleware/simplified-account')
+const paths = require('@root/paths')
+const { response } = require('@utils/response')
+const { updateStipeDetailsResponsiblePerson } = require('@services/stripe-details.service')
+const { formatPhoneNumberWithCountryCode } = require('@utils/telephone-number-utils')
+const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
+const _ = require('lodash')
 
 async function get (req, res) {
-  const { name, dob, address, contact } = req.session.formData
+  const { name, dob, address, contact } = _.get(req, FORM_STATE_KEY, {})
+  if (!Object.values({ name, dob, address, contact }).every(Boolean)) {
+    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index, req.service.externalId, req.account.type))
+  }
   return response(req, res, 'simplified-account/settings/stripe-details/responsible-person/check-your-answers', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.contactDetails, req.service.externalId, req.account.type),
     changeResponsiblePersonLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index, req.service.externalId, req.account.type),
@@ -16,7 +21,7 @@ async function get (req, res) {
     answers: {
       name: `${name.firstName} ${name.lastName}`,
       dob: `${dob.dobYear}-${dob.dobMonth}-${dob.dobDay}`,
-      address: `${address.homeAddressLine1} <br/>${address?.homeAddressLine2 ? `${address.homeAddressLine2}<br/>` : ''} ${address.homeAddressCity} <br/>${address.homeAddressPostcode}`,
+      address: ['homeAddressLine1', 'homeAddressLine2', 'homeAddressCity', 'homeAddressPostcode'].map(k => address?.[k]).filter(v => v && v !== '').join('<br>'),
       phone: formatPhoneNumberWithCountryCode(contact.workTelephoneNumber),
       email: contact.workEmail
     }
@@ -24,7 +29,7 @@ async function get (req, res) {
 }
 
 async function post (req, res, next) {
-  const { name, dob, address, contact } = req.session.formData
+  const { name, dob, address, contact } = _.get(req, FORM_STATE_KEY, {})
   const responsiblePerson = {
     first_name: name.firstName,
     last_name: name.lastName,
@@ -40,31 +45,27 @@ async function post (req, res, next) {
   }
   try {
     await updateStipeDetailsResponsiblePerson(req.service, req.account, responsiblePerson)
-    delete req.session.formData
-    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
   } catch (err) {
-    if (err && err.type === 'StripeInvalidRequestError') {
+    if (err.type === 'StripeInvalidRequestError') {
       switch (err.param) {
         case 'phone':
           return postErrorResponse(req, res, {
-            summary: [{ text: 'Invalid work telephone number, please check your answer and try again.' }]
-          })
-        case 'dob[year]':
-          return postErrorResponse(req, res, {
-            summary: [{ text: 'Invalid date of birth year, please check your answer and try again.' }]
+            summary: [{ text: 'There is a problem with your telephone number. Please check your answer and try again.' }]
           })
         default:
           return postErrorResponse(req, res, {
-            summary: [{ text: 'We\'ve not been able to save these details. Contact GOV.UK Pay for assistance.' }]
+            summary: [{ text: 'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }]
           })
       }
     }
     next(err)
   }
+  _.unset(req, FORM_STATE_KEY)
+  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
 }
 
 const postErrorResponse = (req, res, errors) => {
-  const { name, dob, address, contact } = req.session.formData
+  const { name, dob, address, contact } = _.get(req, FORM_STATE_KEY, {})
   return response(req, res, 'simplified-account/settings/stripe-details/responsible-person/check-your-answers', {
     errors,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.contactDetails, req.service.externalId, req.account.type),
@@ -74,7 +75,7 @@ const postErrorResponse = (req, res, errors) => {
     answers: {
       name: `${name.firstName} ${name.lastName}`,
       dob: `${dob.dobYear}-${dob.dobMonth}-${dob.dobDay}`,
-      address: `${address.homeAddressLine1} <br/>${address?.homeAddressLine2 ?? ''} <br/>${address.homeAddressCity} <br/>${address?.homeAddressCounty ?? ''} <br/>${address.homeAddressPostcode}`,
+      address: ['homeAddressLine1', 'homeAddressLine2', 'homeAddressCity', 'homeAddressPostcode'].map(k => address?.[k]).filter(v => v && v !== '').join('<br>'),
       phone: formatPhoneNumberWithCountryCode(contact.workTelephoneNumber),
       email: contact.workEmail
     }

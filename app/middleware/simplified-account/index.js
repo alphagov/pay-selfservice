@@ -4,3 +4,4 @@ module.exports.simplifiedAccountStrategy = require('./simplified-account-strateg
 module.exports.enforcePaymentProviderType = require('./enforce-payment-provider-type.middleware')
 module.exports.enforceEmailCollectionModeNotOff = require('./enforce-email-collection-mode-not-off.middleware')
 module.exports.enforceCannotRemoveSelfFromService = require('./enforce-cannot-remove-self-from-service.middleware')
+module.exports.checkTaskCompletion = require('./check-task-completion.middleware')

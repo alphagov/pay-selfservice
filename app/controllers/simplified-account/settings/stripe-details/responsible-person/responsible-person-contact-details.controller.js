@@ -1,14 +1,15 @@
-const { response } = require('../../../../../utils/response')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('../../../../../paths')
-const { responsiblePersonSchema } = require('../../../../../utils/simplified-account/validation/responsible-person.schema')
+const { formatSimplifiedAccountPathsFor, formatValidationErrors } = require('@utils/simplified-account/format/')
+const { checkTaskCompletion } = require('@middleware/simplified-account')
+const paths = require('@root/paths')
+const _ = require('lodash')
+const { response } = require('@utils/response')
+const { responsiblePersonSchema } = require('@utils/simplified-account/validation/responsible-person.schema')
 const { validationResult } = require('express-validator')
-const formatValidationErrors = require('../../../../../utils/simplified-account/format/format-validation-errors')
-const checkTaskCompletion = require('../../../../../middleware/simplified-account/check-task-completion')
-const { stripeDetailsTasks } = require('../../../../../utils/simplified-account/settings/stripe-details/tasks')
+const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
 
 async function get (req, res) {
-  const { contact } = req.session?.formData ?? {}
+  const { contact } = _.get(req, FORM_STATE_KEY, {})
   return response(req, res, 'simplified-account/settings/stripe-details/responsible-person/contact-details', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.homeAddress, req.service.externalId, req.account.type),
     contact
@@ -32,13 +33,14 @@ async function post (req, res) {
   }
 
   const { workTelephoneNumber, workEmail } = req.body
-  req.session.formData = {
-    ...req.session.formData,
+  const existingFormState = _.get(req, FORM_STATE_KEY, {})
+  _.set(req, FORM_STATE_KEY, {
+    ...existingFormState,
     contact: {
       workTelephoneNumber,
       workEmail
     }
-  }
+  })
   res.redirect(formatSimplifiedAccountPathsFor(
     paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.checkYourAnswers,
     req.service.externalId,
@@ -54,7 +56,7 @@ const postErrorResponse = (req, res, errors) => {
       workTelephoneNumber,
       workEmail
     },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type),
+    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.homeAddress, req.service.externalId, req.account.type),
   })
 }
 

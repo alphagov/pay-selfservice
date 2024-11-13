@@ -1,8 +1,8 @@
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const paths = require('../../../../../paths')
 const { expect } = require('chai')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
@@ -14,8 +14,8 @@ let req, res, next, responseStub, updateStripeDetailsBankAccountStub, bankAccoun
 
 const getController = (stubs = {}) => {
   return proxyquire('./bank-account.controller', {
-    '../../../../../utils/response': { response: stubs.response },
-    '../../../../../services/stripe-details.service': {
+    '@utils/response': { response: stubs.response },
+    '@services/stripe-details.service': {
       updateStripeDetailsBankAccount: stubs.updateStripeDetailsBankAccount
     }
   })

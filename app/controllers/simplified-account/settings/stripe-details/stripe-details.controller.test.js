@@ -9,7 +9,7 @@ const SERVICE_ID = 'service-id-123abc'
 
 const getController = (stubs = {}) => {
   return proxyquire('./stripe-details.controller', {
-    '../../../../utils/response': { response: stubs.response }
+    '@utils/response': { response: stubs.response }
   })
 }
 

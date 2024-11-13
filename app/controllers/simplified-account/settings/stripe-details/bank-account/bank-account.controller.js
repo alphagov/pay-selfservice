@@ -1,11 +1,11 @@
-const paths = require('../../../../../paths')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const formatValidationErrors = require('../../../../../utils/simplified-account/format/format-validation-errors')
-const checkTaskCompletion = require('../../../../../middleware/simplified-account/check-task-completion')
-const { response } = require('../../../../../utils/response')
+const paths = require('@root/paths')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { checkTaskCompletion } = require('@middleware/simplified-account')
+const { response } = require('@utils/response')
 const { body, validationResult } = require('express-validator')
-const { updateStripeDetailsBankAccount } = require('../../../../../services/stripe-details.service')
-const { stripeDetailsTasks } = require('../../../../../utils/simplified-account/settings/stripe-details/tasks')
+const { updateStripeDetailsBankAccount } = require('@services/stripe-details.service')
+const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 
 const ACCT_NUMBER_ERR_MSG = 'Enter a valid account number like 00733445'
 

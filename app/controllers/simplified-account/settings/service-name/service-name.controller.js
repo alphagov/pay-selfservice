@@ -1,10 +1,10 @@
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const paths = require('@root/paths')
 const { body, validationResult } = require('express-validator')
-const { SERVICE_NAME_MAX_LENGTH } = require('../../../../utils/validation/server-side-form-validations')
-const { response } = require('../../../../utils/response')
-const { updateServiceName } = require('../../../../services/service.service')
-const paths = require('../../../../paths')
-const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const formatValidationErrors = require('../../../../utils/simplified-account/format/format-validation-errors')
+const { SERVICE_NAME_MAX_LENGTH } = require('@utils/validation/server-side-form-validations')
+const { response } = require('@utils/response')
+const { updateServiceName } = require('@services/service.service')
 
 function get (req, res) {
   const context = {
