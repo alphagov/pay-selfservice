@@ -1,6 +1,6 @@
-const userStubs = require('../../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../../stubs/gateway-account-stubs')
-const inviteStubs = require('../../../stubs/invite-stubs')
+const userStubs = require('../../../../stubs/user-stubs')
+const gatewayAccountStubs = require('../../../../stubs/gateway-account-stubs')
+const inviteStubs = require('../../../../stubs/invite-stubs')
 
 const ADMIN_USER_ID = 'admin-user-id'
 const VIEW_ONLY_USER_ID = 'view-only-user-id'
