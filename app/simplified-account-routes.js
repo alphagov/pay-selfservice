@@ -45,6 +45,7 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.templa
 // organisation details
 simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.index, serviceSettingsController.organisationDetails.get)
 simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.edit, serviceSettingsController.organisationDetails.edit.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.organisationDetails.edit, serviceSettingsController.organisationDetails.edit.post)
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
