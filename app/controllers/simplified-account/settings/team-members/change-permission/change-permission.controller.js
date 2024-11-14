@@ -22,7 +22,6 @@ async function get (req, res, next) {
 
 async function post (req, res, next) {
   // TODO implement change permissions
-  console.log('post to change permission controller')
   const externalServiceId = req.service.externalId
   const accountType = req.account.type
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, externalServiceId, accountType))
