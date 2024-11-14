@@ -12,8 +12,8 @@ let req, res, responseStub, customParagraphController, updateConfirmationTemplat
 
 const getController = (stubs = {}) => {
   return proxyquire('./custom-paragraph.controller', {
-    '../../../../../utils/response': { response: stubs.response },
-    '../../../../../services/email.service': { updateConfirmationTemplateByServiceIdAndAccountType: stubs.updateConfirmationTemplateByServiceIdAndAccountType }
+    '@utils/response': { response: stubs.response },
+    '@services/email.service': { updateConfirmationTemplateByServiceIdAndAccountType: stubs.updateConfirmationTemplateByServiceIdAndAccountType }
   })
 }
 

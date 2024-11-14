@@ -1,9 +1,9 @@
-const { response } = require('../../../../../utils/response')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('../../../../../paths')
-const { updateConfirmationTemplateByServiceIdAndAccountType } = require('../../../../../services/email.service')
-const { validateOptionalField } = require('../../../../../utils/validation/server-side-form-validations')
-const logger = require('../../../../../utils/logger')(__filename)
+const { response } = require('@utils/response')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
+const { updateConfirmationTemplateByServiceIdAndAccountType } = require('@services/email.service')
+const { validateOptionalField } = require('@utils/validation/server-side-form-validations')
+const logger = require('@utils/logger')(__filename)
 const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 
 function get (req, res) {
