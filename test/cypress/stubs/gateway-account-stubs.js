@@ -209,6 +209,16 @@ function setRefundEmailEnabledByServiceIdAndAccountType (serviceId, accountType,
   return stubBuilder('PATCH', path, 200, payload)
 }
 
+function patchCustomParagraphByServiceIdAndAccountType (serviceId, accountType, text) {
+  const path = `/v1/api/service/${serviceId}/account/${accountType}/email-notification`
+  const payload = {
+    op: 'replace',
+    path: '/payment_confirmed/template_body',
+    value: text
+  }
+  return stubBuilder('PATCH', path, 200, payload)
+}
+
 function setPaymentConfirmationEmailEnabledByServiceIdAndAccountType (serviceId, accountType, enabled) {
   const path = `/v1/api/service/${serviceId}/account/${accountType}/email-notification`
   const payload = {
@@ -346,6 +356,7 @@ module.exports = {
   patchRefundEmailToggleSuccess,
   patchAccountEmailCollectionModeSuccess,
   patchAccountEmailCollectionModeSuccessByServiceIdAndAccountType,
+  patchCustomParagraphByServiceIdAndAccountType,
   patchUpdateServiceNameSuccess,
   patchUpdateMaskCardNumberSuccess,
   patchUpdateMaskSecurityCodeSuccess,
