@@ -20,7 +20,8 @@ async function updateConfirmationTemplate (accountID, emailText) {
 
 async function updateConfirmationTemplateByServiceIdAndAccountType (serviceExternalId, accountType, emailText) {
   try {
-    await connectorClient.updateConfirmationEmailByServiceId(serviceExternalId, accountType, emailText)
+    const payload = { op: 'replace', path: '/payment_confirmed/template_body', value: emailText }
+    await connectorClient.patchEmailNotificationByServiceIdAndAccountType(serviceExternalId, accountType, payload)
   } catch (err) {
     clientFailure(err, 'PATCH', false)
   }

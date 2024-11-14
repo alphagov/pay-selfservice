@@ -400,15 +400,14 @@ ConnectorClient.prototype = {
   /**
    * @param {string} serviceId
    * @param {string} accountType
-   * @param {string} emailText
+   * @param {{op: string, path: string, value}} payload
    */
-  updateConfirmationEmailByServiceId: async function (serviceId, accountType, emailText) {
+  patchEmailNotificationByServiceIdAndAccountType: async function (serviceId, accountType, payload) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}/email-notification`
       .replace('{serviceId}', encodeURIComponent(serviceId))
       .replace('{accountType}', encodeURIComponent(accountType))
-    const payload = { op: 'replace', path: '/payment_confirmed/template_body', value: emailText }
     configureClient(client, url)
-    const response = await client.patch(url, payload, 'update payment confirmation template body')
+    const response = await client.patch(url, payload, `update email notification with ${JSON.stringify(payload)}`)
     return response.data
   },
 
