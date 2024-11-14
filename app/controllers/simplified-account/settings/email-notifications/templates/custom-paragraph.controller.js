@@ -9,7 +9,7 @@ const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 function get (req, res) {
   const account = req.account
   response(req, res, 'simplified-account/settings/email-notifications/custom-paragraph', {
-    customEmailText: account.email_notifications.PAYMENT_CONFIRMED.template_body,
+    customParagraphText: account.email_notifications.PAYMENT_CONFIRMED.template_body,
     serviceName: account.service_name,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
       req.service.externalId, account.type)
@@ -20,22 +20,22 @@ async function post (req, res) {
   const serviceExternalId = req.service.externalId
   const serviceName = req.account.service_name
   const accountType = req.account.type
-  const customEmailText = req.body['custom-email-text']
+  const customParagraph = req.body['custom-paragraph']
 
-  const validationResult = validateOptionalField(customEmailText, CUSTOM_PARAGRAPH_MAX_LENGTH, 'custom paragraph')
+  const validationResult = validateOptionalField(customParagraph, CUSTOM_PARAGRAPH_MAX_LENGTH, 'custom paragraph')
   if (!validationResult.valid) {
     return response(req, res, 'simplified-account/settings/email-notifications/custom-paragraph', {
       errors: {
-        customEmailText: validationResult.message
+        customParagraph: validationResult.message
       },
-      customEmailText,
+      customParagraphText: customParagraph,
       serviceName,
       backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
         req.service.externalId, accountType)
     })
   }
 
-  await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, customEmailText)
+  await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, customParagraph)
   logger.info('Updated email notifications custom paragraph')
   req.flash('messages', { state: 'success', icon: '&check;', heading: 'Custom paragraph updated' })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,

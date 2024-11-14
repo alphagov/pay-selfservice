@@ -77,7 +77,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
     })
 
     it('should pass context data to the response method', () => {
-      expect(responseStub.args[0][3]).to.have.property('customEmailText').to.equal('Do this next')
+      expect(responseStub.args[0][3]).to.have.property('customParagraphText').to.equal('Do this next')
       expect(responseStub.args[0][3]).to.have.property('serviceName').to.equal(SERVICE_NAME)
       expect(responseStub.args[0][3]).to.have.property('backLink').to.contain(paths.simplifiedAccount.settings.emailNotifications.index)
     })
@@ -85,7 +85,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
 
   describe('post', () => {
     before(() => {
-      const body = { 'custom-email-text': 'a test custom paragraph' }
+      const body = { 'custom-paragraph': 'a test custom paragraph' }
       setupTest(body)
       customParagraphController.post(req, res)
     })
@@ -105,7 +105,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
     describe('with validation error', () => {
       const invalidText = 'hi'.repeat(5000)
       before(() => {
-        const body = { 'custom-email-text': invalidText }
+        const body = { 'custom-paragraph': invalidText }
         setupTest(body)
         customParagraphController.post(req, res)
       })
@@ -122,9 +122,9 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
 
       it('should pass context data to the response method', () => {
         expect(responseStub.args[0][3]).to.have.property('errors').to.deep.equal({
-          customEmailText: 'Custom paragraph must be 5000 characters or fewer'
+          customParagraph: 'Custom paragraph must be 5000 characters or fewer'
         })
-        expect(responseStub.args[0][3]).to.have.property('customEmailText').to.equal(invalidText)
+        expect(responseStub.args[0][3]).to.have.property('customParagraphText').to.equal(invalidText)
         expect(responseStub.args[0][3]).to.have.property('serviceName').to.equal(SERVICE_NAME)
         expect(responseStub.args[0][3]).to.have.property('backLink').to.contain(paths.simplifiedAccount.settings.emailNotifications.index)
       })

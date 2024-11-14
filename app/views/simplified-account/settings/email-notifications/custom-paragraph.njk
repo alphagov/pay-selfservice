@@ -16,7 +16,7 @@
       titleText: "There is a problem",
       errorList: [
         {
-          text: errors.customEmailText,
+          text: errors.customParagraph,
           href: "#"
         }
       ]
@@ -64,15 +64,15 @@
 
     {{
       govukTextarea({
-        name: "custom-email-text",
-        id: "custom-email-text",
+        name: "custom-paragraph",
+        id: "custom-paragraph",
         label: {
           text: "Enter a custom paragraph",
           classes: "govuk-label--m"
         },
         classes: "qa-custom-p",
-        value: customEmailText,
-        errorMessage: { text: errors.customEmailText } if errors.customEmailText else false
+        value: customParagraphText,
+        errorMessage: { text: errors.customParagraph } if errors.customParagraph else false
       })
     }}
     {{
