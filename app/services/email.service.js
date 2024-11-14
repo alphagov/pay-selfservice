@@ -18,9 +18,9 @@ async function updateConfirmationTemplate (accountID, emailText) {
   }
 }
 
-async function updateConfirmationTemplateByServiceIdAndAccountType (serviceExternalId, accountType, emailText) {
+async function updateCustomParagraphByServiceIdAndAccountType (serviceExternalId, accountType, customParagraph) {
   try {
-    const payload = { op: 'replace', path: '/payment_confirmed/template_body', value: emailText }
+    const payload = { op: 'replace', path: '/payment_confirmed/template_body', value: customParagraph }
     await connectorClient.patchEmailNotificationByServiceIdAndAccountType(serviceExternalId, accountType, payload)
   } catch (err) {
     clientFailure(err, 'PATCH', false)
@@ -102,7 +102,7 @@ function clientFailure (err, methodType, isPatchEndpoint) {
 
 module.exports = {
   updateConfirmationTemplate,
-  updateConfirmationTemplateByServiceIdAndAccountType,
+  updateCustomParagraphByServiceIdAndAccountType,
   setEmailCollectionMode,
   setEmailCollectionModeByServiceIdAndAccountType,
   setConfirmationEnabled,

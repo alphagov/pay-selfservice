@@ -1,7 +1,7 @@
 const { response } = require('@utils/response')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const { updateConfirmationTemplateByServiceIdAndAccountType } = require('@services/email.service')
+const { updateCustomParagraphByServiceIdAndAccountType } = require('@services/email.service')
 const { validateOptionalField } = require('@utils/validation/server-side-form-validations')
 const logger = require('@utils/logger')(__filename)
 const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
@@ -35,7 +35,7 @@ async function post (req, res) {
     })
   }
 
-  await updateConfirmationTemplateByServiceIdAndAccountType(serviceExternalId, accountType, customEmailText)
+  await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, customEmailText)
   logger.info('Updated email notifications custom paragraph')
   req.flash('messages', { state: 'success', icon: '&check;', heading: 'Custom paragraph updated' })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
