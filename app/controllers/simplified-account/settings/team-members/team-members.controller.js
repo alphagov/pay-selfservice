@@ -41,3 +41,4 @@ async function getChangePermission (req, res, next) {
 module.exports.get = get
 module.exports.getChangePermission = getChangePermission
 module.exports.removeUser = require('./remove-user/remove-user.controller')
+module.exports.changePermission = require('./change-permission/change-permission.controller')
