@@ -8,21 +8,21 @@ const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 const SERVICE_NAME = 'My Service'
 
-let req, res, responseStub, customParagraphController, updateConfirmationTemplateByServiceIdAndAccountTypeStub
+let req, res, responseStub, customParagraphController, updateCustomParagraphByServiceIdAndAccountTypeStub
 
 const getController = (stubs = {}) => {
   return proxyquire('./custom-paragraph.controller', {
     '@utils/response': { response: stubs.response },
-    '@services/email.service': { updateConfirmationTemplateByServiceIdAndAccountType: stubs.updateConfirmationTemplateByServiceIdAndAccountType }
+    '@services/email.service': { updateCustomParagraphByServiceIdAndAccountType: stubs.updateCustomParagraphByServiceIdAndAccountType }
   })
 }
 
 const setupTest = (body = {}) => {
   responseStub = sinon.spy()
-  updateConfirmationTemplateByServiceIdAndAccountTypeStub = sinon.stub().resolves({ status: 200 })
+  updateCustomParagraphByServiceIdAndAccountTypeStub = sinon.stub().resolves({ status: 200 })
   customParagraphController = getController({
     response: responseStub,
-    updateConfirmationTemplateByServiceIdAndAccountType: updateConfirmationTemplateByServiceIdAndAccountTypeStub
+    updateCustomParagraphByServiceIdAndAccountType: updateCustomParagraphByServiceIdAndAccountTypeStub
   })
   res = {
     redirect: sinon.spy()
@@ -92,8 +92,8 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
 
     describe('without validation error', () => {
       it('should update the confirmation template', () => {
-        expect(updateConfirmationTemplateByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-        expect(updateConfirmationTemplateByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'a test custom paragraph')).to.be.true // eslint-disable-line
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'a test custom paragraph')).to.be.true // eslint-disable-line
       })
 
       it('should redirect to the templates page', () => {
