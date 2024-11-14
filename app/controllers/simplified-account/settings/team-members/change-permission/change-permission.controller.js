@@ -1,10 +1,10 @@
 const { findByExternalId } = require('@services/user.service')
 const { response } = require('@utils/response')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 
 async function get (req, res, next) {
-  const externalServiceId = req.service.externalId
+  const serviceId = req.service.externalId
   const accountType = req.account.type
   const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
   try {
@@ -13,7 +13,7 @@ async function get (req, res, next) {
       {
         email,
         serviceHasAgentInitiatedMotoEnabled,
-        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, externalServiceId, accountType)
+        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, serviceId, accountType)
       })
   } catch (err) {
     next(err)
@@ -22,9 +22,9 @@ async function get (req, res, next) {
 
 async function post (req, res, next) {
   // TODO implement change permissions
-  const externalServiceId = req.service.externalId
+  const serviceId = req.service.externalId
   const accountType = req.account.type
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, externalServiceId, accountType))
+  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, serviceId, accountType))
 }
 
 module.exports = {
