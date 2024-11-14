@@ -398,6 +398,20 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * @param {string} serviceId
+   * @param {string} accountType
+   * @param {{op: string, path: string, value}} payload
+   */
+  patchEmailNotificationByServiceIdAndAccountType: async function (serviceId, accountType, payload) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}/email-notification`
+      .replace('{serviceId}', encodeURIComponent(serviceId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.patch(url, payload, `update email notification with ${JSON.stringify(payload)}`)
+    return response.data
+  },
+
+  /**
    *
    * @param {Object} params
    */
