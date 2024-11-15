@@ -11,8 +11,8 @@ describe('Organisation details Validation', () => {
         addressLine1: '742',
         addressLine2: 'Evergreen Terrace',
         addressCity: 'Springfield',
-        addressCountry: 'US',
-        addressPostcode: 'NT1A 1AA',
+        addressCountry: 'GB',
+        addressPostcode: 'NT1 1AA',
         telephoneNumber: '01611234567',
         organisationUrl: 'https://www.compuglobalhypermeganet.example.com'
       }
@@ -96,6 +96,14 @@ describe('Organisation details Validation', () => {
       await organisationDetailsSchema.organisationAddress.postcode.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
       expect(errors.array()[0].msg).to.equal('Enter a real postcode')
+    })
+
+    it('should pass with invalid postcode if country code is not GB', async () => {
+      const validReq = {
+        body: Object.assign({}, BASE_REQ.body, { addressPostcode: 'not a postcode', addressCountry: 'US' })
+      }
+      await organisationDetailsSchema.organisationAddress.postcode.validate.run(validReq)
+      expect(validationResult(validReq).isEmpty()).to.be.true // eslint-disable-line
     })
 
     const validPostcodes = [

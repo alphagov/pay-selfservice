@@ -42,7 +42,10 @@ const organisationDetailsSchema = {
         .notEmpty()
         .withMessage('Enter a postcode')
         .bail()
-        .matches(postcodeRegex)
+        .custom((postcode, { req }) =>
+          (req.body?.addressCountry && req.body.addressCountry === 'GB') // only validate GB postcodes
+            ? postcodeRegex.test(postcode)
+            : true)
         .withMessage('Enter a real postcode')
     },
     country: {
