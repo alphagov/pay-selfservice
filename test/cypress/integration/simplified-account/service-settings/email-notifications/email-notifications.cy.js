@@ -280,12 +280,27 @@ describe('Email notifications settings', () => {
       beforeEach(() => {
         setupStubs()
       })
+
       it('should show relevant tabs and Add Custom Paragraph link', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
         cy.get('#tab_confirmation-html').should('have.attr', 'href', '#confirmation-html')
         cy.get('#add-custom-paragraph-link').should('have.attr',
           'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`)
         cy.get('#tab_refund-html').eq(0).should('have.attr', 'href', '#refund-html')
+      })
+
+      it('should be able to add a custom paragraph successfully', () => {
+        const customParagraphText = 'a test custom paragraph'
+        cy.task('setupStubs', [
+          gatewayAccountStubs.patchCustomParagraphByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, customParagraphText)
+        ])
+
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`)
+        cy.get('#custom-paragraph').clear().type(customParagraphText)
+        cy.get('#continue').click()
+        cy.get('h1').should('contain', 'Email templates')
+        cy.get('.govuk-notification-banner__heading').should('contain', 'Custom paragraph updated')
+        cy.title().should('contain', 'Settings - Email notifications')
       })
     })
 
@@ -298,6 +313,15 @@ describe('Email notifications settings', () => {
         cy.get('#tab_confirmation-html').should('have.attr', 'href', '#confirmation-html')
         cy.get('#add-custom-paragraph-link').should('have.attr', 'disabled', 'disabled')
         cy.get('#tab_refund-html').eq(0).should('have.attr', 'href', '#refund-html')
+      })
+
+      it('should return 403 when navigating directly to the custom paragraph page', () => {
+        cy.request({
+          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`,
+          failOnStatusCode: false
+        }).then((response) => {
+          expect(response.status).to.eq(403)
+        })
       })
     })
   })
