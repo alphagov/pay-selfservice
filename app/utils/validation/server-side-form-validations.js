@@ -265,5 +265,6 @@ module.exports = {
   validatePassword,
   validateOtp,
   validateUrl,
+  isValidUrl,
   SERVICE_NAME_MAX_LENGTH: 50
 }

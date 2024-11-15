@@ -1,5 +1,6 @@
 const { body } = require('express-validator')
 const { formatPhoneNumberWithCountryCode } = require('@utils/telephone-number-utils')
+const { postcodeRegex } = require('@utils/validation/postcode-validation')
 
 const responsiblePersonSchema = {
   name: {
@@ -120,7 +121,7 @@ const responsiblePersonSchema = {
         .notEmpty()
         .withMessage('Postcode is required')
         .bail()
-        .matches(/^([A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})$/)
+        .matches(postcodeRegex)
         .withMessage('Enter a real postcode')
     }
   },
