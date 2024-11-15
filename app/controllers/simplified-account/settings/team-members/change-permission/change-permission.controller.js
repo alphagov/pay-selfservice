@@ -10,11 +10,14 @@ async function get (req, res, next) {
   const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
   const availableRoles = getAvailableRolesForService(serviceHasAgentInitiatedMotoEnabled)
   try {
-    const { email } = await findByExternalId(req.params.externalUserId)
+    const user = await findByExternalId(req.params.externalUserId)
+    const userCurrentRole = user.getRoleForService(serviceId)
+
     response(req, res, 'simplified-account/settings/team-members/change-permission',
       {
         availableRoles,
-        email,
+        userCurrentRoleName: userCurrentRole.name,
+        email: user.email,
         serviceHasAgentInitiatedMotoEnabled,
         backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, serviceId, accountType)
       })
