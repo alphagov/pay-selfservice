@@ -18,6 +18,11 @@ async function updateConfirmationTemplate (accountID, emailText) {
   }
 }
 
+/**
+ * @param {string} serviceExternalId
+ * @param {string} accountType
+ * @param {string} customParagraph
+ */
 async function updateCustomParagraphByServiceIdAndAccountType (serviceExternalId, accountType, customParagraph) {
   try {
     const payload = { op: 'replace', path: '/payment_confirmed/template_body', value: customParagraph }
@@ -60,17 +65,29 @@ async function setConfirmationEnabled (accountID, enabled) {
   }
 }
 
+/**
+ * @param {string} serviceExternalId
+ * @param {string} accountType
+ * @param {boolean} enabled
+ */
 async function setConfirmationEnabledByServiceIdAndAccountType (serviceExternalId, accountType, enabled) {
   try {
-    await connectorClient.updateConfirmationEmailEnabledByServiceId(serviceExternalId, accountType, enabled)
+    const payload = { op: 'replace', path: '/payment_confirmed/enabled', value: enabled }
+    await connectorClient.patchEmailNotificationByServiceIdAndAccountType(serviceExternalId, accountType, payload)
   } catch (err) {
     clientFailure(err, 'PATCH', false)
   }
 }
 
+/**
+ * @param {string} serviceExternalId
+ * @param {string} accountType
+ * @param {boolean} enabled
+ */
 async function setRefundEmailEnabledByServiceIdAndAccountType (serviceExternalId, accountType, enabled) {
   try {
-    await connectorClient.updateRefundEmailEnabledByServiceId(serviceExternalId, accountType, enabled)
+    const payload = { op: 'replace', path: '/refund_issued/enabled', value: enabled }
+    await connectorClient.patchEmailNotificationByServiceIdAndAccountType(serviceExternalId, accountType, payload)
   } catch (err) {
     clientFailure(err, 'PATCH', false)
   }
