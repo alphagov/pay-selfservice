@@ -5,11 +5,11 @@ const proxyquire = require('proxyquire')
 const User = require('@models/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
 
-describe('Middleware: enforceCannotRemoveSelfFromService', () => {
-  let enforceCannotRemoveSelfFromService, req, res, next
+describe('Middleware: enforceCannotDoAdminActionOnSelf', () => {
+  let enforceCannotDoAdminActionOnSelf, req, res, next
 
   const setupTest = (additionalReqProps = {}) => {
-    enforceCannotRemoveSelfFromService = proxyquire('./enforce-cannot-remove-self-from-service.middleware', {})
+    enforceCannotDoAdminActionOnSelf = proxyquire('./enforce-cannot-do-admin-action-on-self.middleware', {})
     const adminUser = new User(userFixtures.validUserResponse({
       external_id: 'user-id-for-admin-user',
       email: 'admin-user@users.gov.uk'
@@ -25,18 +25,18 @@ describe('Middleware: enforceCannotRemoveSelfFromService', () => {
     next = sinon.stub()
   }
 
-  it('should call next() when logged in user is removing another user from the service', () => {
-    setupTest({ params: { externalUserId: 'user-id-to-remove' } })
-    enforceCannotRemoveSelfFromService(req, res, next)
+  it('should call next() when logged in user is doing an action action on another user from the service', () => {
+    setupTest({ params: { externalUserId: 'another-user-id' } })
+    enforceCannotDoAdminActionOnSelf('A specific error message')(req, res, next)
     expect(next.calledOnce).to.be.true // eslint-disable-line
     expect(next.args[0]).to.be.empty // eslint-disable-line
   })
 
-  it('should call next() with error when logged in user is attempting to remove self from the service', () => {
+  it('should call next() with error when logged in user is doing an admin action on themselves', () => {
     setupTest({ params: { externalUserId: 'user-id-for-admin-user' } })
-    enforceCannotRemoveSelfFromService(req, res, next)
+    enforceCannotDoAdminActionOnSelf('A specific error message')(req, res, next)
     const expectedError = sinon.match.instanceOf(NotFoundError)
-      .and(sinon.match.has('message', 'Attempted to remove self from service'))
+      .and(sinon.match.has('message', 'A specific error message'))
     sinon.assert.calledWith(next, expectedError)
   })
 })
