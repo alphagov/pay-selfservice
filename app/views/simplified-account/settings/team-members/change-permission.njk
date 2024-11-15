@@ -14,6 +14,17 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input type="hidden" name="email" value="{{ email }}" />
 
+    {% set roleItems = [] %}
+    {% for role in availableRoles %}
+      {% set roleItem = {
+        value: role.name,
+        id: "role-" + role.name + "-input",
+        html: "<label class=\"govuk-!-font-weight-bold\">" + role.description + "</label>",
+        hint: { text: role.explanation }
+      } %}
+      {% set roleItems = (roleItems.push(roleItem), roleItems) %}
+    {% endfor %}
+
     {{ govukRadios({
       idPrefix: "changePermission",
       name: "changePermission",
@@ -24,48 +35,7 @@
           classes: "govuk-fieldset__legend--l"
         }
       },
-      items: [
-        {
-          value: admin.id,
-          id: "role-admin-input",
-          text: 'Administrator',
-          hint: {
-            text: 'They can view transactions, refund payments, take telephone payments and manage settings' if serviceHasAgentInitiatedMotoEnabled else 'They can view transactions, refund payments and manage settings'
-          }
-        },
-        {
-          value: viewRefundAndInitiateMoto.id,
-          id: "role-view-refund-and-initiate-moto-input",
-          text: 'View, refund and take telephone payments',
-          hint: {
-            text: 'They can view transactions, refund payments, and take telephone payments'
-          }
-        } if serviceHasAgentInitiatedMotoEnabled,
-        {
-          value: viewAndRefund.id,
-          id: "role-view-and-refund-input",
-          text: 'View and refund',
-          hint: {
-            text: 'They can view transactions and refund payments'
-          }
-        },
-        {
-          value: viewAndInitiateMoto.id,
-          id: "role-view-and-initiate-moto-input",
-          text: 'View and take telephone payments',
-          hint: {
-            text: 'They can view transactions and take telephone payments'
-          }
-        } if serviceHasAgentInitiatedMotoEnabled,
-        {
-          value: view.id,
-          id: "role-view-input",
-          text: 'View only',
-          hint: {
-            text: 'They can view transactions'
-          }
-        }
-      ]
+      items: roleItems
     }) }}
     {{
     govukButton({
