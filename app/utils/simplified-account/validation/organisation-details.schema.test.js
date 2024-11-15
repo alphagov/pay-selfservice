@@ -22,7 +22,6 @@ describe('Organisation details Validation', () => {
   describe('Organisation name Validation', () => {
     it('should pass with a valid organisation name', async () => {
       await organisationDetailsSchema.organisationName.validate.run(BASE_REQ)
-      console.log(validationResult(BASE_REQ))
       expect(validationResult(BASE_REQ).isEmpty()).to.be.true // eslint-disable-line
     })
 
