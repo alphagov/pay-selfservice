@@ -51,7 +51,7 @@ module.exports = {
   },
   getAvailableRolesForService: agentInitiatedMotoEnabled => {
     return Object.values(roles)
-      .filter(role => agentInitiatedMotoEnabled ? true : !role.agentInitiatedMotoServicesOnly)
+      .filter(role => agentInitiatedMotoEnabled || !role.agentInitiatedMotoServicesOnly)
       .map(role => _.pick(role, ['name', 'description', 'explanation']))
       .map(role => {
         // for agent-initiated moto services, add 'take telephone payments' to the explanation content for the admin role
