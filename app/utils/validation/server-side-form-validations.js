@@ -103,7 +103,6 @@ function validatePhoneNumber (phoneNumber) {
 }
 
 function validatePostcode (postcode, countryCode) {
-  console.log(postcode, countryCode)
   const isEmptyErrorMessage = isEmpty(postcode)
   if (isEmptyErrorMessage) {
     return notValidReturnObject('Enter a postcode')
