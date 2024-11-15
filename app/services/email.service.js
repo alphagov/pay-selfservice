@@ -62,7 +62,8 @@ async function setConfirmationEnabled (accountID, enabled) {
 
 async function setConfirmationEnabledByServiceIdAndAccountType (serviceExternalId, accountType, enabled) {
   try {
-    await connectorClient.updateConfirmationEmailEnabledByServiceId(serviceExternalId, accountType, enabled)
+    const payload = { op: 'replace', path: '/payment_confirmed/enabled', value: enabled }
+    await connectorClient.patchEmailNotificationByServiceIdAndAccountType(serviceExternalId, accountType, payload)
   } catch (err) {
     clientFailure(err, 'PATCH', false)
   }
@@ -70,7 +71,8 @@ async function setConfirmationEnabledByServiceIdAndAccountType (serviceExternalI
 
 async function setRefundEmailEnabledByServiceIdAndAccountType (serviceExternalId, accountType, enabled) {
   try {
-    await connectorClient.updateRefundEmailEnabledByServiceId(serviceExternalId, accountType, enabled)
+    const payload = { op: 'replace', path: '/refund_issued/enabled', value: enabled }
+    await connectorClient.patchEmailNotificationByServiceIdAndAccountType(serviceExternalId, accountType, payload)
   } catch (err) {
     clientFailure(err, 'PATCH', false)
   }
