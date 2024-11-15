@@ -3,6 +3,7 @@ const { response } = require('@utils/response')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { getAvailableRolesForService } = require('@utils/roles')
+const { NotFoundError } = require('@root/errors')
 
 async function get (req, res, next) {
   const serviceId = req.service.externalId
@@ -12,7 +13,9 @@ async function get (req, res, next) {
   try {
     const user = await findByExternalId(req.params.externalUserId)
     const userCurrentRole = user.getRoleForService(serviceId)
-
+    if (userCurrentRole === undefined) {
+      throw new NotFoundError('User does not have a role in this service')
+    }
     response(req, res, 'simplified-account/settings/team-members/change-permission',
       {
         availableRoles,
