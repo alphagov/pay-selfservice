@@ -8,7 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
 const serviceFixtures = require('../../../fixtures/service.fixtures')
-const { validPaths, ServiceUpdateRequest } = require('../../../../app/models/ServiceUpdateRequest.class')
+const { ServiceUpdateRequest } = require('../../../../app/models/ServiceUpdateRequest.class')
 const goLiveStage = require('../../../../app/models/go-live-stage')
 const pspTestAccountStage = require('../../../../app/models/psp-test-account-stage')
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
@@ -42,7 +42,7 @@ describe('adminusers client - patch request to update service', function () {
   describe('a valid update service patch request to update single field', () => {
     const merchantDetailsName = 'updated-name'
     const validUpdateServiceRequest = new ServiceUpdateRequest()
-      .replace(validPaths.merchantDetails.name, merchantDetailsName)
+      .replace().merchantDetails.name(merchantDetailsName)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({
@@ -91,18 +91,18 @@ describe('adminusers client - patch request to update service', function () {
     const takesPaymentsOverPhone = true
 
     const validUpdateServiceRequest = new ServiceUpdateRequest()
-      .replace(validPaths.merchantDetails.name, merchantDetails.name)
-      .replace(validPaths.merchantDetails.addressLine1, merchantDetails.address_line1)
-      .replace(validPaths.merchantDetails.addressLine2, merchantDetails.address_line2)
-      .replace(validPaths.merchantDetails.addressCity, merchantDetails.address_city)
-      .replace(validPaths.merchantDetails.addressCountry, merchantDetails.address_country)
-      .replace(validPaths.merchantDetails.addressPostcode, merchantDetails.address_postcode)
-      .replace(validPaths.merchantDetails.telephoneNumber, merchantDetails.telephone_number)
-      .replace(validPaths.merchantDetails.email, merchantDetails.email)
-      .replace(validPaths.currentGoLiveStage, currentGoLiveStage)
-      .replace(validPaths.currentPspTestAccountStage, currentPspTestAccountStage)
-      .replace(validPaths.merchantDetails.url, merchantDetails.url)
-      .replace(validPaths.takesPaymentsOverPhone, takesPaymentsOverPhone)
+      .replace().merchantDetails.name(merchantDetails.name)
+      .replace().merchantDetails.addressLine1(merchantDetails.address_line1)
+      .replace().merchantDetails.addressLine2(merchantDetails.address_line2)
+      .replace().merchantDetails.addressCity(merchantDetails.address_city)
+      .replace().merchantDetails.addressPostcode(merchantDetails.address_postcode)
+      .replace().merchantDetails.addressCountry(merchantDetails.address_country)
+      .replace().merchantDetails.telephoneNumber(merchantDetails.telephone_number)
+      .replace().merchantDetails.email(merchantDetails.email)
+      .replace().merchantDetails.url(merchantDetails.url)
+      .replace().currentGoLiveStage(currentGoLiveStage)
+      .replace().currentPspTestAccountStage(currentPspTestAccountStage)
+      .replace().takesPaymentsOverPhone(takesPaymentsOverPhone)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({

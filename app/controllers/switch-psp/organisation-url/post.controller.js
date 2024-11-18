@@ -12,7 +12,7 @@ const { isSwitchingCredentialsRoute, getCurrentCredential } = require('../../../
 const { updateAccount } = require('../../../services/clients/stripe/stripe.client')
 const logger = require('../../../utils/logger')(__filename)
 const { updateService } = require('../../../services/service.service')
-const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
+const { ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 
 const ORGANISATION_URL = 'organisation-url'
 
@@ -29,7 +29,7 @@ function validateOrgUrl (organisationUrl) {
 
 const updateServiceWithUrl = async function (organisationUrl, serviceExternalId) {
   const updateRequest = new ServiceUpdateRequest()
-    .replace(validPaths.merchantDetails.url, organisationUrl)
+    .replace().merchantDetails.url(organisationUrl)
 
   return updateService(serviceExternalId, updateRequest.formatPayload())
 }

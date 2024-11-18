@@ -5,6 +5,7 @@ const { response } = require('@utils/response')
 const { updateStipeDetailsResponsiblePerson } = require('@services/stripe-details.service')
 const { formatPhoneNumberWithCountryCode } = require('@utils/telephone-number-utils')
 const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const { formatAddressAsParagraph } = require('@utils/format-address-as-paragraph')
 const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
 const _ = require('lodash')
 
@@ -21,7 +22,7 @@ async function get (req, res) {
     answers: {
       name: `${name.firstName} ${name.lastName}`,
       dob: `${dob.dobYear}-${dob.dobMonth}-${dob.dobDay}`,
-      address: ['homeAddressLine1', 'homeAddressLine2', 'homeAddressCity', 'homeAddressPostcode'].map(k => address?.[k]).filter(v => v && v !== '').join('<br>'),
+      address: formatAddressAsParagraph({ line1: address.homeAddressLine1, line2: address.homeAddressLine2, city: address.homeAddressCity, postcode: address.homeAddressPostcode }),
       phone: formatPhoneNumberWithCountryCode(contact.workTelephoneNumber),
       email: contact.workEmail
     }

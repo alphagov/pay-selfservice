@@ -3,7 +3,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const assert = require('assert')
-const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
+const { ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
 const User = require('../../../models/User.class')
@@ -85,7 +85,7 @@ describe('Organisation URL POST controller', () => {
     sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { url: organisationUrl })
 
     const updateRequest = new ServiceUpdateRequest()
-      .replace(validPaths.merchantDetails.url, organisationUrl)
+      .replace().merchantDetails.url(organisationUrl)
     sinon.assert.calledWith(updateServiceMock, req.service.externalId, updateRequest.formatPayload())
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/switch-psp`)
   })
