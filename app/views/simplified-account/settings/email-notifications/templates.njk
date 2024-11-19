@@ -78,12 +78,16 @@
       <h2 class="govuk-heading-m">Custom paragraph</h2>
 
       {% if permissions.email_notification_toggle_update and isAdminUser %}
-        <p class="govuk-body">
-          You can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
-        </p>
+        {% if not customEmailText %}
+          <p class="govuk-body">
+            You can add a custom paragraph to give users extra information related to your service. For example, how
+            long it will take to process the payment.
+          </p>
+        {% endif %}
+
         {{ govukButton({
           href: customParagraphHref,
-          text: 'Add a custom paragraph',
+          text: 'Edit custom paragraph' if customEmailText else 'Add a custom paragraph',
           attributes: {
             id: 'add-custom-paragraph-link'
           }
