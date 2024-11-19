@@ -14,7 +14,8 @@
     "@models": "app/models",
     "@services": "app/services",
     "@utils": "app/utils",
-    "@views": "app/views"
+    "@views": "app/views",
+    "@test": "test"
   },
   "standard": {
     "globals": [

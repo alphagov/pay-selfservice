@@ -5,13 +5,13 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
-const serviceFixtures = require('../../../fixtures/service.fixtures')
-const { ServiceUpdateRequest } = require('../../../../app/models/ServiceUpdateRequest.class')
-const goLiveStage = require('../../../../app/models/go-live-stage')
-const pspTestAccountStage = require('../../../../app/models/psp-test-account-stage')
-const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const goLiveStage = require('@models/go-live-stage')
+const pspTestAccountStage = require('@models/psp-test-account-stage')
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'

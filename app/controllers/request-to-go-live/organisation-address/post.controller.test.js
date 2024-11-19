@@ -20,26 +20,26 @@ const stubGetStripeAccountId = sinon.stub().resolves(stripeAccountId)
 
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
-    '../../../services/service.service': mockServiceService,
-    '../../../services/clients/connector.client': {
+    '@services/service.service': mockServiceService,
+    '@services/clients/connector.client': {
       ConnectorClient: function () {
         this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
       }
     },
-    '../../../utils/response': {
+    '@utils/response': {
       response: mockResponse
     },
-    '../../../controllers/stripe-setup/stripe-setup.util': {
+    '@controllers/stripe-setup/stripe-setup.util': {
       getStripeAccountId: (...params) => {
         return stubGetStripeAccountId(...params)
       }
     },
-    '../../../utils/logger': function (filename) {
+    '@utils/logger': function (filename) {
       return {
         info: loggerInfoMock
       }
     },
-    '../../../services/clients/stripe/stripe.client': {
+    '@services/clients/stripe/stripe.client': {
       updateOrganisationDetails: updateStripeAccountMock
     }
   })

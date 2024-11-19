@@ -2,17 +2,17 @@
 
 const lodash = require('lodash')
 
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { validateUrl } = require('../../../utils/validation/server-side-form-validations')
-const { validationErrors } = require('../../../utils/validation/field-validation-checks')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { validateUrl } = require('@utils/validation/server-side-form-validations')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
 const { getStripeAccountId } = require('../../stripe-setup/stripe-setup.util')
-const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, getCurrentCredential } = require('../../../utils/credentials')
-const { updateAccount } = require('../../../services/clients/stripe/stripe.client')
-const logger = require('../../../utils/logger')(__filename)
-const { updateService } = require('../../../services/service.service')
-const { ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
+const { response } = require('@utils/response')
+const { isSwitchingCredentialsRoute, getCurrentCredential } = require('@utils/credentials')
+const { updateAccount } = require('@services/clients/stripe/stripe.client')
+const logger = require('@utils/logger')(__filename)
+const { updateService } = require('@services/service.service')
+const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
 
 const ORGANISATION_URL = 'organisation-url'
 

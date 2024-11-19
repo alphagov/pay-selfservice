@@ -2,28 +2,28 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
-const goLiveStage = require('../../../models/go-live-stage')
-const paths = require('../../../paths')
+const goLiveStage = require('@models/go-live-stage')
+const paths = require('@root/paths')
 const {
   validateMandatoryField,
   validateOptionalField,
   validatePostcode,
   validatePhoneNumber,
   validateUrl
-} = require('../../../utils/validation/server-side-form-validations')
-const { updateService } = require('../../../services/service.service')
-const { ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
-const formatServicePathsFor = require('../../../utils/format-service-paths-for')
-const { response } = require('../../../utils/response')
+} = require('@utils/validation/server-side-form-validations')
+const { updateService } = require('@services/service.service')
+const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const { response } = require('@utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
-const { getStripeAccountId } = require('../../../controllers/stripe-setup/stripe-setup.util')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+const { getStripeAccountId } = require('@controllers/stripe-setup/stripe-setup.util')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const { updateOrganisationDetails } = require('../../../services/clients/stripe/stripe.client')
-const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('../../../utils/credentials')
+const { updateOrganisationDetails } = require('@services/clients/stripe/stripe.client')
+const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('@utils/credentials')
 
 const clientFieldNames = {
   name: 'merchant-name',
