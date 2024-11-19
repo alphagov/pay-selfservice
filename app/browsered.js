@@ -1,7 +1,5 @@
 'use strict'
 
-require('@babel/polyfill')
-
 const multiSelects = require('./browsered/multi-select')
 const targetToShow = require('./browsered/target-to-show')
 const analytics = require('gaap-analytics')

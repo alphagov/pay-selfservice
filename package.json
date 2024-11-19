@@ -130,7 +130,6 @@
   },
   "devDependencies": {
     "@babel/core": "7.22.10",
-    "@babel/polyfill": "7.12.1",
     "@babel/preset-env": "7.22.10",
     "@govuk-pay/run-amock": "0.0.5",
     "@pact-foundation/pact": "^12.1.1",
