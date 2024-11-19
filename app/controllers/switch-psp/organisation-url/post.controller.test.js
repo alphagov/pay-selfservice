@@ -3,10 +3,10 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const assert = require('assert')
-const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
-const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
+const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
 
 describe('Organisation URL POST controller', () => {
   const organisationUrl = 'https://www.example.com'
@@ -36,7 +36,7 @@ describe('Organisation URL POST controller', () => {
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
-      '../../../services/clients/stripe/stripe.client': {
+      '@services/clients/stripe/stripe.client': {
         updateAccount: updateAccountMock
       },
       '../../stripe-setup/stripe-setup.util': {
@@ -44,7 +44,7 @@ describe('Organisation URL POST controller', () => {
           return Promise.resolve(stripeAccountId)
         }
       },
-      '../../../services/service.service': {
+      '@services/service.service': {
         updateService: updateServiceMock
       }
     })
@@ -85,7 +85,7 @@ describe('Organisation URL POST controller', () => {
     sinon.assert.calledWith(updateAccountMock, res.locals.stripeAccount.stripeAccountId, { url: organisationUrl })
 
     const updateRequest = new ServiceUpdateRequest()
-      .replace(validPaths.merchantDetails.url, organisationUrl)
+      .replace().merchantDetails.url(organisationUrl)
     sinon.assert.calledWith(updateServiceMock, req.service.externalId, updateRequest.formatPayload())
     sinon.assert.calledWith(res.redirect, 303, `/account/${accountExternalId}/switch-psp`)
   })

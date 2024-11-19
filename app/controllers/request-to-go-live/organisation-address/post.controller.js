@@ -2,28 +2,28 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
-const goLiveStage = require('../../../models/go-live-stage')
-const paths = require('../../../paths')
+const goLiveStage = require('@models/go-live-stage')
+const paths = require('@root/paths')
 const {
   validateMandatoryField,
   validateOptionalField,
   validatePostcode,
   validatePhoneNumber,
   validateUrl
-} = require('../../../utils/validation/server-side-form-validations')
-const { updateService } = require('../../../services/service.service')
-const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
-const formatServicePathsFor = require('../../../utils/format-service-paths-for')
-const { response } = require('../../../utils/response')
+} = require('@utils/validation/server-side-form-validations')
+const { updateService } = require('@services/service.service')
+const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const { response } = require('@utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
-const { getStripeAccountId } = require('../../../controllers/stripe-setup/stripe-setup.util')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+const { getStripeAccountId } = require('@controllers/stripe-setup/stripe-setup.util')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const { updateOrganisationDetails } = require('../../../services/clients/stripe/stripe.client')
-const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('../../../utils/credentials')
+const { updateOrganisationDetails } = require('@services/clients/stripe/stripe.client')
+const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('@utils/credentials')
 
 const clientFieldNames = {
   name: 'merchant-name',
@@ -166,18 +166,18 @@ async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourne
     })
   } else {
     const updateRequest = new ServiceUpdateRequest()
-      .replace(validPaths.merchantDetails.addressLine1, form[clientFieldNames.addressLine1])
-      .replace(validPaths.merchantDetails.addressLine2, form[clientFieldNames.addressLine2])
-      .replace(validPaths.merchantDetails.addressCity, form[clientFieldNames.addressCity])
-      .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
-      .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
-      .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
-      .replace(validPaths.merchantDetails.url, form[clientFieldNames.url])
+      .replace().merchantDetails.addressLine1(form[clientFieldNames.addressLine1])
+      .replace().merchantDetails.addressLine2(form[clientFieldNames.addressLine2])
+      .replace().merchantDetails.addressCity(form[clientFieldNames.addressCity])
+      .replace().merchantDetails.addressPostcode(form[clientFieldNames.addressPostcode])
+      .replace().merchantDetails.addressCountry(form[clientFieldNames.addressCountry])
+      .replace().merchantDetails.telephoneNumber(form[clientFieldNames.telephoneNumber])
+      .replace().merchantDetails.url(form[clientFieldNames.url])
 
     if (isRequestToGoLive) {
-      updateRequest.replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
+      updateRequest.replace().currentGoLiveStage(goLiveStage.ENTERED_ORGANISATION_ADDRESS)
     } else {
-      updateRequest.replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
+      updateRequest.replace().merchantDetails.name(form[clientFieldNames.name])
     }
     return updateService(req.service.externalId, updateRequest.formatPayload())
   }

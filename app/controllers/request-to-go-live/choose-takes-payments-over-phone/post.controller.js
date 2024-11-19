@@ -2,18 +2,18 @@
 
 const lodash = require('lodash')
 
-const { updateCurrentGoLiveStage, updateService } = require('../../../services/service.service')
-const goLiveStage = require('../../../models/go-live-stage')
-const formatServicePathsFor = require('../../../utils/format-service-paths-for')
-const { response } = require('../../../utils/response')
-const { requestToGoLive } = require('../../../paths').service
-const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
+const { updateCurrentGoLiveStage, updateService } = require('@services/service.service')
+const goLiveStage = require('@models/go-live-stage')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const { response } = require('@utils/response')
+const { requestToGoLive } = require('@root/paths').service
+const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
 
 const CHOOSE_TAKES_PAYMENTS_OVER_PHONE = 'choose-takes-payments-over-phone'
 
 const updateServiceForTakesPaymentsOverPhone = async function (serviceExternalId, takesPaymentsOverPhone) {
   const updateRequest = new ServiceUpdateRequest()
-    .replace(validPaths.takesPaymentsOverPhone, takesPaymentsOverPhone)
+    .replace().takesPaymentsOverPhone(takesPaymentsOverPhone)
 
   return updateService(serviceExternalId, updateRequest.formatPayload())
 }

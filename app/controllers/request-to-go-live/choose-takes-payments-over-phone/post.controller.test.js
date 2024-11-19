@@ -3,21 +3,21 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
-const User = require('../../../models/User.class')
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
 const { expect } = require('chai')
-const { GOV_BANKING_MOTO_OPTION_COMPLETED } = require('../../../models/go-live-stage')
+const { GOV_BANKING_MOTO_OPTION_COMPLETED } = require('@models/go-live-stage')
 
 let updateServiceMock, updateCurrentGoLiveStageMock
 let mockResponse
 
 function postControllerWithMocks () {
   return proxyquire('./post.controller.js', {
-    '../../../services/service.service': {
+    '@services/service.service': {
       updateCurrentGoLiveStage: updateCurrentGoLiveStageMock,
       updateService: updateServiceMock
     },
-    '../../../utils/response': {
+    '@utils/response': {
       response: mockResponse
     }
   })

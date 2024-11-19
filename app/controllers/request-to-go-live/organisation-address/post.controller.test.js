@@ -20,26 +20,26 @@ const stubGetStripeAccountId = sinon.stub().resolves(stripeAccountId)
 
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
-    '../../../services/service.service': mockServiceService,
-    '../../../services/clients/connector.client': {
+    '@services/service.service': mockServiceService,
+    '@services/clients/connector.client': {
       ConnectorClient: function () {
         this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
       }
     },
-    '../../../utils/response': {
+    '@utils/response': {
       response: mockResponse
     },
-    '../../../controllers/stripe-setup/stripe-setup.util': {
+    '@controllers/stripe-setup/stripe-setup.util': {
       getStripeAccountId: (...params) => {
         return stubGetStripeAccountId(...params)
       }
     },
-    '../../../utils/logger': function (filename) {
+    '@utils/logger': function (filename) {
       return {
         info: loggerInfoMock
       }
     },
-    '../../../services/clients/stripe/stripe.client': {
+    '@services/clients/stripe/stripe.client': {
       updateOrganisationDetails: updateStripeAccountMock
     }
   })
@@ -395,43 +395,43 @@ describe('organisation address - post controller', () => {
             const expectedUpdateServiceRequest = [
               {
                 op: 'replace',
-                path: 'merchant_details/address_line1',
-                value: validLine1
+                value: validLine1,
+                path: 'merchant_details/address_line1'
               },
               {
                 op: 'replace',
-                path: 'merchant_details/address_line2',
-                value: ''
+                value: '',
+                path: 'merchant_details/address_line2'
               },
               {
                 op: 'replace',
-                path: 'merchant_details/address_city',
-                value: validCity
+                value: validCity,
+                path: 'merchant_details/address_city'
               },
               {
                 op: 'replace',
-                path: 'merchant_details/address_postcode',
-                value: validPostcode
+                value: validPostcode,
+                path: 'merchant_details/address_postcode'
               },
               {
                 op: 'replace',
-                path: 'merchant_details/address_country',
-                value: validCountry
+                value: validCountry,
+                path: 'merchant_details/address_country'
               },
               {
                 op: 'replace',
-                path: 'merchant_details/telephone_number',
-                value: validTelephoneNumber
+                value: validTelephoneNumber,
+                path: 'merchant_details/telephone_number'
               },
               {
                 op: 'replace',
-                path: 'merchant_details/url',
-                value: validUrl
+                value: validUrl,
+                path: 'merchant_details/url'
               },
               {
                 op: 'replace',
-                path: 'current_go_live_stage',
-                value: goLiveStage.ENTERED_ORGANISATION_ADDRESS
+                value: goLiveStage.ENTERED_ORGANISATION_ADDRESS,
+                path: 'current_go_live_stage'
               }
             ]
 

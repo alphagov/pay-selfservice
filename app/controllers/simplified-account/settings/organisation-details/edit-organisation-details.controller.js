@@ -7,13 +7,19 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const paths = require('@root/paths')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const { organisationDetailsSchema } = require('@utils/simplified-account/validation/organisation-details.schema')
+const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const { updateService } = require('@services/service.service')
 
 function get (req, res) {
   const organisationDetails = {
-    organisationName: '',
-    address: '',
-    telephoneNumber: '',
-    websiteAddress: ''
+    organisationName: req.service?.merchantDetails?.name || '',
+    addressLine1: req.service?.merchantDetails?.address_line1 || '',
+    addressLine2: req.service?.merchantDetails?.address_line2 || '',
+    addressCity: req.service?.merchantDetails?.address_city || '',
+    addressPostcode: req.service?.merchantDetails?.address_postcode || '',
+    addressCountry: req.service?.merchantDetails?.address_country || '',
+    telephoneNumber: req.service?.merchantDetails?.telephone_number || '',
+    organisationUrl: req.service?.merchantDetails?.url || ''
   }
   const context = {
     messages: res.locals?.flash?.messages ?? [],
@@ -24,7 +30,7 @@ function get (req, res) {
   return response(req, res, 'simplified-account/settings/organisation-details/edit-organisation-details', context)
 }
 
-function post (req, res) {
+async function post (req, res) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
@@ -38,6 +44,19 @@ function post (req, res) {
       countries: countries.govukFrontendFormatted()
     })
   }
+
+  const serviceUpdates = new ServiceUpdateRequest()
+    .replace().merchantDetails.name(req.body.organisationName)
+    .replace().merchantDetails.addressLine1(req.body.addressLine1)
+    .replace().merchantDetails.addressLine2(req.body.addressLine2)
+    .replace().merchantDetails.addressCity(req.body.addressCity)
+    .replace().merchantDetails.addressPostcode(req.body.addressPostcode)
+    .replace().merchantDetails.addressCountry(req.body.addressCountry)
+    .replace().merchantDetails.telephoneNumber(req.body.telephoneNumber)
+    .replace().merchantDetails.url(req.body.organisationUrl)
+    .formatPayload()
+
+  await updateService(req.service.externalId, serviceUpdates)
 
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, req.service.externalId, req.account.type))
 }
