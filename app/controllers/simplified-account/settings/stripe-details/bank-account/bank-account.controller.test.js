@@ -72,8 +72,8 @@ describe('Controller: settings/stripe-details/bank-account', () => {
     describe('when submitting valid bank details', () => {
       before(() => setupTest('post', {}, {}, {
         body: {
-          sortCodeInput: VALID_SORT_CODE,
-          accountNumberInput: VALID_ACCOUNT_NUMBER
+          sortCode: VALID_SORT_CODE,
+          accountNumber: VALID_ACCOUNT_NUMBER
         }
       }))
 
@@ -103,16 +103,16 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           expect(responseArgs[2]).to.equal('simplified-account/settings/stripe-details/bank-account/index')
           expect(responseArgs[3].errors.summary).to.deep.equal([
             {
-              href: '#sort-code-input',
+              href: '#sort-code',
               text: 'Enter a sort code'
             },
             {
-              href: '#account-number-input',
+              href: '#account-number',
               text: 'Enter an account number'
             }
           ])
-          expect(responseArgs[3].errors.formErrors.sortCodeInput).to.equal('Enter a sort code')
-          expect(responseArgs[3].errors.formErrors.accountNumberInput).to.equal('Enter an account number')
+          expect(responseArgs[3].errors.formErrors.sortCode).to.equal('Enter a sort code')
+          expect(responseArgs[3].errors.formErrors.accountNumber).to.equal('Enter an account number')
         })
 
         it('should preserve the user input', () => {
@@ -127,7 +127,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           setupTest('post',
             {},
             {},
-            { body: { sortCodeInput: 'not-a-valid-sort-code', accountNumberInput: VALID_ACCOUNT_NUMBER } }
+            { body: { sortCode: 'not-a-valid-sort-code', accountNumber: VALID_ACCOUNT_NUMBER } }
           )
         })
 
@@ -136,10 +136,10 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           expect(responseStub.calledOnce).to.be.true // eslint-disable-line
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary).to.deep.equal([{
-            href: '#sort-code-input',
+            href: '#sort-code',
             text: expectedErrorMsg
           }])
-          expect(responseArgs[3].errors.formErrors.sortCodeInput).to.equal(expectedErrorMsg)
+          expect(responseArgs[3].errors.formErrors.sortCode).to.equal(expectedErrorMsg)
         })
 
         it('should preserve the user input', () => {
@@ -154,7 +154,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           setupTest('post',
             {},
             {},
-            { body: { sortCodeInput: VALID_SORT_CODE, accountNumberInput: 'not-a-valid-account-number' } }
+            { body: { sortCode: VALID_SORT_CODE, accountNumber: 'not-a-valid-account-number' } }
           )
         })
 
@@ -163,10 +163,10 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           expect(responseStub.calledOnce).to.be.true // eslint-disable-line
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary).to.deep.equal([{
-            href: '#account-number-input',
+            href: '#account-number',
             text: expectedErrorMsg
           }])
-          expect(responseArgs[3].errors.formErrors.accountNumberInput).to.equal(expectedErrorMsg)
+          expect(responseArgs[3].errors.formErrors.accountNumber).to.equal(expectedErrorMsg)
         })
 
         it('should preserve the user input', () => {
@@ -183,7 +183,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           setupTest('post',
             { updateStripeDetailsBankAccount: sinon.stub().rejects({ code: 'bank_account_unusable' }) },
             {},
-            { body: { sortCodeInput: VALID_SORT_CODE, accountNumberInput: VALID_ACCOUNT_NUMBER } }
+            { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
         })
 
@@ -201,7 +201,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           setupTest('post',
             { updateStripeDetailsBankAccount: sinon.stub().rejects({ code: 'routing_number_invalid' }) },
             {},
-            { body: { sortCodeInput: VALID_SORT_CODE, accountNumberInput: VALID_ACCOUNT_NUMBER } }
+            { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
         })
 
@@ -209,7 +209,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           expect(responseStub.calledOnce).to.be.true // eslint-disable-line
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary[0].text).to.equal('Invalid sort code')
-          expect(responseArgs[3].errors.formErrors.sortCodeInput).to.equal(
+          expect(responseArgs[3].errors.formErrors.sortCode).to.equal(
             'The sort code provided is invalid'
           )
         })
@@ -220,7 +220,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           setupTest('post',
             { updateStripeDetailsBankAccount: sinon.stub().rejects({ code: 'account_number_invalid' }) },
             {},
-            { body: { sortCodeInput: VALID_SORT_CODE, accountNumberInput: VALID_ACCOUNT_NUMBER } }
+            { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
         })
 
@@ -228,7 +228,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           expect(responseStub.calledOnce).to.be.true // eslint-disable-line
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary[0].text).to.equal('Invalid account number')
-          expect(responseArgs[3].errors.formErrors.accountNumberInput).to.equal(
+          expect(responseArgs[3].errors.formErrors.accountNumber).to.equal(
             'The account number provided is invalid'
           )
         })
@@ -239,7 +239,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           setupTest('post',
             { updateStripeDetailsBankAccount: sinon.stub().rejects({ code: 'unhandled_error' }) },
             {},
-            { body: { sortCodeInput: VALID_SORT_CODE, accountNumberInput: VALID_ACCOUNT_NUMBER } }
+            { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
         })
 
@@ -254,7 +254,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
           setupTest('post',
             { updateStripeDetailsBankAccount: sinon.stub().rejects({ foo: 'bar' }) },
             {},
-            { body: { sortCodeInput: VALID_SORT_CODE, accountNumberInput: VALID_ACCOUNT_NUMBER } }
+            { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
         })
 

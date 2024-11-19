@@ -30,10 +30,12 @@ const setupTest = (additionalReqProps = {}) => {
     flash: sinon.stub(),
     account: {
       type: ACCOUNT_TYPE,
-      email_collection_mode: 'MANDATORY',
-      email_notifications: {
-        PAYMENT_CONFIRMED: {
-          enabled: false
+      rawResponse: {
+        email_collection_mode: 'MANDATORY',
+        email_notifications: {
+          PAYMENT_CONFIRMED: {
+            enabled: false
+          }
         }
       }
     },

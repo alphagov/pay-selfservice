@@ -10,7 +10,8 @@ describe('navigation menu', function () {
     }
     const templateData = {
       currentGatewayAccount: {
-        full_type: 'test'
+        full_type: 'test',
+        payment_provider: 'sandbox'
       },
       currentService: { name: 'Service Name' },
       permissions: testPermissions,
@@ -34,7 +35,8 @@ describe('navigation menu', function () {
     }
     const templateData = {
       currentGatewayAccount: {
-        full_type: 'test'
+        full_type: 'test',
+        paymentProvider: 'sandbox'
       },
       currentService: { name: 'Service Name' },
       permissions: testPermissions,

@@ -116,7 +116,7 @@
   }) }}
 
 
-  <form id="responsible-person-check-your-answers" method="post" class="govuk-!-margin-top-4" novalidate>
+  <form id="responsible-person-check-your-answers-form" method="post" class="govuk-!-margin-top-4" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
     {{ govukButton({
@@ -128,7 +128,7 @@
   <script>
     // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
     const submitButton = document.getElementById('responsible-person-submit')
-    document.getElementById('responsible-person-check-your-answers').addEventListener('submit', function () {
+    document.getElementById('responsible-person-check-your-answers-form').addEventListener('submit', function () {
       submitButton.setAttribute('disabled', 'true')
       submitButton.setAttribute('aria-disabled', 'true')
       submitButton.setAttribute('class', 'govuk-button govuk-button--disabled')

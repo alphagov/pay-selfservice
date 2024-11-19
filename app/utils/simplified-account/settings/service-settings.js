@@ -3,6 +3,12 @@ const formatSimplifiedAccountPathsFor = require('../format/format-simplified-acc
 const SettingsBuilder = require('./SettingsBuilder.class')
 const { LIVE } = require('../../../models/go-live-stage')
 
+/**
+ * @param {GatewayAccount} account
+ * @param {GOVUKPayService} service
+ * @param {String} currentUrl
+ * @param {[String]} permissions
+ */
 module.exports = (account, service, currentUrl, permissions) => {
   const settingsBuilder = new SettingsBuilder(account, service, currentUrl, permissions, formatSimplifiedAccountPathsFor)
   const serviceSettings = settingsBuilder
@@ -37,7 +43,7 @@ module.exports = (account, service, currentUrl, permissions) => {
       id: 'stripe-details',
       name: 'stripe details',
       path: paths.simplifiedAccount.settings.stripeDetails.index,
-      permission: account.payment_provider === 'stripe' && account.type === 'live' && Boolean(permissions?.stripe_account_details_update)
+      permission: account.paymentProvider === 'stripe' && account.type === 'live' && Boolean(permissions?.stripe_account_details_update)
     })
     .category('payments')
     .add({

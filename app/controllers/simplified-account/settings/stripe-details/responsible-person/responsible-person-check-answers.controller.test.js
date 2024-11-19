@@ -13,23 +13,23 @@ const RESPONSIBLE_PERSON_INDEX_PATH = formatSimplifiedAccountPathsFor(paths.simp
 const RESPONSIBLE_PERSON_ADDRESS_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.homeAddress, SERVICE_ID, ACCOUNT_TYPE)
 const RESPONSIBLE_PERSON_CONTACT_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.contactDetails, SERVICE_ID, ACCOUNT_TYPE)
 
-let req, res, next, responseStub, updateStipeDetailsResponsiblePersonStub, responsiblePersonCheckAnswersController
+let req, res, next, responseStub, updateStripeDetailsResponsiblePersonStub, responsiblePersonCheckAnswersController
 
 const getController = (stubs = {}) => {
   return proxyquire('./responsible-person-check-answers.controller', {
     '@utils/response': { response: stubs.response },
     '@services/stripe-details.service': {
-      updateStipeDetailsResponsiblePerson: stubs.updateStipeDetailsResponsiblePerson
+      updateStripeDetailsResponsiblePerson: stubs.updateStripeDetailsResponsiblePerson
     }
   })
 }
 
 const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
   responseStub = sinon.spy()
-  updateStipeDetailsResponsiblePersonStub = sinon.stub().resolves()
+  updateStripeDetailsResponsiblePersonStub = sinon.stub().resolves()
   responsiblePersonCheckAnswersController = getController({
     response: responseStub,
-    updateStipeDetailsResponsiblePerson: updateStipeDetailsResponsiblePersonStub,
+    updateStripeDetailsResponsiblePerson: updateStripeDetailsResponsiblePersonStub,
     ...additionalStubs
   })
   res = {
@@ -154,7 +154,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
       }))
 
       it('should submit responsible person to the stripe details service', () => {
-        const call = updateStipeDetailsResponsiblePersonStub.getCall(0)
+        const call = updateStripeDetailsResponsiblePersonStub.getCall(0)
         expect(call).to.not.be.null // eslint-disable-line
         expect(call.args).to.deep.equal([
           req.service,
@@ -190,7 +190,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
         before(() => {
           setupTest('post',
             {
-              updateStipeDetailsResponsiblePerson: sinon.stub().rejects({
+              updateStripeDetailsResponsiblePerson: sinon.stub().rejects({
                 type: 'StripeInvalidRequestError',
                 param: 'phone'
               })
@@ -219,7 +219,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
         before(() => {
           setupTest('post',
             {
-              updateStipeDetailsResponsiblePerson: sinon.stub().rejects({
+              updateStripeDetailsResponsiblePerson: sinon.stub().rejects({
                 type: 'StripeInvalidRequestError',
                 param: 'foo'
               })
@@ -248,7 +248,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
         before(() => {
           setupTest('post',
             {
-              updateStipeDetailsResponsiblePerson: sinon.stub().rejects({
+              updateStripeDetailsResponsiblePerson: sinon.stub().rejects({
                 foo: 'bar'
               })
             },

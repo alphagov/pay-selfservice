@@ -9,5 +9,70 @@
     text: "Back",
     href: backLink
   }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">VAT registration number</h1>
+
+  <form id="vat-number-form" method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    {{ govukRadios({
+      idPrefix: 'vat-number-declaration',
+      name: 'vatNumberDeclaration',
+      fieldset: {
+        legend: {
+          text: 'Does your organisation have a VAT registration number?',
+          isPageHeading: false,
+          classes: 'govuk-fieldset__legend--m'
+        }
+      },
+      errorMessage: { text: errors.formErrors['vatNumberDeclaration'] } if errors.formErrors['vatNumberDeclaration'] else false,
+      items: [
+        {
+          text: 'Yes',
+          value: 'true',
+          conditional: {
+          html: govukInput({
+            label: {
+              text: "Enter your VAT registration number"
+            },
+            classes: "govuk-!-width-one-quarter",
+            id: "vat-number",
+            name: "vatNumber",
+            inputmode: "numeric",
+            value: vatNumber,
+            errorMessage: { text: errors.formErrors['vatNumber'] } if errors.formErrors['vatNumber'] else false,
+            hint: {
+              text: "This is usually 9 numbers and may start with GB. For example, 123456789 or GB123456789. You can find it on your VAT registration certificate."
+            }
+          })
+        },
+          checked: (vatNumberDeclaration === true)
+        },
+        {
+          text: 'No',
+          value: 'false',
+          checked: (vatNumberDeclaration === false)
+        }
+      ]
+    }) }}
+
+    {{ govukButton({ text: "Save and continue", id: "vat-number-submit" }) }}
+  </form>
+
+  <script>
+    // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
+    const submitButton = document.getElementById('vat-number-submit')
+    document.getElementById('vat-number-form').addEventListener('submit', function () {
+      submitButton.setAttribute('disabled', 'true')
+      submitButton.setAttribute('aria-disabled', 'true')
+      submitButton.setAttribute('class', 'govuk-button govuk-button--disabled')
+      submitButton.textContent = 'Saving...'
+    })
+  </script>
 {% endblock %}

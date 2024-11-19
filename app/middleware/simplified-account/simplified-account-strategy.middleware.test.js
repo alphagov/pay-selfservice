@@ -6,6 +6,7 @@ const sinon = require('sinon')
 const User = require('../../models/User.class')
 const userFixtures = require('../../../test/fixtures/user.fixtures')
 const stripeAccountSetupFixture = require('../../../test/fixtures/stripe-account-setup.fixtures')
+const GatewayAccount = require('@models/GatewayAccount.class')
 
 const A_GATEWAY_EXTERNAL_ID = 'a-gateway-external-id'
 const A_SERVICE_EXTERNAL_ID = 'a-service-external-id'
@@ -43,18 +44,18 @@ const setupSimplifiedAccountStrategyTest = function (options) {
   if (errorCode) {
     connectorGetAccountMock = sinon.stub().rejects({ errorCode })
   } else {
-    connectorGetAccountMock = sinon.stub().resolves({
+    connectorGetAccountMock = sinon.stub().resolves(new GatewayAccount({
       gateway_account_id: gatewayAccountID,
       external_id: gatewayAccountExternalId,
       payment_provider: paymentProvider
-    })
+    }))
   }
 
   const connectorMock = {
     ConnectorClient: function () {
       return {
-        getAccountByServiceIdAndAccountType: connectorGetAccountMock,
-        getStripeAccountSetupByServiceIdAndAccountType: paymentProvider === 'stripe'
+        getAccountByServiceExternalIdAndAccountType: connectorGetAccountMock,
+        getStripeAccountSetupByServiceExternalIdAndAccountType: paymentProvider === 'stripe'
           ? sinon.stub().resolves(stripeAccountSetupFixture.buildGetStripeAccountSetupResponse())
           : undefined
       }
@@ -63,7 +64,7 @@ const setupSimplifiedAccountStrategyTest = function (options) {
 
   const simplifiedAccountStrategy = proxyquire(
     path.join(__dirname, './simplified-account-strategy.middleware'),
-    { '../../services/clients/connector.client.js': connectorMock }
+    { '@services/clients/connector.client.js': connectorMock }
   )
 
   return {
@@ -86,11 +87,11 @@ describe('Middleware: getSimplifiedAccount', () => {
     sinon.assert.calledOnce(next)
     expect(connectorGetAccountMock.called).to.equal(true)
     expect(connectorGetAccountMock.calledWith({
-      serviceId: A_SERVICE_EXTERNAL_ID,
+      serviceExternalId: A_SERVICE_EXTERNAL_ID,
       accountType: 'test'
     })).to.equal(true)
 
-    expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
+    expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
     expect(req.service.externalId).to.equal(A_SERVICE_EXTERNAL_ID)
   })
   it('should error if service external ID or gateway account type cannot be resolved from request parameters', async () => {
@@ -134,7 +135,7 @@ describe('Middleware: getSimplifiedAccount', () => {
       })
       await simplifiedAccountStrategy(req, res, next)
       expect(req.account.disableToggle3ds).to.equal(false)
-      expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
+      expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
     })
     it('should extend the account data with disableToggle3ds set to true if payment provider is stripe', async () => {
       const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
@@ -146,7 +147,7 @@ describe('Middleware: getSimplifiedAccount', () => {
       })
       await simplifiedAccountStrategy(req, res, next)
       expect(req.account.disableToggle3ds).to.equal(true)
-      expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
+      expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
     })
   })
   describe('extend gateway account data with supports3ds field', () => {
@@ -161,7 +162,7 @@ describe('Middleware: getSimplifiedAccount', () => {
         })
         await simplifiedAccountStrategy(req, res, next)
         expect(req.account.supports3ds).to.equal(true)
-        expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
+        expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
       })
     })
     it('should extend the account data with supports3ds set to false if payment provider is sandbox', async () => {
@@ -174,7 +175,7 @@ describe('Middleware: getSimplifiedAccount', () => {
       })
       await simplifiedAccountStrategy(req, res, next)
       expect(req.account.supports3ds).to.equal(false)
-      expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
+      expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
     })
   })
   describe('extend gateway account data stripe setup', () => {
@@ -188,7 +189,7 @@ describe('Middleware: getSimplifiedAccount', () => {
           accountType: 'test'
         })
         await simplifiedAccountStrategy(req, res, next)
-        expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
+        expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
         expect(req.account).to.not.have.property('connectorGatewayAccountStripeProgress')
       })
     })
@@ -201,7 +202,7 @@ describe('Middleware: getSimplifiedAccount', () => {
         accountType: 'test'
       })
       await simplifiedAccountStrategy(req, res, next)
-      expect(req.account.external_id).to.equal(A_GATEWAY_EXTERNAL_ID)
+      expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
       expect(req.account).to.have.property('connectorGatewayAccountStripeProgress')
     })
   })

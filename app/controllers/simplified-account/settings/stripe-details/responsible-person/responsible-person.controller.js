@@ -4,7 +4,7 @@ const paths = require('@root/paths')
 const _ = require('lodash')
 const { validationResult } = require('express-validator')
 const { response } = require('@utils/response')
-const { responsiblePersonSchema } = require('@utils/simplified-account/validation/responsible-person.schema')
+const { stripePersonSchema } = require('@utils/simplified-account/validation/stripe-person.schema')
 const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
 
@@ -19,12 +19,12 @@ async function get (req, res) {
 
 async function post (req, res) {
   const validations = [
-    responsiblePersonSchema.name.firstName.validate,
-    responsiblePersonSchema.name.lastName.validate,
-    responsiblePersonSchema.dob.validate,
-    responsiblePersonSchema.dob.dobDay.validate,
-    responsiblePersonSchema.dob.dobMonth.validate,
-    responsiblePersonSchema.dob.dobYear.validate
+    stripePersonSchema.name.firstName.validate,
+    stripePersonSchema.name.lastName.validate,
+    stripePersonSchema.dob.validate,
+    stripePersonSchema.dob.dobDay.validate,
+    stripePersonSchema.dob.dobMonth.validate,
+    stripePersonSchema.dob.dobYear.validate
   ]
 
   await Promise.all(validations.map(validation => validation.run(req)))

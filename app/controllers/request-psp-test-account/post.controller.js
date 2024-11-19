@@ -32,12 +32,12 @@ module.exports = async function submitRequestForPspTestAccount (req, res, next) 
     return response(req, res, 'request-psp-test-account/index', pageData)
   }
 
-  const gatewayAccount = await connectorClient.getAccountByServiceIdAndAccountType({ serviceId: service.externalId, accountType: 'test' })
-  if (!(gatewayAccount.payment_provider === 'sandbox')) {
+  const gatewayAccount = await connectorClient.getAccountByServiceExternalIdAndAccountType({ serviceExternalId: service.externalId, accountType: 'test' })
+  if (!(gatewayAccount.paymentProvider === 'sandbox')) {
     throw new Error('Existing test account must be a sandbox one in order to request a Stripe test account.')
   }
 
-  const sandboxGatewayAccountId = gatewayAccount.gateway_account_id
+  const sandboxGatewayAccountId = gatewayAccount.id
   const gatewayAccountExternalId = await submitRequestAndUpdatePspTestAccountStatus(req)
 
   try {

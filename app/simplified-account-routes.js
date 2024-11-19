@@ -1,5 +1,5 @@
+const multer = require('multer')
 const { Router } = require('express')
-
 const {
   simplifiedAccountStrategy,
   simplifiedAccountOptIn,
@@ -7,13 +7,15 @@ const {
   enforceLiveAccountOnly,
   enforcePaymentProviderType,
   enforceCannotRemoveSelfFromService
-} = require('./middleware/simplified-account')
-const userIsAuthorised = require('./middleware/user-is-authorised')
-const permission = require('./middleware/permission')
+} = require('@middleware/simplified-account')
+const userIsAuthorised = require('@middleware/user-is-authorised')
+const permission = require('@middleware/permission')
 const paths = require('./paths')
-const serviceSettingsController = require('./controllers/simplified-account/settings')
-const { STRIPE } = require('./models/payment-providers')
+const serviceSettingsController = require('@controllers/simplified-account/settings')
+const { STRIPE } = require('@models/payment-providers')
+const { GOV_ENTITY_DOC_FORM_FIELD_NAME } = require('@controllers/simplified-account/settings/stripe-details/government-entity-document/constants')
 
+const upload = multer({ storage: multer.memoryStorage() })
 const simplifiedAccount = new Router({ mergeParams: true })
 
 simplifiedAccount.use(simplifiedAccountOptIn, simplifiedAccountStrategy, userIsAuthorised)
@@ -59,7 +61,9 @@ stripeDetailsRouter.get(stripeDetailsPath.bankAccount, serviceSettingsController
 stripeDetailsRouter.post(stripeDetailsPath.bankAccount, serviceSettingsController.stripeDetails.bankAccount.post)
 // -- new stuff
 stripeDetailsRouter.get(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.get)
+stripeDetailsRouter.post(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.post)
 stripeDetailsRouter.get(stripeDetailsPath.organisationDetails, serviceSettingsController.stripeDetails.organisationDetails.get)
+stripeDetailsRouter.post(stripeDetailsPath.organisationDetails, serviceSettingsController.stripeDetails.organisationDetails.post)
 // -- responsible person
 stripeDetailsRouter.get(stripeDetailsPath.responsiblePerson.index, serviceSettingsController.stripeDetails.responsiblePerson.get)
 stripeDetailsRouter.post(stripeDetailsPath.responsiblePerson.index, serviceSettingsController.stripeDetails.responsiblePerson.post)
@@ -70,9 +74,12 @@ stripeDetailsRouter.post(stripeDetailsPath.responsiblePerson.contactDetails, ser
 stripeDetailsRouter.get(stripeDetailsPath.responsiblePerson.checkYourAnswers, serviceSettingsController.stripeDetails.responsiblePerson.checkYourAnswers.get)
 stripeDetailsRouter.post(stripeDetailsPath.responsiblePerson.checkYourAnswers, serviceSettingsController.stripeDetails.responsiblePerson.checkYourAnswers.post)
 // --
-stripeDetailsRouter.get(stripeDetailsPath.governmentEntityDocument, serviceSettingsController.stripeDetails.governmentEntityDocument.get)
 stripeDetailsRouter.get(stripeDetailsPath.vatNumber, serviceSettingsController.stripeDetails.vatNumber.get)
+stripeDetailsRouter.post(stripeDetailsPath.vatNumber, serviceSettingsController.stripeDetails.vatNumber.post)
 stripeDetailsRouter.get(stripeDetailsPath.director, serviceSettingsController.stripeDetails.director.get)
+stripeDetailsRouter.post(stripeDetailsPath.director, serviceSettingsController.stripeDetails.director.post)
+stripeDetailsRouter.get(stripeDetailsPath.governmentEntityDocument, serviceSettingsController.stripeDetails.governmentEntityDocument.get)
+stripeDetailsRouter.post(stripeDetailsPath.governmentEntityDocument, upload.single(GOV_ENTITY_DOC_FORM_FIELD_NAME), serviceSettingsController.stripeDetails.governmentEntityDocument.post)
 simplifiedAccount.use(stripeDetailsRouter)
 
 module.exports = simplifiedAccount

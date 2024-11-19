@@ -18,10 +18,10 @@ async function get (req, res) {
 
 async function post (req, res, next) {
   const validations = [
-    body('sortCodeInput').trim()
+    body('sortCode').trim()
       .notEmpty().withMessage('Enter a sort code').bail()
       .matches(/^\d{2}[ -]?\d{2}[ -]?\d{2}$/).withMessage('Enter a valid sort code like 30-94-30 or 309430'), // 6 digits with optional dashes and spaces
-    body('accountNumberInput').trim()
+    body('accountNumber').trim()
       .notEmpty().withMessage('Enter an account number').bail()
       .isNumeric().withMessage(ACCT_NUMBER_ERR_MSG).bail()
       .isLength({ max: 8, min: 6 }).withMessage(ACCT_NUMBER_ERR_MSG)
@@ -37,8 +37,8 @@ async function post (req, res, next) {
     })
   }
 
-  const sortCode = req.body.sortCodeInput.replace(/\D/g, '')
-  const accountNumber = req.body.accountNumberInput.replace(/\D/g, '')
+  const sortCode = req.body.sortCode.replace(/\D/g, '')
+  const accountNumber = req.body.accountNumber.replace(/\D/g, '')
 
   try {
     await updateStripeDetailsBankAccount(req.service, req.account, sortCode, accountNumber)
@@ -52,13 +52,13 @@ async function post (req, res, next) {
         })
       case 'routing_number_invalid':
         return postErrorResponse(req, res, {
-          summary: [{ text: 'Invalid sort code', href: '#sort-code-input' }],
-          formErrors: { sortCodeInput: 'The sort code provided is invalid' }
+          summary: [{ text: 'Invalid sort code', href: '#sort-code' }],
+          formErrors: { sortCode: 'The sort code provided is invalid' }
         })
       case 'account_number_invalid':
         return postErrorResponse(req, res, {
-          summary: [{ text: 'Invalid account number', href: '#account-number-input' }],
-          formErrors: { accountNumberInput: 'The account number provided is invalid' }
+          summary: [{ text: 'Invalid account number', href: '#account-number' }],
+          formErrors: { accountNumber: 'The account number provided is invalid' }
         })
       default:
         next(error)
@@ -69,8 +69,8 @@ async function post (req, res, next) {
 const postErrorResponse = (req, res, errors) => {
   return response(req, res, 'simplified-account/settings/stripe-details/bank-account/index', {
     errors,
-    sortCode: req.body.sortCodeInput,
-    accountNumber: req.body.accountNumberInput,
+    sortCode: req.body.sortCode,
+    accountNumber: req.body.accountNumber,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type),
     submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.bankAccount, req.service.externalId, req.account.type)
   })

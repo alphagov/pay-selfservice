@@ -1,4 +1,27 @@
-'use strict'
+/**
+ * @typedef {Object} StripeDirectorParams
+ * @property {string} first_name
+ * @property {string} last_name
+ * @property {number} dob_day
+ * @property {number} dob_month
+ * @property {number} dob_year
+ * @property {string} email
+ */
+
+/**
+ * @typedef {Object} StripeDirector
+ * @property {string} first_name
+ * @property {string} last_name
+ * @property {{
+ *   day: number,
+ *   month: number,
+ *   year: number
+ * }} dob
+ * @property {string} email
+ * @property {{
+ *   director: boolean
+ * }} relationship
+ */
 
 const Joi = require('joi')
 
@@ -12,7 +35,14 @@ const schema = Joi.object({
   relationship: Joi.string().optional()
 })
 
+/**
+ * @class StripeDirector
+ */
 class StripeDirector {
+  /**
+   * @param {StripeDirectorParams} body
+   * @returns {StripeDirector}
+   */
   constructor (body) {
     const params = Object.assign({}, body)
 

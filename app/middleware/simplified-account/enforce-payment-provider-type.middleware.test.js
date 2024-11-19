@@ -1,8 +1,8 @@
 const { expect } = require('chai')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const { STRIPE, SANDBOX } = require('../../models/payment-providers')
-const { NotFoundError } = require('../../errors')
+const { STRIPE, SANDBOX } = require('@models/payment-providers')
+const { NotFoundError } = require('@root/errors')
 
 describe('Middleware: enforcePaymentProviderType', () => {
   let enforcePaymentProviderType, req, res, next
@@ -11,7 +11,7 @@ describe('Middleware: enforcePaymentProviderType', () => {
     enforcePaymentProviderType = proxyquire('./enforce-payment-provider-type.middleware', {})
     req = {
       account: {
-        payment_provider: STRIPE
+        paymentProvider: STRIPE
       }
     }
     res = {}
@@ -27,7 +27,7 @@ describe('Middleware: enforcePaymentProviderType', () => {
   })
 
   it('should call next() with error when account payment provider is sandbox and enforced type is stripe', () => {
-    req.account.payment_provider = SANDBOX
+    req.account.paymentProvider = SANDBOX
     const middleware = enforcePaymentProviderType(STRIPE)
     middleware(req, res, next)
     const expectedError = sinon.match.instanceOf(NotFoundError)

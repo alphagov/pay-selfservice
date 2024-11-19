@@ -1,5 +1,5 @@
-const { NotFoundError } = require('../../errors')
-const { LIVE } = require('../../models/go-live-stage')
+const { NotFoundError } = require('@root/errors')
+const { LIVE } = require('@models/go-live-stage')
 
 module.exports = (req, res, next) => {
   const account = req.account

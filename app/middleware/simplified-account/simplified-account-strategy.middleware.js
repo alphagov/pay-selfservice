@@ -1,11 +1,11 @@
-const { NotFoundError } = require('../../errors')
+const { NotFoundError } = require('@root/errors')
+const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE } = require('@root/paths').keys
 const { keys } = require('@govuk-pay/pay-js-commons').logging
-const { addField } = require('../../services/clients/base/request-context')
-const { getSwitchingCredentialIfExists } = require('../../utils/credentials')
-const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE } = require('../../paths').keys
+const { addField } = require('@services/clients/base/request-context')
+const { getSwitchingCredentialIfExists } = require('@utils/credentials')
 const _ = require('lodash')
-const logger = require('../../utils/logger')(__filename)
-const Connector = require('../../services/clients/connector.client.js').ConnectorClient
+const logger = require('@utils/logger')(__filename)
+const Connector = require('@services/clients/connector.client.js').ConnectorClient
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
 function getService (user, serviceExternalId, gatewayAccountId) {
@@ -22,29 +22,30 @@ function getService (user, serviceExternalId, gatewayAccountId) {
   return service
 }
 
-async function getGatewayAccountByServiceIdAndAccountType (serviceExternalId, accountType) {
+async function getGatewayAccount (serviceExternalId, accountType) {
   try {
     const params = {
-      serviceId: serviceExternalId,
+      serviceExternalId,
       accountType
     }
-    let account = await connectorClient.getAccountByServiceIdAndAccountType(params)
+    let gatewayAccount = await connectorClient.getAccountByServiceExternalIdAndAccountType(params)
 
-    account = _.extend({}, account, {
-      supports3ds: ['worldpay', 'stripe'].includes(account.payment_provider),
-      disableToggle3ds: account.payment_provider === 'stripe'
+    gatewayAccount = _.extend({}, gatewayAccount, {
+      supports3ds: ['worldpay', 'stripe'].includes(gatewayAccount.paymentProvider),
+      disableToggle3ds: gatewayAccount.paymentProvider === 'stripe'
     })
 
-    const switchingCredential = getSwitchingCredentialIfExists(account)
+    const switchingCredential = getSwitchingCredentialIfExists(gatewayAccount)
     const isSwitchingToStripe = switchingCredential && switchingCredential.payment_provider === 'stripe'
-    if (account.payment_provider === 'stripe' || isSwitchingToStripe) {
-      const stripeAccountSetup = await connectorClient.getStripeAccountSetupByServiceIdAndAccountType(serviceExternalId, accountType)
+
+    if (gatewayAccount.paymentProvider === 'stripe' || isSwitchingToStripe) {
+      const stripeAccountSetup = await connectorClient.getStripeAccountSetupByServiceExternalIdAndAccountType(serviceExternalId, accountType)
       if (stripeAccountSetup) {
-        account.connectorGatewayAccountStripeProgress = stripeAccountSetup
+        gatewayAccount.connectorGatewayAccountStripeProgress = stripeAccountSetup
       }
     }
 
-    return account
+    return gatewayAccount
   } catch (err) {
     const logContext = {
       error: err.message,
@@ -68,15 +69,15 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
       next(new NotFoundError('Could not resolve service external ID or gateway account type from request params'))
     }
 
-    const gatewayAccount = await getGatewayAccountByServiceIdAndAccountType(serviceExternalId, accountType)
+    const gatewayAccount = await getGatewayAccount(serviceExternalId, accountType)
     if (gatewayAccount) {
       req.account = gatewayAccount
-      addField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.gateway_account_id)
+      addField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.id)
       addField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
     } else {
       next(new NotFoundError('Could not retrieve gateway account with provided parameters'))
     }
-    const service = getService(req.user, serviceExternalId, gatewayAccount.gateway_account_id)
+    const service = getService(req.user, serviceExternalId, gatewayAccount.id)
     if (service) {
       req.service = service
       addField(keys.SERVICE_EXTERNAL_ID, service.externalId)

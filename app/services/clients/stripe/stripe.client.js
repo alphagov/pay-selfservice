@@ -56,21 +56,50 @@ module.exports = {
     return stripe.accounts.listPersons(stripeAccountId)
   },
 
+  listBankAccount: function (stripeAccountId) {
+    return stripe.accounts.listExternalAccounts(
+      stripeAccountId,
+      { object: 'bank_account', limit: 1 }
+    )
+  },
+
+  /**
+   * @param stripeAccountId {string}
+   * @param stripePersonId {string}
+   * @param body {StripePersonParams}
+   * @returns {Promise<Stripe.Response<Stripe.Person>>}
+   */
   updatePerson: function (stripeAccountId, stripePersonId, body) {
     const stripePerson = new StripePerson(body)
     return stripe.accounts.updatePerson(stripeAccountId, stripePersonId, stripePerson.basicObject())
   },
 
+  /**
+   * @param stripeAccountId {string}
+   * @param body {StripePersonParams}
+   * @returns {Promise<Stripe.Response<Stripe.Person>>}
+   */
   createPerson: function (stripeAccountId, body) {
     const stripePerson = new StripePerson(body)
     return stripe.accounts.createPerson(stripeAccountId, stripePerson.basicObject())
   },
 
+  /**
+   * @param stripeAccountId {string}
+   * @param stripeDirectorId {string}
+   * @param body {StripeDirectorParams}
+   * @returns {Promise<Stripe.Response<Stripe.Person>>}
+   */
   updateDirector: function (stripeAccountId, stripeDirectorId, body) {
     const stripeDirector = new StripeDirector(body)
     return stripe.accounts.updatePerson(stripeAccountId, stripeDirectorId, stripeDirector.basicObject())
   },
 
+  /**
+   * @param stripeAccountId {string}
+   * @param body {StripeDirectorParams}
+   * @returns {Promise<Stripe.Response<Stripe.Person>>}
+   */
   createDirector: function (stripeAccountId, body) {
     const stripeDirector = new StripeDirector(body)
     return stripe.accounts.createPerson(stripeAccountId, stripeDirector.basicObject())

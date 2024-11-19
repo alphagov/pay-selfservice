@@ -3,7 +3,7 @@ const { checkTaskCompletion } = require('@middleware/simplified-account')
 const paths = require('@root/paths')
 const _ = require('lodash')
 const { response } = require('@utils/response')
-const { responsiblePersonSchema } = require('@utils/simplified-account/validation/responsible-person.schema')
+const { stripePersonSchema } = require('@utils/simplified-account/validation/stripe-person.schema')
 const { validationResult } = require('express-validator')
 const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
@@ -18,8 +18,8 @@ async function get (req, res) {
 
 async function post (req, res) {
   const validations = [
-    responsiblePersonSchema.contactDetails.workEmail.validate,
-    responsiblePersonSchema.contactDetails.workTelephoneNumber.validate
+    stripePersonSchema.contactDetails.workEmail.validate,
+    stripePersonSchema.contactDetails.workTelephoneNumber.validate
   ]
 
   await Promise.all(validations.map(validation => validation.run(req)))

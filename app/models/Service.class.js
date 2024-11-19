@@ -3,6 +3,12 @@
 /**
  * @class GOVUKPayService
  * @property externalId {string} - The external id of the service
+ * @property currentGoLiveStage {string} - Live stage of the service
+ * @property name {string} - English name of service
+ * @property {{
+ *   en: string,
+ *   cy: string
+ * }} serviceName - object containing english and welsh service names
  */
 class Service {
   constructor (serviceData) {

@@ -33,6 +33,13 @@ function listPersons (opts) {
   })
 }
 
+function listBankAccount (opts) {
+  const path = `/v1/accounts/${opts.stripeAccountId}/external_accounts`
+  return stubBuilder('GET', path, 200, {
+    response: stripePspFixtures.validBankAccount(opts)
+  })
+}
+
 function retrieveAccountDetails (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}`
   const fixtureOpts = parseStripeAccountOptions(opts)
@@ -75,6 +82,7 @@ function updateAccount (opts) {
 
 module.exports = {
   listPersons,
+  listBankAccount,
   retrieveAccountDetails,
   updateListPerson,
   createOrUpdatePerson,

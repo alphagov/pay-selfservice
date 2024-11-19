@@ -121,7 +121,7 @@ module.exports = function (req, data, template) {
   const isAdminUser = service && user && user.isAdminUserForService(service.externalId)
   const isDegatewayed = user && session && user.isDegatewayed()
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
-  const paymentProvider = account && account.payment_provider
+  const paymentProvider = account && (account.payment_provider || account.paymentProvider) // TODO back compat, remove me
   convertedData.loggedIn = user && session && user.sessionVersion === session.version
   convertedData.isDegatewayed = isDegatewayed
   convertedData.paymentMethod = paymentMethod
@@ -142,8 +142,8 @@ module.exports = function (req, data, template) {
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, isDegatewayed, currentUrl, account)
-    convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account, service)
+    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, isDegatewayed, currentUrl, service, account)
+    convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account)
     if (currentUrl.includes('simplified') && currentUrl.includes('settings')) {
       convertedData.serviceSettings = serviceSettings(account, service, currentUrl, permissions)
     }
