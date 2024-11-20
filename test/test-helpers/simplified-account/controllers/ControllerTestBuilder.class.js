@@ -33,8 +33,8 @@ module.exports = class ControllerTestBuilder {
     return this
   }
 
-  withService (account) {
-    this.req.service = account
+  withService (service) {
+    this.req.service = service
     return this
   }
 
