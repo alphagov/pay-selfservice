@@ -1,5 +1,5 @@
 const { findByExternalId } = require('@services/user.service')
-const { response } = require('@utils/response')
+const { response, renderErrorView } = require('@utils/response')
 const { body, validationResult } = require('express-validator')
 const paths = require('@root/paths')
 const userService = require('@services/user.service')
@@ -7,6 +7,9 @@ const formatValidationErrors = require('@utils/simplified-account/format/format-
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 
 async function get (req, res, next) {
+  if (req.user.externalId === req.params.externalUserId) {
+    return renderErrorView(req, res, 'You cannot remove yourself from a service', 403)
+  }
   const externalServiceId = req.service.externalId
   const accountType = req.account.type
   try {
@@ -27,6 +30,11 @@ async function post (req, res, next) {
   const removerExternalId = req.user.externalId
   const externalServiceId = req.service.externalId
   const accountType = req.account.type
+
+  if (removerExternalId === userToRemoveExternalId) {
+    return renderErrorView(req, res, 'You cannot remove yourself from a service', 403)
+  }
+
   const validation = body('confirmRemoveUser').not().isEmpty().withMessage(`Confirm if you want to remove ${userToRemoveEmail}`)
   await validation.run(req)
   const errors = validationResult(req)

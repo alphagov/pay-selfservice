@@ -17,30 +17,32 @@ const getController = (stubs = {}) => {
   })
 }
 
-const setupTest = (method, additionalReqProps = {}) => {
-  responseStub = sinon.spy()
-  const adminUser = new User(userFixtures.validUserResponse({
-    external_id: 'user-id-for-admin-user',
-    email: 'admin-user@users.gov.uk',
+const adminUser = new User(userFixtures.validUserResponse({
+  external_id: 'user-id-for-admin-user',
+  email: 'admin-user@users.gov.uk',
+  service_roles: {
+    service: {
+      service: { external_id: SERVICE_ID },
+      role: { name: 'admin' }
+    }
+  }
+}))
+
+const viewOnlyUser = new User(userFixtures.validUserResponse(
+  {
+    external_id: 'user-id-to-change-permission',
+    email: 'user-to-change-permission@users.gov.uk',
     service_roles: {
-      service: {
-        service: { external_id: SERVICE_ID },
-        role: { name: 'admin' }
-      }
+      service:
+        {
+          service: { external_id: SERVICE_ID },
+          role: { name: 'view-only' }
+        }
     }
   }))
-  const userToChangePermission = new User(userFixtures.validUserResponse(
-    {
-      external_id: 'user-id-to-change-permission',
-      email: 'user-to-change-permission@users.gov.uk',
-      service_roles: {
-        service:
-          {
-            service: { external_id: SERVICE_ID },
-            role: { name: 'view-only' }
-          }
-      }
-    }))
+
+const setupTest = (method, userToChangePermission, additionalReqProps = {}) => {
+  responseStub = sinon.spy()
   findByExternalIdStub = sinon.stub().resolves(userToChangePermission)
 
   changePermissionController = getController({
@@ -48,6 +50,9 @@ const setupTest = (method, additionalReqProps = {}) => {
     findByExternalId: findByExternalIdStub
   })
   res = {
+    setHeader: sinon.stub(),
+    status: sinon.spy(),
+    render: sinon.spy(),
     redirect: sinon.spy()
   }
   req = {
@@ -66,7 +71,7 @@ const setupTest = (method, additionalReqProps = {}) => {
 describe('Controller: settings/team-members/change-permission', () => {
   describe('get', () => {
     describe('success', () => {
-      before(() => setupTest('get', { params: { externalUserId: 'user-id-to-change-permission' } }))
+      before(() => setupTest('get', viewOnlyUser, { params: { externalUserId: 'user-id-to-change-permission' } }))
 
       it('should call the response method', () => {
         expect(findByExternalIdStub.called).to.be.true // eslint-disable-line
@@ -85,6 +90,13 @@ describe('Controller: settings/team-members/change-permission', () => {
         expect(responseStub.args[0][3]).to.have.property('userCurrentRoleName').to.equal('view-only')
         expect(responseStub.args[0][3]).to.have.property('email').to.equal('user-to-change-permission@users.gov.uk')
         expect(responseStub.args[0][3]).to.have.property('backLink').to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members')
+      })
+    })
+    describe('failure - admin attempts to change own permissions', () => {
+      before(() => setupTest('get', adminUser, { params: { externalUserId: 'user-id-for-admin-user' } }))
+
+      it('should call the render method with an error', () => {
+        sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'You cannot update your own permissions' }))
       })
     })
   })

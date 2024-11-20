@@ -1,11 +1,14 @@
 const { findByExternalId } = require('@services/user.service')
-const { response } = require('@utils/response')
+const { response, renderErrorView } = require('@utils/response')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { getAvailableRolesForService } = require('@utils/roles')
 const { NotFoundError } = require('@root/errors')
 
 async function get (req, res, next) {
+  if (req.user.externalId === req.params.externalUserId) {
+    return renderErrorView(req, res, 'You cannot update your own permissions', 403)
+  }
   const serviceId = req.service.externalId
   const accountType = req.account.type
   const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled ?? false

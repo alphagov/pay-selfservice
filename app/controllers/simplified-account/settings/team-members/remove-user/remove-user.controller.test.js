@@ -18,30 +18,33 @@ const getController = (stubs = {}) => {
   })
 }
 
-const setupTest = (method, additionalReqProps = {}) => {
-  responseStub = sinon.spy()
-  const adminUser = new User(userFixtures.validUserResponse({
-    external_id: 'user-id-for-admin-user',
-    email: 'admin-user@users.gov.uk',
+const adminUser = new User(userFixtures.validUserResponse({
+  external_id: 'user-id-for-admin-user',
+  email: 'admin-user@users.gov.uk',
+  service_roles: {
+    service: {
+      service: { external_id: SERVICE_ID },
+      role: { name: 'admin' }
+    }
+  }
+}))
+
+const viewOnlyUser = new User(userFixtures.validUserResponse(
+  {
+    external_id: 'user-id-to-remove',
+    email: 'user-to-remove@users.gov.uk',
     service_roles: {
-      service: {
-        service: { external_id: SERVICE_ID },
-        role: { name: 'admin' }
-      }
+      service:
+        {
+          service: { external_id: SERVICE_ID },
+          role: { name: 'view-only' }
+        }
     }
   }))
-  const userToRemove = new User(userFixtures.validUserResponse(
-    {
-      external_id: 'user-id-to-remove',
-      email: 'user-to-remove@users.gov.uk',
-      service_roles: {
-        service:
-          {
-            service: { external_id: SERVICE_ID },
-            role: { name: 'view-only' }
-          }
-      }
-    }))
+
+const setupTest = (method, userToRemove, additionalReqProps = {}) => {
+  responseStub = sinon.spy()
+
   findByExternalIdStub = sinon.stub().resolves(userToRemove)
   deleteStub = sinon.stub().returns({ })
 
@@ -51,7 +54,10 @@ const setupTest = (method, additionalReqProps = {}) => {
     delete: deleteStub
   })
   res = {
-    redirect: sinon.spy()
+    setHeader: sinon.stub(),
+    status: sinon.spy(),
+    redirect: sinon.spy(),
+    render: sinon.spy()
   }
   req = {
     user: adminUser,
@@ -69,7 +75,7 @@ const setupTest = (method, additionalReqProps = {}) => {
 describe('Controller: settings/team-members/remove-user', () => {
   describe('get', () => {
     describe('success', () => {
-      before(() => setupTest('get', { params: { externalUserId: 'user-id-to-remove' } }))
+      before(() => setupTest('get', viewOnlyUser, { params: { externalUserId: 'user-id-to-remove' } }))
 
       it('should call the response method', () => {
         expect(findByExternalIdStub.called).to.be.true // eslint-disable-line
@@ -87,11 +93,19 @@ describe('Controller: settings/team-members/remove-user', () => {
         expect(responseStub.args[0][3]).to.have.property('backLink').to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members')
       })
     })
+
+    describe('failure - admin attempts to remove self', () => {
+      before(() => setupTest('get', adminUser, { params: { externalUserId: 'user-id-for-admin-user' } }))
+
+      it('should call the render method with an error', () => {
+        sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'You cannot remove yourself from a service' }))
+      })
+    })
   })
 
   describe('post', () => {
     describe('admin user confirmed remove user', () => {
-      before(() => setupTest('post',
+      before(() => setupTest('post', viewOnlyUser,
         {
           params: { externalUserId: 'user-id-to-remove' },
           body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'yes' },
@@ -115,7 +129,7 @@ describe('Controller: settings/team-members/remove-user', () => {
     })
 
     describe('admin user selected not to remove user', () => {
-      before(() => setupTest('post',
+      before(() => setupTest('post', viewOnlyUser,
         {
           params: { externalUserId: 'user-id-to-remove' },
           body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'no' },
@@ -127,6 +141,19 @@ describe('Controller: settings/team-members/remove-user', () => {
         expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
         expect(deleteStub.called).to.be.false // eslint-disable-line
+      })
+    })
+
+    describe('admin user attempted to remove self', () => {
+      before(() => setupTest('post', adminUser,
+        {
+          params: { externalUserId: 'user-id-for-admin-user' },
+          body: { email: 'admin-user@users.gov.uk', confirmRemoveUser: 'yes' },
+          flash: sinon.stub()
+        }
+      ))
+      it('should call the render method with an error', () => {
+        sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'You cannot remove yourself from a service' }))
       })
     })
   })
