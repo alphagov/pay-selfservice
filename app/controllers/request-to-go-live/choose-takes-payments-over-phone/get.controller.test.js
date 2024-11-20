@@ -6,10 +6,10 @@ const {
   NOT_STARTED, ENTERED_ORGANISATION_NAME, ENTERED_ORGANISATION_ADDRESS, CHOSEN_PSP_STRIPE,
   CHOSEN_PSP_GOV_BANKING_WORLDPAY, TERMS_AGREED_STRIPE, TERMS_AGREED_GOV_BANKING_WORLDPAY, LIVE,
   DENIED, GOV_BANKING_MOTO_OPTION_COMPLETED
-} = require('../../../models/go-live-stage')
+} = require('@models/go-live-stage')
 
-const User = require('../../../models/User.class')
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 describe('Request to go live - choose takes payments over phone - GET controller', () => {
   let req, res, next

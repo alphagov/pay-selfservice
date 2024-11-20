@@ -1,9 +1,9 @@
 'use strict'
 
-const adminusersClient = require('../services/clients/adminusers.client')()
-const paths = require('../paths')
-const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
-const { ExpiredInviteError, NotFoundError } = require('../errors')
+const adminusersClient = require('@services/clients/adminusers.client')()
+const paths = require('@root/paths')
+const { INVITE_SESSION_COOKIE_NAME } = require('@utils/constants')
+const { ExpiredInviteError, NotFoundError } = require('@root/errors')
 
 /**
  * Intermediate endpoint which captures the invite code and validate.

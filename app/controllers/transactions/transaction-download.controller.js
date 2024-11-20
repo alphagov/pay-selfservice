@@ -1,9 +1,9 @@
 'use strict'
 
-const transactionService = require('../../services/transaction.service')
-const date = require('../../utils/dates')
-const { renderErrorView } = require('../../utils/response')
-const Stream = require('../../services/clients/stream.client')
+const transactionService = require('@services/transaction.service')
+const date = require('@utils/dates')
+const { renderErrorView } = require('@utils/response')
+const Stream = require('@services/clients/stream.client')
 
 const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (req, res) {
   const accountId = req.account.gateway_account_id

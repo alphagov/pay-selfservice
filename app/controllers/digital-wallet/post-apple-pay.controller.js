@@ -1,8 +1,8 @@
 'use strict'
 
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { ConnectorClient } = require('../../services/clients/connector.client')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 module.exports = async (req, res, next) => {

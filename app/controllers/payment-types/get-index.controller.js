@@ -1,7 +1,7 @@
 'use strict'
 
-const { response } = require('../../utils/response')
-const { ConnectorClient } = require('../../services/clients/connector.client')
+const { response } = require('@utils/response')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 function formatLabel (card) {

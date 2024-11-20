@@ -1,7 +1,7 @@
 const moment = require('moment')
 
-const Ledger = require('../../services/clients/ledger.client')
-const Paginator = require('../../utils/paginator')
+const Ledger = require('@services/clients/ledger.client')
+const Paginator = require('@utils/paginator')
 
 const { indexServiceNamesByGatewayAccountId } = require('./user-services-names.controller')
 

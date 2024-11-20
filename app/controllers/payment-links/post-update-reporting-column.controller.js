@@ -1,10 +1,10 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const MetadataForm = require('./metadata/metadata-form')
-const { getPaymentLinksContext, metadata } = require('../../utils/payment-links')
+const { getPaymentLinksContext, metadata } = require('@utils/payment-links')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('@utils/response.js')
 
 function addMetadata (req, res, next) {
   try {

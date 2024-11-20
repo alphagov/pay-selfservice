@@ -2,14 +2,14 @@
 
 const url = require('url')
 
-const { response } = require('../../utils/response')
-const transactionService = require('../../services/transaction.service')
-const permissions = require('../../utils/permissions')
-const { getFilters } = require('../../utils/filters.js')
-const paths = require('../../paths')
+const { response } = require('@utils/response')
+const transactionService = require('@services/transaction.service')
+const permissions = require('@utils/permissions')
+const { getFilters } = require('@utils/filters.js')
+const paths = require('@root/paths')
 
-const logger = require('../../utils/logger')(__filename)
-const { NoServicesWithPermissionError } = require('../../errors')
+const logger = require('@utils/logger')(__filename)
+const { NoServicesWithPermissionError } = require('@root/errors')
 const { populateModel } = require('./populateModel.js')
 
 module.exports = async function getTransactionsForAllServices (req, res, next) {

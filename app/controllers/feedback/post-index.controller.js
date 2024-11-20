@@ -1,9 +1,9 @@
 'use strict'
 
 const lodash = require('lodash')
-const logger = require('../../utils/logger')(__filename)
-const paths = require('../../paths')
-const zendeskClient = require('../../services/clients/zendesk.client')
+const logger = require('@utils/logger')(__filename)
+const paths = require('@root/paths')
+const zendeskClient = require('@services/clients/zendesk.client')
 
 module.exports = async function postZendeskFeedback (req, res) {
   const message = `Feedback rating: ${req.body['feedback-rating']}

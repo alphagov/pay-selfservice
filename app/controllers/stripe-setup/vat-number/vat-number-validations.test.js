@@ -3,7 +3,7 @@
 const { expect } = require('chai')
 
 const vatNumberValidations = require('./vat-number-validations')
-const { validationErrors } = require('../../../utils/validation/field-validation-checks')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
 
 // Constants
 const standardVatNumber = 'GB999 9999 73'

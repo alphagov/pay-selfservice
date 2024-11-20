@@ -1,9 +1,9 @@
 'use strict'
 
-const paths = require('../../paths')
-const publicAuthClient = require('../../services/clients/public-auth.client')
-const logger = require('../../utils/logger')(__filename)
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const paths = require('@root/paths')
+const publicAuthClient = require('@services/clients/public-auth.client')
+const logger = require('@utils/logger')(__filename)
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 module.exports = async function revokeApiKey (req, res) {
   const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, req.account.external_id)

@@ -1,9 +1,9 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
-const User = require('../../models/User.class')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
 
 const checkCredentialsMock = sinon.spy(() => Promise.resolve({ result: 'valid' }))
 const updateCredentialsMock = sinon.spy(() => Promise.resolve())
@@ -67,7 +67,7 @@ describe('Worldpay credentials controller', () => {
 
 function getControllerWithMocks () {
   return proxyquire('./worldpay.controller', {
-    '../../services/clients/connector.client': {
+    '@services/clients/connector.client': {
       ConnectorClient: function () {
         this.postCheckWorldpayCredentials = checkCredentialsMock
         this.patchAccountGatewayAccountCredentials = updateCredentialsMock

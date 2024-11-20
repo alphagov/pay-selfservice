@@ -1,11 +1,11 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const User = require('../../models/User.class')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
-const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
-const Service = require('../../models/Service.class')
-const serviceFixtures = require('../../../test/fixtures/service.fixtures')
-const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
+const Service = require('@models/Service.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const ledgerTransactionFixture = require('@test/fixtures/ledger-transaction.fixtures')
 
 describe('List transactions - GET', () => {
   let req, res, next
@@ -58,13 +58,13 @@ describe('List transactions - GET', () => {
 
   function getController () {
     return proxyquire('./transaction-list.controller', {
-      '../../services/transaction.service': {
+      '@services/transaction.service': {
         search: sinon.spy(() => Promise.resolve(transactionSearchResponse))
       },
-      '../../services/clients/connector.client.js': {
+      '@services/clients/connector.client.js': {
         ConnectorClient: class {async getAllCardTypes () { return {} }}
       },
-      '../../utils/states': {
+      '@utils/states': {
         allDisplayStateSelectorObjects: allDisplayStateSelectorObjectsMock
       }
     })

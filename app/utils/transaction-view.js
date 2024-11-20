@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 const changeCase = require('change-case')
-const dates = require('../utils/dates.js')
+const dates = require('@utils/dates.js')
 const router = require('../routes.js')
 const qs = require('qs')
 const { penceToPoundsWithCurrency } = require('./currency-formatter')
@@ -10,9 +10,9 @@ const Paginator = require('./paginator')
 const states = require('./states')
 const check = require('check-types')
 const url = require('url')
-const TransactionEvent = require('../models/TransactionEvent.class')
-const DisputeTransaction = require('../models/DisputeTransaction.class')
-const formatAccountPathsFor = require('../utils/format-account-paths-for')
+const TransactionEvent = require('@models/TransactionEvent.class')
+const DisputeTransaction = require('@models/DisputeTransaction.class')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
 const REDACTED_PII_FIELD_VALUE = '<DELETED>'

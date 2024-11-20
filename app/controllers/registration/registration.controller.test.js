@@ -2,12 +2,12 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const inviteFixtures = require('../../../test/fixtures/invite.fixtures')
-const { ExpiredInviteError } = require('../../errors')
+const inviteFixtures = require('@test/fixtures/invite.fixtures')
+const { ExpiredInviteError } = require('@root/errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { paths } = require('../../routes')
 const registrationController = require('./registration.controller')
-const { APP, SMS } = require('../../models/second-factor-method')
+const { APP, SMS } = require('@models/second-factor-method')
 const lodash = require('lodash')
 
 const inviteCode = 'a-code'
@@ -1009,7 +1009,7 @@ describe('Registration', () => {
 
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {
   return proxyquire('./registration.controller.js', {
-    '../../services/clients/adminusers.client': () => mockedAdminusersClient,
+    '@services/clients/adminusers.client': () => mockedAdminusersClient,
     qrcode: { toDataURL: qrToDataURLSpy }
   })
 }

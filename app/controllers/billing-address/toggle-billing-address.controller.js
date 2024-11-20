@@ -2,11 +2,11 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
-const { response } = require('../../utils/response')
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const serviceService = require('../../services/service.service')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const serviceService = require('@services/service.service')
 
 function getIndex (req, res) {
   const model = {

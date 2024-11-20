@@ -1,10 +1,10 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const productsClient = require('../../services/clients/products.client.js')
-const publicAuthClient = require('../../services/clients/public-auth.client.js')
+const logger = require('@utils/logger')(__filename)
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const productsClient = require('@services/clients/products.client.js')
+const publicAuthClient = require('@services/clients/public-auth.client.js')
 
 module.exports = async (req, res) => {
   const gatewayAccountId = req.account.gateway_account_id

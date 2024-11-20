@@ -2,14 +2,14 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
-const { response } = require('../../../utils/response')
-const { validateMandatoryField, validateEmail } = require('../../../utils/validation/server-side-form-validations')
-const { validationErrors } = require('../../../utils/validation/field-validation-checks')
-const { listPersons, updateDirector, createDirector, updateCompany } = require('../../../services/clients/stripe/stripe.client')
+const logger = require('@utils/logger')(__filename)
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('@utils/credentials')
+const { response } = require('@utils/response')
+const { validateMandatoryField, validateEmail } = require('@utils/validation/server-side-form-validations')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
+const { listPersons, updateDirector, createDirector, updateCompany } = require('@services/clients/stripe/stripe.client')
 const {
   validateField,
   validateDoB,
@@ -17,7 +17,7 @@ const {
   getStripeAccountId,
   getAlreadySubmittedErrorPageData
 } = require('../stripe-setup.util')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const FIRST_NAME_FIELD = 'first-name'
 const LAST_NAME_FIELD = 'last-name'

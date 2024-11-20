@@ -1,12 +1,12 @@
 const _ = require('lodash')
-const paths = require('../paths')
-const formatAccountPathsFor = require('../utils/format-account-paths-for')
-const { response } = require('../utils/response')
-const { getCredentialByExternalId } = require('../utils/credentials')
-const { ConnectorClient } = require('../services/clients/connector.client')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { response } = require('@utils/response')
+const { getCredentialByExternalId } = require('@utils/credentials')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const { CONNECTOR_URL } = process.env
-const { isPasswordLessThanTenChars } = require('../utils/validation/field-validation-checks')
-const { NotFoundError } = require('../errors')
+const { isPasswordLessThanTenChars } = require('@utils/validation/field-validation-checks')
+const { NotFoundError } = require('@root/errors')
 
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
 

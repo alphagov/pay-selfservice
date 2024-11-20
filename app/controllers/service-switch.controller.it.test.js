@@ -8,9 +8,9 @@ const chaiAsPromised = require('chai-as-promised')
 const { expect } = require('chai')
 
 const myServicesController = require('./my-services')
-const User = require('../models/User.class')
-const userFixtures = require('../../test/fixtures/user.fixtures')
-const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 chai.use(chaiAsPromised)
 

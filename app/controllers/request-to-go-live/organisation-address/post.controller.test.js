@@ -4,10 +4,10 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const goLiveStage = require('../../../models/go-live-stage')
-const Service = require('../../../models/Service.class')
-const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
-const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
+const goLiveStage = require('@models/go-live-stage')
+const Service = require('@models/Service.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
 
 const mockResponse = sinon.spy()
 

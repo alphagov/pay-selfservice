@@ -3,7 +3,7 @@
 const chai = require('chai')
 
 const goLiveStageToNextPagePath = require('./go-live-stage-to-next-page-path')
-const goLiveStage = require('../../models/go-live-stage')
+const goLiveStage = require('@models/go-live-stage')
 
 // Constants
 const expect = chai.expect

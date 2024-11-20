@@ -17,7 +17,7 @@ function getConfigWithMocks (correlationId) {
       getRequestCorrelationIDField: () => correlationId
     },
     './request-logger': proxyquire('./request-logger', {
-      '../../../utils/logger': () => ({
+      '@utils/logger': () => ({
         info: logInfoSpy
       })
     })

@@ -1,10 +1,10 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
-const productsClient = require('../../services/clients/products.client.js')
-const { ConnectorClient } = require('../../services/clients/connector.client')
+const logger = require('@utils/logger')(__filename)
+const productsClient = require('@services/clients/products.client.js')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const router = require('../../routes')
 
 module.exports = async function goToTransactions (req, res, next) {

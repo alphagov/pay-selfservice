@@ -1,9 +1,9 @@
 'use strict'
 
 const MetadataForm = require('./metadata/metadata-form')
-const { getPaymentLinksContext } = require('../../utils/payment-links')
+const { getPaymentLinksContext } = require('@utils/payment-links')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('@utils/response.js')
 
 function showAddMetadataPage (req, res) {
   const paymentLinksContext = getPaymentLinksContext(req)

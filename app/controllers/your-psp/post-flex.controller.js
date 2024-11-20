@@ -2,14 +2,14 @@
 
 const lodash = require('lodash')
 
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { renderErrorView } = require('../../utils/response')
-const { ConnectorClient } = require('../../services/clients/connector.client')
-const { validationErrors } = require('../../utils/validation/field-validation-checks')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { renderErrorView } = require('@utils/response')
+const { ConnectorClient } = require('@services/clients/connector.client')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
 const worldpay3dsFlexValidations = require('./worldpay-3ds-flex-validations')
-const { getCredentialByExternalId } = require('../../utils/credentials')
-const { isSwitchingCredentialsRoute } = require('../../utils/credentials')
+const { getCredentialByExternalId } = require('@utils/credentials')
+const { isSwitchingCredentialsRoute } = require('@utils/credentials')
 
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 // Constants

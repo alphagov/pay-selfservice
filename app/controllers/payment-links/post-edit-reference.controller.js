@@ -2,9 +2,9 @@
 
 const lodash = require('lodash')
 
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { validateOptionalField } = require('../../utils/validation/server-side-form-validations')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { validateOptionalField } = require('@utils/validation/server-side-form-validations')
 
 const LABEL_MAX_LENGTH = 50
 const HINT_MAX_LENGTH = 255

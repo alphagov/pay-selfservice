@@ -3,7 +3,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const paths = require('../../../paths')
+const paths = require('@root/paths')
 
 describe('Company number POST controller', () => {
   const postBody = {
@@ -19,10 +19,10 @@ describe('Company number POST controller', () => {
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
-      '../../../services/clients/stripe/stripe.client': {
+      '@services/clients/stripe/stripe.client': {
         updateCompany: updateCompanyMock
       },
-      '../../../services/clients/connector.client': {
+      '@services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
         }

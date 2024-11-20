@@ -1,6 +1,6 @@
 'use strict'
 
-const paths = require('../../paths')
+const paths = require('@root/paths')
 
 function get (req, res) {
   res.redirect(paths.serviceSwitcher.index)

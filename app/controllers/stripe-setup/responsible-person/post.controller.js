@@ -3,10 +3,10 @@
 const lodash = require('lodash')
 const ukPostcode = require('uk-postcode')
 
-const logger = require('../../../utils/logger')(__filename)
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
+const logger = require('@utils/logger')(__filename)
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('@utils/credentials')
 const {
   validateField,
   validateDoB,
@@ -14,18 +14,18 @@ const {
   getStripeAccountId,
   getAlreadySubmittedErrorPageData
 } = require('../stripe-setup.util')
-const { response } = require('../../../utils/response')
+const { response } = require('@utils/response')
 const {
   validateMandatoryField,
   validateOptionalField,
   validatePostcode,
   validatePhoneNumber,
   validateEmail
-} = require('../../../utils/validation/server-side-form-validations')
-const { formatPhoneNumberWithCountryCode } = require('../../../utils/telephone-number-utils')
-const { validationErrors } = require('../../../utils/validation/field-validation-checks')
-const { listPersons, updatePerson, createPerson, updateCompany } = require('../../../services/clients/stripe/stripe.client')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+} = require('@utils/validation/server-side-form-validations')
+const { formatPhoneNumberWithCountryCode } = require('@utils/telephone-number-utils')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
+const { listPersons, updatePerson, createPerson, updateCompany } = require('@services/clients/stripe/stripe.client')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const FIRST_NAME_FIELD = 'first-name'

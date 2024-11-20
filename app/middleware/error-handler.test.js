@@ -6,11 +6,11 @@ const {
   ExpiredInviteError
 } = require('../errors')
 const paths = require('../paths')
-const User = require('../models/User.class')
-const Service = require('../models/Service.class')
-const userFixtures = require('../../test/fixtures/user.fixtures')
-const serviceFixtures = require('../../test/fixtures/service.fixtures')
-const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
+const User = require('@models/User.class')
+const Service = require('@models/Service.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 const correlationId = 'a-request-id'
 const req = {
@@ -36,7 +36,7 @@ describe('Error handler middleware', () => {
     infoLoggerSpy = sinon.spy()
     sentrySpy = sinon.spy()
     errorHandler = proxyquire('./error-handler', {
-      '../utils/logger': () => {
+      '@utils/logger': () => {
         return {
           info: infoLoggerSpy
         }

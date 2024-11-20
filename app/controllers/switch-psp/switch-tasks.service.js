@@ -1,6 +1,6 @@
 'use strict'
 
-const { CREDENTIAL_STATE } = require('../../utils/credentials')
+const { CREDENTIAL_STATE } = require('@utils/credentials')
 const lodash = require('lodash')
 
 function linkCredentialsComplete (targetCredential) {

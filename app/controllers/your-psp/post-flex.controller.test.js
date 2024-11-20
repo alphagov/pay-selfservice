@@ -3,7 +3,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 describe('Post 3DS Flex controller', () => {
   const gatewayAccountExternalId = 'a-gateway-account-external-id'
@@ -105,14 +105,14 @@ describe('Post 3DS Flex controller', () => {
 
   function getControllerWithMocks () {
     return proxyquire('./post-flex.controller', {
-      '../../services/clients/connector.client': {
+      '@services/clients/connector.client': {
         ConnectorClient: function () {
           this.postCheckWorldpay3dsFlexCredentials = postCheckWorldpay3dsFlexCredentials
           this.post3dsFlexAccountCredentials = post3dsFlexAccountCredentials
           this.updateIntegrationVersion3ds = updateIntegrationVersion3dsMock
         }
       },
-      '../../utils/response': {
+      '@utils/response': {
         renderErrorView: renderErrorViewMock
       }
     })

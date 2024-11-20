@@ -4,7 +4,7 @@ const Sentry = require('@sentry/node')
 const { AxiosError } = require('axios')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const {
   NotAuthenticatedError,
   UserAccountDisabledError,
@@ -20,8 +20,8 @@ const {
   GatewayTimeoutForAllServicesSearchError, TaskAlreadyCompletedError
 } = require('../errors')
 const paths = require('../paths')
-const { renderErrorView, response } = require('../utils/response')
-const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/format/format-simplified-account-paths-for')
+const { renderErrorView, response } = require('@utils/response')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 
 module.exports = function errorHandler (err, req, res, next) {
   if (res.headersSent) {

@@ -4,14 +4,14 @@ const url = require('url')
 const _ = require('lodash')
 
 const router = require('../../routes.js')
-const transactionService = require('../../services/transaction.service')
-const { ConnectorClient } = require('../../services/clients/connector.client.js')
-const { buildPaymentList } = require('../../utils/transaction-view.js')
-const { response } = require('../../utils/response.js')
-const { getFilters, describeFilters } = require('../../utils/filters.js')
-const states = require('../../utils/states')
+const transactionService = require('@services/transaction.service')
+const { ConnectorClient } = require('@services/clients/connector.client.js')
+const { buildPaymentList } = require('@utils/transaction-view.js')
+const { response } = require('@utils/response.js')
+const { getFilters, describeFilters } = require('@utils/filters.js')
+const states = require('@utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 module.exports = async function showTransactionList (req, res, next) {
   const accountId = req.account.gateway_account_id

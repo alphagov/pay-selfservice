@@ -4,7 +4,7 @@ const {
   listPersons, updatePerson, createPerson,
   updateCompany, uploadFile, updateAccount, retrieveAccountDetails, listBankAccount
 } = require('@services/clients/stripe/stripe.client')
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 /**

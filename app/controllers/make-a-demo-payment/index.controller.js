@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('@utils/response.js')
 
 const DEFAULTS = {
   paymentDescription: 'An example payment description',

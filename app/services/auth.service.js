@@ -4,18 +4,18 @@ const lodash = require('lodash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const CustomStrategy = require('passport-custom').Strategy
-const { addField } = require('../services/clients/base/request-context')
+const { addField } = require('@services/clients/base/request-context')
 const { USER_EXTERNAL_ID } = require('@govuk-pay/pay-js-commons').logging.keys
 
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const sessionValidator = require('./session-validator.js')
 const paths = require('../paths.js')
 const userService = require('./user.service.js')
 const { validationErrors } = require('./../utils/validation/field-validation-checks')
-const secondFactorMethod = require('../models/second-factor-method')
-const { validateOtp } = require('../utils/validation/server-side-form-validations')
-const { sanitiseSecurityCode } = require('../utils/security-code-utils')
-const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
+const secondFactorMethod = require('@models/second-factor-method')
+const { validateOtp } = require('@utils/validation/server-side-form-validations')
+const { sanitiseSecurityCode } = require('@utils/security-code-utils')
+const { INVITE_SESSION_COOKIE_NAME } = require('@utils/constants')
 
 // Exports
 module.exports = {

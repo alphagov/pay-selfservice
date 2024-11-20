@@ -1,7 +1,7 @@
 const { expect } = require('chai')
 const { getTaskList, isComplete } = require('./switch-tasks.service')
-const { getSwitchingCredential } = require('../../utils/credentials')
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const { getSwitchingCredential } = require('@utils/credentials')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 describe('Switching PSP service', () => {
   describe('parses a task list based on switching credential', () => {

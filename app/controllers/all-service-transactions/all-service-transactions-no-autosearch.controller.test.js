@@ -1,10 +1,10 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const User = require('../../models/User.class')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
-const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
-const Service = require('../../models/Service.class')
-const serviceFixtures = require('../../../test/fixtures/service.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
+const Service = require('@models/Service.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
 
 describe('All service transactions no autosearch - GET', () => {
   let req, res, next
@@ -60,16 +60,16 @@ describe('All service transactions no autosearch - GET', () => {
 
   function getController () {
     return proxyquire('./all-service-transactions-no-autosearch.controller', {
-      '../../utils/permissions': {
+      '@utils/permissions': {
         getGatewayAccountsFor: sinon.spy(() => Promise.resolve(userPermittedAccountsSummary))
       },
       './populateModel': {
         populateModel: modelMock
       },
-      '../../utils/response': {
+      '@utils/response': {
         response: responseMock
       },
-      '../../utils/filters.js': {
+      '@utils/filters': {
         getFilters: filterMock
       }
     })

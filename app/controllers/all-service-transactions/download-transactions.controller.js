@@ -1,10 +1,10 @@
 'use strict'
 
-const date = require('../../utils/dates')
-const transactionService = require('../../services/transaction.service')
-const Stream = require('../../services/clients/stream.client')
-const permissions = require('../../utils/permissions')
-const { NoServicesWithPermissionError } = require('../../errors')
+const date = require('@utils/dates')
+const transactionService = require('@services/transaction.service')
+const Stream = require('@services/clients/stream.client')
+const permissions = require('@utils/permissions')
+const { NoServicesWithPermissionError } = require('@root/errors')
 
 module.exports = async function dowmloadTransactions (req, res, next) {
   const filters = req.query

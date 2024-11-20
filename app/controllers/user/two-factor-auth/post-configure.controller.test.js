@@ -2,11 +2,11 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
-const paths = require('../../../paths')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const paths = require('@root/paths')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
-const secondFactorMethod = require('../../../models/second-factor-method')
+const secondFactorMethod = require('@models/second-factor-method')
 
 const userExternalId = 'user-id'
 const twoFactorAuthMethod = secondFactorMethod.SMS
@@ -138,7 +138,7 @@ describe('Configure new second factor method post controller', () => {
 
 function getController (configureNewOtpKeySpy) {
   return proxyquire('./post-configure.controller', {
-    '../../../services/user.service.js': {
+    '@services/user.service.js': {
       configureNewOtpKey: configureNewOtpKeySpy
     }
   })

@@ -1,5 +1,5 @@
 const morgan = require('morgan')
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const { CORRELATION_HEADER } = require('../../config')
 const { format } = require('@govuk-pay/pay-js-commons').logging.requestLogFormat(CORRELATION_HEADER)
 

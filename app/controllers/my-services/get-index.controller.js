@@ -2,11 +2,11 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response')
-const serviceService = require('../../services/service.service')
-const { filterGatewayAccountIds } = require('../../utils/permissions')
-const getHeldPermissions = require('../../utils/get-held-permissions')
-const { DEFAULT_SERVICE_NAME } = require('../../utils/constants')
+const { response } = require('@utils/response')
+const serviceService = require('@services/service.service')
+const { filterGatewayAccountIds } = require('@utils/permissions')
+const getHeldPermissions = require('@utils/get-held-permissions')
+const { DEFAULT_SERVICE_NAME } = require('@utils/constants')
 
 function hasStripeAccount (gatewayAccounts) {
   return gatewayAccounts.some(gatewayAccount =>

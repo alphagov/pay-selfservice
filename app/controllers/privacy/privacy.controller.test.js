@@ -55,6 +55,6 @@ describe('Privacy controller', () => {
 
 const getControllerWithMock = function getController (sessionValidatorMock) {
   return proxyquire('./privacy.controller', {
-    './../../services/session-validator': sessionValidatorMock
+    '@services/session-validator': sessionValidatorMock
   })
 }

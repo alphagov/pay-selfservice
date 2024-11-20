@@ -1,9 +1,9 @@
 'use strict'
 
-const { refund } = require('../../services/transaction.service')
+const { refund } = require('@services/transaction.service')
 const router = require('../../routes.js')
-const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const { safeConvertPoundsStringToPence } = require('@utils/currency-formatter')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const refundTransaction = async function refundTransaction (req, res, next) {
   try {

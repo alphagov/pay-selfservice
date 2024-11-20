@@ -2,12 +2,12 @@
 
 const { constants } = require('@govuk-pay/pay-js-commons')
 
-const { response } = require('../../utils/response.js')
-const paths = require('../../paths')
-const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-strategy-account-paths-for')
+const { response } = require('@utils/response.js')
+const paths = require('@root/paths')
+const formatFutureStrategyAccountPathsFor = require('@utils/format-future-strategy-account-paths-for')
 
 const webhooksService = require('./webhooks.service')
-const logger = require('../../utils/logger.js')(__filename)
+const logger = require('@utils/logger.js')(__filename)
 const { WebhooksForm } = require('./webhooks-form')
 
 const webhooksFormSchema = new WebhooksForm()

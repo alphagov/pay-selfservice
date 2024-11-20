@@ -1,8 +1,8 @@
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const User = require('../../../../models/User.class')
-const paths = require('../../../../paths')
+const User = require('@models/User.class')
+const paths = require('@root/paths')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
@@ -11,8 +11,8 @@ let req, res, responseStub, emailNotificationsController, setEmailCollectionMode
 
 const getController = (stubs = {}) => {
   return proxyquire('./email-notifications.controller', {
-    '../../../../utils/response': { response: stubs.response },
-    '../../../../services/email.service': { setEmailCollectionModeByServiceIdAndAccountType: stubs.setEmailCollectionModeByServiceIdAndAccountType }
+    '@utils/response': { response: stubs.response },
+    '@services/email.service': { setEmailCollectionModeByServiceIdAndAccountType: stubs.setEmailCollectionModeByServiceIdAndAccountType }
   })
 }
 

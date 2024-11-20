@@ -1,6 +1,6 @@
 'use strict'
 
-const sessionValidator = require('./../../services/session-validator')
+const sessionValidator = require('@services/session-validator')
 
 function getPage (req, res) {
   const loggedIn = sessionValidator.validate(req.user, req.session)

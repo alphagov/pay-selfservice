@@ -2,8 +2,8 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
-const { getCurrentCredential } = require('../../utils/credentials')
+const { response } = require('@utils/response')
+const { getCurrentCredential } = require('@utils/credentials')
 
 module.exports = (req, res) => {
   lodash.set(req, 'session.pageData.createPaymentLink', {})

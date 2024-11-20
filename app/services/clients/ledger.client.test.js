@@ -3,7 +3,7 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
-const transactionDetailsFixtures = require('../../../test/fixtures/ledger-transaction.fixtures')
+const transactionDetailsFixtures = require('@test/fixtures/ledger-transaction.fixtures')
 
 const configureSpy = sinon.spy()
 

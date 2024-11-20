@@ -9,7 +9,7 @@ const {
   legacyConnectorTransactionsParity,
   legacyConnectorTransactionSummaryParity
 } = require('./utils/ledger-legacy-connector-parity')
-const getQueryStringForParams = require('../../utils/get-query-string-for-params')
+const getQueryStringForParams = require('@utils/get-query-string-for-params')
 const qs = require('qs')
 
 const defaultOptions = {

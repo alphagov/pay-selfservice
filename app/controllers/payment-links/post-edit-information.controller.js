@@ -2,9 +2,9 @@
 
 const lodash = require('lodash')
 
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { validateMandatoryField, validateNaxsiSafe } = require('../../utils/validation/server-side-form-validations')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { validateMandatoryField, validateNaxsiSafe } = require('@utils/validation/server-side-form-validations')
 
 const TITLE_MAX_LENGTH = 255
 

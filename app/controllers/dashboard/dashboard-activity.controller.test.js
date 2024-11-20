@@ -1,14 +1,14 @@
 'use strict'
 
 const sinon = require('sinon')
-const User = require('../../models/User.class')
-const { validUser } = require('../../../test/fixtures/user.fixtures')
-const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
-const { ConnectorClient } = require('../../services/clients/connector.client')
-const StripeClient = require('../../services/clients/stripe/stripe.client.js')
+const User = require('@models/User.class')
+const { validUser } = require('@test/fixtures/user.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
+const { ConnectorClient } = require('@services/clients/connector.client')
+const StripeClient = require('@services/clients/stripe/stripe.client.js')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 describe('Controller: Dashboard activity', () => {
   const externalServiceId = 'service-external-id'
@@ -97,7 +97,7 @@ describe('Controller: Dashboard activity', () => {
 
 function getControllerWithMocks (gatewayAccounts) {
   return proxyquire('./dashboard-activity.controller', {
-    '../../services/service.service': {
+    '@services/service.service': {
       getGatewayAccounts: sinon.spy(() => Promise.resolve(gatewayAccounts))
     }
   })

@@ -1,7 +1,7 @@
 const sinon = require('sinon')
-const User = require('../../../../../models/User.class')
+const User = require('@models/User.class')
 const { expect } = require('chai')
-const paths = require('../../../../../paths')
+const paths = require('@root/paths')
 const proxyquire = require('proxyquire')
 
 const ACCOUNT_TYPE = 'test'
@@ -12,7 +12,7 @@ let req, res, responseStub, templatesController
 
 const getController = (stubs = {}) => {
   return proxyquire('./templates.controller', {
-    '../../../../../utils/response': { response: stubs.response }
+    '@utils/response': { response: stubs.response }
   })
 }
 

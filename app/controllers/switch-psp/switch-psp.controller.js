@@ -1,11 +1,11 @@
 'use strict'
-const { response } = require('../../utils/response')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const formatPSPName = require('../../utils/format-PSP-name')
-const paths = require('../../paths')
+const { response } = require('@utils/response')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const formatPSPName = require('@utils/format-PSP-name')
+const paths = require('@root/paths')
 const switchTasks = require('./switch-tasks.service')
-const { getSwitchingCredential, getActiveCredential } = require('../../utils/credentials')
-const { ConnectorClient } = require('../../services/clients/connector.client')
+const { getSwitchingCredential, getActiveCredential } = require('@utils/credentials')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 function switchPSPPage (req, res, next) {

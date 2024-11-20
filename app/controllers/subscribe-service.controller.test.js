@@ -3,11 +3,11 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
-const userFixtures = require('../../test/fixtures/user.fixtures')
-const inviteFixtures = require('../../test/fixtures/invite.fixtures')
-const paths = require('../paths')
-const User = require('../models/User.class')
-const { ExpiredInviteError } = require('../errors')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const inviteFixtures = require('@test/fixtures/invite.fixtures')
+const paths = require('@root/paths')
+const User = require('@models/User.class')
+const { ExpiredInviteError } = require('@root/errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 describe('Subscribe service controller', () => {
@@ -48,7 +48,7 @@ describe('Subscribe service controller', () => {
   describe('Subscribe service', () => {
     function getController (mockCompleteInvite) {
       return proxyquire('./subscribe-service.controller', {
-        '../services/clients/adminusers.client': () => ({
+        '@services/clients/adminusers.client': () => ({
           completeInvite: mockCompleteInvite
         })
       })

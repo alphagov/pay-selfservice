@@ -2,7 +2,7 @@ const { expect } = require('chai')
 
 const { WebhooksForm } = require('./webhooks-form')
 
-const webhooksFixtures = require('./../../../test/fixtures/webhooks.fixtures')
+const webhooksFixtures = require('@test/fixtures/webhooks.fixtures')
 
 describe('Webhooks forms', () => {
   it('constructs a form with no fields', () => {

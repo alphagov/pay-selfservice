@@ -1,9 +1,9 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-const Service = require('../../models/Service.class')
-const serviceFixtures = require('../../../test/fixtures/service.fixtures')
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const Service = require('@models/Service.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 const updateDefaultBillingAddressCountrySpy = sinon.spy()
 const adminuUsersClientStub = () => {
@@ -13,7 +13,7 @@ const adminuUsersClientStub = () => {
 }
 const controller = proxyquire('./default-billing-address-country.controller',
   {
-    '../../services/clients/adminusers.client': adminuUsersClientStub
+    '@services/clients/adminusers.client': adminuUsersClientStub
   }
 )
 

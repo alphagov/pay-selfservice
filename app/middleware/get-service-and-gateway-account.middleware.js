@@ -2,13 +2,13 @@
 
 const _ = require('lodash')
 
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID, ENVIRONMENT_ID } = require('../paths').keys
-const Connector = require('../services/clients/connector.client.js').ConnectorClient
+const Connector = require('@services/clients/connector.client.js').ConnectorClient
 
 const { keys } = require('@govuk-pay/pay-js-commons').logging
-const { addField } = require('../services/clients/base/request-context')
-const { getSwitchingCredentialIfExists } = require('../utils/credentials')
+const { addField } = require('@services/clients/base/request-context')
+const { getSwitchingCredentialIfExists } = require('@utils/credentials')
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
 async function getGatewayAccountByExternalId (gatewayAccountExternalId) {

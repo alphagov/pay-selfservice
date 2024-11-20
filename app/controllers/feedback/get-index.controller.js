@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('@utils/response.js')
 
 module.exports = (req, res) => {
   const pageData = {

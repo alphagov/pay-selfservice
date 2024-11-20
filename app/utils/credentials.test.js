@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const paths = require('../paths')
-const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const { InvalidConfigurationError } = require('../errors')
 const { getCurrentCredential, getSwitchingCredential, isSwitchingCredentialsRoute, getPSPPageLinks, getCredentialByExternalId, hasSwitchedProvider, getSwitchingCredentialIfExists, getActiveCredential, isEnableStripeOnboardingTaskListRoute, getWorldpayMerchantDetailOperationByKey, worldpayMerchantDetailOperations } = require('./credentials')
 

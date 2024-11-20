@@ -1,11 +1,11 @@
 const lodash = require('lodash')
-const { response } = require('../utils/response.js')
-const userService = require('../services/user.service.js')
-const paths = require('../paths.js')
-const rolesModule = require('../utils/roles')
-const { isValidEmail } = require('../utils/email-tools.js')
+const { response } = require('@utils/response.js')
+const userService = require('@services/user.service.js')
+const paths = require('@root/paths.js')
+const rolesModule = require('@utils/roles')
+const { isValidEmail } = require('@utils/email-tools.js')
 
-const formatServicePathsFor = require('../utils/format-service-paths-for')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 const messages = {
   emailAlreadyInUse: 'Email already in use',

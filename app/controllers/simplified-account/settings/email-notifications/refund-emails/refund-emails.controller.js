@@ -1,8 +1,8 @@
-const { response } = require('../../../../../utils/response')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('../../../../../paths')
-const { setRefundEmailEnabledByServiceIdAndAccountType } = require('../../../../../services/email.service')
-const logger = require('../../../../../utils/logger')(__filename)
+const { response } = require('@utils/response')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
+const { setRefundEmailEnabledByServiceIdAndAccountType } = require('@services/email.service')
+const logger = require('@utils/logger')(__filename)
 
 function get (req, res) {
   const account = req.account

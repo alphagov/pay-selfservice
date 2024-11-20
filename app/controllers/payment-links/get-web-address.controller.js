@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('@utils/response.js')
 
 module.exports = function showWebAddressPage (req, res, next) {
   const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI

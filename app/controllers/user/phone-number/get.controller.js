@@ -1,7 +1,7 @@
 'use strict'
 
-const { response } = require('../../../utils/response')
-const userService = require('../../../services/user.service')
+const { response } = require('@utils/response')
+const userService = require('@services/user.service')
 
 module.exports = async function showUpdatePhoneNumber (req, res, next) {
   try {

@@ -4,7 +4,7 @@ const nock = require('nock')
 const { expect } = chai
 
 const payoutService = require('./payouts.service')
-const fixtures = require('../../../test/fixtures/payout.fixtures')
+const fixtures = require('@test/fixtures/payout.fixtures')
 
 const gatewayAccountId = '100'
 const ledgerMock = nock(process.env.LEDGER_URL)

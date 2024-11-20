@@ -3,11 +3,11 @@
 const lodash = require('lodash')
 const { slugify, removeIndefiniteArticles } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
-const paths = require('../../paths')
+const paths = require('@root/paths')
 
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const productsClient = require('../../services/clients/products.client.js')
-const { validateMandatoryField, validateNaxsiSafe } = require('../../utils/validation/server-side-form-validations')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const productsClient = require('@services/clients/products.client.js')
+const { validateMandatoryField, validateNaxsiSafe } = require('@utils/validation/server-side-form-validations')
 
 const TITLE_MAX_LENGTH = 255
 

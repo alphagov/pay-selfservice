@@ -2,9 +2,9 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
-const paths = require('../../../paths')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const paths = require('@root/paths')
 
 const userExternalId = 'user-id'
 
@@ -109,7 +109,7 @@ describe('Select new second factor method post controller', () => {
 
   function getController (provisionNewOtpKeySpy, sendProvisionalOtpSpy) {
     return proxyquire('./post-index.controller', {
-      '../../../services/user.service.js': {
+      '@services/user.service.js': {
         provisionNewOtpKey: provisionNewOtpKeySpy,
         sendProvisionalOTP: sendProvisionalOtpSpy
       }

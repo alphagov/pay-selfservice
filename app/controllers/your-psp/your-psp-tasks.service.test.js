@@ -1,7 +1,7 @@
 const { expect } = require('chai')
-const { getCurrentCredential } = require('../../utils/credentials')
+const { getCurrentCredential } = require('@utils/credentials')
 const { getStripeTaskList, stripeTaskListIsComplete, stripeTaskListNumberOftasksComplete } = require('./your-psp-tasks.service')
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 describe('Stripe task list', () => {
   describe('Get Stripe task list status', () => {

@@ -1,9 +1,9 @@
 'use strict'
 
 const { RegistrationSessionMissingError } = require('../errors')
-const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
-const { addField } = require('../services/clients/base/request-context')
-const { isInternalGDSEmail } = require('../utils/email-tools')
+const { INVITE_SESSION_COOKIE_NAME } = require('@utils/constants')
+const { addField } = require('@services/clients/base/request-context')
+const { isInternalGDSEmail } = require('@utils/email-tools')
 
 module.exports = function inviteCookieIsPresent (req, res, next) {
   const cookie = req[INVITE_SESSION_COOKIE_NAME]

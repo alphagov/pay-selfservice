@@ -4,7 +4,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const { NotFoundError } = require('../errors')
 
-const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const restrictToSwitchingAccount = require('./restrict-to-switching-account')
 
 describe('restrict-to-switching-account middleware', () => {

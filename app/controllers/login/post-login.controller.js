@@ -2,8 +2,8 @@
 
 const _ = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
-const paths = require('../../paths')
+const logger = require('@utils/logger')(__filename)
+const paths = require('@root/paths')
 
 /**
  * Reset the login counter for the user, and clean

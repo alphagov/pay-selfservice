@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 const DisputeTransaction = require('./DisputeTransaction.class')
-const dates = require('../utils/dates')
+const dates = require('@utils/dates')
 
 describe('Dispute transaction model', () => {
   it('should build dispute transaction correctly for full dispute data', () => {

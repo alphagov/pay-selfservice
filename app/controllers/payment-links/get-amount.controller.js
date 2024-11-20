@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('@utils/response.js')
 
 module.exports = function showAmountPage (req, res, next) {
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')

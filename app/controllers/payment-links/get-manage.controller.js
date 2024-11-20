@@ -2,10 +2,10 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response')
-const productsClient = require('../../services/clients/products.client')
-const supportedLanguage = require('../../models/supported-language')
-const paths = require('../../paths')
+const { response } = require('@utils/response')
+const productsClient = require('@services/clients/products.client')
+const supportedLanguage = require('@models/supported-language')
+const paths = require('@root/paths')
 
 module.exports = async (req, res, next) => {
   const externalServiceId = req.service && req.service.externalId

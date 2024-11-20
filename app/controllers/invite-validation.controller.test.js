@@ -2,10 +2,10 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const { NotFoundError, ExpiredInviteError } = require('../errors')
+const { NotFoundError, ExpiredInviteError } = require('@root/errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
-const paths = require('../paths')
-const inviteFixtures = require('../../test/fixtures/invite.fixtures')
+const paths = require('@root/paths')
+const inviteFixtures = require('@test/fixtures/invite.fixtures')
 
 describe('Invite validation controller', function () {
   let req, res, next
@@ -123,6 +123,6 @@ describe('Invite validation controller', function () {
 
 function getControllerWithMockedAdminusersClient (mockedAdminusersClient) {
   return proxyquire('./invite-validation.controller.js', {
-    '../services/clients/adminusers.client': () => mockedAdminusersClient
+    '@services/clients/adminusers.client': () => mockedAdminusersClient
   })
 }

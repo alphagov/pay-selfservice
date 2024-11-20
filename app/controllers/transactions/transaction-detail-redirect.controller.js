@@ -1,11 +1,11 @@
 'use strict'
 
-const { userServicesContainsGatewayAccount } = require('../../utils/permissions')
-const Ledger = require('../../services/clients/ledger.client')
+const { userServicesContainsGatewayAccount } = require('@utils/permissions')
+const Ledger = require('@services/clients/ledger.client')
 const router = require('../../routes')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { ConnectorClient } = require('../../services/clients/connector.client')
-const { NotFoundError } = require('../../errors')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { ConnectorClient } = require('@services/clients/connector.client')
+const { NotFoundError } = require('@root/errors')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 module.exports = async function redirectToTransactionDetail (req, res, next) {

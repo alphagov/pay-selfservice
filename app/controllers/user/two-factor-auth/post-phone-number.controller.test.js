@@ -1,10 +1,10 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
-const paths = require('../../../paths')
-const { validationErrors } = require('../../../utils/validation/field-validation-checks')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const paths = require('@root/paths')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
 
 const userExternalId = 'user-id'
 
@@ -84,7 +84,7 @@ describe('The POST set phone number for updating 2FA method controller', () => {
 
 function getController (updatePhoneNumberSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy) {
   return proxyquire('./post-phone-number.controller', {
-    '../../../services/user.service': {
+    '@services/user.service': {
       updatePhoneNumber: updatePhoneNumberSpy,
       provisionNewOtpKey: provisionNewOtpKeySpy,
       sendProvisionalOTP: sendProvisionalOTPSpy

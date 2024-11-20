@@ -3,14 +3,14 @@
 const qs = require('qs')
 const lodash = require('lodash')
 
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const Ledger = require('./clients/ledger.client')
 const { ConnectorClient } = require('./clients/connector.client')
-const getQueryStringForParams = require('../utils/get-query-string-for-params')
-const userService = require('../services/user.service')
-const transactionView = require('../utils/transaction-view')
-const errorIdentifier = require('../models/error-identifier')
+const getQueryStringForParams = require('@utils/get-query-string-for-params')
+const userService = require('@services/user.service')
+const transactionView = require('@utils/transaction-view')
+const errorIdentifier = require('@models/error-identifier')
 const { GatewayTimeoutError, GatewayTimeoutForAllServicesSearchError } = require('../errors')
 
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)

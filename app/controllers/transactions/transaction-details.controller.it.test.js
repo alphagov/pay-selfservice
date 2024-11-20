@@ -4,9 +4,9 @@ const sinon = require('sinon')
 const nock = require('nock')
 
 const gatewayAccountId = '15486734'
-const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 const transactionDetailController = require('./transaction-detail.controller')
-const { NotFoundError } = require('../../errors')
+const { NotFoundError } = require('@root/errors')
 
 const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 const LEDGER_TRANSACTION_PATH = '/v1/transaction/{transactionId}?account_id=' + gatewayAccountId

@@ -1,7 +1,7 @@
 'use strict'
 
-const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
-const logger = require('../../utils/logger')(__filename)
+const { INVITE_SESSION_COOKIE_NAME } = require('@utils/constants')
+const logger = require('@utils/logger')(__filename)
 
 module.exports = (req, res, userExternalId) => {
   if (!userExternalId) {

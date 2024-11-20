@@ -1,13 +1,13 @@
 const _ = require('lodash')
 
-const { renderErrorView, response } = require('../utils/response.js')
-const userService = require('../services/user.service.js')
-const paths = require('../paths.js')
-const roles = require('../utils/roles').roles
-const secondFactorMethod = require('../models/second-factor-method')
-const logger = require('../utils/logger.js')(__filename)
-const { SHOW_DEGATEWAY_SETTINGS } = require('../utils/constants')
-const formatServicePathsFor = require('../utils/format-service-paths-for')
+const { renderErrorView, response } = require('@utils/response.js')
+const userService = require('@services/user.service.js')
+const paths = require('@root/paths.js')
+const roles = require('@utils/roles').roles
+const secondFactorMethod = require('@models/second-factor-method')
+const logger = require('@utils/logger.js')(__filename)
+const { SHOW_DEGATEWAY_SETTINGS } = require('@utils/constants')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 const mapByRoles = function (users, externalServiceId, currentUser) {
   const userRolesMap = {}

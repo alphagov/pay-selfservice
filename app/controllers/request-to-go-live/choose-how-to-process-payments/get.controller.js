@@ -1,9 +1,9 @@
 'use strict'
 
-const goLiveStage = require('../../../models/go-live-stage')
-const paths = require('../../../paths')
-const response = require('../../../utils/response')
-const formatServicePathsFor = require('../../../utils/format-service-paths-for')
+const goLiveStage = require('@models/go-live-stage')
+const paths = require('@root/paths')
+const response = require('@utils/response')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 module.exports = (req, res) => {
   // redirect on wrong stage

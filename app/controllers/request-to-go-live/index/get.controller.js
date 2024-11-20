@@ -2,8 +2,8 @@
 
 const lodash = require('lodash')
 
-const goLiveStage = require('../../../models/go-live-stage')
-const response = require('../../../utils/response')
+const goLiveStage = require('@models/go-live-stage')
+const response = require('@utils/response')
 
 const {
   NOT_STARTED,

@@ -1,9 +1,9 @@
 'use strict'
 
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { getCurrentCredential } = require('../../../utils/credentials')
-const { response } = require('../../../utils/response')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { getCurrentCredential } = require('@utils/credentials')
+const { response } = require('@utils/response')
 
 module.exports = async function getPspAccountDetails (req, res, next) {
   if (!req.account || !req.account.connectorGatewayAccountStripeProgress) {

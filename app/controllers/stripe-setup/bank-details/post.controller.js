@@ -2,17 +2,17 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
-const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('@utils/credentials')
 const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const bankDetailsValidations = require('./bank-details-validations')
-const { updateBankAccount } = require('../../../services/clients/stripe/stripe.client')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+const { updateBankAccount } = require('@services/clients/stripe/stripe.client')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const fieldValidationChecks = require('../../../utils/validation/field-validation-checks')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const fieldValidationChecks = require('@utils/validation/field-validation-checks')
 
 // Constants
 const ACCOUNT_NUMBER_FIELD = 'account-number'

@@ -1,7 +1,7 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
-const { setSessionVersion } = require('../../services/auth.service')
+const logger = require('@utils/logger')(__filename)
+const { setSessionVersion } = require('@services/auth.service')
 
 module.exports = (req, res) => {
   req.session.secondFactor = 'totp'

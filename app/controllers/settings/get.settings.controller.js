@@ -1,7 +1,7 @@
 'use strict'
 
-const { response } = require('../../utils/response')
-const humaniseEmailMode = require('../../utils/humanise-email-mode')
+const { response } = require('@utils/response')
+const humaniseEmailMode = require('@utils/humanise-email-mode')
 
 module.exports = (req, res) => {
   const pageData = {

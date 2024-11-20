@@ -3,14 +3,14 @@
 const _ = require('lodash')
 const moment = require('moment-timezone')
 
-const logger = require('../../utils/logger')(__filename)
-const response = require('../../utils/response').response
-const { getCurrentCredential, getSwitchingCredential } = require('../../utils/credentials')
-const LedgerClient = require('../../services/clients/ledger.client')
-const ProductsClient = require('../../services/clients/products.client.js')
-const { ConnectorClient } = require('../../services/clients/connector.client.js')
+const logger = require('@utils/logger')(__filename)
+const response = require('@utils/response').response
+const { getCurrentCredential, getSwitchingCredential } = require('@utils/credentials')
+const LedgerClient = require('@services/clients/ledger.client')
+const ProductsClient = require('@services/clients/products.client.js')
+const { ConnectorClient } = require('@services/clients/connector.client.js')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const { retrieveAccountDetails } = require('../../services/clients/stripe/stripe.client')
+const { retrieveAccountDetails } = require('@services/clients/stripe/stripe.client')
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
 const {
@@ -24,9 +24,9 @@ const {
   TERMS_AGREED_GOV_BANKING_WORLDPAY,
   LIVE,
   DENIED
-} = require('../../models/go-live-stage')
-const pspTestAccountStage = require('../../models/psp-test-account-stage')
-const serviceService = require('../../services/service.service')
+} = require('@models/go-live-stage')
+const pspTestAccountStage = require('@models/psp-test-account-stage')
+const serviceService = require('@services/service.service')
 
 const links = {
   demoPayment: 0,

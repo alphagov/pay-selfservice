@@ -1,10 +1,10 @@
 'use strict'
 
 const paths = require('../../../../app/paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
-const logger = require('../../../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 
 function getTargetServiceForRedirect (user, externalServiceId) {
   return user.serviceRoles.filter((serviceRole) => serviceRole.service.externalId === externalServiceId)[0]

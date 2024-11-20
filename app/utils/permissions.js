@@ -1,6 +1,6 @@
 'use strict'
 const _ = require('lodash')
-const { ConnectorClient } = require('../services/clients/connector.client.js')
+const { ConnectorClient } = require('@services/clients/connector.client.js')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const userServicesContainsGatewayAccount = function userServicesContainsGatewayAccount (accountId, user) {

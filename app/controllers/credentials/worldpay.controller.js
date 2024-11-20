@@ -1,9 +1,9 @@
-const paths = require('../../paths')
-const logger = require('../../utils/logger')(__filename)
-const { response } = require('../../utils/response')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { isSwitchingCredentialsRoute, getCredentialByExternalId, worldpayMerchantDetailOperations, getWorldpayMerchantDetailOperationByKey } = require('../../utils/credentials')
-const { ConnectorClient } = require('../../services/clients/connector.client')
+const paths = require('@root/paths')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { isSwitchingCredentialsRoute, getCredentialByExternalId, worldpayMerchantDetailOperations, getWorldpayMerchantDetailOperationByKey } = require('@utils/credentials')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const { CredentialsForm, isNotEmpty, formatErrorsForSummaryList } = require('./credentials-form')
 const { CONNECTOR_URL, SKIP_PSP_CREDENTIAL_CHECKS } = process.env
 

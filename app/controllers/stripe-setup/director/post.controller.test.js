@@ -4,10 +4,10 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const assert = require('assert')
 const { expect } = require('chai')
-const paths = require('../../../paths')
-const gatewayAccountFixtures = require('../../../../test/fixtures/gateway-account.fixtures')
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
+const paths = require('@root/paths')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
 
 describe('Director POST controller', () => {
   const firstName = 'Chesney '
@@ -55,13 +55,13 @@ describe('Director POST controller', () => {
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
-      '../../../services/clients/stripe/stripe.client': {
+      '@services/clients/stripe/stripe.client': {
         listPersons: listPersonsMock,
         updateDirector: updateDirectorMock,
         createDirector: createDirectorMock,
         updateCompany: updateCompanyMock
       },
-      '../../../services/clients/connector.client': {
+      '@services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
         }

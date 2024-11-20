@@ -2,16 +2,16 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
-const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('../../../utils/credentials')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response')
+const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('@utils/credentials')
 const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
-const { updateCompany } = require('../../../services/clients/stripe/stripe.client')
+const { updateCompany } = require('@services/clients/stripe/stripe.client')
 const companyNumberValidations = require('./company-number-validations')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 // Constants
 const COMPANY_NUMBER_DECLARATION_FIELD = 'company-number-declaration'

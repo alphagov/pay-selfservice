@@ -1,10 +1,10 @@
 'use strict'
 
 const lodash = require('lodash')
-const { getCredentialByExternalId } = require('../../utils/credentials')
-const { isSwitchingCredentialsRoute } = require('../../utils/credentials')
+const { getCredentialByExternalId } = require('@utils/credentials')
+const { isSwitchingCredentialsRoute } = require('@utils/credentials')
 
-const { response } = require('../../utils/response')
+const { response } = require('@utils/response')
 
 module.exports = (req, res, next) => {
   try {

@@ -1,5 +1,5 @@
 const assert = require('assert')
-const mockSession = require('../../test/test-helpers/mock-session')
+const mockSession = require('@test/test-helpers/mock-session')
 const sessionValidator = require('./session-validator')
 
 describe('session validator', () => {

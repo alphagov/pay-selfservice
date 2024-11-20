@@ -1,9 +1,9 @@
 'use strict'
 
-const paths = require('../../paths')
-const { response } = require('../../utils/response')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const getAdminUsersClient = require('../../services/clients/adminusers.client')
+const paths = require('@root/paths')
+const { response } = require('@utils/response')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const getAdminUsersClient = require('@services/clients/adminusers.client')
 const adminUsersClient = getAdminUsersClient()
 
 const GB_COUNTRY_CODE = 'GB'

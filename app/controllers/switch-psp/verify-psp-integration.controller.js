@@ -1,16 +1,16 @@
 'use strict'
 const urljoin = require('url-join')
-const paths = require('../../paths')
-const { response } = require('../../utils/response')
-const { ConnectorClient } = require('../../services/clients/connector.client')
-const { getSwitchingCredential } = require('../../utils/credentials')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { CREDENTIAL_STATE } = require('../../utils/credentials')
+const paths = require('@root/paths')
+const { response } = require('@utils/response')
+const { ConnectorClient } = require('@services/clients/connector.client')
+const { getSwitchingCredential } = require('@utils/credentials')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { CREDENTIAL_STATE } = require('@utils/credentials')
 const {
   VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY,
   filterNextUrl
-} = require('../../utils/verify-psp-integration')
-const logger = require('../../utils/logger')(__filename)
+} = require('@utils/verify-psp-integration')
+const logger = require('@utils/logger')(__filename)
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const selfserviceURL = process.env.SELFSERVICE_URL

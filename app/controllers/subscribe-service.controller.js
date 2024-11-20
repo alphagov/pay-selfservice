@@ -1,11 +1,11 @@
 'use strict'
 
-const logger = require('../utils/logger')(__filename)
-const adminusersClient = require('../services/clients/adminusers.client')()
-const paths = require('../paths')
-const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
-const { SMS } = require('../models/second-factor-method')
-const { ExpiredInviteError } = require('../errors')
+const logger = require('@utils/logger')(__filename)
+const adminusersClient = require('@services/clients/adminusers.client')()
+const paths = require('@root/paths')
+const { INVITE_SESSION_COOKIE_NAME } = require('@utils/constants')
+const { SMS } = require('@models/second-factor-method')
+const { ExpiredInviteError } = require('@root/errors')
 
 const subscribeService = async function subscribeService (req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]

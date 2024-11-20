@@ -1,7 +1,7 @@
 'use strict'
 
-const { response } = require('../../utils/response.js')
-const publicAuthClient = require('../../services/clients/public-auth.client')
+const { response } = require('@utils/response.js')
+const publicAuthClient = require('@services/clients/public-auth.client')
 
 module.exports = async function createApiKey (req, res, next) {
   const accountId = req.account.gateway_account_id

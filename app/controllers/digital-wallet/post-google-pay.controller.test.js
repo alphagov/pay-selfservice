@@ -3,11 +3,11 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
-const { validGatewayAccount } = require('../../../test/fixtures/gateway-account.fixtures')
-const { validUserResponse } = require('../../../test/fixtures/user.fixtures')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const paths = require('../../paths')
-const User = require('../../models/User.class')
+const { validGatewayAccount } = require('@test/fixtures/gateway-account.fixtures')
+const { validUserResponse } = require('@test/fixtures/user.fixtures')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const paths = require('@root/paths')
+const User = require('@models/User.class')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 const gatewayAccountCredentialId = 12
@@ -164,10 +164,10 @@ describe('Google Pay settings POST controller', () => {
 
 function getControllerWithMocks (patchGooglePayGatewayMerchantIdMock, toggleGooglePayMock) {
   return proxyquire('./post-google-pay.controller.js', {
-    '../../utils/response': {
+    '@utils/response': {
       response: responseMock
     },
-    '../../services/clients/connector.client': {
+    '@services/clients/connector.client': {
       ConnectorClient: function () {
         this.patchGooglePayGatewayMerchantId = patchGooglePayGatewayMerchantIdMock
         this.toggleGooglePay = toggleGooglePayMock
