@@ -8,7 +8,7 @@ const { NotFoundError } = require('@root/errors')
 async function get (req, res, next) {
   const serviceId = req.service.externalId
   const accountType = req.account.type
-  const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
+  const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled ?? false
   const availableRoles = getAvailableRolesForService(serviceHasAgentInitiatedMotoEnabled)
   try {
     const user = await findByExternalId(req.params.externalUserId)
