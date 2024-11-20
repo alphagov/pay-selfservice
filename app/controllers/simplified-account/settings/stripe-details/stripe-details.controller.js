@@ -18,7 +18,7 @@ async function get (req, res) {
     messages: res.locals?.flash?.messages ?? [],
     stripeDetailsTasks,
     incompleteTasks,
-    serviceId: service.externalId,
+    serviceExternalId: service.externalId,
     answers
   })
 }

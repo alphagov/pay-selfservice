@@ -65,7 +65,7 @@ describe('Controller: settings/stripe-details', () => {
 
       it('should pass context data to the response method', () => {
         expect(responseStub.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
-        expect(responseStub.args[0][3]).to.have.property('serviceId').to.equal(SERVICE_ID)
+        expect(responseStub.args[0][3]).to.have.property('serviceExternalId').to.equal(SERVICE_ID)
       })
 
       it('should pass Stripe details tasks to the response method', () => {
