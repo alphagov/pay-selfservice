@@ -96,6 +96,7 @@ describe('Controller: settings/team-members/change-permission', () => {
       before(() => setupTest('get', adminUser, { params: { externalUserId: 'user-id-for-admin-user' } }))
 
       it('should call the render method with an error', () => {
+        sinon.assert.calledWith(res.status, 403)
         sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'You cannot update your own permissions' }))
       })
     })
