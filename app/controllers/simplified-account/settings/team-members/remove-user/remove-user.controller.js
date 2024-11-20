@@ -1,10 +1,10 @@
-const { findByExternalId } = require('../../../../../services/user.service')
-const { response } = require('../../../../../utils/response')
+const { findByExternalId } = require('@services/user.service')
+const { response } = require('@utils/response')
 const { body, validationResult } = require('express-validator')
-const paths = require('../../../../../paths')
-const userService = require('../../../../../services/user.service')
-const formatValidationErrors = require('../../../../../utils/simplified-account/format/format-validation-errors')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
+const userService = require('@services/user.service')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 
 async function get (req, res, next) {
   const externalServiceId = req.service.externalId

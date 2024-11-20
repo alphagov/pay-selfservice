@@ -11,8 +11,8 @@ let req, res, responseStub, getServiceUsersStub, getInvitedUsersStub, teamMember
 
 const getController = (stubs = {}) => {
   return proxyquire('./team-members.controller', {
-    '../../../../utils/response': { response: stubs.response },
-    '../../../../services/user.service':
+    '@utils/response': { response: stubs.response },
+    '@services/user.service':
       { getServiceUsers: stubs.getServiceUsers, getInvitedUsers: stubs.getInvitedUsers }
   })
 }

@@ -1,9 +1,9 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const User = require('../../../../../models/User.class')
-const userFixtures = require('../../../../../../test/fixtures/user.fixtures')
-const paths = require('../../../../../paths')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const paths = require('@root/paths')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
@@ -12,8 +12,8 @@ let req, res, responseStub, findByExternalIdStub, deleteStub, removeUserControll
 
 const getController = (stubs = {}) => {
   return proxyquire('./remove-user.controller', {
-    '../../../../../utils/response': { response: stubs.response },
-    '../../../../../services/user.service':
+    '@utils/response': { response: stubs.response },
+    '@services/user.service':
       { findByExternalId: stubs.findByExternalId, delete: stubs.delete }
   })
 }

@@ -1,8 +1,8 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const User = require('../../../../../models/User.class')
-const userFixtures = require('../../../../../../test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
