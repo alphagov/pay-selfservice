@@ -29,13 +29,15 @@ const setupTest = (additionalReqProps = {}) => {
   req = {
     account: {
       type: ACCOUNT_TYPE,
-      email_collection_mode: 'MANDATORY',
-      email_notifications: {
-        PAYMENT_CONFIRMED: {
-          enabled: true
-        },
-        REFUND_ISSUED: {
-          enabled: true
+      rawResponse: {
+        email_collection_mode: 'MANDATORY',
+        email_notifications: {
+          PAYMENT_CONFIRMED: {
+            enabled: true
+          },
+          REFUND_ISSUED: {
+            enabled: true
+          }
         }
       }
     },

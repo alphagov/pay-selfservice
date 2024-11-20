@@ -17,7 +17,7 @@
     }) }}
   {% endif %}
 
-  <form id="bank-account" autocomplete="off" method="post" action="{{ submitLink }}">
+  <form id="bank-account-form" autocomplete="off" method="post" action="{{ submitLink }}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     {% call govukFieldset({
       legend: {
@@ -32,11 +32,11 @@
           text: "Sort code"
         },
         classes: "govuk-!-width-one-quarter",
-        id: "sort-code-input",
-        name: "sortCodeInput",
+        id: "sort-code",
+        name: "sortCode",
         inputmode: "numeric",
         value: sortCode,
-        errorMessage: { text: errors.formErrors['sortCodeInput'] } if errors.formErrors['sortCodeInput'] else false,
+        errorMessage: { text: errors.formErrors['sortCode'] } if errors.formErrors['sortCode'] else false,
         hint: {
           text: "Must be 6 digits long"
         },
@@ -50,11 +50,11 @@
           text: "Account number"
         },
         classes: "govuk-!-width-one-quarter",
-        id: "account-number-input",
-        name: "accountNumberInput",
+        id: "account-number",
+        name: "accountNumber",
         inputmode: "numeric",
         value: accountNumber,
-        errorMessage: { text: errors.formErrors['accountNumberInput'] } if errors.formErrors['accountNumberInput'] else false,
+        errorMessage: { text: errors.formErrors['accountNumber'] } if errors.formErrors['accountNumber'] else false,
         hint: {
           text: "Must be between 6 and 8 digits long"
         },
@@ -74,7 +74,7 @@
   <script>
     // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
     const submitButton = document.getElementById('bank-account-submit')
-    document.getElementById('bank-account').addEventListener('submit', function () {
+    document.getElementById('bank-account-form').addEventListener('submit', function () {
       submitButton.setAttribute('disabled', 'true')
       submitButton.setAttribute('aria-disabled', 'true')
       submitButton.setAttribute('class', 'govuk-button govuk-button--disabled')
@@ -82,13 +82,13 @@
     })
 
     // progressively enhance the account number input to only accept digits
-    document.getElementById('account-number-input').addEventListener('input', function (e) {
+    document.getElementById('account-number').addEventListener('input', function (e) {
       let value = e.target.value
       e.target.value = value.replace(/\D/g, '').slice(0, 8)
     })
 
     // progressively enhance the sort code input to only accept digits and add dashes automatically
-    document.getElementById('sort-code-input').addEventListener('input', function (e) {
+    document.getElementById('sort-code').addEventListener('input', function (e) {
       let value = e.target.value
 
       value = value.replace(/\D/g, '').slice(0, 6)
@@ -106,7 +106,7 @@
       }
     })
 
-    document.getElementById('sort-code-input').addEventListener('keydown', function (e) {
+    document.getElementById('sort-code').addEventListener('keydown', function (e) {
       if (e.key === 'Backspace' && this.value.endsWith('-')) {
         e.preventDefault()
         this.value = this.value.slice(0, -2)

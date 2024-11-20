@@ -5,6 +5,7 @@ const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-clien
 const { configureClient } = require('./base/config')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 const StripeAccount = require('../../models/StripeAccount.class')
+const GatewayAccount = require('@models/GatewayAccount.class')
 
 // Constants
 const SERVICE_NAME = 'connector'
@@ -23,13 +24,13 @@ function ConnectorClient (connectorUrl) {
 }
 
 ConnectorClient.prototype = {
-  getAccountByServiceIdAndAccountType: async function (params) {
-    const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}`
-      .replace('{serviceId}', encodeURIComponent(params.serviceId))
+  getAccountByServiceExternalIdAndAccountType: async function (params) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}`
+      .replace('{serviceExternalId}', encodeURIComponent(params.serviceExternalId))
       .replace('{accountType}', encodeURIComponent(params.accountType))
     configureClient(client, url)
     const response = await client.get(url, 'get gateway account by service Id and account type')
-    return response.data
+    return new GatewayAccount(response.data)
   },
 
   /**
@@ -488,7 +489,7 @@ ConnectorClient.prototype = {
    * @param accountType {string}
    * @returns {StripeAccountSetup}
    */
-  getStripeAccountSetupByServiceIdAndAccountType: async function (serviceExternalId, accountType) {
+  getStripeAccountSetupByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup`
       .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
       .replace('{accountType}', encodeURIComponent(accountType))

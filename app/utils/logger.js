@@ -1,5 +1,5 @@
 const { createLogger, format, transports } = require('winston')
-const { json, splat, prettyPrint } = format
+const { json, splat, prettyPrint, combine, timestamp, printf, colorize } = format
 const { govUkPayLoggingFormat } = require('@govuk-pay/pay-js-commons').logging
 const { addSentryToErrorLevel } = require('./sentry.js')
 const { getLoggingFields } = require('../services/clients/base/request-context')
@@ -24,7 +24,43 @@ const logger = createLogger({
   ]
 })
 
+const nsDebugFormat = printf(({ level, message, timestamp, ...metadata }) => {
+  const metadataStr = Object.keys(metadata).length
+    ? JSON.stringify(metadata, null, 2)
+    : ''
+
+  return metadataStr
+    ? `${timestamp} [${level}]: ${message}\n${metadataStr}`
+    : `${timestamp} [${level}]: ${message}`
+})
+
+const nsDebugLogger = createLogger({
+  format: combine(
+    colorize({
+      colors: {
+        error: 'red',
+        warn: 'yellow',
+        info: 'green',
+        debug: 'blue'
+      }
+    }),
+    timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }),
+    nsDebugFormat
+  ),
+  transports: [
+    new transports.Console({
+      level: 'debug'
+    })
+  ]
+})
+
+const nsDebug = process.env.NS_DEBUG === 'true'
+
 module.exports = (loggerName) => {
-  const childLogger = logger.child({ logger_name: loggerName })
+  const childLogger = nsDebug
+    ? nsDebugLogger.child({ logger_name: loggerName })
+    : logger.child({ logger_name: loggerName })
   return addSentryToErrorLevel(childLogger)
 }

@@ -1,5 +1,5 @@
 {% macro systemMessages(params) %}
-  <div class="system-messages">
+  <div>
     {% for message in params.messages %}
       {% set intent %}
         {% if message.state %}{{ message.state }}{% else %}info{% endif %}
@@ -8,7 +8,7 @@
         {% if message.state == 'error' %}alert{% else %}status{% endif %}
       {% endset %}
       <div
-        class="govuk-notification-banner govuk-notification-banner--{{ intent }}"
+        class="govuk-notification-banner govuk-notification-banner--{{ intent }} system-messages"
         role="{{ role }}"
         aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
         <div class="govuk-notification-banner__content system-message__container">

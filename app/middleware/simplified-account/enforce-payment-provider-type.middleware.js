@@ -1,10 +1,10 @@
-const { NotFoundError } = require('../../errors')
+const { NotFoundError } = require('@root/errors')
 
 module.exports = function enforcePaymentProviderType (paymentProvider) {
   return function (req, res, next) {
     const account = req.account
-    if (account.payment_provider !== paymentProvider) {
-      next(new NotFoundError(`Attempted to access ${paymentProvider} setting for ${account.payment_provider} service`))
+    if (account.paymentProvider !== paymentProvider) {
+      next(new NotFoundError(`Attempted to access ${paymentProvider} setting for ${account.paymentProvider} service`))
     }
     next()
   }

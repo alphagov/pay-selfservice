@@ -28,16 +28,18 @@ const setupTest = () => {
     flash: sinon.stub(),
     account: {
       type: ACCOUNT_TYPE,
-      email_collection_mode: 'MANDATORY',
-      email_notifications: {
-        PAYMENT_CONFIRMED: {
-          enabled: true,
-          template_body: null
+      rawResponse: {
+        email_collection_mode: 'MANDATORY',
+        email_notifications: {
+          PAYMENT_CONFIRMED: {
+            enabled: true,
+            template_body: null
+          }
         }
-      },
-      service_name: SERVICE_NAME
+      }
     },
     service: {
+      name: SERVICE_NAME,
       externalId: SERVICE_ID
     },
     user: new User({

@@ -9,9 +9,9 @@ function getEmailNotificationsSettingsPage (req, res) {
   const account = req.account
 
   const context = {
-    emailCollectionMode: account.email_collection_mode,
-    confirmationEmailEnabled: account.email_notifications?.PAYMENT_CONFIRMED?.enabled ?? false,
-    refundEmailEnabled: account.email_notifications?.REFUND_ISSUED?.enabled ?? false,
+    emailCollectionMode: account.rawResponse.email_collection_mode,
+    confirmationEmailEnabled: account.rawResponse.email_notifications?.PAYMENT_CONFIRMED?.enabled ?? false,
+    refundEmailEnabled: account.rawResponse.email_notifications?.REFUND_ISSUED?.enabled ?? false,
     editEmailCollectionHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode,
       service.externalId, account.type),
     editRefundEmailToggleHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.refundEmailToggle,
@@ -31,7 +31,7 @@ function getEditEmailCollectionModePage (req, res) {
       optional: 'OPTIONAL',
       no: 'OFF'
     },
-    emailCollectionMode: req.account.email_collection_mode,
+    emailCollectionMode: req.account.rawResponse.email_collection_mode,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index,
       req.service.externalId, req.account.type)
   })

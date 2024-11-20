@@ -24,12 +24,14 @@ const yourPspPaths = ['your-psp', 'notification-credentials']
 const additionalPspPaths = ['switch-psp']
 const webhookPaths = ['webhooks']
 
-const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, currentUrl, account = {}) => {
+const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, currentUrl, service = {}, account = {}) => {
+  const gatewayAccountExternalId = account.external_id ?? account.externalId
+  const serviceExternalId = account.service_id ?? service.externalId
   const navigationItems = []
   navigationItems.push({
     id: 'navigation-menu-home',
     name: 'Dashboard',
-    url: formatAccountPathsFor(paths.account.dashboard.index, account.external_id),
+    url: formatAccountPathsFor(paths.account.dashboard.index, gatewayAccountExternalId),
     current: pathLookup(currentPath, paths.account.dashboard.index),
     permissions: true
   })
@@ -37,7 +39,7 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
     navigationItems.push({
       id: 'navigation-menu-transactions',
       name: 'Transactions',
-      url: formatAccountPathsFor(paths.account.transactions.index, account.external_id),
+      url: formatAccountPathsFor(paths.account.transactions.index, gatewayAccountExternalId),
       current: pathLookup(currentPath, paths.account.transactions.index),
       permissions: permissions.transactions_read
     })
@@ -45,7 +47,7 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
   navigationItems.push({
     id: 'navigation-menu-agreements',
     name: 'Agreements',
-    url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.agreements.index, account.type, account.service_id, account.external_id),
+    url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.agreements.index, account.type, serviceExternalId, gatewayAccountExternalId),
     current: pathLookup(currentPath, paths.futureAccountStrategy.agreements.index),
     permissions: permissions.agreements_read && account.recurring_enabled
   })
@@ -53,8 +55,8 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
     navigationItems.push({
       id: 'navigation-menu-payment-links',
       name: 'Payment links',
-      url: (permissions.token_create && formatAccountPathsFor(paths.account.paymentLinks.start, account.external_id)) ||
-        formatAccountPathsFor(paths.account.paymentLinks.manage.index, account.external_id),
+      url: (permissions.token_create && formatAccountPathsFor(paths.account.paymentLinks.start, gatewayAccountExternalId)) ||
+        formatAccountPathsFor(paths.account.paymentLinks.manage.index, gatewayAccountExternalId),
       current: currentPath !== '/' && flattenNestedValues(paths.account.paymentLinks).filter(path => currentPath.includes(path)).length,
       permissions: permissions.transactions_read
     })
@@ -62,7 +64,7 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
   navigationItems.push({
     id: 'navigation-menu-settings',
     name: 'Settings',
-    url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
+    url: formatAccountPathsFor(paths.account.settings.index, gatewayAccountExternalId),
     current: currentPath !== '/' && !currentUrl.includes('simplified')
       ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
         ...mainSettingsPaths,
@@ -83,7 +85,7 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
     navigationItems.push({
       id: 'simplified-account-settings',
       name: 'Simplified Account Settings',
-      url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, account.service_id, account.type),
+      url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, serviceExternalId, account.type),
       current: currentUrl.includes('simplified') && currentUrl.includes('settings'),
       permissions: true
     })
@@ -92,7 +94,7 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
   return navigationItems
 }
 
-const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}, service = {}) => {
+const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}) => {
   const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, account.external_id)
   return [
     {

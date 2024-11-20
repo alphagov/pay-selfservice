@@ -9,5 +9,76 @@
     text: "Back",
     href: backLink
   }) }}
-  <h1 class="govuk-heading-l">Confirm your organisation's name and address match your government entity document</h1>
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-l">Organisation details</h1>
+
+  <p class="govuk-body">
+    Stripe needs the name and address for your organisation that appears on your
+    government entity document.
+  </p>
+
+  <p class="govuk-body">
+    Match the information to the document you are going to use:
+  </p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>VAT Registration</li>
+    <li>Certificate of incorporation</li>
+    <li>Companies House Document</li>
+    <li>HM Revenue and Customs: VAT Certificate</li>
+    <li>HM Revenue and Customs: Account Statement</li>
+    <li>Charity Commission Document</li>
+    <li>OSCR Scottish Charity Regulator</li>
+  </ul>
+
+  <form id="confirm-org-details-form" method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "Organisation name" },
+          value: { text: organisationName }
+        },
+        {
+          key: { text: "Organisation address" },
+          value: {
+          html: organisationAddress | safe
+        }
+        }
+      ]
+    }) }}
+
+    {{ govukRadios({
+      idPrefix: "confirm-org-details",
+      name: "confirmOrgDetails",
+      fieldset: {
+        legend: {
+          html: "<h2 class='govuk-heading-m'>Do these organisation details match the details on your government entity document?</h2>"
+        }
+      },
+      items: [
+        {
+          text: "Yes, these organisation details match",
+          value: "true"
+        },
+        {
+          text: "No, these organisation details do not match",
+          value: "false"
+        }
+      ],
+      errorMessage: { text: errors.formErrors['confirmOrgDetails'] } if errors.formErrors['confirmOrgDetails'] else false
+    }) }}
+
+    {{ govukButton({
+      text: "Continue"
+    }) }}
+  </form>
 {% endblock %}

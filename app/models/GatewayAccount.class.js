@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * @class GatewayAccount
  * @property {string} name - The name of the gateway account
@@ -8,22 +6,26 @@
  * @property {string} description - The description of the gateway account
  * @property {string} analyticsId - Google analyticsId of the gateway account
  * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
+ * @property {Object} rawResponse - raw 'gateway account' object
  */
 class GatewayAccount {
   /**
-   * Create an instance of Service
+   * Create an instance of GatewayAccount
    * @param {Object} gatewayAccountData - raw 'gateway account' object from server
-   * @param {string} gatewayAccountData.gateway_account_id - The external ID of the gateway account
+   * @param {string} gatewayAccountData.gateway_account_id - The ID of the gateway account
+   * @param {string} gatewayAccountData.external_id - The external ID of the gateway account
    * @param {string} gatewayAccountData.service_name - The name of the gateway account
    * @param {string} gatewayAccountData.type - The type of the gateway account
    * @param {string} gatewayAccountData.payment_provider - The payment provider of the gateway account
    * @param {string} gatewayAccountData.description - The description of the gateway account
    * @param {string} gatewayAccountData.analytics_id - Google analytics_id of the gateway account
    * @param {boolean} gatewayAccountData.toggle_3ds - whether 3DS is enabled or not on this gateway account
+   * @param {boolean} gatewayAccountData.provider_switch_enabled - indicates that the gateway is transitioning psp
+   * @param {boolean} gatewayAccountData.recurring_enabled - whether recurring card payments are enabled on this account
    **/
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
-    this.external_id = gatewayAccountData.external_id
+    this.externalId = gatewayAccountData.external_id
     this.name = gatewayAccountData.service_name
     this.type = gatewayAccountData.type
     this.paymentProvider = gatewayAccountData.payment_provider
@@ -32,6 +34,9 @@ class GatewayAccount {
     this.toggle3ds = gatewayAccountData.toggle_3ds
     this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
     this.recurringEnabled = gatewayAccountData.recurring_enabled
+    // TODO: this is a temporary compatability fix! If you find yourself using this for new code
+    //  you should instead add any rawResponse data as part of the constructor
+    this.rawResponse = gatewayAccountData
   }
 
   /**
@@ -42,7 +47,7 @@ class GatewayAccount {
     // until we have external ids for card accounts, the external id is the internal one
     return {
       id: this.id,
-      external_id: this.external_id,
+      external_id: this.externalId,
       payment_provider: this.paymentProvider,
       service_name: this.name,
       type: this.type,

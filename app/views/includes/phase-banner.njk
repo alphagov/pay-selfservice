@@ -2,14 +2,16 @@
 {% set accountLabelWithTag %}
   <strong>{{currentService.name}}</strong>
   {% if currentGatewayAccount %}
-    {% set paymentProvider = currentGatewayAccount.payment_provider and currentGatewayAccount.payment_provider.toLowerCase() %}
+    {% set paymentProvider = currentGatewayAccount.payment_provider or currentGatewayAccount.paymentProvider %}
+    {% set normalisedPaymentProvider = paymentProvider.toLowerCase() %}
     {% set isLive = currentGatewayAccount.type === "live" %}
     {% set stripeAccountIsSetup = (currentGatewayAccount.connectorGatewayAccountStripeProgress.bankAccount and currentGatewayAccount.connectorGatewayAccountStripeProgress.responsiblePerson
-      and currentGatewayAccount.connectorGatewayAccountStripeProgress.vatNumber and currentGatewayAccount.connectorGatewayAccountStripeProgress.companyNumber) %}
+      and currentGatewayAccount.connectorGatewayAccountStripeProgress.vatNumber and currentGatewayAccount.connectorGatewayAccountStripeProgress.companyNumber
+      and currentGatewayAccount.connectorGatewayAccountStripeProgress.organisationDetails and currentGatewayAccount.connectorGatewayAccountStripeProgress.governmentEntityDocument) %}
 
     {% set tagModifierClass %}
-      {% if (paymentProvider === 'stripe' and not stripeAccountIsSetup) or
-        currentGatewayAccount.provider_switch_enabled %}
+      {% if (normalisedPaymentProvider === 'stripe' and not stripeAccountIsSetup) or
+        (currentGatewayAccount.provider_switch_enabled or currentGatewayAccount.providerSwitchEnabled) %}
         govuk-tag--blue
       {% elseif not isLive %}
         govuk-tag--grey
@@ -18,18 +20,18 @@
 
     {% set tagText %}
       {% if not isLive %}
-        {% if paymentProvider === 'sandbox' %}
+        {% if normalisedPaymentProvider === 'sandbox' %}
           Test
         {% else %}
-          {{ paymentProvider }} Test
+          {{ normalisedPaymentProvider }} Test
         {% endif %}
       {% else %}
         Live
       {% endif %}
-      {% if (paymentProvider === 'stripe' and not stripeAccountIsSetup) %}
+      {% if (normalisedPaymentProvider === 'stripe' and not stripeAccountIsSetup) %}
         - information needed
       {% endif %}
-      {% if isAdminUser and currentGatewayAccount.provider_switch_enabled %}
+      {% if isAdminUser and (currentGatewayAccount.provider_switch_enabled or currentGatewayAccount.providerSwitchEnabled) %}
       - switch psp
       {% endif %}
     {% endset %}

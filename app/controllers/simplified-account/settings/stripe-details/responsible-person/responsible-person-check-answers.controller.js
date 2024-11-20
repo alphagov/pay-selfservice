@@ -2,7 +2,7 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const { checkTaskCompletion } = require('@middleware/simplified-account')
 const paths = require('@root/paths')
 const { response } = require('@utils/response')
-const { updateStipeDetailsResponsiblePerson } = require('@services/stripe-details.service')
+const { updateStripeDetailsResponsiblePerson } = require('@services/stripe-details.service')
 const { formatPhoneNumberWithCountryCode } = require('@utils/telephone-number-utils')
 const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { formatAddressAsParagraph } = require('@utils/format-address-as-paragraph')
@@ -45,7 +45,7 @@ async function post (req, res, next) {
     ...(address.homeAddressLine2 && { address_line2: address.homeAddressLine2 })
   }
   try {
-    await updateStipeDetailsResponsiblePerson(req.service, req.account, responsiblePerson)
+    await updateStripeDetailsResponsiblePerson(req.service, req.account, responsiblePerson)
   } catch (err) {
     if (err.type === 'StripeInvalidRequestError') {
       switch (err.param) {

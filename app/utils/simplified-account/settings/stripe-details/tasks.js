@@ -88,6 +88,7 @@ const friendlyStripeTasks = (account, service) => {
       return acc
     }, {})
   } else {
+    logger.error(`Expected Stripe account progress for gateway account but none was found [gateway_account_id: ${account.id}]`)
     return {}
   }
 }

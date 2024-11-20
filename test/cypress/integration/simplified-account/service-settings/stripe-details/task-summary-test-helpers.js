@@ -26,7 +26,7 @@ const checkTaskNavigation = (length, expectedTasks) => {
       const hrefs = links.map((_, link) => link.href).get()
       hrefs.forEach((href, index) => {
         cy.visit(href)
-        cy.get('h1').should('contain.text', expectedTasks[index].name)
+        cy.get('h1').should('contain.text', expectedTasks[index].heading)
         cy.get('.govuk-back-link').click()
       })
     })

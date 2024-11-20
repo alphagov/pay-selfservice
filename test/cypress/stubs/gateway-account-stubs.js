@@ -328,6 +328,15 @@ function getAccountByServiceIdAndAccountType (serviceExternalId, accountType = '
   })
 }
 
+function getStripeAccountByServiceIdAndAccountType (serviceExternalId, accountType = 'test', opts) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/stripe-account`
+  return stubBuilder('GET', path, 200, {
+    response: {
+      stripe_account_id: opts.stripeAccountId
+    }
+  })
+}
+
 function requestStripeTestAccount (serviceExternalId, opts = {}) {
   const path = `/v1/api/service/${serviceExternalId}/request-stripe-test-account`
   return stubBuilder('POST', path, 200, {
@@ -344,6 +353,7 @@ module.exports = {
   addGatewayAccountsToService,
   getAccountAuthSuccess,
   getAccountByServiceIdAndAccountType,
+  getStripeAccountByServiceIdAndAccountType,
   getGatewayAccountSuccess,
   getGatewayAccountsSuccess,
   getGatewayAccountByExternalIdSuccess,

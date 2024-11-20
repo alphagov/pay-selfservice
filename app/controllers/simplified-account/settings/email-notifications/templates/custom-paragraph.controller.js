@@ -9,8 +9,8 @@ const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 function get (req, res) {
   const account = req.account
   response(req, res, 'simplified-account/settings/email-notifications/custom-paragraph', {
-    customParagraphText: account.email_notifications.PAYMENT_CONFIRMED.template_body,
-    serviceName: account.service_name,
+    customParagraphText: account.rawResponse.email_notifications.PAYMENT_CONFIRMED.template_body,
+    serviceName: req.service.name,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
       req.service.externalId, account.type)
   })
@@ -18,7 +18,7 @@ function get (req, res) {
 
 async function post (req, res) {
   const serviceExternalId = req.service.externalId
-  const serviceName = req.account.service_name
+  const serviceName = req.service.name
   const accountType = req.account.type
   const customParagraph = req.body['custom-paragraph']
 

@@ -9,5 +9,135 @@
     text: "Back",
     href: backLink
   }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">Service director</h1>
+
+  <p class="govuk-body">We need the details of the director of the service or someone at director level in your
+    organisation. They could be the same as your responsible person. The details will be used by Stripe to run
+    anti-money laundering checks.</p>
+
+  <p class="govuk-body">If your organisation does not have a director, we need the details of a person who has the
+    authority to transfer funds. Someone like a chief executive officer (CEO), chief financial officer (CFO), or chief
+    operating officer (COO).</p>
+
+  <form id="director-form" method="post" class="govuk-!-margin-top-4" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {% call govukFieldset({
+      legend: {
+        text: "Name",
+        classes: "govuk-fieldset__legend--m",
+        isPageHeading: false
+      }
+    }) %}
+      {{ govukInput({
+        label: {
+          text: "First name"
+        },
+        id: "first-name",
+        name: "firstName",
+        value: name.firstName,
+        type: "text",
+        autocomplete: "given-name",
+        spellcheck: false,
+        errorMessage: { text: errors.formErrors['firstName'] } if errors.formErrors['firstName'] else false,
+        classes: "govuk-input--width-20"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Last name"
+        },
+        id: "last-name",
+        name: "lastName",
+        value: name.lastName,
+        type: "text",
+        autocomplete: "family-name",
+        spellcheck: false,
+        errorMessage: { text: errors.formErrors['lastName'] } if errors.formErrors['lastName'] else false,
+        classes: "govuk-input--width-20"
+      }) }}
+
+    {% endcall %}
+
+    {{ govukDateInput({
+      id: "dob",
+      fieldset: {
+        legend: {
+          classes: "govuk-fieldset__legend--m",
+          text: "Date of birth"
+        }
+      },
+      hint: {
+        text: "For example, 26 5 1980"
+      },
+      errorMessage: {
+        text: errors.formErrors['dobDay'] or errors.formErrors['dobMonth'] or errors.formErrors['dobYear']
+      } if (errors.formErrors['dobDay'] or errors.formErrors['dobMonth'] or errors.formErrors['dobYear']) else false,
+      items: [
+        {
+          label: "Day",
+          value: dob.dobDay,
+          name: "dobDay",
+          id: "dob-day",
+          classes: "govuk-input--width-2",
+          autocomplete: "section-person bday-day"
+        },
+        {
+          label: "Month",
+          value: dob.dobMonth,
+          name: "dobMonth",
+          id: "dob-month",
+          classes: "govuk-input--width-2",
+          autocomplete: "section-person bday-month"
+        },
+        {
+          label: "Year",
+          value: dob.dobYear,
+          name: "dobYear",
+          id: "dob-year",
+          classes: "govuk-input--width-4",
+          autocomplete: "section-person bday-year"
+        }
+      ]
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Work email address",
+        classes: "govuk-label--m"
+      },
+      id: "work-email",
+      name: "workEmail",
+      value: workEmail,
+      type: "email",
+      autocomplete: "work email",
+      spellcheck: false,
+      errorMessage: { text: errors.formErrors['workEmail'] } if errors.formErrors['workEmail'] else false,
+      classes: "govuk-!-width-two-thirds"
+    }) }}
+
+    {{ govukButton({
+      text: "Save and continue",
+      id: "director-submit"
+    }) }}
+  </form>
+
+  <script>
+    // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
+    const submitButton = document.getElementById('director-submit')
+    document.getElementById('director-form').addEventListener('submit', function () {
+      submitButton.setAttribute('disabled', 'true')
+      submitButton.setAttribute('aria-disabled', 'true')
+      submitButton.setAttribute('class', 'govuk-button govuk-button--disabled')
+      submitButton.textContent = 'Saving...'
+    })
+  </script>
 {% endblock %}

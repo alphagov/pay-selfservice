@@ -104,8 +104,53 @@ function validStripePerson (opts = {}) {
   return stripePerson
 }
 
+function validBankAccount (opts = {}) {
+  const account = opts.stripeAccountId || 'acct_123abc546def789g'
+  return {
+    object: 'list',
+    data: [
+      {
+        id: 'ba_1QMTkSQU1cEQrIlt78z7toKz',
+        object: 'bank_account',
+        account,
+        account_holder_name: null,
+        account_holder_type: 'company',
+        account_type: null,
+        available_payout_methods: [
+          'standard',
+          'instant'
+        ],
+        bank_name: 'STRIPE TEST BANK',
+        country: 'GB',
+        currency: 'gbp',
+        default_for_currency: true,
+        fingerprint: 'BAXNmx3AK8GN6SAN',
+        future_requirements: {
+          currently_due: [],
+          errors: [],
+          past_due: [],
+          pending_verification: []
+        },
+        last4: '2345',
+        metadata: {},
+        requirements: {
+          currently_due: [],
+          errors: [],
+          past_due: [],
+          pending_verification: []
+        },
+        routing_number: '10-88-00',
+        status: 'new'
+      }
+    ],
+    has_more: false,
+    url: `/v1/accounts/${account}/external_accounts`
+  }
+}
+
 module.exports = {
   validRetrieveStripeAccountDetails,
   validListStripePersons,
-  validStripePerson
+  validStripePerson,
+  validBankAccount
 }

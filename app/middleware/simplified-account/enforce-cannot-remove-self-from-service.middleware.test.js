@@ -1,9 +1,9 @@
 const { expect } = require('chai')
-const { NotFoundError } = require('../../errors')
+const { NotFoundError } = require('@root/errors')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const User = require('../../models/User.class')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 describe('Middleware: enforceCannotRemoveSelfFromService', () => {
   let enforceCannotRemoveSelfFromService, req, res, next
