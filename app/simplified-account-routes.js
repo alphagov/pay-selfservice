@@ -5,11 +5,7 @@ const {
   simplifiedAccountOptIn,
   enforceEmailCollectionModeNotOff,
   enforceLiveAccountOnly,
-<<<<<<< HEAD
-  enforcePaymentProviderType,
-=======
   enforcePaymentProviderType
->>>>>>> 4d04dcb6a (PP-13297 Replace adminActionOnSelf middleware)
 } = require('./middleware/simplified-account')
 const userIsAuthorised = require('./middleware/user-is-authorised')
 const permission = require('./middleware/permission')
