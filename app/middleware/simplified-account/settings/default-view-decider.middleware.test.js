@@ -1,6 +1,6 @@
 const sinon = require('sinon')
 const { NOT_STARTED, LIVE } = require('@models/go-live-stage')
-const formatSimplifiedAccountPathsFor = require('../../../utils/simplified-account/format/format-simplified-account-paths-for')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { expect } = require('chai')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
@@ -98,17 +98,17 @@ describe('Middleware: defaultViewDecider', () => {
 const assertEmailNotificationsControllerIsSelected = (accountType) => {
   const actual = call()
   const expectedUrl = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, SERVICE_ID, accountType)
-  const expectedController = 'getEmailNotificationsSettingsPage'
+  const expectedController = require('@controllers/simplified-account/settings/email-notifications/email-notifications.controller')
   expect(actual.req.url).to.equal(expectedUrl)
-  expect(actual.req.selectedController.name).to.equal(expectedController)
+  expect(actual.req.selectedController).to.equal(expectedController.getEmailNotificationsSettingsPage)
   sinon.assert.called(next)
 }
 
 const assertServiceNameControllerIsSelected = (accountType) => {
   const actual = call()
   const expectedUrl = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_ID, accountType)
-  const expectedController = 'get'
+  const expectedController = require('@controllers/simplified-account/settings/service-name/service-name.controller')
   expect(actual.req.url).to.equal(expectedUrl)
-  expect(actual.req.selectedController.name).to.equal(expectedController)
+  expect(actual.req.selectedController).to.equal(expectedController.get)
   sinon.assert.called(next)
 }
