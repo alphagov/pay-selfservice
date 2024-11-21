@@ -5,11 +5,10 @@ const {
   simplifiedAccountOptIn,
   enforceEmailCollectionModeNotOff,
   enforceLiveAccountOnly,
-  enforcePaymentProviderType,
-  enforceCannotRemoveSelfFromService
-} = require('@middleware/simplified-account')
-const userIsAuthorised = require('@middleware/user-is-authorised')
-const permission = require('@middleware/permission')
+  enforcePaymentProviderType
+} = require('./middleware/simplified-account')
+const userIsAuthorised = require('./middleware/user-is-authorised')
+const permission = require('./middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')
 const { STRIPE } = require('@models/payment-providers')
@@ -30,8 +29,8 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.serviceName.edit, enforc
 
 // team members
 simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.index, permission('transactions:read'), serviceSettingsController.teamMembers.get)
-simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.delete, enforceCannotRemoveSelfFromService, permission('users-service:delete'), serviceSettingsController.teamMembers.removeUser.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.teamMembers.delete, enforceCannotRemoveSelfFromService, permission('users-service:delete'), serviceSettingsController.teamMembers.removeUser.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.delete, permission('users-service:delete'), serviceSettingsController.teamMembers.removeUser.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.teamMembers.delete, permission('users-service:delete'), serviceSettingsController.teamMembers.removeUser.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.permission, permission('users-service:create'), serviceSettingsController.teamMembers.changePermission.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.teamMembers.permission, permission('users-service:create'), serviceSettingsController.teamMembers.changePermission.post)
 

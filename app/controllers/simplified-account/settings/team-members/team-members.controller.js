@@ -1,9 +1,9 @@
-const paths = require('../../../../paths')
-const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const { response } = require('../../../../utils/response')
-const { getServiceUsers, getInvitedUsers } = require('../../../../services/user.service')
-const { mapTeamMembersByRoles, mapInvitedTeamMembersByRoles } = require('../../../../utils/simplified-account/format/arrange-users-by-role')
-const { roles } = require('../../../../utils/roles')
+const paths = require('@root/paths')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const { response } = require('@utils/response')
+const { getServiceUsers, getInvitedUsers } = require('@services/user.service')
+const { mapTeamMembersByRoles, mapInvitedTeamMembersByRoles } = require('@utils/simplified-account/format/arrange-users-by-role')
+const { roles } = require('@utils/roles')
 
 async function get (req, res, next) {
   const externalServiceId = req.service.externalId

@@ -1,52 +1,56 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const User = require('../../../../../models/User.class')
-const userFixtures = require('../../../../../../test/fixtures/user.fixtures')
-const paths = require('../../../../../paths')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const paths = require('@root/paths')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 
-let req, res, responseStub, findByExternalIdStub, deleteStub, removeUserController
+let req, res, responseStub, renderErrorViewStub, findByExternalIdStub, deleteStub, removeUserController
 
 const getController = (stubs = {}) => {
   return proxyquire('./remove-user.controller', {
-    '../../../../../utils/response': { response: stubs.response },
-    '../../../../../services/user.service':
+    '@utils/response': { response: stubs.response, renderErrorView: stubs.renderErrorView },
+    '@services/user.service':
       { findByExternalId: stubs.findByExternalId, delete: stubs.delete }
   })
 }
 
-const setupTest = (method, additionalReqProps = {}) => {
-  responseStub = sinon.spy()
-  const adminUser = new User(userFixtures.validUserResponse({
-    external_id: 'user-id-for-admin-user',
-    email: 'admin-user@users.gov.uk',
+const adminUser = new User(userFixtures.validUserResponse({
+  external_id: 'user-id-for-admin-user',
+  email: 'admin-user@users.gov.uk',
+  service_roles: {
+    service: {
+      service: { external_id: SERVICE_ID },
+      role: { name: 'admin' }
+    }
+  }
+}))
+
+const viewOnlyUser = new User(userFixtures.validUserResponse(
+  {
+    external_id: 'user-id-to-remove',
+    email: 'user-to-remove@users.gov.uk',
     service_roles: {
-      service: {
-        service: { external_id: SERVICE_ID },
-        role: { name: 'admin' }
-      }
+      service:
+        {
+          service: { external_id: SERVICE_ID },
+          role: { name: 'view-only' }
+        }
     }
   }))
-  const userToRemove = new User(userFixtures.validUserResponse(
-    {
-      external_id: 'user-id-to-remove',
-      email: 'user-to-remove@users.gov.uk',
-      service_roles: {
-        service:
-          {
-            service: { external_id: SERVICE_ID },
-            role: { name: 'view-only' }
-          }
-      }
-    }))
+
+const setupTest = (method, userToRemove, additionalReqProps = {}) => {
+  responseStub = sinon.spy()
+  renderErrorViewStub = sinon.spy()
   findByExternalIdStub = sinon.stub().resolves(userToRemove)
   deleteStub = sinon.stub().returns({ })
 
   removeUserController = getController({
     response: responseStub,
+    renderErrorView: renderErrorViewStub,
     findByExternalId: findByExternalIdStub,
     delete: deleteStub
   })
@@ -69,7 +73,7 @@ const setupTest = (method, additionalReqProps = {}) => {
 describe('Controller: settings/team-members/remove-user', () => {
   describe('get', () => {
     describe('success', () => {
-      before(() => setupTest('get', { params: { externalUserId: 'user-id-to-remove' } }))
+      before(() => setupTest('get', viewOnlyUser, { params: { externalUserId: 'user-id-to-remove' } }))
 
       it('should call the response method', () => {
         expect(findByExternalIdStub.called).to.be.true // eslint-disable-line
@@ -87,11 +91,19 @@ describe('Controller: settings/team-members/remove-user', () => {
         expect(responseStub.args[0][3]).to.have.property('backLink').to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members')
       })
     })
+
+    describe('failure - admin attempts to remove self', () => {
+      before(() => setupTest('get', adminUser, { params: { externalUserId: 'user-id-for-admin-user' } }))
+
+      it('should call the renderErrorView method', () => {
+        sinon.assert.calledWith(renderErrorViewStub, req, res, 'You cannot remove yourself from a service', 403)
+      })
+    })
   })
 
   describe('post', () => {
     describe('admin user confirmed remove user', () => {
-      before(() => setupTest('post',
+      before(() => setupTest('post', viewOnlyUser,
         {
           params: { externalUserId: 'user-id-to-remove' },
           body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'yes' },
@@ -115,7 +127,7 @@ describe('Controller: settings/team-members/remove-user', () => {
     })
 
     describe('admin user selected not to remove user', () => {
-      before(() => setupTest('post',
+      before(() => setupTest('post', viewOnlyUser,
         {
           params: { externalUserId: 'user-id-to-remove' },
           body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'no' },
@@ -127,6 +139,19 @@ describe('Controller: settings/team-members/remove-user', () => {
         expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
         expect(deleteStub.called).to.be.false // eslint-disable-line
+      })
+    })
+
+    describe('admin user attempted to remove self', () => {
+      before(() => setupTest('post', adminUser,
+        {
+          params: { externalUserId: 'user-id-for-admin-user' },
+          body: { email: 'admin-user@users.gov.uk', confirmRemoveUser: 'yes' },
+          flash: sinon.stub()
+        }
+      ))
+      it('should call the renderErrorView method', () => {
+        sinon.assert.calledWith(renderErrorViewStub, req, res, 'You cannot remove yourself from a service', 403)
       })
     })
   })
