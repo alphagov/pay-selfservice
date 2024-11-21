@@ -14,7 +14,7 @@ const router = require('./app/routes')
 const cookieUtil = require('./app/utils/cookie')
 const noCache = require('./app/utils/no-cache')
 const auth = require('./app/services/auth.service')
-const middlwareUtils = require('./app/utils/middleware')
+const middlewareUtils = require('./app/utils/middleware')
 const errorHandler = require('./app/middleware/error-handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const logger = require('./app/utils/logger')(__filename)
@@ -86,7 +86,7 @@ function initialiseGlobalMiddleware (app) {
   })
 
   app.use(healthcheck.path, healthcheckController.healthcheck)
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'], function (req, res, next) {
+  app.use(middlewareUtils.excludingPaths(['/healthcheck'], function (req, res, next) {
     // flash requires sessions which also excludes healthcheck endpoint (see below)
     res.locals.flash = req.flash()
     next()
@@ -144,8 +144,8 @@ function initialiseAuth (app) {
 }
 
 function initialiseCookies (app) {
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.sessionCookie()))
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.registrationCookie()))
+  app.use(middlewareUtils.excludingPaths(['/healthcheck'], cookieUtil.sessionCookie()))
+  app.use(middlewareUtils.excludingPaths(['/healthcheck'], cookieUtil.registrationCookie()))
 }
 
 function initialiseErrorHandling (app) {

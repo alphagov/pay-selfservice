@@ -41,8 +41,9 @@ async function post (req, res, next) {
   }
 
   try {
-    const vatNumber = req.body.vatNumber.replace(/\s/g, '').toUpperCase()
-    await updateStripeDetailsVatNumber(req.service, req.account, hasVatNumber ? vatNumber : false)
+    await updateStripeDetailsVatNumber(req.service, req.account, hasVatNumber
+      ? req.body.vatNumber.replace(/\s/g, '').toUpperCase()
+      : false)
   } catch (err) {
     if (err.type === 'StripeInvalidRequestError') {
       return postErrorResponse(req, res, {

@@ -5,10 +5,11 @@ const {
   simplifiedAccountOptIn,
   enforceEmailCollectionModeNotOff,
   enforceLiveAccountOnly,
-  enforcePaymentProviderType
-} = require('./middleware/simplified-account')
-const userIsAuthorised = require('./middleware/user-is-authorised')
-const permission = require('./middleware/permission')
+  enforcePaymentProviderType,
+  defaultViewDecider
+} = require('@middleware/simplified-account')
+const userIsAuthorised = require('@middleware/user-is-authorised')
+const permission = require('@middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')
 const { STRIPE } = require('@models/payment-providers')
@@ -19,7 +20,10 @@ const simplifiedAccount = new Router({ mergeParams: true })
 
 simplifiedAccount.use(simplifiedAccountOptIn, simplifiedAccountStrategy, userIsAuthorised)
 
-simplifiedAccount.get(paths.simplifiedAccount.settings.index, serviceSettingsController.index.get)
+// settings index
+simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider, (req, res) => {
+  req.selectedController(req, res)
+})
 
 // service name
 simplifiedAccount.get(paths.simplifiedAccount.settings.serviceName.index, enforceLiveAccountOnly, permission('service-name:update'), serviceSettingsController.serviceName.get)

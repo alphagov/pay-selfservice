@@ -78,14 +78,20 @@ module.exports = class ControllerTestBuilder {
           }))
           this.nextStubsData = null
         }
-        const fn = index !== undefined ? controller[method][index] : controller[method]
+        let fn
+        if (method === undefined) {
+          fn = index !== undefined ? controller[index] : controller
+        } else {
+          fn = index !== undefined ? controller[method][index] : controller[method]
+        }
         if (typeof fn !== 'function') {
           throw new Error(`No function found for method '${method}'${index !== undefined ? ` at index ${index}` : ''}`)
         }
         const result = fn(this.nextReq || this.req, this.nextRes || this.res, this.next)
-        this.nextReq = null
-        this.nextRes = null
-        return result
+        const currentReq = this.nextReq || this.req
+        const currentRes = this.nextRes || this.res
+        this.nextReq = this.nextRes = null
+        return { result, req: currentReq, res: currentRes }
       }
     }
   }
