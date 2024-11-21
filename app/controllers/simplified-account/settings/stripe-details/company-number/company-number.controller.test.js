@@ -51,27 +51,72 @@ describe('Controller: settings/stripe-details/company-number', () => {
   })
 
   describe('post', () => {
-    describe('when a valid company number is submitted', () => {
-      before(() => {
-        nextRequest({
-          body: {
-            companyNumberDeclaration: 'true',
-            companyNumber: '01234567'
-          }
+    const validCompanyNumbers = [
+      {
+        companyNumber: '01234567',
+        description: 'England and Wales limited company (0 then 7 digits) number'
+      },
+      {
+        companyNumber: 'OC123456',
+        description: 'England and Wales LLP (OC then 6 digits) number'
+      },
+      {
+        companyNumber: 'LP123456',
+        description: 'England and Wales limited partnership (LP then 6 digits) number'
+      },
+      {
+        companyNumber: 'SC123456',
+        description: 'Scotland limited company (SC then 6 digits) number'
+      },
+      {
+        companyNumber: 'SO123456',
+        description: 'Scotland LLP (SO then 6 digits) number'
+      },
+      {
+        companyNumber: 'SL123456',
+        description: 'Scotland limited partnership (SL then 6 digits) number'
+      },
+      {
+        companyNumber: 'NI123456',
+        description: 'Northern Ireland limited company (NI then 6 digits) number'
+      },
+      {
+        companyNumber: 'R0123456',
+        description: 'NI pre-partition limited company (R0 then 6 digits) number'
+      },
+      {
+        companyNumber: 'NC123456',
+        description: 'NI LLP (NC then 6 digits) number'
+      },
+      {
+        companyNumber: 'NL123456',
+        description: 'NI limited partnership (NL then 6 digits)'
+      }
+    ]
+
+    validCompanyNumbers.forEach(({ companyNumber, description }) => {
+      describe(`when a valid ${description} is submitted`, () => {
+        before(() => {
+          nextRequest({
+            body: {
+              companyNumberDeclaration: 'true',
+              companyNumber
+            }
+          })
+          call('post', 1)
         })
-        call('post', 1)
-      })
 
-      it('should submit company number to the stripe details service', () => {
-        const call = mockStripeDetailsService.updateStripeDetailsCompanyNumber.getCall(0)
-        expect(call).to.not.be.null // eslint-disable-line
-        expect(call.args).to.deep.equal([req.service, req.account, '01234567'])
-      })
+        it('should submit company number to the stripe details service', () => {
+          const call = mockStripeDetailsService.updateStripeDetailsCompanyNumber.getCall(0)
+          expect(call).to.not.be.null // eslint-disable-line
+          expect(call.args).to.deep.equal([req.service, req.account, companyNumber])
+        })
 
-      it('should redirect to the stripe details index page', () => {
-        const redirect = res.redirect
-        expect(redirect.calledOnce).to.be.true // eslint-disable-line
-        expect(redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
+        it('should redirect to the stripe details index page', () => {
+          const redirect = res.redirect
+          expect(redirect.calledOnce).to.be.true // eslint-disable-line
+          expect(redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
+        })
       })
     })
 

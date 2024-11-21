@@ -13,7 +13,7 @@ const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
 const STRIPE_DETAILS_INDEX_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, SERVICE_ID, ACCOUNT_TYPE)
 
-const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/stripe-details/vat-number/vat-number.controller')
+const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/stripe-details/vat-number/vat-number.controller')
   .withServiceExternalId(SERVICE_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
@@ -41,6 +41,134 @@ describe('Controller: settings/stripe-details/vat-number', () => {
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('vatNumberDeclaration').to.equal(true)
       expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
+    })
+  })
+
+  describe('post', () => {
+    const validVATNumbers = [
+      {
+        vatNumber: 'GB123456789',
+        description: 'standard VAT number'
+      },
+      {
+        vatNumber: '123456789',
+        description: 'standard VAT number (no prefix)'
+      },
+      {
+        vatNumber: 'GB123456789123',
+        description: 'branch trader VAT number'
+      },
+      {
+        vatNumber: 'GBGD001',
+        description: 'government department VAT number'
+      },
+      {
+        vatNumber: 'GBHA599',
+        description: 'health authority VAT number'
+      }
+    ]
+
+    validVATNumbers.forEach(({ vatNumber, description }) => {
+      describe(`when a valid ${description} is submitted`, () => {
+        before(() => {
+          nextRequest({
+            body: {
+              vatNumberDeclaration: 'true',
+              vatNumber
+            }
+          })
+          call('post', 1)
+        })
+
+        it('should submit vat number to the stripe details service', () => {
+          const call = mockStripeDetailsService.updateStripeDetailsVatNumber.getCall(0)
+          expect(call).to.not.be.null // eslint-disable-line
+          expect(call.args).to.deep.equal([req.service, req.account, vatNumber])
+        })
+
+        it('should redirect to the stripe details index page', () => {
+          const redirect = res.redirect
+          expect(redirect.calledOnce).to.be.true // eslint-disable-line
+          expect(redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
+        })
+      })
+    })
+    describe('when VAT number declaration is false', () => {
+      before(() => {
+        nextRequest({
+          body: {
+            vatNumberDeclaration: 'false'
+          }
+        })
+        call('post', 1)
+      })
+
+      it('should not submit VAT number to the stripe details service', () => {
+        const call = mockStripeDetailsService.updateStripeDetailsVatNumber.getCall(0)
+        expect(call).to.not.be.null // eslint-disable-line
+        expect(call.args).to.deep.equal([req.service, req.account, false])
+      })
+
+      it('should redirect to the stripe details index page', () => {
+        const redirect = res.redirect
+        expect(redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
+      })
+    })
+
+    describe('when the Stripe API returns an error', () => {
+      before(() => {
+        nextStubs({
+          '@services/stripe-details.service': {
+            updateStripeDetailsVatNumber: sinon.stub().rejects({ type: 'StripeInvalidRequestError' })
+          }
+        })
+        nextRequest({
+          body: {
+            vatNumberDeclaration: 'true',
+            vatNumber: 'GB123456789'
+          }
+        })
+        call('post', 1)
+      })
+
+      it('should render the form with appropriate error response', () => {
+        expect(mockResponse.args[0][3].errors.summary[0].text).to.equal('There is a problem with your VAT number. Please check your answer and try again.')
+      })
+    })
+
+    describe('when VAT number validation fails', () => {
+      before(() => {
+        nextRequest({
+          body: {
+            vatNumberDeclaration: 'true',
+            vatNumber: 'what'
+          }
+        })
+        call('post', 1)
+      })
+
+      it('should not call the stripe details service', () => {
+        sinon.assert.notCalled(mockStripeDetailsService.updateStripeDetailsVatNumber)
+      })
+
+      it('should not redirect to the stripe details index page', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
+
+      it('should render the form with validation errors', () => {
+        expect(mockResponse.calledOnce).to.be.true // eslint-disable-line
+        expect(mockResponse.args[0][3].errors.summary[0].text).to.equal('Enter a valid VAT registration number')
+        expect(mockResponse.args[0][3].errors.formErrors.vatNumber).to.equal(
+          'Enter a valid VAT registration number'
+        )
+      })
+
+      it('should restore user input', () => {
+        expect(mockResponse.args[0][3]).to.have.property('vatNumberDeclaration').to.equal(true)
+        expect(mockResponse.args[0][3]).to.have.property('vatNumber').to.equal('what')
+        expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
+      })
     })
   })
 })

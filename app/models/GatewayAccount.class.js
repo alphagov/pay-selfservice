@@ -1,3 +1,5 @@
+const GatewayAccountCredential = require('@models/GatewayAccountCredential.class')
+
 /**
  * @class GatewayAccount
  * @property {string} name - The name of the gateway account
@@ -6,6 +8,7 @@
  * @property {string} description - The description of the gateway account
  * @property {string} analyticsId - Google analyticsId of the gateway account
  * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
+ * @property {[GatewayAccountCredential]} gatewayAccountCredentials - available credentials for gateway account
  * @property {Object} rawResponse - raw 'gateway account' object
  */
 class GatewayAccount {
@@ -22,6 +25,7 @@ class GatewayAccount {
    * @param {boolean} gatewayAccountData.toggle_3ds - whether 3DS is enabled or not on this gateway account
    * @param {boolean} gatewayAccountData.provider_switch_enabled - indicates that the gateway is transitioning psp
    * @param {boolean} gatewayAccountData.recurring_enabled - whether recurring card payments are enabled on this account
+   * @param {[{Object}]} gatewayAccountData.gateway_account_credentials - whether recurring card payments are enabled on this account
    **/
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
@@ -34,6 +38,10 @@ class GatewayAccount {
     this.toggle3ds = gatewayAccountData.toggle_3ds
     this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
     this.recurringEnabled = gatewayAccountData.recurring_enabled
+    if (gatewayAccountData?.gateway_account_credentials) {
+      this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials
+        .map(credentialData => new GatewayAccountCredential(credentialData))
+    }
     // TODO: this is a temporary compatability fix! If you find yourself using this for new code
     //  you should instead add any rawResponse data as part of the constructor
     this.rawResponse = gatewayAccountData

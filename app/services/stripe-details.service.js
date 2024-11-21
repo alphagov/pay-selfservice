@@ -170,7 +170,7 @@ const getStripeAccountOnboardingDetails = async (service, account) => {
       company: {
         vatNumber: connectAccount.company?.vat_id_provided ? 'Provided' : 'Not provided',
         companyNumber: connectAccount.company?.tax_id_provided ? 'Provided' : 'Not provided',
-        entityDocument: connectAccount.company?.verification?.document ? 'Uploaded' : 'Not found'
+        entityDocument: connectAccount.company?.verification?.document ? 'Provided' : 'Not provided'
       },
       bankAccount: {
         sortCode: bankAccount.data[0]?.routing_number,
