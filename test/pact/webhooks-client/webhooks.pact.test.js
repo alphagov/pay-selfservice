@@ -5,10 +5,10 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const { Pact } = require('@pact-foundation/pact')
 
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 const webhookFixtures = require('../../fixtures/webhooks.fixtures')
-const webhooksClient = require('../../../app/services/clients/webhooks.client')
+const webhooksClient = require('@services/clients/webhooks.client')
 
 const { expect } = chai
 chai.use(chaiAsPromised)

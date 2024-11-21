@@ -1,5 +1,5 @@
-const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
 
 function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, type = 'test', requires3ds = false) {
   cy.task('setupStubs', [

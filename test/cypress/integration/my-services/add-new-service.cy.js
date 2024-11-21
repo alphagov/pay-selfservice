@@ -1,9 +1,9 @@
 'use strict'
 
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const userStubs = require('../../stubs/user-stubs')
-const serviceStubs = require('../../stubs/service-stubs')
-const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const serviceStubs = require('@cypress-stubs/service-stubs')
+const transactionsSummaryStubs = require('@cypress-stubs/transaction-summary-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 const newServiceName = 'Pay for a thing'

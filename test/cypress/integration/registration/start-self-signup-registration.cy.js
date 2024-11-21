@@ -1,4 +1,4 @@
-const inviteStubs = require('../../stubs/invite-stubs')
+const inviteStubs = require('@cypress-stubs/invite-stubs')
 
 describe('Start self-signup registration', () => {
   it('should rerender page if invalid email address', () => {

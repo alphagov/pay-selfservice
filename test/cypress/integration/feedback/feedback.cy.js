@@ -1,7 +1,7 @@
 'use strict'
 
-const userStubs = require('../../stubs/user-stubs')
-const zendeskStubs = require('../../stubs/zendesk-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const zendeskStubs = require('@cypress-stubs/zendesk-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 

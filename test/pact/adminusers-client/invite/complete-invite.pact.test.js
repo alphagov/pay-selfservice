@@ -5,11 +5,11 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const getAdminUsersClient = require('@services/clients/adminusers.client')
 const inviteFixtures = require('../../../fixtures/invite.fixtures')
-const secondFactorMethod = require('../../../../app/models/second-factor-method')
-const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
+const secondFactorMethod = require('@models/second-factor-method')
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'

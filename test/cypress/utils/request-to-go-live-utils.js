@@ -1,8 +1,8 @@
 'use strict'
 
-const userStubs = require('../stubs/user-stubs')
-const gatewayAccountStubs = require('../stubs/gateway-account-stubs')
-const serviceStubs = require('../stubs/service-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const serviceStubs = require('@cypress-stubs/service-stubs')
 
 const variables = {
   userExternalId: 'userExternalId',

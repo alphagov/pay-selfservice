@@ -4,12 +4,12 @@ const supertest = require('supertest')
 const { expect } = require('chai')
 const nock = require('nock')
 const { getApp } = require('../../../server')
-const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
+const { getMockSession, createAppWithSession, getUser } = require('@test/test-helpers/mock-session')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
 const { validProductResponse } = require('../../fixtures/product.fixtures')
 const lodash = require('lodash')
-const paths = require('../../../app/paths')
+const paths = require('@root/paths')
 
 const { CONNECTOR_URL } = process.env
 const { PRODUCTS_URL } = process.env

@@ -12,13 +12,13 @@ const alwaysValidPassword = function (password) {
 }
 
 const userService = function (commonPasswordMock) {
-  return proxyquire('../../app/services/user.service.js', {
+  return proxyquire('@services/user.service.js', {
     'common-password': commonPasswordMock || alwaysValidPassword
   })
 }
 
 const forgottenPassword = function (commonPasswordMock) {
-  return proxyquire('../../app/controllers/forgotten-password.controller.js', {
+  return proxyquire('@controllers/forgotten-password.controller.js', {
     '../services/user.service.js': userService(commonPasswordMock)
   })
 }

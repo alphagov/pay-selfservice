@@ -1,6 +1,6 @@
-const { render } = require('../test-helpers/html-assertions')
-const { serviceNavigationItems, adminNavigationItems } = require('../../app/utils/nav-builder')
-const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
+const { render } = require('@test/test-helpers/html-assertions')
+const { serviceNavigationItems, adminNavigationItems } = require('@utils/nav-builder')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
 
 describe('navigation menu', function () {

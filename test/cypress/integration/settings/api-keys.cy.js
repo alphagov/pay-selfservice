@@ -1,6 +1,6 @@
-const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const tokenStubs = require('../../stubs/token-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const tokenStubs = require('@cypress-stubs/token-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e' // pragma: allowlist secret
 const gatewayAccountId = 42

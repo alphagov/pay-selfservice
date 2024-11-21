@@ -6,13 +6,13 @@ const nock = require('nock')
 const supertest = require('supertest')
 const csrf = require('csrf')
 
-const mockSession = require('../../test-helpers/mock-session.js')
+const mockSession = require('@test/test-helpers/mock-session.js')
 const getApp = require('../../../server.js').getApp
 const userFixtures = require('../../fixtures/user.fixtures')
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
-const paths = require('../../../app/paths.js')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const paths = require('@root/paths.js')
 const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
-const User = require('../../../app/models/User.class')
+const User = require('@models/User.class')
 
 // Constants
 const expect = chai.expect

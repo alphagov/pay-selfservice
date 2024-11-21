@@ -3,11 +3,11 @@
 const request = require('supertest')
 const nock = require('nock')
 
-require('../test-helpers/serialize-mock.js')
-const userCreator = require('../test-helpers/user-creator.js')
+require('@test/test-helpers/serialize-mock.js')
+const userCreator = require('@test/test-helpers/user-creator.js')
 const getApp = require('../../server.js').getApp
-const paths = require('../../app/paths.js')
-const session = require('../test-helpers/mock-session.js')
+const paths = require('@root/paths.js')
+const session = require('@test/test-helpers/mock-session.js')
 const gatewayAccountId = '15486734'
 const { validTransactionDetailsResponse } = require('../fixtures/ledger-transaction.fixtures')
 const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fixtures')

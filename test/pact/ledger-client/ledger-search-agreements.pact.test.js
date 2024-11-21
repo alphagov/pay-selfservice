@@ -3,10 +3,10 @@
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const ledgerClient = require('../../../app/services/clients/ledger.client')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const ledgerClient = require('@services/clients/ledger.client')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 const agreementFixtures = require('../../fixtures/agreement.fixtures')
 const { validAgreementsNotFoundResponse } = require('../../fixtures/agreement.fixtures')

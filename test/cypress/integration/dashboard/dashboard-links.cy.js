@@ -1,9 +1,9 @@
 'use strict'
 
-const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
-const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
+const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const transactionsSummaryStubs = require('@cypress-stubs/transaction-summary-stubs')
+const stripeAccountSetupStubs = require('@cypress-stubs/stripe-account-setup-stub')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'

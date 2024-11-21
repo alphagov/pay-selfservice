@@ -1,8 +1,8 @@
 'use strict'
 
-const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const transactionStubs = require('../../stubs/transaction-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const transactionStubs = require('@cypress-stubs/transaction-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const transactionsUrl = '/all-service-transactions'

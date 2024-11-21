@@ -1,6 +1,6 @@
 'use strict'
 
-const { render } = require('../test-helpers/html-assertions.js')
+const { render } = require('@test/test-helpers/html-assertions.js')
 
 describe('The pagination links', function () {
   it('should display correct pagination links for all filters', () => {

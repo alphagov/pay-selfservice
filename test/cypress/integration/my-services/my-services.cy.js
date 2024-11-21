@@ -1,8 +1,8 @@
 'use strict'
 
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const userStubs = require('../../stubs/user-stubs')
-const payoutStubs = require('../../stubs/payout-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const payoutStubs = require('@cypress-stubs/payout-stubs')
 
 const authenticatedUserId = 'authenticated-user-id'
 const myServicesPageTitle = 'My services - GOV.UK Pay'

@@ -5,14 +5,14 @@ const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 const path = require('path')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 
 // Constants
 const API_RESOURCE = '/v1/api'
 let result, productExternalId, gatewayAccountId, productsClient
 
 function getProductsClient (baseUrl) {
-  return proxyquire('../../../../app/services/clients/products.client', {
+  return proxyquire('@services/clients/products.client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
     }

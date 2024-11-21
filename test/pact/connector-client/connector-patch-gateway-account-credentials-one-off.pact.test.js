@@ -4,11 +4,11 @@ const { Pact } = require('@pact-foundation/pact')
 const { expect } = require('chai')
 const path = require('path')
 
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const Connector = require('../../../app/services/clients/connector.client').ConnectorClient
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const Connector = require('@services/clients/connector.client').ConnectorClient
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
-const { worldpayMerchantDetailOperations } = require('../../../app/utils/credentials')
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
+const { worldpayMerchantDetailOperations } = require('@utils/credentials')
 
 const existingGatewayAccountId = 333
 const existingGatewayAccountCredentialsId = 444

@@ -2,12 +2,12 @@
 /* eslint no-undef: "off" */
 /* eslint no-unused-expressions: "off" */
 
-const cookieBanner = require('../../../app/browsered/cookie-banner')
-const analytics = require('../../../app/browsered/analytics')
+const cookieBanner = require('@root/browsered/cookie-banner')
+const analytics = require('@root/browsered/analytics')
 const sinon = require('sinon')
 const jsdom = require('jsdom')
 const { expect } = require('chai')
-const renderTemplate = require('../../test-helpers/html-assertions.js').render
+const renderTemplate = require('@test/test-helpers/html-assertions.js').render
 
 let event
 let cookieBannerObject

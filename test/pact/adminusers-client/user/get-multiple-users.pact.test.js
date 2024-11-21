@@ -4,11 +4,11 @@ const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../fixtures/user.fixtures')
-const random = require('../../../../app/utils/random')
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const random = require('@utils/random')
+const getAdminUsersClient = require('@services/clients/adminusers.client')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 let adminUsersClient
-const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
+const { userResponsePactifier } = require('@test/test-helpers/pact/pactifier')
 
 chai.use(chaiAsPromised)
 

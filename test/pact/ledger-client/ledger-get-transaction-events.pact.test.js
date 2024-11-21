@@ -3,12 +3,12 @@
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const ledgerClient = require('../../../app/services/clients/ledger.client')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const ledgerClient = require('@services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../fixtures/ledger-transaction.fixtures')
-const legacyConnectorParityTransformer = require('../../../app/services/clients/utils/ledger-legacy-connector-parity')
+const legacyConnectorParityTransformer = require('@services/clients/utils/ledger-legacy-connector-parity')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'

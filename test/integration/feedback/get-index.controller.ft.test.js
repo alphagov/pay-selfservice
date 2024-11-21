@@ -6,8 +6,8 @@ const cheerio = require('cheerio')
 const nock = require('nock')
 
 const { getApp } = require('../../../server')
-const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
-const paths = require('../../../app/paths')
+const { getMockSession, createAppWithSession, getUser } = require('@test/test-helpers/mock-session')
+const paths = require('@root/paths')
 
 describe('Feedback page GET', () => {
   let result, $, session

@@ -1,6 +1,6 @@
-const inviteStubs = require('../../stubs/invite-stubs')
-const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const inviteStubs = require('@cypress-stubs/invite-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
 
 const inviteCode = 'an-invite-code'
 const email = 'foo@example.com'

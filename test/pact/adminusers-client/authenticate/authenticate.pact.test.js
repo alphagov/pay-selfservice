@@ -5,11 +5,11 @@ const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
+const getAdminUsersClient = require('@services/clients/adminusers.client')
 const userFixtures = require('../../../fixtures/user.fixtures')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const User = require('../../../../app/models/User.class')
-const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const User = require('@models/User.class')
+const { userResponsePactifier } = require('@test/test-helpers/pact/pactifier')
 
 // Constants
 const AUTHENTICATE_PATH = '/v1/api/users/authenticate'

@@ -1,7 +1,7 @@
-const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const agreementStubs = require('../../stubs/agreement-stubs')
-const transactionStubs = require('../../stubs/transaction-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const agreementStubs = require('@cypress-stubs/agreement-stubs')
+const transactionStubs = require('@cypress-stubs/transaction-stubs')
 
 const userExternalId = 'some-user-id'
 const gatewayAccountId = 10

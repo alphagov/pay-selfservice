@@ -1,4 +1,4 @@
-const userStubs = require('../../stubs/user-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
 
 describe('Edit phone number flow', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'

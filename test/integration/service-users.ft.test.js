@@ -10,13 +10,13 @@ const chaiAsPromised = require('chai-as-promised')
 const { expect } = chai
 
 // Local modules
-const session = require('../test-helpers/mock-session.js')
+const session = require('@test/test-helpers/mock-session.js')
 const { getApp } = require('../../server.js')
 const inviteFixtures = require('../fixtures/invite.fixtures')
 const userFixtures = require('../fixtures/user.fixtures')
-const paths = require('../../app/paths.js')
-const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
-const User = require('../../app/models/User.class')
+const paths = require('@root/paths.js')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const User = require('@models/User.class')
 
 // Local constants
 const adminusersMock = nock(process.env.ADMINUSERS_URL)

@@ -5,10 +5,10 @@ const chai = require('chai')
 chai.should()
 const nunjucks = require('nunjucks')
 
-const router = require('../../app/routes.js')
+const router = require('@root/routes.js')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
-const formatPSPname = require('../../app/utils/format-PSP-name')
-const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
+const formatPSPname = require('@utils/format-PSP-name')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const environment = nunjucks.configure([
   './node_modules/govuk-frontend/',

@@ -4,7 +4,7 @@ const express = require('express')
 const _ = require('lodash')
 const sinon = require('sinon')
 
-const User = require('../../app/models/User.class')
+const User = require('@models/User.class')
 const userFixtures = require('../fixtures/user.fixtures')
 
 const getUser = (opts) => {

@@ -5,11 +5,11 @@ const nock = require('nock')
 const { expect } = require('chai')
 
 const { getApp } = require('../../../server')
-const mockSession = require('../../test-helpers/mock-session')
-const userCreator = require('../../test-helpers/user-creator')
-const paths = require('../../../app/paths')
+const mockSession = require('@test/test-helpers/mock-session')
+const userCreator = require('@test/test-helpers/user-creator')
+const paths = require('@root/paths')
 const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 

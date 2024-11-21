@@ -15,7 +15,8 @@
     "@services": "app/services",
     "@utils": "app/utils",
     "@views": "app/views",
-    "@test": "test"
+    "@test": "test",
+    "@cypress-stubs": "test/cypress/stubs"
   },
   "standard": {
     "globals": [

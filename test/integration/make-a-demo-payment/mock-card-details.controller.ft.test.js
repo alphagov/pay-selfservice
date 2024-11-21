@@ -7,9 +7,9 @@ const nock = require('nock')
 const lodash = require('lodash')
 
 const { getApp } = require('../../../server')
-const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
-const paths = require('../../../app/paths')
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
+const { getMockSession, createAppWithSession, getUser } = require('@test/test-helpers/mock-session')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
 
 const { CONNECTOR_URL } = process.env

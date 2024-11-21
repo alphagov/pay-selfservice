@@ -1,7 +1,7 @@
 'use strict'
 
-const userStubs = require('../../stubs/user-stubs')
-const inviteStubs = require('../../stubs/invite-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const inviteStubs = require('@cypress-stubs/invite-stubs')
 
 const SERVICE_EXTERNAL_ID = 'service_abc_123'
 const AUTHENTICATED_USER_ID = 'authenticated-user-id'

@@ -8,10 +8,10 @@ const expect = chai.expect
 chai.should()
 chai.use(chaiAsPromised)
 
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const worldpayCredentialsFixtures = require('../../fixtures/worldpay-credentials.fixtures')
-const Connector = require('../../../app/services/clients/connector.client').ConnectorClient
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const Connector = require('@services/clients/connector.client').ConnectorClient
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 let connectorClient
 const EXISTING_GATEWAY_ACCOUNT_ID = 333

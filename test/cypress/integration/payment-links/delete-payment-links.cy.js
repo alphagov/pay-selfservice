@@ -1,11 +1,11 @@
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const userStubs = require('../../stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
 const {
   getProductsByGatewayAccountIdAndTypeStub,
   getProductByExternalIdAndGatewayAccountIdStub,
   deleteProductStub
-} = require('../../stubs/products-stubs')
-const { deleteTokenByApiTokenSuccess } = require('../../stubs/token-stubs')
+} = require('@cypress-stubs/products-stubs')
+const { deleteTokenByApiTokenSuccess } = require('@cypress-stubs/token-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountExternalId = 'a-valid-account-id'
 const gatewayAccountId = 42

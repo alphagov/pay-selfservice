@@ -1,5 +1,5 @@
-const userStubs = require('../../../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../../../stubs/gateway-account-stubs')
+const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'

@@ -2,12 +2,12 @@
 
 const chai = require('chai')
 
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const payoutFixture = require('../../fixtures/payout.fixtures')
-const ledgerClient = require('../../../app/services/clients/ledger.client')
+const ledgerClient = require('@services/clients/ledger.client')
 
 const pactTestProvider = require('./ledger-pact-test-provider')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 const { expect } = chai
 
