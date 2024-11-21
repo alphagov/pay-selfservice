@@ -8,11 +8,11 @@ const paths = require('@root/paths')
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 
-let req, res, responseStub, findByExternalIdStub, deleteStub, removeUserController
+let req, res, responseStub, renderErrorViewStub, findByExternalIdStub, deleteStub, removeUserController
 
 const getController = (stubs = {}) => {
   return proxyquire('./remove-user.controller', {
-    '@utils/response': { response: stubs.response },
+    '@utils/response': { response: stubs.response, renderErrorView: stubs.renderErrorView },
     '@services/user.service':
       { findByExternalId: stubs.findByExternalId, delete: stubs.delete }
   })
@@ -44,20 +44,18 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
 
 const setupTest = (method, userToRemove, additionalReqProps = {}) => {
   responseStub = sinon.spy()
-
+  renderErrorViewStub = sinon.spy()
   findByExternalIdStub = sinon.stub().resolves(userToRemove)
   deleteStub = sinon.stub().returns({ })
 
   removeUserController = getController({
     response: responseStub,
+    renderErrorView: renderErrorViewStub,
     findByExternalId: findByExternalIdStub,
     delete: deleteStub
   })
   res = {
-    setHeader: sinon.stub(),
-    status: sinon.spy(),
-    redirect: sinon.spy(),
-    render: sinon.spy()
+    redirect: sinon.spy()
   }
   req = {
     user: adminUser,
@@ -97,9 +95,8 @@ describe('Controller: settings/team-members/remove-user', () => {
     describe('failure - admin attempts to remove self', () => {
       before(() => setupTest('get', adminUser, { params: { externalUserId: 'user-id-for-admin-user' } }))
 
-      it('should call the render method with an error', () => {
-        sinon.assert.calledWith(res.status, 403)
-        sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'You cannot remove yourself from a service' }))
+      it('should call the renderErrorView method', () => {
+        sinon.assert.calledWith(renderErrorViewStub, req, res, 'You cannot remove yourself from a service', 403)
       })
     })
   })
@@ -153,9 +150,8 @@ describe('Controller: settings/team-members/remove-user', () => {
           flash: sinon.stub()
         }
       ))
-      it('should call the render method with an error', () => {
-        sinon.assert.calledWith(res.status, 403)
-        sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'You cannot remove yourself from a service' }))
+      it('should call the renderErrorView method', () => {
+        sinon.assert.calledWith(renderErrorViewStub, req, res, 'You cannot remove yourself from a service', 403)
       })
     })
   })

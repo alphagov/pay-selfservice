@@ -7,11 +7,11 @@ const userFixtures = require('@test/fixtures/user.fixtures')
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 
-let req, res, responseStub, findByExternalIdStub, changePermissionController
+let req, res, responseStub, renderErrorViewStub, findByExternalIdStub, changePermissionController
 
 const getController = (stubs = {}) => {
   return proxyquire('./change-permission.controller', {
-    '@utils/response': { response: stubs.response },
+    '@utils/response': { response: stubs.response, renderErrorView: stubs.renderErrorView },
     '@services/user.service':
       { findByExternalId: stubs.findByExternalId }
   })
@@ -43,16 +43,15 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
 
 const setupTest = (method, userToChangePermission, additionalReqProps = {}) => {
   responseStub = sinon.spy()
+  renderErrorViewStub = sinon.spy()
   findByExternalIdStub = sinon.stub().resolves(userToChangePermission)
 
   changePermissionController = getController({
     response: responseStub,
-    findByExternalId: findByExternalIdStub
+    findByExternalId: findByExternalIdStub,
+    renderErrorView: renderErrorViewStub
   })
   res = {
-    setHeader: sinon.stub(),
-    status: sinon.spy(),
-    render: sinon.spy(),
     redirect: sinon.spy()
   }
   req = {
@@ -95,9 +94,8 @@ describe('Controller: settings/team-members/change-permission', () => {
     describe('failure - admin attempts to change own permissions', () => {
       before(() => setupTest('get', adminUser, { params: { externalUserId: 'user-id-for-admin-user' } }))
 
-      it('should call the render method with an error', () => {
-        sinon.assert.calledWith(res.status, 403)
-        sinon.assert.calledWith(res.render, 'error', sinon.match({ message: 'You cannot update your own permissions' }))
+      it('should call the renderErrorView method', () => {
+        sinon.assert.calledWith(renderErrorViewStub, req, res, 'You cannot update your own permissions', 403)
       })
     })
   })
