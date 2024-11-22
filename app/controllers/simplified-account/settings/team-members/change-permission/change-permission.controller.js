@@ -29,7 +29,6 @@ async function get (req, res, next) {
         availableRoles,
         userCurrentRoleName: userCurrentRole.name,
         email: user.email,
-        serviceHasAgentInitiatedMotoEnabled,
         backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, serviceId, accountType)
       })
   } catch (err) {
