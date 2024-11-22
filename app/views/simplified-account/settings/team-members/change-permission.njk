@@ -12,7 +12,7 @@
 
   <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input type="hidden" name="email" value="{{ email }}" />
+    <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"
 
     {% set roleItems = [] %}
     {% for role in availableRoles %}
@@ -27,8 +27,8 @@
     {% endfor %}
 
     {{ govukRadios({
-      idPrefix: "changePermission",
-      name: "changePermission",
+      idPrefix: "newRole",
+      name: "newRole",
       fieldset: {
         legend: {
           text: "Change permission for " + email,
