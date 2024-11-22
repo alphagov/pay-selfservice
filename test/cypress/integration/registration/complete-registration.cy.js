@@ -1,6 +1,6 @@
-const inviteStubs = require('@cypress-stubs/invite-stubs')
-const userStubs = require('@cypress-stubs/user-stubs')
-const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const inviteStubs = require('@cypress/stubs/invite-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress/stubs/gateway-account-stubs')
 
 const inviteCode = 'an-invite-code'
 const otpKey = 'ANEXAMPLESECRETSECONDFACTORCODE1'

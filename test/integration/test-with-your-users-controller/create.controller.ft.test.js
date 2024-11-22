@@ -6,12 +6,12 @@ const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
 
-const { getApp } = require('../../../server')
+const { getApp } = require('@server')
 const { getMockSession, createAppWithSession, getUser } = require('@test/test-helpers/mock-session')
 const paths = require('@root/paths')
 const { penceToPounds } = require('@utils/currency-formatter')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
-const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 
 const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'

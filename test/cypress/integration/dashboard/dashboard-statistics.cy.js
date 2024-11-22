@@ -1,7 +1,7 @@
 const moment = require('moment-timezone')
-const userStubs = require('@cypress-stubs/user-stubs')
-const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
-const transactionsSummaryStubs = require('@cypress-stubs/transaction-summary-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress/stubs/gateway-account-stubs')
+const transactionsSummaryStubs = require('@cypress/stubs/transaction-summary-stubs')
 
 describe('Account dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'

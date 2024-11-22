@@ -9,7 +9,7 @@ const { USER_EXTERNAL_ID } = require('@govuk-pay/pay-js-commons').logging.keys
 
 const logger = require('@utils/logger')(__filename)
 const sessionValidator = require('./session-validator.js')
-const paths = require('../paths.js')
+const paths = require('@root/paths.js')
 const userService = require('./user.service.js')
 const { validationErrors } = require('./../utils/validation/field-validation-checks')
 const secondFactorMethod = require('@models/second-factor-method')

@@ -5,7 +5,7 @@ const csrf = require('csrf')
 const { expect } = require('chai')
 const nock = require('nock')
 
-const { getApp } = require('../../../server')
+const { getApp } = require('@server')
 const { getMockSession, createAppWithSession, getUser } = require('@test/test-helpers/mock-session')
 const paths = require('@root/paths')
 const ZENDESK_URL = 'https://govuk.zendesk.com/api/v2'

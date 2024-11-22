@@ -1,4 +1,4 @@
-const userStubs = require('@cypress-stubs/user-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
 
 describe('Request PSP test account: index', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'

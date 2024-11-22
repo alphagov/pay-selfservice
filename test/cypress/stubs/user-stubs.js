@@ -1,6 +1,6 @@
 'use strict'
 
-const userFixtures = require('../../fixtures/user.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getUserWithServiceRoleStubOpts (userExternalId, email, serviceExternalId, roleName) {

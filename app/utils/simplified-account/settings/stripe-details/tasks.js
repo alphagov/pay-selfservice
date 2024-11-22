@@ -1,6 +1,6 @@
 const formatSimplifiedAccountPathsFor = require('../../format/format-simplified-account-paths-for')
-const paths = require('../../../../paths')
-const logger = require('../../../logger')(__filename)
+const paths = require('@root/paths')
+const logger = require('@utils/logger')(__filename)
 
 const stripeDetailsTasks = Object.freeze({
   bankAccount: {

@@ -1,6 +1,6 @@
 'use strict'
 
-const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
+const stripeAccountSetupFixtures = require('@test/fixtures/stripe-account-setup.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getServiceAndAccountTypeStripeSetupSuccess (opts) {

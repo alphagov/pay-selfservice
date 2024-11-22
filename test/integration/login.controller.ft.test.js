@@ -12,12 +12,12 @@ const chaiAsPromised = require('chai-as-promised')
 
 require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
-const { buildGetStripeAccountSetupResponse } = require('../fixtures/stripe-account-setup.fixtures')
-const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
+const { buildGetStripeAccountSetupResponse } = require('@test/fixtures/stripe-account-setup.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const mockSession = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const loginController = require(path.join(__dirname, '/../../app/controllers/login'))
-const mockRes = require('../fixtures/response')
+const mockRes = require('@test/fixtures/response')
 
 const { CONNECTOR_URL } = process.env
 const { LEDGER_URL } = process.env

@@ -1,7 +1,7 @@
 const sinon = require('sinon')
 
 const inviteCookeIsPresent = require('./invite-cookie-is-present')
-const { RegistrationSessionMissingError } = require('../errors')
+const { RegistrationSessionMissingError } = require('@root/errors')
 
 const res = {}
 const next = sinon.spy()

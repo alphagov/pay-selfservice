@@ -1,9 +1,9 @@
-const userStubs = require('@cypress-stubs/user-stubs')
-const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress/stubs/gateway-account-stubs')
 const {
   getProductsByGatewayAccountIdAndTypeStub,
   getProductByExternalIdAndGatewayAccountIdStub
-} = require('@cypress-stubs/products-stubs')
+} = require('@cypress/stubs/products-stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-valid-account-id'

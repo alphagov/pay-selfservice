@@ -7,7 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('@services/clients/adminusers.client')
-const inviteFixtures = require('../../../fixtures/invite.fixtures')
+const inviteFixtures = require('@test/fixtures/invite.fixtures')
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Constants

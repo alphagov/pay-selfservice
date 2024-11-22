@@ -1,9 +1,9 @@
 'use strict'
 
-const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const cardFixtures = require('../../fixtures/card.fixtures')
-const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
-const worldpayCredentialsFixtures = require('../../fixtures/worldpay-credentials.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const cardFixtures = require('@test/fixtures/card.fixtures')
+const worldpay3dsFlexCredentialsFixtures = require('@test/fixtures/worldpay-3ds-flex-credentials.fixtures')
+const worldpayCredentialsFixtures = require('@test/fixtures/worldpay-credentials.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function parseGatewayAccountOptions (opts) {

@@ -7,7 +7,7 @@ const path = require('path')
 
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('@services/clients/connector.client').ConnectorClient
-const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
+const stripeAccountSetupFixtures = require('@test/fixtures/stripe-account-setup.fixtures')
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'

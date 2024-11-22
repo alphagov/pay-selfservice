@@ -5,7 +5,7 @@ const _ = require('lodash')
 const sinon = require('sinon')
 
 const User = require('@models/User.class')
-const userFixtures = require('../fixtures/user.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 const getUser = (opts) => {
   return new User(userFixtures.validUser(opts))

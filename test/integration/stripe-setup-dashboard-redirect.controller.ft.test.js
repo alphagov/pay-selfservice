@@ -5,12 +5,12 @@ const nock = require('nock')
 
 require('@test/test-helpers/serialize-mock.js')
 const userCreator = require('@test/test-helpers/user-creator.js')
-const getApp = require('../../server.js').getApp
+const getApp = require('@server').getApp
 const session = require('@test/test-helpers/mock-session.js')
 
 const connectorMock = nock(process.env.CONNECTOR_URL)
 
-const { validGatewayAccountsResponse } = require('../fixtures/gateway-account.fixtures')
+const { validGatewayAccountsResponse } = require('@test/fixtures/gateway-account.fixtures')
 
 const user = session.getUser()
 const app = session.getAppWithLoggedInUser(getApp(), session.getUser())

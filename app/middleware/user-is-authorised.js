@@ -1,7 +1,7 @@
 'use strict'
 
-const { NotAuthorisedError, NotAuthenticatedError, UserAccountDisabledError } = require('../errors')
-const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID } = require('../paths').keys
+const { NotAuthorisedError, NotAuthenticatedError, UserAccountDisabledError } = require('@root/errors')
+const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID } = require('@root/paths').keys
 
 module.exports = function userIsAuthorised (req, res, next) {
   const { user, session, params, service } = req

@@ -13,7 +13,7 @@ let result, productExternalId, gatewayAccountId, productsClient
 
 function getProductsClient (baseUrl) {
   return proxyquire('@services/clients/products.client', {
-    '../../../config': {
+    '@config': {
       PRODUCTS_URL: baseUrl
     }
   })

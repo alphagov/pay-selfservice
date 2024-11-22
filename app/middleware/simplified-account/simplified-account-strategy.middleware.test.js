@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { NotFoundError } = require('../../errors')
+const { NotFoundError } = require('@root/errors')
 const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')

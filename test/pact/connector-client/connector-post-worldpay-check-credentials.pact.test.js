@@ -9,7 +9,7 @@ chai.should()
 chai.use(chaiAsPromised)
 
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const worldpayCredentialsFixtures = require('../../fixtures/worldpay-credentials.fixtures')
+const worldpayCredentialsFixtures = require('@test/fixtures/worldpay-credentials.fixtures')
 const Connector = require('@services/clients/connector.client').ConnectorClient
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 

@@ -1,7 +1,7 @@
 const { render } = require('@test/test-helpers/html-assertions')
 const { serviceNavigationItems, adminNavigationItems } = require('@utils/nav-builder')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
-const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 describe('navigation menu', function () {
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {

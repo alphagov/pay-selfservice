@@ -1,6 +1,6 @@
 'use strict'
 
-const goLiveRequestFixtures = require('../../fixtures/go-live-requests.fixture')
+const goLiveRequestFixtures = require('@test/fixtures/go-live-requests.fixture')
 const { stubBuilder } = require('./stub-builder')
 
 function postGovUkPayAgreement (opts) {

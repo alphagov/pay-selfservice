@@ -1,12 +1,12 @@
 'use strict'
 
-const utils = require('../../utils/request-to-go-live-utils')
+const utils = require('@cypress/utils/request-to-go-live-utils')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
-const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
-const userStubs = require('@cypress-stubs/user-stubs')
-const goLiveRequestStubs = require('@cypress-stubs/go-live-request-stubs')
-const serviceStubs = require('@cypress-stubs/service-stubs')
-const zendeskStubs = require('@cypress-stubs/zendesk-stubs')
+const gatewayAccountStubs = require('@cypress/stubs/gateway-account-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
+const goLiveRequestStubs = require('@cypress/stubs/go-live-request-stubs')
+const serviceStubs = require('@cypress/stubs/service-stubs')
+const zendeskStubs = require('@cypress/stubs/zendesk-stubs')
 
 const requestToGoLiveAgreementUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`
 

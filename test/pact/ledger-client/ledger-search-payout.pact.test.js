@@ -3,7 +3,7 @@
 const chai = require('chai')
 
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const payoutFixture = require('../../fixtures/payout.fixtures')
+const payoutFixture = require('@test/fixtures/payout.fixtures')
 const ledgerClient = require('@services/clients/ledger.client')
 
 const pactTestProvider = require('./ledger-pact-test-provider')

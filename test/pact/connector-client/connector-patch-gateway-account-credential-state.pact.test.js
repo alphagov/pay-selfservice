@@ -6,7 +6,7 @@ const path = require('path')
 
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('@services/clients/connector.client').ConnectorClient
-const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 const existingGatewayAccountId = 444

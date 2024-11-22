@@ -4,7 +4,7 @@ const chai = require('chai')
 const _ = require('lodash')
 const chaiAsPromised = require('chai-as-promised')
 const getAdminUsersClient = require('@services/clients/adminusers.client')
-const userFixtures = require('../../../fixtures/user.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { userResponsePactifier } = require('@test/test-helpers/pact/pactifier')
 

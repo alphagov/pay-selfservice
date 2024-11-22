@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised')
 
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const ledgerClient = require('@services/clients/ledger.client')
-const transactionDetailsFixtures = require('../../fixtures/ledger-transaction.fixtures')
+const transactionDetailsFixtures = require('@test/fixtures/ledger-transaction.fixtures')
 const pactTestProvider = require('./ledger-pact-test-provider')
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 

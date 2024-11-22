@@ -2,7 +2,7 @@
 
 const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
 const { configureClient } = require('./base/config')
-const { PUBLIC_AUTH_URL } = require('../../../config')
+const { PUBLIC_AUTH_URL } = require('@config')
 // Constants
 const SERVICE_NAME = 'publicauth'
 

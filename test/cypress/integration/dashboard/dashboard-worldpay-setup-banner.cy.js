@@ -1,8 +1,8 @@
 'use strict'
 
-const userStubs = require('@cypress-stubs/user-stubs')
-const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
-const transactionsSummaryStubs = require('@cypress-stubs/transaction-summary-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress/stubs/gateway-account-stubs')
+const transactionsSummaryStubs = require('@cypress/stubs/transaction-summary-stubs')
 
 describe('Worldpay account setup banner', () => {
   const gatewayAccountId = '22'

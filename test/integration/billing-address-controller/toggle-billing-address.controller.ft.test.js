@@ -7,11 +7,11 @@ const supertest = require('supertest')
 const csrf = require('csrf')
 
 const mockSession = require('@test/test-helpers/mock-session.js')
-const getApp = require('../../../server.js').getApp
-const userFixtures = require('../../fixtures/user.fixtures')
+const getApp = require('@server').getApp
+const userFixtures = require('@test/fixtures/user.fixtures')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const paths = require('@root/paths.js')
-const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 const User = require('@models/User.class')
 
 // Constants

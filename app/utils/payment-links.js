@@ -3,7 +3,7 @@
 
 const lodash = require('lodash')
 
-const paths = require('../paths')
+const paths = require('@root/paths')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 // the edit and create flows handle storing cookie session data in separate places,

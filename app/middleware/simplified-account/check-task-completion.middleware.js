@@ -1,4 +1,4 @@
-const { TaskAlreadyCompletedError } = require('../../errors')
+const { TaskAlreadyCompletedError } = require('@root/errors')
 
 module.exports = function checkTaskCompletion (task) {
   return function (req, res, next) {

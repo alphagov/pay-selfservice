@@ -7,7 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('@services/clients/adminusers.client')
-const serviceFixtures = require('../../../fixtures/service.fixtures')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Global setup

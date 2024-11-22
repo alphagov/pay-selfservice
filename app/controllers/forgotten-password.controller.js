@@ -1,7 +1,7 @@
 'use strict'
 
 const paths = require('@root/paths.js')
-const userService = require('@services/user.service.js')
+const userService = require('@services/user.service')
 const logger = require('@utils/logger')(__filename)
 const {
   validateEmail,

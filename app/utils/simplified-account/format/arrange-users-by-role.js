@@ -1,7 +1,7 @@
 const _ = require('lodash')
-const paths = require('../../../paths')
+const paths = require('@root/paths')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
-const { roles } = require('../../roles')
+const { roles } = require('@utils/roles')
 
 function mapTeamMembersByRoles (users, externalServiceId, accountType, currentUser) {
   const teamMembersRoleMap = {}

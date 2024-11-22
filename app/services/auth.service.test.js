@@ -8,7 +8,7 @@ const _ = require('lodash')
 const { expect } = require('chai')
 
 const auth = require('./auth.service.js')
-const paths = require('../paths.js')
+const paths = require('@root/paths.js')
 const mockSession = require('@test/test-helpers/mock-session.js')
 const userFixtures = require('@test/fixtures/user.fixtures')
 const User = require('@models/User.class')

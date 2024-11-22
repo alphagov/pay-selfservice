@@ -1,6 +1,6 @@
 'use strict'
 
-const { RegistrationSessionMissingError } = require('../errors')
+const { RegistrationSessionMissingError } = require('@root/errors')
 const { INVITE_SESSION_COOKIE_NAME } = require('@utils/constants')
 const { addField } = require('@services/clients/base/request-context')
 const { isInternalGDSEmail } = require('@utils/email-tools')

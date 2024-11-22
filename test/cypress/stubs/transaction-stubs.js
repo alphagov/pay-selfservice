@@ -2,8 +2,8 @@
 
 const lodash = require('lodash')
 
-const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fixtures')
-const refundFixtures = require('../../fixtures/refund.fixtures')
+const ledgerTransactionFixtures = require('@test/fixtures/ledger-transaction.fixtures')
+const refundFixtures = require('@test/fixtures/refund.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getLedgerTransactionSuccess (opts) {

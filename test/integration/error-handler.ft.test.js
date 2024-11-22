@@ -11,7 +11,7 @@ describe('express unhandled error handler', () => {
     let response, $
 
     before(done => {
-      const { getApp } = proxyquire('../../server', {
+      const { getApp } = proxyquire('@server', {
         './app/routes': {
           bind: (app) => {
             app.get(testPath, () => { throw Error('an unhandled error') })

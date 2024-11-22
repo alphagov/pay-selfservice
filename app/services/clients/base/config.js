@@ -2,7 +2,7 @@
 
 const requestLogger = require('./request-logger')
 const { getRequestCorrelationIDField } = require('./request-context')
-const { CORRELATION_HEADER } = require('../../../../config')
+const { CORRELATION_HEADER } = require('@config')
 
 function transformRequestAddHeaders () {
   const correlationId = getRequestCorrelationIDField()

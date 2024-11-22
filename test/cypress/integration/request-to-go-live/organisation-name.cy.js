@@ -1,7 +1,7 @@
 'use strict'
 
-const utils = require('../../utils/request-to-go-live-utils')
-const serviceStubs = require('@cypress-stubs/service-stubs')
+const utils = require('@cypress/utils/request-to-go-live-utils')
+const serviceStubs = require('@cypress/stubs/service-stubs')
 const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 const notStartedServiceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
 const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`

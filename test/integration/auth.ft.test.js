@@ -2,7 +2,7 @@ require('@test/test-helpers/serialize-mock.js')
 const request = require('supertest')
 const { getAppWithLoggedInUser, getUser, getAppWithSessionWithoutSecondFactor, getAppWithLoggedOutSession } = require('@test/test-helpers/mock-session.js')
 const paths = require('@root/paths.js')
-const server = require('../../server.js')
+const server = require('@server')
 
 let app
 

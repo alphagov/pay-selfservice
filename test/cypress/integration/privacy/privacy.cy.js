@@ -1,5 +1,5 @@
 'use strict'
-const userStubs = require('@cypress-stubs/user-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
 
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42

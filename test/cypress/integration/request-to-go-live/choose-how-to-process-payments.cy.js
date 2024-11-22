@@ -1,9 +1,9 @@
 'use strict'
 
-const utils = require('../../utils/request-to-go-live-utils')
+const utils = require('@cypress/utils/request-to-go-live-utils')
 const variables = utils.variables
-const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
-const userStubs = require('@cypress-stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress/stubs/gateway-account-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
 
 const userExternalId = variables.userExternalId
 const gatewayAccountId = variables.gatewayAccountId

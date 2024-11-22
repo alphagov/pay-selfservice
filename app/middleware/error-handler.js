@@ -18,8 +18,8 @@ const {
   ExpiredInviteError,
   GatewayTimeoutError,
   GatewayTimeoutForAllServicesSearchError, TaskAlreadyCompletedError
-} = require('../errors')
-const paths = require('../paths')
+} = require('@root/errors')
+const paths = require('@root/paths')
 const { renderErrorView, response } = require('@utils/response')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 

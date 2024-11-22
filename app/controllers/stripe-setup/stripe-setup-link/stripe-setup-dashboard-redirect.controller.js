@@ -1,6 +1,6 @@
 'use strict'
 
-const paths = require('../../../../app/paths')
+const paths = require('@root/paths')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const { ConnectorClient } = require('@services/clients/connector.client')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)

@@ -4,7 +4,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 
 const restrictToStripeAccountContext = require('./restrict-to-stripe-account-context')
-const { NotFoundError } = require('../../errors')
+const { NotFoundError } = require('@root/errors')
 
 describe('Restrict to live stripe account middleware', () => {
   let res

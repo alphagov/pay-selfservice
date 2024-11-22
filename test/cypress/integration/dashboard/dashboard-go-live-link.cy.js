@@ -1,7 +1,7 @@
 'use strict'
 
-const utils = require('../../utils/request-to-go-live-utils')
-const transactionStubs = require('@cypress-stubs/transaction-stubs')
+const utils = require('@cypress/utils/request-to-go-live-utils')
+const transactionStubs = require('@cypress/stubs/transaction-stubs')
 const { userExternalId, gatewayAccountExternalId, serviceExternalId } = utils.variables
 
 const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`

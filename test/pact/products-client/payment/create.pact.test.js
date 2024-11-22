@@ -6,7 +6,7 @@ const proxyquire = require('proxyquire')
 
 const path = require('path')
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const productFixtures = require('../../../fixtures/product.fixtures')
+const productFixtures = require('@test/fixtures/product.fixtures')
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
@@ -15,7 +15,7 @@ let result, productsClient
 
 function getProductsClient (baseUrl) {
   return proxyquire('@services/clients/products.client', {
-    '../../../config': {
+    '@config': {
       PRODUCTS_URL: baseUrl
     }
   })

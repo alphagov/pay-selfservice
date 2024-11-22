@@ -11,9 +11,9 @@ const { expect } = chai
 
 // Local modules
 const session = require('@test/test-helpers/mock-session.js')
-const { getApp } = require('../../server.js')
-const inviteFixtures = require('../fixtures/invite.fixtures')
-const userFixtures = require('../fixtures/user.fixtures')
+const { getApp } = require('@server')
+const inviteFixtures = require('@test/fixtures/invite.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
 const paths = require('@root/paths.js')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const User = require('@models/User.class')

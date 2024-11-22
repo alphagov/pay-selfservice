@@ -3,7 +3,7 @@
 const _ = require('lodash')
 
 const logger = require('@utils/logger')(__filename)
-const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID, ENVIRONMENT_ID } = require('../paths').keys
+const { SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_EXTERNAL_ID, ENVIRONMENT_ID } = require('@root/paths').keys
 const Connector = require('@services/clients/connector.client.js').ConnectorClient
 
 const { keys } = require('@govuk-pay/pay-js-commons').logging

@@ -4,8 +4,8 @@ const { expect } = require('chai')
 const {
   NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError,
   ExpiredInviteError
-} = require('../errors')
-const paths = require('../paths')
+} = require('@root/errors')
+const paths = require('@root/paths')
 const User = require('@models/User.class')
 const Service = require('@models/Service.class')
 const userFixtures = require('@test/fixtures/user.fixtures')

@@ -5,12 +5,12 @@ const nock = require('nock')
 
 require('@test/test-helpers/serialize-mock.js')
 const userCreator = require('@test/test-helpers/user-creator.js')
-const getApp = require('../../server.js').getApp
+const getApp = require('@server').getApp
 const paths = require('@root/paths.js')
 const session = require('@test/test-helpers/mock-session.js')
 const gatewayAccountId = '15486734'
-const { validTransactionDetailsResponse } = require('../fixtures/ledger-transaction.fixtures')
-const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fixtures')
+const { validTransactionDetailsResponse } = require('@test/fixtures/ledger-transaction.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 
 let app
 

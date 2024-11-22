@@ -2,7 +2,7 @@
 // check if a missed URL (404) is a URL that has been upgraded during the
 // account URL structure change. When this utility is reporting few or no
 // upgrades it can be removed
-const paths = require('../paths')
+const paths = require('@root/paths')
 const flattenNestedValues = require('./flatten-nested-values')
 
 // only flatten paths once given the singleton module export patten, these

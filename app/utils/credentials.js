@@ -1,7 +1,7 @@
 'use strict'
 
-const paths = require('../paths')
-const { InvalidConfigurationError, NotFoundError } = require('../errors')
+const paths = require('@root/paths')
+const { InvalidConfigurationError, NotFoundError } = require('@root/errors')
 
 const CREDENTIAL_STATE = {
   CREATED: 'CREATED',

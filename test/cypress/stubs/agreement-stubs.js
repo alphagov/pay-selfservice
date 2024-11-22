@@ -1,6 +1,6 @@
 'use strict'
 
-const agreementFixtures = require('../../fixtures/agreement.fixtures')
+const agreementFixtures = require('@test/fixtures/agreement.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getLedgerAgreementsSuccess (opts) {

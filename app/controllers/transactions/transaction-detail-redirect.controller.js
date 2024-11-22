@@ -2,7 +2,7 @@
 
 const { userServicesContainsGatewayAccount } = require('@utils/permissions')
 const Ledger = require('@services/clients/ledger.client')
-const router = require('../../routes')
+const router = require('@root/routes')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const { ConnectorClient } = require('@services/clients/connector.client')
 const { NotFoundError } = require('@root/errors')

@@ -1,6 +1,6 @@
 'use strict'
 
-const inviteFixtures = require('../../fixtures/invite.fixtures')
+const inviteFixtures = require('@test/fixtures/invite.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function createSelfSignupInviteSuccess (email) {

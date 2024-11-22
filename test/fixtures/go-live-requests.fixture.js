@@ -1,6 +1,6 @@
 'use strict'
 
-const utils = require('../cypress/utils/request-to-go-live-utils')
+const utils = require('@cypress/utils/request-to-go-live-utils')
 
 module.exports = {
   validPostGovUkPayAgreementRequest: (opts = {}) => {

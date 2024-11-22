@@ -1,4 +1,4 @@
-const { InvalidConfigurationError, NotAuthenticatedError } = require('../../errors')
+const { InvalidConfigurationError, NotAuthenticatedError } = require('@root/errors')
 
 module.exports = (req, res, next) => {
   if (req.user) {

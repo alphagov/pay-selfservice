@@ -5,7 +5,7 @@ const productsClient = require('@services/clients/products.client.js')
 const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
-const router = require('../../routes')
+const router = require('@root/routes')
 
 module.exports = async function goToTransactions (req, res, next) {
   const productExternalId = req.params.productExternalId

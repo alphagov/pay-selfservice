@@ -1,6 +1,6 @@
 'use strict'
 
-const { NotFoundError } = require('../errors')
+const { NotFoundError } = require('@root/errors')
 
 module.exports = (req, res, next) => {
   if (req.account.provider_switch_enabled) {

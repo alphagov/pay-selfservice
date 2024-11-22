@@ -7,7 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('@services/clients/adminusers.client')
-const validPostGovUkPayAgreementRequest = require('../../../fixtures/go-live-requests.fixture').validPostGovUkPayAgreementRequest
+const validPostGovUkPayAgreementRequest = require('@test/fixtures/go-live-requests.fixture').validPostGovUkPayAgreementRequest
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'

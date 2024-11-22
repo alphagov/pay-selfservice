@@ -1,6 +1,6 @@
-const userStubs = require('@cypress-stubs/user-stubs')
-const gatewayAccountStubs = require('@cypress-stubs/gateway-account-stubs')
-const webhooksStubs = require('@cypress-stubs/webhooks-stubs')
+const userStubs = require('@cypress/stubs/user-stubs')
+const gatewayAccountStubs = require('@cypress/stubs/gateway-account-stubs')
+const webhooksStubs = require('@cypress/stubs/webhooks-stubs')
 
 const userExternalId = 'some-user-id'
 const gatewayAccountId = 10

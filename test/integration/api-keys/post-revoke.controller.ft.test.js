@@ -5,11 +5,11 @@ const csrf = require('csrf')
 const nock = require('nock')
 const supertest = require('supertest')
 
-const { getApp } = require('../../../server')
+const { getApp } = require('@server')
 const mockSession = require('@test/test-helpers/mock-session')
 const userCreator = require('@test/test-helpers/user-creator')
 const paths = require('@root/paths')
-const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env

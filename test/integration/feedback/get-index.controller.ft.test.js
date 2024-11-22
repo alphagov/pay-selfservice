@@ -5,7 +5,7 @@ const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 
-const { getApp } = require('../../../server')
+const { getApp } = require('@server')
 const { getMockSession, createAppWithSession, getUser } = require('@test/test-helpers/mock-session')
 const paths = require('@root/paths')
 

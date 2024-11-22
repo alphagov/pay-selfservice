@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 const changeCase = require('change-case')
 const dates = require('@utils/dates.js')
-const router = require('../routes.js')
+const router = require('@root/routes.js')
 const qs = require('qs')
 const { penceToPoundsWithCurrency } = require('./currency-formatter')
 const Paginator = require('./paginator')

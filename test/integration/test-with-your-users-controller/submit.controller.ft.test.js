@@ -6,12 +6,12 @@ const csrf = require('csrf')
 const cheerio = require('cheerio')
 const { expect } = require('chai')
 
-const { getApp } = require('../../../server')
+const { getApp } = require('@server')
 const { getMockSession, getUser, createAppWithSession } = require('@test/test-helpers/mock-session')
 const paths = require('@root/paths')
 const { randomUuid } = require('@utils/random')
-const { validCreateProductRequest, validProductResponse } = require('../../fixtures/product.fixtures')
-const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
+const { validCreateProductRequest, validProductResponse } = require('@test/fixtures/product.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env

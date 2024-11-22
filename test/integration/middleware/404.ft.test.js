@@ -1,5 +1,5 @@
 const request = require('supertest')
-const app = require('../../../server.js').getApp()
+const app = require('@server').getApp()
 
 describe('Invalid pages redirect to 404 page', () => {
   it('should return 404', done => {

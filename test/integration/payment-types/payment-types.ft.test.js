@@ -7,12 +7,12 @@ const csrf = require('csrf')
 
 require('@test/test-helpers/serialize-mock.js')
 const { expect } = chai
-const getApp = require('../../../server.js').getApp
+const getApp = require('@server').getApp
 const paths = require('@root/paths.js')
 const session = require('@test/test-helpers/mock-session.js')
 const userCreator = require('@test/test-helpers/user-creator.js')
-const cardFixtures = require('../../fixtures/card.fixtures')
-const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
+const cardFixtures = require('@test/fixtures/card.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const gatewayAccountId = '15486734'

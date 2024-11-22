@@ -10,7 +10,7 @@ const proxyquire = require('proxyquire')
 // constants
 const TOKENS_PATH = '/v1/frontend/auth'
 
-const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
@@ -20,7 +20,7 @@ let publicAuthClient
 
 function getPublicAuthClient (baseUrl) {
   return proxyquire('@services/clients/public-auth.client', {
-    '../../../config': {
+    '@config': {
       PUBLIC_AUTH_URL: baseUrl
     }
   })

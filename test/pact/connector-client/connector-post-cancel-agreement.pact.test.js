@@ -7,7 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('@services/clients/connector.client').ConnectorClient
-const cancelAgreementFixture = require('../../fixtures/cancel-agreement.fixtures')
+const cancelAgreementFixture = require('@test/fixtures/cancel-agreement.fixtures')
 
 // Constants
 let connectorClient

@@ -1,6 +1,6 @@
 const request = require('supertest')
 
-const { getApp } = require('../../server')
+const { getApp } = require('@server')
 const session = require('@test/test-helpers/mock-session.js')
 
 describe('URL redirecting from old ones', () => {

@@ -2,7 +2,7 @@
 
 const sinon = require('sinon')
 const { expect } = require('chai')
-const { NotAuthorisedError, NotAuthenticatedError, UserAccountDisabledError } = require('../errors')
+const { NotAuthorisedError, NotAuthenticatedError, UserAccountDisabledError } = require('@root/errors')
 const userIsAuthorised = require('./user-is-authorised')
 const User = require('@models/User.class')
 const Service = require('@models/Service.class')

@@ -1,6 +1,6 @@
 'use strict'
 
-const webhooksFixtures = require('../../fixtures/webhooks.fixtures')
+const webhooksFixtures = require('@test/fixtures/webhooks.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getWebhooksListSuccess (opts) {

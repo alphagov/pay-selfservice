@@ -3,7 +3,7 @@
 const url = require('url')
 const _ = require('lodash')
 
-const router = require('../../routes.js')
+const router = require('@root/routes.js')
 const transactionService = require('@services/transaction.service')
 const { ConnectorClient } = require('@services/clients/connector.client.js')
 const { buildPaymentList } = require('@utils/transaction-view.js')

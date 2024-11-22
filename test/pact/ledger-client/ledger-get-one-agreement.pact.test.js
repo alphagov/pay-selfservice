@@ -8,7 +8,7 @@ const ledgerClient = require('@services/clients/ledger.client')
 const pactTestProvider = require('./ledger-pact-test-provider')
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
-const agreementFixtures = require('../../fixtures/agreement.fixtures')
+const agreementFixtures = require('@test/fixtures/agreement.fixtures')
 
 // Constants
 const AGREEMENT_RESOURCE = '/v1/agreement'

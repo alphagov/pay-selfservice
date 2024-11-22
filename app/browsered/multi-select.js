@@ -1,7 +1,7 @@
 'use strict'
 // TODO: we should probably do some browser testing in this project to prove this all works as intended
 
-const multiSelect = require('../views/includes/multi-select.njk')
+const multiSelect = require('@views/includes/multi-select.njk')
 
 // Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
 require('./polyfills')

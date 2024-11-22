@@ -1,4 +1,4 @@
-const paths = require('../../../paths')
+const paths = require('@root/paths')
 const formatSimplifiedAccountPathsFor = require('../format/format-simplified-account-paths-for')
 const SettingsBuilder = require('./SettingsBuilder.class')
 const { LIVE } = require('@models/go-live-stage')

@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const { NotFoundError } = require('../errors')
+const { NotFoundError } = require('@root/errors')
 
 const restrictToSandboxOrStripeTestAccount = require('./restrict-to-sandbox-or-stripe-test-account')
 

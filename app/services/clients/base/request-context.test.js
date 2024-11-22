@@ -2,7 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const { CORRELATION_HEADER } = require('../../../../config')
+const { CORRELATION_HEADER } = require('@config')
 const { CORRELATION_ID } = require('@govuk-pay/pay-js-commons').logging.keys
 
 const { expect } = require('chai')
