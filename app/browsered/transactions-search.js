@@ -1,6 +1,6 @@
 'use strict'
 
-const isAPotentialPan = require('@utils/is-a-potential-pan')
+const isAPotentialPan = require('../utils/is-a-potential-pan')
 
 module.exports = () => {
   function checkIfReferenceSearchFilterIsAPan () {
