@@ -49,11 +49,11 @@ module.exports = {
     })
     return found
   },
-  getAvailableRolesForService: agentInitiatedMotoEnabled => {
+  getAvailableRolesForService: serviceHasAgentInitiatedMotoEnabled => {
     const availableRoles = {}
     for (const roleName in roles) {
       const role = roles[roleName]
-      if (agentInitiatedMotoEnabled) {
+      if (serviceHasAgentInitiatedMotoEnabled) {
         if (roleName === 'admin') {
           // for agent-initiated moto services, add 'take telephone payments' to the explanation content for the admin role
           availableRoles[roleName] = {
