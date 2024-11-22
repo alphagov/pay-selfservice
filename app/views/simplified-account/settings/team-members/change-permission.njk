@@ -9,10 +9,10 @@
     text: "Back",
     href: backLink
   }) }}
-<div>
+
   <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"
+    <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"/>
 
     {% set roleItems = [] %}
     {% set roleDisplayOrder = ['admin', 'view-refund-and-initiate-moto', 'view-and-refund', 'view-and-initiate-moto', 'view-only'] %}
@@ -41,6 +41,7 @@
       },
       items: roleItems
     }) }}
+
     {{
     govukButton({
       text: "Save changes"
@@ -48,5 +49,5 @@
     }}
 
   </form>
-</div>
+
 {% endblock %}
