@@ -44,7 +44,8 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.paymen
 simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.paymentConfirmationEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-toggle:update'), serviceSettingsController.emailNotifications.paymentConfirmationEmails.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.templates, permission('email-notification-template:read'), serviceSettingsController.emailNotifications.templates.get)
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.customParagraph, permission('email-notification-paragraph:update'), serviceSettingsController.emailNotifications.customParagraph.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.customParagraph, permission('email-notification-paragraph:update'), serviceSettingsController.emailNotifications.customParagraph.post)
+simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.customParagraph, permission('email-notification-paragraph:update'), serviceSettingsController.emailNotifications.customParagraph.postEditCustomParagraph)
+simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.removeCustomParagraph, permission('email-notification-paragraph:update'), serviceSettingsController.emailNotifications.customParagraph.postRemoveCustomParagraph)
 
 // organisation details
 simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.index, serviceSettingsController.organisationDetails.get)

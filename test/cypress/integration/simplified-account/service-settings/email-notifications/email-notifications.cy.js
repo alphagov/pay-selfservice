@@ -311,7 +311,6 @@ describe('Email notifications settings', () => {
       it('should show relevant tabs only', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
         cy.get('#tab_confirmation-html').should('have.attr', 'href', '#confirmation-html')
-        cy.get('#add-custom-paragraph-link').should('have.attr', 'disabled', 'disabled')
         cy.get('#tab_refund-html').eq(0).should('have.attr', 'href', '#refund-html')
       })
 

@@ -96,13 +96,6 @@
         <p class="govuk-body">
           Admin users can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
         </p>
-        {{ govukButton({
-          text: 'Add a custom paragraph',
-          attributes: {
-            id: 'add-custom-paragraph-link'
-          },
-          disabled: true
-        }) }}
       {% endif %}
     </div>
 
@@ -147,7 +140,7 @@
 
     <div class="pay-email-template-body">
       <h3 class="govuk-heading-m email-heading">You have been refunded £<span class="govuk-grey-text">[amount]</span> by <span class="govuk-grey-text">{{ serviceName }}</span></h3>
-      <ul class="govuk-list govuk-list--bullet">
+      <ul class="govuk-list">
         <li>Refund for: <span class="govuk-grey-text">[description]</span></li>
         <li>Reference: <span class="govuk-grey-text">[service reference]</span></li>
         <li>Date of original payment: <span class="govuk-grey-text">[date]</span></li>
