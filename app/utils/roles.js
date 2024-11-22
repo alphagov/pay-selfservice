@@ -8,18 +8,18 @@ const roles = {
     explanation: 'They can view transactions, refund payments and manage settings',
     agentInitiatedMotoServicesOnly: false
   },
+  'view-refund-and-initiate-moto': {
+    extId: 600,
+    name: 'view-refund-and-initiate-moto',
+    description: 'View, refund and take telephone payments',
+    explanation: 'They can view transactions, refund payments, and take telephone payments',
+    agentInitiatedMotoServicesOnly: true
+  },
   'view-and-refund': {
     extId: 300,
     name: 'view-and-refund',
     description: 'View and refund',
     explanation: 'They can view transactions and refund payments',
-    agentInitiatedMotoServicesOnly: false
-  },
-  'view-only': {
-    extId: 400,
-    name: 'view-only',
-    description: 'View only',
-    explanation: 'They can view transactions',
     agentInitiatedMotoServicesOnly: false
   },
   'view-and-initiate-moto': {
@@ -29,12 +29,12 @@ const roles = {
     explanation: 'They can view transactions and take telephone payments',
     agentInitiatedMotoServicesOnly: true
   },
-  'view-refund-and-initiate-moto': {
-    extId: 600,
-    name: 'view-refund-and-initiate-moto',
-    description: 'View, refund and take telephone payments',
-    explanation: 'They can view transactions, refund payments, and take telephone payments',
-    agentInitiatedMotoServicesOnly: true
+  'view-only': {
+    extId: 400,
+    name: 'view-only',
+    description: 'View only',
+    explanation: 'They can view transactions',
+    agentInitiatedMotoServicesOnly: false
   }
 }
 
