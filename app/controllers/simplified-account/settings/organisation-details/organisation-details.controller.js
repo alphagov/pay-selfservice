@@ -5,7 +5,7 @@ const { formatAddressAsParagraph } = require('@utils/format-address-as-paragraph
 
 function get (req, res) {
   if (!req.service?.merchantDetails) {
-    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type))
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type))
   }
 
   const organisationDetails = {
