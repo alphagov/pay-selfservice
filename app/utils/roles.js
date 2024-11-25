@@ -50,23 +50,16 @@ module.exports = {
     return found
   },
   getAvailableRolesForService: serviceHasAgentInitiatedMotoEnabled => {
-    const availableRoles = {}
-    for (const roleName in roles) {
-      const role = roles[roleName]
-      if (serviceHasAgentInitiatedMotoEnabled) {
-        if (roleName === 'admin') {
-          // for agent-initiated moto services, add 'take telephone payments' to the explanation content for the admin role
-          availableRoles[roleName] = {
-            description: role.description,
-            explanation: 'They can view transactions, refund payments, take telephone payments and manage settings'
-          }
-        } else {
-          availableRoles[roleName] = { description: role.description, explanation: role.explanation }
-        }
-      } else if (!role.agentInitiatedMotoServicesOnly) {
-        availableRoles[roleName] = { description: role.description, explanation: role.explanation }
-      }
-    }
-    return availableRoles
+    const roleDisplayOrder = ['admin', 'view-refund-and-initiate-moto', 'view-and-refund', 'view-and-initiate-moto', 'view-only']
+
+    return roleDisplayOrder.map(roleName => roles[roleName])
+      .filter(role => serviceHasAgentInitiatedMotoEnabled || !role.agentInitiatedMotoServicesOnly)
+      .map(role => _.pick(role, ['name', 'description', 'explanation']))
+      .map(role => {
+        // for agent-initiated moto services, add 'take telephone payments' to the explanation content for the admin role
+        return (role.name === 'admin' && serviceHasAgentInitiatedMotoEnabled)
+          ? { ...role, explanation: 'They can view transactions, refund payments, take telephone payments and manage settings' }
+          : role
+      })
   }
 }

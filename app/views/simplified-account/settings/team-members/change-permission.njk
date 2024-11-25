@@ -15,18 +15,15 @@
     <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"/>
 
     {% set roleItems = [] %}
-    {% set roleDisplayOrder = ['admin', 'view-refund-and-initiate-moto', 'view-and-refund', 'view-and-initiate-moto', 'view-only'] %}
-    {% for roleName in roleDisplayOrder %}
-      {% if availableRoles[roleName] %}
-        {% set roleItem = {
-          value: roleName,
-          id: "role-" + roleName + "-input",
-          html: "<label class=\"govuk-!-font-weight-bold\">" + availableRoles[roleName].description + "</label>",
-          hint: { text: availableRoles[roleName].explanation },
-          checked: userCurrentRoleName === roleName
-        } %}
-        {% set roleItems = (roleItems.push(roleItem), roleItems) %}
-      {% endif %}
+    {% for role in availableRoles %}
+      {% set roleItem = {
+        value: role.name,
+        id: "role-" + role.name + "-input",
+        html: "<label class=\"govuk-!-font-weight-bold\">" + role.description + "</label>",
+        hint: { text: role.explanation },
+        checked: userCurrentRoleName === role.name
+      } %}
+      {% set roleItems = (roleItems.push(roleItem), roleItems) %}
     {% endfor %}
 
     {{ govukRadios({
