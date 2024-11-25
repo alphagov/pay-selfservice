@@ -1,4 +1,3 @@
-const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const sinon = require('sinon')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
