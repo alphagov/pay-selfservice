@@ -12,7 +12,7 @@
 
   <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"
+    <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"/>
 
     {% set roleItems = [] %}
     {% for role in availableRoles %}
@@ -38,6 +38,7 @@
       },
       items: roleItems
     }) }}
+
     {{
     govukButton({
       text: "Save changes"

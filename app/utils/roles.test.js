@@ -42,5 +42,10 @@ describe('roles module', function () {
       description: 'Administrator',
       explanation: 'They can view transactions, refund payments, take telephone payments and manage settings'
     })
+    expect(rolesForService[1]).to.deep.equal({
+      name: 'view-refund-and-initiate-moto',
+      description: 'View, refund and take telephone payments',
+      explanation: 'They can view transactions, refund payments, and take telephone payments'
+    })
   })
 })

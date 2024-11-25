@@ -49,13 +49,15 @@ module.exports = {
     })
     return found
   },
-  getAvailableRolesForService: agentInitiatedMotoEnabled => {
-    return Object.values(roles)
-      .filter(role => agentInitiatedMotoEnabled || !role.agentInitiatedMotoServicesOnly)
+  getAvailableRolesForService: serviceHasAgentInitiatedMotoEnabled => {
+    const roleDisplayOrder = ['admin', 'view-refund-and-initiate-moto', 'view-and-refund', 'view-and-initiate-moto', 'view-only']
+
+    return roleDisplayOrder.map(roleName => roles[roleName])
+      .filter(role => serviceHasAgentInitiatedMotoEnabled || !role.agentInitiatedMotoServicesOnly)
       .map(role => _.pick(role, ['name', 'description', 'explanation']))
       .map(role => {
         // for agent-initiated moto services, add 'take telephone payments' to the explanation content for the admin role
-        return (role.name === 'admin' && agentInitiatedMotoEnabled)
+        return (role.name === 'admin' && serviceHasAgentInitiatedMotoEnabled)
           ? { ...role, explanation: 'They can view transactions, refund payments, take telephone payments and manage settings' }
           : role
       })
