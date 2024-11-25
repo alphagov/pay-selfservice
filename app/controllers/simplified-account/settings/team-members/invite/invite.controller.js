@@ -3,7 +3,6 @@ const { getAvailableRolesForService } = require('@utils/roles')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 
-
 async function get (req, res) {
   const serviceId = req.service.externalId
   const accountType = req.account.type
