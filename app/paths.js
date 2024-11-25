@@ -187,7 +187,8 @@ module.exports = {
       teamMembers: {
         index: '/settings/team-members',
         delete: '/settings/team-members/:externalUserId/delete',
-        permission: '/settings/team-members/:externalUserId/permission'
+        permission: '/settings/team-members/:externalUserId/permission',
+        invite: '/settings/team-members/invite'
       },
       organisationDetails: {
         index: '/settings/organisation-details',

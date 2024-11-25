@@ -97,7 +97,7 @@ describe('Controller: settings/team-members', () => {
       expect(responseStub.args[0][3].invitedTeamMembers['view-only'][0]).to.have.property('email').to.equal('invited-view-only-user@user.gov.uk')
 
       expect(responseStub.args[0][3]).to.have.property('inviteTeamMemberLink')
-        .to.equal('/simplified/service/service-id-123abc/account/test/team-members/invite')
+        .to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members/invite')
       expect(responseStub.args[0][3]).to.have.property('numberInvitedMembers').to.equal(2)
     })
   })

@@ -1,0 +1,64 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Team members - Invite a team member
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+  <h1 class="govuk-heading-l">Invite a team member</h1>
+  <div>
+    <form method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"/>
+
+      {{ govukInput({
+        label: {
+          text: "Email address",
+          classes: "govuk-label--s"
+        },
+        id: "invite-email",
+        name: "inviteEmail",
+        type: "email",
+        spellcheck: false,
+        errorMessage: { text: errors.formErrors['inviteEmail'] } if errors.formErrors['inviteEmail'] else false,
+        classes: "govuk-!-width-two-thirds"
+      }) }}
+
+      {% set roleItems = [] %}
+      {% for role in availableRoles %}
+        {% set roleItem = {
+          value: role.name,
+          id: "role-" + role.name + "-input",
+          html: "<label class=\"govuk-!-font-weight-bold\">" + role.description + "</label>",
+          hint: { text: role.explanation },
+          checked: userCurrentRoleName === role.name
+        } %}
+        {% set roleItems = (roleItems.push(roleItem), roleItems) %}
+      {% endfor %}
+
+      {{ govukRadios({
+        idPrefix: "newRole",
+        name: "newRole",
+        fieldset: {
+          legend: {
+            text: "Permission level",
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: roleItems
+      }) }}
+
+      {{
+      govukButton({
+        text: "Save changes"
+      })
+      }}
+
+    </form>
+  </div>
+
+{% endblock %}
