@@ -187,7 +187,8 @@ module.exports = {
       teamMembers: {
         index: '/settings/team-members',
         delete: '/settings/team-members/:externalUserId/delete',
-        permission: '/settings/team-members/:externalUserId/permission'
+        permission: '/settings/team-members/:externalUserId/permission',
+        invite: '/settings/team-members/invite'
       },
       organisationDetails: {
         index: '/settings/organisation-details',
@@ -246,9 +247,9 @@ module.exports = {
     },
     teamMembers: {
       index: '/team-members',
-      show: '/team-member/:externalUserId',
-      delete: '/team-member/:externalUserId/delete',
-      permissions: '/team-member/:externalUserId/permissions',
+      show: '/team-members/:externalUserId',
+      delete: '/team-members/:externalUserId/delete',
+      permissions: '/team-members/:externalUserId/permissions',
       invite: '/team-members/invite'
     }
   },

@@ -16,7 +16,7 @@ async function get (req, res, next) {
     ])
     const teamMembers = mapTeamMembersByRoles(serviceUsers, externalServiceId, accountType, req.user)
     const invitedTeamMembers = mapInvitedTeamMembersByRoles(invitedUsers)
-    const inviteTeamMemberLink = formatSimplifiedAccountPathsFor(paths.service.teamMembers.invite, externalServiceId, accountType)
+    const inviteTeamMemberLink = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.invite, externalServiceId, accountType)
     const numberInvitedMembers = invitedUsers.length
     const isServiceAdmin = req.user.isAdminUserForService(externalServiceId)
 
@@ -34,11 +34,7 @@ async function get (req, res, next) {
   }
 }
 
-async function getChangePermission (req, res, next) {
-  // TODO implement change permission page
-}
-
 module.exports.get = get
-module.exports.getChangePermission = getChangePermission
 module.exports.removeUser = require('./remove-user/remove-user.controller')
 module.exports.changePermission = require('./change-permission/change-permission.controller')
+module.exports.invite = require('./invite/invite.controller')

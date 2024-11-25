@@ -37,6 +37,8 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.delete, permi
 simplifiedAccount.post(paths.simplifiedAccount.settings.teamMembers.delete, permission('users-service:delete'), serviceSettingsController.teamMembers.removeUser.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.permission, permission('users-service:create'), serviceSettingsController.teamMembers.changePermission.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.teamMembers.permission, permission('users-service:create'), serviceSettingsController.teamMembers.changePermission.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.teamMembers.invite, permission('users-service:create'), serviceSettingsController.teamMembers.invite.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.teamMembers.invite, permission('users-service:create'), serviceSettingsController.teamMembers.invite.post)
 
 // email notifications
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('transactions:read'), serviceSettingsController.emailNotifications.getEmailNotificationsSettingsPage)
