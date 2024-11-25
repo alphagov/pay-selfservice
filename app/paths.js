@@ -247,9 +247,9 @@ module.exports = {
     },
     teamMembers: {
       index: '/team-members',
-      show: '/team-members/:externalUserId',
-      delete: '/team-members/:externalUserId/delete',
-      permissions: '/team-members/:externalUserId/permissions',
+      show: '/team-member/:externalUserId',
+      delete: '/team-member/:externalUserId/delete',
+      permissions: '/team-member/:externalUserId/permissions',
       invite: '/team-members/invite'
     }
   },
