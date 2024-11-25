@@ -9,22 +9,30 @@
     text: "Back",
     href: backLink
   }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">Invite a team member</h1>
   <div>
     <form method="post" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-      <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"/>
 
       {{ govukInput({
         label: {
           text: "Email address",
           classes: "govuk-label--s"
         },
-        id: "invite-email",
-        name: "inviteEmail",
+        id: "invitedUserEmail",
+        name: "invitedUserEmail",
         type: "email",
+        value: invitedUserEmail,
         spellcheck: false,
-        errorMessage: { text: errors.formErrors['inviteEmail'] } if errors.formErrors['inviteEmail'] else false,
+        errorMessage: { text: errors.formErrors['invitedUserEmail'] } if errors.formErrors['invitedUserEmail'] else false,
         classes: "govuk-!-width-two-thirds"
       }) }}
 
@@ -35,14 +43,15 @@
           id: "role-" + role.name + "-input",
           html: "<label class=\"govuk-!-font-weight-bold\">" + role.description + "</label>",
           hint: { text: role.explanation },
-          checked: userCurrentRoleName === role.name
+          checked: role.name === checkedRole
         } %}
         {% set roleItems = (roleItems.push(roleItem), roleItems) %}
       {% endfor %}
 
       {{ govukRadios({
-        idPrefix: "newRole",
-        name: "newRole",
+        idPrefix: "invitedUserRole",
+        name: "invitedUserRole",
+        errorMessage: { text: errors.formErrors['invitedUserRole'] } if errors.formErrors['invitedUserRole'] else false,
         fieldset: {
           legend: {
             text: "Permission level",
