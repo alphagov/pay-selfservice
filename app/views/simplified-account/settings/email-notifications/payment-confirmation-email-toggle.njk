@@ -32,7 +32,7 @@
       items: [
         {
           value: 'true',
-          text: 'On',
+          html: '<b>On</b>' if emailCollectionMode === 'OPTIONAL' else 'On',
           checked: confirmationEnabled === true,
           hint: {
             text: 'Entering an email address is currently optional so users might not get a payment confirmation'
@@ -40,7 +40,7 @@
         },
         {
           value: 'false',
-          text: 'Off',
+          html: '<b>Off</b>' if emailCollectionMode === 'OPTIONAL' else 'Off',
           checked: confirmationEnabled === false
         }
       ]
