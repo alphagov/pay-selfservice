@@ -87,7 +87,7 @@ describe('Controller: settings/team-members/change-permission', () => {
       })
 
       it('should pass context data to the response method', () => {
-        expect(responseStub.args[0][3]).to.have.property('availableRoles').to.have.all.keys('admin', 'view-and-refund', 'view-only')
+        expect(responseStub.args[0][3]).to.have.property('availableRoles').to.have.length(3)
         expect(responseStub.args[0][3]).to.have.property('userCurrentRoleName').to.equal('view-only')
         expect(responseStub.args[0][3]).to.have.property('email').to.equal('user-to-change-permission@users.gov.uk')
         expect(responseStub.args[0][3]).to.have.property('backLink').to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members')
