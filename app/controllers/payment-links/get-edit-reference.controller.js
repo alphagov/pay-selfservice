@@ -2,10 +2,10 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const supportedLanguage = require('../../models/supported-language')
+const { response } = require('@utils/response.js')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const supportedLanguage = require('@models/supported-language')
 
 module.exports = function showEditReferencePage (req, res, next) {
   const { productExternalId } = req.params

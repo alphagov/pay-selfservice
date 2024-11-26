@@ -1,6 +1,6 @@
 'use strict'
 
-const ledgerFixture = require('../../fixtures/ledger-transaction.fixtures')
+const ledgerFixture = require('@test/fixtures/ledger-transaction.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getDashboardStatistics (opts = {}) {

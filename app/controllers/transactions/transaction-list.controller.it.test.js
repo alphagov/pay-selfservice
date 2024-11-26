@@ -1,17 +1,17 @@
 'use strict'
 
 const sinon = require('sinon')
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { validGatewayAccountResponse } = require('../../../test/fixtures/gateway-account.fixtures')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 const transactionListController = require('./transaction-list.controller')
 const proxyquire = require('proxyquire')
-const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
-const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
-const Service = require('../../models/Service.class')
-const serviceFixtures = require('../../../test/fixtures/service.fixtures')
-const User = require('../../models/User.class')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
+const ledgerTransactionFixture = require('@test/fixtures/ledger-transaction.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
+const Service = require('@models/Service.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 // Setup
 const gatewayAccountId = '651342'
@@ -135,10 +135,10 @@ describe('The /transactions endpoint', () => {
 
   function getController () {
     return proxyquire('./transaction-list.controller', {
-      '../../services/transaction.service': {
+      '@services/transaction.service': {
         search: sinon.spy(() => Promise.resolve(transactionSearchResponse))
       },
-      '../../services/clients/connector.client.js': {
+      '@services/clients/connector.client.js': {
         ConnectorClient: class {async getAllCardTypes () { return {} }}
       }
     })

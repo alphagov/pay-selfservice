@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 
-const paths = require('../paths')
+const paths = require('@root/paths')
 const { getPaymentLinksContext, metadata } = require('./payment-links')
 
 function getMockRequest (mockPaymentLinkSession = {}) {

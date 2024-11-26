@@ -1,9 +1,9 @@
 'use strict'
 
-const userService = require('../../../services/user.service')
-const paths = require('../../../paths')
-const logger = require('../../../utils/logger')(__filename)
-const { SHOW_DEGATEWAY_SETTINGS } = require('../../../utils/constants')
+const userService = require('@services/user.service')
+const paths = require('@root/paths')
+const logger = require('@utils/logger')(__filename)
+const { SHOW_DEGATEWAY_SETTINGS } = require('@utils/constants')
 
 module.exports = async function postDegatewayPreference (req, res, next) {
   const degatewayPreference = req.body['degateway-preference']

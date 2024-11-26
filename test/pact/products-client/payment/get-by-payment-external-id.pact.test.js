@@ -5,17 +5,17 @@ const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 const path = require('path')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const productFixtures = require('../../../fixtures/product.fixtures')
-const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const productFixtures = require('@test/fixtures/product.fixtures')
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const PAYMENT_RESOURCE = '/v1/api/payments'
 let result, productsClient
 
 function getProductsClient (baseUrl) {
-  return proxyquire('../../../../app/services/clients/products.client', {
-    '../../../config': {
+  return proxyquire('@services/clients/products.client', {
+    '@config': {
       PRODUCTS_URL: baseUrl
     }
   })

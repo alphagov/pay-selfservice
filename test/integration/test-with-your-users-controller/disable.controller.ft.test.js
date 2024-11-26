@@ -4,17 +4,17 @@ const supertest = require('supertest')
 const { expect } = require('chai')
 const nock = require('nock')
 
-const { getApp } = require('../../../server')
-const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
-const paths = require('../../../app/paths')
-const { randomUuid } = require('../../../app/utils/random')
-const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
+const { getApp } = require('@server')
+const { getMockSession, createAppWithSession, getUser } = require('@test/test-helpers/mock-session')
+const paths = require('@root/paths')
+const { randomUuid } = require('@utils/random')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 
 const GATEWAY_ACCOUNT_ID = '929'
 const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'
 
 const { PRODUCTS_URL, CONNECTOR_URL } = process.env
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 function mockConnectorGetAccount () {
   nock(CONNECTOR_URL).get(`/v1/frontend/accounts/external-id/${EXTERNAL_GATEWAY_ACCOUNT_ID}`)

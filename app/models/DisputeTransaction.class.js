@@ -1,9 +1,9 @@
 'use strict'
 const lodash = require('lodash')
-const { penceToPoundsWithCurrency } = require('../utils/currency-formatter')
+const { penceToPoundsWithCurrency } = require('@utils/currency-formatter')
 
-const states = require('../utils/states')
-const dates = require('../utils/dates')
+const states = require('@utils/states')
+const dates = require('@utils/dates')
 
 const reasonToFriendlyString = new Map()
 

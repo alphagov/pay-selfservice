@@ -1,6 +1,6 @@
 'use strict'
 
-const serviceFixtures = require('../../fixtures/service.fixtures')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function postCreateServiceSuccess (opts) {

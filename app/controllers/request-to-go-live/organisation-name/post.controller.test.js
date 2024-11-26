@@ -6,7 +6,7 @@ const { expect } = require('chai')
 
 const getController = function getContsroller (mockServiceService) {
   return proxyquire('./post.controller', {
-    '../../../services/service.service': {
+    '@services/service.service': {
       updateCurrentGoLiveStage: Promise.resolve(),
       updateService: Promise.resolve()
     }

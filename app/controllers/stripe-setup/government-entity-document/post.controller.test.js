@@ -3,7 +3,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const paths = require('../../../paths')
+const paths = require('@root/paths')
 const assert = require('assert')
 
 describe('Government entity document POST controller', () => {
@@ -21,11 +21,11 @@ describe('Government entity document POST controller', () => {
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
-      '../../../services/clients/stripe/stripe.client': {
+      '@services/clients/stripe/stripe.client': {
         uploadFile: uploadFileMock,
         updateAccount: updateAccountMock
       },
-      '../../../services/clients/connector.client': {
+      '@services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
         }

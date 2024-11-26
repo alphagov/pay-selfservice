@@ -3,7 +3,7 @@
 const nock = require('nock')
 const sinon = require('sinon')
 
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const controller = require('./get-revoked.controller')
 
 const { PUBLIC_AUTH_URL } = process.env

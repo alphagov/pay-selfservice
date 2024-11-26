@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const connectorChargeFixtures = require('../../test/fixtures/connector-charge.fixtures')
+const connectorChargeFixtures = require('@test/fixtures/connector-charge.fixtures')
 const { filterNextUrl } = require('./verify-psp-integration')
 
 describe('verify psp integration utility', () => {

@@ -1,9 +1,9 @@
 'use strict'
 
-const { response } = require('../../utils/response')
+const { response } = require('@utils/response')
 const { populateModel } = require('./populateModel')
-const { getFilters } = require('../../utils/filters')
-const permissions = require('../../utils/permissions')
+const { getFilters } = require('@utils/filters')
+const permissions = require('@utils/permissions')
 
 module.exports = async function getTransactionsForAllServicesNoSearch (req, res, next) {
   const filters = getFilters(req)

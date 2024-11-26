@@ -2,11 +2,11 @@
 
 const _ = require('lodash')
 
-const { response } = require('../../utils/response')
-const paths = require('../../paths')
-const serviceService = require('../../services/service.service')
-const userService = require('../../services/user.service')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const { response } = require('@utils/response')
+const paths = require('@root/paths')
+const serviceService = require('@services/service.service')
+const userService = require('@services/user.service')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 function get (req, res) {
   const createServiceState = _.get(req, 'session.pageData.createService', {})

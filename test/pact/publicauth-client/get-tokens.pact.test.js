@@ -10,17 +10,17 @@ const proxyquire = require('proxyquire')
 // constants
 const TOKENS_PATH = '/v1/frontend/auth'
 
-const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 chai.use(chaiAsPromised)
 
 let publicAuthClient
 
 function getPublicAuthClient (baseUrl) {
-  return proxyquire('../../../app/services/clients/public-auth.client', {
-    '../../../config': {
+  return proxyquire('@services/clients/public-auth.client', {
+    '@config': {
       PUBLIC_AUTH_URL: baseUrl
     }
   })

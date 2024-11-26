@@ -1,7 +1,7 @@
 'use strict'
 
 const lodash = require('lodash')
-const { NotFoundError } = require('../errors')
+const { NotFoundError } = require('@root/errors')
 
 module.exports = (req, res, next) => {
   const provider = lodash.get(req, 'account.payment_provider', '')

@@ -1,8 +1,8 @@
 'use strict'
 
-const { NotFoundError } = require('../../errors')
-const { ledgerFindWithEvents } = require('../../services/transaction.service')
-const { response } = require('../../utils/response.js')
+const { NotFoundError } = require('@root/errors')
+const { ledgerFindWithEvents } = require('@services/transaction.service')
+const { response } = require('@utils/response.js')
 
 module.exports = async function showTransactionDetails (req, res, next) {
   const accountId = req.account.gateway_account_id

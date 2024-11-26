@@ -2,7 +2,7 @@
 const cheerio = require('cheerio')
 const { expect } = require('chai')
 
-const renderTemplate = require('../test-helpers/html-assertions.js').render
+const renderTemplate = require('@test/test-helpers/html-assertions.js').render
 
 describe('The transaction list view', function () {
   it('should render all transactions', function () {

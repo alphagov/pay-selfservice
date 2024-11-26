@@ -3,7 +3,7 @@ const sinon = require('sinon')
 
 const proxyquire = require('proxyquire')
 
-const webhooksFixture = require('./../../../test/fixtures/webhooks.fixtures')
+const webhooksFixture = require('@test/fixtures/webhooks.fixtures')
 
 describe('webhooks service', () => {
   describe('list webhooks', () => {
@@ -115,7 +115,7 @@ describe('webhooks service', () => {
 })
 
 function getWebhooksServiceWithStub (stub) {
-  const webhooksService = proxyquire('./webhooks.service.js', { './../../services/clients/webhooks.client': stub })
+  const webhooksService = proxyquire('./webhooks.service.js', { '@services/clients/webhooks.client': stub })
   return webhooksService
 }
 

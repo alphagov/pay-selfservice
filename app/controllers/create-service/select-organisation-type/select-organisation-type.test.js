@@ -3,12 +3,12 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const paths = require('../../../paths')
+const paths = require('@root/paths')
 const mockResponse = {}
 
 const controller = function (mockResponses) {
   return proxyquire('./select-organisation-type.controller', {
-    '../../../utils/response': mockResponses
+    '@utils/response': mockResponses
   })
 }
 

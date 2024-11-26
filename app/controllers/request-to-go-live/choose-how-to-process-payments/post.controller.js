@@ -3,10 +3,10 @@
 const lodash = require('lodash')
 
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
-const { updateCurrentGoLiveStage } = require('../../../services/service.service')
-const goLiveStage = require('../../../models/go-live-stage')
-const formatServicePathsFor = require('../../../utils/format-service-paths-for')
-const response = require('../../../utils/response')
+const { updateCurrentGoLiveStage } = require('@services/service.service')
+const goLiveStage = require('@models/go-live-stage')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const response = require('@utils/response')
 
 const PSP = 'choose-how-to-process-payments-mode'
 const stages = {

@@ -1,6 +1,6 @@
 'use strict'
 
-const stripePspFixtures = require('../../fixtures/stripe-psp.fixtures')
+const stripePspFixtures = require('@test/fixtures/stripe-psp.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function parseStripePersonOptions (opts) {

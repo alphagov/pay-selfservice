@@ -1,7 +1,7 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
-const { response } = require('../../utils/response')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response')
 
 const supportedPolicyDocuments = require('./supported-policy-documents')
 const policyBucket = require('./aws-s3-policy-bucket')

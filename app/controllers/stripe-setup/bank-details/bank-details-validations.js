@@ -1,6 +1,6 @@
 'use strict'
 
-const { isEmpty, isNotAccountNumber, isNotSortCode } = require('../../../utils/validation/field-validation-checks')
+const { isEmpty, isNotAccountNumber, isNotSortCode } = require('@utils/validation/field-validation-checks')
 
 exports.validateAccountNumber = (accountNumber) => {
   if (isEmpty(accountNumber)) {

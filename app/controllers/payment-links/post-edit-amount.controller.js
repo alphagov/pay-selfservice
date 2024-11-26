@@ -2,10 +2,10 @@
 
 const lodash = require('lodash')
 
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
-const { validateOptionalField } = require('../../utils/validation/server-side-form-validations')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { safeConvertPoundsStringToPence } = require('@utils/currency-formatter')
+const { validateOptionalField } = require('@utils/validation/server-side-form-validations')
 
 const HINT_MAX_LENGTH = 255
 

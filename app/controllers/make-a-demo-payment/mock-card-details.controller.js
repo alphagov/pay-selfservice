@@ -2,9 +2,9 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const { response } = require('@utils/response.js')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 module.exports = (req, res) => {
   const { paymentAmount, paymentDescription } = lodash.get(req, 'session.pageData.makeADemoPayment', {})

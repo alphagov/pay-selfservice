@@ -3,7 +3,7 @@
 const { expect } = require('chai')
 
 const { buildPaymentView } = require('./transaction-view')
-const transactionFixtures = require('../../test/fixtures/ledger-transaction.fixtures')
+const transactionFixtures = require('@test/fixtures/ledger-transaction.fixtures')
 
 describe('Transaction view utilities', () => {
   describe('disputed payment refundable', () => {

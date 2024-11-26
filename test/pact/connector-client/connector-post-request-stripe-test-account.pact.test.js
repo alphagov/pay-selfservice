@@ -5,8 +5,8 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const Connector = require('../../../app/services/clients/connector.client').ConnectorClient
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const Connector = require('@services/clients/connector.client').ConnectorClient
 const { string } = require('@pact-foundation/pact').Matchers
 
 // Constants

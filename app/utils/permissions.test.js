@@ -2,11 +2,11 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
-const { ConnectorClient } = require('../services/clients/connector.client')
-const User = require('../models/User.class')
+const { ConnectorClient } = require('@services/clients/connector.client')
+const User = require('@models/User.class')
 
-const { validUser } = require('../../test/fixtures/user.fixtures')
-const { validGatewayAccountResponse } = require('../../test/fixtures/gateway-account.fixtures')
+const { validUser } = require('@test/fixtures/user.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 
 describe('gateway account filter utiltiies', () => {
   const { userServicesContainsGatewayAccount } = require('./permissions')
@@ -43,7 +43,7 @@ describe('gateway account filter utiltiies', () => {
 
     it('correctly identifies stripe and moto headers for relavent accounts', async () => {
       const { getGatewayAccountsFor } = proxyquire('./permissions', {
-        '../services/clients/connector.client.js': {
+        '@services/clients/connector.client.js': {
           ConnectorClient: class {
             async getAccounts () {
               return {
@@ -72,7 +72,7 @@ describe('gateway account filter utiltiies', () => {
 
     it('correctly identifies non stripe and moto headers', async () => {
       const { getGatewayAccountsFor } = proxyquire('./permissions', {
-        '../services/clients/connector.client.js': {
+        '@services/clients/connector.client.js': {
           ConnectorClient: class {
             async getAccounts () {
               return {
@@ -92,7 +92,7 @@ describe('gateway account filter utiltiies', () => {
 
     it('correctly filters accounts', async () => {
       const { getGatewayAccountsFor } = proxyquire('./permissions', {
-        '../services/clients/connector.client.js': {
+        '@services/clients/connector.client.js': {
           ConnectorClient: class {
             async getAccounts () {
               return {
@@ -130,7 +130,7 @@ describe('gateway account filter utiltiies', () => {
 
     it('correctly filters services by users permission role', async () => {
       const { getGatewayAccountsFor } = proxyquire(
-        './permissions', { '../services/clients/connector.client.js': ConnectorClient }
+        './permissions', { '@services/clients/connector.client.js': ConnectorClient }
       )
 
       getGatewayAccountsFor(user, true, 'perm-1')
@@ -139,7 +139,7 @@ describe('gateway account filter utiltiies', () => {
 
     it('does not interract with the backend if no services have the required permissions', () => {
       const { getGatewayAccountsFor } = proxyquire(
-        './permissions', { '../services/clients/connector.client.js': ConnectorClient }
+        './permissions', { '@services/clients/connector.client.js': ConnectorClient }
       )
 
       getGatewayAccountsFor(user, true, 'permission-user-does-not-have')

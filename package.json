@@ -15,7 +15,10 @@
     "@services": "app/services",
     "@utils": "app/utils",
     "@views": "app/views",
-    "@test": "test"
+    "@config": "config",
+    "@server": "server.js",
+    "@test": "test",
+    "@cypress": "test/cypress"
   },
   "standard": {
     "globals": [

@@ -3,7 +3,7 @@ const sinon = require('sinon')
 
 const proxyquire = require('proxyquire')
 
-const agreementsFixture = require('../../../test/fixtures/agreement.fixtures')
+const agreementsFixture = require('@test/fixtures/agreement.fixtures')
 
 describe('agreements service', () => {
   describe('list agreements', () => {
@@ -90,7 +90,7 @@ describe('agreements service', () => {
 
 function getAgreementsService (ledgerClientStub = {}, connectorClientStub = {}) {
   return proxyquire('./agreements.service.js', {
-    './../../services/clients/ledger.client': ledgerClientStub,
-    './../../services/clients/connector.client': connectorClientStub
+    '@services/clients/ledger.client': ledgerClientStub,
+    '@services/clients/connector.client': connectorClientStub
   })
 }

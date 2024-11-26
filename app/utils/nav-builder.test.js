@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const { yourPSPNavigationItems } = require('./nav-builder')
 
 describe('navigation builder', () => {

@@ -1,6 +1,6 @@
 'use strict'
 
-const ledgerPayoutFixtures = require('../../fixtures/payout.fixtures')
+const ledgerPayoutFixtures = require('@test/fixtures/payout.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getLedgerPayoutSuccess (opts) {

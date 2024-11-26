@@ -1,13 +1,13 @@
 const url = require('url')
 
 const agreementsService = require('./agreements.service')
-const transactionService = require('../../services/transaction.service')
-const { buildPaymentList } = require('../../utils/transaction-view')
-const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-strategy-account-paths-for')
-const paths = require('../../paths')
+const transactionService = require('@services/transaction.service')
+const { buildPaymentList } = require('@utils/transaction-view')
+const formatFutureStrategyAccountPathsFor = require('@utils/format-future-strategy-account-paths-for')
+const paths = require('@root/paths')
 
-const { response } = require('../../utils/response')
-const { NotFoundError } = require('../../errors')
+const { response } = require('@utils/response')
+const { NotFoundError } = require('@root/errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 const LIMIT_NUMBER_OF_TRANSACTIONS_TO_SHOW = 5

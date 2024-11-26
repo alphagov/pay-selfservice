@@ -1,6 +1,6 @@
 'use strict'
 
-const stripeAccountFixtures = require('../../fixtures/stripe-account.fixtures')
+const stripeAccountFixtures = require('@test/fixtures/stripe-account.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getStripeAccountSuccess (gatewayAccountId, stripeAccountId) {

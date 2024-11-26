@@ -1,6 +1,6 @@
 'use strict'
 
-const { response } = require('../../utils/response')
+const { response } = require('@utils/response')
 
 module.exports = function showToggleMaskCardNumberPage (req, res) {
   const pageData = {

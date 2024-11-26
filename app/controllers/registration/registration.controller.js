@@ -3,22 +3,22 @@
 const qrcode = require('qrcode')
 const lodash = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
-const { ExpiredInviteError } = require('../../errors')
+const logger = require('@utils/logger')(__filename)
+const { ExpiredInviteError } = require('@root/errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
-const adminusersClient = require('../../services/clients/adminusers.client')()
-const paths = require('../../paths')
+const adminusersClient = require('@services/clients/adminusers.client')()
+const paths = require('@root/paths')
 const {
   validateEmail,
   validatePassword,
   validateOtp,
   validatePhoneNumber
-} = require('../../utils/validation/server-side-form-validations')
-const { isEmpty } = require('../../utils/validation/field-validation-checks')
-const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
-const { validationErrors } = require('../../utils/validation/field-validation-checks')
-const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
-const { APP, SMS } = require('../../models/second-factor-method')
+} = require('@utils/validation/server-side-form-validations')
+const { isEmpty } = require('@utils/validation/field-validation-checks')
+const { sanitiseSecurityCode } = require('@utils/security-code-utils')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
+const { INVITE_SESSION_COOKIE_NAME } = require('@utils/constants')
+const { APP, SMS } = require('@models/second-factor-method')
 const { USER_EXTERNAL_ID } = require('@govuk-pay/pay-js-commons/lib/logging/keys')
 
 const EMAIL_INPUT_FIELD_NAME = 'email'

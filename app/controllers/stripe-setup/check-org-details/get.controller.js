@@ -1,7 +1,7 @@
 'use strict'
 
-const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
+const { response } = require('@utils/response')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('@utils/credentials')
 const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
 const lodash = require('lodash')
 

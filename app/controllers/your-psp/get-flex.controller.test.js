@@ -2,7 +2,7 @@
 
 const sinon = require('sinon')
 const getController = require('./get-flex.controller')
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const { expect } = require('chai')
 const credentialId = 'a-valid-credential-id'
 

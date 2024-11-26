@@ -1,11 +1,11 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const User = require('../../models/User.class')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
-const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
-const Service = require('../../models/Service.class')
-const serviceFixtures = require('../../../test/fixtures/service.fixtures')
-const { getFilters } = require('../../utils/filters.js')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
+const Service = require('@models/Service.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const { getFilters } = require('@utils/filters.js')
 const { expect } = require('chai')
 
 describe('Populate Model', () => {
@@ -98,10 +98,10 @@ describe('Populate Model', () => {
 
   function populateModel () {
     return proxyquire('./populateModel', {
-      '../../services/clients/connector.client.js': {
+      '@services/clients/connector.client': {
         ConnectorClient: class {async getAllCardTypes () { return {} }}
       },
-      '../../utils/states': {
+      '@utils/states': {
         allDisplayStateSelectorObjects: allDisplayStateSelectorObjectsMock
       }
     }).populateModel

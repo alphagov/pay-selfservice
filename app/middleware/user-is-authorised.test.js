@@ -2,12 +2,12 @@
 
 const sinon = require('sinon')
 const { expect } = require('chai')
-const { NotAuthorisedError, NotAuthenticatedError, UserAccountDisabledError } = require('../errors')
+const { NotAuthorisedError, NotAuthenticatedError, UserAccountDisabledError } = require('@root/errors')
 const userIsAuthorised = require('./user-is-authorised')
-const User = require('../models/User.class')
-const Service = require('../models/Service.class')
-const userFixtures = require('../../test/fixtures/user.fixtures')
-const serviceFixtures = require('../../test/fixtures/service.fixtures')
+const User = require('@models/User.class')
+const Service = require('@models/Service.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
 
 const serviceExternalId = 'a-service-external-id'
 const sessionVersion = 1

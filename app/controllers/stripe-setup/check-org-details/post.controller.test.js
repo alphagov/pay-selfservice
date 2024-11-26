@@ -3,11 +3,11 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
-const Service = require('../../../models/Service.class')
-const User = require('../../../models/User.class')
-const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
+const Service = require('@models/Service.class')
+const User = require('@models/User.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
 
 const stripeAcountId = 'acct_123example123'
 const stubGetStripeAccountId = sinon.stub().resolves(stripeAcountId)
@@ -23,7 +23,7 @@ describe('Check org details - post controller', () => {
 
   function getControllerWithMocks () {
     return proxyquire('./post.controller', {
-      '../../../services/clients/connector.client': {
+      '@services/clients/connector.client': {
         ConnectorClient: function () {
           this.setStripeAccountSetupFlag = setStripeAccountSetupFlagMock
         }
@@ -33,7 +33,7 @@ describe('Check org details - post controller', () => {
           return stubGetStripeAccountId(...params)
         }
       },
-      '../../../utils/logger': function (filename) {
+      '@utils/logger': function (filename) {
         return {
           info: loggerInfoMock
         }

@@ -2,9 +2,9 @@
 
 const lodash = require('lodash')
 
-const paths = require('../paths')
-const formatServicePathsFor = require('../utils/format-service-paths-for')
-const { response } = require('../utils/response')
+const paths = require('@root/paths')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const { response } = require('@utils/response')
 
 function showOrganisationDetails (req, res) {
   const externalServiceId = req.service.externalId

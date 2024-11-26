@@ -1,6 +1,6 @@
 'use strict'
 
-const tokenFixtures = require('../../fixtures/token.fixtures')
+const tokenFixtures = require('@test/fixtures/token.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function postCreateTokenForAccountSuccess (opts) {

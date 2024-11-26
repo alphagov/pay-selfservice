@@ -1,6 +1,6 @@
-const Ledger = require('../../services/clients/ledger.client')
-const { ConnectorClient } = require('../../services/clients/connector.client')
-const Paginator = require('../../utils/paginator')
+const Ledger = require('@services/clients/ledger.client')
+const { ConnectorClient } = require('@services/clients/connector.client')
+const Paginator = require('@utils/paginator')
 const { CONNECTOR_URL } = process.env
 
 const connectorClient = new ConnectorClient(CONNECTOR_URL)

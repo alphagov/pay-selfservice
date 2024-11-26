@@ -1,10 +1,10 @@
 'use string'
 
-const { response } = require('../../../utils/response')
-const paths = require('../../../paths')
-const { invalidTelephoneNumber } = require('../../../utils/telephone-number-utils')
-const { validationErrors } = require('../../../utils/validation/field-validation-checks')
-const userService = require('../../../services/user.service')
+const { response } = require('@utils/response')
+const paths = require('@root/paths')
+const { invalidTelephoneNumber } = require('@utils/telephone-number-utils')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
+const userService = require('@services/user.service')
 
 module.exports = async function submitPhoneNumber (req, res, next) {
   const { phone } = req.body

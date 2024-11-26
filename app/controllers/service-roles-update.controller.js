@@ -1,14 +1,14 @@
 const _ = require('lodash')
-const paths = require('../paths')
-const logger = require('../utils/logger')(__filename)
+const paths = require('@root/paths')
+const logger = require('@utils/logger')(__filename)
 
-const rolesModule = require('../utils/roles')
+const rolesModule = require('@utils/roles')
 const roles = rolesModule.roles
 const getRole = rolesModule.getRoleByExtId
 
-const userService = require('../services/user.service.js')
+const userService = require('@services/user.service.js')
 
-const { renderErrorView, response } = require('../utils/response')
+const { renderErrorView, response } = require('@utils/response')
 
 const hasSameService = (admin, user, externalServiceId) => {
   return admin.hasService(externalServiceId) && user.hasService(externalServiceId)
@@ -19,7 +19,7 @@ const serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExter
   return renderErrorView(req, res, 'Unable to update permissions for this user')
 }
 
-const formatServicePathsFor = require('../utils/format-service-paths-for')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 async function index (req, res, next) {
   const externalUserId = req.params.externalUserId

@@ -2,7 +2,7 @@ const http = require('http')
 const https = require('https')
 const url = require('url')
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 
 class Stream {
   constructor (dataCallback, successCallback, errorCallback, headers) {

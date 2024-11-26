@@ -4,16 +4,16 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 
-const serviceFixtures = require('../../../test/fixtures/service.fixtures')
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
-const agreementFixtures = require('../../../test/fixtures/agreement.fixtures')
-const transactionFixtures = require('../../../test/fixtures/ledger-transaction.fixtures')
-const Service = require('../../models/Service.class')
-const { NotFoundError } = require('../../errors')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const agreementFixtures = require('@test/fixtures/agreement.fixtures')
+const transactionFixtures = require('@test/fixtures/ledger-transaction.fixtures')
+const Service = require('@models/Service.class')
+const { NotFoundError } = require('@root/errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
-const { buildPaymentList } = require('../../utils/transaction-view')
-const User = require('../../models/User.class')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
+const { buildPaymentList } = require('@utils/transaction-view')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 const agreementsServiceSpy = {
   agreements: sinon.spy(() => Promise.resolve(agreements)),
@@ -259,7 +259,7 @@ function getControllerWithMocks (
   transactionsServiceSpy) {
   return proxyquire('./agreements.controller', {
     './agreements.service': agreementsServiceSpy,
-    '../../utils/response': responseSpy,
-    '../../services/transaction.service': transactionsServiceSpy
+    '@utils/response': responseSpy,
+    '@services/transaction.service': transactionsServiceSpy
   })
 }

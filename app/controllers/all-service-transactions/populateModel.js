@@ -1,9 +1,9 @@
-const { buildPaymentList } = require('../../utils/transaction-view')
-const paths = require('../../paths')
-const { describeFilters } = require('../../utils/filters')
-const states = require('../../utils/states')
+const { buildPaymentList } = require('@utils/transaction-view')
+const paths = require('@root/paths')
+const { describeFilters } = require('@utils/filters')
+const states = require('@utils/states')
 const _ = require('lodash')
-const { ConnectorClient } = require('../../services/clients/connector.client')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
 async function populateModel (req, searchResultOutput, filters, downloadRoute, filterLiveAccounts, userPermittedAccountsSummary) {

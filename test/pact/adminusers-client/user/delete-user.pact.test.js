@@ -2,8 +2,8 @@ const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const getAdminUsersClient = require('@services/clients/adminusers.client')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const SERVICES_PATH = '/v1/api/services'
 let adminUsersClient
 const expect = chai.expect

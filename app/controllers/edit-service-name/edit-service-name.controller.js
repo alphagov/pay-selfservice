@@ -2,15 +2,15 @@
 
 const lodash = require('lodash')
 
-const responses = require('../../utils/response')
-const paths = require('../../paths')
-const formatServicePathsFor = require('../../utils/format-service-paths-for')
-const serviceService = require('../../services/service.service')
+const responses = require('@utils/response')
+const paths = require('@root/paths')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const serviceService = require('@services/service.service')
 const {
   validateMandatoryField,
   validateOptionalField,
   SERVICE_NAME_MAX_LENGTH
-} = require('../../utils/validation/server-side-form-validations')
+} = require('@utils/validation/server-side-form-validations')
 
 function getServiceName (req, res) {
   let pageData = lodash.get(req, 'session.pageData.editServiceName')

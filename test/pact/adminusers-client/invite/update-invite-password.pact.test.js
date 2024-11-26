@@ -5,9 +5,9 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
-const inviteFixtures = require('../../../fixtures/invite.fixtures')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const getAdminUsersClient = require('@services/clients/adminusers.client')
+const inviteFixtures = require('@test/fixtures/invite.fixtures')
 
 // Global setup
 chai.use(chaiAsPromised)

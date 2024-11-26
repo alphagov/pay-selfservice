@@ -1,6 +1,6 @@
 /* eslint no-global-assign: "off" */
 
-const cookieFunctions = require('../../../app/browsered/cookie-functions')
+const cookieFunctions = require('@root/browsered/cookie-functions')
 const jsdom = require('jsdom')
 const { expect } = require('chai')
 

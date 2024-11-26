@@ -1,6 +1,6 @@
 'use strict'
 
-const { PermissionDeniedError } = require('../errors')
+const { PermissionDeniedError } = require('@root/errors')
 
 /**
  * @param {String} permission User must be associated to a role with the given permission

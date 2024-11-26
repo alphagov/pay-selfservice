@@ -3,8 +3,8 @@
 const qs = require('qs')
 const moment = require('moment-timezone')
 const check = require('check-types')
-const Paginator = require('../utils/paginator.js')
-const states = require('../utils/states')
+const Paginator = require('@utils/paginator.js')
+const states = require('@utils/states')
 const _ = require('lodash')
 
 function validateFilters (filters) {

@@ -1,8 +1,8 @@
 const _ = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const logger = require('@utils/logger')(__filename)
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const validAccountId = (accountId, user) => {
   const gatewayAccountIds = _.flattenDeep(_.concat(user.serviceRoles.map(serviceRole => serviceRole.service.gatewayAccountIds)))

@@ -1,10 +1,10 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
-const connectorChargeFixtures = require('../../../test/fixtures/connector-charge.fixtures')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
-const User = require('../../models/User.class')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const connectorChargeFixtures = require('@test/fixtures/connector-charge.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
 const { expect } = require('chai')
 
 const defaultCharge = connectorChargeFixtures.validChargeResponse()
@@ -98,7 +98,7 @@ describe('Verify PSP integration controller', () => {
 
 function getControllerWithMocks () {
   return proxyquire('./verify-psp-integration.controller', {
-    '../../services/clients/connector.client': {
+    '@services/clients/connector.client': {
       ConnectorClient: function () {
         this.postChargeRequest = postChargeRequestMock
         this.patchAccountGatewayAccountCredentialsState = patchAccountGatewayAccountCredentialsStateMock

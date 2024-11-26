@@ -3,13 +3,13 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const Service = require('../../models/Service.class')
-const random = require('../../utils/random')
+const Service = require('@models/Service.class')
+const random = require('@utils/random')
 const mockResponses = {}
 const mockServiceService = {}
 const editServiceNameCtrl = proxyquire('./edit-service-name.controller', {
-  '../../utils/response': mockResponses,
-  '../../services/service.service': mockServiceService
+  '@utils/response': mockResponses,
+  '@services/service.service': mockServiceService
 })
 let req, res, next
 

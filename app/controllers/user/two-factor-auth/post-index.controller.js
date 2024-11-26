@@ -2,9 +2,9 @@
 
 const lodash = require('lodash')
 
-const userService = require('../../../services/user.service.js')
-const paths = require('../../../paths')
-const secondFactorMethod = require('../../../models/second-factor-method')
+const userService = require('@services/user.service.js')
+const paths = require('@root/paths')
+const secondFactorMethod = require('@models/second-factor-method')
 
 module.exports = async (req, res, next) => {
   const method = req.body['two-fa-method']

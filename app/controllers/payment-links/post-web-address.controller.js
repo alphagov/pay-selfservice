@@ -2,11 +2,11 @@
 
 const lodash = require('lodash')
 
-const paths = require('../../paths')
-const productsClient = require('../../services/clients/products.client.js')
+const paths = require('@root/paths')
+const productsClient = require('@services/clients/products.client.js')
 const { slugify, removeIndefiniteArticles } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const makeNiceURL = string => {
   return slugify(removeIndefiniteArticles(string))

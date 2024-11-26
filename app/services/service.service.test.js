@@ -7,7 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const sinon = require('sinon')
 
-const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 const expect = chai.expect
 
@@ -44,7 +44,7 @@ describe('service service', function () {
 
       serviceService = proxyquire('./service.service',
         {
-          '../services/clients/connector.client': connectorClientStub
+          './clients/connector.client': connectorClientStub
         })
 
       const gatewayAccounts = await serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId])
@@ -82,7 +82,7 @@ describe('service service', function () {
       }
       serviceService = proxyquire('./service.service',
         {
-          '../services/clients/connector.client': connectorClientStub,
+          './clients/connector.client': connectorClientStub,
           './clients/adminusers.client': adminusersClientStub
         })
 
@@ -140,7 +140,7 @@ describe('service service', function () {
       }
       serviceService = proxyquire('./service.service',
         {
-          '../services/clients/connector.client': connectorClientStub,
+          './clients/connector.client': connectorClientStub,
           './clients/adminusers.client': adminusersClientStub
         })
 

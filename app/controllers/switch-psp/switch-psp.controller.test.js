@@ -1,9 +1,9 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
-const User = require('../../models/User.class')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
 
 const postAccountSwitchPSPMock = sinon.spy(() => Promise.resolve())
 let req, res, next
@@ -65,7 +65,7 @@ function setupEnvironment (switchingCredentialState) {
 
 function getControllerWithMocks () {
   return proxyquire('./switch-psp.controller', {
-    '../../services/clients/connector.client': {
+    '@services/clients/connector.client': {
       ConnectorClient: function () {
         this.postAccountSwitchPSP = postAccountSwitchPSPMock
       }

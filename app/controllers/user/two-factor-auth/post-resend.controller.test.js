@@ -1,10 +1,10 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
-const paths = require('../../../paths')
-const { validationErrors } = require('../../../utils/validation/field-validation-checks')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const paths = require('@root/paths')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
 
 const userExternalId = 'user-id'
 
@@ -81,7 +81,7 @@ describe('The POST resend code for updating 2FA to SMS controller', () => {
 
 function getController (updatePhoneNumberSpy, sendProvisionalOTPSpy) {
   return proxyquire('./post-resend.controller', {
-    '../../../services/user.service': {
+    '@services/user.service': {
       updatePhoneNumber: updatePhoneNumberSpy,
       sendProvisionalOTP: sendProvisionalOTPSpy
     }

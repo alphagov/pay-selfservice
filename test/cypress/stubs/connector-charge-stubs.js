@@ -1,4 +1,4 @@
-const connectorChargeFixtures = require('../../fixtures/connector-charge.fixtures')
+const connectorChargeFixtures = require('@test/fixtures/connector-charge.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function postCreateChargeSuccess (opts) {

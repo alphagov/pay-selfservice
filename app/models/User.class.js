@@ -2,8 +2,8 @@
 
 const _ = require('lodash')
 const ServiceRole = require('./ServiceRole.class')
-const { isInternalGDSEmail } = require('../utils/email-tools')
-const logger = require('../utils/logger')(__filename)
+const { isInternalGDSEmail } = require('@utils/email-tools')
+const logger = require('@utils/logger')(__filename)
 const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
 
 /**

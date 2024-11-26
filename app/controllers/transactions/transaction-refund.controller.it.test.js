@@ -4,7 +4,7 @@ const sinon = require('sinon')
 const nock = require('nock')
 
 const refundController = require('./transaction-refund.controller.js')
-const transactionFixtures = require('../../../test/fixtures/refund.fixtures')
+const transactionFixtures = require('@test/fixtures/refund.fixtures')
 
 const ACCOUNT_ID = '123'
 const CHARGE_ID = '123456'

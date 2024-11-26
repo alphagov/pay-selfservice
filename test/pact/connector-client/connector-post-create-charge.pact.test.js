@@ -5,9 +5,9 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
-const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const Connector = require('../../../app/services/clients/connector.client').ConnectorClient
-const chargeFixture = require('../../fixtures/charge.fixtures')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const Connector = require('@services/clients/connector.client').ConnectorClient
+const chargeFixture = require('@test/fixtures/charge.fixtures')
 
 // Constants
 const CHARGES_RESOURCE = '/v1/api/accounts'

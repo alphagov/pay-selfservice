@@ -2,12 +2,12 @@
 
 const lodash = require('lodash')
 
-const { getSwitchingCredential } = require('../../utils/credentials')
-const { ConnectorClient } = require('../../services/clients/connector.client')
+const { getSwitchingCredential } = require('@utils/credentials')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const { validateDateOfBirth } = require('../../utils/validation/server-side-form-validations')
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const { validateDateOfBirth } = require('@utils/validation/server-side-form-validations')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 

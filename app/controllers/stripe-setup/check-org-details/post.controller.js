@@ -2,13 +2,13 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
-const { response } = require('../../../utils/response')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response')
 const { getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
-const { getCredentialByExternalId, isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { getCredentialByExternalId, isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('@utils/credentials')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { getStripeAccountId } = require('../stripe-setup.util')
 

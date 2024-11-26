@@ -2,15 +2,15 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
-const goLiveStage = require('../../../models/go-live-stage')
-const { updateCurrentGoLiveStage } = require('../../../services/service.service')
-const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('../../../services/service.service')
+const logger = require('@utils/logger')(__filename)
+const goLiveStage = require('@models/go-live-stage')
+const { updateCurrentGoLiveStage } = require('@services/service.service')
+const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('@services/service.service')
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { isIPv4, isIPv6 } = require('net')
-const zendeskClient = require('../../../services/clients/zendesk.client')
-const formatServicePathsFor = require('../../../utils/format-service-paths-for')
-const { response } = require('../../../utils/response')
+const zendeskClient = require('@services/clients/zendesk.client')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const { response } = require('@utils/response')
 
 const stages = {
   CHOSEN_PSP_STRIPE: goLiveStage.TERMS_AGREED_STRIPE,

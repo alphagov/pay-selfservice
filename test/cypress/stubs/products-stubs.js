@@ -1,6 +1,6 @@
 'use strict'
 
-const productFixtures = require('../../fixtures/product.fixtures')
+const productFixtures = require('@test/fixtures/product.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
 function getProductsByGatewayAccountIdAndTypeStub (products, gatewayAccountId, productType) {

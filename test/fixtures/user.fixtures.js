@@ -1,10 +1,10 @@
 'use strict'
 
 const lodash = require('lodash')
-const goLiveStage = require('../../app/models/go-live-stage')
-const stripeTestAccountStage = require('../../app/models/psp-test-account-stage')
+const goLiveStage = require('@models/go-live-stage')
+const stripeTestAccountStage = require('@models/psp-test-account-stage')
 const serviceFixtures = require('./service.fixtures')
-const secondFactorMethod = require('../../app/models/second-factor-method')
+const secondFactorMethod = require('@models/second-factor-method')
 
 // Constants
 const defaultPermissions = [

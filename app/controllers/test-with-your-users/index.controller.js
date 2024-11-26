@@ -1,6 +1,6 @@
 'use strict'
 
-const { response } = require('../../utils/response.js')
+const { response } = require('@utils/response.js')
 
 const PAGE_PARAMS = {
   productsTab: false

@@ -1,12 +1,12 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
-const response = require('../../utils/response.js').response
-const emailService = require('../../services/email.service.js')
-const paths = require('../../paths.js')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const humaniseEmailMode = require('../../utils/humanise-email-mode')
-const { validateOptionalField } = require('../../utils/validation/server-side-form-validations')
+const logger = require('@utils/logger')(__filename)
+const response = require('@utils/response.js').response
+const emailService = require('@services/email.service.js')
+const paths = require('@root/paths.js')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const humaniseEmailMode = require('@utils/humanise-email-mode')
+const { validateOptionalField } = require('@utils/validation/server-side-form-validations')
 
 const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 

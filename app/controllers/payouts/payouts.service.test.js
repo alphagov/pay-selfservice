@@ -1,9 +1,9 @@
 const chai = require('chai')
 const { expect } = chai
 const { groupPayoutsByDate } = require('./payouts.service')
-const User = require('../../models/User.class')
-const payoutFixtures = require('../../../test/fixtures/payout.fixtures')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
+const User = require('@models/User.class')
+const payoutFixtures = require('@test/fixtures/payout.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 describe('payout service data transforms', () => {
   describe('grouping payouts by date', () => {

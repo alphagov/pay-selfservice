@@ -2,15 +2,15 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
-const { response } = require('../../utils/response.js')
-const paths = require('../../paths')
-const productsClient = require('../../services/clients/products.client.js')
-const productTypes = require('../../utils/product-types')
-const publicAuthClient = require('../../services/clients/public-auth.client')
-const { isCurrency, isHttps, isAboveMaxAmount } = require('../../utils/validation/field-validation-checks')
-const { penceToPounds, safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response.js')
+const paths = require('@root/paths')
+const productsClient = require('@services/clients/products.client.js')
+const productTypes = require('@utils/product-types')
+const publicAuthClient = require('@services/clients/public-auth.client')
+const { isCurrency, isHttps, isAboveMaxAmount } = require('@utils/validation/field-validation-checks')
+const { penceToPounds, safeConvertPoundsStringToPence } = require('@utils/currency-formatter')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 module.exports = async (req, res) => {
   const gatewayAccountId = req.account.gateway_account_id

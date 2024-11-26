@@ -1,6 +1,6 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const gatewayAccountFixture = require('../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
 const patchAccountSpy = sinon.spy(() => Promise.resolve())
 const postNotificationCredentialsSpy = sinon.spy(() => Promise.resolve())
 const connectorClientMock = {
@@ -9,7 +9,7 @@ const connectorClientMock = {
     this.postAccountNotificationCredentials = postNotificationCredentialsSpy
   }
 }
-const credentialsController = proxyquire('./credentials.controller', { '../services/clients/connector.client': connectorClientMock })
+const credentialsController = proxyquire('./credentials.controller', { '@services/clients/connector.client': connectorClientMock })
 
 // @TODO(sfount) there should be a common pattern of helpers for quickly unit
 //               testing controllers with values that work out of the box

@@ -2,15 +2,15 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
-const { response } = require('../../../utils/response')
-const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('../../../utils/credentials')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response')
+const { isSwitchingCredentialsRoute, getCurrentCredential, isEnableStripeOnboardingTaskListRoute } = require('@utils/credentials')
 const { getStripeAccountId, getAlreadySubmittedErrorPageData } = require('../stripe-setup.util')
-const { uploadFile, updateAccount } = require('../../../services/clients/stripe/stripe.client')
-const { ConnectorClient } = require('../../../services/clients/connector.client')
+const { uploadFile, updateAccount } = require('@services/clients/stripe/stripe.client')
+const { ConnectorClient } = require('@services/clients/connector.client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const paths = require('../../../paths')
-const formatAccountPathsFor = require('../../../utils/format-account-paths-for')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const GOVERNMENT_ENTITY_DOCUMENT_FIELD = 'government-entity-document'
 

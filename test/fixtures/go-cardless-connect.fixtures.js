@@ -1,6 +1,6 @@
 'use strict'
 
-const { GO_CARDLESS_ACCOUNT_ALREADY_LINKED_TO_ANOTHER_ACCOUNT } = require('../../app/models/error-identifier')
+const { GO_CARDLESS_ACCOUNT_ALREADY_LINKED_TO_ANOTHER_ACCOUNT } = require('@models/error-identifier')
 
 module.exports = {
   exchangeAccessTokenAccountAlreadyConnectedResponse: (opts = {}) => {

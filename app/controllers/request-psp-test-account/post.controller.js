@@ -1,11 +1,11 @@
 'use strict'
 
-const { response } = require('../../utils/response')
-const getAdminUsersClient = require('../../services/clients/adminusers.client')
-const publicAuthClient = require('../../services/clients/public-auth.client')
-const { ConnectorClient } = require('../../services/clients/connector.client')
-const logger = require('../../utils/logger')(__filename)
-const { CREATED, NOT_STARTED, REQUEST_SUBMITTED } = require('../../models/psp-test-account-stage')
+const { response } = require('@utils/response')
+const getAdminUsersClient = require('@services/clients/adminusers.client')
+const publicAuthClient = require('@services/clients/public-auth.client')
+const { ConnectorClient } = require('@services/clients/connector.client')
+const logger = require('@utils/logger')(__filename)
+const { CREATED, NOT_STARTED, REQUEST_SUBMITTED } = require('@models/psp-test-account-stage')
 const adminUsersClient = getAdminUsersClient()
 const { CONNECTOR_URL } = process.env
 const connectorClient = new ConnectorClient(CONNECTOR_URL)

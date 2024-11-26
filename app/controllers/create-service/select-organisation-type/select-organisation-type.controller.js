@@ -1,12 +1,12 @@
 const _ = require('lodash')
-const paths = require('../../../paths')
-const { response } = require('../../../utils/response')
+const paths = require('@root/paths')
+const { response } = require('@utils/response')
 const {
   validateMandatoryField,
   SERVICE_NAME_MAX_LENGTH,
   validateOptionalField
-} = require('../../../utils/validation/server-side-form-validations')
-const logger = require('../../../utils/logger')(__filename)
+} = require('@utils/validation/server-side-form-validations')
+const logger = require('@utils/logger')(__filename)
 
 function get (req, res) {
   const createServiceState = _.get(req, 'session.pageData.createService', {})

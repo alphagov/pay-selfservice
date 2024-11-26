@@ -2,10 +2,10 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
-const paths = require('../../paths')
-const productsClient = require('../../services/clients/products.client.js')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const { response } = require('@utils/response.js')
+const paths = require('@root/paths')
+const productsClient = require('@services/clients/products.client.js')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 module.exports = async function showEditPaymentLink (req, res, next) {
   const { productExternalId } = req.params

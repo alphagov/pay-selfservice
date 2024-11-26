@@ -2,7 +2,7 @@
 const { expect } = require('chai')
 
 const User = require('./User.class')
-const userFixtures = require('../../test/fixtures/user.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 // Assignments etc
 let user, service, result, permission, role

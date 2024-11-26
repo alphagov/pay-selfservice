@@ -2,13 +2,13 @@
 
 const lodash = require('lodash')
 
-const goLiveStage = require('../../../models/go-live-stage')
-const paths = require('../../../paths')
-const { response } = require('../../../utils/response')
+const goLiveStage = require('@models/go-live-stage')
+const paths = require('@root/paths')
+const { response } = require('@utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
-const formatServicePathsFor = require('../../../utils/format-service-paths-for')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 const { getAlreadySubmittedErrorPageData } = require('../../stripe-setup/stripe-setup.util')
-const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('../../../utils/credentials')
+const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('@utils/credentials')
 
 module.exports = function getOrganisationAddress (req, res) {
   const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)

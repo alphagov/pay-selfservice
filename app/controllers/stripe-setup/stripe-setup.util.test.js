@@ -2,7 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const { assert, expect } = require('chai')
-const { validateMandatoryField } = require('../../utils/validation/server-side-form-validations')
+const { validateMandatoryField } = require('@utils/validation/server-side-form-validations')
 
 let addNewCapabilitiesMock, retrieveAccountDetailsMock
 let setStripeAccountSetupFlagMock
@@ -101,11 +101,11 @@ describe('Stripe setup util', () => {
 
 function getStripeSetupUtil () {
   return proxyquire('./stripe-setup.util', {
-    '../../services/clients/stripe/stripe.client': {
+    '@services/clients/stripe/stripe.client': {
       addNewCapabilities: addNewCapabilitiesMock,
       retrieveAccountDetails: retrieveAccountDetailsMock
     },
-    '../../services/clients/connector.client': {
+    '@services/clients/connector.client': {
       ConnectorClient: function () {
         this.getStripeAccount = () => Promise.resolve({
           stripeAccountId: 'acct_123example123'

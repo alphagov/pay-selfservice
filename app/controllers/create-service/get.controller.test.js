@@ -8,7 +8,7 @@ let req, res
 
 const getController = function (mockResponses) {
   return proxyquire('./create-service.controller', {
-    '../../utils/response': mockResponses
+    '@utils/response': mockResponses
   })
 }
 

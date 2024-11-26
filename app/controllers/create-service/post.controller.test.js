@@ -3,8 +3,8 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const paths = require('../../paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const paths = require('@root/paths')
 const mockResponses = {}
 const mockServiceService = {}
 const mockUserService = {}
@@ -16,9 +16,9 @@ let req, res, next
 
 const getController = function (mockResponses, mockServiceService, mockUserService) {
   return proxyquire('./create-service.controller', {
-    '../../utils/response': mockResponses,
-    '../../services/service.service': mockServiceService,
-    '../../services/user.service': mockUserService
+    '@utils/response': mockResponses,
+    '@services/service.service': mockServiceService,
+    '@services/user.service': mockUserService
   })
 }
 

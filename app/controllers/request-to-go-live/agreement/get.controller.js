@@ -2,10 +2,10 @@
 
 const lodash = require('lodash')
 
-const goLiveStage = require('../../../models/go-live-stage')
-const paths = require('../../../paths')
-const { response } = require('../../../utils/response')
-const formatServicePathsFor = require('../../../utils/format-service-paths-for')
+const goLiveStage = require('@models/go-live-stage')
+const paths = require('@root/paths')
+const { response } = require('@utils/response')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 const { CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED } = goLiveStage
 const chosenOptions = [CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED]

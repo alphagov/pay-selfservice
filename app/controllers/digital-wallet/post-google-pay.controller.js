@@ -1,12 +1,12 @@
 'use strict'
 
-const paths = require('../../paths')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const logger = require('../../utils/logger')(__filename)
-const { ConnectorClient } = require('../../services/clients/connector.client')
-const { getCurrentCredential } = require('../../utils/credentials')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const logger = require('@utils/logger')(__filename)
+const { ConnectorClient } = require('@services/clients/connector.client')
+const { getCurrentCredential } = require('@utils/credentials')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const { response } = require('../../utils/response')
+const { response } = require('@utils/response')
 
 module.exports = async function updateGooglePaySettings (req, res, next) {
   const gatewayAccountId = req.account.gateway_account_id

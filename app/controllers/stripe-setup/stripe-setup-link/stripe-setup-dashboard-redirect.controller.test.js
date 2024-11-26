@@ -1,9 +1,9 @@
 const sinon = require('sinon')
 
-const { ConnectorClient } = require('../../../services/clients/connector.client')
-const User = require('../../../models/User.class')
-const { validUser } = require('../../../../test/fixtures/user.fixtures')
-const { validGatewayAccountsResponse } = require('../../../../test/fixtures/gateway-account.fixtures')
+const { ConnectorClient } = require('@services/clients/connector.client')
+const User = require('@models/User.class')
+const { validUser } = require('@test/fixtures/user.fixtures')
+const { validGatewayAccountsResponse } = require('@test/fixtures/gateway-account.fixtures')
 const dashboardRedirectController = require('./stripe-setup-dashboard-redirect.controller')
 
 describe('Dashboard redirect controller', () => {

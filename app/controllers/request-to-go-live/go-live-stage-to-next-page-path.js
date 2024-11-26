@@ -1,7 +1,7 @@
 'use strict'
 
-const goLiveStage = require('../../models/go-live-stage')
-const { requestToGoLive } = require('../../paths').service
+const goLiveStage = require('@models/go-live-stage')
+const { requestToGoLive } = require('@root/paths').service
 
 const goLiveStageToNextPagePathMap = {}
 goLiveStageToNextPagePathMap[goLiveStage.NOT_STARTED] = requestToGoLive.organisationName

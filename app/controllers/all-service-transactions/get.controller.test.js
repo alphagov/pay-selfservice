@@ -1,11 +1,11 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const User = require('../../models/User.class')
-const userFixtures = require('../../../test/fixtures/user.fixtures')
-const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
-const Service = require('../../models/Service.class')
-const serviceFixtures = require('../../../test/fixtures/service.fixtures')
-const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
+const Service = require('@models/Service.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const ledgerTransactionFixture = require('@test/fixtures/ledger-transaction.fixtures')
 
 describe('All service transactions - GET', () => {
   let req, res, next
@@ -62,23 +62,23 @@ describe('All service transactions - GET', () => {
 
   function getController () {
     return proxyquire('./get.controller', {
-      '../../utils/permissions': {
+      '@utils/permissions': {
         getGatewayAccountsFor: sinon.spy(() => Promise.resolve(userPermittedAccountsSummary))
       },
-      '../../services/transaction.service': {
+      '@services/transaction.service': {
         search: sinon.spy(() => Promise.resolve(transactionSearchResponse))
       },
       './populateModel': {
         populateModel: modelMock
       },
-      '../../utils/response': {
+      '@utils/response': {
         response: responseMock
       },
-      '../../paths': {
+      '@root/paths': {
         allServiceTransactions: { download: 'download-path' },
         formattedPathFor: () => 'formatted-path'
       },
-      '../../utils/filters.js': {
+      '@utils/filters.js': {
         getFilters: filterMock
       }
     })

@@ -4,13 +4,13 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 const mockResponses = {}
 
 const getController = function (mockResponses) {
   return proxyquire('./get-start.controller', {
-    '../../utils/response': mockResponses
+    '@utils/response': mockResponses
   })
 }
 

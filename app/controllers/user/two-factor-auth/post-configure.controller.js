@@ -2,13 +2,13 @@
 
 const lodash = require('lodash')
 
-const paths = require('../../../paths')
-const userService = require('../../../services/user.service.js')
-const secondFactorMethod = require('../../../models/second-factor-method')
+const paths = require('@root/paths')
+const userService = require('@services/user.service.js')
+const secondFactorMethod = require('@models/second-factor-method')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
-const { validateOtp } = require('../../../utils/validation/server-side-form-validations')
-const { validationErrors } = require('../../../utils/validation/field-validation-checks')
-const { sanitiseSecurityCode } = require('../../../utils/security-code-utils')
+const { validateOtp } = require('@utils/validation/server-side-form-validations')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
+const { sanitiseSecurityCode } = require('@utils/security-code-utils')
 
 module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
   const code = sanitiseSecurityCode(req.body.code)

@@ -1,6 +1,6 @@
 'use strict'
 
-const { isEmpty, isNotVatNumber, validationErrors } = require('../../../utils/validation/field-validation-checks')
+const { isEmpty, isNotVatNumber, validationErrors } = require('@utils/validation/field-validation-checks')
 
 exports.validateVatNumber = function validateVatNumber (value) {
   if (isEmpty(value)) {

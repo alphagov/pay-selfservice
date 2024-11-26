@@ -4,9 +4,9 @@ const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const User = require('../models/User.class')
-const userFixtures = require('../../test/fixtures/user.fixtures')
-const stripeAccountSetupFixture = require('../../test/fixtures/stripe-account-setup.fixtures')
+const User = require('@models/User.class')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const stripeAccountSetupFixture = require('@test/fixtures/stripe-account-setup.fixtures')
 
 let req, res, next, connectorGetAccountMock, connectorGetStripeAccountSetupMock
 
@@ -49,7 +49,7 @@ const setupGetGatewayAccountAndService = function (gatewayAccountID, gatewayAcco
   }
 
   return proxyquire(path.join(__dirname, './get-service-and-gateway-account.middleware'), {
-    '../services/clients/connector.client.js': connectorMock
+    '@services/clients/connector.client.js': connectorMock
   })
 }
 const setupGetGatewayAccountClientError = function (gatewayAccountExternalId, errorCode) {
@@ -63,7 +63,7 @@ const setupGetGatewayAccountClientError = function (gatewayAccountExternalId, er
   })
 
   return proxyquire(path.join(__dirname, './get-service-and-gateway-account.middleware'), {
-    '../services/clients/connector.client.js': connectorMock
+    '@services/clients/connector.client.js': connectorMock
   })
 }
 

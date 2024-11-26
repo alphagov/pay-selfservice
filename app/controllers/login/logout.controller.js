@@ -1,8 +1,8 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
-const userService = require('../../services/user.service')
-const router = require('../../routes')
+const logger = require('@utils/logger')(__filename)
+const userService = require('@services/user.service')
+const router = require('@root/routes')
 
 module.exports = (req, res) => {
   if (req.user) {

@@ -1,13 +1,13 @@
 'use strict'
 
-const { response } = require('../../utils/response')
+const { response } = require('@utils/response')
 const {
   getCredentialByExternalId,
   getCurrentCredential,
   getSwitchingCredentialIfExists,
   hasSwitchedProvider,
   worldpayMerchantDetailOperations
-} = require('../../utils/credentials')
+} = require('@utils/credentials')
 const yourPspTasks = require('./your-psp-tasks.service')
 
 module.exports = async (req, res, next) => {

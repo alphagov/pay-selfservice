@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { InvalidConfigurationError } = require('../../errors')
+const { InvalidConfigurationError } = require('@root/errors')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 

@@ -6,10 +6,10 @@ const chai = require('chai')
 const { expect } = chai
 const chaiAsPromised = require('chai-as-promised')
 
-const userFixtures = require('../../../fixtures/user.fixtures')
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const getAdminUsersClient = require('@services/clients/adminusers.client')
+const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const { userResponsePactifier } = require('@test/test-helpers/pact/pactifier')
 
 // constants
 let adminUsersClient

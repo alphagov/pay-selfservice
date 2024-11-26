@@ -1,4 +1,4 @@
-require('../../test/test-helpers/html-assertions.js')
+require('@test/test-helpers/html-assertions.js')
 const assert = require('assert')
 const dates = require('./dates.js')
 

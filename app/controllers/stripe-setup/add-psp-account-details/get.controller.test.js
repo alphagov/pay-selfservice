@@ -2,7 +2,7 @@
 
 const sinon = require('sinon')
 
-const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
 const getController = require('./get.controller')
 
 describe('Stripe setup get controller', () => {

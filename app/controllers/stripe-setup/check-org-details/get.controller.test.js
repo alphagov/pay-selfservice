@@ -3,11 +3,11 @@
 const sinon = require('sinon')
 const { expect } = require('chai')
 const getController = require('./get.controller')
-const Service = require('../../../models/Service.class')
-const User = require('../../../models/User.class')
-const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
-const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
+const Service = require('@models/Service.class')
+const User = require('@models/User.class')
+const serviceFixtures = require('@test/fixtures/service.fixtures')
+const userFixtures = require('@test/fixtures/user.fixtures')
+const gatewayAccountFixture = require('@test/fixtures/gateway-account.fixtures')
 
 describe('Check org details - get controller', () => {
   let req

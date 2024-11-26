@@ -1,9 +1,9 @@
 const moment = require('moment')
-const logger = require('../../utils/logger')(__filename)
-const { response } = require('../../utils/response.js')
-const permissions = require('../../utils/permissions')
+const logger = require('@utils/logger')(__filename)
+const { response } = require('@utils/response.js')
+const permissions = require('@utils/permissions')
 const payoutService = require('./payouts.service')
-const { NoServicesWithPermissionError } = require('../../errors')
+const { NoServicesWithPermissionError } = require('@root/errors')
 
 const listAllServicesPayouts = async function listAllServicesPayouts (req, res, next) {
   const { page } = req.query
