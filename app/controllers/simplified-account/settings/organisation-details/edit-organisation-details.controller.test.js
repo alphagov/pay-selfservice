@@ -138,5 +138,10 @@ describe('Controller: settings/organisation-details', () => {
         }
       ])
     })
+
+    it('should call redirect with the correct path', () => {
+      expect(res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      expect(res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_ID, ACCOUNT_TYPE))
+    })
   })
 })
