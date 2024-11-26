@@ -85,11 +85,29 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
     })
   })
 
-  describe('post', () => {
+  describe('postRemoveCustomParagraph', () => {
     before(() => {
       const body = { 'custom-paragraph': 'a test custom paragraph' }
       setupTest(body)
-      customParagraphController.post(req, res)
+      customParagraphController.postRemoveCustomParagraph(req, res)
+    })
+
+    it('should update the confirmation template', () => {
+      expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
+      expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, '')).to.be.true // eslint-disable-line
+    })
+
+    it('should redirect to the templates page', () => {
+      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+      expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.emailNotifications.templates)
+    })
+  })
+
+  describe('postEditCustomParagraph', () => {
+    before(() => {
+      const body = { 'custom-paragraph': 'a test custom paragraph' }
+      setupTest(body)
+      customParagraphController.postEditCustomParagraph(req, res)
     })
 
     describe('without validation error', () => {
@@ -109,7 +127,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       before(() => {
         const body = { 'custom-paragraph': invalidText }
         setupTest(body)
-        customParagraphController.post(req, res)
+        customParagraphController.postEditCustomParagraph(req, res)
       })
 
       it('should call the response method', () => {

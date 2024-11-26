@@ -182,7 +182,8 @@ module.exports = {
         refundEmailToggle: '/settings/email-notifications/refund-email-toggle',
         paymentConfirmationEmailToggle: '/settings/email-notifications/payment-confirmation-email-toggle',
         templates: '/settings/email-notifications/templates',
-        customParagraph: '/settings/email-notifications/templates/custom-paragraph'
+        customParagraph: '/settings/email-notifications/templates/custom-paragraph',
+        removeCustomParagraph: '/settings/email-notifications/templates/custom-paragraph/remove'
       },
       teamMembers: {
         index: '/settings/team-members',

@@ -59,7 +59,7 @@
       <li>use redirects or tracking links</li>
   </ul>
 
-  <form method="post" novalidate>
+  <form id="add-custom-paragraph" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{
@@ -75,14 +75,30 @@
         errorMessage: { text: errors.customParagraph } if errors.customParagraph else false
       })
     }}
-    {{
-      govukButton({
-        text: "Continue",
-        classes: "qa-edit-submit",
-        attributes: {
-          id: "continue"
-        }
-      })
-    }}
   </form>
+
+  {% if customParagraphText %}
+    <form id="remove-custom-paragraph" action="{{ removeCustomParagraphLink }}" method="POST">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    </form>
+  {% endif %}
+
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "Continue",
+      attributes: {
+        id: "continue",
+        form: "add-custom-paragraph"
+      }
+    }) }}
+    {% if customParagraphText %}
+      {{ govukButton({
+        text: "Remove custom paragraph",
+        classes: "govuk-button--secondary",
+        attributes: {
+          form: "remove-custom-paragraph"
+        }
+      }) }}
+    {% endif %}
+  </div>
 {% endblock %}

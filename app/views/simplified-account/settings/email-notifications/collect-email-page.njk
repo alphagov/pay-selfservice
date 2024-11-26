@@ -16,19 +16,22 @@
 
       {{
         govukRadios({
-          idPrefix: 'email-collection-mode',
+          idPrefix: 'mode',
           name: 'emailCollectionMode',
           fieldset: {
             legend: {
               text: 'Ask users for their email address',
               isPageHeading: true,
-              classes: 'govuk-fieldset__legend--l'
+              classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
             }
           },
           items: [
             {
                 value: emailCollectionModes.mandatory,
-                text: 'On – as a mandatory field',
+                html: 'On – as a mandatory field',
+                label: {
+                  classes: 'govuk-!-font-weight-bold'
+                },
                 checked: emailCollectionMode === emailCollectionModes.mandatory,
                 hint: {
                   text: 'Users must enter an email address to complete a payment – they can receive notifications'
@@ -36,7 +39,10 @@
             },
             {
                 value: emailCollectionModes.optional,
-                text: 'On – as an optional field',
+                html: 'On – as an optional field',
+                label: {
+                  classes: 'govuk-!-font-weight-bold'
+                },
                 checked: emailCollectionMode === emailCollectionModes.optional,
                 hint: {
                   text: 'Users can choose to enter an email address – if they do, they can receive notifications'
@@ -44,7 +50,10 @@
             },
             {
                 value: emailCollectionModes.no,
-                text: 'Off',
+                html: 'Off',
+                label: {
+                  classes: 'govuk-!-font-weight-bold'
+                },
                 checked: emailCollectionMode === emailCollectionModes.no,
                 hint: {
                   text: 'Users do not have the option to enter an email address – they will not receive notifications'

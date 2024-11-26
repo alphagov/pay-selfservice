@@ -15,7 +15,7 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
     {{ govukRadios({
-      idPrefix: 'refund-email-toggle',
+      idPrefix: 'toggle',
       name: 'refundEmailToggle',
       hint: {
         text: 'Users will receive an email confirming their refund from GOV.UK Pay'
@@ -32,7 +32,10 @@
       items: [
         {
           value: 'true',
-          text: 'On',
+          html: 'On',
+          label: {
+            classes: 'govuk-!-font-weight-bold'
+          } if emailCollectionMode === 'OPTIONAL',
           checked: refundEmailEnabled === true,
           hint: {
             text: 'Entering an email address is currently optional so users might not get a refund confirmation'
@@ -40,7 +43,10 @@
         },
         {
           value: 'false',
-          text: 'Off',
+          html: 'Off',
+          label: {
+            classes: 'govuk-!-font-weight-bold'
+          } if emailCollectionMode === 'OPTIONAL',
           checked: refundEmailEnabled === false
         }
       ]
