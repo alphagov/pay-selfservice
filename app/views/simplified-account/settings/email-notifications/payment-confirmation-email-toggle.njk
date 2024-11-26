@@ -32,7 +32,10 @@
       items: [
         {
           value: 'true',
-          html: '<b>On</b>' if emailCollectionMode === 'OPTIONAL' else 'On',
+          html: 'On',
+          label: {
+            classes: 'govuk-!-font-weight-bold'
+          } if emailCollectionMode === 'OPTIONAL',
           checked: confirmationEnabled === true,
           hint: {
             text: 'Entering an email address is currently optional so users might not get a payment confirmation'
@@ -40,7 +43,10 @@
         },
         {
           value: 'false',
-          html: '<b>Off</b>' if emailCollectionMode === 'OPTIONAL' else 'Off',
+          html: 'Off',
+          label: {
+            classes: 'govuk-!-font-weight-bold'
+          } if emailCollectionMode === 'OPTIONAL',
           checked: confirmationEnabled === false
         }
       ]

@@ -3,7 +3,6 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 const { updateCustomParagraphByServiceIdAndAccountType } = require('@services/email.service')
 const { validateOptionalField } = require('@utils/validation/server-side-form-validations')
-const logger = require('@utils/logger')(__filename)
 const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 
 function get (req, res) {
@@ -22,7 +21,6 @@ function get (req, res) {
 
 async function postEditCustomParagraph (req, res) {
   const serviceExternalId = req.service.externalId
-  const serviceName = req.service.name
   const accountType = req.account.type
   const customParagraph = req.body['custom-paragraph']
 
@@ -33,14 +31,13 @@ async function postEditCustomParagraph (req, res) {
         customParagraph: validationResult.message
       },
       customParagraphText: customParagraph,
-      serviceName,
+      serviceName: req.service.name,
       backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
         req.service.externalId, accountType)
     })
   }
 
   await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, customParagraph)
-  logger.info('Updated email notifications custom paragraph')
   req.flash('messages', { state: 'success', icon: '&check;', heading: 'Custom paragraph updated' })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
     serviceExternalId, accountType))
@@ -51,7 +48,6 @@ async function postRemoveCustomParagraph (req, res) {
   const accountType = req.account.type
 
   await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, '')
-  logger.info('Removed custom paragraph')
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
     serviceExternalId, accountType))
 }
