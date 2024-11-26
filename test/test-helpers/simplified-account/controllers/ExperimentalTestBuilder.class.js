@@ -1,5 +1,5 @@
 const sinon = require('sinon')
-const _ = require('lodash')
+// const _ = require('lodash')
 const proxyquire = require('proxyquire')
 
 class TestRequest {
