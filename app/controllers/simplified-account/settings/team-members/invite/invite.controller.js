@@ -5,7 +5,6 @@ const paths = require('@root/paths')
 const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const userService = require('@services/user.service')
-const lodash = require('lodash')
 
 async function get (req, res) {
   const serviceId = req.service.externalId
@@ -28,7 +27,8 @@ async function post (req, res, next) {
   const validations = [
     body('invitedUserRole')
       .not().isEmpty().withMessage('Select a permission level'),
-    body('invitedUserEmail').isEmail().withMessage('Enter a valid email address')
+    body('invitedUserEmail')
+      .isEmail().withMessage('Enter a valid email address')
   ]
   await Promise.all(validations.map(validation => validation.run(req)))
   const errors = validationResult(req)
@@ -50,10 +50,6 @@ async function post (req, res, next) {
 
   try {
     await userService.createInviteToJoinService(invitedUserEmail, adminUserExternalId, externalServiceId, invitedUserRole)
-    if (lodash.has(req, 'session.pageData.invitee')) {
-      delete req.session.pageData.invitee
-    }
-    // send email
     req.flash('messages', { state: 'success', icon: '&check;', heading: 'Team member invitation sent to ' + req.body.invitedUserEmail })
     res.redirect(teamMembersIndexPath)
   } catch (err) {
