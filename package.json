@@ -138,7 +138,7 @@
     "@pact-foundation/pact-core": "^14.0.5",
     "chai": "4.5.0",
     "chai-arrays": "2.2.0",
-    "chai-as-promised": "8.0.0",
+    "chai-as-promised": "7.1.2",
     "cheerio": "1.0.0-rc.12",
     "chokidar-cli": "*",
     "csrf": "^3.1.0",

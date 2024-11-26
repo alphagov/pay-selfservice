@@ -45,7 +45,11 @@ describe('Controller: settings/organisation-details', () => {
       })
 
       it('should call the response method with req, res, template path, and context', () => {
-        expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/organisation-details/index', {
+        expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/organisation-details/index')
+      })
+
+      it('should pass the context to the response method', () => {
+        expect(mockResponse).to.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           messages: [],
           organisationDetails: {
             organisationName: 'Compu-Global-Hyper-Mega-Net',
