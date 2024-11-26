@@ -1,19 +1,19 @@
 const sinon = require('sinon')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const chai = require('chai')
 const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 const expect = chai.expect
 const Service = require('@models/Service.class')
+const ExperimentalTestBuilder = require('@test/test-helpers/simplified-account/controllers/ExperimentalTestBuilder.class')
 
 const mockResponse = sinon.spy()
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
 
-const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/simplified-account/settings/organisation-details/organisation-details.controller')
+const controllerTest = new ExperimentalTestBuilder('@controllers/simplified-account/settings/organisation-details/organisation-details.controller')
   .withService(new Service({
     id: '123',
     external_id: SERVICE_ID,
@@ -36,19 +36,18 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
 describe('Controller: settings/organisation-details', () => {
   describe('get', () => {
     describe('where organisation details have been set', () => {
-      before(() => {
-        call('get')
-      })
-
       it('should call the response method', () => {
+        controllerTest.callMethod('get')
         expect(mockResponse).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
       })
 
       it('should call the response method with req, res, template path, and context', () => {
-        expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/organisation-details/index')
+        controllerTest.callMethod('get')
+        expect(mockResponse).to.have.been.calledWith(controllerTest.req, controllerTest.res, 'simplified-account/settings/organisation-details/index')
       })
 
       it('should pass the context to the response method', () => {
+        controllerTest.callMethod('get')
         expect(mockResponse).to.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           messages: [],
           organisationDetails: {
@@ -63,20 +62,17 @@ describe('Controller: settings/organisation-details', () => {
     })
 
     describe('where organisation details have not been set', () => {
-      before(() => {
-        nextRequest({
-          service: new Service({
-            id: '123',
-            external_id: SERVICE_ID
-          }),
-          account: { type: ACCOUNT_TYPE }
-        })
-        call('get')
-      })
+      const controllerTestWithoutOrgDetails = ExperimentalTestBuilder.copy(controllerTest)
+        .withService(new Service({
+          id: '123',
+          external_id: SERVICE_ID
+        }))
+        .build()
 
       it('should call the redirect method with the edit organisation details url', () => {
-        expect(res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
-        expect(res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_ID, ACCOUNT_TYPE))
+        controllerTestWithoutOrgDetails.callMethod('get')
+        expect(controllerTestWithoutOrgDetails.res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        expect(controllerTestWithoutOrgDetails.res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_ID, ACCOUNT_TYPE))
       })
     })
   })

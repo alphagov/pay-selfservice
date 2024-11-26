@@ -1,12 +1,13 @@
 const sinon = require('sinon')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const chai = require('chai')
 const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 const expect = chai.expect
 const Service = require('@models/Service.class')
+
+const ExperimentalTestBuilder = require('@test/test-helpers/simplified-account/controllers/ExperimentalTestBuilder.class')
 
 const mockResponse = sinon.spy()
 const updateServiceSpy = sinon.spy()
@@ -14,7 +15,7 @@ const updateServiceSpy = sinon.spy()
 const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
 
-const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/simplified-account/settings/organisation-details/edit-organisation-details.controller')
+const controllerTest = new ExperimentalTestBuilder('@controllers/simplified-account/settings/organisation-details/edit-organisation-details.controller')
   .withService(new Service({
     id: '123',
     external_id: SERVICE_ID,
@@ -38,19 +39,22 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
 
 describe('Controller: settings/organisation-details', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
-    })
+    // before(() => {
+    //   call('get')
+    // })
 
     it('should call the response method', () => {
+      controllerTest.callMethod('get')
       expect(mockResponse).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
     })
 
     it('should call the response method with req, res, and template path', () => {
-      expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/organisation-details/edit-organisation-details')
+      controllerTest.callMethod('get')
+      expect(mockResponse).to.have.been.calledWith(controllerTest.req, controllerTest.res, 'simplified-account/settings/organisation-details/edit-organisation-details')
     })
 
     it('should pass the context to the response method', () => {
+      controllerTest.callMethod('get')
       expect(mockResponse).to.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
         messages: [],
         organisationDetails: {
@@ -70,30 +74,21 @@ describe('Controller: settings/organisation-details', () => {
   })
 
   describe('post', () => {
-    before(() => {
-      nextRequest({
-        service: new Service({
-          id: '123',
-          external_id: SERVICE_ID
-        }),
-        account: {
-          type: ACCOUNT_TYPE
-        },
-        body: {
-          organisationName: 'Flancrest Enterprises',
-          addressLine1: '744 Evergreen Terrace',
-          addressLine2: '',
-          addressCity: 'Springfield',
-          addressPostcode: 'SP21NG',
-          addressCountry: 'US',
-          telephoneNumber: '09876543210',
-          organisationUrl: 'https://www.flancrest.example.com'
-        }
+    const postTest = ExperimentalTestBuilder.copy(controllerTest)
+      .withRequestBody({
+        organisationName: 'Flancrest Enterprises',
+        addressLine1: '744 Evergreen Terrace',
+        addressLine2: '',
+        addressCity: 'Springfield',
+        addressPostcode: 'SP21NG',
+        addressCountry: 'US',
+        telephoneNumber: '09876543210',
+        organisationUrl: 'https://www.flancrest.example.com'
       })
-      call('post', 1)
-    })
+      .build()
 
     it('should call the updateService method with the correct PATCH request', () => {
+      postTest.callMethodAtIndex('post', 1)
       expect(updateServiceSpy).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
       expect(updateServiceSpy).to.have.been.calledWith(SERVICE_ID, [
         {
@@ -140,8 +135,8 @@ describe('Controller: settings/organisation-details', () => {
     })
 
     it('should call redirect with the correct path', () => {
-      expect(res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
-      expect(res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_ID, ACCOUNT_TYPE))
+      expect(postTest.res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      expect(postTest.res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_ID, ACCOUNT_TYPE))
     })
   })
 })
