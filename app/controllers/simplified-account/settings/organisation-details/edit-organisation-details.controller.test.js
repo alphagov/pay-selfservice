@@ -46,7 +46,7 @@ describe('Controller: settings/organisation-details', () => {
       expect(mockResponse).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
     })
 
-    it('should call the response method with req, res, template path', () => {
+    it('should call the response method with req, res, and template path', () => {
       expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/organisation-details/edit-organisation-details')
     })
 
