@@ -80,6 +80,12 @@
     },
     "cli-color": {
       "ansi-regex": "3.0.1"
+    },
+    "csurf": {
+      "cookie": "0.7.2"
+    },
+    "@sentry/node": {
+      "cookie": "0.7.2"
     }
   },
   "dependencies": {
