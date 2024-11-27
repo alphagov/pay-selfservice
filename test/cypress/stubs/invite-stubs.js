@@ -24,7 +24,6 @@ function createSelfSignupInviteNotPublicSectorEmail (email) {
 function createInviteToJoinService (opts, userAlreadyInvited) {
   const path = '/v1/api/invites/create-invite-to-join-service'
   const responseCode = userAlreadyInvited ? 412 : 200
-  console.log('response code: ' + responseCode)
   return stubBuilder('POST', path, responseCode, {
     request: {
       email: opts.email,

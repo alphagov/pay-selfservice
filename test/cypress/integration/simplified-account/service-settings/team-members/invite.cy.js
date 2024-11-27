@@ -11,17 +11,11 @@ const TEAM_MEMBERS_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/ac
 
 const setStubs = (opts = {}, additionalStubs = []) => {
   const adminUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(ADMIN_USER_ID, 'admin-user@example.com', SERVICE_EXTERNAL_ID, 'admin')
-  const viewOnlyUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(VIEW_ONLY_USER_ID, 'view-only-user@example.com', SERVICE_EXTERNAL_ID, 'view-only')
 
   cy.task('setupStubs', [
     userStubs.getServiceUsersSuccess({
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      users: [adminUserStubOpts, viewOnlyUserStubOpts]
-    }),
-    userStubs.getUserSuccess({
-      userExternalId: VIEW_ONLY_USER_ID,
-      serviceExternalId: SERVICE_EXTERNAL_ID,
-      email: 'view-only-user@example.com'
+      users: [adminUserStubOpts]
     }),
     userStubs.getUserSuccess({
       userExternalId: ADMIN_USER_ID,
@@ -69,8 +63,8 @@ describe('Team members settings', () => {
       cy.get('button').contains('Send invitation email').click()
       cy.get('.govuk-error-summary').should('contain.text', 'Select a permission level')
       cy.get('.govuk-error-summary').should('contain.text', 'Enter a valid email address')
-      cy.get('#invitedUserEmail-error').should('contain.text', 'Enter a valid email address')
-      cy.get('#invitedUserRole-error').should('contain.text', 'Select a permission level')
+      cy.get('#invited-user-email-error').should('contain.text', 'Enter a valid email address')
+      cy.get('#invited-user-role-error').should('contain.text', 'Select a permission level')
     })
 
     it('should show validation error if button clicked without selecting a role', () => {
@@ -78,9 +72,8 @@ describe('Team members settings', () => {
       cy.get('button').contains('Send invitation email').click()
       cy.get('.govuk-error-summary').should('contain.text', 'Select a permission level')
       cy.get('.govuk-error-summary').should('contain.text', 'Enter a valid email address')
-      cy.get('form')
-      cy.get('#invitedUserEmail-error').should('contain.text', 'Enter a valid email address')
-      cy.get('#invitedUserRole-error').should('contain.text', 'Select a permission level')
+      cy.get('#invited-user-email-error').should('contain.text', 'Enter a valid email address')
+      cy.get('#invited-user-role-error').should('contain.text', 'Select a permission level')
     })
 
     it('should return to team members page and show notification banner when user completes the form correctly', () => {
@@ -101,13 +94,13 @@ describe('Team members settings', () => {
       cy.get('#invite-team-member-link').click()
     })
 
-    it.only('should show error when button clicked', () => {
+    it('should show error when button clicked', () => {
       cy.get('input[type="radio"][value="view-only"]').click()
       cy.get('input[type="email"]').type('invited_user@users.gov.uk')
       cy.get('.govuk-error-summary').should('not.exist')
       cy.get('button').contains('Send invitation email').click()
       cy.get('.govuk-error-summary').should('contain.text', 'This person has already been invited')
-      cy.get('#invitedUserEmail-error').should('contain.text', 'You cannot send an invitation to invited_user@users.gov.uk because they have received one already, or may be an existing team member.')
+      cy.get('#invited-user-email-error').should('contain.text', 'You cannot send an invitation to invited_user@users.gov.uk because they have received one already, or may be an existing team member')
     })
   })
 })
