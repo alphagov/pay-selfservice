@@ -35,7 +35,8 @@ const setStubs = (opts = {}, additionalStubs = []) => {
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: LIVE_ACCOUNT_TYPE,
-      payment_provider: opts.paymentProvider || STRIPE
+      payment_provider: opts.paymentProvider || STRIPE,
+      provider_switch_enabled: opts.providerSwitchEnabled || false
     }),
     ...additionalStubs])
 }
@@ -290,6 +291,53 @@ describe('Stripe details settings', () => {
       })
       it('should navigate to \'Government entity document\' task when clicked', () => {
         checkTaskNavigation(1, [expectedTasks[6]])
+      })
+    })
+    describe('When account is switching provider', () => {
+      beforeEach(() => {
+        setStubs({
+          providerSwitchEnabled: true
+        }, [
+          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            serviceExternalId: SERVICE_EXTERNAL_ID,
+            accountType: LIVE_ACCOUNT_TYPE,
+            bankAccount: true,
+            responsiblePerson: true,
+            director: true,
+            vatNumber: true,
+            companyNumber: true,
+            organisationDetails: true,
+            governmentEntityDocument: true
+          }),
+          gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(
+            SERVICE_EXTERNAL_ID,
+            LIVE_ACCOUNT_TYPE,
+            {
+              stripeAccountId: STRIPE_ACCOUNT_ID
+            }
+          ),
+          stripePspStubs.retrieveAccountDetails({
+            stripeAccountId: STRIPE_ACCOUNT_ID
+          }),
+          stripePspStubs.listPersons({
+            stripeAccountId: STRIPE_ACCOUNT_ID,
+            director: true,
+            representative: true,
+            firstName: 'Scrooge',
+            lastName: 'McDuck'
+          }),
+          stripePspStubs.listBankAccount({
+            stripeAccountId: STRIPE_ACCOUNT_ID,
+            director: true,
+            representative: true
+          })
+        ])
+        cy.visit(SERVICE_SETTINGS_URL + '/stripe-details')
+      })
+
+      it('should show information about switching', () => {
+        cy.get('.govuk-inset-text')
+          .should('contain.text', 'Your service is ready to switch PSP from Stripe to Worldpay')
       })
     })
   })

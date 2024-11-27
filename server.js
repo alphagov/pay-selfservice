@@ -128,6 +128,9 @@ function initialiseTemplateEngine (app) {
   nunjucksEnvironment.addFilter('isList', (n) => Array.isArray(n))
   nunjucksEnvironment.addFilter('smartCaps', smartCaps)
   nunjucksEnvironment.addFilter('govukDate', govukDate)
+  nunjucksEnvironment.addFilter('docsLink', (text, slug) => {
+    return new nunjucks.runtime.SafeString(`<a class="govuk-link govuk-link--no-visited-state" href="https://docs.payments.service.gov.uk/${slug}">${text}</a>`)
+  })
 }
 
 function initialisePublic (app) {

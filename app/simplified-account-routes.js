@@ -68,8 +68,10 @@ stripeDetailsRouter.post(stripeDetailsPath.bankAccount, serviceSettingsControlle
 // -- new stuff
 stripeDetailsRouter.get(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.get)
 stripeDetailsRouter.post(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.post)
-stripeDetailsRouter.get(stripeDetailsPath.organisationDetails, serviceSettingsController.stripeDetails.organisationDetails.get)
-stripeDetailsRouter.post(stripeDetailsPath.organisationDetails, serviceSettingsController.stripeDetails.organisationDetails.post)
+stripeDetailsRouter.get(stripeDetailsPath.organisationDetails.index, serviceSettingsController.stripeDetails.organisationDetails.get)
+stripeDetailsRouter.post(stripeDetailsPath.organisationDetails.index, serviceSettingsController.stripeDetails.organisationDetails.post)
+stripeDetailsRouter.get(stripeDetailsPath.organisationDetails.update, serviceSettingsController.stripeDetails.organisationDetails.update.get)
+stripeDetailsRouter.post(stripeDetailsPath.organisationDetails.update, serviceSettingsController.stripeDetails.organisationDetails.update.post)
 // -- responsible person
 stripeDetailsRouter.get(stripeDetailsPath.responsiblePerson.index, serviceSettingsController.stripeDetails.responsiblePerson.get)
 stripeDetailsRouter.post(stripeDetailsPath.responsiblePerson.index, serviceSettingsController.stripeDetails.responsiblePerson.post)
@@ -85,7 +87,7 @@ stripeDetailsRouter.post(stripeDetailsPath.vatNumber, serviceSettingsController.
 stripeDetailsRouter.get(stripeDetailsPath.director, serviceSettingsController.stripeDetails.director.get)
 stripeDetailsRouter.post(stripeDetailsPath.director, serviceSettingsController.stripeDetails.director.post)
 stripeDetailsRouter.get(stripeDetailsPath.governmentEntityDocument, serviceSettingsController.stripeDetails.governmentEntityDocument.get)
-stripeDetailsRouter.post(stripeDetailsPath.governmentEntityDocument, upload.single(GOV_ENTITY_DOC_FORM_FIELD_NAME), serviceSettingsController.stripeDetails.governmentEntityDocument.post)
+stripeDetailsRouter.post(stripeDetailsPath.governmentEntityDocument, [upload.single(GOV_ENTITY_DOC_FORM_FIELD_NAME), ...serviceSettingsController.stripeDetails.governmentEntityDocument.post])
 simplifiedAccount.use(stripeDetailsRouter)
 
 module.exports = simplifiedAccount

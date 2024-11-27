@@ -1,0 +1,47 @@
+{% extends "../../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Stripe details - Update organisation details
+{% endblock %}
+
+{% block settingsContent %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) }}
+
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-l">What is the name and address of your organisation on your government entity document?</h1>
+
+  <form id="update-organisation-details-form" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {% include "../../organisation-details/_edit-organisation-details-name.njk" %}
+    {% include "../../organisation-details/_edit-organisation-details-address.njk" %}
+
+    {{ govukButton({
+      text: "Update organisation details",
+      attributes: {
+        id: "update-organisation-details-submit"
+      }
+    }) }}
+  </form>
+
+  <script>
+    // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
+    const submitButton = document.getElementById('update-organisation-details-submit')
+    document.getElementById('update-organisation-details-form').addEventListener('submit', function () {
+      submitButton.setAttribute('disabled', 'true')
+      submitButton.setAttribute('aria-disabled', 'true')
+      submitButton.setAttribute('class', 'govuk-button govuk-button--disabled')
+      submitButton.textContent = 'Updating...'
+    })
+  </script>
+{% endblock %}
+

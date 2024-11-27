@@ -19,7 +19,8 @@ async function get (req, res) {
     stripeDetailsTasks,
     incompleteTasks,
     serviceExternalId: service.externalId,
-    answers
+    answers,
+    providerSwitchEnabled: account.providerSwitchEnabled
   })
 }
 

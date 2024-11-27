@@ -33,7 +33,7 @@ module.exports = (account, service, currentUrl, permissions) => {
       permission: true // everyone can view team members settings
     })
     .add({
-      id: 'org-details',
+      id: 'organisation-details',
       name: 'organisation details',
       path: paths.simplifiedAccount.settings.organisationDetails.index,
       permission: 'merchant_details_update' // TODO find a better way of defining these

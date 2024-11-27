@@ -3,8 +3,6 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const chai = require('chai')
-const sinonChai = require('sinon-chai')
-chai.use(sinonChai)
 const expect = chai.expect
 const Service = require('@models/Service.class')
 
