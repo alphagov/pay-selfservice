@@ -24,22 +24,11 @@ async function post (req, res, next) {
   const invitedUserRole = req.body.invitedUserRole
   const teamMembersIndexPath = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, externalServiceId, accountType)
 
-  const validations = [
-    body('invitedUserRole')
-      .not().isEmpty().withMessage('Select a permission level'),
-    body('invitedUserEmail')
-      .isEmail().withMessage('Enter a valid email address')
-  ]
-  await Promise.all(validations.map(validation => validation.run(req)))
-  const errors = validationResult(req)
-
-  if (!errors.isEmpty()) {
-    const formattedErrors = formatValidationErrors(errors)
-
+  const responseWithErrors = (errors) => {
     return response(req, res, 'simplified-account/settings/team-members/invite', {
       errors: {
-        summary: formattedErrors.errorSummary,
-        formErrors: formattedErrors.formErrors
+        summary: errors.errorSummary,
+        formErrors: errors.formErrors
       },
       invitedUserEmail,
       checkedRole: invitedUserRole,
@@ -48,12 +37,31 @@ async function post (req, res, next) {
     })
   }
 
+  const validations = [
+    body('invitedUserRole')
+      .not().isEmpty().withMessage('Select a permission level'),
+    body('invitedUserEmail')
+      .isEmail().withMessage('Enter a valid email address')
+  ]
+  await Promise.all(validations.map(validation => validation.run(req)))
+  const validationErrors = validationResult(req)
+  if (!validationErrors.isEmpty()) {
+    const formattedValidationErrors = formatValidationErrors(validationErrors)
+    return responseWithErrors(formattedValidationErrors)
+  }
+
   try {
     await userService.createInviteToJoinService(invitedUserEmail, adminUserExternalId, externalServiceId, invitedUserRole)
-    req.flash('messages', { state: 'success', icon: '&check;', heading: 'Team member invitation sent to ' + req.body.invitedUserEmail })
+    req.flash('messages', { state: 'success', icon: '&check;', heading: `Team member invitation sent to ${req.body.invitedUserEmail}` })
     res.redirect(teamMembersIndexPath)
   } catch (err) {
-    // TODO - handle 412 (user already invited or already a team member)
+    if (err.errorCode === 412) {
+      const personAlreadyInvitedError = {
+        errorSummary: [{ text: 'This person has already been invited', href: '#invited-user-email' }],
+        formErrors: { invitedUserEmail: `You cannot send an invitation to ${req.body.invitedUserEmail} because they have received one already, or may be an existing team member` }
+      }
+      return responseWithErrors(personAlreadyInvitedError)
+    }
     next(err)
   }
 }
