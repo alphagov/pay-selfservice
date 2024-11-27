@@ -88,7 +88,17 @@ describe('Controller: settings/organisation-details', () => {
       .build()
 
     it('should call the updateService method with the correct PATCH request', () => {
-      postTest.callMethodAtIndex('post', 1)
+      controllerTest.override(builder => builder.withRequestBody({
+        organisationName: 'Flancrest Enterprises',
+        addressLine1: '744 Evergreen Terrace',
+        addressLine2: '',
+        addressCity: 'Springfield',
+        addressPostcode: 'SP21NG',
+        addressCountry: 'US',
+        telephoneNumber: '09876543210',
+        organisationUrl: 'https://www.flancrest.example.com'
+      })).callMethodAtIndex('post', 1)
+      // postTest.callMethodAtIndex('post', 1)
       expect(updateServiceSpy).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
       expect(updateServiceSpy).to.have.been.calledWith(SERVICE_ID, [
         {

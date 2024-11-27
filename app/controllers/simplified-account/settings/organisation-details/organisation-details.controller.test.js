@@ -62,17 +62,23 @@ describe('Controller: settings/organisation-details', () => {
     })
 
     describe('where organisation details have not been set', () => {
-      const controllerTestWithoutOrgDetails = ExperimentalTestBuilder.copy(controllerTest)
-        .withService(new Service({
+      // const controllerTestWithoutOrgDetails = ExperimentalTestBuilder.copy(controllerTest)
+      // .withService(new Service({
+      //   id: '123',
+      //   external_id: SERVICE_ID
+      // }))
+      // .build()
+      before(() => {
+        controllerTest.override(builder => builder.withService(new Service({
           id: '123',
           external_id: SERVICE_ID
-        }))
-        .build()
+        }))).callMethod('get')
+      })
 
       it('should call the redirect method with the edit organisation details url', () => {
-        controllerTestWithoutOrgDetails.callMethod('get')
-        expect(controllerTestWithoutOrgDetails.res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
-        expect(controllerTestWithoutOrgDetails.res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_ID, ACCOUNT_TYPE))
+        // controllerTestWithoutOrgDetails.callMethod('get')
+        expect(controllerTest.res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        expect(controllerTest.res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_ID, ACCOUNT_TYPE))
       })
     })
   })

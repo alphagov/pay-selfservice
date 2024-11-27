@@ -1,5 +1,5 @@
 const sinon = require('sinon')
-// const _ = require('lodash')
+const _ = require('lodash')
 const proxyquire = require('proxyquire')
 
 class TestRequest {
@@ -40,7 +40,7 @@ class TestResponse {
   }
 }
 
-module.exports = class ExperimentalTestBuilder {
+class ExperimentalTestBuilder {
   constructor (controllerPath) {
     this.controllerPath = controllerPath
     this.next = sinon.spy()
@@ -61,11 +61,6 @@ module.exports = class ExperimentalTestBuilder {
 
   withRequestBody (body) {
     this.req.withBody(body)
-    return this
-  }
-
-  withServiceExternalId (serviceExternalId) {
-    this.req.service.externalId = serviceExternalId
     return this
   }
 
@@ -133,15 +128,34 @@ class ControllerTest {
     this.stubs = stubs
   }
 
-  callMethod (method, recursive = false) {
-    sinon.resetHistory()
-    const controllerMethod = this.controller[method]
-    return this.#call(controllerMethod, recursive)
+  override (callback) {
+    const newBuilder = new ExperimentalTestBuilder(this.controllerPath)
+      .withReq(this.req)
+      .withRes(this.res)
+      .withNext(this.next)
+      .withStubs(this.stubs)
+    callback(newBuilder)
+    return newBuilder.build()
   }
 
   call (recursive = false) {
     sinon.resetHistory()
+    this._req = _.cloneDeep(this.req)
     return this.#call(this.controller, recursive)
+  }
+
+  callMethod (method, recursive = false) {
+    sinon.resetHistory()
+    this._req = _.cloneDeep(this.req)
+    const controllerMethod = this.controller[method]
+    return this.#call(controllerMethod, recursive)
+  }
+
+  callMethodAtIndex (method, index, recursive = false) {
+    sinon.resetHistory()
+    this._req = _.cloneDeep(this.req)
+    const controllerMethod = this.controller[method][index]
+    return this.#call(controllerMethod)
   }
 
   #call (method, recursive = false) {
@@ -153,12 +167,8 @@ class ControllerTest {
       throw new Error(`Method [${method}] is not a function`)
     }
 
-    return method(this.req, this.res, this.next)
-  }
-
-  callMethodAtIndex (method, index, recursive = false) {
-    sinon.resetHistory()
-    const controllerMethod = this.controller[method][index]
-    return this.#call(controllerMethod)
+    return method(this._req, this.res, this.next)
   }
 }
+
+module.exports = ExperimentalTestBuilder
