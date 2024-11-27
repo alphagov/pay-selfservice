@@ -4,6 +4,7 @@ const proxyquire = require('proxyquire')
 const User = require('@models/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
 const paths = require('@root/paths')
+const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
@@ -13,8 +14,7 @@ let req, res, responseStub, createInviteToJoinServiceStub, inviteController
 const getController = (stubs = {}) => {
   return proxyquire('./invite.controller', {
     '@utils/response': { response: stubs.response, renderErrorView: stubs.renderErrorView },
-    '@services/user.service':
-      { createInviteToJoinService: stubs.createInviteToJoinService }
+    '@services/user.service': { createInviteToJoinService: stubs.createInviteToJoinService }
   })
 }
 
@@ -29,9 +29,12 @@ const adminUser = new User(userFixtures.validUserResponse({
   }
 }))
 
-const setupTest = (method, additionalReqProps = {}) => {
+const setupTest = (method, adminusers412Response, additionalReqProps = {}) => {
   responseStub = sinon.spy()
   createInviteToJoinServiceStub = sinon.stub()
+  if (adminusers412Response) {
+    createInviteToJoinServiceStub.rejects(new RESTClientError(null, 'adminusers', 412))
+  }
 
   inviteController = getController({
     response: responseStub,
@@ -75,7 +78,7 @@ describe('Controller: settings/team-members/invite', () => {
 
   describe('post', () => {
     describe('success', () => {
-      before(() => setupTest('post',
+      before(() => setupTest('post', false,
         {
           body: { invitedUserEmail: 'user-to-invite@users.gov.uk', invitedUserRole: 'view-only' },
           flash: sinon.stub()
@@ -94,6 +97,27 @@ describe('Controller: settings/team-members/invite', () => {
         })
         expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
+      })
+    })
+
+    describe('failure - user already in service', () => {
+      before(() => setupTest('post', true,
+        {
+          body: { invitedUserEmail: 'user-to-invite@users.gov.uk', invitedUserRole: 'view-only' },
+          flash: sinon.stub()
+        }
+      ))
+
+      it('should respond with error message', () => {
+        expect(createInviteToJoinServiceStub.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true // eslint-disable-line
+        expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+        expect(responseStub.args[0][0]).to.deep.equal(req)
+        expect(responseStub.args[0][1]).to.deep.equal(res)
+        expect(responseStub.args[0][2]).to.equal('simplified-account/settings/team-members/invite')
+        expect(responseStub.args[0][3]).to.have.property('errors').to.deep.equal({
+          summary: [{ text: 'This person has already been invited', href: '#invited-user-email' }],
+          formErrors: { invitedUserEmail: `You cannot send an invitation to ${req.body.invitedUserEmail} because they have received one already, or may be an existing team member` }
+        })
       })
     })
   })
