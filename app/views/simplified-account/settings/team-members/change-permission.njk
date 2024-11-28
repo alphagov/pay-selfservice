@@ -9,7 +9,7 @@
     text: "Back",
     href: backLink
   }) }}
-
+<div class="fieldset-legend-width">
   <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"/>
@@ -20,7 +20,7 @@
         value: role.name,
         id: "role-" + role.name + "-input",
         html: "<label class=\"govuk-!-font-weight-bold\">" + role.description + "</label>",
-        hint: { text: role.explanation },
+        hint: { text: role.explanation, classes: "hint-and-body-width" },
         checked: userCurrentRoleName === role.name
       } %}
       {% set roleItems = (roleItems.push(roleItem), roleItems) %}
@@ -46,5 +46,6 @@
     }}
 
   </form>
+</div>
 
 {% endblock %}
