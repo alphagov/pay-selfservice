@@ -21,6 +21,19 @@ function createSelfSignupInviteNotPublicSectorEmail (email) {
   })
 }
 
+function createInviteToJoinService (opts, userAlreadyInvited) {
+  const path = '/v1/api/invites/create-invite-to-join-service'
+  const responseCode = userAlreadyInvited ? 412 : 200
+  return stubBuilder('POST', path, responseCode, {
+    request: {
+      email: opts.email,
+      sender: opts.senderId,
+      service_external_id: opts.serviceExternalId,
+      role_name: opts.roleName
+    }
+  })
+}
+
 function getInvitedUsersSuccess (opts) {
   const path = '/v1/api/invites'
   return stubBuilder('GET', path, 200, {
@@ -89,6 +102,7 @@ function patchUpdateInvitePhoneNumberSuccess (inviteCode, phoneNumber) {
 module.exports = {
   createSelfSignupInviteSuccess,
   createSelfSignupInviteNotPublicSectorEmail,
+  createInviteToJoinService,
   getInvitedUsersSuccess,
   getInviteSuccess,
   completeInviteSuccess,
