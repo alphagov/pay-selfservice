@@ -34,7 +34,7 @@ describe('Payout list page', () => {
 
   it('should correctly display payouts given a successful response from Ledger', () => {
     const payouts = [
-      { gatewayAccountId: liveGatewayAccountId, paidOutDate: '2019-01-29T08:00:00.000000Z' }
+      { gatewayAccountId: liveGatewayAccountId, paidOutDate: '2024-12-31T15:34:00.000000Z' }
     ]
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
@@ -43,6 +43,7 @@ describe('Payout list page', () => {
 
     cy.visit('/payments-to-your-bank-account')
     cy.get('h1').find('.govuk-tag').should('have.text', 'LIVE')
+    cy.get('[data-cy=payout-date]').should('have.text', '31 December 2024')
     cy.get('#payout-list').find('tr').should('have.length', 2)
     cy.get('#pagination').should('not.exist')
 

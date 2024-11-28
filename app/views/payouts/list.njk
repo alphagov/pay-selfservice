@@ -54,8 +54,8 @@ Payments to your bank account - GOV.UK Pay
 {% set transactionsDownloadPath = routes.allServiceTransactions.download if filterLiveAccounts else routes.formattedPathFor(routes.allServiceTransactions.downloadStatusFilter, 'test') %}
 <div class="govuk-grid-column-two-thirds">
   {% for key, group in payoutSearchResult.groups %}
-    {% set dateString = group.date.format('DD MMMM') %}
-    <h2 class="govuk-heading-m">{{ dateString }}</h2>
+    {% set dateString = group.date.format('D MMMM YYYY') %}
+    <h2 class="govuk-heading-m" data-cy="payout-date">{{ dateString }}</h2>
 
     <table class="govuk-table" id="payout-list">
       <thead class="govuk-table__head">
