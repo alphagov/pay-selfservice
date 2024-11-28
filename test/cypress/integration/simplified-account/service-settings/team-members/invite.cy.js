@@ -66,15 +66,6 @@ describe('Team members settings', () => {
       cy.get('#invited-user-role-error').should('contain.text', 'Select a permission level')
     })
 
-    it('should show validation error if button clicked without selecting a role', () => {
-      cy.get('.govuk-error-summary').should('not.exist')
-      cy.get('button').contains('Send invitation email').click()
-      cy.get('.govuk-error-summary').should('contain.text', 'Select a permission level')
-      cy.get('.govuk-error-summary').should('contain.text', 'Enter a valid email address')
-      cy.get('#invited-user-email-error').should('contain.text', 'Enter a valid email address')
-      cy.get('#invited-user-role-error').should('contain.text', 'Select a permission level')
-    })
-
     it('should return to team members page and show notification banner when user completes the form correctly', () => {
       cy.get('input[type="radio"][value="view-only"]').click()
       cy.get('input[type="email"]').type('invited_user@users.gov.uk')
