@@ -1,54 +1,12 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const serviceStubs = require('@test/cypress/stubs/service-stubs')
+const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
 const GATEWAY_ACCOUNT_ID = 11
-const ADMIN_ROLE = {
-  description: 'Administrator',
-  name: 'admin',
-  permissions: [
-    {
-      description: 'Viewtransactionslist',
-      name: 'transactions:read'
-    },
-    {
-      description: 'Viewemailnotificationstemplate',
-      name: 'email-notification-template:read'
-    },
-    {
-      description: 'Turnemailnotificationson/off',
-      name: 'email-notification-toggle:update'
-    },
-    {
-      description: 'Editemailnotificationsparagraph',
-      name: 'email-notification-paragraph:update'
-    },
-    {
-      description: '',
-      name: 'merchant-details:read'
-    },
-    {
-      description: '',
-      name: 'merchant-details:update'
-    }
-  ]
-}
-const NON_ADMIN_ROLE = {
-  description: 'View only',
-  name: 'view-only',
-  permissions: [
-    {
-      description: 'Viewtransactionslist',
-      name: 'transactions:read'
-    },
-    {
-      description: 'Viewemailnotificationstemplate',
-      name: 'email-notification-template:read'
-    }
-  ]
-}
+
 const ACCOUNT_TYPE = 'test'
 const VALID_ORG_DETAILS = {
   name: 'Compu-Global-Hyper-Mega-Net',
@@ -61,7 +19,7 @@ const VALID_ORG_DETAILS = {
   url: 'https://www.cghmn.example.com'
 }
 
-const setupStubs = (role = ADMIN_ROLE, merchantDetails) => {
+const setupStubs = (role = 'admin', merchantDetails) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
       userExternalId: USER_EXTERNAL_ID,
@@ -69,7 +27,7 @@ const setupStubs = (role = ADMIN_ROLE, merchantDetails) => {
       serviceName: { en: 'My cool service' },
       merchantDetails,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role,
+      role: ROLES[role],
       features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, { gateway_account_id: GATEWAY_ACCOUNT_ID }),
@@ -109,7 +67,7 @@ describe('Organisation details settings', () => {
 
       describe('when organisation details have been set', () => {
         beforeEach(() => {
-          setupStubs(ADMIN_ROLE, VALID_ORG_DETAILS)
+          setupStubs('admin', VALID_ORG_DETAILS)
         })
 
         it('should not redirect to the edit organisation details page', () => {
@@ -160,10 +118,25 @@ describe('Organisation details settings', () => {
       })
     })
 
-    describe('Edit organisation details', () => {
+    describe('for a non-admin user', () => {
+      beforeEach(() => {
+        setupStubs('view-and-refund')
+      })
+
+      it('should return a 403', () => {
+        cy.request({
+          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`,
+          failOnStatusCode: false
+        }).then(response => expect(response.status).to.eq(403))
+      })
+    })
+  })
+
+  describe('Edit organisation details page', () => {
+    describe('for an admin user', () => {
       describe('when organisation details have been set', () => {
         beforeEach(() => {
-          setupStubs(ADMIN_ROLE, VALID_ORG_DETAILS)
+          setupStubs('admin', VALID_ORG_DETAILS)
         })
 
         it('should populate the form with the existing organisation details', () => {
@@ -217,7 +190,7 @@ describe('Organisation details settings', () => {
 
           // adminusers should now respond with the set organisation details
           // otherwise it will redirect to the edit organisation details page
-          setupStubs(ADMIN_ROLE, VALID_ORG_DETAILS)
+          setupStubs('admin', VALID_ORG_DETAILS)
 
           cy.get('button#save-merchant-details').click()
 
@@ -244,6 +217,19 @@ describe('Organisation details settings', () => {
           cy.get('#telephone-number-error').should('contain.text', 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
           cy.get('#url-error').should('contain.text', 'Enter a valid website address')
         })
+      })
+    })
+
+    describe('for a non-admin user', () => {
+      beforeEach(() => {
+        setupStubs('view-and-refund')
+      })
+
+      it('should return a 403', () => {
+        cy.request({
+          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`,
+          failOnStatusCode: false
+        }).then(response => expect(response.status).to.eq(403))
       })
     })
   })
