@@ -42,7 +42,7 @@
           value: role.name,
           id: "role-" + role.name + "-input",
           html: "<label class=\"govuk-!-font-weight-bold\">" + role.description + "</label>",
-          hint: { text: role.explanation },
+          hint: { text: role.explanation, classes: "hint-and-body-width" },
           checked: role.name === checkedRole
         } %}
         {% set roleItems = (roleItems.push(roleItem), roleItems) %}
