@@ -25,7 +25,7 @@ function get (req, res) {
     messages: res.locals?.flash?.messages ?? [],
     organisationDetails,
     submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type),
-    countries: countries.govukFrontendFormatted()
+    countries: countries.govukFrontendFormatted(organisationDetails.addressCountry)
   }
   return response(req, res, 'simplified-account/settings/organisation-details/edit-organisation-details', context)
 }
@@ -41,7 +41,7 @@ async function post (req, res) {
       },
       organisationDetails: _.pick(req.body, ['organisationName', 'addressLine1', 'addressLine2', 'addressCity', 'addressPostcode', 'telephoneNumber', 'organisationUrl']),
       submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type),
-      countries: countries.govukFrontendFormatted()
+      countries: countries.govukFrontendFormatted(req.body.addressCountry)
     })
   }
 
@@ -58,7 +58,7 @@ async function post (req, res) {
 
   await updateService(req.service.externalId, serviceUpdates)
 
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, req.service.externalId, req.account.type))
+  return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, req.service.externalId, req.account.type))
 }
 
 const postValidation = [
