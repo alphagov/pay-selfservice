@@ -216,6 +216,9 @@ module.exports = {
       worldpayDetails: {
         index: '/settings/worldpay-details'
       },
+      worldpayDetails: {
+        index: '/settings/worldpay-details'
+      },
       cardPayments: {
         index: '/settings/card-payments'
       },
