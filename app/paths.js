@@ -213,6 +213,9 @@ module.exports = {
           update: '/settings/stripe-details/organisation-details/update'
         }
       },
+      worldpayDetails: {
+        index: '/settings/worldpay-details'
+      },
       cardPayments: {
         index: '/settings/card-payments'
       },

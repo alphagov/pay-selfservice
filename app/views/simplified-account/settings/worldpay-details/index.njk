@@ -1,0 +1,42 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Worldpay details
+{% endblock %}
+
+{% macro showTask(task) %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link govuk-link--no-visited-state" href="{{ task.href }}"
+         aria-describedby="{{ task.id }}">
+        {{ task.linkText }}
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="{{ task.id }}">
+      {% if value.complete == true %}
+        Completed
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Not yet started
+        </strong>
+      {% endif %}
+    </div>
+  </li>
+{% endmacro %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">Worldpay details</h1>
+
+  {% if incompleteTasks %}
+    <p class="govuk-body govuk-!-margin-bottom-6">
+      You need to link your Worldpay account to GOV.UK Pay.
+    </p>
+
+    <ul class="govuk-task-list">
+      {% for task in tasks %}
+        {{ showTask(task) }}
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+{% endblock %}
