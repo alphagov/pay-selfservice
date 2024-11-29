@@ -1,11 +1,16 @@
 {% extends "../settings-layout.njk" %}
 
 {% block settingsPageTitle %}
-  Organisation Details
+  Organisation details
 {% endblock %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Organisation Details</h1>
+  {{ govukBackLink({
+    text: "Back",
+    href: backLink
+  }) if backLink }}
+
+  <h1 class="govuk-heading-l">Organisation details</h1>
 
   <p class="govuk-body govuk-!-margin-bottom-6">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
 
