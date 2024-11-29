@@ -54,9 +54,9 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.custo
 simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.removeCustomParagraph, permission('email-notification-paragraph:update'), serviceSettingsController.emailNotifications.customParagraph.postRemoveCustomParagraph)
 
 // organisation details
-simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.index, permission('merchant-details:read'), serviceSettingsController.organisationDetails.get)
-simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.edit, permission('merchant-details:update'), serviceSettingsController.organisationDetails.edit.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.organisationDetails.edit, permission('merchant-details:update'), serviceSettingsController.organisationDetails.edit.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.index, enforceLiveAccountOnly, permission('merchant-details:read'), serviceSettingsController.organisationDetails.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.edit, enforceLiveAccountOnly, permission('merchant-details:update'), serviceSettingsController.organisationDetails.edit.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.organisationDetails.edit, enforceLiveAccountOnly, permission('merchant-details:update'), serviceSettingsController.organisationDetails.edit.post)
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
