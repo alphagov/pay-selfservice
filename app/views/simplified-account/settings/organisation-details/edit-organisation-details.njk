@@ -12,7 +12,7 @@
 
   <h1 class="govuk-heading-l">Organisation details</h1>
 
-  <p class="govuk-body govuk-!-margin-bottom-6">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
+  <p class="govuk-body govuk-!-margin-bottom-6 hint-and-body-width">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
 
   <form id="organisation-details-form" method="post" action="{{ submitLink }}" >
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
@@ -27,8 +27,10 @@
         name: "organisationName",
         errorMessage: { text: errors.formErrors['organisationName'] } if errors.formErrors['organisationName'] else false,
         hint: {
-          html: "<p>Enter the main name of your organisation, not your local office or individual department.</p>
-                <p>Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>"
+          html: "<div class='hint-and-body-width'>
+            <p>Enter the main name of your organisation, not your local office or individual department.</p>
+            <p>Write the organisation name in full. Only use acronyms that are widely understood (for example, NHS).</p>
+          </div>"
         },
         classes: "govuk-!-width-two-thirds",
         value: organisationDetails.organisationName
