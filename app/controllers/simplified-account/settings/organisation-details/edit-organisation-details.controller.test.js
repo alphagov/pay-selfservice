@@ -64,7 +64,8 @@ describe('Controller: settings/organisation-details', () => {
           organisationUrl: 'https://www.cpghm.example.com'
         },
         submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_ID, ACCOUNT_TYPE),
-        countries: []
+        countries: [],
+        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_ID, ACCOUNT_TYPE)
       })
     })
   })
