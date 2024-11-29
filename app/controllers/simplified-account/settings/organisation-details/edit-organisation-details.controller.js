@@ -25,7 +25,8 @@ function get (req, res) {
     messages: res.locals?.flash?.messages ?? [],
     organisationDetails,
     submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type),
-    countries: countries.govukFrontendFormatted(organisationDetails.addressCountry)
+    countries: countries.govukFrontendFormatted(organisationDetails.addressCountry),
+    backLink: req.service?.merchantDetails && formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, req.service.externalId, req.account.type)
   }
   return response(req, res, 'simplified-account/settings/organisation-details/edit-organisation-details', context)
 }
@@ -41,7 +42,8 @@ async function post (req, res) {
       },
       organisationDetails: _.pick(req.body, ['organisationName', 'addressLine1', 'addressLine2', 'addressCity', 'addressPostcode', 'telephoneNumber', 'organisationUrl']),
       submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type),
-      countries: countries.govukFrontendFormatted(req.body.addressCountry)
+      countries: countries.govukFrontendFormatted(req.body.addressCountry),
+      backLink: req.service?.merchantDetails && formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, req.service.externalId, req.account.type)
     })
   }
 

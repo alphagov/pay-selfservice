@@ -139,6 +139,16 @@ describe('Organisation details settings', () => {
           setupStubs('admin', VALID_ORG_DETAILS)
         })
 
+        it('should show the back link to the organisation details landing page', () => {
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+
+          cy.get('.govuk-back-link')
+            .should('be.visible')
+            .should('contain', 'Back')
+            .should('have.attr', 'href',
+              `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+        })
+
         it('should populate the form with the existing organisation details', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
@@ -162,6 +172,12 @@ describe('Organisation details settings', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
           cy.get('h1').should('contain', 'Organisation details')
           cy.title().should('eq', 'Settings - Organisation details - GOV.UK Pay')
+        })
+
+        it('should not show the back link to the organisation details landing page', () => {
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+
+          cy.get('.govuk-back-link').should('not.exist')
         })
 
         it('should show an empty form', () => {
