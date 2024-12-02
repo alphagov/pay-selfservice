@@ -1,5 +1,13 @@
 const GatewayAccountCredential = require('@models/GatewayAccountCredential.class')
 
+const CREDENTIAL_STATE = {
+  CREATED: 'CREATED',
+  ENTERED: 'ENTERED',
+  VERIFIED: 'VERIFIED_WITH_LIVE_PAYMENT',
+  ACTIVE: 'ACTIVE',
+  RETIRED: 'RETIRED'
+}
+
 /**
  * @class GatewayAccount
  * @property {string} name - The name of the gateway account
@@ -44,6 +52,8 @@ class GatewayAccount {
     if (gatewayAccountData?.gateway_account_credentials) {
       this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials
         .map(credentialData => new GatewayAccountCredential(credentialData))
+
+      this.activeCredential = this.gatewayAccountCredentials.filter((credential) => credential.state === CREDENTIAL_STATE.ACTIVE)[0] || null
     }
     /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
      * you should instead add any rawResponse data as part of the constructor */

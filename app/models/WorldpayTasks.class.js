@@ -1,7 +1,5 @@
 'use strict'
 
-const { getActiveCredential } = require('@utils/credentials')
-
 class WorldpayTasks {
   /**
    * @param {GatewayAccount} gatewayAccount
@@ -10,7 +8,7 @@ class WorldpayTasks {
     this.tasks = []
     this.incompleteTasks = true
 
-    const credential = getActiveCredential(gatewayAccount.rawResponse)
+    const credential = gatewayAccount.activeCredential
 
     if (gatewayAccount.allowMoto) {
       const worldpayCredentials = {

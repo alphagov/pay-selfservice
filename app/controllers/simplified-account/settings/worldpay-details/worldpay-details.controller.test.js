@@ -2,6 +2,7 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 const sinon = require('sinon')
 const { expect } = require('chai')
 const Service = require('@models/Service.class')
+const GatewayAccount = require('@models/GatewayAccount.class')
 
 const mockResponse = sinon.spy()
 
@@ -13,10 +14,19 @@ const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-ac
     external_id: SERVICE_ID
   }))
   .withAccountType(ACCOUNT_TYPE)
-  .withAccount({
+  .withAccount(new GatewayAccount({
     type: ACCOUNT_TYPE,
-    allowMoto: true
-  })
+    allow_moto: true,
+    gateway_account_id: 1,
+    gateway_account_credentials: [{
+      external_id: 'creds-id',
+      payment_provider: 'worldpay',
+      state: 'CREATED',
+      created_date: '2024-11-29T11:58:36.214Z',
+      gateway_account_id: 1,
+      credentials: {}
+    }]
+  }))
   .withStubs({
     '@utils/response': { response: mockResponse }
   })
