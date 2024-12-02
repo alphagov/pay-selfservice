@@ -31,7 +31,7 @@ const stripeDetailsTasks = Object.freeze({
   organisationDetails: {
     name: 'organisationDetails',
     friendlyName: 'Confirm your organisation\'s name and address match your government entity document',
-    path: paths.simplifiedAccount.settings.stripeDetails.organisationDetails
+    path: paths.simplifiedAccount.settings.stripeDetails.organisationDetails.index
   },
   governmentEntityDocument: {
     name: 'governmentEntityDocument',

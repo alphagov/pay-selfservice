@@ -36,7 +36,12 @@ async function post (req, res) {
       formErrors: formattedErrors.formErrors
     })
   }
-  await updateConnectorStripeProgress(req.service, req.account, 'organisation_details')
+  const isCorrect = req.body.confirmOrgDetails === 'true'
+  if (isCorrect) {
+    await updateConnectorStripeProgress(req.service, req.account, 'organisation_details')
+  } else {
+    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.organisationDetails.update, req.service.externalId, req.account.type))
+  }
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
 }
 
@@ -50,7 +55,6 @@ const postErrorResponse = (req, res, errors) => {
   })
 }
 
-module.exports = {
-  get: [checkTaskCompletion(stripeDetailsTasks.organisationDetails.name), get],
-  post: [checkTaskCompletion(stripeDetailsTasks.organisationDetails.name), post]
-}
+module.exports.get = [checkTaskCompletion(stripeDetailsTasks.organisationDetails.name), get]
+module.exports.post = [checkTaskCompletion(stripeDetailsTasks.organisationDetails.name), post]
+module.exports.update = require('./organisation-details-update.controller')

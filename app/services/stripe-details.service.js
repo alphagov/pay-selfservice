@@ -2,8 +2,11 @@ const { ConnectorClient } = require('./clients/connector.client')
 const {
   updateDirector, createDirector, updateBankAccount,
   listPersons, updatePerson, createPerson,
-  updateCompany, uploadFile, updateAccount, retrieveAccountDetails, listBankAccount
+  updateCompany, uploadFile, updateAccount, retrieveAccountDetails,
+  listBankAccount, updateOrganisationDetails
 } = require('@services/clients/stripe/stripe.client')
+const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const { updateService } = require('@services/service.service')
 const logger = require('../utils/logger')(__filename)
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
@@ -143,6 +146,33 @@ const updateStripeDetailsUploadEntityDocument = async (service, account, file) =
 }
 
 /**
+ * Updates Stripe account director for the given service and account type
+ * @param {GatewayAccount} account
+ * @param {GOVUKPayService} service
+ * @param {StripeOrganisationDetailsParams} newOrgDetails
+ */
+const updateStripeDetailsOrganisationNameAndAddress = async (service, account, newOrgDetails) => {
+  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
+  await updateOrganisationDetails(stripeAccount.stripeAccountId, newOrgDetails)
+  await updateConnectorStripeProgress(service, account, 'organisation_details')
+  logger.info('Organisation details updated for Stripe account', {
+    stripe_account_id: stripeAccount.stripeAccountId
+  })
+  const serviceUpdateRequest = new ServiceUpdateRequest()
+    .replace().merchantDetails.name(newOrgDetails.name)
+    .replace().merchantDetails.addressLine1(newOrgDetails.address_line1)
+    .replace().merchantDetails.addressLine2(newOrgDetails.address_line2 ?? '')
+    .replace().merchantDetails.addressCity(newOrgDetails.address_city)
+    .replace().merchantDetails.addressPostcode(newOrgDetails.address_postcode)
+    .replace().merchantDetails.addressCountry(newOrgDetails.address_country)
+    .formatPayload()
+  await updateService(service.externalId, serviceUpdateRequest)
+  logger.info('Organisation details updated for service', {
+    service_external_id: service.externalId
+  })
+}
+
+/**
  * Updates Stripe set up progress in connector for given service and account type
  * @param {GOVUKPayService} service
  * @param {GatewayAccount} account
@@ -194,6 +224,7 @@ module.exports = {
   updateStripeDetailsCompanyNumber,
   updateStripeDetailsVatNumber,
   updateStripeDetailsUploadEntityDocument,
+  updateStripeDetailsOrganisationNameAndAddress,
   updateConnectorStripeProgress,
   getStripeAccountOnboardingDetails
 }

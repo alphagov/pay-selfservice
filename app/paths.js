@@ -208,7 +208,10 @@ module.exports = {
         companyNumber: '/settings/stripe-details/company-number',
         director: '/settings/stripe-details/director',
         governmentEntityDocument: '/settings/stripe-details/government-entity-document',
-        organisationDetails: '/settings/stripe-details/organisation-details'
+        organisationDetails: {
+          index: '/settings/stripe-details/organisation-details/index',
+          update: '/settings/stripe-details/organisation-details/update'
+        }
       },
       cardPayments: {
         index: '/settings/card-payments'

@@ -1,4 +1,14 @@
-'use strict'
+/**
+ * @typedef {Object} StripeOrganisationDetailsParams
+ * @property {string} name
+ * @property {string} address_line1
+ * @property {string} [address_line2]
+ * @property {string} address_city
+ * @property {string} address_postcode
+ * @property {string} address_country
+ * @property {string} [telephone_number]
+ * @property {string} [url]
+ */
 
 const Joi = require('joi')
 
@@ -14,6 +24,9 @@ const schema = Joi.object({
 })
 
 class StripeOrganisationDetails {
+  /**
+   * @param {StripeOrganisationDetailsParams} body
+   */
   constructor (body) {
     const params = Object.assign({}, body)
 
