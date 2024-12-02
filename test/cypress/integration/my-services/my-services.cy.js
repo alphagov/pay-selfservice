@@ -28,7 +28,7 @@ describe('User has access to Worldpay services', () => {
     cy.setEncryptedCookies(authenticatedUserId)
 
     cy.visit('/my-services')
-    cy.get('strong').should('have.class', 'govuk-tag govuk-tag--grey').contains('WORLDPAY TEST SERVICE')
+    cy.get('strong').should('have.class', 'govuk-tag govuk-tag--grey').contains('Worldpay test service')
   })
 
   it('should not display WORLDPAY TEST SERVICE label where there is a Worldpay Live account', () => {

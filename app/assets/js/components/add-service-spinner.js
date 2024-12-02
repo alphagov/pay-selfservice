@@ -14,6 +14,5 @@
 
     document.getElementById('submit-button').setAttribute('disabled', true)
     document.getElementById('submit-button').setAttribute('aria-disabled', true)
-    document.getElementById('submit-button').setAttribute('class', 'govuk-button govuk-button--disabled')
   }
 })()

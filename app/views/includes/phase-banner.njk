@@ -23,7 +23,7 @@
         {% if normalisedPaymentProvider === 'sandbox' %}
           Test
         {% else %}
-          {{ normalisedPaymentProvider }} Test
+          {{ normalisedPaymentProvider | capitalize }} test
         {% endif %}
       {% else %}
         Live
@@ -35,7 +35,7 @@
       - switch psp
       {% endif %}
     {% endset %}
-    <strong class="service-info--tag govuk-tag {{ tagModifierClass }}">{{ tagText }}</strong>
+    <strong class="govuk-tag service-info--tag {{ tagModifierClass }}">{{ tagText }}</strong>
   {% endif %}
 {% endset %}
 

@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
 
 {% block pageTitle %}
   Request a live account - {{ currentService.name }} - GOV.UK Pay
@@ -32,7 +33,7 @@
         <div class="govuk-warning-text">
           <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
           <strong class="govuk-warning-text__text">
-            <span class="govuk-warning-text__assistive">Warning</span>
+            <span class="govuk-visually-hidden">Warning</span>
               All users with admin permissions can submit this information.  You can <a href="{{formatServicePathsFor(routes.service.teamMembers.index, currentService.externalId)}}" class="govuk-link">manage your users</a> here.
           </strong>
         </div>
@@ -91,19 +92,28 @@
         <ol class="govuk-list govuk-list--number">
           <li>Add your organisation’s name and address. These details will appear on your payment pages.
             {% if enteredOrganisationAddress %}
-              <span class="status">Completed</span>
-              {% elif enteredOrganisationName %}
-              <span class="status">In Progress</span>
+              {{ govukTag({
+                text: "Completed"
+              }) }}
+            {% elif enteredOrganisationName %}
+              {{ govukTag({
+                text: "In progress",
+                classes: "govuk-tag--grey"
+              }) }} 
             {% endif %}
           </li>
           <li>Tell us which payment service provider you will use.
             {% if chosenHowToProcessPayments %}
-              <span class="status">Completed</span>
+              {{ govukTag({
+                text: "Completed"
+              }) }}
             {% endif %}
           </li>
           <li>Read and accept our legal terms.
             {% if agreedToTerms %}
-              <span class="status">Completed</span>
+              {{ govukTag({
+                text: "Completed"
+              }) }}
             {% endif %}
           </li>
         </ol>

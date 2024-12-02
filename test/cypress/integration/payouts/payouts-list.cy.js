@@ -42,7 +42,7 @@ describe('Payout list page', () => {
     ])
 
     cy.visit('/payments-to-your-bank-account')
-    cy.get('h1').find('.govuk-tag').should('have.text', 'LIVE')
+    cy.get('h1').find('.govuk-tag').should('have.text', 'Live')
     cy.get('[data-cy=payout-date]').should('have.text', '31 December 2024')
     cy.get('#payout-list').find('tr').should('have.length', 2)
     cy.get('#pagination').should('not.exist')
@@ -50,7 +50,7 @@ describe('Payout list page', () => {
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Payments to your bank account')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'LIVE')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Live')
     })
   })
 
@@ -87,14 +87,14 @@ describe('Payout list page', () => {
 
     cy.get('a').contains('Switch to test transactions').click()
 
-    cy.get('h1').find('.govuk-tag').should('have.text', 'TEST')
+    cy.get('h1').find('.govuk-tag').should('have.text', 'Test')
     cy.get('.govuk-inset-text').contains('Test reports represent')
     cy.get('#payout-list').find('tr').should('have.length', 2)
 
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Payments to your bank account')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Test')
     })
   })
 
@@ -105,14 +105,14 @@ describe('Payout list page', () => {
     ])
 
     cy.visit('/payments-to-your-bank-account/test')
-    cy.get('h1').find('.govuk-tag').should('have.text', 'TEST')
+    cy.get('h1').find('.govuk-tag').should('have.text', 'Test')
     cy.get('#payout-list').find('tr').should('have.length', 2)
     cy.get('#pagination').should('not.exist')
 
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Payments to your bank account')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Test')
     })
   })
 
@@ -123,7 +123,7 @@ describe('Payout list page', () => {
     ])
 
     cy.visit('/payments-to-your-bank-account')
-    cy.get('h1').find('.govuk-tag').should('have.text', 'LIVE')
+    cy.get('h1').find('.govuk-tag').should('have.text', 'Live')
     cy.get('#pagination').should('not.exist')
     cy.get('#payout-list').should('not.exist')
     cy.get('.govuk-section-break.govuk-section-break--l.govuk-section-break--visible').next('p').contains('No payments to your bank account found on or after 22 May 2020')

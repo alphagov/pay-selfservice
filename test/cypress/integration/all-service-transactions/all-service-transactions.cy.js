@@ -98,7 +98,7 @@ describe('All service transactions', () => {
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'LIVE')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Live')
     })
 
     cy.get('.transactions-list--row').should('have.length', 2)
@@ -112,7 +112,7 @@ describe('All service transactions', () => {
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Test')
     })
 
     cy.get('.transactions-list--row').should('have.length', 2)
@@ -159,7 +159,7 @@ describe('All service transactions', () => {
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Test')
     })
 
     cy.get('.govuk-back-link')
@@ -172,7 +172,7 @@ describe('All service transactions', () => {
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Test')
     })
 
     cy.get('.govuk-back-link')
