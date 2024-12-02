@@ -98,13 +98,6 @@
         </p>
       {% endif %}
     </div>
-
-    <div class="pay-email-custom-paragraph">
-      <h3 class="govuk-heading-m">What we mean by ‘description’</h3>
-      <p class="govuk-body">
-        You added a payment description when you created a new payment call to the Pay API. If you’re using a payment link, the description is taken from the payment link title.
-      </p>
-    </div>
   {% endset -%}
 
   {% set refundEmailHtml %}
@@ -148,13 +141,6 @@
       <p class="govuk-body">Your refund may take up to 6 days to appear in your account.</p>
       <p class="govuk-body">This email address is not monitored. If you have any questions about your refund, contact the service you made the original payment to directly.</p>
     </div>
-
-    <div class="pay-email-custom-paragraph">
-      <h2 class="govuk-heading-m">What we mean by ‘description’</h2>
-      <p class="govuk-body">
-        You added a payment description when you created a new payment call to the Pay API. If you’re using a payment link, the description is taken from the payment link title.
-      </p>
-    </div>
   {% endset -%}
 
   {{ govukTabs({
@@ -175,4 +161,10 @@
       }
     ]
   }) }}
+
+  <h3 class="govuk-heading-m">What we mean by ‘description’</h3>
+  <p class="govuk-body">
+    You added a payment description when you created a new payment call to the Pay API. If you’re using a payment link,
+    the description is taken from the payment link title.
+  </p>
 {% endblock %}
