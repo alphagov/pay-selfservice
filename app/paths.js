@@ -214,10 +214,8 @@ module.exports = {
         }
       },
       worldpayDetails: {
-        index: '/settings/worldpay-details'
-      },
-      worldpayDetails: {
-        index: '/settings/worldpay-details'
+        index: '/settings/worldpay-details',
+        credentials: '/settings/worldpay-details/credentials'
       },
       cardPayments: {
         index: '/settings/card-payments'

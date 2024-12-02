@@ -70,7 +70,7 @@ module.exports = class ControllerTestBuilder {
       nextRequest: this.nextRequest.bind(this),
       nextResponse: this.nextResponse.bind(this),
       nextStubs: this.nextStubs.bind(this),
-      call: (method, index) => {
+      call: async (method, index) => {
         sinon.resetHistory() // ensure fresh mock data for each call
         if (this.nextStubsData) {
           Object.assign(this.stubs, this.nextStubsData) // copy by ref
@@ -88,7 +88,7 @@ module.exports = class ControllerTestBuilder {
         if (typeof fn !== 'function') {
           throw new Error(`No function found for method '${method}'${index !== undefined ? ` at index ${index}` : ''}`)
         }
-        const result = fn(this.nextReq || this.req, this.nextRes || this.res, this.next)
+        const result = await fn(this.nextReq || this.req, this.nextRes || this.res, this.next)
         const currentReq = this.nextReq || this.req
         const currentRes = this.nextRes || this.res
         this.nextReq = this.nextRes = null

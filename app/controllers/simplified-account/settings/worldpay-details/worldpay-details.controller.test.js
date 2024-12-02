@@ -3,6 +3,8 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const Service = require('@models/Service.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
+const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
 
 const mockResponse = sinon.spy()
 
@@ -13,7 +15,6 @@ const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-ac
   .withService(new Service({
     external_id: SERVICE_ID
   }))
-  .withAccountType(ACCOUNT_TYPE)
   .withAccount(new GatewayAccount({
     type: ACCOUNT_TYPE,
     allow_moto: true,
@@ -50,7 +51,8 @@ describe('Controller: settings/worldpay-details', () => {
 
     it('should pass context data to the response method', () => {
       const tasks = [{
-        href: '#',
+        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.credentials,
+          SERVICE_ID, ACCOUNT_TYPE),
         id: 'worldpay-credentials',
         linkText: 'Link your Worldpay account with GOV.UK Pay',
         complete: false
