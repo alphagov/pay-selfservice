@@ -58,6 +58,9 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.index
 simplifiedAccount.get(paths.simplifiedAccount.settings.organisationDetails.edit, enforceLiveAccountOnly, permission('merchant-details:update'), serviceSettingsController.organisationDetails.edit.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.organisationDetails.edit, enforceLiveAccountOnly, permission('merchant-details:update'), serviceSettingsController.organisationDetails.edit.post)
 
+// card types
+simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permission('transactions:read'), serviceSettingsController.cardTypes.get)
+
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })
