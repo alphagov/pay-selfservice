@@ -148,9 +148,15 @@ function patchUpdateStripeSetupSuccess (gatewayAccountId) {
   return stubBuilder('PATCH', path, 200)
 }
 
+function patchStripeProgressByServiceExternalIdAndAccountType (opts) {
+  const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/stripe-setup`
+  return stubBuilder('PATCH', path, 200)
+}
+
 module.exports = {
   getGatewayAccountStripeSetupSuccess,
   getServiceAndAccountTypeStripeSetupSuccess,
   getGatewayAccountStripeSetupFlagForMultipleCalls,
-  patchUpdateStripeSetupSuccess
+  patchUpdateStripeSetupSuccess,
+  patchStripeProgressByServiceExternalIdAndAccountType
 }
