@@ -10,7 +10,7 @@ const { GatewayAccountCredential, CREDENTIAL_STATE } = require('@models/GatewayA
  * @property {string} analyticsId - Google analyticsId of the gateway account
  * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
  * @property {[GatewayAccountCredential]} gatewayAccountCredentials - available credentials for gateway account
- * @property {GatewayAccountCredential} activeCredential - the active credential for the gateway account
+ * @property {GatewayAccountCredential} [activeCredential] - the active credential for the gateway account
  * @property {Object} rawResponse - raw 'gateway account' object
  */
 class GatewayAccount {

@@ -32,11 +32,35 @@
       You need to link your Worldpay account to GOV.UK Pay.
     </p>
 
-    <ul class="govuk-task-list">
-      {% for task in tasks %}
-        {{ showTask(task) }}
-      {% endfor %}
-    </ul>
+    {% set taskList = [] %}
+    {% for task in tasks %}
+      {% set taskList = (taskList.push({
+        title: {
+          text: task.linkText
+        },
+        href: task.href,
+        status: {
+          tag: {
+            text: "Not yet started",
+            classes: "govuk-tag--blue"
+          }
+        } if task.complete == false else (
+          {
+            tag: {
+              text: "Completed",
+              classes: "govuk-tag--grey"
+            }
+          }
+        )
+      }), taskList) %}
+    {% endfor %}
+
+    {{ govukTaskList({
+      idPrefix: "worldpay-tasks",
+      items: taskList,
+      classes: "task-list"
+    }) }}
+
   {% endif %}
 
 {% endblock %}
