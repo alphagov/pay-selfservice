@@ -14,6 +14,8 @@ class GatewayAccountCredential {
 class Credential {
   constructor (data) {
     this.stripeAccountId = data.stripe_account_id
+    /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
+     * you should instead add any rawResponse data as part of the constructor */
     this.rawResponse = data
   }
 }

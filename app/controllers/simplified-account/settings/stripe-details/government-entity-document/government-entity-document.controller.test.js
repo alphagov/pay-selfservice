@@ -14,7 +14,13 @@ const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
 const STRIPE_DETAILS_INDEX_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, SERVICE_ID, ACCOUNT_TYPE)
 
-const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/stripe-details/government-entity-document/government-entity-document.controller')
+const {
+  req,
+  res,
+  nextRequest,
+  nextStubs,
+  call
+} = new ControllerTestBuilder('@controllers/simplified-account/settings/stripe-details/government-entity-document/government-entity-document.controller')
   .withServiceExternalId(SERVICE_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
@@ -42,6 +48,209 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
       expect(mockResponse.args[0][3]).to.have.property('uploadField').to.equal(GOV_ENTITY_DOC_FORM_FIELD_NAME)
+    })
+  })
+  describe('post', () => {
+    describe('when uploading a valid file', () => {
+      before(() => {
+        nextRequest({
+          file: {
+            size: 10 * 1024 * 1024,
+            mimetype: 'image/jpeg'
+          }
+        })
+        call('post', 1)
+      })
+
+      it('should submit the file to the stripe details service', () => {
+        expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.have.been.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          {
+            size: 10485760,
+            mimetype: 'image/jpeg'
+          }
+        )
+      })
+
+      it('should set message', () => {
+        expect(req.flash).to.have.been.calledWith('messages', { state: 'success', icon: '&check;', heading: 'Service connected to Stripe', body: 'This service can now take payments' })
+      })
+
+      it('should redirect to the stripe details index', () => {
+        expect(res.redirect).to.have.been.calledWith(STRIPE_DETAILS_INDEX_PATH)
+      })
+    })
+
+    describe('when submitting invalid data', () => {
+      describe('file is too large', () => {
+        before(() => {
+          nextRequest({
+            file: {
+              size: 11 * 1024 * 1024,
+              mimetype: 'image/jpeg'
+            }
+          })
+          call('post', 1)
+        })
+
+        it('should not submit the file to the stripe details service', () => {
+          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should not set message', () => {
+          expect(req.flash).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should not redirect to the stripe details index', () => {
+          expect(res.redirect).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should call response with errors', () => {
+          expect(mockResponse).to.have.been.calledWith(
+            sinon.match.any,
+            sinon.match.any,
+            'simplified-account/settings/stripe-details/government-entity-document/index',
+            {
+              errors: {
+                summary: [
+                  { text: 'File size must be less than 10MB', href: '#government-entity-document' }
+                ],
+                formErrors: {
+                  governmentEntityDocument: 'File size must be less than 10MB'
+                }
+              },
+              backLink: STRIPE_DETAILS_INDEX_PATH,
+              uploadField: GOV_ENTITY_DOC_FORM_FIELD_NAME
+            }
+          )
+        })
+      })
+
+      describe('mimetype is incorrect', () => {
+        before(() => {
+          nextRequest({
+            file: {
+              size: 10 * 1024 * 1024,
+              mimetype: 'application/json'
+            }
+          })
+          call('post', 1)
+        })
+
+        it('should not submit the file to the stripe details service', () => {
+          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should not set message', () => {
+          expect(req.flash).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should not redirect to the stripe details index', () => {
+          expect(res.redirect).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should call response with errors', () => {
+          expect(mockResponse).to.have.been.calledWith(
+            sinon.match.any,
+            sinon.match.any,
+            'simplified-account/settings/stripe-details/government-entity-document/index',
+            {
+              errors: {
+                summary: [
+                  { text: 'File type must be PDF, JPG or PNG', href: '#government-entity-document' }
+                ],
+                formErrors: {
+                  governmentEntityDocument: 'File type must be PDF, JPG or PNG'
+                }
+              },
+              backLink: STRIPE_DETAILS_INDEX_PATH,
+              uploadField: GOV_ENTITY_DOC_FORM_FIELD_NAME
+            }
+          )
+        })
+      })
+      describe('file is missing', () => {
+        before(() => {
+          nextRequest({
+          })
+          call('post', 1)
+        })
+
+        it('should not submit the file to the stripe details service', () => {
+          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should not set message', () => {
+          expect(req.flash).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should not redirect to the stripe details index', () => {
+          expect(res.redirect).to.not.have.been.called // eslint-disable-line
+        })
+
+        it('should call response with errors', () => {
+          expect(mockResponse).to.have.been.calledWith(
+            sinon.match.any,
+            sinon.match.any,
+            'simplified-account/settings/stripe-details/government-entity-document/index',
+            {
+              errors: {
+                summary: [
+                  { text: 'Select a file to upload', href: '#government-entity-document' }
+                ],
+                formErrors: {
+                  governmentEntityDocument: 'Select a file to upload'
+                }
+              },
+              backLink: STRIPE_DETAILS_INDEX_PATH,
+              uploadField: GOV_ENTITY_DOC_FORM_FIELD_NAME
+            }
+          )
+        })
+      })
+    })
+
+    describe('when the Stripe API returns an error', () => {
+      before(() => {
+        nextStubs({
+          '@services/stripe-details.service': {
+            updateStripeDetailsUploadEntityDocument: sinon.stub().rejects({ type: 'StripeInvalidRequestError', param: 'file' })
+          }
+        })
+        nextRequest({
+          file: {
+            size: 10 * 1024 * 1024,
+            mimetype: 'image/jpeg'
+          }
+        })
+        call('post', 1)
+      })
+
+      it('should not set message', () => {
+        expect(req.flash).to.not.have.been.called // eslint-disable-line
+      })
+
+      it('should not redirect to the stripe details index', () => {
+        expect(res.redirect).to.not.have.been.called // eslint-disable-line
+      })
+
+      it('should call response with errors', () => {
+        expect(mockResponse).to.have.been.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/settings/stripe-details/government-entity-document/index',
+          {
+            errors: {
+              summary: [
+                { text: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png', href: '#government-entity-document' }
+              ]
+            },
+            backLink: STRIPE_DETAILS_INDEX_PATH,
+            uploadField: GOV_ENTITY_DOC_FORM_FIELD_NAME
+          }
+        )
+      })
     })
   })
 })
