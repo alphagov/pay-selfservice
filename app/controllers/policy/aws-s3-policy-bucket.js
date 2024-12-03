@@ -1,10 +1,11 @@
 'use strict'
 
-const AWS = require('aws-sdk')
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
 const logger = require('../../utils/logger')(__filename)
 
 // AWS S3 SDK is configured based on the production environment of the service
-const s3 = new AWS.S3()
+const s3Client = new S3Client()
 
 const bucketName = process.env.AWS_S3_POLICY_DOCUMENTS_BUCKET_NAME
 const environmentVariablesSet =
@@ -30,37 +31,13 @@ const generatePrivateLink = async function generatePrivateLink (documentConfig) 
     // signed URL expiration in seconds
     Expires: 60 * 60
   }
-  return getSignedUrl('getObject', params)
-}
-
-// wrap AWS SDK callback to work with library Promise async standards
-const getSignedUrl = (key, config) => new Promise((resolve, reject) => {
-  s3.getSignedUrl(key, config, (error, url) => {
-    if (error) {
-      reject(new Error(`Policy documents storage error: ${error.message}`))
-    } else {
-      resolve(url)
-    }
-  })
-})
-
-function getDocumentHtmlFromS3 (documentConfig) {
-  const params = {
-    ...s3BucketConfig,
-    Key: `${documentConfig.key}.html`
-  }
-  return new Promise((resolve, reject) => {
-    s3.getObject(params, function (error, data) {
-      if (error) {
-        reject(new Error(`Error getting policy document HTML: ${error.message}`))
-      } else {
-        resolve(data.Body.toString('utf-8'))
-      }
+  const command = new GetObjectCommand(params)
+  return getSignedUrl(s3Client, command, { expiresIn: 60 * 60 })
+    .catch(error => {
+      throw new Error(`Policy documents storage error: ${error.message}`)
     })
-  })
 }
 
 module.exports = {
-  generatePrivateLink,
-  getDocumentHtmlFromS3
+  generatePrivateLink
 }
