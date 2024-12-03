@@ -1,0 +1,46 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Worldpay details
+{% endblock %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">Worldpay details</h1>
+
+  {% if incompleteTasks %}
+    <p class="govuk-body govuk-!-margin-bottom-6">
+      You need to link your Worldpay account to GOV.UK Pay.
+    </p>
+
+    {% set taskList = [] %}
+    {% for task in tasks %}
+      {% set taskList = (taskList.push({
+        title: {
+          text: task.linkText
+        },
+        href: task.href,
+        status: {
+          tag: {
+            text: "Not yet started",
+            classes: "govuk-tag--blue"
+          }
+        } if task.complete == false else (
+          {
+            tag: {
+              text: "Completed",
+              classes: "govuk-tag--grey"
+            }
+          }
+        )
+      }), taskList) %}
+    {% endfor %}
+
+    {{ govukTaskList({
+      idPrefix: "worldpay-tasks",
+      items: taskList,
+      classes: "task-list"
+    }) }}
+
+  {% endif %}
+
+{% endblock %}

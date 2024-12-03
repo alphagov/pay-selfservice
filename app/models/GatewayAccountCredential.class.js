@@ -1,3 +1,11 @@
+const CREDENTIAL_STATE = {
+  CREATED: 'CREATED',
+  ENTERED: 'ENTERED',
+  VERIFIED: 'VERIFIED_WITH_LIVE_PAYMENT',
+  ACTIVE: 'ACTIVE',
+  RETIRED: 'RETIRED'
+}
+
 class GatewayAccountCredential {
   constructor (data) {
     this.externalId = data.external_id
@@ -20,4 +28,5 @@ class Credential {
   }
 }
 
-module.exports = GatewayAccountCredential
+module.exports.GatewayAccountCredential = GatewayAccountCredential
+module.exports.CREDENTIAL_STATE = CREDENTIAL_STATE

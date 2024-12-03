@@ -45,6 +45,13 @@ module.exports = (account, service, currentUrl, permissions) => {
       path: paths.simplifiedAccount.settings.stripeDetails.index,
       permission: account.paymentProvider === 'stripe' && account.type === 'live' && Boolean(permissions?.stripe_account_details_update)
     })
+    .category('payment provider')
+    .add({
+      id: 'worldpay-details',
+      name: 'worldpay details',
+      path: paths.simplifiedAccount.settings.worldpayDetails.index,
+      permission: account.paymentProvider === 'worldpay' && 'gateway_credentials_read'
+    })
     .category('payments')
     .add({
       id: 'card-payments',

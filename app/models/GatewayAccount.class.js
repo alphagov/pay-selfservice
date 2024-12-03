@@ -1,4 +1,4 @@
-const GatewayAccountCredential = require('@models/GatewayAccountCredential.class')
+const { GatewayAccountCredential, CREDENTIAL_STATE } = require('@models/GatewayAccountCredential.class')
 
 /**
  * @class GatewayAccount
@@ -6,9 +6,11 @@ const GatewayAccountCredential = require('@models/GatewayAccountCredential.class
  * @property {string} id - The id of the gateway account
  * @property {string} type - The type of the gateway account (e.g. test/live)
  * @property {string} description - The description of the gateway account
+ * @property {boolean} allowMoto - whether MOTO payments are enabled on the gateway account
  * @property {string} analyticsId - Google analyticsId of the gateway account
  * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
  * @property {[GatewayAccountCredential]} gatewayAccountCredentials - available credentials for gateway account
+ * @property {GatewayAccountCredential} [activeCredential] - the active credential for the gateway account
  * @property {Object} rawResponse - raw 'gateway account' object
  */
 class GatewayAccount {
@@ -21,6 +23,7 @@ class GatewayAccount {
    * @param {string} gatewayAccountData.type - The type of the gateway account
    * @param {string} gatewayAccountData.payment_provider - The payment provider of the gateway account
    * @param {string} gatewayAccountData.description - The description of the gateway account
+   * @param {boolean} gatewayAccountData.allow_moto - whether MOTO payments are enabled on the gateway account
    * @param {string} gatewayAccountData.analytics_id - Google analytics_id of the gateway account
    * @param {boolean} gatewayAccountData.toggle_3ds - whether 3DS is enabled or not on this gateway account
    * @param {boolean} gatewayAccountData.provider_switch_enabled - indicates that the gateway is transitioning psp
@@ -34,6 +37,7 @@ class GatewayAccount {
     this.type = gatewayAccountData.type
     this.paymentProvider = gatewayAccountData.payment_provider
     this.description = gatewayAccountData.description
+    this.allowMoto = gatewayAccountData.allow_moto
     this.analyticsId = gatewayAccountData.analytics_id
     this.toggle3ds = gatewayAccountData.toggle_3ds
     this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
@@ -41,6 +45,9 @@ class GatewayAccount {
     if (gatewayAccountData?.gateway_account_credentials) {
       this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials
         .map(credentialData => new GatewayAccountCredential(credentialData))
+
+      this.activeCredential = this.gatewayAccountCredentials.filter((credential) =>
+        credential.state === CREDENTIAL_STATE.ACTIVE)[0] || null
     }
     /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
      * you should instead add any rawResponse data as part of the constructor */
