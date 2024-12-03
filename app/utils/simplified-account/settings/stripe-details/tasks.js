@@ -80,10 +80,10 @@ const friendlyStripeTasks = (account, service) => {
       const status = task === stripeDetailsTasks.governmentEntityDocument.name && govEntityDocTaskUnavailable ? 'disabled' : completed
       const href = formatSimplifiedAccountPathsFor(stripeDetailsTasks[task].path, service.externalId, account.type)
       const id = stripeDetailsTasks[task].name
-      acc[friendlyName] = {
+      acc[id] = {
+        friendlyName,
         href,
-        status,
-        id
+        status
       }
       return acc
     }, {})

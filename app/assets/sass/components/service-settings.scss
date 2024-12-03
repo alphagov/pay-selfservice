@@ -43,3 +43,15 @@
     width: 30% !important;
   }
 }
+
+.task-list {
+  a:visited, a:link {
+    color: govuk-colour("blue");
+  }
+  a:hover {
+    color: govuk-colour("dark-blue");
+  }
+  a:active, a:focus {
+    color: govuk-colour("black");
+  }
+}

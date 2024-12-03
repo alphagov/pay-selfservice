@@ -8,7 +8,8 @@ module.exports = class ControllerTestBuilder {
     this.next = sinon.spy()
     this.req = {
       service: {},
-      account: {}
+      account: {},
+      flash: sinon.spy()
     }
     this.res = {
       redirect: sinon.spy()

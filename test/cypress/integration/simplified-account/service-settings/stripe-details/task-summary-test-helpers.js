@@ -11,9 +11,11 @@ const checkDisplayedTasks = (length, expectedTasks) => {
       cy.wrap(row).should('contain.text', task.name)
       cy.wrap(row)
         .find('.govuk-task-list__status')
-        .find('strong')
         .should('contain.text', task.status)
-        .should('have.class', task.tagClass)
+      if (task.status !== taskStatus.COMPLETE) {
+        cy.wrap(row).find('strong')
+          .should('have.class', task.tagClass)
+      }
       cy.wrap(row)
         .find('a')
         .should(task.status === taskStatus.NOT_STARTED ? 'exist' : 'not.exist')

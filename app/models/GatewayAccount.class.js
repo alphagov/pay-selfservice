@@ -42,8 +42,8 @@ class GatewayAccount {
       this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials
         .map(credentialData => new GatewayAccountCredential(credentialData))
     }
-    // TODO: this is a temporary compatability fix! If you find yourself using this for new code
-    //  you should instead add any rawResponse data as part of the constructor
+    /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
+     * you should instead add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData
   }
 

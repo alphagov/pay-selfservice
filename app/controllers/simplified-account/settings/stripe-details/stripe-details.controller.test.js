@@ -64,21 +64,21 @@ describe('Controller: settings/stripe-details', () => {
 
       it('should pass Stripe details tasks to the response method', () => {
         const stripeDetailsTasks = mockResponse.args[0][3].stripeDetailsTasks
-        expect(stripeDetailsTasks).to.have.all.keys('Organisation\'s bank details', 'Government entity document', 'VAT registration number')
-        expect(stripeDetailsTasks['Organisation\'s bank details']).to.deep.equal({
+        expect(stripeDetailsTasks).to.have.all.keys('bankAccount', 'vatNumber', 'governmentEntityDocument')
+        expect(stripeDetailsTasks.bankAccount).to.deep.equal({
+          friendlyName: 'Organisation\'s bank details',
           href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/bank-account`,
-          status: true,
-          id: 'bankAccount'
+          status: true
         })
-        expect(stripeDetailsTasks['VAT registration number']).to.deep.equal({
+        expect(stripeDetailsTasks.vatNumber).to.deep.equal({
+          friendlyName: 'VAT registration number',
           href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/vat-number`,
-          status: false,
-          id: 'vatNumber'
+          status: false
         })
-        expect(stripeDetailsTasks['Government entity document']).to.deep.equal({
+        expect(stripeDetailsTasks.governmentEntityDocument).to.deep.equal({
+          friendlyName: 'Government entity document',
           href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/government-entity-document`,
-          status: 'disabled',
-          id: 'governmentEntityDocument'
+          status: 'disabled'
         })
       })
     })

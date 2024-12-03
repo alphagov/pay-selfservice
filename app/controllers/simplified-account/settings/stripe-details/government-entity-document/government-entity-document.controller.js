@@ -49,7 +49,7 @@ async function post (req, res, next) {
   } catch (err) {
     if (err.type === 'StripeInvalidRequestError' && err.param === 'file') {
       return postErrorResponse(req, res, {
-        summary: [{ text: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png' }]
+        summary: [{ text: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png', href: '#government-entity-document' }]
       })
     }
     next(err)
