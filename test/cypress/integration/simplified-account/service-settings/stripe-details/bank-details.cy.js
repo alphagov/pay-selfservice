@@ -1,8 +1,9 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setup-stub')
-const { STRIPE } = require('@models/payment-providers')
+const { STRIPE, WORLDPAY } = require('@models/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
+const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -28,7 +29,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
         address_city: 'Duckburg',
         address_postcode: 'SW1A 1AA'
       },
-      role: opts.role,
+      role: ROLES[opts.role || 'admin'],
       features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
@@ -45,6 +46,30 @@ describe('Stripe details settings', () => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
   describe('The bank details task', () => {
+    describe('For a non-admin', () => {
+      beforeEach(() => {
+        setStubs({
+          role: 'view-and-refund'
+        })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account', { failOnStatusCode: false })
+      })
+      it('should show not found page', () => {
+        cy.title().should('eq', 'Page not found - GOV.UK Pay')
+        cy.get('h1').should('contain.text', 'Page not found')
+      })
+    })
+    describe('For a non-stripe service', () => {
+      beforeEach(() => {
+        setStubs({
+          paymentProvider: WORLDPAY
+        })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account', { failOnStatusCode: false })
+      })
+      it('should show not found page', () => {
+        cy.title().should('eq', 'Page not found - GOV.UK Pay')
+        cy.get('h1').should('contain.text', 'Page not found')
+      })
+    })
     describe('Completed', () => {
       beforeEach(() => {
         setStubs({}, [
