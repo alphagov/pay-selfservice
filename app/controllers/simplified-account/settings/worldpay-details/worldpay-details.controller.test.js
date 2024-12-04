@@ -3,7 +3,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const Service = require('@models/Service.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
-const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 
 const mockResponse = sinon.spy()

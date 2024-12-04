@@ -1,5 +1,5 @@
 const { response } = require('@utils/response')
-const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
@@ -14,8 +14,7 @@ function get (req, res) {
 const worldpayCredentialsValidations = [
   body('merchantCode').not().isEmpty().withMessage('Enter your merchant code').bail()
     .custom((value, { req }) => {
-      const merchantCode = req.body.merchantCode
-      if (req.account.allowMoto && !merchantCode.endsWith('MOTO') && !merchantCode.endsWith('MOTOGBP')) {
+      if (req.account.allowMoto && !value.endsWith('MOTO') && !value.endsWith('MOTOGBP')) {
         throw new Error('Enter a MOTO merchant code. MOTO payments are enabled for the account')
       }
     }),
