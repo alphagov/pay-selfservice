@@ -17,6 +17,7 @@ const worldpayCredentialsValidations = [
       if (req.account.allowMoto && !value.endsWith('MOTO') && !value.endsWith('MOTOGBP')) {
         throw new Error('Enter a MOTO merchant code. MOTO payments are enabled for the account')
       }
+      return true
     }),
   body('username').not().isEmpty().withMessage('Enter your username'),
   body('password').not().isEmpty().withMessage('Enter your password')
