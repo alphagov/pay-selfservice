@@ -10,10 +10,10 @@ const MINIMUM_VISIBLE_ITEMS = 3.5 // Minimum amount of items to show in dropdown
 
 const ENHANCEMENT_SELECTOR = [...document.querySelectorAll('select[data-enhance-multiple]')]
 const TOP_LEVEL_SELECTOR = '.multi-select'
-const OPEN_BUTTON_SELECTOR = '.multi-select-title'
-const CLOSE_BUTTON_SELECTOR = '.multi-select-close-button'
+const OPEN_BUTTON_SELECTOR = '.multi-select__title'
+const CLOSE_BUTTON_SELECTOR = '.multi-select-dropdown__close-button'
 const DROPDOWN_SELECTOR = '.multi-select-dropdown'
-const SCROLL_CONTAINER_SELECTOR = '.multi-select-dropdown-inner-container'
+const SCROLL_CONTAINER_SELECTOR = '.multi-select-dropdown__inner-container'
 const ITEM_SELECTOR = '.govuk-checkboxes__input'
 const CURRENT_SELECTIONS = '.multi-select-current-selections'
 
