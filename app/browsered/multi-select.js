@@ -1,4 +1,3 @@
-'use strict'
 // TODO: we should probably do some browser testing in this project to prove this all works as intended
 
 const multiSelect = require('../views/includes/multi-select.njk')
@@ -6,15 +5,13 @@ const multiSelect = require('../views/includes/multi-select.njk')
 // Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
 require('./polyfills')
 
-// Variables
 const MAXIMUM_VISIBLE_ITEMS = 8.5 // Maximum amount of items to show in dropdown
 const MINIMUM_VISIBLE_ITEMS = 3.5 // Minimum amount of items to show in dropdown (assuming total is larger than this value)
 
-// Selectors
 const ENHANCEMENT_SELECTOR = [...document.querySelectorAll('select[data-enhance-multiple]')]
 const TOP_LEVEL_SELECTOR = '.multi-select'
 const OPEN_BUTTON_SELECTOR = '.multi-select-title'
-const CLOSE_BUTTON_SELECTOR = '.multi-select-dropdown-close-area'
+const CLOSE_BUTTON_SELECTOR = '.multi-select-close-button'
 const DROPDOWN_SELECTOR = '.multi-select-dropdown'
 const SCROLL_CONTAINER_SELECTOR = '.multi-select-dropdown-inner-container'
 const ITEM_SELECTOR = '.govuk-checkboxes__input'
@@ -56,11 +53,24 @@ function progressivelyEnhanceSelects () {
     const dropdown = [...newMultiSelect.querySelectorAll(DROPDOWN_SELECTOR)][0]
     const scrollContainer = [...newMultiSelect.querySelectorAll(SCROLL_CONTAINER_SELECTOR)][0]
 
+    // close if user clicks outside the dropdown
+    document.addEventListener('click', (event) => {
+      const dropdowns = document.querySelectorAll(DROPDOWN_SELECTOR)
+      dropdowns.forEach(dropdown => {
+        if (!dropdown.contains(event.target) &&
+          !event.target.closest(OPEN_BUTTON_SELECTOR)) {
+          dropdown.style.visibility = 'hidden'
+          dropdown.closest(TOP_LEVEL_SELECTOR)
+            .querySelector(OPEN_BUTTON_SELECTOR)
+            .setAttribute('aria-expanded', false)
+        }
+      })
+    }, false)
+
     openButton.addEventListener('click', onOpenButtonClick, false)
-    closeButton.addEventListener('click', onCloseAreaClick, false)
+    closeButton.addEventListener('click', onCloseButtonClick, false)
     items.forEach(item => {
       item.addEventListener('change', onItemChange, false)
-      item.addEventListener('blur', onItemBlur, false)
     })
     const itemHeight = ([...items].map(item => item.parentNode.offsetHeight).reduce((sum, value) => sum + value) / items.length)
     const maxVisibleItems = Math.min(Math.floor(((window.innerHeight - openButton.getBoundingClientRect().top) / itemHeight) - 0.5) + 0.5, MAXIMUM_VISIBLE_ITEMS)
@@ -92,29 +102,30 @@ const closeMultiSelectOnEscapeKeypress = function () {
   }
 }
 
-const onItemBlur = event => {
-  const dropdown = event.target.closest(DROPDOWN_SELECTOR)
-  setTimeout(() => {
-    if ([...dropdown.querySelectorAll(`${ITEM_SELECTOR}:focus`)].length <= 0) {
-      dropdown.style.visibility = 'hidden'
-      dropdown.closest(TOP_LEVEL_SELECTOR).querySelector(OPEN_BUTTON_SELECTOR).setAttribute('aria-expanded', false)
-    }
-  }, 100)
+const onCloseButtonClick = event => {
+  const { target } = event
+  event.stopPropagation()
+  const dropdown = target.closest(TOP_LEVEL_SELECTOR).querySelector(DROPDOWN_SELECTOR)
+  dropdown.style.visibility = 'hidden'
+  target.setAttribute('aria-expanded', false)
 }
 
 const onOpenButtonClick = event => {
   const { target } = event
-  target.blur();
-  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'visible';
-  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(ITEM_SELECTOR)][0].focus()
-  target.closest(OPEN_BUTTON_SELECTOR).setAttribute('aria-expanded', true)
-}
+  event.stopPropagation()
 
-const onCloseAreaClick = event => {
-  const { target } = event;
-  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(OPEN_BUTTON_SELECTOR)][0].focus();
-  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'hidden'
-  target.closest(OPEN_BUTTON_SELECTOR).setAttribute('aria-expanded', false)
+  // close all other dropdowns first
+  document.querySelectorAll(DROPDOWN_SELECTOR).forEach(dropdown => {
+    dropdown.style.visibility = 'hidden'
+    dropdown.closest(TOP_LEVEL_SELECTOR)
+      .querySelector(OPEN_BUTTON_SELECTOR)
+      .setAttribute('aria-expanded', false)
+  })
+
+  const dropdown = target.closest(TOP_LEVEL_SELECTOR).querySelector(DROPDOWN_SELECTOR)
+  dropdown.style.visibility = 'visible'
+  dropdown.querySelector(ITEM_SELECTOR).focus()
+  target.setAttribute('aria-expanded', true)
 }
 
 const onItemChange = event => {

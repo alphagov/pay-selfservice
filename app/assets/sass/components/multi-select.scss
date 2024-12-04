@@ -20,8 +20,6 @@
   -webkit-appearance: none;
   appearance: none;
   max-width: 100%;
-
-  display: block;
   cursor: pointer;
 
   div {
@@ -47,48 +45,37 @@
   }
 }
 
-.multi-select-dropdown{
+.multi-select-dropdown {
   @extend .govuk-clearfix;
-
   top: 0;
   left: 0;
   background-color: govuk-colour("white");
   z-index: 10;
   position: absolute;
   border: 2px solid $govuk-text-colour;
-  box-sizing: border-box;
   width: 100%;
   font-size: 16px;
 
+  .multi-select-close-button {
+    min-height: 34px;
+    width: 100%;
+    margin-bottom: 0;
+  }
+
   .multi-select-dropdown-inner-container {
+    padding: 10px 5px;
     overflow-y: scroll;
     overflow-x: hidden;
+
+    .govuk-checkboxes__item {
+      label {
+        width: 100%;
+      }
+    }
   }
 
   &:focus {
     outline: 3px solid $govuk-focus-colour;
     outline-offset: 0;
-  }
-
-  .multi-select-dropdown-close-area {
-    width: 15%;
-    top: 0;
-    right: 13px;
-    position: absolute;
-    z-index: 14;
-    height: 100%;
-    background-image: url("/public/images/dd-arrow.svg");
-    background-repeat: no-repeat;
-    background-position: right -4px top 6px;
-  }
-
-  .govuk-checkboxes__item {
-    display: flex;
-    align-items: start;
-    text-align: left;
-    cursor: pointer;
-    input {
-      z-index: 12;
-    }
   }
 }
