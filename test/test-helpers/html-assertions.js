@@ -11,7 +11,7 @@ const formatPSPname = require('../../app/utils/format-PSP-name')
 const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
 
 const environment = nunjucks.configure([
-  './node_modules/govuk-frontend/dist/',
+  './node_modules/govuk-frontend/',
   './app/views',
   './govuk_modules/govuk_template/views/layouts'
 ], {

@@ -58,13 +58,13 @@ describe('Request to go live: index', () => {
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(1) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(1) > span').should('not.exist')
 
       cy.get('ol.govuk-list > li:nth-child(2)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(2) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(2) > span').should('not.exist')
 
       cy.get('ol.govuk-list > li:nth-child(3)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(3) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(3) > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Start now')
@@ -85,18 +85,17 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
-
       cy.get('h1').should('contain', 'Request a live account')
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(1) > strong').should('contain', 'In progress')
+      cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'In Progress')
 
       cy.get('ol.govuk-list > li:nth-child(2)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(2) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(2) > span').should('not.exist')
 
       cy.get('ol.govuk-list > li:nth-child(3)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(3) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(3) > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -118,13 +117,13 @@ describe('Request to go live: index', () => {
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(1) > strong').should('contain', 'Completed')
+      cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'Completed')
 
       cy.get('ol.govuk-list > li:nth-child(2)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(2) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(2) > span').should('not.exist')
 
       cy.get('ol.govuk-list > li:nth-child(3)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(3) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(3) > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -145,15 +144,14 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
-
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(1) > strong').should('contain', 'Completed')
+      cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'Completed')
 
       cy.get('ol.govuk-list > li:nth-child(2)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(2) > strong').should('contain', 'Completed')
+      cy.get('ol.govuk-list > li:nth-child(2) > span').should('contain', 'Completed')
 
       cy.get('ol.govuk-list > li:nth-child(3)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(3) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(3) > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -193,13 +191,13 @@ describe('Request to go live: index', () => {
       cy.get('h1 + p').should('contain', 'Complete these steps to request a live account')
 
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(1) > strong').should('contain', 'Completed')
+      cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'Completed')
 
       cy.get('ol.govuk-list > li:nth-child(2)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(2) > strong').should('contain', 'Completed')
+      cy.get('ol.govuk-list > li:nth-child(2) > span').should('contain', 'Completed')
 
       cy.get('ol.govuk-list > li:nth-child(3)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(3) > strong').should('not.exist')
+      cy.get('ol.govuk-list > li:nth-child(3) > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -294,13 +292,13 @@ describe('Request to go live: index', () => {
       cy.get('.next-steps-panel').should('not.exist')
 
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(1) > strong').should('contain', 'Completed')
+      cy.get('ol.govuk-list > li:nth-child(1) > span').should('contain', 'Completed')
 
       cy.get('ol.govuk-list > li:nth-child(2)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(2) > strong').should('contain', 'Completed')
+      cy.get('ol.govuk-list > li:nth-child(2) > span').should('contain', 'Completed')
 
       cy.get('ol.govuk-list > li:nth-child(3)').should('exist')
-      cy.get('ol.govuk-list > li:nth-child(3) > strong').should('contain', 'Completed')
+      cy.get('ol.govuk-list > li:nth-child(3) > span').should('contain', 'Completed')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })

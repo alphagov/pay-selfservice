@@ -1,10 +1,7 @@
 // We set all our pages wider in selfservice because it helps people viewing the list of transactions
 $govuk-page-width: 1200px;
-$govuk-suppressed-warnings: (
-    govuk-typography-scale-14
-);
 
-@import "govuk-frontend/dist/govuk/all";
+@import "govuk-frontend/govuk/all";
 @import "accessible-autocomplete";
 
 @import "components/cookie-message";

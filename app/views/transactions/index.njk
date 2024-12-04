@@ -30,7 +30,7 @@
   {% if allServiceTransactions %}
     {% set pageTitleBreadcrumbWithTag %}
       <span>Transactions for all services</span>
-      <strong class="govuk-tag govuk-tag--grey service-info--tag ">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
+      <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
     {% endset %}
     {{ breadcrumbs([
       { text: "My services", href: routes.serviceSwitcher.index },
@@ -62,7 +62,7 @@
   <h1 class="govuk-heading-l">
     {% if allServiceTransactions %}
        Transactions for all services
-       <strong class="govuk-tag govuk-tag--grey">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
+       <strong class="govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
     {% else %}
        Transactions
     {% endif %}

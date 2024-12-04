@@ -71,7 +71,7 @@ function initialiseGlobalMiddleware (app) {
   if (process.env.DISABLE_REQUEST_LOGGING !== 'true') {
     app.use(/\/((?!public|favicon.ico).)*/, loggingMiddleware())
   }
-  app.use(favicon('node_modules/govuk-frontend/dist/govuk/assets/images/favicon.ico'))
+  app.use(favicon('node_modules/govuk-frontend/govuk/assets/images/favicon.ico'))
   app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
@@ -99,7 +99,7 @@ function initialiseTemplateEngine (app) {
   // Configure nunjucks
   // see https://mozilla.github.io/nunjucks/api.html#configure
   const nunjucksEnvironment = nunjucks.configure([
-    'node_modules/govuk-frontend/dist/',
+    'node_modules/govuk-frontend/',
     'app/views'
   ], {
     express: app, // the express app that nunjucks should install to
@@ -135,7 +135,7 @@ function initialiseTemplateEngine (app) {
 
 function initialisePublic (app) {
   app.use('/public', express.static('public'))
-  app.use('/', express.static('node_modules/govuk-frontend/dist/govuk'))
+  app.use('/', express.static('node_modules/govuk-frontend/govuk'))
 }
 
 function initialiseRoutes (app) {

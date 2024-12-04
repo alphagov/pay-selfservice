@@ -79,7 +79,7 @@ describe('All service transactions without automatic search', () => {
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Live')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'LIVE')
     })
 
     cy.get('.transactions-list--row').should('have.length', 0)
@@ -92,7 +92,7 @@ describe('All service transactions without automatic search', () => {
     cy.get('.govuk-breadcrumbs').within(() => {
       cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Test')
+      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'TEST')
     })
 
     cy.get('.transactions-list--row').should('have.length', 2)

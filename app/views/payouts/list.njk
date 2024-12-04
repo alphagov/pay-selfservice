@@ -8,7 +8,7 @@ Payments to your bank account - GOV.UK Pay
 {% block beforeContent %}
   {% set pageTitleBreadcrumbWithTag %}
       <span>Payments to your bank account</span>
-      <strong class="govuk-tag govuk-tag--grey service-info--tag">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
+      <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
   {% endset %}
   {{ breadcrumbs([
     { text: "My services", href: routes.serviceSwitcher.index },
@@ -20,7 +20,7 @@ Payments to your bank account - GOV.UK Pay
 <div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">
     Payments to your bank account
-    <strong class="govuk-tag govuk-tag--grey">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
+    <strong class="govuk-tag govuk-tag--grey">{{ "LIVE" if filterLiveAccounts else "TEST" }}</strong>
   </h1>
 </div>
 <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">

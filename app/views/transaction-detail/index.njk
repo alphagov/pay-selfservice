@@ -12,7 +12,7 @@
   {% if contextIsAllServiceTransactions %}
     {% set pageTitleBreadcrumbWithTag %}
       <span>Transactions for all services</span>
-      <strong class="govuk-tag govuk-tag--grey service-info--tag">{{ "Live" if live else "Test" }}</strong>
+      <strong class="service-info--tag govuk-tag govuk-tag--grey">{{ "LIVE" if live else "TEST" }}</strong>
     {% endset %}
     {{ breadcrumbs([
       { text: "My services", href: routes.serviceSwitcher.index },
