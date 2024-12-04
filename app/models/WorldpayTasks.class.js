@@ -1,10 +1,13 @@
 'use strict'
 
+const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
+
 class WorldpayTasks {
   /**
    * @param {GatewayAccount} gatewayAccount
    */
-  constructor (gatewayAccount) {
+  constructor (gatewayAccount, service) {
     this.tasks = []
     this.incompleteTasks = true
 
@@ -12,7 +15,8 @@ class WorldpayTasks {
 
     if (gatewayAccount.allowMoto) {
       const worldpayCredentials = {
-        href: '#',
+        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.credentials,
+          service.externalId, gatewayAccount.type),
         id: 'worldpay-credentials',
         linkText: 'Link your Worldpay account with GOV.UK Pay',
         complete: true

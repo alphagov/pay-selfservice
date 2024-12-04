@@ -95,8 +95,8 @@ describe('Middleware: defaultViewDecider', () => {
   })
 })
 
-const assertEmailNotificationsControllerIsSelected = (accountType) => {
-  const actual = call()
+const assertEmailNotificationsControllerIsSelected = async (accountType) => {
+  const actual = await call()
   const expectedUrl = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, SERVICE_ID, accountType)
   const expectedController = require('@controllers/simplified-account/settings/email-notifications/email-notifications.controller')
   expect(actual.req.url).to.equal(expectedUrl)
@@ -104,8 +104,8 @@ const assertEmailNotificationsControllerIsSelected = (accountType) => {
   sinon.assert.called(next)
 }
 
-const assertServiceNameControllerIsSelected = (accountType) => {
-  const actual = call()
+const assertServiceNameControllerIsSelected = async (accountType) => {
+  const actual = await call()
   const expectedUrl = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_ID, accountType)
   const expectedController = require('@controllers/simplified-account/settings/service-name/service-name.controller')
   expect(actual.req.url).to.equal(expectedUrl)

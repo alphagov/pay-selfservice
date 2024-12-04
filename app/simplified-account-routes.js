@@ -64,6 +64,11 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permissi
 // worldpay details
 simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
 
+// worldpay details
+simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.credentials, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.credentials, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.post)
+
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })
