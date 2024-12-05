@@ -45,13 +45,13 @@ describe('Stripe details settings', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
-  describe('The bank details task', () => {
+  describe('The VAT number task', () => {
     describe('For a non-admin', () => {
       beforeEach(() => {
         setStubs({
           role: 'view-and-refund'
         })
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account', { failOnStatusCode: false })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/vat-number', { failOnStatusCode: false })
       })
       it('should show not found page', () => {
         cy.title().should('eq', 'Page not found - GOV.UK Pay')
@@ -63,7 +63,7 @@ describe('Stripe details settings', () => {
         setStubs({
           paymentProvider: WORLDPAY
         })
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account', { failOnStatusCode: false })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/vat-number', { failOnStatusCode: false })
       })
       it('should show not found page', () => {
         cy.title().should('eq', 'Page not found - GOV.UK Pay')
@@ -76,10 +76,10 @@ describe('Stripe details settings', () => {
           stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
-            bankAccount: true
+            vatNumber: true
           })
         ])
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/vat-number')
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
@@ -94,7 +94,7 @@ describe('Stripe details settings', () => {
             accountType: LIVE_ACCOUNT_TYPE
           })
         ])
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/vat-number')
       })
       describe('The settings navigation', () => {
         it('should show stripe details', () => {
@@ -110,13 +110,13 @@ describe('Stripe details settings', () => {
       })
       describe('The task page', () => {
         it('should show the correct title', () => {
-          cy.title().should('eq', 'Settings - Stripe details - Organisation\'s bank details - GOV.UK Pay')
+          cy.title().should('eq', 'Settings - Stripe details - VAT registration number - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
-          cy.get('h1').should('contain', 'Organisation\'s bank details')
+          cy.get('h1').should('contain', 'VAT registration number')
         })
       })
-      describe('When inputting bank details', () => {
+      describe('When inputting a VAT registration number', () => {
         beforeEach(() => {
           setStubs({}, [
             stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
@@ -124,72 +124,38 @@ describe('Stripe details settings', () => {
               accountType: LIVE_ACCOUNT_TYPE
             })
           ])
-          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
-        })
-
-        it('should format sort code with dashes when javascript is enabled', () => {
-          cy.get('input[name="sortCode"]')
-            .clear({ force: true })
-            .type('010203')
-
-          cy.get('input[name="sortCode"]').should('have.value', '01-02-03')
-        })
-
-        it('should disallow non-numeric characters on form inputs when javascript is enabled', () => {
-          cy.get('input[name="sortCode"]')
-            .clear({ force: true })
-            .type('0102AB')
-
-          cy.get('input[name="accountNumber"]')
-            .clear({ force: true })
-            .type('fff12345')
-
-          cy.get('input[name="sortCode"]').should('have.value', '01-02')
-          cy.get('input[name="accountNumber"]').should('have.value', '12345')
+          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/vat-number')
         })
 
         it('should render errors when submitting bad inputs', () => {
-          const invalidSortCodeError = 'Enter a valid sort code like 30-94-30 or 309430'
-          const emptySortCodeError = 'Enter a sort code'
-          const invalidAccountNumberError = 'Enter a valid account number like 00733445'
-          const emptyAccountNumberError = 'Enter an account number'
+          const invalidVATRegError = 'Enter a valid VAT registration number'
+          const emptyVATRegError = 'Enter a VAT registration number'
 
           cy.get('.govuk-error-summary').should('not.exist')
 
-          cy.get('input[name="sortCode"]')
+          cy.get('input[name="vatNumber"]')
             .clear({ force: true })
-            .type('00')
-          cy.get('input[name="accountNumber"]')
-            .clear({ force: true })
-            .type('00')
+            .type('what')
 
-          cy.get('#bank-account-submit').click()
+          cy.get('#vat-number-submit').click()
           cy.get('.govuk-error-summary')
             .should('exist')
-            .should('contain', invalidSortCodeError)
-            .should('contain', invalidAccountNumberError)
-          cy.get('input[name="sortCode"]').should('have.class', 'govuk-input--error')
-          cy.get('input[name="accountNumber"]').should('have.class', 'govuk-input--error')
-          cy.get('#sort-code-error').should('contain.text', invalidSortCodeError)
-          cy.get('#account-number-error').should('contain.text', invalidAccountNumberError)
+            .should('contain', invalidVATRegError)
+          cy.get('input[name="vatNumber"]').should('have.class', 'govuk-input--error')
+          cy.get('#vat-number-error').should('contain.text', invalidVATRegError)
 
-          cy.get('input[name="sortCode"]')
-            .clear({ force: true })
-          cy.get('input[name="accountNumber"]')
+          cy.get('input[name="vatNumber"]')
             .clear({ force: true })
 
-          cy.get('#bank-account-submit').click()
+          cy.get('#vat-number-submit').click()
           cy.get('.govuk-error-summary')
             .should('exist')
-            .should('contain', emptySortCodeError)
-            .should('contain', emptyAccountNumberError)
-          cy.get('input[name="sortCode"]').should('have.class', 'govuk-input--error')
-          cy.get('input[name="accountNumber"]').should('have.class', 'govuk-input--error')
-          cy.get('#sort-code-error').should('contain.text', emptySortCodeError)
-          cy.get('#account-number-error').should('contain.text', emptyAccountNumberError)
+            .should('contain', emptyVATRegError)
+          cy.get('input[name="vatNumber"]').should('have.class', 'govuk-input--error')
+          cy.get('#vat-number-error').should('contain.text', emptyVATRegError)
         })
       })
-      describe('When submitting valid bank details', () => {
+      describe('When selecting yes and submitting a VAT number', () => {
         beforeEach(() => {
           setStubs({}, [
             stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
@@ -213,27 +179,72 @@ describe('Stripe details settings', () => {
             stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE,
-              bankAccount: true
+              vatNumber: true
             })
           ])
-          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/vat-number')
         })
 
         it('should redirect to the task summary page on success', () => {
-          cy.get('input[name="sortCode"]')
+          cy.get('input[name="vatNumber"]')
             .clear({ force: true })
-            .type('010203')
+            .type('GB123456789')
 
-          cy.get('input[name="accountNumber"]')
-            .clear({ force: true })
-            .type('00012345')
-
-          cy.get('#bank-account-submit').click()
+          cy.get('#vat-number-submit').click()
           cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
-          cy.location('pathname').should('not.contain', '/bank-account')
+          cy.location('pathname').should('not.contain', '/vat-number')
           cy.get('.govuk-task-list__item')
-            .contains('Organisation\'s bank details')
+            .contains('VAT registration number')
+            .parent()
+            .parent()
+            .within(() => {
+              cy.get('.govuk-task-list__status').should('contain.text', 'Complete')
+            })
+        })
+      })
+      describe('When selecting no and completing the task', () => {
+        beforeEach(() => {
+          setStubs({}, [
+            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+              serviceExternalId: SERVICE_EXTERNAL_ID,
+              accountType: LIVE_ACCOUNT_TYPE
+            }),
+            gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(
+              SERVICE_EXTERNAL_ID,
+              LIVE_ACCOUNT_TYPE,
+              {
+                stripeAccountId: STRIPE_ACCOUNT_ID
+              }
+            ),
+            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType({
+              serviceExternalId: SERVICE_EXTERNAL_ID,
+              accountType: LIVE_ACCOUNT_TYPE
+            }),
+            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+              serviceExternalId: SERVICE_EXTERNAL_ID,
+              accountType: LIVE_ACCOUNT_TYPE,
+              vatNumber: true
+            })
+          ])
+          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/vat-number')
+        })
+
+        it('should redirect to the task summary page on success', () => {
+          cy.get('input[type="radio"]')
+            .siblings('label')
+            .contains('No')
+            .prev('input[type="radio"]')
+            .check()
+
+          cy.get('input[name="vatNumber"]').should('not.be.visible')
+
+          cy.get('#vat-number-submit').click()
+          cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+          cy.get('h1').should('contain', 'Stripe details')
+          cy.location('pathname').should('not.contain', '/vat-number')
+          cy.get('.govuk-task-list__item')
+            .contains('VAT registration number')
             .parent()
             .parent()
             .within(() => {
