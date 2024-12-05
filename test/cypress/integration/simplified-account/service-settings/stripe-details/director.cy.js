@@ -45,13 +45,13 @@ describe('Stripe details settings', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
-  describe('The bank details task', () => {
+  describe('The director task', () => {
     describe('For a non-admin', () => {
       beforeEach(() => {
         setStubs({
           role: 'view-and-refund'
         })
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account', { failOnStatusCode: false })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/director', { failOnStatusCode: false })
       })
       it('should show not found page', () => {
         cy.title().should('eq', 'Page not found - GOV.UK Pay')
@@ -63,7 +63,7 @@ describe('Stripe details settings', () => {
         setStubs({
           paymentProvider: WORLDPAY
         })
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account', { failOnStatusCode: false })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/director', { failOnStatusCode: false })
       })
       it('should show not found page', () => {
         cy.title().should('eq', 'Page not found - GOV.UK Pay')
@@ -76,10 +76,10 @@ describe('Stripe details settings', () => {
           stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
-            bankAccount: true
+            director: true
           })
         ])
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/director')
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
@@ -94,7 +94,7 @@ describe('Stripe details settings', () => {
             accountType: LIVE_ACCOUNT_TYPE
           })
         ])
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/director')
       })
       describe('The settings navigation', () => {
         it('should show stripe details', () => {
@@ -110,13 +110,13 @@ describe('Stripe details settings', () => {
       })
       describe('The task page', () => {
         it('should show the correct title', () => {
-          cy.title().should('eq', 'Settings - Stripe details - Organisation\'s bank details - GOV.UK Pay')
+          cy.title().should('eq', 'Settings - Stripe details - Service director - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
-          cy.get('h1').should('contain', 'Organisation\'s bank details')
+          cy.get('h1').should('contain', 'Service director')
         })
       })
-      describe('When inputting bank details', () => {
+      describe('When inputting director details', () => {
         beforeEach(() => {
           setStubs({}, [
             stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
@@ -124,72 +124,51 @@ describe('Stripe details settings', () => {
               accountType: LIVE_ACCOUNT_TYPE
             })
           ])
-          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
-        })
-
-        it('should format sort code with dashes when javascript is enabled', () => {
-          cy.get('input[name="sortCode"]')
-            .clear({ force: true })
-            .type('010203')
-
-          cy.get('input[name="sortCode"]').should('have.value', '01-02-03')
-        })
-
-        it('should disallow non-numeric characters on form inputs when javascript is enabled', () => {
-          cy.get('input[name="sortCode"]')
-            .clear({ force: true })
-            .type('0102AB')
-
-          cy.get('input[name="accountNumber"]')
-            .clear({ force: true })
-            .type('fff12345')
-
-          cy.get('input[name="sortCode"]').should('have.value', '01-02')
-          cy.get('input[name="accountNumber"]').should('have.value', '12345')
+          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/director')
         })
 
         it('should render errors when submitting bad inputs', () => {
-          const invalidSortCodeError = 'Enter a valid sort code like 30-94-30 or 309430'
-          const emptySortCodeError = 'Enter a sort code'
-          const invalidAccountNumberError = 'Enter a valid account number like 00733445'
-          const emptyAccountNumberError = 'Enter an account number'
+          const emptyFirstNameError = 'Enter your first name'
+          const emptyLastNameError = 'Enter your last name'
+          const tooOldError = 'Enter a valid year of birth'
+          const invalidEmailError = 'Enter a real email address'
 
           cy.get('.govuk-error-summary').should('not.exist')
 
-          cy.get('input[name="sortCode"]')
+          cy.get('input[name="firstName"]')
             .clear({ force: true })
-            .type('00')
-          cy.get('input[name="accountNumber"]')
+          cy.get('input[name="lastName"]')
             .clear({ force: true })
-            .type('00')
+          cy.get('input[name="dobDay"]')
+            .clear({ force: true })
+            .type('01')
+          cy.get('input[name="dobMonth"]')
+            .clear({ force: true })
+            .type('01')
+          cy.get('input[name="dobYear"]')
+            .clear({ force: true })
+            .type('1899')
+          cy.get('input[name="workEmail"]')
+            .clear({ force: true })
+            .type('not.an.email.address')
 
-          cy.get('#bank-account-submit').click()
+          cy.get('#director-submit').click()
           cy.get('.govuk-error-summary')
             .should('exist')
-            .should('contain', invalidSortCodeError)
-            .should('contain', invalidAccountNumberError)
-          cy.get('input[name="sortCode"]').should('have.class', 'govuk-input--error')
-          cy.get('input[name="accountNumber"]').should('have.class', 'govuk-input--error')
-          cy.get('#sort-code-error').should('contain.text', invalidSortCodeError)
-          cy.get('#account-number-error').should('contain.text', invalidAccountNumberError)
-
-          cy.get('input[name="sortCode"]')
-            .clear({ force: true })
-          cy.get('input[name="accountNumber"]')
-            .clear({ force: true })
-
-          cy.get('#bank-account-submit').click()
-          cy.get('.govuk-error-summary')
-            .should('exist')
-            .should('contain', emptySortCodeError)
-            .should('contain', emptyAccountNumberError)
-          cy.get('input[name="sortCode"]').should('have.class', 'govuk-input--error')
-          cy.get('input[name="accountNumber"]').should('have.class', 'govuk-input--error')
-          cy.get('#sort-code-error').should('contain.text', emptySortCodeError)
-          cy.get('#account-number-error').should('contain.text', emptyAccountNumberError)
+            .should('contain', emptyFirstNameError)
+            .should('contain', emptyLastNameError)
+            .should('contain', tooOldError)
+            .should('contain', invalidEmailError)
+          cy.get('input[name="firstName"]').should('have.class', 'govuk-input--error')
+          cy.get('#first-name-error').should('contain.text', emptyFirstNameError)
+          cy.get('input[name="lastName"]').should('have.class', 'govuk-input--error')
+          cy.get('#last-name-error').should('contain.text', emptyLastNameError)
+          cy.get('#dob-error').should('contain.text', tooOldError)
+          cy.get('input[name="workEmail"]').should('have.class', 'govuk-input--error')
+          cy.get('#work-email-error').should('contain.text', invalidEmailError)
         })
       })
-      describe('When submitting valid bank details', () => {
+      describe('When submitting valid director details', () => {
         beforeEach(() => {
           setStubs({}, [
             stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
@@ -213,27 +192,38 @@ describe('Stripe details settings', () => {
             stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE,
-              bankAccount: true
+              director: true
             })
           ])
-          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/director')
         })
 
         it('should redirect to the task summary page on success', () => {
-          cy.get('input[name="sortCode"]')
+          cy.get('input[name="firstName"]')
             .clear({ force: true })
-            .type('010203')
-
-          cy.get('input[name="accountNumber"]')
+            .type('Scrooge')
+          cy.get('input[name="lastName"]')
             .clear({ force: true })
-            .type('00012345')
+            .type('McDuck')
+          cy.get('input[name="dobDay"]')
+            .clear({ force: true })
+            .type('01')
+          cy.get('input[name="dobMonth"]')
+            .clear({ force: true })
+            .type('01')
+          cy.get('input[name="dobYear"]')
+            .clear({ force: true })
+            .type('1901')
+          cy.get('input[name="workEmail"]')
+            .clear({ force: true })
+            .type('atotallyrealemailaddress@example.com')
 
-          cy.get('#bank-account-submit').click()
+          cy.get('#director-submit').click()
           cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
-          cy.location('pathname').should('not.contain', '/bank-account')
+          cy.location('pathname').should('not.contain', '/vat-number')
           cy.get('.govuk-task-list__item')
-            .contains('Organisation\'s bank details')
+            .contains('Service director')
             .parent()
             .parent()
             .within(() => {

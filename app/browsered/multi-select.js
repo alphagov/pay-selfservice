@@ -105,9 +105,12 @@ const closeMultiSelectOnEscapeKeypress = function () {
 const onCloseButtonClick = event => {
   const { target } = event
   event.stopPropagation()
-  const dropdown = target.closest(TOP_LEVEL_SELECTOR).querySelector(DROPDOWN_SELECTOR)
+  const multiSelect = target.closest(TOP_LEVEL_SELECTOR)
+  const dropdown = multiSelect.querySelector(DROPDOWN_SELECTOR)
+  const openButton = multiSelect.querySelector(OPEN_BUTTON_SELECTOR)
   dropdown.style.visibility = 'hidden'
-  target.setAttribute('aria-expanded', false)
+  openButton.setAttribute('aria-expanded', false)
+  openButton.focus()
 }
 
 const onOpenButtonClick = event => {
