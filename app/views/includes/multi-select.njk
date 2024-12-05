@@ -1,21 +1,23 @@
-<div id="{{id}}__container" class="multi-select">
+<div id="{{ id }}__container" class="multi-select">
   <button type="button"
-    class="multi-select-title"
-    id="{{id}}" aria-expanded="false">
-    <div><span class="govuk-visually-hidden">Currently selected: </span><span class="multi-select-current-selections"></span></div>
+          class="multi-select__title"
+          id="{{ id }}" aria-expanded="false">
+    <div><span class="govuk-visually-hidden">Currently selected: </span><span
+        class="multi-select-current-selections"></span></div>
   </button>
-  <div role="group" aria-labelledby="option-select-title-{{name}}"
-     class="multi-select-dropdown"
-     id="list-of-sectors-{{ name }}"
-     style="visibility:hidden;">
-    <div class="multi-select-dropdown-inner-container govuk-checkboxes">
+  <div role="group" aria-labelledby="option-select-title-{{ name }}"
+       class="multi-select-dropdown"
+       id="list-of-sectors-{{ name }}"
+       style="visibility:hidden;">
+    <button type="button" class="govuk-button govuk-button--secondary multi-select-dropdown__close-button">Close</button>
+    <div class="multi-select-dropdown__inner-container govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
       {% for item in items %}
-      <div class="govuk-checkboxes__item">
-        <input class="govuk-checkboxes__input govuk-!-font-size-16" name="{{name}}" value="{{ item.value }}" id="{{ item.id }}" type="checkbox" {% if item.checked %}checked{% endif %}>
-        <label for="{{ item.id }}" class="govuk-label govuk-checkboxes__label govuk-!-font-size-16 multi-select-label-{{ name }}">{{ item.text }}</label>
-      </div>
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" name="{{ name }}" value="{{ item.value }}" id="{{ item.id }}"
+                 type="checkbox" {% if item.checked %}checked{% endif %}>
+          <label for="{{ item.id }}" class="govuk-label govuk-checkboxes__label">{{ item.text }}</label>
+        </div>
       {% endfor %}
     </div>
-    <div class="multi-select-dropdown-close-area"></div>
   </div>
 </div>
