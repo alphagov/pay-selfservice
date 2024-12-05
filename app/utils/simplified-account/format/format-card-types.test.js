@@ -76,9 +76,9 @@ describe('format-card-types for template', () => {
       expect(cards.debitCards.filter(card => card.text === 'Mastercard debit')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
       expect(cards.debitCards.filter(card => card.text === 'Maestro')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
       expect(cards).to.have.property('creditCards').to.have.length(3)
-      expect(cards.debitCards.filter(card => card.text === 'Visa credit')[0].checked).to.be.false // eslint-disable-line no-unused-expressions
-      expect(cards.debitCards.filter(card => card.text === 'American Express')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
-      expect(cards.debitCards.filter(card => card.text === 'JCB')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
+      expect(cards.creditCards.filter(card => card.text === 'Visa credit')[0].checked).to.be.false // eslint-disable-line no-unused-expressions
+      expect(cards.creditCards.filter(card => card.text === 'American Express')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
+      expect(cards.creditCards.filter(card => card.text === 'JCB')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
     })
 
     it('should set checkbox to disabled for requires3ds card types if 3ds not enabled on account', () => {
