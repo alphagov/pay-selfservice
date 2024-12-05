@@ -11,7 +11,7 @@ describe('roles module', function () {
       extId: 200,
       name: 'admin',
       description: 'Administrator',
-      explanation: 'They can view transactions, refund payments and manage settings',
+      explanation: 'They can view transactions, refund payments, and manage settings',
       agentInitiatedMotoServicesOnly: false
     })
   })
@@ -29,7 +29,7 @@ describe('roles module', function () {
     expect(rolesForService[0]).to.deep.equal({
       name: 'admin',
       description: 'Administrator',
-      explanation: 'They can view transactions, refund payments and manage settings'
+      explanation: 'They can view transactions, refund payments, and manage settings'
     })
   })
 
@@ -40,7 +40,7 @@ describe('roles module', function () {
     expect(rolesForService[0]).to.deep.equal({
       name: 'admin',
       description: 'Administrator',
-      explanation: 'They can view transactions, refund payments, take telephone payments and manage settings'
+      explanation: 'They can view transactions, refund payments, take telephone payments, and manage settings'
     })
     expect(rolesForService[1]).to.deep.equal({
       name: 'view-refund-and-initiate-moto',
