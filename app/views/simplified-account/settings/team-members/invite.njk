@@ -41,8 +41,9 @@
         {% set roleItem = {
           value: role.name,
           id: "role-" + role.name + "-input",
-          html: "<label class=\"govuk-!-font-weight-bold\">" + role.description + "</label>",
-          hint: { text: role.explanation, classes: "hint-and-body-width" },
+          text: role.description,
+          label: { classes: "govuk-!-font-weight-bold" },
+          hint: { html: "<div class='hint-and-body-width'>" + role.explanation + "</div>" },
           checked: role.name === checkedRole
         } %}
         {% set roleItems = (roleItems.push(roleItem), roleItems) %}

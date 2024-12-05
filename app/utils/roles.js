@@ -5,7 +5,7 @@ const roles = {
     extId: 200,
     name: 'admin',
     description: 'Administrator',
-    explanation: 'They can view transactions, refund payments and manage settings',
+    explanation: 'They can view transactions, refund payments, and manage settings',
     agentInitiatedMotoServicesOnly: false
   },
   'view-and-refund': {
@@ -58,7 +58,7 @@ module.exports = {
       .map(role => {
         // for agent-initiated moto services, add 'take telephone payments' to the explanation content for the admin role
         return (role.name === 'admin' && serviceHasAgentInitiatedMotoEnabled)
-          ? { ...role, explanation: 'They can view transactions, refund payments, take telephone payments and manage settings' }
+          ? { ...role, explanation: 'They can view transactions, refund payments, take telephone payments, and manage settings' }
           : role
       })
   }
