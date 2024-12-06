@@ -73,7 +73,7 @@ describe('Stripe details settings', () => {
     describe('Completed', () => {
       beforeEach(() => {
         setStubs({}, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
             vatNumber: true
@@ -89,7 +89,7 @@ describe('Stripe details settings', () => {
     describe('Not yet started', () => {
       beforeEach(() => {
         setStubs({}, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE
           })
@@ -119,7 +119,7 @@ describe('Stripe details settings', () => {
       describe('When inputting a VAT registration number', () => {
         beforeEach(() => {
           setStubs({}, [
-            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE
             })
@@ -158,7 +158,7 @@ describe('Stripe details settings', () => {
       describe('When selecting yes and submitting a VAT number', () => {
         beforeEach(() => {
           setStubs({}, [
-            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE
             }),
@@ -176,7 +176,7 @@ describe('Stripe details settings', () => {
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE
             }),
-            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE,
               vatNumber: true
@@ -206,7 +206,7 @@ describe('Stripe details settings', () => {
       describe('When selecting no and completing the task', () => {
         beforeEach(() => {
           setStubs({}, [
-            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE
             }),
@@ -221,7 +221,7 @@ describe('Stripe details settings', () => {
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE
             }),
-            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE,
               vatNumber: true

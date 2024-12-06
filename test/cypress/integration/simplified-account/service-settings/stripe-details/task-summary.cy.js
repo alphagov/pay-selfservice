@@ -49,7 +49,7 @@ describe('Stripe details settings', () => {
     describe('For an admin user', () => {
       beforeEach(() => {
         setStubs({}, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
             bankAccount: true
@@ -113,7 +113,7 @@ describe('Stripe details settings', () => {
     describe('When all tasks are complete', () => {
       beforeEach(() => {
         setStubs({}, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
             bankAccount: true,
@@ -166,7 +166,7 @@ describe('Stripe details settings', () => {
     describe('When no tasks are complete', () => {
       beforeEach(() => {
         setStubs({}, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE
           })
@@ -228,7 +228,7 @@ describe('Stripe details settings', () => {
     describe('When all tasks except Government Entity Document are complete', () => {
       beforeEach(() => {
         setStubs({}, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
             bankAccount: true,
@@ -298,7 +298,7 @@ describe('Stripe details settings', () => {
         setStubs({
           providerSwitchEnabled: true
         }, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
             bankAccount: true,

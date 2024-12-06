@@ -3,7 +3,7 @@
 const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
-function getServiceAndAccountTypeStripeSetupSuccess (opts) {
+function getStripeSetupProgressByServiceExternalIdAndAccountType (opts) {
   const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/stripe-setup`
   return getStripeSetupSuccess(path, opts)
 }
@@ -155,7 +155,7 @@ function patchStripeProgressByServiceExternalIdAndAccountType (opts) {
 
 module.exports = {
   getGatewayAccountStripeSetupSuccess,
-  getServiceAndAccountTypeStripeSetupSuccess,
+  getStripeSetupProgressByServiceExternalIdAndAccountType,
   getGatewayAccountStripeSetupFlagForMultipleCalls,
   patchUpdateStripeSetupSuccess,
   patchStripeProgressByServiceExternalIdAndAccountType

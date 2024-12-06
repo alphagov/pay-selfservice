@@ -146,7 +146,7 @@ const updateStripeDetailsUploadEntityDocument = async (service, account, file) =
 }
 
 /**
- * Updates Stripe account director for the given service and account type
+ * Updates Stripe account organisation name and address for the given service and account type
  * @param {GatewayAccount} account
  * @param {GOVUKPayService} service
  * @param {StripeOrganisationDetailsParams} newOrgDetails
