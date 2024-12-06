@@ -73,7 +73,7 @@ describe('Stripe details settings', () => {
     describe('Completed', () => {
       beforeEach(() => {
         setStubs({}, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
             bankAccount: true
@@ -89,7 +89,7 @@ describe('Stripe details settings', () => {
     describe('Not yet started', () => {
       beforeEach(() => {
         setStubs({}, [
-          stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE
           })
@@ -119,7 +119,7 @@ describe('Stripe details settings', () => {
       describe('When inputting bank details', () => {
         beforeEach(() => {
           setStubs({}, [
-            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE
             })
@@ -192,7 +192,7 @@ describe('Stripe details settings', () => {
       describe('When submitting valid bank details', () => {
         beforeEach(() => {
           setStubs({}, [
-            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE
             }),
@@ -210,7 +210,7 @@ describe('Stripe details settings', () => {
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE
             }),
-            stripeAccountSetupStubs.getServiceAndAccountTypeStripeSetupSuccess({
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE,
               bankAccount: true
