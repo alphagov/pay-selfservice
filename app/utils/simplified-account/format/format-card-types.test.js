@@ -81,11 +81,22 @@ describe('format-card-types for template', () => {
       expect(cards.creditCards.filter(card => card.text === 'JCB')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
     })
 
-    it('should set checkbox to disabled for requires3ds card types if 3ds not enabled on account', () => {
+    it('should set checkbox to disabled for requires3ds card types if 3ds not enabled for test account', () => {
       const acceptedCards = [...allCards]
-      const account = { requires3ds: false }
+      const account = { requires3ds: false, type: 'test' }
       const cards = formatCardTypesForTemplate(allCards, acceptedCards, account, true)
       expect(cards.debitCards.filter(card => card.text === 'Maestro')[0]).to.have.property('disabled').to.be.true // eslint-disable-line no-unused-expressions
+      expect(cards.debitCards.filter(card => card.text === 'Maestro')[0]).to.have.property('hint')
+        .to.deep.equal({ html: 'Maestro is not available on test accounts' })
+    })
+
+    it('should set checkbox to disabled for requires3ds card types if 3ds not enabled for live account', () => {
+      const acceptedCards = [...allCards]
+      const account = { requires3ds: false, type: 'live' }
+      const cards = formatCardTypesForTemplate(allCards, acceptedCards, account, true)
+      expect(cards.debitCards.filter(card => card.text === 'Maestro')[0]).to.have.property('disabled').to.be.true // eslint-disable-line no-unused-expressions
+      expect(cards.debitCards.filter(card => card.text === 'Maestro')[0]).to.have.property('hint')
+        .to.deep.equal({ html: 'Maestro cannot be used because 3D Secure is not available. Please contact support' })
     })
 
     it('should add hint to American Express if payment provider is Worldpay and account is live', () => {
