@@ -24,11 +24,6 @@ module.exports = class ControllerTestBuilder {
     return this
   }
 
-  withUser (user) {
-    this.req.user = user
-    return this
-  }
-
   withAccount (account) {
     this.req.account = account
     return this
