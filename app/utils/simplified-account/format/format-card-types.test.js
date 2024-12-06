@@ -52,19 +52,13 @@ describe('format-card-types for template', () => {
       const account = { requires3ds: true }
       const cards = formatCardTypesForTemplate(allCards, acceptedCards, account, true)
       expect(cards).to.have.property('debitCards').to.have.length(3)
-      expect(cards.debitCards[0].text).to.equal('Visa debit')
-      expect(cards.debitCards[0].checked).to.be.true // eslint-disable-line no-unused-expressions
-      expect(cards.debitCards[1].text).to.equal('Mastercard debit')
-      expect(cards.debitCards[1].checked).to.be.true // eslint-disable-line no-unused-expressions
-      expect(cards.debitCards[2].text).to.equal('Maestro')
-      expect(cards.debitCards[2].checked).to.be.true // eslint-disable-line no-unused-expressions
+      expect(cards.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: true })
+      expect(cards.debitCards[1]).to.deep.include({ text: 'Mastercard debit', checked: true })
+      expect(cards.debitCards[2]).to.deep.include({ text: 'Maestro', checked: true })
       expect(cards).to.have.property('creditCards').to.have.length(3)
-      expect(cards.creditCards[0].text).to.equal('Visa credit')
-      expect(cards.creditCards[0].checked).to.be.true // eslint-disable-line no-unused-expressions
-      expect(cards.creditCards[1].text).to.equal('American Express')
-      expect(cards.creditCards[1].checked).to.be.true // eslint-disable-line no-unused-expressions
-      expect(cards.creditCards[2].text).to.equal('JCB')
-      expect(cards.creditCards[2].checked).to.be.true // eslint-disable-line no-unused-expressions
+      expect(cards.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: true })
+      expect(cards.creditCards[1]).to.deep.include({ text: 'American Express', checked: true })
+      expect(cards.creditCards[2]).to.deep.include({ text: 'JCB', checked: true })
     })
 
     it('should return unchecked boxes for not accepted card types', () => {
@@ -72,13 +66,13 @@ describe('format-card-types for template', () => {
       const account = { requires3ds: true }
       const cards = formatCardTypesForTemplate(allCards, acceptedCards, account, true)
       expect(cards).to.have.property('debitCards').to.have.length(3)
-      expect(cards.debitCards.filter(card => card.text === 'Visa debit')[0].checked).to.be.false // eslint-disable-line no-unused-expressions
-      expect(cards.debitCards.filter(card => card.text === 'Mastercard debit')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
-      expect(cards.debitCards.filter(card => card.text === 'Maestro')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
+      expect(cards.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: false })
+      expect(cards.debitCards[1]).to.deep.include({ text: 'Mastercard debit', checked: true })
+      expect(cards.debitCards[2]).to.deep.include({ text: 'Maestro', checked: true })
       expect(cards).to.have.property('creditCards').to.have.length(3)
-      expect(cards.creditCards.filter(card => card.text === 'Visa credit')[0].checked).to.be.false // eslint-disable-line no-unused-expressions
-      expect(cards.creditCards.filter(card => card.text === 'American Express')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
-      expect(cards.creditCards.filter(card => card.text === 'JCB')[0].checked).to.be.true // eslint-disable-line no-unused-expressions
+      expect(cards.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: false })
+      expect(cards.creditCards[1]).to.deep.include({ text: 'American Express', checked: true })
+      expect(cards.creditCards[2]).to.deep.include({ text: 'JCB', checked: true })
     })
 
     it('should set checkbox to disabled for requires3ds card types if 3ds not enabled for test account', () => {

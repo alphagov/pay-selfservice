@@ -1,3 +1,5 @@
+const cardsThatNeedToBeEnabledOnWorldpay = ['American Express', 'Union Pay']
+
 const formatLabel = (card) => {
   if (card.brand === 'visa' || card.brand === 'master-card') {
     return `${card.label} ${card.type.toLowerCase()}`
@@ -28,7 +30,7 @@ const disableCheckboxIf3dsRequiredButNotEnabled = (cardTypeChecklistItem, accoun
 }
 
 const addHintForAmexAndUnionpayIfWorldpay = (cardTypeChecklistItem, paymentProvider) => {
-  if (['American Express', 'Union Pay'].includes(cardTypeChecklistItem.text) && paymentProvider === 'worldpay') {
+  if (cardsThatNeedToBeEnabledOnWorldpay.includes(cardTypeChecklistItem.text) && paymentProvider === 'worldpay') {
     return {
       ...cardTypeChecklistItem,
       hint: {

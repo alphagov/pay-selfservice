@@ -258,7 +258,7 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Retrieves the accepted card Types for the given account
+   * Retrieves the accepted card Types for the given external service external id and account type
    * @param serviceId (required)
    * @param accountType (required)
    * @returns {Promise<Object>}
