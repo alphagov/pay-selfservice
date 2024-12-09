@@ -68,7 +68,7 @@ const canStartGovernmentEntityDocument = (gatewayAccountStripeProgress) => {
  * @property {string} id - camelCase task name
  */
 
-/*
+/**
  * Transforms connectorGatewayAccountStripeProgress into 'render-able' stripe details tasks
  * @param account {GatewayAccount}
  * @param service {GOVUKPayService}

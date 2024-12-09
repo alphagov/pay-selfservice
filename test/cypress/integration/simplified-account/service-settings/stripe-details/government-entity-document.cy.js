@@ -45,7 +45,7 @@ describe('Stripe details settings', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
-  describe('The responsible person task', () => {
+  describe('The government entity document task', () => {
     describe('For a non-admin', () => {
       beforeEach(() => {
         setStubs({
@@ -108,7 +108,7 @@ describe('Stripe details settings', () => {
             governmentEntityDocument: false
           })
         ])
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document', { failOnStatusCode: false })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document')
       })
       it('should redirect to the task summary', () => {
         cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
@@ -131,7 +131,7 @@ describe('Stripe details settings', () => {
             governmentEntityDocument: false
           })
         ])
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document', { failOnStatusCode: false })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document')
       })
       describe('The settings navigation', () => {
         it('should show stripe details', () => {
@@ -154,22 +154,6 @@ describe('Stripe details settings', () => {
         })
       })
       describe('When uploading an invalid file', () => {
-        beforeEach(() => {
-          setStubs({}, [
-            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
-              serviceExternalId: SERVICE_EXTERNAL_ID,
-              accountType: LIVE_ACCOUNT_TYPE,
-              bankAccount: true,
-              companyNumber: true,
-              vatNumber: true,
-              director: true,
-              responsiblePerson: true,
-              organisationDetails: true,
-              governmentEntityDocument: false
-            })
-          ])
-          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document', { failOnStatusCode: false })
-        })
         describe('Wrong file type', () => {
           it('should render error', () => {
             const wrongFileTypeError = 'File type must be PDF, JPG or PNG'
