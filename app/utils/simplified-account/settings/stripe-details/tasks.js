@@ -56,6 +56,11 @@ const orderTasks = (target) => {
   return orderedTasks
 }
 
+const canStartGovernmentEntityDocument = (gatewayAccountStripeProgress) => {
+  return Object.entries(gatewayAccountStripeProgress)
+    .every(([key, value]) => key === stripeDetailsTasks.governmentEntityDocument.name ? value !== true : value === true)
+}
+
 /**
  * @typedef {Object} friendlyStripeTasks
  * @property {string} href - formatted path for task
@@ -63,7 +68,7 @@ const orderTasks = (target) => {
  * @property {string} id - camelCase task name
  */
 
-/**
+/*
  * Transforms connectorGatewayAccountStripeProgress into 'render-able' stripe details tasks
  * @param account {GatewayAccount}
  * @param service {GOVUKPayService}
@@ -95,5 +100,6 @@ const friendlyStripeTasks = (account, service) => {
 
 module.exports = {
   friendlyStripeTasks,
-  stripeDetailsTasks
+  stripeDetailsTasks,
+  canStartGovernmentEntityDocument
 }

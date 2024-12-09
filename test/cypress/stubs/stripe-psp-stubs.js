@@ -80,6 +80,30 @@ function updateAccount (opts) {
   })
 }
 
+function uploadFile () {
+  const path = '/v1/files'
+  return stubBuilder('POST', path, 200, {
+    response: {
+      id: 'file_abc123efg456',
+      object: 'file',
+      created: 1733741405,
+      expires_at: null,
+      filename: 'entity_document_for_account_X',
+      links: {
+        object: 'list',
+        data: [],
+        has_more: false,
+        url: '/v1/file_links?file=file_abc123efg456'
+      },
+      purpose: 'identity_document',
+      size: 5818,
+      title: null,
+      type: 'png',
+      url: null
+    }
+  })
+}
+
 module.exports = {
   listPersons,
   listBankAccount,
@@ -87,5 +111,6 @@ module.exports = {
   updateListPerson,
   createOrUpdatePerson,
   updateCompany,
-  updateAccount
+  updateAccount,
+  uploadFile
 }

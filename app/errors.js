@@ -96,6 +96,12 @@ class ExpiredInviteError extends DomainError {
 class TaskAlreadyCompletedError extends DomainError {
 }
 
+/**
+ * Thrown when trying to visit a task page when the requisite tasks have not been completed
+ */
+class TaskAccessedOutOfSequenceError extends DomainError {
+}
+
 module.exports = {
   NotAuthenticatedError,
   UserAccountDisabledError,
@@ -109,5 +115,6 @@ module.exports = {
   ExpiredInviteError,
   GatewayTimeoutError,
   GatewayTimeoutForAllServicesSearchError,
-  TaskAlreadyCompletedError
+  TaskAlreadyCompletedError,
+  TaskAccessedOutOfSequenceError
 }
