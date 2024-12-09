@@ -56,6 +56,11 @@ const orderTasks = (target) => {
   return orderedTasks
 }
 
+const canStartGovernmentEntityDocument = (gatewayAccountStripeProgress) => {
+  return Object.entries(gatewayAccountStripeProgress)
+    .every(([key, value]) => key === stripeDetailsTasks.governmentEntityDocument.name ? value !== true : value === true)
+}
+
 /**
  * @typedef {Object} friendlyStripeTasks
  * @property {string} href - formatted path for task
@@ -95,5 +100,6 @@ const friendlyStripeTasks = (account, service) => {
 
 module.exports = {
   friendlyStripeTasks,
-  stripeDetailsTasks
+  stripeDetailsTasks,
+  canStartGovernmentEntityDocument
 }

@@ -52,7 +52,7 @@ async function post (req, res, next) {
         summary: [{ text: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png', href: '#government-entity-document' }]
       })
     }
-    next(err)
+    return next(err)
   }
   req.flash('messages', { state: 'success', icon: '&check;', heading: 'Service connected to Stripe', body: 'This service can now take payments' })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))

@@ -17,7 +17,9 @@ const {
   InvalidConfigurationError,
   ExpiredInviteError,
   GatewayTimeoutError,
-  GatewayTimeoutForAllServicesSearchError, TaskAlreadyCompletedError
+  GatewayTimeoutForAllServicesSearchError,
+  TaskAlreadyCompletedError,
+  TaskAccessedOutOfSequenceError
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
@@ -76,6 +78,11 @@ module.exports = function errorHandler (err, req, res, next) {
   if (err instanceof ExpiredInviteError) {
     logger.info(`ExpiredInviteError handled: ${err.message}. Rendering error page`)
     return renderErrorView(req, res, 'This invitation is no longer valid', 410)
+  }
+
+  if (err instanceof TaskAccessedOutOfSequenceError) {
+    logger.info(`TaskAccessedOutOfSequenceError handled: ${err.message}. Redirecting`)
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
   }
 
   if (err instanceof TaskAlreadyCompletedError) {

@@ -1,5 +1,3 @@
-'use strict'
-
 const ProxyAgent = require('https-proxy-agent')
 
 const StripeBankAccount = require('./StripeBankAccount.class')
@@ -11,6 +9,7 @@ const StripeOrganisationDetails = require('./StripeOrganisationDetails.class')
 
 // Constants
 const STRIPE_HOST = process.env.STRIPE_HOST
+const STRIPE_FILES_HOST = process.env.STRIPE_FILES_HOST
 const STRIPE_PORT = process.env.STRIPE_PORT
 const STRIPE_PROTOCOL = process.env.STRIPE_PROTOCOL
 
@@ -124,6 +123,8 @@ module.exports = {
         type: fileType
       },
       purpose: 'identity_document'
+    }, STRIPE_FILES_HOST && {
+      host: STRIPE_FILES_HOST
     })
   }
 }
