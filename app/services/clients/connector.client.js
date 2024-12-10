@@ -258,6 +258,21 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * Retrieves the accepted card Types for the given external service external id and account type
+   * @param serviceId (required)
+   * @param accountType (required)
+   * @returns {Promise<Object>}
+   */
+  getAcceptedCardsForServiceAndAccountType: async function (serviceId, accountType) {
+    const url = `${this.connectorUrl}/v1/frontend/service/{serviceId}/account/{accountType}/card-types`
+      .replace('{serviceId}', encodeURIComponent(serviceId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.get(url, 'get accepted card types for account')
+    return response.data
+  },
+
+  /**
    * Updates the accepted card Types for to the given gateway account
    * @param gatewayAccountId (required)
    * @param payload (required)
