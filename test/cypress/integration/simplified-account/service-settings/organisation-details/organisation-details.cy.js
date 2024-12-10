@@ -226,6 +226,15 @@ describe('Organisation details settings', () => {
 
           cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
+          cy.get('.govuk-error-summary')
+            .should('exist')
+            .should('contain', 'Organisation name must be 100 characters or fewer')
+            .should('contain', 'Enter a building and street')
+            .should('contain', 'Enter a town or city')
+            .should('contain', 'Enter a real postcode')
+            .should('contain', 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+            .should('contain', 'Enter a valid website address')
+
           cy.get('#organisation-name-error').should('contain.text', 'Organisation name must be 100 characters or fewer')
           cy.get('#address-line1-error').should('contain.text', 'Enter a building and street')
           cy.get('#address-city-error').should('contain.text', 'Enter a town or city')

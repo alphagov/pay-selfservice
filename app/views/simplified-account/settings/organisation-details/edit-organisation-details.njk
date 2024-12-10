@@ -10,6 +10,13 @@
     href: backLink
   }) if backLink }}
 
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">Organisation details</h1>
 
   <p class="govuk-body govuk-!-margin-bottom-6 hint-and-body-width">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
