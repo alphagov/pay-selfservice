@@ -324,6 +324,22 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * Updates the accepted card Types for to the given service and account type
+   * @param serviceId (required)
+   * @param accountType (required)
+   * @param payload (required)
+   * @returns {Promise<Object>}
+   */
+  postAcceptedCardsForServiceAndAccountType: async function (serviceId, accountType, payload) {
+    const url = `${this.connectorUrl}/v1/frontend/service/{serviceId}/account/{accountType}/card-types`
+      .replace('{serviceId}', encodeURIComponent(serviceId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.post(url, payload, 'post accepted card types for account')
+    return response.data
+  },
+
+  /**
    * Retrieves all card types
    * @returns {Promise<Object>}
    */

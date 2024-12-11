@@ -3,6 +3,7 @@
 
   <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input type="hidden" name="currentAcceptedCardTypeIds" value="{{ currentAcceptedCardTypeIds }}" />
     {{
     govukCheckboxes({
       idPrefix: "debit",
