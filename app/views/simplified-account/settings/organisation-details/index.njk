@@ -7,7 +7,8 @@
 {% block settingsContent %}
   <h1 class="govuk-heading-l">Organisation details</h1>
 
-  <p class="govuk-body govuk-!-margin-bottom-6 hint-and-body-width">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
+  <p class="govuk-body govuk-!-margin-bottom-6">Payment card schemes require the details of the organisation taking
+    payment to be shown on payment pages.</p>
 
   {{ govukSummaryList({
     classes: "govuk-!-margin-bottom-9",
@@ -27,35 +28,35 @@
     rows: [
       {
         key: {
-          text: "Name"
-        },
+        text: "Name"
+      },
         value: {
-          text: organisationDetails.organisationName
-        }
+        text: organisationDetails.organisationName
+      }
       },
       {
         key: {
-          text: "Address"
-        },
+        text: "Address"
+      },
         value: {
-          html: organisationDetails.address
-        }
+        html: organisationDetails.address
+      }
       },
       {
         key: {
-          text: "Telephone number"
-        },
+        text: "Telephone number"
+      },
         value: {
-          text: organisationDetails.telephoneNumber
-        }
+        text: organisationDetails.telephoneNumber
+      }
       },
       {
         key: {
-          text: "Website address"
-        },
+        text: "Website address"
+      },
         value: {
-          text: organisationDetails.url
-        }
+        text: organisationDetails.url
+      }
       }
     ]
   }) }}

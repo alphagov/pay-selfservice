@@ -5,18 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">Check your responsible person details</h1>
 
   {{ govukSummaryList({
@@ -132,7 +120,7 @@
       submitButton.setAttribute('disabled', 'true')
       submitButton.setAttribute('aria-disabled', 'true')
       submitButton.setAttribute('class', 'govuk-button govuk-button--disabled')
-      submitButton.textContent = "Saving..."
+      submitButton.textContent = 'Saving...'
     })
   </script>
 {% endblock %}

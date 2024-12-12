@@ -52,7 +52,7 @@ describe('Team members settings', () => {
       setStubs({})
       cy.setEncryptedCookies(ADMIN_USER_ID)
       cy.visit(TEAM_MEMBERS_SETTINGS_URL)
-      cy.get('#team-members-view-only-list').find('dl').first().find('a').contains('Change permission').click()
+      cy.get('#team-members-view-only-list').find('dl').first().find('a').contains('Change').click()
     })
 
     it('should show the show the correct heading, title and form with correct elements', () => {

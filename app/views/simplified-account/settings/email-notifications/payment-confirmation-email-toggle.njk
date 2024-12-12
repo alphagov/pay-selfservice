@@ -5,15 +5,8 @@
 {% endblock %}
 
 {% block settingsContent %}
-
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
   <form id="payment-confirmation-email-toggle" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-
     {{ govukRadios({
       idPrefix: 'toggle',
       name: 'paymentConfirmationEmailToggle',
@@ -34,20 +27,19 @@
           value: 'true',
           html: 'On',
           label: {
-            classes: 'govuk-!-font-weight-bold'
-          } if emailCollectionMode === 'OPTIONAL',
+          classes: 'govuk-!-font-weight-bold'
+        } if emailCollectionMode === 'OPTIONAL',
           checked: confirmationEnabled === true,
           hint: {
-            text: 'Entering an email address is currently optional so users might not get a payment confirmation',
-            classes: 'hint-and-body-width'
-          } if emailCollectionMode === 'OPTIONAL'
+          text: 'Entering an email address is currently optional so users might not get a payment confirmation'
+        } if emailCollectionMode === 'OPTIONAL'
         },
         {
           value: 'false',
           html: 'Off',
           label: {
-            classes: 'govuk-!-font-weight-bold'
-          } if emailCollectionMode === 'OPTIONAL',
+          classes: 'govuk-!-font-weight-bold'
+        } if emailCollectionMode === 'OPTIONAL',
           checked: confirmationEnabled === false
         }
       ]
@@ -55,6 +47,5 @@
     {{ govukButton({
       text: 'Save changes'
     }) }}
-
   </form>
 {% endblock %}

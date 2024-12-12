@@ -30,9 +30,9 @@
         } if value.status == false else (
           {
             tag: {
-              text: "Cannot start yet",
-              classes: "govuk-tag--grey"
-            }
+            text: "Cannot start yet",
+            classes: "govuk-tag--grey"
+          }
           } if value.status == 'disabled' else {
             text: "Completed"
           }
@@ -46,7 +46,8 @@
       classes: "task-list"
     }) }}
   {% else %}
-    <p class="govuk-body">This information has been sent to Stripe so that your service can take payments. For security
+    <p class="govuk-body">This information has been sent to Stripe so that your service can take payments. For
+      security
       reasons we cannot show all the information submitted to Stripe.</p>
 
     <p class="govuk-body">If you need to change these details or upload another Government Entity document, <a
@@ -140,5 +141,4 @@
       ]
     }) }}
   {% endif %}
-
 {% endblock %}

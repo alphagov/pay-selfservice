@@ -5,48 +5,41 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-<div class="fieldset-legend-width">
-  <form method="post" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"/>
+  <div class="fieldset-legend-width">
+    <form method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <input type="hidden" name="userCurrentRoleName" value="{{ userCurrentRoleName }}"/>
 
-    {% set roleItems = [] %}
-    {% for role in availableRoles %}
-      {% set roleItem = {
-        value: role.name,
-        id: "role-" + role.name + "-input",
-        text: role.description,
-        label: { classes: "govuk-!-font-weight-bold" },
-        hint: { html: "<div class='hint-and-body-width'>" + role.explanation + "</div>" },
-        checked: userCurrentRoleName === role.name
-      } %}
-      {% set roleItems = (roleItems.push(roleItem), roleItems) %}
-    {% endfor %}
+      {% set roleItems = [] %}
+      {% for role in availableRoles %}
+        {% set roleItem = {
+          value: role.name,
+          id: "role-" + role.name + "-input",
+          text: role.description,
+          label: { classes: "govuk-!-font-weight-bold" },
+          hint: { html: "<div>" + role.explanation + "</div>" },
+          checked: userCurrentRoleName === role.name
+        } %}
+        {% set roleItems = (roleItems.push(roleItem), roleItems) %}
+      {% endfor %}
 
-    {{ govukRadios({
-      idPrefix: "newRole",
-      name: "newRole",
-      fieldset: {
-        legend: {
-          text: "Change permission for " + email,
-          isPageHeading: true,
-          classes: "govuk-fieldset__legend--l"
-        }
-      },
-      items: roleItems
-    }) }}
+      {{ govukRadios({
+        idPrefix: "newRole",
+        name: "newRole",
+        fieldset: {
+          legend: {
+            text: "Change permission for " + email,
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: roleItems
+      }) }}
 
-    {{
-    govukButton({
-      text: "Save changes"
-    })
-    }}
+      {{ govukButton({
+        text: "Save changes"
+      }) }}
 
-  </form>
-</div>
-
+    </form>
+  </div>
 {% endblock %}

@@ -5,18 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">VAT registration number</h1>
 
   <form id="vat-number-form" method="post" novalidate>
@@ -41,7 +29,7 @@
             label: {
               text: "Enter your VAT registration number"
             },
-            classes: "govuk-!-width-one-quarter",
+            classes: "govuk-input--width-10",
             id: "vat-number",
             name: "vatNumber",
             inputmode: "numeric",

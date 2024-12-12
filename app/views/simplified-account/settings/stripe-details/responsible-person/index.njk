@@ -7,18 +7,6 @@
 
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">Responsible person</h1>
   <p class="govuk-body">We need details of a <a class="govuk-link"
                                                 href="https://www.payments.service.gov.uk/required-responsible-person-and-director-information/">responsible
@@ -54,7 +42,7 @@
         autocomplete: "section-person given-name",
         spellcheck: false,
         errorMessage: { text: errors.formErrors['firstName'] } if errors.formErrors['firstName'] else false,
-        classes: "govuk-input--width-20"
+        classes: "govuk-!-width-three-quarters"
       }) }}
 
       {{ govukInput({
@@ -68,7 +56,7 @@
         autocomplete: "section-person family-name",
         spellcheck: false,
         errorMessage: { text: errors.formErrors['lastName'] } if errors.formErrors['lastName'] else false,
-        classes: "govuk-input--width-20"
+        classes: "govuk-!-width-three-quarters"
       }) }}
 
     {% endcall %}
@@ -121,7 +109,7 @@
 
   <script>
     // progressively enhance dob input to only accept digits
-    const elementIds = [{id: 'dob-day', length: 2}, {id: 'dob-month', length: 2}, {id: 'dob-year', length: 4}]
+    const elementIds = [{ id: 'dob-day', length: 2 }, { id: 'dob-month', length: 2 }, { id: 'dob-year', length: 4 }]
     elementIds.forEach(element => {
       document.getElementById(element.id).addEventListener('input', function (e) {
         let value = e.target.value

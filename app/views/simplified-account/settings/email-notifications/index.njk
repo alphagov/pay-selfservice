@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-
   {% if not isAdminUser %}
     {{ govukInsetText({
       text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure,
@@ -38,12 +37,12 @@
       },
       {
         key: {
-          text: "Send payment confirmation emails"
-        },
+        text: "Send payment confirmation emails"
+      },
         value: {
-          text: 'On' if (confirmationEmailEnabled and emailCollectionMode !== 'OFF') else
+        text: 'On' if (confirmationEmailEnabled and emailCollectionMode !== 'OFF') else
           ('Off' if (not confirmationEmailEnabled and emailCollectionMode !== 'OFF') else 'Off (not asking users for their email address)')
-        },
+      },
         actions: {
         items: [
           {
@@ -57,12 +56,12 @@
       },
       {
         key: {
-          text: "Send refund emails"
-        },
+        text: "Send refund emails"
+      },
         value: {
-          text: 'On' if (refundEmailEnabled and emailCollectionMode !== 'OFF') else
+        text: 'On' if (refundEmailEnabled and emailCollectionMode !== 'OFF') else
           ('Off' if (not refundEmailEnabled and emailCollectionMode !== 'OFF') else 'Off (not asking users for their email address)')
-        },
+      },
         actions: {
         items: [
           {
@@ -77,8 +76,10 @@
     ]}) }}
 
   {% if isAdminUser %}
-    <p class="govuk-body"><a class="govuk-link" href="{{ templatesHref }}" id="templates-link">View email templates and add a custom paragraph</a></p>
+    <p class="govuk-body"><a class="govuk-link" href="{{ templatesHref }}" id="templates-link">View email templates
+        and add a custom paragraph</a></p>
   {% else %}
-    <p class="govuk-body"><a class="govuk-link" href="{{ templatesHref }}" id="templates-link">View email templates</a></p>
+    <p class="govuk-body"><a class="govuk-link" href="{{ templatesHref }}" id="templates-link">View email
+        templates</a></p>
   {% endif %}
 {% endblock %}

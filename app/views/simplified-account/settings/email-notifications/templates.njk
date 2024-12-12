@@ -5,12 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
   {% if not isAdminUser %}
     {{ govukInsetText({
       text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure,
@@ -21,7 +15,7 @@
 
   <h1 class="govuk-heading-l">Email templates</h1>
 
-  <p class="govuk-body-l">
+  <p class="govuk-body govuk-!-margin-bottom-6">
     GOV.UK Pay can send notifications to users.
   </p>
 
@@ -57,7 +51,8 @@
     }) }}
 
     <div class="pay-email-template-body">
-      <h3 class="govuk-heading-m pay-email-heading">Your payment of £<span class="govuk-grey-text">[amount]</span> to <span class="govuk-grey-text">{{ serviceName }}</span> was successful</h3>
+      <h3 class="govuk-heading-m pay-email-heading">Your payment of £<span class="govuk-grey-text">[amount]</span> to
+        <span class="govuk-grey-text">{{ serviceName }}</span> was successful</h3>
       <ul class="govuk-list">
         <li>Payment for: <span class="govuk-grey-text">[description]</span></li>
         <li>Reference: <span class="govuk-grey-text">[service reference]</span></li>
@@ -71,7 +66,8 @@
         <p class="govuk-body govuk-grey-text qa-custom-p">*Optional custom paragraph - add this below*</p>
       {% endif %}
 
-      <p class="govuk-body">This email address is not monitored. If you have any questions about your payment, contact the service you made the payment to directly.</p>
+      <p class="govuk-body">This email address is not monitored. If you have any questions about your payment, contact
+        the service you made the payment to directly.</p>
     </div>
 
     <div class="pay-email-custom-paragraph">
@@ -87,6 +83,7 @@
 
         {{ govukButton({
           href: customParagraphHref,
+          classes: 'govuk-!-margin-bottom-0',
           text: 'Edit custom paragraph' if customEmailText else 'Add a custom paragraph',
           attributes: {
             id: 'add-custom-paragraph-link'
@@ -94,7 +91,8 @@
         }) }}
       {% else %}
         <p class="govuk-body">
-          Admin users can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
+          Admin users can add a custom paragraph to give users extra information related to your service. For example,
+          how long it will take to process the payment.
         </p>
       {% endif %}
     </div>
@@ -132,14 +130,16 @@
     }) }}
 
     <div class="pay-email-template-body">
-      <h3 class="govuk-heading-m email-heading">You have been refunded £<span class="govuk-grey-text">[amount]</span> by <span class="govuk-grey-text">{{ serviceName }}</span></h3>
+      <h3 class="govuk-heading-m email-heading">You have been refunded £<span class="govuk-grey-text">[amount]</span> by
+        <span class="govuk-grey-text">{{ serviceName }}</span></h3>
       <ul class="govuk-list">
         <li>Refund for: <span class="govuk-grey-text">[description]</span></li>
         <li>Reference: <span class="govuk-grey-text">[service reference]</span></li>
         <li>Date of original payment: <span class="govuk-grey-text">[date]</span></li>
       </ul>
       <p class="govuk-body">Your refund may take up to 6 days to appear in your account.</p>
-      <p class="govuk-body">This email address is not monitored. If you have any questions about your refund, contact the service you made the original payment to directly.</p>
+      <p class="govuk-body">This email address is not monitored. If you have any questions about your refund, contact
+        the service you made the original payment to directly.</p>
     </div>
   {% endset -%}
 
@@ -149,8 +149,8 @@
         label: 'Confirmation email',
         id: 'confirmation-html',
         panel: {
-          html: confirmationEmailHtml
-        }
+        html: confirmationEmailHtml
+      }
       },
       {
         label: 'Refund email',

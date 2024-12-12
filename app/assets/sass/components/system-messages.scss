@@ -20,6 +20,8 @@
 
 .system-message__text {
   flex: 1;
+  overflow-wrap: break-word;
+  overflow: hidden;
 }
 
 .system-message__icon--success {

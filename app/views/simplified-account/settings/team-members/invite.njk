@@ -5,70 +5,52 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">Invite a team member</h1>
-  <div>
-    <form method="post" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+  <form method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
-      {{ govukInput({
-        label: {
-          text: "Email address",
-          classes: "govuk-label--s"
-        },
-        id: "invited-user-email",
-        name: "invitedUserEmail",
-        type: "email",
-        value: invitedUserEmail,
-        spellcheck: false,
-        errorMessage: { text: errors.formErrors['invitedUserEmail'] } if errors.formErrors['invitedUserEmail'] else false,
-        classes: "govuk-!-width-two-thirds"
-      }) }}
+    {{ govukInput({
+      label: {
+        text: "Email address",
+        classes: "govuk-label--s"
+      },
+      id: "invited-user-email",
+      name: "invitedUserEmail",
+      type: "email",
+      value: invitedUserEmail,
+      spellcheck: false,
+      errorMessage: { text: errors.formErrors['invitedUserEmail'] } if errors.formErrors['invitedUserEmail'] else false,
+      classes: "govuk-!-width-two-thirds"
+    }) }}
 
-      {% set roleItems = [] %}
-      {% for role in availableRoles %}
-        {% set roleItem = {
-          value: role.name,
-          id: "role-" + role.name + "-input",
-          text: role.description,
-          label: { classes: "govuk-!-font-weight-bold" },
-          hint: { html: "<div class='hint-and-body-width'>" + role.explanation + "</div>" },
-          checked: role.name === checkedRole
-        } %}
-        {% set roleItems = (roleItems.push(roleItem), roleItems) %}
-      {% endfor %}
+    {% set roleItems = [] %}
+    {% for role in availableRoles %}
+      {% set roleItem = {
+        value: role.name,
+        id: "role-" + role.name + "-input",
+        text: role.description,
+        label: { classes: "govuk-!-font-weight-bold" },
+        hint: { html: "<div>" + role.explanation + "</div>" },
+        checked: role.name === checkedRole
+      } %}
+      {% set roleItems = (roleItems.push(roleItem), roleItems) %}
+    {% endfor %}
 
-      {{ govukRadios({
-        idPrefix: "invited-user-role",
-        name: "invitedUserRole",
-        errorMessage: { text: errors.formErrors['invitedUserRole'] } if errors.formErrors['invitedUserRole'] else false,
-        fieldset: {
-          legend: {
-            text: "Permission level",
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-        items: roleItems
-      }) }}
+    {{ govukRadios({
+      idPrefix: "invited-user-role",
+      name: "invitedUserRole",
+      errorMessage: { text: errors.formErrors['invitedUserRole'] } if errors.formErrors['invitedUserRole'] else false,
+      fieldset: {
+        legend: {
+          text: "Permission level",
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: roleItems
+    }) }}
 
-      {{
-      govukButton({
-        text: "Send invitation email"
-      })
-      }}
-
-    </form>
-  </div>
-
+    {{ govukButton({
+      text: "Send invitation email"
+    }) }}
+  </form>
 {% endblock %}

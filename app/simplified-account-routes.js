@@ -75,18 +75,20 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permissi
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })
-  .use(enforcePaymentProviderType(STRIPE), permission('stripe-account-details:update'))
+  .use(enforceLiveAccountOnly, enforcePaymentProviderType(STRIPE), permission('stripe-account-details:update'))
 stripeDetailsRouter.get(stripeDetailsPath.index, serviceSettingsController.stripeDetails.get)
+
 stripeDetailsRouter.get(stripeDetailsPath.bankAccount, serviceSettingsController.stripeDetails.bankAccount.get)
 stripeDetailsRouter.post(stripeDetailsPath.bankAccount, serviceSettingsController.stripeDetails.bankAccount.post)
-// -- new stuff
+
 stripeDetailsRouter.get(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.get)
 stripeDetailsRouter.post(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.post)
+
 stripeDetailsRouter.get(stripeDetailsPath.organisationDetails.index, serviceSettingsController.stripeDetails.organisationDetails.get)
 stripeDetailsRouter.post(stripeDetailsPath.organisationDetails.index, serviceSettingsController.stripeDetails.organisationDetails.post)
 stripeDetailsRouter.get(stripeDetailsPath.organisationDetails.update, serviceSettingsController.stripeDetails.organisationDetails.update.get)
 stripeDetailsRouter.post(stripeDetailsPath.organisationDetails.update, serviceSettingsController.stripeDetails.organisationDetails.update.post)
-// -- responsible person
+
 stripeDetailsRouter.get(stripeDetailsPath.responsiblePerson.index, serviceSettingsController.stripeDetails.responsiblePerson.get)
 stripeDetailsRouter.post(stripeDetailsPath.responsiblePerson.index, serviceSettingsController.stripeDetails.responsiblePerson.post)
 stripeDetailsRouter.get(stripeDetailsPath.responsiblePerson.homeAddress, serviceSettingsController.stripeDetails.responsiblePerson.homeAddress.get)
@@ -95,13 +97,16 @@ stripeDetailsRouter.get(stripeDetailsPath.responsiblePerson.contactDetails, serv
 stripeDetailsRouter.post(stripeDetailsPath.responsiblePerson.contactDetails, serviceSettingsController.stripeDetails.responsiblePerson.contactDetails.post)
 stripeDetailsRouter.get(stripeDetailsPath.responsiblePerson.checkYourAnswers, serviceSettingsController.stripeDetails.responsiblePerson.checkYourAnswers.get)
 stripeDetailsRouter.post(stripeDetailsPath.responsiblePerson.checkYourAnswers, serviceSettingsController.stripeDetails.responsiblePerson.checkYourAnswers.post)
-// --
+
 stripeDetailsRouter.get(stripeDetailsPath.vatNumber, serviceSettingsController.stripeDetails.vatNumber.get)
 stripeDetailsRouter.post(stripeDetailsPath.vatNumber, serviceSettingsController.stripeDetails.vatNumber.post)
+
 stripeDetailsRouter.get(stripeDetailsPath.director, serviceSettingsController.stripeDetails.director.get)
 stripeDetailsRouter.post(stripeDetailsPath.director, serviceSettingsController.stripeDetails.director.post)
+
 stripeDetailsRouter.get(stripeDetailsPath.governmentEntityDocument, serviceSettingsController.stripeDetails.governmentEntityDocument.get)
 stripeDetailsRouter.post(stripeDetailsPath.governmentEntityDocument, [upload.single(GOV_ENTITY_DOC_FORM_FIELD_NAME), ...serviceSettingsController.stripeDetails.governmentEntityDocument.post])
+
 simplifiedAccount.use(stripeDetailsRouter)
 
 module.exports = simplifiedAccount

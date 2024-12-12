@@ -2,7 +2,8 @@ const { response } = require('@utils/response')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { updateCustomParagraphByServiceIdAndAccountType } = require('@services/email.service')
-const { validateOptionalField } = require('@utils/validation/server-side-form-validations')
+const { body, validationResult } = require('express-validator')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 
 function get (req, res) {
@@ -10,7 +11,7 @@ function get (req, res) {
   const service = req.service
 
   response(req, res, 'simplified-account/settings/email-notifications/custom-paragraph', {
-    customParagraphText: account.rawResponse.email_notifications.PAYMENT_CONFIRMED.template_body,
+    customParagraph: account.rawResponse.email_notifications.PAYMENT_CONFIRMED.template_body,
     serviceName: service.name,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
       service.externalId, account.type),
@@ -22,22 +23,31 @@ function get (req, res) {
 async function postEditCustomParagraph (req, res) {
   const serviceExternalId = req.service.externalId
   const accountType = req.account.type
-  const customParagraph = req.body['custom-paragraph']
+  const validations = [
+    body('customParagraph').trim().isLength({ max: CUSTOM_PARAGRAPH_MAX_LENGTH }).withMessage(`Custom paragraph name must be ${CUSTOM_PARAGRAPH_MAX_LENGTH} characters or fewer`)
+  ]
 
-  const validationResult = validateOptionalField(customParagraph, CUSTOM_PARAGRAPH_MAX_LENGTH, 'custom paragraph')
-  if (!validationResult.valid) {
+  await Promise.all(validations.map(validation => validation.run(req)))
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    const formattedErrors = formatValidationErrors(errors)
     return response(req, res, 'simplified-account/settings/email-notifications/custom-paragraph', {
       errors: {
-        customParagraph: validationResult.message
+        summary: formattedErrors.errorSummary,
+        formErrors: formattedErrors.formErrors
       },
-      customParagraphText: customParagraph,
+      customParagraph: req.body.customParagraph,
       serviceName: req.service.name,
       backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
+        req.service.externalId, accountType),
+      removeCustomParagraphLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.removeCustomParagraph,
         req.service.externalId, accountType)
     })
   }
 
-  await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, customParagraph)
+  const newCustomParagraph = req.body.customParagraph.trim()
+  await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, newCustomParagraph)
   req.flash('messages', { state: 'success', icon: '&check;', heading: 'Custom paragraph updated' })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
     serviceExternalId, accountType))
@@ -48,6 +58,7 @@ async function postRemoveCustomParagraph (req, res) {
   const accountType = req.account.type
 
   await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, '')
+  req.flash('messages', { state: 'success', icon: '&check;', heading: 'Custom paragraph removed' })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
     serviceExternalId, accountType))
 }

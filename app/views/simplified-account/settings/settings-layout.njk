@@ -12,10 +12,23 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-three-quarters">
-    {% if messages is defined and messages is iterable and messages|length > 0 %}
-      {{ systemMessages({ messages: messages }) }}
-    {% endif %}
-
-    {% block settingsContent %}{% endblock %}
+    <div class="service-settings-pane">
+      {% if backLink %}
+        {{ govukBackLink({
+          text: "Back",
+          href: backLink
+        }) }}
+      {% endif %}
+      {% if messages is defined and messages is iterable and messages|length > 0 %}
+        {{ systemMessages({ messages: messages }) }}
+      {% endif %}
+      {% if errors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.summary
+        }) }}
+      {% endif %}
+      {% block settingsContent %}{% endblock %}
+    </div>
   </div>
 {% endblock %}

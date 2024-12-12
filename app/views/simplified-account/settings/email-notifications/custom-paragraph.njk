@@ -5,38 +5,20 @@
 {% endblock %}
 
 {% block settingsContent %}
-
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: [
-        {
-          text: errors.customParagraph,
-          href: "#"
-        }
-      ]
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">Add a custom paragraph</h1>
 
   <p class="govuk-body">
-      You can add a custom paragraph to give users more information about your service. For example, you can tell users:
+    You can add a custom paragraph to give users more information about your service. For example, you can tell users:
   </p>
 
   <ul class="govuk-list govuk-list--bullet">
-      <li>what they need to do next</li>
-      <li>how long it will take to process the payment</li>
-      <li>about delivery dates</li>
+    <li>what they need to do next</li>
+    <li>how long it will take to process the payment</li>
+    <li>about delivery dates</li>
   </ul>
 
   <p class="govuk-body">
-      If you include a link in your custom paragraph you must:
+    If you include a link in your custom paragraph you must:
   </p>
 
   <ul class="govuk-list govuk-list--bullet">
@@ -46,38 +28,36 @@
   </ul>
 
   <p class="govuk-body">
-      Do not include contact details in the custom paragraph. If you want to provide contact details, you must link to a page on a gov.uk domain.
+    Do not include contact details in the custom paragraph. If you want to provide contact details, you must link to a
+    page on a gov.uk domain.
   </p>
 
   <p class="govuk-body">
-      You should not:
+    You should not:
   </p>
 
   <ul class="govuk-list govuk-list--bullet">
-      <li>request personal data, passwords or payment details</li>
-      <li>link directly to a sign-in page</li>
-      <li>use redirects or tracking links</li>
+    <li>request personal data, passwords or payment details</li>
+    <li>link directly to a sign-in page</li>
+    <li>use redirects or tracking links</li>
   </ul>
 
   <form id="add-custom-paragraph" method="post" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
-    {{
-      govukTextarea({
-        name: "custom-paragraph",
-        id: "custom-paragraph",
-        label: {
-          text: "Enter a custom paragraph",
-          classes: "govuk-label--m"
-        },
-        classes: "qa-custom-p",
-        value: customParagraphText,
-        errorMessage: { text: errors.customParagraph } if errors.customParagraph else false
-      })
-    }}
+    {{ govukTextarea({
+      name: "customParagraph",
+      id: "custom-paragraph",
+      label: {
+        text: "Enter a custom paragraph",
+        classes: "govuk-label--m"
+      },
+      errorMessage: { text: errors.formErrors['customParagraph'] } if errors.formErrors['customParagraph'] else false,
+      value: customParagraph
+    }) }}
   </form>
 
-  {% if customParagraphText %}
+  {% if customParagraph %}
     <form id="remove-custom-paragraph" action="{{ removeCustomParagraphLink }}" method="POST">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     </form>
@@ -91,7 +71,7 @@
         form: "add-custom-paragraph"
       }
     }) }}
-    {% if customParagraphText %}
+    {% if customParagraph %}
       {{ govukButton({
         text: "Remove custom paragraph",
         classes: "govuk-button--secondary",

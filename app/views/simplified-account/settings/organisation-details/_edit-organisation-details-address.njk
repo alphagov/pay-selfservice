@@ -13,7 +13,7 @@
     hint: {
       text: "Cannot be a PO Box"
     },
-    classes: "govuk-!-width-two-thirds",
+    classes: "govuk-!-width-three-quarters",
     id: "address-line1",
     name: "addressLine1",
     autocomplete: "section-address address-line1",
@@ -25,7 +25,7 @@
     label: {
       html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
     },
-    classes: "govuk-!-width-two-thirds",
+    classes: "govuk-!-width-three-quarters",
     id: "address-line2",
     name: "addressLine2",
     autocomplete: "section-address address-line2",
@@ -37,7 +37,7 @@
     label: {
       text: "Town or city"
     },
-    classes: "govuk-!-width-one-half",
+    classes: "govuk-!-width-two-thirds",
     id: "address-city",
     name: "addressCity",
     autocomplete: "section-address address-level2",
@@ -47,7 +47,7 @@
 
   {{ govukSelect({
     id: "address-country",
-    classes: "govuk-!-width-one-half",
+    classes: "govuk-!-width-two-thirds",
     name: "addressCountry",
     errorMessage: { text: errors.formErrors['addressCountry'] } if errors.formErrors['addressCountry'] else false,
     label: {
@@ -60,7 +60,7 @@
     label: {
       text: "Postcode"
     },
-    classes: "govuk-input--width-10",
+    classes: "govuk-!-width-one-quarter",
     id: "address-postcode",
     name: "addressPostcode",
     autocomplete: "section-address postal-code",

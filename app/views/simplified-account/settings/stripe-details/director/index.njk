@@ -5,18 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">Service director</h1>
 
   <p class="govuk-body">We need the details of the director of the service or someone at director level in your
@@ -48,7 +36,7 @@
         autocomplete: "given-name",
         spellcheck: false,
         errorMessage: { text: errors.formErrors['firstName'] } if errors.formErrors['firstName'] else false,
-        classes: "govuk-input--width-20"
+        classes: "govuk-!-width-two-thirds"
       }) }}
 
       {{ govukInput({
@@ -62,7 +50,7 @@
         autocomplete: "family-name",
         spellcheck: false,
         errorMessage: { text: errors.formErrors['lastName'] } if errors.formErrors['lastName'] else false,
-        classes: "govuk-input--width-20"
+        classes: "govuk-!-width-two-thirds"
       }) }}
 
     {% endcall %}
@@ -121,7 +109,7 @@
       autocomplete: "work email",
       spellcheck: false,
       errorMessage: { text: errors.formErrors['workEmail'] } if errors.formErrors['workEmail'] else false,
-      classes: "govuk-!-width-two-thirds"
+      classes: "govuk-!-width-full"
     }) }}
 
     {{ govukButton({

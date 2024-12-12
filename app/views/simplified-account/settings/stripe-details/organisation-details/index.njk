@@ -5,18 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">Organisation details</h1>
 
   <p class="govuk-body">
@@ -61,7 +49,7 @@
       name: "confirmOrgDetails",
       fieldset: {
         legend: {
-          html: "<h2 class='govuk-heading-m'>Do these organisation details match the details on your government entity document?</h2>"
+          html: "<h2 class='govuk-heading-s'>Do these organisation details match the details on your government entity document?</h2>"
         }
       },
       items: [
