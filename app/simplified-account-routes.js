@@ -72,6 +72,9 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.credenti
 // card types
 simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permission('transactions:read'), serviceSettingsController.cardTypes.get)
 
+// api keys
+simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.index, permission('tokens-active:read'), serviceSettingsController.apiKeys.get)
+
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })
