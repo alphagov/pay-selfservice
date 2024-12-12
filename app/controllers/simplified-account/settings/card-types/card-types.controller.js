@@ -1,15 +1,18 @@
 const { response } = require('@utils/response')
 const { formatCardTypesForTemplate } = require('@utils/simplified-account/format/format-card-types')
 const { getAllCardTypes, getAcceptedCardTypesForServiceAndAccountType, postAcceptedCardsForServiceAndAccountType } = require('@services/card-types.service')
-const paths = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
+const paths = require('@root/paths')
 
 async function get (req, res, next) {
   const serviceId = req.service.externalId
   const accountType = req.account.type
   const isAdminUser = req.user.isAdminUserForService(serviceId)
   const messages = res.locals?.flash?.messages ?? []
-  const noCardTypesSelectedError = res.locals?.flash?.noCardTypesSelectedError ? { summary: [{text: res.locals?.flash?.noCardTypesSelectedError}] } : undefined
+  let noCardTypesSelectedError
+  if (res.locals?.flash?.noCardTypesSelectedError) {
+    noCardTypesSelectedError = { summary: [{ text: res.locals?.flash?.noCardTypesSelectedError }] }
+  }
   try {
     const { card_types: allCards } = await getAllCardTypes()
     const { card_types: acceptedCards } = await getAcceptedCardTypesForServiceAndAccountType(serviceId, accountType)
@@ -29,6 +32,7 @@ async function get (req, res, next) {
 }
 
 async function post (req, res, next) {
+  console.log(req.body)
   const serviceId = req.service.externalId
   const accountType = req.account.type
   const selectedDebitCards = (typeof req.body.debit === 'string' ? [req.body.debit] : req.body.debit) || []
