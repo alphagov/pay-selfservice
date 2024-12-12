@@ -3,6 +3,8 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 const { expect } = require('chai')
 const User = require('@models/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
+const { postAcceptedCardsForServiceAndAccountType } = require('@services/card-types.service')
+const paths = require('@root/paths')
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
@@ -48,6 +50,7 @@ const acceptedCardTypes = [allCardTypes[0]]
 const mockResponse = sinon.spy()
 const mockGetAllCardTypes = sinon.stub().resolves({ card_types: allCardTypes })
 const mockGetAcceptedCardTypesForServiceAndAccountType = sinon.stub().resolves({ card_types: acceptedCardTypes })
+const mockPostAcceptedCardsForServiceAndAccountType = sinon.stub().resolves({})
 
 const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-types/card-types.controller')
   .withServiceExternalId(SERVICE_ID)
@@ -56,7 +59,8 @@ const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simpl
     '@utils/response': { response: mockResponse },
     '@services/card-types.service': {
       getAllCardTypes: mockGetAllCardTypes,
-      getAcceptedCardTypesForServiceAndAccountType: mockGetAcceptedCardTypesForServiceAndAccountType
+      getAcceptedCardTypesForServiceAndAccountType: mockGetAcceptedCardTypesForServiceAndAccountType,
+      postAcceptedCardsForServiceAndAccountType: mockPostAcceptedCardsForServiceAndAccountType
     }
   })
   .build()
@@ -86,6 +90,7 @@ describe('Controller: settings/card-types', () => {
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(1)
       expect(mockResponse.args[0][3].cardTypes.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: false })
       expect(mockResponse.args[0][3]).to.have.property('isAdminUser').to.equal(true)
+      expect(mockResponse.args[0][3]).to.have.property('currentAcceptedCardTypeIds').length(1)
     })
   })
 
@@ -113,6 +118,25 @@ describe('Controller: settings/card-types', () => {
       expect(mockResponse.args[0][3].cardTypes).to.have.property('Enabled credit cards').to.have.length(0)
       expect(mockResponse.args[0][3].cardTypes).to.have.property('Not enabled credit cards').to.have.length(1).to.include('Visa credit')
       expect(mockResponse.args[0][3]).to.have.property('isAdminUser').to.equal(false)
+      expect(mockResponse.args[0][3]).to.have.property('currentAcceptedCardTypeIds').length(1)
     })
   })
-})
+
+  describe('post to enable an additional card type', () => {
+    before(() => {
+      nextRequest({
+        user: adminUser,
+        body: { currentAcceptedCardTypeIds: 'id-001', credit: ['id-001', 'id-002'] },
+        flash: sinon.stub()
+      })
+      call('post')
+    })
+
+    it('should call adminusers to update accepted card types', () => {
+      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.true // eslint-disable-line
+    })
+
+    it('should redirect to same page', () => {
+      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+      expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.cardTypes.index)
+    })

@@ -14,12 +14,14 @@ async function get (req, res, next) {
     const { card_types: allCards } = await getAllCardTypes()
     const { card_types: acceptedCards } = await getAcceptedCardTypesForServiceAndAccountType(serviceId, accountType)
     const cardTypesSelected = noCardTypesSelectedError ? [] : acceptedCards
+    const currentAcceptedCardTypeIds = acceptedCards.map(card => card.id)
     const cardTypes = formatCardTypesForTemplate(allCards, cardTypesSelected, req.account, isAdminUser)
     response(req, res, 'simplified-account/settings/card-types/index', {
       errors: noCardTypesSelectedError,
       messages,
       cardTypes,
-      isAdminUser
+      isAdminUser,
+      currentAcceptedCardTypeIds
     })
   } catch (err) {
     next(err)
@@ -33,7 +35,6 @@ async function post (req, res, next) {
   const selectedCreditCards = (typeof req.body.credit === 'string' ? [req.body.credit] : req.body.credit) || []
   const selectedCardTypeIds = [...selectedDebitCards, ...selectedCreditCards]
   const currentAcceptedCardTypeIds = req.body.currentAcceptedCardTypeIds ? req.body.currentAcceptedCardTypeIds.split(',') : []
-
   if (!selectedDebitCards.length && !selectedCreditCards.length) {
     req.flash('noCardTypesSelectedError', 'You must choose at least one card')
     return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardTypes.index, serviceId, accountType))
@@ -51,11 +52,10 @@ async function post (req, res, next) {
 
   try {
     const payload = {
-      card_types: [...selectedCardTypeIds]
+      card_types: selectedCardTypeIds
     }
     await postAcceptedCardsForServiceAndAccountType(serviceId, accountType, payload)
     req.flash('messages', { state: 'success', icon: '&check;', heading: 'Accepted card types have been updated' })
-    console.log("----------\nredirecting to form with success message\n---------")
     return res.redirect(
       formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardTypes.index, serviceId, accountType)
     )
