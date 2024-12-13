@@ -79,7 +79,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
     })
 
     it('should pass context data to the response method', () => {
-      expect(responseStub.args[0][3]).to.have.property('customParagraphText').to.equal('Do this next')
+      expect(responseStub.args[0][3]).to.have.property('customParagraph').to.equal('Do this next')
       expect(responseStub.args[0][3]).to.have.property('serviceName').to.equal(SERVICE_NAME)
       expect(responseStub.args[0][3]).to.have.property('backLink').to.contain(paths.simplifiedAccount.settings.emailNotifications.index)
     })
@@ -87,7 +87,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
 
   describe('postRemoveCustomParagraph', () => {
     before(() => {
-      const body = { 'custom-paragraph': 'a test custom paragraph' }
+      const body = { customParagraph: 'a test custom paragraph' }
       setupTest(body)
       customParagraphController.postRemoveCustomParagraph(req, res)
     })
@@ -105,7 +105,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
 
   describe('postEditCustomParagraph', () => {
     before(() => {
-      const body = { 'custom-paragraph': 'a test custom paragraph' }
+      const body = { customParagraph: 'a test custom paragraph' }
       setupTest(body)
       customParagraphController.postEditCustomParagraph(req, res)
     })
@@ -125,7 +125,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
     describe('with validation error', () => {
       const invalidText = 'hi'.repeat(5000)
       before(() => {
-        const body = { 'custom-paragraph': invalidText }
+        const body = { customParagraph: invalidText }
         setupTest(body)
         customParagraphController.postEditCustomParagraph(req, res)
       })
@@ -141,12 +141,23 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       })
 
       it('should pass context data to the response method', () => {
-        expect(responseStub.args[0][3]).to.have.property('errors').to.deep.equal({
-          customParagraph: 'Custom paragraph must be 5000 characters or fewer'
-        })
-        expect(responseStub.args[0][3]).to.have.property('customParagraphText').to.equal(invalidText)
+        const errors = responseStub.args[0][3].errors
+        expect(errors.summary).to.deep.equal(
+          [
+            {
+              text: 'Custom paragraph name must be 5000 characters or fewer',
+              href: '#custom-paragraph'
+            }
+          ])
+        expect(errors.formErrors).to.deep.equal(
+          {
+            customParagraph: 'Custom paragraph name must be 5000 characters or fewer'
+          }
+        )
+        expect(responseStub.args[0][3]).to.have.property('customParagraph').to.equal(invalidText)
         expect(responseStub.args[0][3]).to.have.property('serviceName').to.equal(SERVICE_NAME)
         expect(responseStub.args[0][3]).to.have.property('backLink').to.contain(paths.simplifiedAccount.settings.emailNotifications.index)
+        expect(responseStub.args[0][3]).to.have.property('removeCustomParagraphLink').to.contain(paths.simplifiedAccount.settings.emailNotifications.removeCustomParagraph)
       })
     })
   })

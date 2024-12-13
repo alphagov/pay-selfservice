@@ -5,15 +5,8 @@
 {% endblock %}
 
 {% block settingsContent %}
-
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
   <form id="refund-email-toggle" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-
     {{ govukRadios({
       idPrefix: 'toggle',
       name: 'refundEmailToggle',
@@ -36,11 +29,10 @@
           label: {
             classes: 'govuk-!-font-weight-bold'
           } if emailCollectionMode === 'OPTIONAL',
-          checked: refundEmailEnabled === true,
-          hint: {
-            text: 'Entering an email address is currently optional so users might not get a refund confirmation',
-            classes: 'hint-and-body-width'
-          } if emailCollectionMode === 'OPTIONAL'
+            checked: refundEmailEnabled === true,
+            hint: {
+              text: 'Entering an email address is currently optional so users might not get a refund confirmation'
+            } if emailCollectionMode === 'OPTIONAL'
         },
         {
           value: 'false',
@@ -48,13 +40,12 @@
           label: {
             classes: 'govuk-!-font-weight-bold'
           } if emailCollectionMode === 'OPTIONAL',
-          checked: refundEmailEnabled === false
-        }
+            checked: refundEmailEnabled === false
+          }
       ]
     }) }}
     {{ govukButton({
       text: 'Save changes'
     }) }}
-
   </form>
 {% endblock %}

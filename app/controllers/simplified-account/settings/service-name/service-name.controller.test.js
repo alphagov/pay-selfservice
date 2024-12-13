@@ -123,7 +123,7 @@ describe('Controller: settings/service-name', () => {
       before(() => {
         setupTest('postEditServiceName', {}, {
           body: {
-            serviceNameInput: 'New English Name',
+            serviceName: 'New English Name',
             cy: 'false'
           }
         })
@@ -143,7 +143,7 @@ describe('Controller: settings/service-name', () => {
       before(() => {
         setupTest('postEditServiceName', {}, {
           body: {
-            serviceNameInput: 'Enw Cymraeg newydd',
+            serviceName: 'Enw Cymraeg newydd',
             cy: 'true'
           }
         })
@@ -186,6 +186,7 @@ describe('Controller: settings/service-name', () => {
         expect(responseStub.calledOnce).to.be.true // eslint-disable-line
         const [, , template, context] = responseStub.args[0]
         expect(template).to.equal('simplified-account/settings/service-name/edit-service-name')
+        expect(context).to.have.property('removeCyLink').to.contain(paths.simplifiedAccount.settings.serviceName.removeCy)
         expect(context.errors).to.deep.equal({
           summary: ['Error summary'],
           formErrors: { serviceNameInput: 'Error message' }

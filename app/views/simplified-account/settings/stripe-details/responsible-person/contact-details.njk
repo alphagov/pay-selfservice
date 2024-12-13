@@ -5,18 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">Responsible person contact details</h1>
 
   <form id="responsible-person-contact-details-form" method="post" class="govuk-!-margin-top-4" novalidate>
@@ -36,7 +24,7 @@
       type: "tel",
       autocomplete: "section-contact work tel",
       errorMessage: { text: errors.formErrors['workTelephoneNumber'] } if errors.formErrors['workTelephoneNumber'] else false,
-      classes: "govuk-!-width-two-thirds"
+      classes: "govuk-!-full-width"
     }) }}
 
     {{ govukInput({
@@ -51,7 +39,7 @@
       autocomplete: "section-contact work email",
       spellcheck: false,
       errorMessage: { text: errors.formErrors['workEmail'] } if errors.formErrors['workEmail'] else false,
-      classes: "govuk-!-width-two-thirds"
+      classes: "govuk-!-full-width"
     }) }}
 
     {{ govukButton({ text: "Save and continue" }) }}

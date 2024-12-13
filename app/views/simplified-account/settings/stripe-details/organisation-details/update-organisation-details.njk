@@ -5,18 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l">What is the name and address of your organisation on your government entity document?</h1>
 
   <form id="update-organisation-details-form" method="post">
@@ -32,7 +20,6 @@
       }
     }) }}
   </form>
-
   <script>
     // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
     const submitButton = document.getElementById('update-organisation-details-submit')

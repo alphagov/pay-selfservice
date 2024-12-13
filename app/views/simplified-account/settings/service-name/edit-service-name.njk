@@ -9,22 +9,10 @@
 {% endset %}
 
 {% block settingsPageTitle %}
-  Edit {% if editCy %}Welsh{% else %}English{% endif%} service name
+  Edit {% if editCy %}Welsh{% else %}English{% endif %} service name
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <form id="edit-service-name" method="post" action="{{ submitLink }}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     <input id="cy" name="cy" type="hidden" value="{{ editCy }}"/>
@@ -33,11 +21,11 @@
       label: {
         html: inputLabel
       },
-      errorMessage: { text: errors.formErrors['serviceNameInput'] } if errors.formErrors['serviceNameInput'] else false,
-      id: "service-name-input",
-      name: "serviceNameInput",
+      errorMessage: { text: errors.formErrors['serviceName'] } if errors.formErrors['serviceName'] else false,
+      id: "service-name",
+      name: "serviceName",
       value: serviceName,
-      classes: "govuk-!-width-one-half",
+      classes: "govuk-!-width-two-thirds",
       type: "text",
       spellcheck: true,
       hint: {
@@ -48,7 +36,7 @@
       }
     }) }}
 
-    <p class="govuk-body">
+    <p class="govuk-body govuk-!-margin-bottom-6">
       {% if editCy %}
         <a class="govuk-link govuk-link--no-visited-state" id="welsh-language-guidance"
            href="https://docs.payments.service.gov.uk/optional_features/welsh_language/">

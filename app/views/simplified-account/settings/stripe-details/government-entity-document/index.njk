@@ -6,18 +6,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Upload a government entity document</h1>
 
   <p class="govuk-body">For Stripe to verify that your organisation is a ‘government entity’, you need to upload one

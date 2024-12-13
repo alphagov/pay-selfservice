@@ -34,6 +34,10 @@
   @include govuk-typography-weight-bold();
 }
 
+.service-settings-pane {
+  max-width: 630px;
+}
+
 .service-settings-inset-text--grey {
   background-color: govuk-colour("light-grey");
 }
@@ -45,6 +49,9 @@
 }
 
 .task-list {
+  .govuk-task-list__name-and-hint {
+    width: 70% !important;
+  }
   a:visited, a:link {
     color: govuk-colour("blue");
   }

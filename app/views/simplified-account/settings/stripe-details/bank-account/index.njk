@@ -5,18 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLink
-  }) }}
-
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   <form id="bank-account-form" autocomplete="off" method="post" action="{{ submitLink }}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     {% call govukFieldset({
@@ -77,7 +65,7 @@
     document.getElementById('bank-account-form').addEventListener('submit', function () {
       submitButton.setAttribute('disabled', 'true')
       submitButton.setAttribute('aria-disabled', 'true')
-      submitButton.textContent = "Saving..."
+      submitButton.textContent = 'Saving...'
     })
 
     // progressively enhance the account number input to only accept digits
