@@ -5,7 +5,6 @@ const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const worldpayDetailsService = require('@services/worldpay-details.service')
 const { WorldpayCredential } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
-const { kebabCase } = require('change-case')
 
 function get (req, res) {
   return response(req, res, 'simplified-account/settings/worldpay-details/credentials', {
