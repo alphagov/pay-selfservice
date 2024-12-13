@@ -25,15 +25,15 @@
         text: 'On' if (emailCollectionMode === 'MANDATORY') else ('On - as an optional field' if (emailCollectionMode === 'OPTIONAL') else 'Off')
       },
         actions: {
-        items: [
-          {
-            href: editEmailCollectionHref,
-            text: "Change",
-            classes: "govuk-link--no-visited-state",
-            visuallyHiddenText: "Edit collect email addresses"
-          } if isAdminUser else {}
-        ]
-      }
+          items: [
+            {
+              href: editEmailCollectionHref,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "Edit collect email addresses"
+            } if isAdminUser else {}
+          ]
+        }
       },
       {
         key: {
@@ -44,15 +44,15 @@
           ('Off' if (not confirmationEmailEnabled and emailCollectionMode !== 'OFF') else 'Off (not asking users for their email address)')
       },
         actions: {
-        items: [
-          {
-            href: editPaymentConfirmationEmailToggleHref,
-            text: "Change",
-            classes: "govuk-link--no-visited-state",
-            visuallyHiddenText: "Payment confirmation emails settings"
-          } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
-        ]
-      }
+          items: [
+            {
+              href: editPaymentConfirmationEmailToggleHref,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "Payment confirmation emails settings"
+            } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
+          ]
+        }
       },
       {
         key: {
@@ -63,15 +63,15 @@
           ('Off' if (not refundEmailEnabled and emailCollectionMode !== 'OFF') else 'Off (not asking users for their email address)')
       },
         actions: {
-        items: [
-          {
-            href: editRefundEmailToggleHref,
-            text: "Change",
-            classes: "govuk-link--no-visited-state",
-            visuallyHiddenText: "Refund emails settings"
-          } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
-        ]
-      }
+          items: [
+            {
+              href: editRefundEmailToggleHref,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "Refund emails settings"
+            } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
+          ]
+        }
       }
     ]}) }}
 
