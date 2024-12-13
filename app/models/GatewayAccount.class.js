@@ -1,4 +1,4 @@
-const { GatewayAccountCredential, CREDENTIAL_STATE } = require('@models/GatewayAccountCredential.class')
+const { GatewayAccountCredential, CREDENTIAL_STATE } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
 
 /**
  * @class GatewayAccount

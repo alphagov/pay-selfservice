@@ -6,6 +6,7 @@ const paths = require('@root/paths')
 class WorldpayTasks {
   /**
    * @param {GatewayAccount} gatewayAccount
+   * @param {Service} service
    */
   constructor (gatewayAccount, service) {
     this.tasks = []
@@ -21,7 +22,7 @@ class WorldpayTasks {
         linkText: 'Link your Worldpay account with GOV.UK Pay',
         complete: true
       }
-      if (credential === null || credential.credentials.one_off_customer_initiated === null) {
+      if (!credential || !credential.credentials.oneOffCustomerInitiated) {
         worldpayCredentials.complete = false
       }
       this.tasks.push(worldpayCredentials)
