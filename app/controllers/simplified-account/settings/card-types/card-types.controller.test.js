@@ -95,6 +95,7 @@ describe('Controller: settings/card-types', () => {
       expect(mockResponse.args[0][3].cardTypes.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: true })
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(2)
       expect(mockResponse.args[0][3].cardTypes.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: false })
+      expect(mockResponse.args[0][3].cardTypes.creditCards[1]).to.deep.include({ text: 'American Express', checked: false })
       expect(mockResponse.args[0][3]).to.have.property('isAdminUser').to.equal(true)
       expect(mockResponse.args[0][3]).to.have.property('currentAcceptedCardTypeIds').length(1)
     })
@@ -119,10 +120,11 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should pass context data to the response method', () => {
-      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('Enabled debit cards').to.have.length(1).to.include('Visa debit')
-      expect(mockResponse.args[0][3].cardTypes).to.have.property('Not enabled debit cards').to.have.length(0)
-      expect(mockResponse.args[0][3].cardTypes).to.have.property('Enabled credit cards').to.have.length(0)
-      expect(mockResponse.args[0][3].cardTypes).to.have.property('Not enabled credit cards').to.have.length(2).to.include('Visa credit')
+      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('debit/enabled')
+        .to.have.property('cards').to.deep.equal(['Visa debit'])
+      expect(mockResponse.args[0][3].cardTypes).to.have.property('debit/disabled').to.have.property('cards').to.have.length(0)
+      expect(mockResponse.args[0][3].cardTypes).to.have.property('credit/enabled').to.have.property('cards').to.have.length(0)
+      expect(mockResponse.args[0][3].cardTypes['credit/disabled'].cards).to.deep.equal(['Visa credit', 'American Express'])
       expect(mockResponse.args[0][3]).to.have.property('isAdminUser').to.equal(false)
       expect(mockResponse.args[0][3]).to.have.property('currentAcceptedCardTypeIds').length(1)
     })
@@ -185,10 +187,15 @@ describe('Controller: settings/card-types', () => {
       expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.false // eslint-disable-line no-unused-expressions
     })
 
-    it('should redirect to same page with an error', () => {
-      expect(req.flash).to.have.been.calledWith('noCardTypesSelectedError', 'You must choose at least one card') // eslint-disable-line no-unused-expressions
-      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line no-unused-expressions
-      expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.cardTypes.index)
+    it('should should pass context data to the response method with an error', () => {
+      expect(mockResponse.args[0][3]).to.have.property('errors').to.deep.equal({ summary: [{ text: 'You must choose at least one card' }] })
+      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('debitCards').length(1)
+      expect(mockResponse.args[0][3].cardTypes.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: false })
+      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(2)
+      expect(mockResponse.args[0][3].cardTypes.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: false })
+      expect(mockResponse.args[0][3].cardTypes.creditCards[1]).to.deep.include({ text: 'American Express', checked: false })
+      expect(mockResponse.args[0][3]).to.have.property('isAdminUser').to.equal(true)
+      expect(mockResponse.args[0][3]).to.have.property('currentAcceptedCardTypeIds').length(1)
     })
   })
 })
