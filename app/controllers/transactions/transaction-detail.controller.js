@@ -8,7 +8,8 @@ module.exports = async function showTransactionDetails (req, res, next) {
   const accountId = req.account.gateway_account_id
   const chargeId = req.params.chargeId
   try {
-    const data = await ledgerFindWithEvents(accountId, chargeId)
+    const isCorporateExemptionsEnabled = req.account?.worldpay_3ds_flex?.corporate_exemptions_enabled
+    const data = await ledgerFindWithEvents(accountId, chargeId, isCorporateExemptionsEnabled)
     data.indexFilters = req.session.filters
     if (req.session.contextIsAllServiceTransactions) {
       data.contextIsAllServiceTransactions = req.session.contextIsAllServiceTransactions
