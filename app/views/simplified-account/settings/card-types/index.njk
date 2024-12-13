@@ -23,9 +23,9 @@
   <h1 class="govuk-heading-l page-title">Card types</h1>
 
   {% if isAdminUser %}
-    {% include "./cardTypesCheckboxes.njk" %}
+    {% include "./_card-types-checkboxes.njk" %}
   {% else %}
-    {% include "./cardTypesList.njk" %}
+    {% include "./_card-types-list.njk" %}
   {% endif %}
 
 {% endblock %}

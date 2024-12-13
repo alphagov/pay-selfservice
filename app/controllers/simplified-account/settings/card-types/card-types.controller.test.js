@@ -6,13 +6,13 @@ const userFixtures = require('@test/fixtures/user.fixtures')
 const paths = require('@root/paths')
 
 const ACCOUNT_TYPE = 'live'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const adminUser = new User(userFixtures.validUserResponse({
   external_id: 'user-id-for-admin-user',
   service_roles: {
     service: {
-      service: { external_id: SERVICE_ID },
+      service: { external_id: SERVICE_EXTERNAL_ID },
       role: { name: 'admin' }
     }
   }
@@ -24,7 +24,7 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
     service_roles: {
       service:
         {
-          service: { external_id: SERVICE_ID },
+          service: { external_id: SERVICE_EXTERNAL_ID },
           role: { name: 'view-only' }
         }
     }
@@ -59,7 +59,7 @@ const mockGetAcceptedCardTypesForServiceAndAccountType = sinon.stub().resolves({
 const mockPostAcceptedCardsForServiceAndAccountType = sinon.stub().resolves({})
 
 const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-types/card-types.controller')
-  .withServiceExternalId(SERVICE_ID)
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },

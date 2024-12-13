@@ -5,9 +5,9 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const paths = require('@root/paths')
 
 async function get (req, res, next) {
-  const serviceId = req.service.externalId
+  const serviceExternalId = req.service.externalId
   const accountType = req.account.type
-  const isAdminUser = req.user.isAdminUserForService(serviceId)
+  const isAdminUser = req.user.isAdminUserForService(serviceExternalId)
   const messages = res.locals?.flash?.messages ?? []
   let noCardTypesSelectedError
   if (res.locals?.flash?.noCardTypesSelectedError) {
@@ -15,7 +15,7 @@ async function get (req, res, next) {
   }
   try {
     const { card_types: allCards } = await getAllCardTypes()
-    const { card_types: acceptedCards } = await getAcceptedCardTypesForServiceAndAccountType(serviceId, accountType)
+    const { card_types: acceptedCards } = await getAcceptedCardTypesForServiceAndAccountType(serviceExternalId, accountType)
     const cardTypesSelected = noCardTypesSelectedError ? [] : acceptedCards
     const currentAcceptedCardTypeIds = acceptedCards.map(card => card.id)
     const cardTypes = formatCardTypesForTemplate(allCards, cardTypesSelected, req.account, isAdminUser)
@@ -32,8 +32,7 @@ async function get (req, res, next) {
 }
 
 async function post (req, res, next) {
-  console.log(req.body)
-  const serviceId = req.service.externalId
+  const serviceExternalId = req.service.externalId
   const accountType = req.account.type
   const selectedDebitCards = (typeof req.body.debit === 'string' ? [req.body.debit] : req.body.debit) || []
   const selectedCreditCards = (typeof req.body.credit === 'string' ? [req.body.credit] : req.body.credit) || []
@@ -41,7 +40,7 @@ async function post (req, res, next) {
   const currentAcceptedCardTypeIds = req.body.currentAcceptedCardTypeIds ? req.body.currentAcceptedCardTypeIds.split(',') : []
   if (!selectedDebitCards.length && !selectedCreditCards.length) {
     req.flash('noCardTypesSelectedError', 'You must choose at least one card')
-    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardTypes.index, serviceId, accountType))
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardTypes.index, serviceExternalId, accountType))
   }
 
   const noChangesToAcceptedCardTypes = (
@@ -50,7 +49,7 @@ async function post (req, res, next) {
   )
   if (noChangesToAcceptedCardTypes) {
     return res.redirect(
-      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardTypes.index, serviceId, accountType)
+      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardTypes.index, serviceExternalId, accountType)
     )
   }
 
@@ -58,10 +57,10 @@ async function post (req, res, next) {
     const payload = {
       card_types: selectedCardTypeIds
     }
-    await postAcceptedCardsForServiceAndAccountType(serviceId, accountType, payload)
+    await postAcceptedCardsForServiceAndAccountType(serviceExternalId, accountType, payload)
     req.flash('messages', { state: 'success', icon: '&check;', heading: 'Accepted card types have been updated' })
     return res.redirect(
-      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardTypes.index, serviceId, accountType)
+      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardTypes.index, serviceExternalId, accountType)
     )
   } catch (err) {
     next(err)
