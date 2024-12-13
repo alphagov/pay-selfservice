@@ -5,13 +5,6 @@
 {% endblock %}
 
 {% block settingsContent %}
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
   {% if not isAdminUser %}
     {{ govukInsetText({
       text: "You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure,
