@@ -6,10 +6,8 @@ const SERVICE_ID = 'service-id-123abc'
 
 const mockResponse = sinon.spy()
 const tokens = [{ description: 'my token', created_by: 'system generated', issued_date: '12 Dec 2024' }]
-const mockPublicAuthService = {
-  getActiveTokensForAccount: sinon.stub().resolves({
-    tokens
-  })
+const apiKeysService = {
+  getActiveKeys: sinon.stub().resolves(tokens)
 }
 
 const {
@@ -21,7 +19,7 @@ const {
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/clients/public-auth.client': mockPublicAuthService
+    '@services/api-keys.service': apiKeysService
   })
   .build()
 
@@ -32,13 +30,11 @@ describe('Controller: settings/api-keys', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse).to.have.been.calledOnce // eslint-disable-line
     })
 
     it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse.args[0][0]).to.deep.equal(req)
-      expect(mockResponse.args[0][1]).to.deep.equal(res)
-      expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/api-keys/index')
+      expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/api-keys/index')
     })
 
     it('should pass context data to the response method', () => {

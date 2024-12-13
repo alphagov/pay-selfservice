@@ -1,13 +1,11 @@
 const { response } = require('@utils/response')
-const publicAuthClient = require('@services/clients/public-auth.client')
+const apiKeysService = require('@services/api-keys.service')
 
 async function get (req, res) {
-  const publicAuthData = await publicAuthClient.getActiveTokensForAccount({
-    accountId: req.account.id
-  })
+  const activeKeys = await apiKeysService.getActiveKeys(req.account.id)
   return response(req, res, 'simplified-account/settings/api-keys/index', {
     accountType: req.account.type,
-    activeKeys: publicAuthData.tokens || [],
+    activeKeys: activeKeys,
     createApiKeyLink: '#',
     showRevokedKeysLink: '#'
   })
