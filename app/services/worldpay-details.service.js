@@ -11,7 +11,6 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
  * @returns {Promise}
  */
 async function checkCredential (serviceExternalId, accountType, credential) {
-  console.log(credential.toJson())
   const credentialCheck = await connectorClient.postCheckWorldpayCredentialByServiceExternalIdAndAccountType(
     serviceExternalId,
     accountType,
