@@ -11,7 +11,7 @@ GOV.UK Pay Self Service admin tool (Node.js)
 Start the backend services locally in docker, using the Pay CLI.
   
   ```
-  pay local launch admin
+  pay local launch --cluster admin
   ```
  
 Generate the environment variables file. This only needs to be done the first time you run locally.

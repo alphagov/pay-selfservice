@@ -256,6 +256,12 @@ function buildServiceRoleOpts (opts) {
   if (opts.merchantDetails) {
     service.merchant_details = opts.merchantDetails
   }
+  if (opts.collectBillingAddress) {
+    service.collect_billing_address = opts.collectBillingAddress
+  }
+  if (opts.defaultBillingAddressCountry) {
+    service.default_billing_address_country = opts.defaultBillingAddressCountry
+  }
 
   const serviceRole = {
     service
@@ -281,7 +287,9 @@ function buildUserWithServiceRoleOpts (opts) {
     telephone_number: opts.telephoneNumber,
     second_factor: opts.secondFactor,
     provisional_otp_key: opts.provisionalOtpKey,
-    features: opts.features
+    features: opts.features,
+    collectBillingAddress: opts.collectBillingAddress,
+    defaultBillingAddressCountry: opts.defaultBillingAddressCountry
   }
 }
 

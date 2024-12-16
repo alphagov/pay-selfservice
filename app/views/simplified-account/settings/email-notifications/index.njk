@@ -30,7 +30,7 @@
               href: editEmailCollectionHref,
               text: "Change",
               classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Edit collect email addresses"
+              visuallyHiddenText: "collect email addresses"
             } if isAdminUser else {}
           ]
         }
@@ -49,7 +49,7 @@
               href: editPaymentConfirmationEmailToggleHref,
               text: "Change",
               classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Payment confirmation emails settings"
+              visuallyHiddenText: "payment confirmation emails settings"
             } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
           ]
         }
@@ -68,7 +68,7 @@
               href: editRefundEmailToggleHref,
               text: "Change",
               classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Refund emails settings"
+              visuallyHiddenText: "refund emails settings"
             } if (isAdminUser and emailCollectionMode !== 'OFF') else {}
           ]
         }

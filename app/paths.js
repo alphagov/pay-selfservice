@@ -218,7 +218,11 @@ module.exports = {
         credentials: '/settings/worldpay-details/credentials'
       },
       cardPayments: {
-        index: '/settings/card-payments'
+        index: '/settings/card-payments',
+        collectBillingAddress: '/settings/card-payments/collect-billing-address',
+        defaultBillingAddressCountry: '/settings/card-payments/default-billing-address-country',
+        applePay: '/settings/card-payments/apple-pay',
+        googlePay: '/settings/card-payments/google-pay'
       },
       cardTypes: {
         index: '/settings/card-types'

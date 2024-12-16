@@ -5,4 +5,5 @@ module.exports.stripeDetails = require('./stripe-details/stripe-details.controll
 module.exports.teamMembers = require('./team-members/team-members.controller')
 module.exports.organisationDetails = require('./organisation-details/organisation-details.controller')
 module.exports.cardTypes = require('./card-types/card-types.controller')
+module.exports.cardPayments = require('./card-payments/card-payments.controller')
 module.exports.worldpayDetails = require('./worldpay-details/worldpay-details.controller')
