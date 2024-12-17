@@ -188,7 +188,7 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should should pass context data to the response method with an error', () => {
-      expect(mockResponse.args[0][3]).to.have.property('errors').to.deep.equal({ summary: [{ text: 'You must choose at least one card' }] })
+      expect(mockResponse.args[0][3]).to.have.property('errors').to.deep.include({ summary: [{ text: 'You must choose at least one card', href: '#' }] })
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('debitCards').length(1)
       expect(mockResponse.args[0][3].cardTypes.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: false })
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(2)
