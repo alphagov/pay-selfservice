@@ -41,9 +41,8 @@ async function post (req, res) {
     .withUsername(req.body.username)
     .withPassword(req.body.password)
 
-  try {
-    await worldpayDetailsService.checkCredential(req.service.externalId, req.account.type, credential)
-  } catch (e) {
+  const isValid = await worldpayDetailsService.checkCredential(req.service.externalId, req.account.type, credential)
+  if (!isValid) {
     return errorResponse(req, res, {
       summary: [
         {

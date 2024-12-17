@@ -6,6 +6,7 @@ const { configureClient } = require('./base/config')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 const StripeAccount = require('../../models/StripeAccount.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
+const ValidationResult = require('@models/gateway-account-credential/ValidationResult.class')
 
 // Constants
 const SERVICE_NAME = 'connector'
@@ -138,7 +139,7 @@ ConnectorClient.prototype = {
    * @param {String} accountType
    * @param {String} credentialsId
    * @param {Object} payload
-   * @returns {Promise}
+   * @returns {Promise<GatewayAccountCredential>}
    */
   patchGatewayAccountCredentialsByServiceIdAndAccountType: async function (serviceExternalId, accountType, credentialsId, payload) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/credentials/{credentialsId}`
@@ -240,16 +241,16 @@ ConnectorClient.prototype = {
    *
    * @param {String} serviceExternalId
    * @param {String} accountType
-   * @param {Object} credentials
-   * @returns {Promise}
+   * @param {WorldpayCredential} credentials
+   * @returns {Promise<ValidationResult>}
    */
   postCheckWorldpayCredentialByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, credentials) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/worldpay/check-credentials`
       .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
       .replace('{accountType}', encodeURIComponent(accountType))
     configureClient(client, url)
-    const response = await client.post(url, credentials, 'Check Worldpay credentials')
-    return response.data
+    const response = await client.post(url, credentials.toJson(), 'Check Worldpay credentials')
+    return ValidationResult.fromJson(response.data)
   },
 
   /**
