@@ -3,6 +3,8 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const worldpayDetailsService = require('@services/worldpay-details.service')
+const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
 
 function get (req, res) {
   return response(req, res, 'simplified-account/settings/worldpay-details/credentials', {
@@ -33,6 +35,26 @@ async function post (req, res) {
       formErrors: formattedErrors.formErrors
     })
   }
+
+  const credential = new WorldpayCredential()
+    .withMerchantCode(req.body.merchantCode)
+    .withUsername(req.body.username)
+    .withPassword(req.body.password)
+
+  const isValid = await worldpayDetailsService.checkCredential(req.service.externalId, req.account.type, credential)
+  if (!isValid) {
+    return errorResponse(req, res, {
+      summary: [
+        {
+          text: 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided',
+          href: '#merchantCode'
+        }
+      ]
+    })
+  }
+
+  return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
+    req.service.externalId, req.account.type))
 }
 
 const errorResponse = (req, res, errors) => {

@@ -6,6 +6,7 @@ const { configureClient } = require('./base/config')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 const StripeAccount = require('../../models/StripeAccount.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
+const ValidationResult = require('@models/gateway-account-credential/ValidationResult.class')
 
 // Constants
 const SERVICE_NAME = 'connector'
@@ -132,6 +133,25 @@ ConnectorClient.prototype = {
     return response.data
   },
 
+  /**
+   *
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {String} credentialsId
+   * @param {Object} payload
+   * @returns {Promise<GatewayAccountCredential>}
+   */
+  patchGatewayAccountCredentialsByServiceIdAndAccountType: async function (serviceExternalId, accountType, credentialsId, payload) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/credentials/{credentialsId}`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+      .replace('{credentialsId}', encodeURIComponent(credentialsId))
+
+    configureClient(client, url)
+    const response = await client.patch(url, payload, 'patch gateway account credentials')
+    return response.data
+  },
+
   patchGooglePayGatewayMerchantId: async function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/credentials/{credentialsId}`
       .replace('{accountId}', encodeURIComponent(gatewayAccountId))
@@ -215,6 +235,22 @@ ConnectorClient.prototype = {
     configureClient(client, url)
     const response = await client.post(url, params.payload, 'Check Worldpay credentials')
     return response.data
+  },
+
+  /**
+   *
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {WorldpayCredential} credentials
+   * @returns {Promise<ValidationResult>}
+   */
+  postCheckWorldpayCredentialByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, credentials) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/worldpay/check-credentials`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.post(url, credentials.toJson(), 'Check Worldpay credentials')
+    return ValidationResult.fromJson(response.data)
   },
 
   /**
