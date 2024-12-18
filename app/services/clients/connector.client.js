@@ -142,7 +142,7 @@ ConnectorClient.prototype = {
    * @param {GatewayAccountCredentialUpdateRequest} patchRequest
    * @returns {Promise<GatewayAccountCredential>}
    */
-  patchGatewayAccountCredentialsByServiceIdAndAccountType: async function (serviceExternalId, accountType, credentialsId, patchRequest) {
+  patchGatewayAccountCredentialsByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, credentialsId, patchRequest) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/credentials/{credentialsId}`
       .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
       .replace('{accountType}', encodeURIComponent(accountType))

@@ -38,7 +38,7 @@ async function checkCredential (serviceExternalId, accountType, credential) {
 async function updateCredentials (serviceExternalId, accountType, credentialId, userExternalId, credential) {
   const patchRequest = new GatewayAccountCredentialUpdateRequest(userExternalId)
     .replace().credentials().oneOffCustomerInitiated(credential.toJson())
-  return connectorClient.patchGatewayAccountCredentialsByServiceIdAndAccountType(serviceExternalId, accountType, credentialId, patchRequest)
+  return connectorClient.patchGatewayAccountCredentialsByServiceExternalIdAndAccountType(serviceExternalId, accountType, credentialId, patchRequest)
 }
 
 module.exports = {
