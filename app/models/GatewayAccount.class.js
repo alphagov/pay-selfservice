@@ -44,14 +44,33 @@ class GatewayAccount {
     this.recurringEnabled = gatewayAccountData.recurring_enabled
     if (gatewayAccountData?.gateway_account_credentials) {
       this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials
-        .map(credentialData => new GatewayAccountCredential(credentialData))
-
-      this.activeCredential = this.gatewayAccountCredentials.filter((credential) =>
-        credential.state === CREDENTIAL_STATE.ACTIVE)[0] || null
+        .map(credentialData => GatewayAccountCredential.fromJson(credentialData))
     }
+    this.supports3ds = ['worldpay', 'stripe'].includes(gatewayAccountData.payment_provider)
+    this.disableToggle3ds = gatewayAccountData.payment_provider === 'stripe'
     /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
      * you should instead add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData
+  }
+
+  /**
+   *
+   * @returns {GatewayAccountCredential}
+   */
+  getCurrentCredential () {
+    if (this.gatewayAccountCredentials.length === 1) {
+      return this.gatewayAccountCredentials[0]
+    }
+    return this.getActiveCredential()
+  }
+
+  /**
+   *
+   * @returns {GatewayAccountCredential}
+   */
+  getActiveCredential () {
+    return this.gatewayAccountCredentials
+      .filter((credential) => credential.state === CREDENTIAL_STATE.ACTIVE)[0] || null
   }
 
   /**

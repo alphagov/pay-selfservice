@@ -23,10 +23,15 @@ class GatewayAccountCredentialUpdateRequest {
 
 const safeOperation = (op, request) => {
   return {
-    credentials: (value) => {
-      request.updates.push({ op, path: 'credentials', value })
-      return request
+    credentials: () => {
+      return {
+        oneOffCustomerInitiated: (value) => {
+          request.updates.push({ op, path: 'credentials/worldpay/one_off_customer_initiated', value })
+          return request
+        }
+      }
     }
   }
 }
-module.exports = { GatewayAccountCredentialUpdateRequest }
+
+module.exports = GatewayAccountCredentialUpdateRequest

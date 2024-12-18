@@ -215,7 +215,7 @@ module.exports = {
       },
       worldpayDetails: {
         index: '/settings/worldpay-details',
-        credentials: '/settings/worldpay-details/credentials'
+        oneOffCustomerInitiated: '/settings/worldpay-details/one-off-customer-initiated'
       },
       cardPayments: {
         index: '/settings/card-payments'

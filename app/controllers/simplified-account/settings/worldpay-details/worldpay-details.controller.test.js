@@ -51,7 +51,7 @@ describe('Controller: settings/worldpay-details', () => {
 
     it('should pass context data to the response method', () => {
       const tasks = [{
-        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.credentials,
+        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
           SERVICE_ID, ACCOUNT_TYPE),
         id: 'worldpay-credentials',
         linkText: 'Link your Worldpay account with GOV.UK Pay',

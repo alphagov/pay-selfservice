@@ -12,11 +12,11 @@ class WorldpayTasks {
     this.tasks = []
     this.incompleteTasks = true
 
-    const credential = gatewayAccount.activeCredential
+    const credential = gatewayAccount.getCurrentCredential()
 
     if (gatewayAccount.allowMoto) {
       const worldpayCredentials = {
-        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.credentials,
+        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
           service.externalId, gatewayAccount.type),
         id: 'worldpay-credentials',
         linkText: 'Link your Worldpay account with GOV.UK Pay',
