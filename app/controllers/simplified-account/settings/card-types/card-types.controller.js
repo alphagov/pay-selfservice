@@ -32,13 +32,19 @@ async function post (req, res, next) {
   const accountType = req.account.type
   const currentAcceptedCardTypeIds = req.body.currentAcceptedCardTypeIds?.split(',') || []
 
+  let selectedCardTypeIds
   const sanitiseToArray = value => Array.isArray(value) ? value : (value ? [value] : [])
   const validations = [
     body('debit').customSanitizer(sanitiseToArray),
     body('credit').customSanitizer(sanitiseToArray),
     body()
-      .custom((_, { req }) => (req.body.debit?.length ?? 0) + (req.body.credit?.length ?? 0) > 0)
-      .withMessage('You must choose at least one card')
+      .custom((_, { req }) => {
+        selectedCardTypeIds = sanitiseToArray(req.body.debit).concat(sanitiseToArray(req.body.credit))
+        if (selectedCardTypeIds < 1) {
+          throw new Error('You must choose at least one card')
+        }
+        return true
+      })
   ]
   await Promise.all(validations.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
@@ -56,7 +62,6 @@ async function post (req, res, next) {
     })
   }
 
-  const selectedCardTypeIds = sanitiseToArray(req.body.debit).concat(sanitiseToArray(req.body.credit))
   const noChangesToAcceptedCardTypes = (
     currentAcceptedCardTypeIds.length === selectedCardTypeIds.length &&
     currentAcceptedCardTypeIds.every(item => selectedCardTypeIds.includes(item))
