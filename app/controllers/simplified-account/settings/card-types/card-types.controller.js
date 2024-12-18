@@ -35,8 +35,6 @@ async function post (req, res, next) {
   let selectedCardTypeIds
   const sanitiseToArray = value => Array.isArray(value) ? value : (value ? [value] : [])
   const validations = [
-    body('debit').customSanitizer(sanitiseToArray),
-    body('credit').customSanitizer(sanitiseToArray),
     body()
       .custom((_, { req }) => {
         selectedCardTypeIds = sanitiseToArray(req.body.debit).concat(sanitiseToArray(req.body.credit))
