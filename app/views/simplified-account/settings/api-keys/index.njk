@@ -1,0 +1,97 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  {% if accountType === 'test' %}Test{% else %}Live{% endif %} API keys
+{% endblock %}
+
+{% block settingsContent %}
+
+  <h1 class="govuk-heading-l page-title">
+    {% if accountType === 'test' %}Test{% else %}Live{% endif %} API keys
+  </h1>
+
+  {{ govukWarningText(
+    {
+      text: 'Do not use a test API key on your live account. It will not work properly.',
+      iconFallbackText: 'Warning'
+    } if accountType === 'test' else {
+      text: 'Do not use a live API key on your test account. It will not work properly.',
+      iconFallbackText: 'Warning'
+    }
+  ) }}
+
+  <p class="govuk-body">Use these to connect your digital service to Pay and to access the reporting API.</p>
+  <p class="govuk-body">
+    You do not need API keys to use
+    <a class="govuk-link" href="https://www.payments.service.gov.uk/govuk-payment-pages/">payment links</a>.
+  </p>
+
+  {{ govukButton({
+    href: createApiKeyLink,
+    text: 'Create a new API key',
+    classes: 'govuk-!-margin-top-2'
+  }) }}
+
+  {% if activeKeys.length == 0 %}
+    <h2 class="govuk-heading-m govuk-!-margin-top-2">
+      There are no active {{ accountType }} API keys
+    </h2>
+  {% else %}
+    <h2 class="govuk-heading-m govuk-!-margin-top-2">
+      Active {{ accountType }} API keys ({{ activeKeys.length }})
+    </h2>
+    {% for key in activeKeys %}
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: key.description
+          },
+          actions: {
+            items: [
+              {
+                href: '#',
+                text: 'Change name'
+              },
+              {
+                href: '#',
+                text: 'Revoke'
+              }
+            ]
+          }
+        },
+        rows: [
+          {
+            key: {
+              text: 'Created by'
+            },
+            value: {
+              text: key.createdBy
+            }
+          },
+          {
+            key: {
+              text: 'Date created'
+            },
+            value: {
+              text: key.issuedDate
+            }
+          },
+          {
+            key: {
+              text: 'Last used'
+            },
+            value: {
+              text: key.lastUsed
+            }
+          }
+        ]
+      }) }}
+    {% endfor %}
+  {% endif %}
+
+  {{ govukButton({
+    href: showRevokedKeysLink,
+    text: 'Show revoked API keys',
+    classes: 'govuk-!-margin-top-2 govuk-button--secondary'
+  }) }}
+{% endblock %}

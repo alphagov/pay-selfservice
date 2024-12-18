@@ -72,8 +72,7 @@ module.exports = (account, service, currentUrl, permissions) => {
       id: 'api-keys',
       name: 'API keys',
       path: paths.simplifiedAccount.settings.apiKeys.index,
-      permission: 'tokens_update', // TODO find a better way of defining these
-      alwaysViewable: true // viewable on test and live accounts
+      permission: 'tokens_active_read'
     })
     .add({
       id: 'webhooks',
