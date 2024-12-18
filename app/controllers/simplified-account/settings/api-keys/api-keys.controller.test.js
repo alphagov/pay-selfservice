@@ -5,7 +5,7 @@ const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
 
 const mockResponse = sinon.spy()
-const tokens = [{ description: 'my token', created_by: 'system generated', issued_date: '12 Dec 2024' }]
+const tokens = [{ description: 'my token', createdBy: 'system generated', issuedDate: '12 Dec 2024' }]
 const apiKeysService = {
   getActiveKeys: sinon.stub().resolves(tokens)
 }

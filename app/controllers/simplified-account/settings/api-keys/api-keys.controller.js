@@ -5,7 +5,7 @@ async function get (req, res) {
   const activeKeys = await apiKeysService.getActiveKeys(req.account.id)
   return response(req, res, 'simplified-account/settings/api-keys/index', {
     accountType: req.account.type,
-    activeKeys: activeKeys,
+    activeKeys,
     createApiKeyLink: '#',
     showRevokedKeysLink: '#'
   })
