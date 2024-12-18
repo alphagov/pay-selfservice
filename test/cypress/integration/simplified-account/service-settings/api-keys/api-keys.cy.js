@@ -30,14 +30,12 @@ describe('Settings - API keys', () => {
   })
 
   describe('for an admin user', () => {
-
     describe('when there are no active API keys', () => {
       beforeEach(() => {
         setupStubs()
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
       it('should show appropriate buttons and text', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
-
         cy.get('#api-keys').should('have.text', 'API keys')
         cy.get('.service-settings-pane')
           .find('a')
@@ -57,14 +55,13 @@ describe('Settings - API keys', () => {
     describe('when there are active API keys', () => {
       const apiKeys = [
         new Token().withCreatedBy('system generated').withDescription('description').withIssuedDate('12 Dec 2024'),
-        new Token().withCreatedBy('algae bra').withDescription('mathematical clothes').withIssuedDate('10 Dec 2024')
+        new Token().withCreatedBy('algae bra').withDescription('mathematical clothes').withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024')
       ]
       beforeEach(() => {
         setupStubs('admin', apiKeys)
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
       it('should show appropriate buttons and text', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
-
         cy.get('#api-keys').should('have.text', 'API keys')
         cy.get('.service-settings-pane')
           .find('a')
@@ -78,6 +75,38 @@ describe('Settings - API keys', () => {
           .find('a')
           .contains('Show revoked API keys')
           .should('exist')
+      })
+
+      it('should list the api keys', () => {
+        cy.get('div.govuk-summary-card').should('have.length', 2)
+
+        function verifySummaryCard (pos, token) {
+          cy.get('div.govuk-summary-card').eq(pos)
+            .within(() => {
+              cy.get('.govuk-summary-card__title').should('contain', token.description)
+
+              cy.get('.govuk-summary-list__row').eq(0)
+                .within(() => {
+                  cy.get('.govuk-summary-list__key').should('contain', 'Created by')
+                  cy.get('.govuk-summary-list__value').should('contain', token.createdBy)
+                })
+
+              cy.get('.govuk-summary-list__row').eq(1)
+                .within(() => {
+                  cy.get('.govuk-summary-list__key').should('contain', 'Date created')
+                  cy.get('.govuk-summary-list__value').should('contain', token.issuedDate)
+                })
+
+              cy.get('.govuk-summary-list__row').eq(2)
+                .within(() => {
+                  cy.get('.govuk-summary-list__key').should('contain', 'Last used')
+                  cy.get('.govuk-summary-list__value').should('contain', token.lastUsed || '')
+                })
+            })
+        }
+
+        verifySummaryCard(0, apiKeys[0])
+        verifySummaryCard(1, apiKeys[1])
       })
     })
   })
