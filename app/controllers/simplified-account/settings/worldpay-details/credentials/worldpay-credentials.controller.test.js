@@ -51,7 +51,7 @@ describe('Controller: settings/worldpay-details/credentials', () => {
 
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(
-        formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID)
+        formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
       )
     })
   })
