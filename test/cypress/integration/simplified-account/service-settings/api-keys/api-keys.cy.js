@@ -81,6 +81,7 @@ describe('Settings - API keys', () => {
         cy.get('div.govuk-summary-card').should('have.length', 2)
 
         function verifySummaryCard (pos, token) {
+          // TODO verify Change and Revoke links
           cy.get('div.govuk-summary-card').eq(pos)
             .within(() => {
               cy.get('.govuk-summary-card__title').should('contain', token.description)

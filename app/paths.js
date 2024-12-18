@@ -224,7 +224,8 @@ module.exports = {
         index: '/settings/card-types'
       },
       apiKeys: {
-        index: '/settings/api-keys'
+        index: '/settings/api-keys',
+        create: '/settings/api-keys/create'
       },
       webhooks: {
         index: '/settings/webhooks'

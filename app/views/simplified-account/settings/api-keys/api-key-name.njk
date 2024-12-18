@@ -1,0 +1,34 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  API key name
+{% endblock %}
+
+{% block settingsContent %}
+
+  <h1 class="govuk-heading-l page-title">API key name</h1>
+
+  <form id="api-key-name" method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukInput({
+      id: "description",
+      name: "description",
+      type: "text",
+      attributes: {
+        maxlength: "100"
+      },
+      classes: "govuk-input--width-40",
+      label: {
+        text: "Add a description for the key"
+      },
+      hint: {
+        text: "For example, “John Smith’s API key”"
+      }
+    }) }}
+
+    {{ govukButton({
+      text: "Continue"
+    }) }}
+  </form>
+{% endblock %}
