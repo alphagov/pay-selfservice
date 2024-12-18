@@ -85,6 +85,20 @@ describe('Settings - API keys', () => {
             .within(() => {
               cy.get('.govuk-summary-card__title').should('contain', token.description)
 
+              cy.get('.govuk-summary-card__action').eq(0)
+                .within(() => {
+                  cy.get('a')
+                    .should('contain.text', 'Change name')
+                    .and('have.attr', 'href', '#')
+                })
+
+              cy.get('.govuk-summary-card__action').eq(1)
+                .within(() => {
+                  cy.get('a')
+                    .should('contain.text', 'Revoke')
+                    .and('have.attr', 'href', '#')
+                })
+
               cy.get('.govuk-summary-list__row').eq(0)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Created by')
