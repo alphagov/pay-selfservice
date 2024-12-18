@@ -7,9 +7,7 @@ class Credential {
    * @returns {Credential}
    */
   withStripeAccountId (stripeAccountId) {
-    if (stripeAccountId) {
-      this.stripeAccountId = stripeAccountId
-    }
+    this.stripeAccountId = stripeAccountId
     return this
   }
 
@@ -19,9 +17,7 @@ class Credential {
    * @returns {Credential}
    */
   withOneOffCustomerInitiated (oneOffCustomerInitiated) {
-    if (oneOffCustomerInitiated) {
-      this.oneOffCustomerInitiated = oneOffCustomerInitiated
-    }
+    this.oneOffCustomerInitiated = oneOffCustomerInitiated
     return this
   }
 
@@ -36,16 +32,21 @@ class Credential {
 
   toJson () {
     return {
-      ...this.stripeAccountId && { stripe_account_id: this.stripeAccountId },
-      ...this.oneOffCustomerInitiated && { one_off_customer_initiated: this.oneOffCustomerInitiated.toJson() }
+      ...this.stripeAccountId ?? { stripe_account_id: this.stripeAccountId },
+      ...this.oneOffCustomerInitiated ?? { one_off_customer_initiated: this.oneOffCustomerInitiated.toJson() }
     }
   }
 
   static fromJson (data) {
-    return new Credential()
-      .withStripeAccountId(data?.stripe_account_id)
-      .withOneOffCustomerInitiated(WorldpayCredential.fromJson(data?.one_off_customer_initiated))
+    const credential = new Credential()
       .withRawResponse(data)
+    if (data?.stripe_account_id) {
+      credential.withStripeAccountId(data.stripe_account_id)
+    }
+    if (data?.one_off_customer_initiated) {
+      credential.withOneOffCustomerInitiated(WorldpayCredential.fromJson(data.one_off_customer_initiated))
+    }
+    return credential
   }
 }
 

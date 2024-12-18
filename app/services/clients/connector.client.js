@@ -7,6 +7,7 @@ const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 const StripeAccount = require('../../models/StripeAccount.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
 const ValidationResult = require('@models/gateway-account-credential/ValidationResult.class')
+const { GatewayAccountCredential } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
 
 // Constants
 const SERVICE_NAME = 'connector'
@@ -138,18 +139,18 @@ ConnectorClient.prototype = {
    * @param {String} serviceExternalId
    * @param {String} accountType
    * @param {String} credentialsId
-   * @param {Object} payload
+   * @param {GatewayAccountCredentialUpdateRequest} patchRequest
    * @returns {Promise<GatewayAccountCredential>}
    */
-  patchGatewayAccountCredentialsByServiceIdAndAccountType: async function (serviceExternalId, accountType, credentialsId, payload) {
+  patchGatewayAccountCredentialsByServiceIdAndAccountType: async function (serviceExternalId, accountType, credentialsId, patchRequest) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/credentials/{credentialsId}`
       .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
       .replace('{accountType}', encodeURIComponent(accountType))
       .replace('{credentialsId}', encodeURIComponent(credentialsId))
 
     configureClient(client, url)
-    const response = await client.patch(url, payload, 'patch gateway account credentials')
-    return response.data
+    const response = await client.patch(url, patchRequest.formatPayload(), 'patch gateway account credentials')
+    return GatewayAccountCredential.fromJson(response.data)
   },
 
   patchGooglePayGatewayMerchantId: async function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId) {

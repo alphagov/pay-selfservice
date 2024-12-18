@@ -1,22 +1,16 @@
 class WorldpayCredential {
   withMerchantCode (merchantCode) {
-    if (merchantCode) {
-      this.merchantCode = merchantCode
-    }
+    this.merchantCode = merchantCode
     return this
   }
 
   withUsername (username) {
-    if (username) {
-      this.username = username
-    }
+    this.username = username
     return this
   }
 
   withPassword (password) {
-    if (password) {
-      this.password = password
-    }
+    this.password = password
     return this
   }
 
@@ -29,9 +23,6 @@ class WorldpayCredential {
   }
 
   static fromJson (data) {
-    if (!data) {
-      return undefined
-    }
     return new WorldpayCredential()
       .withMerchantCode(data?.merchant_code)
       .withUsername(data?.username)

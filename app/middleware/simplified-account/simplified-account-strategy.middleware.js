@@ -28,12 +28,7 @@ async function getGatewayAccount (serviceExternalId, accountType) {
       serviceExternalId,
       accountType
     }
-    let gatewayAccount = await connectorClient.getAccountByServiceExternalIdAndAccountType(params)
-
-    gatewayAccount = _.extend({}, gatewayAccount, {
-      supports3ds: ['worldpay', 'stripe'].includes(gatewayAccount.paymentProvider),
-      disableToggle3ds: gatewayAccount.paymentProvider === 'stripe'
-    })
+    const gatewayAccount = await connectorClient.getAccountByServiceExternalIdAndAccountType(params)
 
     const switchingCredential = getSwitchingCredentialIfExists(gatewayAccount)
     const isSwitchingToStripe = switchingCredential && switchingCredential.payment_provider === 'stripe'

@@ -53,6 +53,14 @@ async function post (req, res) {
     })
   }
 
+  await worldpayDetailsService.updateCredentials(
+    req.service.externalId,
+    req.account.type,
+    req.account.getCurrentCredential().externalId,
+    req.user.externalId,
+    credential
+  )
+
   return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
     req.service.externalId, req.account.type))
 }

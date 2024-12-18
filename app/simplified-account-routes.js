@@ -66,8 +66,8 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, pe
 
 // worldpay details
 simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
-simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.credentials, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.credentials, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.post)
 
 // card types
 simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permission('transactions:read'), serviceSettingsController.cardTypes.get)

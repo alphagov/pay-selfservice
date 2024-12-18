@@ -7,7 +7,8 @@ const keys = {
   ENVIRONMENT_ID: 'environmentId',
   SERVICE_EXTERNAL_ID: 'serviceExternalId',
   GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId',
-  ACCOUNT_TYPE: 'accountType'
+  ACCOUNT_TYPE: 'accountType',
+  CREDENTIAL_EXTERNAL_ID: 'credentialExternalId'
 }
 
 module.exports = {
@@ -215,7 +216,7 @@ module.exports = {
       },
       worldpayDetails: {
         index: '/settings/worldpay-details',
-        credentials: '/settings/worldpay-details/credentials'
+        oneOffCustomerInitiated: '/settings/worldpay-details/one-off-customer-initiated'
       },
       cardPayments: {
         index: '/settings/card-payments'
