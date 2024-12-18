@@ -152,6 +152,15 @@ const buildTransactionDetails = (opts = {}) => {
   if (opts.total_amount) data.total_amount = opts.total_amount
   if (opts.wallet_type) data.wallet_type = opts.wallet_type
   if (opts.metadata) data.metadata = opts.metadata
+
+  if (opts.authorisation_summary) {
+    data.authorisation_summary = opts.authorisation_summary
+  }
+
+  if (opts.exemption) {
+    data.exemption = opts.exemption
+  }
+
   return data
 }
 
