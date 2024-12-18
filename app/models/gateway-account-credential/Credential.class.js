@@ -32,8 +32,8 @@ class Credential {
 
   toJson () {
     return {
-      ...this.stripeAccountId ?? { stripe_account_id: this.stripeAccountId },
-      ...this.oneOffCustomerInitiated ?? { one_off_customer_initiated: this.oneOffCustomerInitiated.toJson() }
+      ...this.stripeAccountId && { stripe_account_id: this.stripeAccountId },
+      ...this.oneOffCustomerInitiated && { one_off_customer_initiated: this.oneOffCustomerInitiated.toJson() }
     }
   }
 
