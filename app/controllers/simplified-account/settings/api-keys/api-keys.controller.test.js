@@ -5,9 +5,9 @@ const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
 
 const mockResponse = sinon.spy()
-const tokens = [{ description: 'my token', createdBy: 'system generated', issuedDate: '12 Dec 2024' }]
+const apiKeys = [{ description: 'my token', createdBy: 'system generated', issuedDate: '12 Dec 2024' }]
 const apiKeysService = {
-  getActiveKeys: sinon.stub().resolves(tokens)
+  getActiveKeys: sinon.stub().resolves(apiKeys)
 }
 
 const {
@@ -39,7 +39,7 @@ describe('Controller: settings/api-keys', () => {
 
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('accountType').to.equal('live')
-      expect(mockResponse.args[0][3]).to.have.property('activeKeys').to.deep.equal(tokens)
+      expect(mockResponse.args[0][3]).to.have.property('activeKeys').to.deep.equal(apiKeys)
     })
   })
 })

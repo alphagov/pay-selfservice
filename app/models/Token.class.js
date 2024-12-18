@@ -19,6 +19,15 @@ class Token {
     return this
   }
 
+  toJson () {
+    return {
+      ...this.description && { description: this.description },
+      ...this.createdBy && { created_by: this.createdBy },
+      ...this.issuedDate && { issued_date: this.issuedDate },
+      ...this.lastUsed && { last_used: this.lastUsed }
+    }
+  }
+
   static fromJson (data) {
     if (!data) {
       return undefined
