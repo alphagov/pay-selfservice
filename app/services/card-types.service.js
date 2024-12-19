@@ -11,7 +11,12 @@ async function getAcceptedCardTypesForServiceAndAccountType (serviceId, accountT
   return connectorClient.getAcceptedCardsForServiceAndAccountType(serviceId, accountType)
 }
 
+async function postAcceptedCardsForServiceAndAccountType (serviceId, accountType, payload) {
+  return connectorClient.postAcceptedCardsForServiceAndAccountType(serviceId, accountType, payload)
+}
+
 module.exports = {
   getAllCardTypes,
-  getAcceptedCardTypesForServiceAndAccountType
+  getAcceptedCardTypesForServiceAndAccountType,
+  postAcceptedCardsForServiceAndAccountType
 }

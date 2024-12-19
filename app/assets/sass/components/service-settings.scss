@@ -62,3 +62,14 @@
     color: govuk-colour("black");
   }
 }
+
+.card-types {
+  .govuk-checkboxes__item {
+    border-bottom: 1px solid govuk-colour("mid-grey");
+    padding-bottom: govuk-spacing(2);
+  }
+
+  .govuk-summary-list__row:first-of-type {
+    border-top: 1px solid govuk-colour("mid-grey");
+  }
+}

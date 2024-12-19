@@ -295,14 +295,14 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Retrieves the accepted card Types for the given external service external id and account type
-   * @param serviceId (required)
-   * @param accountType (required)
+   * Retrieves the accepted card Types for the given service external id and account type
+   * @param {String} serviceExternalId
+   * @param {String} accountType
    * @returns {Promise<Object>}
    */
-  getAcceptedCardsForServiceAndAccountType: async function (serviceId, accountType) {
-    const url = `${this.connectorUrl}/v1/frontend/service/{serviceId}/account/{accountType}/card-types`
-      .replace('{serviceId}', encodeURIComponent(serviceId))
+  getAcceptedCardsForServiceAndAccountType: async function (serviceExternalId, accountType) {
+    const url = `${this.connectorUrl}/v1/frontend/service/{serviceExternalId}/account/{accountType}/card-types`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
       .replace('{accountType}', encodeURIComponent(accountType))
     configureClient(client, url)
     const response = await client.get(url, 'get accepted card types for account')
@@ -318,6 +318,22 @@ ConnectorClient.prototype = {
   postAcceptedCardsForAccount: async function (gatewayAccountId, payload) {
     const url = `${this.connectorUrl}/v1/frontend/accounts/{accountId}/card-types`
       .replace('{accountId}', encodeURIComponent(gatewayAccountId))
+    configureClient(client, url)
+    const response = await client.post(url, payload, 'post accepted card types for account')
+    return response.data
+  },
+
+  /**
+   * Updates the accepted card Types for the given service and account type
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {{card_types: string|string[]}} payload
+   * @returns {Promise<Object>}
+   */
+  postAcceptedCardsForServiceAndAccountType: async function (serviceExternalId, accountType, payload) {
+    const url = `${this.connectorUrl}/v1/frontend/service/{serviceExternalId}/account/{accountType}/card-types`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
     configureClient(client, url)
     const response = await client.post(url, payload, 'post accepted card types for account')
     return response.data

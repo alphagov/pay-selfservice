@@ -13,12 +13,75 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-l page-title">Card types</h1>
+  <h1 class="govuk-heading-l">Card types</h1>
 
   {% if isAdminUser %}
-    {% include "./cardTypesCheckboxes.njk" %}
-  {% else %}
-    {% include "./cardTypesList.njk" %}
-  {% endif %}
+    <p class="govuk-body">Choose which credit and debit cards you want to accept.</p>
+    <form method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <input type="hidden" name="currentAcceptedCardTypeIds" value="{{ currentAcceptedCardTypeIds }}" />
+      {{
+      govukCheckboxes({
+        idPrefix: "debit",
+        name: "debit",
+        fieldset: {
+          legend: {
+            text: "Debit cards",
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        classes: "card-types govuk-!-padding-top-2",
+        items: cardTypes.debitCards
+      })
+      }}
 
+      {{
+      govukCheckboxes({
+        idPrefix: "credit",
+        name: "credit",
+        fieldset: {
+          legend: {
+            text: "Credit cards",
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        classes: "card-types govuk-!-padding-top-2",
+        items: cardTypes.creditCards
+      })
+      }}
+
+      {{
+      govukButton({
+        text: 'Save changes',
+        attributes: {
+          id: "save-card-types"
+        }
+      })
+      }}
+    </form>
+  {% else %}
+    {% for category, item in cardTypes %}
+      {% if (item.cards.length > 0) %}
+        <h2 class="govuk-heading-s">
+          {{ item.heading }}
+        </h2>
+        {% set cardList = [] %}
+        {% for cardBrand in item.cards %}
+          {% set cardListItem = {
+            key: {
+              classes: "govuk-!-display-none"
+            },
+            value: {
+              text: cardBrand
+            }
+          } %}
+          {% set cardList = (cardList.push(cardListItem), cardList) %}
+        {% endfor %}
+        {{ govukSummaryList({
+          rows: cardList,
+          classes: "card-types govuk-!-margin-bottom-4"
+        }) }}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 {% endblock %}

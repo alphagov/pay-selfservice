@@ -3,15 +3,16 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 const { expect } = require('chai')
 const User = require('@models/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
+const paths = require('@root/paths')
 
 const ACCOUNT_TYPE = 'live'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const adminUser = new User(userFixtures.validUserResponse({
   external_id: 'user-id-for-admin-user',
   service_roles: {
     service: {
-      service: { external_id: SERVICE_ID },
+      service: { external_id: SERVICE_EXTERNAL_ID },
       role: { name: 'admin' }
     }
   }
@@ -23,7 +24,7 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
     service_roles: {
       service:
         {
-          service: { external_id: SERVICE_ID },
+          service: { external_id: SERVICE_EXTERNAL_ID },
           role: { name: 'view-only' }
         }
     }
@@ -42,21 +43,30 @@ const allCardTypes = [{
   label: 'Visa',
   type: 'CREDIT',
   requires3ds: false
+},
+{
+  id: 'id-003',
+  brand: 'amex',
+  label: 'American Express',
+  type: 'CREDIT',
+  requires3ds: false
 }]
 const acceptedCardTypes = [allCardTypes[0]]
 
 const mockResponse = sinon.spy()
 const mockGetAllCardTypes = sinon.stub().resolves({ card_types: allCardTypes })
 const mockGetAcceptedCardTypesForServiceAndAccountType = sinon.stub().resolves({ card_types: acceptedCardTypes })
+const mockPostAcceptedCardsForServiceAndAccountType = sinon.stub().resolves({})
 
-const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-types/card-types.controller')
-  .withServiceExternalId(SERVICE_ID)
+const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-types/card-types.controller')
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/card-types.service': {
       getAllCardTypes: mockGetAllCardTypes,
-      getAcceptedCardTypesForServiceAndAccountType: mockGetAcceptedCardTypesForServiceAndAccountType
+      getAcceptedCardTypesForServiceAndAccountType: mockGetAcceptedCardTypesForServiceAndAccountType,
+      postAcceptedCardsForServiceAndAccountType: mockPostAcceptedCardsForServiceAndAccountType
     }
   })
   .build()
@@ -83,9 +93,11 @@ describe('Controller: settings/card-types', () => {
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('debitCards').length(1)
       expect(mockResponse.args[0][3].cardTypes.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: true })
-      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(1)
+      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(2)
       expect(mockResponse.args[0][3].cardTypes.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: false })
+      expect(mockResponse.args[0][3].cardTypes.creditCards[1]).to.deep.include({ text: 'American Express', checked: false })
       expect(mockResponse.args[0][3]).to.have.property('isAdminUser').to.equal(true)
+      expect(mockResponse.args[0][3]).to.have.property('currentAcceptedCardTypeIds').length(1)
     })
   })
 
@@ -108,11 +120,82 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should pass context data to the response method', () => {
-      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('Enabled debit cards').to.have.length(1).to.include('Visa debit')
-      expect(mockResponse.args[0][3].cardTypes).to.have.property('Not enabled debit cards').to.have.length(0)
-      expect(mockResponse.args[0][3].cardTypes).to.have.property('Enabled credit cards').to.have.length(0)
-      expect(mockResponse.args[0][3].cardTypes).to.have.property('Not enabled credit cards').to.have.length(1).to.include('Visa credit')
+      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('debit/enabled')
+        .to.have.property('cards').to.deep.equal(['Visa debit'])
+      expect(mockResponse.args[0][3].cardTypes).to.have.property('debit/disabled').to.have.property('cards').to.have.length(0)
+      expect(mockResponse.args[0][3].cardTypes).to.have.property('credit/enabled').to.have.property('cards').to.have.length(0)
+      expect(mockResponse.args[0][3].cardTypes['credit/disabled'].cards).to.deep.equal(['Visa credit', 'American Express'])
       expect(mockResponse.args[0][3]).to.have.property('isAdminUser').to.equal(false)
+      expect(mockResponse.args[0][3]).to.have.property('currentAcceptedCardTypeIds').length(1)
+    })
+  })
+
+  describe('post to enable an additional card type', () => {
+    before(() => {
+      nextRequest({
+        user: adminUser,
+        body: { currentAcceptedCardTypeIds: 'id-001', debit: 'id-001', credit: ['id-002', 'id-003'] }
+      })
+      call('post')
+    })
+
+    it('should call adminusers to update accepted card types', () => {
+      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.true // eslint-disable-line
+    })
+
+    it('should redirect to same page with success notification', () => {
+      expect(req.flash).to.have.been.calledWith('messages', {
+        state: 'success',
+        icon: '&check;',
+        heading: 'Accepted card types have been updated'
+      })
+      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+      expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.cardTypes.index)
+    })
+  })
+
+  describe('post an unchanged set of card types', () => {
+    before(() => {
+      nextRequest({
+        user: adminUser,
+        body: { currentAcceptedCardTypeIds: 'id-001', debit: 'id-001' }
+      })
+      call('post')
+    })
+
+    it('should not call adminusers', () => {
+      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.false // eslint-disable-line no-unused-expressions
+    })
+
+    it('should redirect to same page without a notification', () => {
+      expect(req.flash).to.have.been.not.called // eslint-disable-line no-unused-expressions
+      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line no-unused-expressions
+      expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.cardTypes.index)
+    })
+  })
+
+  describe('post with no card types selected', () => {
+    before(() => {
+      nextRequest({
+        user: adminUser,
+        body: { currentAcceptedCardTypeIds: 'id-001' }
+      })
+      call('post')
+    })
+
+    it('should not call adminusers', () => {
+      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.false // eslint-disable-line no-unused-expressions
+    })
+
+    it('should should pass context data to the response method with an error', () => {
+      expect(mockResponse.args[0][3]).to.have.property('errors').to.deep.include({ summary: [{ text: 'You must choose at least one card', href: '#' }] })
+      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('debitCards').length(1)
+      expect(mockResponse.args[0][3].cardTypes.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: false })
+      expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(2)
+      expect(mockResponse.args[0][3].cardTypes.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: false })
+      expect(mockResponse.args[0][3].cardTypes.creditCards[1]).to.deep.include({ text: 'American Express', checked: false })
+      expect(mockResponse.args[0][3]).to.have.property('isAdminUser').to.equal(true)
+      expect(mockResponse.args[0][3]).to.have.property('currentAcceptedCardTypeIds').length(1)
     })
   })
 })
