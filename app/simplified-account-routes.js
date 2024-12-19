@@ -61,6 +61,9 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.organisationDetails.edit
 // card types
 simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permission('transactions:read'), serviceSettingsController.cardTypes.get)
 
+// card payments
+simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.index, permission('payment-types:update'), serviceSettingsController.cardPayments.get)
+
 // worldpay details
 simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
 

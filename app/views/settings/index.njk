@@ -26,7 +26,7 @@
               classes: 'govuk-!-width-one-half'
             },
             value: {
-              text: "On" if currentGatewayAccount.allow_apple_pay else "Off",
+              text: currentGatewayAccount.allow_apple_pay | boolToOnOrOff,
               classes: 'govuk-!-width-one-quarter'
             },
             actions: {
@@ -47,7 +47,7 @@
               classes: 'govuk-!-width-one-half'
             },
             value: {
-              text: "On" if currentGatewayAccount.allow_google_pay else "Off",
+              text: currentGatewayAccount.allow_google_pay | boolToOnOrOff,
               classes: 'govuk-!-width-one-quarter'
             },
             actions: {
@@ -56,7 +56,7 @@
                 {
                   href: formatAccountPathsFor(routes.account.digitalWallet.googlePay, currentGatewayAccount.external_id),
                   classes: 'govuk-link--no-visited-state',
-                  text: 'Change' if permissions.toggle_billing_address_update else 'View',
+                  text: permissions.toggle_billing_address_update | boolToText('Change', 'View'),
                   visuallyHiddenText: 'Google Pay settings'
                 }
               ]
@@ -81,7 +81,7 @@
               classes: 'govuk-!-width-one-half'
             },
             value: {
-              text: 'On' if requires3ds else 'Off',
+              text: requires3ds | boolToOnOrOff,
               classes: 'govuk-!-width-one-quarter'
             }
           }
@@ -200,7 +200,7 @@
               classes: 'govuk-!-width-one-half'
             },
             value: {
-              text: 'On' if refundEmailEnabled else 'Off',
+              text: refundEmailEnabled | boolToOnOrOff,
               classes: 'govuk-!-width-one-quarter'
             },
             actions: {
@@ -235,7 +235,7 @@
                 classes: 'govuk-!-width-one-half'
               },
               value: {
-                text: 'On' if motoMaskCardNumberInputEnabled else 'Off',
+                text: motoMaskCardNumberInputEnabled | boolToOnOrOff,
                 classes: 'govuk-!-width-one-quarter'
               },
               actions: {
@@ -256,7 +256,7 @@
                 classes: 'govuk-!-width-one-half'
               },
               value: {
-                text: 'On' if motoMaskSecurityCodeInputEnabled else 'Off',
+                text: motoMaskSecurityCodeInputEnabled | boolToOnOrOff,
                 classes: 'govuk-!-width-one-quarter'
               },
               actions: {

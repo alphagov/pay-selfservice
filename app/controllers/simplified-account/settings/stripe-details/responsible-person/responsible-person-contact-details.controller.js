@@ -56,7 +56,7 @@ const postErrorResponse = (req, res, errors) => {
       workTelephoneNumber,
       workEmail
     },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.homeAddress, req.service.externalId, req.account.type),
+    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.homeAddress, req.service.externalId, req.account.type)
   })
 }
 
