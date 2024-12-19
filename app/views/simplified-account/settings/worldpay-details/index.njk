@@ -41,6 +41,35 @@
       classes: "task-list"
     }) }}
 
+  {% else %}
+
+    {% set taskList = [] %}
+    {% for task in tasks %}
+      {% set taskCardRows = [] %}
+        {% for row in task.completedCard.rows %}
+          {% set taskCardRows = (taskCardRows.push({
+              key: { text: row.keyText },
+              value: { text: row.valueText }
+          }), taskCardRows) %}
+        {% endfor %}
+
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: task.completedCard.title
+          },
+          actions: {
+            items: [{
+              href: task.href,
+              text: 'Change'
+            }]
+          }
+        },
+        rows: taskCardRows
+      }) }}
+
+    {% endfor %}
+
   {% endif %}
 
 {% endblock %}

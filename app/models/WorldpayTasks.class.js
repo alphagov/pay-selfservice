@@ -20,7 +20,20 @@ class WorldpayTasks {
           service.externalId, gatewayAccount.type),
         id: 'worldpay-credentials',
         linkText: 'Link your Worldpay account with GOV.UK Pay',
-        complete: true
+        complete: true,
+        completedCard: {
+          title: 'Account credentials',
+          rows: [{
+            keyText: 'Merchant Code',
+            valueText: credential.credentials?.oneOffCustomerInitiated?.merchantCode
+          }, {
+            keyText: 'Username',
+            valueText: credential.credentials?.oneOffCustomerInitiated?.username
+          }, {
+            keyText: 'Password',
+            valueText: '●●●●●●●●'
+          }]
+        }
       }
       if (!credential || !credential.credentials.oneOffCustomerInitiated) {
         worldpayCredentials.complete = false
