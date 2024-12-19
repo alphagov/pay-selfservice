@@ -145,7 +145,6 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
-
       cy.get('ol.govuk-list > li:nth-child(1)').should('exist')
       cy.get('ol.govuk-list > li:nth-child(1) > strong').should('contain', 'Completed')
 

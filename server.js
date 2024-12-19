@@ -29,6 +29,7 @@ const formatFutureStrategyAccountPathsFor = require('./app/utils/format-future-s
 const formatServicePathsFor = require('./app//utils/format-service-paths-for')
 const healthcheckController = require('./app/controllers/healthcheck.controller')
 const { healthcheck } = require('./app/paths.js')
+const { boolToText, boolToOnOrOff } = require('@utils/bool-to-text')
 // Global constants
 const bindHost = (process.env.BIND_HOST || '127.0.0.1')
 const port = (process.env.PORT || 3000)
@@ -131,6 +132,8 @@ function initialiseTemplateEngine (app) {
   nunjucksEnvironment.addFilter('docsLink', (text, slug) => {
     return new nunjucks.runtime.SafeString(`<a class="govuk-link govuk-link--no-visited-state" href="https://docs.payments.service.gov.uk/${slug}">${text}</a>`)
   })
+  nunjucksEnvironment.addFilter('boolToText', boolToText)
+  nunjucksEnvironment.addFilter('boolToOnOrOff', boolToOnOrOff)
 }
 
 function initialisePublic (app) {

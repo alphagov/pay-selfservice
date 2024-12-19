@@ -59,6 +59,9 @@ const nsDebugLogger = createLogger({
 const nsDebug = process.env.NS_DEBUG === 'true'
 
 module.exports = (loggerName) => {
+  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
+    return console
+  }
   const childLogger = nsDebug
     ? nsDebugLogger.child({ logger_name: loggerName })
     : logger.child({ logger_name: loggerName })

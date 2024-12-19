@@ -562,7 +562,6 @@ describe('Switch PSP settings page', () => {
         it('all steps are complete', () => {
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
 
-
           cy.get('strong[id="Add organisation website address-status"]').should('contain', 'Completed')
           cy.get('strong[id="Provide your bank details-status"]').should('contain', 'Completed')
           cy.get('strong[id="Provide details about your responsible person-status"]').should('contain', 'Completed')
