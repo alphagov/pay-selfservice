@@ -16,9 +16,71 @@
   <h1 class="govuk-heading-l page-title">Card types</h1>
 
   {% if isAdminUser %}
-    {% include "./cardTypesCheckboxes.njk" %}
+    <p class="govuk-body">Choose which credit and debit cards you want to accept.</p>
+    <form method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <input type="hidden" name="currentAcceptedCardTypeIds" value="{{ currentAcceptedCardTypeIds }}" />
+      {{
+      govukCheckboxes({
+        idPrefix: "debit",
+        name: "debit",
+        classes: "with-border govuk-!-padding-top-3 pay-!-border-top",
+        fieldset: {
+          legend: {
+            text: "Debit cards",
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: cardTypes.debitCards
+      })
+      }}
+
+      {{
+      govukCheckboxes({
+        idPrefix: "credit",
+        name: "credit",
+        classes: "with-border govuk-!-padding-top-3 pay-!-border-top",
+        fieldset: {
+          legend: {
+            text: "Credit cards",
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: cardTypes.creditCards
+      })
+      }}
+
+      {{
+      govukButton({
+        text: 'Save changes',
+        attributes: {
+          id: "save-card-types"
+        }
+      })
+      }}
+    </form>
   {% else %}
-    {% include "./cardTypesList.njk" %}
+    {% for category, item in cardTypes %}
+      {% if (item.cards.length > 0) %}
+        <h3 class="govuk-heading-m">
+          {{ item.heading }}
+        </h3>
+        {% set cardList = [] %}
+        {% for card in item.cards %}
+          {% set cardListItem = {
+            key: {
+              text: card,
+              classes: "govuk-!-display-none"
+            },
+            value: {
+              html: card
+            }
+          } %}
+          {% set cardList = (cardList.push(cardListItem), cardList) %}
+        {% endfor %}
+        {{ govukSummaryList({ rows: cardList }) }}
+      {% endif %}
+    {% endfor %}
   {% endif %}
 
 {% endblock %}

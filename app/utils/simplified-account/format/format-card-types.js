@@ -56,14 +56,26 @@ const formatCardTypesForAdminTemplate = (allCards, acceptedCards, account) => {
 const formatCardTypesForNonAdminTemplate = (allCards, acceptedCards) => {
   const acceptedCardTypeIds = acceptedCards.map(card => card.id)
   const formattedCardTypes = {
-    'Enabled debit cards': [],
-    'Not enabled debit cards': [],
-    'Enabled credit cards': [],
-    'Not enabled credit cards': []
+    'debit/enabled': {
+      cards: [],
+      heading: 'Enabled debit cards'
+    },
+    'debit/disabled': {
+      cards: [],
+      heading: 'Not enabled debit cards'
+    },
+    'credit/enabled': {
+      cards: [],
+      heading: 'Enabled credit cards'
+    },
+    'credit/disabled': {
+      cards: [],
+      heading: 'Not enabled credit cards'
+    }
   }
   allCards.forEach(card => {
-    const cardIsEnabled = acceptedCardTypeIds.includes(card.id) ? 'Enabled' : 'Not enabled'
-    formattedCardTypes[`${cardIsEnabled} ${card.type.toLowerCase()} cards`].push(formatLabel(card))
+    const cardIsEnabled = acceptedCardTypeIds.includes(card.id) ? 'enabled' : 'disabled'
+    formattedCardTypes[`${card.type.toLowerCase()}/${cardIsEnabled}`].cards.push(formatLabel(card))
   })
   return formattedCardTypes
 }
