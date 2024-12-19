@@ -19,9 +19,14 @@ class WorldpayTasks {
         href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
           service.externalId, gatewayAccount.type),
         id: 'worldpay-credentials',
-        linkText: 'Link your Worldpay account with GOV.UK Pay',
-        complete: true,
-        completedCard: {
+        linkText: 'Link your Worldpay account with GOV.UK Pay'
+
+      }
+      if (!credential || !credential.credentials.oneOffCustomerInitiated) {
+        worldpayCredentials.complete = false
+      } else {
+        worldpayCredentials.complete = true
+        worldpayCredentials.completedCard = {
           title: 'Account credentials',
           rows: [{
             keyText: 'Merchant Code',
@@ -34,9 +39,6 @@ class WorldpayTasks {
             valueText: '●●●●●●●●'
           }]
         }
-      }
-      if (!credential || !credential.credentials.oneOffCustomerInitiated) {
-        worldpayCredentials.complete = false
       }
       this.tasks.push(worldpayCredentials)
     }
